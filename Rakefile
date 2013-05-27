@@ -41,8 +41,8 @@ task :post do
   open(filename, 'w') do |post|
     post.puts "---"
     post.puts "layout: post"
-    post.puts "title: \"#{title.gsub(/-/,' ')}\""
     post.puts "category: posts"
+    post.puts "title: \"#{title.gsub(/-/,' ')}\""
     post.puts "---"
   end
 end # task :post
