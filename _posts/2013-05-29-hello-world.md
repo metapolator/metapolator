@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Hello World
 category: posts
+title: Hello World
 ---
 
 This is the first blog post. 
