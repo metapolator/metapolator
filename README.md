@@ -8,6 +8,7 @@ for [Jekyll](https://github.com/mojombo/jekyll).
 
 ## Installation
 
+- Install Ruby 1.9 `brew install ruby`
 - Install the ImageMagick dependency `brew install imagemagick`
 - Install the npm dependency `brew install npm`
 - Clone this repo: `git clone https://github.com/metapolator/metapolator.git metapolator`
