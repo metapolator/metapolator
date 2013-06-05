@@ -1,7 +1,7 @@
 ---
 layout: post
 category: posts
-title: Comming Soon!
+title: Coming Soon!
 ---
 
 This is the first blog post. 
