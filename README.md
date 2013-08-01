@@ -22,9 +22,11 @@
 <p class="p12"><br></p>
 <p class="p13">Load the preset database:</p>
 <p class="p12"><br></p>
+<code>
 <p class="p11">mysql&gt; USE blog;</p>
 <p class="p11">mysql&gt; SOURCE dbscript.sql;</p>
 <p class="p11">mysql&gt; SOURCE mysqlview.sql;</p>
+</code>
 <p class="p9"><br></p>
 <p class="p10">Start web.py application:</p>
 <p class="p9"><br></p>
