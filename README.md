@@ -55,7 +55,7 @@
 <p class="p9"><br></p>
 <h2 style="margin: 0.0px 0.0px 15.0px 0.0px; font: 24.0px Arial; color: #333333"><b>Screenshots</b></h2>
 
-<p><a href="https://github.com/metapolator/metapolator/metapolator.png" target="_blank"><img src="https://github.com/metapolator/metapolator/metapolator.png" alt="Metapolator" style="max-width:100%;"></a></p>
+<p><a href="https://github.com/metapolator/metapolator.png" target="_blank"><img src="https://github.com/metapolator/metapolator.png" alt="Metapolator" style="max-width:100%;"></a></p>
 <p class="p9"><br></p>
 <p class="p9"><br></p>
 <p class="p9"><br></p>
