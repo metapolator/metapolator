@@ -1,0 +1,14 @@
+$def with (posts,master)
+
+<h1>Font - Point</h1>
+$for mast in master:
+  <p> $mast.FontName <br>
+   metapolation $mast.metapolation <br> 
+</p>
+$for post in posts:
+        <div  id="$post.id" style="$post.position">
+        <p><a href="/view/$post.id">$post.PointNr</a></p> 
+	</div>
+
+
+

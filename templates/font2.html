@@ -1,0 +1,82 @@
+$def with (form,gmlist,cfont)
+<title>Global Parameters</title>
+<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<style>
+h3_b {
+	position:absolute;
+	z-index:-5;
+	bottom:-350px;
+	left:9px;
+	font-family:"metapolator","backup";
+	font-size:1200px;
+	color:grey;
+}
+h3_a {
+	position:absolute;
+	z-index:-5;
+	bottom:-359px;
+	right:9px;
+	font-family:"metapolator","backup";
+	font-size:1200px;
+	color:grey;
+}
+h3_c {
+	position:absolute;
+	z-index:-5;
+	bottom:-350px;
+	left:619px;
+	font-family:"metapolator","backup";
+	font-size:1200px;
+	color:grey;
+}
+p,h2,.menu,table,th,td,#ruler,a {
+	font:normal 15px/19px Menlo,'Inconsolata',mono;
+}
+h2 {
+	color:red;
+}
+#center {
+	background:red;
+	bottom:0;
+	height:0px;
+	left:-300;
+	margin:auto;
+	position:absolute;
+	top:200;
+	right:0;
+	width:0px;
+	-webkit-transform:translate(0%,0%) scale(0.80,0.80);
+}
+a:visited {
+	color: green;
+	text-decoration:underline;
+}
+a:link {
+	color: green;
+	text-decoration:underline;
+}
+table,th,td {
+	width:200px;
+	text-align:left;
+	color: red;
+}
+#mm {
+     position:relative;
+     top: 10;
+     }
+</style>
+
+<div class="title">Global Parameters | Project $cfont.idmaster</div>
+
+<p><a href="/font2/$cfont.idglobal">Global Parameters Edit</a>&nbsp;
+<span><a href="/font3/$cfont.idlocalA">A Local Params Edit</a>&nbsp;</span>
+<span><a href="/font4/$cfont.idlocalB">B Local Params Edit</a>&nbsp;</span></p>
+
+<div id="mm">
+<form action="" method="POST" name="form">
+$:form.render()
+</form>
+</div>
+<p>
+$for gmg in gmlist:
+     <a href="/font2/$gmg.idglobal">Global $gmg.idglobal</a> interp $gmg.metapolation sz $gmg.fontsize mean $gmg.mean cap $gmg.cap asc $gmg.ascl desc $gmg.des box $gmg.box <br>

@@ -1,0 +1,64 @@
+<?xml version="1.0" ?><glyph format="1" name="65">
+  <advance width="492"/>
+  <unicode hex="0061"/>
+  <outline>
+    <contour>
+      <point pointNo="p1" x="319" y="293"/>
+      <point pointNo="p2" x="257" y="285"/>
+      <point dir="-174" name="z8r" penshifted="0,-5mpx" penwidth="1-0.15mpx" pointNo="p3" smooth="yes" tension="90" type="curve" x="221" y="281"/>
+      <point pointNo="p4" x="115" y="270"/>
+      <point pointNo="p5" x="48" y="229"/>
+      <point name="z9r" pointNo="p6" tension="95" type="curve" x="48" y="133"/>
+      <point pointNo="p7" x="48" y="36"/>
+      <point pointNo="p8" x="132" y="-8"/>
+      <point name="z10r" overbase="y10r" penwidth="1-0.1mpx" pointNo="p9" rightp="1" smooth="yes" type="curve" x="201" y="-8"/>
+      <point pointNo="p10" x="271" y="-8"/>
+      <point pointNo="p11" x="358" y="33"/>
+      <point name="z11r" overbase="y10r" penwidth="1-0.1mpx" pointNo="p12" type="curve" upp="1" x="358" y="154"/>
+      <point name="z11l" pointNo="p13" pointshifted="x4r-x11l,0" type="line" x="328" y="169"/>
+      <point pointNo="p14" x="328" y="108"/>
+      <point pointNo="p15" x="270" y="68"/>
+      <point name="z10l" pointNo="p16" smooth="yes" type="curve" x="225" y="68"/>
+      <point pointNo="p17" x="171" y="68"/>
+      <point pointNo="p18" x="140" y="98"/>
+      <point name="z9l" pointNo="p19" smooth="yes" type="curve" x="141" y="141"/>
+      <point pointNo="p20" x="142" y="175"/>
+      <point pointNo="p21" x="163" y="201"/>
+      <point name="z8l" pointNo="p22" smooth="yes" type="curve" x="217" y="209"/>
+      <point pointNo="p23" x="256" y="215"/>
+      <point pointNo="p24" x="309" y="221"/>
+      <point name="z7l" pointNo="p25" type="curve" x="372" y="242"/>
+      <point name="z7r" penshifted="0,-5mpx" penwidth="1-0.15mpx" pointNo="p26" startp="1" type="line" x="372" y="310"/>
+    </contour>
+    <contour>
+      <point pointNo="p27" x="121" y="396"/>
+      <point pointNo="p28" x="183" y="427"/>
+      <point name="z2r" overx="y2l" pointNo="p29" rightp="1" tension="90" type="curve" x="228" y="427"/>
+      <point pointNo="p30" x="302" y="427"/>
+      <point pointNo="p31" x="328" y="390"/>
+      <point name="z3r" overx="y2l" pointNo="p32" smooth="yes" type="curve" x="328" y="315"/>
+      <point name="z4r" penshifted="0,40mpx " pointNo="p33" smooth="yes" type="line" x="328" y="67"/>
+      <point pointNo="p34" x="328" y="27"/>
+      <point pointNo="p35" x="364" y="-8"/>
+      <point name="z5r" overbase="y5r" penshifted="25mpx,0" penwidth="1-0.15mpx" pointNo="p36" smooth="yes" type="curve" x="405" y="-8"/>
+      <point pointNo="p37" x="433" y="-8"/>
+      <point pointNo="p38" x="450" y="-2"/>
+      <point name="z6r" penshifted="35mpx,6mpx " penwidth="1-0.2mpx " pointNo="p39" type="curve" x="469" y="10"/>
+      <point name="z6l" pointNo="p40" type="line" x="476" y="74"/>
+      <point pointNo="p41" x="458" y="68"/>
+      <point pointNo="p42" x="445" y="66"/>
+      <point name="z5l" pointNo="p43" smooth="yes" type="curve" x="434" y="71"/>
+      <point pointNo="p44" x="425" y="75"/>
+      <point pointNo="p45" x="421" y="87"/>
+      <point name="z4l" pointNo="p46" type="curve" x="421" y="102"/>
+      <point name="z3l" pointNo="p47" smooth="yes" tripledash="1" type="line" x="421" y="349"/>
+      <point pointNo="p48" x="421" y="449"/>
+      <point pointNo="p49" x="355" y="508"/>
+      <point name="z2l" pointNo="p50" type="curve" x="243" y="508"/>
+      <point pointNo="p51" x="170" y="508"/>
+      <point pointNo="p52" x="123" y="475"/>
+      <point name="z1l" pointNo="p53" type="curve" x="67" y="466"/>
+      <point dir="6.4" name="z1r" penshifted="-30mpx,-20mpx" pointNo="p54" startp="1" type="line" x="67" y="390"/>
+    </contour>
+  </outline>
+</glyph>

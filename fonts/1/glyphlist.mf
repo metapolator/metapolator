@@ -1,0 +1,3 @@
+input glyphs/65.mf
+input glyphs/78.mf
+input glyphs/92.mf

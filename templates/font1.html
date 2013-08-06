@@ -1,0 +1,114 @@
+$def with (fontlist,form,mmaster,cfont)
+<title>Settings</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<style>
+h3_b {
+	position:absolute;
+	z-index:-5;
+	bottom:-350px;
+	left:9px;
+	font-family:"metapolator","backup";
+	font-size:1200px;
+	color:grey;
+}
+h3_a {
+	position:absolute;
+	z-index:-5;
+	bottom:-359px;
+	right:9px;
+	font-family:"metapolator","backup";
+	font-size:1200px;
+	color:grey;
+}
+h3_c {
+	position:absolute;
+	z-index:-5;
+	bottom:-350px;
+	left:619px;
+	font-family:"metapolator","backup";
+	font-size:1200px;
+	color:grey;
+}
+p,h2,.menu,table,th,td,#ruler {
+	font:normal 15px/19px Menlo,'Inconsolata',mono;
+}
+h2 {
+	color:red;
+}
+#center {
+	background:red;
+	bottom:0;
+	height:0px;
+	left:-300;
+	margin:auto;
+	position:absolute;
+	top:200;
+	right:0;
+	width:0px;
+	-webkit-transform:translate(0%,0%) scale(0.80,0.80);
+}
+a:visited {
+		color:inherit;
+	text-decoration:none;
+}
+a:link {
+		color:inherit;
+	text-decoration:none;
+}
+table,th,td {
+	width:200px;
+	text-align:left;
+	color: red;
+}
+.wide{
+line-height:160%;
+}
+.wide a:link,a:visited{
+padding: 5px;
+}
+.wide a:hover{
+font-weight:bold;
+color:red;
+}
+</style>
+
+<h2> fonts in directories</h2>
+<p>
+$for fontl in fontlist:
+   $fontl  <br>
+<p>
+
+<p>
+<div class="title">
+     Project $cfont.idmaster <br></div><p>
+
+$for mma in mmaster:
+   <a href="/font1/$mma.idmaster" style="color:green;text-decoration:underline;">Project $mma.idmaster</a> projname $mma.FontName fontA $mma.FontNameA fontB $mma.FontNameB idglobal $mma.idglobal vdate $mma.vdate <br>
+</p>
+<div>
+<form action="" method="post">
+$:form.render()
+</form>
+</div>
+
+
+<div>
+<p>
+<a href="/font2/$cfont.idglobal" style="color:green;text-decoration:underline;">Edit Global and Local Parameters</a>
+</p>
+<p>
+<span class="button"><a href="/view/1">Edit Glyph</a></span>
+</p>
+
+</p>
+
+<p>
+loadoption [0]: default case, read parameters from the xml attributes <br>
+           [1]: read only cooridnates and apply parameters stored in the database, coresponding to the glyph, the fontA or fontB. <br>
+                 this is equivalent as an update in the xml-source happen not with the webinterface and with a newer timestamp as the database records.<br>
+</p>
+<h2>glyphs</h2>
+<p class="wide">
+<a href="/font1/1002">&#33;</a><a href="/font1/1003">&#34;</a><a href="/font1/1004">&#35;</a><a href="/font1/1005">&#36;</a><a href="/font1/1006">&#37;</a><a href="/font1/1007">&#38;</a><a href="/font1/1008">&#39;</a><a href="/font1/1009">&#40;</a><a href="/font1/1010">&#41;</a><a href="/font1/1011">&#42;</a><a href="/font1/1012">&#43;</a><a href="/font1/1013">&#44;</a><a href="/font1/1014">&#45;</a><a href="/font1/1015">&#46;</a><a href="/font1/1016">&#47;</a><a href="/font1/1017">&#48;</a><a href="/font1/1018">&#49;</a><a href="/font1/1019">&#50;</a><a href="/font1/1020">&#51;</a><a href="/font1/1021">&#52;</a><a href="/font1/1022">&#53;</a><a href="/font1/1023">&#54;</a><a href="/font1/1024">&#55;</a><a href="/font1/1025">&#56;</a><a href="/font1/1026">&#57;</a><a href="/font1/1027">&#58;</a><a href="/font1/1028">&#59;</a><a href="/font1/1029">&#60;</a><a href="/font1/1030">&#61;</a><a href="/font1/1031">&#62;</a><a href="/font1/1032">&#63;</a><a href="/font1/1033">&#64;</a><br><a href="/font1/1034">&#65;</a><a href="/font1/1035">&#66;</a><a href="/font1/1036">&#67;</a><a href="/font1/1037">&#68;</a><a href="/font1/1038">&#69;</a><a href="/font1/1039">&#70;</a><a href="/font1/1040">&#71;</a><a href="/font1/1041">&#72;</a><a href="/font1/1042">&#73;</a><a href="/font1/1043">&#74;</a><a href="/font1/1044">&#75;</a><a href="/font1/1045">&#76;</a><a href="/font1/1046">&#77;</a><a href="/font1/1047">&#78;</a><a href="/font1/1048">&#79;</a><a href="/font1/1049">&#80;</a><a href="/font1/1050">&#81;</a><a href="/font1/1051">&#82;</a><a href="/font1/1052">&#83;</a><a href="/font1/1053">&#84;</a><a href="/font1/1054">&#85;</a><a href="/font1/1055">&#86;</a><a href="/font1/1056">&#87;</a><a href="/font1/1057">&#88;</a><a href="/font1/1058">&#89;</a><a href="/font1/1059">&#90;</a><a href="/font1/1060">&#91;</a><a href="/font1/1061">&#92;</a><a href="/font1/1062">&#93;</a><a href="/font1/1063">&#94;</a><a href="/font1/1064">&#95;</a><a href="/font1/1065">&#96;</a><br><a href="/font1/1066">&#97;</a><a href="/font1/1067">&#98;</a><a href="/font1/1068">&#99;</a><a href="/font1/1069">&#100;</a><a href="/font1/1070">&#101;</a><a href="/font1/1071">&#102;</a><a href="/font1/1072">&#103;</a><a href="/font1/1073">&#104;</a><a href="/font1/1074">&#105;</a><a href="/font1/1075">&#106;</a><a href="/font1/1076">&#107;</a><a href="/font1/1077">&#108;</a><a href="/font1/1078">&#109;</a><a href="/font1/1079">&#110;</a><a href="/font1/1080">&#111;</a><a href="/font1/1081">&#112;</a><a href="/font1/1082">&#113;</a><a href="/font1/1083">&#114;</a><a href="/font1/1084">&#115;</a><a href="/font1/1085">&#116;</a><a href="/font1/1086">&#117;</a><a href="/font1/1087">&#118;</a><a href="/font1/1088">&#119;</a><a href="/font1/1089">&#120;</a><a href="/font1/1090">&#121;</a><a href="/font1/1091">&#122;</a><a href="/font1/1092">&#123;</a><a href="/font1/1093">&#124;</a><a href="/font1/1094">&#125;</a><a href="/font1/1095">&#126;</a><a href="/font1/1096">space</a></p><p class="wide"><a href="/font1/1097/">&#128;</a> <a href="/font1/1098/">&#129;</a><a href="/font1/1099/">&#130;</a><a href="/font1/1100/">&#131;</a><a href="/font1/1101/">&#132;</a><a href="/font1/1102/">&#133;</a><a href="/font1/1103/">&#134;</a><a href="/font1/1104/">&#135;</a><a href="/font1/1105/">&#136;</a><a href="/font1/1106/">&#137;</a><a href="/font1/1107/">&#138;</a><a href="/font1/1108/">&#139;</a><a href="/font1/1109/">&#140;</a><a href="/font1/1110/">&#141;</a><a href="/font1/1111/">&#142;</a><a href="/font1/1112/">&#143;</a><a href="/font1/1113/">&#144;</a><a href="/font1/1114/">&#145;</a><a href="/font1/1115/">&#146;</a><a href="/font1/1116/">&#147;</a><a href="/font1/1117/">&#148;</a><a href="/font1/1118/">&#149;</a><a href="/font1/1119/">&#150;</a><a href="/font1/1120/">&#151;</a><br><a href="/font1/1121/">&#152;</a><a href="/font1/1122/">&#153;</a><a href="/font1/1123/">&#154;</a><a href="/font1/1124/">&#155;</a><a href="/font1/1125/">&#156;</a><a href="/font1/1126/">&#157;</a><a href="/font1/1127/">&#158;</a><a href="/font1/1128/">&#159;</a><a href="/font1/1129/">&#160;</a><a href="/font1/1130/">&#161;</a><a href="/font1/1131/">&#162;</a><a href="/font1/1132/">&#163;</a><a href="/font1/1133/">&#164;</a><a href="/font1/1134/">&#165;</a><a href="/font1/1135/">&#166;</a><a href="/font1/1136/">&#167;</a><a href="/font1/1137/">&#168;</a><a href="/font1/1138/">&#169;</a><a href="/font1/1139/">&#170;</a><a href="/font1/1140/">&#171;</a><a href="/font1/1141/">&#172;</a><a href="/font1/1142/">&#173;</a><a href="/font1/1143/">&#174;</a><a href="/font1/1144/">&#175;</a><a href="/font1/1145/">&#176;</a><a href="/font1/1146/">&#177;</a><a href="/font1/1147/">&#178;</a><a href="/font1/1148/">&#179;</a><a href="/font1/1149/">&#180;</a><a href="/font1/1150/">&#181;</a><a href="/font1/1151/">&#182;</a><a href="/font1/1152/">&#183;</a><a href="/font1/1153/">&#184;</a><a href="/font1/1154/">&#185;</a><a href="/font1/1155/">&#186;</a><a href="/font1/1156/">&#187;</a><a href="/font1/1157/">&#188;</a><a href="/font1/1158/">&#189;</a><a href="/font1/1159/">&#190;</a><a href="/font1/1160/">&#191;</a><br><a href="/font1/1161/">&#192;</a><a href="/font1/1162/">&#193;</a><a href="/font1/1163/">&#194;</a><a href="/font1/1164/">&#195;</a><a href="/font1/1165/">&#196;</a><a href="/font1/1166/">&#197;</a><a href="/font1/1167/">&#198;</a><a href="/font1/1168/">&#199;</a><a href="/font1/1169/">&#200;</a><a href="/font1/1170/">&#201;</a><a href="/font1/1171/">&#202;</a><a href="/font1/1172/">&#203;</a><a href="/font1/1173/">&#204;</a><a href="/font1/1174/">&#205;</a><a href="/font1/1175/">&#206;</a><a href="/font1/1176/">&#207;</a><a href="/font1/1177/">&#208;</a><a href="/font1/1178/">&#209;</a><a href="/font1/1179/">&#210;</a><a href="/font1/1180/">&#211;</a><a href="/font1/1181/">&#212;</a><a href="/font1/1182/">&#213;</a><a href="/font1/1183/">&#214;</a><a href="/font1/1184/">&#215;</a><a href="/font1/1185/">&#216;</a><a href="/font1/1186/">&#217;</a><a href="/font1/1187/">&#218;</a><a href="/font1/1188/">&#219;</a><a href="/font1/1189/">&#220;</a><a href="/font1/1190/">&#221;</a><a href="/font1/1191/">&#222;</a><a href="/font1/1192/">&#223;</a><a href="/font1/1193/">&#224;</a><br><a href="/font1/1194/">&#225;</a><a href="/font1/1195/">&#226;</a><a href="/font1/1196/">&#227;</a><a href="/font1/1197/">&#228;</a><a href="/font1/1198/">&#229;</a><a href="/font1/1199/">&#230;</a><a href="/font1/1200/">&#231;</a><a href="/font1/1201/">&#232;</a><a href="/font1/1202/">&#233;</a><a href="/font1/1203/">&#234;</a><a href="/font1/1204/">&#235;</a><a href="/font1/1205/">&#236;</a><a href="/font1/1206/">&#237;</a><a href="/font1/1207/">&#238;</a><a href="/font1/1208/">&#239;</a><a href="/font1/1209/">&#240;</a><a href="/font1/1210/">&#241;</a><a href="/font1/1211/">&#242;</a><a href="/font1/1212/">&#243;</a><a href="/font1/1213/">&#244;</a><a href="/font1/1214/">&#245;</a><a href="/font1/1215/">&#246;</a><a href="/font1/1216/">&#247;</a><a href="/font1/1217/">&#248;</a><a href="/font1/1218/">&#249;</a><a href="/font1/1219/">&#250;</a><a href="/font1/1220/">&#251;</a><a href="/font1/1221/">&#252;</a><a href="/font1/1222/">&#253;</a><a href="/font1/1223/">&#254;</a><a href="/font1/1224/">&#255;</a><a href="/font1/1225/">&#256;</a>
+</p>

@@ -1,0 +1,84 @@
+$def with (posts,master,fontsource,webglyph)
+<meta http-equiv="refresh" content="0;url=/view/1">
+<title>Glyph Edit</title>
+<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<style>
+      .first {
+        color: grey;
+      }
+      .second { 
+        color: #95F5FF;
+      }
+
+p,h2,table,th,td, .menu, input, select, textarea {
+	font:normal 15px/19px Menlo,'Inconsolata',mono;
+	z-index:5;
+	margin:0 0 10 0;
+}
+h2 {
+	color:red;
+}
+#center {
+	bottom:0;
+	height:0px;
+	left:-600;
+	margin:auto;
+	position:absolute;
+	top:700;
+	right:0;
+	width:0px;
+	-webkit-transform:translate(0%,0%) scale(100%,100%);
+}
+a:visited {
+		color:inherit;
+	text-decoration:none;
+}
+a:link {
+		color:inherit;
+	text-decoration:none;
+}
+table,th,td {
+	width:200px;
+	text-align:left;
+	color: red;
+}
+</style>
+
+<p>
+Selected Font :</p>
+<div class="title">
+$for fonts in fontsource:
+     $fonts <br>
+</div><br>
+
+<p>
+Selected Glyph :</p>
+<div class="title">
+     $webglyph <br>
+</div>
+
+<p> 
+<span class="button"><a href="/metap/0">Edit Font A</a></span>
+<span class="button"><a href="/metap/1">Edit Font B</a></span>
+</p> 
+
+<br>
+<p style="color:blue;">Click on point to start Editor or <br>
+choose Font in Settings  <br>
+ <br>
+Optimized for Chrome
+</p>
+
+<div id="center" >
+
+<div>
+        <middle>
+$webglyph
+        </middle>
+</div>
+
+$for posti in posts:
+        <div  id="$posti.id" style="$posti.position">
+        <p><a href="/view/$posti.id" >&#9673;$posti.PointNr</a></p> 
+        </div>
+</div>
