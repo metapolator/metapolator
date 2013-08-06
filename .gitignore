@@ -35,3 +35,8 @@ nosetests.xml
 .pydevproject
 
 .DS_Store
+/font.pfb
+/font.log
+/font.afm
+/font.tfm
+glyphlist.mf
