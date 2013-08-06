@@ -33,6 +33,30 @@ This should give you a local webadress you can copy paste into a chrome browser,
 http://0.0.0.0:8080/
 ```
 
+####Note
+
+ttf2eot should be installed in the Metapolator directory. 
+
+The mf2pt1.pl script will need to be modified as follows:  
+In the section   
+```
+    # Create a FontForge script file.
+```
+replace  
+```
+Generate($1);
+```
+with  
+```
+foreach
+  SetCharName(NameFromUnicode(GlyphInfo("Unicode")))
+endloop
+Generate($1);
+Generate($1:r + ".otf");
+Generate($1:r + ".ttf");
+```
+
+
 ##Usage
 Settings:
 - Go to Settings and choose a project id. 
@@ -51,9 +75,9 @@ Glyph names are incremental numbers – see glyphnames.txt file for reference.
 
 ##License
 
-The sourcecode of this project is licensed under the gnu general public license v3.0
+The sourcecode of this project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html).
 
 
+##Credits
 
-
-
+Metapolator is developed by Simon Egli, Walter Egli and Wei Huang.
