@@ -68,10 +68,9 @@ Editor:
 To copy and replace an existing project folder, type in '1001' at load-option in Settings. Once copied the preset folder the two fonts can be replaced by other .ufo fonts. 
 Glyph names are incremental numbers – see glyphnames.txt file for reference.
 
-##Screenshots
+##Preview
 
-![Metapolator interface](/metapolator.png)
-
+[<img src="/metapolatorvideo.png">](http://vimeo.com/71826912)
 
 ##License
 
