@@ -70,7 +70,7 @@ Glyph names are incremental numbers – see glyphnames.txt file for reference.
 
 ##Preview
 
-[<img src="/metapolatorvideo.png">](http://vimeo.com/71826912)
+<a href="http://vimeo.com/71826912" target="_blank"><img src="/metapolatorvideo.png"></a>
 
 ##License
 
