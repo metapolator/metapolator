@@ -21,9 +21,11 @@ def xxmlat(s, dbob, sattr, val, iro):
 
       if val == '' :
           s.attributes[sattr] = str(dbob)
-      else : 
+      else :
           if iro > 0 :
             s.attributes[sattr] = round(val,iro)
+          else :
+            s.attributes[sattr] = val
          
    else :
       if s.hasAttribute(sattr) :

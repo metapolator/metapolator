@@ -130,7 +130,7 @@ CREATE TABLE globalparam (
 );
 CREATE TABLE localparam (
     idlocal INT ,
-    px        float default 0.1,
+    px        float default 0,
     width  float default 1,
 	space  float default 0,
     xheight   float default 5.0,
@@ -146,7 +146,7 @@ CREATE TABLE localparam (
     primary key (idlocal)
 );
 insert into master (FontName,FontNameA,FontNameB,idglobal) Values ("My First Metapolator Font", "FoxtailA.ufo","FoxtailB.ufo",1);
-insert into globalparam (idglobal,metapolation,unitwidth,fontsize) Values (1, 0.5,1,10);
+insert into globalparam (idglobal,metapolation,unitwidth,fontsize) Values (1, 0,1,10);
 insert into globalparam (idglobal,metapolation,unitwidth,fontsize) Values (2, 0.5,1,10);
 insert into localparam (idlocal) values (1);
 insert into localparam (idlocal) values (2);
