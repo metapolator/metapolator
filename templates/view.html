@@ -256,75 +256,74 @@ $if form.d.PointName > "0" :
 <!-- add new parameters here: -->
 <p class="menuleftgreen" >
   $if glyphparam != None :
-	$if glyphparam.PointName != '' :
-		<span class="ptname"><span style="color:white;">$glyphparam.PointName</span></span>
-		<span class="ptparamcell">
-		$if glyphparam.startp != None : 
-		   <a href="#" class="whitelink" onClick="selectparam('startp'); return false;">startp</a> <a href="javascript:;" class="copyparam">$glyphparam.startp</a><br>
-		$if glyphparam.doubledash != None :
-		   <a href="#" class="whitelink" onClick="selectparam('doubledash'); return false;">doubledash</a> <a href="javascript:;" class="copyparam">$glyphparam.doubledash</a><br>
-		$if glyphparam.tripledash != None :
-		   <a href="#" class="whitelink" onClick="selectparam('tripledash'); return false;">tripledash</a> <a href="javascript:;" class="copyparam">$glyphparam.tripledash</a><br>
-		$if glyphparam.superleft != None :
-		   <a href="#" class="whitelink" onClick="selectparam('superleft'); return false;">superleft</a> <a href="javascript:;" class="copyparam">$glyphparam.superleft</a><br>
-		$if glyphparam.superright != None :
-		   <a href="#" class="whitelink" onClick="selectparam('superright'); return false;">superright </a><a href="javascript:;" class="copyparam">$glyphparam.superright</a><br>
-		$if glyphparam.leftp != None :
-		   <a href="#" class="whitelink" onClick="selectparam('leftp'); return false;">leftp </a><a href="javascript:;" class="copyparam">$glyphparam.leftp</a><br>
-		$if glyphparam.rightp != None :
-		   <a href="#" class="whitelink" onClick="selectparam('rightp'); return false;">rightp </a><a href="javascript:;" class="copyparam">$glyphparam.rightp</a><br>
-		$if glyphparam.downp != None :
-		   <a href="#" class="whitelink" onClick="selectparam('downp'); return false;">downp </a><a href="javascript:;" class="copyparam">$glyphparam.downp</a><br>
-		$if glyphparam.upp != None :
-		   <a href="#" class="whitelink" onClick="selectparam('upp'); return false;">upp </a><a href="javascript:;" class="copyparam">$glyphparam.upp</a><br>
-		$if glyphparam.dir != None :
-		   <a href="#" class="whitelink" onClick="selectparam('dir'); return false;">dir </a><a href="javascript:;" class="copyparam">$glyphparam.dir</a><br>
-		$if glyphparam.leftp2 != None :
-		   <a href="#" class="whitelink" onClick="selectparam('leftp2'); return false;">leftp2 </a><a href="javascript:;" class="copyparam">$glyphparam.leftp2</a><br>
-		$if glyphparam.rightp2 != None :
-		   <a href="#" class="whitelink" onClick="selectparam('rightp2'); return false;">rightp2 </a><a href="javascript:;" class="copyparam">$glyphparam.rightp2</a><br>
-		$if glyphparam.downp2 != None :
-		   <a href="#" class="whitelink" onClick="selectparam('downp2'); return false;">downp2 </a><a href="javascript:;" class="copyparam">$glyphparam.downp2</a><br>
-		$if glyphparam.upp2 != None :
-		   <a href="#" class="whitelink" onClick="selectparam('upp2'); return false;">upp2 </a><a href="javascript:;" class="copyparam">$glyphparam.upp2</a><br>
-		$if glyphparam.dir2 != None :
-		   <a href="#" class="whitelink" onClick="selectparam('dir2'); return false;">dir2 </a><a href="javascript:;" class="copyparam">$glyphparam.dir2</a><br>
-		$if glyphparam.angle != None :
-		   <a href="#" class="whitelink" onClick="selectparam('angle'); return false;">angle </a><a href="javascript:;" class="copyparam">$glyphparam.angle</a><br>
-		$if glyphparam.tension != None :
-		   <a href="#" class="whitelink" onClick="selectparam('tension'); return false;">tension </a><a href="javascript:;" class="copyparam">$glyphparam.tension</a><br>
-		$if glyphparam.tensionand != None :
-		   <a href="#" class="whitelink" onClick="selectparam('tensionand'); return false;">tensionand </a><a href="javascript:;" class="copyparam">$glyphparam.tensionand</a><br>
-		$if glyphparam.cycle != None :
-		   <a href="#" class="whitelink" onClick="selectparam('cycle'); return false;">cycle </a><a href="javascript:;" class="copyparam">$glyphparam.cycle</a><br>
-		$if glyphparam.penshifted != None :
-		   <a href="#" class="whitelink" onClick="selectparam('penshifted'); return false;">penshifted </a><a href="javascript:;" class="copyparam">$glyphparam.penshifted</a><br>
-		$if glyphparam.pointshifted != None :
-		   <a href="#" class="whitelink" onClick="selectparam('pointshifted'); return false;">pointshifted </a><a href="javascript:;" class="copyparam">$glyphparam.pointshifted</a><br>
-		$if glyphparam.penwidth != None :
-		   <a href="#" class="whitelink" onClick="selectparam('penwidth'); return false;">penwidth </a><a href="javascript:;" class="copyparam">$glyphparam.penwidth</a><br>
-		$if glyphparam.overx != None :
-		   <a href="#" class="whitelink" onClick="selectparam('overx'); return false;">overx </a><a href="javascript:;" class="copyparam">$glyphparam.overx</a><br>
-		$if glyphparam.overbase != None :
-		   <a href="#" class="whitelink" onClick="selectparam('overbase'); return false;">overbase </a><a href="javascript:;" class="copyparam">$glyphparam.overbase</a><br>
-		$if glyphparam.overcap != None :
-		   <a href="#" class="whitelink" onClick="selectparam('overcap'); return false;">overcap </a><a href="javascript:;" class="copyparam">$glyphparam.overcap</a><br>
-		$if glyphparam.overasc != None :
-		   <a href="#" class="whitelink" onClick="selectparam('overasc'); return false;">overasc </a><a href="javascript:;" class="copyparam">$glyphparam.overasc</a><br>
-		$if glyphparam.overdesc != None :
-		   <a href="#" class="whitelink" onClick="selectparam('overdesc'); return false;">overdesc </a><a href="javascript:;" class="copyparam">$glyphparam.overdesc</a><br>
-		$if glyphparam.ascpoint != None :
-		   <a href="#" class="whitelink" onClick="selectparam('ascpoint'); return false;">ascpoint </a><a href="javascript:;" class="copyparam">$glyphparam.ascpoint</a><br>
-		$if glyphparam.descpoint != None :
-		   <a href="#" class="whitelink" onClick="selectparam('descpoint'); return false;">descpoint </a><a href="javascript:;" class="copyparam">$glyphparam.descpoint</a><br>
-		$if glyphparam.stemcutter != None :
-		   <a href="#" class="whitelink" onClick="selectparam('stemcutter'); return false;">stemcutter </a><a href="javascript:;" class="copyparam">$glyphparam.stemcutter</a><br>
-		$if glyphparam.stemshift != None :
-		   <a href="#" class="whitelink" onClick="selectparam('stemshift'); return false;">stemshift </a><a href="javascript:;" class="copyparam">$glyphparam.stemshift</a><br>
-		$if glyphparam.inktrap_l != None :
-		   <a href="#" class="whitelink" onClick="selectparam('inktrap_l'); return false;">inktrap_l </a><a href="javascript:;" class="copyparam">$glyphparam.inktrap_l</a><br>
-		$if glyphparam.inktrap_r != None :
-		   <a href="#" class="whitelink" onClick="selectparam('inktrap_r'); return false;">inktrap_r </a><a href="javascript:;" class="copyparam">$glyphparam.inktrap_r</a><br>
+	<span class="ptname"><span style="color:white;">$glyphparam.PointName</span></span>
+	<span class="ptparamcell">
+	$if glyphparam.startp != None : 
+	   <a href="#" class="whitelink" onClick="selectparam('startp'); return false;">startp</a> <a href="javascript:;" class="copyparam">$glyphparam.startp</a><br>
+	$if glyphparam.doubledash != None :
+	   <a href="#" class="whitelink" onClick="selectparam('doubledash'); return false;">doubledash</a> <a href="javascript:;" class="copyparam">$glyphparam.doubledash</a><br>
+	$if glyphparam.tripledash != None :
+	   <a href="#" class="whitelink" onClick="selectparam('tripledash'); return false;">tripledash</a> <a href="javascript:;" class="copyparam">$glyphparam.tripledash</a><br>
+	$if glyphparam.superleft != None :
+	   <a href="#" class="whitelink" onClick="selectparam('superleft'); return false;">superleft</a> <a href="javascript:;" class="copyparam">$glyphparam.superleft</a><br>
+	$if glyphparam.superright != None :
+	   <a href="#" class="whitelink" onClick="selectparam('superright'); return false;">superright </a><a href="javascript:;" class="copyparam">$glyphparam.superright</a><br>
+	$if glyphparam.leftp != None :
+	   <a href="#" class="whitelink" onClick="selectparam('leftp'); return false;">leftp </a><a href="javascript:;" class="copyparam">$glyphparam.leftp</a><br>
+	$if glyphparam.rightp != None :
+	   <a href="#" class="whitelink" onClick="selectparam('rightp'); return false;">rightp </a><a href="javascript:;" class="copyparam">$glyphparam.rightp</a><br>
+	$if glyphparam.downp != None :
+	   <a href="#" class="whitelink" onClick="selectparam('downp'); return false;">downp </a><a href="javascript:;" class="copyparam">$glyphparam.downp</a><br>
+	$if glyphparam.upp != None :
+	   <a href="#" class="whitelink" onClick="selectparam('upp'); return false;">upp </a><a href="javascript:;" class="copyparam">$glyphparam.upp</a><br>
+	$if glyphparam.dir != None :
+	   <a href="#" class="whitelink" onClick="selectparam('dir'); return false;">dir </a><a href="javascript:;" class="copyparam">$glyphparam.dir</a><br>
+	$if glyphparam.leftp2 != None :
+	   <a href="#" class="whitelink" onClick="selectparam('leftp2'); return false;">leftp2 </a><a href="javascript:;" class="copyparam">$glyphparam.leftp2</a><br>
+	$if glyphparam.rightp2 != None :
+	   <a href="#" class="whitelink" onClick="selectparam('rightp2'); return false;">rightp2 </a><a href="javascript:;" class="copyparam">$glyphparam.rightp2</a><br>
+	$if glyphparam.downp2 != None :
+	   <a href="#" class="whitelink" onClick="selectparam('downp2'); return false;">downp2 </a><a href="javascript:;" class="copyparam">$glyphparam.downp2</a><br>
+	$if glyphparam.upp2 != None :
+	   <a href="#" class="whitelink" onClick="selectparam('upp2'); return false;">upp2 </a><a href="javascript:;" class="copyparam">$glyphparam.upp2</a><br>
+	$if glyphparam.dir2 != None :
+	   <a href="#" class="whitelink" onClick="selectparam('dir2'); return false;">dir2 </a><a href="javascript:;" class="copyparam">$glyphparam.dir2</a><br>
+	$if glyphparam.angle != None :
+	   <a href="#" class="whitelink" onClick="selectparam('angle'); return false;">angle </a><a href="javascript:;" class="copyparam">$glyphparam.angle</a><br>
+	$if glyphparam.tension != None :
+	   <a href="#" class="whitelink" onClick="selectparam('tension'); return false;">tension </a><a href="javascript:;" class="copyparam">$glyphparam.tension</a><br>
+	$if glyphparam.tensionand != None :
+	   <a href="#" class="whitelink" onClick="selectparam('tensionand'); return false;">tensionand </a><a href="javascript:;" class="copyparam">$glyphparam.tensionand</a><br>
+	$if glyphparam.cycle != None :
+	   <a href="#" class="whitelink" onClick="selectparam('cycle'); return false;">cycle </a><a href="javascript:;" class="copyparam">$glyphparam.cycle</a><br>
+	$if glyphparam.penshifted != None :
+	   <a href="#" class="whitelink" onClick="selectparam('penshifted'); return false;">penshifted </a><a href="javascript:;" class="copyparam">$glyphparam.penshifted</a><br>
+	$if glyphparam.pointshifted != None :
+	   <a href="#" class="whitelink" onClick="selectparam('pointshifted'); return false;">pointshifted </a><a href="javascript:;" class="copyparam">$glyphparam.pointshifted</a><br>
+	$if glyphparam.penwidth != None :
+	   <a href="#" class="whitelink" onClick="selectparam('penwidth'); return false;">penwidth </a><a href="javascript:;" class="copyparam">$glyphparam.penwidth</a><br>
+	$if glyphparam.overx != None :
+	   <a href="#" class="whitelink" onClick="selectparam('overx'); return false;">overx </a><a href="javascript:;" class="copyparam">$glyphparam.overx</a><br>
+	$if glyphparam.overbase != None :
+	   <a href="#" class="whitelink" onClick="selectparam('overbase'); return false;">overbase </a><a href="javascript:;" class="copyparam">$glyphparam.overbase</a><br>
+	$if glyphparam.overcap != None :
+	   <a href="#" class="whitelink" onClick="selectparam('overcap'); return false;">overcap </a><a href="javascript:;" class="copyparam">$glyphparam.overcap</a><br>
+	$if glyphparam.overasc != None :
+	   <a href="#" class="whitelink" onClick="selectparam('overasc'); return false;">overasc </a><a href="javascript:;" class="copyparam">$glyphparam.overasc</a><br>
+	$if glyphparam.overdesc != None :
+	   <a href="#" class="whitelink" onClick="selectparam('overdesc'); return false;">overdesc </a><a href="javascript:;" class="copyparam">$glyphparam.overdesc</a><br>
+	$if glyphparam.ascpoint != None :
+	   <a href="#" class="whitelink" onClick="selectparam('ascpoint'); return false;">ascpoint </a><a href="javascript:;" class="copyparam">$glyphparam.ascpoint</a><br>
+	$if glyphparam.descpoint != None :
+	   <a href="#" class="whitelink" onClick="selectparam('descpoint'); return false;">descpoint </a><a href="javascript:;" class="copyparam">$glyphparam.descpoint</a><br>
+	$if glyphparam.stemcutter != None :
+	   <a href="#" class="whitelink" onClick="selectparam('stemcutter'); return false;">stemcutter </a><a href="javascript:;" class="copyparam">$glyphparam.stemcutter</a><br>
+	$if glyphparam.stemshift != None :
+	   <a href="#" class="whitelink" onClick="selectparam('stemshift'); return false;">stemshift </a><a href="javascript:;" class="copyparam">$glyphparam.stemshift</a><br>
+	$if glyphparam.inktrap_l != None :
+	   <a href="#" class="whitelink" onClick="selectparam('inktrap_l'); return false;">inktrap_l </a><a href="javascript:;" class="copyparam">$glyphparam.inktrap_l</a><br>
+	$if glyphparam.inktrap_r != None :
+	   <a href="#" class="whitelink" onClick="selectparam('inktrap_r'); return false;">inktrap_r </a><a href="javascript:;" class="copyparam">$glyphparam.inktrap_r</a><br>
 </p>
        
 	<form action="" method="post">
@@ -335,6 +334,7 @@ $if form.d.groupn > "0" :
 
 <p class="menuleftorange" > 
 $if groupparam != None :
+	<span style="color:white;font-weight:bold">$groupparam.groupname</span><br>
 	<span class="ptname"></span>
 	<span class="ptparamcell">
     $if groupparam.startp != None : 

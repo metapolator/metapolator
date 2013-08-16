@@ -59,14 +59,15 @@ class cFont:
      idlocalA = 1
      idlocalB = 2
      loadoption = '0'
- 
+     mfoption = '0'
+
 class Index:
 
     def GET (self):
         """ Show page """
         posts = model.get_posts()
         master = model.get_masters()
-        fontsource = [cFont.fontna,cFont.fontnb]
+        fontsource = [cFont.fontna,cFont.fontnb,cFont.glyphName]
 	webglyph = cFont.glyphName
         return render.metap(posts,master,fontsource,webglyph)
 
@@ -75,17 +76,19 @@ class Metap:
 
     def GET (self,id):
         """ Show page """
+        posts = model.get_posts()
+        master = model.get_masters()
 
         if id =='0':
 #          we are working on font A
            cFont.idwork=id
 #
-           fontsource = [cFont.fontna]
+           fontsource = [cFont.fontna,cFont.glyphName]
         if id =='1':
 #          we are working on font B
            cFont.idwork=id
 #          
-           fontsource = [cFont.fontnb]
+           fontsource = [cFont.fontnb,cFont.glyphName]
 
         posts = model.get_posts()
         master = model.get_masters()
@@ -206,7 +209,11 @@ class View:
         glyphparam = model.get_glyphparam(int(id))
         groupparam = model.get_groupparam(int(id))
 
-        model.writexml()        
+        if cFont.mfoption =='1' :
+           model.writeallxmlfromdb()
+        else:
+           model.writexml()        
+        
         model.ufo2mf() 
         os.environ['MFINPUTS'] = cFont.fontpath
 #        os.environ['MPINPUTS'] = cFont.fontpath
@@ -238,6 +245,9 @@ class Font1:
         web.form.Textbox('loadoption', web.form.notnull, 
             size=1,
             description="loadoption", value="0"),
+        web.form.Textbox('mfprocess', web.form.notnull, 
+            size=1,
+            description="mfprocess", value="0"),
 
         web.form.Button('savefont'),
         )
@@ -256,7 +266,7 @@ class Font1:
         fontlist.sort()
         form=self.form()
         form=Font1.form()
-        form.fill({'Name':fontname,'UFO_A':fontna,'UFO_B':fontnb,'GLYPH':cFont.glyphName,'loadoption':cFont.loadoption})
+        form.fill({'Name':fontname,'UFO_A':fontna,'UFO_B':fontnb,'GLYPH':cFont.glyphName,'loadoption':cFont.loadoption,'mfprocess':cFont.mfoption})
         return render.font1(fontlist,form,mmaster,cFont)
 
     def POST (self,id):
@@ -272,13 +282,27 @@ class Font1:
            cFont.glyphunic = str(int(id)-1001)
            form.fill()
         cFont.glyphName  = form.d.GLYPH
+#
+#   switch on off mfoption
+#   mfoption = '0' only the xml file of the current character will be written
+#   mfoption = '1' all characters stored in DB will be written for the font 
+#   process
+#
+        if form.d.mfprocess == '0' :
+           cFont.mfoption = '0'
+        if form.d.mfprocess == '1' :
+           cFont.mfoption = '1'
+
         cFont.loadoption = form.d.loadoption
+
         if int(id) > 0 and int(id) <1000:
            model.update_master(id)
            master= list(model.get_master(id))
-        model.putFont()
+#       model.putFont()
+        model.putFontAllglyphs()
         fontlist = [f for f in glob.glob("fonts/*/*.ufo")]
         fontlist.sort()
+
         if cFont.loadoption == '1001':
             return render.cproject() 
         print "loadoption ",cFont.loadoption
@@ -543,7 +567,7 @@ class localParamB:
 
 class copyproject:
 
-   def GET (selfi,id):
+   def GET (self,id):
        print "** in cproject copy project ",cFont.idmaster
        if id == '1001' :
           ip=model.copyproject()

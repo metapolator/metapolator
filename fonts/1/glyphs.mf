@@ -1,3 +1,7 @@
+% slant
+slant:=0;
+font_slant slant;
+
 % meta parameters
 mpx:=A_px#+metapolation*(B_px#-A_px#);
 mwidth:=A_width+metapolation*(B_width-A_width);
