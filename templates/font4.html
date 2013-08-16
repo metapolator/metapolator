@@ -2,7 +2,7 @@ $def with (form,gmlist,cfont,glo,formlA,formlB)
 <title>B Local Parameters</title>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <style>
-p,h2,.menu,table,th,td,#ruler,.paramset,a {
+p,h2,.menu,table,th,td,#ruler,.paramset,a, input {
 	font:normal 15px/19px Menlo,'Inconsolata',mono;
 	}
 h2 {
@@ -19,29 +19,44 @@ a:link {
 table,th,td {
 	width:200px;
 	text-align:left;
-	color: red;
 	}
 #mmB table,#mmB th,#mmB td, #mmB A {
 	width:200px;
 	text-align:left;
 	color: black;
 	}
+#mmA input, #mmB input{
+    border:none;
+	margin: 0 0 3px 0;
+}
 #mmA {
-     display:inline-block;
-     z-index:10;
-     }
+    display:inline-block;
+    z-index:10;
+    height: 340px;
+}
 #mmB {
-     display:inline-block;
-     z-index:10;
-     background: rgb(200,245,200);
-     color: black;
-     }
+    display:inline-block;
+    z-index:10;
+    background: rgb(200,245,200);
+    height: 400px;
+    width: 180px;
+    margin: 0 40 20 0;
+}
+#saveA{
+	display: none;
+}
+#saveB{
+	margin: 10px 0 0 0;
+	padding: 5px;
+}
 .paramset {
-     display:inline-block;
-     margin: 0 75 20 0;
+    display:inline-block;
+    margin: 0 75 20 0;
+    color: #666;
+    line-height: 23.35px;
 }
 .paramname {
-	color:rgb(300,150,150);
+	color:#aaa;
 }
 .value {
 	float: right;
@@ -55,18 +70,22 @@ table,th,td {
 <br>
 
 <div style="vertical-align:top;display:inline-block;">
-<div id="mmA" ><span>
-<a href="/font3/$cfont.idlocalA">A Params Edit</a></span><br><br>
-<form action="" method="POST" name="formlA">
-$:formlA.render()
-</form>
-</div>
-<div id="mmB"><span>
-<a href="/font4/$cfont.idlocalB">B Params Edit</a></span><br><br>
-<form action="" method="POST" name="formlB">
-$:formlB.render()
-</form>
-</div>
+	<div id="mmA" >
+		<span><a href="/font3/$cfont.idlocalA">A Params Edit</a></span><br><br>
+<!-- 
+		<form action="" method="POST" name="formlA">
+ -->
+		$:formlA.render()
+<!-- 
+		</form>
+ -->
+	</div>
+	<div id="mmB">
+		<span><a href="/font4/$cfont.idlocalB">B Params Edit</a></span><br><br>
+		<span>
+		$:formlB.render()
+		</span>
+	</div>
 </div>
 
 <div class="paramset">
