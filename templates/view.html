@@ -167,6 +167,19 @@ a:hover .ptnumber {
 	background:#555;
 	margin:0;
 }
+	$for posti in posts:
+	.pp$posti.id { 
+		$posti.position 
+	}	
+.dragThis {
+	position: absolute;
+	color: orange;
+	font: bold 24px Menlo,'Inconsolata',mono;
+	top: -9px;
+	left: -8px;
+	padding: 5px;
+	z-index: 10;
+}
 </style>
 
 <div class="menuright2"><p>
@@ -236,7 +249,6 @@ $$(function(){
 			$$("#groupval").val($$(this).text());
 		});
 });
-
 function selectgroup(what) {
     $$('select[name=Group]>option[value=' + what +']').attr('selected', 'selected');
 };
@@ -493,7 +505,7 @@ $for ppp in postspa:
 	 </a>
 	 <hr class="line">
 </div>
-
+<br>
 <p style="color:black"> &#9678; z points </p>
 <p style="color:blue"> &#9678; undefined points </p>
 <p style="color:CCFFFF"> &#9678; control points </p>
@@ -502,22 +514,36 @@ $for ppp in postspa:
 
 
 <div id="center">
-	<div>
-<!-- 
-		<left>&#124;&#124;&#124;&#124;&#124;&#124;&#124;</left>
- -->
-	</div>
+
+	<div><!-- <left>&#124;&#124;&#124;&#124;&#124;&#124;&#124;</left> --></div>
 	
 	<div>
 		<middle>
-			<span class="first">$webglyph</span><!-- <span class="second">&#124;&#124;&#124;&#124;&#124;&#124;&#124;</span>  -->
-		<middle>
+			<span class="first">$webglyph</span>
+			<!-- <span class="second">&#124;&#124;&#124;&#124;&#124;&#124;&#124;</span>  -->
+		</middle>
 	</div>
+	
+	$for posti in posts:
+		<div class="pp$posti.id">
+			<p><a href="/view/$posti.id" style="text-decoration:none">●$posti.PointNr</a></p>
+		</div>
 
-$for posti in posts:
-	<div id="$posti.id" style="$posti.position">
-		<p>
-			<a href="/view/$posti.id" style="text-decoration:none">&#9678;$posti.PointNr</a>
-		</p>
-	</div>
+	$if form.d.PointName > "0" : 
+		<div class="p$glyphparam.PointNr">
+			<span class="dragThis"><a href="#">⊙</a></span>
+		</div>
+
+	<script type="text/javascript">
+	$$('.dragThis').draggable({
+		drag: function() {
+			var offset = $$(this).offset();
+			var xPos = Math.round(offset.left-285.4);
+			var yPos = Math.round(729.3-offset.top);
+			$$("#x").val(xPos);
+			$$('#y').val(yPos);
+		}
+	});
+	</script>
+
 </div>
