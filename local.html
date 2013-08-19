@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Local Parameters</title>
+
+</head>
+<body>
+<h1>Local Parameters</h1>
+
+<p>Metapolator uses the Local Parameters at FontA and FontB for interpolation. The input type is a floating point.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter </th>
+<th align="left"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>px</strong><a id="px"></a> </td>
+<td align="left"> Extra 'pen width', default is 0. Adding px increases the weight of the font – which will usually require compensations and adjustments in the z-point Functions, such as 'pen width', 'over' and 'pen'/'pointshifting'.</td>
+</tr>
+<tr>
+<td align="left"><strong>width</strong><a id="width"></a>  </td>
+<td align="left"> The width of the typeface, default is 1.</td>
+</tr>
+<tr>
+<td align="left"><strong>space</strong><a id="space"></a> </td>
+<td align="left"> Spacing adjustment. Default is 0. Positive value increases spacing; negative value decreases spacing.</td>
+</tr>
+<tr>
+<td align="left"><strong>xheight</strong><a id="height"></a> </td>
+<td align="left"> The x-height. If the value given here is the equal to mean in Global Parameters, then no x-height adjustment is made.</td>
+</tr>
+<tr>
+<td align="left"><strong>capital</strong><a id="capital"></a>  </td>
+<td align="left"> The cap-height. If the value given here is the equal to cap in Global Parameters, then no cap-height adjustment is made.</td>
+</tr>
+<tr>
+<td align="left"><strong>boxheight</strong><a id="boxheight"></a> </td>
+<td align="left"> The total height between cap- or ascender height . If the value given here is the equal to box in Global Parameters, then no total height adjustment is made.</td>
+</tr>
+<tr>
+<td align="left"><strong>ascender</strong><a id="ascender"></a> </td>
+<td align="left"> The ascender height. If the value given here is the equal to asc in Global Parameters, then no ascender height adjustment is made.</td>
+</tr>
+<tr>
+<td align="left"><strong>descender</strong><a id="descender"></a> </td>
+<td align="left"> The descender height. If the value given here is the equal to desc in Global Parameters, then no descender height adjustment is made.</td>
+</tr>
+<tr>
+<td align="left"><strong>inktrap</strong><a id="inktrap"></a>  </td>
+<td align="left"> The size of inktraps when an <a href="zpoint.html#inktrap_l">inktrap_l</a> or <a href="zpoint.html#inktrap_r">inktrap_r</a> function is applied to a point.</td>
+</tr>
+<tr>
+<td align="left"><strong>stemcut</strong><a id="stemcut"></a>  </td>
+<td align="left"> The size of stem cuts when a <a href="local.html#stemcut">stemcut</a> function is applied to a point.</td>
+</tr>
+<tr>
+<td align="left"><strong>skeleton</strong><a id="skeleton"></a> </td>
+<td align="left"> The amount of reduction towards or addition away from the monolinear skeleton. Default is 0. -1 gives you an almost razor-thin skeleton. See <a href="skeleton.html">more</a></td>
+</tr>
+<tr>
+<td align="left"><strong>superness</strong><a id="superness"></a> </td>
+<td align="left"> The round/squareness of a superquarter – when using a superleft or superright z-point function.</td>
+</tr>
+<tr>
+<td align="left"><strong>over</strong><a id="over"></a> </td>
+<td align="left"> The amount of overshoot. 0.1 would be equivalent to 10 units in a UFO file.</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>The Local Parameters page:<br/>
+<img src="images/localparam.gif" alt="" /></p>
+</body>
+</html>

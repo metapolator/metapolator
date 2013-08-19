@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>UFO Preparation</title>
+
+</head>
+<body>
+<h1>UFO Preparation</h1>
+
+<ol>
+<li>Prepare outlines</li>
+<li>Label z-points</li>
+<li>Rename glyphs and .glif files</li>
+</ol>
+
+
+<h2>1. Preparing outlines</h2>
+
+<p>Metapolator requires UFOs where shapes are broken up into constituent parts or 'strokes'.<br/>
+<img src="images/outlines.png" alt="Outlines" /></p>
+
+<p>Almost all glyphs contain composite shapes which will require splitting up into seperate 'strokes'. Here are some examples:<br/>
+<img src="images/ufo/n.png" alt="n" /><br/>
+<img src="images/ufo/n2.png" alt="n" /><br/>
+<img src="images/ufo/n3.png" alt="n" /><br/>
+<img src="images/ufo/n_.png" alt="N" /><br/>
+<img src="images/ufo/b_.png" alt="B" /></p>
+
+<h3>Stemcut<a id="stemcut"></a></h3>
+
+<p>An extra z-point pair is required preceding/following (depending on ordering) the z-point where a stemcut will be applied.
+<img src="images/ufo/nextra.png" alt="N Stemcut" /><br/>
+<em>An 'n' before and after adding an extra point pair for stemcuts</em><br/>
+&nbsp;<br/>
+&nbsp;<br/>
+<img src="images/ufo/nstemcut.gif" alt="N Stemcut" /><br/>
+<em>An 'n' with a <a href="stemcut.html">stemcut</a> and <a href="stemshift.html">stemshift</a> applied to the top z-point. The example on the right also has a down function at the 2nd point to create a smooth transition</em></p>
+
+<h3>Inktrap<a id="inktrap"></a></h3>
+
+<p>An inktrap is similar to a stemcut as they also requre an extra z-point.</p>
+
+<p>The z-point pair should be parallel to the other z-point pairs; in this case the points are horizontal.</p>
+
+<p><img src="images/ufo/v_stemcut.gif" alt="V Inktrap" /></p>
+
+<h2>2. Labelling z-points</h2>
+
+<p><img src="images/ufo/tfilled.png" alt="'t' glyph" /><br/>
+Currently every on-curve point needs to be manually labelled in consecutive pairs in the 'z–l' and 'z–r' format; for example, z1l, z1r, z2l, z2r, and so. Each pair creates a z-point. This is the order in which a stroke will be rendered. A new stroke in the same glyph continues the numbering rather than starting from z1 again.</p>
+
+<p><img src="images/ufo/labelling.gif" alt="Labelling z-points" /><br/>
+1. Click a blank point.<br/>
+2. Enter the point name.<br/>
+3. Save</p>
+
+<p>Take care to keep the l and r sides consistent with the direction which the pen is travelling – a useful metaphor is to imagine the pen as a car: a sudden reversal in the left and right side probably means disaster!<br/>
+<img src="images/ufo/tflipped.png" alt="Wrong labels" /></p>
+
+<h2>3. Renaming glyphs and .glif files</h2>
+
+<p>Due to restrictions within Metafont, the .glif filenames and 'glyph name' (an xml tag within the .glif file) must be renamed according to the numeric filenames set out in <a href="glyphnames.txt">glyphnames.txt</a> (also found in the local folder of Metaplator).</p>
+
+<p><em>Currently this process is done manually but we would like to automate this in the near future</em></p>
+
+<h3>Rename .glif files</h3>
+
+<p>The .glif files are found inside the .ufo/glyphs/ folder. To access, right click on the ufo and 'Show Packaged Contents'.</p>
+
+<h3>Rename 'glyph name'</h3>
+
+<p>A .glif file is an xml file that describes the glyph. The <code>&lt;glyph format="1" name="a"&gt;</code> tag must be changed so that it corresponds to the numeric value; for example <code>&lt;glyph format="1" name="65"&gt;</code></p>
+</body>
+</html>

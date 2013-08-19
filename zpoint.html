@@ -1,0 +1,406 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Z-point Functions</title>
+
+</head>
+<body>
+<h1>Z-point Functions</h1>
+
+<p>These are the Metafont functions that are applied to individual z-points. This is how lettershapes are sculpted. Examples can be found by clicking the function names in the table.</p>
+
+<p>In most functions there is no difference between applying a function to z-l or z-r, the calculation is made either by taking a pair in account or using the center point; for example, an inktrap_l can be similarly applied either to a z3l or z3r. Common sense should apply on which functions will be in conflict; for example, a leftp can not be used on the same point with a rightp. Exceptions are point-coordinate related functions, like penshifted, pointshifted and all overshoot functions.</p>
+
+<h4>Important</h4>
+
+<p>Most of the z-point functions only need to be applied to FontA. The following functions can take a different value in FontB (by specifying it again on the same point) to interpolate between. In the current version a value in FonatA AND FontB is mandatory.</p>
+
+<ul>
+<li><a href="#dir">dir</a></li>
+<li><a href="#dir2">dir2</a></li>
+<li><a href="#angle">angle</a></li>
+<li><a href="#penwidth">penwidth</a></li>
+<li><a href="#tension">tension</a></li>
+<li><a href="#tensionand">tensionand</a></li>
+<li><a href="#superright">superright</a></li>
+<li><a href="#superright">superleft</a></li>
+</ul>
+
+
+<table>
+<thead>
+<tr>
+<th align="left">Function </th>
+<th align="left"> Input </th>
+<th align="left"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong><a href="startp.html">startp</a></strong><a id="start"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Starts a new penstroke. Z1 will always require a startp – otherwise Metafont will return an error.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dash.html">doubledash</a></strong><a id="doubledash"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Creates a straight line to the next z-point (z+1). This is required because Metafont's default mode of drawing is to connect points with curves.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dash.html">tripledash</a></strong><a id="tripledash"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Creates a straight line which blends smoothly into the next z+1. The angle of the tangent at z+1 will be equal to the angle between z and z+1.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong>superleft</strong><a id="superleft"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> Creates a left quarter of a <a href="http://en.wikipedia.org/wiki/Superellipse">superellipse</a>. Superquarters are not as flexible as ordinary curves – direction and tension commands are not applicable and pointshifting is difficult to tame with superquarters. However, <a href="http://metaflop.com/img/helloworld/bespoke-helloworld-01-it.png">interesting results</a> are possible.</td>
+</tr>
+<tr>
+<td align="left"><strong>superright</strong><a id="superright"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> Creates a right quarter of a <a href="http://en.wikipedia.org/wiki/Superellipse">superellipse</a>. See above.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir.html">leftp</a></strong><a id="leftp"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Direction at z will be leftwards.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir.html">rightp</a></strong><a id="rightp"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> As above but rightwards.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir.html">downp</a></strong><a id="downp"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> As above but downwards.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir.html">upp</a></strong><a id="upp"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> As above but upwards.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir.html">dir</a></strong><a id="dir"></a> </td>
+<td align="left"> Foat </td>
+<td align="left"> As above but at the specified. Metafont angles are measured in degrees counterclockwise from a horizontal rightward line. See <a href="images/clock.png" target="_blank">Metafont&nbsp;clock</a>.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir2.html">leftp2</a></strong><a id="leftp2"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Direction going into z+1 will be leftwards. <strong>Important:</strong> direction commands (leftp, rightp, downp, upp, dir)  can not be used on the last z point as it reqiures a z+1 point. Direction2 commands (lefpt2, rightp2, downp2, upp2, dir2) are used on the z-point before the final one in a penstroke to specify the terminatng direction. For example, if z8 is the last z-point in a penstroke, leftp2 would be applied to z7 to create a leftwards travelling ending at z8.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir2.html">rightp2</a></strong><a id="rightp2"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Similar to leftp2 but rightwards.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir2.html">downp2</a></strong><a id="downp2"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Similar to leftp2 but downwards.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir2.html">upp2</a></strong><a id="upp2"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Similar to leftp2 but upwards.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="dir2.html">dir2</a></strong><a id="dir2"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> Similar to leftp2 but at the <a href="images/clock.png" target="_blank">angle</a> specified.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong><a href="tension.html">tension</a></strong><a id="tension"></a> </td>
+<td align="left"> 3 digit integer </td>
+<td align="left"> Specifies the 'tension' of a curve. All curves have a default tension of 100. 075–400 is the allowed range. Higher values creates a straighter line (400 usually produces a straight line), while a decrease is looser.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="tension.html#and">tensionand</a></strong><a id="tensionand"></a> </td>
+<td align="left"> 6 digit integer </td>
+<td align="left"> Asymmetrical tension setting, the first 3 digit specifies the first half of a curve, while the next 3 specifies the second half.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong><a href="cycle.html">cycle</a></strong><a id="cycle"></a> </td>
+<td align="left"> 0 or 1 </td>
+<td align="left"> Specified on the last z-point in a penstroke to create a stroke loop. Used in glyphs such as 'o' to create a circle.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong><a href="penshifted.html">penshifted</a></strong><a id="penshifted"></a> </td>
+<td align="left"> String </td>
+<td align="left"> Shifts the point after other transformations have been applied. There is usually no difference between penshifted and pointshifted – it becomes important when using superleft or superright. See <a href="penshifted.html">instructions</a> on how to create 'magnetic' points that attach to other points and more.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="pointshifed.html">pointshifted</a></strong><a id="pointshifted"></a> </td>
+<td align="left"> String </td>
+<td align="left"> Shifts the poiint before transformations have been applied.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong><a href="angle.html">angle</a></strong><a id="angle"></a> </td>
+<td align="left"> '+string' or '‑string' </td>
+<td align="left"> Changes the pen angle. Enter equations such as: '+20' or '-30'.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="penwidth.html">penwidth</a></strong><a id="penwidth"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> Multiplies the pen width by the value entered. 1 keeps the width, 0.5 is half, 2 is double and so on.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong><a href="over.html">overx</a></strong><a id="overx"></a> </td>
+<td align="left"> y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r </td>
+<td align="left"> Used to create overshoots by the amount specified in the <a href="local.html#over">over</a> Local Parameter. Enter the the y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r point (y3l, y4r, and so on) which corresponds to where the overshoot should occur. Overx can also be applied to points adjacent to the overshoot to shift the whole curve instead of one point – this keeps the shape of the curve intact. See <a href="over.html#curve">Overshoot whole curve</a>.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="over.html">overbase</a></strong><a id="overbase"></a> </td>
+<td align="left"> y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r </td>
+<td align="left"> Similar to overx but at the baseline.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="over.html">overcap</a></strong><a id="overcap"></a> </td>
+<td align="left"> y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r </td>
+<td align="left"> Similar to overx but at the cap-height.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="over.html">overasc</a></strong><a id="overasc"></a> </td>
+<td align="left"> y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r </td>
+<td align="left"> Similar to overx but at the ascender.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="over.html">overdesc</a></strong><a id="overdesc"></a> </td>
+<td align="left"> y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r </td>
+<td align="left"> Similar to overx but at the descender.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong>ascpoint</strong><a id="ascpoint"></a> </td>
+<td align="left"> y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r </td>
+<td align="left"> Tags a point as part of the ascender to prevent it from being affected by the xheight, capital, or descender parameter. <em>Currently not in use.</em></td>
+</tr>
+<tr>
+<td align="left"><strong>descpoint</strong><a id="descpoint"></a> </td>
+<td align="left"> y&thinsp;–&thinsp;l or y&thinsp;–&thinsp;r </td>
+<td align="left"> Tags a point as part of the descender to prevent it from being affected by the xheight, capital, or ascender parameter. <em>Currently not in use.</em></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong><a href="stemcut.html">stemcutter</a></strong><a id="stemcutter"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> Used in conjuction with stemshift to create a stem cut. A value of '1' decreases the penwidth by the amount specified in the <a href="local#stemcut">stemcut</a> Local Parameter. The stem will not be straight so a stemshift and <a href="stemcut.html">other corrections</a> are needed. <strong>Important:</strong> The ufo must be prepared with extra z-points, see <a href="ufo.html#stemcut">UFO Preparation</a>.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="stemcut.html">stemshift</a></strong><a id="stemshift"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> -1 straightens the left side of the stem, 1 straightens the right side. Other values create non-straight strokes. See <a href="stemcut.html">More</a>. <strong>Important:</strong> The ufo must be prepared with extra z-points, see <a href="ufo.html#stemcut">UFO Preparation</a>.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="inktrap.html">inktrap_l</a></strong><a id="inktrap_l"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> Decreases the penwidth by the amount specified in the <a href="local.html#intrap">inktrap</a> Local Parameter and straightens up the stem on the left side of the penstroke. Used in conjuction with inktrap_r on a colliding penstrokes to create a symmetrical inktrap. The difference between inktrap_l/r and stemcutter &amp; stemshift is that the inktrap_l/r function will always create a straight edge, whereas using stemscutter &amp; stemshift can create results like <a href="stemcut.html#notstraight">this</a>. <strong>Important:</strong> The ufo must be prepared with extra z-points, see <a href="ufo.html#inktrap">UFO Preparation</a>.</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="inktrap.html">inktrap_r</a></strong><a id="inktrap_r"></a> </td>
+<td align="left"> Float </td>
+<td align="left"> As above but on the right side.</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Advanced Function Usage</h3>
+</body>
+</html>
