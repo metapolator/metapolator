@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Metapolator user's guide</title>
+
+</head>
+<body>
+<h1>Metapolator user's guide</h1>
+
+<ul>
+<li>Introduction
+
+<ul>
+<li><a href="#metafont">Metafont</a></li>
+<li><a href="#metapolator">Metapolator</a></li>
+</ul>
+</li>
+<li><a href="ufo.html">UFO Preparation</a></li>
+<li><a href="#starting">Starting Metapolator</a></li>
+<li><a href="#interface">The Editor</a></li>
+<li><a href="global.html">Global Parameters</a></li>
+<li><a href="local.html">Local Parameters</a></li>
+<li><a href="zpoint.html">Z-Point Functions</a></li>
+</ul>
+
+
+<p>This short guide is provided as a walkthrough for using Metapolator to design typeface families. It should be read in its entirety in order to understand how to use Metapolator. A designer using Metapolator should be familiar with basic type design principals; for example, typeface anatomy and optical correction. A good understanding of basic highschool level algebra is also helpful.</p>
+
+<p><em>Metapolator is constantly changing, the interface is tentative and we recognise there are inefficiencies. This is up to date as of 16 August 2013</em></p>
+
+<p>Let's meata-design!</p>
+
+<h2>Introduction<a id="introduction"></a></h2>
+
+<hr />
+
+<h3>Metafont<a id="metafont"></a></h3>
+
+<p>from Wikipedia:</p>
+
+<blockquote><p>Unlike more common outline font formats (such as TrueType or PostScript Type 1), a Metafont font is primarily made up of strokes with finite-width 'pens', along with filled regions. Thus, rather than describing the outline of the glyph directly, a Metafont file describes the pen paths.</p></blockquote>
+
+<p><img src="images/a.png" alt="'a' glyph" /><br/>
+<em>Lowercase 'a' as constructed by Metafont</em></p>
+
+<p>The numerical points denote the 'pen positions' (also known as 'z-points') of a stroke. The z-points are where Metafont functions are applied – see <a href="zpoint.html">z-point Functions</a>. The 'l' and 'r' points define the thickness (known as 'pen widths') – and angle of each 'pen position'. Together, the 'pen positions' define a pen path (or 'penstroke') – the black line.</p>
+
+<h3>Metapolator<a id="metapolator"></a></h3>
+
+<p>Metapolator converts outline fonts to Metafonts by parsing the point coordinates from xml and calculating the 'pen positions' and 'pen widths'. To do so, Metapolator requires specially prepared UFO files.</p>
+
+<p>See <a href="ufo.html">UFO Preparation</a> for further instructions on how to prepare outlines – especially for <a href="zpoint.html#stemcutter">stemcuts</a> and <a href="zpoint.html#inktrap_l">inktraps</a>.</p>
+
+<p>Metapolator uses two font 'masters' – FontA and FontB – to interpolate between and generate fonts. FontA and FontB may have different Pen positions (as in the position of the points in the UFO files) and different <a href="local.html">Local Parameters</a>. Metapolator can also interpolate between different <a href="zpoint.html">z-point Functions</a> for:</p>
+
+<ul>
+<li>dir</li>
+<li>dir2</li>
+<li>angle</li>
+<li>penwidth</li>
+<li>tension</li>
+<li>tensionand</li>
+<li>superright</li>
+<li>superleft</li>
+</ul>
+
+
+<p><img src="images/a.gif" alt="Metapolation of 'a'" /><br/>
+<em>Metapolation between FontA and FontB</em></p>
+
+<h2>Starting Metapolator<a id="starting"></a></h2>
+
+<hr />
+
+<p>The first screen is the 'Settings' screen.<br/>
+<img src="images/settings.gif" alt="Settings" /><br/>
+1. Click the Project Number you wish to work on.<br/>
+2. Enter the Project Name, FontA and FontB if not already filled in.<br/>
+3. Select the glyph you wish to edit.<br/>
+4. 'Edit' to go to the Editor.</p>
+
+<p>If you are starting a new project, you may wish to edit the <a href="global.html">Global</a> and <a href="local.html">Local Parameters</a> first.</p>
+</body>
+</html>
