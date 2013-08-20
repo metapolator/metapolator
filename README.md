@@ -18,9 +18,14 @@ Set your mysql username to root and leave password empty. You could also change 
 ```
 $ mysql -u root -p
 ```
+Create new database:
+```
+mysql> CREATE DATABASE 'Name of database'.sql;
+```
+
 Load the preset database:
 ```
-mysql> USE blog;
+mysql> USE 'Name of database'.sql;
 mysql> SOURCE dbscript.sql;
 mysql> SOURCE mysqlview.sql;
 ```
