@@ -10,6 +10,7 @@ Requirements
 - [FontForge](http://sourceforge.net/projects/fontforge/files/fontforge-source/)
 - [mf2pt1](http://www.ctan.org/tex-archive/support/mf2pt1)
 - [Type 1 utilities](http://www.lcdf.org/type/#t1utils)
+- Optimized for Google Chrome
 
 
 ##Installation
