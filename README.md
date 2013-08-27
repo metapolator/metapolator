@@ -3,6 +3,7 @@
 Metapolator is a web-based parametric font editor. It provides a GUI for designing with Metafont – a program and language for semi-algorithmic specification of fonts. Metapolator was created out of the need to create large type families efficiently. [more](http://metapolator.com/)
 
 Requirements
+- [Metafont and Metapost](http://www.tug.org/)
 - [MySQL](http://dev.mysql.com/downloads/mysql/)
 - [Python](http://www.python.org/)
 - [python-mysqldb](http://sourceforge.net/projects/mysql-python/)
