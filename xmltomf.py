@@ -7,7 +7,8 @@
 # GPL v3 (http://www.gnu.org/copyleft/gpl.html). 
 
 import model
-from xml.dom import minidom
+from lxml import etree
+import os.path 
 import sys
 
 
@@ -22,24 +23,23 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 % box dimension definition %
 """)
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('advance') 
+	glif = etree.parse(font_a)
+	itemlist = glif.find('advance') 
 
-	w = itemlist[0].attributes['width'].value
+	w = itemlist.get('width')
 	w = str(float(w)/100)
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('advance') 
+	glif = etree.parse(font_b)
+	itemlist = glif.find('advance') 
 
-	w2 = itemlist[0].attributes['width'].value
+	w2 = itemlist.get('width')
 	w2 = str(float(w2)/100)
 
-	glyph = glif.getElementsByTagName('glyph')
-	g = glyph[0].attributes['name'].value 
+	glyph = glif.getroot() 
+	g = glyph.get('name') 
 
-	uni = minidom.parse(font_a) 
-	itemlist = uni.getElementsByTagName('unicode')
-	u = itemlist[0].attributes['hex'].value
+	itemlist = glif.find('unicode')
+	u = itemlist.get('hex')
 
 
 
@@ -50,9 +50,6 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	# fi
 	# """
 
-	fip.write("\n")
-	fip.write("currenttransform := identity slanted slant;")
-
 	# reading l and r as pxl and pxr font A
 
 	fip.write("\n")
@@ -60,8 +57,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 % point coordinates font A
 """)
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+        itemlist = [point for point in glif.iter() if point.tag == 'point']
 
 	inattr=0   
 	for item in itemlist :
@@ -71,21 +68,21 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
+	       x = item.get('x')
+	       y = item.get('y')
 	       x = str(float(x)/100)
 	       y = str(float(y)/100)
-	       im =item.attributes['name'] 
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 		   fip.write("\n")
 		   fip.write( "px" + znamer[1:] + " := " + x + "u ; "   +  "py"+ znamer[1:] + " := " + y + "u ;"  ) 
-		 if im.value.find(znamel)>-1 :
+		 if im == znamel :
 		   fip.write("\n")
 		   fip.write( "px" + znamel[1:] + " := " + x + "u ; "   +  "py"+ znamel[1:] + " := " + y + "u ;"   )
 
@@ -93,8 +90,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 # reading mid points Font A
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	fip.write("\n")
 	fip.write( """
@@ -110,16 +107,16 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 		
 			fip.write("\n")
 			fip.write( ".5(px"+ znamel[1:] + " + px" + znamer[1:] + ") = x2" + zname[1:-1] +"0;"  ) 
@@ -129,8 +126,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 # reading fake 100 l and r points Font A
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
         fip.write( """
 % fake extra l an r for metafont
@@ -145,17 +142,17 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	   
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 
 			fip.write("\n")
 			fip.write( "px"+ znamel[1:] + " = x"+ znamel[1:-1] + "Bl; py"+ znamel[1:] + " = y"+ znamel[1:-1] + "Bl; ") 
@@ -166,8 +163,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 # reading pen widhts Font A
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	fip.write("\n")
 	fip.write( """
@@ -183,17 +180,17 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	     
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 
 			fip.write("\n")
 			fip.write( "dist"+ znamel[1:-1] + " := length (z"+ znamel[1:-1] + "Bl-" + "z"+ znamel[1:-1] + "Br) ;" )
@@ -206,8 +203,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 """)
 
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	for item in itemlist :
@@ -218,22 +215,22 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
+	       x = item.get('x')
+	       y = item.get('y')
 	       x = str(float(x)/100)
 	       y = str(float(y)/100)
-	       im =item.attributes['name'] 
+	       im =item.get('name') 
 	       ipn = 1   
 
 	     except : 
 	       inattr=inattr+1 
 
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 		   fip.write("\n")
 		   fip.write( "ppx" + znamer[1:] + " := " + x + "u ; "   +  "ppy"+ znamer[1:] + " := " + y + "u ;"   )
-		 if im.value.find(znamel)>-1 :
+		 if im == znamel :
 		   fip.write("\n")
 		   fip.write( "ppx" + znamel[1:] + " := " + x + "u ; "   +  "ppy"+ znamel[1:] + " := " + y + "u ;"   )
 
@@ -242,8 +239,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 # reading mid points Font B
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	fip.write("\n")
 	fip.write( """
@@ -259,17 +256,17 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	    
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 
 			fip.write("\n")
 			fip.write( ".5(ppx"+ znamel[1:] + " + ppx" + znamer[1:] + ") = x2" + zname[1:-1] +"A;" )  
@@ -280,8 +277,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	# reading fake 100 l and r points Font B
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
         fip.write( """
 % fake extra l an r for font B
@@ -296,17 +293,17 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	    
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :		 
+	       if im == znamer or im == znamel: 
+		 if im == znamer :		 
 			fip.write("\n")
 			fip.write( "ppx"+ znamel[1:] + " = x"+ znamel[1:-1] + "Cl; ppy"+ znamel[1:] + " = y"+ znamel[1:-1] + "Cl; " )
 			fip.write("\n")
@@ -318,8 +315,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	# reading pen widhts Font B
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	fip.write("\n")
 	fip.write( """
@@ -335,17 +332,17 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	     
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 
 			fip.write("\n")
 			fip.write( "dist"+ znamel[1:-1] + "B := length (z"+ znamel[1:-1] + "Cl-" + "z"+ znamel[1:-1] + "Cr) ;" )
@@ -357,8 +354,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 # reading pen angle Font A
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	fip.write("\n")
 	fip.write( """
@@ -374,17 +371,17 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	    
 	     if ipn == 1 :
-	       if im.value.find(znamer)>-1 or im.value.find(znamel)>-1: 
-		 if im.value.find(znamer)>-1 :
+	       if im == znamer or im == znamel: 
+		 if im == znamer :
 
 			fip.write("\n")
 			fip.write( "ang"+ znamel[1:-1] + " := angle((" + znamel[0:-1] + "Br + (metapolation * (" + znamel[0:-1] + "Cr -" + znamel[0:-1] + "Br))) - (" + znamel[0:-1] + "Bl + (metapolation * (" + znamel[0:-1] + "Cl -" + znamel[0:-1] + "Bl))));" )
@@ -397,14 +394,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 % test extra pen angle
 """ )
 
-
-	glyph = glif.getElementsByTagName('glyph')
-	g = glyph[0].attributes['name'].value
-
-
-
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	ivn = 0
@@ -434,7 +425,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 
-	# search for parameter values
+	# search for parameters
 	  
 	for item in itemlist :
 	  for i in range (1,100):
@@ -443,43 +434,30 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	     
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
-	       try :
-		 istartp = item.attributes['startp'].value   
-		 istartp = True
-	       except :
-		 istartp = False
-
-	       try :
-		 iangle = item.attributes['angle'].value   
-		 iangle = True
-	       except :
-		 iangle = False
-
-
-
-
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
+	       istartp = item.get('startp')   
+	       iangle = item.get('angle')   
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
+	       if im == znamel or im == znamer:
 
-		 if istartp == True :
-		   istartpval = item.attributes['startp'].value
+		 if istartp != None :
+		   istartpval = item.get('startp')
 		   del startp[i-1]
 		   startp.insert(i-1,"startp")
 		   del startpval[i-1]
 		   startpval.insert(i-1,istartpval)
 
-		 if iangle == True :
-		   iangleval = item.attributes['angle'].value
+		 if iangle != None :
+		   iangleval = item.get('angle')
 		   del angle[i-1]
 		   angle.insert(i-1,"angle")
 		   del angleval_B[i-1]
@@ -495,13 +473,9 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 """ )
 
 
-	glyph = glif.getElementsByTagName('glyph')
-	g = glyph[0].attributes['name'].value
 
-
-
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	ivn = 0
@@ -531,7 +505,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 
-# search for parameter values
+# search for parameters
 	  
 	for item in itemlist :
 	  for i in range (1,100):
@@ -540,49 +514,34 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	     
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
-	       try :
-		 istartp = item.attributes['startp'].value   
-		 istartp = True
-	       except :
-		 istartp = False
-
-	       try :
-		 iangle = item.attributes['angle'].value   
-		 iangle = True
-	       except :
-		 iangle = False
-
-
-
-
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
+	       istartp = item.get('startp')   
+	       iangle = item.get('angle')   
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
+	       if im == znamel or im == znamer:
 
-		 if istartp == True :
-		   istartpval = item.attributes['startp'].value
+		 if istartp != None :
+		   istartpval = item.get('startp')
 		   del startp[i-1]
 		   startp.insert(i-1,"startp")
 		   del startpval[i-1]
 		   startpval.insert(i-1,istartpval)
 
-		 if iangle == True :
-		   iangleval = item.attributes['angle'].value
+		 if iangle != None :
+		   iangleval = item.get('angle')
 		   del angle[i-1]
 		   angle.insert(i-1,"angle")
 		   del angleval[i-1]
 		   angleval.insert(i-1,iangleval)
-
-
 
 
 	nnz = 0
@@ -618,14 +577,14 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	  fip.write( zeile)
 	  
 
-####### new penpos
+####### penpos
 
 
 # reading font Pen Positions Font B
 
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 
 
@@ -651,7 +610,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	  B_penwidthval.append(0)
 
 
-# search for parameter values
+# search for parameters
 	  
 	for item in itemlist :
 	  for i in range (1,100):
@@ -660,15 +619,10 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	     
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
-
-	       try :
-		 ipenwidth = item.attributes['penwidth'].value   
-		 ipenwidth = True
-	       except :
-		 ipenwidth = False
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
+	       ipenwidth = item.get('penwidth')   
 
 
 	       ipn = 1   
@@ -677,26 +631,24 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
+	       if im == znamel or im == znamer:
 
-		 if ipenwidth == True :
-		   ipenwidthval = item.attributes['penwidth'].value
+		 if ipenwidth != None :
+		   ipenwidthval = item.get('penwidth')
 		   del penwidth[i-1]
 		   penwidth.insert(i-1,"penwidth")
 		   del B_penwidthval[i-1]
 		   B_penwidthval.insert(i-1,ipenwidthval)
-
-
 
 
 
 		
 # reading font Pen Positions Font B
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	ivn = 0
@@ -721,7 +673,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 
-# search for parameter values
+# search for parameters
 	  
 	for item in itemlist :
 	  for i in range (1,100):
@@ -730,17 +682,10 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	     
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
-
-
-	       try :
-		 ipenwidth = item.attributes['penwidth'].value   
-		 ipenwidth = True
-	       except :
-		 ipenwidth = False
-
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
+	       ipenwidth = item.get('penwidth')   
 
 	       ipn = 1   
 	     except : 
@@ -748,18 +693,16 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
+	       if im == znamel or im == znamer:
 
-		 if ipenwidth == True :
-		   ipenwidthval = item.attributes['penwidth'].value
+		 if ipenwidth != None :
+		   ipenwidthval = item.get('penwidth')
 		   del penwidth[i-1]
 		   penwidth.insert(i-1,"penwidth")
 		   del B_penwidthval[i-1]
 		   B_penwidthval.insert(i-1,ipenwidthval)
-
-
 
 
 		
@@ -771,10 +714,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 % test new penpos
 """ )
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
-
-
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	ivn = 0
@@ -786,18 +727,19 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	stemcutter = []
 	stemcutterval = []
 
-
 	inktrap_l = []
 	inktrap_lval = []
-
 
 	inktrap_r = []
 	inktrap_rval = []
 
-
 	penwidth = []
 	penwidthval = []
 	A_penwidthval = []
+
+	comp = []
+	compval = []
+	A_compval = []
 
 
 # add iteration to string
@@ -817,9 +759,13 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	  penwidthval.append(0)
 	  A_penwidthval.append(0)
 
+	  comp.append("")
+	  compval.append(0)
+	  A_compval.append(0)
 
 
-# search for parameter values
+
+# search for parameters
 	  
 	for item in itemlist :
 	  for i in range (1,100):
@@ -828,33 +774,14 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	     
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
-
-	       try :
-		 istemcutter = item.attributes['stemcutter'].value   
-		 istemcutter = True
-	       except :
-		 istemcutter = False
-
-	       try :
-		 iinktrap_l = item.attributes['inktrap_l'].value   
-		 iinktrap_l = True
-	       except :
-		 iinktrap_l = False
-
-	       try :
-		 iinktrap_r = item.attributes['inktrap_r'].value   
-		 iinktrap_r = True
-	       except :
-		 iinktrap_r = False
-
-	       try :
-		 ipenwidth = item.attributes['penwidth'].value   
-		 ipenwidth = True
-	       except :
-		 ipenwidth = False
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
+	       istemcutter = item.get('stemcutter')   
+	       iinktrap_l = item.get('inktrap_l')   
+	       iinktrap_r = item.get('inktrap_r')   
+	       ipenwidth = item.get('penwidth')   
+	       icomp = item.get('comp')   
 
 
 	       ipn = 1   
@@ -863,37 +790,44 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
+	       if im == znamel or im == znamer:
 
-		 if istemcutter == True :
-		   istemcutterval = item.attributes['stemcutter'].value
+		 if istemcutter != None :
+		   istemcutterval = item.get('stemcutter')
 		   del stemcutter[i-1]
 		   stemcutter.insert(i-1,"stemcutter")
 		   del stemcutterval[i-1]
 		   stemcutterval.insert(i-1,istemcutterval)
 
-		 if iinktrap_l == True :
-		   iinktrap_lval = item.attributes['inktrap_l'].value
+		 if iinktrap_l != None :
+		   iinktrap_lval = item.get('inktrap_l')
 		   del inktrap_l[i-1]
 		   inktrap_l.insert(i-1,"inktrap_l")
 		   del inktrap_lval[i-1]
 		   inktrap_lval.insert(i-1,iinktrap_lval)
 
-		 if iinktrap_r == True :
-		   iinktrap_rval = item.attributes['inktrap_r'].value
+		 if iinktrap_r != None :
+		   iinktrap_rval = item.get('inktrap_r')
 		   del inktrap_r[i-1]
 		   inktrap_r.insert(i-1,"inktrapcut")
 		   del inktrap_rval[i-1]
 		   inktrap_rval.insert(i-1,iinktrap_rval)
 
-		 if ipenwidth == True :
-		   ipenwidthval = item.attributes['penwidth'].value
+		 if ipenwidth != None :
+		   ipenwidthval = item.get('penwidth')
 		   del penwidth[i-1]
 		   penwidth.insert(i-1,"penwidth")
 		   del A_penwidthval[i-1]
 		   A_penwidthval.insert(i-1,ipenwidthval)
+
+		 if icomp != None :
+		   icompval = item.get('comp')
+		   del comp[i-1]
+		   comp.insert(i-1,"comp")
+		   del compval[i-1]
+		   compval.insert(i-1,icompval)
 
 	nnz = 0
 	for zitem in zzn :
@@ -913,24 +847,49 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	  zitemc = zzn[i-1]
 
 ## default string
+	
+	  zeile = ""
 
-	  zeile =""
-
-#  zeile = """penpos"""  +str(zitem) + "(dist" +str(zitem) + " + ((A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + "))"
-
-
-#  zeile = """penpos""" + znamel[1:-1] + "(dist" + znamel[1:-1] + " + (metapolation * (px - (dist"+znamel[1:-1] + " + (distV * (dist" + znamel[1:-1] + "V - dist" +znamel[1:-1] + "))))), (ang"+znamel[1:-1] + " + (angV * (ang" + znamel[1:-1] + "V - ang" + znamel[1:-1] +"))));"
+#          if penwidth[i] <> "" :
+#              pw = "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")))"
+#          else :
+#              pw = 1
 
 
-# parameters 
-	  
+#          if comp[i] <> "" :
+
+#              zeile = zeile + """penpos"""  +str(zitem) + "(" +str(pw) + "* (dist" +str(zitem) + " + A_px+metapolation*(B_px-A_px) + (A_skeleton/50+metapolation*(B_skeleton/50-A_skeleton/50) * dist00" +str(zitem) + ")) / (compA + ( compB * (sind (ang" +str(zitem) + " - (" +str(compval[i]) + ")))))"
+
+#              zeile = zeile + """penpos"""  +str(zitem) + "(max(" +str(pw) + "* (dist" +str(zitem) + "  / 2 * (A_px + metapolation * (B_px - A_px))),(limiter * A_px))"
+
+
+#	      zeile = zeile + """penpos"""  +str(zitem) + "(" +str(pw) + "* (dist" +str(zitem) + " + A_px+metapolation*(B_px-A_px) + (A_skeleton/50+metapolation*(B_skeleton/50-A_skeleton/50) * dist00" +str(zitem) + "))"
+
+#	    zeile = zeile + """penpos"""  +str(zitem) + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + " / (sind (ang" +str(zitem) + " - (" +str(compval[i]) +"))))"
+
+ #         else : 
+
+#              zeile = zeile + """penpos"""  +str(zitem) + "(max(" +str(pw) + "* (dist" +str(zitem) + "  / 2 * (A_px + metapolation * (B_px - A_px))),(limiter * A_px))"
+
+
+#	  else :
+
+#	      zeile = zeile + """penpos"""  +str(zitem) + "(" +str(pw) + "* (dist" +str(zitem) + " + A_px+metapolation*(B_px-A_px) + (A_skeleton/50+metapolation*(B_skeleton/50-A_skeleton/50) * dist00" +str(zitem) + "))"
+
+#	  if penwidth[i] <> "" :
+#	    zeile = zeile + """penpos"""  +str(zitem) + "(" +str(pw) + "* (dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + "))"
+#	  else :
+#	    zeile = zeile + """penpos"""  +str(zitem) + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + " / (sind (ang" +str(zitem) + " - (" +str(compval[i]) +"))))"
+
+
+# "/ (compA + ( compB * (sind (ang" +str(zitem) + " - (" +str(compval[i]) + "))
+
+
 	  if penwidth[i] <> "" :
 	    zeile = zeile +"""penpos"""  +str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + "))"
 	  else :
 	    zeile = zeile + """penpos"""  +str(zitem) + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + ")"
 
-#    zeile = zeile + " * (" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + "))"
-#    zeile = zeile + " * (" + str(A_penwidthval[i]) +")"
 
 	  if stemcutter[i] <> "" :
 	    zeile = zeile + "-" + stemcutter[i] + "(" +  str(stemcutterval[i]) + ")"      
@@ -940,28 +899,20 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	 
 	  if inktrap_r[i] <> "" :
 	    zeile = zeile + "- inktrapcut (" +  str(inktrap_rval[i]) + ")"      
-
-#   if angleval[i] <> "" :
-#     zeile = zeile + ",ang" + str(angleval[i]) + ");"      
-#      
+      
 	  else: 
 	    zeile = zeile 
 	  zeile = zeile + ", ang" +str(zitem) + ");"
 	  fip.write("\n")
 	  fip.write( zeile)
 
-#zeile = zeileend + semi
 
-#fip.write( zeile)
 # reading font Pen strokes
 
 	fip.write("\n")
 	fip.write( """
 % test new center (z) points
 """ )
-
-	glyph = glif.getElementsByTagName('glyph')
-	g = glyph[0].attributes['name'].value
 
 
 	mean = ['13','14','26','29','65','67','69','77','78','79','82','83','85','86','87','88','90','94','95','12','27','63','71','80','81','89','2','7','11','28','30','62','64','66','68','70','72','73','75','76','84','4','8','9','15','59','60','61','74','91','92','93']
@@ -991,8 +942,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 #    ggroup = 'boxheight'
 
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	ivn = 0
@@ -1028,11 +979,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	overcap = []
 	overcapval = []
 
-
-
 	inktrap_l = []
 	inktrap_lval = []
-
 
 	inktrap_r = []
 	inktrap_rval = []
@@ -1045,11 +993,6 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	descpoint = []
 	descpointval = []
-
-
-
-
-
 
 
 # add iteration to string
@@ -1098,7 +1041,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 
-# search for parameter values
+# search for parameters
 	  
 	for item in itemlist :
 	  for i in range (1,100):
@@ -1107,90 +1050,22 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	     
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
-
-	       try :
-		 ipointshifted = item.attributes['pointshifted'].value   
-		 ipointshifted = True
-	       except :
-		 ipointshifted = False
-
-	       try :
-		 ipointshiftedy = item.attributes['pointshiftedy'].value   
-		 ipointshiftedy = True
-	       except :
-		 ipointshiftedy = False
-
-	       try :
-		 istartp = item.attributes['startp'].value   
-		 istartp = True
-	       except :
-		 istartp = False
-
-
-	       try :
-		 iv = item.attributes['v'].value   
-		 iv = True
-	       except :
-		 iv = False
-
-	       try :
-		 ih = item.attributes['h'].value   
-		 ih = True
-	       except :
-		 ih = False
-
-	       try :
-		 ioverx = item.attributes['overx'].value   
-		 ioverx = True
-	       except :
-		 ioverx = False
-
-	       try :
-		 ioverbase = item.attributes['overbase'].value   
-		 ioverbase = True
-	       except :
-		 ioverbase = False
-
-	       try :
-		 iovercap = item.attributes['overcap'].value   
-		 iovercap = True
-	       except :
-		 iovercap = False
-
-	       try :
-		 iinktrap_l = item.attributes['inktrap_l'].value   
-		 iinktrap_l = True
-	       except :
-		 iinktrap_l = False
-
-	       try :
-		 iinktrap_r = item.attributes['inktrap_r'].value   
-		 iinktrap_r = True
-	       except :
-		 iinktrap_r = False
-
-	       try :
-		 istemshift = item.attributes['stemshift'].value   
-		 istemshift = True
-	       except :
-		 istemshift = False
-
-	       try :
-		 iascpoint = item.attributes['ascpoint'].value   
-		 iascpoint = True
-	       except :
-		 iascpoint = False
-
-	       try :
-		 idescpoint = item.attributes['descpoint'].value   
-		 idescpoint = True
-	       except :
-		 idescpoint = False
-
-
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
+               ipointshifted = item.get('pointshifted')   
+               ipointshiftedy = item.get('pointshiftedy')   
+               istartp = item.get('startp')   
+               iv = item.get('v')   
+               ih = item.get('h')   
+               ioverx = item.get('overx')   
+               ioverbase = item.get('overbase')   
+               iovercap = item.get('overcap')   
+               iinktrap_l = item.get('inktrap_l')   
+               iinktrap_r = item.get('inktrap_r')   
+               istemshift = item.get('stemshift')   
+               iascpoint = item.get('ascpoint')   
+               idescpoint = item.get('descpoint')   
 
 	       ipn = 1   
 	     except : 
@@ -1198,98 +1073,98 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
-#         if im.value.find("startp") >-1 :
+	       if im == znamel or im == znamer:
+#         if im.find("startp") >-1 :
 #           del startp[i-1]
 #           startp.insert(i-1,"")
-		 if istartp == True :
-		   istartpval = item.attributes['startp'].value
+		 if istartp != None :
+		   istartpval = item.get('startp')
 		   del startp[i-1]
 		   startp.insert(i-1,"startp")
 		   del startpval[i-1]
 		   startpval.insert(i-1,istartpval)
 
-		 if ipointshifted== True :
-		   ipointshiftedval= item.attributes['pointshifted'].value
+		 if ipointshifted != None :
+		   ipointshiftedval= item.get('pointshifted')
 		   del pointshifted[i-1]
 		   pointshifted.insert(i-1,"shifted")
 		   del pointshiftedval[i-1]
 		   pointshiftedval.insert(i-1,ipointshiftedval)
 
-		 if ipointshiftedy == True :
-		   ipointshiftedyval = item.attributes['pointshiftedy'].value
+		 if ipointshiftedy != None :
+		   ipointshiftedyval = item.get('pointshiftedy')
 		   del pointshiftedy[i-1]
 		   pointshiftedy.insert(i-1,"shifted")
 		   del pointshiftedyval[i-1]
 		   pointshiftedyval.insert(i-1,ipointshiftedyval)
 
-		 if iv == True :
-		   ivval = item.attributes['v'].value
+		 if iv != None :
+		   ivval = item.get('v')
 		   del v[i-1]
 		   v.insert(i-1,"v")
 		   del vval[i-1]
 		   vval.insert(i-1,ivval)
 
-		 if ih == True :
-		   ihval = item.attributes['h'].value
+		 if ih != None :
+		   ihval = item.get('h')
 		   del h[i-1]
 		   h.insert(i-1,"h")
 		   del hval[i-1]
 		   hval.insert(i-1,ihval)
 
-		 if ioverx == True :
-		   ioverxval = item.attributes['overx'].value
+		 if ioverx != None :
+		   ioverxval = item.get('overx')
 		   del overx[i-1]
 		   overx.insert(i-1,"shifted")
 		   del overxval[i-1]
 		   overxval.insert(i-1,ioverxval)
 
-		 if ioverbase == True :
-		   ioverbaseval = item.attributes['overbase'].value
+		 if ioverbase != None :
+		   ioverbaseval = item.get('overbase')
 		   del overbase[i-1]
 		   overbase.insert(i-1,"shifted")
 		   del overbaseval[i-1]
 		   overbaseval.insert(i-1,ioverbaseval)
 
-		 if iovercap == True :
-		   iovercapval = item.attributes['overcap'].value
+		 if iovercap != None :
+		   iovercapval = item.get('overcap')
 		   del overcap[i-1]
 		   overcap.insert(i-1,"shifted")
 		   del overcapval[i-1]
 		   overcapval.insert(i-1,iovercapval)
 
-		 if iinktrap_l == True :
-		   iinktrap_lval = item.attributes['inktrap_l'].value
+		 if iinktrap_l != None :
+		   iinktrap_lval = item.get('inktrap_l')
 		   del inktrap_l[i-1]
 		   inktrap_l.insert(i-1,"inktrapcut")
 		   del inktrap_lval[i-1]
 		   inktrap_lval.insert(i-1,iinktrap_lval)
 
-		 if iinktrap_r == True :
-		   iinktrap_rval = item.attributes['inktrap_r'].value
+		 if iinktrap_r != None :
+		   iinktrap_rval = item.get('inktrap_r')
 		   del inktrap_r[i-1]
 		   inktrap_r.insert(i-1,"inktrapcut")
 		   del inktrap_rval[i-1]
 		   inktrap_rval.insert(i-1,iinktrap_rval)
 
-		 if istemshift == True :
-		   istemshiftval = item.attributes['stemshift'].value
+		 if istemshift != None :
+		   istemshiftval = item.get('stemshift')
 		   del stemshift[i-1]
 		   stemshift.insert(i-1,"stemshift")
 		   del stemshiftval[i-1]
 		   stemshiftval.insert(i-1,istemshiftval)
 
-		 if iascpoint == True :
-		   iascpointval = item.attributes['ascpoint'].value
+		 if iascpoint != None :
+		   iascpointval = item.get('ascpoint')
 		   del ascpoint[i-1]
 		   ascpoint.insert(i-1,"ascpoint")
 		   del ascpointval[i-1]
 		   ascpointval.insert(i-1,iascpointval)
 
-		 if idescpoint == True :
-		   idescpointval = item.attributes['descpoint'].value
+		 if idescpoint != None :
+		   idescpointval = item.get('descpoint')
 		   del descpoint[i-1]
 		   descpoint.insert(i-1,"descpoint")
 		   del descpointval[i-1]
@@ -1375,11 +1250,11 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 #fip.write( zeile)
 	 
 
-# reading values functions font B
+# readings functions font B
 
 
-	glif = minidom.parse(font_b)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_b)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	ivn = 0
@@ -1502,96 +1377,24 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 
-
-	       try :
-		 idoubledash = item.attributes['doubledash'].value   
-		 idoubledash = True
-	       except :
-		 idoubledash = False
-
-	       try :
-		 itripledash = item.attributes['tripledash'].value   
-		 itripledash = True
-	       except :
-		 itripledash = False
-
-	       try :
-		 idir = item.attributes['dir'].value   
-		 idir = True
-	       except :
-		 idir = False
-
-	       try :
-		 idir2 = item.attributes['dir2'].value   
-		 idir2 = True
-	       except :
-		 idir2 = False
-
-	       try :
-		 ileftp = item.attributes['leftp'].value   
-		 ileftp = True
-	       except :
-		 ileftp = False
-
-	       try :
-		 iupp = item.attributes['upp'].value   
-		 iupp = True
-	       except :
-		 iupp = False
-
-	       try :
-		 irightp = item.attributes['rightp'].value   
-		 irightp = True
-	       except :
-		 irightp = False
-
-	       try :
-		 idownp = item.attributes['downp'].value   
-		 idownp = True
-	       except :
-		 idownp = False
-
-	       try :
-		 itension = item.attributes['tension'].value   
-		 itension = True
-	       except :
-		 itension = False
-
-	       try :
-		 itensionand = item.attributes['tensionand'].value   
-		 itensionand = True
-
-	       except :
-		 itensionand = False
-
-	       try :
-		 isuperright = item.attributes['superright'].value   
-		 isuperright = True
-	       except :
-		 isuperright = False
-
-	       try :
-		 isuperleft = item.attributes['superleft'].value   
-		 isuperleft = True
-	       except :
-		 isuperleft = False
-
-	       try :
-		 ipenshifted = item.attributes['penshifted'].value   
-		 ipenshifted = True
-	       except :
-		 ipenshifted = False
-
-	       try :
-		 ipenshiftedy = item.attributes['penshiftedy'].value   
-		 ipenshiftedy = True
-	       except :
-		 ipenshiftedy = False
-
+	       idoubledash = item.get('doubledash')   
+	       itripledash = item.get('tripledash')   
+	       idir = item.get('dir')   
+	       idir2 = item.get('dir2')   
+	       ileftp = item.get('leftp')   
+	       iupp = item.get('upp')   
+	       irightp = item.get('rightp')   
+	       idownp = item.get('downp')   
+	       itension = item.get('tension')   
+	       itensionand = item.get('tensionand')   
+	       isuperright = item.get('superright')   
+	       isuperleft = item.get('superleft')   
+	       ipenshifted = item.get('penshifted')   
+	       ipenshiftedy = item.get('penshiftedy')   
 
 	       ipn = 1   
 	     except : 
@@ -1599,78 +1402,78 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
-#         if im.value.find("startp") >-1 :
+	       if im == znamel or im == znamer:
+#         if im.find("startp") >-1 :
 #           del zzstartp[i-1]
 #           zzstartp.insert(i-1,"penstroke ")
 		     
-		 if idoubledash == True :
-		   idoubledashval = item.attributes['doubledash'].value
+		 if idoubledash != None :
+		   idoubledashval = item.get('doubledash')
 		   del doubledash[i-1]
 		   doubledash.insert(i-1,"doubledash")
 		   del doubledashvalB[i-1]
 		   doubledashvalB.insert(i-1,idoubledashval)
 
-		 if itripledash == True :
-		   itripledashval = item.attributes['tripledash'].value
+		 if itripledash != None :
+		   itripledashval = item.get('tripledash')
 		   del tripledash[i-1]
 		   tripledash.insert(i-1," ---")
 		   del tripledashvalB[i-1]
 		   tripledashvalB.insert(i-1,itripledashval)
 
-		 if idir == True :
-		   idirval = item.attributes['dir'].value
+		 if idir != None :
+		   idirval = item.get('dir')
 		   del dir[i-1]
 		   dirB.insert(i-1,"dir")
 		   del dirvalB[i-1]
 		   dirvalB.insert(i-1,idirval)
 
-		 if idir2 == True :
-		   idir2val = item.attributes['dir2'].value
+		 if idir2 != None :
+		   idir2val = item.get('dir2')
 		   del dir2[i-1]
 		   dir2B.insert(i-1,"dir")
 		   del dir2valB[i-1]
 		   dir2valB.insert(i-1,idir2val)
 	      
-		 if iupp == True :
-		   iuppval = item.attributes['upp'].value
+		 if iupp != None :
+		   iuppval = item.get('upp')
 		   del upp[i-1]
 		   upp.insert(i-1,"up")
 		   del uppvalB[i-1]
 		   uppvalB.insert(i-1,iuppval)
 
-		 if ileftp == True :
-		   ileftpval = item.attributes['leftp'].value
+		 if ileftp != None :
+		   ileftpval = item.get('leftp')
 		   del leftp[i-1]
 		   leftp.insert(i-1,"left")
 		   del leftpvalB[i-1]
 		   leftpvalB.insert(i-1,ileftpval)
 
-		 if irightp == True :
-		   irightpval = item.attributes['rightp'].value
+		 if irightp != None :
+		   irightpval = item.get('rightp')
 		   del rightp[i-1]
 		   rightp.insert(i-1,"right")
 		   del rightpvalB[i-1]
 		   rightpvalB.insert(i-1,irightpval)
 
-		 if idownp == True :
-		   idownpval = item.attributes['downp'].value
+		 if idownp != None :
+		   idownpval = item.get('downp')
 		   del downp[i-1]
 		   downp.insert(i-1,"down")
 		   del downpvalB[i-1]
 		   downpvalB.insert(i-1,idownpval)
 			  
-		 if itension == True :
-		   itensionval = item.attributes['tension'].value
+		 if itension != None :
+		   itensionval = item.get('tension')
 		   del tension[i-1]
 		   tensionB.insert(i-1,"tension")
 		   del tensionvalB[i-1]
 		   tensionvalB.insert(i-1,itensionval)
 
-		 if itensionand == True :
-		   itensionandval = item.attributes['tensionand'].value
+		 if itensionand != None :
+		   itensionandval = item.get('tensionand')
 		   del tensionand[i-1]
 		   tensionandB.insert(i-1,"tensionand")
 		   del tensionandvalB[i-1]
@@ -1678,36 +1481,36 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 		   tensionandvalB.insert(i-1,itensionandval[:3])
 		   tensionandval2B.insert(i-1,itensionandval[-3:])
 
-		 if isuperright == True :
-		   isuperrightval = item.attributes['superright'].value
+		 if isuperright != None :
+		   isuperrightval = item.get('superright')
 		   del superright[i-1]
 		   superright.insert(i-1,"superright")
 		   del superrightvalB[i-1]
 		   superrightvalB.insert(i-1,isuperrightval)
 
-		 if isuperleft == True :
-		   isuperleftval = item.attributes['superleft'].value
+		 if isuperleft != None :
+		   isuperleftval = item.get('superleft')
 		   del superleft[i-1]
 		   superleft.insert(i-1,"superleft")
 		   del superleftvalB[i-1]
 		   superleftvalB.insert(i-1,isuperleftval)
 
-		 if idir == True :
-		   idirval = item.attributes['dir'].value
+		 if idir != None :
+		   idirval = item.get('dir')
 		   del dir[i-1]
 		   dir.insert(i-1,"dir")
 		   del dirvalB[i-1]
 		   dirvalB.insert(i-1,idirval)
 
-		 if ipenshifted == True :
-		   ipenshiftedval = item.attributes['penshifted'].value
+		 if ipenshifted != None :
+		   ipenshiftedval = item.get('penshifted')
 		   del penshifted[i-1]
 		   penshifted.insert(i-1,"shifted")
 		   del penshiftedvalB[i-1]
 		   penshiftedvalB.insert(i-1,ipenshiftedval)
 
-		 if ipenshiftedy == True :
-		   ipenshiftedyval = item.attributes['penshiftedy'].value
+		 if ipenshiftedy != None :
+		   ipenshiftedyval = item.get('penshiftedy')
 		   del penshiftedy[i-1]
 		   penshiftedy.insert(i-1,"shifted")
 		   del penshiftedyvalB[i-1]
@@ -1723,8 +1526,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 # reading font penstrokes
 
 
-	glif = minidom.parse(font_a)
-	itemlist = glif.getElementsByTagName('point') 
+	glif = etree.parse(font_a)
+	itemlist = [point for point in glif.iter() if point.tag == 'point'] 
 
 	inattr=0   
 	ivn = 0
@@ -1882,10 +1685,8 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	  overcap.append("")
 	  overcapval.append(0)
 
-
 	  overasc.append("")
 	  overascval.append(0)
-
 
 	  overdesc.append("")
 	  overdescval.append(0)
@@ -1901,281 +1702,152 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 	     ipn=0
 	     try :
-	       x = item.attributes['x'].value
-	       y = item.attributes['y'].value
-	       im =item.attributes['name'] 
+	       x = item.get('x')
+	       y = item.get('y')
+	       im =item.get('name') 
 
-	       try :
-		 istartp = item.attributes['startp'].value   
-		 istartp = True
-	       except :
-		 istartp = False
-
-	       try :
-		 idoubledash = item.attributes['doubledash'].value   
-		 idoubledash = True
-	       except :
-		 idoubledash = False
-
-	       try :
-		 itripledash = item.attributes['tripledash'].value   
-		 itripledash = True
-	       except :
-		 itripledash = False
-
-	       try :
-		 idir = item.attributes['dir'].value   
-		 idir = True
-	       except :
-		 idir = False
-
-	       try :
-		 idir2 = item.attributes['dir2'].value   
-		 idir2 = True
-	       except :
-		 idir2 = False
-
-	       try :
-		 ileftp = item.attributes['leftp'].value   
-		 ileftp = True
-	       except :
-		 ileftp = False
-
-	       try :
-		 ileftp2 = item.attributes['leftp2'].value   
-		 ileftp2 = True
-	       except :
-		 ileftp2 = False
-
-	       try :
-		 iupp = item.attributes['upp'].value   
-		 iupp = True
-	       except :
-		 iupp = False
-
-	       try :
-		 iupp2 = item.attributes['upp2'].value   
-		 iupp2 = True
-	       except :
-		 iupp2 = False
-
-	       try :
-		 irightp = item.attributes['rightp'].value   
-		 irightp = True
-	       except :
-		 irightp = False
-
-	       try :
-		 irightp2 = item.attributes['rightp2'].value   
-		 irightp2 = True
-	       except :
-		 irightp2 = False
-
-	       try :
-		 idownp = item.attributes['downp'].value   
-		 idownp = True
-	       except :
-		 idownp = False
-
-	       try :
-		 idownp2= item.attributes['downp2'].value   
-		 idownp2= True
-	       except :
-		 idownp2= False
-
-
-	       try :
-		 itension = item.attributes['tension'].value   
-		 itension = True
-	       except :
-		 itension = False
-
-	       try :
-		 itensionand = item.attributes['tensionand'].value   
-		 itensionand = True
-	       except :
-		 itensionand = False
-
-	       try :
-		 isuperright = item.attributes['superright'].value   
-		 isuperright = True
-	       except :
-		 isuperright = False
-
-	       try :
-		 isuperleft = item.attributes['superleft'].value   
-		 isuperleft = True
-	       except :
-		 isuperleft = False
-
-	       try :
-		 ipenshifted = item.attributes['penshifted'].value   
-		 ipenshifted = True
-	       except :
-		 ipenshifted = False
-
-	       try :
-		 ipenshiftedy = item.attributes['penshiftedy'].value   
-		 ipenshiftedy = True
-	       except :
-		 ipenshiftedy = False
-
-	       try :
-		 ioverx = item.attributes['overx'].value   
-		 ioverx = True
-	       except :
-		 ioverx = False
-
-	       try :
-		 ioverbase = item.attributes['overbase'].value   
-		 ioverbase = True
-	       except :
-		 ioverbase = False
-
-	       try :
-		 iovercap = item.attributes['overcap'].value   
-		 iovercap = True
-	       except :
-		 iovercap = False
-
-	       try :
-		 ioverasc = item.attributes['overasc'].value   
-		 ioverasc = True
-	       except :
-		 ioverasc = False
-
-	       try :
-		 ioverdesc = item.attributes['overdesc'].value   
-		 ioverdesc = True
-	       except :
-		 ioverdesc = False
-
-	       try :
-		 icycle = item.attributes['cycle'].value   
-		 icycle = True
-	       except :
-		 icycle = False
+               istartp = item.get('startp')   
+               idoubledash = item.get('doubledash')   
+               itripledash = item.get('tripledash')   
+               idir = item.get('dir')   
+               idir2 = item.get('dir2')   
+               ileftp = item.get('leftp')   
+               ileftp2 = item.get('leftp2')   
+               iupp = item.get('upp')   
+               iupp2 = item.get('upp2')   
+               irightp = item.get('rightp')   
+               irightp2 = item.get('rightp2')   
+               idownp = item.get('downp')   
+               idownp2= item.get('downp2')   
+               itension = item.get('tension')   
+               itensionand = item.get('tensionand')   
+               isuperright = item.get('superright')   
+               isuperleft = item.get('superleft')   
+               ipenshifted = item.get('penshifted')   
+               ipenshiftedy = item.get('penshiftedy')   
+               ioverx = item.get('overx')   
+               ioverbase = item.get('overbase')   
+               iovercap = item.get('overcap')   
+               ioverasc = item.get('overasc')   
+               ioverdesc = item.get('overdesc')   
+               icycle = item.get('cycle')   
 
 	       ipn = 1   
 	     except : 
 	       inattr=inattr+1 
 
 	     if ipn == 1 :
-	       if im.value.find(znamel) > -1 :
+	       if im == znamel:
 		  zzn.append (i)
-	       if im.value.find(znamel) > -1 or im.value.find(znamer) > -1:
+	       if im == znamel or im == znamer:
 		
-#	 if im.value.find("startp") >-1 :
-#           del zzstartp[i-1]
-#           zzstartp.insert(i-1,"penstroke ")
-
-		 if istartp == True :
-		   istartpval = item.attributes['startp'].value
+		 if istartp != None :
+		   istartpval = item.get('startp')
 		   del startp[i-1]
 		   startp.insert(i-1,"penstroke ")
 		   del startpval[i-1]
 		   startpval.insert(i-1,istartpval)
 	  
-		 if icycle == True :
-		   icycleval = item.attributes['cycle'].value
+		 if icycle != None :
+		   icycleval = item.get('cycle')
 		   del cycle[i-1]
 		   cycle.insert(i-1,"cycle")
 		   del cycleval[i-1]
 		   cycleval.insert(i-1,icycleval)
 		       
-		 if idoubledash == True :
-		   idoubledashval = item.attributes['doubledash'].value
+		 if idoubledash != None :
+		   idoubledashval = item.get('doubledash')
 		   del doubledash[i-1]
 		   doubledash.insert(i-1," -- ")
 		   del doubledashval[i-1]
 		   doubledashval.insert(i-1,idoubledashval)
 
-		 if itripledash == True :
-		   itripledashval = item.attributes['tripledash'].value
+		 if itripledash != None :
+		   itripledashval = item.get('tripledash')
 		   del tripledash[i-1]
 		   tripledash.insert(i-1," ---")
 		   del tripledashval[i-1]
 		   tripledashval.insert(i-1,itripledashval)
 
-		 if idir == True :
-		   idirval = item.attributes['dir'].value
+		 if idir != None :
+		   idirval = item.get('dir')
 		   del dir[i-1]
 		   dir.insert(i-1,"dir")
 		   del dirval[i-1]
 		   dirval.insert(i-1,idirval)
 	      
-		 if idir2 == True :
-		   idir2val = item.attributes['dir2'].value
+		 if idir2 != None :
+		   idir2val = item.get('dir2')
 		   del dir2[i-1]
 		   dir2.insert(i-1,"dir")
 		   del dir2val[i-1]
 		   dir2val.insert(i-1,idir2val)
 	      
-		 if iupp == True :
-		   iuppval = item.attributes['upp'].value
+		 if iupp != None :
+		   iuppval = item.get('upp')
 		   del upp[i-1]
 		   upp.insert(i-1,"{up} ")
 		   del uppval[i-1]
 		   uppval.insert(i-1,iuppval)
 
-		 if ileftp == True :
-		   ileftpval = item.attributes['leftp'].value
+		 if ileftp != None :
+		   ileftpval = item.get('leftp')
 		   del leftp[i-1]
 		   leftp.insert(i-1,"{left} ")
 		   del leftpval[i-1]
 		   leftpval.insert(i-1,ileftpval)
 
-		 if irightp == True :
-		   irightpval = item.attributes['rightp'].value
+		 if irightp != None :
+		   irightpval = item.get('rightp')
 		   del rightp[i-1]
 		   rightp.insert(i-1,"{right} ")
 		   del rightpval[i-1]
 		   rightpval.insert(i-1,irightpval)
 
-		 if idownp == True :
-		   idownpval = item.attributes['downp'].value
+		 if idownp != None :
+		   idownpval = item.get('downp')
 		   del downp[i-1]
 		   downp.insert(i-1," {down} ")
 		   del downpval[i-1]
 		   downpval.insert(i-1,idownpval)
 
-		 if idownp2 == True :
-		   idownp2val = item.attributes['downp2'].value
+		 if idownp2 != None :
+		   idownp2val = item.get('downp2')
 		   del downp2[i-1]
 		   downp2.insert(i-1," {down} ")
 		   del downp2val[i-1]
 		   downp2val.insert(i-1,idownp2val)
 
-		 if iupp2 == True :
-		   iupp2val = item.attributes['upp2'].value
+		 if iupp2 != None :
+		   iupp2val = item.get('upp2')
 		   del upp2[i-1]
 		   upp2.insert(i-1,"{up} ")
 		   del upp2val[i-1]
 		   upp2val.insert(i-1,iupp2val)
 
-		 if ileftp2 == True :
-		   ileftp2val = item.attributes['leftp2'].value
+		 if ileftp2 != None :
+		   ileftp2val = item.get('leftp2')
 		   del leftp2[i-1]
 		   leftp2.insert(i-1,"{left} ")
 		   del leftp2val[i-1]
 		   leftp2val.insert(i-1,ileftp2val)
 
-		 if irightp2 == True :
-		   irightp2val = item.attributes['rightp2'].value
+		 if irightp2 != None :
+		   irightp2val = item.get('rightp2')
 		   del rightp2[i-1]
 		   rightp2.insert(i-1,"{right} ")
 		   del rightp2val[i-1]
 		   rightp2val.insert(i-1,irightp2val)
 			  
-		 if itension == True :
-		   itensionval = item.attributes['tension'].value
+		 if itension != None :
+		   itensionval = item.get('tension')
 		   del tension[i-1]
 		   tension.insert(i-1,"tension")
 		   del tensionval[i-1]
 		   tensionval.insert(i-1,itensionval)
 
-		 if itensionand == True :
-		   itensionandval = item.attributes['tensionand'].value
+		 if itensionand != None :
+		   itensionandval = item.get('tensionand')
 		   del tensionand[i-1]
 		   tensionand.insert(i-1,"tensionand")
 		   del tensionandval[i-1]
@@ -2183,71 +1855,71 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 		   tensionandval.insert(i-1,itensionandval[:3])
 		   tensionandval2.insert(i-1,itensionandval[-3:])
 
-		 if isuperright == True :
-		   isuperrightval = item.attributes['superright'].value
+		 if isuperright != None :
+		   isuperrightval = item.get('superright')
 		   del superright[i-1]
 		   superright.insert(i-1,"super_qr")
 		   del superrightval[i-1]
 		   superrightval.insert(i-1,isuperrightval)
 
-		 if isuperleft == True :
-		   isuperleftval = item.attributes['superleft'].value
+		 if isuperleft != None :
+		   isuperleftval = item.get('superleft')
 		   del superleft[i-1]
 		   superleft.insert(i-1,"super_ql")
 		   del superleftval[i-1]
 		   superleftval.insert(i-1,isuperleftval)
 
-		 if idir == True :
-		   idirval = item.attributes['dir'].value
+		 if idir != None :
+		   idirval = item.get('dir')
 		   del dir[i-1]
 		   dir.insert(i-1,"dir")
 		   del dirval[i-1]
 		   dirval.insert(i-1,idirval)
 
-		 if ipenshifted == True :
-		   ipenshiftedval = item.attributes['penshifted'].value
+		 if ipenshifted != None :
+		   ipenshiftedval = item.get('penshifted')
 		   del penshifted[i-1]
 		   penshifted.insert(i-1,"shifted")
 		   del penshiftedval[i-1]
 		   penshiftedval.insert(i-1,ipenshiftedval)
 
-		 if ipenshiftedy == True :
-		   ipenshiftedyval = item.attributes['penshiftedy'].value
+		 if ipenshiftedy != None :
+		   ipenshiftedyval = item.get('penshiftedy')
 		   del penshiftedy[i-1]
 		   penshiftedy.insert(i-1,"shifted")
 		   del penshiftedyval[i-1]
 		   penshiftedyval.insert(i-1,ipenshiftedyval)
 
-		 if ioverx == True :
-		   ioverxval = item.attributes['overx'].value
+		 if ioverx != None :
+		   ioverxval = item.get('overx')
 		   del overx[i-1]
 		   overx.insert(i-1,"shifted")
 		   del overxval[i-1]
 		   overxval.insert(i-1,ioverxval)
 
-		 if ioverbase == True :
-		   ioverbaseval = item.attributes['overbase'].value
+		 if ioverbase != None :
+		   ioverbaseval = item.get('overbase')
 		   del overbase[i-1]
 		   overbase.insert(i-1,"shifted")
 		   del overbaseval[i-1]
 		   overbaseval.insert(i-1,ioverbaseval)
 
-		 if iovercap == True :
-		   iovercapval = item.attributes['overcap'].value
+		 if iovercap != None :
+		   iovercapval = item.get('overcap')
 		   del overcap[i-1]
 		   overcap.insert(i-1,"shifted")
 		   del overcapval[i-1]
 		   overcapval.insert(i-1,iovercapval)
 
-		 if ioverasc == True :
-		   ioverascval = item.attributes['overasc'].value
+		 if ioverasc != None :
+		   ioverascval = item.get('overasc')
 		   del overasc[i-1]
 		   overasc.insert(i-1,"shifted")
 		   del overascval[i-1]
 		   overascval.insert(i-1,ioverascval)
 
-		 if ioverdesc == True :
-		   ioverdescval = item.attributes['overdesc'].value
+		 if ioverdesc != None :
+		   ioverdescval = item.get('overdesc')
 		   del overdesc[i-1]
 		   overdesc.insert(i-1,"shifted")
 		   del overdescval[i-1]
@@ -2263,7 +1935,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	semi = ";"
 	zeilestart = ""
 
-	if tripledash == True :
+	if tripledash != None :
 	 dash = " --- "
 	else :
 	 dash = " ... "
@@ -2370,10 +2042,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 
 	    if dir[i] <> "" :
-	       if dirB[i] <> "" :
 		  zeile = zeile + " {dir ("+ str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"      
-	       else :
-		  zeile = zeile + " {dir ("+ str(dirval[i]) + " + metapolation * (" + str(dirval[i]) + " - " + str(dirval[i]) + "))}"      
 
 		     
 ## tension and leftp2
@@ -2474,18 +2143,12 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 			    if  (tension[i] <> "" and 
 				 dir2[i] <> "") :
-				   if tensionB[i] <> "" :
 				     zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + " {dir ("+ str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"  
-				   else :
-				     zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + " {dir ("+ str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}" 
 
 
 			    if  (tensionand[i] <> "" and 
 				 dir2[i] <> "") :
-				   if tensionandB[i] <> "" :
 				      zeile = zeile + strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))'  + strtwo  + " {dir ("+ str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"  
-				   else :
-				      zeile = zeile + strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandval[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))'  + strtwo  + " {dir ("+ str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}" 
 
 
 			    else :
@@ -2494,17 +2157,11 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 			      else :
 				 if tension[i] <> "" :
-				      if tensionB[i] <> "" :
 					zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
-				      else :
-					zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
 
 				 else :
 				   if  tensionand[i] <> "" : 
-				      if tensionandB[i] <> "" :
 					zeile = zeile + strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))'  + strtwo
-				      else :
-					zeile = zeile + strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandval[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))'  + strtwo
 	  
 
 	    zeile = zeile + dash 
@@ -2514,10 +2171,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	  else: 
 
 	    if dir[i] <> "" :
-	       if dirB[i] <> "" :
 		  zeile = zeile + " {dir ("+ str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"      
-	       else :
-		  zeile = zeile + " {dir ("+ str(dirval[i]) + " + metapolation * (" + str(dirval[i]) + " - " + str(dirval[i]) + "))}"      
 
 	    if overx[i] <> "" :
 	      zeile = zeile + " shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - " + str(overxval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))" 
@@ -2586,10 +2240,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 
 		else :
 		  if tension[i] <> "" :
-		    if tensionB[i] <> "" :
 		      zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo  
-		    else :
-		      zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo 
 	       
 		  else :
 		    if tensionand[i] <> "" :
@@ -2609,10 +2260,7 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	 zeile = zeile + " shifted (" + str(penshiftedval[i+1]) + ")"       
 
 	if dir[i+1] <> "" :
-	       if dirB[i+1] <> "" :
 		  zeile = zeile + " {dir ("+ str(dirval[i+1]) + " + metapolation * (" + str(dirvalB[i+1]) + " - " + str(dirval[i+1]) + "))}"      
-	       else :
-		  zeile = zeile + " {dir ("+ str(dirval[i+1]) + " + metapolation * (" + str(dirval[i+1]) + " - " + str(dirval[i+1]) + "))}"      
 
 	if overx[i+1] <> "" :
 	      zeile = zeile + " shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - " + str(overxval[i+1]) + ") + (0, A_over + metapolation * (B_over - A_over))" 
@@ -2648,6 +2296,11 @@ def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
 	if  ( tension[i+1] <> "" and 
 	      dir2[i+1] <> "") :
 		zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i+1]) + '/100 + (metapolation * (' + str(tensionvalB[i+1]) + '/100-' + str(tensionval[i+1]) + '/100)))' + strtwo  + "{dir "+ str(dir2val[i+1]) + "}" 
+
+	if  (tensionand[i+1] <> "" and 
+	      dir2[i+1] <> "") :
+	        zeile = zeile + strtwo + "tension" + " ((" + str(tensionandval[i+1]) + '/100) + (metapolation * ((' + str(tensionandvalB[i+1]) + '/100) - (' + str(tensionandval[i+1]) + '/100))))' + " and ((" + str(tensionandval2[i+1]) + '/100) + (metapolation * ((' + str(tensionandval2B[i+1]) + '/100) - (' + str(tensionandval2[i+1]) + '/100))))'  + strtwo  + " {dir ("+ str(dir2val[i+1]) + " + metapolation * (" + str(dir2valB[i+1]) + " - " + str(dir2val[i+1]) + "))}"  
+
 
 	if upp2[i+1] <> "" :
 	 zeile = zeile + dash + upp2[i+1]  
