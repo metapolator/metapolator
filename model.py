@@ -7,7 +7,7 @@
 # GPL v3 (http://www.gnu.org/copyleft/gpl.html). 
 
 import web, datetime,mfg
-from xml.dom import minidom
+from lxml import etree 
 import codecs
 import os.path, time
 import xmltomf
@@ -17,33 +17,36 @@ db = web.database(dbn='mysql', db='blog', user='root', pw='' )
 def xxmlat(s, dbob, sattr, val, iro):
 
    if str(dbob) != 'None' :
-      if not s.hasAttribute(sattr) :
-          s.setAttribute(sattr,"")
+      if s.get(sattr) :
+          del s.attrib[sattr]
 #
 #  this are values with floating point number types
 #
       if val == '' :
 #  if a rounding number is set then round the value
           if iro >0 :
-             s.attributes[sattr] = str(round(float(dbob),iro))
+             s.attrib[sattr] = str(round(float(dbob),iro))
           else:   
-             s.attributes[sattr] = str(dbob)
+             s.attrib[sattr] = str(dbob)
 #
 #  in this case we will set the fixed value into xml
       else : 
-          s.attributes[sattr] = val
+          s.attrib[sattr] = val
            
    else :
 #  in this case we look if the attribute is already set in the xml
 #  then we remove it
-      if s.hasAttribute(sattr) :
-          s.removeAttribute(sattr)
+      if s.get(sattr) :
+          del s.attrib[sattr]
 
 def xxmrlat( inum, s, sattr ):
-             
-   if s.hasAttribute(sattr) :
-       val = s.getAttribute(sattr)
-       update_glyphparamD( inum, sattr, val)
+  
+   cc = s.attrib 
+   for item in cc :
+     if item in sattr:
+       val = cc[item]
+       update_glyphparamD ( inum, item, val) 
+
 
 def delFont(fontName,glyphNamel):
 
@@ -59,15 +62,17 @@ def putFontG( glyphName, glyphsource, idmaster ):
 #  loadoption '1' :  read only x-y coordinates independent of timestamp and use parameters stored in db
 #  loadoption '99':  read data and put it in db independent of timestamp
 #
+    paramattr = ['groupname','startp','doubledash' , 'tripledash' , 'superleft','superright', 'leftp','rightp','downp','upp','dir','tension','tensionand','cycle','penshifted','pointshifted','angle','penwidth','overx','overbase','overcap','overasc','overdesc','ascpoint','descpoint','stemcutter','stemshift','inktrap_l','inktrap_r']
+
     if idmaster > 0 :
       mfg.cFont.idwork = '0'
     if idmaster < 0 :
       mfg.cFont.idwork = '1'
 
-    xmldoc = minidom.parse(glyphsource)
+    xmldoc = etree.parse(glyphsource)
+    outline = xmldoc.find("outline")
 
-    advance = xmldoc.getElementsByTagName('advance')
-  
+
     ids= " and idmaster="+'"'+str(idmaster)+'"'
 #
 #  decide when to load new entries from xml file   
@@ -86,7 +91,8 @@ def putFontG( glyphName, glyphsource, idmaster ):
             vdatedbp = 0
          else:
             vdatedbp=int(dbqp[0].vdate)
-    itemlist = xmldoc.getElementsByTagName('point')
+
+    items = outline 
 
     idel = 0
     if dbq:
@@ -101,97 +107,55 @@ def putFontG( glyphName, glyphsource, idmaster ):
 #  put data into db
       inum=0
       strg=""
-      for s in itemlist :
-        inum = inum+1
+      for itemlist in items :
+        for s in itemlist: 
+          inum = inum+1
 #  find a named point , convention the name begin with the letter z
-        if mfg.cFont.loadoption == '0' or idel == 1:
-          if s.hasAttribute('name'): 
-            im = s.attributes['name'] 
-            iposa = im.value.find("z")
-            ipose = im.value.find(",",iposa)
-            if ipose > iposa :
-               nameval = im.value[iposa:ipose]
-            else :
-               if ipose == -1 :
-                 ipose=len(im.value) 
-                 nameval = im.value[iposa:ipose]
-            idpar=inum
-            db.insert('glyphparam', id=inum,GlyphName=glyphName, idmaster=idmaster, PointName=nameval)
+          if mfg.cFont.loadoption == '0' or idel == 1:
+
+            if s.get('name'): 
+              nameval = s.get('name') 
+              idpar=inum
+              db.insert('glyphparam', id=inum,GlyphName=glyphName, idmaster=idmaster, PointName=nameval)
 
 #  find  all parameter and save it in db
 # add glyphparameters here:
-            xxmrlat( inum, s, 'groupname')
-            xxmrlat( inum, s, 'startp' )
-            xxmrlat( inum, s, 'doubledash' )
-            xxmrlat( inum, s, 'tripledash')
-            xxmrlat( inum, s, 'superleft')
-            xxmrlat( inum, s, 'superright')
-            xxmrlat( inum, s, 'leftp')
-            xxmrlat( inum, s, 'rightp')
-            xxmrlat( inum, s, 'downp')
-            xxmrlat( inum, s, 'upp')
-            xxmrlat( inum, s, 'dir')
-            xxmrlat( inum, s, 'tension')
-            xxmrlat( inum, s, 'tensionand')
-            xxmrlat( inum, s, 'cycle')
-            xxmrlat( inum, s, 'penshifted')
-            xxmrlat( inum, s, 'pointshifted')
-            xxmrlat( inum, s, 'angle')
-            xxmrlat( inum, s, 'penwidth')
-            xxmrlat( inum, s, 'overx')
-            xxmrlat( inum, s, 'overbase')
-            xxmrlat( inum, s, 'overcap')
-            xxmrlat( inum, s, 'overasc')
-            xxmrlat( inum, s, 'overdesc')
-            xxmrlat( inum, s, 'ascpoint')
-            xxmrlat( inum, s, 'descpoint')
-            xxmrlat( inum, s, 'stemcutter')
-            xxmrlat( inum, s, 'stemshift')
-            xxmrlat( inum, s, 'inktrap_l')
-            xxmrlat( inum, s, 'inktrap_r')
+              xxmrlat( inum, s, paramattr)
 
-          else :
-            nameval = ""
-            startp = 0
-            idpar =  None
+            else :
+              nameval = ""
+              startp = 0
+              idpar =  None
+            pointno = "p" + str(inum)
 
-          s.attributes['pointNo']= "p" + str(inum)    # adding a new attribute
-
-          if s.hasAttribute('type') : 
-              mainpoint = 1
-          else :
-             mainpoint = 0 
-          if idpar == None :
-              strg= "insert into glyphoutline (GlyphName,PointNr,x,y,contrp,id,idmaster,pip) Values ("+'"'+glyphName+'"'+","+'"'+s.attributes['pointNo'].value+'"' + ","+ str(s.attributes['x'].value)+ "," + str(s.attributes['y'].value)+","+str(mainpoint)+","+str(inum)+","+str(idmaster)+",NULL)"
-          else:
-              strg= "insert into glyphoutline (GlyphName,PointNr,x,y,contrp,id,idmaster,pip) Values ("+'"'+glyphName+'"'+","+'"'+s.attributes['pointNo'].value+'"' + ","+ str(s.attributes['x'].value)+ "," + str(s.attributes['y'].value)+","+str(mainpoint)+","+str(inum)+","+str(idmaster)+","+str(idpar)+")"
-          db.query(strg)
-          db.query("commit") 
+            if s.get('type') : 
+                mainpoint = 1
+            else :
+               mainpoint = 0 
+            if idpar == None :
+                strg= "insert into glyphoutline (GlyphName,PointNr,x,y,contrp,id,idmaster,pip) Values ("+'"'+glyphName+'"'+","+'"'+pointno+'"' + ","+ str(s.get('x'))+ "," + str(s.get('y'))+","+str(mainpoint)+","+str(inum)+","+str(idmaster)+",NULL)"
+            else:
+                strg= "insert into glyphoutline (GlyphName,PointNr,x,y,contrp,id,idmaster,pip) Values ("+'"'+glyphName+'"'+","+'"'+pointno+'"' + ","+ str(s.get('x'))+ "," + str(s.get('y'))+","+str(mainpoint)+","+str(inum)+","+str(idmaster)+","+str(idpar)+")"
+            db.query(strg)
+            db.query("commit") 
 #
 #  load option 1  read from xml files only x,y coordinates
 #  it could be the order of the records has been changed
 #
-        if mfg.cFont.loadoption == '1' and idel <1:
-          if s.hasAttribute('type') : 
-              mainpoint = 1
-          else :
-             mainpoint = 0 
-          update_postp0(inum, s.attributes['x'].value, s.attributes['y'].value, str(mainpoint))
-#    in this case we read only the coordinates from the xml file
-          if s.hasAttribute('name'): 
-            im = s.attributes['name'] 
-            iposa = im.value.find("z")
-            ipose = im.value.find(",",iposa)
-            if ipose > iposa :
-               nameval = im.value[iposa:ipose]
+          if mfg.cFont.loadoption == '1' and idel <1:
+            if s.get('type') : 
+                mainpoint = 1
             else :
-               if ipose == -1 :
-                 ipose=len(im.value) 
-                 nameval = im.value[iposa:ipose]
+               mainpoint = 0 
+            update_postp0(inum, s.get('x'), s.get('y'), str(mainpoint))
+#    in this case we read only the coordinates from the xml file
+            if s.get('name'): 
+              nameval = s.get('name')
 #    get the link pip to the parameter table
-            pip=get_glyphparamid (glyphName, idmaster, nameval)
-            update_postp(inum, s.attributes['x'].value, s.attributes['y'].value, pip)
-
+              pip=get_glyphparamid (glyphName, idmaster, nameval)
+              update_postp(inum, s.get('x'), s.get('y'), pip)
+   
+    
     return None
 
 
@@ -496,7 +460,10 @@ def insert_glyphparam(idp, a):
         break
     db.update('glyphoutline', where='id="'+str(idp)+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
               pip=idpar)
-    db.insert('glyphparam', id=idpar,GlyphName=glyphName, PointName=a, idmaster=idmaster)
+    try :
+      db.insert('glyphparam', id=idpar,GlyphName=glyphName, PointName=a, idmaster=idmaster)
+    except :
+      print "error during insert into glyphparam"
     db.query("commit")
     return None
 
@@ -698,38 +665,38 @@ def writexml():
      if mfg.cFont.idwork == '0' :
         glyphsourceA  = mfg.cFont.fontpath+mfg.cFont.fontna + "/glyphs/"+glyphName+".glif"
         glyphsource = glyphsourceA
-        xmldocA = minidom.parse(glyphsourceA)
-        itemlist = xmldocA.getElementsByTagName('point')
+        xmldoc = etree.parse(glyphsourceA)
+        items = xmldoc.find("outline")
 
      if mfg.cFont.idwork == '1' :
         glyphsourceB = mfg.cFont.fontpath+mfg.cFont.fontnb + "/glyphs/"+glyphName+".glif"
         glyphsource = glyphsourceB
-        xmldocB = minidom.parse(glyphsourceB)
-        itemlist = xmldocB.getElementsByTagName('point')
+        xmldoc = etree.parse(glyphsourceB)
+        items = xmldoc.find("outline")
 
      ids= " and idmaster="+'"'+str(idmaster)+'"'
      inum = 0
 #     db_rows=list(db.query("SELECT PointName,x,y from glyphoutline"))
 #    we assume the number of rows from the db >= the number of the itemlist 
-     for  s in itemlist:
+     for  itemlist in items :
+       for s in itemlist : 
              inum = inum + 1
              qstr = "SELECT PointNr,x,y,PointName from vglyphoutline where id="+str(inum) +" and Glyphname="+'"'+glyphName+'"'+ids
             
              db_rows=list(db.query(qstr))
-             s.attributes['pointNo'] = str(db_rows[0].PointNr)
-             s.attributes['x'] = str(db_rows[0].x)
-             s.attributes['y'] = str(db_rows[0].y)
+             s.attrib['pointNo'] = str(db_rows[0].PointNr)
+             s.attrib['x'] = str(db_rows[0].x)
+             s.attrib['y'] = str(db_rows[0].y)
              sname = str(db_rows[0].PointName)
                
              if sname not in ['','NULL', "None"] : 
                    qstrp = "SELECT * from  vglyphoutlines where id="+str(inum) +" and Glyphname="+'"'+glyphName+'"'+ids
                    db_rowpar = list(db.query(qstrp))
                    nameattr = sname
-                   if s.hasAttribute('name') :
-                      s.attributes['name']=nameattr
+                   if s.get('name') :
+                      s.attrib['name']=nameattr
                    else :
-                      s.setAttribute('name',nameattr)
-                      s.toxml()
+                      s.attrib['name']=nameattr
 #
 #     first read group parameters
 #                 
@@ -738,11 +705,10 @@ def writexml():
 
 #     save the groupname in an xml attribute
 #
-                     if s.hasAttribute('groupname') :
-                        s.attributes['groupname']=groupname
+                     if s.get('groupname') :
+                        s.attrib['groupname']=groupname
                      else :
-                        s.setAttribute('groupname',groupname)
-                        s.toxml()
+                        s.sattrib('groupname',groupname)
 #
 #     get the parameter list included with group parameters (lower priority)
                      qstrp = "SELECT * from vgls where id="+str(inum) +" and Glyphname="+'"'+glyphName+'"'+ids
@@ -786,19 +752,14 @@ def writexml():
                    xxmlat(s,db_rowpar[0].inktrap_r,'inktrap_r','',4)
              else :
 
-                   if s.hasAttribute('name') :
-                      s.removeAttribute('name')
+                   if s.get('name') :
+                      del s.attrib['name']
 #
 			
-             s.toxml()
      print "glyphsource", glyphsource
-     if mfg.cFont.idwork == '0' :
-        with codecs.open(glyphsource, "w", "utf-8") as out:
-          xmldocA.writexml(out) 
-     if mfg.cFont.idwork == '1' :
-        with codecs.open(glyphsource, "w", "utf-8") as out:
-          xmldocB.writexml(out) 
-
+     with codecs.open(glyphsource, "w", "utf-8") as out:
+          xmldoc.write(out) 
+     out.close()
 #  restore current idwork setting
      mfg.cFont.idwork=idworks
      return None
