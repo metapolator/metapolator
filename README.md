@@ -66,8 +66,8 @@ Generate($1:r + ".ttf");
 
 ##Usage
 Settings:
-- Go to Settings and choose a project id. 
-- Select a glyph and save
+- Go to Settings and choose a project id. (No. 1 to test preset) 
+- Select a glyph and save (only lowercase 'n' or 'a' available to test in preset font 'foxtail')
 
 Editor:
 - Select a point of the glyph to start the editing window.
