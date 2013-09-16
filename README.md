@@ -33,27 +33,43 @@ mysql> SOURCE mysqlview.sql;
 ```
 Start web.py application:
 ```
-$ python mfg.py    
+$ python mfg.py
 ```
 This should give you a local webadress you can copy paste into a chrome browser, something like this:
 ```
 http://0.0.0.0:8080/
 ```
 
+### Deployment
+
+Install supervisor and nginx
+
+```
+sudo apt-get install nginx
+sudo apt-get install supervisor
+```
+
+Create symlinks for configuration file. Notice that your project directory is not different from configs
+
+```
+sudo ln -s /var/www/webpy-app/metapolator/supervisor.conf /etc/supervisor/conf.d/metapolator.conf
+sudo ln -s /var/www/webpy-app/metapolator/nginx.conf /etc/nginx/sites-enabled/metapolator.conf
+```
+
 ####Note
 
-ttf2eot should be installed in the Metapolator directory. 
+ttf2eot should be installed in the Metapolator directory.
 
-The mf2pt1.pl script will need to be modified as follows:  
-In the section   
+The mf2pt1.pl script will need to be modified as follows:
+In the section
 ```
     # Create a FontForge script file.
 ```
-replace  
+replace
 ```
 Generate($1);
 ```
-with  
+with
 ```
 foreach
   SetCharName(NameFromUnicode(GlyphInfo("Unicode")))
@@ -66,13 +82,13 @@ Generate($1:r + ".ttf");
 
 ##Usage
 Settings:
-- Go to Settings and choose a project id. (No. 1 to test preset) 
+- Go to Settings and choose a project id. (No. 1 to test preset)
 - Select a glyph and save (only lowercase 'n' or 'a' available to test in preset font 'foxtail')
 
 Editor:
 - Select a point of the glyph to start the editing window.
 
-To copy and replace an existing project folder, type in '1001' at load-option in Settings. Once copied the preset folder the two fonts can be replaced by other .ufo fonts. 
+To copy and replace an existing project folder, type in '1001' at load-option in Settings. Once copied the preset folder the two fonts can be replaced by other .ufo fonts.
 Glyph names are incremental numbers – see glyphnames.txt file for reference.
 
 ##Preview
