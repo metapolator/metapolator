@@ -52,8 +52,8 @@ sudo apt-get install supervisor
 Create symlinks for configuration file. Notice that your project directory is not different from configs
 
 ```
-sudo ln -s /var/www/webpy-app/metapolator/supervisor.conf /etc/supervisor/conf.d/metapolator.conf
-sudo ln -s /var/www/webpy-app/metapolator/nginx.conf /etc/nginx/sites-enabled/metapolator.conf
+sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/supervisor/conf.d/metapolator.conf
+sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf
 ```
 
 ####Note
