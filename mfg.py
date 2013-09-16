@@ -580,3 +580,8 @@ app = web.application(urls, globals())
 if __name__ == '__main__':
     app.run()
 
+application = None
+if os.environ.get('PRODUCTION', False):
+    application = app.wsgifunc()
+
+
