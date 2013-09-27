@@ -8,11 +8,12 @@ $def with (form, is_loggedin=False)
 <body>
 $if is_loggedin:
     <div>You are already registered in metapolator</div>
+    <div><a href="/logout">Logout</a></div>
 $else:
     <form action="" method="post">
         $:form.render()
     </form>
 
-<div>or <a href="/login">Login</a></div>
+    <div>or <a href="/login">Login</a></div>
 </body>
 </html>
