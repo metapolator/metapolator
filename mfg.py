@@ -615,15 +615,16 @@ class Login:
         name, pwd = web.input().username, web.input().password
         user = model.get_user_by_username(name)
         if not user:
-            return render.login()
+            return render.login(is_loggedin(), True)
 
         salt, pwhash = user['password'].split(';')
         step1 = hashlib.sha1(pwd).hexdigest()
         r = hashlib.sha1(salt + ';' + step1).hexdigest()
         if r == pwhash:
             session.authorized = True
-            return render.login(is_loggedin())
-        return render.login(is_loggedin())
+            session.user = user['id']
+            raise web.seeother("/")
+        return render.login(is_loggedin(), True)
 
 
 if __name__ == '__main__':

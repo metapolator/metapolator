@@ -12,7 +12,12 @@ CREATE TABLE users (
 
 
 INSERT INTO users
-    SET username='metapolator',
+    SET username='guest1',
         password='dGl1;41403470df0873202278944aa5bac987dfca4145',
-        email='metapolator@metapolator.com',
-        is_admin=TRUE;
+        email='guest1@example.com';
+
+
+INSERT INTO users
+    SET username='guest2',
+        password='dGl1;41403470df0873202278944aa5bac987dfca4145',
+        email='guest2@example.com';

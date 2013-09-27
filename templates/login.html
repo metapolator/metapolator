@@ -1,4 +1,4 @@
-$def with (is_loggedin=False)
+$def with (is_loggedin=False, error=False)
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,9 +10,12 @@ $if is_loggedin:
     <p>Already authorized</p>
 $else:
     <form action="" method="post">
-        <input type="text" name="username">
-        <input type="password" name="password" />
+        <label for="username">Username</label><input type="text" name="username"><br />
+        <label for="password">Password</label><input type="password" name="password" /><br />
         <input type="submit" value="Login">
     </form>
+
+$if error:
+    <div style="font-weight: 800; color: red">Invalid username or password</div>
 </body>
 </html>
