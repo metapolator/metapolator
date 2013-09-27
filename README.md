@@ -30,6 +30,7 @@ Load the preset database:
 mysql> USE 'Name of database'.sql;
 mysql> SOURCE dbscript.sql;
 mysql> SOURCE mysqlview.sql;
+mysql> SOURCE dbusers.sql;
 ```
 Start web.py application:
 ```

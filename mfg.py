@@ -7,22 +7,33 @@
 # GPL v3 (http: //www.gnu.org/copyleft/gpl.html).
 
 """ Basic metafont point interface using webpy  """
-import web
+import glob
+import hashlib
 import model
 import os
 import sys
-import glob
+import web
+
+
 ### Url mappings
 
 urls = ('/', 'Index',
-    '/view/(\d+)', 'View',
-    '/metap/(\d+)', 'Metap',
-    '/viewfont/', 'ViewFont',
-    '/font1/(\d+)', 'Font1',
-    '/font2/(\d+)', 'GlobalParam',
-    '/font3/(\d+)', 'localParamA',
-    '/font4/(\d+)', 'localParamB',
-    '/cproject/(\d+)', 'copyproject')
+        '/login', 'Login',
+        '/view/(\d+)', 'View',
+        '/metap/(\d+)', 'Metap',
+        '/viewfont/', 'ViewFont',
+        '/font1/(\d+)', 'Font1',
+        '/font2/(\d+)', 'GlobalParam',
+        '/font3/(\d+)', 'localParamA',
+        '/font4/(\d+)', 'localParamB',
+        '/cproject/(\d+)', 'copyproject'
+        )
+
+
+app = web.application(urls, globals())
+
+web.config.debug = False
+session = web.session.Session(app, web.session.DiskStore('sessions'), {'count': 0})
 
 
 ### Templates
@@ -588,10 +599,36 @@ class copyproject:
         return render.cproject()
 
 
-app = web.application(urls, globals())
+def is_loggedin():
+    try:
+        return session.authorized
+    except AttributeError:
+        pass
+
+
+class Login:
+
+    def GET(self):
+        return render.login(is_loggedin())
+
+    def POST(self):
+        name, pwd = web.input().username, web.input().password
+        user = model.get_user_by_username(name)
+        if not user:
+            return render.login()
+
+        salt, pwhash = user['password'].split(';')
+        step1 = hashlib.sha1(pwd).hexdigest()
+        r = hashlib.sha1(salt + ';' + step1).hexdigest()
+        if r == pwhash:
+            session.authorized = True
+            return render.login(is_loggedin())
+        return render.login(is_loggedin())
+
 
 if __name__ == '__main__':
     app.run()
+
 
 application = None
 if os.environ.get('PRODUCTION', False):

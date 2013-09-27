@@ -1,0 +1,18 @@
+$def with (is_loggedin=False)
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+$if is_loggedin:
+    <p>Already authorized</p>
+$else:
+    <form action="" method="post">
+        <input type="text" name="username">
+        <input type="password" name="password" />
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
