@@ -1,0 +1,16 @@
+$def with (form, is_loggedin=False)
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+$if is_loggedin:
+    <div>You are already registered in metapolator</div>
+$else:
+    <form action="" method="post">
+        $:form.render()
+    </form>
+</body>
+</html>

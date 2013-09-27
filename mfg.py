@@ -8,17 +8,21 @@
 
 """ Basic metafont point interface using webpy  """
 import glob
-import hashlib
 import model
 import os
+import re
 import sys
 import web
+
+from passlib.hash import bcrypt
 
 
 ### Url mappings
 
 urls = ('/', 'Index',
         '/login', 'Login',
+        '/register', 'Register',
+        '/logout', 'logout',
         '/view/(\d+)', 'View',
         '/metap/(\d+)', 'Metap',
         '/viewfont/', 'ViewFont',
@@ -606,7 +610,22 @@ def is_loggedin():
         pass
 
 
+class logout:
+
+    def GET(self):
+        if is_loggedin():
+            session.kill()
+        raise web.seeother('/login')
+
+
+def authorize(user):
+    session.authorized = True
+    session.user = user['id']
+    return web.seeother("/")
+
+
 class Login:
+    """ Processes authorization of users with username and password """
 
     def GET(self):
         return render.login(is_loggedin())
@@ -617,15 +636,67 @@ class Login:
         if not user:
             return render.login(is_loggedin(), True)
 
-        salt, pwhash = user['password'].split(';')
-        step1 = hashlib.sha1(pwd).hexdigest()
-        r = hashlib.sha1(salt + ';' + step1).hexdigest()
-        if r == pwhash:
-            session.authorized = True
-            session.user = user['id']
-            raise web.seeother("/")
+        if bcrypt.verify(pwd, user['password']):
+            raise authorize(user)
         return render.login(is_loggedin(), True)
 
+
+def validate_existing_user(item):
+    usernamecase = model.get_user_by_username(item.username)
+    emailcase = model.get_user_by_email(item.email)
+    return not bool(usernamecase) and not bool(emailcase)
+
+
+def vemail(value):
+    user_regex = re.compile(
+        r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*$"
+        r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"$)',
+        re.IGNORECASE)
+    domain_regex = re.compile(
+        r'(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}|[A-Z0-9-]{2,})\.?$'
+        # literal form, ipv4 address (SMTP 4.1.3)
+        r'|^\[(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\]$',
+        re.IGNORECASE)
+    if not value or '@' not in value:
+        return False
+    user_part, domain_part = value.rsplit('@', 1)
+
+    if not user_regex.match(user_part):
+        return False
+
+    if not domain_regex.match(domain_part):
+        return False
+
+    return True
+
+
+RegisterForm = web.form.Form(
+    web.form.Textbox("username", web.form.notnull, description="Username"),
+    web.form.Textbox("email", web.form.Validator("Invalid email", vemail),
+                     description="E-Mail"),
+    web.form.Password("password", web.form.notnull, description="Password"),
+    web.form.Password("password2", web.form.notnull, description="Repeat password"),
+    web.form.Button("submit", type="submit", description="Register"),
+    validators=[web.form.Validator("Passwords did't match",
+                                   lambda i: i.password == i.password2),
+                web.form.Validator("User with this email or username already registered",
+                                   validate_existing_user)]
+    )
+
+
+class Register:
+    """ Registration processes of users with username and password """
+
+    def GET(self):
+        form = RegisterForm()
+        return render.register(form, is_loggedin())
+
+    def POST(self):
+        form = RegisterForm()
+        if not form.validates():
+            return render.register(form)
+        user = model.create_user(form.d.username, form.d.password, form.d.email)
+        raise authorize(user)
 
 if __name__ == '__main__':
     app.run()

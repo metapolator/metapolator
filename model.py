@@ -13,6 +13,7 @@ import web
 import xmltomf
 
 from lxml import etree
+from passlib.hash import bcrypt
 
 import mfg
 
@@ -937,3 +938,17 @@ def get_user_by_username(name):
         return db.select('users', where='username=$name', vars=locals())[0]
     except IndexError:
         pass
+
+
+def get_user_by_email(email):
+    try:
+        return db.select('users', where='email=$email', vars=locals())[0]
+    except IndexError:
+        pass
+
+
+def create_user(username, password, email):
+    pwhash = bcrypt.encrypt(password)
+    db.insert('users', username=username, password=pwhash,
+              email=email, date_joined=web.SQLLiteral("NOW()"))
+    return get_user_by_email(email)

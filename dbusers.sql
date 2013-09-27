@@ -6,6 +6,7 @@ CREATE TABLE users (
     password varchar(128) NOT NULL,
     email varchar(100) NOT NULL,
     is_admin tinyint(1) NOT NULL DEFAULT 0,
+    date_joined datetime NOT NULL,
     INDEX idx_username (username),
     INDEX idx_email (email)
 );
@@ -13,11 +14,11 @@ CREATE TABLE users (
 
 INSERT INTO users
     SET username='guest1',
-        password='dGl1;41403470df0873202278944aa5bac987dfca4145',
+        password='$2a$12$sZKe4qnuECXbACZcbZeJpuB3HmIxWooFsdXP3Y.nO8Qgz5wuhONsq',
         email='guest1@example.com';
 
 
 INSERT INTO users
     SET username='guest2',
-        password='dGl1;41403470df0873202278944aa5bac987dfca4145',
+        password='$2a$12$sZKe4qnuECXbACZcbZeJpuB3HmIxWooFsdXP3Y.nO8Qgz5wuhONsq',
         email='guest2@example.com';
