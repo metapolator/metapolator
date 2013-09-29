@@ -177,7 +177,7 @@ def putFont():
     print mfg.cFont.glyphName, mfg.cFont.glyphunic
 
     glyphName = mfg.cFont.glyphunic
-    glyphnameNew = glyphName + ".glif"
+    glyphNameNew = glyphName + ".glif"
 
     glyphPath = os.path.join("glyphs", glyphNameNew)
 
