@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><glyph format="1" name="78">
+<glyph format="1" name="78">
   <advance width="578"/>
   <unicode hex="006E"/>
   <outline>
@@ -8,25 +8,25 @@
       <point name="z3l" pointNo="p3" type="line" x="179" y="0"/>
       <point name="z2l" pointNo="p4" type="line" x="179" y="403"/>
       <point name="z1l" pointNo="p5" type="line" x="179" y="500"/>
-      <point doubledash="1" name="z1r" pointNo="p6" startp="1" stemcutter="1.0" stemshift="-1.0" type="line" x="86" y="500"/>
+      <point name="z1r" pointNo="p6" type="line" x="86" y="500" startp="1" doubledash="1" stemcutter="1.0" stemshift="-1.0"/>
     </contour>
     <contour>
       <point pointNo="p7" x="182" y="389"/>
       <point pointNo="p8" x="234" y="427"/>
-      <point name="z5r" overx="y5l" pointNo="p9" rightp="1" smooth="yes" type="curve" x="309" y="427"/>
+      <point name="z5r" pointNo="p9" smooth="yes" type="curve" x="309" y="427" rightp="1" overx="y5l"/>
       <point pointNo="p10" x="366" y="427"/>
       <point pointNo="p11" x="406" y="395"/>
-      <point downp="1" name="z6r" overx="y5l" pointNo="p12" smooth="yes" type="curve" x="406" y="333"/>
+      <point name="z6r" pointNo="p12" smooth="yes" type="curve" x="406" y="333" downp="1" overx="y5l"/>
       <point name="z7r" pointNo="p13" type="line" x="406" y="0"/>
       <point name="z7l" pointNo="p14" type="line" x="499" y="0"/>
       <point name="z6l" pointNo="p15" smooth="yes" type="line" x="499" y="349"/>
       <point pointNo="p16" x="499" y="449"/>
-      <point pointNo="p17" x="431" y="508"/>
-      <point name="z5l" pointNo="p18" smooth="yes" type="curve" x="325" y="508"/>
+      <point pointNo="p17" x="280" y="600"/>
+      <point name="z5l" pointNo="p18" smooth="yes" type="curve" x="325" y="508" tensionand="080080"/>
       <point pointNo="p19" x="229" y="508"/>
       <point pointNo="p20" x="147" y="442"/>
       <point name="z4l" pointNo="p21" type="curve" x="111" y="359"/>
-      <point name="z4r" overx="y5l" penshifted="0,-50mpx " pointNo="p22" startp="1" type="line" x="147" y="328"/>
+      <point name="z4r" pointNo="p22" type="line" x="147" y="328" startp="1" penshifted="0,-5mpx " overx="y5l"/>
     </contour>
   </outline>
 </glyph>

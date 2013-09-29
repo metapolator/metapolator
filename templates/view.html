@@ -8,6 +8,23 @@ Project $cfont.idmaster
 </title>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <style>
+ .buttonbig {
+  color:#08233e;
+  font:2.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  font-size:70%;
+  padding:14px;
+  background:url(overlay.png) repeat-x center #ffcc00;
+  background-color:rgba(255,204,0,1);
+  border:1px solid #ffcc00;
+  -moz-border-radius:10px;
+  -webkit-border-radius:10px;
+  border-radius:10px;
+  border-bottom:1px solid #9f9f9f;
+  -moz-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  -webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  cursor:pointer;
+ }
 .first{
 	color: grey;
 }
@@ -107,8 +124,8 @@ table, tr, .menuleft {
 .menuright2{
 	position: absolute;
 	float: right;
-	top: 100px;
-	right:20px;
+	top: 200px;
+	right:40px;
 	margin: 0 0 0 0;
 }
 .menuright{
@@ -265,6 +282,9 @@ $if form.d.PointName > "0" :
     $:formparam.render() 
     <input style="margin:0;position:relative;top:-35px;left:180px;" type="button" value="clear" onClick="resetparam()">
 	</p>
+    <p>
+    <input style="color:red;height:100px;width:300px;font-size:40px;" type="button" value="Refesh View" onClick="history.go(0), window.location.reload()">
+    </p>
 <!-- add new parameters here: -->
 <p class="menuleftgreen" >
   $if glyphparam != None :
@@ -534,17 +554,6 @@ $for ppp in postspa:
 			<span class="dragThis"><a href="#">⊙</a></span>
 		</div>
 
-	<script type="text/javascript">
-	$$('.dragThis').draggable({
-		drag: function() {
-			var offset = $$(this).offset();
-			var xPos = Math.round(offset.left-285.4);
-			var yPos = Math.round(729.3-offset.top);
-			$$("#x").val(xPos);
-			$$('#y').val(yPos);
-		}
-	});
-	</script>    
 
 
 </div>

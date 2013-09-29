@@ -1,4 +1,4 @@
-% File parsed with ufo2mf (UFO to Metafont) by Walter Egli, Simon Egli, Wei Huang  %
+% File parsed with Metapolator %
 
 % box dimension definition %
 
@@ -53,7 +53,6 @@ px1r := 0.67u ; py1r := 3.9u ;
 .5(py6l + py6r) = y260;
 .5(px1l + px1r) = x210;
 .5(py1l + py1r) = y210;
-
 % fake extra l an r for metafont
 
 px8l = x8Bl; py8l = y8Bl; 
@@ -142,7 +141,6 @@ ppx1r := 0.67u ; ppy1r := 3.9u ;
 .5(ppy6l + ppy6r) = y26A;
 .5(ppx1l + ppx1r) = x21A;
 .5(ppy1l + ppy1r) = y21A;
-
 % fake extra l an r for font B
 
 ppx8l = x8Cl; ppy8l = y8Cl; 
@@ -196,9 +194,7 @@ ang5 := angle((z5Br + (metapolation * (z5Cr -z5Br))) - (z5Bl + (metapolation * (
 ang6 := angle((z6Br + (metapolation * (z6Cr -z6Br))) - (z6Bl + (metapolation * (z6Cl -z6Bl))));
 ang1 := angle((z1Br + (metapolation * (z1Cr -z1Br))) - (z1Bl + (metapolation * (z1Cl -z1Bl))));
 
-
 % test extra pen angle
-
 
 
 % test extra pen angle
@@ -230,7 +226,6 @@ penpos9(dist9 + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapo
 penpos10((1-0.1mpx + metapolation * (1-0.1mpx - 1-0.1mpx)) * (dist10 + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist10)), ang10);
 penpos11((1-0.1mpx + metapolation * (1-0.1mpx - 1-0.1mpx)) * (dist11 + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist11)), ang11);
 
-
 % test new center (z) points
 
 z1=((A_width + metapolation * (B_width - A_width)) * (x210 + metapolation * (x21A - x210) + spacing_65L) * width_65, (y210 + metapolation *(y21A - y210))*((A_xheight + metapolation * (B_xheight - A_xheight)) / mean#));
@@ -247,7 +242,7 @@ z11=((A_width + metapolation * (B_width - A_width)) * (x2110 + metapolation * (x
 
 % penstrokes
 
-penstroke z1e shifted (-30mpx,-20mpx) {dir (6.4 + metapolation * (6.4 - 6.4))} ... 
+penstroke z1e shifted (20mpx,-20mpx) {dir (+50 + metapolation * (+50 - +50))} ... 
 z2e shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - y2l) + (0, A_over + metapolation * (B_over - A_over)){right} .. tension (90/100 + (metapolation * (90/100 -90/100 ))) .. 
 z3e shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - y2l) + (0, A_over + metapolation * (B_over - A_over)) --- 
 z4e shifted (0,40mpx ) ... 
@@ -260,8 +255,6 @@ z10e shifted (0, - y10r) - (0, A_over + metapolation * (B_over - A_over)){right}
 z11e shifted (0, - y10r) - (0, A_over + metapolation * (B_over - A_over))
 ;
 
-
 % pen labels
 penlabels(range 1 thru 99);
 endchar;
-

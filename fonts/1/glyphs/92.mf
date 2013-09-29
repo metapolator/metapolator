@@ -1,4 +1,4 @@
-% File parsed with ufo2mf (UFO to Metafont) by Walter Egli, Simon Egli, Wei Huang  %
+% File parsed with Metapolator %
 
 % box dimension definition %
 
@@ -57,7 +57,6 @@ px8r := 0.47u ; py8r := 7.0u ;
 .5(py7l + py7r) = y270;
 .5(px8l + px8r) = x280;
 .5(py8l + py8r) = y280;
-
 % fake extra l an r for metafont
 
 px12l = x12Bl; py12l = y12Bl; 
@@ -153,7 +152,6 @@ ppx8r := 0.47u ; ppy8r := 7.0u ;
 .5(ppy7l + ppy7r) = y27A;
 .5(ppx8l + ppx8r) = x28A;
 .5(ppy8l + ppy8r) = y28A;
-
 % fake extra l an r for font B
 
 ppx12l = x12Cl; ppy12l = y12Cl; 
@@ -211,9 +209,7 @@ ang6 := angle((z6Br + (metapolation * (z6Cr -z6Br))) - (z6Bl + (metapolation * (
 ang7 := angle((z7Br + (metapolation * (z7Cr -z7Br))) - (z7Bl + (metapolation * (z7Cl -z7Bl))));
 ang8 := angle((z8Br + (metapolation * (z8Cr -z8Br))) - (z8Bl + (metapolation * (z8Cl -z8Bl))));
 
-
 % test extra pen angle
-
 
 
 % test extra pen angle
@@ -247,7 +243,6 @@ penpos10(dist10 + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + meta
 penpos11(dist11 + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist11), ang11);
 penpos12(dist12 + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist12), ang12);
 
-
 % test new center (z) points
 
 z1=((A_width + metapolation * (B_width - A_width)) * (x210 + metapolation * (x21A - x210) + spacing_92L) * width_92, (y210 + metapolation *(y21A - y210))*((A_xheight + metapolation * (B_xheight - A_xheight)) / mean#));
@@ -279,8 +274,6 @@ penstroke z11e ...
 z12e
 ;
 
-
 % pen labels
 penlabels(range 1 thru 99);
 endchar;
-
