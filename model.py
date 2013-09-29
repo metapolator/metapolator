@@ -177,9 +177,12 @@ def putFont():
     print mfg.cFont.glyphName, mfg.cFont.glyphunic
 
     glyphName = mfg.cFont.glyphunic
-    glyphsourceA = mfg.cFont.fontpath+mfg.cFont.fontna + "/glyphs/" + glyphName + ".glif"
-    glyphsourceB = mfg.cFont.fontpath+mfg.cFont.fontnb + "/glyphs/" + glyphName + ".glif"
     glyphnameNew = glyphName + ".glif"
+
+    glyphPath = os.path.join("glyphs", glyphNameNew)
+
+    glyphsourceA = os.path.join(mfg.working_dir(mfg.cFont.fontpath), mfg.cFont.fontna, glyphPath)
+    glyphsourceB = os.path.join(mfg.working_dir(mfg.cFont.fontpath), mfg.cFont.fontna, glyphPath)
 
     print glyphnameNew
     print "lastmodifiedA: %s" % time.ctime(os.path.getmtime(glyphsourceA))
@@ -204,8 +207,10 @@ def putFontAllglyphs():
     glyphnames = mfg.cFont.glyphName
     glyphunics = mfg.cFont.glyphunic
 
-    dirnamea = mfg.cFont.fontpath + mfg.cFont.fontna + "/glyphs/"
-    dirnameb = mfg.cFont.fontpath + mfg.cFont.fontnb + "/glyphs/"
+    dirnamea = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                            mfg.cFont.fontna, "glyphs")
+    dirnameb = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                            mfg.cFont.fontnb, "glyphs")
 
     charlista = [f for f in os.listdir(dirnamea)]
     charlistb = [f for f in os.listdir(dirnameb)]
@@ -451,6 +456,7 @@ def insert_glyphparam(idp, a):
     ligl = get_postspip()
     piplist = []
     idlist = []
+    idpar = 0
     for liid in ligl:
         idlist.append(liid.id)
         if liid.pip not in []:
@@ -666,13 +672,17 @@ def writexml():
     idmaster = gidmast(mfg.cFont.idwork)
 
     if mfg.cFont.idwork == '0':
-        glyphsourceA = mfg.cFont.fontpath + mfg.cFont.fontna + "/glyphs/" + glyphName + ".glif"
+        glyphsourceA = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                                    mfg.cFont.fontna,
+                                    "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceA
         xmldoc = etree.parse(glyphsourceA)
         items = xmldoc.find("outline")
 
     if mfg.cFont.idwork == '1':
-        glyphsourceB = mfg.cFont.fontpath+mfg.cFont.fontnb + "/glyphs/"+glyphName+".glif"
+        glyphsourceB = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                                    mfg.cFont.fontnb,
+                                    "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceB
         xmldoc = etree.parse(glyphsourceB)
         items = xmldoc.find("outline")
@@ -773,8 +783,10 @@ def get_activeglyph():
 
 
 def writeallxmlfromdb():
-    dirnamea = mfg.cFont.fontpath+mfg.cFont.fontna + "/glyphs/"
-    dirnameb = mfg.cFont.fontpath+mfg.cFont.fontnb + "/glyphs/"
+    dirnamea = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                            mfg.cFont.fontna, "glyphs")
+    dirnameb = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                            mfg.cFont.fontnb, "glyphs")
 
     charlista = [f for f in os.listdir(dirnamea) if fnextension(f) == 'glif']
     charlistb = [f for f in os.listdir(dirnameb) if fnextension(f) == 'glif']
@@ -802,7 +814,8 @@ def writeallxmlfromdb():
 
 
 def writeGlyphlist():
-    ifile = open(mfg.cFont.fontpath + "glyphlist.mf", "w")
+    ifile = open(os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                              "glyphlist.mf"), "w")
 
 
 def writeGlobalParam():
@@ -829,7 +842,8 @@ def writeGlobalParam():
     box = imgl[0].box
 
     # global parameters
-    ifile = open(mfg.cFont.fontpath + "font.mf", "w")
+    ifile = open(os.path.join(mfg.working_dir(mfg.cFont.fontpath),
+                              "font.mf"), "w")
     ifile.write("% parameter file \n")
     ifile.write("metapolation:=%.2f;\n" % metapolation)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
@@ -899,9 +913,11 @@ def fnextension(filename):
 
 def ufo2mf():
     print "ufo2mf", mfg.cFont.fontpath
-    dirnamef1 = mfg.cFont.fontpath + mfg.cFont.fontna+"/glyphs"
-    dirnamef2 = mfg.cFont.fontpath + mfg.cFont.fontnb+"/glyphs"
-    dirnamep1 = mfg.cFont.fontpath + "glyphs"
+    dirnamef1 = mfg.working_dir(os.path.join(mfg.cFont.fontpath,
+                                             mfg.cFont.fontna, "glyphs"))
+    dirnamef2 = mfg.working_dir(os.path.join(mfg.cFont.fontpath,
+                                             mfg.cFont.fontnb, "glyphs"))
+    dirnamep1 = mfg.working_dir(os.path.join(mfg.cFont.fontpath, "glyphs"))
 
     charlist1 = [f for f in os.listdir(dirnamef1) if fnextension(f) == 'glif']
     charlist2 = [f for f in os.listdir(dirnamef2) if fnextension(f) == 'glif']
@@ -921,8 +937,9 @@ def ufo2mf():
 
 def writeGlyphlist():
     print "*** write glyphlist ***"
-    ifile = open(mfg.cFont.fontpath + "glyphlist.mf", "w")
-    dirnamep1 = mfg.cFont.fontpath + "glyphs"
+    ifile = open(mfg.working_dir(os.path.join(mfg.cFont.fontpath,
+                                              "glyphlist.mf")), "w")
+    dirnamep1 = mfg.working_dir(os.path.join(mfg.cFont.fontpath, "glyphs"))
 
     charlist1 = [f for f in os.listdir(dirnamep1)]
 
