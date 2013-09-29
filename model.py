@@ -184,7 +184,7 @@ def putFont():
     glyphsourceA = os.path.join(mfg.working_dir(mfg.cFont.fontpath), mfg.cFont.fontna, glyphPath)
     glyphsourceB = os.path.join(mfg.working_dir(mfg.cFont.fontpath), mfg.cFont.fontna, glyphPath)
 
-    print glyphnameNew
+    print glyphNameNew
     print "lastmodifiedA: %s" % time.ctime(os.path.getmtime(glyphsourceA))
     print "lastmodifiedB: %s" % time.ctime(os.path.getmtime(glyphsourceB))
 
