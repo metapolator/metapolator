@@ -34,10 +34,24 @@ urls = ('/', 'Index',
         )
 
 
+PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
+
+def working_dir(path=None, user=None):
+    if is_loggedin():
+        directory = os.path.join(PROJECT_ROOT, 'users',
+                                 str(user or session.user))
+        if not path:
+            return directory
+        return os.path.join(directory, path)
+    return path
+
+
 app = web.application(urls, globals())
 
 web.config.debug = False
-session = web.session.Session(app, web.session.DiskStore('sessions'), {'count': 0})
+session = web.session.Session(app, web.session.DiskStore('sessions'),
+                              {'count': 0})
 
 
 ### Templates
@@ -166,7 +180,7 @@ class View:
         """ View single post """
         form = self.form()
 
-        if id > '0':
+        if int(id) > 0:
             post = model.get_post(int(id))
             glyphparam = model.get_glyphparam(int(id))
             groupparam = model.get_groupparam(int(id))
@@ -240,10 +254,10 @@ class View:
             model.writexml()
 
         model.ufo2mf()
-        os.environ['MFINPUTS'] = cFont.fontpath
+        os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
 #        os.environ['MPINPUTS'] = cFont.fontpath
         model.writeGlyphlist()
-        strms = "sh makefont.sh font.mf"
+        strms = "sh %s font.mf" % working_dir("makefont.sh")
         os.system(strms)
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
 
@@ -287,7 +301,7 @@ class Font1:
         fontna = cFont.fontna
         fontnb = cFont.fontnb
         loadoption = cFont.loadoption
-        fontlist = [f for f in glob.glob("fonts/*/*.ufo")]
+        fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
         form = self.form()
         form = Font1.form()
@@ -325,7 +339,7 @@ class Font1:
             master = list(model.get_master(id))
 #       model.putFont()
         model.putFontAllglyphs()
-        fontlist = [f for f in glob.glob("fonts/*/*.ufo")]
+        fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
 
         if cFont.loadoption == '1001':
@@ -696,7 +710,13 @@ class Register:
         if not form.validates():
             return render.register(form)
         user = model.create_user(form.d.username, form.d.password, form.d.email)
-        raise authorize(user)
+        if not user:
+            return render.register(form)
+        seeother = authorize(user)
+
+        import shutil
+        shutil.copytree(working_dir(user='skel'), working_dir())
+        raise seeother
 
 if __name__ == '__main__':
     app.run()
@@ -705,5 +725,3 @@ if __name__ == '__main__':
 application = None
 if os.environ.get('PRODUCTION', False):
     application = app.wsgifunc()
-
-
