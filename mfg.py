@@ -257,7 +257,7 @@ class View:
         os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
 #        os.environ['MPINPUTS'] = cFont.fontpath
         model.writeGlyphlist()
-        strms = "sh %s font.mf" % working_dir("makefont.sh")
+        strms = "cd %s && sh %s font.mf" % (working_dir(), "makefont.sh")
         os.system(strms)
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
 
