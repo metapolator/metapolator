@@ -42,3 +42,4 @@ nosetests.xml
 /font.tfm
 glyphlist.mf
 /sessions
+/users

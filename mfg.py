@@ -15,43 +15,7 @@ import sys
 import web
 
 from passlib.hash import bcrypt
-
-
-### Url mappings
-
-urls = ('/', 'Index',
-        '/login', 'Login',
-        '/register', 'Register',
-        '/logout', 'logout',
-        '/view/(\d+)', 'View',
-        '/metap/(\d+)', 'Metap',
-        '/viewfont/', 'ViewFont',
-        '/font1/(\d+)', 'Font1',
-        '/font2/(\d+)', 'GlobalParam',
-        '/font3/(\d+)', 'localParamA',
-        '/font4/(\d+)', 'localParamB',
-        '/cproject/(\d+)', 'copyproject'
-        )
-
-
-PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-
-
-def working_dir(path=None, user=None):
-    if is_loggedin():
-        directory = os.path.join(PROJECT_ROOT, 'users',
-                                 str(user or session.user))
-        if not path:
-            return directory
-        return os.path.join(directory, path)
-    return path
-
-
-app = web.application(urls, globals())
-
-web.config.debug = False
-session = web.session.Session(app, web.session.DiskStore('sessions'),
-                              {'count': 0})
+from config import app, cFont, is_loggedin, session, working_dir
 
 
 ### Templates
@@ -60,32 +24,6 @@ t_globals = {
 }
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
-
-
-### preset font loading
-class cFont:
-    fontpath = "fonts/1/"
-    fontna = ""
-    fontnb = ""
-    fontname = ""
-    idglobal = 1
-    idmaster = 1
-    idwork = '0'
-    glyphName = ""
-    glyphunic = "1"
-    metapolation = 0.5
-    unitwidth = 1
-    fontsize = 10
-    mean = 0.5
-    cap = 0.8
-    ascl = 0.2
-    des = 0.2
-    box = 1
-    timestamp = 0
-    idlocalA = 1
-    idlocalB = 2
-    loadoption = '0'
-    mfoption = '0'
 
 
 class Index:
@@ -255,8 +193,6 @@ class View:
 
         model.ufo2mf()
         os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
-        os.environ['CURDIR'] = working_dir()
-#        os.environ['MPINPUTS'] = cFont.fontpath
         model.writeGlyphlist()
         strms = "cd %s; sh %s font.mf" % (working_dir(), "makefont.sh")
         os.system(strms)
@@ -618,13 +554,6 @@ class copyproject:
         return render.cproject()
 
 
-def is_loggedin():
-    try:
-        return session.authorized
-    except AttributeError:
-        pass
-
-
 class logout:
 
     def GET(self):
@@ -718,6 +647,7 @@ class Register:
         import shutil
         shutil.copytree(working_dir(user='skel'), working_dir())
         raise seeother
+
 
 if __name__ == '__main__':
     app.run()
