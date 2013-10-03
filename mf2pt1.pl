@@ -902,11 +902,12 @@ else {
     print FFSCRIPT <<'AUTOHINT';
 Open($1);
 SelectAll();
-RemoveOverlap();
 AddExtrema();
+RemoveOverlap();
 Simplify(0, 2);
 CorrectDirection();
 Simplify(0, 2);
+# Inline(0,2);
 RoundToInt();
 AutoHint();
 foreach
@@ -916,7 +917,6 @@ Generate($1);
 Generate($1:r + ".otf");
 Generate($1:r + ".ufo");
 Generate($1:r + ".ttf");
-Generate($1);
 Quit(0);
 AUTOHINT
     ;

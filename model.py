@@ -7,7 +7,8 @@
 # GPL v3 (http://www.gnu.org/copyleft/gpl.html).
 import datetime
 import codecs
-import os.path
+import os
+import os.path as op
 import time
 import web
 import xmltomf
@@ -15,14 +16,14 @@ import xmltomf
 from lxml import etree
 from passlib.hash import bcrypt
 
-import mfg
+from config import cFont, working_dir
 
 db = web.database(dbn='mysql', db='blog', user='root', pw='')
 
 
 def xxmlat(s, dbob, sattr, val, iro):
 
-    if str(dbob) != 'None':
+    if dbob is not None:
         if s.get(sattr):
             del s.attrib[sattr]
         #
@@ -76,9 +77,9 @@ def putFontG(glyphName, glyphsource, idmaster):
                  'stemcutter', 'stemshift', 'inktrap_l', 'inktrap_r']
 
     if idmaster > 0:
-        mfg.cFont.idwork = '0'
+        cFont.idwork = '0'
     if idmaster < 0:
-        mfg.cFont.idwork = '1'
+        cFont.idwork = '1'
 
     xmldoc = etree.parse(glyphsource)
     outline = xmldoc.find("outline")
@@ -106,14 +107,14 @@ def putFontG(glyphName, glyphsource, idmaster):
 
     idel = 0
     if dbq:
-        vdateos = int(os.path.getmtime(glyphsource))
-        if (max(vdatedb, vdatedbp) < vdateos) and mfg.cFont.loadoption == '0' or mfg.cFont.loadoption == '99':
+        vdateos = int(op.getmtime(glyphsource))
+        if (max(vdatedb, vdatedbp) < vdateos) and cFont.loadoption == '0' or cFont.loadoption == '99':
             db.delete('glyphoutline', where='Glyphname="' + glyphName + '"' + ids)
             db.delete('glyphparam', where='Glyphname="' + glyphName+'"' + ids)
             idel = 1
 
     # check if list is empty
-    if not list(db.select('glyphoutline', where='GlyphName="' + glyphName + '"' + ids)) or mfg.cFont.loadoption == '1':
+    if not list(db.select('glyphoutline', where='GlyphName="' + glyphName + '"' + ids)) or cFont.loadoption == '1':
         #  put data into db
         inum = 0
         strg = ""
@@ -121,7 +122,7 @@ def putFontG(glyphName, glyphsource, idmaster):
             for s in itemlist:
                 inum = inum + 1
                 #  find a named point , convention the name begin with the letter z
-                if mfg.cFont.loadoption == '0' or idel == 1:
+                if cFont.loadoption == '0' or idel == 1:
 
                     if s.get('name'):
                         nameval = s.get('name')
@@ -150,7 +151,7 @@ def putFontG(glyphName, glyphsource, idmaster):
                 #  load option 1  read from xml files only x,y coordinates
                 #  it could be the order of the records has been changed
                 #
-                if mfg.cFont.loadoption == '1' and idel < 1:
+                if cFont.loadoption == '1' and idel < 1:
                     if s.get('type'):
                         mainpoint = 1
                     else:
@@ -171,29 +172,29 @@ def putFont():
     #  read font A and font B
     #  put font A and font B into DB according the loadoption rule
     #
-    idworks = mfg.cFont.idwork
-    mfg.cFont.fontpath = "fonts/" + str(mfg.cFont.idmaster) + "/"
+    idworks = cFont.idwork
+    cFont.fontpath = "fonts/" + str(cFont.idmaster) + "/"
 
-    print mfg.cFont.glyphName, mfg.cFont.glyphunic
+    print cFont.glyphName, cFont.glyphunic
 
-    glyphName = mfg.cFont.glyphunic
+    glyphName = cFont.glyphunic
     glyphNameNew = glyphName + ".glif"
 
-    glyphPath = os.path.join("glyphs", glyphNameNew)
+    glyphPath = op.join("glyphs", glyphNameNew)
 
-    glyphsourceA = os.path.join(mfg.working_dir(mfg.cFont.fontpath), mfg.cFont.fontna, glyphPath)
-    glyphsourceB = os.path.join(mfg.working_dir(mfg.cFont.fontpath), mfg.cFont.fontna, glyphPath)
+    glyphsourceA = op.join(working_dir(cFont.fontpath), cFont.fontna, glyphPath)
+    glyphsourceB = op.join(working_dir(cFont.fontpath), cFont.fontna, glyphPath)
 
     print glyphNameNew
-    print "lastmodifiedA: %s" % time.ctime(os.path.getmtime(glyphsourceA))
-    print "lastmodifiedB: %s" % time.ctime(os.path.getmtime(glyphsourceB))
+    print "lastmodifiedA: %s" % time.ctime(op.getmtime(glyphsourceA))
+    print "lastmodifiedB: %s" % time.ctime(op.getmtime(glyphsourceB))
 
-    idmaster = mfg.cFont.idmaster
+    idmaster = cFont.idmaster
     #
     putFontG(glyphName, glyphsourceA, int(idmaster))
     putFontG(glyphName, glyphsourceB, -int(idmaster))
 
-    mfg.cFont.idwork = idworks
+    cFont.idwork = idworks
 
 
 def putFontAllglyphs():
@@ -203,14 +204,14 @@ def putFontAllglyphs():
     #  only the fonts (xml file) will be read when the glifs are present in both fonts A and B
     #
     # save the values for restore
-    idworks = mfg.cFont.idwork
-    glyphnames = mfg.cFont.glyphName
-    glyphunics = mfg.cFont.glyphunic
+    idworks = cFont.idwork
+    glyphnames = cFont.glyphName
+    glyphunics = cFont.glyphunic
 
-    dirnamea = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                            mfg.cFont.fontna, "glyphs")
-    dirnameb = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                            mfg.cFont.fontnb, "glyphs")
+    dirnamea = op.join(working_dir(cFont.fontpath),
+                            cFont.fontna, "glyphs")
+    dirnameb = op.join(working_dir(cFont.fontpath),
+                            cFont.fontnb, "glyphs")
 
     charlista = [f for f in os.listdir(dirnamea)]
     charlistb = [f for f in os.listdir(dirnameb)]
@@ -219,35 +220,35 @@ def putFontAllglyphs():
             fnb, ext = buildfname(ch1)
             if ext in ["glif"]:
                 glyphName = fnb
-                mfg.cFont.glyphName = glyphName
-                mfg.cFont.glyphunic = glyphName
+                cFont.glyphName = glyphName
+                cFont.glyphunic = glyphName
                 putFont()
     #
     #   save previous values back
-    mfg.cFont.idwork = idworks
-    mfg.cFont.glyphName = glyphnames
-    mfg.cFont.glyphunic = glyphunics
+    cFont.idwork = idworks
+    cFont.glyphName = glyphnames
+    cFont.glyphunic = glyphunics
 
 
 def gidmast(idwork):
     if idwork == '0':
-        idmaster = int(mfg.cFont.idmaster)
+        idmaster = int(cFont.idmaster)
     if idwork == '1':
-        idmaster = -int(mfg.cFont.idmaster)
+        idmaster = -int(cFont.idmaster)
     return idmaster
 
 
 def get_posts():
-    idmaster = gidmast(mfg.cFont.idwork)
-    glyphName = mfg.cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
+    glyphName = cFont.glyphunic
     ids = " and idmaster=" + '"'+str(idmaster) + '"'
     q1 = "SELECT IFNULL(PointName, '') PointNr,x,y,concat('position:absolute;left:',0+x,'px;top:',0-y,'px; ',IF (PointName > '', 'color:black;', IF (contrp > 0 , 'z-index:1;color:blue;', 'z-index:0;color:CCFFFF;')) ) position, id from vglyphoutline where GlyphName="+'"'+glyphName+'"'
     return list(db.query(q1 + ids))
 
 
 def get_postspa():
-    idmaster = gidmast(mfg.cFont.idwork)
-    glyphName = mfg.cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
+    glyphName = cFont.glyphunic
     ids = " and idmaster="+'"'+str(idmaster)+'"'
 #    dbstr=db.select('vglyphoutlines', where='glyphName='+'"'+glyphName+'"' +ids, vars=locals())
     dbstr = db.select('vgls', where='glyphName=' + '"' + glyphName + '"' + ids + ' order by length(PointName) asc,PointName asc', vars=locals())
@@ -255,8 +256,8 @@ def get_postspa():
 
 
 def get_post(id):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     try:
         return db.select('vglyphoutline', where='id=$id and glyphName=' + '"'+glyphName + '"' + ids, vars=locals())[0]
@@ -265,8 +266,8 @@ def get_post(id):
 
 
 def get_postspip():
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     q1 = "SELECT id,pip from glyphoutline where GlyphName=" + '"' + glyphName + '"'
     return list(db.query(q1+ids))
@@ -280,8 +281,8 @@ def get_glyphparamid(glyphName, idmaster, nameval):
 
 
 def get_glyphparam(id):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster=" + '"' + str(idmaster) + '"'
     try:
 #        return db.select('glyphparam', where='id=$id and GlyphName='+'"'+glyphName+'"'+ids, vars=locals())[0]
@@ -291,8 +292,8 @@ def get_glyphparam(id):
 
 
 def get_groupparam(id):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster=" + '"' + str(idmaster) + '"'
     try:
         return db.select('vglgroup', where='id=$id and GlyphName='+'"'+glyphName+'"'+ids, vars=locals())[0]
@@ -301,7 +302,7 @@ def get_groupparam(id):
 
 
 def get_groupparam0(groupname):
-    idmaster = gidmast(mfg.cFont.idwork)
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster=" + '"' + str(idmaster) + '"'
     try:
         return db.select('groupparam', where='groupname=' + '"' + groupname + '"' + ids, vars=locals())[0]
@@ -310,8 +311,8 @@ def get_groupparam0(groupname):
 
 
 def update_post(id, x, y):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster=" + '"' + str(idmaster) + '"'
 
     db.update('glyphoutline', where='id=$id and GlyphName="' + glyphName + '"' + ids, vars=locals(),
@@ -321,8 +322,8 @@ def update_post(id, x, y):
 
 
 def update_postp0(id, x, y, contr):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     #  remove pip link and set coordinates and contr new
     db.update('glyphoutline', where='id=$id and GlyphName="' + glyphName + '"' + ids, vars=locals(),
@@ -331,8 +332,8 @@ def update_postp0(id, x, y, contr):
 
 
 def update_postp(id, x, y, idpar):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster=" + '"' + str(idmaster) + '"'
 
     if x is None:
@@ -347,8 +348,8 @@ def update_postp(id, x, y, idpar):
 
 def update_glyphparamD(id, ap, bp):
     # string:syntax update glyphparam set leftp='1' where id=75 and Glyphname='p' and idmaster=1;
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     #
     #   get id from glyphoutline
@@ -377,8 +378,8 @@ def update_glyphparamD(id, ap, bp):
 
 
 def update_glyphparam(id, a, b):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
 #
 #   get id from glyphoutline
@@ -407,8 +408,8 @@ def update_glyphparam(id, a, b):
 
 
 def update_glyphparamName(id, a):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster=" + '"' + str(idmaster) + '"'
 #
 #   get id from glyphoutline
@@ -429,8 +430,8 @@ def update_glyphparamName(id, a):
 
 
 def update_glyphparamG(id, a):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     #
     #   get id from glyphoutline
@@ -450,8 +451,8 @@ def update_glyphparamG(id, a):
 
 
 def insert_glyphparam(idp, a):
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     ligl = get_postspip()
     piplist = []
@@ -479,8 +480,8 @@ def insert_glyphparam(idp, a):
 def update_groupparamD(groupname, a, b):
     # string:syntax update groupparam set leftp='1' where id=75 and groupname='g1' and idmaster=1;
     print a, b
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     aa = a
     print "*****group", groupname, a, b
@@ -499,8 +500,8 @@ def update_groupparamD(groupname, a, b):
 def insert_groupparam(a):
     if a == '':
         return
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     db.insert('groupparam', groupname=a, idmaster=idmaster)
     db.query("commit")
 
@@ -510,20 +511,20 @@ def get_masters():
 
 
 def get_master(id):
-    mfg.cFont.idmaster = id
+    cFont.idmaster = id
     ssmr = db.select('master',  where='idmaster=$id', vars=locals())
     ssm = list(ssmr)
-    mfg.cFont.fontname = str(ssm[0].FontName)
-    mfg.cFont.fontna = str(ssm[0].FontNameA)
-    mfg.cFont.fontnb = str(ssm[0].FontNameB)
+    cFont.fontname = str(ssm[0].FontName)
+    cFont.fontna = str(ssm[0].FontNameA)
+    cFont.fontnb = str(ssm[0].FontNameB)
 
     return ssmr
 
 
 def update_master(id):
-    fontNameA = mfg.cFont.fontna
-    fontNameB = mfg.cFont.fontnb
-    fontName = mfg.cFont.fontname
+    fontNameA = cFont.fontna
+    fontNameB = cFont.fontnb
+    fontName = cFont.fontname
     db.update('master', where='idmaster=$id', vars=locals(),
               fontNameA=fontNameA, fontNameB=fontNameB, FontName=fontName)
     db.query("commit")
@@ -534,10 +535,10 @@ def get_globalparams():
 
 
 def put_master():
-    fontName = mfg.cFont.fontname
-    fontNameA = mfg.cFont.fontna
-    fontNameB = mfg.cFont.fontnb
-    idglobal = mfg.cFont.idglobal
+    fontName = cFont.fontname
+    fontNameA = cFont.fontna
+    fontNameB = cFont.fontnb
+    idglobal = cFont.idglobal
     t = db.transaction()
 
     try:
@@ -554,7 +555,7 @@ def get_globalparams():
 
 
 def get_globalparam(id):
-    mfg.cFont.idglobal = id
+    cFont.idglobal = id
     return db.select('globalparam', where='idglobal=$id', vars=locals())
 
 
@@ -568,14 +569,14 @@ def get_localparam(id):
 
 
 def put_globalparam(id):
-    metapolation = mfg.cFont.metapolation
-    unitwidth = mfg.cFont.unitwidth
-    fontsize = mfg.cFont.fontsize
-    mean = mfg.cFont.mean
-    cap = mfg.cFont.cap
-    ascl = mfg.cFont.ascl
-    des = mfg.cFont.des
-    box = mfg.cFont.box
+    metapolation = cFont.metapolation
+    unitwidth = cFont.unitwidth
+    fontsize = cFont.fontsize
+    mean = cFont.mean
+    cap = cFont.cap
+    ascl = cFont.ascl
+    des = cFont.des
+    box = cFont.box
     db.insert('globalparam', where='idglobal = $id', vars=locals(),
               metapolation=metapolation, unitwidth=unitwidth,
               fontsize=fontsize, mean=mean, cap=cap, ascl=ascl, des=des,
@@ -605,7 +606,7 @@ def update_localparam(id, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13
 
 
 def copyproject():
-    idmaster = int(mfg.cFont.idmaster)
+    idmaster = int(cFont.idmaster)
     #
     # copy unix font ufo files
     #
@@ -666,22 +667,21 @@ def writexml():
 #  write  two xml file for glyph in A and B Font
 #
 
-    glyphName = mfg.cFont.glyphunic
-    idworks = mfg.cFont.idwork
+    glyphName = cFont.glyphunic
+    idworks = cFont.idwork
 
-    idmaster = gidmast(mfg.cFont.idwork)
+    idmaster = gidmast(cFont.idwork)
 
-    if mfg.cFont.idwork == '0':
-        glyphsourceA = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                                    mfg.cFont.fontna,
+    if cFont.idwork == '0':
+        glyphsourceA = op.join(working_dir(cFont.fontpath),
+                                    cFont.fontna,
                                     "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceA
         xmldoc = etree.parse(glyphsourceA)
         items = xmldoc.find("outline")
 
-    if mfg.cFont.idwork == '1':
-        glyphsourceB = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                                    mfg.cFont.fontnb,
+    if cFont.idwork == '1':
+        glyphsourceB = op.join(working_dir(cFont.fontpath), cFont.fontnb,
                                     "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceB
         xmldoc = etree.parse(glyphsourceB)
@@ -770,12 +770,12 @@ def writexml():
         xmldoc.write(out)
     out.close()
 #  restore current idwork setting
-    mfg.cFont.idwork = idworks
+    cFont.idwork = idworks
 
 
 def get_activeglyph():
-    glyphName = mfg.cFont.glyphunic
-    idmaster = gidmast(mfg.cFont.idwork)
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
     ids = " idmaster=" + '"' + str(idmaster) + '"'
     strg = 'select distinct(glyphname)  from glyphoutline where ' + ids
     print strg
@@ -783,15 +783,13 @@ def get_activeglyph():
 
 
 def writeallxmlfromdb():
-    dirnamea = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                            mfg.cFont.fontna, "glyphs")
-    dirnameb = os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                            mfg.cFont.fontnb, "glyphs")
+    dirnamea = op.join(working_dir(cFont.fontpath), cFont.fontna, "glyphs")
+    dirnameb = op.join(working_dir(cFont.fontpath), cFont.fontnb, "glyphs")
 
     charlista = [f for f in os.listdir(dirnamea) if fnextension(f) == 'glif']
     charlistb = [f for f in os.listdir(dirnameb) if fnextension(f) == 'glif']
 
-    idworks = mfg.cFont.idwork
+    idworks = cFont.idwork
     alist = list(get_activeglyph())
     aalist = []
     for g in alist:
@@ -801,30 +799,29 @@ def writeallxmlfromdb():
         if ch1 in charlistb:
             glyphname, exte = buildfname(ch1)
             if glyphname in aalist:
-                mfg.cFont.glyphunic = glyphname
-                mfg.cFont.glyphName = glyphname
+                cFont.glyphunic = glyphname
+                cFont.glyphName = glyphname
                 #   for A and B font
                 for iwork in ['0', '1']:
-                    mfg.cFont.idwork = iwork
+                    cFont.idwork = iwork
                     writexml()
     #
     #    restore old idwork value
-    mfg.cFont.idwork = idworks
+    cFont.idwork = idworks
     return None
 
 
 def writeGlyphlist():
-    ifile = open(os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                              "glyphlist.mf"), "w")
+    ifile = open(op.join(working_dir(cFont.fontpath), "glyphlist.mf"), "w")
 
 
 def writeGlobalParam():
     #
     # prepare font.mf parameter file
-    # write the file into the directory mfg.cFont.fontpath
+    # write the file into the directory cFont.fontpath
     #
-    master = list(get_master(mfg.cFont.idmaster))
-    imgl = list(get_globalparam(mfg.cFont.idglobal))
+    master = list(get_master(cFont.idmaster))
+    imgl = list(get_globalparam(cFont.idglobal))
 
     mean = 5.0
     cap = 0.8
@@ -842,8 +839,7 @@ def writeGlobalParam():
     box = imgl[0].box
 
     # global parameters
-    ifile = open(os.path.join(mfg.working_dir(mfg.cFont.fontpath),
-                              "font.mf"), "w")
+    ifile = open(op.join(working_dir(cFont.fontpath), "font.mf"), "w")
     ifile.write("% parameter file \n")
     ifile.write("metapolation:=%.2f;\n" % metapolation)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
@@ -855,7 +851,7 @@ def writeGlobalParam():
     ifile.write("u#:=%.3fpt#;\n" % u)
 
     # local parameters A
-    imlo = list(get_localparam(mfg.cFont.idlocalA))
+    imlo = list(get_localparam(cFont.idlocalA))
 
     ifile.write("A_px#:=%.2fpt#;\n" % imlo[0].px)
     ifile.write("A_width:=%.2f;\n" % imlo[0].width)
@@ -872,7 +868,7 @@ def writeGlobalParam():
     ifile.write("A_over:=%.2fpt;\n" % imlo[0].over)
 
     # local parameters B
-    imlo = list(get_localparam(mfg.cFont.idlocalB))
+    imlo = list(get_localparam(cFont.idlocalB))
 
     ifile.write("B_px#:=%.2fpt#;\n" % imlo[0].px)
     ifile.write("B_width:=%.2f;\n" % imlo[0].width)
@@ -912,12 +908,10 @@ def fnextension(filename):
 
 
 def ufo2mf():
-    print "ufo2mf", mfg.cFont.fontpath
-    dirnamef1 = mfg.working_dir(os.path.join(mfg.cFont.fontpath,
-                                             mfg.cFont.fontna, "glyphs"))
-    dirnamef2 = mfg.working_dir(os.path.join(mfg.cFont.fontpath,
-                                             mfg.cFont.fontnb, "glyphs"))
-    dirnamep1 = mfg.working_dir(os.path.join(mfg.cFont.fontpath, "glyphs"))
+    print "ufo2mf", cFont.fontpath
+    dirnamef1 = working_dir(op.join(cFont.fontpath, cFont.fontna, "glyphs"))
+    dirnamef2 = working_dir(op.join(cFont.fontpath, cFont.fontnb, "glyphs"))
+    dirnamep1 = working_dir(op.join(cFont.fontpath, "glyphs"))
 
     charlist1 = [f for f in os.listdir(dirnamef1) if fnextension(f) == 'glif']
     charlist2 = [f for f in os.listdir(dirnamef2) if fnextension(f) == 'glif']
@@ -925,21 +919,20 @@ def ufo2mf():
     for ch1 in charlist1:
         if ch1 in charlist2:
             fnb, ext = buildfname(ch1)
-            if fnb == mfg.cFont.glyphunic or mfg.cFont.timestamp == 0 or mfg.cFont.mfoption == "1":
+            if fnb == cFont.glyphunic or cFont.timestamp == 0 or cFont.mfoption == "1":
                 newfile = fnb
                 newfilename = newfile + ".mf"
                 # commd2 = "python parser_pino_mono.py " +ch1 +" " +dirnamef1 +" " +dirnamef2 +" > " +dirnamep1 +"/" +newfilename
                 # os.system(commd2)
                 xmltomf.xmltomf1(ch1, dirnamef1, dirnamef2, dirnamep1, newfilename)
 
-    mfg.cFont.timestamp = 1
+    cFont.timestamp = 1
 
 
 def writeGlyphlist():
     print "*** write glyphlist ***"
-    ifile = open(mfg.working_dir(os.path.join(mfg.cFont.fontpath,
-                                              "glyphlist.mf")), "w")
-    dirnamep1 = mfg.working_dir(os.path.join(mfg.cFont.fontpath, "glyphs"))
+    ifile = open(working_dir(op.join(cFont.fontpath, "glyphlist.mf")), "w")
+    dirnamep1 = working_dir(op.join(cFont.fontpath, "glyphs"))
 
     charlist1 = [f for f in os.listdir(dirnamep1)]
 

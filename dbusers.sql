@@ -1,5 +1,21 @@
 DROP TABLE IF EXISTS users;
 
+-- ALTER TABLE glyph DROP INDEX idx_user_id, DROP COLUMN user_id;
+-- ALTER TABLE glyphoutline DROP INDEX idx_user_id, DROP COLUMN user_id;
+-- ALTER TABLE glyphparam DROP INDEX idx_user_id, DROP COLUMN user_id;
+-- ALTER TABLE groupparam DROP INDEX idx_user_id, DROP COLUMN user_id;
+-- ALTER TABLE master DROP INDEX idx_user_id, DROP COLUMN user_id;
+-- ALTER TABLE globalparam DROP INDEX idx_user_id, DROP COLUMN user_id;
+-- ALTER TABLE localparam DROP INDEX idx_user_id, DROP COLUMN user_id;
+
+ALTER TABLE glyph ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+ALTER TABLE glyphoutline ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+ALTER TABLE glyphparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+ALTER TABLE groupparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+ALTER TABLE master ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+ALTER TABLE globalparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+ALTER TABLE localparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+
 CREATE TABLE users (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username varchar(80) NOT NULL,
