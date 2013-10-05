@@ -169,6 +169,7 @@ class VGlyphOutlines(Model):
 
     __table__ = 'vglyphoutlines'
 
+    @classmethod
     def select_one(cls, user, id, glyphName, idmaster):
         return cls.db_select_first(where=('id=$id and GlyphName=$glyphName'
                                           ' and idmaster=$idmaster'
@@ -698,12 +699,13 @@ def insert_groupparam(a):
 
 
 def get_masters():
-    return Master.db_select()
+    return Master.db_select(where='user_id=$user',
+                            vars=dict(user=session.user))
 
 
 def get_master(id):
     cFont.idmaster = id
-    ssmr = list(Master.select_one(session.user, id))
+    ssmr = Master.select_one(session.user, id)
     if not ssmr:
         return
     cFont.fontname = str(ssmr.FontName)
@@ -1010,7 +1012,7 @@ def writeGlobalParam():
     # prepare font.mf parameter file
     # write the file into the directory cFont.fontpath
     #
-    master = list(get_master(cFont.idmaster))
+    master = get_master(cFont.idmaster)
     imgl = list(get_globalparam(cFont.idglobal))
 
     mean = 5.0

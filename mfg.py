@@ -132,7 +132,9 @@ class View:
         if groupparam is not None:
             formParamG.fill(groupparam)
         mastglobal = model.get_globalparam(cFont.idglobal)
-        master = model.get_master(cFont.idmaster)
+        master = model.get_master(cFont.idmaster) or []
+        if master:
+            master = [master]
         webglyph = cFont.glyphName
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
 
@@ -230,7 +232,7 @@ class Font1:
     def GET(self, id):
         mmaster = list(model.get_masters())
         if int(id) > 0 and int(id) < 1000:
-            master = list(model.get_master(id))
+            model.get_master(id)
         if int(id) > 1000:
             cFont.glyphName = chr(int(id) - 1001 + 32)
             cFont.glyphunic = str(int(id) - 1001)
@@ -273,7 +275,7 @@ class Font1:
 
         if int(id) > 0 and int(id) < 1000:
             model.update_master(id)
-            master = list(model.get_master(id))
+            master = model.get_master(id)
 #       model.putFont()
         model.putFontAllglyphs()
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
