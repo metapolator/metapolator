@@ -60,12 +60,12 @@ def delFont(fontName, glyphNamel):
 class Model(object):
 
     @classmethod
-    def db_select(cls, where=None, vars={}, what=None, order=None):
+    def db_select(cls, where=None, vars={}, what='*', order=None):
         return db.select(cls.__table__, what=what, where=where,
                          vars=vars, order=order)
 
     @classmethod
-    def db_delete(cls, where=None, vars={}, what=None, order=None):
+    def db_delete(cls, where=None, vars={}, what='*', order=None):
         return db.delete(cls.__table__, what=what, where=where,
                          vars=vars, order=order)
 
@@ -75,7 +75,7 @@ class Model(object):
                          **kwargs)
 
     @classmethod
-    def db_select_first(cls, where=None, vars={}, what=None, order=None):
+    def db_select_first(cls, where=None, vars={}, what='*', order=None):
         try:
             return db.select(cls.__table__, what=what, where=where,
                              vars=vars, order=order)[0]
