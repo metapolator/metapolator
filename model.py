@@ -57,86 +57,135 @@ def delFont(fontName, glyphNamel):
     return None
 
 
-class GlyphOutline(object):
-
-    __table__ = 'glyphoutline'
+class Model(object):
 
     @classmethod
-    def select(cls, user, glyphName, idmaster):
-        query = db.select(cls.__table__,
-                          where=('glyphName=$glyphName'
-                                 ' and idmaster=$idmaster and user_id=$user'),
-                          vars=dict(idmaster=idmaster, glyphName=glyphName,
-                                    user=user))
-        return list(query)
+    def db_select(cls, where='', vars={}, what='', order=''):
+        return db.select(cls.__table__, what=what, where=where,
+                         vars=vars, order=order)
 
     @classmethod
-    def select_vdate(cls, user, glyphName, idmaster):
-        return list(db.select(cls.__table__,
-                              what='unix_timestamp(max(vdate)) vdate',
-                              where=("user_id=$user and glyphName=$glyphName"
-                                     " and idmaster=$idmaster"),
-                              vars=dict(user=user, glyphName=glyphName,
-                                        idmaster=idmaster)))
+    def db_delete(cls, where='', vars={}, what='', order=''):
+        return db.delete(cls.__table__, what=what, where=where,
+                         vars=vars, order=order)
 
     @classmethod
-    def select_pip_only(cls, user, glyphName, idmaster):
-        query = db.select(cls.__table__,
-                          where=("GlyphName=$glyphName and idmaster=$idmaster"
-                                 " and user_id=$user"),
-                          what="id, pip",
-                          vars=dict(user=user, glyphName=glyphName,
-                                    idmaster=idmaster))
-        return list(query)
+    def db_update(cls, where='', vars={}, **kwargs):
+        return db.update(cls.__table__, where=where, vars=vars,
+                         **kwargs)
 
     @classmethod
-    def delete(cls, user, glyphName, idmaster):
-        db.delete(cls.__table__,
-                  where=('Glyphname=$glyphName and idmaster=$idmaster'
-                         ' and user_id=$user'),
-                  vars=dict(user=user, glyphName=glyphName,
-                            idmaster=idmaster))
+    def db_select_first(cls, where='', vars={}, what='', order=''):
+        try:
+            return db.select(cls.__table__, what=what, where=where,
+                             vars=vars, order=order)[0]
+        except IndexError:
+            pass
 
     @classmethod
     def insert(cls, **kwargs):
         db.insert(cls.__table__, **kwargs)
 
 
-class VGlyphOutline(object):
+class GlyphOutline(Model):
+
+    __table__ = 'glyphoutline'
+
+    @classmethod
+    def select(cls, user, glyphName, idmaster):
+        query = cls.db_select(where=('glyphName=$glyphName'
+                                     ' and idmaster=$idmaster'
+                                     ' and user_id=$user'),
+                              vars=dict(idmaster=idmaster, glyphName=glyphName,
+                                        user=user))
+        return list(query)
+
+    @classmethod
+    def select_vdate(cls, user, glyphName, idmaster):
+        return cls.db_select(what='unix_timestamp(max(vdate)) vdate',
+                             where=("user_id=$user and glyphName=$glyphName"
+                                    " and idmaster=$idmaster"),
+                             vars=dict(user=user, glyphName=glyphName,
+                                       idmaster=idmaster))
+
+    @classmethod
+    def select_pip_only(cls, user, glyphName, idmaster):
+        query = cls.db_select(where=("GlyphName=$glyphName"
+                                     " and idmaster=$idmaster"
+                                     " and user_id=$user"),
+                              what="id, pip",
+                              vars=dict(user=user, glyphName=glyphName,
+                                        idmaster=idmaster))
+        return list(query)
+
+    @classmethod
+    def select_one_pip(cls, user, id, glyphName, idmaster):
+        return cls.db_select_first(what='pip',
+                                   where='id=$id'
+                                         ' and glyphName=$glyphName'
+                                         ' and idmaster=$idmaster'
+                                         ' and user_id=$user',
+                                   vars=dict(id=id, user=user,
+                                             idmaster=idmaster,
+                                             glyphName=glyphName))
+
+    @classmethod
+    def update(cls, user, id, glyphName, idmaster, **kwargs):
+        cls.db_update(where=('id=$id and GlyphName=$glyphName'
+                             ' and idmaster=$idmaster"'
+                             ' and user_id=$user'),
+                      vars=dict(id=id, user=user, glyphName=glyphName,
+                                idmaster=idmaster), **kwargs)
+
+    @classmethod
+    def delete(cls, user, glyphName, idmaster):
+        cls.db_delete(where=('Glyphname=$glyphName and idmaster=$idmaster'
+                             ' and user_id=$user'),
+                      vars=dict(user=user, glyphName=glyphName,
+                                idmaster=idmaster))
+
+
+class VGlyphOutline(Model):
 
     __table__ = 'vglyphoutline'
 
     @classmethod
     def select(cls, user, glyphName, idmaster):
-        return db.select(cls.__table__,
-                         what="id, IFNULL(PointName, '') PointNr, x, y,"
-                              "concat('position: absolute; left: ', 0 + x, 'px;"
-                              "       top:', 0 - y, 'px; ',"
-                              "       IF (PointName > '', 'color:black;',"
-                              "         IF (contrp > 0 , 'z-index:1;color:blue;',"
-                              "             'z-index:0;color:CCFFFF;')"
-                              "       )"
-                              ") position",
-                         where=("glyphName=$glyphName and idmaster=$idmaster"
-                                " and user_id=$user"),
-                         vars=dict(glyphName=glyphName, idmaster=idmaster,
-                                   user=user))
+        return cls.db_select(what="id, IFNULL(PointName, '') PointNr, x, y,"
+                                  "concat('position: absolute; left: ', 0 + x, 'px;"
+                                  "       top:', 0 - y, 'px; ',"
+                                  "       IF (PointName > '', 'color:black;',"
+                                  "         IF (contrp > 0 , 'z-index:1;color:blue;',"
+                                  "             'z-index:0;color:CCFFFF;')"
+                                  "       )"
+                                  ") position",
+                             where=("glyphName=$glyphName and idmaster=$idmaster"
+                                    " and user_id=$user"),
+                             vars=dict(glyphName=glyphName, idmaster=idmaster,
+                                       user=user))
 
     @classmethod
     def select_one(cls, user, id, glyphName, idmaster):
-        try:
-            query = db.select(cls.__table__,
-                              where=('id=$id and glyphName=$glyphName'
-                                     ' and idmaster=$idmaster'
-                                     ' and user_id=$user'),
-                              vars=dict(id=id, glyphName=glyphName,
-                                        idmaster=idmaster, user=user))
-            return query[0]
-        except IndexError:
-            pass
+        return cls.db_select_first(where=('id=$id and glyphName=$glyphName'
+                                          ' and idmaster=$idmaster'
+                                          ' and user_id=$user'),
+                                   vars=dict(id=id, glyphName=glyphName,
+                                             idmaster=idmaster, user=user))
 
 
-class VGLS(object):
+class VGlyphOutlines(Model):
+
+    __table__ = 'vglyphoutlines'
+
+    def select_one(cls, user, id, glyphName, idmaster):
+        return cls.db_select_first(where=('id=$id and GlyphName=$glyphName'
+                                          ' and idmaster=$idmaster'
+                                          ' and user_id=$user'),
+                                   vars=dict(id=id, idmaster=idmaster,
+                                             glyphName=glyphName, user=user))
+
+
+class VGLS(Model):
 
     __table__ = 'vgls'
 
@@ -144,53 +193,82 @@ class VGLS(object):
     def select(cls, user, glyphName, idmaster):
         # dbstr=db.select('vglyphoutlines',
         #   where='glyphName='+'"'+glyphName+'"' +ids, vars=locals())
-        dbstr = db.select(cls.__table__,
-                          where=('glyphName=$glyphName and idmaster=$idmaster'
-                                 ' and user_id=$user'),
-                          vars=dict(user=user, glyphName=glyphName,
-                                    idmaster=idmaster),
-                          order='length(PointName) asc,PointName asc')
+        dbstr = cls.db_select(where=('glyphName=$glyphName'
+                                     ' and idmaster=$idmaster'
+                                     ' and user_id=$user'),
+                              vars=dict(user=user, glyphName=glyphName,
+                                        idmaster=idmaster),
+                              order='length(PointName) asc, PointName asc')
         return list(dbstr)
 
 
-class GlyphParam(object):
+class VGLGroup(Model):
+
+    __table__ = 'vglgroup'
+
+    @classmethod
+    def select_one(cls, user, id, glyphName, idmaster):
+        return cls.db_select_first(where=('id=$id and GlyphName=$glyphName'
+                                          ' and idmaster=$idmaster'
+                                          ' and user_id=$user'),
+                                   vars=dict(id=id, user=user,
+                                             glyphName=glyphName,
+                                             idmaster=idmaster))
+
+
+class GlyphParam(Model):
 
     __table__ = 'glyphparam'
 
     @classmethod
     def select_vdate(cls, user, glyphName, idmaster):
-        return list(db.select(cls.__table__,
-                              what='unix_timestamp(max(vdate)) vdate',
-                              where=("user_id=$user and glyphName=$glyphName"
-                                     " and idmaster=$idmaster"),
-                              vars=dict(user=session.user, glyphName=glyphName,
-                                        idmaster=idmaster)))
+        return list(cls.db_select(what='unix_timestamp(max(vdate)) vdate',
+                                  where=("user_id=$user and glyphName=$glyphName"
+                                         " and idmaster=$idmaster"),
+                                  vars=dict(user=session.user, glyphName=glyphName,
+                                            idmaster=idmaster)))
 
     @classmethod
     def select_one_id(cls, user, glyphName, nameval, idmaster):
+        query = db.db_select_first(what='id',
+                                   where=('GlyphName=$glyphName'
+                                          ' and PointName=$PointName'
+                                          ' idmaster=$idmaster'
+                                          ' and user_id=$user'),
+                                   vars=dict(idmaster=idmaster, PointName=nameval,
+                                             user=user, glyphName=glyphName))
         try:
-            return db.select(cls.__table__,
-                             what='id',
-                             where=('GlyphName=$glyphName'
-                                    ' and PointName=$PointName'
-                                    ' idmaster=$idmaster'
-                                    ' and user_id=$user'),
-                             vars=dict(idmaster=idmaster, PointName=nameval,
-                                       user=user, glyphName=glyphName))[0].id
-        except (IndexError, AttributeError):
+            return query.id
+        except AttributeError:
             pass
 
     @classmethod
     def delete(cls, user, glyphName, idmaster):
-        db.delete(cls.__table__,
-                  where=('glyphName=$glyphName and idmaster=$idmaster'
-                         ' and user_id=$user'),
-                  vars=dict(user=user, glyphName=glyphName,
-                            idmaster=idmaster))
+        cls.db_delete(where=('glyphName=$glyphName and idmaster=$idmaster'
+                             ' and user_id=$user'),
+                      vars=dict(user=user, glyphName=glyphName,
+                                idmaster=idmaster))
 
     @classmethod
-    def insert(cls, **kwargs):
-        db.insert(cls.__table__, **kwargs)
+    def update(cls, user, id, glyphName, idmaster, **kwargs):
+        cls.db_update(where='id=$id and glyphName=$glyphName'
+                            ' and idmaster=$idmaster and user_id=$user',
+                      vars=dict(id=id, user=user, glyphName=glyphName,
+                                idmaster=idmaster),
+                      **kwargs)
+
+
+class GroupParam(object):
+
+    __table__ = 'groupparam'
+
+    @classmethod
+    def select_one(cls, user, groupname, idmaster):
+        return cls.db_select_first(where=('groupname=$groupname'
+                                          ' and idmaster=$idmaster'
+                                          ' and user_id=$user'),
+                                   vars=dict(idmaster=idmaster, user=user,
+                                             groupname=groupname))
 
 
 def putFontG(glyphName, glyphsource, idmaster):
@@ -408,178 +486,124 @@ def get_glyphparamid(glyphName, idmaster, nameval):
 def get_glyphparam(id):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
-    try:
-#        return db.select('glyphparam', where='id=$id and GlyphName='+'"'+glyphName+'"'+ids, vars=locals())[0]
-        return db.select('vglyphoutlines', where='id=$id and GlyphName=' + '"' + glyphName + '"' + ids, vars=locals())[0]
-    except IndexError:
-        return None
+    return VGlyphOutlines.select_one(session.user, id, glyphName, idmaster)
 
 
 def get_groupparam(id):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
-    try:
-        return db.select('vglgroup', where='id=$id and GlyphName='+'"'+glyphName+'"'+ids, vars=locals())[0]
-    except IndexError:
-        pass
+    return VGLGroup.select_one(session.user, id, glyphName, idmaster)
 
 
 def get_groupparam0(groupname):
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
-    try:
-        return db.select('groupparam', where='groupname=' + '"' + groupname + '"' + ids, vars=locals())[0]
-    except IndexError:
-        pass
+    return GroupParam.select_one(session.user, groupname, idmaster)
 
 
 def update_post(id, x, y):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
-
-    db.update('glyphoutline', where='id=$id and GlyphName="' + glyphName + '"' + ids, vars=locals(),
-              x=x, y=y)
-
-    db.query("commit")
+    GlyphOutline.update(session.user, id, glyphName, idmaster, x=x, y=y)
 
 
 def update_postp0(id, x, y, contr):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
-    #  remove pip link and set coordinates and contr new
-    db.update('glyphoutline', where='id=$id and GlyphName="' + glyphName + '"' + ids, vars=locals(),
-              x=x, y=y, pip=None, contrp=contr)
-    db.query("commit")
+    GlyphOutline.update(session.user, id, glyphName, idmaster,
+                        x=x, y=y, pip=None, contrp=contr)
 
 
 def update_postp(id, x, y, idpar):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
 
     if x is None:
-        db.update('glyphoutline', where='id=$id and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pip=idpar)
+        GlyphOutline.update(session.user, id, glyphName, idmaster, pip=idpar)
     else:
-        db.update('glyphoutline', where='id=$id and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  x=x, y=y, pip=idpar)
-
-    db.query("commit")
+        GlyphOutline.update(session.user, id, glyphName, idmaster,
+                            x=x, y=y, pip=idpar)
 
 
 def update_glyphparamD(id, ap, bp):
     # string:syntax update glyphparam set leftp='1' where id=75 and Glyphname='p' and idmaster=1;
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
     #
     #   get id from glyphoutline
-    strg = "select pip from glyphoutline where id='"+str(id)+"' and glyphname='"+glyphName+"'"+ids
-    lli = list(db.query(strg))
-    strg = ""
+    lli = list(GlyphOutline.select_one_pip(session.user, id,
+                                           glyphName, idmaster))
     if not lli:
         idp = id
         update_postp(id, None, None, idp)
     else:
-        idp = str(lli[0].pip)
+        idp = str(lli.pip)
     print "link id,pip", id, idp
 
     if ap in ['', 'select']:
         return
-    aa = ap
     if bp != '':
         bb = bp
         bbstr = str(bb)
-        strg = "update glyphparam set "+aa+"="+"'"+bbstr+"'"+" where id="+str(idp)+" and GlyphName='"+glyphName+"'"+ids
+        GlyphParam.update(session.user, idp, glyphName, idmaster,
+                          **{ap: str(bbstr)})
     else:
-        strg = "update glyphparam set "+aa+"=NULL where id="+str(idp)+" and GlyphName='"+glyphName+"'"+ids
-    print strg
-    db.query(strg)
-    db.query("commit")
+        GlyphParam.update(session.user, idp, glyphName, idmaster, **{ap: None})
 
 
 def update_glyphparam(id, a, b):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
-#
-#   get id from glyphoutline
-    strg = "select pip from glyphoutline where id='"+str(id)+"' and glyphname='"+glyphName+"'"+ids
-    lli = list(db.query(strg))
-    idp = str(lli[0].pip)
-    print "link id,pip", id, idp
-#
-    if a != '':
-        aa = a
-    else:
-        db.update('glyphparam', where='id="'+idp+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pointName=None, groupname=None)
-        db.query("commit")
+    #
+    #   get id from glyphoutline
+    lli = list(GlyphOutline.select_one_pip(session.user, id,
+                                           glyphName, idmaster))
+    if not lli:
         return
 
+    idp = str(lli.pip)
+    print "link id,pip", id, idp
+#
+    if a == '':
+        GlyphParam.update(session.user, idp, glyphName, idmaster,
+                          pointName=None, groupname=None)
+        return
+    
+    aa = a
     if b != '':
         bb = b
-        db.update('glyphparam', where='id="'+idp+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pointName=aa, groupname=bb)
-        db.query("commit")
+        GlyphParam.update(session.user, idp, glyphName, idmaster,
+                          pointName=aa, groupname=bb)
     else:
-        db.update('glyphparam', where='id="'+idp+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pointName=aa, groupname=None)
-        db.query("commit")
+        GlyphParam.update(session.user, idp, glyphName, idmaster,
+                          pointName=aa, groupname=None)
 
 
 def update_glyphparamName(id, a):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
-#
-#   get id from glyphoutline
-    strg = "select pip from glyphoutline where id='"+str(id)+"' and glyphname='"+glyphName+"'"+ids
-    lli = list(db.query(strg))
-    idp = str(lli[0].pip)
-    print "link id,pip", id, idp
-#
-    if a != '':
-        aa = a
-        db.update('glyphparam', where='id="'+idp+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pointName=aa)
-        db.query("commit")
-    else:
-        db.update('glyphparam', where='id="'+idp+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pointName=None)
-        db.query("commit")
-
-
-def update_glyphparamG(id, a):
-    glyphName = cFont.glyphunic
-    idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
     #
     #   get id from glyphoutline
-    strg = "select pip from glyphoutline where id='"+str(id)+"' and glyphname='"+glyphName+"'"+ids
-    lli = list(db.query(strg))
-    idp = str(lli[0].pip)
-    #
+
+    lli = list(GlyphOutline.select_one_pip(session.user, id,
+                                           glyphName, idmaster))
+    if not lli:
+        return
+
+    idp = str(lli.pip)
+    print "link id, pip", id, idp
+
     if a != '':
         aa = a
-        db.update('glyphparam', where='id="'+idp+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pointName=aa)
-        db.query("commit")
+        GlyphParam.update(session.user, idp, glyphName, idmaster,
+                          pointName=aa)
     else:
-        db.update('glyphparam', where='id="'+idp+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-                  pointName=None)
-        db.query("commit")
+        GlyphParam.update(session.user, idp, glyphName, idmaster,
+                          pointName=None)
 
 
 def insert_glyphparam(idp, a):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
     ligl = get_postspip()
     piplist = []
     idlist = []
@@ -594,13 +618,16 @@ def insert_glyphparam(idp, a):
             print "insert glyphparam", idpa
             idpar = str(idpa)
             break
-    db.update('glyphoutline', where='id="'+str(idp)+'" and GlyphName="'+glyphName+'"'+ids, vars=locals(),
-              pip=idpar)
+
+    GlyphOutline.update(session.user, idp, glyphName, idmaster,
+                        pip=idpar)
     try:
-        db.insert('glyphparam', id=idpar, GlyphName=glyphName, PointName=a, idmaster=idmaster)
+        GlyphParam.insert(id=idpar,
+                          GlyphName=glyphName,
+                          PointName=a,
+                          idmaster=idmaster)
     except:
         print "error during insert into glyphparam"
-    db.query("commit")
 
 
 def update_groupparamD(groupname, a, b):
