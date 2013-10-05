@@ -16,7 +16,7 @@ import xmltomf
 from lxml import etree
 from passlib.hash import bcrypt
 
-from config import cFont, working_dir
+from config import cFont, working_dir, session
 
 db = web.database(dbn='mysql', db='blog', user='root', pw='')
 
@@ -57,8 +57,143 @@ def delFont(fontName, glyphNamel):
     return None
 
 
-def putFontG(glyphName, glyphsource, idmaster):
+class GlyphOutline(object):
 
+    __table__ = 'glyphoutline'
+
+    @classmethod
+    def select(cls, user, glyphName, idmaster):
+        query = db.select(cls.__table__,
+                          where=('glyphName=$glyphName'
+                                 ' and idmaster=$idmaster and user_id=$user'),
+                          vars=dict(idmaster=idmaster, glyphName=glyphName,
+                                    user=user))
+        return list(query)
+
+    @classmethod
+    def select_vdate(cls, user, glyphName, idmaster):
+        return list(db.select(cls.__table__,
+                              what='unix_timestamp(max(vdate)) vdate',
+                              where=("user_id=$user and glyphName=$glyphName"
+                                     " and idmaster=$idmaster"),
+                              vars=dict(user=user, glyphName=glyphName,
+                                        idmaster=idmaster)))
+
+    @classmethod
+    def select_pip_only(cls, user, glyphName, idmaster):
+        query = db.select(cls.__table__,
+                          where=("GlyphName=$glyphName and idmaster=$idmaster"
+                                 " and user_id=$user"),
+                          what="id, pip",
+                          vars=dict(user=user, glyphName=glyphName,
+                                    idmaster=idmaster))
+        return list(query)
+
+    @classmethod
+    def delete(cls, user, glyphName, idmaster):
+        db.delete(cls.__table__,
+                  where=('Glyphname=$glyphName and idmaster=$idmaster'
+                         ' and user_id=$user'),
+                  vars=dict(user=user, glyphName=glyphName,
+                            idmaster=idmaster))
+
+    @classmethod
+    def insert(cls, **kwargs):
+        db.insert(cls.__table__, **kwargs)
+
+
+class VGlyphOutline(object):
+
+    __table__ = 'vglyphoutline'
+
+    @classmethod
+    def select(cls, user, glyphName, idmaster):
+        return db.select(cls.__table__,
+                         what="id, IFNULL(PointName, '') PointNr, x, y,"
+                              "concat('position: absolute; left: ', 0 + x, 'px;"
+                              "       top:', 0 - y, 'px; ',"
+                              "       IF (PointName > '', 'color:black;',"
+                              "         IF (contrp > 0 , 'z-index:1;color:blue;',"
+                              "             'z-index:0;color:CCFFFF;')"
+                              "       )"
+                              ") position",
+                         where=("glyphName=$glyphName and idmaster=$idmaster"
+                                " and user_id=$user"),
+                         vars=dict(glyphName=glyphName, idmaster=idmaster,
+                                   user=user))
+
+    @classmethod
+    def select_one(cls, user, id, glyphName, idmaster):
+        try:
+            query = db.select(cls.__table__,
+                              where=('id=$id and glyphName=$glyphName'
+                                     ' and idmaster=$idmaster'
+                                     ' and user_id=$user'),
+                              vars=dict(id=id, glyphName=glyphName,
+                                        idmaster=idmaster, user=user))
+            return query[0]
+        except IndexError:
+            pass
+
+
+class VGLS(object):
+
+    __table__ = 'vgls'
+
+    @classmethod
+    def select(cls, user, glyphName, idmaster):
+        # dbstr=db.select('vglyphoutlines',
+        #   where='glyphName='+'"'+glyphName+'"' +ids, vars=locals())
+        dbstr = db.select(cls.__table__,
+                          where=('glyphName=$glyphName and idmaster=$idmaster'
+                                 ' and user_id=$user'),
+                          vars=dict(user=user, glyphName=glyphName,
+                                    idmaster=idmaster),
+                          order='length(PointName) asc,PointName asc')
+        return list(dbstr)
+
+
+class GlyphParam(object):
+
+    __table__ = 'glyphparam'
+
+    @classmethod
+    def select_vdate(cls, user, glyphName, idmaster):
+        return list(db.select(cls.__table__,
+                              what='unix_timestamp(max(vdate)) vdate',
+                              where=("user_id=$user and glyphName=$glyphName"
+                                     " and idmaster=$idmaster"),
+                              vars=dict(user=session.user, glyphName=glyphName,
+                                        idmaster=idmaster)))
+
+    @classmethod
+    def select_one_id(cls, user, glyphName, nameval, idmaster):
+        try:
+            return db.select(cls.__table__,
+                             what='id',
+                             where=('GlyphName=$glyphName'
+                                    ' and PointName=$PointName'
+                                    ' idmaster=$idmaster'
+                                    ' and user_id=$user'),
+                             vars=dict(idmaster=idmaster, PointName=nameval,
+                                       user=user, glyphName=glyphName))[0].id
+        except (IndexError, AttributeError):
+            pass
+
+    @classmethod
+    def delete(cls, user, glyphName, idmaster):
+        db.delete(cls.__table__,
+                  where=('glyphName=$glyphName and idmaster=$idmaster'
+                         ' and user_id=$user'),
+                  vars=dict(user=user, glyphName=glyphName,
+                            idmaster=idmaster))
+
+    @classmethod
+    def insert(cls, **kwargs):
+        db.insert(cls.__table__, **kwargs)
+
+
+def putFontG(glyphName, glyphsource, idmaster):
     #  Read one glyph from xml file with glif extension
     #  and put the data into db
     #  There is a loadoption with values:
@@ -81,15 +216,11 @@ def putFontG(glyphName, glyphsource, idmaster):
     if idmaster < 0:
         cFont.idwork = '1'
 
-    xmldoc = etree.parse(glyphsource)
-    outline = xmldoc.find("outline")
-
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
     #
     #  decide when to load new entries from xml file
     #
-    dbq = list(db.query("SELECT unix_timestamp(max(vdate)) vdate from glyphoutline where glyphname=glyphName" + ids))
-    dbqp = list(db.query("SELECT unix_timestamp(max(vdate)) vdate from glyphparam where glyphname=glyphName" + ids))
+    dbq = GlyphOutline.select_vdate(session.user, glyphName, idmaster)
+    dbqp = GlyphParam.select_vdate(session.user, glyphName, idmaster)
     #
     # check if glyphoutline exists
     #
@@ -103,32 +234,35 @@ def putFontG(glyphName, glyphsource, idmaster):
         else:
             vdatedbp = int(dbqp[0].vdate)
 
-    items = outline
-
     idel = 0
     if dbq:
         vdateos = int(op.getmtime(glyphsource))
-        if (max(vdatedb, vdatedbp) < vdateos) and cFont.loadoption == '0' or cFont.loadoption == '99':
-            db.delete('glyphoutline', where='Glyphname="' + glyphName + '"' + ids)
-            db.delete('glyphparam', where='Glyphname="' + glyphName+'"' + ids)
+        if (max(vdatedb, vdatedbp) < vdateos) and cFont.loadoption == '0' \
+                or cFont.loadoption == '99':
+            GlyphOutline.delete(session.user, glyphName, idmaster)
+            GlyphParam.delete(session.user, glyphName, idmaster)
             idel = 1
 
     # check if list is empty
-    if not list(db.select('glyphoutline', where='GlyphName="' + glyphName + '"' + ids)) or cFont.loadoption == '1':
+    glyphs = GlyphOutline.select(session.user, glyphName, idmaster)
+    if not glyphs or cFont.loadoption == '1':
         #  put data into db
         inum = 0
         strg = ""
-        for itemlist in items:
+        xmldoc = etree.parse(glyphsource)
+        outline = xmldoc.find("outline")
+        for itemlist in outline:
             for s in itemlist:
                 inum = inum + 1
-                #  find a named point , convention the name begin with the letter z
+                # find a named point, convention the name begin
+                # with the letter z
                 if cFont.loadoption == '0' or idel == 1:
-
+                    idpar = inum
                     if s.get('name'):
                         nameval = s.get('name')
-                        idpar = inum
-                        db.insert('glyphparam', id=inum, GlyphName=glyphName, idmaster=idmaster, PointName=nameval)
-
+                        GlyphParam.insert(user_id=session.user, id=inum,
+                                          GlyphName=glyphName,
+                                          idmaster=idmaster, PointName=nameval)
                         #  find  all parameter and save it in db
                         # add glyphparameters here:
                         xxmrlat(inum, s, paramattr)
@@ -136,17 +270,23 @@ def putFontG(glyphName, glyphsource, idmaster):
                         nameval = ""
                         startp = 0
                         idpar = None
+
                     pointno = "p" + str(inum)
 
                     if s.get('type'):
                         mainpoint = 1
                     else:
                         mainpoint = 0
-                    if idpar is None:
-                        idpar = 'NULL'
-                    strg = "insert into glyphoutline (GlyphName,PointNr,x,y,contrp,id,idmaster,pip) Values (" + '"' + glyphName + '"' + "," + '"' + pointno + '"' + "," + str(s.get('x')) + "," + str(s.get('y')) + "," + str(mainpoint) + "," + str(inum) + "," + str(idmaster) + "," + str(idpar) + ")"
-                    db.query(strg)
-                    db.query("commit")
+
+                    GlyphOutline.insert(id=inum,
+                                        glyphName=glyphName,
+                                        PointNr=pointno,
+                                        x=s.get('x'),
+                                        y=s.get('y'),
+                                        contrp=mainpoint,
+                                        idmaster=idmaster,
+                                        pip=idpar,
+                                        user_id=session.user)
                 #
                 #  load option 1  read from xml files only x,y coordinates
                 #  it could be the order of the records has been changed
@@ -157,7 +297,8 @@ def putFontG(glyphName, glyphsource, idmaster):
                     else:
                         mainpoint = 0
                     update_postp0(inum, s.get('x'), s.get('y'), str(mainpoint))
-                    # in this case we read only the coordinates from the xml file
+                    # in this case we read only the coordinates
+                    # from the xml file
                     if s.get('name'):
                         nameval = s.get('name')
                         # get the link pip to the parameter table
@@ -208,10 +349,8 @@ def putFontAllglyphs():
     glyphnames = cFont.glyphName
     glyphunics = cFont.glyphunic
 
-    dirnamea = op.join(working_dir(cFont.fontpath),
-                            cFont.fontna, "glyphs")
-    dirnameb = op.join(working_dir(cFont.fontpath),
-                            cFont.fontnb, "glyphs")
+    dirnamea = op.join(working_dir(cFont.fontpath), cFont.fontna, "glyphs")
+    dirnameb = op.join(working_dir(cFont.fontpath), cFont.fontnb, "glyphs")
 
     charlista = [f for f in os.listdir(dirnamea)]
     charlistb = [f for f in os.listdir(dirnameb)]
@@ -241,43 +380,29 @@ def gidmast(idwork):
 def get_posts():
     idmaster = gidmast(cFont.idwork)
     glyphName = cFont.glyphunic
-    ids = " and idmaster=" + '"'+str(idmaster) + '"'
-    q1 = "SELECT IFNULL(PointName, '') PointNr,x,y,concat('position:absolute;left:',0+x,'px;top:',0-y,'px; ',IF (PointName > '', 'color:black;', IF (contrp > 0 , 'z-index:1;color:blue;', 'z-index:0;color:CCFFFF;')) ) position, id from vglyphoutline where GlyphName="+'"'+glyphName+'"'
-    return list(db.query(q1 + ids))
+    return list(VGlyphOutline.select(session.user, glyphName, idmaster))
 
 
 def get_postspa():
     idmaster = gidmast(cFont.idwork)
     glyphName = cFont.glyphunic
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
-#    dbstr=db.select('vglyphoutlines', where='glyphName='+'"'+glyphName+'"' +ids, vars=locals())
-    dbstr = db.select('vgls', where='glyphName=' + '"' + glyphName + '"' + ids + ' order by length(PointName) asc,PointName asc', vars=locals())
-    return list(dbstr)
+    return VGLS.select(session.user, glyphName, idmaster)
 
 
 def get_post(id):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
-    try:
-        return db.select('vglyphoutline', where='id=$id and glyphName=' + '"'+glyphName + '"' + ids, vars=locals())[0]
-    except IndexError:
-        pass
+    return VGlyphOutline.select_one(session.user, id, glyphName, idmaster)
 
 
 def get_postspip():
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
-    q1 = "SELECT id,pip from glyphoutline where GlyphName=" + '"' + glyphName + '"'
-    return list(db.query(q1+ids))
+    return GlyphOutline.select_pip_only(session.user, glyphName, idmaster)
 
 
 def get_glyphparamid(glyphName, idmaster, nameval):
-    ids = " and idmaster=" + '"' + str(idmaster) + '"'
-    strg = "select id from glyphparam where GlyphName='" + glyphName + "' and PointName ='" + nameval + "'" + ids
-    dbstr = list(db.query(strg))
-    return dbstr and dbstr[0].id
+    return GlyphParam.select_one_id(session.user, glyphName, nameval, idmaster)
 
 
 def get_glyphparam(id):
@@ -313,6 +438,7 @@ def get_groupparam0(groupname):
 def update_post(id, x, y):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
+
     ids = " and idmaster=" + '"' + str(idmaster) + '"'
 
     db.update('glyphoutline', where='id=$id and GlyphName="' + glyphName + '"' + ids, vars=locals(),
