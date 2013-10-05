@@ -2,9 +2,9 @@ drop view if exists vglyphoutline;
 drop view if exists vglyphoutlines;
 drop view if exists vgls;
 drop view if exists vglgroup;
-create  view vglyphoutline as select v.id,v.glyphName,v.PointNr,v.x,v.y,v.contrp,p.PointName, IFNULL(p.groupname,'') groupn, v.idmaster from glyphoutline v left join glyphparam p  on v.pip=p.id and v.glyphName=p.glyphName and v.idmaster=p.idmaster;
-create view vglyphoutlines as select v.id,p.idmaster,p.glyphName,PointNr,PointName, IFNULL(p.groupname,'') groupn,startp,doubledash,tripledash,superleft,superright,leftp,rightp,downp,upp,dir,leftp2,rightp2,downp2,upp2,dir2,tension,tensionand,cycle,penshifted,pointshifted,angle,penwidth,overx,overbase,overcap,overasc,overdesc,ascpoint,descpoint,stemcutter,stemshift,inktrap_l,inktrap_r from glyphoutline v left join glyphparam p on v.pip=p.id and p.PointName>'' and v.glyphName=p.glyphName and v.idmaster=p.idmaster;
-create view vgls as select v.id,p.idmaster,p.glyphName,PointNr,PointName,
+create  view vglyphoutline as select v.id, v.user_id, v.glyphName,v.PointNr,v.x,v.y,v.contrp,p.PointName, IFNULL(p.groupname,'') groupn, v.idmaster from glyphoutline v left join glyphparam p  on v.pip=p.id and v.glyphName=p.glyphName and v.idmaster=p.idmaster and v.user_id = p.user_id;
+create view vglyphoutlines as select v.id, v.user_id, p.idmaster,p.glyphName,PointNr,PointName, IFNULL(p.groupname,'') groupn,startp,doubledash,tripledash,superleft,superright,leftp,rightp,downp,upp,dir,leftp2,rightp2,downp2,upp2,dir2,tension,tensionand,cycle,penshifted,pointshifted,angle,penwidth,overx,overbase,overcap,overasc,overdesc,ascpoint,descpoint,stemcutter,stemshift,inktrap_l,inktrap_r from glyphoutline v left join glyphparam p on v.pip=p.id and p.PointName>'' and v.user_id=p.user_id and v.glyphName=p.glyphName and v.idmaster=p.idmaster;
+create view vgls as select v.id,p.idmaster,p.glyphName,PointNr,PointName, v.user_id, 
 ifnull(p.startp     ,(select g.startp      from groupparam g where g.idmaster=v.idmaster and g.groupname=p.groupname)) startp     ,
 ifnull(p.doubledash ,(select g.doubledash  from groupparam g where g.idmaster=v.idmaster and g.groupname=p.groupname)) doubledash ,
 ifnull(p.tripledash ,(select g.tripledash  from groupparam g where g.idmaster=v.idmaster and g.groupname=p.groupname)) tripledash ,
@@ -38,6 +38,6 @@ ifnull(p.stemcutter ,(select g.stemcutter  from groupparam g where g.idmaster=v.
 ifnull(p.stemshift  ,(select g.stemshift   from groupparam g where g.idmaster=v.idmaster and g.groupname=p.groupname)) stemshift  ,
 ifnull(p.inktrap_l  ,(select g.inktrap_l   from groupparam g where g.idmaster=v.idmaster and g.groupname=p.groupname)) inktrap_l  ,
 ifnull(p.inktrap_r  ,(select g.inktrap_r   from groupparam g where g.idmaster=v.idmaster and g.groupname=p.groupname)) inktrap_r  
-from glyphoutline v left join glyphparam p on v.pip=p.id and p.PointName>'' and v.glyphName=p.glyphName and v.idmaster=p.idmaster order by p.PointName;
-create view vglgroup as select v.id,v.idmaster,v.glyphName,v.groupname,
-p.startp,p.doubledash,p.tripledash,p.superleft,p.superright,p.leftp,p.rightp,p.downp,p.upp,p.dir,p.leftp2,p.rightp2,p.downp2,p.upp2,p.dir2,p.tension,p.tensionand,p.cycle,p.penshifted,p.pointshifted,p.angle,p.penwidth,p.overx,p.overbase,p.overcap,p.overasc,p.overdesc,p.ascpoint,p.descpoint,p.stemcutter,p.stemshift,p.inktrap_l,p.inktrap_r from glyphparam v , groupparam p where  p.groupname>'' and v.groupname=p.groupname and v.idmaster=p.idmaster;
+from glyphoutline v left join glyphparam p on v.pip=p.id and p.PointName>'' and v.glyphName=p.glyphName and v.user_id=p.user_id and v.idmaster=p.idmaster order by p.PointName;
+create view vglgroup as select v.id, v.user_id, v.idmaster,v.glyphName,v.groupname,
+p.startp,p.doubledash,p.tripledash,p.superleft,p.superright,p.leftp,p.rightp,p.downp,p.upp,p.dir,p.leftp2,p.rightp2,p.downp2,p.upp2,p.dir2,p.tension,p.tensionand,p.cycle,p.penshifted,p.pointshifted,p.angle,p.penwidth,p.overx,p.overbase,p.overcap,p.overasc,p.overdesc,p.ascpoint,p.descpoint,p.stemcutter,p.stemshift,p.inktrap_l,p.inktrap_r from glyphparam v , groupparam p where  p.groupname>'' and v.groupname=p.groupname and v.user_id=p.user_id and v.idmaster=p.idmaster;

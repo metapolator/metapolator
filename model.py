@@ -60,22 +60,22 @@ def delFont(fontName, glyphNamel):
 class Model(object):
 
     @classmethod
-    def db_select(cls, where='', vars={}, what='', order=''):
+    def db_select(cls, where=None, vars={}, what=None, order=None):
         return db.select(cls.__table__, what=what, where=where,
                          vars=vars, order=order)
 
     @classmethod
-    def db_delete(cls, where='', vars={}, what='', order=''):
+    def db_delete(cls, where=None, vars={}, what=None, order=None):
         return db.delete(cls.__table__, what=what, where=where,
                          vars=vars, order=order)
 
     @classmethod
-    def db_update(cls, where='', vars={}, **kwargs):
+    def db_update(cls, where=None, vars={}, **kwargs):
         return db.update(cls.__table__, where=where, vars=vars,
                          **kwargs)
 
     @classmethod
-    def db_select_first(cls, where='', vars={}, what='', order=''):
+    def db_select_first(cls, where=None, vars={}, what=None, order=None):
         try:
             return db.select(cls.__table__, what=what, where=where,
                              vars=vars, order=order)[0]
@@ -151,16 +151,8 @@ class VGlyphOutline(Model):
 
     @classmethod
     def select(cls, user, glyphName, idmaster):
-        return cls.db_select(what="id, IFNULL(PointName, '') PointNr, x, y,"
-                                  "concat('position: absolute; left: ', 0 + x, 'px;"
-                                  "       top:', 0 - y, 'px; ',"
-                                  "       IF (PointName > '', 'color:black;',"
-                                  "         IF (contrp > 0 , 'z-index:1;color:blue;',"
-                                  "             'z-index:0;color:CCFFFF;')"
-                                  "       )"
-                                  ") position",
-                             where=("glyphName=$glyphName and idmaster=$idmaster"
-                                    " and user_id=$user"),
+        return cls.db_select(what="id, IFNULL(PointName, '') PointNr, x, y, concat('position: absolute; left: ', 0 + x, 'px; top:', 0 - y, 'px; ', IF (PointName > '', 'color:black;', IF (contrp > 0 , 'z-index:1;color:blue;', 'z-index:0;color:CCFFFF;'))) position",
+                             where="glyphName=$glyphName and idmaster=$idmaster and user_id=$user",
                              vars=dict(glyphName=glyphName, idmaster=idmaster,
                                        user=user))
 
@@ -270,6 +262,52 @@ class GroupParam(object):
                                    vars=dict(idmaster=idmaster, user=user,
                                              groupname=groupname))
 
+    @classmethod
+    def update(cls, user, groupname, idmaster, **kwargs):
+        cls.db_update(where='groupname=$groupname and idmaster=$idmaster'
+                            ' and user_id=$user',
+                      vars=dict(groupname=groupname, user=user,
+                                idmaster=idmaster),
+                      **kwargs)
+
+
+class Master(Model):
+
+    __table__ = 'master'
+
+    @classmethod
+    def select_one(cls, user, id):
+        return cls.db_select_first(where='idmaster=$id and user_id=$user',
+                                   vars=dict(id=id, user=user))
+
+    @classmethod
+    def update(cls, user, id, **kwargs):
+        cls.db_update(where='user_id=$user and idmaster=$id',
+                      vars=dict(user=user, id=id),
+                      **kwargs)
+
+
+class GlobalParam(Model):
+
+    __table__ = 'globalparam'
+
+    @classmethod
+    def update(cls, user, id, **kwargs):
+        cls.db_update(where='idglobal=$id and user_id=$user',
+                      vars={'user': user, 'id': id},
+                      **kwargs)
+
+
+class LocalParam(Model):
+
+    __table__ = 'localparam'
+
+    @classmethod
+    def update(cls, user, id, **kwargs):
+        cls.db_update(where='idlocal=$id and user_id=$user',
+                      vars={'user': user, 'id': id},
+                      **kwargs)
+
 
 def putFontG(glyphName, glyphsource, idmaster):
     #  Read one glyph from xml file with glif extension
@@ -340,7 +378,8 @@ def putFontG(glyphName, glyphsource, idmaster):
                         nameval = s.get('name')
                         GlyphParam.insert(user_id=session.user, id=inum,
                                           GlyphName=glyphName,
-                                          idmaster=idmaster, PointName=nameval)
+                                          idmaster=idmaster,
+                                          PointName=nameval)
                         #  find  all parameter and save it in db
                         # add glyphparameters here:
                         xxmrlat(inum, s, paramattr)
@@ -625,7 +664,8 @@ def insert_glyphparam(idp, a):
         GlyphParam.insert(id=idpar,
                           GlyphName=glyphName,
                           PointName=a,
-                          idmaster=idmaster)
+                          idmaster=idmaster,
+                          user_id=session.user)
     except:
         print "error during insert into glyphparam"
 
@@ -635,19 +675,17 @@ def update_groupparamD(groupname, a, b):
     print a, b
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    ids = " and idmaster="+'"'+str(idmaster)+'"'
     aa = a
     print "*****group", groupname, a, b
     if a is not None and a != 'select':
         if b != '':
             bb = b
             bbstr = str(bb)
-            strg = "update groupparam set "+aa+"="+"'"+bbstr+"'"+" where groupname='"+groupname+"'"+ids
+            GroupParam.update(session.user, groupname, idmaster,
+                              **{aa: bbstr})
         else:
-            strg = "update groupparam set "+aa+"=NULL where groupname='"+groupname+"'"+ids
-        print strg
-        db.query(strg)
-        db.query("commit")
+            GroupParam.update(session.user, groupname, idmaster,
+                              **{aa: None})
 
 
 def insert_groupparam(a):
@@ -655,21 +693,22 @@ def insert_groupparam(a):
         return
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    db.insert('groupparam', groupname=a, idmaster=idmaster)
-    db.query("commit")
+    GroupParam.insert(groupname=a, idmaster=idmaster,
+                      user_id=session.user)
 
 
 def get_masters():
-    return db.select('master',  vars=locals())
+    return Master.db_select()
 
 
 def get_master(id):
     cFont.idmaster = id
-    ssmr = db.select('master',  where='idmaster=$id', vars=locals())
-    ssm = list(ssmr)
-    cFont.fontname = str(ssm[0].FontName)
-    cFont.fontna = str(ssm[0].FontNameA)
-    cFont.fontnb = str(ssm[0].FontNameB)
+    ssmr = list(Master.select_one(session.user, id))
+    if not ssmr:
+        return
+    cFont.fontname = str(ssmr.FontName)
+    cFont.fontna = str(ssmr.FontNameA)
+    cFont.fontnb = str(ssmr.FontNameB)
 
     return ssmr
 
@@ -678,13 +717,14 @@ def update_master(id):
     fontNameA = cFont.fontna
     fontNameB = cFont.fontnb
     fontName = cFont.fontname
-    db.update('master', where='idmaster=$id', vars=locals(),
-              fontNameA=fontNameA, fontNameB=fontNameB, FontName=fontName)
-    db.query("commit")
+
+    Master.update(session.user, id, fontNameA=fontNameA,
+                  fontNameB=fontNameB, FontName=fontName)
 
 
 def get_globalparams():
-    return db.select('globalparam', vars=locals())
+    return GlobalParam.db_select(where='user_id=$user',
+                                 vars={'user': session.user})
 
 
 def put_master():
@@ -695,7 +735,9 @@ def put_master():
     t = db.transaction()
 
     try:
-        db.insert('master', FontName="'"+fontName+"'", FontNameA="'"+fontNameA+"'", FontNameB="'"+fontNameB+"'", idglobal="'"+idglobal+"'")
+        Master.insert(user_id=session.user,
+                      FontName=fontName, FontNameA=fontNameA,
+                      FontNameB=fontNameB, idglobal=idglobal)
     except:
         t.rollback()
         raise
@@ -703,22 +745,21 @@ def put_master():
         t.commit()
 
 
-def get_globalparams():
-    return db.select('globalparam', vars=locals())
-
-
 def get_globalparam(id):
     cFont.idglobal = id
-    return db.select('globalparam', where='idglobal=$id', vars=locals())
+    return GlobalParam.db_select(where='user_id=$user and idglobal=$id',
+                                 vars={'user': session.user, 'id': id})
 
 
 def get_localparams():
-    return db.select('localparam', vars=locals())
+    return LocalParam.db_select(where='user_id=$user',
+                                vars={'user': session.user})
 
 
 def get_localparam(id):
     print "idididget local", id
-    return db.select('localparam', where='idlocal=$id', vars=locals())
+    return LocalParam.db_select(where='user_id=$user and idlocal=$id',
+                                vars={'user': session.user, 'id': id})
 
 
 def put_globalparam(id):
@@ -730,7 +771,8 @@ def put_globalparam(id):
     ascl = cFont.ascl
     des = cFont.des
     box = cFont.box
-    db.insert('globalparam', where='idglobal = $id', vars=locals(),
+
+    db.insert('globalparam', where='idglobal=$id', vars=locals(),
               metapolation=metapolation, unitwidth=unitwidth,
               fontsize=fontsize, mean=mean, cap=cap, ascl=ascl, des=des,
               box=box)
@@ -738,24 +780,21 @@ def put_globalparam(id):
 
 
 def updatemaster(id, a, b, c, d):
-    db.update('master', where='idmaster = $id', vars=locals(),
-              FontName=a, FontNameA=b, FontNameB=c, idglobal=d)
-    db.query("commit")
-
+    Master.update(session.user, id, FontName=a, FontNameA=b,
+                  FontNameB=c, idglobal=d)
+    
 
 def update_globalparam(id, a, b, c, d, e, f, g):
-    db.update('globalparam', where='idglobal = $id', vars=locals(),
-              metapolation=a, fontsize=b, mean=c, cap=d, ascl=e, des=f, box=g)
-    db.query("commit")
+    GlobalParam.update(session.user, id, metapolation=a, fontsize=b, mean=c,
+                       cap=d, ascl=e, des=f, box=g)
 
 
 def update_localparam(id, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13):
     print "id local param update", id
-    db.update('localparam', where='idlocal = $id', vars=locals(),
-              px=a1, width=a2, space=a3, xheight=a4, capital=a5, boxheight=a6,
-              ascender=a7, descender=a8, inktrap=a9, stemcut=a10, skeleton=a11,
-              superness=a12, over=a13)
-    db.query("commit")
+    LocalParam.update(session.user, id,
+                      px=a1, width=a2, space=a3, xheight=a4, capital=a5,
+                      boxheight=a6, ascender=a7, descender=a8, inktrap=a9,
+                      stemcut=a10, skeleton=a11, superness=a12, over=a13)
 
 
 def copyproject():
@@ -771,47 +810,46 @@ def copyproject():
     idmasternew = idma[0].maxid + 1
     print "idmasternew", idmasternew
     #
-    strg = "mkdir -p fonts/"+str(idmasternew)
-    print "mkdir **", strg
-    os.system(strg)
-    strg = "cp -rp fonts/"+str(idmaster)+"/* fonts/"+str(idmasternew)+"/"
-    #
-    print "cp **", strg
-    os.system(strg)
+    import shutil
+    new_proj_dir = working_dir(op.join('fonts', gstr(idmasternew)))
+    old_proj_dir = working_dir(op.join('fonts', gstr(idmaster)))
+    shutil.copytree(old_proj_dir, new_proj_dir)
     #
     #
     for iloop in [1, -1]:
         idmnew = "'"+str(iloop*idmasternew)+"'"
         idm = "'"+str(iloop*idmaster)+"'"
-        strg = "insert into master (idmaster,FontName,FontNameA,FontNameB,idglobal,vdate) select "+idmnew+", FontName,FontNameA,FontNameB,idglobal,now() from master where idmaster="+idm
+        strg = ("insert into master (idmaster,FontName,FontNameA,FontNameB,idglobal,vdate,user_id)"
+                " select "+idmnew+", FontName,FontNameA,FontNameB,idglobal,now() from master where"
+                " user_id=%s and idmaster=%s") % (session.user, idm)
         print strg
         db.query(strg)
 
         strg = "drop table if exists tmp"
         db.query(strg)
-        strg = "create temporary table tmp select * from glyphoutline where idmaster="+idm
+        strg = "create temporary table tmp select * from glyphoutline where user_id=%s anb idmaster=%s" % (session.user, idm)
         db.query(strg)
-        strg = "update tmp set idmaster="+idmnew+",vdate=now() where idmaster="+idm
+        strg = "update tmp set idmaster="+idmnew+",vdate=now() where user_id=%s and idmaster=%s" % (session.user, idm)
         db.query(strg)
-        strg = "insert into glyphoutline select * from tmp where idmaster="+idmnew
-        db.query(strg)
-
-        strg = "drop table if exists tmp"
-        db.query(strg)
-        strg = "create temporary table tmp select * from groupparam where idmaster="+idm
-        db.query(strg)
-        strg = "update tmp set idmaster="+idmnew+",vdate=now() where idmaster="+idm
-        db.query(strg)
-        strg = "insert into groupparam select * from tmp where idmaster="+idmnew
+        strg = "insert into glyphoutline select * from tmp where idmaster=%s and user_id=%s" % (idmnew, session.user)
         db.query(strg)
 
         strg = "drop table if exists tmp"
         db.query(strg)
-        strg = "create temporary table tmp select * from glyphparam where idmaster="+idm
+        strg = "create temporary table tmp select * from groupparam where idmaster=%s and user_id=%s" % (idm, session.user)
         db.query(strg)
-        strg = "update tmp set idmaster="+idmnew+",vdate=now() where idmaster="+idm
+        strg = "update tmp set idmaster="+idmnew+",vdate=now() where idmaster=%s and user_id=%s" % (idm, session.user)
         db.query(strg)
-        strg = "insert into glyphparam select * from tmp where idmaster="+idmnew
+        strg = "insert into groupparam select * from tmp where idmaster=%s and user_id=%s" % (idmnew, session.user)
+        db.query(strg)
+
+        strg = "drop table if exists tmp"
+        db.query(strg)
+        strg = "create temporary table tmp select * from glyphparam where idmaster=%s and user_id=%s" % (idm, session.user)
+        db.query(strg)
+        strg = "update tmp set idmaster="+idmnew+",vdate=now() where idmaster=%s and user_id=%s" % (idm, session.user)
+        db.query(strg)
+        strg = "insert into glyphparam select * from tmp where idmaster=%s and user_id=%s" % (idmnew, session.user)
         db.query(strg)
 
 
@@ -826,16 +864,15 @@ def writexml():
     idmaster = gidmast(cFont.idwork)
 
     if cFont.idwork == '0':
-        glyphsourceA = op.join(working_dir(cFont.fontpath),
-                                    cFont.fontna,
-                                    "glyphs", glyphName + ".glif")
+        glyphsourceA = op.join(working_dir(cFont.fontpath), cFont.fontna,
+                               "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceA
         xmldoc = etree.parse(glyphsourceA)
         items = xmldoc.find("outline")
 
     if cFont.idwork == '1':
         glyphsourceB = op.join(working_dir(cFont.fontpath), cFont.fontnb,
-                                    "glyphs", glyphName + ".glif")
+                               "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceB
         xmldoc = etree.parse(glyphsourceB)
         items = xmldoc.find("outline")
@@ -847,75 +884,75 @@ def writexml():
     for itemlist in items:
         for s in itemlist:
             inum = inum + 1
-            qstr = "SELECT PointNr,x,y,PointName from vglyphoutline where id=" + str(inum) + " and Glyphname=" + '"'+glyphName + '"' + ids
 
-            db_rows = list(db.query(qstr))
-            s.attrib['pointNo'] = str(db_rows[0].PointNr)
-            s.attrib['x'] = str(db_rows[0].x)
-            s.attrib['y'] = str(db_rows[0].y)
-            sname = str(db_rows[0].PointName)
+            db_row = VGlyphOutline.select_one(session.user, inum, glyphName, idmaster)
+            if not db_row:
+                continue
+            s.attrib['pointNo'] = str(db_row.PointNr)
+            s.attrib['x'] = str(db_row.x)
+            s.attrib['y'] = str(db_row.y)
+            sname = db_row.PointName
 
-            if sname not in ['', 'NULL', "None"]:
-                qstrp = "SELECT * from  vglyphoutlines where id=" + str(inum) + " and Glyphname=" + '"' + glyphName + '"' + ids
-                db_rowpar = list(db.query(qstrp))
-                nameattr = sname
-                if s.get('name'):
-                    s.attrib['name'] = nameattr
-                else:
-                    s.attrib['name'] = nameattr
-                #
-                # first read group parameters
-                if str(db_rowpar[0].groupn) not in ["None", 'NULL', '']:
-                    groupname = db_rowpar[0].groupn
-                    #     save the groupname in an xml attribute
-                    #
-                    if s.get('groupname'):
-                        s.attrib['groupname'] = groupname
-                    else:
-                        s.sattrib('groupname', groupname)
-                    #
-                    #     get the parameter list included with group parameters (lower priority)
-                    qstrp = "SELECT * from vgls where id=" + str(inum) + " and Glyphname=" + '"' + glyphName + '"' + ids
-                    db_rowpar = list(db.query(qstrp))
-
-                #
-                # read param value and write into xml
-                # add glyphparameters here:
-                xxmlat(s, db_rowpar[0].startp, 'startp', '1', 0)
-                xxmlat(s, db_rowpar[0].doubledash, 'doubledash', '1', 0)
-                xxmlat(s, db_rowpar[0].tripledash, 'tripledash', '1', 0)
-                xxmlat(s, db_rowpar[0].superleft, 'superleft', '', 5)
-                xxmlat(s, db_rowpar[0].superright, 'superright', '', 5)
-                xxmlat(s, db_rowpar[0].leftp, 'leftp', '1', 0)
-                xxmlat(s, db_rowpar[0].rightp, 'rightp', '1', 0)
-                xxmlat(s, db_rowpar[0].downp, 'downp', '1', 0)
-                xxmlat(s, db_rowpar[0].upp, 'upp', '1', 0)
-                xxmlat(s, db_rowpar[0].dir, 'dir', '', 0)
-                xxmlat(s, db_rowpar[0].leftp2, 'leftp2', '1', 0)
-                xxmlat(s, db_rowpar[0].rightp2, 'rightp2', '1', 0)
-                xxmlat(s, db_rowpar[0].downp2, 'downp2', '1', 0)
-                xxmlat(s, db_rowpar[0].upp2, 'upp2', '1', 0)
-                xxmlat(s, db_rowpar[0].dir2, 'dir2', '', 0)
-                xxmlat(s, db_rowpar[0].tension, 'tension', '', 0)
-                xxmlat(s, db_rowpar[0].tensionand, 'tensionand', '', 0)
-                xxmlat(s, db_rowpar[0].cycle, 'cycle', '', 0)
-                xxmlat(s, db_rowpar[0].penshifted, 'penshifted', '', 0)
-                xxmlat(s, db_rowpar[0].pointshifted, 'pointshifted', '', 0)
-                xxmlat(s, db_rowpar[0].angle, 'angle', '', 0)
-                xxmlat(s, db_rowpar[0].penwidth, 'penwidth', '', 0)
-                xxmlat(s, db_rowpar[0].overx, 'overx', '', 0)
-                xxmlat(s, db_rowpar[0].overbase, 'overbase', '', 0)
-                xxmlat(s, db_rowpar[0].overcap, 'overcap', '', 0)
-                xxmlat(s, db_rowpar[0].overasc, 'overasc', '', 0)
-                xxmlat(s, db_rowpar[0].ascpoint, 'ascpoint', '1', 0)
-                xxmlat(s, db_rowpar[0].descpoint, 'descpoint', '1', 0)
-                xxmlat(s, db_rowpar[0].stemcutter, 'stemcutter', '', 4)
-                xxmlat(s, db_rowpar[0].stemshift, 'stemshift', '', 4)
-                xxmlat(s, db_rowpar[0].inktrap_l, 'inktrap_l', '', 4)
-                xxmlat(s, db_rowpar[0].inktrap_r, 'inktrap_r', '', 4)
-            else:
+            if not sname:
                 if s.get('name'):
                     del s.attrib['name']
+                continue
+
+            db_rowpar = VGlyphOutlines.select_one(session.user, inum, glyphName, idmaster)
+            nameattr = sname
+            if s.get('name'):
+                s.attrib['name'] = nameattr
+            else:
+                s.attrib['name'] = nameattr
+            #
+            # first read group parameters
+            if str(db_rowpar.groupn) not in ["None", 'NULL', '']:
+                groupname = db_rowpar.groupn
+                #     save the groupname in an xml attribute
+                #
+                if s.get('groupname'):
+                    s.attrib['groupname'] = groupname
+                else:
+                    s.sattrib('groupname', groupname)
+                #
+                #     get the parameter list included with group parameters (lower priority)
+                db_rowpar = VGLS.select_one(session.user, inum, glyphName, idmaster)
+
+            #
+            # read param value and write into xml
+            # add glyphparameters here:
+            xxmlat(s, db_rowpar.startp, 'startp', '1', 0)
+            xxmlat(s, db_rowpar.doubledash, 'doubledash', '1', 0)
+            xxmlat(s, db_rowpar.tripledash, 'tripledash', '1', 0)
+            xxmlat(s, db_rowpar.superleft, 'superleft', '', 5)
+            xxmlat(s, db_rowpar.superright, 'superright', '', 5)
+            xxmlat(s, db_rowpar.leftp, 'leftp', '1', 0)
+            xxmlat(s, db_rowpar.rightp, 'rightp', '1', 0)
+            xxmlat(s, db_rowpar.downp, 'downp', '1', 0)
+            xxmlat(s, db_rowpar.upp, 'upp', '1', 0)
+            xxmlat(s, db_rowpar.dir, 'dir', '', 0)
+            xxmlat(s, db_rowpar.leftp2, 'leftp2', '1', 0)
+            xxmlat(s, db_rowpar.rightp2, 'rightp2', '1', 0)
+            xxmlat(s, db_rowpar.downp2, 'downp2', '1', 0)
+            xxmlat(s, db_rowpar.upp2, 'upp2', '1', 0)
+            xxmlat(s, db_rowpar.dir2, 'dir2', '', 0)
+            xxmlat(s, db_rowpar.tension, 'tension', '', 0)
+            xxmlat(s, db_rowpar.tensionand, 'tensionand', '', 0)
+            xxmlat(s, db_rowpar.cycle, 'cycle', '', 0)
+            xxmlat(s, db_rowpar.penshifted, 'penshifted', '', 0)
+            xxmlat(s, db_rowpar.pointshifted, 'pointshifted', '', 0)
+            xxmlat(s, db_rowpar.angle, 'angle', '', 0)
+            xxmlat(s, db_rowpar.penwidth, 'penwidth', '', 0)
+            xxmlat(s, db_rowpar.overx, 'overx', '', 0)
+            xxmlat(s, db_rowpar.overbase, 'overbase', '', 0)
+            xxmlat(s, db_rowpar.overcap, 'overcap', '', 0)
+            xxmlat(s, db_rowpar.overasc, 'overasc', '', 0)
+            xxmlat(s, db_rowpar.ascpoint, 'ascpoint', '1', 0)
+            xxmlat(s, db_rowpar.descpoint, 'descpoint', '1', 0)
+            xxmlat(s, db_rowpar.stemcutter, 'stemcutter', '', 4)
+            xxmlat(s, db_rowpar.stemshift, 'stemshift', '', 4)
+            xxmlat(s, db_rowpar.inktrap_l, 'inktrap_l', '', 4)
+            xxmlat(s, db_rowpar.inktrap_r, 'inktrap_r', '', 4)
 #
 
     print "glyphsource", glyphsource
