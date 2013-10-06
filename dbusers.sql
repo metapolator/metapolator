@@ -42,3 +42,12 @@ INSERT INTO users
     SET username='guest2',
         password='$2a$12$sZKe4qnuECXbACZcbZeJpuB3HmIxWooFsdXP3Y.nO8Qgz5wuhONsq',
         email='guest2@example.com';
+
+
+UPDATE glyph SET user_id = 1;
+UPDATE glyphoutline SET user_id = 1;
+UPDATE glyphparam SET user_id = 1;
+UPDATE groupparam SET user_id = 1;
+UPDATE master SET user_id = 1;
+UPDATE globalparam SET user_id = 1;
+UPDATE localparam SET user_id = 1;
