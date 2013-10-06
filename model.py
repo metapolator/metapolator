@@ -569,8 +569,7 @@ def update_glyphparamD(id, ap, bp):
     idmaster = gidmast(cFont.idwork)
     #
     #   get id from glyphoutline
-    lli = list(GlyphOutline.select_one_pip(session.user, id,
-                                           glyphName, idmaster))
+    lli = GlyphOutline.select_one_pip(session.user, id, glyphName, idmaster)
     if not lli:
         idp = id
         update_postp(id, None, None, idp)
