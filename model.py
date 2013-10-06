@@ -866,14 +866,20 @@ def writexml():
         glyphsourceA = op.join(working_dir(cFont.fontpath), cFont.fontna,
                                "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceA
-        xmldoc = etree.parse(glyphsourceA)
+        try:
+            xmldoc = etree.parse(glyphsourceA)
+        except IOError:
+            return
         items = xmldoc.find("outline")
 
     if cFont.idwork == '1':
         glyphsourceB = op.join(working_dir(cFont.fontpath), cFont.fontnb,
                                "glyphs", glyphName + ".glif")
         glyphsource = glyphsourceB
-        xmldoc = etree.parse(glyphsourceB)
+        try:
+            xmldoc = etree.parse(glyphsourceB)
+        except IOError:
+            return
         items = xmldoc.find("outline")
 
     ids = " and idmaster="+'"'+str(idmaster)+'"'
