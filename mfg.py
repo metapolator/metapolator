@@ -206,6 +206,8 @@ class View:
         model.writeGlyphlist()
         strms = "cd %s; sh %s font.mf" % (working_dir(), "makefont.sh")
         os.system(strms)
+
+        master = [master]
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
 
 
