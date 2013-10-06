@@ -16,6 +16,10 @@ ALTER TABLE master ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (u
 ALTER TABLE globalparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
 ALTER TABLE localparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
 
+ALTER TABLE glyphoutline DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, id, glyphName, user_id);
+ALTER TABLE glyphparam DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, id, glyphName, user_id);
+ALTER TABLE groupparam DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, groupname, user_id);
+
 CREATE TABLE users (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username varchar(80) NOT NULL,
@@ -38,3 +42,12 @@ INSERT INTO users
     SET username='guest2',
         password='$2a$12$sZKe4qnuECXbACZcbZeJpuB3HmIxWooFsdXP3Y.nO8Qgz5wuhONsq',
         email='guest2@example.com';
+
+
+UPDATE glyph SET user_id = 1;
+UPDATE glyphoutline SET user_id = 1;
+UPDATE glyphparam SET user_id = 1;
+UPDATE groupparam SET user_id = 1;
+UPDATE master SET user_id = 1;
+UPDATE globalparam SET user_id = 1;
+UPDATE localparam SET user_id = 1;

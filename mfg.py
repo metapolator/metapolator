@@ -13,7 +13,7 @@ import os
 import re
 import sys
 import web
-
+from web import seeother
 from passlib.hash import bcrypt
 from config import app, cFont, is_loggedin, session, working_dir
 
@@ -30,6 +30,8 @@ class Index:
 
     def GET(self):
         """ Show page """
+        if not is_loggedin():
+            raise seeother('/login')
         posts = model.get_posts()
         master = model.get_masters()
         fontsource = [cFont.fontna, cFont.fontnb, cFont.glyphName]
@@ -41,6 +43,8 @@ class Metap:
 
     def GET(self, id):
         """ Show page """
+        if not is_loggedin():
+            raise seeother('/login')
         posts = model.get_posts()
         master = model.get_masters()
 
@@ -116,6 +120,8 @@ class View:
 
     def GET(self, id):
         """ View single post """
+        if not is_loggedin():
+            raise seeother('/login')
         form = self.form()
 
         if int(id) > 0:
@@ -132,11 +138,15 @@ class View:
         if groupparam is not None:
             formParamG.fill(groupparam)
         mastglobal = model.get_globalparam(cFont.idglobal)
-        master = model.get_master(cFont.idmaster)
+        master = model.get_master(cFont.idmaster) or []
+        if master:
+            master = [master]
         webglyph = cFont.glyphName
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
 
     def POST(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         form = View.form()
         formParam = View.formParam()
         formParamG = View.formParamG()
@@ -202,6 +212,8 @@ class View:
 class ViewFont:
     def GET(self):
         """ View single post """
+        if not is_loggedin():
+            raise seeother('/login')
         param = cFont.glyphName
         return render.viewfont(param)
 
@@ -228,9 +240,11 @@ class Font1:
                          web.form.Button('savefont'),)
 
     def GET(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         mmaster = list(model.get_masters())
         if int(id) > 0 and int(id) < 1000:
-            master = list(model.get_master(id))
+            model.get_master(id)
         if int(id) > 1000:
             cFont.glyphName = chr(int(id) - 1001 + 32)
             cFont.glyphunic = str(int(id) - 1001)
@@ -247,6 +261,8 @@ class Font1:
         return render.font1(fontlist, form, mmaster, cFont)
 
     def POST(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         mmaster = list(model.get_masters())
         form = Font1.form()
         form.fill()
@@ -273,7 +289,7 @@ class Font1:
 
         if int(id) > 0 and int(id) < 1000:
             model.update_master(id)
-            master = list(model.get_master(id))
+            master = model.get_master(id)
 #       model.putFont()
         model.putFontAllglyphs()
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
@@ -318,6 +334,8 @@ class GlobalParam:
         web.form.Button('saveg'),)
 
     def GET(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         print "getparam", id
         gml = list(model.get_globalparams())
         formg = self.formg()
@@ -333,6 +351,8 @@ class GlobalParam:
         return render.font2(formg, gml, cFont)
 
     def POST(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         print "postparam", id
         gml = list(model.get_globalparams())
         gm = list(model.get_globalparam(id))
@@ -392,6 +412,8 @@ class localParamA:
         web.form.Button('saveA'),)
 
     def GET(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         print "getparam", id
         gml = list(model.get_globalparams())
         formg = GlobalParam.formg()
@@ -423,6 +445,8 @@ class localParamA:
         return render.font3(formg, gml, cFont, glo, formlA, formlB)
 
     def POST(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         gml = list(model.get_globalparams())
         glo = list(model.get_localparams())
         idlB = cFont.idlocalB
@@ -491,7 +515,8 @@ class localParamB:
         web.form.Button('saveB'),)
 
     def GET(self, id):
-
+        if not is_loggedin():
+            raise seeother('/login')
         gml = list(model.get_globalparams())
         formg = GlobalParam.formg()
         glo = list(model.get_localparams())
@@ -518,6 +543,8 @@ class localParamB:
         return render.font4(formg, gml, cFont, glo, formlA, formlB)
 
     def POST(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         gml = list(model.get_globalparams())
         glo = list(model.get_localparams())
         idlA = cFont.idlocalA
@@ -547,6 +574,8 @@ class localParamB:
 class copyproject:
 
     def GET(self, id):
+        if not is_loggedin():
+            raise seeother('/login')
         print "** in cproject copy project ", cFont.idmaster
         if id == '1001':
             ip = model.copyproject()
