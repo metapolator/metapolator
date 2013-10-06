@@ -593,8 +593,7 @@ def update_glyphparam(id, a, b):
     idmaster = gidmast(cFont.idwork)
     #
     #   get id from glyphoutline
-    lli = list(GlyphOutline.select_one_pip(session.user, id,
-                                           glyphName, idmaster))
+    lli = GlyphOutline.select_one_pip(session.user, id, glyphName, idmaster)
     if not lli:
         return
 
