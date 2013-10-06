@@ -131,7 +131,7 @@ class GlyphOutline(Model):
     @classmethod
     def update(cls, user, id, glyphName, idmaster, **kwargs):
         cls.db_update(where=('id=$id and GlyphName=$glyphName'
-                             ' and idmaster=$idmaster"'
+                             ' and idmaster=$idmaster'
                              ' and user_id=$user'),
                       vars=dict(id=id, user=user, glyphName=glyphName,
                                 idmaster=idmaster), **kwargs)
