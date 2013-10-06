@@ -250,7 +250,7 @@ class GlyphParam(Model):
                       **kwargs)
 
 
-class GroupParam(object):
+class GroupParam(Model):
 
     __table__ = 'groupparam'
 
