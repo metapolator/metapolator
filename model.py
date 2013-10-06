@@ -66,8 +66,7 @@ class Model(object):
 
     @classmethod
     def db_delete(cls, where=None, vars={}, what='*', order=None):
-        return db.delete(cls.__table__, what=what, where=where,
-                         vars=vars, order=order)
+        return db.delete(cls.__table__, where=where, vars=vars)
 
     @classmethod
     def db_update(cls, where=None, vars={}, **kwargs):
