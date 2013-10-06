@@ -336,20 +336,20 @@ def putFontG(glyphName, glyphsource, idmaster):
     #
     #  decide when to load new entries from xml file
     #
-    dbq = GlyphOutline.select_vdate(session.user, glyphName, idmaster)
-    dbqp = GlyphParam.select_vdate(session.user, glyphName, idmaster)
+    dbq = GlyphOutline.select_vdate(session.user, glyphName, idmaster)[0]
+    dbqp = GlyphParam.select_vdate(session.user, glyphName, idmaster)[0]
     #
     # check if glyphoutline exists
     #
-    if dbq[0].vdate is None:
+    if dbq.vdate is None:
         vdatedb = 0
         vdatedbp = 0
     else:
-        vdatedb = int(dbq[0].vdate)
-        if dbqp[0].vdate is None:
+        vdatedb = int(dbq.vdate)
+        if dbqp.vdate is None:
             vdatedbp = 0
         else:
-            vdatedbp = int(dbqp[0].vdate)
+            vdatedbp = int(dbqp.vdate)
 
     idel = 0
     if dbq:
