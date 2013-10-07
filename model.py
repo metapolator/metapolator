@@ -22,7 +22,7 @@ db = web.database(dbn='mysql', db='blog', user='root', pw='')
 
 
 def xxmlat(s, dbob, sattr, val, iro):
-
+    print sattr, '=', dbop
     if dbob is not None:
         if s.get(sattr):
             del s.attrib[sattr]
