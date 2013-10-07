@@ -21,7 +21,7 @@ urls = ('/', 'mfg.Index',
         '/cproject/(\d+)', 'mfg.copyproject'
         )
 
-
+web.config.debug = False
 app = web.application(urls, globals())
 
 session = web.session.Session(app, web.session.DiskStore('sessions'),
@@ -64,6 +64,15 @@ class cFont:
 def working_dir(path=None, user=None):
     if is_loggedin():
         directory = op.join(PROJECT_ROOT, 'users', str(user or session.user))
+        if not path:
+            return directory
+        return op.join(directory, path)
+    return path
+
+
+def working_url(path=None):
+    if is_loggedin():
+        directory = op.join('/', 'users', str(session.user))
         if not path:
             return directory
         return op.join(directory, path)

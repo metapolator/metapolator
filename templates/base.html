@@ -87,7 +87,9 @@ right {
 
 <div class="menu">
 
-<p><span class="button"><a href="/static/font.otf">Download OTF</a></span></p>
+$if is_loggedin():
+	<p><span class="button"><a href="$working_url('static/font.otf')">Download OTF</a></span></p>
+
 
 <p><span class="button"><a href="/view/1">Editor&nbsp;&nbsp;</a></span></p>
 <!-- <p><span class="button"><a href="/">Editor&nbsp;&nbsp;</a></span></p> -->

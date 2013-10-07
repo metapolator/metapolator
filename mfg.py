@@ -15,12 +15,15 @@ import sys
 import web
 from web import seeother
 from passlib.hash import bcrypt
-from config import app, cFont, is_loggedin, session, working_dir
+from config import app, cFont, is_loggedin, session, working_dir, \
+    working_url
 
 
 ### Templates
 t_globals = {
-    'datestr': web.datestr
+    'datestr': web.datestr,
+    'working_url': working_url,
+    'is_loggedin': is_loggedin
 }
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
