@@ -13,6 +13,7 @@ import os
 import re
 import sys
 import web
+import web.form as form
 from web import seeother
 from passlib.hash import bcrypt
 from config import app, cFont, is_loggedin, session, working_dir, \
@@ -681,6 +682,70 @@ class Register:
         import shutil
         shutil.copytree(working_dir(user='skel'), working_dir())
         raise seeother
+
+
+UploadForm = form.Form(
+    form.Textbox("name", form.notnull, description="Project name"),
+    form.File("zipfile", form.notnull, description="Zip file"))
+
+
+class CreateProject:
+    """ User can create project by uploading formed zip files with ufo
+        folder inside. Project would be extracted to its working directory. """
+
+    def GET(self):
+        if not is_loggedin():
+            raise seeother('/login')
+        return render.create_project()
+
+    def POST(self):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        import zipfile
+        x = web.input(zipfile={})
+        if 'zipfile' in x and 'name' in x and x.name:
+            filename = os.path.join(working_dir(), x.zipfile.filename)
+
+            try:
+                with open(filename, 'w') as fp:
+                    fp.write(x.zipfile.file.read())
+            except (IOError, OSError):
+                return render.create_project(error='Could not upload this file to disk')
+
+            try:
+                fzip = zipfile.ZipFile(filename)
+
+                namelist = fzip.namelist()
+
+                iscorrect_ufo = False
+                ufo_dirs = []
+                for f in namelist:
+                    if re.search(r'.ufo[\\/]$', f):
+                        ufo_dirs.append(re.sub(r'[\\/]', '', f))
+                    if re.search(r'.ufo[\\/]glyphs[\\/].*?.glif$', f, re.IGNORECASE):
+                        iscorrect_ufo = True
+
+                if not iscorrect_ufo:
+                    return render.create_project(error='Archive does not contain any correct UFO folder')
+
+                FontNameA = ufo_dirs[0]
+                try:
+                    FontNameB = ufo_dirs[1]
+                except IndexError:
+                    FontNameB = ''
+                newid = model.Master.insert(idglobal=1, FontName=x.name,
+                                            FontNameA=FontNameA,
+                                            FontNameB=FontNameB,
+                                            user_id=session.user)
+                cFont.fontpath = 'fonts/%s' % newid
+
+                fzip.extractall(working_dir(cFont.fontpath))
+            except (zipfile.BadZipfile, OSError, IOError):
+                return render.create_project(error='Could not extract file to working directory')
+            return seeother('/')
+
+        return render.create_project(error='Please fill all fields in form')
 
 
 if __name__ == '__main__':

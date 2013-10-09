@@ -83,7 +83,7 @@ class Model(object):
 
     @classmethod
     def insert(cls, **kwargs):
-        db.insert(cls.__table__, **kwargs)
+        return db.insert(cls.__table__, **kwargs)
 
 
 class GlyphOutline(Model):
@@ -604,7 +604,7 @@ def update_glyphparam(id, a, b):
         GlyphParam.update(session.user, idp, glyphName, idmaster,
                           pointName=None, groupname=None)
         return
-    
+
     aa = a
     if b != '':
         bb = b
@@ -781,7 +781,7 @@ def put_globalparam(id):
 def updatemaster(id, a, b, c, d):
     Master.update(session.user, id, FontName=a, FontNameA=b,
                   FontNameB=c, idglobal=d)
-    
+
 
 def update_globalparam(id, a, b, c, d, e, f, g):
     GlobalParam.update(session.user, id, metapolation=a, fontsize=b, mean=c,

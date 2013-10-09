@@ -1,0 +1,14 @@
+$def with (error=None)
+
+<div>
+	<h1>Create project</h1>
+
+	<form action="" method="post" enctype="multipart/form-data">
+		<div><label for="name">Project name</label><input type="text" id="name" name="name" /></div>
+		<div><label for="zipfile">Zip file</label><input type="file" id="zipfile" name="zipfile"></div>
+		<div><input type="submit" id="submit" value="Submit"></div>
+	</form>
+
+	$if error:
+		<font color="red">$error</font>
+</div>

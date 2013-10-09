@@ -1,28 +1,16 @@
+import os
 import os.path as op
 import web
+import urls
 
 
-PROJECT_ROOT = op.abspath(op.dirname(op.realpath(__file__)))
+PROJECT_ROOT = op.abspath(op.dirname(__file__))
 
 
 ### Url mappings
 
-urls = ('/', 'mfg.Index',
-        '/login', 'mfg.Login',
-        '/register', 'mfg.Register',
-        '/logout', 'mfg.logout',
-        '/view/(\d+)', 'mfg.View',
-        '/metap/(\d+)', 'mfg.Metap',
-        '/viewfont/', 'mfg.ViewFont',
-        '/font1/(\d+)', 'mfg.Font1',
-        '/font2/(\d+)', 'mfg.GlobalParam',
-        '/font3/(\d+)', 'mfg.localParamA',
-        '/font4/(\d+)', 'mfg.localParamB',
-        '/cproject/(\d+)', 'mfg.copyproject'
-        )
-
 web.config.debug = False
-app = web.application(urls, globals())
+app = web.application(urls.urls, globals())
 
 session = web.session.Session(app, web.session.DiskStore('sessions'),
                               {'count': 0})
@@ -64,9 +52,17 @@ class cFont:
 def working_dir(path=None, user=None):
     if is_loggedin():
         directory = op.join(PROJECT_ROOT, 'users', str(user or session.user))
+        if not op.exists(directory):
+            os.makedirs(directory)
+
         if not path:
             return directory
-        return op.join(directory, path)
+
+        result_path = op.join(directory, path)
+        if not op.exists(op.dirname(result_path)):
+            os.makedirs(op.dirname(result_path))
+
+        return result_path
     return path
 
 
