@@ -679,8 +679,11 @@ class Register:
             return render.register(form)
         seeother = authorize(user)
 
-        import shutil
-        shutil.copytree(working_dir(user='skel'), working_dir())
+        try:
+            import shutil
+            shutil.copytree(working_dir(user='skel'), working_dir())
+        except OSError:
+            pass
         raise seeother
 
 
