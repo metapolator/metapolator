@@ -1,0 +1,9 @@
+MySQL-python
+bcrypt
+cffi
+lxml
+passlib
+pycparser
+redis
+web.py
+wsgiref
