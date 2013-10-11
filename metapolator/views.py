@@ -13,11 +13,14 @@ import os
 import re
 import sys
 import web
-import web.form as form
 from web import seeother
 from passlib.hash import bcrypt
+
+
 from config import app, cFont, is_loggedin, session, working_dir, \
     working_url
+from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
+    GlobalParamForm, RegisterForm, LocalParamAForm, LocalParamBForm
 
 
 ### Templates
@@ -58,9 +61,8 @@ class Metap:
             fontsource = [cFont.fontna, cFont.glyphName]
 
         if id == '1':
-            #          we are working on font B
+            # we are working on font B
             cFont.idwork = id
-#
             fontsource = [cFont.fontnb, cFont.glyphName]
 
         posts = model.get_posts()
@@ -71,62 +73,12 @@ class Metap:
 
 
 class View:
-    form = web.form.Form(web.form.Textbox('PointNr', web.form.notnull, size=3, description="nr"),
-                         web.form.Textbox('x', web.form.notnull, size=5, description="x"),
-                         web.form.Textbox('y', web.form.notnull, size=5, description="y"),
-                         web.form.Textbox('PointName', size=5, description="name"),
-                         web.form.Textbox('groupn', size=5, description="groupn"),
-                         web.form.Button('save'),)
-
-# add glyphparameters here:
-
-    formParam = web.form.Form(web.form.Dropdown('Param', [('select', 'select'),
-                                                          ('startp', 'startp'),
-                                                          ('doubledash', 'doubledash'),
-                                                          ('tripledash', 'tripledash'),
-                                                          ('superleft', 'superleft'),
-                                                          ('superright', 'superright'),
-                                                          ('leftp', 'leftp'),
-                                                          ('rightp', 'rightp'),
-                                                          ('downp', 'downp'),
-                                                          ('upp', 'upp'),
-                                                          ('dir', 'dir'),
-                                                          ('leftp2', 'leftp2'),
-                                                          ('rightp2', 'rightp2'),
-                                                          ('downp2', 'downp2'),
-                                                          ('upp2', 'upp2'),
-                                                          ('dir2', 'dir2'), ('tension', 'tension'),
-                                                          ('tensionand', 'tensionand'),
-                                                          ('cycle', 'cycle'),
-                                                          ('penshifted', 'penshifted'),
-                                                          ('pointshifted', 'pointshifted'),
-                                                          ('angle', 'angle'),
-                                                          ('penwidth', 'penwidth'),
-                                                          ('overx', 'overx'),
-                                                          ('overbase', 'overbase'),
-                                                          ('overcap', 'overcap'),
-                                                          ('overasc', 'overasc'),
-                                                          ('overdesc', 'overdesc'),
-                                                          ('ascpoint', 'ascpoint'),
-                                                          ('descpoint', 'descpoint'),
-                                                          ('stemcutter', 'stemcutter'),
-                                                          ('stemshift', 'stemshift'),
-                                                          ('inktrap_l', 'inktrap_l'),
-                                                          ('inktrap_r', 'inktrap_r')]),
-                              web.form.Textbox('parmval', size=15, description="parmval", id="parmvaltext"),
-                              web.form.Button('saveParam'),)
-# and the same parameters for groups here:
-
-    formParamG = web.form.Form(web.form.Dropdown('Group',
-            [('select', 'select'), ('startp', 'startp'), ('doubledash', 'doubledash'), ('tripledash', 'tripledash'), ('superleft', 'superleft'), ('superright', 'superright'), ('leftp', 'leftp'), ('rightp', 'rightp'), ('downp', 'downp'), ('upp', 'upp'), ('dir', 'dir'), ('leftp2', 'leftp2'), ('rightp2', 'rightp2'), ('downp2', 'downp2'), ('upp2', 'upp2'), ('dir2', 'dir2'), ('tension', 'tension'), ('tensionand', 'tensionand'), ('cycle', 'cycle'), ('penshifted', 'penshifted'), ('pointshifted', 'pointshifted'), ('angle', 'angle'), ('penwidth', 'penwidth'), ('overx', 'overx'), ('overbase', 'overbase'), ('overcap', 'overcap'), ('overasc', 'overasc'), ('overdesc', 'overdesc'), ('ascpoint', 'ascpoint'), ('descpoint', 'descpoint'), ('stemcutter', 'stemcutter'), ('stemshift', 'stemshift'), ('inktrap_l', 'inktrap_l'), ('inktrap_r', 'inktrap_r')]),
-        web.form.Textbox('groupval', size=15, description="groupval"),
-        web.form.Button('saveGroup'),)
 
     def GET(self, id):
         """ View single post """
         if not is_loggedin():
             raise seeother('/login')
-        form = self.form()
+        form = PointForm()
 
         if int(id) > 0:
             post = model.get_post(int(id))
@@ -135,8 +87,10 @@ class View:
             form.fill(post)
         posts = model.get_posts()
         postspa = model.get_postspa()
-        formParam = self.formParam()
-        formParamG = self.formParamG()
+
+        formParam = ParamForm()
+        formParamG = GroupParamForm()
+
         if glyphparam is not None:
             formParam.fill(glyphparam)
         if groupparam is not None:
@@ -151,12 +105,12 @@ class View:
     def POST(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        form = View.form()
-        formParam = View.formParam()
-        formParamG = View.formParamG()
+        form = PointForm()
+
+        formParam = ParamForm()
+        formParamG = GroupParamForm()
         post = model.get_post(int(id))
         postspa = model.get_postspa()
-        formParam = self.formParam()
         if not form.validates():
             posts = model.get_posts()
             master = model.get_master(cFont.idmaster)
@@ -225,25 +179,6 @@ class ViewFont:
 
 
 class Font1:
-    form = web.form.Form(web.form.Textbox('Name', web.form.notnull,
-                                          size=30,
-                                          description="name", value=cFont.fontna),
-                         web.form.Textbox('UFO_A', web.form.notnull,
-                                          size=20,
-                                          description="fontnameA", value=cFont.fontna),
-                         web.form.Textbox('UFO_B', web.form.notnull,
-                                          size=20,
-                                          description="fontnameB", value=cFont.fontnb),
-                         web.form.Textbox('GLYPH', web.form.notnull,
-                                          size=5,
-                                          description="glyph", value="c"),
-                         web.form.Textbox('loadoption', web.form.notnull,
-                                          size=1,
-                                          description="loadoption", value="0"),
-                         web.form.Textbox('mfprocess', web.form.notnull,
-                                          size=1,
-                                          description="mfprocess", value="0"),
-                         web.form.Button('savefont'),)
 
     def GET(self, id):
         if not is_loggedin():
@@ -260,8 +195,7 @@ class Font1:
         loadoption = cFont.loadoption
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
-        form = self.form()
-        form = Font1.form()
+        form = FontForm()
         form.fill({'Name': fontname, 'UFO_A': fontna, 'UFO_B': fontnb, 'GLYPH': cFont.glyphName,
                    'loadoption': cFont.loadoption, 'mfprocess': cFont.mfoption})
         return render.font1(fontlist, form, mmaster, cFont)
@@ -270,8 +204,7 @@ class Font1:
         if not is_loggedin():
             raise seeother('/login')
         mmaster = list(model.get_masters())
-        form = Font1.form()
-        form.fill()
+        form = FontForm()
         cFont.fontname = form.d.Name
         cFont.fontna = form.d.UFO_A
         cFont.fontnb = form.d.UFO_B
@@ -280,12 +213,12 @@ class Font1:
             cFont.glyphunic = str(int(id) - 1001)
             form.fill()
         cFont.glyphName = form.d.GLYPH
-#
-#   switch on off mfoption
-#   mfoption = '0' only the xml file of the current character will be written
-#   mfoption = '1' all characters stored in DB will be written for the font
-#   process
-#
+        #
+        #   switch on off mfoption
+        #   mfoption = '0' only the xml file of the current character will be written
+        #   mfoption = '1' all characters stored in DB will be written for the font
+        #   process
+        #
         if form.d.mfprocess == '0':
             cFont.mfoption = '0'
         if form.d.mfprocess == '1':
@@ -296,7 +229,7 @@ class Font1:
         if int(id) > 0 and int(id) < 1000:
             model.update_master(id)
             master = model.get_master(id)
-#       model.putFont()
+
         model.putFontAllglyphs()
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
@@ -313,38 +246,12 @@ class Font1:
 
 class GlobalParam:
 
-    formg = web.form.Form(web.form.Textbox('metapolation', web.form.notnull,
-            size=3,
-            description="metapolation", value="0.5"),
-#         web.form.Textbox('unitwidth', web.form.notnull,
-#             size=3,
-#             description="unitwidth", value="1.0"),
-        web.form.Textbox('fontsize', web.form.notnull,
-            size=3,
-            description="fontsize", value="10"),
-        web.form.Textbox('mean', web.form.notnull,
-            size=3,
-            description="mean", value="0.5"),
-        web.form.Textbox('cap', web.form.notnull,
-            size=3,
-            description="cap", value="0.8"),
-        web.form.Textbox('ascl', web.form.notnull,
-            size=3,
-            description="asc", value="0.2"),
-        web.form.Textbox('des', web.form.notnull,
-            size=3,
-            description="desc", value="0.2"),
-        web.form.Textbox('box', web.form.notnull,
-            size=3,
-            description="box", value="1"),
-        web.form.Button('saveg'),)
-
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
         print "getparam", id
         gml = list(model.get_globalparams())
-        formg = self.formg()
+        formg = GlobalParamForm()
         if id > '0':
             gm = list(model.get_globalparam(id))
         else:
@@ -362,8 +269,7 @@ class GlobalParam:
         print "postparam", id
         gml = list(model.get_globalparams())
         gm = list(model.get_globalparam(id))
-        formg = self.formg()
-        formg.fill()
+        formg = GlobalParamForm()
         if formg.validates:
             model.update_globalparam(id, formg.d.metapolation, formg.d.fontsize, formg.d.mean, formg.d.cap, formg.d.ascl, formg.d.des, formg.d.box)
         if not formg.validates():
@@ -376,56 +282,16 @@ class GlobalParam:
 
 class localParamA:
 
-    formlocA = web.form.Form(web.form.Textbox('px', web.form.notnull,
-            size=3,
-            description="px", value="1"),
-        web.form.Textbox('width', web.form.notnull,
-            size=3,
-            description="width", value="1"),
-        web.form.Textbox('space', web.form.notnull,
-            size=3,
-            description="space", value="0"),
-        web.form.Textbox('xheight', web.form.notnull,
-            size=3,
-            description="xheight", value="10"),
-        web.form.Textbox('capital', web.form.notnull,
-            size=3,
-            description="capital", value="10"),
-        web.form.Textbox('boxheight', web.form.notnull,
-            size=3,
-            description="boxheight", value="10"),
-        web.form.Textbox('ascender', web.form.notnull,
-            size=3,
-            description="ascender", value="10"),
-        web.form.Textbox('descender', web.form.notnull,
-            size=3,
-            description="descender", value="10"),
-        web.form.Textbox('inktrap', web.form.notnull,
-            size=3,
-            description="inktrap", value="10"),
-        web.form.Textbox('stemcut', web.form.notnull,
-            size=3,
-            description="stemcut", value="10"),
-        web.form.Textbox('skeleton', web.form.notnull,
-            size=3,
-            description="skeleton", value="10"),
-        web.form.Textbox('superness', web.form.notnull,
-            size=3,
-            description="superness", value="30"),
-        web.form.Textbox('over', web.form.notnull,
-            size=3,
-            description="over", value="0.05"),
-        web.form.Button('saveA'),)
-
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
         print "getparam", id
         gml = list(model.get_globalparams())
-        formg = GlobalParam.formg()
+        formg = GlobalParamForm()
         glo = list(model.get_localparams())
-        formlA = self.formlocA()
-        formlB = localParamB.formlocB()
+        formlA = LocalParamAForm()
+        formlB = LocalParamBForm()
+
         gm = list(model.get_globalparam(cFont.idglobal))
         formg.fill({'metapolation': gm[0].metapolation, 'fontsize': gm[0].fontsize,
                     'mean': gm[0].mean, 'cap': gm[0].cap, 'ascl': gm[0].ascl,
@@ -460,10 +326,10 @@ class localParamA:
         cFont.idlocalA = id
         gloA = list(model.get_localparam(idlA))
         gloB = list(model.get_localparam(idlB))
-        formg = GlobalParam.formg()
-        formlA = self.formlocA()
-        formlB = localParamB.formlocB()
-        formlA.fill()
+
+        formg = GlobalParamForm()
+        formlA = LocalParamAForm()
+        formlB = LocalParamBForm()
 
         formlB.fill({'px': gloB[0].px, 'width': gloA[0].width, 'space': gloB[0].space, 'xheight': gloB[0].xheight, 'capital': gloB[0].capital, 'boxheight': gloB[0].boxheight, 'ascender': gloB[0].ascender, 'descender': gloB[0].descender, 'inktrap': gloB[0].inktrap, 'stemcut': gloB[0].stemcut, 'skeleton': gloB[0].skeleton, 'superness': gloB[0].superness, 'over': gloB[0].over})
 
@@ -479,55 +345,15 @@ class localParamA:
 
 class localParamB:
 
-    formlocB = web.form.Form(web.form.Textbox('px', web.form.notnull,
-            size=3,
-            description="px", value="1"),
-        web.form.Textbox('width', web.form.notnull,
-            size=3,
-            description="width", value="1"),
-        web.form.Textbox('space', web.form.notnull,
-            size=3,
-            description="space", value="0"),
-        web.form.Textbox('xheight', web.form.notnull,
-            size=3,
-            description="xheight", value="10"),
-        web.form.Textbox('capital', web.form.notnull,
-            size=3,
-            description="capital", value="10"),
-        web.form.Textbox('boxheight', web.form.notnull,
-            size=3,
-            description="boxheight", value="10"),
-        web.form.Textbox('ascender', web.form.notnull,
-            size=3,
-            description="ascender", value="10"),
-        web.form.Textbox('descender', web.form.notnull,
-            size=3,
-            description="descender", value="10"),
-        web.form.Textbox('inktrap', web.form.notnull,
-            size=3,
-            description="inktrap", value="10"),
-        web.form.Textbox('stemcut', web.form.notnull,
-            size=3,
-            description="stemcut", value="10"),
-        web.form.Textbox('skeleton', web.form.notnull,
-            size=3,
-            description="skeleton", value="10"),
-        web.form.Textbox('superness', web.form.notnull,
-            size=3,
-            description="superness", value="20"),
-        web.form.Textbox('over', web.form.notnull,
-            size=3,
-            description="over", value="0.05"),
-        web.form.Button('saveB'),)
-
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
         gml = list(model.get_globalparams())
-        formg = GlobalParam.formg()
+
+        formg = GlobalParamForm()
         glo = list(model.get_localparams())
-        formlA = localParamA.formlocA()
-        formlB = self.formlocB()
+        formlA = LocalParamAForm()
+        formlB = LocalParamBForm()
         gm = list(model.get_globalparam(cFont.idglobal))
         formg.fill({'metapolation': gm[0].metapolation, 'fontsize': gm[0].fontsize, 'mean': gm[0].mean, 'cap': gm[0].cap, 'ascl': gm[0].ascl, 'des': gm[0].des, 'box': gm[0].box})
         idlA = cFont.idlocalA
@@ -556,14 +382,14 @@ class localParamB:
         idlA = cFont.idlocalA
         cFont.idlocalB = id
         idlB = id
-#                id argument via the html
-#
+        #
+        # id argument via the html
+        #
         gloB = list(model.get_localparam(id))
         gloA = list(model.get_localparam(idlA))
-        formlB = self.formlocB()
-        formlA = localParamA.formlocA()
-        formg = GlobalParam.formg()
-        formlB.fill()
+        formlB = LocalParamBForm()
+        formlA = LocalParamAForm()
+        formg = GlobalParamForm()
 
         formlA.fill({'px': gloA[0].px, 'width': gloA[0].width, 'space': gloA[0].space, 'xheight': gloA[0].xheight, 'capital': gloA[0].capital, 'boxheight': gloA[0].boxheight, 'ascender': gloA[0].ascender, 'descender': gloA[0].descender, 'inktrap': gloA[0].inktrap, 'stemcut': gloA[0].stemcut, 'skeleton': gloA[0].skeleton, 'superness': gloA[0].superness, 'over': gloA[0].over})
 
@@ -620,49 +446,6 @@ class Login:
         return render.login(is_loggedin(), True)
 
 
-def validate_existing_user(item):
-    usernamecase = model.get_user_by_username(item.username)
-    emailcase = model.get_user_by_email(item.email)
-    return not bool(usernamecase) and not bool(emailcase)
-
-
-def vemail(value):
-    user_regex = re.compile(
-        r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*$"
-        r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"$)',
-        re.IGNORECASE)
-    domain_regex = re.compile(
-        r'(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}|[A-Z0-9-]{2,})\.?$'
-        # literal form, ipv4 address (SMTP 4.1.3)
-        r'|^\[(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\]$',
-        re.IGNORECASE)
-    if not value or '@' not in value:
-        return False
-    user_part, domain_part = value.rsplit('@', 1)
-
-    if not user_regex.match(user_part):
-        return False
-
-    if not domain_regex.match(domain_part):
-        return False
-
-    return True
-
-
-RegisterForm = web.form.Form(
-    web.form.Textbox("username", web.form.notnull, description="Username"),
-    web.form.Textbox("email", web.form.Validator("Invalid email", vemail),
-                     description="E-Mail"),
-    web.form.Password("password", web.form.notnull, description="Password"),
-    web.form.Password("password2", web.form.notnull, description="Repeat password"),
-    web.form.Button("submit", type="submit", description="Register"),
-    validators=[web.form.Validator("Passwords did't match",
-                                   lambda i: i.password == i.password2),
-                web.form.Validator("User with this email or username already registered",
-                                   validate_existing_user)]
-    )
-
-
 class Register:
     """ Registration processes of users with username and password """
 
@@ -685,11 +468,6 @@ class Register:
         except OSError:
             pass
         raise seeother
-
-
-UploadForm = form.Form(
-    form.Textbox("name", form.notnull, description="Project name"),
-    form.File("zipfile", form.notnull, description="Zip file"))
 
 
 class CreateProject:
