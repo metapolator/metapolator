@@ -4,7 +4,7 @@ import web
 import urls
 
 
-PROJECT_ROOT = op.abspath(op.dirname(__file__))
+PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
 
 
 ### Url mappings

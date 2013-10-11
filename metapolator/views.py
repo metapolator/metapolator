@@ -746,12 +746,3 @@ class CreateProject:
             return seeother('/')
 
         return render.create_project(error='Please fill all fields in form')
-
-
-if __name__ == '__main__':
-    app.run()
-
-
-application = None
-if os.environ.get('PRODUCTION', False):
-    application = app.wsgifunc()
