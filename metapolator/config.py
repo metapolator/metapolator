@@ -1,7 +1,6 @@
 import os
 import os.path as op
 import web
-import urls
 
 
 PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
@@ -10,7 +9,8 @@ PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
 ### Url mappings
 
 web.config.debug = False
-app = web.application(urls.urls, globals())
+
+app = web.auto_application()
 
 session = web.session.Session(app, web.session.DiskStore('sessions'),
                               {'count': 0})

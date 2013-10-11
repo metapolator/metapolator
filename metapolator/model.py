@@ -467,7 +467,12 @@ def putFontAllglyphs():
     glyphunics = cFont.glyphunic
 
     dirnamea = op.join(working_dir(cFont.fontpath), cFont.fontna, "glyphs")
+    if not op.exists(dirnamea):
+        os.makedirs(dirnamea)
+
     dirnameb = op.join(working_dir(cFont.fontpath), cFont.fontnb, "glyphs")
+    if not op.exists(dirnameb):
+        os.makedirs(dirnameb)
 
     charlista = [f for f in os.listdir(dirnamea)]
     charlistb = [f for f in os.listdir(dirnameb)]

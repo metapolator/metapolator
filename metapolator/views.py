@@ -33,7 +33,9 @@ render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
 
 
-class Index:
+class Index(app.page):
+
+    path = '/'
 
     def GET(self):
         """ Show page """
@@ -46,7 +48,9 @@ class Index:
         return render.metap(posts, master, fontsource, webglyph)
 
 
-class Metap:
+class Metap(app.page):
+
+    path = '/metap/([0-9]+)'
 
     def GET(self, id):
         """ Show page """
@@ -72,7 +76,9 @@ class Metap:
         return render.metap(posts, master, fontsource, webglyph)
 
 
-class View:
+class View(app.page):
+
+    path = '/view/([0-9]+)'
 
     def GET(self, id):
         """ View single post """
@@ -169,7 +175,10 @@ class View:
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
 
 
-class ViewFont:
+class ViewFont(app.page):
+
+    path = '/viewfont/'
+
     def GET(self):
         """ View single post """
         if not is_loggedin():
@@ -178,7 +187,9 @@ class ViewFont:
         return render.viewfont(param)
 
 
-class Font1:
+class Font1(app.page):
+
+    path = '/font1/([0-9]+)'
 
     def GET(self, id):
         if not is_loggedin():
@@ -244,7 +255,9 @@ class Font1:
         return render.font1(fontlist, form, mmaster, cFont)
 
 
-class GlobalParam:
+class GlobalParam(app.page):
+
+    path = '/font2/([0-9]+)'
 
     def GET(self, id):
         if not is_loggedin():
@@ -280,7 +293,9 @@ class GlobalParam:
         return render.font2(formg, gml, cFont)
 
 
-class localParamA:
+class localParamA(app.page):
+
+    path = '/font3/([0-9]+)'
 
     def GET(self, id):
         if not is_loggedin():
@@ -343,7 +358,9 @@ class localParamA:
         return render.font3(formg, gml, cFont, glo, formlA, formlB)
 
 
-class localParamB:
+class localParamB(app.page):
+
+    path = '/font4/([0-9]+)'
 
     def GET(self, id):
         if not is_loggedin():
@@ -405,6 +422,8 @@ class localParamB:
 
 class copyproject:
 
+    path = '/cproject/([0-9]+)'
+
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
@@ -415,7 +434,9 @@ class copyproject:
         return render.cproject()
 
 
-class logout:
+class logout(app.page):
+
+    path = '/logout'
 
     def GET(self):
         if is_loggedin():
@@ -429,8 +450,10 @@ def authorize(user):
     return web.seeother("/")
 
 
-class Login:
+class Login(app.page):
     """ Processes authorization of users with username and password """
+
+    path = '/login'
 
     def GET(self):
         return render.login(is_loggedin())
@@ -446,8 +469,10 @@ class Login:
         return render.login(is_loggedin(), True)
 
 
-class Register:
+class Register(app.page):
     """ Registration processes of users with username and password """
+
+    path = '/register'
 
     def GET(self):
         form = RegisterForm()
@@ -470,9 +495,11 @@ class Register:
         raise seeother
 
 
-class CreateProject:
+class CreateProject(app.page):
     """ User can create project by uploading formed zip files with ufo
         folder inside. Project would be extracted to its working directory. """
+
+    path = '/project/create/'
 
     def GET(self):
         if not is_loggedin():
