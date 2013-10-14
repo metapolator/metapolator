@@ -90,6 +90,9 @@ $if cfont.idwork == '1' :
        </span>
 </p>
 </div>
+<p style="color:blue;font-size:50px;">  idmaster $cfont.idmaster glyph $cfont.glyphName
+</p>
+
 <p>
 
 $for mma in mmaster:
@@ -106,18 +109,23 @@ $:form.render()
 <p>
 <a href="/font2/$cfont.idglobal" style="color:green;text-decoration:underline;">Edit Global and Local Parameters</a>
 </p>
-<p>
-<span class="button"><a href="/view/1">Edit '$cfont.glyphName' Glyph</a></span>
-</p>
 
-</p>
-
+<div>
+<h2> import </h2>
 <p>
-loadoption <br>
-[0]: Load parameters and glyph outlines from the XML (default)<br>
-[1]: Load only glyph outlines from XML (if timestamp is newer than databse)<br>
-[2]: Save parameters and glyph outlines from database to XML<br>
-[99]: Load parameters and glyph outlines from XML to Database<br>
+<a onclick="this.style.fontWeight= 'bold'" href="/font1/i0">import single glyph only x and y coordinates </a>
+<br>
+<a onclick="this.style.fontWeight= 'bold'" href="/font1/i1">import single glyph coordinates and parameters</a>
+<br>
+<a onclick="this.style.fontWeight= 'bold'" href="/font1/i2">import all glyphs only x and y coordinates </a>
+<br>
+<a onclick="this.style.fontWeight= 'bold'" href="/font1/i3">import all glyphs coordinates and parameters </a>
+<h2> export </h2>
+<p>
+<a onclick="this.style.fontWeight= 'bold'" href="/font1/e4">export single glyph </a>
+<br>
+<a onclick="this.style.fontWeight= 'bold'" href="/font1/e5">export all glyphs  </a>
+<br>
 </p>
 <h2>glyphs</h2>
 <p><span class="button"><a href="/view/1">Edit '$cfont.glyphName' Glyph</a></span></p>

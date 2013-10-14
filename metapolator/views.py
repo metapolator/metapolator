@@ -160,10 +160,7 @@ class View(app.page):
         glyphparam = model.get_glyphparam(int(id))
         groupparam = model.get_groupparam(int(id))
 
-        if cFont.mfoption == '1':
-            model.writeallxmlfromdb()
-        else:
-            model.writexml()
+        model.writexml()
 
         model.ufo2mf()
         os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
@@ -189,26 +186,57 @@ class ViewFont(app.page):
 
 class Font1(app.page):
 
-    path = '/font1/([0-9]+)'
+    path = '/font1/(.*)'
 
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
         mmaster = list(model.get_masters())
-        if int(id) > 0 and int(id) < 1000:
-            model.get_master(id)
-        if int(id) > 1000:
-            cFont.glyphName = chr(int(id) - 1001 + 32)
-            cFont.glyphunic = str(int(id) - 1001)
+        ida = 0
+        if (id == 'i0') :
+           cFont.loadoption=0
+           cFont.loadoptionAll=0
+           model.putFont() 
+           ida=1
+        if (id == 'i1') :
+           cFont.loadoption=1
+           cFont.loadoptionAll=0
+           model.putFont() 
+           ida=1
+        if (id == 'i2') :
+           cFont.loadoption=0
+           cFont.loadoptionAll=1
+           model.putFontAllglyphs() 
+           ida=1
+        if (id == 'i3') :
+           cFont.loadoption=1
+           cFont.loadoptionAll=1
+           model.putFontAllglyphs() 
+           ida=1
+        if (id == 'e4') :
+           mfoption = 0
+           model.writexml()
+           ida=1
+        if (id == 'e5') :
+           mfoption = 1
+           model.writeallxmlfromdb()
+           ida=1
+
+        if ida == 0:        
+          if int(id) > 1000 and int(id) <10000:
+              cFont.glyphName = chr(int(id)-1001+32)
+              cFont.glyphunic = str(int(id)-1001)
+
+          if int(id) > 0 and int(id) < 1000:
+              model.get_master(id)
+       
         fontname = cFont.fontname
         fontna = cFont.fontna
         fontnb = cFont.fontnb
-        loadoption = cFont.loadoption
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
         form = FontForm()
-        form.fill({'Name': fontname, 'UFO_A': fontna, 'UFO_B': fontnb, 'GLYPH': cFont.glyphName,
-                   'loadoption': cFont.loadoption, 'mfprocess': cFont.mfoption})
+        form.fill({'Name': fontname, 'UFO_A': fontna, 'UFO_B': fontnb})
         return render.font1(fontlist, form, mmaster, cFont)
 
     def POST(self, id):
@@ -216,41 +244,13 @@ class Font1(app.page):
             raise seeother('/login')
         mmaster = list(model.get_masters())
         form = FontForm()
+        form.fill()
         cFont.fontname = form.d.Name
         cFont.fontna = form.d.UFO_A
         cFont.fontnb = form.d.UFO_B
-        if int(id) > 1000:
-            form.d.GLYPH = chr(int(id) - 1001 + 32)
-            cFont.glyphunic = str(int(id) - 1001)
-            form.fill()
-        cFont.glyphName = form.d.GLYPH
         #
-        #   switch on off mfoption
-        #   mfoption = '0' only the xml file of the current character will be written
-        #   mfoption = '1' all characters stored in DB will be written for the font
-        #   process
-        #
-        if form.d.mfprocess == '0':
-            cFont.mfoption = '0'
-        if form.d.mfprocess == '1':
-            cFont.mfoption = '1'
-
-        cFont.loadoption = form.d.loadoption
-
-        if int(id) > 0 and int(id) < 1000:
-            model.update_master(id)
-            master = model.get_master(id)
-
-        model.putFontAllglyphs()
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
-
-        if cFont.loadoption == '1001':
-            return render.cproject()
-
-        print "loadoption ", cFont.loadoption
-        if cFont.loadoption == '2':
-            model.writeallxmlfromdb()
 
         return render.font1(fontlist, form, mmaster, cFont)
 
@@ -430,7 +430,7 @@ class copyproject:
         print "** in cproject copy project ", cFont.idmaster
         if id == '1001':
             ip = model.copyproject()
-        cFont.loadoption = '0'
+ 
         return render.cproject()
 
 
