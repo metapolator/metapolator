@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head>
+<body>
+    Point For Glyph: <a href="javascript:;" class="label label-error" message="get">get</a>
+    <div class="well">
+        
+    </div>
+</body>
+
+<script>
+    var ws = new WebSocket('ws://localhost:8888/ws');
+    $('.label').click(function(){
+        ws.send($(this).attr('message'));
+    })
+    ws.onmessage = function(ev) {
+        $('.well').text(ev.data);
+    }
+  </script>
+</html>
