@@ -7,19 +7,21 @@
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 </head>
 <body>
-    Point For Glyph: <a href="javascript:;" class="label label-error" message="get">get</a>
-    <div class="well">
-        
-    </div>
+    Point For Glyph: <input type="text" id="text">
+
+    <div class="well"></div>
 </body>
 
 <script>
     var ws = new WebSocket('ws://localhost:8888/ws');
-    $('.label').click(function(){
-        ws.send($(this).attr('message'));
-    })
+    $('#text').keypress(function(e) {
+        if(e.which == 13) {
+            ws.send($(this).val());
+            $(this).val('');
+        }
+    });
     ws.onmessage = function(ev) {
-        $('.well').text(ev.data);
+        $('.well').html($('.well').html() + '<br />' + ev.data);
     }
   </script>
 </html>

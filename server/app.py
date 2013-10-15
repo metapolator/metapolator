@@ -2,6 +2,9 @@
 from tornado import ioloop, web, websocket
 
 
+listeners = []
+
+
 class IndexHandler(web.RequestHandler):
 
     def get(self):
@@ -10,8 +13,15 @@ class IndexHandler(web.RequestHandler):
 
 class EchoWebSocket(websocket.WebSocketHandler):
 
+    def open(self):
+        listeners.append(self)
+
     def on_message(self, message):
-        self.write_message(u"You said: " + message)
+        for w in listeners:
+            w.write_message(message)
+
+    def on_close(self):
+        listeners.remove(self)
 
 
 app = web.Application([
