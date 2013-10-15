@@ -18,7 +18,7 @@ from passlib.hash import bcrypt
 
 from config import cFont, working_dir, session
 
-db = web.database(dbn='mysql', db='blog', user='root', pw='')
+db = web.database(dbn='mysql', db='blog', user='walter', pw='')
 
 
 def xxmlat(s, dbob, sattr, val, iro):
@@ -46,12 +46,17 @@ def xxmlat(s, dbob, sattr, val, iro):
 
 
 def xxmrlat(inum, s, sattr):
+    
+    idmaster = gidmast(cFont.idwork)
+    ids = " and idmaster="+'"'+str(idmaster)+'"'
     cc = s.attrib
     for item in cc:
         if item in sattr:
             val = cc[item]
-            update_glyphparamD(inum, item, val)
+            if item not in ['','select'] :
+              update_glyphparamX ( inum, item, val, ids)
 
+    return None
 
 def delFont(fontName, glyphNamel):
     return None
@@ -222,10 +227,10 @@ class GlyphParam(Model):
 
     @classmethod
     def select_one_id(cls, user, glyphName, nameval, idmaster):
-        query = db.db_select_first(what='id',
+        query = cls.db_select_first(what='id',
                                    where=('GlyphName=$glyphName'
                                           ' and PointName=$PointName'
-                                          ' idmaster=$idmaster'
+                                          ' and idmaster=$idmaster'
                                           ' and user_id=$user'),
                                    vars=dict(idmaster=idmaster, PointName=nameval,
                                              user=user, glyphName=glyphName))
@@ -314,11 +319,28 @@ def putFontG(glyphName, glyphsource, idmaster):
     #  and put the data into db
     #  There is a loadoption with values:
     #
-    #  loadoption '0' :  read data and put it in db when timestamp
-    #                    in xmlfile is newer than db
-    #  loadoption '1' :  read only x-y coordinates independent of
-    #                    timestamp and use parameters stored in db
-    #  loadoption '99':  read data and put it in db independent of timestamp
+    #  There is a loadoption with values:
+    #
+    #  Load Single:
+    #  loadoptionAll '0'
+    #  loadoption '0'
+    #- Import Single Glyph (Selected Glyph) only x and y coordinates
+    #  loadoption '1'
+    #- Import Single Glyph (Selected Glyph) x and y coordinates and parameter
+    #
+    #- Export Single Glyph (Selected Glyph) only x and y coordinates
+    #- Export Single Glyph (Selected Glyph) x and y coordinates and parameter
+
+    #  Load All:
+    #  loadoptionAll '1'
+    #  loadoption '0'
+    #- Import All Glyphs only x and y coordinates
+    #  loadoption '1'
+    #- Import All Glyphs x and y coordinates and parameter
+    #
+    #- Export All Glyphs only x and y coordinates
+    #- Export All Glyphs x and y coordinates and parameter
+    #
     #
     paramattr = ['groupname', 'startp', 'doubledash', 'tripledash',
                  'superleft', 'superright', 'leftp', 'rightp', 'downp', 'upp',
@@ -331,71 +353,44 @@ def putFontG(glyphName, glyphsource, idmaster):
         cFont.idwork = '0'
     if idmaster < 0:
         cFont.idwork = '1'
-
     #
-    #  decide when to load new entries from xml file
+    xmldoc = etree.parse(glyphsource)
+    outline = xmldoc.find("outline")
+    items = outline
     #
-    dbq = GlyphOutline.select_vdate(session.user, glyphName, idmaster)[0]
-    dbqp = GlyphParam.select_vdate(session.user, glyphName, idmaster)[0]
+    if cFont.loadoption == 0 :
+       GlyphOutline.delete(session.user, glyphName, idmaster)
+    if cFont.loadoption == 1 :
+       GlyphOutline.delete(session.user, glyphName, idmaster)
+       GlyphParam.delete(session.user, glyphName, idmaster)
     #
-    # check if glyphoutline exists
+    #  load option 0  read from xml files only x,y coordinates
+    #  it could be the order of the records has been changed
+    #  in this case we read only the coordinates from the xml file
     #
-    if dbq.vdate is None:
-        vdatedb = 0
-        vdatedbp = 0
-    else:
-        vdatedb = int(dbq.vdate)
-        if dbqp.vdate is None:
-            vdatedbp = 0
-        else:
-            vdatedbp = int(dbqp.vdate)
 
-    idel = 0
-    if dbq:
-        vdateos = int(op.getmtime(glyphsource))
-        if (max(vdatedb, vdatedbp) < vdateos) and cFont.loadoption == '0' \
-                or cFont.loadoption == '99':
-            GlyphOutline.delete(session.user, glyphName, idmaster)
-            GlyphParam.delete(session.user, glyphName, idmaster)
-            idel = 1
-
-    # check if list is empty
-    glyphs = GlyphOutline.select(session.user, glyphName, idmaster)
-    if not glyphs or cFont.loadoption == '1':
-        #  put data into db
-        inum = 0
-        strg = ""
-        xmldoc = etree.parse(glyphsource)
-        outline = xmldoc.find("outline")
-        for itemlist in outline:
-            for s in itemlist:
-                inum = inum + 1
-                # find a named point, convention the name begin
-                # with the letter z
-                if cFont.loadoption == '0' or idel == 1:
-                    idpar = inum
-                    if s.get('name'):
-                        nameval = s.get('name')
-                        GlyphParam.insert(user_id=session.user, id=inum,
-                                          GlyphName=glyphName,
-                                          idmaster=idmaster,
-                                          PointName=nameval)
-                        #  find  all parameter and save it in db
-                        # add glyphparameters here:
-                        xxmrlat(inum, s, paramattr)
-                    else:
-                        nameval = ""
-                        startp = 0
-                        idpar = None
-
-                    pointno = "p" + str(inum)
-
-                    if s.get('type'):
-                        mainpoint = 1
-                    else:
-                        mainpoint = 0
-
-                    GlyphOutline.insert(id=inum,
+    if cFont.loadoption == 0 :
+    #  put data into db
+      inum=0
+      strg=""
+      for itemlist in items :
+        for s in itemlist:
+          inum = inum+1
+          # find a named point, convention the name begin
+          # with the letter z
+          idpar = None
+          pointno = "p" + str(inum)
+          if s.get('name'):
+             nameval = s.get('name')
+             # get the link to the parameter table
+             pip = get_glyphparamid (glyphName, idmaster, nameval)
+             idpar = pip
+             #
+          if s.get('type') :
+                mainpoint = 1
+          else :
+                mainpoint = 0
+          GlyphOutline.insert(id=inum,
                                         glyphName=glyphName,
                                         PointNr=pointno,
                                         x=s.get('x'),
@@ -404,24 +399,52 @@ def putFontG(glyphName, glyphsource, idmaster):
                                         idmaster=idmaster,
                                         pip=idpar,
                                         user_id=session.user)
-                #
-                #  load option 1  read from xml files only x,y coordinates
-                #  it could be the order of the records has been changed
-                #
-                if cFont.loadoption == '1' and idel < 1:
-                    if s.get('type'):
-                        mainpoint = 1
-                    else:
-                        mainpoint = 0
-                    update_postp0(inum, s.get('x'), s.get('y'), str(mainpoint))
-                    # in this case we read only the coordinates
-                    # from the xml file
-                    if s.get('name'):
-                        nameval = s.get('name')
-                        # get the link pip to the parameter table
-                        pip = get_glyphparamid(glyphName, idmaster, nameval)
-                        update_postp(inum, s.get('x'), s.get('y'), pip)
 
+    # 
+    #
+    #  load option 1  read from xml files x,y coordinates
+    #                 and parameters   
+
+    if cFont.loadoption == 1 :
+
+    #  put data into db
+      inum=0
+      strg=""
+      for itemlist in items :
+        for s in itemlist:
+          inum = inum+1
+          #  find a named point , convention the name begin with the letter z
+          idpar = None
+          if s.get('name'):
+              nameval = s.get('name')
+              idpar=inum
+              GlyphParam.insert(user_id=session.user, id=inum,
+                                          GlyphName=glyphName,
+                                          idmaster=idmaster,
+                                          PointName=nameval)
+              #  find  all parameter and save it in db
+              # add glyphparameters here:
+              xxmrlat(inum, s, paramattr)
+          else:
+              nameval = ""
+              startp = 0
+              idpar = None
+          pointno = "p" + str(inum)
+          #
+          if s.get('type'):
+              mainpoint = 1
+          else:
+              mainpoint = 0
+          #
+          GlyphOutline.insert(id=inum,
+                                        glyphName=glyphName,
+                                        PointNr=pointno,
+                                        x=s.get('x'),
+                                        y=s.get('y'),
+                                        contrp=mainpoint,
+                                        idmaster=idmaster,
+                                        pip=idpar,
+                                        user_id=session.user)
 
 def putFont():
     #
@@ -444,8 +467,6 @@ def putFont():
     glyphsourceB = op.join(working_dir(cFont.fontpath), cFont.fontna, glyphPath)
 
     print glyphNameNew
-    print "lastmodifiedA: %s" % time.ctime(op.getmtime(glyphsourceA))
-    print "lastmodifiedB: %s" % time.ctime(op.getmtime(glyphsourceB))
 
     idmaster = cFont.idmaster
     #
@@ -567,6 +588,18 @@ def update_postp(id, x, y, idpar):
         GlyphOutline.update(session.user, id, glyphName, idmaster,
                             x=x, y=y, pip=idpar)
 
+
+def update_glyphparamX(id, ap, bp, ids):
+    # string:syntax update glyphparam set leftp='1' where id=75 and Glyphname='p' and idmaster=1;
+    glyphName = cFont.glyphunic
+    idmaster = gidmast(cFont.idwork)
+    idp = id
+    if bp != '':
+        bb = bp
+        bbstr = str(bb)
+        GlyphParam.update(session.user, idp, glyphName, idmaster,
+                          **{ap: str(bbstr)})
+    return None
 
 def update_glyphparamD(id, ap, bp):
     # string:syntax update glyphparam set leftp='1' where id=75 and Glyphname='p' and idmaster=1;

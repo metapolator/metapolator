@@ -46,9 +46,6 @@ GroupParamForm = Form(Dropdown('Group', CHOICES),
 FontForm = Form(Textbox('Name', notnull, size=30, description="name", value=''),
                 Textbox('UFO_A', notnull, size=20, description="fontnameA", value=''),
                 Textbox('UFO_B', notnull, size=20, description="fontnameB", value=''),
-                Textbox('GLYPH', notnull, size=5, description="glyph", value="c"),
-                Textbox('loadoption', notnull, size=1, description="loadoption", value="0"),
-                Textbox('mfprocess', notnull, size=1, description="mfprocess", value="0"),
                 Button('savefont'))
 
 
