@@ -18,6 +18,9 @@ class EchoWebSocket(websocket.WebSocketHandler):
 
     def on_message(self, message):
         for w in listeners:
+            if not w:
+                listeners.remove(w)
+                continue
             w.write_message(message)
 
     def on_close(self):
