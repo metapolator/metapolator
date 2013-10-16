@@ -8,11 +8,11 @@
 </head>
 <body>
     <a href="javascript:;" value="get" class="label">show me the magic!</a>
-    <div class="well"></div>
+    <pre class="well"></pre>
 </body>
 
 <script>
-    var ws = new WebSocket('ws://alpha.metapolator.com:8888/ws');
+    var ws = new WebSocket('ws://localhost:8888/ws');
     $('.label').click(function(e) {
         ws.send($(this).attr('value'));
     });
