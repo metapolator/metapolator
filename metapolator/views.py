@@ -97,7 +97,7 @@ class View(app.page):
             groupparam = model.get_groupparam(int(id))
             form.fill(post)
 
-        posts = get_edges(working_dir(op.join('fonts', cFont.idwork)))  # model.get_posts()
+        posts = get_edges(working_dir(op.join('fonts', cFont.idwork, 'font.log')))  # model.get_posts()
         postspa = model.get_postspa()
 
         formParam = ParamForm()
