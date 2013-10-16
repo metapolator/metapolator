@@ -21,6 +21,7 @@ from config import app, cFont, is_loggedin, session, working_dir, \
     working_url
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamAForm, LocalParamBForm
+from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, writeGlyphlist
 
 
 ### Templates
@@ -162,9 +163,10 @@ class View(app.page):
 
         model.writexml()
 
-        model.ufo2mf()
+        ufo2mf(cFont.fontpath)
+
         os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
-        model.writeGlyphlist()
+        writeGlyphlist(cFont.fontpath)
         strms = "cd %s; sh %s font.mf" % (working_dir(), "makefont.sh")
         os.system(strms)
 
@@ -193,43 +195,45 @@ class Font1(app.page):
             raise seeother('/login')
         mmaster = list(model.get_masters())
         ida = 0
-        if (id == 'i0') :
-           cFont.loadoption=0
-           cFont.loadoptionAll=0
-           model.putFont() 
-           ida=1
-        if (id == 'i1') :
-           cFont.loadoption=1
-           cFont.loadoptionAll=0
-           model.putFont() 
-           ida=1
-        if (id == 'i2') :
-           cFont.loadoption=0
-           cFont.loadoptionAll=1
-           model.putFontAllglyphs() 
-           ida=1
-        if (id == 'i3') :
-           cFont.loadoption=1
-           cFont.loadoptionAll=1
-           model.putFontAllglyphs() 
-           ida=1
-        if (id == 'e4') :
-           mfoption = 0
-           model.writexml()
-           ida=1
-        if (id == 'e5') :
-           mfoption = 1
-           model.writeallxmlfromdb()
-           ida=1
+        if id == 'i0':
+            cFont.loadoption = 0
+            cFont.loadoptionAll = 0
+            model.putFont()
+            ida = 1
+        if id == 'i1':
+            cFont.loadoption = 1
+            cFont.loadoptionAll = 0
+            model.putFont()
+            ida = 1
+        if id == 'i2':
+            cFont.loadoption = 0
+            cFont.loadoptionAll = 1
+            putFontAllglyphs()
+            ida = 1
+        if id == 'i3':
+            cFont.loadoption = 1
+            cFont.loadoptionAll = 1
+            putFontAllglyphs()
+            ida = 1
+        if id == 'e4':
+            mfoption = 0
+            model.writexml()
+            ida = 1
+        if id == 'e5':
+            mfoption = 1
+            alist = list(get_activeglyph())
+            writeallxmlfromdb(alist)
+            ida = 1
 
-        if ida == 0:        
-          if int(id) > 1000 and int(id) <10000:
-              cFont.glyphName = chr(int(id)-1001+32)
-              cFont.glyphunic = str(int(id)-1001)
+        if ida == 0:
+            id = int(id)
+            if id > 1000 and id < 10000:
+                cFont.glyphName = chr(id - 1001 + 32)
+                cFont.glyphunic = str(id - 1001)
 
-          if int(id) > 0 and int(id) < 1000:
-              model.get_master(id)
-       
+            if id > 0 and id < 1000:
+                model.get_master(id)
+
         fontname = cFont.fontname
         fontna = cFont.fontna
         fontnb = cFont.fontnb
@@ -430,7 +434,7 @@ class copyproject:
         print "** in cproject copy project ", cFont.idmaster
         if id == '1001':
             ip = model.copyproject()
- 
+
         return render.cproject()
 
 
@@ -549,6 +553,12 @@ class CreateProject(app.page):
                 cFont.fontpath = 'fonts/%s' % newid
 
                 fzip.extractall(working_dir(cFont.fontpath))
+
+                ufo2mf(fontpath)
+                os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
+                writeGlyphlist(cFont.fontpath)
+                strms = "cd %s; sh %s font.mf" % (working_dir(), "makefont.sh")
+                os.system(strms)
             except (zipfile.BadZipfile, OSError, IOError):
                 return render.create_project(error='Could not extract file to working directory')
             return seeother('/')

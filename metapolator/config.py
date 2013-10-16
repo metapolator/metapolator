@@ -56,6 +56,15 @@ class cFont:
     mfoption = '0'
 
 
+def buildfname(filename):
+    try:
+        basename, extension = filename.split('.')
+    except:
+        extension = "garbage"
+        basename = ""
+    return [basename, extension]
+
+
 def working_dir(path=None, user=None):
     if is_loggedin():
         directory = op.join(PROJECT_ROOT, 'users', str(user or session.user))

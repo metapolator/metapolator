@@ -16,7 +16,8 @@ import xmltomf
 from lxml import etree
 from passlib.hash import bcrypt
 
-from config import cFont, working_dir, session, DATABASE_USER, DATABASE_PWD
+from config import cFont, working_dir, session, buildfname, \
+    DATABASE_USER, DATABASE_PWD
 
 db = web.database(dbn='mysql', db='blog',
                   user=DATABASE_USER, pw=DATABASE_PWD)
@@ -54,12 +55,9 @@ def xxmrlat(inum, s, sattr):
     for item in cc:
         if item in sattr:
             val = cc[item]
-            if item not in ['','select'] :
-              update_glyphparamX ( inum, item, val, ids)
+            if item not in ['', 'select']:
+                update_glyphparamX(inum, item, val, ids)
 
-    return None
-
-def delFont(fontName, glyphNamel):
     return None
 
 
@@ -475,42 +473,6 @@ def putFont():
     putFontG(glyphName, glyphsourceB, -int(idmaster))
 
     cFont.idwork = idworks
-
-
-def putFontAllglyphs():
-    #
-    #  read all fonts (xml files with glif extension) in unix directory
-    #  and put the xml data into db using the rule applied in loadoption
-    #  only the fonts (xml file) will be read when the glifs are present in both fonts A and B
-    #
-    # save the values for restore
-    idworks = cFont.idwork
-    glyphnames = cFont.glyphName
-    glyphunics = cFont.glyphunic
-
-    dirnamea = op.join(working_dir(cFont.fontpath), cFont.fontna, "glyphs")
-    if not op.exists(dirnamea):
-        os.makedirs(dirnamea)
-
-    dirnameb = op.join(working_dir(cFont.fontpath), cFont.fontnb, "glyphs")
-    if not op.exists(dirnameb):
-        os.makedirs(dirnameb)
-
-    charlista = [f for f in os.listdir(dirnamea)]
-    charlistb = [f for f in os.listdir(dirnameb)]
-    for ch1 in charlista:
-        if ch1 in charlistb:
-            fnb, ext = buildfname(ch1)
-            if ext in ["glif"]:
-                glyphName = fnb
-                cFont.glyphName = glyphName
-                cFont.glyphunic = glyphName
-                putFont()
-    #
-    #   save previous values back
-    cFont.idwork = idworks
-    cFont.glyphName = glyphnames
-    cFont.glyphunic = glyphunics
 
 
 def gidmast(idwork):
@@ -1016,39 +978,6 @@ def get_activeglyph():
     return db.query(strg)
 
 
-def writeallxmlfromdb():
-    dirnamea = op.join(working_dir(cFont.fontpath), cFont.fontna, "glyphs")
-    dirnameb = op.join(working_dir(cFont.fontpath), cFont.fontnb, "glyphs")
-
-    charlista = [f for f in os.listdir(dirnamea) if fnextension(f) == 'glif']
-    charlistb = [f for f in os.listdir(dirnameb) if fnextension(f) == 'glif']
-
-    idworks = cFont.idwork
-    alist = list(get_activeglyph())
-    aalist = []
-    for g in alist:
-        aalist.append(g.glyphname)
-    #
-    for ch1 in charlista:
-        if ch1 in charlistb:
-            glyphname, exte = buildfname(ch1)
-            if glyphname in aalist:
-                cFont.glyphunic = glyphname
-                cFont.glyphName = glyphname
-                #   for A and B font
-                for iwork in ['0', '1']:
-                    cFont.idwork = iwork
-                    writexml()
-    #
-    #    restore old idwork value
-    cFont.idwork = idworks
-    return None
-
-
-def writeGlyphlist():
-    ifile = open(op.join(working_dir(cFont.fontpath), "glyphlist.mf"), "w")
-
-
 def writeGlobalParam():
     #
     # prepare font.mf parameter file
@@ -1123,15 +1052,6 @@ def writeGlobalParam():
     ifile.close()
 
 
-def buildfname(filename):
-    try:
-        basename, extension = filename.split('.')
-    except:
-        extension = "garbage"
-        basename = ""
-    return [basename, extension]
-
-
 def fnextension(filename):
     try:
         basename, extension = filename.split('.')
@@ -1139,42 +1059,6 @@ def fnextension(filename):
         extension = "garbage"
         basename = ""
     return extension
-
-
-def ufo2mf():
-    print "ufo2mf", cFont.fontpath
-    dirnamef1 = working_dir(op.join(cFont.fontpath, cFont.fontna, "glyphs"))
-    dirnamef2 = working_dir(op.join(cFont.fontpath, cFont.fontnb, "glyphs"))
-    dirnamep1 = working_dir(op.join(cFont.fontpath, "glyphs"))
-
-    charlist1 = [f for f in os.listdir(dirnamef1) if fnextension(f) == 'glif']
-    charlist2 = [f for f in os.listdir(dirnamef2) if fnextension(f) == 'glif']
-
-    for ch1 in charlist1:
-        if ch1 in charlist2:
-            fnb, ext = buildfname(ch1)
-            if fnb == cFont.glyphunic or cFont.timestamp == 0 or cFont.mfoption == "1":
-                newfile = fnb
-                newfilename = newfile + ".mf"
-                # commd2 = "python parser_pino_mono.py " +ch1 +" " +dirnamef1 +" " +dirnamef2 +" > " +dirnamep1 +"/" +newfilename
-                # os.system(commd2)
-                xmltomf.xmltomf1(ch1, dirnamef1, dirnamef2, dirnamep1, newfilename)
-
-    cFont.timestamp = 1
-
-
-def writeGlyphlist():
-    print "*** write glyphlist ***"
-    ifile = open(working_dir(op.join(cFont.fontpath, "glyphlist.mf")), "w")
-    dirnamep1 = working_dir(op.join(cFont.fontpath, "glyphs"))
-
-    charlist1 = [f for f in os.listdir(dirnamep1)]
-
-    for ch1 in charlist1:
-        fnb, ext = buildfname(ch1)
-        if ext in ["mf"]:
-            ifile.write("input glyphs/"+ch1+"\n")
-    ifile.close()
 
 
 def get_user_by_username(name):
