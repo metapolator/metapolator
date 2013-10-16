@@ -27,11 +27,10 @@ def get_json(filename):
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
     point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
 
-    pattern = re.findall(r'Edge structure(.*?)End edge', content,
+    pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
                          re.I | re.DOTALL | re.M)
-
     edges = []
-    for edge in pattern:
+    for glyph, edge in pattern:
         contours = []
         for contour in contour_pattern.findall(edge.strip()):
             contour = re.sub('\n(\S)', '\\1', contour)
@@ -48,7 +47,7 @@ def get_json(filename):
                                                    'y': y_control_1},
                                                   {'x': x_control_2,
                                                    'y': y_control_2}]})
-        edges.append(contours)
+        edges.append({'glyph': glyph, 'contours': contours})
 
     return {'total_edges': len(edges), 'edges': edges}
 
