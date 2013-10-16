@@ -14,7 +14,6 @@ import re
 import sys
 import web
 import zipfile
-import os.path as op
 
 from web import seeother
 from passlib.hash import bcrypt
@@ -25,7 +24,7 @@ from config import app, cFont, is_loggedin, session, working_dir, \
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamAForm, LocalParamBForm
 from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
-    writeGlyphlist, makefont, get_edges
+    writeGlyphlist, makefont
 
 
 ### Templates
@@ -96,8 +95,7 @@ class View(app.page):
             glyphparam = model.get_glyphparam(int(id))
             groupparam = model.get_groupparam(int(id))
             form.fill(post)
-
-        posts = get_edges(working_dir(op.join('fonts', cFont.idwork, 'font.log')))  # model.get_posts()
+        posts = model.get_posts()
         postspa = model.get_postspa()
 
         formParam = ParamForm()
