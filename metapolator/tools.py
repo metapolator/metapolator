@@ -4,6 +4,15 @@ import os.path as op
 from config import cFont, working_dir, buildfname
 
 
+def fnextension(filename):
+    try:
+        basename, extension = filename.split('.')
+    except:
+        extension = "garbage"
+        basename = ""
+    return extension
+
+
 def ufo2mf(fontpath):
     print "ufo2mf", fontpath
     dirnamef1 = working_dir(op.join(fontpath, cFont.fontna, "glyphs"))

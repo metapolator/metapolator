@@ -1052,15 +1052,6 @@ def writeGlobalParam():
     ifile.close()
 
 
-def fnextension(filename):
-    try:
-        basename, extension = filename.split('.')
-    except:
-        extension = "garbage"
-        basename = ""
-    return extension
-
-
 def get_user_by_username(name):
     try:
         return db.select('users', where='username=$name', vars=locals())[0]
