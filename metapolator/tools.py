@@ -1,5 +1,6 @@
 import os
 import os.path as op
+import xmltomf1
 
 from config import cFont, working_dir, buildfname
 
