@@ -13,6 +13,8 @@ import os
 import re
 import sys
 import web
+import zipfile
+
 from web import seeother
 from passlib.hash import bcrypt
 
@@ -21,7 +23,8 @@ from config import app, cFont, is_loggedin, session, working_dir, \
     working_url
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamAForm, LocalParamBForm
-from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, writeGlyphlist
+from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
+    writeGlyphlist, makefont
 
 
 ### Templates
@@ -163,12 +166,7 @@ class View(app.page):
 
         model.writexml()
 
-        ufo2mf(cFont.fontpath)
-
-        os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
-        writeGlyphlist(cFont.fontpath)
-        strms = "cd %s; sh %s font.mf" % (working_dir(), "makefont.sh")
-        os.system(strms)
+        makefont(working_dir(), cFont.fontpath)
 
         master = [master]
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
@@ -491,11 +489,11 @@ class Register(app.page):
             return render.register(form)
         seeother = authorize(user)
 
-        try:
-            import shutil
-            shutil.copytree(working_dir(user='skel'), working_dir())
-        except OSError:
-            pass
+        from distutils.dir_util import copy_tree
+        copy_tree(working_dir(user='skel'), working_dir())
+
+        # create static files for users so that he can download his fonts
+        working_dir('static')
         raise seeother
 
 
@@ -514,7 +512,6 @@ class CreateProject(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        import zipfile
         x = web.input(zipfile={})
         if 'zipfile' in x and 'name' in x and x.name:
             filename = os.path.join(working_dir(), x.zipfile.filename)
@@ -545,22 +542,21 @@ class CreateProject(app.page):
                 try:
                     FontNameB = ufo_dirs[1]
                 except IndexError:
-                    FontNameB = ''
+                    FontNameB = FontNameA
                 newid = model.Master.insert(idglobal=1, FontName=x.name,
                                             FontNameA=FontNameA,
                                             FontNameB=FontNameB,
                                             user_id=session.user)
                 cFont.fontpath = 'fonts/%s' % newid
+                cFont.fontna = FontNameA
+                cFont.fontnb = FontNameB
 
                 fzip.extractall(working_dir(cFont.fontpath))
 
-                ufo2mf(fontpath)
-                os.environ['MFINPUTS'] = working_dir(cFont.fontpath)
-                writeGlyphlist(cFont.fontpath)
-                strms = "cd %s; sh %s font.mf" % (working_dir(), "makefont.sh")
-                os.system(strms)
+                makefont(working_dir(), cFont.fontpath)
             except (zipfile.BadZipfile, OSError, IOError):
-                return render.create_project(error='Could not extract file to working directory')
+                raise
+                # return render.create_project(error='Could not extract file to %s' % working_dir(cFont.fontpath))
             return seeother('/')
 
         return render.create_project(error='Please fill all fields in form')

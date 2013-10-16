@@ -5,6 +5,14 @@ import xmltomf
 from config import cFont, working_dir, buildfname
 
 
+def makefont(working_dir, fontpath):
+    ufo2mf(fontpath)
+    os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
+    writeGlyphlist(fontpath)
+    strms = "cd %s; sh %s font.mf" % (working_dir, "makefont.sh")
+    os.system(strms)
+
+
 def fnextension(filename):
     try:
         basename, extension = filename.split('.')
@@ -19,9 +27,11 @@ def ufo2mf(fontpath):
     dirnamef1 = working_dir(op.join(fontpath, cFont.fontna, "glyphs"))
     dirnamef2 = working_dir(op.join(fontpath, cFont.fontnb, "glyphs"))
     dirnamep1 = working_dir(op.join(fontpath, "glyphs"))
+    if not op.exists(dirnamep1):
+        os.makedirs(dirnamep1)
 
-    charlist1 = [f for f in os.listdir(dirnamef1) if fnextension(f) == 'glif']
-    charlist2 = [f for f in os.listdir(dirnamef2) if fnextension(f) == 'glif']
+    charlist1 = filter(lambda f: fnextension(f) == 'glif', os.listdir(dirnamef1))
+    charlist2 = filter(lambda f: fnextension(f) == 'glif', os.listdir(dirnamef2))
 
     for ch1 in charlist1:
         if ch1 in charlist2:
