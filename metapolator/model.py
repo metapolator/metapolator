@@ -814,8 +814,8 @@ def copyproject():
     print "idmasternew", idmasternew
     #
     import shutil
-    new_proj_dir = working_dir(op.join('fonts', gstr(idmasternew)))
-    old_proj_dir = working_dir(op.join('fonts', gstr(idmaster)))
+    new_proj_dir = working_dir(op.join('fonts', str(idmasternew)))
+    old_proj_dir = working_dir(op.join('fonts', str(idmaster)))
     shutil.copytree(old_proj_dir, new_proj_dir)
     #
     #
@@ -823,14 +823,15 @@ def copyproject():
         idmnew = "'"+str(iloop*idmasternew)+"'"
         idm = "'"+str(iloop*idmaster)+"'"
         strg = ("insert into master (idmaster,FontName,FontNameA,FontNameB,idglobal,vdate,user_id)"
-                " select "+idmnew+", FontName,FontNameA,FontNameB,idglobal,now() from master where"
+                " select "+idmnew+", FontName,FontNameA,FontNameB,idglobal,now(),user_id from master where"
                 " user_id=%s and idmaster=%s") % (session.user, idm)
         print strg
         db.query(strg)
 
         strg = "drop table if exists tmp"
+        print strg
         db.query(strg)
-        strg = "create temporary table tmp select * from glyphoutline where user_id=%s anb idmaster=%s" % (session.user, idm)
+        strg = "create temporary table tmp select * from glyphoutline where user_id=%s and idmaster=%s" % (session.user, idm)
         db.query(strg)
         strg = "update tmp set idmaster="+idmnew+",vdate=now() where user_id=%s and idmaster=%s" % (session.user, idm)
         db.query(strg)

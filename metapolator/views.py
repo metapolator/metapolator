@@ -223,6 +223,9 @@ class Font1(app.page):
             writeallxmlfromdb(alist)
             ida = 1
 
+        if id == '20000' :
+            return render.cproject()
+
         if ida == 0:
             id = int(id)
             if id > 1000 and id < 10000:
@@ -422,7 +425,7 @@ class localParamB(app.page):
         return render.font4(formg, gml, cFont, glo, formlA, formlB)
 
 
-class copyproject:
+class copyproject (app.page):
 
     path = '/cproject/([0-9]+)'
 
