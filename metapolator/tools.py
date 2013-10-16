@@ -6,7 +6,7 @@ import xmltomf
 from config import cFont, working_dir, buildfname
 
 
-def get_json(filename):
+def get_edges(filename):
     try:
         fp = open(filename)
         content = fp.read()
