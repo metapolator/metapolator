@@ -12,7 +12,7 @@
 </body>
 
 <script>
-    var ws = new WebSocket('ws://localhost:8888/ws');
+    var ws = new WebSocket('ws://alpha.metapolator.com:8888/ws');
     $('.label').click(function(e) {
         ws.send($(this).attr('value'));
     });
