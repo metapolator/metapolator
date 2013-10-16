@@ -1,3 +1,4 @@
+import os
 import os.path as op
 
 from config import cFont, working_dir, buildfname
@@ -100,4 +101,3 @@ def writeallxmlfromdb(alist):
     #
     #    restore old idwork value
     cFont.idwork = idworks
-    return None
