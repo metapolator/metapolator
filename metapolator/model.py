@@ -16,9 +16,10 @@ import xmltomf
 from lxml import etree
 from passlib.hash import bcrypt
 
-from config import cFont, working_dir, session
+from config import cFont, working_dir, session, DATABASE_USER, DATABASE_PWD
 
-db = web.database(dbn='mysql', db='blog', user='walter', pw='')
+db = web.database(dbn='mysql', db='blog',
+                  user=DATABASE_USER, pw=DATABASE_PWD)
 
 
 def xxmlat(s, dbob, sattr, val, iro):
@@ -46,7 +47,7 @@ def xxmlat(s, dbob, sattr, val, iro):
 
 
 def xxmrlat(inum, s, sattr):
-    
+
     idmaster = gidmast(cFont.idwork)
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     cc = s.attrib
@@ -400,10 +401,10 @@ def putFontG(glyphName, glyphsource, idmaster):
                                         pip=idpar,
                                         user_id=session.user)
 
-    # 
+    #
     #
     #  load option 1  read from xml files x,y coordinates
-    #                 and parameters   
+    #                 and parameters
 
     if cFont.loadoption == 1 :
 

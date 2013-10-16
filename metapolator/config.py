@@ -4,6 +4,13 @@ import web
 
 
 PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
+DATABASE_USER = 'root'
+DATABASE_PWD = ''
+
+try:
+    from localconfig import DATABASE_USER, DATABASE_PWD
+except ImportError:
+    pass
 
 
 ### Url mappings
