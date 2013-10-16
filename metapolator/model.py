@@ -227,12 +227,12 @@ class GlyphParam(Model):
     @classmethod
     def select_one_id(cls, user, glyphName, nameval, idmaster):
         query = cls.db_select_first(what='id',
-                                   where=('GlyphName=$glyphName'
-                                          ' and PointName=$PointName'
-                                          ' and idmaster=$idmaster'
-                                          ' and user_id=$user'),
-                                   vars=dict(idmaster=idmaster, PointName=nameval,
-                                             user=user, glyphName=glyphName))
+                                    where=('GlyphName=$glyphName'
+                                           ' and PointName=$PointName'
+                                           ' and idmaster=$idmaster'
+                                           ' and user_id=$user'),
+                                    vars=dict(idmaster=idmaster, PointName=nameval,
+                                              user=user, glyphName=glyphName))
         try:
             return query.id
         except AttributeError:
@@ -357,9 +357,10 @@ def putFontG(glyphName, glyphsource, idmaster):
     outline = xmldoc.find("outline")
     items = outline
     #
-    if cFont.loadoption == 0 :
+    if cFont.loadoption == 0:
         GlyphOutline.delete(session.user, glyphName, idmaster)
-    if cFont.loadoption == 1 :
+
+    if cFont.loadoption == 1:
         GlyphOutline.delete(session.user, glyphName, idmaster)
         GlyphParam.delete(session.user, glyphName, idmaster)
     #
@@ -368,13 +369,13 @@ def putFontG(glyphName, glyphsource, idmaster):
     #  in this case we read only the coordinates from the xml file
     #
 
-    if cFont.loadoption == 0 :
+    if cFont.loadoption == 0:
     #   put data into db
-        inum=0
-        strg=""
-        for itemlist in items :
+        inum = 0
+        strg = ""
+        for itemlist in items:
             for s in itemlist:
-                inum = inum+1
+                inum = inum + 1
                 # find a named point, convention the name begin
                 # with the letter z
                 idpar = None
@@ -382,68 +383,69 @@ def putFontG(glyphName, glyphsource, idmaster):
                 if s.get('name'):
                     nameval = s.get('name')
                     # get the link to the parameter table
-                    pip = get_glyphparamid (glyphName, idmaster, nameval)
+                    pip = get_glyphparamid(glyphName, idmaster, nameval)
                     idpar = pip
                     #
-                if s.get('type') :
+                if s.get('type'):
                     mainpoint = 1
-                else :
+                else:
                     mainpoint = 0
                 GlyphOutline.insert(id=inum,
-                                        glyphName=glyphName,
-                                        PointNr=pointno,
-                                        x=s.get('x'),
-                                        y=s.get('y'),
-                                        contrp=mainpoint,
-                                        idmaster=idmaster,
-                                        pip=idpar,
-                                        user_id=session.user)
+                                    glyphName=glyphName,
+                                    PointNr=pointno
+                                    x=s.get('x'),
+                                    y=s.get('y'),
+                                    contrp=mainpoint,
+                                    idmaster=idmaster,
+                                    pip=idpar,
+                                    user_id=session.user)
 
     #
     #
     #  load option 1  read from xml files x,y coordinates
     #                 and parameters
 
-    if cFont.loadoption == 1 :
+    if cFont.loadoption == 1:
 
-    #  put data into db
-      inum=0
-      strg=""
-      for itemlist in items :
-          for s in itemlist:
-              inum = inum+1
-              #  find a named point , convention the name begin with the letter z
-              idpar = None
-              if s.get('name'):
-                  nameval = s.get('name')
-                  idpar=inum
-                  GlyphParam.insert(user_id=session.user, id=inum,
-                                          GlyphName=glyphName,
-                                          idmaster=idmaster,
-                                          PointName=nameval)
-                  #  find  all parameter and save it in db
-                  # add glyphparameters here:
-                  xxmrlat(inum, s, paramattr)
-              else:
-                  nameval = ""
-                  startp = 0
-                  idpar = None
-              pointno = "p" + str(inum)
-              #
-              if s.get('type'):
-                  mainpoint = 1
-              else:
-                  mainpoint = 0
-              #
-              GlyphOutline.insert(id=inum,
-                                        glyphName=glyphName,
-                                        PointNr=pointno,
-                                        x=s.get('x'),
-                                        y=s.get('y'),
-                                        contrp=mainpoint,
-                                        idmaster=idmaster,
-                                        pip=idpar,
-                                        user_id=session.user)
+        #  put data into db
+        inum = 0
+        strg = ""
+        for itemlist in items:
+            for s in itemlist:
+                inum = inum + 1
+                #  find a named point , convention the name begin with the letter z
+                idpar = None
+                if s.get('name'):
+                    nameval = s.get('name')
+                    idpar = inum
+                    GlyphParam.insert(user_id=session.user, id=inum,
+                                      GlyphName=glyphName,
+                                      idmaster=idmaster,
+                                      PointName=nameval)
+                    #  find  all parameter and save it in db
+                    # add glyphparameters here:
+                    xxmrlat(inum, s, paramattr)
+                else:
+                    nameval = ""
+                    startp = 0
+                    idpar = None
+                pointno = "p" + str(inum)
+                #
+                if s.get('type'):
+                    mainpoint = 1
+                else:
+                    mainpoint = 0
+                #
+                GlyphOutline.insert(id=inum,
+                                    glyphName=glyphName,
+                                    PointNr=pointno,
+                                    x=s.get('x'),
+                                    y=s.get('y'),
+                                    contrp=mainpoint,
+                                    idmaster=idmaster,
+                                    pip=idpar,
+                                    user_id=session.user)
+
 
 def putFont():
     #
@@ -563,6 +565,7 @@ def update_glyphparamX(id, ap, bp, ids):
         GlyphParam.update(session.user, idp, glyphName, idmaster,
                           **{ap: str(bbstr)})
     return None
+
 
 def update_glyphparamD(id, ap, bp):
     # string:syntax update glyphparam set leftp='1' where id=75 and Glyphname='p' and idmaster=1;
