@@ -358,10 +358,10 @@ def putFontG(glyphName, glyphsource, idmaster):
     items = outline
     #
     if cFont.loadoption == 0 :
-       GlyphOutline.delete(session.user, glyphName, idmaster)
+        GlyphOutline.delete(session.user, glyphName, idmaster)
     if cFont.loadoption == 1 :
-       GlyphOutline.delete(session.user, glyphName, idmaster)
-       GlyphParam.delete(session.user, glyphName, idmaster)
+        GlyphOutline.delete(session.user, glyphName, idmaster)
+        GlyphParam.delete(session.user, glyphName, idmaster)
     #
     #  load option 0  read from xml files only x,y coordinates
     #  it could be the order of the records has been changed
@@ -369,27 +369,27 @@ def putFontG(glyphName, glyphsource, idmaster):
     #
 
     if cFont.loadoption == 0 :
-    #  put data into db
-      inum=0
-      strg=""
-      for itemlist in items :
-        for s in itemlist:
-          inum = inum+1
-          # find a named point, convention the name begin
-          # with the letter z
-          idpar = None
-          pointno = "p" + str(inum)
-          if s.get('name'):
-             nameval = s.get('name')
-             # get the link to the parameter table
-             pip = get_glyphparamid (glyphName, idmaster, nameval)
-             idpar = pip
-             #
-          if s.get('type') :
-                mainpoint = 1
-          else :
-                mainpoint = 0
-          GlyphOutline.insert(id=inum,
+    #   put data into db
+        inum=0
+        strg=""
+        for itemlist in items :
+            for s in itemlist:
+                inum = inum+1
+                # find a named point, convention the name begin
+                # with the letter z
+                idpar = None
+                pointno = "p" + str(inum)
+                if s.get('name'):
+                    nameval = s.get('name')
+                    # get the link to the parameter table
+                    pip = get_glyphparamid (glyphName, idmaster, nameval)
+                    idpar = pip
+                    #
+                if s.get('type') :
+                    mainpoint = 1
+                else :
+                    mainpoint = 0
+                GlyphOutline.insert(id=inum,
                                         glyphName=glyphName,
                                         PointNr=pointno,
                                         x=s.get('x'),
@@ -410,32 +410,32 @@ def putFontG(glyphName, glyphsource, idmaster):
       inum=0
       strg=""
       for itemlist in items :
-        for s in itemlist:
-          inum = inum+1
-          #  find a named point , convention the name begin with the letter z
-          idpar = None
-          if s.get('name'):
-              nameval = s.get('name')
-              idpar=inum
-              GlyphParam.insert(user_id=session.user, id=inum,
+          for s in itemlist:
+              inum = inum+1
+              #  find a named point , convention the name begin with the letter z
+              idpar = None
+              if s.get('name'):
+                  nameval = s.get('name')
+                  idpar=inum
+                  GlyphParam.insert(user_id=session.user, id=inum,
                                           GlyphName=glyphName,
                                           idmaster=idmaster,
                                           PointName=nameval)
-              #  find  all parameter and save it in db
-              # add glyphparameters here:
-              xxmrlat(inum, s, paramattr)
-          else:
-              nameval = ""
-              startp = 0
-              idpar = None
-          pointno = "p" + str(inum)
-          #
-          if s.get('type'):
-              mainpoint = 1
-          else:
-              mainpoint = 0
-          #
-          GlyphOutline.insert(id=inum,
+                  #  find  all parameter and save it in db
+                  # add glyphparameters here:
+                  xxmrlat(inum, s, paramattr)
+              else:
+                  nameval = ""
+                  startp = 0
+                  idpar = None
+              pointno = "p" + str(inum)
+              #
+              if s.get('type'):
+                  mainpoint = 1
+              else:
+                  mainpoint = 0
+              #
+              GlyphOutline.insert(id=inum,
                                         glyphName=glyphName,
                                         PointNr=pointno,
                                         x=s.get('x'),
