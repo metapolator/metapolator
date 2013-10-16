@@ -1,4 +1,4 @@
-$def with (posts,post,form,formparam,formparamG,master,mastglobal,webglyph,glyphparam,groupparam,cfont,postspa)
+$def with (edges,post,form,formparam,formparamG,master,mastglobal,webglyph,glyphparam,groupparam,cfont,postspa)
 <title>
 $if cfont.idwork == '0' :
        A: $cfont.fontna
@@ -552,10 +552,12 @@ $for ppp in postspa:
 		</middle>
 	</div>
 	
-	$for posti in posts:
-		<div class="pp$posti.id">
+	$for edge in edges:
+        $for point in edge:
+            <div>$point['x']x$point['y']</div>
+		<!-- div class="pp$posti.id">
 			<p><a href="/view/$posti.id" style="text-decoration:none">●$posti.PointNr</a></p>
-		</div>
+		</div -->
 
  	$if form.d.PointName > "0" : 
 		<div class="p$glyphparam.PointNr">

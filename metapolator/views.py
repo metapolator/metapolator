@@ -24,7 +24,7 @@ from config import app, cFont, is_loggedin, session, working_dir, \
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamAForm, LocalParamBForm
 from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
-    writeGlyphlist, makefont
+    writeGlyphlist, makefont, get_edges
 
 
 ### Templates
@@ -95,7 +95,8 @@ class View(app.page):
             glyphparam = model.get_glyphparam(int(id))
             groupparam = model.get_groupparam(int(id))
             form.fill(post)
-        posts = model.get_posts()
+
+        posts = get_edges(working_dir(op.join('fonts', cFont.idwork)))  # model.get_posts()
         postspa = model.get_postspa()
 
         formParam = ParamForm()
