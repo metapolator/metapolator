@@ -1,3 +1,6 @@
+tracingall
+loggingall
+
 % slant
 slant:=0;
 font_slant slant;
