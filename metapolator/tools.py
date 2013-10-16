@@ -12,7 +12,7 @@ def get_edges(filename):
         content = fp.read()
         fp.close()
     except (IOError, OSError):
-        return {}
+        return {'total_edges': 0, 'edges': []}
 
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
     point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
