@@ -553,6 +553,15 @@ class CreateProject(app.page):
 
                 fzip.extractall(working_dir(cFont.fontpath))
 
+                import shutil
+                for f in os.listdir(working_dir('commons', user='skel')):
+                    filename = working_dir(os.path.join('commons', f),
+                                           user='skel')
+                    try:
+                        shutil.copy2(filename, working_dir(cFont.fontpath))
+                    except IOError:
+                        print 'unable to copy file', filename, 'to', working_dir(cFont.fontpath)
+
                 makefont(working_dir(), cFont.fontpath)
             except (zipfile.BadZipfile, OSError, IOError):
                 raise

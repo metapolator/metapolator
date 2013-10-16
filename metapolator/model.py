@@ -392,7 +392,7 @@ def putFontG(glyphName, glyphsource, idmaster):
                     mainpoint = 0
                 GlyphOutline.insert(id=inum,
                                     glyphName=glyphName,
-                                    PointNr=pointno
+                                    PointNr=pointno,
                                     x=s.get('x'),
                                     y=s.get('y'),
                                     contrp=mainpoint,
