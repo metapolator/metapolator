@@ -144,13 +144,15 @@ class View(app.page):
             formParam.fill(glyphparam)
         if groupparam is not None:
             formParamG.fill(groupparam)
-        mastglobal = model.get_globalparam(cFont.idglobal)
+        mastglobal = model.get_globalpa
+        ram(cFont.idglobal)
         master = model.get_master(cFont.idmaster) or []
         if master:
             master = [master]
         webglyph = cFont.glyphName
 
-        json = get_json(op.join(working_dir(), cFont.fontpath, webglyph))
+        json = {'p': op.join(working_dir(), 'font.log'),
+                'r': get_json(op.join(working_dir(), 'font.log'))}
 
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa, json)
 
