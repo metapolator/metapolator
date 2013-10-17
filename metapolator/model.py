@@ -20,7 +20,7 @@ from config import cFont, working_dir, session, buildfname, \
     DATABASE_USER, DATABASE_PWD
 
 db = web.database(dbn='mysql', db='blog',
-                  user='walter', pw='')
+                  user=DATABASE_USER, pw=DATABASE_PWD)
 
 
 def xxmlat(s, dbob, sattr, val, iro):
