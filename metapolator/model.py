@@ -20,7 +20,7 @@ from config import cFont, working_dir, session, buildfname, \
     DATABASE_USER, DATABASE_PWD
 
 db = web.database(dbn='mysql', db='blog',
-                  user=DATABASE_USER, pw=DATABASE_PWD)
+                  user='walter', pw='')
 
 
 def xxmlat(s, dbob, sattr, val, iro):
@@ -290,6 +290,11 @@ class Master(Model):
                       vars=dict(user=user, id=id),
                       **kwargs)
 
+    @classmethod
+    def select_maxid(cls, user):
+        return cls.db_select(where='user_id=$user',
+                                   what='max(idmaster) maxid',
+                                   vars=dict(user=user))
 
 class GlobalParam(Model):
 
@@ -808,8 +813,7 @@ def copyproject():
     # mkdir -p fonts/3
     # cp -rpu fonts/1/* fonts/3/
     #
-    strg = "select max(idmaster) maxid from master"
-    idma = list(db.query(strg))
+    idma = Master.select_maxid(session.user)
     idmasternew = idma[0].maxid + 1
     print "idmasternew", idmasternew
     #
@@ -828,34 +832,23 @@ def copyproject():
         print strg
         db.query(strg)
 
-        strg = "drop table if exists tmp"
+        strg = ("insert into glyphoutline (idmaster,id,glyphname,PointNr,x,y,contrp,pip,vdate,user_id)"
+                " select "+idmnew+",id,glyphname,PointNr,x,y,contrp,pip,now(),user_id from glyphoutline where"
+                " user_id=%s and idmaster=%s") % (session.user, idm)
         print strg
         db.query(strg)
-        strg = "create temporary table tmp select * from glyphoutline where user_id=%s and idmaster=%s" % (session.user, idm)
-        db.query(strg)
-        strg = "update tmp set idmaster="+idmnew+",vdate=now() where user_id=%s and idmaster=%s" % (session.user, idm)
-        db.query(strg)
-        strg = "insert into glyphoutline select * from tmp where idmaster=%s and user_id=%s" % (idmnew, session.user)
-        db.query(strg)
 
-        strg = "drop table if exists tmp"
+        strg = ("insert into groupparam (idmaster,user_id,groupname,vdate,startp,doubledash,tripledash,superleft,superright,leftp,rightp,downp,upp,dir,leftp2,rightp2,downp2,upp2,dir2,tension,tensionand,cycle,penshifted,pointshifted,angle,penwidth,overx,overbase,overcap,overasc,overdesc,ascpoint,descpoint,stemcutter,stemshift,inktrap_l,inktrap_r)"
+                " select "+idmnew+",user_id,groupname,now(),startp,doubledash,tripledash,superleft,superright,leftp,rightp,downp,upp,dir,leftp2,rightp2,downp2,upp2,dir2,tension,tensionand,cycle,penshifted,pointshifted,angle,penwidth,overx,overbase,overcap,overasc,overdesc,ascpoint,descpoint,stemcutter,stemshift,inktrap_l,inktrap_r from groupparam where"
+                " user_id=%s and idmaster=%s") % (session.user, idm)
+        print strg
         db.query(strg)
-        strg = "create temporary table tmp select * from groupparam where idmaster=%s and user_id=%s" % (idm, session.user)
+        strg = ("insert into glyphparam (idmaster,id,glyphname,user_id,PointName,groupname,vdate,startp,doubledash,tripledash,superleft,superright,leftp,rightp,downp,upp,dir,leftp2,rightp2,downp2,upp2,dir2,tension,tensionand,cycle,penshifted,pointshifted,angle,penwidth,overx,overbase,overcap,overasc,overdesc,ascpoint,descpoint,stemcutter,stemshift,inktrap_l,inktrap_r)"
+                " select "+idmnew+",id,glyphname,user_id,PointName,groupname,now(),startp,doubledash,tripledash,superleft,superright,leftp,rightp,downp,upp,dir,leftp2,rightp2,downp2,upp2,dir2,tension,tensionand,cycle,penshifted,pointshifted,angle,penwidth,overx,overbase,overcap,overasc,overdesc,ascpoint,descpoint,stemcutter,stemshift,inktrap_l,inktrap_r from glyphparam where"
+                " user_id=%s and idmaster=%s") % (session.user, idm)
+        print strg
         db.query(strg)
-        strg = "update tmp set idmaster="+idmnew+",vdate=now() where idmaster=%s and user_id=%s" % (idm, session.user)
-        db.query(strg)
-        strg = "insert into groupparam select * from tmp where idmaster=%s and user_id=%s" % (idmnew, session.user)
-        db.query(strg)
-
-        strg = "drop table if exists tmp"
-        db.query(strg)
-        strg = "create temporary table tmp select * from glyphparam where idmaster=%s and user_id=%s" % (idm, session.user)
-        db.query(strg)
-        strg = "update tmp set idmaster="+idmnew+",vdate=now() where idmaster=%s and user_id=%s" % (idm, session.user)
-        db.query(strg)
-        strg = "insert into glyphparam select * from tmp where idmaster=%s and user_id=%s" % (idmnew, session.user)
-        db.query(strg)
-
+        return
 
 def writexml():
 #
