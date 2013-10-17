@@ -144,8 +144,7 @@ class View(app.page):
             formParam.fill(glyphparam)
         if groupparam is not None:
             formParamG.fill(groupparam)
-        mastglobal = model.get_globalpa
-        ram(cFont.idglobal)
+        mastglobal = model.get_globalparam(cFont.idglobal)
         master = model.get_master(cFont.idmaster) or []
         if master:
             master = [master]
