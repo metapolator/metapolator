@@ -16,13 +16,13 @@ class IndexHandler(web.RequestHandler):
         return self.render('index.html')
 
 
-def get_json(filename):
+def get_json(filename, glyphid=None):
     try:
         fp = open(filename)
         content = fp.read()
         fp.close()
     except (IOError, OSError):
-        pass
+        return {}
 
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
     point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
@@ -31,6 +31,8 @@ def get_json(filename):
                          re.I | re.DOTALL | re.M)
     edges = []
     for glyph, edge in pattern:
+        if glyphid and int(glyphid) != int(glyph):
+            continue
         contours = []
         for contour in contour_pattern.findall(edge.strip()):
             contour = re.sub('\n(\S)', '\\1', contour)
