@@ -150,10 +150,7 @@ class View(app.page):
             master = [master]
         webglyph = cFont.glyphName
 
-        json = {'g': cFont.__dict__,
-                'p': op.join(working_dir(), 'font.log'),
-                'r': get_json(op.join(working_dir(), 'font.log'))}
-
+        json = get_json(op.join(working_dir(), 'font.log'), cFont.glyphunic)
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa, json)
 
     def POST(self, id):
