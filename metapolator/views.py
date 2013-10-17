@@ -150,9 +150,9 @@ class View(app.page):
             master = [master]
         webglyph = cFont.glyphName
 
-        print get_json(op.join(working_dir(), cFont.fontpath, webglyph))
+        json = get_json(op.join(working_dir(), cFont.fontpath, webglyph))
 
-        return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
+        return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa, json)
 
     def POST(self, id):
         if not is_loggedin():

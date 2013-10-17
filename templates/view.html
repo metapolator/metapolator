@@ -1,4 +1,4 @@
-$def with (posts,post,form,formparam,formparamG,master,mastglobal,webglyph,glyphparam,groupparam,cfont,postspa)
+$def with (posts,post,form,formparam,formparamG,master,mastglobal,webglyph,glyphparam,groupparam,cfont,postspa,json=None)
 <title>
 $if cfont.idwork == '0' :
        A: $cfont.fontna
@@ -206,7 +206,7 @@ a:hover .ptnumber {
 	z-index: 10;
 }
 </style>
-
+$json
 <div class="menuright2"><p>
 $for mast in mastglobal:
 	<span class="paramname">mtpltn</span> <span class="value">$mast.metapolation</span><br>
