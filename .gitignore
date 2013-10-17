@@ -43,3 +43,4 @@ nosetests.xml
 glyphlist.mf
 /sessions
 /users
+localconfig.py
