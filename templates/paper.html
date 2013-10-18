@@ -280,10 +280,10 @@
 
     var edges = EDGE_JSON.edges;
     for (var i = 0; i < edges.length; i++) {
-        for (var j = 0; j < edges[i].contours.length; j++) {
+        for (var j = 0; j < edges[i].contours.length - 1; j++) {
             var path = new Path();
             var contours = edges[i].contours[j];
-            for (var k = 0; k < contours.length; k++) {
+            for (var k = 0; k < 2; k++) {
                 contour = contours[k];
 
                 var segment = null;
