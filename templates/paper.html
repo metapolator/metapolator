@@ -288,6 +288,11 @@
 
                 var segment = null;
                 console.log(contour);
+                console.log({x: contour.x, y: 714 - contour.y,
+                             controls: [{x: contour.x - contour.controls[0].x,
+                                         y: contour.y - contour.controls[0].y},
+                                        {x: contour.x - contour.controls[1].x,
+                                         y: contour.y - contour.controls[1].y}]})
 
                 segment = new Segment(new Point(contour.x, 714 - contour.y),
                                       new Point(contour.x - contour.controls[0].x,
