@@ -67,7 +67,7 @@ class EchoWebSocket(websocket.WebSocketHandler):
                 listeners.remove(w)
                 continue
             if message == 'get':
-                message = simplejson.dumps(get_json(os.path.join(SERVER_PYTHON_ROOT, 'font.log'), 71), indent=2)
+                message = simplejson.dumps(get_json(os.path.join(SERVER_PYTHON_ROOT, 'font.log'), 65), indent=2)
             w.write_message(message)
 
     def on_close(self):

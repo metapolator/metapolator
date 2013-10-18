@@ -285,10 +285,16 @@
             var contours = edges[i].contours[j];
             for (var k = 0; k < contours.length; k++) {
                 contour = contours[k];
+
+                var segment = null;
                 console.log(contour);
-                var segment = new Segment(new Point(contour.x / 3, 500 - contour.y / 3),
-                                          new Point(contour.controls[0].x / 3, 500 - contour.controls[0].y / 3),
-                                          new Point(contour.controls[1].x / 3, 500 - contour.controls[1].y / 3));
+
+                segment = new Segment(new Point(contour.x, 714 - contour.y),
+                                      new Point(contour.x - contour.controls[0].x,
+                                                contour.y - contour.controls[0].y),
+                                      new Point(contour.x - contour.controls[1].x,
+                                                contour.y - contour.controls[1].y));
+
                 path.add(segment);
             }
             // path.closed = true;
@@ -296,6 +302,7 @@
             path.fullySelected = true;
             path.strokeColor = 'black';
             path.position.x += 500;
+            path.position.y += 300;
             // path.smooth();
 
             path.fillColor = {
