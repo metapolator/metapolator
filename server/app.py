@@ -36,6 +36,7 @@ def get_json(filename, glyphid=None):
         contours = []
         for contour in contour_pattern.findall(edge.strip()):
             contour = re.sub('\n(\S)', '\\1', contour)
+            _contours = []
             for point in contour.split('\n'):
                 point = point.strip().strip('..')
                 match = point_pattern.match(point)
@@ -44,11 +45,12 @@ def get_json(filename, glyphid=None):
                     x_control_1, y_control_1 = match.group(4).split(',')
                     x_control_2, y_control_2 = match.group(7).split(',')
 
-                    contours.append({'x': x_point, 'y': y_point,
-                                     'controls': [{'x': x_control_1,
-                                                   'y': y_control_1},
-                                                  {'x': x_control_2,
-                                                   'y': y_control_2}]})
+                    _contours.append({'x': x_point, 'y': y_point,
+                                      'controls': [{'x': x_control_1,
+                                                    'y': y_control_1},
+                                                   {'x': x_control_2,
+                                                    'y': y_control_2}]})
+            contours.append(_contours)
         edges.append({'glyph': glyph, 'contours': contours})
 
     return {'total_edges': len(edges), 'edges': edges}
@@ -65,7 +67,7 @@ class EchoWebSocket(websocket.WebSocketHandler):
                 listeners.remove(w)
                 continue
             if message == 'get':
-                message = simplejson.dumps(get_json(os.path.join(SERVER_PYTHON_ROOT, 'font.log')), indent=2)
+                message = simplejson.dumps(get_json(os.path.join(SERVER_PYTHON_ROOT, 'font.log'), 71), indent=2)
             w.write_message(message)
 
     def on_close(self):
