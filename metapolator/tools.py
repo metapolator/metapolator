@@ -122,3 +122,45 @@ def writeallxmlfromdb(alist):
     #
     #    restore old idwork value
     cFont.idwork = idworks
+
+
+def get_json(content, glyphid=None):
+
+    contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
+    point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
+
+    pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
+                         re.I | re.DOTALL | re.M)
+    edges = []
+    for glyph, edge in pattern:
+        if glyphid and int(glyphid) != int(glyph):
+            continue
+        contours = []
+        for contour in contour_pattern.findall(edge.strip()):
+            contour = re.sub('\n(\S)', '\\1', contour)
+            _contours = []
+            x_control_next_point, y_control_next_point = None, None
+            for point in contour.split('\n'):
+                point = point.strip().strip('..')
+                match = point_pattern.match(point)
+                if match:
+                    x_point, y_point = match.group(1).split(',')
+                    x_control_point, y_control_point = match.group(4).split(',')
+
+                    controlpoints = [{'x': 0, 'y': 0},
+                                     {'x': x_control_point, 'y': y_control_point}]
+                    if x_control_next_point is not None and y_control_next_point is not None:
+                        controlpoints[0] = {'x': x_control_next_point,
+                                            'y': y_control_next_point}
+                    _contours.append({'x': x_point, 'y': y_point,
+                                      'controls': controlpoints})
+                    x_control_next_point, y_control_next_point = match.group(7).split(',')
+
+            if x_control_next_point and y_control_next_point:
+                _contours[0]['controls'][0] = {'x': x_control_next_point,
+                                               'y': y_control_next_point}
+
+            contours.append(_contours)
+        edges.append({'glyph': glyph, 'contours': contours})
+
+    return {'total_edges': len(edges), 'edges': edges}
