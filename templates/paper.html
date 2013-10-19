@@ -280,14 +280,13 @@
 
     var edges = EDGE_JSON.edges;
     for (var i = 0; i < edges.length; i++) {
-        for (var j = 0; j < edges[i].contours.length - 1; j++) {
+        for (var j = 0; j < edges[i].contours.length; j++) {
             var path = new Path();
             var contours = edges[i].contours[j];
-            for (var k = 0; k < 2; k++) {
+            for (var k = 0; k < contours.length; k++) {
                 contour = contours[k];
-
                 var segment = null;
-                console.log(contour);
+                // console.log(contour);
                 console.log({x: contour.x, y: 714 - contour.y,
                              controls: [{x: contour.x - contour.controls[0].x,
                                          y: contour.y - contour.controls[0].y},
@@ -298,7 +297,7 @@
                                       new Point(contour.x - contour.controls[0].x,
                                                 contour.y - contour.controls[0].y),
                                       new Point(contour.x - contour.controls[1].x,
-                                                contour.y - contour.controls[1].y));
+                                                contour.y - contour.controls[1].y));                    
 
                 path.add(segment);
             }
