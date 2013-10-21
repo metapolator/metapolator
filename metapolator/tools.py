@@ -132,20 +132,10 @@ class Point:
     def __init__(self, x, y):
         self.x = float(x)
         self.y = float(y)
-        self.controls = [{'x': None, 'y': None}, {'x': None, 'y': None}]
+        self.controls = []
 
     def add_controls(self, x, y):
-        point = {'x': float(x), 'y': float(y)}
-        if float(x) < self.x:
-            if self.controls[0]['x'] is not None:
-                self.controls[1] = point
-            else:
-                self.controls[0] = point
-        else:
-            if self.controls[1]['x'] is not None:
-                self.controls[0] = point
-            else:
-                self.controls[1] = point
+        self.controls.append({'x': float(x), 'y': float(y)})
 
     def get_json(self):
         return {'x': self.x, 'y': self.y, 'controls': self.controls}
