@@ -567,7 +567,7 @@ $for ppp in postspa:
 $if json:
     <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
     <script type="text/paperscript" canvas="myCanvas">
-    var EDGE_JSON = $json ;
+    var EDGE_JSON = $:json;
     var edges = EDGE_JSON.edges;
     for (var i = 0; i < edges.length; i++) {
         for (var j = 0; j < edges[i].contours.length; j++) {
