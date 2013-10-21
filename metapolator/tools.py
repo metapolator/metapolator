@@ -2,8 +2,10 @@ import os
 import os.path as op
 import re
 import xmltomf
+import model
 
 from config import cFont, working_dir, buildfname
+from model import putFont
 
 
 def makefont(working_dir, fontpath):
