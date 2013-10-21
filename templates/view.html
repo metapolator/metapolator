@@ -538,30 +538,30 @@ $for ppp in postspa:
 <p style="color:CCFFFF"> &#9678; control points </p>
 
 
+<div class="canvas"><canvas id="myCanvas" resize></canvas></div>
 
 
 <div id="center">
 
-	<div><!-- <left>&#124;&#124;&#124;&#124;&#124;&#124;&#124;</left> --></div>
-	
-	<div>
-		<middle>
-			<span class="first">$webglyph</span>
-			<!-- <span class="second">&#124;&#124;&#124;&#124;&#124;&#124;&#124;</span>  -->
-		</middle>
-	</div>
-	
-	$for posti in posts:
-		<div class="pp$posti.id">
-			<p><a href="/view/$posti.id" style="text-decoration:none">●$posti.PointNr</a></p>
-		</div>
+    <div><!-- <left>&#124;&#124;&#124;&#124;&#124;&#124;&#124;</left> --></div>
+    
+    <div>
+        <middle>
+            <span class="first">$webglyph</span>
+            <!-- <span class="second">&#124;&#124;&#124;&#124;&#124;&#124;&#124;</span>  -->
+        </middle>
+    </div>
+    
+    $for posti in posts:
+        <div class="pp$posti.id">
+            <p><a href="/view/$posti.id" style="text-decoration:none">●$posti.PointNr</a></p>
+        </div>
 
- 	$if form.d.PointName > "0" : 
-		<div class="p$glyphparam.PointNr">
-			<span class="dragThis"><a href="#">⊙</a></span>
-		</div>
+    $if form.d.PointName > "0" : 
+        <div class="p$glyphparam.PointNr">
+            <span class="dragThis"><a href="#">⊙</a></span>
+        </div>
 
-    <div class="canvas"><canvas id="myCanvas" resize></canvas></div>
 
 </div>
 $if json:
