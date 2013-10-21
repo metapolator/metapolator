@@ -206,7 +206,6 @@ a:hover .ptnumber {
 	z-index: 10;
 }
 </style>
-$json
 <div class="menuright2"><p>
 $for mast in mastglobal:
 	<span class="paramname">mtpltn</span> <span class="value">$mast.metapolation</span><br>
@@ -562,6 +561,45 @@ $for ppp in postspa:
 			<span class="dragThis"><a href="#">⊙</a></span>
 		</div>
 
-
+    <div class="canvas"><canvas id="myCanvas" resize></canvas></div>
 
 </div>
+$if json:
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/paperscript" canvas="myCanvas">
+    var edges = EDGE_JSON.edges;
+    for (var i = 0; i < edges.length; i++) {
+        for (var j = 0; j < edges[i].contours.length; j++) {
+            var path = new Path();
+            var contours = edges[i].contours[j];
+            for (var k = 0; k < contours.length; k++) { // contours.length
+                contour = contours[k];
+                console.log(contour);
+                // console.log({x: contour.x, y: 714 - contour.y,
+                //              controls: [{x: contour.x - contour.controls[0].x,
+                //                          y: contour.y - contour.controls[0].y},
+                //                         {x: contour.x - contour.controls[1].x,
+                //                          y: contour.y - contour.controls[1].y}]})
+                segment = new Segment(new Point(contour.x -0 , 300 - contour.y -0),
+                                      new Point(contour.x - contour.controls[0].x,
+                                                contour.y - contour.controls[0].y),
+                                      new Point(contour.x - contour.controls[1].x,
+                                                contour.y - contour.controls[1].y));
+                path.add(segment);
+            }
+            path.selected = true;
+            path.fullySelected = true;
+            path.strokeColor = 'black';
+            path.position.x += 500;
+            path.position.y += 500;
+
+            path.fillColor = {
+                hue: 360 * Math.random(),
+                saturation: 1,
+                brightness: 1,
+                alpha: 0.5
+            };
+        }
+    }
+    </script>
