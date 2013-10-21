@@ -9,6 +9,78 @@ $def with (page)
 <script type="text/javascript" src="/static/jquery-1.6.4.min.js"></script>
 <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+<style>
+@font-face {
+    font-family: 'metapolator';
+    src: url('/static/font-webfont.eot');
+    src: url('/static/font-webfont.eot?#iefix') format('embedded-opentype'),url('/static/font-webfont.woff') format('woff'),url('/static/font-webfont.ttf') format('truetype'),url('/static/font-webfont.svg#metapolator') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Inconsolata';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Inconsolata'), url('/static/Inconsolata/Inconsolata-Regular.ttf') format('truetype'), url('/static/Inconsolata/Inconsolata-Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'Inconsolata';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Inconsolata Bold'), local('Inconsolata-Bold'), url('/static/Inconsolata/Inconsolata-Bold.ttf') format('truetype'), url('/static/Inconsolata/Inconsolata-Bold.woff') format('woff');
+}
+.menu {
+   position:relative;
+   display:block;
+   float:right;
+   right:10px;
+   z-index:5;
+   }
+.menu a:visited, #menu a:link {
+   text-decoration:none;
+   color:white;
+   font-size:1.05em;
+}
+left {
+   position:absolute;
+   font-family:"metapolator","backup";
+   font-size:1000px;
+   color: rgba(120, 120, 120, 0.2);
+   right:0;
+   bottom:-275;
+   z-index:-6;
+}
+middle, right {
+   position:absolute;
+   bottom:-275;
+   left:6;
+   font-family:"metapolator","backup";
+   font-size:1000px;
+   color:grey;
+   z-index:-5;
+}
+right {
+   color:CCFFFF;
+   z-index:-8;
+}
+.title {
+   font:bold 32px/36px Menlo,'Inconsolata',mono;
+   margin:10 0;
+}
+.button {
+   background-color:green;
+   width:300px;
+   color: white;
+   font-size:1.05em;
+   text-decoration:none;
+}
+.button a:link, .button a:visited{
+   color: white;
+   text-decoration:none;
+   font-size:1.05em;
+   padding:4px 5px;
+}
+</style>
 
 </head>
 <body>
