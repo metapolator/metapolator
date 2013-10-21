@@ -3,6 +3,7 @@ import os.path as op
 import re
 import xmltomf
 import model
+import simplejson
 
 from config import cFont, working_dir, buildfname
 from model import putFont
@@ -126,10 +127,36 @@ def writeallxmlfromdb(alist):
     cFont.idwork = idworks
 
 
+class Point:
+
+    def __init__(self, x, y):
+        self.x = float(x)
+        self.y = float(y)
+        self.controls = [{'x': None, 'y': None}, {'x': None, 'y': None}]
+
+    def add_controls(self, x, y):
+        point = {'x': float(x), 'y': float(y)}
+        if float(x) < self.x:
+            if self.controls[0]['x'] is not None:
+                self.controls[1] = point
+            else:
+                self.controls[0] = point
+        else:
+            if self.controls[1]['x'] is not None:
+                self.controls[0] = point
+            else:
+                self.controls[1] = point
+
+    def get_json(self):
+        return {'x': self.x, 'y': self.y, 'controls': self.controls}
+
+
 def get_json(content, glyphid=None):
 
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
-    point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
+    point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)'
+                               r'..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)'
+                               r'\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
 
     pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
                          re.I | re.DOTALL | re.M)
@@ -141,28 +168,28 @@ def get_json(content, glyphid=None):
         for contour in contour_pattern.findall(edge.strip()):
             contour = re.sub('\n(\S)', '\\1', contour)
             _contours = []
-            x_control_next_point, y_control_next_point = None, None
+            control_x_next, control_y_next = None, None
             for point in contour.split('\n'):
                 point = point.strip().strip('..')
                 match = point_pattern.match(point)
                 if match:
-                    x_point, y_point = match.group(1).split(',')
-                    x_control_point, y_control_point = match.group(4).split(',')
+                    anchor_x, anchor_y = match.group(1).split(',')
+                    control_x, control_y = match.group(4).split(',')
+                    p = Point(anchor_x, anchor_y)
+                    p.add_controls(control_x, control_y)
 
-                    controlpoints = [{'x': 0, 'y': 0},
-                                     {'x': x_control_point, 'y': y_control_point}]
-                    if x_control_next_point is not None and y_control_next_point is not None:
-                        controlpoints[0] = {'x': x_control_next_point,
-                                            'y': y_control_next_point}
-                    _contours.append({'x': x_point, 'y': y_point,
-                                      'controls': controlpoints})
-                    x_control_next_point, y_control_next_point = match.group(7).split(',')
+                    if control_x_next is not None and control_y_next is not None:
+                        p.add_controls(control_x_next, control_y_next)
+                    _contours.append(p)
+                    control_x_next, control_y_next = match.group(7).split(',')
 
-            if x_control_next_point and y_control_next_point:
-                _contours[0]['controls'][0] = {'x': x_control_next_point,
-                                               'y': y_control_next_point}
+            if control_x_next and control_y_next:
+                _contours[0].add_controls(control_x_next, control_y_next)
 
-            contours.append(_contours)
+            points = []
+            for point in _contours:
+                points.append(point.get_json())
+            contours.append(points)
         edges.append({'glyph': glyph, 'contours': contours})
 
     return {'total_edges': len(edges), 'edges': edges}

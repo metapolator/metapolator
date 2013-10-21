@@ -342,7 +342,7 @@ Project $cfont.idmaster
         <p style="color:CCFFFF"> &#9678; control points </p>
     </div>
     <div class="col-md-9">
-        <div class="canvas"><canvas id="myCanvas" width="500" height="500"></canvas></div>
+        <div class="canvas"><canvas id="myCanvas" resize></canvas></div>
     </div>
     
     
@@ -361,7 +361,7 @@ $if json:
             var contours = edges[i].contours[j];
             for (var k = 0; k < contours.length; k++) { // contours.length
                 contour = contours[k];
-                segment = new Segment(new Point(contour.x -0 , 300 - contour.y -0),
+                segment = new Segment(new Point(contour.x -0 , 500 - contour.y -0),
                                       new Point(contour.x - contour.controls[0].x,
                                                 contour.y - contour.controls[0].y),
                                       new Point(contour.x - contour.controls[1].x,
