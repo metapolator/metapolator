@@ -551,12 +551,6 @@ $if json:
             var contours = edges[i].contours[j];
             for (var k = 0; k < contours.length; k++) { // contours.length
                 contour = contours[k];
-                console.log(contour);
-                // console.log({x: contour.x, y: 714 - contour.y,
-                //              controls: [{x: contour.x - contour.controls[0].x,
-                //                          y: contour.y - contour.controls[0].y},
-                //                         {x: contour.x - contour.controls[1].x,
-                //                          y: contour.y - contour.controls[1].y}]})
                 segment = new Segment(new Point(contour.x -0 , 300 - contour.y -0),
                                       new Point(contour.x - contour.controls[0].x,
                                                 contour.y - contour.controls[0].y),
@@ -568,7 +562,6 @@ $if json:
             path.fullySelected = true;
             path.strokeColor = 'black';
             path.position.x += 500;
-            path.position.y += 500;
 
             path.fillColor = {
                 hue: 360 * Math.random(),
