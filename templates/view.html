@@ -353,6 +353,12 @@ Project $cfont.idmaster
 $if json:
     <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
     <script type="text/paperscript" canvas="myCanvas">
+    function setText(point, x, y) {
+        var text = new PointText(point);
+        text.justification = 'center';
+        text.fillColor = 'black';
+        text.content = Number(x).toFixed(2) + ',' + Number(y).toFixed(2);
+    }
     var EDGE_JSON = $:json;
     var edges = EDGE_JSON.edges;
     for (var i = 0; i < edges.length; i++) {
@@ -361,17 +367,23 @@ $if json:
             var contours = edges[i].contours[j];
             for (var k = 0; k < contours.length; k++) { // contours.length
                 contour = contours[k];
-                segment = new Segment(new Point(contour.x -0 , 500 - contour.y -0),
-                                      new Point(contour.x - contour.controls[0].x,
-                                                contour.y - contour.controls[0].y),
-                                      new Point(contour.x - contour.controls[1].x,
-                                                contour.y - contour.controls[1].y));
+                console.log(contour);
+
+                var point = new Point(Number(contour.x) -0, 500 - Number(contour.y) -0);
+                var handleIn = new Point(Number(contour.x) - Number(contour.controls[0].x),
+                                         Number(contour.y) - Number(contour.controls[0].y));
+                var handleOut = new Point(Number(contour.x) - Number(contour.controls[1].x),
+                                          Number(contour.y) - Number(contour.controls[1].y));
+                setText(point, contour.x, contour.y);
+                // setText(handleIn, contour.controls[0].x, contour.controls[0].y);
+                // setText(handleOut, contour.controls[1].x, contour.controls[1].y);
+                
+                segment = new Segment(point, handleIn, handleOut);
                 path.add(segment);
             }
             path.selected = true;
             path.fullySelected = true;
             path.strokeColor = 'black';
-            path.position.x += 500;
 
             path.fillColor = {
                 hue: 360 * Math.random(),

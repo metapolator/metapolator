@@ -185,9 +185,12 @@ class Point:
 #     return {'total_edges': len(edges), 'edges': edges}
 
 def get_json(content, glyphid=None):
+    print glyphid
 
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
-    point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
+    point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s'
+                               r'\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s'
+                               r'\(((-?\d+.?\d+),(-?\d+.\d+))\)')
 
     pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
                          re.I | re.DOTALL | re.M)
@@ -199,26 +202,32 @@ def get_json(content, glyphid=None):
         for contour in contour_pattern.findall(edge.strip()):
             contour = re.sub('\n(\S)', '\\1', contour)
             _contours = []
-            x_control_next_point, y_control_next_point = None, None
+            handleIn_X, handleIn_Y = None, None
             for point in contour.split('\n'):
                 point = point.strip().strip('..')
                 match = point_pattern.match(point)
-                if match:
-                    x_point, y_point = match.group(1).split(',')
-                    x_control_point, y_control_point = match.group(4).split(',')
+                if not match:
+                    continue
 
-                    controlpoints = [{'x': 0, 'y': 0},
-                                     {'x': x_control_point, 'y': y_control_point}]
-                    if x_control_next_point is not None and y_control_next_point is not None:
-                        controlpoints[0] = {'x': x_control_next_point,
-                                            'y': y_control_next_point}
-                    _contours.append({'x': x_point, 'y': y_point,
-                                      'controls': controlpoints})
-                    x_control_next_point, y_control_next_point = match.group(7).split(',')
+                X = match.group(2)
+                Y = match.group(3)
 
-            if x_control_next_point and y_control_next_point:
-                _contours[0]['controls'][0] = {'x': x_control_next_point,
-                                               'y': y_control_next_point}
+                handleOut_X = match.group(5)
+                handleOut_Y = match.group(6)
+
+                controlpoints = [{'x': 0, 'y': 0},
+                                 {'x': handleOut_X, 'y': handleOut_Y}]
+                if handleIn_X is not None and handleIn_Y is not None:
+                    controlpoints[0] = {'x': handleIn_X, 'y': handleIn_Y}
+
+                _contours.append({'x': X, 'y': Y,
+                                  'controls': controlpoints})
+                handleIn_X = match.group(8)
+                handleIn_Y = match.group(9)
+
+            if handleIn_X and handleIn_Y:
+                _contours[0]['controls'][0] = {'x': handleIn_X,
+                                               'y': handleIn_Y}
 
             contours.append(_contours)
         edges.append({'glyph': glyph, 'contours': contours})
