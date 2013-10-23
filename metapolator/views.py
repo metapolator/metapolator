@@ -569,7 +569,7 @@ class CreateProject(app.page):
                     filename = working_dir(os.path.join('commons', f),
                                            user='skel')
                     try:
-                        if filename == 'font.mf':
+                        if filename.endswith('font.mf'):
                             shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), x.name) + '.mf')
                         else:
                             shutil.copy2(filename, working_dir(cFont.fontpath))
