@@ -755,7 +755,8 @@ def put_master():
 
 def get_globalparam(id):
     cFont.idglobal = id
-    return GlobalParam.db_select(where='user_id=$user and idglobal=$id',
+    # user_id=$user and
+    return GlobalParam.db_select(where='idglobal=$id',
                                  vars={'user': session.user, 'id': id})
 
 
