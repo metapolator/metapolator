@@ -113,7 +113,7 @@ class View(app.page):
         webglyph = cFont.glyphName
 
         try:
-            fp = open(op.join(working_dir(), 'font.log'))
+            fp = open(op.join(working_dir(), u'%s.log' % cFont.fontname))
             content = fp.read()
             fp.close()
             json = get_json(content, cFont.glyphunic)
