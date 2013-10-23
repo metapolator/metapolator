@@ -353,11 +353,10 @@ Project $cfont.idmaster
 $if json:
     <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
     <script type="text/paperscript" canvas="myCanvas">
-    function setText(point, x, y) {
+    function setText(point) {
         var text = new PointText(point);
-        text.justification = 'center';
         text.fillColor = 'black';
-        text.content = Number(x).toFixed(2) + ',' + Number(y).toFixed(2);
+        text.content = point.x.toFixed(2) + ',' + point.y.toFixed(2);
     }
     var EDGE_JSON = $:json;
     var edges = EDGE_JSON.edges;
@@ -369,19 +368,19 @@ $if json:
                 contour = contours[k];
                 console.log(contour);
 
-                var point = new Point(Number(contour.x) -0, 500 - Number(contour.y) -0);
+                var point = new Point(Number(contour.x), 500 - Number(contour.y));
                 var handleIn = new Point(Number(contour.controls[0].x) - Number(contour.x),
                                          Number(contour.y) - Number(contour.controls[0].y));
-                var handleOut = new Point(Number(contour.controls[1].x - Number(contour.x)),
+                var handleOut = new Point(Number(contour.controls[1].x) - Number(contour.x),
                                           Number(contour.y) - Number(contour.controls[1].y));
                 segment = new Segment(point, handleIn, handleOut);
+                // setText(point);
                 path.add(segment);
             }
             path.closed = true;
             path.selected = true;
             path.fullySelected = true;
             path.strokeColor = 'black';
-            path.scale(.5);
             path.position.y += +500;
             path.position.x += +100;
             path.fillColor = {
@@ -392,4 +391,5 @@ $if json:
             };
         }
     }
+    alert(paperScope.project.exportJSON());
     </script>
