@@ -116,19 +116,18 @@ CREATE TABLE master (
     primary key (idmaster)
 );
 CREATE TABLE globalparam (
-    idglobal INT ,
-    metapolation float,
-    unitwidth float,
+    idglobal INT AUTO_INCREMENT PRIMARY KEY,
+    metapolation float default 0,
+    unitwidth float default 0,
     fontsize  integer default 10,
     mean      float default 5.0,
     cap       float default 8.0,
     ascl       float default 2.0,
     des       float default 2.0,
-    box       float default 10,
-    primary key (idglobal)
+    box       float default 10
 );
 CREATE TABLE localparam (
-    idlocal INT ,
+    idlocal INT AUTO_INCREMENT PRIMARY KEY,
     px        float default 0,
     width  float default 1,
 	space  float default 0,
@@ -141,8 +140,7 @@ CREATE TABLE localparam (
     stemcut   integer default 20,
     skeleton  float default 0.0,
     superness float default 1.0,
-	over float default 0.1,
-    primary key (idlocal)
+	over float default 0.1
 );
 insert into master (FontName,FontNameA,FontNameB,idglobal) Values ("Foxtail", "FoxtailA.ufo","FoxtailA.ufo",1);
 insert into globalparam (idglobal,metapolation,unitwidth,fontsize) Values (1, 0,1,10);

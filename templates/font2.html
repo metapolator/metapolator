@@ -1,4 +1,4 @@
-$def with (form,gmlist,cfont)
+$def with (gmlist, cfont, form=None)
 <title>Global Parameters</title>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <style>
@@ -72,15 +72,21 @@ table,th,td {
 
 <div class="title">Global Parameters | Project $cfont.idmaster</div>
 
-<p><a href="/settings/globals/$cfont.idglobal">Global Parameters Edit</a>&nbsp;
-<span><a href="/settings/locals-a/$cfont.idlocalA">A Local Params Edit</a>&nbsp;</span>
-<span><a href="/settings/locals-b/$cfont.idlocalB">B Local Params Edit</a>&nbsp;</span></p>
+$if form:
+	<p><a href="/settings/globals/$cfont.idglobal">Global Parameters Edit</a>&nbsp;
+	<span><a href="/settings/locals-a/$cfont.idlocalA">A Local Params Edit</a>&nbsp;</span>
+	<span><a href="/settings/locals-b/$cfont.idlocalB">B Local Params Edit</a>&nbsp;</span></p>
 
-<div id="mm">
-<form action="" method="POST" name="form">
-$:form.render()
-</form>
-</div>
+	<div id="mm">
+	<form action="" method="POST" name="form">
+	$:form.render()
+	</form>
+	</div>
+$else:
+	<form class="form" method="post">
+	<input type="submit" value="Create new global settings" class="btn btn-large" />
+	</form>
 <p>
 $for gmg in gmlist:
      <a href="/settings/globals/$gmg.idglobal">Global $gmg.idglobal</a> interp $gmg.metapolation sz $gmg.fontsize mean $gmg.mean cap $gmg.cap asc $gmg.ascl desc $gmg.des box $gmg.box <br>
+</p>

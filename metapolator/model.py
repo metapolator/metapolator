@@ -991,14 +991,14 @@ def writeGlobalParam():
     des = 0.2
     box = 1.0
 
-    metapolation = imgl[0].metapolation
-    u = imgl[0].unitwidth
-    fontsize = imgl[0].fontsize
-    mean = imgl[0].mean
-    cap = imgl[0].cap
-    ascl = imgl[0].ascl
-    des = imgl[0].des
-    box = imgl[0].box
+    metapolation = imgl[0].metapolation or 0
+    u = imgl[0].unitwidth or 0
+    fontsize = imgl[0].fontsize or 0
+    mean = imgl[0].mean or 0
+    cap = imgl[0].cap or 0
+    ascl = imgl[0].ascl or 0
+    des = imgl[0].des or 0
+    box = imgl[0].box or 0
 
     # global parameters
     ifile = open(op.join(working_dir(cFont.fontpath), "font.mf"), "w")

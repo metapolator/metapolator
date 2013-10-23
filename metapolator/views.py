@@ -198,6 +198,8 @@ class Fonts(app.page):
     path = '/fonts/'
 
     def GET(self):
+        if not is_loggedin():
+            raise seeother('/login')
         mmaster = list(model.get_masters())
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
@@ -280,44 +282,62 @@ class Font(app.page):
         return render.font1(fontlist, form, mmaster, cFont)
 
 
+class GlobalParams(app.page):
+
+    path = '/settings/globals/'
+
+    def GET(self):
+        if not is_loggedin():
+            raise seeother('/login')
+        gml = list(model.get_globalparams())
+        return render.font2(gml, cFont)
+
+    def POST(self):
+        if not is_loggedin():
+            raise seeother('/login')
+        # create new one and redirect to edit page
+        newid = model.GlobalParam.insert(user_id=session.user)
+        raise seeother('/settings/globals/%s' % newid)
+
+
 class GlobalParam(app.page):
 
-    path = '/settings/globals/([0-9]+)'
+    path = '/settings/globals/([1-9][0-9]{0,})'
 
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
 
-        gml = list(model.get_globalparams())
-        formg = GlobalParamForm()
-        if id > '0':
-            gm = list(model.get_globalparam(id))
-            if not gm:
-                newid = model.GlobalParam.insert(user_id=session.user)
-                gm = list(model.get_globalparam(newid))
-        else:
-            gm = None
+        gm = list(model.get_globalparam(id))
+        if not gm:
+            return web.notfound()
 
-        if gm is not None:
-            formg.fill({'metapolation': gm[0].metapolation, 'fontsize': gm[0].fontsize,
-                        'mean': gm[0].mean, 'cap': gm[0].cap, 'ascl': gm[0].ascl,
-                        'des': gm[0].des, 'box': gm[0].box})
-        return render.font2(formg, gml, cFont)
+        formg = GlobalParamForm()
+        formg.fill({'metapolation': gm[0].metapolation, 'fontsize': gm[0].fontsize,
+                    'mean': gm[0].mean, 'cap': gm[0].cap, 'ascl': gm[0].ascl,
+                    'des': gm[0].des, 'box': gm[0].box})
+
+        gml = list(model.get_globalparams())
+        return render.font2(gml, cFont, formg)
 
     def POST(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        gml = list(model.get_globalparams())
+
         gm = list(model.get_globalparam(id))
+        if not gm:
+            return web.notfound()
+
         formg = GlobalParamForm()
-        if formg.validates:
-            model.update_globalparam(id, formg.d.metapolation, formg.d.fontsize, formg.d.mean, formg.d.cap, formg.d.ascl, formg.d.des, formg.d.box)
-        if not formg.validates():
-            return render.font2(formg, gml, cFont)
+        if formg.validates():
+            model.update_globalparam(id, formg.d.metapolation, formg.d.fontsize,
+                                     formg.d.mean, formg.d.cap, formg.d.ascl,
+                                     formg.d.des, formg.d.box)
+            model.writeGlobalParam()
+            return seeother('/settings/globals/')
 
-        model.writeGlobalParam()
-
-        return render.font2(formg, gml, cFont)
+        gml = list(model.get_globalparams())
+        return render.font2(gml, cFont, formg)
 
 
 class localParamA(app.page):
