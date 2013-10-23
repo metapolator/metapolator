@@ -173,10 +173,9 @@ class View(app.page):
         webglyph = cFont.glyphName
         glyphparam = model.get_glyphparam(int(id))
         groupparam = model.get_groupparam(int(id))
-
         model.writexml()
 
-        makefont(working_dir(), cFont.fontpath)
+        makefont(working_dir(), cFont.fontname, cFont.fontpath)
 
         master = [master]
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
@@ -574,7 +573,7 @@ class CreateProject(app.page):
                     except IOError:
                         print 'unable to copy file', filename, 'to', working_dir(cFont.fontpath)
 
-                makefont(working_dir(), cFont.fontpath)
+                makefont(working_dir(), cFont.fontname, cFont.fontpath)
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
                 # return render.create_project(error='Could not extract file to %s' % working_dir(cFont.fontpath))

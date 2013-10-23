@@ -9,11 +9,11 @@ from config import cFont, working_dir, buildfname
 from model import putFont
 
 
-def makefont(working_dir, fontpath):
+def makefont(working_dir, master, fontpath):
     ufo2mf(fontpath)
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
-    strms = "cd %s; sh %s font.mf" % (working_dir, "makefont.sh")
+    strms = "cd %s; sh %s %s.mf" % (working_dir, "makefont.sh", master)
     os.system(strms)
 
 
@@ -126,63 +126,6 @@ def writeallxmlfromdb(alist):
     #    restore old idwork value
     cFont.idwork = idworks
 
-
-class Point:
-
-    def __init__(self, x, y):
-        self.x = float(x)
-        self.y = float(y)
-        self.controls = []
-
-    def add_controls(self, x, y):
-        self.controls.append({'x': float(x), 'y': float(y)})
-
-    def get_json(self):
-        return {'x': self.x, 'y': self.y, 'controls': self.controls}
-
-
-# def get_json(content, glyphid=None):
-
-#     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
-#     point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)'
-#                                r'..controls\s\(((-?\d+.?\d+),(-?\d+.\d+))\)'
-#                                r'\sand\s\(((-?\d+.?\d+),(-?\d+.\d+))\)')
-
-#     pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
-#                          re.I | re.DOTALL | re.M)
-#     edges = []
-#     for glyph, edge in pattern:
-#         if glyphid and int(glyphid) != int(glyph):
-#             continue
-#         contours = []
-#         for contour in contour_pattern.findall(edge.strip()):
-#             contour = re.sub('\n(\S)', '\\1', contour)
-#             _contours = []
-#             control_x_next, control_y_next = None, None
-#             for point in contour.split('\n'):
-#                 point = point.strip().strip('..')
-#                 match = point_pattern.match(point)
-#                 if match:
-#                     anchor_x, anchor_y = match.group(1).split(',')
-#                     control_x, control_y = match.group(4).split(',')
-#                     p = Point(anchor_x, anchor_y)
-#                     p.add_controls(control_x, control_y)
-
-#                     if control_x_next is not None and control_y_next is not None:
-#                         p.add_controls(control_x_next, control_y_next)
-#                     _contours.append(p)
-#                     control_x_next, control_y_next = match.group(7).split(',')
-
-#             if control_x_next and control_y_next:
-#                 _contours[0].add_controls(control_x_next, control_y_next)
-
-#             points = []
-#             for point in _contours:
-#                 points.append(point.get_json())
-#             contours.append(points)
-#         edges.append({'glyph': glyph, 'contours': contours})
-
-#     return {'total_edges': len(edges), 'edges': edges}
 
 def get_json(content, glyphid=None):
     print glyphid
