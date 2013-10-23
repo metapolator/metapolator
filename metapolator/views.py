@@ -569,7 +569,10 @@ class CreateProject(app.page):
                     filename = working_dir(os.path.join('commons', f),
                                            user='skel')
                     try:
-                        shutil.copy2(filename, working_dir(cFont.fontpath))
+                        if filename == 'font.mf':
+                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), x.name) + '.mf')
+                        else:
+                            shutil.copy2(filename, working_dir(cFont.fontpath))
                     except IOError:
                         print 'unable to copy file', filename, 'to', working_dir(cFont.fontpath)
 

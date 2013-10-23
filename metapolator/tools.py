@@ -13,7 +13,7 @@ def makefont(working_dir, master, fontpath):
     ufo2mf(fontpath)
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
-    strms = "cd %s; sh %s %s.mf" % (working_dir, "makefont.sh", master)
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master)
     os.system(strms)
 
 
@@ -27,7 +27,6 @@ def fnextension(filename):
 
 
 def ufo2mf(fontpath):
-    print "ufo2mf", fontpath
     dirnamef1 = working_dir(op.join(fontpath, cFont.fontna, "glyphs"))
     dirnamef2 = working_dir(op.join(fontpath, cFont.fontnb, "glyphs"))
     dirnamep1 = working_dir(op.join(fontpath, "glyphs"))

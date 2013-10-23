@@ -1,8 +1,7 @@
-rm font.log
-rm font.tfm
-rm font.pfb
-rm font.afm
-
+# rm font.log
+# rm font.tfm
+# rm font.pfb
+# rm font.afm
 # mf font.mf
 
 perl mf2pt1.pl --encoding=mtp.enc --comment="Copyright (c) 2013" --family="font" --nofixedpitch --fullname="font" --name="font-regular" --weight="regular" $1
