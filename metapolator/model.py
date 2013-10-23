@@ -296,6 +296,7 @@ class Master(Model):
                                    what='max(idmaster) maxid',
                                    vars=dict(user=user))
 
+
 class GlobalParam(Model):
 
     __table__ = 'globalparam'
@@ -850,6 +851,7 @@ def copyproject():
         print strg
         db.query(strg)
         return
+
 
 def writexml():
 #

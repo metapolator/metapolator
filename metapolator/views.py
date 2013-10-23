@@ -193,9 +193,24 @@ class ViewFont(app.page):
         return render.viewfont(param)
 
 
-class Font1(app.page):
+class Fonts(app.page):
 
-    path = '/font1/(.*)'
+    path = '/fonts/'
+
+    def GET(self):
+        mmaster = list(model.get_masters())
+        fontname = cFont.fontname
+        fontna = cFont.fontna
+        fontnb = cFont.fontnb
+        fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
+        fontlist.sort()
+        form = FontForm()
+        return render.font1(fontlist, form, mmaster, cFont)
+
+
+class Font(app.page):
+
+    path = '/fonts/(.+)'
 
     def GET(self, id):
         if not is_loggedin():
@@ -279,6 +294,9 @@ class GlobalParam(app.page):
         gml = list(model.get_globalparams())
         formg = GlobalParamForm()
         if id > '0':
+            gm = list(model.get_globalparam(id))
+            if not gm:
+                GlobalParam.insert(user_id=session.user, id=id)
             gm = list(model.get_globalparam(id))
         else:
             gm = None
