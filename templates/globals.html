@@ -1,4 +1,4 @@
-$def with (gmlist, cfont, form=None)
+$def with (gmlist, form=None)
 <title>Global Parameters</title>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <style>
@@ -70,13 +70,14 @@ table,th,td {
 }
 </style>
 
-<div class="title">Global Parameters | Project $cfont.idmaster</div>
+<div class="title">Global Parameters</div>
+
+<p>
+	Global Parameters Edit
+	<span><a href="/settings/locals/">Local Params Edit</a></span>
+</p>
 
 $if form:
-	<p><a href="/settings/globals/$cfont.idglobal">Global Parameters Edit</a>&nbsp;
-	<span><a href="/settings/locals-a/$cfont.idlocalA">A Local Params Edit</a>&nbsp;</span>
-	<span><a href="/settings/locals-b/$cfont.idlocalB">B Local Params Edit</a>&nbsp;</span></p>
-
 	<div id="mm">
 	<form action="" method="POST" name="form">
 	$:form.render()

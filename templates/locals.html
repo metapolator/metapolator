@@ -1,0 +1,98 @@
+$def with (localparams)
+<title>Local Parameters</title>
+<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<style>
+p,h2,.menu,table,th,td,#ruler,.paramset,a, input {
+	font:normal 15px/19px Menlo,'Inconsolata',mono;
+	}
+h2 {
+	color:red;
+}
+a:visited {
+	color: green;
+	text-decoration:underline;
+}
+a:link {
+	color: green;
+	text-decoration:underline;
+}
+table,th,td {
+	width:200px;
+	text-align:left;
+	}
+#mmA table,#mmA th,#mmA td, #mmA A {
+	width:200px;
+	text-align:left;
+	color: black;
+	}
+#mmA input, #mmB input{
+    border:none;
+	margin: 0 0 3px 0;
+}
+#mmA {
+    display:inline-block;
+    z-index:10;
+    background: rgb(200,245,200);
+    height: 400px;
+    width: 180px;
+    margin: 0 20 0 0;
+}
+#saveA{
+	margin: 10px 0 0 0;
+	padding: 5px;
+}
+#mmB {
+    display:inline-block;
+    z-index:10;
+    height: 400px;
+    width: 180px;
+    margin: 0 40 20 0;
+}
+#saveB{
+	display: none;
+}
+.paramset {
+    display:inline-block;
+    margin: 0 75 20 0;
+    color: #666;
+    line-height: 23.35px;
+}
+.paramname {
+	color:#aaa;
+}
+.value {
+	float: right;
+    margin: 0 0 0 15;
+}
+</style>
+
+<div class="title">Local Parameters</div>
+
+<p>
+    <span><a href="/settings/globals/">Global Parameters Edit</a></span>
+    Local Parameters
+</p>
+
+<form action="" method="post">
+    <input type="submit" value="Create new local parameters set" class="btn btn-large" />
+</form>
+
+<div class="paramset">
+$for localparam in localparams:
+	<a href="/settings/locals/edit/$localparam.idlocal">
+	Local Param $localparam.idlocal</a><br><br>
+	<span class="paramname">px</span> <span class="value">$localparam.px</span><br>
+	<span class="paramname">width</span> <span class="value">$localparam.width</span><br>
+	<span class="paramname">space</span> <span class="value">$localparam.space</span><br>
+	<span class="paramname">xheight</span> <span class="value">$localparam.xheight</span><br>
+	<span class="paramname">capital</span> <span class="value">$localparam.capital</span><br>
+	<span class="paramname">boxheight</span> <span class="value">$localparam.boxheight</span><br>
+	<span class="paramname">ascender</span> <span class="value">$localparam.ascender</span><br>
+	<span class="paramname">descender</span> <span class="value">$localparam.descender</span><br>
+	<span class="paramname">inktrap</span> <span class="value">$localparam.inktrap</span><br>
+	<span class="paramname">stemcut</span> <span class="value">$localparam.stemcut</span><br>
+	<span class="paramname">skeleton</span> <span class="value">$localparam.skeleton</span><br>
+	<span class="paramname">superness</span> <span class="value">$localparam.superness</span><br>
+	<span class="paramname">over</span> <span class="value">$localparam.over</span><br>
+	</div><div class="paramset">
+</div>

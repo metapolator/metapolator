@@ -1,7 +1,7 @@
 import re
 
 from web.form import Form, Textbox, Dropdown, Button, Validator, Password, \
-    File, notnull
+    notnull
 
 import model
 
@@ -49,78 +49,50 @@ FontForm = Form(Textbox('Name', notnull, size=30, description="name", value=''),
                 Button('savefont'))
 
 
-GlobalParamForm = Form(Textbox('metapolation', notnull, size=3,
+GlobalParamForm = Form(Textbox('metapolation', notnull, size=5,
                                description="metapolation", value="0.5"),
-                       Textbox('fontsize', notnull, size=3,
+                       Textbox('fontsize', notnull, size=5,
                                description="fontsize", value="10"),
-                       Textbox('mean', notnull, size=3,
+                       Textbox('mean', notnull, size=5,
                                description="mean", value="0.5"),
-                       Textbox('cap', notnull, size=3,
+                       Textbox('cap', notnull, size=5,
                                description="cap", value="0.8"),
-                       Textbox('ascl', notnull, size=3,
+                       Textbox('ascl', notnull, size=5,
                                description="asc", value="0.2"),
-                       Textbox('des', notnull, size=3,
+                       Textbox('des', notnull, size=5,
                                description="desc", value="0.2"),
-                       Textbox('box', notnull, size=3,
+                       Textbox('box', notnull, size=5,
                                description="box", value="1"),
                        Button('saveg'))
 
 
-LocalParamAForm = Form(Textbox('px', notnull, size=3,
-                               description="px", value="1"),
-                       Textbox('width', notnull, size=3,
-                               description="width", value="1"),
-                       Textbox('space', notnull, size=3,
-                               description="space", value="0"),
-                       Textbox('xheight', notnull, size=3,
-                               description="xheight", value="10"),
-                       Textbox('capital', notnull, size=3,
-                               description="capital", value="10"),
-                       Textbox('boxheight', notnull, size=3,
-                               description="boxheight", value="10"),
-                       Textbox('ascender', notnull, size=3,
-                               description="ascender", value="10"),
-                       Textbox('descender', notnull, size=3,
-                               description="descender", value="10"),
-                       Textbox('inktrap', notnull, size=3,
-                               description="inktrap", value="10"),
-                       Textbox('stemcut', notnull, size=3,
-                               description="stemcut", value="10"),
-                       Textbox('skeleton', notnull, size=3,
-                               description="skeleton", value="10"),
-                       Textbox('superness', notnull, size=3,
-                               description="superness", value="30"),
-                       Textbox('over', notnull, size=3,
-                               description="over", value="0.05"),
-                       Button('saveA'))
-
-LocalParamBForm = Form(Textbox('px', notnull, size=3,
-                               description="px", value="1"),
-                       Textbox('width', notnull, size=3,
-                               description="width", value="1"),
-                       Textbox('space', notnull, size=3,
-                               description="space", value="0"),
-                       Textbox('xheight', notnull, size=3,
-                               description="xheight", value="10"),
-                       Textbox('capital', notnull, size=3,
-                               description="capital", value="10"),
-                       Textbox('boxheight', notnull, size=3,
-                               description="boxheight", value="10"),
-                       Textbox('ascender', notnull, size=3,
-                               description="ascender", value="10"),
-                       Textbox('descender', notnull, size=3,
-                               description="descender", value="10"),
-                       Textbox('inktrap', notnull, size=3,
-                               description="inktrap", value="10"),
-                       Textbox('stemcut', notnull, size=3,
-                               description="stemcut", value="10"),
-                       Textbox('skeleton', notnull, size=3,
-                               description="skeleton", value="10"),
-                       Textbox('superness', notnull, size=3,
-                               description="superness", value="20"),
-                       Textbox('over', notnull, size=3,
-                               description="over", value="0.05"),
-                       Button('saveB'))
+LocalParamForm = Form(Textbox('px', notnull, size=5,
+                              description="px", value="1"),
+                      Textbox('width', notnull, size=5,
+                              description="width", value="1"),
+                      Textbox('space', notnull, size=5,
+                              description="space", value="0"),
+                      Textbox('xheight', notnull, size=5,
+                              description="xheight", value="10"),
+                      Textbox('capital', notnull, size=5,
+                              description="capital", value="10"),
+                      Textbox('boxheight', notnull, size=5,
+                              description="boxheight", value="10"),
+                      Textbox('ascender', notnull, size=5,
+                              description="ascender", value="10"),
+                      Textbox('descender', notnull, size=5,
+                              description="descender", value="10"),
+                      Textbox('inktrap', notnull, size=5,
+                              description="inktrap", value="10"),
+                      Textbox('stemcut', notnull, size=5,
+                              description="stemcut", value="10"),
+                      Textbox('skeleton', notnull, size=5,
+                              description="skeleton", value="10"),
+                      Textbox('superness', notnull, size=5,
+                              description="superness", value="30"),
+                      Textbox('over', notnull, size=5,
+                              description="over", value="0.05"),
+                      Button('Save'))
 
 
 def validate_existing_user(item):
@@ -132,7 +104,7 @@ def validate_existing_user(item):
 def vemail(value):
     user_regex = re.compile(
         r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*$"
-        r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"$)',
+        r"|^\"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*\"$)",
         re.IGNORECASE)
     domain_regex = re.compile(
         r'(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}|[A-Z0-9-]{2,})\.?$'

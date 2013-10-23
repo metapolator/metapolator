@@ -1,0 +1,76 @@
+$def with (localparam, localparams, form)
+<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<style>
+p,h2,.menu,table,th,td,#ruler,.paramset,a, input {
+    font:normal 15px/19px Menlo,'Inconsolata',mono;
+    }
+h2 {
+    color:red;
+}
+a:visited {
+    color: green;
+    text-decoration:underline;
+}
+a:link {
+    color: green;
+    text-decoration:underline;
+}
+table,th,td {
+    width:200px;
+    text-align:left;
+    }
+#mmA table,#mmA th,#mmA td, #mmA A {
+    width:200px;
+    text-align:left;
+    color: black;
+    }
+#mmA input, #mmB input{
+    border:none;
+    margin: 0 0 3px 0;
+}
+#mmA {
+    display:inline-block;
+    z-index:10;
+    background: rgb(200,245,200);
+    height: 400px;
+    width: 180px;
+    margin: 0 20 0 0;
+}
+#saveA{
+    margin: 10px 0 0 0;
+    padding: 5px;
+}
+#mmB {
+    display:inline-block;
+    z-index:10;
+    height: 400px;
+    width: 180px;
+    margin: 0 40 20 0;
+}
+#saveB{
+    display: none;
+}
+.paramset {
+    display:inline-block;
+    margin: 0 75 20 0;
+    color: #666;
+    line-height: 23.35px;
+}
+.paramname {
+    color:#aaa;
+}
+.value {
+    float: right;
+    margin: 0 0 0 15;
+}
+</style>
+<div class="title">Local Parameters</div>
+
+<p>
+    <span><a href="/settings/globals/">Global Parameters Edit</a></span>
+    <span><a href="/settings/locals/">Local Parameters</a></span>
+</p>
+
+<form action="" method="post">
+    $:form.render()
+</form>

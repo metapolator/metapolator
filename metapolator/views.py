@@ -23,7 +23,7 @@ from passlib.hash import bcrypt
 from config import app, cFont, is_loggedin, session, working_dir, \
     working_url
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
-    GlobalParamForm, RegisterForm, LocalParamAForm, LocalParamBForm
+    GlobalParamForm, RegisterForm, LocalParamForm
 from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
     writeGlyphlist, makefont, get_json
 
@@ -290,7 +290,7 @@ class GlobalParams(app.page):
         if not is_loggedin():
             raise seeother('/login')
         gml = list(model.get_globalparams())
-        return render.font2(gml, cFont)
+        return render.globals(gml)
 
     def POST(self):
         if not is_loggedin():
@@ -318,7 +318,7 @@ class GlobalParam(app.page):
                     'des': gm[0].des, 'box': gm[0].box})
 
         gml = list(model.get_globalparams())
-        return render.font2(gml, cFont, formg)
+        return render.globals(gml, formg)
 
     def POST(self, id):
         if not is_loggedin():
@@ -337,146 +337,75 @@ class GlobalParam(app.page):
             return seeother('/settings/globals/')
 
         gml = list(model.get_globalparams())
-        return render.font2(gml, cFont, formg)
+        return render.globals(gml, formg)
 
 
-class localParamA(app.page):
+class LocalParams(app.page):
 
-    path = '/settings/locals-a/([0-9]+)'
+    path = '/settings/locals/'
+
+    def GET(self):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        return render.locals(model.get_localparams())
+
+    def POST(self):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        newid = model.LocalParam.insert(user_id=session.user)
+        raise seeother('/settings/locals/%s' % newid)
+
+
+class LocalParam(app.page):
+
+    path = '/settings/locals/edit/(.*)'
+
+    def getform(self, localparam):
+        form = LocalParamForm()
+        form.fill({'px': localparam[0].px, 'width': localparam[0].width, 'space': localparam[0].space,
+                   'xheight': localparam[0].xheight, 'capital': localparam[0].capital,
+                   'boxheight': localparam[0].boxheight, 'ascender': localparam[0].ascender,
+                   'descender': localparam[0].descender, 'inktrap': localparam[0].inktrap,
+                   'stemcut': localparam[0].stemcut, 'skeleton': localparam[0].skeleton,
+                   'superness': localparam[0].superness, 'over': localparam[0].over})
+        return form
 
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
 
-        gml = list(model.get_globalparams())
-        formg = GlobalParamForm()
+        localparam = list(model.get_localparam(id))
+        if not localparam:
+            return web.notfound()
+
+        form = self.getform(localparam)
+
         glo = list(model.get_localparams())
-        formlA = LocalParamAForm()
-        formlB = LocalParamBForm()
-
-        gm = list(model.get_globalparam(cFont.idglobal))
-        formg.fill({'metapolation': gm[0].metapolation, 'fontsize': gm[0].fontsize,
-                    'mean': gm[0].mean, 'cap': gm[0].cap, 'ascl': gm[0].ascl,
-                    'des': gm[0].des, 'box': gm[0].box})
-        idlA = id
-
-        idlB = cFont.idlocalB
-        if idlA > '0':
-            cFont.idlocalA = id
-            gloA = list(model.get_localparam(id))
-            if not gloA:
-                id = model.LocalParam.insert(user_id=session.user)
-                gloA = list(model.get_localparam(id))
-        else:
-            gloA = None
-        if idlB > '0':
-            gloB = list(model.get_localparam(idlB))
-            if not gloB:
-                id = model.LocalParam.insert(user_id=session.user)
-                gloB = list(model.get_localparam(idlB))
-        else:
-            gloB = None
-
-        if gloA is not None:
-            formlA.fill({'px': gloA[0].px, 'width': gloA[0].width, 'space': gloA[0].space, 'xheight': gloA[0].xheight, 'capital': gloA[0].capital, 'boxheight': gloA[0].boxheight, 'ascender': gloA[0].ascender, 'descender': gloA[0].descender, 'inktrap': gloA[0].inktrap, 'stemcut': gloA[0].stemcut, 'skeleton': gloA[0].skeleton, 'superness': gloA[0].superness, 'over': gloA[0].over})
-        if gloB is not None:
-            formlB.fill({'px': gloB[0].px, 'width': gloB[0].width, 'space': gloB[0].space, 'xheight': gloB[0].xheight, 'capital': gloB[0].capital, 'boxheight': gloB[0].boxheight, 'ascender': gloB[0].ascender, 'descender': gloB[0].descender, 'inktrap': gloB[0].inktrap, 'stemcut': gloB[0].stemcut, 'skeleton': gloB[0].skeleton, 'superness': gloB[0].superness, 'over': gloB[0].over})
-
-        return render.font3(formg, gml, cFont, glo, formlA, formlB)
+        return render.editlocals(localparam, glo, form)
 
     def POST(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        gml = list(model.get_globalparams())
+
+        localparam = list(model.get_localparam(id))
+        if not localparam:
+            return web.notfound()
+
+        form = self.getform(localparam)
+
+        if form.validates():
+            model.update_localparam(id, form.d.px, form.d.width,
+                                    form.d.space, form.d.xheight, form.d.capital,
+                                    form.d.boxheight, form.d.ascender, form.d.descender,
+                                    form.d.inktrap, form.d.stemcut, form.d.skeleton,
+                                    form.d.superness, form.d.over)
+            model.writeGlobalParam()
+            raise seeother('/settings/locals/')
+
         glo = list(model.get_localparams())
-        idlB = cFont.idlocalB
-        idlA = id
-        cFont.idlocalA = id
-
-        gloA = list(model.get_localparam(idlA))
-        gloB = list(model.get_localparam(idlB))
-        formg = GlobalParamForm()
-        formlA = LocalParamAForm()
-        formlB = LocalParamBForm()
-
-        formlB.fill({'px': gloB[0].px, 'width': gloA[0].width, 'space': gloB[0].space, 'xheight': gloB[0].xheight, 'capital': gloB[0].capital, 'boxheight': gloB[0].boxheight, 'ascender': gloB[0].ascender, 'descender': gloB[0].descender, 'inktrap': gloB[0].inktrap, 'stemcut': gloB[0].stemcut, 'skeleton': gloB[0].skeleton, 'superness': gloB[0].superness, 'over': gloB[0].over})
-
-        if formlA.validates():
-            model.update_localparam(idlA, formlA.d.px, formlA.d.width, formlA.d.space, formlA.d.xheight, formlA.d.capital, formlA.d.boxheight, formlA.d.ascender, formlA.d.descender, formlA.d.inktrap, formlA.d.stemcut, formlA.d.skeleton, formlA.d.superness, formlA.d.over)
-
-        if not formlA.validates():
-            return render.font3(formg, gml, cFont, glo, formlA, formlB)
-
-        model.writeGlobalParam()
-        return render.font3(formg, gml, cFont, glo, formlA, formlB)
-
-
-class localParamB(app.page):
-
-    path = '/settings/locals-b/([0-9]+)'
-
-    def GET(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-        gml = list(model.get_globalparams())
-
-        formg = GlobalParamForm()
-        glo = list(model.get_localparams())
-        formlA = LocalParamAForm()
-        formlB = LocalParamBForm()
-        gm = list(model.get_globalparam(cFont.idglobal))
-        formg.fill({'metapolation': gm[0].metapolation, 'fontsize': gm[0].fontsize, 'mean': gm[0].mean, 'cap': gm[0].cap, 'ascl': gm[0].ascl, 'des': gm[0].des, 'box': gm[0].box})
-        idlA = cFont.idlocalA
-        idlB = id
-        if idlA > '0':
-            gloA = list(model.get_localparam(idlA))
-            if not gloA:
-                newid = model.LocalParam.insert(user_id=session.user)
-                gloA = list(model.get_localparam(newid))
-        else:
-            gloA = None
-        if idlB > '0':
-            gloB = list(model.get_localparam(id))
-            if not gloB:
-                newid = model.LocalParam.insert(user_id=session.user)
-                gloB = list(model.get_localparam(newid))
-        else:
-            gloB = None
-
-        if gloA is not None:
-            formlA.fill({'px': gloA[0].px, 'width': gloA[0].width, 'space': gloA[0].space, 'xheight': gloA[0].xheight, 'capital': gloA[0].capital, 'boxheight': gloA[0].boxheight, 'ascender': gloA[0].ascender, 'descender': gloA[0].descender, 'inktrap': gloA[0].inktrap, 'stemcut': gloA[0].stemcut, 'skeleton': gloA[0].skeleton, 'superness': gloA[0].superness, 'over': gloA[0].over})
-        if gloB is not None:
-            formlB.fill({'px': gloB[0].px, 'width': gloB[0].width, 'space': gloB[0].space, 'xheight': gloB[0].xheight, 'capital': gloB[0].capital, 'boxheight': gloB[0].boxheight, 'ascender': gloB[0].ascender, 'descender': gloB[0].descender, 'inktrap': gloB[0].inktrap, 'stemcut': gloB[0].stemcut, 'skeleton': gloB[0].skeleton, 'superness': gloB[0].superness, 'over': gloB[0].over})
-
-        return render.font4(formg, gml, cFont, glo, formlA, formlB)
-
-    def POST(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-        gml = list(model.get_globalparams())
-        glo = list(model.get_localparams())
-        idlA = cFont.idlocalA
-        cFont.idlocalB = id
-        idlB = id
-        #
-        # id argument via the html
-        #
-        gloB = list(model.get_localparam(id))
-        gloA = list(model.get_localparam(idlA))
-        formlB = LocalParamBForm()
-        formlA = LocalParamAForm()
-        formg = GlobalParamForm()
-
-        formlA.fill({'px': gloA[0].px, 'width': gloA[0].width, 'space': gloA[0].space, 'xheight': gloA[0].xheight, 'capital': gloA[0].capital, 'boxheight': gloA[0].boxheight, 'ascender': gloA[0].ascender, 'descender': gloA[0].descender, 'inktrap': gloA[0].inktrap, 'stemcut': gloA[0].stemcut, 'skeleton': gloA[0].skeleton, 'superness': gloA[0].superness, 'over': gloA[0].over})
-
-        if formlB.validates():
-            model.update_localparam(idlB, formlB.d.px, formlB.d.width, formlB.d.space, formlB.d.xheight, formlB.d.capital, formlB.d.boxheight, formlB.d.ascender, formlB.d.descender, formlB.d.inktrap, formlB.d.stemcut, formlB.d.skeleton, formlB.d.superness, formlB.d.over)
-        if not formlB.validates():
-            return render.font4(formg, gml, cFont, glo, formlA, formlB)
-
-        model.writeGlobalParam()
-
-        return render.font4(formg, gml, cFont, glo, formlA, formlB)
+        return render.editlocals(localparam, glo, form)
 
 
 class copyproject (app.page):
@@ -486,7 +415,6 @@ class copyproject (app.page):
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        print "** in cproject copy project ", cFont.idmaster
         if id == '1001':
             ip = model.copyproject()
 
