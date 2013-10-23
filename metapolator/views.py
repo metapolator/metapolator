@@ -199,9 +199,6 @@ class Fonts(app.page):
 
     def GET(self):
         mmaster = list(model.get_masters())
-        fontname = cFont.fontname
-        fontna = cFont.fontna
-        fontnb = cFont.fontnb
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
         form = FontForm()
@@ -285,19 +282,19 @@ class Font(app.page):
 
 class GlobalParam(app.page):
 
-    path = '/font2/([0-9]+)'
+    path = '/settings/globals/([0-9]+)'
 
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        print "getparam", id
+
         gml = list(model.get_globalparams())
         formg = GlobalParamForm()
         if id > '0':
             gm = list(model.get_globalparam(id))
             if not gm:
-                GlobalParam.insert(user_id=session.user, id=id)
-            gm = list(model.get_globalparam(id))
+                newid = model.GlobalParam.insert(user_id=session.user)
+                gm = list(model.get_globalparam(newid))
         else:
             gm = None
 
@@ -310,7 +307,6 @@ class GlobalParam(app.page):
     def POST(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        print "postparam", id
         gml = list(model.get_globalparams())
         gm = list(model.get_globalparam(id))
         formg = GlobalParamForm()
@@ -326,12 +322,12 @@ class GlobalParam(app.page):
 
 class localParamA(app.page):
 
-    path = '/font3/([0-9]+)'
+    path = '/settings/locals-a/([0-9]+)'
 
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        print "getparam", id
+
         gml = list(model.get_globalparams())
         formg = GlobalParamForm()
         glo = list(model.get_localparams())
@@ -348,10 +344,16 @@ class localParamA(app.page):
         if idlA > '0':
             cFont.idlocalA = id
             gloA = list(model.get_localparam(id))
+            if not gloA:
+                id = model.LocalParam.insert(user_id=session.user)
+                gloA = list(model.get_localparam(id))
         else:
             gloA = None
         if idlB > '0':
             gloB = list(model.get_localparam(idlB))
+            if not gloB:
+                id = model.LocalParam.insert(user_id=session.user)
+                gloB = list(model.get_localparam(idlB))
         else:
             gloB = None
 
@@ -370,9 +372,9 @@ class localParamA(app.page):
         idlB = cFont.idlocalB
         idlA = id
         cFont.idlocalA = id
+
         gloA = list(model.get_localparam(idlA))
         gloB = list(model.get_localparam(idlB))
-
         formg = GlobalParamForm()
         formlA = LocalParamAForm()
         formlB = LocalParamBForm()
@@ -391,7 +393,7 @@ class localParamA(app.page):
 
 class localParamB(app.page):
 
-    path = '/font4/([0-9]+)'
+    path = '/settings/locals-b/([0-9]+)'
 
     def GET(self, id):
         if not is_loggedin():
@@ -408,10 +410,16 @@ class localParamB(app.page):
         idlB = id
         if idlA > '0':
             gloA = list(model.get_localparam(idlA))
+            if not gloA:
+                newid = model.LocalParam.insert(user_id=session.user)
+                gloA = list(model.get_localparam(newid))
         else:
             gloA = None
         if idlB > '0':
             gloB = list(model.get_localparam(id))
+            if not gloB:
+                newid = model.LocalParam.insert(user_id=session.user)
+                gloB = list(model.get_localparam(newid))
         else:
             gloB = None
 

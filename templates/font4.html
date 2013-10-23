@@ -66,12 +66,12 @@ table,th,td {
 
 <div class="title">B Local Parameters | Project $cfont.idmaster</div>
 
-<p><span><a href="/font2/$cfont.idglobal">Global Parameters Edit</a></span></p>
+<p><span><a href="/settings/globals/$cfont.idglobal">Global Parameters Edit</a></span></p>
 <br>
 
 <div style="vertical-align:top;display:inline-block;">
 	<div id="mmA" >
-		<span><a href="/font3/$cfont.idlocalA">A Params Edit</a></span><br><br>
+		<span><a href="/settings/locals-a/$cfont.idlocalA">A Params Edit</a></span><br><br>
 <!-- 
 		<form action="" method="POST" name="formlA">
  -->
@@ -81,7 +81,7 @@ table,th,td {
  -->
 	</div>
 	<div id="mmB">
-		<span><a href="/font4/$cfont.idlocalB">B Params Edit</a></span><br><br>
+		<span><a href="/settings/locals-b/$cfont.idlocalB">B Params Edit</a></span><br><br>
 		<span>
 		<form action="" method="POST" name="formlA">
 		$:formlB.render()
@@ -92,7 +92,7 @@ table,th,td {
 
 <div class="paramset">
 $for gm in glo:
-	<a href="/font4/$gm.idlocal">
+	<a href="/settings/locals-b/$gm.idlocal">
 	Local Param $gm.idlocal</a><br><br>
 	<span class="paramname">px</span> <span class="value">$gm.px</span><br>
 	<span class="paramname">width</span> <span class="value">$gm.width</span><br>
