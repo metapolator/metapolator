@@ -369,13 +369,11 @@ $if json:
                 contour = contours[k];
                 console.log(contour);
 
-                var point = new Point(Number(contour.x), 500 - Number(contour.y));
-                var handleIn = new Point(Number(contour.x) - Number(contour.controls[0].x),
+                var point = new Point(Number(contour.x) -0, 500 - Number(contour.y) -0);
+                var handleIn = new Point(Number(contour.controls[0].x) - Number(contour.x),
                                          Number(contour.y) - Number(contour.controls[0].y));
-                var handleOut = new Point(Number(contour.x) - Number(contour.controls[1].x),
+                var handleOut = new Point(Number(contour.controls[1].x - Number(contour.x)),
                                           Number(contour.y) - Number(contour.controls[1].y));
-                setText(point, contour.x, contour.y);
-                
                 segment = new Segment(point, handleIn, handleOut);
                 path.add(segment);
             }
@@ -383,7 +381,9 @@ $if json:
             path.selected = true;
             path.fullySelected = true;
             path.strokeColor = 'black';
-
+            path.scale(.5);
+            path.position.y += +500;
+            path.position.x += +100;
             path.fillColor = {
                 hue: 360 * Math.random(),
                 saturation: 1,
