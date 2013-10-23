@@ -767,7 +767,7 @@ def get_localparams():
 
 def get_localparam(id):
     print "idididget local", id
-    return LocalParam.db_select(where='idlocal=$id',
+    return LocalParam.db_select(where='user_id=$user and idlocal=$id',
                                 vars={'user': session.user, 'id': id})
 
 
