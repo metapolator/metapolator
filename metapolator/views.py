@@ -559,6 +559,7 @@ class CreateProject(app.page):
                                             FontNameB=FontNameB,
                                             user_id=session.user)
                 cFont.fontpath = 'fonts/%s' % newid
+                cFont.fontname = x.name
                 cFont.fontna = FontNameA
                 cFont.fontnb = FontNameB
 
