@@ -188,9 +188,9 @@ def get_json(content, glyphid=None):
     print glyphid
 
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
-    point_pattern = re.compile(r'\(((-?\d+.?\d+),(-?\d+.\d+))\)..controls\s'
-                               r'\(((-?\d+.?\d+),(-?\d+.\d+))\)\sand\s'
-                               r'\(((-?\d+.?\d+),(-?\d+.\d+))\)')
+    point_pattern = re.compile(r'\(([-\d.]+),([-\d.]+)\)..controls\s'
+                               r'\(([-\d.]+),([-\d.]+)\)\sand\s'
+                               r'\(([-\d.]+),([-\d.]+)\)')
 
     pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
                          re.I | re.DOTALL | re.M)
@@ -209,11 +209,11 @@ def get_json(content, glyphid=None):
                 if not match:
                     continue
 
-                X = match.group(2)
-                Y = match.group(3)
+                X = match.group(1)
+                Y = match.group(2)
 
-                handleOut_X = match.group(5)
-                handleOut_Y = match.group(6)
+                handleOut_X = match.group(3)
+                handleOut_Y = match.group(4)
 
                 controlpoints = [{'x': 0, 'y': 0},
                                  {'x': handleOut_X, 'y': handleOut_Y}]
@@ -222,8 +222,8 @@ def get_json(content, glyphid=None):
 
                 _contours.append({'x': X, 'y': Y,
                                   'controls': controlpoints})
-                handleIn_X = match.group(8)
-                handleIn_Y = match.group(9)
+                handleIn_X = match.group(5)
+                handleIn_Y = match.group(6)
 
             if handleIn_X and handleIn_Y:
                 _contours[0]['controls'][0] = {'x': handleIn_X,

@@ -369,18 +369,17 @@ $if json:
                 contour = contours[k];
                 console.log(contour);
 
-                var point = new Point(Number(contour.x) -0, 500 - Number(contour.y) -0);
+                var point = new Point(Number(contour.x), 500 - Number(contour.y));
                 var handleIn = new Point(Number(contour.x) - Number(contour.controls[0].x),
                                          Number(contour.y) - Number(contour.controls[0].y));
                 var handleOut = new Point(Number(contour.x) - Number(contour.controls[1].x),
                                           Number(contour.y) - Number(contour.controls[1].y));
                 setText(point, contour.x, contour.y);
-                // setText(handleIn, contour.controls[0].x, contour.controls[0].y);
-                // setText(handleOut, contour.controls[1].x, contour.controls[1].y);
                 
                 segment = new Segment(point, handleIn, handleOut);
                 path.add(segment);
             }
+            path.closed = true;
             path.selected = true;
             path.fullySelected = true;
             path.strokeColor = 'black';
