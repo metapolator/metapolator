@@ -66,8 +66,7 @@ class Regenerate(app.page):
         fontpath = 'fonts/{0}'.format(master.idmaster)
         working_dir('static')
 
-        if not makefont(working_dir(), master.FontName, fontpath):
-
+        makefont(working_dir(), master.FontName, fontpath)
         raise seeother('/fonts/')
 
 
