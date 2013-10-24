@@ -58,11 +58,11 @@ class Regenerate(app.page):
     path = '/regenerate/(\d+)'
 
     def GET(self, id):
-        master = model.get_master(cFont.idmaster)
+        master = model.get_master(id)
         if not master:
             return web.notfound()
 
-        fontpath = 'fonts/{0}'.format(master.id)
+        fontpath = 'fonts/{0}'.format(master.idmaster)
         makefont(working_dir(), master.FontName, fontpath)
         raise seeother('/fonts/')
 
