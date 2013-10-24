@@ -26,7 +26,7 @@ CREATE TABLE users (
     password varchar(128) NOT NULL,
     email varchar(100) NOT NULL,
     is_admin tinyint(1) NOT NULL DEFAULT 0,
-    date_joined datetime NOT NULL DEFAULT NOW(),
+    date_joined datetime,
     INDEX idx_username (username),
     INDEX idx_email (email)
 );
