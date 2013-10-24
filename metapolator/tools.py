@@ -15,13 +15,15 @@ def project_exists(master):
     return op.exists(mf_file)
 
 
-def makefont(working_dir, master, fontpath):
+def makefont(working_dir, master):
     if not project_exists(master):
         return False
     ufo2mf(fontpath)
+
+    fontpath = 'fonts/{0}'.format(master.idmaster)
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master)
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.FontName)
     os.system(strms)
     return True
 

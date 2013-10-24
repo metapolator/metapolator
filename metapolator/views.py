@@ -63,10 +63,9 @@ class Regenerate(app.page):
         if not master:
             return web.notfound()
 
-        fontpath = 'fonts/{0}'.format(master.idmaster)
         working_dir('static')
 
-        makefont(working_dir(), master.FontName, fontpath)
+        makefont(working_dir(), master)
         raise seeother('/fonts/')
 
 
@@ -192,7 +191,7 @@ class View(app.page):
         groupparam = model.get_groupparam(int(id))
         model.writexml()
 
-        makefont(working_dir(), cFont.fontname, cFont.fontpath)
+        makefont(working_dir(), master)
 
         master = [master]
         return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
@@ -568,7 +567,8 @@ class CreateProject(app.page):
                     except IOError:
                         print 'unable to copy file', filename, 'to', working_dir(cFont.fontpath)
 
-                makefont(working_dir(), cFont.fontname, cFont.fontpath)
+                master = model.get_master(newid)
+                makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
                 # return render.create_project(error='Could not extract file to %s' % working_dir(cFont.fontpath))
