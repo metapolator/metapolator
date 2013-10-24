@@ -98,7 +98,9 @@ $if cfont.idwork == '1' :
 <p>
 
 $for mma in mmaster:
-   <a href="/fonts/$mma.idmaster" style="color:green;text-decoration:underline;">Project $mma.idmaster</a> projname $mma.FontName fontA $mma.FontNameA fontB $mma.FontNameB idglobal $mma.idglobal vdate $mma.vdate <a href="/regenerate/$mma.idmaster">Regenerate LOG</a><br>
+    $if not project_exists(mma):
+      <span>X</span>
+    <a href="/fonts/$mma.idmaster" style="color:green;text-decoration:underline;">Project $mma.idmaster</a> projname $mma.FontName fontA $mma.FontNameA fontB $mma.FontNameB idglobal $mma.idglobal vdate $mma.vdate <a href="/regenerate/$mma.idmaster">Regenerate LOG</a><br>
 </p>
 <div>
 <form action="" method="post">

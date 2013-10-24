@@ -9,12 +9,21 @@ from config import cFont, working_dir, buildfname
 from model import putFont
 
 
+def project_exists(master):
+    mf_file = op.join(working_dir(), 'fonts/{0}'.format(master.id),
+                      master + '.mf')
+    return op.exists(mf_file)
+
+
 def makefont(working_dir, master, fontpath):
+    if not project_exists(master):
+        return False
     ufo2mf(fontpath)
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
     strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master)
     os.system(strms)
+    return True
 
 
 def fnextension(filename):

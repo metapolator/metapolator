@@ -25,14 +25,15 @@ from config import app, cFont, is_loggedin, session, working_dir, \
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamForm
 from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
-    writeGlyphlist, makefont, get_json
+    writeGlyphlist, makefont, get_json, project_exists
 
 
 ### Templates
 t_globals = {
     'datestr': web.datestr,
     'working_url': working_url,
-    'is_loggedin': is_loggedin
+    'is_loggedin': is_loggedin,
+    'project_exists': project_exists
 }
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
@@ -65,7 +66,8 @@ class Regenerate(app.page):
         fontpath = 'fonts/{0}'.format(master.idmaster)
         working_dir('static')
 
-        makefont(working_dir(), master.FontName, fontpath)
+        if not makefont(working_dir(), master.FontName, fontpath):
+
         raise seeother('/fonts/')
 
 
