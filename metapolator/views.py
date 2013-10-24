@@ -399,7 +399,7 @@ class LocalParam(app.page):
         form = self.getform(localparam)
 
         glo = list(model.get_localparams())
-        return render.editlocals(localparam, glo, form)
+        return render.editlocals(localparam[0], glo, form)
 
     def POST(self, id):
         if not is_loggedin():
@@ -421,7 +421,7 @@ class LocalParam(app.page):
             raise seeother('/settings/locals/')
 
         glo = list(model.get_localparams())
-        return render.editlocals(localparam, glo, form)
+        return render.editlocals(localparam[0], glo, form)
 
 
 class copyproject (app.page):

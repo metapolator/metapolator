@@ -71,6 +71,34 @@ table,th,td {
     <span><a href="/settings/locals/">Local Parameters</a></span>
 </p>
 
-<form action="" method="post">
-    $:form.render()
-</form>
+<div class="paramset row">
+    <div class="col-md-3">
+        <h3>Local param $localparam.idlocal</h3>
+        <form action="" method="post">
+            $:form.render()
+        </form>
+    </div>
+
+    <div class="col-md-9">
+        <div class="row">
+        $for param in localparams:
+            $if param.idlocal != localparam.idlocal:
+                <div class="col-md-4">
+                    <h3>Local param $param.idlocal</h3>
+                    <span class="paramname">px</span> <span class="value">$param.px</span><br>
+                    <span class="paramname">width</span> <span class="value">$param.width</span><br>
+                    <span class="paramname">space</span> <span class="value">$param.space</span><br>
+                    <span class="paramname">xheight</span> <span class="value">$param.xheight</span><br>
+                    <span class="paramname">capital</span> <span class="value">$param.capital</span><br>
+                    <span class="paramname">boxheight</span> <span class="value">$param.boxheight</span><br>
+                    <span class="paramname">ascender</span> <span class="value">$param.ascender</span><br>
+                    <span class="paramname">descender</span> <span class="value">$param.descender</span><br>
+                    <span class="paramname">inktrap</span> <span class="value">$param.inktrap</span><br>
+                    <span class="paramname">stemcut</span> <span class="value">$param.stemcut</span><br>
+                    <span class="paramname">skeleton</span> <span class="value">$param.skeleton</span><br>
+                    <span class="paramname">superness</span> <span class="value">$param.superness</span><br>
+                    <span class="paramname">over</span> <span class="value">$param.over</span><br>
+                </div>
+        </div>
+    </div>
+</div>
