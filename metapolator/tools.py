@@ -11,7 +11,7 @@ from model import putFont
 
 def project_exists(master):
     mf_file = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                      master + '.mf')
+                      master.FontName + '.mf')
     return op.exists(mf_file)
 
 
