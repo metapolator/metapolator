@@ -63,6 +63,8 @@ class Regenerate(app.page):
             return web.notfound()
 
         fontpath = 'fonts/{0}'.format(master.idmaster)
+        working_dir('static')
+
         makefont(working_dir(), master.FontName, fontpath)
         raise seeother('/fonts/')
 
