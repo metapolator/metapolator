@@ -53,6 +53,20 @@ class Index(app.page):
         return render.metap(posts, master, fontsource, webglyph)
 
 
+class Regenerate(app.page):
+
+    path = '/regenerate/(\d+)'
+
+    def GET(self, id):
+        master = model.get_master(cFont.idmaster)
+        if not master:
+            return web.notfound()
+
+        fontpath = 'fonts/{0}'.format(master.id)
+        makefont(working_dir(), master.FontName, fontpath)
+        raise seeother('/fonts/')
+
+
 class Metap(app.page):
 
     path = '/metap/([0-9]+)'
