@@ -113,7 +113,7 @@ class View(app.page):
             fp = open(op.join(working_dir(), u'%s.log' % master.FontNameA))
             content = fp.read()
             fp.close()
-            A_glyphjson = get_json(content, cFont.glyphid)
+            A_glyphjson = get_json(content, glyphid)
         except (IOError, OSError):
             pass
 
@@ -122,7 +122,7 @@ class View(app.page):
                 fp = open(op.join(working_dir(), u'%s.log' % master.FontNameB))
                 content = fp.read()
                 fp.close()
-                B_glyphjson = get_json(content, cFont.glyphid)
+                B_glyphjson = get_json(content, glyphid)
             except (IOError, OSError):
                 pass
         return render.view(master, A_glyphjson, B_glyphjson)
@@ -503,6 +503,9 @@ class CreateProject(app.page):
             raise seeother('/login')
 
         x = web.input(zipfile={})
+        if 'name' in x and model.Master.get_by_name(x.name, session.user):
+            return render.create_project(error='Project with this name already exists')
+
         if 'zipfile' in x and 'name' in x and x.name:
             filename = os.path.join(working_dir(), x.zipfile.filename)
 

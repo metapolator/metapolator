@@ -296,6 +296,11 @@ class Master(Model):
                                    what='max(idmaster) maxid',
                                    vars=dict(user=user))
 
+    @classmethod
+    def get_by_name(cls, projectname, user):
+        return cls.db_select_first(where='FontName=$name and user_id=$user',
+                                   vars=dict(user=user, name=projectname))
+
 
 class GlobalParam(Model):
 

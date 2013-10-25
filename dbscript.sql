@@ -113,7 +113,8 @@ CREATE TABLE master (
     FontNameB varchar(30),
     idglobal INT, 
     vdate    TIMESTAMP default now(),
-    primary key (idmaster)
+    primary key (idmaster),
+    index key idx_name (FontName)
 );
 CREATE TABLE globalparam (
     idglobal INT AUTO_INCREMENT PRIMARY KEY,
