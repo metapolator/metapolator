@@ -1,394 +1,104 @@
-$def with (posts,post,form,formparam,formparamG,master,mastglobal,webglyph,glyphparam,groupparam,cfont,postspa,json=None)
+$def with (master)
 <title>
-$if cfont.idwork == '0' :
-       A: $cfont.fontna
-$if cfont.idwork == '1' : 
-       B: $cfont.fontnb
-Project $cfont.idmaster
+Project $master.fontname
 </title>
-<!-- <link rel="stylesheet" type="text/css" href="/static/mfg.css"/> -->
+<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
 
 <div class="row">
-    <div class="col-md-2">
-        <div class="menuright2"><p>
-            $for mast in mastglobal:
-        	<span class="paramname">mtpltn</span> <span class="value">$mast.metapolation</span><br>
-        	<span class="paramname">fontsize</span> <span class="value">$mast.fontsize</span><br>
-        	<span class="paramname">mean</span> <span class="value">$mast.mean</span><br>
-        	<span class="paramname">cap</span> <span class="value">$mast.cap</span><br>
-        	<span class="paramname">asc</span> <span class="value">$mast.ascl</span><br>
-        	<span class="paramname">desc</span> <span class="value">$mast.des</span><br>
-        	<span class="paramname">box</span> <span class="value">$mast.box</span><br>
-            </p>
-        </div>
+  <div class="col-md-4">
+    <canvas id="canvas-a" resize></canvas>
+  </div>
 
-        $for mast in master:
-           $mast.FontName
+  <div class="col-md-4">
+    <h3>Metapolation</h3>
+  </div>
 
-        <!-- 
-        <p id="viewmenu">  
-        $for mast in master:
-           $mast.FontName  
-        $for mast in mastglobal:
-           Metapolation $mast.metapolation <br>
-           fontsize $mast.fontsize <br>
-           mean $mast.mean <br>
-           cap $mast.cap <br>
-           asc $mast.ascl <br>
-           desc $mast.des <br>
-           box $mast.box <br>
-           <br>
-        </p>
-         -->
-
-        <p id="fonttitle">  
-        $if cfont.idwork == '0' :
-           <span style="color:red;font-weight:bold;">A</span>&nbsp;&nbsp;$cfont.fontna&nbsp;&nbsp;'$webglyph'&nbsp;
-           $if form.d.PointName > "0" : 
-              <b>$glyphparam.PointName</b>
-           $else: select point
-        $if cfont.idwork == '1' : 
-           <span style="color:red;font-weight:bold;">B</span>&nbsp;&nbsp;$cfont.fontnb&nbsp;&nbsp;'$webglyph'&nbsp;
-           $if form.d.PointName > "0" : 
-              <b>$glyphparam.PointName</b>
-           $else: select point
-        </p> 
-
-        <p style="margin:10px 0;">
-        <span class="button"><a href="/metap/0">Edit Font A</a></span>&nbsp
-        <span class="button"><a href="/metap/1">Edit Font B</a></span>
-        </p> 
-        <script type="text/javascript">
-        $$(function(){
-            $$('.copyparam').live('click', function()
-        		{
-        			$$("#parmvaltext").val($$(this).text());
-        		});
-        });
-        function selectparam(which) {
-            $$('select[name=Param]>option[value=' + which +']').attr('selected', 'selected');
-        };
-        function resetparam() {
-        paramform.parmvaltext.value = "";
-        };
-        $$(function(){
-            $$('.copygroup').live('click', function()
-        		{
-        			$$("#groupval").val($$(this).text());
-        		});
-        });
-        function selectgroup(what) {
-            $$('select[name=Group]>option[value=' + what +']').attr('selected', 'selected');
-        };
-        function resetgroup() {
-        paramform.groupval.value = "";
-        };
-        </script>
-        <form action="" method="post" name="paramform" id="paramform">
-        <div class="menuright">
-        $:form.render() 
-        </div>
-        $if form.d.PointName > "0" : 
-            <p style="height:90px;">
-            $:formparam.render() 
-            <input style="margin:0;position:relative;top:-35px;left:180px;" type="button" value="clear" onClick="resetparam()">
-        	</p>
-            <p>
-            <input style="color:red;height:100px;width:300px;font-size:40px;" type="button" value="Refresh View" onClick="history.go(0), window.location.reload()">
-            </p>
-        <!-- add new parameters here: -->
-        <p class="menuleftgreen" >
-          $if glyphparam != None :
-        	<span class="ptname"><span style="color:white;">$glyphparam.PointName</span></span>
-        	<span class="ptparamcell">
-        	$if glyphparam.startp != None : 
-        	   <a href="#" class="whitelink" onClick="selectparam('startp'); return false;">startp</a> <a href="javascript:;" class="copyparam">$glyphparam.startp</a><br>
-        	$if glyphparam.doubledash != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('doubledash'); return false;">doubledash</a> <a href="javascript:;" class="copyparam">$glyphparam.doubledash</a><br>
-        	$if glyphparam.tripledash != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('tripledash'); return false;">tripledash</a> <a href="javascript:;" class="copyparam">$glyphparam.tripledash</a><br>
-        	$if glyphparam.superleft != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('superleft'); return false;">superleft</a> <a href="javascript:;" class="copyparam">$glyphparam.superleft</a><br>
-        	$if glyphparam.superright != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('superright'); return false;">superright </a><a href="javascript:;" class="copyparam">$glyphparam.superright</a><br>
-        	$if glyphparam.leftp != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('leftp'); return false;">leftp </a><a href="javascript:;" class="copyparam">$glyphparam.leftp</a><br>
-        	$if glyphparam.rightp != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('rightp'); return false;">rightp </a><a href="javascript:;" class="copyparam">$glyphparam.rightp</a><br>
-        	$if glyphparam.downp != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('downp'); return false;">downp </a><a href="javascript:;" class="copyparam">$glyphparam.downp</a><br>
-        	$if glyphparam.upp != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('upp'); return false;">upp </a><a href="javascript:;" class="copyparam">$glyphparam.upp</a><br>
-        	$if glyphparam.dir != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('dir'); return false;">dir </a><a href="javascript:;" class="copyparam">$glyphparam.dir</a><br>
-        	$if glyphparam.leftp2 != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('leftp2'); return false;">leftp2 </a><a href="javascript:;" class="copyparam">$glyphparam.leftp2</a><br>
-        	$if glyphparam.rightp2 != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('rightp2'); return false;">rightp2 </a><a href="javascript:;" class="copyparam">$glyphparam.rightp2</a><br>
-        	$if glyphparam.downp2 != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('downp2'); return false;">downp2 </a><a href="javascript:;" class="copyparam">$glyphparam.downp2</a><br>
-        	$if glyphparam.upp2 != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('upp2'); return false;">upp2 </a><a href="javascript:;" class="copyparam">$glyphparam.upp2</a><br>
-        	$if glyphparam.dir2 != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('dir2'); return false;">dir2 </a><a href="javascript:;" class="copyparam">$glyphparam.dir2</a><br>
-        	$if glyphparam.angle != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('angle'); return false;">angle </a><a href="javascript:;" class="copyparam">$glyphparam.angle</a><br>
-        	$if glyphparam.tension != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('tension'); return false;">tension </a><a href="javascript:;" class="copyparam">$glyphparam.tension</a><br>
-        	$if glyphparam.tensionand != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('tensionand'); return false;">tensionand </a><a href="javascript:;" class="copyparam">$glyphparam.tensionand</a><br>
-        	$if glyphparam.cycle != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('cycle'); return false;">cycle </a><a href="javascript:;" class="copyparam">$glyphparam.cycle</a><br>
-        	$if glyphparam.penshifted != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('penshifted'); return false;">penshifted </a><a href="javascript:;" class="copyparam">$glyphparam.penshifted</a><br>
-        	$if glyphparam.pointshifted != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('pointshifted'); return false;">pointshifted </a><a href="javascript:;" class="copyparam">$glyphparam.pointshifted</a><br>
-        	$if glyphparam.penwidth != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('penwidth'); return false;">penwidth </a><a href="javascript:;" class="copyparam">$glyphparam.penwidth</a><br>
-        	$if glyphparam.overx != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('overx'); return false;">overx </a><a href="javascript:;" class="copyparam">$glyphparam.overx</a><br>
-        	$if glyphparam.overbase != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('overbase'); return false;">overbase </a><a href="javascript:;" class="copyparam">$glyphparam.overbase</a><br>
-        	$if glyphparam.overcap != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('overcap'); return false;">overcap </a><a href="javascript:;" class="copyparam">$glyphparam.overcap</a><br>
-        	$if glyphparam.overasc != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('overasc'); return false;">overasc </a><a href="javascript:;" class="copyparam">$glyphparam.overasc</a><br>
-        	$if glyphparam.overdesc != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('overdesc'); return false;">overdesc </a><a href="javascript:;" class="copyparam">$glyphparam.overdesc</a><br>
-        	$if glyphparam.ascpoint != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('ascpoint'); return false;">ascpoint </a><a href="javascript:;" class="copyparam">$glyphparam.ascpoint</a><br>
-        	$if glyphparam.descpoint != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('descpoint'); return false;">descpoint </a><a href="javascript:;" class="copyparam">$glyphparam.descpoint</a><br>
-        	$if glyphparam.stemcutter != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('stemcutter'); return false;">stemcutter </a><a href="javascript:;" class="copyparam">$glyphparam.stemcutter</a><br>
-        	$if glyphparam.stemshift != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('stemshift'); return false;">stemshift </a><a href="javascript:;" class="copyparam">$glyphparam.stemshift</a><br>
-        	$if glyphparam.inktrap_l != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('inktrap_l'); return false;">inktrap_l </a><a href="javascript:;" class="copyparam">$glyphparam.inktrap_l</a><br>
-        	$if glyphparam.inktrap_r != None :
-        	   <a href="#" class="whitelink" onClick="selectparam('inktrap_r'); return false;">inktrap_r </a><a href="javascript:;" class="copyparam">$glyphparam.inktrap_r</a><br>
-        </p>
-               
-        	<form action="" method="post">
-        $if form.d.groupn > "0" : 
-            <p style="height:90px;"> $:formparamG.render() 
-            &nbsp;<input style="position:relative;top:-35px;left:180px;" type="button" value="clear" onClick="resetgroup()">
-        	</p>
-
-        <p class="menuleftorange" > 
-        $if groupparam != None :
-        	<span style="color:white;font-weight:bold">$groupparam.groupname</span><br>
-        	<span class="ptname"></span>
-        	<span class="ptparamcell">
-            $if groupparam.startp != None : 
-               <a href="#" class="whitelink" onClick="selectgroup('startp'); return false;">startp</a> <a href="javascript:;" class="copygroup">$groupparam.startp</a><br>
-            $if groupparam.doubledash != None :
-               <a href="#" class="whitelink" onClick="selectgroup('doubledash'); return false;">doubledash</a> <a href="javascript:;" class="copygroup">$groupparam.doubledash</a><br>
-            $if groupparam.tripledash != None :
-               <a href="#" class="whitelink" onClick="selectgroup('tripledash'); return false;">tripledash</a> <a href="javascript:;" class="copygroup">$groupparam.tripledash</a><br>
-            $if groupparam.superleft != None :
-               <a href="#" class="whitelink" onClick="selectgroup('superleft'); return false;">superleft</a> <a href="javascript:;" class="copygroup">$groupparam.superleft</a><br>
-            $if groupparam.superright != None :
-               <a href="#" class="whitelink" onClick="selectgroup('superright'); return false;">superright </a><a href="javascript:;" class="copygroup">$groupparam.superright</a><br>
-            $if groupparam.leftp != None :
-               <a href="#" class="whitelink" onClick="selectgroup('leftp'); return false;">leftp </a><a href="javascript:;" class="copygroup">$groupparam.leftp</a><br>
-            $if groupparam.rightp != None :
-               <a href="#" class="whitelink" onClick="selectgroup('rightp'); return false;">rightp </a><a href="javascript:;" class="copygroup">$groupparam.rightp</a><br>
-            $if groupparam.downp != None :
-               <a href="#" class="whitelink" onClick="selectgroup('downp'); return false;">downp </a><a href="javascript:;" class="copygroup">$groupparam.downp</a><br>
-            $if groupparam.upp != None :
-               <a href="#" class="whitelink" onClick="selectgroup('upp'); return false;">upp </a><a href="javascript:;" class="copygroup">$groupparam.upp</a><br>
-            $if groupparam.dir != None :
-               <a href="#" class="whitelink" onClick="selectgroup('dir'); return false;">dir </a><a href="javascript:;" class="copygroup">$groupparam.dir</a><br>
-            $if groupparam.leftp2 != None :
-               <a href="#" class="whitelink" onClick="selectgroup('leftp2'); return false;">leftp2 </a><a href="javascript:;" class="copygroup">$groupparam.leftp2</a><br>
-            $if groupparam.rightp2 != None :
-               <a href="#" class="whitelink" onClick="selectgroup('rightp2'); return false;">rightp2 </a><a href="javascript:;" class="copygroup">$groupparam.rightp2</a><br>
-            $if groupparam.downp2 != None :
-               <a href="#" class="whitelink" onClick="selectgroup('downp2'); return false;">downp2 </a><a href="javascript:;" class="copygroup">$groupparam.downp2</a><br>
-            $if groupparam.upp2 != None :
-               <a href="#" class="whitelink" onClick="selectgroup('upp2'); return false;">upp2 </a><a href="javascript:;" class="copygroup">$groupparam.upp2</a><br>
-            $if groupparam.dir2 != None :
-               <a href="#" class="whitelink" onClick="selectgroup('dir2'); return false;">dir2 </a><a href="javascript:;" class="copygroup">$groupparam.dir2</a><br>
-            $if groupparam.angle != None :
-               <a href="#" class="whitelink" onClick="selectgroup('angle'); return false;">angle </a><a href="javascript:;" class="copygroup">$groupparam.angle</a><br>
-            $if groupparam.tension != None :
-               <a href="#" class="whitelink" onClick="selectgroup('tension'); return false;">tension </a><a href="javascript:;" class="copygroup">$groupparam.tension</a><br>
-            $if groupparam.tensionand != None :
-               <a href="#" class="whitelink" onClick="selectgroup('tensionand'); return false;">tensionand </a><a href="javascript:;" class="copygroup">$groupparam.tensionand</a><br>
-            $if groupparam.cycle != None :
-               <a href="#" class="whitelink" onClick="selectgroup('cycle'); return false;">cycle </a><a href="javascript:;" class="copygroup">$groupparam.cycle</a><br>
-            $if groupparam.penshifted != None :
-               <a href="#" class="whitelink" onClick="selectgroup('penshifted'); return false;">penshifted </a><a href="javascript:;" class="copygroup">$groupparam.penshifted</a><br>
-            $if groupparam.pointshifted != None :
-               <a href="#" class="whitelink" onClick="selectgroup('pointshifted'); return false;">pointshifted </a><a href="javascript:;" class="copygroup">$groupparam.pointshifted</a><br>
-            $if groupparam.penwidth != None :
-               <a href="#" class="whitelink" onClick="selectgroup('penwidth'); return false;">penwidth </a><a href="javascript:;" class="copygroup">$groupparam.penwidth</a><br>
-            $if groupparam.overx != None :
-               <a href="#" class="whitelink" onClick="selectgroup('overx'); return false;">overx </a><a href="javascript:;" class="copygroup">$groupparam.overx</a><br>
-            $if groupparam.overbase != None :
-               <a href="#" class="whitelink" onClick="selectgroup('overbase'); return false;">overbase </a><a href="javascript:;" class="copygroup">$groupparam.overbase</a><br>
-            $if groupparam.overcap != None :
-               <a href="#" class="whitelink" onClick="selectgroup('overcap'); return false;">overcap </a><a href="javascript:;" class="copygroup">$groupparam.overcap</a><br>
-            $if groupparam.overasc != None :
-               <a href="#" class="whitelink" onClick="selectgroup('overasc'); return false;">overasc </a><a href="javascript:;" class="copygroup">$groupparam.overasc</a><br>
-            $if groupparam.overdesc != None :
-               <a href="#" class="whitelink" onClick="selectgroup('overdesc'); return false;">overdesc </a><a href="javascript:;" class="copygroup">$groupparam.overdesc</a><br>
-            $if groupparam.ascpoint != None :
-               <a href="#" class="whitelink" onClick="selectgroup('ascpoint'); return false;">ascpoint </a><a href="javascript:;" class="copygroup">$groupparam.ascpoint</a><br>
-            $if groupparam.descpoint != None :
-               <a href="#" class="whitelink" onClick="selectgroup('descpoint'); return false;">descpoint </a><a href="javascript:;" class="copygroup">$groupparam.descpoint</a><br>
-            $if groupparam.stemcutter != None :
-               <a href="#" class="whitelink" onClick="selectgroup('stemcutter'); return false;">stemcutter </a><a href="javascript:;" class="copygroup">$groupparam.stemcutter</a><br>
-            $if groupparam.stemshift != None :
-               <a href="#" class="whitelink" onClick="selectgroup('stemshift'); return false;">stemshift </a><a href="javascript:;" class="copygroup">$groupparam.stemshift</a><br>
-            $if groupparam.inktrap_l != None :
-               <a href="#" class="whitelink" onClick="selectgroup('inktrap_l'); return false;">inktrap_l </a><a href="javascript:;" class="copygroup">$groupparam.inktrap_l</a><br>
-            $if groupparam.inktrap_r != None :
-               <a href="#" class="whitelink" onClick="selectgroup('inktrap_r'); return false;">inktrap_r </a><a href="javascript:;" class="copygroup">$groupparam.inktrap_r</a><br>
-        	</span>
-        </p>
-
-
-        <div class="menuleft">
-        <!-- add new parameters here: -->
-         
-        $for ppp in postspa:
-           $if ppp.PointName != '' :
-        	 <a href="/view/$ppp.id">
-        		 <div class="ptparamrow">
-        			 <div class="ptname">
-        			 $ppp.PointName
-        			 </div>
-        			 <div class="ptparamcell">
-        			 $if ppp.startp != None :
-        				 startp&nbsp;<span class="listvalue">$ppp.startp</span>
-        			 $if ppp.doubledash != None :
-        				 doubledash&nbsp;<span class="listvalue">$ppp.doubledash</span>
-        			 $if ppp.tripledash != None :
-        				 tripledash&nbsp;<span class="listvalue">$ppp.tripledash</span>
-        			 $if ppp.superleft != None :
-        				 superleft&nbsp;<span class="listvalue">$ppp.superleft</span>
-        			 $if ppp.superright != None :
-        				 superright&nbsp;<span class="listvalue">$ppp.superright</span>
-        			 $if ppp.leftp != None :
-        			   leftp&nbsp;<span class="listvalue">$ppp.leftp</span>
-        			 $if ppp.rightp != None :
-        			   rightp&nbsp;<span class="listvalue">$ppp.rightp</span>
-        			 $if ppp.downp != None :
-        			   downp&nbsp;<span class="listvalue">$ppp.downp</span>
-        			 $if ppp.upp != None :
-        			   upp&nbsp;<span class="listvalue">$ppp.upp</span>
-        			 $if ppp.dir != None :
-        			   dir&nbsp;<span class="listvalue">$ppp.dir</span>
-        			 $if ppp.leftp2 != None :
-        			   leftp2&nbsp;<span class="listvalue">$ppp.leftp2</span>
-        			 $if ppp.rightp2 != None :
-        			   rightp2&nbsp;<span class="listvalue">$ppp.rightp2</span>
-        			 $if ppp.downp2 != None :
-        			   downp2&nbsp;<span class="listvalue">$ppp.downp2</span>
-        			 $if ppp.upp2 != None :
-        			   upp2&nbsp;<span class="listvalue">$ppp.upp2</span>
-        			 $if ppp.dir2 != None :
-        			   dir2&nbsp;<span class="listvalue">$ppp.dir2</span>
-        			 $if ppp.angle != None :
-        			   angle&nbsp;<span class="listvalue">$ppp.angle</span>
-        			 $if ppp.tension != None :
-        			   tension&nbsp;<span class="listvalue">$ppp.tension</span>
-        			 $if ppp.tensionand != None :
-        			   tensionand&nbsp;<span class="listvalue">$ppp.tensionand</span>
-        			 $if ppp.cycle != None :
-        			   cycle&nbsp;<span class="listvalue">$ppp.cycle</span>
-        			 $if ppp.penshifted != None :
-        			   penshifted&nbsp;<span class="listvalue">$ppp.penshifted</span>
-        			 $if ppp.pointshifted != None :
-        			   pointshifted&nbsp;<span class="listvalue">$ppp.pointshifted</span>
-        			 $if ppp.penwidth != None :
-        			   penwidth&nbsp;<span class="listvalue">$ppp.penwidth</span>
-        			 $if ppp.overx != None :
-        			   overx&nbsp;<span class="listvalue">$ppp.overx</span>
-        			 $if ppp.overbase != None :
-        			   overbase&nbsp;<span class="listvalue">$ppp.overbase</span>
-        			 $if ppp.overcap != None :
-        			   overcap&nbsp;<span class="listvalue">$ppp.overcap</span>
-        			 $if ppp.overasc != None :
-        			   overasc&nbsp;<span class="listvalue">$ppp.overasc</span>
-        			 $if ppp.overdesc != None :
-        			   overdesc&nbsp;<span class="listvalue">$ppp.overdesc</span>
-        			 $if ppp.ascpoint != None :
-        			   ascpoint&nbsp;<span class="listvalue">$ppp.ascpoint</span>
-        			 $if ppp.descpoint != None :
-        			   descpoint&nbsp;<span class="listvalue">$ppp.descpoint</span>
-        			 $if ppp.stemcutter != None :
-        			   stemcutter&nbsp;<span class="listvalue">$ppp.stemcutter</span>
-        			 $if ppp.stemshift != None :
-        			   stemshift&nbsp;<span class="listvalue">$ppp.stemshift</span>
-        			 $if ppp.inktrap_l != None :
-        			   inktrap_l&nbsp;<span class="listvalue">$ppp.inktrap_l</span>
-        			 $if ppp.inktrap_r != None :
-        			   inktrap_r&nbsp;<span class="listvalue">$ppp.inktrap_r</span>
-        		   <br>
-        		   </div>
-        		   <div class="ptnumber">
-        		   $ppp.id
-        		   </div>
-        	   </div>
-        	 </a>
-        	 <hr class="line">
-        </div>
-        <br>
-        <p style="color:black"> &#9678; z points </p>
-        <p style="color:blue"> &#9678; undefined points </p>
-        <p style="color:CCFFFF"> &#9678; control points </p>
+  $if master.FontNameB:
+    <div class="col-md-4">
+      <canvas id="canvas-b" resize></canvas>
     </div>
-    <div class="col-md-10">
-        <div class="canvas"><canvas id="myCanvas" resize></canvas></div>
-    </div>
-    
-    
 </div>
 
+<script type="text/paperscript" canvas="canvas-a">
+  function setText(point) {
+      var text = new PointText(point);
+      text.fillColor = 'black';
+      text.content = point.x.toFixed(2) + ',' + point.y.toFixed(2);
+  }
+  var EDGE_JSON = $:A_glyphjson;
+  var edges = EDGE_JSON.edges;
+  for (var i = 0; i < edges.length; i++) {
+      for (var j = 0; j < edges[i].contours.length; j++) {
+          var path = new Path();
+          var contours = edges[i].contours[j];
+          for (var k = 0; k < contours.length; k++) { // contours.length
+              contour = contours[k];
+              console.log(contour);
 
+              var point = new Point(Number(contour.x), 500 - Number(contour.y));
+              var handleIn = new Point(Number(contour.controls[0].x) - Number(contour.x),
+                                       Number(contour.y) - Number(contour.controls[0].y));
+              var handleOut = new Point(Number(contour.controls[1].x) - Number(contour.x),
+                                        Number(contour.y) - Number(contour.controls[1].y));
+              segment = new Segment(point, handleIn, handleOut);
+              // setText(point);
+              path.add(segment);
+          }
+          path.closed = true;
+          path.selected = true;
+          path.fullySelected = true;
+          path.strokeColor = 'black';
+          path.position.y += +500;
+          path.position.x += +100;
+          path.fillColor = {
+              hue: 360 * Math.random(),
+              saturation: 1,
+              brightness: 1,
+              alpha: 0.5
+          };
+      }
+  }
+</script>
 
-$if json:
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
-    <script type="text/paperscript" canvas="myCanvas">
-    function setText(point) {
-        var text = new PointText(point);
-        text.fillColor = 'black';
-        text.content = point.x.toFixed(2) + ',' + point.y.toFixed(2);
-    }
-    var EDGE_JSON = $:json;
-    var edges = EDGE_JSON.edges;
-    for (var i = 0; i < edges.length; i++) {
-        for (var j = 0; j < edges[i].contours.length; j++) {
-            var path = new Path();
-            var contours = edges[i].contours[j];
-            for (var k = 0; k < contours.length; k++) { // contours.length
-                contour = contours[k];
-                console.log(contour);
+$if master.FontNameB:
+  <script type="text/paperscript" canvas="canvas-b">
+  function setText(point) {
+      var text = new PointText(point);
+      text.fillColor = 'black';
+      text.content = point.x.toFixed(2) + ',' + point.y.toFixed(2);
+  }
+  var EDGE_JSON = $:B_glyphjson;
+  var edges = EDGE_JSON.edges;
+  for (var i = 0; i < edges.length; i++) {
+      for (var j = 0; j < edges[i].contours.length; j++) {
+          var path = new Path();
+          var contours = edges[i].contours[j];
+          for (var k = 0; k < contours.length; k++) { // contours.length
+              contour = contours[k];
+              console.log(contour);
 
-                var point = new Point(Number(contour.x), 500 - Number(contour.y));
-                var handleIn = new Point(Number(contour.controls[0].x) - Number(contour.x),
-                                         Number(contour.y) - Number(contour.controls[0].y));
-                var handleOut = new Point(Number(contour.controls[1].x) - Number(contour.x),
-                                          Number(contour.y) - Number(contour.controls[1].y));
-                segment = new Segment(point, handleIn, handleOut);
-                // setText(point);
-                path.add(segment);
-            }
-            path.closed = true;
-            path.selected = true;
-            path.fullySelected = true;
-            path.strokeColor = 'black';
-            path.position.y += +500;
-            path.position.x += +100;
-            path.fillColor = {
-                hue: 360 * Math.random(),
-                saturation: 1,
-                brightness: 1,
-                alpha: 0.5
-            };
-        }
-    }
-    </script>
+              var point = new Point(Number(contour.x), 500 - Number(contour.y));
+              var handleIn = new Point(Number(contour.controls[0].x) - Number(contour.x),
+                                       Number(contour.y) - Number(contour.controls[0].y));
+              var handleOut = new Point(Number(contour.controls[1].x) - Number(contour.x),
+                                        Number(contour.y) - Number(contour.controls[1].y));
+              segment = new Segment(point, handleIn, handleOut);
+              // setText(point);
+              path.add(segment);
+          }
+          path.closed = true;
+          path.selected = true;
+          path.fullySelected = true;
+          path.strokeColor = 'black';
+          path.position.y += +500;
+          path.position.x += +100;
+          path.fillColor = {
+              hue: 360 * Math.random(),
+              saturation: 1,
+              brightness: 1,
+              alpha: 0.5
+          };
+      }
+  }
+  </script>

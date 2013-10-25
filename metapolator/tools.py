@@ -24,8 +24,12 @@ def makefont(working_dir, master):
 
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.FontName)
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.FontNameA)
     os.system(strms)
+
+    if master.FontNameB:
+        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.FontNameB)
+        os.system(strms)
     return True
 
 

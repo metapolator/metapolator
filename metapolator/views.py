@@ -99,44 +99,33 @@ class Metap(app.page):
 
 class View(app.page):
 
-    path = '/view/([0-9]+)'
+    path = '/view/([-.\w\d]+)/(\d+)'
 
-    def GET(self, id):
+    def GET(self, name, glyphid):
         """ View single post """
         if not is_loggedin():
             raise seeother('/login')
-        form = PointForm()
 
-        if int(id) > 0:
-            post = model.get_post(int(id))
-            glyphparam = model.get_glyphparam(int(id))
-            groupparam = model.get_groupparam(int(id))
-            form.fill(post)
-        posts = model.get_posts()
-        postspa = model.get_postspa()
-
-        formParam = ParamForm()
-        formParamG = GroupParamForm()
-
-        if glyphparam is not None:
-            formParam.fill(glyphparam)
-        if groupparam is not None:
-            formParamG.fill(groupparam)
-        mastglobal = model.get_globalparam(cFont.idglobal)
-        master = model.get_master(cFont.idmaster) or []
-        if master:
-            master = [master]
-        webglyph = cFont.glyphName
+        master = model.Master.get_by_name(name)
+        A_glyphjson, B_glyphjson = {}, {}
 
         try:
-            fp = open(op.join(working_dir(), u'%s.log' % cFont.fontname))
+            fp = open(op.join(working_dir(), u'%s.log' % master.FontNameA))
             content = fp.read()
             fp.close()
-            json = get_json(content, cFont.glyphunic)
+            A_glyphjson = get_json(content, cFont.glyphid)
         except (IOError, OSError):
-            json = {}
+            pass
 
-        return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa, json)
+        if master.FontNameB:
+            try:
+                fp = open(op.join(working_dir(), u'%s.log' % master.FontNameB))
+                content = fp.read()
+                fp.close()
+                B_glyphjson = get_json(content, cFont.glyphid)
+            except (IOError, OSError):
+                pass
+        return render.view(master, A_glyphjson, B_glyphjson)
 
     def POST(self, id):
         if not is_loggedin():
@@ -543,7 +532,7 @@ class CreateProject(app.page):
                 try:
                     FontNameB = ufo_dirs[1]
                 except IndexError:
-                    FontNameB = FontNameA
+                    FontNameB = ''
                 newid = model.Master.insert(idglobal=1, FontName=x.name,
                                             FontNameA=FontNameA,
                                             FontNameB=FontNameB,
