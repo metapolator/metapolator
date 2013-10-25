@@ -115,6 +115,7 @@ class View(app.page):
             fp.close()
             A_glyphjson = get_json(content, glyphid)
         except (IOError, OSError):
+            print master.FontNameA
             d = a
 
         if master.FontNameB:
