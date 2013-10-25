@@ -11,13 +11,13 @@ from model import putFont
 
 def project_exists(master):
     mf_file1 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                       master.FontNameA + '.mf')
+                       remove_ext(master.FontNameA) + '.mf')
     if op.exists(mf_file1):
         return True
 
     if master.FontNameB:
         mf_file2 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                           master.FontNameA + '.mf')
+                           remove_ext(master.FontNameB) + '.mf')
         return op.exists(mf_file2)
 
 
@@ -37,11 +37,11 @@ def makefont(working_dir, master):
 
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", removeext(master.FontNameA))
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontNameA))
     os.system(strms)
 
     if master.FontNameB:
-        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", removeext(master.FontNameB))
+        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontNameB))
         os.system(strms)
     return True
 
