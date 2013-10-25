@@ -107,7 +107,7 @@ class View(app.page):
             raise seeother('/login')
 
         master = model.Master.get_by_name(name, session.user)
-        A_glyphjson, B_glyphjson = {}, {}
+        A_glyphjson, B_glyphjson = {'edges': []}, {'edges': []}
 
         try:
             fp = open(op.join(working_dir(), u'%s.log' % master.FontNameA))
@@ -115,7 +115,7 @@ class View(app.page):
             fp.close()
             A_glyphjson = get_json(content, glyphid)
         except (IOError, OSError):
-            pass
+            d = a
 
         if master.FontNameB:
             try:
