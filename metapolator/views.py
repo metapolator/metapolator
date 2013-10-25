@@ -221,6 +221,10 @@ class Font(app.page):
             raise seeother('/login')
         mmaster = list(model.get_masters())
 
+        fontname = cFont.fontname
+        fontna = cFont.fontna
+        fontnb = cFont.fontnb
+
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
         form = FontForm()
@@ -267,10 +271,6 @@ class Font(app.page):
         master = None
         if id > 0 and id < 1000:
             master = model.get_master(id)
-
-        fontname = cFont.fontname
-        fontna = cFont.fontna
-        fontnb = cFont.fontnb
 
         return render.font1(fontlist, form, mmaster, cFont, master)
 
