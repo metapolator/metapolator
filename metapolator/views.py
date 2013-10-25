@@ -25,7 +25,7 @@ from config import app, cFont, is_loggedin, session, working_dir, \
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamForm
 from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
-    writeGlyphlist, makefont, get_json, project_exists
+    writeGlyphlist, makefont, get_json, project_exists, remove_ext
 
 
 ### Templates
@@ -110,7 +110,7 @@ class View(app.page):
         A_glyphjson, B_glyphjson = {'edges': []}, {'edges': []}
 
         try:
-            fp = open(op.join(working_dir(), u'%s.log' % master.FontNameA))
+            fp = open(op.join(working_dir(), u'%s.log' % remove_ext(master.FontNameA)))
             content = fp.read()
             fp.close()
             A_glyphjson = get_json(content, glyphid)
@@ -119,7 +119,7 @@ class View(app.page):
 
         if master.FontNameB:
             try:
-                fp = open(op.join(working_dir(), u'%s.log' % master.FontNameB))
+                fp = open(op.join(working_dir(), u'%s.log' % remove_ext(master.FontNameB)))
                 content = fp.read()
                 fp.close()
                 B_glyphjson = get_json(content, glyphid)
