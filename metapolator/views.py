@@ -557,7 +557,9 @@ class CreateProject(app.page):
                                            user='skel')
                     try:
                         if filename.endswith('font.mf'):
-                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), x.name) + '.mf')
+                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), FontNameA) + '.mf')
+                            if FontNameB:
+                                shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), FontNameB) + '.mf')
                         else:
                             shutil.copy2(filename, working_dir(cFont.fontpath))
                     except IOError:

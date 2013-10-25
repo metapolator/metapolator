@@ -10,9 +10,15 @@ from model import putFont
 
 
 def project_exists(master):
-    mf_file = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                      master.FontName + '.mf')
-    return op.exists(mf_file)
+    mf_file1 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
+                      master.FontNameA + '.mf')
+    if op.exists(mf_file1):
+        return True
+
+    if master.FontNameB:
+        mf_file2 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
+                          master.FontNameA + '.mf')
+        return op.exists(mf_file2)
 
 
 def makefont(working_dir, master):
