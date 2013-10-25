@@ -99,7 +99,7 @@ class Metap(app.page):
 
 class View(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d+)'
+    path = '/view/([-.\w\d]+)/(\d+)/'
 
     def GET(self, name, glyphid):
         """ View single post """
