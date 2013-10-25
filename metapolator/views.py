@@ -220,56 +220,59 @@ class Font(app.page):
         if not is_loggedin():
             raise seeother('/login')
         mmaster = list(model.get_masters())
-        ida = 0
-        if id == 'i0':
-            cFont.loadoption = 0
-            cFont.loadoptionAll = 0
-            model.putFont()
-            ida = 1
-        if id == 'i1':
-            cFont.loadoption = 1
-            cFont.loadoptionAll = 0
-            model.putFont()
-            ida = 1
-        if id == 'i2':
-            cFont.loadoption = 0
-            cFont.loadoptionAll = 1
-            putFontAllglyphs()
-            ida = 1
-        if id == 'i3':
-            cFont.loadoption = 1
-            cFont.loadoptionAll = 1
-            putFontAllglyphs()
-            ida = 1
-        if id == 'e4':
-            mfoption = 0
-            model.writexml()
-            ida = 1
-        if id == 'e5':
-            mfoption = 1
-            alist = list(get_activeglyph())
-            writeallxmlfromdb(alist)
-            ida = 1
-        if id == '20000':
-            return render.cproject()
 
-        if ida == 0:
-            id = int(id)
-            if id > 1000 and id < 10000:
-                cFont.glyphName = chr(id - 1001 + 32)
-                cFont.glyphunic = str(id - 1001)
-
-            if id > 0 and id < 1000:
-                model.get_master(id)
-
-        fontname = cFont.fontname
-        fontna = cFont.fontna
-        fontnb = cFont.fontnb
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
         form = FontForm()
         form.fill({'Name': fontname, 'UFO_A': fontna, 'UFO_B': fontnb})
-        return render.font1(fontlist, form, mmaster, cFont)
+
+        if id == 'i0':
+            cFont.loadoption = 0
+            cFont.loadoptionAll = 0
+            model.putFont()
+            return render.font1(fontlist, form, mmaster, cFont)
+        if id == 'i1':
+            cFont.loadoption = 1
+            cFont.loadoptionAll = 0
+            model.putFont()
+            return render.font1(fontlist, form, mmaster, cFont)
+        if id == 'i2':
+            cFont.loadoption = 0
+            cFont.loadoptionAll = 1
+            putFontAllglyphs()
+            return render.font1(fontlist, form, mmaster, cFont)
+        if id == 'i3':
+            cFont.loadoption = 1
+            cFont.loadoptionAll = 1
+            putFontAllglyphs()
+            return render.font1(fontlist, form, mmaster, cFont)
+        if id == 'e4':
+            mfoption = 0
+            model.writexml()
+            return render.font1(fontlist, form, mmaster, cFont)
+        if id == 'e5':
+            mfoption = 1
+            alist = list(get_activeglyph())
+            writeallxmlfromdb(alist)
+            return render.font1(fontlist, form, mmaster, cFont)
+        if id == '20000':
+            return render.cproject()
+
+        id = int(id)
+
+        if id > 1000 and id < 10000:
+            cFont.glyphName = chr(id - 1001 + 32)
+            cFont.glyphunic = str(id - 1001)
+
+        master = None
+        if id > 0 and id < 1000:
+            master = model.get_master(id)
+
+        fontname = cFont.fontname
+        fontna = cFont.fontna
+        fontnb = cFont.fontnb
+
+        return render.font1(fontlist, form, mmaster, cFont, master)
 
     def POST(self, id):
         if not is_loggedin():
