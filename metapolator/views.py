@@ -106,7 +106,7 @@ class View(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = model.Master.get_by_name(name)
+        master = model.Master.get_by_name(name, session.user)
         A_glyphjson, B_glyphjson = {}, {}
 
         try:
