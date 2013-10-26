@@ -18,14 +18,14 @@ $if master.FontNameB:
 
     <div class="col-md-4">
       <h4>Font B</h4>
-      <canvas id="canvas-b" width="600" height="600"></canvas>
+      <canvas id="canvas-b" height="600"></canvas>
     </div>
   </div>
 $else:
   <div class="row">
     <div class="col-md-6">
       <h4>Font A</h4>
-      <canvas id="canvas-a" width="600" height="600"></canvas>
+      <canvas id="canvas-a" height="600" width="600"></canvas>
     </div>
 
     <div class="col-md-6">
@@ -40,7 +40,25 @@ $else:
       text.fillColor = 'black';
       text.content = point.x.toFixed(2) + ',' + point.y.toFixed(2);
   }
+
   var EDGE_JSON = $:A_glyphjson;
+
+  function getPoint(x, y) {
+    width = EDGE_JSON.width;
+    height = EDGE_JSON.height;
+
+    ratio = width / height;
+    h = scope.view.size.height - 200;
+
+    w = h * ratio;
+
+    nx = w * x / width;
+    ny = h * y / height;
+
+    console.log({'nx': nx, 'ny': ny})
+    return new Point(nx, ny);
+  }
+
   var edges = EDGE_JSON.edges;
   for (var i = 0; i < edges.length; i++) {
       for (var j = 0; j < edges[i].contours.length; j++) {
@@ -50,10 +68,10 @@ $else:
               contour = contours[k];
               console.log(contour);
 
-              var point = new Point(Number(contour.x), 500 - Number(contour.y));
-              var handleIn = new Point(Number(contour.controls[0].x) - Number(contour.x),
+              var point = getPoint(Number(contour.x), 500 - Number(contour.y));
+              var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
                                        Number(contour.y) - Number(contour.controls[0].y));
-              var handleOut = new Point(Number(contour.controls[1].x) - Number(contour.x),
+              var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
                                         Number(contour.y) - Number(contour.controls[1].y));
               segment = new Segment(point, handleIn, handleOut);
               // setText(point);
@@ -63,8 +81,7 @@ $else:
           path.selected = true;
           path.fullySelected = true;
           path.strokeColor = 'black';
-          path.position.y += +500;
-          path.position.x += +100;
+          path.position.y += +300;
           path.fillColor = {
               hue: 360 * Math.random(),
               saturation: 1,
@@ -73,6 +90,13 @@ $else:
           };
       }
   }
+  width = EDGE_JSON.width;
+  height = EDGE_JSON.height;
+
+  ratio = width / height;
+  w = scope.view.size.height * ratio;
+  scope.view.size.width = w;
+  console.log(scope.view.size);
 </script>
 
 $if master.FontNameB:

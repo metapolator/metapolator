@@ -166,6 +166,10 @@ def get_json(content, glyphid=None):
     pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
                          re.I | re.DOTALL | re.M)
     edges = []
+    x_min = 0
+    y_min = 0
+    x_max = 0
+    y_max = 0
     for glyph, edge in pattern:
         if glyphid and int(glyphid) != int(glyph):
             continue
@@ -196,6 +200,11 @@ def get_json(content, glyphid=None):
                 handleIn_X = match.group(5)
                 handleIn_Y = match.group(6)
 
+                x_min = min(x_min, float(X), float(handleOut_X), float(handleIn_X))
+                y_min = min(y_min, float(Y), float(handleOut_Y), float(handleIn_Y))
+                x_max = max(x_max, float(X), float(handleOut_X), float(handleIn_X))
+                y_max = max(y_max, float(Y), float(handleOut_Y), float(handleIn_Y))
+
             if handleIn_X and handleIn_Y:
                 _contours[0]['controls'][0] = {'x': handleIn_X,
                                                'y': handleIn_Y}
@@ -203,4 +212,7 @@ def get_json(content, glyphid=None):
             contours.append(_contours)
         edges.append({'glyph': glyph, 'contours': contours})
 
-    return {'total_edges': len(edges), 'edges': edges}
+    width = abs(x_max) + abs(x_min)
+    height = abs(y_max) + abs(y_min)
+    return {'total_edges': len(edges), 'edges': edges,
+            'width': width, 'height': height}
