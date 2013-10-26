@@ -21,11 +21,11 @@ from passlib.hash import bcrypt
 
 
 from config import app, cFont, is_loggedin, session, working_dir, \
-    working_url
+    working_url, remove_ext
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamForm
 from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
-    writeGlyphlist, makefont, get_json, project_exists, remove_ext
+    writeGlyphlist, makefont, get_json, project_exists
 
 
 ### Templates
@@ -97,6 +97,58 @@ class Metap(app.page):
         return render.metap(posts, master, fontsource, webglyph)
 
 
+class Settings(app.page):
+
+    path = '/view/([-.\w\d]+)/settings/'
+
+    def GET(self, name):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        master = model.Master.get_by_name(name, session.user)
+        if not master:
+            return web.notfound()
+
+        localparameters = list(model.get_localparams())
+        localA = model.get_localparam(master.idlocalA)
+        localB = model.get_localparam(master.idlocalB)
+        return render.settings(master, localparameters, localA, localB)
+
+    def POST(self, name):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        master = model.Master.get_by_name(name, session.user)
+        if not master:
+            return web.notfound()
+
+        x = web.input(create='', update='', idlocal=None)
+        if 'create' in x and 'idlocal' not in x:
+            if x.create == 'a':
+                newid = model.LocalParam.insert(user_id=session.user)
+                model.Master.update(session.user, master.id, idlocalA=newid)
+            if x.create == 'b':
+                newid = model.LocalParam.insert(user_id=session.user)
+                model.Master.update(session.user, master.id, idlocalB=newid)
+            raise seeother('/view/{0}/settings/'.format(master.FontName))
+
+        if 'update' in x and 'idlocal' in x and x.idlocal:
+            if x['update'] == 'a':
+                model.Master.update(session.user, master.idmaster,
+                                    idlocalA=int(x.idlocal))
+            if x['update'] == 'b':
+                model.Master.update(session.user, master.idmaster,
+                                    idlocalB=int(x.idlocal))
+            raise seeother('/view/{0}/settings/'.format(master.FontName))
+
+        model.writeGlobalParam(master)
+
+        localparameters = list(model.get_localparams())
+        localA = model.get_localparam(master.idlocalA)
+        localB = model.get_localparam(master.idlocalB)
+        return render.settings(master, localparameters, localA, localB)
+
+
 class View(app.page):
 
     path = '/view/([-.\w\d]+)/(\d+)/'
@@ -107,6 +159,9 @@ class View(app.page):
             raise seeother('/login')
 
         master = model.Master.get_by_name(name, session.user)
+        if not master:
+            return web.notfound()
+
         A_glyphjson, B_glyphjson = {'edges': []}, {'edges': []}
 
         try:
@@ -341,7 +396,6 @@ class GlobalParam(app.page):
             model.update_globalparam(id, formg.d.metapolation, formg.d.fontsize,
                                      formg.d.mean, formg.d.cap, formg.d.ascl,
                                      formg.d.des, formg.d.box)
-            model.writeGlobalParam()
             return seeother('/settings/globals/')
 
         gml = list(model.get_globalparams())
@@ -409,7 +463,6 @@ class LocalParam(app.page):
                                     form.d.boxheight, form.d.ascender, form.d.descender,
                                     form.d.inktrap, form.d.stemcut, form.d.skeleton,
                                     form.d.superness, form.d.over)
-            model.writeGlobalParam()
             raise seeother('/settings/locals/')
 
         glo = list(model.get_localparams())

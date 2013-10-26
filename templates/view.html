@@ -9,16 +9,33 @@ Project $master.FontName
   <div class="col-md-4">
     <h4>Font A</h4>
     <canvas id="canvas-a" width="400" height="400"></canvas>
+
+    <div class="well">
+      <h4>Parameters Font A <small><a href="/view/$master.FontName/settings/">change</a></small></h4>
+
+      $if not master.idlocalA:
+        <div class="label label-danger">This font has not specified local parameters</div>
+    </div>
   </div>
 
   <div class="col-md-4" style="border: solid 2px black;">
     <h4>Metapolation</h4>
     <canvas width="400" height="400"></canvas>
+
+    <div class="well">
+      <h4>Global Parameters <small><a href="/view/$master.FontName/settings/">change</a></small></h4>
+    </div>
   </div>
 
   <div class="col-md-4">
     <h4>Font B</h4>
     <canvas id="canvas-b" height="400" width="400"></canvas>
+
+    <div class="well">
+      <h4>Parameters Font B <small><a href="/view/$master.FontName/settings/">change</a></small></h4>
+      $if not master.idlocalB:
+        <div class="label label-danger">This font has not specified local parameters</div>
+    </div>
   </div>
 </div>
 

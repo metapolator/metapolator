@@ -5,7 +5,7 @@ import xmltomf
 import model
 import simplejson
 
-from config import cFont, working_dir, buildfname
+from config import cFont, working_dir, buildfname, remove_ext
 from model import putFont
 
 
@@ -19,13 +19,6 @@ def project_exists(master):
         mf_file2 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
                            remove_ext(master.FontNameB) + '.mf')
         return op.exists(mf_file2)
-
-
-def remove_ext(filename):
-    try:
-        return op.splitext(filename)[0]
-    except IndexError:
-        return filename
 
 
 def makefont(working_dir, master):
@@ -79,7 +72,6 @@ def ufo2mf(fontpath):
 
 
 def writeGlyphlist(fontpath):
-    print "*** write glyphlist ***"
     ifile = open(working_dir(op.join(fontpath, "glyphlist.mf")), "w")
     dirnamep1 = working_dir(op.join(fontpath, "glyphs"))
 

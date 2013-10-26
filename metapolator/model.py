@@ -771,9 +771,8 @@ def get_localparams():
 
 
 def get_localparam(id):
-    print "idididget local", id
-    return LocalParam.db_select(where='user_id=$user and idlocal=$id',
-                                vars={'user': session.user, 'id': id})
+    return LocalParam.db_select_first(where='user_id=$user and idlocal=$id',
+                                      vars={'user': session.user, 'id': id})
 
 
 def put_globalparam(id):
@@ -982,13 +981,12 @@ def get_activeglyph():
     return db.query(strg)
 
 
-def writeGlobalParam():
+def writeGlobalParam(master):
     #
     # prepare font.mf parameter file
     # write the file into the directory cFont.fontpath
     #
-    master = get_master(cFont.idmaster)
-    imgl = list(get_globalparam(cFont.idglobal))
+    imgl = list(get_globalparam(master.idglobal))
 
     mean = 5.0
     cap = 0.8
@@ -1006,7 +1004,7 @@ def writeGlobalParam():
     box = imgl[0].box or 0
 
     # global parameters
-    ifile = open(op.join(working_dir(cFont.fontpath), "font.mf"), "w")
+    ifile = open(op.join(working_dir('fonts/{0}'.format(master.id)), remove_ext(master.FontName) + ".mf"), "w")
     ifile.write("% parameter file \n")
     ifile.write("metapolation:=%.2f;\n" % metapolation)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
@@ -1018,7 +1016,7 @@ def writeGlobalParam():
     ifile.write("u#:=%.3fpt#;\n" % u)
 
     # local parameters A
-    imlo = list(get_localparam(cFont.idlocalA))
+    imlo = list(get_localparam(master.idlocalA))
 
     ifile.write("A_px#:=%.2fpt#;\n" % imlo[0].px)
     ifile.write("A_width:=%.2f;\n" % imlo[0].width)
@@ -1035,7 +1033,7 @@ def writeGlobalParam():
     ifile.write("A_over:=%.2fpt;\n" % imlo[0].over)
 
     # local parameters B
-    imlo = list(get_localparam(cFont.idlocalB))
+    imlo = list(get_localparam(master.idlocalB))
 
     ifile.write("B_px#:=%.2fpt#;\n" % imlo[0].px)
     ifile.write("B_width:=%.2f;\n" % imlo[0].width)

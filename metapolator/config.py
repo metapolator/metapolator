@@ -14,13 +14,19 @@ except ImportError:
 
 
 ### Url mappings
-
 web.config.debug = False
 
 app = web.auto_application()
 
 session = web.session.Session(app, web.session.DiskStore('sessions'),
                               {'count': 0})
+
+
+def remove_ext(filename):
+    try:
+        return op.splitext(filename)[0]
+    except IndexError:
+        return filename
 
 
 def is_loggedin():

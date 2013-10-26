@@ -1,10 +1,10 @@
-drop table glyph;
-drop table glyphoutline;
-drop table glyphparam;
-drop table master;
-drop table globalparam;
-drop table localparam;
-drop table groupparam;
+drop table if exists glyph;
+drop table if exists glyphoutline;
+drop table if exists glyphparam;
+drop table if exists master;
+drop table if exists globalparam;
+drop table if exists localparam;
+drop table if exists groupparam;
 
 CREATE TABLE glyph (
     idglyph INT AUTO_INCREMENT,
@@ -104,17 +104,22 @@ CREATE TABLE groupparam (
     inktrap_r float,  
     idmaster INT,
     vdate    TIMESTAMP default now(),
-    primary key (idmaster,groupname)
+    primary key (idmaster, groupname)
 );
 CREATE TABLE master (
     idmaster INT AUTO_INCREMENT,
-    FontName TEXT,
+    FontName VARCHAR(30) NOT NULL,
     FontNameA varchar(30),
     FontNameB varchar(30),
     idglobal INT, 
+    idlocalA INT,
+    idlocalB INT,
     vdate    TIMESTAMP default now(),
     primary key (idmaster),
-    index key idx_name (FontName)
+    index idx_name (FontName),
+    index idx_idglobal (idglobal),
+    index idx_idlocalA (idlocalA),
+    index idx_idlocalB (idlocalB)
 );
 CREATE TABLE globalparam (
     idglobal INT AUTO_INCREMENT PRIMARY KEY,
