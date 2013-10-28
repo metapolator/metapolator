@@ -591,7 +591,7 @@ class CreateProject(app.page):
                 try:
                     FontNameB = ufo_dirs[1]
                 except IndexError:
-                    FontNameB = ''
+                    FontNameB = ufo_dirs[0] + '.B'
                 newid = model.Master.insert(idglobal=1, FontName=x.name,
                                             FontNameA=FontNameA,
                                             FontNameB=FontNameB,
