@@ -12,7 +12,6 @@ import model
 import os
 import os.path as op
 import re
-import sys
 import web
 import zipfile
 
@@ -25,7 +24,7 @@ from config import app, cFont, is_loggedin, session, working_dir, \
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamForm
 from tools import writeallxmlfromdb, putFontAllglyphs, \
-    writeGlyphlist, makefont, get_json, project_exists
+    makefont, get_json, project_exists
 
 
 ### Templates
@@ -563,7 +562,7 @@ class CreateProject(app.page):
             return render.create_project(error='Project with this name already exists')
 
         if 'zipfile' in x and 'name' in x and x.name:
-            filename = os.path.join(working_dir(), x.zipfile.filename)
+            filename = op.join(working_dir(), x.zipfile.filename)
 
             try:
                 with open(filename, 'w') as fp:
@@ -608,14 +607,14 @@ class CreateProject(app.page):
 
                 import shutil
                 for f in os.listdir(working_dir('commons', user='skel')):
-                    filename = working_dir(os.path.join('commons', f),
+                    filename = working_dir(op.join('commons', f),
                                            user='skel')
                     try:
                         if filename.endswith('font.mf'):
-                            shutil.copy2(filename, os.path.join(fontpath, mf_filename(FontNameA)))
+                            shutil.copy2(filename, op.join(fontpath, mf_filename(FontNameA)))
                             if FontNameB:
-                                shutil.copy2(filename, os.path.join(fontpath, mf_filename(FontNameB)))
-                            shutil.copy2(filename, os.path.join(fontpath, mf_filename(x.name)))
+                                shutil.copy2(filename, op.join(fontpath, mf_filename(FontNameB)))
+                            shutil.copy2(filename, op.join(fontpath, mf_filename(x.name)))
                         else:
                             shutil.copy2(filename, fontpath)
                     except (IOError, OSError):
