@@ -596,12 +596,15 @@ class CreateProject(app.page):
                                             FontNameA=FontNameA,
                                             FontNameB=FontNameB,
                                             user_id=session.user)
+
+                fontpath = working_dir('fonts/%s' % newid)
+
                 cFont.fontpath = 'fonts/%s' % newid
                 cFont.fontname = x.name
                 cFont.fontna = FontNameA
                 cFont.fontnb = FontNameB
 
-                fzip.extractall(working_dir(cFont.fontpath))
+                fzip.extractall(working_dir(fontpath))
 
                 import shutil
                 for f in os.listdir(working_dir('commons', user='skel')):
@@ -609,20 +612,19 @@ class CreateProject(app.page):
                                            user='skel')
                     try:
                         if filename.endswith('font.mf'):
-                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(FontNameA)))
+                            shutil.copy2(filename, os.path.join(fontpath, mf_filename(FontNameA)))
                             if FontNameB:
-                                shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(FontNameB)))
-                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(x.name)))
+                                shutil.copy2(filename, os.path.join(fontpath, mf_filename(FontNameB)))
+                            shutil.copy2(filename, os.path.join(fontpath, mf_filename(x.name)))
                         else:
-                            shutil.copy2(filename, working_dir(cFont.fontpath))
-                    except IOError:
-                        print 'unable to copy file', filename, 'to', working_dir(cFont.fontpath)
+                            shutil.copy2(filename, fontpath)
+                    except (IOError, OSError):
+                        pass
 
                 master = model.get_master(newid)
                 makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
-                # return render.create_project(error='Could not extract file to %s' % working_dir(cFont.fontpath))
             return seeother('/')
 
         return render.create_project(error='Please fill all fields in form')
