@@ -590,7 +590,7 @@ class CreateProject(app.page):
                 try:
                     FontNameB = ufo_dirs[1]
                 except IndexError:
-                    FontNameB = remove_ext(ufo_dirs[0]) + '.B.UFO'
+                    FontNameB = ''
                 newid = model.Master.insert(idglobal=1, FontName=x.name,
                                             FontNameA=FontNameA,
                                             FontNameB=FontNameB,
@@ -606,14 +606,15 @@ class CreateProject(app.page):
                 fzip.extractall(working_dir(fontpath))
 
                 import shutil
+                if not FontNameB:
+                    FontNameB = remove_ext(ufo_dirs[0]) + '.B.UFO'
                 for f in os.listdir(working_dir('commons', user='skel')):
                     filename = working_dir(op.join('commons', f),
                                            user='skel')
                     try:
                         if filename.endswith('font.mf'):
                             shutil.copy2(filename, op.join(fontpath, mf_filename(FontNameA)))
-                            if FontNameB:
-                                shutil.copy2(filename, op.join(fontpath, mf_filename(FontNameB)))
+                            shutil.copy2(filename, op.join(fontpath, mf_filename(FontNameB)))
                             shutil.copy2(filename, op.join(fontpath, mf_filename(x.name)))
                         else:
                             shutil.copy2(filename, fontpath)

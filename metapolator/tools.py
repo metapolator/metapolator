@@ -32,9 +32,12 @@ def makefont(working_dir, master):
     strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontNameA))
     os.system(strms)
 
-    if master.FontNameB:
-        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontNameB))
-        os.system(strms)
+    FontNameB = master.FontNameB
+    if not master.FontNameB:
+        FontNameB = remove_ext(master.FontNameA) + '.B.UFO'
+
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(FontNameB))
+    os.system(strms)
 
     strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontName))
     os.system(strms)
