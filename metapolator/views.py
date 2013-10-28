@@ -21,10 +21,10 @@ from passlib.hash import bcrypt
 
 
 from config import app, cFont, is_loggedin, session, working_dir, \
-    working_url, remove_ext
+    working_url, remove_ext, mf_filename
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamForm
-from tools import ufo2mf, writeallxmlfromdb, putFontAllglyphs, \
+from tools import writeallxmlfromdb, putFontAllglyphs, \
     writeGlyphlist, makefont, get_json, project_exists
 
 
@@ -609,9 +609,10 @@ class CreateProject(app.page):
                                            user='skel')
                     try:
                         if filename.endswith('font.mf'):
-                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), remove_ext(FontNameA)) + '.mf')
+                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(FontNameA)))
                             if FontNameB:
-                                shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), remove_ext(FontNameB)) + '.mf')
+                                shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(FontNameB)))
+                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(x.name)))
                         else:
                             shutil.copy2(filename, working_dir(cFont.fontpath))
                     except IOError:

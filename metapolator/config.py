@@ -29,6 +29,10 @@ def remove_ext(filename):
         return filename
 
 
+def mf_filename(filename):
+    return remove_ext(filename) + '.mf'
+
+
 def is_loggedin():
     try:
         return session.authorized

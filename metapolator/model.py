@@ -17,7 +17,7 @@ from lxml import etree
 from passlib.hash import bcrypt
 
 from config import cFont, working_dir, session, buildfname, \
-    DATABASE_USER, DATABASE_PWD
+    DATABASE_USER, DATABASE_PWD, mf_filename
 
 db = web.database(dbn='mysql', db='blog',
                   user=DATABASE_USER, pw=DATABASE_PWD)
@@ -1004,7 +1004,7 @@ def writeGlobalParam(master):
     box = imgl[0].box or 0
 
     # global parameters
-    ifile = open(op.join(working_dir('fonts/{0}'.format(master.id)), remove_ext(master.FontName) + ".mf"), "w")
+    ifile = open(op.join(working_dir('fonts/{0}'.format(master.id)), mf_filename(master.FontName)), "w")
     ifile.write("% parameter file \n")
     ifile.write("metapolation:=%.2f;\n" % metapolation)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)

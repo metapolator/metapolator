@@ -3,21 +3,20 @@ import os.path as op
 import re
 import xmltomf
 import model
-import simplejson
 
-from config import cFont, working_dir, buildfname, remove_ext
+from config import cFont, working_dir, buildfname, remove_ext, mf_filename
 from model import putFont
 
 
 def project_exists(master):
     mf_file1 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                       remove_ext(master.FontNameA) + '.mf')
+                       mf_filename(master.FontNameA))
     if op.exists(mf_file1):
         return True
 
     if master.FontNameB:
         mf_file2 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                           remove_ext(master.FontNameB) + '.mf')
+                           mf_filename(master.FontNameB))
         return op.exists(mf_file2)
 
 
@@ -26,7 +25,7 @@ def makefont(working_dir, master):
         return False
     fontpath = 'fonts/{0}'.format(master.idmaster)
 
-    ufo2mf(fontpath)
+    ufo2mf(master)
 
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
@@ -36,6 +35,9 @@ def makefont(working_dir, master):
     if master.FontNameB:
         strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontNameB))
         os.system(strms)
+
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontName))
+    os.system(strms)
     return True
 
 
@@ -44,13 +46,14 @@ def fnextension(filename):
         basename, extension = filename.split('.')
     except:
         extension = "garbage"
-        basename = ""
     return extension
 
 
-def ufo2mf(fontpath):
-    dirnamef1 = working_dir(op.join(fontpath, cFont.fontna, "glyphs"))
-    dirnamef2 = working_dir(op.join(fontpath, cFont.fontnb, "glyphs"))
+def ufo2mf(master):
+    fontpath = 'fonts/{0}'.format(master.idmaster)
+
+    dirnamef1 = working_dir(op.join(fontpath, master.FontNameA, "glyphs"))
+    dirnamef2 = working_dir(op.join(fontpath, master.FontNameB, "glyphs"))
     dirnamep1 = working_dir(op.join(fontpath, "glyphs"))
     if not op.exists(dirnamep1):
         os.makedirs(dirnamep1)
@@ -141,15 +144,13 @@ def writeallxmlfromdb(alist):
                 #   for A and B font
                 for iwork in ['0', '1']:
                     cFont.idwork = iwork
-                    writexml()
+                    model.writexml()
     #
     #    restore old idwork value
     cFont.idwork = idworks
 
 
 def get_json(content, glyphid=None):
-    print glyphid
-
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
     point_pattern = re.compile(r'\(([-\d.]+),([-\d.]+)\)..controls\s'
                                r'\(([-\d.]+),([-\d.]+)\)\sand\s'
