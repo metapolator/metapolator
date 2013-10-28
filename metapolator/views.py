@@ -587,11 +587,11 @@ class CreateProject(app.page):
                 if not iscorrect_ufo:
                     return render.create_project(error='Archive does not contain any correct UFO folder')
 
-                FontNameA = mf_filename(ufo_dirs[0])
+                FontNameA = ufo_dirs[0]
                 try:
-                    FontNameB = mf_filename(ufo_dirs[1])
+                    FontNameB = ufo_dirs[1]
                 except IndexError:
-                    FontNameB = mf_filename(remove_ext(ufo_dirs[0]) + '.B.UFO')
+                    FontNameB = remove_ext(ufo_dirs[0]) + '.B.UFO'
                 newid = model.Master.insert(idglobal=1, FontName=x.name,
                                             FontNameA=FontNameA,
                                             FontNameB=FontNameB,
@@ -609,9 +609,9 @@ class CreateProject(app.page):
                                            user='skel')
                     try:
                         if filename.endswith('font.mf'):
-                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), FontNameA))
+                            shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(FontNameA)))
                             if FontNameB:
-                                shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), FontNameB))
+                                shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(FontNameB)))
                             shutil.copy2(filename, os.path.join(working_dir(cFont.fontpath), mf_filename(x.name)))
                         else:
                             shutil.copy2(filename, working_dir(cFont.fontpath))
