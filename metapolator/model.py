@@ -1004,7 +1004,7 @@ def writeGlobalParam(master):
     box = imgl[0].box or 0
 
     # global parameters
-    ifile = open(op.join(working_dir('fonts/{0}'.format(master.id)), mf_filename(master.FontName)), "w")
+    ifile = open(op.join(working_dir('fonts/{0}'.format(master.idmaster)), mf_filename(master.FontName)), "w")
     ifile.write("% parameter file \n")
     ifile.write("metapolation:=%.2f;\n" % metapolation)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)

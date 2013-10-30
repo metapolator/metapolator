@@ -132,6 +132,9 @@ class Settings(app.page):
             if x.create == 'b':
                 newid = model.LocalParam.insert(user_id=session.user)
                 model.Master.update(session.user, master.id, idlocalB=newid)
+
+            master = model.Master.select_one(session.user, master.idmaster)
+            model.writeGlobalParam(master)
             raise seeother('/view/{0}/settings/'.format(master.FontName))
 
         if 'update' in x and 'idlocal' in x and x.idlocal:
@@ -141,9 +144,10 @@ class Settings(app.page):
             if x['update'] == 'b':
                 model.Master.update(session.user, master.idmaster,
                                     idlocalB=int(x.idlocal))
-            raise seeother('/view/{0}/settings/'.format(master.FontName))
 
-        model.writeGlobalParam(master)
+            master = model.Master.select_one(session.user, master.idmaster)
+            model.writeGlobalParam(master)
+            raise seeother('/view/{0}/settings/'.format(master.FontName))
 
         localparameters = list(model.get_localparams())
         localA = model.get_localparam(master.idlocalA)
@@ -425,32 +429,32 @@ class LocalParam(app.page):
 
     def getform(self, localparam):
         form = LocalParamForm()
-        form.fill({'px': localparam[0].px, 'width': localparam[0].width, 'space': localparam[0].space,
-                   'xheight': localparam[0].xheight, 'capital': localparam[0].capital,
-                   'boxheight': localparam[0].boxheight, 'ascender': localparam[0].ascender,
-                   'descender': localparam[0].descender, 'inktrap': localparam[0].inktrap,
-                   'stemcut': localparam[0].stemcut, 'skeleton': localparam[0].skeleton,
-                   'superness': localparam[0].superness, 'over': localparam[0].over})
+        form.fill({'px': localparam.px, 'width': localparam.width, 'space': localparam.space,
+                   'xheight': localparam.xheight, 'capital': localparam.capital,
+                   'boxheight': localparam.boxheight, 'ascender': localparam.ascender,
+                   'descender': localparam.descender, 'inktrap': localparam.inktrap,
+                   'stemcut': localparam.stemcut, 'skeleton': localparam.skeleton,
+                   'superness': localparam.superness, 'over': localparam.over})
         return form
 
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
 
-        localparam = list(model.get_localparam(id))
+        localparam = model.get_localparam(id)
         if not localparam:
             return web.notfound()
 
         form = self.getform(localparam)
 
         glo = list(model.get_localparams())
-        return render.editlocals(localparam[0], glo, form)
+        return render.editlocals(localparam, glo, form)
 
     def POST(self, id):
         if not is_loggedin():
             raise seeother('/login')
 
-        localparam = list(model.get_localparam(id))
+        localparam = model.get_localparam(id)
         if not localparam:
             return web.notfound()
 
@@ -465,7 +469,7 @@ class LocalParam(app.page):
             raise seeother('/settings/locals/')
 
         glo = list(model.get_localparams())
-        return render.editlocals(localparam[0], glo, form)
+        return render.editlocals(localparam, glo, form)
 
 
 class copyproject (app.page):

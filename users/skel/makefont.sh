@@ -1,7 +1,4 @@
 rm $1.log
-rm $1.tfm
-rm $1.pfb
-rm $1.afm
 # mf font.mf
 
 perl mf2pt1.pl --encoding=mtp.enc --comment="Copyright (c) 2013" --family="font" --nofixedpitch --fullname="font" --name="font-regular" --weight="regular" $1.mf
