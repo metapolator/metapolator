@@ -152,6 +152,17 @@ class View(app.page):
 
     path = '/view/([-.\w\d]+)/(\d+)/'
 
+    def get_edges_json(self, log_filename, glyphid):
+        result = {'edges': []}
+        try:
+            fp = open(op.join(working_dir(), log_filename))
+            content = fp.read()
+            fp.close()
+            return get_json(content, glyphid)
+        except (IOError, OSError):
+            pass
+        return result
+
     def GET(self, name, glyphid):
         """ View single post """
         if not is_loggedin():
@@ -161,25 +172,14 @@ class View(app.page):
         if not master:
             return web.notfound()
 
-        A_glyphjson, B_glyphjson = {'edges': []}, {'edges': []}
-
-        try:
-            fp = open(op.join(working_dir(), u'%s.log' % remove_ext(master.FontNameA)))
-            content = fp.read()
-            fp.close()
-            A_glyphjson = get_json(content, glyphid)
-        except (IOError, OSError):
-            pass
-
+        A_glyphjson = self.get_edges_json(u'%s.log' % remove_ext(master.FontNameA), glyphid)
         if master.FontNameB:
-            try:
-                fp = open(op.join(working_dir(), u'%s.log' % remove_ext(master.FontNameB)))
-                content = fp.read()
-                fp.close()
-                B_glyphjson = get_json(content, glyphid)
-            except (IOError, OSError):
-                pass
-        return render.view(master, A_glyphjson, B_glyphjson)
+            B_glyphjson = self.get_edges_json(u'%s.log' % remove_ext(master.FontNameB), glyphid)
+        else:
+            B_glyphjson = self.get_edges_json(u'%s.B.log' % remove_ext(master.FontNameA), glyphid)
+        M_glyphjson = self.get_edges_json(u'%s.log' % remove_ext(master.FontName), glyphid)
+
+        return render.view(master, A_glyphjson, B_glyphjson, M_glyphjson)
 
     def POST(self, id):
         if not is_loggedin():
@@ -619,7 +619,7 @@ class CreateProject(app.page):
                         else:
                             shutil.copy2(filename, fontpath)
                     except (IOError, OSError):
-                        pass
+                        raise
 
                 master = model.get_master(newid)
                 makefont(working_dir(), master)

@@ -1,4 +1,4 @@
-$def with (master, A_glyphjson, B_glyphjson)
+$def with (master, A_glyphjson, B_glyphjson, M_glyphjson)
 <title>
 Project $master.FontName
 </title>
@@ -20,7 +20,7 @@ Project $master.FontName
 
   <div class="col-md-4" style="border: solid 2px black;">
     <h4>Metapolation</h4>
-    <canvas width="400" height="400"></canvas>
+    <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
       <h4>Global Parameters <small><a href="/view/$master.FontName/settings/">change</a></small></h4>
@@ -38,6 +38,69 @@ Project $master.FontName
     </div>
   </div>
 </div>
+
+
+<script type="text/paperscript" canvas="canvas-m">
+  function setText(point) {
+      var text = new PointText(point);
+      text.fillColor = 'black';
+      text.content = point.x.toFixed(2) + ',' + point.y.toFixed(2);
+  }
+
+  var EDGE_JSON = $:M_glyphjson;
+
+  function getPoint(x, y) {
+    width = EDGE_JSON.width;
+    height = EDGE_JSON.height;
+
+    ratio = width / height;
+    if (width > height) {
+      w = scope.view.size.width - 100;
+      h = w / ratio;
+    } else {
+      h = scope.view.size.height - 100;
+      w = h * ratio;
+    }
+    nx = w * x / width;
+    ny = h * y / height;
+
+    console.log({'nx': nx, 'ny': ny})
+    return new Point(nx, ny);
+  }
+
+  var edges = EDGE_JSON.edges;
+  for (var i = 0; i < edges.length; i++) {
+      for (var j = 0; j < edges[i].contours.length; j++) {
+          var path = new Path();
+          var contours = edges[i].contours[j];
+          for (var k = 0; k < contours.length; k++) { // contours.length
+              contour = contours[k];
+              console.log(contour);
+
+              var point = getPoint(Number(contour.x), 500 - Number(contour.y));
+              var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
+                                       Number(contour.y) - Number(contour.controls[0].y));
+              var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
+                                        Number(contour.y) - Number(contour.controls[1].y));
+              segment = new Segment(point, handleIn, handleOut);
+              // setText(point);
+              path.add(segment);
+          }
+          path.closed = true;
+          path.selected = true;
+          path.fullySelected = true;
+          path.strokeColor = 'black';
+          path.position.y += +200;
+          path.fillColor = {
+              hue: 360 * Math.random(),
+              saturation: 1,
+              brightness: 1,
+              alpha: 0.5
+          };
+      }
+  }
+</script>
+
 
 <script type="text/paperscript" canvas="canvas-a">
   function setText(point) {

@@ -29,6 +29,7 @@ def makefont(working_dir, master):
 
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
+
     strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontNameA))
     os.system(strms)
 
@@ -56,7 +57,7 @@ def ufo2mf(master):
     fontpath = 'fonts/{0}'.format(master.idmaster)
 
     dirnamef1 = working_dir(op.join(fontpath, master.FontNameA, "glyphs"))
-    dirnamef2 = working_dir(op.join(fontpath, master.FontNameB, "glyphs"))
+    dirnamef2 = working_dir(op.join(fontpath, master.FontNameB or master.FontNameA, "glyphs"))
     dirnamep1 = working_dir(op.join(fontpath, "glyphs"))
     if not op.exists(dirnamep1):
         os.makedirs(dirnamep1)
@@ -67,14 +68,14 @@ def ufo2mf(master):
     for ch1 in charlist1:
         if ch1 in charlist2:
             fnb, ext = buildfname(ch1)
-            if fnb == cFont.glyphunic or cFont.timestamp == 0 or cFont.mfoption == "1":
-                newfile = fnb
-                newfilename = newfile + ".mf"
-                # commd2 = "python parser_pino_mono.py " +ch1 +" " +dirnamef1 +" " +dirnamef2 +" > " +dirnamep1 +"/" +newfilename
-                # os.system(commd2)
-                xmltomf.xmltomf1(ch1, dirnamef1, dirnamef2, dirnamep1, newfilename)
+            # if fnb == cFont.glyphunic or cFont.timestamp == 0 or cFont.mfoption == "1":
+            newfile = fnb
+            newfilename = newfile + ".mf"
+            # commd2 = "python parser_pino_mono.py " +ch1 +" " +dirnamef1 +" " +dirnamef2 +" > " +dirnamep1 +"/" +newfilename
+            # os.system(commd2)
+            xmltomf.xmltomf1(ch1, dirnamef1, dirnamef2, dirnamep1, newfilename)
 
-    cFont.timestamp = 1
+    # cFont.timestamp = 1
 
 
 def writeGlyphlist(fontpath):
