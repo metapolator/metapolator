@@ -13,3 +13,7 @@ mv $1.eot static/$1-webfont.eot
 mv $1.woff static/$1-webfont.woff
 mv $1.ttf static/$1-webfont.ttf
 mv $1.otf static/$1.otf
+
+rm -rf $1.afm
+rm -rf $1.pfb
+rm -rf $1.tfm
