@@ -981,43 +981,36 @@ def get_activeglyph():
     return db.query(strg)
 
 
-def writeGlobalParam(master):
-    #
-    # prepare font.mf parameter file
-    # write the file into the directory cFont.fontpath
-    #
-    imgl = list(get_globalparam(master.idglobal))
-
+def writeParams(filename, globalparam, metapolation):
     mean = 5.0
     cap = 0.8
     ascl = 0.2
     des = 0.2
     box = 1.0
 
-    metapolation = imgl[0].metapolation or 0
+    metapolation = metapolation or imgl[0].metapolation
     u = imgl[0].unitwidth or 0
     fontsize = imgl[0].fontsize or 0
-    mean = imgl[0].mean or 0
-    cap = imgl[0].cap or 0
-    ascl = imgl[0].ascl or 0
-    des = imgl[0].des or 0
-    box = imgl[0].box or 0
+    mean = imgl[0].mean or mean
+    cap = imgl[0].cap or cap
+    ascl = imgl[0].ascl or ascl
+    des = imgl[0].des or des
+    box = imgl[0].box or box
 
-    # global parameters
-    ifile = open(op.join(working_dir('fonts/{0}'.format(master.idmaster)), mf_filename(master.FontName)), "w")
-    ifile.write("% parameter file \n")
-    ifile.write("metapolation:=%.2f;\n" % metapolation)
-    ifile.write("font_size:=%.3fpt#;\n" % fontsize)
-    ifile.write("mean#:=%.3fpt#;\n" % mean)
-    ifile.write("cap#:=%.3fpt#;\n" % cap)
-    ifile.write("asc#:=%.3fpt#;\n" % ascl)
-    ifile.write("desc#:=%.3fpt#;\n" % des)
-    ifile.write("box#:=%.3fpt#;\n" % box)
-    ifile.write("u#:=%.3fpt#;\n" % u)
+    with open(filename, "w") as ifile:
+        # global parameters
+        ifile.write("% parameter file \n")
+        ifile.write("metapolation:=%.2f;\n" % metapolation)
+        ifile.write("font_size:=%.3fpt#;\n" % fontsize)
+        ifile.write("mean#:=%.3fpt#;\n" % mean)
+        ifile.write("cap#:=%.3fpt#;\n" % cap)
+        ifile.write("asc#:=%.3fpt#;\n" % ascl)
+        ifile.write("desc#:=%.3fpt#;\n" % des)
+        ifile.write("box#:=%.3fpt#;\n" % box)
+        ifile.write("u#:=%.3fpt#;\n" % u)
 
-    # local parameters A
-    imlo = get_localparam(master.idlocalA)
-    if imlo:
+        # local parameters A
+        imlo = get_localparam(master.idlocalA)
         ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
         ifile.write("A_width:=%.2f;\n" % imlo.width)
         ifile.write("A_space:=%.2f;\n" % imlo.space)
@@ -1032,9 +1025,8 @@ def writeGlobalParam(master):
         ifile.write("A_superness:=%.2f;\n" % imlo.superness)
         ifile.write("A_over:=%.2fpt;\n" % imlo.over)
 
-    # local parameters B
-    imlo = get_localparam(master.idlocalB)
-    if imlo:
+        # local parameters B
+        imlo = get_localparam(master.idlocalB)
         ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
         ifile.write("B_width:=%.2f;\n" % imlo.width)
         ifile.write("B_space:=%.2f;\n" % imlo.space)
@@ -1048,10 +1040,29 @@ def writeGlobalParam(master):
         ifile.write("B_superness:=%.2f;\n" % imlo.superness)
         ifile.write("B_over:=%.2fpt;\n" % imlo.over)
 
-    ifile.write("\n")
-    ifile.write("input glyphs\n")
-    ifile.write("bye\n")
-    ifile.close()
+        ifile.write("\n")
+        ifile.write("input glyphs\n")
+        ifile.write("bye\n")
+
+
+def writeGlobalParam(master):
+    #
+    # prepare font.mf parameter file
+    # write the file into the directory cFont.fontpath
+    #
+    globalparam = list(get_globalparam(master.idglobal))
+
+    filename = working_dir('fonts/{0}'.format(master.idmaster)),
+                           '%s.mf' % master.FontName)
+    writeParams(filename, globalparam, metapolation)
+
+    filename = working_dir('fonts/{0}'.format(master.idmaster)),
+                           '%sA.mf' % master.FontName)
+    writeParams(filename, globalparam, 0)
+
+    filename = working_dir('fonts/{0}'.format(master.idmaster)),
+                           '%sB.mf' % master.FontName)
+    writeParams(filename, globalparam, 1)
 
 
 def get_user_by_username(name):
