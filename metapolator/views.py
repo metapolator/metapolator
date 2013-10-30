@@ -554,9 +554,6 @@ class Register(app.page):
         seeother = authorize(user)
 
         prepare_environment_directory()
-
-        # create static files for users so that he can download his fonts
-        working_dir('static')
         raise seeother
 
 
