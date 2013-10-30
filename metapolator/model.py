@@ -988,7 +988,8 @@ def writeParams(filename, master, globalparam, metapolation=None):
     des = 0.2
     box = 1.0
 
-    metapolation = metapolation or globalparam[0].metapolation
+    metapolation = (metapolation is not None and metapolation) \
+        or globalparam[0].metapolation
     u = globalparam[0].unitwidth or 0
     fontsize = globalparam[0].fontsize or 0
     mean = globalparam[0].mean or mean
@@ -1011,6 +1012,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
 
     # local parameters A
     imlo = get_localparam(master.idlocalA)
+    hasA = False
     if imlo:
         ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
         ifile.write("A_width:=%.2f;\n" % imlo.width)
@@ -1025,9 +1027,11 @@ def writeParams(filename, master, globalparam, metapolation=None):
         ifile.write("A_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
         ifile.write("A_superness:=%.2f;\n" % imlo.superness)
         ifile.write("A_over:=%.2fpt;\n" % imlo.over)
+        hasA = True
 
     # local parameters B
     imlo = get_localparam(master.idlocalB)
+    hasB = False
     if imlo:
         ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
         ifile.write("B_width:=%.2f;\n" % imlo.width)
@@ -1041,11 +1045,14 @@ def writeParams(filename, master, globalparam, metapolation=None):
         ifile.write("B_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
         ifile.write("B_superness:=%.2f;\n" % imlo.superness)
         ifile.write("B_over:=%.2fpt;\n" % imlo.over)
+        hasB = True
 
     ifile.write("\n")
     ifile.write("input glyphs\n")
     ifile.write("bye\n")
     ifile.close()
+
+    return hasA and hasB
 
 
 def writeGlobalParam(master):
@@ -1057,15 +1064,16 @@ def writeGlobalParam(master):
 
     filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
                        '%s.mf' % master.FontName)
-    writeParams(filename, master, globalparam)
+    result1 = writeParams(filename, master, globalparam)
 
     filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
                        '%sA.mf' % master.FontName)
-    writeParams(filename, master, globalparam, 0)
+    result2 = writeParams(filename, master, globalparam, 0)
 
     filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
                        '%sB.mf' % master.FontName)
-    writeParams(filename, master, globalparam, 1)
+    result3 = writeParams(filename, master, globalparam, 1)
+    return result1 and result2 and result3
 
 
 def get_user_by_username(name):

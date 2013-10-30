@@ -1,4 +1,4 @@
-$def with (master, glyphid, localparameters, localA, localB)
+$def with (master, glyphid, localparameters, globalparams, globalparam, localA, localB)
 <title>
 Project $master.FontName
 </title>
@@ -60,6 +60,38 @@ Project $master.FontName
     </div>
     <div class="col-md-4">
         <h4>Global</h4>
+
+        <form action="" method="post">
+            <input type="submit" class="btn btn-large" value="Create Global Parameters">
+            <input type="hidden" name="create" value="g">
+        </form>
+
+        <form action="" method="post">
+            <input type="hidden" name="update" value="g">
+            <select class="parameter-select" name="idglobal" id="">
+                <option value="">Choose Parameter Set</option>
+                $for gl in globalparams:
+                    <option value="$gl.idglobal"
+                        $if master.idglobal == gl.idglobal:
+                            selected="selected"
+                        >Global parameters $gl.idglobal</option>
+            </select>
+            <input type="submit" >
+        </form>
+
+        $if globalparam:
+            <pre>
+                metapolation: $globalparam.metapolation
+                unitwidth: $globalparam.unitwidth
+                fontsize: $globalparam.fontsize
+                mean: $globalparam.mean
+                cap: $globalparam.cap
+                ascl: $globalparam.ascl
+                des: $globalparam.des
+                box: $globalparam.box
+            </pre>
+
+        <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
         <h4>Font B</h4>

@@ -112,9 +112,14 @@ class Settings(app.page):
             return web.notfound()
 
         localparameters = list(model.get_localparams())
+        globalparams = model.get_globalparams()
         localA = model.get_localparam(master.idlocalA)
         localB = model.get_localparam(master.idlocalB)
-        return render.settings(master, glyphid, localparameters, localA, localB)
+        try:
+            globalparam = model.get_globalparam(master.idglobal)[0]
+        except IndexError:
+            globalparam = None
+        return render.settings(master, glyphid, localparameters, globalparams, globalparam, localA, localB)
 
     def POST(self, name, glyphid):
         if not is_loggedin():
@@ -124,37 +129,37 @@ class Settings(app.page):
         if not master:
             return web.notfound()
 
-        x = web.input(create='', update='', idlocal=None)
-        if 'create' in x and 'idlocal' not in x:
-            if x.create == 'a':
-                newid = model.LocalParam.insert(user_id=session.user)
-                model.Master.update(session.user, master.id, idlocalA=newid)
-            if x.create == 'b':
-                newid = model.LocalParam.insert(user_id=session.user)
-                model.Master.update(session.user, master.id, idlocalB=newid)
+        x = web.input(create='', update='', idlocal=None, idglobal=None)
+        if x.create == 'a' and 'idlocal' in x and x.idlocal:
+            newid = model.LocalParam.insert(user_id=session.user)
+            model.Master.update(session.user, master.id, idlocalA=newid)
 
-            master = model.Master.select_one(session.user, master.idmaster)
-            model.writeGlobalParam(master)
+        if x.create == 'b' and 'idlocal' in x and x.idlocal:
+            newid = model.LocalParam.insert(user_id=session.user)
+            model.Master.update(session.user, master.id, idlocalB=newid)
+
+        if x.create == 'g' and 'idglobal' in x and x.idglobal:
+            newid = model.GlobalParam.insert(user_id=session.user)
+            model.Master.update(session.user, master.idmaster,
+                                idglobal=int(x.idglobal))
+
+        if x['update'] == 'a' and 'idlocal' in x and x.idlocal:
+            model.Master.update(session.user, master.idmaster,
+                                idlocalA=int(x.idlocal))
+
+        if x['update'] == 'b' and 'idlocal' in x and x.idlocal:
+            model.Master.update(session.user, master.idmaster,
+                                idlocalB=int(x.idlocal))
+
+        if x['update'] == 'g' and 'idglobal' in x and x.idglobal:
+            model.Master.update(session.user, master.idmaster,
+                                idglobal=int(x.idglobal))
+
+        master = model.Master.select_one(session.user, master.idmaster)
+        if model.writeGlobalParam(master):
             makefont(working_dir(), master)
-            raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
-        if 'update' in x and 'idlocal' in x and x.idlocal:
-            if x['update'] == 'a':
-                model.Master.update(session.user, master.idmaster,
-                                    idlocalA=int(x.idlocal))
-            if x['update'] == 'b':
-                model.Master.update(session.user, master.idmaster,
-                                    idlocalB=int(x.idlocal))
-
-            master = model.Master.select_one(session.user, master.idmaster)
-            model.writeGlobalParam(master)
-            makefont(working_dir(), master)
-            raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
-
-        localparameters = list(model.get_localparams())
-        localA = model.get_localparam(master.idlocalA)
-        localB = model.get_localparam(master.idlocalB)
-        return render.settings(master, glyphid, localparameters, localA, localB)
+        raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
 
 class View(app.page):
