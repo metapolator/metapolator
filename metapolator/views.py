@@ -12,6 +12,7 @@ import model
 import os
 import os.path as op
 import re
+import shutil
 import web
 import zipfile
 
@@ -20,7 +21,7 @@ from passlib.hash import bcrypt
 
 
 from config import app, cFont, is_loggedin, session, working_dir, \
-    working_url, remove_ext, mf_filename
+    working_url, mf_filename
 from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
     GlobalParamForm, RegisterForm, LocalParamForm
 from tools import writeallxmlfromdb, putFontAllglyphs, \
@@ -63,6 +64,8 @@ class Regenerate(app.page):
             return web.notfound()
 
         working_dir('static')
+
+        prepare_environment_directory()
 
         makefont(working_dir(), master)
         raise seeother('/fonts/')
@@ -172,12 +175,9 @@ class View(app.page):
         if not master:
             return web.notfound()
 
-        A_glyphjson = self.get_edges_json(u'%s.log' % remove_ext(master.FontNameA), glyphid)
-        if master.FontNameB:
-            B_glyphjson = self.get_edges_json(u'%s.log' % remove_ext(master.FontNameB), glyphid)
-        else:
-            B_glyphjson = self.get_edges_json(u'%s.B.log' % remove_ext(master.FontNameA), glyphid)
-        M_glyphjson = self.get_edges_json(u'%s.log' % remove_ext(master.FontName), glyphid)
+        A_glyphjson = self.get_edges_json(u'%sA.log' % master.FontName, glyphid)
+        B_glyphjson = self.get_edges_json(u'%sB.log' % master.FontName, glyphid)
+        M_glyphjson = self.get_edges_json(u'%s.log' % master.FontName, glyphid)
 
         return render.view(master, A_glyphjson, B_glyphjson, M_glyphjson)
 
@@ -516,6 +516,25 @@ class Login(app.page):
         return render.login(is_loggedin(), True)
 
 
+def prepare_environment_directory(force=False):
+    filelist = ['makefont.sh', 'mf2pt1.mp', 'mf2pt1.pl', 'mf2pt1.texi',
+                'mtp.enc']
+
+    static_directory = op.join(working_dir(), 'static')
+    if not op.exists(static_directory):
+        os.makedirs(static_directory)
+
+    if op.exists(op.join(working_dir(), 'makefont.sh')) and not force:
+        return
+
+    for filename in filelist:
+        try:
+            shutil.copy2(op.join(working_dir(user='skel'), filename),
+                         op.join(working_dir()))
+        except (OSError, IOError):
+            raise
+
+
 class Register(app.page):
     """ Registration processes of users with username and password """
 
@@ -534,8 +553,7 @@ class Register(app.page):
             return render.register(form)
         seeother = authorize(user)
 
-        from distutils.dir_util import copy_tree
-        copy_tree(working_dir(user='skel'), working_dir())
+        prepare_environment_directory()
 
         # create static files for users so that he can download his fonts
         working_dir('static')
@@ -570,6 +588,8 @@ class CreateProject(app.page):
             except (IOError, OSError):
                 return render.create_project(error='Could not upload this file to disk')
 
+            prepare_environment_directory()
+
             try:
                 fzip = zipfile.ZipFile(filename)
 
@@ -592,22 +612,22 @@ class CreateProject(app.page):
                 except IndexError:
                     FontNameB = ''
                 newid = model.Master.insert(idglobal=1, FontName=x.name,
-                                            FontNameA=FontNameA,
-                                            FontNameB=FontNameB,
                                             user_id=session.user)
-
                 fontpath = working_dir('fonts/%s' % newid)
-
-                cFont.fontpath = 'fonts/%s' % newid
-                cFont.fontname = x.name
-                cFont.fontna = FontNameA
-                cFont.fontnb = FontNameB
-
                 fzip.extractall(working_dir(fontpath))
 
-                import shutil
+                shutil.move(op.join(working_dir(fontpath), FontNameA), op.join(working_dir(fontpath), '%sA.UFO' % x.name))
+                if FontNameB:
+                    shutil.move(op.join(working_dir(fontpath), FontNameB), op.join(working_dir(fontpath), '%sB.UFO' % x.name))
+                    FontNameB = '%sB.UFO' % x.name
+
+                model.Master.update(session.user, newid,
+                                    FontNameA='%sA.UFO' % x.name,
+                                    FontNameB=FontNameB)
+
+                FontNameA = '%sA.UFO' % x.name
                 if not FontNameB:
-                    FontNameB = remove_ext(ufo_dirs[0]) + '.B.UFO'
+                    FontNameB = '%sB.UFO' % x.name
                 for f in os.listdir(working_dir('commons', user='skel')):
                     filename = working_dir(op.join('commons', f),
                                            user='skel')
@@ -623,8 +643,17 @@ class CreateProject(app.page):
 
                 master = model.get_master(newid)
                 makefont(working_dir(), master)
+
+                # deprecated: this config class will be removed in next changes
+                cFont.fontpath = 'fonts/%s' % newid
+                cFont.fontname = x.name
+                cFont.fontna = FontNameA
+                cFont.fontnb = FontNameB
             except (zipfile.BadZipfile, OSError, IOError):
-                raise
+                if newid:
+                    fontpath = working_dir('fonts/%s' % newid)
+                    model.Master.delete(where='idmaster=$id', vars={'id': newid})
+                    shutil.rmtree(fontpath)
             return seeother('/')
 
         return render.create_project(error='Please fill all fields in form')

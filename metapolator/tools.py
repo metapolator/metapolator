@@ -4,7 +4,7 @@ import re
 import xmltomf
 import model
 
-from config import cFont, working_dir, buildfname, remove_ext, mf_filename
+from config import cFont, working_dir, buildfname, mf_filename
 from model import putFont
 
 
@@ -30,17 +30,13 @@ def makefont(working_dir, master):
     os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
     writeGlyphlist(fontpath)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontNameA))
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sA' % master.FontName)
     os.system(strms)
 
-    FontNameB = master.FontNameB
-    if not master.FontNameB:
-        FontNameB = remove_ext(master.FontNameA) + '.B.UFO'
-
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(FontNameB))
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sB' % master.FontName)
     os.system(strms)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", remove_ext(master.FontName))
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.FontName)
     os.system(strms)
     return True
 
