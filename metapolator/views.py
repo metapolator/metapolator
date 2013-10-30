@@ -101,9 +101,9 @@ class Metap(app.page):
 
 class Settings(app.page):
 
-    path = '/view/([-.\w\d]+)/settings/'
+    path = '/view/([-.\w\d]+)/(\d+)/settings/'
 
-    def GET(self, name):
+    def GET(self, name, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
@@ -114,9 +114,9 @@ class Settings(app.page):
         localparameters = list(model.get_localparams())
         localA = model.get_localparam(master.idlocalA)
         localB = model.get_localparam(master.idlocalB)
-        return render.settings(master, localparameters, localA, localB)
+        return render.settings(master, glyphid, localparameters, localA, localB)
 
-    def POST(self, name):
+    def POST(self, name, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
@@ -135,7 +135,8 @@ class Settings(app.page):
 
             master = model.Master.select_one(session.user, master.idmaster)
             model.writeGlobalParam(master)
-            raise seeother('/view/{0}/settings/'.format(master.FontName))
+            makefont(working_dir(), master)
+            raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
         if 'update' in x and 'idlocal' in x and x.idlocal:
             if x['update'] == 'a':
@@ -147,12 +148,13 @@ class Settings(app.page):
 
             master = model.Master.select_one(session.user, master.idmaster)
             model.writeGlobalParam(master)
-            raise seeother('/view/{0}/settings/'.format(master.FontName))
+            makefont(working_dir(), master)
+            raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
         localparameters = list(model.get_localparams())
         localA = model.get_localparam(master.idlocalA)
         localB = model.get_localparam(master.idlocalB)
-        return render.settings(master, localparameters, localA, localB)
+        return render.settings(master, glyphid, localparameters, localA, localB)
 
 
 class View(app.page):
@@ -183,7 +185,7 @@ class View(app.page):
         B_glyphjson = self.get_edges_json(u'%sB.log' % master.FontName, glyphid)
         M_glyphjson = self.get_edges_json(u'%s.log' % master.FontName, glyphid)
 
-        return render.view(master, A_glyphjson, B_glyphjson, M_glyphjson)
+        return render.view(master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson)
 
     def POST(self, id):
         if not is_loggedin():

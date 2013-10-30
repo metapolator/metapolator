@@ -1,4 +1,4 @@
-$def with (master, localparameters, localA, localB)
+$def with (master, glyphid, localparameters, localA, localB)
 <title>
 Project $master.FontName
 </title>
@@ -41,19 +41,22 @@ Project $master.FontName
         </form>
 
         $if localA:
-            <div>px: $localA.px</div>
-            <div>width: $localA.width</div>
-            <div>space: $localA.space</div>
-            <div>xheight: $localA.xheight</div>
-            <div>capital: $localA.capital</div>
-            <div>boxheight: $localA.boxheight</div>
-            <div>ascender: $localA.ascender</div>
-            <div>descender: $localA.descender</div>
-            <div>inktrap: $localA.inktrap</div>
-            <div>stemcut: $localA.stemcut</div>
-            <div>skeleton: $localA.skeleton</div>
-            <div>superness: $localA.superness</div>
-            <div>over: $localA.over</div>
+            <pre>
+px: $localA.px
+width: $localA.width
+space: $localA.space
+xheight: $localA.xheight
+capital: $localA.capital
+boxheight: $localA.boxheight
+ascender: $localA.ascender
+descender: $localA.descender
+inktrap: $localA.inktrap
+stemcut: $localA.stemcut
+skeleton: $localA.skeleton
+superness: $localA.superness
+over: $localA.over
+            </pre>
+        <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
         <h4>Global</h4>
@@ -81,18 +84,22 @@ Project $master.FontName
         </form>
 
         $if localB:
-            <div>px: $localB.px</div>
-            <div>width: $localB.width</div>
-            <div>space: $localB.space</div>
-            <div>xheight: $localB.xheight</div>
-            <div>capital: $localB.capital</div>
-            <div>boxheight: $localB.boxheight</div>
-            <div>ascender: $localB.ascender</div>
-            <div>descender: $localB.descender</div>
-            <div>inktrap: $localB.inktrap</div>
-            <div>stemcut: $localB.stemcut</div>
-            <div>skeleton: $localB.skeleton</div>
-            <div>superness: $localB.superness</div>
-            <div>over: $localB.over</div>
+            <pre>
+px: $localB.px
+width: $localB.width
+space: $localB.space
+xheight: $localB.xheight
+capital: $localB.capital
+boxheight: $localB.boxheight
+ascender: $localB.ascender
+descender: $localB.descender
+inktrap: $localB.inktrap
+stemcut: $localB.stemcut
+skeleton: $localB.skeleton
+superness: $localB.superness
+over: $localB.over
+            </pre>
+
+        <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
 </div>

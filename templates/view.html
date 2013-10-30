@@ -1,4 +1,4 @@
-$def with (master, A_glyphjson, B_glyphjson, M_glyphjson)
+$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson)
 <title>
 Project $master.FontName
 </title>
@@ -11,7 +11,7 @@ Project $master.FontName
     <canvas id="canvas-a" width="400" height="400"></canvas>
 
     <div class="well">
-      <h4>Parameters Font A <small><a href="/view/$master.FontName/settings/">change</a></small></h4>
+      <h4>Parameters Font A <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
 
       $if not master.idlocalA:
         <div class="label label-danger">This font has not specified local parameters</div>
@@ -23,7 +23,7 @@ Project $master.FontName
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
-      <h4>Global Parameters <small><a href="/view/$master.FontName/settings/">change</a></small></h4>
+      <h4>Global Parameters <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
     </div>
   </div>
 
@@ -32,7 +32,7 @@ Project $master.FontName
     <canvas id="canvas-b" height="400" width="400"></canvas>
 
     <div class="well">
-      <h4>Parameters Font B <small><a href="/view/$master.FontName/settings/">change</a></small></h4>
+      <h4>Parameters Font B <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
       $if not master.idlocalB:
         <div class="label label-danger">This font has not specified local parameters</div>
     </div>

@@ -981,21 +981,21 @@ def get_activeglyph():
     return db.query(strg)
 
 
-def writeParams(filename, globalparam, metapolation):
+def writeParams(filename, master, globalparam, metapolation=None):
     mean = 5.0
     cap = 0.8
     ascl = 0.2
     des = 0.2
     box = 1.0
 
-    metapolation = metapolation or imgl[0].metapolation
-    u = imgl[0].unitwidth or 0
-    fontsize = imgl[0].fontsize or 0
-    mean = imgl[0].mean or mean
-    cap = imgl[0].cap or cap
-    ascl = imgl[0].ascl or ascl
-    des = imgl[0].des or des
-    box = imgl[0].box or box
+    metapolation = metapolation or globalparam[0].metapolation
+    u = globalparam[0].unitwidth or 0
+    fontsize = globalparam[0].fontsize or 0
+    mean = globalparam[0].mean or mean
+    cap = globalparam[0].cap or cap
+    ascl = globalparam[0].ascl or ascl
+    des = globalparam[0].des or des
+    box = globalparam[0].box or box
 
     with open(filename, "w") as ifile:
         # global parameters
@@ -1052,17 +1052,17 @@ def writeGlobalParam(master):
     #
     globalparam = list(get_globalparam(master.idglobal))
 
-    filename = working_dir('fonts/{0}'.format(master.idmaster)),
+    filename = working_dir('fonts/{0}'.format(master.idmaster),
                            '%s.mf' % master.FontName)
-    writeParams(filename, globalparam, metapolation)
+    writeParams(filename, master, globalparam)
 
-    filename = working_dir('fonts/{0}'.format(master.idmaster)),
+    filename = working_dir('fonts/{0}'.format(master.idmaster),
                            '%sA.mf' % master.FontName)
-    writeParams(filename, globalparam, 0)
+    writeParams(filename, master, globalparam, 0)
 
-    filename = working_dir('fonts/{0}'.format(master.idmaster)),
+    filename = working_dir('fonts/{0}'.format(master.idmaster),
                            '%sB.mf' % master.FontName)
-    writeParams(filename, globalparam, 1)
+    writeParams(filename, master, globalparam, 1)
 
 
 def get_user_by_username(name):
