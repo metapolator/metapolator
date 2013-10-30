@@ -989,7 +989,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
     box = 1.0
 
     metapolation = (metapolation is not None and metapolation) \
-        or globalparam[0].metapolation
+        or (metapolation is None and globalparam[0].metapolation)
     u = globalparam[0].unitwidth or 0
     fontsize = globalparam[0].fontsize or 0
     mean = globalparam[0].mean or mean
