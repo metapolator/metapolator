@@ -997,52 +997,54 @@ def writeParams(filename, master, globalparam, metapolation=None):
     des = globalparam[0].des or des
     box = globalparam[0].box or box
 
-    with open(filename, "w") as ifile:
-        # global parameters
-        ifile.write("% parameter file \n")
-        ifile.write("metapolation:=%.2f;\n" % metapolation)
-        ifile.write("font_size:=%.3fpt#;\n" % fontsize)
-        ifile.write("mean#:=%.3fpt#;\n" % mean)
-        ifile.write("cap#:=%.3fpt#;\n" % cap)
-        ifile.write("asc#:=%.3fpt#;\n" % ascl)
-        ifile.write("desc#:=%.3fpt#;\n" % des)
-        ifile.write("box#:=%.3fpt#;\n" % box)
-        ifile.write("u#:=%.3fpt#;\n" % u)
+    ifile = open(filename, "w")
+    # global parameters
+    ifile.write("% parameter file \n")
+    ifile.write("metapolation:=%.2f;\n" % metapolation)
+    ifile.write("font_size:=%.3fpt#;\n" % fontsize)
+    ifile.write("mean#:=%.3fpt#;\n" % mean)
+    ifile.write("cap#:=%.3fpt#;\n" % cap)
+    ifile.write("asc#:=%.3fpt#;\n" % ascl)
+    ifile.write("desc#:=%.3fpt#;\n" % des)
+    ifile.write("box#:=%.3fpt#;\n" % box)
+    ifile.write("u#:=%.3fpt#;\n" % u)
 
-        # local parameters A
-        imlo = get_localparam(master.idlocalA)
-        ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
-        ifile.write("A_width:=%.2f;\n" % imlo.width)
-        ifile.write("A_space:=%.2f;\n" % imlo.space)
-        ifile.write("A_spacept:=%.2fpt;\n" % imlo.space)
-        ifile.write("A_xheight:=%.2f;\n" % imlo.xheight)
-        ifile.write("A_capital:=%.2f;\n" % imlo.capital)
-        ifile.write("A_ascender:=%.2f;\n" % imlo.ascender)
-        ifile.write("A_descender:=%.2f;\n" % imlo.descender)
-        ifile.write("A_inktrap:=%.2f;\n" % imlo.inktrap)
-        ifile.write("A_stemcut:=%.2f;\n" % imlo.stemcut)
-        ifile.write("A_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
-        ifile.write("A_superness:=%.2f;\n" % imlo.superness)
-        ifile.write("A_over:=%.2fpt;\n" % imlo.over)
+    # local parameters A
+    imlo = get_localparam(master.idlocalA)
+    print imlo
+    ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
+    ifile.write("A_width:=%.2f;\n" % imlo.width)
+    ifile.write("A_space:=%.2f;\n" % imlo.space)
+    ifile.write("A_spacept:=%.2fpt;\n" % imlo.space)
+    ifile.write("A_xheight:=%.2f;\n" % imlo.xheight)
+    ifile.write("A_capital:=%.2f;\n" % imlo.capital)
+    ifile.write("A_ascender:=%.2f;\n" % imlo.ascender)
+    ifile.write("A_descender:=%.2f;\n" % imlo.descender)
+    ifile.write("A_inktrap:=%.2f;\n" % imlo.inktrap)
+    ifile.write("A_stemcut:=%.2f;\n" % imlo.stemcut)
+    ifile.write("A_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
+    ifile.write("A_superness:=%.2f;\n" % imlo.superness)
+    ifile.write("A_over:=%.2fpt;\n" % imlo.over)
 
-        # local parameters B
-        imlo = get_localparam(master.idlocalB)
-        ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
-        ifile.write("B_width:=%.2f;\n" % imlo.width)
-        ifile.write("B_space:=%.2f;\n" % imlo.space)
-        ifile.write("B_xheight:=%.2f;\n" % imlo.xheight)
-        ifile.write("B_capital:=%.2f;\n" % imlo.capital)
-        ifile.write("B_ascender:=%.2f;\n" % imlo.ascender)
-        ifile.write("B_descender:=%.2f;\n" % imlo.descender)
-        ifile.write("B_inktrap:=%.2f;\n" % imlo.inktrap)
-        ifile.write("B_stemcut:=%.2f;\n" % imlo.stemcut)
-        ifile.write("B_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
-        ifile.write("B_superness:=%.2f;\n" % imlo.superness)
-        ifile.write("B_over:=%.2fpt;\n" % imlo.over)
+    # local parameters B
+    imlo = get_localparam(master.idlocalB)
+    ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
+    ifile.write("B_width:=%.2f;\n" % imlo.width)
+    ifile.write("B_space:=%.2f;\n" % imlo.space)
+    ifile.write("B_xheight:=%.2f;\n" % imlo.xheight)
+    ifile.write("B_capital:=%.2f;\n" % imlo.capital)
+    ifile.write("B_ascender:=%.2f;\n" % imlo.ascender)
+    ifile.write("B_descender:=%.2f;\n" % imlo.descender)
+    ifile.write("B_inktrap:=%.2f;\n" % imlo.inktrap)
+    ifile.write("B_stemcut:=%.2f;\n" % imlo.stemcut)
+    ifile.write("B_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
+    ifile.write("B_superness:=%.2f;\n" % imlo.superness)
+    ifile.write("B_over:=%.2fpt;\n" % imlo.over)
 
-        ifile.write("\n")
-        ifile.write("input glyphs\n")
-        ifile.write("bye\n")
+    ifile.write("\n")
+    ifile.write("input glyphs\n")
+    ifile.write("bye\n")
+    ifile.close()
 
 
 def writeGlobalParam(master):
@@ -1052,16 +1054,16 @@ def writeGlobalParam(master):
     #
     globalparam = list(get_globalparam(master.idglobal))
 
-    filename = working_dir('fonts/{0}'.format(master.idmaster),
-                           '%s.mf' % master.FontName)
+    filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
+                       '%s.mf' % master.FontName)
     writeParams(filename, master, globalparam)
 
-    filename = working_dir('fonts/{0}'.format(master.idmaster),
-                           '%sA.mf' % master.FontName)
+    filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
+                       '%sA.mf' % master.FontName)
     writeParams(filename, master, globalparam, 0)
 
-    filename = working_dir('fonts/{0}'.format(master.idmaster),
-                           '%sB.mf' % master.FontName)
+    filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
+                       '%sB.mf' % master.FontName)
     writeParams(filename, master, globalparam, 1)
 
 
