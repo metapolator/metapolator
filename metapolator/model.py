@@ -279,6 +279,18 @@ class Master(Model):
 
     __table__ = 'master'
 
+    @staticmethod
+    def get_fonts_directory(master, ab_source=None):
+        print master
+        fonts_directory = op.join(working_dir(), 'fonts', str(master.idmaster))
+        if ab_source.lower() == 'a':
+            return op.join(fonts_directory, master.FontNameA)
+        elif ab_source.lower() == 'b' and master.FontNameB:
+            return op.join(fonts_directory, master.FontNameB)
+        elif ab_source.lower() == 'b':
+            return op.join(fonts_directory, master.FontNameA)
+        return fonts_directory
+
     @classmethod
     def select_one(cls, user, id):
         return cls.db_select_first(where='idmaster=$id and user_id=$user',
@@ -324,7 +336,7 @@ class LocalParam(Model):
                       **kwargs)
 
 
-def putFontG(glyphName, glyphsource, idmaster):
+def putFontG(glyphName, glyphsource, idmaster, loadoption=0):
     #  Read one glyph from xml file with glif extension
     #  and put the data into db
     #  There is a loadoption with values:
@@ -368,10 +380,10 @@ def putFontG(glyphName, glyphsource, idmaster):
     outline = xmldoc.find("outline")
     items = outline
     #
-    if cFont.loadoption == 0:
+    if loadoption == 0:
         GlyphOutline.delete(session.user, glyphName, idmaster)
 
-    if cFont.loadoption == 1:
+    if loadoption == 1:
         GlyphOutline.delete(session.user, glyphName, idmaster)
         GlyphParam.delete(session.user, glyphName, idmaster)
     #
@@ -380,7 +392,7 @@ def putFontG(glyphName, glyphsource, idmaster):
     #  in this case we read only the coordinates from the xml file
     #
 
-    if cFont.loadoption == 0:
+    if loadoption == 0:
     #   put data into db
         inum = 0
         strg = ""
@@ -416,7 +428,7 @@ def putFontG(glyphName, glyphsource, idmaster):
     #  load option 1  read from xml files x,y coordinates
     #                 and parameters
 
-    if cFont.loadoption == 1:
+    if loadoption == 1:
 
         #  put data into db
         inum = 0
@@ -458,34 +470,30 @@ def putFontG(glyphName, glyphsource, idmaster):
                                     user_id=session.user)
 
 
-def putFont():
+def putFont(master, glyphid, loadoption=0):
     #
     #  create glypsource names
     #  create fontpath
     #  read font A and font B
     #  put font A and font B into DB according the loadoption rule
     #
-    idworks = cFont.idwork
-    cFont.fontpath = "fonts/" + str(cFont.idmaster) + "/"
 
-    print cFont.glyphName, cFont.glyphunic
-
-    glyphName = cFont.glyphunic
-    glyphNameNew = glyphName + ".glif"
+    glyphNameNew = glyphid + ".glif"
 
     glyphPath = op.join("glyphs", glyphNameNew)
 
-    glyphsourceA = op.join(working_dir(cFont.fontpath), cFont.fontna, glyphPath)
-    glyphsourceB = op.join(working_dir(cFont.fontpath), cFont.fontna, glyphPath)
+    source_fontpath_A = Master.get_fonts_directory(master, 'A')
+    source_fontpath_B = Master.get_fonts_directory(master, 'B')
 
-    print glyphNameNew
+    glyphsourceA = op.join(source_fontpath_A, glyphPath)
+    glyphsourceB = op.join(source_fontpath_B, glyphPath)
 
-    idmaster = cFont.idmaster
-    #
-    putFontG(glyphName, glyphsourceA, int(idmaster))
-    putFontG(glyphName, glyphsourceB, -int(idmaster))
+    putFontG(glyphid, glyphsourceA, int(master.idmaster), loadoption)
+    putFontG(glyphid, glyphsourceB, -int(master.idmaster), loadoption)
 
-    cFont.idwork = idworks
+    # cFont.fontpath = "fonts/" + str(master.idmaster) + "/"
+    # idworks = cFont.idwork
+    # cFont.idwork = idworks
 
 
 def gidmast(idwork):
@@ -856,7 +864,7 @@ def copyproject():
         return
 
 
-def writexml():
+def writexml(master, ab_source=None):
 #
 #  write  two xml file for glyph in A and B Font
 #

@@ -186,6 +186,12 @@ class View(app.page):
         if not master:
             return web.notfound()
 
+        glyph = model.GlyphOutline.db_select_first(where='idmaster=$idmaster and glyphName=$id',
+                                                   vars=dict(idmaster=master.idmaster, id=glyphid))
+
+        if not glyph:
+            model.putFont(master, glyphid, loadoption=1)
+
         A_glyphjson = self.get_edges_json(u'%sA.log' % master.FontName, glyphid)
         B_glyphjson = self.get_edges_json(u'%sB.log' % master.FontName, glyphid)
         M_glyphjson = self.get_edges_json(u'%s.log' % master.FontName, glyphid)
@@ -651,12 +657,6 @@ class CreateProject(app.page):
 
                 master = model.get_master(newid)
                 makefont(working_dir(), master)
-
-                # deprecated: this config class will be removed in next changes
-                cFont.fontpath = 'fonts/%s' % newid
-                cFont.fontname = x.name
-                cFont.fontna = FontNameA
-                cFont.fontnb = FontNameB
             except (zipfile.BadZipfile, OSError, IOError):
                 if newid:
                     fontpath = working_dir('fonts/%s' % newid)

@@ -5,7 +5,7 @@ import xmltomf
 import model
 
 from config import cFont, working_dir, buildfname, mf_filename
-from model import putFont
+from model import putFont, Master
 
 
 def project_exists(master):
@@ -87,67 +87,41 @@ def writeGlyphlist(fontpath):
     ifile.close()
 
 
-def putFontAllglyphs():
-    #
-    #  read all fonts (xml files with glif extension) in unix directory
-    #  and put the xml data into db using the rule applied in loadoption
-    #  only the fonts (xml file) will be read when the glifs are present in both fonts A and B
-    #
-    # save the values for restore
-    idworks = cFont.idwork
-    glyphnames = cFont.glyphName
-    glyphunics = cFont.glyphunic
+def putFontAllglyphs(master):
+    # read all fonts (xml files with glif extension) in unix directory
+    # and put the xml data into db using the rule applied in loadoption
+    # only the fonts (xml file) will be read when the glifs are present
+    # in both fonts A and B
 
-    dirnamea = op.join(working_dir(cFont.fontpath), cFont.fontna, "glyphs")
-    if not op.exists(dirnamea):
-        os.makedirs(dirnamea)
+    source_fontpath_A = Master.get_fonts_directory(master, 'A')
+    source_fontpath_B = Master.get_fonts_directory(master, 'B')
 
-    dirnameb = op.join(working_dir(cFont.fontpath), cFont.fontnb, "glyphs")
-    if not op.exists(dirnameb):
-        os.makedirs(dirnameb)
-
-    charlista = [f for f in os.listdir(dirnamea)]
-    charlistb = [f for f in os.listdir(dirnameb)]
+    charlista = [f for f in os.listdir(source_fontpath_A)]
+    charlistb = [f for f in os.listdir(source_fontpath_B)]
     for ch1 in charlista:
         if ch1 in charlistb:
-            fnb, ext = buildfname(ch1)
+            glyphName, ext = buildfname(ch1)
             if ext in ["glif"]:
-                glyphName = fnb
-                cFont.glyphName = glyphName
-                cFont.glyphunic = glyphName
-                putFont()
-    #
-    #   save previous values back
-    cFont.idwork = idworks
-    cFont.glyphName = glyphnames
-    cFont.glyphunic = glyphunics
+                putFont(master, glyphName, loadoption=1)
 
 
-def writeallxmlfromdb(alist):
-    dirnamea = op.join(working_dir(cFont.fontpath), cFont.fontna, "glyphs")
-    dirnameb = op.join(working_dir(cFont.fontpath), cFont.fontnb, "glyphs")
+def writeallxmlfromdb(master, glyphs):
+    dirnamea = op.join(Master.get_fonts_directory(master, 'A'), "glyphs")
+    dirnameb = op.join(Master.get_fonts_directory(master, 'B'), "glyphs")
 
     charlista = [f for f in os.listdir(dirnamea) if fnextension(f) == 'glif']
     charlistb = [f for f in os.listdir(dirnameb) if fnextension(f) == 'glif']
-
-    idworks = cFont.idwork
-    aalist = []
-    for g in alist:
-        aalist.append(g.glyphname)
     #
     for ch1 in charlista:
         if ch1 in charlistb:
             glyphname, exte = buildfname(ch1)
-            if glyphname in aalist:
+            if glyphname in glyphs:
                 cFont.glyphunic = glyphname
                 cFont.glyphName = glyphname
                 #   for A and B font
                 for iwork in ['0', '1']:
                     cFont.idwork = iwork
                     model.writexml()
-    #
-    #    restore old idwork value
-    cFont.idwork = idworks
 
 
 def get_json(content, glyphid=None):
