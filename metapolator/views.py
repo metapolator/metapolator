@@ -111,15 +111,25 @@ class Settings(app.page):
         if not master:
             return web.notfound()
 
-        localparameters = list(model.get_localparams())
+        globalparamform = GlobalParamForm()
         globalparams = model.get_globalparams()
-        localA = model.get_localparam(master.idlocalA)
-        localB = model.get_localparam(master.idlocalB)
         try:
             globalparam = model.get_globalparam(master.idglobal)[0]
+            globalparamform.fill(globalparam)
         except IndexError:
-            globalparam = None
-        return render.settings(master, glyphid, localparameters, globalparams, globalparam, localA, localB)
+            pass
+
+        localparamform_a = LocalParamForm()
+        localA = model.get_localparam(master.idlocalA)
+        localparamform_a.fill(localA or {})
+
+        localparamform_b = LocalParamForm()
+        localB = model.get_localparam(master.idlocalB)
+        localparamform_b.fill(localB or {})
+
+        localparameters = list(model.get_localparams())
+
+        return render.settings(master, glyphid, localparameters, globalparams, globalparamform, localparamform_a, localparamform_b)
 
     def POST(self, name, glyphid):
         if not is_loggedin():

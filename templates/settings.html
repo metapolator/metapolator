@@ -1,4 +1,4 @@
-$def with (master, glyphid, localparameters, globalparams, globalparam, localA, localB)
+$def with (master, glyphid, localparameters, globalparams, globalparamform, localparamform_a, localparamform_b)
 <title>
 Project $master.FontName
 </title>
@@ -40,22 +40,7 @@ Project $master.FontName
             <input type="submit" >
         </form>
 
-        $if localA:
-            <pre>
-                px: $localA.px
-                width: $localA.width
-                space: $localA.space
-                xheight: $localA.xheight
-                capital: $localA.capital
-                boxheight: $localA.boxheight
-                ascender: $localA.ascender
-                descender: $localA.descender
-                inktrap: $localA.inktrap
-                stemcut: $localA.stemcut
-                skeleton: $localA.skeleton
-                superness: $localA.superness
-                over: $localA.over
-            </pre>
+        $:localparamform_a.render()
         <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
@@ -79,17 +64,7 @@ Project $master.FontName
             <input type="submit" >
         </form>
 
-        $if globalparam:
-            <pre>
-                metapolation: $globalparam.metapolation
-                unitwidth: $globalparam.unitwidth
-                fontsize: $globalparam.fontsize
-                mean: $globalparam.mean
-                cap: $globalparam.cap
-                ascl: $globalparam.ascl
-                des: $globalparam.des
-                box: $globalparam.box
-            </pre>
+        $:globalparamform.render()
 
         <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
@@ -115,22 +90,7 @@ Project $master.FontName
             <input type="submit" >
         </form>
 
-        $if localB:
-            <pre>
-                px: $localB.px
-                width: $localB.width
-                space: $localB.space
-                xheight: $localB.xheight
-                capital: $localB.capital
-                boxheight: $localB.boxheight
-                ascender: $localB.ascender
-                descender: $localB.descender
-                inktrap: $localB.inktrap
-                stemcut: $localB.stemcut
-                skeleton: $localB.skeleton
-                superness: $localB.superness
-                over: $localB.over
-            </pre>
+        $:localparamform_b.render()
 
         <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
