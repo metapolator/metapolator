@@ -99,6 +99,44 @@ class Metap(app.page):
         return render.metap(posts, master, fontsource, webglyph)
 
 
+class SettingsRest(app.page):
+
+    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/'
+
+    def POST(self, name, glyphid):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        master = model.Master.get_by_name(name, session.user)
+        if not master:
+            return web.notfound()
+
+        x = web.input(create='', update='', idglobal='', idlocal='')
+        if x['create'] == 'a':
+            newid = model.LocalParam.insert(user_id=session.user)
+            model.Master.update(session.user, master.idmaster, idlocalA=newid)
+
+        if x['create'] == 'b':
+            newid = model.LocalParam.insert(user_id=session.user)
+            model.Master.update(session.user, master.idmaster, idlocalB=newid)
+
+        if x['create'] == 'g':
+            newid = model.GlobalParam.insert(user_id=session.user)
+            model.Master.update(session.user, master.idmaster, idglobal=newid)
+
+        if x['update'] == 'a':
+            model.Master.update(session.user, master.idmaster,
+                                idlocalA=x.idlocal)
+        if x['update'] == 'b':
+            model.Master.update(session.user, master.idmaster,
+                                idlocalB=x.idlocal)
+        if x['update'] == 'g':
+            model.Master.update(session.user, master.idmaster,
+                                idglobal=x.idglobal)
+
+        raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
+
+
 class Settings(app.page):
 
     path = '/view/([-.\w\d]+)/(\d+)/settings/'
@@ -142,21 +180,6 @@ class Settings(app.page):
         master = model.Master.get_by_name(name, session.user)
         if not master:
             return web.notfound()
-
-        x = web.input(create='')
-        if x.create == 'a':
-            newid = model.LocalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.idmaster, idlocalA=newid)
-
-        if x.create == 'b':
-            newid = model.LocalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.idmaster, idlocalB=newid)
-
-        if x.create == 'g':
-            newid = model.GlobalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.idmaster, idglobal=newid)
-
-        master = model.Master.select_one(session.user, master.idmaster)
 
         form = LocalParamForm()
         if 'ab_source' in form.d and form.validates():
