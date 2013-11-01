@@ -127,10 +127,10 @@ Project $master.FontName
     nx = w * x / width;
     ny = h * y / height;
 
-    var point = new Point(nx, ny);
-    point.data = {'name': 'p' + i}
-    return point
+    return new Point(nx, ny);
   }
+
+  var currentSegment, mode, type;
 
   var edges = EDGE_JSON.edges;
   var pointcounter = 1;
@@ -163,12 +163,35 @@ Project $master.FontName
               brightness: 1,
               alpha: 0.5
           };
+          path.onMouseDown = function(event) {
+              if (currentSegment)
+                  currentSegment.selected = false;
+              mode = type = currentSegment = null;
+
+              var result = findHandle(this, event.point);
+              if (result) {
+                  currentSegment = result.segment;
+                  type = result.type;
+                  if (this.segments.length > 1 && result.type == 'point'
+                          && result.segment.index == 0) {
+                      mode = 'close';
+                      this.closed = true;
+                      this.selected = true;
+                  }
+              }
+
+              if (mode != 'close') {
+                  mode = currentSegment ? 'move' : 'add';
+                  if (!currentSegment)
+                      currentSegment = this.add(event.point);
+                  currentSegment.selected = true;
+              }
+          }
       }
   }
 
-  var path;
   var types = ['point', 'handleIn', 'handleOut'];
-  function findHandle(point) {
+  function findHandle(path, point) {
       for (var i = 0, l = path.segments.length; i < l; i++) {
           for (var j = 0; j < 3; j++) {
               var type = types[j];
@@ -188,35 +211,10 @@ Project $master.FontName
       return null;
   }
 
-  var currentSegment, mode, type;
-  function onMouseDown(event) {
-      if (currentSegment)
-          currentSegment.selected = false;
-      mode = type = currentSegment = null;
-
-  
-      var result = findHandle(event.point);
-      if (result) {
-          currentSegment = result.segment;
-          type = result.type;
-          if (path.segments.length > 1 && result.type == 'point'
-                  && result.segment.index == 0) {
-              mode = 'close';
-              path.closed = true;
-              path.selected = true;
-//                path = null;
-          }
-      }
-
-      if (mode != 'close') {
-          mode = currentSegment ? 'move' : 'add';
-          if (!currentSegment)
-              currentSegment = path.add(event.point);
-          currentSegment.selected = true;
-      }
-  }
-
   function onMouseDrag(event) {
+      if (!currentSegment) {
+        return;
+      }
       if (mode == 'move' && type == 'point') {
           currentSegment.point = event.point;
       } else if (mode != 'close') {
