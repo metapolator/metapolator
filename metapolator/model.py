@@ -47,16 +47,14 @@ def xxmlat(s, dbob, sattr, val, iro):
             del s.attrib[sattr]
 
 
-def xxmrlat(inum, s, sattr):
-
-    idmaster = gidmast(cFont.idwork)
+def xxmrlat(idmaster, fontsource, glyphid, inum, s, sattr):
     ids = " and idmaster="+'"'+str(idmaster)+'"'
     cc = s.attrib
     for item in cc:
         if item in sattr:
             val = cc[item]
             if item not in ['', 'select']:
-                update_glyphparamX(inum, item, val, ids)
+                update_glyphparamX(idmaster, fontsource, glyphid, item, val, ids)
 
     return None
 
@@ -133,19 +131,20 @@ class GlyphOutline(Model):
                                              glyphName=glyphName))
 
     @classmethod
-    def update(cls, user, id, glyphName, idmaster, **kwargs):
+    def update(cls, user, id, glyphName, idmaster, fontsource, **kwargs):
         cls.db_update(where=('id=$id and GlyphName=$glyphName'
                              ' and idmaster=$idmaster'
-                             ' and user_id=$user'),
+                             ' and user_id=$user and fontsource=$source'),
                       vars=dict(id=id, user=user, glyphName=glyphName,
-                                idmaster=idmaster), **kwargs)
+                                idmaster=idmaster, source=fontsource),
+                      **kwargs)
 
     @classmethod
-    def delete(cls, user, glyphName, idmaster):
+    def delete(cls, user, glyphName, idmaster, fontsource):
         cls.db_delete(where=('Glyphname=$glyphName and idmaster=$idmaster'
-                             ' and user_id=$user'),
+                             ' and user_id=$user and fontsource=$source'),
                       vars=dict(user=user, glyphName=glyphName,
-                                idmaster=idmaster))
+                                idmaster=idmaster, source=fontsource))
 
 
 class VGlyphOutline(Model):
@@ -239,18 +238,19 @@ class GlyphParam(Model):
             pass
 
     @classmethod
-    def delete(cls, user, glyphName, idmaster):
+    def delete(cls, user, glyphName, idmaster, fontsource):
         cls.db_delete(where=('glyphName=$glyphName and idmaster=$idmaster'
-                             ' and user_id=$user'),
+                             ' and user_id=$user and fontsource=$source'),
                       vars=dict(user=user, glyphName=glyphName,
-                                idmaster=idmaster))
+                                idmaster=idmaster, source=fontsource))
 
     @classmethod
-    def update(cls, user, id, glyphName, idmaster, **kwargs):
+    def update(cls, user, id, glyphName, idmaster, fontsource, **kwargs):
         cls.db_update(where='id=$id and glyphName=$glyphName'
-                            ' and idmaster=$idmaster and user_id=$user',
+                            ' and idmaster=$idmaster and user_id=$user'
+                            ' and fontsource=$source',
                       vars=dict(id=id, user=user, glyphName=glyphName,
-                                idmaster=idmaster),
+                                idmaster=idmaster, source=fontsource),
                       **kwargs)
 
 
@@ -336,7 +336,7 @@ class LocalParam(Model):
                       **kwargs)
 
 
-def putFontG(glyphName, glyphsource, idmaster, loadoption=0):
+def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
     #  Read one glyph from xml file with glif extension
     #  and put the data into db
     #  There is a loadoption with values:
@@ -371,21 +371,19 @@ def putFontG(glyphName, glyphsource, idmaster, loadoption=0):
                  'overcap', 'overasc', 'overdesc', 'ascpoint', 'descpoint',
                  'stemcutter', 'stemshift', 'inktrap_l', 'inktrap_r']
 
-    if idmaster > 0:
-        cFont.idwork = '0'
-    if idmaster < 0:
-        cFont.idwork = '1'
-    #
     xmldoc = etree.parse(glyphsource)
     outline = xmldoc.find("outline")
     items = outline
     #
     if loadoption == 0:
-        GlyphOutline.delete(session.user, glyphName, idmaster)
+        GlyphOutline.delete(session.user, glyphName,
+                            idmaster, ab_source.upper())
 
     if loadoption == 1:
-        GlyphOutline.delete(session.user, glyphName, idmaster)
-        GlyphParam.delete(session.user, glyphName, idmaster)
+        GlyphOutline.delete(session.user, glyphName, idmaster,
+                            ab_source.upper())
+        GlyphParam.delete(session.user, glyphName, idmaster,
+                          ab_source.upper())
     #
     #  load option 0  read from xml files only x,y coordinates
     #  it could be the order of the records has been changed
@@ -420,6 +418,7 @@ def putFontG(glyphName, glyphsource, idmaster, loadoption=0):
                                     y=s.get('y'),
                                     contrp=mainpoint,
                                     idmaster=idmaster,
+                                    fontsource=ab_source.upper(),
                                     pip=idpar,
                                     user_id=session.user)
 
@@ -444,10 +443,11 @@ def putFontG(glyphName, glyphsource, idmaster, loadoption=0):
                     GlyphParam.insert(user_id=session.user, id=inum,
                                       GlyphName=glyphName,
                                       idmaster=idmaster,
+                                      fontsource=ab_source.upper(),
                                       PointName=nameval)
                     #  find  all parameter and save it in db
                     # add glyphparameters here:
-                    xxmrlat(inum, s, paramattr)
+                    xxmrlat(idmaster, ab_source, glyphName, inum, s, paramattr)
                 else:
                     nameval = ""
                     startp = 0
@@ -466,6 +466,7 @@ def putFontG(glyphName, glyphsource, idmaster, loadoption=0):
                                     y=s.get('y'),
                                     contrp=mainpoint,
                                     idmaster=idmaster,
+                                    fontsource=ab_source.upper(),
                                     pip=idpar,
                                     user_id=session.user)
 
@@ -488,8 +489,8 @@ def putFont(master, glyphid, loadoption=0):
     glyphsourceA = op.join(source_fontpath_A, glyphPath)
     glyphsourceB = op.join(source_fontpath_B, glyphPath)
 
-    putFontG(glyphid, glyphsourceA, int(master.idmaster), loadoption)
-    putFontG(glyphid, glyphsourceB, -int(master.idmaster), loadoption)
+    putFontG(glyphid, glyphsourceA, master.idmaster, 'A', loadoption)
+    putFontG(glyphid, glyphsourceB, master.idmaster, 'B', loadoption)
 
     # cFont.fontpath = "fonts/" + str(master.idmaster) + "/"
     # idworks = cFont.idwork
@@ -573,15 +574,13 @@ def update_postp(id, x, y, idpar):
                             x=x, y=y, pip=idpar)
 
 
-def update_glyphparamX(id, ap, bp, ids):
+def update_glyphparamX(idmaster, fontsource, glyphid, ap, bp, ids):
     # string:syntax update glyphparam set leftp='1' where id=75 and Glyphname='p' and idmaster=1;
-    glyphName = cFont.glyphunic
-    idmaster = gidmast(cFont.idwork)
     idp = id
     if bp != '':
         bb = bp
         bbstr = str(bb)
-        GlyphParam.update(session.user, idp, glyphName, idmaster,
+        GlyphParam.update(session.user, idp, glyphid, idmaster, fontsource,
                           **{ap: str(bbstr)})
     return None
 

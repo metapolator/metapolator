@@ -23,7 +23,8 @@ CREATE TABLE glyphoutline (
     idmaster INT,
     pip INT,
     vdate    TIMESTAMP default now(),
-    primary key (idmaster,id,glyphName)
+    fontsource ENUM('A', 'B'),
+    primary key (idmaster,id,glyphName,fontsource)
 );
 CREATE TABLE glyphparam (
     id INT ,
@@ -65,7 +66,8 @@ CREATE TABLE glyphparam (
     inktrap_r float,   
     idmaster INT,
     vdate    TIMESTAMP default now(),
-    primary key (idmaster,id,glyphName)
+    fontsource ENUM('A', 'B'),
+    primary key (idmaster,id,glyphName,fontsource)
 );
 CREATE TABLE groupparam (
     groupname varchar(10), 
