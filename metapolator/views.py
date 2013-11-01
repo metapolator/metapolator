@@ -99,9 +99,9 @@ class Metap(app.page):
         return render.metap(posts, master, fontsource, webglyph)
 
 
-class SettingsRest(app.page):
+class SettingsRestUpdate(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/'
+    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/update/'
 
     def POST(self, name, glyphid):
         if not is_loggedin():
@@ -111,7 +111,34 @@ class SettingsRest(app.page):
         if not master:
             return web.notfound()
 
-        x = web.input(create='', update='', idglobal='', idlocal='')
+        x = web.input(update='', idglobal='', idlocal='')
+
+        if x['update'] == 'a':
+            model.Master.update(session.user, master.idmaster,
+                                idlocalA=x.idlocal)
+        if x['update'] == 'b':
+            model.Master.update(session.user, master.idmaster,
+                                idlocalB=x.idlocal)
+        if x['update'] == 'g':
+            model.Master.update(session.user, master.idmaster,
+                                idglobal=x.idglobal)
+
+        raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
+
+
+class SettingsRestCreate(app.page):
+
+    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/create/'
+
+    def POST(self, name, glyphid):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        master = model.Master.get_by_name(name, session.user)
+        if not master:
+            return web.notfound()
+
+        x = web.input(create='')
         if x['create'] == 'a':
             newid = model.LocalParam.insert(user_id=session.user)
             model.Master.update(session.user, master.idmaster, idlocalA=newid)
@@ -123,16 +150,6 @@ class SettingsRest(app.page):
         if x['create'] == 'g':
             newid = model.GlobalParam.insert(user_id=session.user)
             model.Master.update(session.user, master.idmaster, idglobal=newid)
-
-        if x['update'] == 'a':
-            model.Master.update(session.user, master.idmaster,
-                                idlocalA=x.idlocal)
-        if x['update'] == 'b':
-            model.Master.update(session.user, master.idmaster,
-                                idlocalB=x.idlocal)
-        if x['update'] == 'g':
-            model.Master.update(session.user, master.idmaster,
-                                idglobal=x.idglobal)
 
         raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
