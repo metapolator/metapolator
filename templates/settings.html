@@ -39,8 +39,10 @@ Project $master.FontName
             </select>
             <input type="submit" >
         </form>
-
+        
+        <form action="" method="post">
         $:localparamform_a.render()
+        </form>
         <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
@@ -64,7 +66,9 @@ Project $master.FontName
             <input type="submit" >
         </form>
 
+        <form action="" method="post">
         $:globalparamform.render()
+        </form>
 
         <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>
@@ -90,7 +94,9 @@ Project $master.FontName
             <input type="submit" >
         </form>
 
+        <form action="" method="post">
         $:localparamform_b.render()
+        </form>
 
         <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
     </div>

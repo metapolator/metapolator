@@ -121,11 +121,15 @@ class Settings(app.page):
 
         localparamform_a = LocalParamForm()
         localA = model.get_localparam(master.idlocalA)
-        localparamform_a.fill(localA or {})
+        d = dict(localA)
+        d.update({'ab_source': 'a'})
+        localparamform_a.fill(d)
 
         localparamform_b = LocalParamForm()
         localB = model.get_localparam(master.idlocalB)
-        localparamform_b.fill(localB or {})
+        d = dict(localB)
+        d.update({'ab_source': 'b'})
+        localparamform_b.fill(d)
 
         localparameters = list(model.get_localparams())
 
@@ -139,36 +143,44 @@ class Settings(app.page):
         if not master:
             return web.notfound()
 
-        x = web.input(create='', update='', idlocal=None, idglobal=None)
-        if x.create == 'a' and 'idlocal' in x and x.idlocal:
+        x = web.input(create='')
+        if x.create == 'a':
             newid = model.LocalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.id, idlocalA=newid)
+            model.Master.update(session.user, master.idmaster, idlocalA=newid)
 
-        if x.create == 'b' and 'idlocal' in x and x.idlocal:
+        if x.create == 'b':
             newid = model.LocalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.id, idlocalB=newid)
+            model.Master.update(session.user, master.idmaster, idlocalB=newid)
 
-        if x.create == 'g' and 'idglobal' in x and x.idglobal:
+        if x.create == 'g':
             newid = model.GlobalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.idmaster,
-                                idglobal=int(x.idglobal))
-
-        if x['update'] == 'a' and 'idlocal' in x and x.idlocal:
-            model.Master.update(session.user, master.idmaster,
-                                idlocalA=int(x.idlocal))
-
-        if x['update'] == 'b' and 'idlocal' in x and x.idlocal:
-            model.Master.update(session.user, master.idmaster,
-                                idlocalB=int(x.idlocal))
-
-        if x['update'] == 'g' and 'idglobal' in x and x.idglobal:
-            model.Master.update(session.user, master.idmaster,
-                                idglobal=int(x.idglobal))
+            model.Master.update(session.user, master.idmaster, idglobal=newid)
 
         master = model.Master.select_one(session.user, master.idmaster)
-        if model.writeGlobalParam(master):
-            makefont(working_dir(), master)
 
+        form = LocalParamForm()
+        if 'ab_source' in form.d and form.validates():
+            if form.d.ab_source == 'a':
+                idlocal = master.idlocalA
+            else:
+                idlocal = master.idlocalB
+            model.update_localparam(idlocal, form.d.px, form.d.width,
+                                    form.d.space, form.d.xheight, form.d.capital,
+                                    form.d.boxheight, form.d.ascender, form.d.descender,
+                                    form.d.inktrap, form.d.stemcut, form.d.skeleton,
+                                    form.d.superness, form.d.over)
+            master = model.Master.select_one(session.user, master.idmaster)
+            if model.writeGlobalParam(master):
+                makefont(working_dir(), master)
+            raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
+
+        formg = GlobalParamForm()
+        if formg.validates():
+            model.update_globalparam(master.idglobal, formg.d.metapolation, formg.d.fontsize,
+                                     formg.d.mean, formg.d.cap, formg.d.ascl,
+                                     formg.d.des, formg.d.box)
+            if model.writeGlobalParam(master):
+                makefont(working_dir(), master)
         raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
 
