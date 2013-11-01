@@ -187,6 +187,9 @@ Project $master.FontName
                   currentSegment.selected = true;
               }
           }
+          path.onMouseUp = function(event) {
+            mode = type = currentSegment = null;
+          }
       }
   }
 
