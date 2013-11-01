@@ -16,8 +16,8 @@ ALTER TABLE master ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (u
 ALTER TABLE globalparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
 ALTER TABLE localparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
 
-ALTER TABLE glyphoutline DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, id, glyphName, user_id);
-ALTER TABLE glyphparam DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, id, glyphName, user_id);
+ALTER TABLE glyphoutline DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, id, glyphName, user_id, fontsource);
+ALTER TABLE glyphparam DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, id, glyphName, user_id, fontsource);
 ALTER TABLE groupparam DROP PRIMARY KEY, ADD PRIMARY KEY (idmaster, groupname, user_id);
 
 CREATE TABLE users (
