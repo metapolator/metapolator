@@ -492,10 +492,6 @@ def putFont(master, glyphid, loadoption=0):
     putFontG(glyphid, glyphsourceA, master.idmaster, 'A', loadoption)
     putFontG(glyphid, glyphsourceB, master.idmaster, 'B', loadoption)
 
-    # cFont.fontpath = "fonts/" + str(master.idmaster) + "/"
-    # idworks = cFont.idwork
-    # cFont.idwork = idworks
-
 
 def gidmast(idwork):
     if idwork == '0':
