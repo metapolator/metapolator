@@ -129,19 +129,16 @@ Project $master.FontName
 
     return new Point(nx, ny);
   }
-
   var currentSegment, mode, type;
-
   var edges = EDGE_JSON.edges;
   var pointcounter = 1;
-  for (var i = 0; i < edges.length; i++) {
+  for (var i = 0; i < edges.length; i++) {   
       for (var j = 0; j < edges[i].contours.length; j++) {
           var path = new Path();
           var contours = edges[i].contours[j];
           for (var k = 0; k < contours.length; k++) { // contours.length
               contour = contours[k];
               console.log(contour);
-
               var point = getPoint(Number(contour.x), 500 - Number(contour.y));
               var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
                                        Number(contour.y) - Number(contour.controls[0].y));
@@ -167,22 +164,16 @@ Project $master.FontName
               center: new Point(306.0, 714- 419.0),
               radius: 10,
               fillColor: 'red', 
-
           });
-
           var box = new Path.Rectangle(new Point(50, 50), new Size(50, 50));
               box.style = {
                   strokeColor: 'red',
                   strokeWidth: '5'
               };
-
           function onFrame(event) {
-    // Each frame, rotate the copy by 1 degree:
               box.rotate(1);
-          }
-             
+          }             
           var path;
-// controlls on          var types = ['point', 'handleIn', 'handleOut'];
           var types = ['point'];
           function findHandle(point) {
               for (var i = 0, l = path.segments.length; i < l; i++) {
@@ -203,7 +194,6 @@ Project $master.FontName
               }
               return null;
           }
-
           var currentSegment, mode, type;
           function onMouseDown(event) {
               if (currentSegment)
@@ -221,7 +211,6 @@ Project $master.FontName
                           path.selected = true; 
                       }             
                   }
-            
                   if (mode != 'close') {
                       mode = currentSegment ? 'move' : 'add';
                       if (!currentSegment)
@@ -229,7 +218,6 @@ Project $master.FontName
                           box.position = event.point;                               
                   }
           }
-
           function onMouseDrag(event) {
               if (mode == 'move' && type == 'point') {
                   currentSegment.point = event.point;
@@ -241,7 +229,10 @@ Project $master.FontName
                   currentSegment.handleIn += delta;
                   currentSegment.handleOut -= delta;
               }
-          }
+          } 
+      }  
+  }         
+
 
 </script>
 
