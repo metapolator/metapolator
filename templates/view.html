@@ -277,9 +277,8 @@ Project $master.FontName
                   mode = currentSegment ? 'move' : 'add';
                   if (currentSegment) {
                     currentSegment.point = event.point;
+                    box.position = event.point;
                   }
-                  box.position = event.point;               
-                  
               }
           }
 
