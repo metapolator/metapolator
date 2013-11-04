@@ -114,16 +114,16 @@ Project $master.FontName
                   currentSegment.selected = false;
               mode = type = currentSegment = null;
 
-              var result = findHandle(path, event.point);
+              var result = findHandle(this, event.point);
               
               if (result) {
                   currentSegment = result.segment;
                   type = result.type;
-                  if (path.segments.length > 1 && result.type == 'point'
+                  if (this.segments.length > 1 && result.type == 'point'
                         && result.segment.index == 0) {
                       mode = 'close';
-                      path.closed = true;
-                      path.selected = true;
+                      this.closed = true;
+                      this.selected = true;
                   }
               }
 
@@ -135,6 +135,10 @@ Project $master.FontName
                   }
                   
               }
+          }
+
+          path.onMouseUp = function(event) {
+            currentSegment = null;
           }
 
           function onMouseDrag(event) {
@@ -255,21 +259,26 @@ Project $master.FontName
           });
 
           var currentSegment, mode, type;
+
+          path.onMouseUp = function(event) {
+            currentSegment = null;
+          }
+          
           path.onMouseDown = function(event) {
               if (currentSegment)
                   currentSegment.selected = false;
               mode = type = currentSegment = null;
 
-              var result = findHandle(path, event.point);
+              var result = findHandle(this, event.point);
               
               if (result) {
                   currentSegment = result.segment;
                   type = result.type;
-                  if (path.segments.length > 1 && result.type == 'point'
+                  if (this.segments.length > 1 && result.type == 'point'
                         && result.segment.index == 0) {
                       mode = 'close';
-                      path.closed = true;
-                      path.selected = true;
+                      this.closed = true;
+                      this.selected = true;
                   }
               }
 
