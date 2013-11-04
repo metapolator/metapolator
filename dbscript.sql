@@ -15,15 +15,19 @@ CREATE TABLE glyph (
 );
 CREATE TABLE glyphoutline (
     id INT ,
+    idmaster INT,
     glyphName VARCHAR(3),
+    fontsource ENUM('A', 'B'),
     PointNr VARCHAR(4),
     x integer,
     y integer, 
-    contrp integer default 0,
-    idmaster INT,
+    vector_xIn int(11),
+    vector_yIn int(11),
+    vector_xOut int(11),
+    vector_yOut int(11),
+    segment int(11),
     pip INT,
     vdate    TIMESTAMP default now(),
-    fontsource ENUM('A', 'B'),
     primary key (idmaster,id,glyphName,fontsource)
 );
 CREATE TABLE glyphparam (

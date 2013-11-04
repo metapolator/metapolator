@@ -24,7 +24,6 @@ db = web.database(dbn='mysql', db='blog',
 
 
 def xxmlat(s, dbob, sattr, val, iro):
-    print sattr, '=', dbob
     if dbob is not None:
         if s.get(sattr):
             del s.attrib[sattr]
@@ -47,8 +46,16 @@ def xxmlat(s, dbob, sattr, val, iro):
             del s.attrib[sattr]
 
 
-def xxmrlat(idmaster, fontsource, glyphid, inum, s, sattr):
+def xxmrlat(idmaster, fontsource, glyphid, inum, s):
+    sattr = ['groupname', 'startp', 'doubledash', 'tripledash',
+             'superleft', 'superright', 'leftp', 'rightp', 'downp', 'upp',
+             'dir', 'tension', 'tensionand', 'cycle', 'penshifted',
+             'pointshifted', 'angle', 'penwidth', 'overx', 'overbase',
+             'overcap', 'overasc', 'overdesc', 'ascpoint', 'descpoint',
+             'stemcutter', 'stemshift', 'inktrap_l', 'inktrap_r']
+
     ids = " and idmaster="+'"'+str(idmaster)+'"'
+
     cc = s.attrib
     for item in cc:
         if item in sattr:
@@ -62,9 +69,9 @@ def xxmrlat(idmaster, fontsource, glyphid, inum, s, sattr):
 class Model(object):
 
     @classmethod
-    def db_select(cls, where=None, vars={}, what='*', order=None):
+    def db_select(cls, where=None, vars={}, what='*', order=None, group=None):
         return db.select(cls.__table__, what=what, where=where,
-                         vars=vars, order=order)
+                         vars=vars, order=order, group=group)
 
     @classmethod
     def db_delete(cls, where=None, vars={}, what='*', order=None):
@@ -281,7 +288,6 @@ class Master(Model):
 
     @staticmethod
     def get_fonts_directory(master, ab_source=None):
-        print master
         fonts_directory = op.join(working_dir(), 'fonts', str(master.idmaster))
         if ab_source.lower() == 'a':
             return op.join(fonts_directory, master.FontNameA)
@@ -336,6 +342,68 @@ class LocalParam(Model):
                       **kwargs)
 
 
+def add_segment(segment, master, ab_source, glyphid, segmentnumber):
+    p = GlyphParam.db_select_first(where='user_id=$user and fontsource=$source'
+                                         ' and idmaster=$idmaster',
+                                   vars=dict(user=session.user,
+                                             source=ab_source.upper(),
+                                             idmaster=master.idmaster),
+                                   order='id desc')
+    pointnumber = (p and p.id + 1) or 1
+
+    GlyphParam.insert(user_id=session.user, id=pointnumber,
+                      GlyphName=glyphid,
+                      idmaster=master.idmaster,
+                      fontsource=ab_source.upper())
+
+    GlyphOutline.insert(id=pointnumber,
+                        glyphName=glyphid,
+                        x=segment.get('x'),
+                        y=segment.get('y'),
+                        vector_xIn=segment['controls'][0].get('x'),
+                        vector_yIn=segment['controls'][0].get('y'),
+                        vector_xOut=segment['controls'][1].get('x'),
+                        vector_yOut=segment['controls'][1].get('y'),
+                        idmaster=master.idmaster,
+                        fontsource=ab_source.upper(),
+                        user_id=session.user,
+                        segment=segmentnumber)
+    return pointnumber
+
+
+def save_segment(segment, master, ab_source, glyphid, segmentnumber=1, pointnumber=None):
+    """
+    Save point coordinates and its in and out vector points.
+
+    >>> segment = {'y': '1372.00081', 'x': '633.00049',
+    ...            'controls': [{'y': '1347.09734', 'x': '965.15842'},
+    ...                         {'y': '1400.20862', 'x': '256.76935'}]}
+    >>> pointnumber = save_segment(segment, master, ab_source, glyphid, 1)
+    >>> GlyphOutline.get(master, ab_source, glyphid, pointnumber)
+    <GlyphOutline (633.00049, 1372.00081)>
+    >>> segment = {'y': '945.94874', 'x': '500.23445',
+    ...            'controls': [{'y': '1347.09734', 'x': '965.15842'},
+    ...                         {'y': '1400.20862', 'x': '256.76935'}]}
+    >>> result = save_segment(segment, master, ab_source, glyphid, 1, pointnumber)
+    >>> GlyphOutline.get(master, ab_source, glyphid, pointnumber)
+    <GlyphOutline (500.23445, 945.94874)>
+    """
+
+    if not pointnumber:
+        return add_segment(segment, master, ab_source, glyphid, segmentnumber)
+
+    GlyphOutline.update(session.user, pointnumber, glyphid,
+                        master.idmaster, ab_source.upper(),
+                        x=segment.get('x'),
+                        y=segment.get('y'),
+                        vector_xIn=segment['controls'][0].get('x'),
+                        vector_yIn=segment['controls'][0].get('y'),
+                        vector_xOut=segment['controls'][1].get('x'),
+                        vector_yOut=segment['controls'][1].get('y'),
+                        segment=segmentnumber)
+    return pointnumber
+
+
 def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
     #  Read one glyph from xml file with glif extension
     #  and put the data into db
@@ -364,12 +432,6 @@ def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
     #- Export All Glyphs x and y coordinates and parameter
     #
     #
-    paramattr = ['groupname', 'startp', 'doubledash', 'tripledash',
-                 'superleft', 'superright', 'leftp', 'rightp', 'downp', 'upp',
-                 'dir', 'tension', 'tensionand', 'cycle', 'penshifted',
-                 'pointshifted', 'angle', 'penwidth', 'overx', 'overbase',
-                 'overcap', 'overasc', 'overdesc', 'ascpoint', 'descpoint',
-                 'stemcutter', 'stemshift', 'inktrap_l', 'inktrap_r']
 
     xmldoc = etree.parse(glyphsource)
     outline = xmldoc.find("outline")
@@ -431,7 +493,6 @@ def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
 
         #  put data into db
         inum = 0
-        strg = ""
         for itemlist in items:
             for s in itemlist:
                 inum = inum + 1
@@ -447,7 +508,7 @@ def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
                                       PointName=nameval)
                     #  find  all parameter and save it in db
                     # add glyphparameters here:
-                    xxmrlat(idmaster, ab_source, glyphName, inum, s, paramattr)
+                    xxmrlat(idmaster, ab_source, glyphName, inum, s)
                 else:
                     nameval = ""
                     startp = 0

@@ -224,20 +224,61 @@ class Settings(app.page):
         raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
 
+def get_edges_json(log_filename, glyphid=None):
+    result = {'edges': []}
+    try:
+        fp = open(op.join(working_dir(), log_filename))
+        content = fp.read()
+        fp.close()
+        return get_json(content, glyphid)
+    except (IOError, OSError):
+        pass
+    return result
+
+
+def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
+    segments = model.GlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id'
+                                                  ' and fontsource=$fontsource and user_id=$user',
+                                            vars=dict(idmaster=master.idmaster, id=glyphid,
+                                                      fontsource=ab_source, user=userid),
+                                            what='segment',
+                                            group='segment')
+    result = {'edges': []}
+    contours = []
+    x_min = 0
+    y_min = 0
+    x_max = 0
+    y_max = 0
+    for segment in segments:
+        points = model.GlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id and segment=$segment'
+                                                    ' and fontsource=$fontsource and user_id=$user',
+                                              vars=dict(idmaster=master.idmaster, id=glyphid,
+                                                        fontsource=ab_source, user=userid,
+                                                        segment=segment['segment']),
+                                              order='id asc')
+        _contours = []
+        for point in points:
+            _contours.append({'x': point.x, 'y': point.y,
+                              'controls': [{'x': point.vector_xIn, 'y': point.vector_yIn},
+                                           {'x': point.vector_xOut, 'y': point.vector_yOut}]})
+            x_min = min(x_min, float(point.x), float(point.vector_xOut), float(point.vector_xIn))
+            y_min = min(y_min, float(point.y), float(point.vector_yOut), float(point.vector_yIn))
+            x_max = max(x_max, float(point.x), float(point.vector_xOut), float(point.vector_xIn))
+            y_max = max(y_max, float(point.y), float(point.vector_yOut), float(point.vector_yIn))
+        contours.append(_contours)
+
+    result['edges'].append({'glyph': glyphid, 'contours': contours})
+    width = abs(x_max) + abs(x_min)
+    height = abs(y_max) + abs(y_min)
+    result.update({'width': width, 'height': height, 'total_edges': 1})
+
+    import simplejson
+    return simplejson.dumps(result)
+
+
 class View(app.page):
 
     path = '/view/([-.\w\d]+)/(\d+)/'
-
-    def get_edges_json(self, log_filename, glyphid):
-        result = {'edges': []}
-        try:
-            fp = open(op.join(working_dir(), log_filename))
-            content = fp.read()
-            fp.close()
-            return get_json(content, glyphid)
-        except (IOError, OSError):
-            pass
-        return result
 
     def GET(self, name, glyphid):
         """ View single post """
@@ -248,15 +289,16 @@ class View(app.page):
         if not master:
             return web.notfound()
 
-        glyph = model.GlyphOutline.db_select_first(where='idmaster=$idmaster and glyphName=$id',
-                                                   vars=dict(idmaster=master.idmaster, id=glyphid))
+        points = model.GlyphOutline.db_select(where='user_id=$userid and idmaster=$idmaster and glyphName=$id',
+                                              vars=dict(idmaster=master.idmaster, id=glyphid, userid=session.user),
+                                              order='id asc')
 
-        if not glyph:
-            model.putFont(master, glyphid, loadoption=1)
+        if not points:
+            return web.notfound()
 
-        A_glyphjson = self.get_edges_json(u'%sA.log' % master.FontName, glyphid)
-        B_glyphjson = self.get_edges_json(u'%sB.log' % master.FontName, glyphid)
-        M_glyphjson = self.get_edges_json(u'%s.log' % master.FontName, glyphid)
+        A_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='A')
+        B_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='B')
+        M_glyphjson = get_edges_json(u'%s.log' % master.FontName, glyphid)
 
         return render.view(master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson)
 
@@ -719,10 +761,25 @@ class CreateProject(app.page):
 
                 master = model.get_master(newid)
                 makefont(working_dir(), master)
+
+                glyphjson = get_edges_json(u'%sA.log' % master.FontName)
+                for glyph in glyphjson['edges']:
+                    for segmentnumber, points in enumerate(glyph['contours']):
+                        for point in points:
+                            model.save_segment(point, master, 'A', glyph['glyph'], segmentnumber)
+
+                glyphjson = get_edges_json(u'%sB.log' % master.FontName)
+                for glyph in glyphjson['edges']:
+                    for segmentnumber, points in enumerate(glyph['contours']):
+                        for point in points:
+                            model.save_segment(point, master, 'B', glyph['glyph'], segmentnumber)
+
             except (zipfile.BadZipfile, OSError, IOError):
                 if newid:
                     fontpath = working_dir('fonts/%s' % newid)
                     model.Master.delete(where='idmaster=$id', vars={'id': newid})
+                    model.GlyphOutline.delete(where='idmaster=$id', vars={'id': newid})
+                    model.GlyphParam.delete(where='idmaster=$id', vars={'id': newid})
                     shutil.rmtree(fontpath)
             return seeother('/')
 
