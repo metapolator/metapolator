@@ -131,8 +131,8 @@ Project $master.FontName
                   mode = currentSegment ? 'move' : 'add';
                   if (currentSegment) {
                     currentSegment.point = event.point;
+                    box.position = event.point;
                   }
-                  box.position = event.point;               
                   
               }
           }
@@ -214,7 +214,7 @@ Project $master.FontName
 
     return new Point(nx, ny);
   }
-  
+
   var types = ['point', 'handleIn', 'handleOut'];
 
   var edges = EDGE_JSON.edges;
