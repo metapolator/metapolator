@@ -138,12 +138,14 @@ class GlyphOutline(Model):
                                              glyphName=glyphName))
 
     @classmethod
-    def update(cls, user, id, glyphName, idmaster, fontsource, **kwargs):
-        cls.db_update(where=('id=$id and GlyphName=$glyphName'
+    def update(cls, user, id, glyphName, idmaster, fontsource, segment, **kwargs):
+        cls.db_update(where=('PointNr=$id and GlyphName=$glyphName'
                              ' and idmaster=$idmaster'
-                             ' and user_id=$user and fontsource=$source'),
+                             ' and user_id=$user and fontsource=$source'
+                             ' and segment=$segment'),
                       vars=dict(id=id, user=user, glyphName=glyphName,
-                                idmaster=idmaster, source=fontsource),
+                                idmaster=idmaster, source=fontsource,
+                                segment=segment),
                       **kwargs)
 
     @classmethod
@@ -343,20 +345,37 @@ class LocalParam(Model):
 
 
 def add_segment(segment, master, ab_source, glyphid, segmentnumber):
+    p = GlyphOutline.db_select_first(where='user_id=$user and fontsource=$source'
+                                           ' and idmaster=$idmaster and glyphName=$glyph'
+                                           ' and segment=$segment',
+                                     vars=dict(user=session.user,
+                                               source=ab_source.upper(),
+                                               idmaster=master.idmaster,
+                                               glyph=glyphid,
+                                               segment=segmentnumber),
+                                     what='PointNr',
+                                     order='PointNr desc')
+    try:
+        PointNr = (not p and -1) or int(p.PointNr)
+    except TypeError:
+        PointNr = -1
+
     p = GlyphParam.db_select_first(where='user_id=$user and fontsource=$source'
                                          ' and idmaster=$idmaster',
                                    vars=dict(user=session.user,
                                              source=ab_source.upper(),
                                              idmaster=master.idmaster),
+                                   what='id',
                                    order='id desc')
-    pointnumber = (p and p.id + 1) or 1
+    id = (p and (p.id or 0) + 1) or 1
 
-    GlyphParam.insert(user_id=session.user, id=pointnumber,
+    GlyphParam.insert(user_id=session.user, id=id,
                       GlyphName=glyphid,
                       idmaster=master.idmaster,
                       fontsource=ab_source.upper())
 
-    GlyphOutline.insert(id=pointnumber,
+    GlyphOutline.insert(id=id,
+                        PointNr=PointNr + 1,
                         glyphName=glyphid,
                         x=segment.get('x'),
                         y=segment.get('y'),
@@ -368,7 +387,7 @@ def add_segment(segment, master, ab_source, glyphid, segmentnumber):
                         fontsource=ab_source.upper(),
                         user_id=session.user,
                         segment=segmentnumber)
-    return pointnumber
+    return PointNr
 
 
 def save_segment(segment, master, ab_source, glyphid, segmentnumber=1, pointnumber=None):

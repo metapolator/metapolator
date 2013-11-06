@@ -242,7 +242,8 @@ def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
                                             vars=dict(idmaster=master.idmaster, id=glyphid,
                                                       fontsource=ab_source, user=userid),
                                             what='segment',
-                                            group='segment')
+                                            group='segment',
+                                            order='segment asc')
     result = {'edges': []}
     contours = []
     x_min = 0
@@ -254,8 +255,7 @@ def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
                                                     ' and fontsource=$fontsource and user_id=$user',
                                               vars=dict(idmaster=master.idmaster, id=glyphid,
                                                         fontsource=ab_source, user=userid,
-                                                        segment=segment['segment']),
-                                              order='id asc')
+                                                        segment=segment['segment']))
         _contours = []
         for point in points:
             _contours.append({'x': point.x, 'y': point.y,
@@ -300,9 +300,40 @@ class View(app.page):
         B_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='B')
         M_glyphjson = get_edges_json(u'%s.log' % master.FontName, glyphid)
 
+        # glyphjson = get_edges_json(u'%sA.log' % master.FontName)
+        # for glyph in glyphjson['edges']:
+        #     for segmentnumber, points in enumerate(glyph['contours']):
+        #         for point in points:
+        #             model.save_segment(point, master, 'A', glyph['glyph'], segmentnumber)
+
+        # glyphjson = get_edges_json(u'%sB.log' % master.FontName)
+        # for glyph in glyphjson['edges']:
+        #     for segmentnumber, points in enumerate(glyph['contours']):
+        #         for point in points:
+        #             model.save_segment(point, master, 'B', glyph['glyph'], segmentnumber)
+
         return render.view(master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson)
 
-    def POST(self, id):
+    def POST(self, name, glyphid):
+        if not is_loggedin():
+            return web.notfound()
+
+        master = model.Master.get_by_name(name, session.user)
+        if not master:
+            return web.notfound()
+
+        x = web.input(pointid='', source='',
+                      x='', y='', xIn='', yIn='', xOut='', yOut='',
+                      segment='')
+
+        model.GlyphOutline.update(session.user, x.pointid, glyphid, master.idmaster,
+                                  x.source.upper(), x.segment,
+                                  x=x.x, y=x.y, vector_xIn=x.xIn, vector_xOut=x.xOut,
+                                  vector_yIn=x.yIn, vector_yOut=x.yOut)
+        return ''
+
+
+
         if not is_loggedin():
             raise seeother('/login')
         form = PointForm()

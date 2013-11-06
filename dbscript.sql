@@ -14,7 +14,7 @@ CREATE TABLE glyph (
     primary key (idglyph)
 );
 CREATE TABLE glyphoutline (
-    id INT ,
+    id INT,
     idmaster INT,
     glyphName VARCHAR(3),
     fontsource ENUM('A', 'B'),
@@ -31,7 +31,7 @@ CREATE TABLE glyphoutline (
     primary key (idmaster,id,glyphName,fontsource)
 );
 CREATE TABLE glyphparam (
-    id INT ,
+    id INT,
     glyphName VARCHAR(3),
     PointName VARCHAR(5),
     groupname VARCHAR(10),

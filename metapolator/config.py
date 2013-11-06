@@ -14,7 +14,7 @@ except ImportError:
 
 
 ### Url mappings
-web.config.debug = False
+web.config.debug = True
 
 app = web.auto_application()
 
