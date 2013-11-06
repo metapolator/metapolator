@@ -429,33 +429,42 @@ function setText(point) {
 
   var EDGE_JSON = $:B_glyphjson;
 
-  function getPoint(x, y) {
+  function getPoint(x, y, i) {
     width = EDGE_JSON.width;
     height = EDGE_JSON.height;
 
+    var r = resize(x, y, EDGE_JSON.width, EDGE_JSON.height,
+                   scope.view.size.width - 100, scope.view.size.height - 100)
+    return new Point(r.x, r.y);
+  }
+
+  function resize(x, y, width, height, newwidth, newheight) {
     ratio = width / height;
     if (width > height) {
-      w = scope.view.size.width - 100;
+      w = newwidth;
       h = w / ratio;
     } else {
-      h = scope.view.size.height - 100;
+      h = newheight;
       w = h * ratio;
     }
     nx = w * x / width;
     ny = h * y / height;
-
-    return new Point(nx, ny);
+    return {x: nx, y: ny}
   }
 
+  var types = ['point', 'handleIn', 'handleOut'];
+
   var edges = EDGE_JSON.edges;
+  var pathes = [];
   for (var i = 0; i < edges.length; i++) {
       for (var j = 0; j < edges[i].contours.length; j++) {
           var path = new Path();
           var contours = edges[i].contours[j];
+          console.log(j + ' segment');
           for (var k = 0; k < contours.length; k++) { // contours.length
               contour = contours[k];
-
-              var point = getPoint(Number(contour.x), 500 - Number(contour.y));
+              console.log(k + ' (' + Number(contour.x) + ',' + Number(contour.y) + ')');
+              var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
               var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
                                        Number(contour.y) - Number(contour.controls[0].y));
               var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
@@ -475,6 +484,136 @@ function setText(point) {
               brightness: 1,
               alpha: 0.5
           };
+          pathes.push(path);
       }
   }
-  </script>
+
+  var circle = new Path.Circle({
+    center: new Point(306.0, 714- 419.0),
+    radius: 10,
+    fillColor: 'red', 
+  });
+
+  var currentSegment, mode, type, pointnumber, pathnumber;
+
+  function restore_original_coords(point) {
+    var r = resize(point.x, point.y, scope.view.size.width - 100, scope.view.size.height - 100,
+               EDGE_JSON.width, EDGE_JSON.height);
+    console.log('pointnr: ' + pointnumber + ', path: ' + pathnumber);
+    console.log(r.x + ', ' + (500 - r.y));
+    return r;
+  }
+
+  function onMouseUp(event) {
+    if (currentSegment) {
+      var x = currentSegment.point.x;
+      var y = currentSegment.point.y - 200;
+      var xycoord = restore_original_coords(new Point(x, y));
+
+      x = (currentSegment.point + currentSegment.handleIn).x;
+      y = (currentSegment.point + currentSegment.handleIn).y - 200;
+      var handleIn = restore_original_coords(new Point(x, y));
+
+      x = (currentSegment.point + currentSegment.handleOut).x;
+      y = (currentSegment.point + currentSegment.handleOut).y - 200;
+      var handleOut = restore_original_coords(new Point(x, y));
+
+      jQuery.post('', {pointid: pointnumber,
+                       x: xycoord.x,
+                       y: 500 - xycoord.y,
+                       xIn: handleIn.x,
+                       yIn: 500 - handleIn.y,
+                       xOut: handleOut.x,
+                       yOut: 500 - handleOut.y,
+                       source: 'b',
+                       segment: pathnumber});
+    }
+    currentSegment = null;
+  }
+  
+  function onMouseDown(event) {
+      mode = type = currentSegment = null;
+      var result = findHandle(event.point);
+      
+      if (!result) 
+        return;
+
+
+      currentSegment = result.segment;
+      type = result.type;
+      path = result.path;
+      pointnumber = result.pointnumber;
+      pathnumber = result.pathnumber;
+      
+      if (path.segments.length > 1 && result.type == 'point'
+            && result.segment.index == 0) {
+          mode = 'close';
+          path.closed = true;
+          path.selected = true;
+      }
+      
+      if (mode != 'close') {
+          mode = currentSegment ? 'move' : 'add';
+          if (currentSegment) {
+            if (type != 'point') {
+              box.position = currentSegment.point + currentSegment[type];
+            }
+          }
+      }
+  }
+
+  function onMouseDrag(event) {
+      if (!currentSegment) {
+        return;
+      }
+      if (mode == 'move' && type == 'point') {
+          currentSegment.point = event.point;
+      } else if (mode != 'close') {
+        var delta = event.delta.clone();
+        if (type == 'handleOut' || mode == 'add')
+            delta = -delta;
+        currentSegment.handleIn += delta;
+        currentSegment.handleOut -= delta;
+      }
+      // console.log(pointnumber);
+      // console.log(currentSegment.point);
+      box.position = type == 'point' ? currentSegment.point : currentSegment.point + currentSegment[type];
+  }
+
+  var box = new Path.Rectangle(new Point(50, 50), new Size(50, 50));
+  box.style = {
+      strokeColor: 'red',
+      strokeWidth: '5'
+  };
+
+  function onFrame(event) {
+    // Each frame, rotate the copy by 1 degree:
+    box.rotate(1);
+  } 
+
+  function findHandle(p) {
+    for (var k = 0; k < pathes.length; k++) {
+      var path = pathes[k];
+      for (var i = 0, l = path.segments.length; i < l; i++) {
+          for (var j = 0; j < 3; j++) {
+              var type = types[j];
+              var segment = path.segments[i];
+              var segmentPoint = type == 'point'
+                  ? segment.point
+                  : segment.point + segment[type];
+
+              if ((p - segmentPoint).length < 3) {
+                  return {
+                      type: type,
+                      segment: segment,
+                      path: path,
+                      pointnumber: i,
+                      pathnumber: k
+                  };
+              }
+          }
+      }
+    }
+    return null;
+  }
+</script>
