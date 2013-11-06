@@ -239,7 +239,7 @@ def get_edges_json(log_filename, glyphid=None):
 
 
 def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
-    segments = model.GlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id'
+    segments = model.DBGlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id'
                                                   ' and fontsource=$fontsource and user_id=$user',
                                             vars=dict(idmaster=master.idmaster, id=glyphid,
                                                       fontsource=ab_source, user=userid),
@@ -253,7 +253,7 @@ def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
     x_max = 0
     y_max = 0
     for segment in segments:
-        points = model.GlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id and segment=$segment'
+        points = model.DBGlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id and segment=$segment'
                                                     ' and fontsource=$fontsource and user_id=$user',
                                               vars=dict(idmaster=master.idmaster, id=glyphid,
                                                         fontsource=ab_source, user=userid,
@@ -291,7 +291,7 @@ class View(app.page):
         if not master:
             return web.notfound()
 
-        points = model.GlyphOutline.db_select(where='user_id=$userid and idmaster=$idmaster and glyphName=$id',
+        points = model.DBGlyphOutline.db_select(where='user_id=$userid and idmaster=$idmaster and glyphName=$id',
                                               vars=dict(idmaster=master.idmaster, id=glyphid, userid=session.user),
                                               order='id asc')
 
@@ -319,7 +319,7 @@ class View(app.page):
                       x='', y='', xIn='', yIn='', xOut='', yOut='',
                       segment='')
 
-        model.GlyphOutline.update(session.user, x.pointid, glyphid, master.idmaster,
+        model.DBGlyphOutline.update(session.user, x.pointid, glyphid, master.idmaster,
                                   x.source.upper(), x.segment,
                                   x=x.x, y=x.y, vector_xIn=x.xIn, vector_xOut=x.xOut,
                                   vector_yIn=x.yIn, vector_yOut=x.yOut)
@@ -747,7 +747,7 @@ class CreateProject(app.page):
                 if newid:
                     fontpath = working_dir('fonts/%s' % newid)
                     model.Master.delete(where='idmaster=$id', vars={'id': newid})
-                    model.GlyphOutline.delete(where='idmaster=$id', vars={'id': newid})
+                    model.DBGlyphOutline.delete(where='idmaster=$id', vars={'id': newid})
                     model.GlyphParam.delete(where='idmaster=$id', vars={'id': newid})
                     shutil.rmtree(fontpath)
             return seeother('/')

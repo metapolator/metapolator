@@ -22,24 +22,6 @@ from config import cFont, working_dir, session, buildfname, \
 db = web.database(dbn='mysql', db='blog',
                   user=DATABASE_USER, pw=DATABASE_PWD)
 
-from sqlalchemy.ext.declarative import declarative_base
-Base = declarative_base()
-
-from sqlalchemy import Column, Integer, String, Text, Enum
-
-
-class Glyph(Base):
-
-    __tablename__ = 'glyph'
-
-    id = Column(Integer, primary_key=True)
-    glyphName = Column(String(3), index=True)
-    width = Column(Integer)
-    unicode = Column(Text)
-    user_id = Column(Integer)
-    idmaster = Column(Integer, index=True)
-    fontsource = Column(Enum('A', 'B'), index=True)
-
 
 def xxmlat(s, dbob, sattr, val, iro):
     if dbob is not None:
@@ -113,7 +95,7 @@ class Model(object):
         return db.insert(cls.__table__, **kwargs)
 
 
-class GlyphOutline(Model):
+class DBGlyphOutline(Model):
 
     __table__ = 'glyphoutline'
 
@@ -174,7 +156,7 @@ class GlyphOutline(Model):
                                 idmaster=idmaster, source=fontsource))
 
 
-class VGlyphOutline(Model):
+class VDBGlyphOutline(Model):
 
     __table__ = 'vglyphoutline'
 
@@ -194,7 +176,7 @@ class VGlyphOutline(Model):
                                              idmaster=idmaster, user=user))
 
 
-class VGlyphOutlines(Model):
+class VDBGlyphOutlines(Model):
 
     __table__ = 'vglyphoutlines'
 
@@ -363,7 +345,7 @@ class LocalParam(Model):
 
 
 def add_segment(segment, master, ab_source, glyphid, segmentnumber):
-    p = GlyphOutline.db_select_first(where='user_id=$user and fontsource=$source'
+    p = DBGlyphOutline.db_select_first(where='user_id=$user and fontsource=$source'
                                            ' and idmaster=$idmaster and glyphName=$glyph'
                                            ' and segment=$segment',
                                      vars=dict(user=session.user,
@@ -392,7 +374,7 @@ def add_segment(segment, master, ab_source, glyphid, segmentnumber):
                       idmaster=master.idmaster,
                       fontsource=ab_source.upper())
 
-    GlyphOutline.insert(id=id,
+    DBGlyphOutline.insert(id=id,
                         PointNr=PointNr + 1,
                         glyphName=glyphid,
                         x=segment.get('x'),
@@ -416,20 +398,20 @@ def save_segment(segment, master, ab_source, glyphid, segmentnumber=1, pointnumb
     ...            'controls': [{'y': '1347.09734', 'x': '965.15842'},
     ...                         {'y': '1400.20862', 'x': '256.76935'}]}
     >>> pointnumber = save_segment(segment, master, ab_source, glyphid, 1)
-    >>> GlyphOutline.get(master, ab_source, glyphid, pointnumber)
-    <GlyphOutline (633.00049, 1372.00081)>
+    >>> DBGlyphOutline.get(master, ab_source, glyphid, pointnumber)
+    <DBGlyphOutline (633.00049, 1372.00081)>
     >>> segment = {'y': '945.94874', 'x': '500.23445',
     ...            'controls': [{'y': '1347.09734', 'x': '965.15842'},
     ...                         {'y': '1400.20862', 'x': '256.76935'}]}
     >>> result = save_segment(segment, master, ab_source, glyphid, 1, pointnumber)
-    >>> GlyphOutline.get(master, ab_source, glyphid, pointnumber)
-    <GlyphOutline (500.23445, 945.94874)>
+    >>> DBGlyphOutline.get(master, ab_source, glyphid, pointnumber)
+    <DBGlyphOutline (500.23445, 945.94874)>
     """
 
     if not pointnumber:
         return add_segment(segment, master, ab_source, glyphid, segmentnumber)
 
-    GlyphOutline.update(session.user, pointnumber, glyphid,
+    DBGlyphOutline.update(session.user, pointnumber, glyphid,
                         master.idmaster, ab_source.upper(),
                         x=segment.get('x'),
                         y=segment.get('y'),
@@ -475,11 +457,11 @@ def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
     items = outline
     #
     if loadoption == 0:
-        GlyphOutline.delete(session.user, glyphName,
+        DBGlyphOutline.delete(session.user, glyphName,
                             idmaster, ab_source.upper())
 
     if loadoption == 1:
-        GlyphOutline.delete(session.user, glyphName, idmaster,
+        DBGlyphOutline.delete(session.user, glyphName, idmaster,
                             ab_source.upper())
         GlyphParam.delete(session.user, glyphName, idmaster,
                           ab_source.upper())
@@ -510,7 +492,7 @@ def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
                     mainpoint = 1
                 else:
                     mainpoint = 0
-                GlyphOutline.insert(id=inum,
+                DBGlyphOutline.insert(id=inum,
                                     glyphName=glyphName,
                                     PointNr=pointno,
                                     x=s.get('x'),
@@ -557,7 +539,7 @@ def putFontG(glyphName, glyphsource, idmaster, ab_source, loadoption=0):
                 else:
                     mainpoint = 0
                 #
-                GlyphOutline.insert(id=inum,
+                DBGlyphOutline.insert(id=inum,
                                     glyphName=glyphName,
                                     PointNr=pointno,
                                     x=s.get('x'),
@@ -602,7 +584,7 @@ def gidmast(idwork):
 def get_posts():
     idmaster = gidmast(cFont.idwork)
     glyphName = cFont.glyphunic
-    return list(VGlyphOutline.select(session.user, glyphName, idmaster))
+    return list(VDBGlyphOutline.select(session.user, glyphName, idmaster))
 
 
 def get_postspa():
@@ -614,13 +596,13 @@ def get_postspa():
 def get_post(id):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    return VGlyphOutline.select_one(session.user, id, glyphName, idmaster)
+    return VDBGlyphOutline.select_one(session.user, id, glyphName, idmaster)
 
 
 def get_postspip():
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    return GlyphOutline.select_pip_only(session.user, glyphName, idmaster)
+    return DBGlyphOutline.select_pip_only(session.user, glyphName, idmaster)
 
 
 def get_glyphparamid(glyphName, idmaster, nameval):
@@ -630,7 +612,7 @@ def get_glyphparamid(glyphName, idmaster, nameval):
 def get_glyphparam(id):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    return VGlyphOutlines.select_one(session.user, id, glyphName, idmaster)
+    return VDBGlyphOutlines.select_one(session.user, id, glyphName, idmaster)
 
 
 def get_groupparam(id):
@@ -647,13 +629,13 @@ def get_groupparam0(groupname):
 def update_post(id, x, y):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    GlyphOutline.update(session.user, id, glyphName, idmaster, x=x, y=y)
+    DBGlyphOutline.update(session.user, id, glyphName, idmaster, x=x, y=y)
 
 
 def update_postp0(id, x, y, contr):
     glyphName = cFont.glyphunic
     idmaster = gidmast(cFont.idwork)
-    GlyphOutline.update(session.user, id, glyphName, idmaster,
+    DBGlyphOutline.update(session.user, id, glyphName, idmaster,
                         x=x, y=y, pip=None, contrp=contr)
 
 
@@ -662,9 +644,9 @@ def update_postp(id, x, y, idpar):
     idmaster = gidmast(cFont.idwork)
 
     if x is None:
-        GlyphOutline.update(session.user, id, glyphName, idmaster, pip=idpar)
+        DBGlyphOutline.update(session.user, id, glyphName, idmaster, pip=idpar)
     else:
-        GlyphOutline.update(session.user, id, glyphName, idmaster,
+        DBGlyphOutline.update(session.user, id, glyphName, idmaster,
                             x=x, y=y, pip=idpar)
 
 
@@ -685,7 +667,7 @@ def update_glyphparamD(id, ap, bp):
     idmaster = gidmast(cFont.idwork)
     #
     #   get id from glyphoutline
-    lli = GlyphOutline.select_one_pip(session.user, id, glyphName, idmaster)
+    lli = DBGlyphOutline.select_one_pip(session.user, id, glyphName, idmaster)
     if not lli:
         idp = id
         update_postp(id, None, None, idp)
@@ -709,7 +691,7 @@ def update_glyphparam(id, a, b):
     idmaster = gidmast(cFont.idwork)
     #
     #   get id from glyphoutline
-    lli = GlyphOutline.select_one_pip(session.user, id, glyphName, idmaster)
+    lli = DBGlyphOutline.select_one_pip(session.user, id, glyphName, idmaster)
     if not lli:
         return
 
@@ -737,7 +719,7 @@ def update_glyphparamName(id, a):
     #
     #   get id from glyphoutline
 
-    lli = list(GlyphOutline.select_one_pip(session.user, id,
+    lli = list(DBGlyphOutline.select_one_pip(session.user, id,
                                            glyphName, idmaster))
     if not lli:
         return
@@ -772,7 +754,7 @@ def insert_glyphparam(idp, a):
             idpar = str(idpa)
             break
 
-    GlyphOutline.update(session.user, idp, glyphName, idmaster,
+    DBGlyphOutline.update(session.user, idp, glyphName, idmaster,
                         pip=idpar)
     try:
         GlyphParam.insert(id=idpar,
@@ -995,7 +977,7 @@ def writexml(master, ab_source=None):
         for s in itemlist:
             inum = inum + 1
 
-            db_row = VGlyphOutline.select_one(session.user, inum, glyphName, idmaster)
+            db_row = VDBGlyphOutline.select_one(session.user, inum, glyphName, idmaster)
             if not db_row:
                 continue
             s.attrib['pointNo'] = str(db_row.PointNr)
@@ -1008,7 +990,7 @@ def writexml(master, ab_source=None):
                     del s.attrib['name']
                 continue
 
-            db_rowpar = VGlyphOutlines.select_one(session.user, inum, glyphName, idmaster)
+            db_rowpar = VDBGlyphOutlines.select_one(session.user, inum, glyphName, idmaster)
             nameattr = sname
             if s.get('name'):
                 s.attrib['name'] = nameattr
@@ -1196,8 +1178,3 @@ def create_user(username, password, email):
     db.insert('users', username=username, password=pwhash,
               email=email, date_joined=web.SQLLiteral("NOW()"))
     return get_user_by_email(email)
-
-
-if __name__ == "__main__":
-    metadata = Base.metadata
-    metadata.create_all(engine)

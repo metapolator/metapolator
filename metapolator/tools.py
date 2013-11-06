@@ -8,6 +8,8 @@ import web
 from config import cFont, working_dir, buildfname, mf_filename, session
 from model import Master
 
+from models import Glyph
+
 
 def project_exists(master):
     mf_file1 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
@@ -115,11 +117,21 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            glyph = model.Glyph(glyphName=g, width=width,
-                                unicode=unicode, user_id=session.user,
-                                idmaster=master.idmaster,
-                                fontsource='B')
-            web.ctx.orm.add(glyph)
+            if not web.ctx.orm.query(Glyph).filter_by(glyphName=g,
+                                                      idmaster=master.idmaster,
+                                                      user_id=session.user,
+                                                      fontsource='A').count():
+                glyph = Glyph(glyphName=g, width=width,
+                              unicode=unicode, user_id=session.user,
+                              idmaster=master.idmaster,
+                              fontsource='A')
+                web.ctx.orm.add(glyph)
+            else:
+                query = web.ctx.orm.query(Glyph).filter_by(glyphName=g,
+                                                           idmaster=master.idmaster,
+                                                           user_id=session.user,
+                                                           fontsource='A')
+                query.update({'width': width, 'unicode': unicode})
 
     for ch1 in charlistb:
         glyphName, ext = buildfname(ch1)
@@ -136,11 +148,21 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            glyph = model.Glyph(glyphName=g, width=width,
-                                unicode=unicode, user_id=session.user,
-                                idmaster=master.idmaster,
-                                fontsource='B')
-            web.ctx.orm.add(glyph)
+            if not web.ctx.orm.query(Glyph).filter_by(glyphName=g,
+                                                      idmaster=master.idmaster,
+                                                      user_id=session.user,
+                                                      fontsource='B').count():
+                glyph = Glyph(glyphName=g, width=width,
+                              unicode=unicode, user_id=session.user,
+                              idmaster=master.idmaster,
+                              fontsource='B')
+                web.ctx.orm.add(glyph)
+            else:
+                query = web.ctx.orm.query(Glyph).filter_by(glyphName=g,
+                                                           idmaster=master.idmaster,
+                                                           user_id=session.user,
+                                                           fontsource='B')
+                query.update({'width': width, 'unicode': unicode})
     # putFont(master, glyphName, loadoption=1)
 
 
