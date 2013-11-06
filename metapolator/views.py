@@ -176,13 +176,17 @@ class Settings(app.page):
 
         localparamform_a = LocalParamForm()
         localA = model.get_localparam(master.idlocalA)
-        d = dict(localA)
+        d = dict()
+        if localA:
+            d.update(localA)
         d.update({'ab_source': 'a'})
         localparamform_a.fill(d)
 
         localparamform_b = LocalParamForm()
         localB = model.get_localparam(master.idlocalB)
-        d = dict(localB)
+        d = dict()
+        if localB:
+            d.update(localB)
         d.update({'ab_source': 'b'})
         localparamform_b.fill(d)
 
@@ -219,8 +223,6 @@ class Settings(app.page):
             model.update_globalparam(master.idglobal, formg.d.metapolation, formg.d.fontsize,
                                      formg.d.mean, formg.d.cap, formg.d.ascl,
                                      formg.d.des, formg.d.box)
-            if model.writeGlobalParam(master):
-                makefont(working_dir(), master)
         raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
 
 
@@ -300,19 +302,10 @@ class View(app.page):
         B_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='B')
         M_glyphjson = get_edges_json(u'%s.log' % master.FontName, glyphid)
 
-        # glyphjson = get_edges_json(u'%sA.log' % master.FontName)
-        # for glyph in glyphjson['edges']:
-        #     for segmentnumber, points in enumerate(glyph['contours']):
-        #         for point in points:
-        #             model.save_segment(point, master, 'A', glyph['glyph'], segmentnumber)
+        localparametersA = model.get_localparam(master.idlocalA)
+        localparametersB = model.get_localparam(master.idlocalB)
 
-        # glyphjson = get_edges_json(u'%sB.log' % master.FontName)
-        # for glyph in glyphjson['edges']:
-        #     for segmentnumber, points in enumerate(glyph['contours']):
-        #         for point in points:
-        #             model.save_segment(point, master, 'B', glyph['glyph'], segmentnumber)
-
-        return render.view(master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson)
+        return render.view(master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB)
 
     def POST(self, name, glyphid):
         if not is_loggedin():

@@ -1,4 +1,4 @@
-$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson)
+$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB)
 <title>
 Project $master.FontName
 </title>
@@ -13,8 +13,24 @@ Project $master.FontName
     <div class="well">
       <h4>Parameters Font A <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
 
-      $if not master.idlocalA:
+      $if not localparametersA:
         <div class="label label-danger">This font has not specified local parameters</div>
+      $else:
+        <div style="font-family: monospace;">
+          px: $localparametersA.px<br />
+          width: $localparametersA.width<br />
+          space: $localparametersA.space<br />
+          xheight: $localparametersA.xheight<br />
+          capital: $localparametersA.capital<br />
+          boxheight: $localparametersA.boxheight<br />
+          ascender: $localparametersA.ascender<br />
+          descender: $localparametersA.descender<br />
+          inktrap: $localparametersA.inktrap<br />
+          stemcut: $localparametersA.stemcut<br />
+          skeleton: $localparametersA.skeleton<br />
+          superness: $localparametersA.superness<br />
+          over: $localparametersA.over
+        </div>
     </div>
   </div>
 
@@ -33,8 +49,24 @@ Project $master.FontName
 
     <div class="well">
       <h4>Parameters Font B <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
-      $if not master.idlocalB:
+      $if not localparametersB:
         <div class="label label-danger">This font has not specified local parameters</div>
+      $else:
+        <div style="font-family: monospace;">
+          px: $localparametersB.px<br />
+          width: $localparametersB.width<br />
+          space: $localparametersB.space<br />
+          xheight: $localparametersB.xheight<br />
+          capital: $localparametersB.capital<br />
+          boxheight: $localparametersB.boxheight<br />
+          ascender: $localparametersB.ascender<br />
+          descender: $localparametersB.descender<br />
+          inktrap: $localparametersB.inktrap<br />
+          stemcut: $localparametersB.stemcut<br />
+          skeleton: $localparametersB.skeleton<br />
+          superness: $localparametersB.superness<br />
+          over: $localparametersB.over
+        </div>
     </div>
   </div>
 </div>
