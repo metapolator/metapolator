@@ -53,9 +53,35 @@ class GlyphOutline(Base):
     x = Column(Integer)
     y = Column(Integer)
     vector_xIn = Column(Integer)
-    vector_xIn = Column(Integer)
+    vector_yIn = Column(Integer)
     vector_xOut = Column(Integer)
     vector_yOut = Column(Integer)
+
+    @classmethod
+    def create(cls, point, master, fontsource, glyphname, segment, **kwargs):
+        q = query(func.max(cls.pointnr))
+        pointnr = q.filter_by(idmaster=master.idmaster,
+                              glyphname=glyphname,
+                              fontsource=fontsource.upper(),
+                              segment=segment).scalar()
+
+        pointnr = ((pointnr is None and -1) or pointnr) + 1
+        kwargs['user_id'] = session.user
+        kwargs['idmaster'] = master.idmaster
+        kwargs['glyphname'] = glyphname
+        kwargs['fontsource'] = fontsource.upper()
+        kwargs['segment'] = segment
+        kwargs['pointnr'] = pointnr
+        kwargs['x'] = point.get('x')
+        kwargs['y'] = point.get('y')
+        if 'controls' in point:
+            kwargs['vector_xIn'] = point['controls'][0].get('x')
+            kwargs['vector_yIn'] = point['controls'][0].get('y')
+            kwargs['vector_xOut'] = point['controls'][1].get('x')
+            kwargs['vector_yOut'] = point['controls'][1].get('y')
+        outline = cls(**kwargs)
+        web.ctx.orm.add(outline)
+        return outline
 
 
 class GlyphParam(Base):

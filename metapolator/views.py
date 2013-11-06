@@ -293,11 +293,23 @@ class View(app.page):
             return web.notfound()
 
         points = model.DBGlyphOutline.db_select(where='user_id=$userid and idmaster=$idmaster and glyphName=$id',
-                                              vars=dict(idmaster=master.idmaster, id=glyphid, userid=session.user),
-                                              order='id asc')
+                                                vars=dict(idmaster=master.idmaster, id=glyphid, userid=session.user),
+                                                order='id asc')
 
         if not points:
             return web.notfound()
+
+        # glyphjson = get_edges_json(u'%sA.log' % master.FontName)
+        # for glyph in glyphjson['edges']:
+        #     for segmentnumber, points in enumerate(glyph['contours']):
+        #         for point in points:
+        #             models.GlyphOutline.create(point, master, 'A', glyph['glyph'], segmentnumber)
+
+        # glyphjson = get_edges_json(u'%sB.log' % master.FontName)
+        # for glyph in glyphjson['edges']:
+        #     for segmentnumber, points in enumerate(glyph['contours']):
+        #         for point in points:
+        #             models.GlyphOutline.create(point, master, 'B', glyph['glyph'], segmentnumber)
 
         A_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='A')
         B_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='B')
@@ -736,17 +748,17 @@ class CreateProject(app.page):
                 for glyph in glyphjson['edges']:
                     for segmentnumber, points in enumerate(glyph['contours']):
                         for point in points:
-                            model.save_segment(point, master, 'A', glyph['glyph'], segmentnumber)
+                            models.GlyphOutline.create(point, master, 'A', glyph['glyph'], segmentnumber)
 
                 glyphjson = get_edges_json(u'%sB.log' % master.FontName)
                 for glyph in glyphjson['edges']:
                     for segmentnumber, points in enumerate(glyph['contours']):
                         for point in points:
-                            model.save_segment(point, master, 'B', glyph['glyph'], segmentnumber)
+                            models.GlyphOutline.create(point, master, 'B', glyph['glyph'], segmentnumber)
 
             except (zipfile.BadZipfile, OSError, IOError):
                 if master:
-                    fontpath = working_dir('fonts/%s' % master.id)
+                    fontpath = master.get_fonts_directory()
                     model.Master.delete(where='idmaster=$id', vars={'id': master.id})
                     model.DBGlyphOutline.delete(where='idmaster=$id', vars={'id': master.id})
                     model.GlyphParam.delete(where='idmaster=$id', vars={'id': master.id})
