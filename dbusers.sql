@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS users;
 
--- ALTER TABLE glyph DROP INDEX idx_user_id, DROP COLUMN user_id;
+-- ALTER TABLE glyph DROP INDEX idx_user_id, DROP COLUMN user_id, DROP INDEX idx_idmaster, DROP COLUMN idmaster;
 -- ALTER TABLE glyphoutline DROP INDEX idx_user_id, DROP COLUMN user_id;
 -- ALTER TABLE glyphparam DROP INDEX idx_user_id, DROP COLUMN user_id;
 -- ALTER TABLE groupparam DROP INDEX idx_user_id, DROP COLUMN user_id;
@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS users;
 -- ALTER TABLE globalparam DROP INDEX idx_user_id, DROP COLUMN user_id;
 -- ALTER TABLE localparam DROP INDEX idx_user_id, DROP COLUMN user_id;
 
-ALTER TABLE glyph ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
+ALTER TABLE glyph ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id), ADD COLUMN idmaster INT(11), ADD INDEX idx_idmaster (idmaster);
 ALTER TABLE glyphoutline ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
 ALTER TABLE glyphparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);
 ALTER TABLE groupparam ADD COLUMN user_id INT(11) NOT NULL, ADD INDEX idx_user_id (user_id);

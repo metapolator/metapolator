@@ -4,8 +4,8 @@ import re
 import xmltomf
 import model
 
-from config import cFont, working_dir, buildfname, mf_filename
-from model import putFont, Master
+from config import cFont, working_dir, buildfname, mf_filename, session
+from model import Master
 
 
 def project_exists(master):
@@ -74,7 +74,7 @@ def ufo2mf(master):
     # cFont.timestamp = 1
 
 
-def writeGlyphlist(fontpath):
+def writeGlyphlist(fontpath, glyphid=None):
     ifile = open(working_dir(op.join(fontpath, "glyphlist.mf")), "w")
     dirnamep1 = working_dir(op.join(fontpath, "glyphs"))
 
@@ -82,7 +82,7 @@ def writeGlyphlist(fontpath):
 
     for ch1 in charlist1:
         fnb, ext = buildfname(ch1)
-        if ext in ["mf"]:
+        if (not glyphid or glyphid == fnb) and ext in ["mf"]:
             ifile.write("input glyphs/"+ch1+"\n")
     ifile.close()
 
@@ -93,16 +93,52 @@ def putFontAllglyphs(master):
     # only the fonts (xml file) will be read when the glifs are present
     # in both fonts A and B
 
-    source_fontpath_A = Master.get_fonts_directory(master, 'A')
-    source_fontpath_B = Master.get_fonts_directory(master, 'B')
+    source_fontpath_A = op.join(Master.get_fonts_directory(master, 'A'), 'glyphs')
+    source_fontpath_B = op.join(Master.get_fonts_directory(master, 'B'), 'glyphs')
 
     charlista = [f for f in os.listdir(source_fontpath_A)]
     charlistb = [f for f in os.listdir(source_fontpath_B)]
+
     for ch1 in charlista:
-        if ch1 in charlistb:
-            glyphName, ext = buildfname(ch1)
-            if ext in ["glif"]:
-                putFont(master, glyphName, loadoption=1)
+        glyphName, ext = buildfname(ch1)
+        if ext in ["glif"]:
+            from lxml import etree
+            glif = etree.parse(op.join(source_fontpath_A, ch1))
+
+            itemlist = glif.find('advance')
+            width = itemlist.get('width')
+
+            glyph = glif.getroot()
+            g = glyph.get('name')
+
+            itemlist = glif.find('unicode')
+            unicode = itemlist.get('hex')
+
+            model.Glyph.insert(glyphName=g, width=width,
+                               unicode=unicode, user_id=session.user,
+                               idmaster=master.idmaster,
+                               fontsource='A')
+
+    for ch1 in charlistb:
+        glyphName, ext = buildfname(ch1)
+        if ext in ["glif"]:
+            from lxml import etree
+            glif = etree.parse(op.join(source_fontpath_A, ch1))
+
+            itemlist = glif.find('advance')
+            width = itemlist.get('width')
+
+            glyph = glif.getroot()
+            g = glyph.get('name')
+
+            itemlist = glif.find('unicode')
+            unicode = itemlist.get('hex')
+
+            model.Glyph.insert(glyphName=g, width=width,
+                               unicode=unicode, user_id=session.user,
+                               idmaster=master.idmaster,
+                               fontsource='B')
+    # putFont(master, glyphName, loadoption=1)
 
 
 def writeallxmlfromdb(master, glyphs):

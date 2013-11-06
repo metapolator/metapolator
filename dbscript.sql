@@ -8,9 +8,11 @@ drop table if exists groupparam;
 
 CREATE TABLE glyph (
     idglyph INT AUTO_INCREMENT,
+    fontsource ENUM('A', 'B'),
     glyphName varchar(3),
     width integer,
     unicode TEXT,
+    INDEX KEY idx_fontsource (fontsource),
     primary key (idglyph)
 );
 CREATE TABLE glyphoutline (

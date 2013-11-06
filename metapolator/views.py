@@ -22,10 +22,9 @@ from passlib.hash import bcrypt
 
 from config import app, cFont, is_loggedin, session, working_dir, \
     working_url, mf_filename
-from forms import FontForm, ParamForm, GroupParamForm, PointForm, \
-    GlobalParamForm, RegisterForm, LocalParamForm
+from forms import FontForm, GlobalParamForm, RegisterForm, LocalParamForm
 from tools import writeallxmlfromdb, putFontAllglyphs, \
-    makefont, get_json, project_exists
+    makefont, get_json, project_exists, writeGlyphlist
 
 
 ### Templates
@@ -67,6 +66,7 @@ class Regenerate(app.page):
 
         prepare_environment_directory()
 
+        putFontAllglyphs(master)
         makefont(working_dir(), master)
         raise seeother('/fonts/')
 
@@ -323,66 +323,10 @@ class View(app.page):
                                   x.source.upper(), x.segment,
                                   x=x.x, y=x.y, vector_xIn=x.xIn, vector_xOut=x.xOut,
                                   vector_yIn=x.yIn, vector_yOut=x.yOut)
+
+        fontpath = 'fonts/{0}'.format(master.idmaster)
+        writeGlyphlist(fontpath, glyphid)
         return ''
-
-
-
-        if not is_loggedin():
-            raise seeother('/login')
-        form = PointForm()
-
-        formParam = ParamForm()
-        formParamG = GroupParamForm()
-        post = model.get_post(int(id))
-        postspa = model.get_postspa()
-        if not form.validates():
-            posts = model.get_posts()
-            master = model.get_master(cFont.idmaster)
-            mastglobal = model.get_globalparam(cFont.idglobal)
-            webglyph = cFont.glyphName
-            return render.view(posts, post, form, formParam, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
-
-        if form.d.PointName is not None:
-            if not formParam.validates():
-                return render.view(posts, post, form, formParam, master, mastglobal)
-            if model.get_glyphparam(int(id)) is not None:
-                model.update_glyphparam(int(id), form.d.PointName, form.d.groupn)
-                model.update_glyphparamD(int(id), formParam.d.Param, formParam.d.parmval)
-                if model.get_groupparam0(form.d.groupn) is not None:
-                    model.update_groupparamD(form.d.groupn, formParamG.d.Group, formParamG.d.groupval)
-                else:
-                    model.insert_groupparam(form.d.groupn)
-
-            else:
-                model.insert_glyphparam(int(id), form.d.PointName)
-                model.update_glyphparam(int(id), form.d.PointName, form.d.groupn)
-                if model.get_groupparam0(form.d.groupn) is not None:
-                    model.update_groupparamD(form.d.groupn, formParamG.d.Group, formParamG.d.groupval)
-                else:
-                    model.insert_groupparam(form.d.groupn)
-
-            if not formParamG.validates():
-                return render.view(posts, post, form, formParam, formParamG, master, mastglobal)
-            if model.get_groupparam(int(id)) is not None:
-                if form.d.groupn is not None:
-                    if model.get_groupparam0(form.d.groupn) is not None:
-                        model.update_groupparamD(form.d.groupn, formParamG.d.Group, formParamG.d.groupval)
-                    else:
-                        model.insert_groupparam(form.d.groupn)
-
-        model.update_post(int(id), form.d.x, form.d.y)
-        posts = model.get_posts()
-        master = model.get_master(cFont.idmaster)
-        mastglobal = model.get_globalparam(cFont.idglobal)
-        webglyph = cFont.glyphName
-        glyphparam = model.get_glyphparam(int(id))
-        groupparam = model.get_groupparam(int(id))
-        model.writexml()
-
-        makefont(working_dir(), master)
-
-        master = [master]
-        return render.view(posts, post, form, formParam, formParamG, master, mastglobal, webglyph, glyphparam, groupparam, cFont, postspa)
 
 
 class ViewFont(app.page):
@@ -784,6 +728,7 @@ class CreateProject(app.page):
                         raise
 
                 master = model.get_master(newid)
+
                 makefont(working_dir(), master)
 
                 glyphjson = get_edges_json(u'%sA.log' % master.FontName)

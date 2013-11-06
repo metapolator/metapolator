@@ -95,6 +95,11 @@ class Model(object):
         return db.insert(cls.__table__, **kwargs)
 
 
+class Glyph(Model):
+
+    __table__ = 'glyph'
+
+
 class GlyphOutline(Model):
 
     __table__ = 'glyphoutline'
