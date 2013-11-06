@@ -9,6 +9,7 @@
 """ Basic metafont point interface using webpy  """
 import glob
 import model
+import models
 import os
 import os.path as op
 import re
@@ -662,7 +663,7 @@ class CreateProject(app.page):
             raise seeother('/login')
 
         x = web.input(zipfile={})
-        if 'name' in x and model.Master.get_by_name(x.name, session.user):
+        if 'name' in x and models.Master.exists(fontname=x.name):
             return render.create_project(error='Project with this name already exists')
 
         if 'zipfile' in x and 'name' in x and x.name:
@@ -697,19 +698,21 @@ class CreateProject(app.page):
                     FontNameB = ufo_dirs[1]
                 except IndexError:
                     FontNameB = ''
-                newid = model.Master.insert(idglobal=1, FontName=x.name,
-                                            user_id=session.user)
-                fontpath = working_dir('fonts/%s' % newid)
-                fzip.extractall(working_dir(fontpath))
+                master = models.Master.create(fontname=x.name)
 
-                shutil.move(op.join(working_dir(fontpath), FontNameA), op.join(working_dir(fontpath), '%sA.UFO' % x.name))
+                fontpath = master.get_fonts_directory()
+                fzip.extractall(fontpath)
+
+                shutil.move(op.join(fontpath, FontNameA),
+                            op.join(fontpath, '%sA.UFO' % x.name))
                 if FontNameB:
-                    shutil.move(op.join(working_dir(fontpath), FontNameB), op.join(working_dir(fontpath), '%sB.UFO' % x.name))
+                    shutil.move(op.join(fontpath, FontNameB),
+                                op.join(fontpath, '%sB.UFO' % x.name))
                     FontNameB = '%sB.UFO' % x.name
 
-                model.Master.update(session.user, newid,
-                                    FontNameA='%sA.UFO' % x.name,
-                                    FontNameB=FontNameB)
+                models.Master.update(idmaster=master.idmaster,
+                                     values=dict(fontnamea='%sA.UFO' % x.name,
+                                                 fontnameb=FontNameB))
 
                 FontNameA = '%sA.UFO' % x.name
                 if not FontNameB:
@@ -727,8 +730,6 @@ class CreateProject(app.page):
                     except (IOError, OSError):
                         raise
 
-                master = model.get_master(newid)
-
                 makefont(working_dir(), master)
 
                 glyphjson = get_edges_json(u'%sA.log' % master.FontName)
@@ -744,11 +745,11 @@ class CreateProject(app.page):
                             model.save_segment(point, master, 'B', glyph['glyph'], segmentnumber)
 
             except (zipfile.BadZipfile, OSError, IOError):
-                if newid:
-                    fontpath = working_dir('fonts/%s' % newid)
-                    model.Master.delete(where='idmaster=$id', vars={'id': newid})
-                    model.DBGlyphOutline.delete(where='idmaster=$id', vars={'id': newid})
-                    model.GlyphParam.delete(where='idmaster=$id', vars={'id': newid})
+                if master:
+                    fontpath = working_dir('fonts/%s' % master.id)
+                    model.Master.delete(where='idmaster=$id', vars={'id': master.id})
+                    model.DBGlyphOutline.delete(where='idmaster=$id', vars={'id': master.id})
+                    model.GlyphParam.delete(where='idmaster=$id', vars={'id': master.id})
                     shutil.rmtree(fontpath)
             return seeother('/')
 

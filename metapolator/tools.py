@@ -102,6 +102,8 @@ def putFontAllglyphs(master):
     charlista = [f for f in os.listdir(source_fontpath_A)]
     charlistb = [f for f in os.listdir(source_fontpath_B)]
 
+    orm = web.ctx.orm
+
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
         if ext in ["glif"]:
@@ -117,20 +119,20 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            if not web.ctx.orm.query(Glyph).filter_by(glyphName=g,
-                                                      idmaster=master.idmaster,
-                                                      user_id=session.user,
-                                                      fontsource='A').count():
-                glyph = Glyph(glyphName=g, width=width,
+            if not orm.query(Glyph).filter_by(name=g,
+                                              idmaster=master.idmaster,
+                                              user_id=session.user,
+                                              fontsource='A').count():
+                glyph = Glyph(name=g, width=width,
                               unicode=unicode, user_id=session.user,
                               idmaster=master.idmaster,
                               fontsource='A')
-                web.ctx.orm.add(glyph)
+                session.add(glyph)
             else:
-                query = web.ctx.orm.query(Glyph).filter_by(glyphName=g,
-                                                           idmaster=master.idmaster,
-                                                           user_id=session.user,
-                                                           fontsource='A')
+                query = orm.query(Glyph).filter_by(name=g,
+                                                   idmaster=master.idmaster,
+                                                   user_id=session.user,
+                                                   fontsource='A')
                 query.update({'width': width, 'unicode': unicode})
 
     for ch1 in charlistb:
@@ -148,20 +150,20 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            if not web.ctx.orm.query(Glyph).filter_by(glyphName=g,
-                                                      idmaster=master.idmaster,
-                                                      user_id=session.user,
-                                                      fontsource='B').count():
-                glyph = Glyph(glyphName=g, width=width,
+            if not orm.query(Glyph).filter_by(name=g,
+                                              idmaster=master.idmaster,
+                                              user_id=session.user,
+                                              fontsource='B').count():
+                glyph = Glyph(name=g, width=width,
                               unicode=unicode, user_id=session.user,
                               idmaster=master.idmaster,
                               fontsource='B')
-                web.ctx.orm.add(glyph)
+                session.add(glyph)
             else:
-                query = web.ctx.orm.query(Glyph).filter_by(glyphName=g,
-                                                           idmaster=master.idmaster,
-                                                           user_id=session.user,
-                                                           fontsource='B')
+                query = orm.query(Glyph).filter_by(name=g,
+                                                   idmaster=master.idmaster,
+                                                   user_id=session.user,
+                                                   fontsource='B')
                 query.update({'width': width, 'unicode': unicode})
     # putFont(master, glyphName, loadoption=1)
 
