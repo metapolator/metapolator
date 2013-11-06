@@ -3,6 +3,7 @@ import os.path as op
 import re
 import xmltomf
 import model
+import web
 
 from config import cFont, working_dir, buildfname, mf_filename, session
 from model import Master
@@ -114,10 +115,11 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            model.Glyph.insert(glyphName=g, width=width,
-                               unicode=unicode, user_id=session.user,
-                               idmaster=master.idmaster,
-                               fontsource='A')
+            glyph = model.Glyph(glyphName=g, width=width,
+                                unicode=unicode, user_id=session.user,
+                                idmaster=master.idmaster,
+                                fontsource='B')
+            web.ctx.orm.add(glyph)
 
     for ch1 in charlistb:
         glyphName, ext = buildfname(ch1)
@@ -134,10 +136,11 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            model.Glyph.insert(glyphName=g, width=width,
-                               unicode=unicode, user_id=session.user,
-                               idmaster=master.idmaster,
-                               fontsource='B')
+            glyph = model.Glyph(glyphName=g, width=width,
+                                unicode=unicode, user_id=session.user,
+                                idmaster=master.idmaster,
+                                fontsource='B')
+            web.ctx.orm.add(glyph)
     # putFont(master, glyphName, loadoption=1)
 
 

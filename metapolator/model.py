@@ -17,10 +17,28 @@ from lxml import etree
 from passlib.hash import bcrypt
 
 from config import cFont, working_dir, session, buildfname, \
-    DATABASE_USER, DATABASE_PWD, mf_filename
+    DATABASE_USER, DATABASE_PWD, mf_filename, engine
 
 db = web.database(dbn='mysql', db='blog',
                   user=DATABASE_USER, pw=DATABASE_PWD)
+
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+
+from sqlalchemy import Column, Integer, String, Text, Enum
+
+
+class Glyph(Base):
+
+    __tablename__ = 'glyph'
+
+    id = Column(Integer, primary_key=True)
+    glyphName = Column(String(3), index=True)
+    width = Column(Integer)
+    unicode = Column(Text)
+    user_id = Column(Integer)
+    idmaster = Column(Integer, index=True)
+    fontsource = Column(Enum('A', 'B'), index=True)
 
 
 def xxmlat(s, dbob, sattr, val, iro):
@@ -93,11 +111,6 @@ class Model(object):
     @classmethod
     def insert(cls, **kwargs):
         return db.insert(cls.__table__, **kwargs)
-
-
-class Glyph(Model):
-
-    __table__ = 'glyph'
 
 
 class GlyphOutline(Model):
@@ -1183,3 +1196,8 @@ def create_user(username, password, email):
     db.insert('users', username=username, password=pwhash,
               email=email, date_joined=web.SQLLiteral("NOW()"))
     return get_user_by_email(email)
+
+
+if __name__ == "__main__":
+    metadata = Base.metadata
+    metadata.create_all(engine)

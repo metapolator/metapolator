@@ -1,7 +1,7 @@
 import os
 import os.path as op
 import web
-
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
 DATABASE_USER = 'root'
@@ -12,11 +12,34 @@ try:
 except ImportError:
     pass
 
+from sqlalchemy import create_engine
+engine = create_engine('mysql+mysqldb://{0}:{1}@localhost/blog'.format(DATABASE_USER, DATABASE_PWD), echo=True)
 
 ### Url mappings
-web.config.debug = True
+web.config.debug = False
+
+
+def load_sqla(handler):
+
+    web.ctx.orm = scoped_session(sessionmaker(bind=engine))
+    try:
+        return handler()
+    except web.HTTPError:
+        web.ctx.orm.commit()
+        raise
+
+    except:
+        web.ctx.orm.rollback()
+        raise
+    finally:
+        web.ctx.orm.commit()
+        # If the above alone doesn't work, uncomment
+        # the following line:
+        #web.ctx.orm.expunge_all()
 
 app = web.auto_application()
+app.add_processor(load_sqla)
+
 
 session = web.session.Session(app, web.session.DiskStore('sessions'),
                               {'count': 0})
