@@ -45,6 +45,7 @@ class Glyph(Base):
         kwargs['user_id'] = session.user
         glyph = cls(**kwargs)
         web.ctx.orm.add(glyph)
+        web.ctx.orm.commit()
         return glyph
 
     @classmethod

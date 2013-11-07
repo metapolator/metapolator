@@ -726,6 +726,8 @@ class CreateProject(app.page):
                     except (IOError, OSError):
                         raise
 
+                putFontAllglyphs(master)
+
                 makefont(working_dir(), master)
 
                 glyphjson = get_edges_json(u'%sA.log' % master.FontName)
