@@ -1,3 +1,4 @@
+import os.path as op
 import web
 
 from sqlalchemy import Column, Integer, String, Text, Enum, Float, \
@@ -38,6 +39,18 @@ class Glyph(Base):
     name = Column(String(3), index=True)
     width = Column(Integer)
     unicode = Column(Text)
+
+    @classmethod
+    def create(cls, **kwargs):
+        kwargs['user_id'] = session.user
+        glyph = cls(**kwargs)
+        web.ctx.orm.add(glyph)
+        return glyph
+
+    @classmethod
+    def filter(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        return query(cls).filter_by(**kwargs)
 
 
 class GlyphOutline(Base):
@@ -199,8 +212,23 @@ class Master(Base):
     idlocalb = Column(Integer, index=True)
     idglobal = Column(Integer, index=True)
 
-    def get_fonts_directory(self):
-        return working_dir('fonts/%s' % self.id)
+    def get_glyph(self, glyphid, ab_source):
+        try:
+            q = Glyph.filter(idmaster=self.idmaster,
+                             name=glyphid, fontsource=ab_source.upper())
+            return q.one()
+        except NoResultFound:
+            return
+
+    def get_fonts_directory(self, ab_source=None):
+        fonts_directory = op.join(working_dir(), 'fonts', str(self.idmaster))
+        if ab_source.lower() == 'a':
+            return op.join(fonts_directory, self.fontnamea)
+        elif ab_source.lower() == 'b' and self.fontnameb:
+            return op.join(fonts_directory, self.fontnameb)
+        elif ab_source.lower() == 'b':
+            return op.join(fonts_directory, self.fontnamea)
+        return fonts_directory
 
     @classmethod
     def exists(cls, **kwargs):

@@ -3,10 +3,8 @@ import os.path as op
 import re
 import xmltomf
 import model
-import web
 
-from config import cFont, working_dir, buildfname, mf_filename, session
-from model import Master
+from config import cFont, working_dir, buildfname, mf_filename
 
 from models import Glyph
 
@@ -96,13 +94,11 @@ def putFontAllglyphs(master):
     # only the fonts (xml file) will be read when the glifs are present
     # in both fonts A and B
 
-    source_fontpath_A = op.join(Master.get_fonts_directory(master, 'A'), 'glyphs')
-    source_fontpath_B = op.join(Master.get_fonts_directory(master, 'B'), 'glyphs')
+    source_fontpath_A = op.join(master.get_fonts_directory('A'), 'glyphs')
+    source_fontpath_B = op.join(master.get_fonts_directory('B'), 'glyphs')
 
     charlista = [f for f in os.listdir(source_fontpath_A)]
     charlistb = [f for f in os.listdir(source_fontpath_B)]
-
-    orm = web.ctx.orm
 
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
@@ -119,20 +115,13 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            if not orm.query(Glyph).filter_by(name=g,
-                                              idmaster=master.idmaster,
-                                              user_id=session.user,
-                                              fontsource='A').count():
-                glyph = Glyph(name=g, width=width,
-                              unicode=unicode, user_id=session.user,
-                              idmaster=master.idmaster,
-                              fontsource='A')
-                session.add(glyph)
+            if not Glyph.filter(name=g, idmaster=master.idmaster,
+                                fontsource='A').count():
+                Glyph.create(name=g, width=width, unicode=unicode,
+                             idmaster=master.idmaster, fontsource='A')
             else:
-                query = orm.query(Glyph).filter_by(name=g,
-                                                   idmaster=master.idmaster,
-                                                   user_id=session.user,
-                                                   fontsource='A')
+                query = Glyph.filter(name=g, idmaster=master.idmaster,
+                                     fontsource='A')
                 query.update({'width': width, 'unicode': unicode})
 
     for ch1 in charlistb:
@@ -150,27 +139,20 @@ def putFontAllglyphs(master):
             itemlist = glif.find('unicode')
             unicode = itemlist.get('hex')
 
-            if not orm.query(Glyph).filter_by(name=g,
-                                              idmaster=master.idmaster,
-                                              user_id=session.user,
-                                              fontsource='B').count():
-                glyph = Glyph(name=g, width=width,
-                              unicode=unicode, user_id=session.user,
-                              idmaster=master.idmaster,
-                              fontsource='B')
-                session.add(glyph)
+            if not Glyph.filter(name=g, idmaster=master.idmaster,
+                                fontsource='B').count():
+                Glyph.create(name=g, width=width, unicode=unicode,
+                             idmaster=master.idmaster, fontsource='B')
             else:
-                query = orm.query(Glyph).filter_by(name=g,
-                                                   idmaster=master.idmaster,
-                                                   user_id=session.user,
-                                                   fontsource='B')
+                query = Glyph.filter(name=g, idmaster=master.idmaster,
+                                     fontsource='B')
                 query.update({'width': width, 'unicode': unicode})
     # putFont(master, glyphName, loadoption=1)
 
 
 def writeallxmlfromdb(master, glyphs):
-    dirnamea = op.join(Master.get_fonts_directory(master, 'A'), "glyphs")
-    dirnameb = op.join(Master.get_fonts_directory(master, 'B'), "glyphs")
+    dirnamea = op.join(master.get_fonts_directory('A'), "glyphs")
+    dirnameb = op.join(master.get_fonts_directory('B'), "glyphs")
 
     charlista = [f for f in os.listdir(dirnamea) if fnextension(f) == 'glif']
     charlistb = [f for f in os.listdir(dirnameb) if fnextension(f) == 'glif']
