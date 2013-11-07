@@ -16,6 +16,7 @@ import re
 import shutil
 import web
 import zipfile
+import simplejson
 
 from web import seeother
 from passlib.hash import bcrypt
@@ -239,14 +240,11 @@ def get_edges_json(log_filename, glyphid=None):
     return result
 
 
-def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
-    segments = model.DBGlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id'
-                                                  ' and fontsource=$fontsource and user_id=$user',
-                                            vars=dict(idmaster=master.idmaster, id=glyphid,
-                                                      fontsource=ab_source, user=userid),
-                                            what='segment',
-                                            group='segment',
-                                            order='segment asc')
+def get_edges_json_from_db(master, glyphid, ab_source='A'):
+    segments = models.query(models.GlyphOutline.segment.label('number'))
+    segments = segments.filter_by(idmaster=master.idmaster, glyphname=glyphid,
+                                  fontsource=ab_source.upper())
+    segments = segments.group_by(models.GlyphOutline.segment)
     result = {'edges': []}
     contours = []
     x_min = 0
@@ -254,11 +252,10 @@ def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
     x_max = 0
     y_max = 0
     for segment in segments:
-        points = model.DBGlyphOutline.db_select(where='idmaster=$idmaster and glyphName=$id and segment=$segment'
-                                                    ' and fontsource=$fontsource and user_id=$user',
-                                              vars=dict(idmaster=master.idmaster, id=glyphid,
-                                                        fontsource=ab_source, user=userid,
-                                                        segment=segment['segment']))
+        points = models.GlyphOutline.filter(idmaster=master.idmaster,
+                                            segment=segment.number,
+                                            fontsource=ab_source.upper(),
+                                            glyphname=glyphid)
         _contours = []
         for point in points:
             _contours.append({'x': point.x, 'y': point.y,
@@ -275,7 +272,6 @@ def get_edges_json_from_db(userid, master, glyphid, ab_source='A'):
     height = abs(y_max) + abs(y_min)
     result.update({'width': width, 'height': height, 'total_edges': 1})
 
-    import simplejson
     return simplejson.dumps(result)
 
 
@@ -288,43 +284,29 @@ class View(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = model.Master.get_by_name(name, session.user)
+        master = models.Master.get(fontname=name)
         if not master:
             return web.notfound()
 
-        points = model.DBGlyphOutline.db_select(where='user_id=$userid and idmaster=$idmaster and glyphName=$id',
-                                                vars=dict(idmaster=master.idmaster, id=glyphid, userid=session.user),
-                                                order='id asc')
-
-        if not points:
+        if not models.GlyphOutline.exists(idmaster=master.idmaster,
+                                          glyphname=glyphid):
             return web.notfound()
 
-        # glyphjson = get_edges_json(u'%sA.log' % master.FontName)
-        # for glyph in glyphjson['edges']:
-        #     for segmentnumber, points in enumerate(glyph['contours']):
-        #         for point in points:
-        #             models.GlyphOutline.create(point, master, 'A', glyph['glyph'], segmentnumber)
+        A_glyphjson = get_edges_json_from_db(master, glyphid, ab_source='A')
+        B_glyphjson = get_edges_json_from_db(master, glyphid, ab_source='B')
+        M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
 
-        # glyphjson = get_edges_json(u'%sB.log' % master.FontName)
-        # for glyph in glyphjson['edges']:
-        #     for segmentnumber, points in enumerate(glyph['contours']):
-        #         for point in points:
-        #             models.GlyphOutline.create(point, master, 'B', glyph['glyph'], segmentnumber)
+        localparametersA = models.LocalParam.get(idlocal=master.idlocala)
+        localparametersB = models.LocalParam.get(idlocal=master.idlocalb)
 
-        A_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='A')
-        B_glyphjson = get_edges_json_from_db(session.user, master, glyphid, ab_source='B')
-        M_glyphjson = get_edges_json(u'%s.log' % master.FontName, glyphid)
-
-        localparametersA = model.get_localparam(master.idlocalA)
-        localparametersB = model.get_localparam(master.idlocalB)
-
-        return render.view(master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB)
+        return render.view(master, glyphid, A_glyphjson, B_glyphjson,
+                           M_glyphjson, localparametersA, localparametersB)
 
     def POST(self, name, glyphid):
         if not is_loggedin():
             return web.notfound()
 
-        master = model.Master.get_by_name(name, session.user)
+        master = models.Master.get(fontname=name)
         if not master:
             return web.notfound()
 
@@ -332,13 +314,15 @@ class View(app.page):
                       x='', y='', xIn='', yIn='', xOut='', yOut='',
                       segment='')
 
-        model.DBGlyphOutline.update(session.user, x.pointid, glyphid, master.idmaster,
-                                  x.source.upper(), x.segment,
-                                  x=x.x, y=x.y, vector_xIn=x.xIn, vector_xOut=x.xOut,
-                                  vector_yIn=x.yIn, vector_yOut=x.yOut)
+        query = models.GlyphOutline.filter(idmaster=master.idmaster,
+                                           segment=x.segment,
+                                           fontsource=x.source.upper(),
+                                           glyphname=glyphid,
+                                           pointnr=x.pointid)
+        query.update(dict(x=x.x, y=x.y, vector_xIn=x.xIn, vector_xOut=x.xOut,
+                          vector_yIn=x.yIn, vector_yOut=x.yOut))
 
-        fontpath = 'fonts/{0}'.format(master.idmaster)
-        writeGlyphlist(fontpath, glyphid)
+        writeGlyphlist(master.get_fonts_directory(), glyphid)
         return ''
 
 

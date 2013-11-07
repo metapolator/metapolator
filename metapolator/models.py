@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Text, Enum, Float, \
     Boolean, DateTime
 from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm.exc import NoResultFound
 
 from config import engine, session, working_dir
 
@@ -56,6 +57,16 @@ class GlyphOutline(Base):
     vector_yIn = Column(Integer)
     vector_xOut = Column(Integer)
     vector_yOut = Column(Integer)
+
+    @classmethod
+    def filter(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        return query(cls).filter_by(**kwargs)
+
+    @classmethod
+    def exists(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        return bool(query(func.count(cls.id)).filter_by(**kwargs).scalar())
 
     @classmethod
     def create(cls, point, master, fontsource, glyphname, segment, **kwargs):
@@ -210,6 +221,14 @@ class Master(Base):
             return
         query(cls).filter_by(*kwargs).update(values)
 
+    @classmethod
+    def get(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        try:
+            return query(cls).filter_by(**kwargs).one()
+        except NoResultFound:
+            return None
+
 
 class LocalParam(Base):
 
@@ -231,6 +250,14 @@ class LocalParam(Base):
     skeleton = Column(Float, default=0)
     superness = Column(Float, default=1)
     over = Column(Float, default=0.1)
+
+    @classmethod
+    def get(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        try:
+            return query(cls).filter_by(**kwargs).one()
+        except NoResultFound:
+            return None
 
 
 class GlobalParam(Base):

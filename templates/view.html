@@ -1,6 +1,6 @@
 $def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB)
 <title>
-Project $master.FontName
+Project $master.fontname
 </title>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
@@ -11,7 +11,7 @@ Project $master.FontName
     <canvas id="canvas-a" width="400" height="400"></canvas>
 
     <div class="well">
-      <h4>Parameters Font A <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font A <small><a href="/view/$master.fontname/$glyphid/settings/">change</a></small></h4>
 
       $if not localparametersA:
         <div class="label label-danger">This font has not specified local parameters</div>
@@ -39,7 +39,7 @@ Project $master.FontName
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
-      <h4>Global Parameters <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
+      <h4>Global Parameters <small><a href="/view/$master.fontname/$glyphid/settings/">change</a></small></h4>
     </div>
   </div>
 
@@ -48,7 +48,7 @@ Project $master.FontName
     <canvas id="canvas-b" height="400" width="400"></canvas>
 
     <div class="well">
-      <h4>Parameters Font B <small><a href="/view/$master.FontName/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font B <small><a href="/view/$master.fontname/$glyphid/settings/">change</a></small></h4>
       $if not localparametersB:
         <div class="label label-danger">This font has not specified local parameters</div>
       $else:
