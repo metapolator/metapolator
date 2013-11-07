@@ -213,7 +213,7 @@ class Master(Base):
     idlocalb = Column(Integer, index=True)
     idglobal = Column(Integer, index=True)
 
-    def get_glyph(self, glyphid, ab_source):
+    def get_glyph(self, glyphid, ab_source='A'):
         try:
             q = Glyph.filter(idmaster=self.idmaster,
                              name=glyphid, fontsource=ab_source.upper())
