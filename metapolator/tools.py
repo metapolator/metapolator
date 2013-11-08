@@ -3,10 +3,12 @@ import os.path as op
 import re
 import xmltomf
 import model
+import web
+from lxml import etree
 
 from config import cFont, working_dir, buildfname, mf_filename
 
-from models import Glyph
+from models import Glyph, GlyphParam, GlyphOutline
 
 
 def project_exists(master):
@@ -83,7 +85,50 @@ def writeGlyphlist(master, glyphid=None):
     ifile.close()
 
 
-def putFontAllglyphs(master):
+def create_glyph(glif, master, ab_source):
+    itemlist = glif.find('advance')
+    width = itemlist.get('width')
+
+    glyph = glif.getroot()
+    glyphname = glyph.get('name')
+
+    itemlist = glif.find('unicode')
+    unicode = itemlist.get('hex')
+    if not Glyph.filter(name=glyphname, idmaster=master.idmaster,
+                        fontsource=ab_source).count():
+        Glyph.create(name=glyphname, width=width, unicode=unicode,
+                     idmaster=master.idmaster, fontsource=ab_source)
+    else:
+        query = Glyph.filter(name=glyphname, idmaster=master.idmaster,
+                             fontsource=ab_source)
+        query.update({'width': width, 'unicode': unicode})
+
+    for i, point in enumerate(glif.xpath('//outline/contour/point')):
+        pointname = point.attrib.get('name')
+        if not pointname:
+            pointname = 'p%s' % (i + 1)
+
+        glyphoutline = GlyphOutline.get(glyphname=glyphname, idmaster=master.idmaster,
+                                        fontsource=ab_source, pointnr=(i + 1))
+        if not glyphoutline:
+            glyphoutline = GlyphOutline.create(glyphname=glyphname, idmaster=master.idmaster,
+                                               fontsource=ab_source, pointnr=(i + 1))
+        glyphoutline.x = float(point.attrib['x'])
+        glyphoutline.y = float(point.attrib['y'])
+
+        glyphparam = GlyphParam.get(glyphname=glyphname, idmaster=master.idmaster,
+                                    fontsource=ab_source, pointname=pointname, pointnr=(i + 1))
+        if not glyphparam:
+            glyphparam = GlyphParam.create(glyphname=glyphname, idmaster=master.idmaster,
+                                           fontsource=ab_source, pointname=pointname, pointnr=(i + 1))
+        for attr in point.attrib:
+            if attr == 'name':
+                continue
+            setattr(glyphparam, attr, point.attrib[attr])
+        web.ctx.orm.commit()
+
+
+def putFontAllglyphs(master, glyphid=None):
     # read all fonts (xml files with glif extension) in unix directory
     # and put the xml data into db using the rule applied in loadoption
     # only the fonts (xml file) will be read when the glifs are present
@@ -97,52 +142,15 @@ def putFontAllglyphs(master):
 
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
-        if ext in ["glif"]:
-            from lxml import etree
+        if ext in ["glif"] and (not glyphid or glyphid == glyphName):
             glif = etree.parse(op.join(source_fontpath_A, ch1))
-
-            itemlist = glif.find('advance')
-            width = itemlist.get('width')
-
-            glyph = glif.getroot()
-            g = glyph.get('name')
-
-            itemlist = glif.find('unicode')
-            unicode = itemlist.get('hex')
-
-            if not Glyph.filter(name=g, idmaster=master.idmaster,
-                                fontsource='A').count():
-                Glyph.create(name=g, width=width, unicode=unicode,
-                             idmaster=master.idmaster, fontsource='A')
-            else:
-                query = Glyph.filter(name=g, idmaster=master.idmaster,
-                                     fontsource='A')
-                query.update({'width': width, 'unicode': unicode})
+            create_glyph(glif, master, 'A')
 
     for ch1 in charlistb:
         glyphName, ext = buildfname(ch1)
-        if ext in ["glif"]:
-            from lxml import etree
-            glif = etree.parse(op.join(source_fontpath_A, ch1))
-
-            itemlist = glif.find('advance')
-            width = itemlist.get('width')
-
-            glyph = glif.getroot()
-            g = glyph.get('name')
-
-            itemlist = glif.find('unicode')
-            unicode = itemlist.get('hex')
-
-            if not Glyph.filter(name=g, idmaster=master.idmaster,
-                                fontsource='B').count():
-                Glyph.create(name=g, width=width, unicode=unicode,
-                             idmaster=master.idmaster, fontsource='B')
-            else:
-                query = Glyph.filter(name=g, idmaster=master.idmaster,
-                                     fontsource='B')
-                query.update({'width': width, 'unicode': unicode})
-    # putFont(master, glyphName, loadoption=1)
+        if ext in ["glif"] and (not glyphid or glyphid == glyphName):
+            glif = etree.parse(op.join(source_fontpath_B, ch1))
+            create_glyph(glif, master, 'B')
 
 
 def writeallxmlfromdb(master, glyphs):

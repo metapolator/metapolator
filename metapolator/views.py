@@ -46,6 +46,7 @@ class Index(app.page):
 
     def GET(self):
         """ Show page """
+        raise seeother('/fonts/')
         if not is_loggedin():
             raise seeother('/login')
         posts = model.get_posts()
@@ -243,38 +244,20 @@ def get_edges_json(log_filename, glyphid=None):
 
 
 def get_edges_json_from_db(master, glyphid, ab_source='A'):
-    segments = models.query(models.GlyphOutline.segment.label('number'))
-    segments = segments.filter_by(idmaster=master.idmaster, glyphname=glyphid,
-                                  fontsource=ab_source.upper())
-    segments = segments.group_by(models.GlyphOutline.segment)
-    result = {'edges': []}
-    contours = []
-    x_min = 0
-    y_min = 0
-    x_max = 0
-    y_max = 0
-    for segment in segments:
+    glyph = models.Glyph.get(idmaster=master.idmaster, name=glyphid,
+                             fontsource=ab_source)
+
+    points = models.GlyphOutline.filter(idmaster=master.idmaster,
+                                        fontsource=ab_source.upper(),
+                                        glyphname=glyphid)
+    _points = []
+    for point in points.order_by(models.GlyphOutline.pointnr.asc()):
         points = models.GlyphOutline.filter(idmaster=master.idmaster,
-                                            segment=segment.number,
                                             fontsource=ab_source.upper(),
                                             glyphname=glyphid)
-        _contours = []
-        for point in points:
-            _contours.append({'x': point.x, 'y': point.y,
-                              'controls': [{'x': point.vector_xIn, 'y': point.vector_yIn},
-                                           {'x': point.vector_xOut, 'y': point.vector_yOut}]})
-            x_min = min(x_min, float(point.x), float(point.vector_xOut), float(point.vector_xIn))
-            y_min = min(y_min, float(point.y), float(point.vector_yOut), float(point.vector_yIn))
-            x_max = max(x_max, float(point.x), float(point.vector_xOut), float(point.vector_xIn))
-            y_max = max(y_max, float(point.y), float(point.vector_yOut), float(point.vector_yIn))
-        contours.append(_contours)
+        _points.append({'x': point.x, 'y': point.y, 'pointnr': point.pointnr})
 
-    result['edges'].append({'glyph': glyphid, 'contours': contours})
-    width = abs(x_max) + abs(x_min)
-    height = abs(y_max) + abs(y_min)
-    result.update({'width': width, 'height': height, 'total_edges': 1})
-
-    return simplejson.dumps(result)
+    return simplejson.dumps({'width': glyph.width, 'points': _points})
 
 
 class View(app.page):
@@ -290,19 +273,26 @@ class View(app.page):
         if not master:
             return web.notfound()
 
+        putFontAllglyphs(master, glyphid)
+
         if not models.GlyphOutline.exists(idmaster=master.idmaster,
                                           glyphname=glyphid):
             return web.notfound()
 
-        A_glyphjson = get_edges_json_from_db(master, glyphid, ab_source='A')
-        B_glyphjson = get_edges_json_from_db(master, glyphid, ab_source='B')
+        A_glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
+        B_glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
 
         localparametersA = models.LocalParam.get(idlocal=master.idlocala)
         localparametersB = models.LocalParam.get(idlocal=master.idlocalb)
 
+        a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
+        b_original_glyphjson = get_edges_json_from_db(master, glyphid, 'B')
+
         return render.view(master, glyphid, A_glyphjson, B_glyphjson,
-                           M_glyphjson, localparametersA, localparametersB)
+                           M_glyphjson, localparametersA, localparametersB,
+                           origins={'a': a_original_glyphjson,
+                                    'b': b_original_glyphjson})
 
     def POST(self, name, glyphid):
         if not is_loggedin():
@@ -312,17 +302,13 @@ class View(app.page):
         if not master:
             return web.notfound()
 
-        x = web.input(pointid='', source='',
-                      x='', y='', xIn='', yIn='', xOut='', yOut='',
-                      segment='')
+        x = web.input(pointid='', source='', x='', y='')
 
         query = models.GlyphOutline.filter(idmaster=master.idmaster,
-                                           segment=x.segment,
                                            fontsource=x.source.upper(),
                                            glyphname=glyphid,
                                            pointnr=x.pointid)
-        query.update(dict(x=x.x, y=x.y, vector_xIn=x.xIn, vector_xOut=x.xOut,
-                          vector_yIn=x.yIn, vector_yOut=x.yOut))
+        query.update(dict(x=x.x, y=x.y))
 
         writeGlyphlist(master.get_fonts_directory(), glyphid)
         return ''
@@ -439,14 +425,14 @@ class GlobalParams(app.page):
     def GET(self):
         if not is_loggedin():
             raise seeother('/login')
-        gml = list(model.get_globalparams())
+        gml = models.GlobalParam.all()
         return render.globals(gml)
 
     def POST(self):
         if not is_loggedin():
             raise seeother('/login')
         # create new one and redirect to edit page
-        newid = model.GlobalParam.insert(user_id=session.user)
+        newid = models.GlobalParam.create()
         raise seeother('/settings/globals/%s' % newid)
 
 
@@ -729,21 +715,7 @@ class CreateProject(app.page):
                         raise
 
                 putFontAllglyphs(master)
-
                 makefont(working_dir(), master)
-
-                glyphjson = get_edges_json(u'%sA.log' % master.FontName)
-                for glyph in glyphjson['edges']:
-                    for segmentnumber, points in enumerate(glyph['contours']):
-                        for point in points:
-                            models.GlyphOutline.create(point, master, 'A', glyph['glyph'], segmentnumber)
-
-                glyphjson = get_edges_json(u'%sB.log' % master.FontName)
-                for glyph in glyphjson['edges']:
-                    for segmentnumber, points in enumerate(glyph['contours']):
-                        for point in points:
-                            models.GlyphOutline.create(point, master, 'B', glyph['glyph'], segmentnumber)
-
             except (zipfile.BadZipfile, OSError, IOError):
                 if master:
                     fontpath = master.get_fonts_directory()
@@ -751,6 +723,6 @@ class CreateProject(app.page):
                     models.GlyphOutline.delete(idmaster=master.id)
                     models.GlyphParam.delete(idmaster=master.id)
                     shutil.rmtree(fontpath)
-            return seeother('/')
+            return seeother('/fonts/')
 
         return render.create_project(error='Please fill all fields in form')

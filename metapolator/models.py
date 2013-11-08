@@ -53,6 +53,14 @@ class Glyph(Base):
         kwargs.update({'user_id': session.user})
         return query(cls).filter_by(**kwargs)
 
+    @classmethod
+    def get(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        try:
+            return query(cls).filter_by(**kwargs).one()
+        except NoResultFound:
+            return None
+
 
 class GlyphOutline(Base):
 
@@ -63,14 +71,9 @@ class GlyphOutline(Base):
     idmaster = Column(Integer, index=True)
     user_id = Column(Integer, index=True)
     fontsource = Column(Enum('A', 'B'), index=True)
-    segment = Column(Integer, index=True)
     pointnr = Column(Integer, index=True)
     x = Column(Integer)
     y = Column(Integer)
-    vector_xIn = Column(Integer)
-    vector_yIn = Column(Integer)
-    vector_xOut = Column(Integer)
-    vector_yOut = Column(Integer)
 
     @classmethod
     def filter(cls, **kwargs):
@@ -83,30 +86,20 @@ class GlyphOutline(Base):
         return bool(query(func.count(cls.id)).filter_by(**kwargs).scalar())
 
     @classmethod
-    def create(cls, point, master, fontsource, glyphname, segment, **kwargs):
-        q = query(func.max(cls.pointnr))
-        pointnr = q.filter_by(idmaster=master.idmaster,
-                              glyphname=glyphname,
-                              fontsource=fontsource.upper(),
-                              segment=segment).scalar()
-
-        pointnr = ((pointnr is None and -1) or pointnr) + 1
-        kwargs['user_id'] = session.user
-        kwargs['idmaster'] = master.idmaster
-        kwargs['glyphname'] = glyphname
-        kwargs['fontsource'] = fontsource.upper()
-        kwargs['segment'] = segment
-        kwargs['pointnr'] = pointnr
-        kwargs['x'] = point.get('x')
-        kwargs['y'] = point.get('y')
-        if 'controls' in point:
-            kwargs['vector_xIn'] = point['controls'][0].get('x')
-            kwargs['vector_yIn'] = point['controls'][0].get('y')
-            kwargs['vector_xOut'] = point['controls'][1].get('x')
-            kwargs['vector_yOut'] = point['controls'][1].get('y')
+    def create(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
         outline = cls(**kwargs)
         web.ctx.orm.add(outline)
+        web.ctx.orm.commit()
         return outline
+
+    @classmethod
+    def get(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        try:
+            return query(cls).filter_by(**kwargs).one()
+        except NoResultFound:
+            return None
 
 
 class GlyphParam(Base):
@@ -114,13 +107,14 @@ class GlyphParam(Base):
     __tablename__ = 'glyphparam'
 
     id = Column(Integer, primary_key=True)
-    glyphname = Column(String, index=True)
+    glyphname = Column(String(32), index=True)
     fontsource = Column(Enum('A', 'B'), index=True)
     user_id = Column(Integer, index=True)
     idmaster = Column(Integer, index=True)
+    pointnr = Column(Integer, index=True)
 
-    pointname = Column(String)
-    groupname = Column(String)
+    pointname = Column(String(32))
+    groupname = Column(String(32))
     startp = Column(Integer)
     doubledash = Column(Integer)
     tripledash = Column(Integer)
@@ -130,30 +124,46 @@ class GlyphParam(Base):
     rightp = Column(Integer)
     downp = Column(Integer)
     upp = Column(Integer)
-    dir = Column(String)
+    dir = Column(String(32))
     leftp2 = Column(Integer)
     rightp2 = Column(Integer)
     downp2 = Column(Integer)
     upp2 = Column(Integer)
-    dir2 = Column(String)
-    tension = Column(String)
-    tensionand = Column(String)
+    dir2 = Column(String(32))
+    tension = Column(String(32))
+    tensionand = Column(String(32))
     cycle = Column(Integer)
-    penshifted = Column(String)
-    pointshifted = Column(String)
-    angle = Column(String)
-    penwidth = Column(String)
-    overx = Column(String)
-    overbase = Column(String)
-    overcap = Column(String)
-    overasc = Column(String)
-    overdesc = Column(String)
+    penshifted = Column(String(32))
+    pointshifted = Column(String(32))
+    angle = Column(String(32))
+    penwidth = Column(String(32))
+    overx = Column(String(32))
+    overbase = Column(String(32))
+    overcap = Column(String(32))
+    overasc = Column(String(32))
+    overdesc = Column(String(32))
     ascpoint = Column(Integer)
     descpoint = Column(Integer)
-    stemcutter = Column(String)
-    stemshift = Column(String)
+    stemcutter = Column(String(32))
+    stemshift = Column(String(32))
     inktrap_l = Column(Float)
     inktrap_r = Column(Float)
+
+    @classmethod
+    def create(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        master = cls(**kwargs)
+        web.ctx.orm.add(master)
+        web.ctx.orm.commit()
+        return master
+
+    @classmethod
+    def get(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        try:
+            return query(cls).filter_by(**kwargs).one()
+        except NoResultFound:
+            return None
 
 
 class GroupParam(Base):
@@ -331,6 +341,14 @@ class LocalParam(Base):
             return
         query(cls).filter_by(**kwargs).update(values)
 
+    @classmethod
+    def create(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        instance = cls(**kwargs)
+        web.ctx.orm.add(instance)
+        web.ctx.orm.commit()
+        return instance
+
 
 class GlobalParam(Base):
 
@@ -360,6 +378,14 @@ class GlobalParam(Base):
     def all(cls, **kwargs):
         kwargs.update({'user_id': session.user})
         return query(cls).filter_by(**kwargs)
+
+    @classmethod
+    def create(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        instance = cls(**kwargs)
+        web.ctx.orm.add(instance)
+        web.ctx.orm.commit()
+        return instance
 
 
 if __name__ == "__main__":
