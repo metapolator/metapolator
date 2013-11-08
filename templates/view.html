@@ -181,9 +181,8 @@ Project $master.fontname
 
   var pathes = [];
   for (var i = 0; i < JSON.points.length; i++) {
-    segment = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
-    path = new Path();
-    path.add(segment);
+    var point = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
+    var path = new Path.Rectangle(point, 1);
     path.closed = true;
     path.selected = true;
     path.fullySelected = true;
@@ -191,12 +190,6 @@ Project $master.fontname
     path.position.y += +200;
     pathes.push(path);
   }
-
-  var circle = new Path.Circle({
-    center: new Point(306.0, 714- 419.0),
-    radius: 10,
-    fillColor: 'red', 
-  });
 
   var currentSegment, mode, type, pointnumber, pathnumber;
 
@@ -226,7 +219,7 @@ Project $master.fontname
       var point = pathes[k].getNearestPoint(event.point);
       if ((event.point - point).length < 5) {
         box.position = point;
-        currentsegment = path.segments[0];
+        currentsegment = path;
         break;
       };
     }
@@ -241,7 +234,7 @@ Project $master.fontname
       return;
     }
     box.position = event.point;
-    currentsegment.point = event.point;
+    currentsegment.position = event.point;
   }
 </script>
 
@@ -301,9 +294,8 @@ Project $master.fontname
 
   var pathes = [];
   for (var i = 0; i < JSON.points.length; i++) {
-    segment = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
-    path = new Path();
-    path.add(segment);
+    var point = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
+    var path = new Path.Rectangle(point, 1);
     path.closed = true;
     path.selected = true;
     path.fullySelected = true;
