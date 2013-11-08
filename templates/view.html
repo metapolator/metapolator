@@ -212,14 +212,29 @@ Project $master.fontname
     box.rotate(1);
   }
 
+  var currentsegment = null;
+
   function onMouseDown(event) {
     for (var k = 0; k < pathes.length; k++) {
       var point = pathes[k].getNearestPoint(event.point);
       if ((event.point - point).length < 5) {
         box.position = point;
+        currentsegment = path.segments[0];
         break;
       };
     }
+  }
+
+  function onMouseUp(event) {
+    currentsegment = null;
+  }
+
+  function onMouseMove(event) {
+    if (!currentsegment) {
+      return;
+    }
+    box.position = event.point;
+    currentsegment.position = event.point;
   }
 </script>
 
