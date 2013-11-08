@@ -108,7 +108,6 @@ Project $master.fontname
               var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
                                         Number(contour.y) - Number(contour.controls[1].y));
               segment = new Segment(point, handleIn, handleOut);
-              console.log(segment);
               path.add(segment);
           }
           path.fillColor = {
@@ -196,8 +195,6 @@ Project $master.fontname
   function restore_original_coords(point) {
     var r = resize(point.x, point.y, scope.view.size.width - 100, scope.view.size.height - 100,
                EDGE_JSON.width, EDGE_JSON.height);
-    console.log('pointnr: ' + pointnumber + ', path: ' + pathnumber);
-    console.log(r.x + ', ' + (500 - r.y));
     return r;
   }
 
@@ -213,6 +210,7 @@ Project $master.fontname
   }
 
   var currentsegment = null;
+  var currentpointnr = null;
 
   function onMouseDown(event) {
     for (var k = 0; k < pathes.length; k++) {
@@ -220,13 +218,26 @@ Project $master.fontname
       if ((event.point - point).length < 5) {
         box.position = point;
         currentsegment = path;
+        currentpointnr = k + 1;
+        console.log(currentsegment.position);
         break;
       };
     }
   }
 
   function onMouseUp(event) {
-    currentsegment = null;
+    if (currentsegment) {
+      var r = restore_original_coords(event.point);
+      console.log(currentpointnr);
+      console.log(r);
+      jQuery.post('', {
+        pointnr: currentpointnr,
+        x: r.x,
+        y: r.y,
+        source: 'a'
+      });
+    }
+    currentsegment = currentpointnr = null;
   }
 
   function onMouseMove(event) {
@@ -315,8 +326,6 @@ Project $master.fontname
   function restore_original_coords(point) {
     var r = resize(point.x, point.y, scope.view.size.width - 100, scope.view.size.height - 100,
                EDGE_JSON.width, EDGE_JSON.height);
-    console.log('pointnr: ' + pointnumber + ', path: ' + pathnumber);
-    console.log(r.x + ', ' + (500 - r.y));
     return r;
   }
 

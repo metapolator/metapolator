@@ -273,8 +273,6 @@ class View(app.page):
         if not master:
             return web.notfound()
 
-        putFontAllglyphs(master, glyphid)
-
         if not models.GlyphOutline.exists(idmaster=master.idmaster,
                                           glyphname=glyphid):
             return web.notfound()
@@ -302,15 +300,15 @@ class View(app.page):
         if not master:
             return web.notfound()
 
-        x = web.input(pointid='', source='', x='', y='')
+        x = web.input(pointnr='', source='', x='', y='')
 
         query = models.GlyphOutline.filter(idmaster=master.idmaster,
                                            fontsource=x.source.upper(),
                                            glyphname=glyphid,
-                                           pointnr=x.pointid)
+                                           pointnr=x.pointnr)
         query.update(dict(x=x.x, y=x.y))
-
-        writeGlyphlist(master.get_fonts_directory(), glyphid)
+        web.ctx.orm.commit()
+        writeGlyphlist(master, glyphid)
         return ''
 
 
