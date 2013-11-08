@@ -63,7 +63,7 @@ GlobalParamForm = Form(Textbox('metapolation', notnull, size=5,
                                description="desc", value="0.2"),
                        Textbox('box', notnull, size=5,
                                description="box", value="1"),
-                       Button('Save Parameter Set'))
+                       Button('save', value='Save Parameter Set'))
 
 
 LocalParamForm = Form(Textbox('px', notnull, size=5,
@@ -93,7 +93,7 @@ LocalParamForm = Form(Textbox('px', notnull, size=5,
                       Textbox('over', notnull, size=5,
                               description="over", value="0.05"),
                       Hidden('ab_source', notnull, value='a'),
-                      Button('Save Parameter Set'))
+                      Button('save', value='Save Parameter Set'))
 
 
 def validate_existing_user(item):

@@ -64,8 +64,6 @@ class Regenerate(app.page):
         if not master:
             return web.notfound()
 
-        working_dir('static')
-
         prepare_environment_directory()
 
         putFontAllglyphs(master)
@@ -160,65 +158,69 @@ class Settings(app.page):
 
     path = '/view/([-.\w\d]+)/(\d+)/settings/'
 
+    @staticmethod
+    def get_local_params(idlocal, ab_source):
+        """ Return dictionary with local parameters. Each dictionary contains
+            `ab_source` key in addition. """
+        local = models.LocalParam.get(idlocal=idlocal)
+        d = dict(ab_source=ab_source)
+        if local:
+            d.update(local.as_dict())
+        return d
+
     def GET(self, name, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = model.Master.get_by_name(name, session.user)
+        master = models.Master.get(fontname=name)
         if not master:
             return web.notfound()
 
         globalparamform = GlobalParamForm()
-        globalparams = model.get_globalparams()
-        try:
-            globalparam = model.get_globalparam(master.idglobal)[0]
+
+        globalparam = models.GlobalParam.get(idglobal=master.idglobal)
+        if globalparam:
             globalparamform.fill(globalparam)
-        except IndexError:
-            pass
 
         localparamform_a = LocalParamForm()
-        localA = model.get_localparam(master.idlocalA)
-        d = dict()
-        if localA:
-            d.update(localA)
-        d.update({'ab_source': 'a'})
-        localparamform_a.fill(d)
+
+        local_params = Settings.get_local_params(master.idlocala, 'a')
+        localparamform_a.fill(local_params)
 
         localparamform_b = LocalParamForm()
-        localB = model.get_localparam(master.idlocalB)
-        d = dict()
-        if localB:
-            d.update(localB)
-        d.update({'ab_source': 'b'})
-        localparamform_b.fill(d)
 
-        localparameters = list(model.get_localparams())
+        local_params = Settings.get_local_params(master.idlocalb, 'b')
+        localparamform_a.fill(local_params)
 
-        return render.settings(master, glyphid, localparameters, globalparams, globalparamform, localparamform_a, localparamform_b)
+        localparameters = models.LocalParam.all()
+        globalparams = models.GlobalParam.all()
+
+        return render.settings(master, glyphid, localparameters, globalparams,
+                               globalparamform, localparamform_a, localparamform_b)
 
     def POST(self, name, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = model.Master.get_by_name(name, session.user)
+        master = models.Master.get(fontname=name)
         if not master:
             return web.notfound()
 
         form = LocalParamForm()
         if 'ab_source' in form.d and form.validates():
             if form.d.ab_source == 'a':
-                idlocal = master.idlocalA
+                idlocal = master.idlocala
             else:
-                idlocal = master.idlocalB
-            model.update_localparam(idlocal, form.d.px, form.d.width,
-                                    form.d.space, form.d.xheight, form.d.capital,
-                                    form.d.boxheight, form.d.ascender, form.d.descender,
-                                    form.d.inktrap, form.d.stemcut, form.d.skeleton,
-                                    form.d.superness, form.d.over)
-            master = model.Master.select_one(session.user, master.idmaster)
+                idlocal = master.idlocalb
+
+            values = form.d
+            del values['ab_source']
+            del values['save']
+
+            models.LocalParam.update(idlocal=idlocal, values=values)
             if model.writeGlobalParam(master):
                 makefont(working_dir(), master)
-            raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
+            raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
         formg = GlobalParamForm()
         if formg.validates():
@@ -345,7 +347,7 @@ class Fonts(app.page):
     def GET(self):
         if not is_loggedin():
             raise seeother('/login')
-        mmaster = list(model.get_masters())
+        mmaster = models.Master.all()
         fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
         fontlist.sort()
         form = FontForm()
@@ -359,7 +361,7 @@ class Font(app.page):
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        mmaster = list(model.get_masters())
+        mmaster = models.Master.all()
 
         fontname = cFont.fontname
         fontna = cFont.fontna
@@ -410,7 +412,7 @@ class Font(app.page):
 
         master = None
         if id > 0 and id < 1000:
-            master = model.get_master(id)
+            master = models.Master.get(idmaster=id)
 
         return render.font1(fontlist, form, mmaster, cFont, master)
 
@@ -745,9 +747,9 @@ class CreateProject(app.page):
             except (zipfile.BadZipfile, OSError, IOError):
                 if master:
                     fontpath = master.get_fonts_directory()
-                    model.Master.delete(where='idmaster=$id', vars={'id': master.id})
-                    model.DBGlyphOutline.delete(where='idmaster=$id', vars={'id': master.id})
-                    model.GlyphParam.delete(where='idmaster=$id', vars={'id': master.id})
+                    models.Master.delete(idmaster=master.id)
+                    models.GlyphOutline.delete(idmaster=master.id)
+                    models.GlyphParam.delete(idmaster=master.id)
                     shutil.rmtree(fontpath)
             return seeother('/')
 

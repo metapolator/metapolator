@@ -1094,7 +1094,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
     ifile.write("u#:=%.3fpt#;\n" % u)
 
     # local parameters A
-    imlo = get_localparam(master.idlocalA)
+    imlo = get_localparam(master.idlocala)
     hasA = False
     if imlo:
         ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
@@ -1113,7 +1113,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
         hasA = True
 
     # local parameters B
-    imlo = get_localparam(master.idlocalB)
+    imlo = get_localparam(master.idlocalb)
     hasB = False
     if imlo:
         ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
@@ -1145,16 +1145,13 @@ def writeGlobalParam(master):
     #
     globalparam = list(get_globalparam(master.idglobal))
 
-    filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
-                       '%s.mf' % master.FontName)
+    filename = op.join(master.get_fonts_directory(), '%s.mf' % master.fontname)
     result1 = writeParams(filename, master, globalparam)
 
-    filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
-                       '%sA.mf' % master.FontName)
+    filename = op.join(master.get_fonts_directory(), '%sA.mf' % master.fontname)
     result2 = writeParams(filename, master, globalparam, 0)
 
-    filename = op.join(working_dir('fonts/{0}'.format(master.idmaster)),
-                       '%sB.mf' % master.FontName)
+    filename = op.join(master.get_fonts_directory(), '%sB.mf' % master.fontname)
     result3 = writeParams(filename, master, globalparam, 1)
     return result1 and result2 and result3
 

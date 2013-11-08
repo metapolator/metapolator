@@ -10,34 +10,31 @@ from models import Glyph
 
 
 def project_exists(master):
-    mf_file1 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                       mf_filename(master.FontNameA))
+    mf_file1 = op.join(master.get_fonts_directory(), mf_filename(master.fontnamea))
     if op.exists(mf_file1):
         return True
 
-    if master.FontNameB:
-        mf_file2 = op.join(working_dir(), 'fonts/{0}'.format(master.idmaster),
-                           mf_filename(master.FontNameB))
+    if master.fontnameb:
+        mf_file2 = op.join(master.get_fonts_directory(), mf_filename(master.fontnameb))
         return op.exists(mf_file2)
 
 
 def makefont(working_dir, master):
     if not project_exists(master):
         return False
-    fontpath = 'fonts/{0}'.format(master.idmaster)
 
     ufo2mf(master)
 
-    os.environ['MFINPUTS'] = op.join(working_dir, fontpath)
-    writeGlyphlist(fontpath)
+    os.environ['MFINPUTS'] = master.get_fonts_directory()
+    writeGlyphlist(master)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sA' % master.FontName)
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sA' % master.fontname)
     os.system(strms)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sB' % master.FontName)
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sB' % master.fontname)
     os.system(strms)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.FontName)
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.fontname)
     os.system(strms)
     return True
 
@@ -51,11 +48,9 @@ def fnextension(filename):
 
 
 def ufo2mf(master):
-    fontpath = 'fonts/{0}'.format(master.idmaster)
-
-    dirnamef1 = working_dir(op.join(fontpath, master.FontNameA, "glyphs"))
-    dirnamef2 = working_dir(op.join(fontpath, master.FontNameB or master.FontNameA, "glyphs"))
-    dirnamep1 = working_dir(op.join(fontpath, "glyphs"))
+    dirnamef1 = working_dir(op.join(master.get_fonts_directory('a'), "glyphs"))
+    dirnamef2 = working_dir(op.join(master.get_fonts_directory('b'), "glyphs"))
+    dirnamep1 = working_dir(op.join(master.get_fonts_directory(), "glyphs"))
     if not op.exists(dirnamep1):
         os.makedirs(dirnamep1)
 
@@ -75,9 +70,9 @@ def ufo2mf(master):
     # cFont.timestamp = 1
 
 
-def writeGlyphlist(fontpath, glyphid=None):
-    ifile = open(working_dir(op.join(fontpath, "glyphlist.mf")), "w")
-    dirnamep1 = working_dir(op.join(fontpath, "glyphs"))
+def writeGlyphlist(master, glyphid=None):
+    ifile = open(op.join(master.get_fonts_directory(), "glyphlist.mf"), "w")
+    dirnamep1 = working_dir(op.join(master.get_fonts_directory(), "glyphs"))
 
     charlist1 = [f for f in os.listdir(dirnamep1)]
 

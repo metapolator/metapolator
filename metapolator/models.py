@@ -222,14 +222,38 @@ class Master(Base):
             return
 
     def get_fonts_directory(self, ab_source=None):
+        """
+        Return uploaded user font project directory.
+
+        If ab_source set then return FontA or FontB directories in fonts
+        project directory.
+
+        >>> master = query(Master).filter(idmaster=1).one()
+        >>> master.get_fonts_directory()
+        /var/www/webpy-app/metapolator/users/1/fonts/1
+        >>> master.get_fonts_directory('a')
+        /var/www/webpy-app/metapolator/users/1/fonts/1/FontNameA.UFO
+        >>> master.get_fonts_directory('b')
+        /var/www/webpy-app/metapolator/users/1/fonts/1/FontNameB.UFO
+
+        If FontB is not set then it returns FontA for that
+
+        >>> master = query(Master).filter(idmaster=2).one()
+        >>> master.get_fonts_directory()
+        /var/www/webpy-app/metapolator/users/1/fonts/1
+        >>> master.get_fonts_directory('a')
+        /var/www/webpy-app/metapolator/users/1/fonts/1/FontNameA.UFO
+        >>> master.get_fonts_directory('b')
+        /var/www/webpy-app/metapolator/users/1/fonts/1/FontNameA.UFO
+        """
         fonts_directory = op.join(working_dir(), 'fonts', str(self.idmaster))
+        if not ab_source:
+            return fonts_directory
         if ab_source.lower() == 'a':
             return op.join(fonts_directory, self.fontnamea)
         elif ab_source.lower() == 'b' and self.fontnameb:
             return op.join(fonts_directory, self.fontnameb)
-        elif ab_source.lower() == 'b':
-            return op.join(fonts_directory, self.fontnamea)
-        return fonts_directory
+        return op.join(fonts_directory, self.fontnamea)
 
     @classmethod
     def exists(cls, **kwargs):
@@ -248,7 +272,7 @@ class Master(Base):
     def update(cls, values={}, **kwargs):
         if not values:
             return
-        query(cls).filter_by(*kwargs).update(values)
+        query(cls).filter_by(**kwargs).update(values)
 
     @classmethod
     def get(cls, **kwargs):
@@ -257,6 +281,11 @@ class Master(Base):
             return query(cls).filter_by(**kwargs).one()
         except NoResultFound:
             return None
+
+    @classmethod
+    def all(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        return query(cls).filter_by(**kwargs)
 
 
 class LocalParam(Base):
@@ -280,6 +309,9 @@ class LocalParam(Base):
     superness = Column(Float, default=1)
     over = Column(Float, default=0.1)
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     @classmethod
     def get(cls, **kwargs):
         kwargs.update({'user_id': session.user})
@@ -287,6 +319,17 @@ class LocalParam(Base):
             return query(cls).filter_by(**kwargs).one()
         except NoResultFound:
             return None
+
+    @classmethod
+    def all(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        return query(cls).filter_by(**kwargs)
+
+    @classmethod
+    def update(cls, values={}, **kwargs):
+        if not values:
+            return
+        query(cls).filter_by(**kwargs).update(values)
 
 
 class GlobalParam(Base):
@@ -304,6 +347,19 @@ class GlobalParam(Base):
     ascl = Column(Float, default=2)
     des = Column(Float, default=2)
     box = Column(Float, default=10)
+
+    @classmethod
+    def get(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        try:
+            return query(cls).filter_by(**kwargs).one()
+        except NoResultFound:
+            return None
+
+    @classmethod
+    def all(cls, **kwargs):
+        kwargs.update({'user_id': session.user})
+        return query(cls).filter_by(**kwargs)
 
 
 if __name__ == "__main__":

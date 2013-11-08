@@ -1,6 +1,6 @@
 $def with (master, glyphid, localparameters, globalparams, globalparamform, localparamform_a, localparamform_b)
 <title>
-Project $master.FontName
+Project $master.fontname
 </title>
 <style>
     .row h4 {
@@ -22,18 +22,18 @@ Project $master.FontName
         <h4>Font A</h4>
         <h4>Local</h4>
 
-        <form action="/view/$master.FontName/$glyphid/settings/rest/create/" method="post">
+        <form action="/view/$master.fontname/$glyphid/settings/rest/create/" method="post">
             <input type="submit" class="btn btn-large" value="Create Local Parameters">
             <input type="hidden" name="create" value="a">
         </form>
 
-        <form action="/view/$master.FontName/$glyphid/settings/rest/update/" method="post">
+        <form action="/view/$master.fontname/$glyphid/settings/rest/update/" method="post">
             <input type="hidden" name="update" value="a">
             <select class="parameter-select" name="idlocal" id="">
                 <option value="">Choose Parameter Set</option>
                 $for local in localparameters:
                     <option name="idlocal" value="$local.idlocal"
-                        $if master.idlocalA == local.idlocal:
+                        $if master.idlocala == local.idlocal:
                             selected="selected"
                         >Local parameters $local.idlocal</option>
             </select>
@@ -43,17 +43,17 @@ Project $master.FontName
         <form action="" method="post">
         $:localparamform_a.render()
         </form>
-        <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
+        <a href="/view/$master.fontname/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
         <h4>Global</h4>
 
-        <form action="/view/$master.FontName/$glyphid/settings/rest/create/" method="post">
+        <form action="/view/$master.fontname/$glyphid/settings/rest/create/" method="post">
             <input type="submit" class="btn btn-large" value="Create Global Parameters">
             <input type="hidden" name="create" value="g">
         </form>
 
-        <form action="/view/$master.FontName/$glyphid/settings/rest/update/" method="post">
+        <form action="/view/$master.fontname/$glyphid/settings/rest/update/" method="post">
             <input type="hidden" name="update" value="g">
             <select class="parameter-select" name="idglobal" id="">
                 <option value="">Choose Parameter Set</option>
@@ -70,24 +70,24 @@ Project $master.FontName
         $:globalparamform.render()
         </form>
 
-        <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
+        <a href="/view/$master.fontname/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
         <h4>Font B</h4>
         <h4>Local</h4>
 
-        <form action="/view/$master.FontName/$glyphid/settings/rest/create/" method="post">
+        <form action="/view/$master.fontname/$glyphid/settings/rest/create/" method="post">
             <input type="submit" class="btn btn-large" value="Create Local Parameters">
             <input type="hidden" name="create" value="b">
         </form>
 
-        <form action="/view/$master.FontName/$glyphid/settings/rest/update/" method="post">
+        <form action="/view/$master.fontname/$glyphid/settings/rest/update/" method="post">
             <input type="hidden" name="update" value="b">
             <select class="parameter-select" name="idlocal" id="">
                 <option value="">Choose Parameter Set</option>
                 $for local in localparameters:
                     <option value="$local.idlocal"
-                        $if master.idlocalB == local.idlocal:
+                        $if master.idlocalb == local.idlocal:
                             selected="selected"
                         >Local parameters $local.idlocal</option>
             </select>
@@ -98,6 +98,6 @@ Project $master.FontName
         $:localparamform_b.render()
         </form>
 
-        <a href="/view/$master.FontName/$glyphid/">Back to editor</a>
+        <a href="/view/$master.fontname/$glyphid/">Back to editor</a>
     </div>
 </div>
