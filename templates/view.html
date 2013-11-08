@@ -227,13 +227,17 @@ Project $master.fontname
 
   function onMouseUp(event) {
     if (currentsegment) {
-      var r = restore_original_coords(event.point);
       console.log(currentpointnr);
-      console.log(r);
+
+      var x = event.point.x;
+      var y = event.point.y - 200;
+      var xycoord = restore_original_coords(new Point(x, y));
+      console.log(xycoord);
+
       jQuery.post('', {
         pointnr: currentpointnr,
-        x: r.x,
-        y: r.y,
+        x: xycoord.x,
+        y: 500 - xycoord.y,
         source: 'a'
       });
     }
