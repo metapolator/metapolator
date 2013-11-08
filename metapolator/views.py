@@ -61,7 +61,7 @@ class Regenerate(app.page):
     path = '/regenerate/(\d+)'
 
     def GET(self, id):
-        master = model.get_master(id)
+        master = models.Master.get(idmaster=id)
         if not master:
             return web.notfound()
 
