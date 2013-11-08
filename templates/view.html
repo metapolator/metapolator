@@ -108,10 +108,18 @@ Project $master.fontname
               var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
                                         Number(contour.y) - Number(contour.controls[1].y));
               segment = new Segment(point, handleIn, handleOut);
-              // setText(point);
               console.log(segment);
               path.add(segment);
           }
+          path.fillColor = {
+              hue: 360 * Math.random(),
+              saturation: 1,
+              brightness: 1,
+              alpha: 0.5
+          };
+          path.closed = true;
+          path.strokeColor = new Color(0.5, 0, 0.5);
+          path.position.y += +200;
           pathes.push(path);
       }
   }
@@ -151,7 +159,6 @@ Project $master.fontname
       for (var j = 0; j < edges[i].contours.length; j++) {
           var path = new Path();
           var contours = edges[i].contours[j];
-          console.log(j + ' segment');
           for (var k = 0; k < contours.length; k++) { // contours.length
               contour = contours[k];
               var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
@@ -272,7 +279,6 @@ Project $master.fontname
       for (var j = 0; j < edges[i].contours.length; j++) {
           var path = new Path();
           var contours = edges[i].contours[j];
-          console.log(j + ' segment');
           for (var k = 0; k < contours.length; k++) { // contours.length
               contour = contours[k];
               var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
