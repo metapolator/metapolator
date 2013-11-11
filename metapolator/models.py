@@ -360,10 +360,10 @@ class GlobalParam(Base):
     metapolation = Column(Float, default=0)
     unitwidth = Column(Float, default=0)
     fontsize = Column(Float, default=10)
-    mean = Column(Float, default=5)
-    cap = Column(Float, default=8)
-    ascl = Column(Float, default=2)
-    des = Column(Float, default=2)
+    mean = Column(Float, default=5, doc='height of lower case')
+    cap = Column(Float, default=8, doc='height of uppercase')
+    ascl = Column(Float, default=2, doc='highest height of talles character')
+    des = Column(Float, default=2, doc='lowest point in glyphs')
     box = Column(Float, default=10)
 
     @classmethod
