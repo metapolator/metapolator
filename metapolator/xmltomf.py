@@ -1435,7 +1435,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 leftpval.append(ileftpval)
             else:
                 leftp.append("")
-                leftp.append(0)
+                leftpval.append(0)
 
             if irightp is not None :
                 irightpval = param.rightp
@@ -1584,6 +1584,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     zzn.sort()
     zeile = ""
     semi = ";"
+
+    print leftp
 
     fip.write('\n')
     for i in range(len(zzn) - 1):
