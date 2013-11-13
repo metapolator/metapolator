@@ -75,7 +75,7 @@ def writeGlyphlist(master, glyphid=None):
 
     for ch1 in charlist1:
         fnb, ext = buildfname(ch1)
-        if (not glyphid or glyphid == fnb) and ext in ["mf"]:
+        if (not glyphid or str(glyphid) == fnb) and ext in ["mf"]:
             ifile.write("input glyphs/" + ch1 + "\n")
     ifile.close()
 
