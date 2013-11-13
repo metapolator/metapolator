@@ -309,6 +309,15 @@ class View(app.page):
         query.update(dict(x=x.x, y=x.y))
         web.ctx.orm.commit()
         writeGlyphlist(master, glyphid)
+
+        glyphA = models.Glyph.get(idmaster=master.idmaster,
+                                  fontsource='A', name=glyphid)
+        glyphB = models.Glyph.get(idmaster=master.idmaster,
+                                  fontsource='A', name=glyphid)
+
+        import xmltomf
+        xmltomf.xmltomf1(master, glyphA, glyphB)
+        makefont(working_dir(), master)
         return ''
 
 

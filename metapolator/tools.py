@@ -25,7 +25,7 @@ def makefont(working_dir, master):
     if not project_exists(master):
         return False
 
-    ufo2mf(master)
+    # ufo2mf(master)
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
     writeGlyphlist(master)
@@ -62,14 +62,9 @@ def ufo2mf(master):
     for ch1 in charlist1:
         if ch1 in charlist2:
             fnb, ext = buildfname(ch1)
-            # if fnb == cFont.glyphunic or cFont.timestamp == 0 or cFont.mfoption == "1":
-            newfile = fnb
-            newfilename = newfile + ".mf"
-            # commd2 = "python parser_pino_mono.py " +ch1 +" " +dirnamef1 +" " +dirnamef2 +" > " +dirnamep1 +"/" +newfilename
-            # os.system(commd2)
-            xmltomf.xmltomf1(ch1, dirnamef1, dirnamef2, dirnamep1, newfilename)
-
-    # cFont.timestamp = 1
+            glyphA = Glyph.get(idmaster=master.idmaster, fontsource='A', name=fnb)
+            glyphB = Glyph.get(idmaster=master.idmaster, fontsource='B', name=fnb)
+            xmltomf.xmltomf1(master, glyphA, glyphB)
 
 
 def writeGlyphlist(master, glyphid=None):
@@ -81,7 +76,7 @@ def writeGlyphlist(master, glyphid=None):
     for ch1 in charlist1:
         fnb, ext = buildfname(ch1)
         if (not glyphid or glyphid == fnb) and ext in ["mf"]:
-            ifile.write("input glyphs/"+ch1+"\n")
+            ifile.write("input glyphs/" + ch1 + "\n")
     ifile.close()
 
 
