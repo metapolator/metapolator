@@ -287,14 +287,14 @@ class View(app.page):
         a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
         b_original_glyphjson = get_edges_json_from_db(master, glyphid, 'B')
 
-        glyphA = models.Glyph.get(idmaster=master.idmaster,
-                                  fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(idmaster=master.idmaster,
-                                  fontsource='A', name=glyphid)
+        # glyphA = models.Glyph.get(idmaster=master.idmaster,
+        #                           fontsource='A', name=glyphid)
+        # glyphB = models.Glyph.get(idmaster=master.idmaster,
+        #                           fontsource='A', name=glyphid)
 
-        import xmltomf
-        xmltomf.xmltomf1(master, glyphA, glyphB)
-        makefont(working_dir(), master)
+        # import xmltomf
+        # xmltomf.xmltomf1(master, glyphA, glyphB)
+        # makefont(working_dir(), master)
 
         return render.view(master, glyphid, A_glyphjson, B_glyphjson,
                            M_glyphjson, localparametersA, localparametersB,

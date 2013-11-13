@@ -28,7 +28,7 @@ def makefont(working_dir, master):
     # ufo2mf(master)
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
-    writeGlyphlist(master)
+    # writeGlyphlist(master)
 
     strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sA' % master.fontname)
     os.system(strms)
