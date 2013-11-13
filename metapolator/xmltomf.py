@@ -1799,10 +1799,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 #     zeile += " shifted (0, y" + str(penshiftedyval[i]) + ")"
 
                 if superleft[i] != "":
-                    zeile += strtwo + superleft[i]+"("+str(zitem)+"e," +str(zitemsuper)+"e, ["+str(superleftval[i]) + '+ (metapolation * (' + str(superleftvalB[i])+ '-' +str(superleftval[i]) + '))])' + strtwo
+                    zeile += strtwo + superleft[i] + "(" + str(zitem) + "e," + str(zitemsuper) + "e, [" + str(superleftval[i]) + '+ (metapolation * (' + str(superleftvalB[i]) + '-' + str(superleftval[i]) + '))])' + strtwo
 
                 if superright[i] != "":
-                    zeile += strtwo + superright[i]+"("+str(zitem)+"e," +str(zitemsuper)+"e, ["+str(superrightval[i]) + '+ (metapolation * (' + str(superrightvalB[i])+ '-' +str(superrightval[i]) + '))])' + strtwo
+                    zeile += strtwo + superright[i] + "(" + str(zitem) + "e," + str(zitemsuper) + "e, [" + str(superrightval[i]) + '+ (metapolation * (' + str(superrightvalB[i]) + '-' + str(superrightval[i]) + '))])' + strtwo
 
                 if upp[i] != "":
                     zeile += "{up}"
