@@ -327,7 +327,9 @@ class View(app.page):
         import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
         makefont(working_dir(), master)
-        return ''
+
+        M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
+        return simplejson.dumps(M_glyphjson)
 
 
 class ViewFont(app.page):

@@ -51,98 +51,27 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                                   glyphname=glyphA.name)
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
 
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
-
     for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
         param = models.GlyphParam.get(**compositefilter_kwargs)
 
         znamel = re.match('z(\d+)l', param.pointname)
-
-        ix = item.x
-        iy = item.y
-
-        im = param.pointname
-
-        if znamel and im == znamel.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = "px" + str(zitem) + "l := " + str(xval[i]) + "u ; " + "py" + str(zitem) + "l := " + str(yval[i]) + "u ;"
-
-        fip.write("\n")
-        fip.write(zeile)
-
-# points for r
-
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
-
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
-
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
         znamer = re.match('z(\d+)r', param.pointname)
+        if znamel and param.pointname == znamel.group(0):
+            zeile = "px{index}l := {xvalue}u ; py{index}l := {yvalue}u ;"
+            zeile = zeile.format(index=znamel.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
 
-        ix = item.x
-        iy = item.y
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "px{index}r := {xvalue}u ; py{index}r := {yvalue}u ;"
+            zeile = zeile.format(index=znamer.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
 
-        im = param.pointname
-
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = "px" + str(zitem) + "r := " + str(xval[i]) + "u ; " + "py" + str(zitem) + "r := " + str(yval[i]) + "u ;"
-
-        fip.write("\n")
-        fip.write(zeile)
+        if zeile:
+            fip.write("\n")
+            fip.write(zeile)
 
 # reading mid points font A
 
