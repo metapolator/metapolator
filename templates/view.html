@@ -153,32 +153,36 @@ Project $master.fontname
     return {x: nx, y: ny}
   }
 
-  var edges = EDGE_JSON.edges;
-  var glyphpaths = [];
-  for (var i = 0; i < edges.length; i++) {
-      for (var j = 0; j < edges[i].contours.length; j++) {
-          var path = new Path();
-          var contours = edges[i].contours[j];
-          for (var k = 0; k < contours.length; k++) { // contours.length
-              contour = contours[k];
-              var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
-              var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
-                                       Number(contour.y) - Number(contour.controls[0].y));
-              var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
-                                        Number(contour.y) - Number(contour.controls[1].y));
-              path.add(new Segment(point, handleIn, handleOut));
-          }
-          path.closed = true;
-          path.position.y += +200;
-          path.fillColor = {
-              hue: 360 * Math.random(),
-              saturation: 1,
-              brightness: 1,
-              alpha: 0.5
-          };
-          glyphpaths.push(path);
-      }
+  function filledges(edges) {
+    var glyphpaths = [];
+    for (var i = 0; i < edges.length; i++) {
+        for (var j = 0; j < edges[i].contours.length; j++) {
+            var path = new Path();
+            var contours = edges[i].contours[j];
+            for (var k = 0; k < contours.length; k++) { // contours.length
+                contour = contours[k];
+                var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
+                var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
+                                         Number(contour.y) - Number(contour.controls[0].y));
+                var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
+                                          Number(contour.y) - Number(contour.controls[1].y));
+                path.add(new Segment(point, handleIn, handleOut));
+            }
+            path.closed = true;
+            path.position.y += +200;
+            path.fillColor = {
+                hue: 360 * Math.random(),
+                saturation: 1,
+                brightness: 1,
+                alpha: 0.5
+            };
+            glyphpaths.push(path);
+        }
+    }
   }
+
+  filledges(EDGE_JSON.edges);
+  
 
   var pathes = [];
   for (var i = 0; i < JSON.points.length; i++) {
@@ -233,8 +237,9 @@ Project $master.fontname
           x: xycoord.x,
           y: 500 - xycoord.y,
           source: 'a'
-        }, function( data ) {
-          
+        }, function(data) {
+          var json = jQuery.parseJSON(data).A;
+          filledges(json.edges);
         });
     }
     currentsegment = currentpointnr = null;
