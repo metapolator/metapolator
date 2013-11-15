@@ -101,6 +101,10 @@ class GlyphOutline(Base):
         except NoResultFound:
             return None
 
+    @classmethod
+    def delete(cls, instance):
+        web.ctx.orm.delete(instance)
+
 
 class GlyphParam(Base):
 
@@ -164,6 +168,10 @@ class GlyphParam(Base):
             return query(cls).filter_by(**kwargs).one()
         except NoResultFound:
             return None
+
+    @classmethod
+    def delete(cls, instance):
+        web.ctx.orm.delete(instance)
 
 
 class GroupParam(Base):
@@ -291,6 +299,10 @@ class Master(Base):
             return query(cls).filter_by(**kwargs).one()
         except NoResultFound:
             return None
+
+    @classmethod
+    def delete(cls, instance):
+        web.ctx.orm.delete(instance)
 
     @classmethod
     def all(cls, **kwargs):

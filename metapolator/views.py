@@ -737,10 +737,11 @@ class CreateProject(app.page):
                 makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
                 if master:
-                    fontpath = master.get_fonts_directory()
                     models.Master.delete(idmaster=master.id)
                     models.GlyphOutline.delete(idmaster=master.id)
                     models.GlyphParam.delete(idmaster=master.id)
+
+                    fontpath = master.get_fonts_directory()
                     shutil.rmtree(fontpath)
             return seeother('/fonts/')
 

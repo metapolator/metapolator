@@ -22,30 +22,32 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     if not stdout_fip:
         path = working_dir(op.join(master.get_fonts_directory(), "glyphs"))
-        print "write to %s" % os.path.join(path, '%s.mf' % glyphA.name)
         fip = open(os.path.join(path, '%s.mf' % glyphA.name), 'w')
     else:
         fip = stdout_fip
 
-    fip.write("""% File parsed with Metapolator %
+    fip.write("% File parsed with Metapolator %\n")
+    fip.write("% box dimension definition %\n")
 
-% box dimension definition %
-""")
     w = str(glyphA.width / 100)
     w2 = str(glyphB.width / 100)
     g = glyphA.name  # get from glyphA as we sure that glypha and glyphb exist in font project
     #  u = glyphA.unicode
 
     fip.write("\n")
-    fip.write('beginfontchar(' + glyphA.name + ', ((' + w + '*A_width + metapolation * (' + w2 + '*B_width - ' + w + '*A_width)) + spacing_' + g + "R) * width_" + g + ", 0, 0 );")
 
-# point coordinates font A ################
+    str_ = ('beginfontchar({glyph}, (({width}*A_width + metapolation * '
+            '({bwidth}*B_width - {width}*A_width)) + '
+            'spacing_{glyph}R) * width_{glyph}, 0, 0 );')
+    fip.write(str_.format(width=w, glyph=glyphA.name, bwidth=glyphB.width))
+
+    # point coordinates font A ################
 
     fip.write("\n")
     fip.write("""% point coordinates font A""")
     fip.write("\n")
 
-# points for l
+    # points for l
 
     compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
                                   glyphname=glyphA.name)
@@ -74,7 +76,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             fip.write("\n")
             fip.write(zeile)
 
-# reading mid points font A
+    # reading mid points font A
 
     fip.write("\n")
     fip.write("""% point coordinates font A""")
@@ -85,68 +87,57 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
     fip.write("\n")
 
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
-
+    index = 1
     for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
         param = models.GlyphParam.get(**compositefilter_kwargs)
 
         znamer = re.match('z(\d+)r', param.pointname)
 
-        ix = item.x
-        iy = item.y
+        if znamer and param.pointname == znamer.group(0):
+            zeile = ".5(px{0}l + px{0}r) = x2{0}0;".format(index)
+            fip.write(zeile + '\n')
 
-        im = param.pointname
+            zeile = ".5(py{0}l + py{0}r) = y2{0}0;".format(index)
+            fip.write(zeile + '\n')
 
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = ".5(px" + str(zitem) + "l + px" + str(zitem) + "r) = x2" + str(zitem) + "0;"
-        fip.write(zeile)
-
-        fip.write("\n")
-        zeile = ".5(py" + str(zitem) + "l + py" + str(zitem) + "r) = y2" + str(zitem) + "0;"
-
-        fip.write(zeile)
-        fip.write("\n")
+            index += 1
 
     fip.write("\n")
     fip.write("""% point coordinates font A""")
-    fip.write("\n")
+    fip.write("\n\n")
 
     compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
                                   glyphname=glyphA.name)
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
 
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
+    index = 1
+    for item in itemlist:
+        compositefilter_kwargs['pointnr'] = item.pointnr
+        param = models.GlyphParam.get(**compositefilter_kwargs)
+
+        znamer = re.match('z(\d+)r', param.pointname)
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "px{0}l = x{0}Bl; py{0}l = y{0}Bl;".format(index)
+            fip.write(zeile + '\n')
+
+            zeile = "px{0}r = x{0}Br; py{0}r = y{0}Br;".format(index)
+            fip.write(zeile + '\n')
+
+            index += 1
+
+    # reading pen widths Font A ################
+
+    fip.write("\n")
+    fip.write("""% pen widhts Font A """)
+    fip.write("\n\n")
+
+    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
+                                  glyphname=glyphA.name)
+    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
+
+    index = 1
 
     for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
@@ -154,105 +145,16 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         znamer = re.match('z(\d+)r', param.pointname)
 
-        ix = item.x
-        iy = item.y
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "dist{0} := length (z{0}Bl-z{0}Br);".format(index)
+            fip.write(zeile + '\n')
 
-        im = param.pointname
-
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = "px" + str(zitem) + "l = x" + str(zitem) + "Bl; py" + str(zitem) + "l = y" + str(zitem) + "Bl; "
-        fip.write(zeile)
-
-        fip.write("\n")
-        zeile = "px" + str(zitem) + "r = x" + str(zitem) + "Br; py" + str(zitem) + "r = y" + str(zitem) + "Br; "
-
-        fip.write(zeile)
-        fip.write("\n")
-
-
-
-
-# reading pen widhts Font A ################
-
-    fip.write("\n")
-    fip.write( """% pen widhts Font A """)
-    fip.write("\n")
-
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
-
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
-
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
-        znamer = re.match('z(\d+)r', param.pointname)
-
-        ix = item.x
-        iy = item.y
-
-        im = param.pointname
-
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = "dist" + str(zitem) + " := length (z" + str(zitem) + "Bl-z" + str(zitem) + "Br); "
-        fip.write(zeile)
-
-        fip.write("\n")
-
-
-
-
+            index += 1
 
 # point coordinates font B ################
 
     fip.write("\n")
-    fip.write( """% point coordinates font B""")
+    fip.write("""% point coordinates font B""")
     fip.write("\n")
 
 # points for l
@@ -288,62 +190,27 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     fip.write("\n")
     fip.write("""% point coordinates font B""")
-    fip.write("\n")
+    fip.write("\n\n")
 
     compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
                                   glyphname=glyphB.name)
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
 
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
-
+    index = 1
     for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
         param = models.GlyphParam.get(**compositefilter_kwargs)
 
         znamer = re.match('z(\d+)r', param.pointname)
 
-        ix = item.x
-        iy = item.y
+        if znamer and param.pointname == znamer.group(0):
+            zeile = ".5(ppx{0}l + ppx{0}r) = x2{0}A;".format(index)
+            fip.write(zeile + '\n')
 
-        im = param.pointname
+            zeile = ".5(ppy{0}l + ppy{0}r) = y2{0}A;".format(index)
+            fip.write(zeile + '\n')
 
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append(ixval)
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append(iyval)
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = ".5(ppx" + str(zitem) + "l + ppx" + str(zitem) + "r) = x2" + str(zitem) + "A;"
-        fip.write(zeile)
-
-        fip.write("\n")
-        zeile = ".5(ppy" + str(zitem) + "l + ppy" + str(zitem) + "r) = y2" + str(zitem) + "A;"
-
-        fip.write(zeile)
-        fip.write("\n")
-
-
-
+            index += 1
 
 # reading fake l and r points Font B ################
 
@@ -356,12 +223,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
     fip.write("\n")
 
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
+    index = 1
 
     for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
@@ -369,149 +231,58 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         znamer = re.match('z(\d+)r', param.pointname)
 
-        ix = item.x
-        iy = item.y
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "ppx{0}l = x{0}Cl; ppy{0}l = y{0}Cl;".format(index)
+            fip.write(zeile + '\n')
 
-        im = param.pointname
+            zeile = "ppx{0}r = x{0}Cr; ppy{0}r = y{0}Cr;".format(index)
+            fip.write(zeile + '\n')
 
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = "ppx" + str(zitem) + "l = x" + str(zitem) + "Cl; ppy" + str(zitem) + "l = y" + str(zitem) + "Cl; "
-        fip.write(zeile)
-
-        fip.write("\n")
-        zeile = "ppx" + str(zitem) + "r = x" + str(zitem) + "Cr; ppy" + str(zitem) + "r = y" + str(zitem) + "Cr; "
-
-        fip.write(zeile)
-        fip.write("\n")
+            index += 1
 
 # reading pen widths Font B ################
 
     fip.write("\n")
-    fip.write( """% pen width Font B""")
-    fip.write("\n")
+    fip.write("""% pen width Font B""")
+    fip.write("\n\n")
 
     compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
                                   glyphname=glyphB.name)
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
 
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
-
+    index = 1
     for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
         param = models.GlyphParam.get(**compositefilter_kwargs)
 
         znamer = re.match('z(\d+)r', param.pointname)
 
-        ix = item.x
-        iy = item.y
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "dist{0}B := length (z{0}Cl - z{0}Cr);".format(index)
+            fip.write(zeile + '\n')
 
-        im = param.pointname
-
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = "dist" + str(zitem) + "B := length (z" + str(zitem) + "Cl - z" + str(zitem) + "Cr); "
-
-        fip.write(zeile)
-
-        fip.write("\n")
+            index += 1
 
 # pen angle (A and B, for B we dont need to read from db) ################
 
     fip.write("\n")
     fip.write("""% pen angle Font A""")
-    fip.write("\n")
+    fip.write("\n\n")
 
     compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
                                   glyphname=glyphA.name)
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
 
-    zzn = []
-    x = []
-    xval = []
-    y = []
-    yval = []
-    i = 1
-
+    index = 1
     for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
         param = models.GlyphParam.get(**compositefilter_kwargs)
 
         znamer = re.match('z(\d+)r', param.pointname)
 
-        ix = item.x
-        iy = item.y
-
-        im = param.pointname
-
-        if znamer and im == znamer.group(0):
-            zzn.append(i)
-
-            if ix is not None:
-                ixval = item.x
-                x.append("x")
-                xval.append('%.2f' % (ixval / 100.))
-
-            if iy is not None:
-                iyval = item.y
-                y.append("y")
-                yval.append('%.2f' % (iyval / 100.))
-
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-
-    for i in range(len(zzn)):
-        zitem = i + 1
-        zeile = "ang" + str(zitem) + " := angle ((z" + str(zitem) + "Br + (metapolation * (z" + str(zitem) + "Cr - z" + str(zitem) + "Br))) - (z" + str(zitem) + "Bl + (metapolation * (z" + str(zitem) + "Cl - z" + str(zitem) + "Bl))));"
-
-        fip.write(zeile)
-
-        fip.write("\n")
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "ang{0} := angle ((z{0}Br + (metapolation * (z{0}Cr - z{0}Br))) - (z{0}Bl + (metapolation * (z{0}Cl - z{0}Bl))));".format(index)
+            index += 1
 
 # reading extra pen angle Font B  ################
 
