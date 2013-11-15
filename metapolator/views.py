@@ -108,23 +108,20 @@ class SettingsRestUpdate(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = model.Master.get_by_name(name, session.user)
+        master = models.Master.get(fontname=name)
         if not master:
             return web.notfound()
 
         x = web.input(update='', idglobal='', idlocal='')
 
         if x['update'] == 'a':
-            model.Master.update(session.user, master.idmaster,
-                                idlocalA=x.idlocal)
+            master.idlocala = x.idlocal
         if x['update'] == 'b':
-            model.Master.update(session.user, master.idmaster,
-                                idlocalB=x.idlocal)
+            master.idlocalb = x.idlocal
         if x['update'] == 'g':
-            model.Master.update(session.user, master.idmaster,
-                                idglobal=x.idglobal)
+            master.idglobal = x.idglobal
 
-        raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
+        raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
 
 class SettingsRestCreate(app.page):
@@ -291,14 +288,15 @@ class View(app.page):
 
         localparametersA = models.LocalParam.get(idlocal=master.idlocala)
         localparametersB = models.LocalParam.get(idlocal=master.idlocalb)
+        globalparams = models.GlobalParam.get(idglobal=master.idglobal)
 
         a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
         b_original_glyphjson = get_edges_json_from_db(master, glyphid, 'B')
 
         return render.view(master, glyphid, A_glyphjson, B_glyphjson,
                            M_glyphjson, localparametersA, localparametersB,
-                           origins={'a': a_original_glyphjson,
-                                    'b': b_original_glyphjson})
+                           globalparams, origins={'a': a_original_glyphjson,
+                                                  'b': b_original_glyphjson})
 
     def POST(self, name, glyphid):
         if not is_loggedin():

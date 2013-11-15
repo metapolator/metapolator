@@ -12,6 +12,7 @@ import os.path as op
 import time
 import web
 import xmltomf
+import models
 
 from lxml import etree
 from passlib.hash import bcrypt
@@ -1072,14 +1073,14 @@ def writeParams(filename, master, globalparam, metapolation=None):
     box = 1.0
 
     metapolation = (metapolation is not None and metapolation) \
-        or (metapolation is None and globalparam[0].metapolation)
-    u = globalparam[0].unitwidth or 0
-    fontsize = globalparam[0].fontsize or 0
-    mean = globalparam[0].mean or mean
-    cap = globalparam[0].cap or cap
-    ascl = globalparam[0].ascl or ascl
-    des = globalparam[0].des or des
-    box = globalparam[0].box or box
+        or (metapolation is None and globalparam.metapolation)
+    u = globalparam.unitwidth or 0
+    fontsize = globalparam.fontsize or 0
+    mean = globalparam.mean or mean
+    cap = globalparam.cap or cap
+    ascl = globalparam.ascl or ascl
+    des = globalparam.des or des
+    box = globalparam.box or box
 
     ifile = open(filename, "w")
     # global parameters
@@ -1094,7 +1095,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
     ifile.write("u#:=%.3fpt#;\n" % u)
 
     # local parameters A
-    imlo = get_localparam(master.idlocala)
+    imlo = models.LocalParam.get(idlocal=master.idlocala)
     hasA = False
     if imlo:
         ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
@@ -1113,7 +1114,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
         hasA = True
 
     # local parameters B
-    imlo = get_localparam(master.idlocalb)
+    imlo = models.LocalParam.get(idlocal=master.idlocalb)
     hasB = False
     if imlo:
         ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
@@ -1143,7 +1144,9 @@ def writeGlobalParam(master):
     # prepare font.mf parameter file
     # write the file into the directory cFont.fontpath
     #
-    globalparam = list(get_globalparam(master.idglobal))
+    globalparam = models.GlobalParam.get(idglobal=master.idglobal)
+    if not globalparam:
+        return False
 
     filename = op.join(master.get_fonts_directory(), '%s.mf' % master.fontname)
     result1 = writeParams(filename, master, globalparam)

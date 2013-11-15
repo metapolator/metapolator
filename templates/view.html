@@ -1,4 +1,4 @@
-$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB, origins)
+$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB, globalparams, origins)
 <title>
 Project $master.fontname
 </title>
@@ -40,6 +40,20 @@ Project $master.fontname
 
     <div class="well">
       <h4>Global Parameters <small><a href="/view/$master.fontname/$glyphid/settings/">change</a></small></h4>
+
+      $if not globalparams:
+        <div class="label label-danger">This font has not specified global parameters</div>
+      $else:
+        <div style="font-family: monospace;">
+          metapolation: $globalparams.metapolation<br />
+          unitwidth: $globalparams.unitwidth<br />
+          fontsize: $globalparams.fontsize<br />
+          mean: $globalparams.mean<br />
+          cap: $globalparams.cap<br />
+          ascl: $globalparams.ascl<br />
+          des: $globalparams.des<br />
+          box: $globalparams.box
+        </div>
     </div>
   </div>
 
