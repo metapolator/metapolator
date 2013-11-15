@@ -415,16 +415,12 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         fip.write("\n")
         fip.write(zeile)
 
-
-
-
 # reading font Pen Positions Font B
 
-
     fip.write("\n")
-    fip.write( """% penposition font B""" )
+    fip.write("""% penposition font B""")
 
-    inattr= 0
+    inattr = 0
     ivn = 0
     strz = ""
     zzn = []
@@ -465,7 +461,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 startp.append("startp")
                 startpval.append(istartpval)
 
-            if ipenwidth is not None :
+            if ipenwidth is not None:
                 ipenwidthval = param.penwidth
                 penwidth.append("penwidth")
                 B_penwidthval.append(ipenwidthval)
@@ -473,20 +469,12 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 penwidth.append("")
                 B_penwidthval.append(0)
 
-
-# when using 4-spaces instead tabs it looks beatiful :)
-# any <> must be changed to !=
-# any != None must be changed to `is not None`
-
-
-
-
 # reading Pen Positions Font A
 
     fip.write("\n")
-    fip.write( """% penposition font A""" )
+    fip.write("""% penposition font A""")
 
-    inattr=0
+    inattr = 0
     ivn = 0
     strz = ""
     zzn = []
@@ -515,12 +503,12 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     startpval = []
 
     compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                      glyphname=glyphA.name)
+                                  glyphname=glyphA.name)
     itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
 
     i = 1
 
-    for item in itemlist :
+    for item in itemlist:
         compositefilter_kwargs['pointnr'] = item.pointnr
         param = models.GlyphParam.get(**compositefilter_kwargs)
 
@@ -590,8 +578,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             i += 1
 
     zzn.sort()
-    zeile =""
-    zeileend =""
+    zeile = ""
+    zeileend = ""
     semi = ";"
     close = ")"
 
@@ -599,28 +587,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         zitem = i + 1
 
         if penwidth[i]:
-            zeile = """penpos"""  +str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + "))"
-        else :
-            zeile = """penpos"""  +str(zitem) + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + ")"
+            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + "))"
+        else:
+            zeile = """penpos"""  + str(zitem) + "(dist" +str(zitem) + " + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * dist" +str(zitem) + ")"
 
-#        if stemcutter[i]:
-#        zeile = zeile + "-" + stemcutter[i] + "(" +  str(stemcutterval[i]) + ")"
-
-#    if inktrap_l[i]:
-#        zeile = zeile + "- inktrapcut (" +  str(inktrap_lval[i]) + ")"
-
-#    if inktrap_r[i]:
-#        zeile = zeile + "- inktrapcut (" +  str(inktrap_rval[i]) + ")"
-
-#    else:
-#        zeile = zeile
-
-        zeile = zeile + ", ang" +str(zitem) + ");"
+        zeile = zeile + ", ang" + str(zitem) + ");"
         fip.write("\n")
-        fip.write( zeile)
-
-
-
+        fip.write(zeile)
 
 # testing new center points
 

@@ -180,6 +180,9 @@ Project $master.fontname
 
   var pathes = [];
   for (var i = 0; i < JSON.points.length; i++) {
+    if (!JSON.points[i].iszpoint) {
+      continue;
+    }
     var point = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
     var path = new Path.Rectangle(point, 1);
     path.closed = true;

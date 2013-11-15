@@ -255,7 +255,15 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
         points = models.GlyphOutline.filter(idmaster=master.idmaster,
                                             fontsource=ab_source.upper(),
                                             glyphname=glyphid)
-        _points.append({'x': point.x, 'y': point.y, 'pointnr': point.pointnr})
+        param = models.GlyphParam.get(idmaster=master.idmaster,
+                                      fontsource=ab_source.upper(),
+                                      glyphname=glyphid,
+                                      pointnr=point.pointnr)
+        iszpoint = False
+        if re.match('z(\d+)[lr]', param.pointname):
+            iszpoint = True
+        _points.append({'x': point.x, 'y': point.y, 'pointnr': point.pointnr,
+                        'iszpoint': iszpoint})
 
     return simplejson.dumps({'width': glyph.width, 'points': _points})
 
@@ -277,15 +285,6 @@ class View(app.page):
                                           glyphname=glyphid):
             return web.notfound()
 
-        # >>>
-        import xmltomf
-        glyphA = models.Glyph.get(idmaster=master.idmaster,
-                                  fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(idmaster=master.idmaster,
-                                  fontsource='A', name=glyphid)
-        xmltomf.xmltomf1(master, glyphA, glyphB)
-        makefont(working_dir(), master)
-        # <<<
         A_glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
         B_glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
@@ -295,15 +294,6 @@ class View(app.page):
 
         a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
         b_original_glyphjson = get_edges_json_from_db(master, glyphid, 'B')
-
-        # glyphA = models.Glyph.get(idmaster=master.idmaster,
-        #                           fontsource='A', name=glyphid)
-        # glyphB = models.Glyph.get(idmaster=master.idmaster,
-        #                           fontsource='A', name=glyphid)
-
-        # import xmltomf
-        # xmltomf.xmltomf1(master, glyphA, glyphB)
-        # makefont(working_dir(), master)
 
         return render.view(master, glyphid, A_glyphjson, B_glyphjson,
                            M_glyphjson, localparametersA, localparametersB,
@@ -332,11 +322,9 @@ class View(app.page):
                                   fontsource='A', name=glyphid)
         glyphB = models.Glyph.get(idmaster=master.idmaster,
                                   fontsource='A', name=glyphid)
-
         import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
         makefont(working_dir(), master)
-
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
         return simplejson.dumps(M_glyphjson)
 
