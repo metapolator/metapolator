@@ -277,6 +277,15 @@ class View(app.page):
                                           glyphname=glyphid):
             return web.notfound()
 
+        # >>>
+        import xmltomf
+        glyphA = models.Glyph.get(idmaster=master.idmaster,
+                                  fontsource='A', name=glyphid)
+        glyphB = models.Glyph.get(idmaster=master.idmaster,
+                                  fontsource='A', name=glyphid)
+        xmltomf.xmltomf1(master, glyphA, glyphB)
+        makefont(working_dir(), master)
+        # <<<
         A_glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
         B_glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)

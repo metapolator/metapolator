@@ -283,6 +283,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         if znamer and param.pointname == znamer.group(0):
             zeile = "ang{0} := angle ((z{0}Br + (metapolation * (z{0}Cr - z{0}Br))) - (z{0}Bl + (metapolation * (z{0}Cl - z{0}Bl))));".format(index)
             index += 1
+            fip.write(zeile + '\n')
 
 # reading extra pen angle Font B  ################
 
