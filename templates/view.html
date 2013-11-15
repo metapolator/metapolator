@@ -193,8 +193,6 @@ Project $master.fontname
     pathes.push(path);
   }
 
-  var currentSegment, mode, type, pointnumber, pathnumber;
-
   function restore_original_coords(point) {
     var r = resize(point.x, point.y, scope.view.size.width - 100, scope.view.size.height - 100,
                EDGE_JSON.width, EDGE_JSON.height);
@@ -218,19 +216,22 @@ Project $master.fontname
   function onMouseDown(event) {
     for (var k = 0; k < pathes.length; k++) {
       var point = pathes[k].getNearestPoint(event.point);
+      console.log(point);
+      console.log(point.getDistance(event.point));
       if (point.getDistance(event.point) < 5) {
         box.position = point;
-        currentsegment = path;
+        currentsegment = pathes[k];
         currentpointnr = k + 1;
-        console.log(currentsegment.position);
-        break;
+
+        box.position = point;
+        return;
       };
     }
   }
 
   function onMouseUp(event) {
     if (currentsegment) {
-      console.log(currentpointnr);
+      // console.log(currentpointnr);
 
       var x = event.point.x;
       var y = event.point.y - 200;
@@ -242,13 +243,13 @@ Project $master.fontname
           y: 500 - xycoord.y,
           source: 'a'
         }, function( data ) {
-          alert(data);
+          // alert(data);
         });
     }
     currentsegment = currentpointnr = null;
   }
 
-  function onMouseMove(event) {
+  function onMouseDrag(event) {
     if (!currentsegment) {
       return;
     }
