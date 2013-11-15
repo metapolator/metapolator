@@ -184,8 +184,8 @@ Project $master.fontname
     var path = new Path.Rectangle(point, 1);
     path.closed = true;
     path.selected = true;
-    path.fullySelected = true;
-    path.strokeColor = new Color(0.5, 0, 0.5);
+//    path.fullySelected = true;
+//    path.strokeColor = new Color(0.5, 0, 0.5);
     path.position.y += +200;
     pathes.push(path);
   }
@@ -204,10 +204,10 @@ Project $master.fontname
       strokeWidth: '5'
   };
 
-  function onFrame(event) {
+//  function onFrame(event) {
     // Each frame, rotate the copy by 1 degree:
-    box.rotate(1);
-  }
+ //   box.rotate(1);
+ // }
 
   var currentsegment = null;
   var currentpointnr = null;
