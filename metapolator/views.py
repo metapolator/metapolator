@@ -329,7 +329,7 @@ class View(app.page):
         else:
             glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
         return simplejson.dumps({'M': M_glyphjson,
-                                 x.source.upper(): glyphjson})
+                                 'R': glyphjson})
 
 
 class ViewFont(app.page):

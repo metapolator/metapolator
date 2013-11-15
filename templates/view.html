@@ -86,42 +86,59 @@ Project $master.fontname
 </div>
 
 
-<script type="text/paperscript" canvas="canvas-m">
-  var EDGE_JSON = $:M_glyphjson;
-
-  function getPoint(x, y) {
-    width = EDGE_JSON.width;
-    height = EDGE_JSON.height;
-
+<script type="text/javascript">
+function resize(x, y, width, height, newwidth, newheight) {
     ratio = width / height;
     if (width > height) {
-      w = scope.view.size.width - 100;
+      w = newwidth;
       h = w / ratio;
     } else {
-      h = scope.view.size.height - 100;
+      h = newheight;
       w = h * ratio;
     }
     nx = w * x / width;
     ny = h * y / height;
+    return {x: nx, y: ny}
+}
 
-    return new Point(nx, ny)
-  }
+function Canvas(canvasid, width, height, source) {
+  this.paper = new paper.PaperScope();
+  this.paper.setup(canvasid);
+  this.width = Number(width);
+  this.height = Number(height);
+  this.source = source;
 
-  var edges = EDGE_JSON.edges;
-  var pathes = [];
+  this.tool = new this.paper.Tool();
+
+  this.tool.onMouseDown = this.onMouseDown.bind(this);
+  this.tool.onMouseUp = this.onMouseUp.bind(this);
+  this.tool.onMouseDrag = this.onMouseDrag.bind(this);
+}
+
+Canvas.prototype.getPoint = function(x, y) {
+  var r = resize(x, y, this.width, this.height, 390 - 100, 390 - 100)
+  return new this.paper.Point(r.x, r.y);
+}
+
+Canvas.prototype.restore_original_coords = function(point) {
+  return resize(point.x, point.y, 390 - 100, 390 - 100, this.width, this.height);
+}
+
+Canvas.prototype.renderGlyph = function(edges) {
+  this.glyphpaths = [];
   for (var i = 0; i < edges.length; i++) {
       for (var j = 0; j < edges[i].contours.length; j++) {
-          var path = new Path();
+          var path = new this.paper.Path();
           var contours = edges[i].contours[j];
           for (var k = 0; k < contours.length; k++) { // contours.length
               contour = contours[k];
 
-              var point = getPoint(Number(contour.x), 500 - Number(contour.y));
-              var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
+              var point = this.getPoint(Number(contour.x), 500 - Number(contour.y));
+              var handleIn = this.getPoint(Number(contour.controls[0].x) - Number(contour.x),
                                        Number(contour.y) - Number(contour.controls[0].y));
-              var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
+              var handleOut = this.getPoint(Number(contour.controls[1].x) - Number(contour.x),
                                         Number(contour.y) - Number(contour.controls[1].y));
-              segment = new Segment(point, handleIn, handleOut);
+              segment = new this.paper.Segment(point, handleIn, handleOut);
               path.add(segment);
           }
           path.fillColor = {
@@ -131,281 +148,129 @@ Project $master.fontname
               alpha: 0.5
           };
           path.closed = true;
-          path.strokeColor = new Color(0.5, 0, 0.5);
+          path.strokeColor = new this.paper.Color(0.5, 0, 0.5);
           path.position.y += +200;
-          pathes.push(path);
+          this.glyphpaths.push(path);
       }
   }
-</script>
+}
 
-
-<script type="text/paperscript" canvas="canvas-a">
-  var EDGE_JSON = $:A_glyphjson;
-
-  var JSON = $:origins['a'];
-
-  function getPoint(x, y, i) {
-    width = EDGE_JSON.width;
-    height = EDGE_JSON.height;
-
-    var r = resize(x, y, EDGE_JSON.width, EDGE_JSON.height,
-                   scope.view.size.width - 100, scope.view.size.height - 100)
-    return new Point(r.x, r.y);
+Canvas.prototype.onMouseDown = function(event) {
+  for (var k = 0; k < this.paths.length; k++) {
+    var point = this.paths[k].getNearestPoint(event.point);
+    if (point.getDistance(event.point) < 5) {
+      this.currentsegment = this.paths[k];
+      this.currentpointnr = k + 1;
+      this.box.position = point;
+      return;
+    };
   }
+}
 
-  function resize(x, y, width, height, newwidth, newheight) {
-    ratio = width / height;
-    if (width > height) {
-      w = newwidth;
-      h = w / ratio;
-    } else {
-      h = newheight;
-      w = h * ratio;
-    }
-    nx = w * x / width;
-    ny = h * y / height;
-    return {x: nx, y: ny}
+Canvas.prototype.onMouseDrag = function(event) {
+  if (!this.currentsegment) {
+    return;
   }
+  this.box.position = event.point;
+  this.currentsegment.position = event.point;
+};
 
-  function filledges(edges) {
-    var glyphpaths = [];
-    for (var i = 0; i < edges.length; i++) {
-        for (var j = 0; j < edges[i].contours.length; j++) {
-            var path = new Path();
-            var contours = edges[i].contours[j];
-            for (var k = 0; k < contours.length; k++) { // contours.length
-                contour = contours[k];
-                var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
-                var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
-                                         Number(contour.y) - Number(contour.controls[0].y));
-                var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
-                                          Number(contour.y) - Number(contour.controls[1].y));
-                path.add(new Segment(point, handleIn, handleOut));
-            }
-            path.closed = true;
-            path.position.y += +200;
-            path.fillColor = {
-                hue: 360 * Math.random(),
-                saturation: 1,
-                brightness: 1,
-                alpha: 0.5
-            };
-            glyphpaths.push(path);
+
+Canvas.prototype.onMouseUp = function(event) {
+  if (this.currentsegment) {
+    var x = event.point.x;
+    var y = event.point.y - 200;
+    var xycoord = this.restore_original_coords(new this.paper.Point(x, y));
+    jQuery.post('', {
+        pointnr: this.currentsegment.data.pointnr,
+        x: xycoord.x,
+        y: 500 - xycoord.y,
+        source: this.source
+      },
+      function(data) {
+        var json = jQuery.parseJSON(data).R;
+        for (var k = 0; k < this.glyphpaths.length; k++) {
+          this.glyphpaths[k].removeSegments();
         }
-    }
-    view.draw();
-    return glyphpaths;
+        this.renderGlyph(json.edges);
+        this.draw();
+
+        if (this.onGlyphLoaded) {
+          this.onGlyphLoaded(data);
+        }
+      }.bind(this)
+    );
   }
+  this.currentsegment = this.currentpointnr = null;
+};
 
-  var glyphpaths = [];
-  glyphpaths = filledges(EDGE_JSON.edges);
-  
-
-  var pathes = [];
-  for (var i = 0; i < JSON.points.length; i++) {
-    if (!JSON.points[i].iszpoint) {
+Canvas.prototype.setZpoints = function(json) {
+  this.paths = []
+  for (var i = 0; i < json.points.length; i++) {
+    if (!json.points[i].iszpoint) {
       continue;
     }
-    console.log(JSON.points[i]);
-    var point = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
-    var path = new Path.Rectangle(point, 1);
+    var point = this.getPoint(Number(json.points[i].x), 500 - Number(json.points[i].y), 0);
+    var path = new this.paper.Path.Rectangle(point, 1);
     path.closed = true;
     path.selected = true;
     path.position.y += +200;
-    path.data.pointnr = JSON.points[i].pointnr;
-    pathes.push(path);
+    path.data.pointnr = json.points[i].pointnr;
+    this.paths.push(path);
   }
+};
 
-  function restore_original_coords(point) {
-    var r = resize(point.x, point.y, scope.view.size.width - 100, scope.view.size.height - 100,
-               EDGE_JSON.width, EDGE_JSON.height);
-    return r;
-  }
-
-  var box = new Path.Rectangle(new Point(50, 50), new Size(50, 50));
-  box.style = {
+Canvas.prototype.showbox = function() {
+  this.box = new this.paper.Path.Rectangle(new this.paper.Point(50, 50), new this.paper.Size(50, 50));
+  this.box.style = {
       strokeColor: 'red',
       strokeWidth: '5'
   };
+};
 
-  var currentsegment = null;
-  var currentpointnr = null;
+Canvas.prototype.draw = function() {
+  this.paper.view.draw();
+};
 
-  function onMouseDown(event) {
-    for (var k = 0; k < pathes.length; k++) {
-      var point = pathes[k].getNearestPoint(event.point);
-      if (point.getDistance(event.point) < 5) {
-        box.position = point;
-        currentsegment = pathes[k];
-        currentpointnr = k + 1;
-        box.position = point;
-        return;
-      };
-    }
-  }
+jQuery(
+  function(){
+    var M_EDGE_JSON = $:M_glyphjson;
+    var M_canvas = new Canvas('canvas-m', M_EDGE_JSON.width, M_EDGE_JSON.height);
+    M_canvas.renderGlyph(M_EDGE_JSON.edges);
+    M_canvas.draw();
 
-  function onMouseUp(event) {
-    if (currentsegment) {
-      var x = event.point.x;
-      var y = event.point.y - 200;
-      var xycoord = restore_original_coords(new Point(x, y));
-      jQuery.post('', {
-          pointnr: currentsegment.data.pointnr,
-          x: xycoord.x,
-          y: 500 - xycoord.y,
-          source: 'a'
-        }, function(data) {
-          var json = jQuery.parseJSON(data).A;
-          for (var k = 0; k < glyphpaths.length; k++) {
-            glyphpaths[k].removeSegments();
-          }
-          glyphpaths = filledges(json.edges);
-        });
-    }
-    currentsegment = currentpointnr = null;
-  }
+    var A_EDGE_JSON = $:A_glyphjson;
+    var A_canvas = new Canvas('canvas-a', A_EDGE_JSON.width, A_EDGE_JSON.height, 'a');
+    A_canvas.renderGlyph(A_EDGE_JSON.edges);
+    A_canvas.setZpoints($:origins['a']);
+    A_canvas.showbox();
 
-  function onMouseDrag(event) {
-    if (!currentsegment) {
-      return;
-    }
-    box.position = event.point;
-    currentsegment.position = event.point;
-  }
-</script>
-
-
-<script type="text/paperscript" canvas="canvas-b">
-  var EDGE_JSON = $:B_glyphjson;
-
-  var JSON = $:origins['b'];
-
-  function getPoint(x, y, i) {
-    width = EDGE_JSON.width;
-    height = EDGE_JSON.height;
-
-    var r = resize(x, y, EDGE_JSON.width, EDGE_JSON.height,
-                   scope.view.size.width - 100, scope.view.size.height - 100)
-    return new Point(r.x, r.y);
-  }
-
-  function resize(x, y, width, height, newwidth, newheight) {
-    ratio = width / height;
-    if (width > height) {
-      w = newwidth;
-      h = w / ratio;
-    } else {
-      h = newheight;
-      w = h * ratio;
-    }
-    nx = w * x / width;
-    ny = h * y / height;
-    return {x: nx, y: ny}
-  }
-
-  function filledges(edges) {
-    var glyphpaths = [];
-    for (var i = 0; i < edges.length; i++) {
-        for (var j = 0; j < edges[i].contours.length; j++) {
-            var path = new Path();
-            var contours = edges[i].contours[j];
-            for (var k = 0; k < contours.length; k++) { // contours.length
-                contour = contours[k];
-                var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
-                var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
-                                         Number(contour.y) - Number(contour.controls[0].y));
-                var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
-                                          Number(contour.y) - Number(contour.controls[1].y));
-                path.add(new Segment(point, handleIn, handleOut));
-            }
-            path.closed = true;
-            path.position.y += +200;
-            path.fillColor = {
-                hue: 360 * Math.random(),
-                saturation: 1,
-                brightness: 1,
-                alpha: 0.5
-            };
-            glyphpaths.push(path);
+    A_canvas.onGlyphLoaded = function(canvas, data) {
+      var json = jQuery.parseJSON(data).M;
+        for (var k = 0; k < canvas.glyphpaths.length; k++) {
+          canvas.glyphpaths[k].removeSegments();
         }
-    }
-    view.draw();
-    return glyphpaths;
+        canvas.renderGlyph(json.edges);
+        canvas.draw();
+    }.bind(this, M_canvas);
+
+    A_canvas.draw();
+
+    var B_EDGE_JSON = $:B_glyphjson;
+    var B_canvas = new Canvas('canvas-b', B_EDGE_JSON.width, B_EDGE_JSON.height, 'b');
+    B_canvas.renderGlyph(B_EDGE_JSON.edges);
+    B_canvas.setZpoints($:origins['b']);
+    B_canvas.showbox();
+    B_canvas.draw();
+
+    B_canvas.onGlyphLoaded = function(data) {
+      var json = jQuery.parseJSON(data).M;
+        for (var k = 0; k < this.glyphpaths.length; k++) {
+          this.glyphpaths[k].removeSegments();
+        }
+        this.renderGlyph(json.edges);
+        this.draw();
+    }.bind(this, M_canvas);
   }
-
-  var glyphpaths = [];
-  glyphpaths = filledges(EDGE_JSON.edges);
-  
-
-  var pathes = [];
-  for (var i = 0; i < JSON.points.length; i++) {
-    if (!JSON.points[i].iszpoint) {
-      continue;
-    }
-    console.log(JSON.points[i]);
-    var point = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
-    var path = new Path.Rectangle(point, 1);
-    path.closed = true;
-    path.selected = true;
-    path.position.y += +200;
-    path.data.pointnr = JSON.points[i].pointnr;
-    pathes.push(path);
-  }
-
-  function restore_original_coords(point) {
-    var r = resize(point.x, point.y, scope.view.size.width - 100, scope.view.size.height - 100,
-               EDGE_JSON.width, EDGE_JSON.height);
-    return r;
-  }
-
-  var box = new Path.Rectangle(new Point(50, 50), new Size(50, 50));
-  box.style = {
-      strokeColor: 'red',
-      strokeWidth: '5'
-  };
-
-  var currentsegment = null;
-  var currentpointnr = null;
-
-  function onMouseDown(event) {
-    for (var k = 0; k < pathes.length; k++) {
-      var point = pathes[k].getNearestPoint(event.point);
-      if (point.getDistance(event.point) < 5) {
-        box.position = point;
-        currentsegment = pathes[k];
-        currentpointnr = k + 1;
-        box.position = point;
-        return;
-      };
-    }
-  }
-
-  function onMouseUp(event) {
-    if (currentsegment) {
-      var x = event.point.x;
-      var y = event.point.y - 200;
-      var xycoord = restore_original_coords(new Point(x, y));
-      jQuery.post('', {
-          pointnr: currentsegment.data.pointnr,
-          x: xycoord.x,
-          y: 500 - xycoord.y,
-          source: 'b'
-        }, function(data) {
-          var json = jQuery.parseJSON(data).B;
-          for (var k = 0; k < glyphpaths.length; k++) {
-            glyphpaths[k].removeSegments();
-          }
-          glyphpaths = filledges(json.edges);
-        });
-    }
-    currentsegment = currentpointnr = null;
-  }
-
-  function onMouseDrag(event) {
-    if (!currentsegment) {
-      return;
-    }
-    box.position = event.point;
-    currentsegment.position = event.point;
-  }
+);
 </script>
