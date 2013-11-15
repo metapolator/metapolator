@@ -39,7 +39,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     str_ = ('beginfontchar({glyph}, (({width}*A_width + metapolation * '
             '({bwidth}*B_width - {width}*A_width)) + '
             'spacing_{glyph}R) * width_{glyph}, 0, 0 );')
-    fip.write(str_.format(width=w, glyph=glyphA.name, bwidth=glyphB.width))
+    fip.write(str_.format(width=w, glyph=glyphA.name, bwidth=w2))
 
     # point coordinates font A ################
 

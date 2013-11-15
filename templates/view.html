@@ -183,6 +183,7 @@ Project $master.fontname
     if (!JSON.points[i].iszpoint) {
       continue;
     }
+    console.log(JSON.points[i]);
     var point = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
     var path = new Path.Rectangle(point, 1);
     path.closed = true;
@@ -190,6 +191,7 @@ Project $master.fontname
 //    path.fullySelected = true;
 //    path.strokeColor = new Color(0.5, 0, 0.5);
     path.position.y += +200;
+    path.data.pointnr = JSON.points[i].pointnr;
     pathes.push(path);
   }
 
@@ -216,13 +218,12 @@ Project $master.fontname
   function onMouseDown(event) {
     for (var k = 0; k < pathes.length; k++) {
       var point = pathes[k].getNearestPoint(event.point);
-      console.log(point);
-      console.log(point.getDistance(event.point));
       if (point.getDistance(event.point) < 5) {
         box.position = point;
         currentsegment = pathes[k];
         currentpointnr = k + 1;
 
+        console.log(point);
         box.position = point;
         return;
       };
@@ -232,13 +233,14 @@ Project $master.fontname
   function onMouseUp(event) {
     if (currentsegment) {
       // console.log(currentpointnr);
+      console.log(event.point);
+      console.log(currentsegment.data.pointnr);
 
       var x = event.point.x;
       var y = event.point.y - 200;
       var xycoord = restore_original_coords(new Point(x, y));
-
       jQuery.post('', {
-          pointnr: currentpointnr,
+          pointnr: currentsegment.data.pointnr,
           x: xycoord.x,
           y: 500 - xycoord.y,
           source: 'a'

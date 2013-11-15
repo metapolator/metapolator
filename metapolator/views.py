@@ -322,9 +322,9 @@ class View(app.page):
                                   fontsource='A', name=glyphid)
         glyphB = models.Glyph.get(idmaster=master.idmaster,
                                   fontsource='A', name=glyphid)
-        # import xmltomf
-        # xmltomf.xmltomf1(master, glyphA, glyphB)
-        # makefont(working_dir(), master)
+        import xmltomf
+        xmltomf.xmltomf1(master, glyphA, glyphB)
+        makefont(working_dir(), master)
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
         if x.source.upper() == 'A':
             glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
