@@ -154,7 +154,6 @@ Project $master.fontname
   }
 
   function filledges(edges) {
-    var glyphpaths = [];
     for (var i = 0; i < edges.length; i++) {
         for (var j = 0; j < edges[i].contours.length; j++) {
             var path = new Path();
@@ -176,7 +175,6 @@ Project $master.fontname
                 brightness: 1,
                 alpha: 0.5
             };
-            glyphpaths.push(path);
         }
     }
   }
@@ -283,44 +281,49 @@ Project $master.fontname
     return {x: nx, y: ny}
   }
 
-  var edges = EDGE_JSON.edges;
-  for (var i = 0; i < edges.length; i++) {
-      for (var j = 0; j < edges[i].contours.length; j++) {
-          var path = new Path();
-          var contours = edges[i].contours[j];
-          for (var k = 0; k < contours.length; k++) { // contours.length
-              contour = contours[k];
-              var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
-              var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
-                                       Number(contour.y) - Number(contour.controls[0].y));
-              var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
-                                        Number(contour.y) - Number(contour.controls[1].y));
-              path.add(new Segment(point, handleIn, handleOut));
-          }
-          path.closed = true;
-          path.position.y += +200;
-          path.fillColor = {
-              hue: 360 * Math.random(),
-              saturation: 1,
-              brightness: 1,
-              alpha: 0.5
-          };
-      }
+  function filledges(edges) {
+    for (var i = 0; i < edges.length; i++) {
+        for (var j = 0; j < edges[i].contours.length; j++) {
+            var path = new Path();
+            var contours = edges[i].contours[j];
+            for (var k = 0; k < contours.length; k++) { // contours.length
+                contour = contours[k];
+                var point = getPoint(Number(contour.x), 500 - Number(contour.y), k);
+                var handleIn = getPoint(Number(contour.controls[0].x) - Number(contour.x),
+                                         Number(contour.y) - Number(contour.controls[0].y));
+                var handleOut = getPoint(Number(contour.controls[1].x) - Number(contour.x),
+                                          Number(contour.y) - Number(contour.controls[1].y));
+                path.add(new Segment(point, handleIn, handleOut));
+            }
+            path.closed = true;
+            path.position.y += +200;
+            path.fillColor = {
+                hue: 360 * Math.random(),
+                saturation: 1,
+                brightness: 1,
+                alpha: 0.5
+            };
+        }
+    }
   }
+
+  filledges(EDGE_JSON.edges);
+  
 
   var pathes = [];
   for (var i = 0; i < JSON.points.length; i++) {
+    if (!JSON.points[i].iszpoint) {
+      continue;
+    }
+    console.log(JSON.points[i]);
     var point = getPoint(Number(JSON.points[i].x), 500 - Number(JSON.points[i].y), 0);
     var path = new Path.Rectangle(point, 1);
     path.closed = true;
     path.selected = true;
-    path.fullySelected = true;
-    path.strokeColor = new Color(0.5, 0, 0.5);
     path.position.y += +200;
+    path.data.pointnr = JSON.points[i].pointnr;
     pathes.push(path);
   }
-
-  var currentSegment, mode, type, pointnumber, pathnumber;
 
   function restore_original_coords(point) {
     var r = resize(point.x, point.y, scope.view.size.width - 100, scope.view.size.height - 100,
@@ -334,46 +337,41 @@ Project $master.fontname
       strokeWidth: '5'
   };
 
-  function onFrame(event) {
-    // Each frame, rotate the copy by 1 degree:
-    box.rotate(1);
-  }
-
   var currentsegment = null;
   var currentpointnr = null;
 
   function onMouseDown(event) {
     for (var k = 0; k < pathes.length; k++) {
       var point = pathes[k].getNearestPoint(event.point);
-      if ((event.point - point).length < 5) {
+      if (point.getDistance(event.point) < 5) {
         box.position = point;
-        currentsegment = path;
+        currentsegment = pathes[k];
         currentpointnr = k + 1;
-        console.log(currentsegment.position);
-        break;
+        box.position = point;
+        return;
       };
     }
   }
 
   function onMouseUp(event) {
     if (currentsegment) {
-      console.log(currentpointnr);
-
       var x = event.point.x;
       var y = event.point.y - 200;
       var xycoord = restore_original_coords(new Point(x, y));
-
       jQuery.post('', {
-        pointnr: currentpointnr,
-        x: xycoord.x,
-        y: 500 - xycoord.y,
-        source: 'b'
-      });
+          pointnr: currentsegment.data.pointnr,
+          x: xycoord.x,
+          y: 500 - xycoord.y,
+          source: 'b'
+        }, function(data) {
+          var json = jQuery.parseJSON(data).B;
+          filledges(json.edges);
+        });
     }
     currentsegment = currentpointnr = null;
   }
 
-  function onMouseMove(event) {
+  function onMouseDrag(event) {
     if (!currentsegment) {
       return;
     }
