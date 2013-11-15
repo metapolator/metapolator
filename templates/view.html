@@ -232,6 +232,16 @@ Canvas.prototype.draw = function() {
   this.paper.view.draw();
 };
 
+
+Canvas.prototype.redrawglyph = function(data) {
+  var json = jQuery.parseJSON(data).M;
+  for (var k = 0; k < this.glyphpaths.length; k++) {
+    this.glyphpaths[k].removeSegments();
+  }
+  this.renderGlyph(json.edges);
+  this.draw();
+}
+
 jQuery(
   function(){
     var M_EDGE_JSON = $:M_glyphjson;
@@ -245,14 +255,7 @@ jQuery(
     A_canvas.setZpoints($:origins['a']);
     A_canvas.showbox();
 
-    A_canvas.onGlyphLoaded = function(canvas, data) {
-      var json = jQuery.parseJSON(data).M;
-        for (var k = 0; k < canvas.glyphpaths.length; k++) {
-          canvas.glyphpaths[k].removeSegments();
-        }
-        canvas.renderGlyph(json.edges);
-        canvas.draw();
-    }.bind(this, M_canvas);
+    A_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
 
     A_canvas.draw();
 
@@ -263,14 +266,7 @@ jQuery(
     B_canvas.showbox();
     B_canvas.draw();
 
-    B_canvas.onGlyphLoaded = function(data) {
-      var json = jQuery.parseJSON(data).M;
-        for (var k = 0; k < this.glyphpaths.length; k++) {
-          this.glyphpaths[k].removeSegments();
-        }
-        this.renderGlyph(json.edges);
-        this.draw();
-    }.bind(this, M_canvas);
+    B_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
   }
 );
 </script>
