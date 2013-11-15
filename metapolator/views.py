@@ -326,7 +326,12 @@ class View(app.page):
         xmltomf.xmltomf1(master, glyphA, glyphB)
         makefont(working_dir(), master)
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
-        return simplejson.dumps(M_glyphjson)
+        if x.source.upper() == 'A':
+            glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
+        else:
+            glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
+        return simplejson.dumps({'M': M_glyphjson,
+                                 x.source.upper(): glyphjson})
 
 
 class ViewFont(app.page):
