@@ -154,6 +154,7 @@ Project $master.fontname
   }
 
   function filledges(edges) {
+    var glyphpaths = [];
     for (var i = 0; i < edges.length; i++) {
         for (var j = 0; j < edges[i].contours.length; j++) {
             var path = new Path();
@@ -175,12 +176,15 @@ Project $master.fontname
                 brightness: 1,
                 alpha: 0.5
             };
+            glyphpaths.push(path);
         }
     }
     view.draw();
+    return glyphpaths;
   }
 
-  filledges(EDGE_JSON.edges);
+  var glyphpaths = [];
+  glyphpaths = filledges(EDGE_JSON.edges);
   
 
   var pathes = [];
@@ -238,7 +242,10 @@ Project $master.fontname
           source: 'a'
         }, function(data) {
           var json = jQuery.parseJSON(data).A;
-          filledges(json.edges);
+          for (var k = 0; k < glyphpaths.length; k++) {
+            glyphpaths[k].fillColor = {alpha: 1};
+          }
+          glyphpaths = filledges(json.edges);
         });
     }
     currentsegment = currentpointnr = null;
@@ -283,6 +290,7 @@ Project $master.fontname
   }
 
   function filledges(edges) {
+    var glyphpaths = [];
     for (var i = 0; i < edges.length; i++) {
         for (var j = 0; j < edges[i].contours.length; j++) {
             var path = new Path();
@@ -304,12 +312,15 @@ Project $master.fontname
                 brightness: 1,
                 alpha: 0.5
             };
+            glyphpaths.push(path);
         }
     }
     view.draw();
+    return glyphpaths;
   }
 
-  filledges(EDGE_JSON.edges);
+  var glyphpaths = [];
+  glyphpaths = filledges(EDGE_JSON.edges);
   
 
   var pathes = [];
@@ -367,7 +378,10 @@ Project $master.fontname
           source: 'b'
         }, function(data) {
           var json = jQuery.parseJSON(data).B;
-          filledges(json.edges);
+          for (var k = 0; k < glyphpaths.length; k++) {
+            glyphpaths[k].fillColor = {alpha: 1};
+          }
+          glyphpaths = filledges(json.edges);
         });
     }
     currentsegment = currentpointnr = null;
