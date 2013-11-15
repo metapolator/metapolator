@@ -228,7 +228,7 @@ class Settings(app.page):
             model.update_globalparam(master.idglobal, formg.d.metapolation, formg.d.fontsize,
                                      formg.d.mean, formg.d.cap, formg.d.ascl,
                                      formg.d.des, formg.d.box)
-        raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
+        raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
 
 def get_edges_json(log_filename, glyphid=None):
