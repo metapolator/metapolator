@@ -218,7 +218,7 @@ Project $master.fontname
   function onMouseDown(event) {
     for (var k = 0; k < pathes.length; k++) {
       var point = pathes[k].getNearestPoint(event.point);
-      if ((event.point - point).length < 5) {
+      if (point.getDistance(event.point) < 5) {
         box.position = point;
         currentsegment = path;
         currentpointnr = k + 1;
@@ -237,11 +237,13 @@ Project $master.fontname
       var xycoord = restore_original_coords(new Point(x, y));
 
       jQuery.post('', {
-        pointnr: currentpointnr,
-        x: xycoord.x,
-        y: 500 - xycoord.y,
-        source: 'a'
-      });
+          pointnr: currentpointnr,
+          x: xycoord.x,
+          y: 500 - xycoord.y,
+          source: 'a'
+        }, function( data ) {
+          alert(data);
+        });
     }
     currentsegment = currentpointnr = null;
   }
