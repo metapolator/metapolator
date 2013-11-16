@@ -212,11 +212,6 @@ class Settings(app.page):
             del values['save']
             del values['idlocal']
 
-            outlines = models.GlyphOutline.filter(idmaster=master.idmaster,
-                                                  fontsource=fontsource.upper(),
-                                                  glyphname=glyphid)
-            outlines.update({models.GlyphOutline.x: models.GlyphOutline.x + values['px']})
-
             models.LocalParam.update(idlocal=idlocal, values=values)
 
         formg = GlobalParamForm()
@@ -257,6 +252,12 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
     points = models.GlyphOutline.filter(idmaster=master.idmaster,
                                         fontsource=ab_source.upper(),
                                         glyphname=glyphid)
+
+    if ab_source.upper() == 'A':
+        param = models.LocalParam.get(idlocal=master.idlocala)
+    else:
+        param = models.LocalParam.get(idlocal=master.idlocalb)
+
     _points = []
     for point in points.order_by(models.GlyphOutline.pointnr.asc()):
         points = models.GlyphOutline.filter(idmaster=master.idmaster,
@@ -269,7 +270,11 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
         iszpoint = False
         if re.match('z(\d+)[lr]', param.pointname):
             iszpoint = True
-        _points.append({'x': point.x, 'y': point.y, 'pointnr': point.pointnr,
+
+        x = point.x
+        if param:
+            x += param.px
+        _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
                         'iszpoint': iszpoint})
 
     return simplejson.dumps({'width': glyph.width, 'points': _points})
