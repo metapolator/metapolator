@@ -10,9 +10,19 @@ Project $master.fontname
 
 <script>
     jQuery(function(){
-         jQuery(".parameter-select").change(function(){
-            jQuery(this).parents('form').submit();
-         });
+        jQuery(".localsettings select#idlocal").change(function(){
+            var form = jQuery(this).parents('form');
+            var idlocal_changed = jQuery(this).val();
+            var ab_source = form.find('input#ab_source').val();
+            jQuery.post('', {idlocal_changed: idlocal_changed, ab_source: ab_source},
+                function(data){
+                    var data = jQuery.parseJSON(data);
+                    form.find("input").each(function(){
+                        jQuery(this).val(data[jQuery(this).attr('name')]);
+                    });
+                }
+            );
+        });
     });
 </script>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
@@ -26,21 +36,8 @@ Project $master.fontname
             <input type="submit" class="btn btn-large" value="Create Local Parameters">
             <input type="hidden" name="create" value="a">
         </form>
-
-        <form action="/view/$master.fontname/$glyphid/settings/rest/update/" method="post">
-            <input type="hidden" name="update" value="a">
-            <select class="parameter-select" name="idlocal" id="">
-                <option value="">Choose Parameter Set</option>
-                $for local in localparameters:
-                    <option name="idlocal" value="$local.idlocal"
-                        $if master.idlocala == local.idlocal:
-                            selected="selected"
-                        >Local parameters $local.idlocal</option>
-            </select>
-            <input type="submit" >
-        </form>
         
-        <form action="" method="post">
+        <form action="" method="post" class="localsettings">
         $:localparamform_a.render()
         </form>
         <a href="/view/$master.fontname/$glyphid/">Back to editor</a>
@@ -51,19 +48,6 @@ Project $master.fontname
         <form action="/view/$master.fontname/$glyphid/settings/rest/create/" method="post">
             <input type="submit" class="btn btn-large" value="Create Global Parameters">
             <input type="hidden" name="create" value="g">
-        </form>
-
-        <form action="/view/$master.fontname/$glyphid/settings/rest/update/" method="post">
-            <input type="hidden" name="update" value="g">
-            <select class="parameter-select" name="idglobal" id="">
-                <option value="">Choose Parameter Set</option>
-                $for gl in globalparams:
-                    <option value="$gl.idglobal"
-                        $if master.idglobal == gl.idglobal:
-                            selected="selected"
-                        >Global parameters $gl.idglobal</option>
-            </select>
-            <input type="submit" >
         </form>
 
         <form action="" method="post">
@@ -81,20 +65,7 @@ Project $master.fontname
             <input type="hidden" name="create" value="b">
         </form>
 
-        <form action="/view/$master.fontname/$glyphid/settings/rest/update/" method="post">
-            <input type="hidden" name="update" value="b">
-            <select class="parameter-select" name="idlocal" id="">
-                <option value="">Choose Parameter Set</option>
-                $for local in localparameters:
-                    <option value="$local.idlocal"
-                        $if master.idlocalb == local.idlocal:
-                            selected="selected"
-                        >Local parameters $local.idlocal</option>
-            </select>
-            <input type="submit" >
-        </form>
-
-        <form action="" method="post">
+        <form action="" method="post" class="localsettings">
         $:localparamform_b.render()
         </form>
 

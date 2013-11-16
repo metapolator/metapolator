@@ -164,6 +164,7 @@ class Settings(app.page):
         d = dict(ab_source=ab_source)
         if local:
             d.update(local.as_dict())
+            d.update({'idlocal': idlocal})
         return d
 
     def GET(self, name, glyphid):
@@ -174,6 +175,9 @@ class Settings(app.page):
         if not master:
             return web.notfound()
 
+        localparameters = models.LocalParam.all()
+        globalparams = models.GlobalParam.all()
+
         globalparamform = GlobalParamForm()
 
         globalparam = models.GlobalParam.get(idglobal=master.idglobal)
@@ -183,15 +187,15 @@ class Settings(app.page):
         localparamform_a = LocalParamForm()
 
         local_params = Settings.get_local_params(master.idlocala, 'a')
+        localparamform_a.idlocal.args = [(o.idlocal, o.idlocal) for o in localparameters]
         localparamform_a.fill(local_params)
 
         localparamform_b = LocalParamForm()
 
         local_params = Settings.get_local_params(master.idlocalb, 'b')
-        localparamform_a.fill(local_params)
+        localparamform_b.idlocal.args = [(o.idlocal, o.idlocal) for o in localparameters]
+        localparamform_b.fill(local_params)
 
-        localparameters = models.LocalParam.all()
-        globalparams = models.GlobalParam.all()
 
         return render.settings(master, glyphid, localparameters, globalparams,
                                globalparamform, localparamform_a, localparamform_b)
@@ -204,16 +208,25 @@ class Settings(app.page):
         if not master:
             return web.notfound()
 
+        x = web.input(idlocal_changed=False, ab_source='a')
+
         form = LocalParamForm()
+        if x.idlocal_changed:
+            # if dropdown value in form has been changed so just refresh
+            # data in selected form
+            attrs = Settings.get_local_params(x.idlocal_changed, x.ab_source)
+            return simplejson.dumps(attrs)
+
         if 'ab_source' in form.d and form.validates():
-            if form.d.ab_source == 'a':
-                idlocal = master.idlocala
-            else:
-                idlocal = master.idlocalb
+            idlocal = form.d.idlocal
+            models.Master.update(idmaster=master.idmaster,
+                                 values={'idlocal{0}'.format(form.d.ab_source.lower()): idlocal})
+            master = models.Master.get(fontname=name)
 
             values = form.d
             del values['ab_source']
             del values['save']
+            del values['idlocal']
 
             models.LocalParam.update(idlocal=idlocal, values=values)
             if model.writeGlobalParam(master):

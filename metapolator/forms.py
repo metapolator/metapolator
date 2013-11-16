@@ -1,7 +1,7 @@
 import re
 
 from web.form import Form, Textbox, Dropdown, Button, Validator, Password, \
-    notnull, Hidden
+    notnull, Hidden, Dropdown
 
 import model
 
@@ -49,7 +49,8 @@ FontForm = Form(Textbox('Name', notnull, size=30, description="name", value=''),
                 Button('savefont'))
 
 
-GlobalParamForm = Form(Textbox('metapolation', notnull, size=5,
+GlobalParamForm = Form(Dropdown('idglobal', [], description='Choose parameter set'),
+                       Textbox('metapolation', notnull, size=5,
                                description="metapolation", value="0.5"),
                        Textbox('fontsize', notnull, size=5,
                                description="fontsize", value="10"),
@@ -66,7 +67,8 @@ GlobalParamForm = Form(Textbox('metapolation', notnull, size=5,
                        Button('save', value='Save Parameter Set'))
 
 
-LocalParamForm = Form(Textbox('px', notnull, size=5,
+LocalParamForm = Form(Dropdown('idlocal', [], description='Choose parameter set'),
+                      Textbox('px', notnull, size=5,
                               description="px", value="1"),
                       Textbox('width', notnull, size=5,
                               description="width", value="1"),
@@ -93,7 +95,7 @@ LocalParamForm = Form(Textbox('px', notnull, size=5,
                       Textbox('over', notnull, size=5,
                               description="over", value="0.05"),
                       Hidden('ab_source', notnull, value='a'),
-                      Button('save', value='Save Parameter Set'))
+                      Button('save'))
 
 
 def validate_existing_user(item):
