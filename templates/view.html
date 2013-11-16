@@ -104,6 +104,7 @@ function resize(x, y, width, height, newwidth, newheight) {
 function Canvas(canvasid, width, height, source) {
   this.paper = new paper.PaperScope();
   this.paper.setup(canvasid);
+
   this.width = Number(width);
   this.height = Number(height);
   this.source = source;
@@ -126,6 +127,7 @@ Canvas.prototype.restore_original_coords = function(point) {
 
 Canvas.prototype.renderGlyph = function(edges) {
   this.glyphpaths = [];
+  this.paper.activate();
   for (var i = 0; i < edges.length; i++) {
       for (var j = 0; j < edges[i].contours.length; j++) {
           var path = new this.paper.Path();
@@ -190,7 +192,7 @@ Canvas.prototype.onMouseUp = function(event) {
       function(data) {
         var json = jQuery.parseJSON(data).R;
         for (var k = 0; k < this.glyphpaths.length; k++) {
-          this.glyphpaths[k].removeSegments();
+          this.glyphpaths[k].remove();
         }
         this.renderGlyph(json.edges);
         this.draw();
@@ -234,6 +236,7 @@ Canvas.prototype.draw = function() {
 
 
 Canvas.prototype.redrawglyph = function(data) {
+  this.paper.activate();
   var json = jQuery.parseJSON(data).M;
   for (var k = 0; k < this.glyphpaths.length; k++) {
     this.glyphpaths[k].removeSegments();
