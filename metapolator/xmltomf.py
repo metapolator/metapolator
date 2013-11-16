@@ -1,9 +1,11 @@
 import os
 import os.path as op
 import re
+import web
 
 import models
 from config import working_dir
+from sqlalchemy import func
 
 
 class DifferentZPointError(Exception):
@@ -16,6 +18,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         master is an instance of models.Master
         glyph is an instance of models.Glyph
     """
+    import time
+
+    starttime = time.time()
 
     if not glyphB:
         glyphB = glyphA
@@ -49,13 +54,28 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     # points for l
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
+    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+    query = query.filter(models.GlyphOutline.idmaster == master.idmaster,
+                         models.GlyphOutline.fontsource == 'A',
+                         models.GlyphOutline.glyphname == glyphA.name)
+    query = query.filter(models.GlyphParam.idmaster == master.idmaster,
+                         models.GlyphParam.fontsource == 'A',
+                         models.GlyphParam.glyphname == glyphA.name,
+                         models.GlyphParam.pointnr == models.GlyphOutline.pointnr)
 
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
+    fonta_outlines = list(query)
+
+    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+    query = query.filter(models.GlyphOutline.idmaster == master.idmaster,
+                         models.GlyphOutline.fontsource == 'B',
+                         models.GlyphOutline.glyphname == glyphB.name)
+    query = query.filter(models.GlyphParam.idmaster == master.idmaster,
+                         models.GlyphParam.fontsource == 'B',
+                         models.GlyphParam.glyphname == glyphB.name,
+                         models.GlyphParam.pointnr == models.GlyphOutline.pointnr)
+    fontb_outlines = list(query)
+
+    for item, param in fonta_outlines:
 
         znamel = re.match('z(\d+)l', param.pointname)
         znamer = re.match('z(\d+)r', param.pointname)
@@ -80,17 +100,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     fip.write("\n")
     fip.write("""% point coordinates font A""")
-    fip.write("\n")
-
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
+    fip.write("\n\n")
 
     index = 1
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
+    for item, param in fonta_outlines:
 
         znamer = re.match('z(\d+)r', param.pointname)
 
@@ -107,15 +120,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("""% point coordinates font A""")
     fip.write("\n\n")
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     index = 1
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fonta_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
@@ -133,16 +139,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("""% pen widhts Font A """)
     fip.write("\n\n")
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     index = 1
 
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fonta_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
@@ -159,14 +158,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
 # points for l
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
-                                  glyphname=glyphB.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fontb_outlines:
         znamel = re.match('z(\d+)l', param.pointname)
         znamer = re.match('z(\d+)r', param.pointname)
         zeile = None
@@ -192,14 +184,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("""% point coordinates font B""")
     fip.write("\n\n")
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
-                                  glyphname=glyphB.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     index = 1
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
+    for item, param in fontb_outlines:
 
         znamer = re.match('z(\d+)r', param.pointname)
 
@@ -216,19 +202,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     fip.write("\n")
     fip.write("""% fake l and r points Font B""")
-    fip.write("\n")
-
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
-                                  glyphname=glyphB.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-    fip.write("\n")
+    fip.write("\n\n")
 
     index = 1
 
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fontb_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
@@ -246,14 +224,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("""% pen width Font B""")
     fip.write("\n\n")
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
-                                  glyphname=glyphB.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     index = 1
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
+    for item, param in fontb_outlines:
 
         znamer = re.match('z(\d+)r', param.pointname)
 
@@ -269,15 +241,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("""% pen angle Font A""")
     fip.write("\n\n")
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     index = 1
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fonta_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
@@ -300,15 +265,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     startp = []
     startpval = []
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
-                                  glyphname=glyphB.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     i = 1
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fontb_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
         zname = re.match('z(\d+)l', param.pointname)
@@ -354,14 +312,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     startp = []
     startpval = []
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     i = 1
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
+    for item, param in fonta_outlines:
 
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
@@ -432,16 +384,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     startp = []
     startpval = []
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='B',
-                                  glyphname=glyphB.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     i = 1
 
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fontb_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
         zname = re.match('z(\d+)l', param.pointname)
@@ -502,15 +447,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     startp = []
     startpval = []
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     i = 1
 
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
+    for item, param in fonta_outlines:
 
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
@@ -654,18 +593,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     descpoint = []
     descpointval = []
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     i = 1
 
 # search for parameters
 
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fonta_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
         zname = re.match('z(\d+)l', param.pointname)
@@ -870,15 +802,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     penshifted = []
     penshiftedvalB = []
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A', glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     i = 1
 
-    for item in itemlist :
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
-
+    for item, param in fonta_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
         zname = re.match('z(\d+)l', param.pointname)
@@ -1068,15 +994,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     cycle = []
     cycleval = []
 
-    compositefilter_kwargs = dict(idmaster=master.idmaster, fontsource='A',
-                                  glyphname=glyphA.name)
-    itemlist = models.GlyphOutline.filter(**compositefilter_kwargs)
-
     i = 1
 
-    for item in itemlist:
-        compositefilter_kwargs['pointnr'] = item.pointnr
-        param = models.GlyphParam.get(**compositefilter_kwargs)
+    for item, param in fonta_outlines:
 
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
@@ -1329,8 +1249,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     zzn.sort()
     zeile = ""
     semi = ";"
-
-    print leftp
 
     fip.write('\n')
     for i in range(len(zzn) - 1):
@@ -1603,4 +1521,5 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("penlabels(range 1 thru 99);\n")
     fip.write("endchar;")
 
+    print time.time() - starttime
     return fip
