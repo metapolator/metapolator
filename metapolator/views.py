@@ -100,9 +100,9 @@ class Metap(app.page):
         return render.metap(posts, master, fontsource, webglyph)
 
 
-class SettingsRestUpdate(app.page):
+class SettingsRestCreate(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/update/'
+    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/create/'
 
     def POST(self, name, glyphid):
         if not is_loggedin():
@@ -112,44 +112,23 @@ class SettingsRestUpdate(app.page):
         if not master:
             return web.notfound()
 
-        x = web.input(update='', idglobal='', idlocal='')
-
-        if x['update'] == 'a':
-            master.idlocala = x.idlocal
-        if x['update'] == 'b':
-            master.idlocalb = x.idlocal
-        if x['update'] == 'g':
-            master.idglobal = x.idglobal
-
-        raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
-
-
-class SettingsRestCreate(app.page):
-
-    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/create/'
-
-    def POST(self, name, glyphid):
-        if not is_loggedin():
-            raise seeother('/login')
-
-        master = model.Master.get_by_name(name, session.user)
-        if not master:
-            return web.notfound()
-
         x = web.input(create='')
         if x['create'] == 'a':
-            newid = model.LocalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.idmaster, idlocalA=newid)
+            obj = models.LocalParam.create()
+            models.Master.update(idmaster=master.idmaster,
+                                 values=dict(idlocala=obj.idlocal))
 
         if x['create'] == 'b':
-            newid = model.LocalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.idmaster, idlocalB=newid)
+            obj = models.LocalParam.create()
+            models.Master.update(idmaster=master.idmaster,
+                                 values=dict(idlocalb=obj.idlocal))
 
         if x['create'] == 'g':
-            newid = model.GlobalParam.insert(user_id=session.user)
-            model.Master.update(session.user, master.idmaster, idglobal=newid)
+            obj = models.GlobalParam.create()
+            models.Master.update(idmaster=master.idmaster,
+                                 values=dict(idglobal=obj.idglobal))
 
-        raise seeother('/view/{0}/{1}/settings/'.format(master.FontName, glyphid))
+        raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
 
 class Settings(app.page):
