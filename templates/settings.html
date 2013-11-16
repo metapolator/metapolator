@@ -23,6 +23,19 @@ Project $master.fontname
                 }
             );
         });
+
+        jQuery(".globalsettings select#idglobal").change(function(){
+            var form = jQuery(this).parents('form');
+            var idglobal_changed = jQuery(this).val();
+            jQuery.post('', {idglobal_changed: idglobal_changed},
+                function(data){
+                    var data = jQuery.parseJSON(data);
+                    form.find("input").each(function(){
+                        jQuery(this).val(data[jQuery(this).attr('name')]);
+                    });
+                }
+            );
+        });
     });
 </script>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
@@ -50,7 +63,7 @@ Project $master.fontname
             <input type="hidden" name="create" value="g">
         </form>
 
-        <form action="" method="post">
+        <form action="" method="post" class="globalsettings">
         $:globalparamform.render()
         </form>
 

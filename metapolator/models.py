@@ -378,6 +378,9 @@ class GlobalParam(Base):
     des = Column(Float, default=2, doc='lowest point in glyphs')
     box = Column(Float, default=10)
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     @classmethod
     def get(cls, **kwargs):
         kwargs.update({'user_id': session.user})
@@ -398,6 +401,12 @@ class GlobalParam(Base):
         web.ctx.orm.add(instance)
         web.ctx.orm.commit()
         return instance
+
+    @classmethod
+    def update(cls, values={}, **kwargs):
+        if not values:
+            return
+        query(cls).filter_by(**kwargs).update(values)
 
 
 if __name__ == "__main__":

@@ -181,6 +181,7 @@ class Settings(app.page):
         globalparamform = GlobalParamForm()
 
         globalparam = models.GlobalParam.get(idglobal=master.idglobal)
+        globalparamform.idglobal.args = [(o.idglobal, o.idglobal) for o in globalparams]
         if globalparam:
             globalparamform.fill(globalparam)
 
@@ -208,7 +209,8 @@ class Settings(app.page):
         if not master:
             return web.notfound()
 
-        x = web.input(idlocal_changed=False, ab_source='a')
+        x = web.input(idlocal_changed=False, idglobal_changed=False,
+                      ab_source='a')
 
         form = LocalParamForm()
         if x.idlocal_changed:
@@ -216,6 +218,9 @@ class Settings(app.page):
             # data in selected form
             attrs = Settings.get_local_params(x.idlocal_changed, x.ab_source)
             return simplejson.dumps(attrs)
+        elif x.idglobal_changed:
+            params = models.GlobalParam.get(idglobal=x.idglobal_changed)
+            return simplejson.dumps(params.as_dict())
 
         if 'ab_source' in form.d and form.validates():
             idlocal = form.d.idlocal
@@ -229,15 +234,22 @@ class Settings(app.page):
             del values['idlocal']
 
             models.LocalParam.update(idlocal=idlocal, values=values)
-            if model.writeGlobalParam(master):
-                makefont(working_dir(), master)
-            raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
         formg = GlobalParamForm()
         if formg.validates():
-            model.update_globalparam(master.idglobal, formg.d.metapolation, formg.d.fontsize,
-                                     formg.d.mean, formg.d.cap, formg.d.ascl,
-                                     formg.d.des, formg.d.box)
+            idglobal = formg.d.idglobal
+            models.Master.update(idmaster=master.idmaster,
+                                 values={'idglobal': idglobal})
+            master = models.Master.get(fontname=name)
+
+            values = formg.d
+            del values['idglobal']
+            del values['save']
+
+            models.GlobalParam.update(idglobal=idglobal, values=values)
+
+        if model.writeGlobalParam(master):
+            makefont(working_dir(), master)
         raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
 
