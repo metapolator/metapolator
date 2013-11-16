@@ -176,7 +176,6 @@ class Settings(app.page):
         localparamform_b.idlocal.args = [(o.idlocal, o.idlocal) for o in localparameters]
         localparamform_b.fill(local_params)
 
-
         return render.settings(master, glyphid, localparameters, globalparams,
                                globalparamform, localparamform_a, localparamform_b)
 
@@ -227,6 +226,7 @@ class Settings(app.page):
 
             models.GlobalParam.update(idglobal=idglobal, values=values)
 
+        writeGlyphlist(master, glyphid)
         if model.writeGlobalParam(master):
             makefont(working_dir(), master)
         raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
