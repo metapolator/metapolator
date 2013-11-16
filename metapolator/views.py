@@ -254,9 +254,9 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
                                         glyphname=glyphid)
 
     if ab_source.upper() == 'A':
-        param = models.LocalParam.get(idlocal=master.idlocala)
+        localparam = models.LocalParam.get(idlocal=master.idlocala)
     else:
-        param = models.LocalParam.get(idlocal=master.idlocalb)
+        localparam = models.LocalParam.get(idlocal=master.idlocalb)
 
     _points = []
     for point in points.order_by(models.GlyphOutline.pointnr.asc()):
@@ -272,8 +272,8 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
             iszpoint = True
 
         x = point.x
-        if param:
-            x += param.px
+        if localparam:
+            x += localparam.px
         _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
                         'iszpoint': iszpoint})
 
