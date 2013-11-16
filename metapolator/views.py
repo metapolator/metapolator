@@ -202,14 +202,20 @@ class Settings(app.page):
 
         if 'ab_source' in form.d and form.validates():
             idlocal = form.d.idlocal
+            fontsource = form.d.ab_source
             models.Master.update(idmaster=master.idmaster,
-                                 values={'idlocal{0}'.format(form.d.ab_source.lower()): idlocal})
+                                 values={'idlocal{0}'.format(fontsource.lower()): idlocal})
             master = models.Master.get(fontname=name)
 
             values = form.d
             del values['ab_source']
             del values['save']
             del values['idlocal']
+
+            outlines = models.GlyphOutline.filter(idmaster=master.idmaster,
+                                                  fontsource=fontsource.upper(),
+                                                  glyphname=glyphid)
+            outlines.update({models.GlyphOutline.x: models.GlyphOutline.x + values['px']})
 
             models.LocalParam.update(idlocal=idlocal, values=values)
 
