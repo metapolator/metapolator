@@ -771,7 +771,7 @@ class CreateProject(app.page):
                         raise
 
                 putFontAllglyphs(master)
-                # writeGlyphlist(master)
+                writeGlyphlist(master)
                 # makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
                 if master:
