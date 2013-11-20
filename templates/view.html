@@ -220,9 +220,11 @@ Canvas.prototype.onMouseUp = function(event) {
       jQuery('#test form button').off('click').on('click', function(e){
         e.preventDefault();
         var val = jQuery(e.target).parents('form').find('input[type=text]').val();
-        jQuery.post('/save-point-parameter/',
+        jQuery.post('/view/$master.fontname/$glyphid/save-point/',
                     {name: jQuery(e.target).parents('form').find('select').val(),
-                     value: val})
+                     value: val,
+                     pointnr: this.currentpointnr,
+                     ab_source: this.source})
           .fail(function(){
             var val = jQuery(e.target).parents('form').find('input[type=text]').val();
             alert("{name:" + jQuery(e.target).parents('form').find('select').val() + ", value:" + val + "}");
