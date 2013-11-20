@@ -209,12 +209,12 @@ Canvas.prototype.onMouseUp = function(event) {
     var e = event.event;
     jQuery('#test').css({left: parseInt(e.clientX) + 'px', top: parseInt(e.clientY) + 'px'});
     jQuery('#test').show();
-  }
+  };
   this.currentsegment = this.currentpointnr = null;
 };
 
 Canvas.prototype.setZpoints = function(json) {
-  this.paths = []
+  this.paths = [];
   for (var i = 0; i < json.points.length; i++) {
     if (!json.points[i].iszpoint) {
       continue;
@@ -281,8 +281,20 @@ jQuery(
 );
 </script>
 
-<div id="test" style="display: none; background-color: white; position: absolute; border: solid 1px black">
-  <form action="">
-    $:pointform.render()
+<div id="test" style="display: none; background-color: white; position: absolute; padding: 8px; border: solid 1px black">
+  <form action="" class="form-horizontal">
+    <div class="form-group">
+      <label for="$:pointform.select.name" class="col-sm-2 control-label">$:pointform.select.description</label>
+      <div class="col-sm-10">
+        $:pointform.select.render()
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="$:pointform.value.name" class="col-sm-2 control-label">$:pointform.value.description</label>
+      <div class="col-sm-10">
+        $:pointform.value.render()
+      </div>
+    </div>
   </form>
 </div>

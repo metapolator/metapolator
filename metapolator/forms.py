@@ -24,44 +24,6 @@ CHOICES = [('select', 'select'), ('startp', 'startp'),
            ('stemcutter', 'stemcutter'), ('stemshift', 'stemshift'),
            ('inktrap_l', 'inktrap_l'), ('inktrap_r', 'inktrap_r')]
 
-
-PointParamForm = Form(
-    Textbox('startp'),
-    Textbox('doubledash'),
-    Textbox('tripledash'),
-    Textbox('superleft'),
-    Textbox('superright'),
-    Textbox('leftp'),
-    Textbox('rightp'),
-    Textbox('downp'),
-    Textbox('upp'),
-    Textbox('dir'),
-    Textbox('leftp2'),
-    Textbox('rightp2'),
-    Textbox('downp2'),
-    Textbox('upp2'),
-    Textbox('dir2'),
-    Textbox('tension'),
-    Textbox('tensionand'),
-    Textbox('cycle'),
-    Textbox('penshifted'),
-    Textbox('pointshifted'),
-    Textbox('angle'),
-    Textbox('penwidth'),
-    Textbox('overx'),
-    Textbox('overbase'),
-    Textbox('overcap'),
-    Textbox('overasc'),
-    Textbox('overdesc'),
-    Textbox('ascpoint'),
-    Textbox('descpoint'),
-    Textbox('stemcutter'),
-    Textbox('stemshift'),
-    Textbox('inktrap_l'),
-    Textbox('inktrap_r'),
-)
-
-
 PointForm = Form(Textbox('PointNr', notnull, size=3, description="nr"),
                  Textbox('x', notnull, size=5, description="x"),
                  Textbox('y', notnull, size=5, description="y"),
@@ -70,8 +32,8 @@ PointForm = Form(Textbox('PointNr', notnull, size=3, description="nr"),
                  Button('save'))
 
 
-ParamForm = Form(Dropdown('Param', CHOICES),
-                 Textbox('parmval', size=15, description="parmval", id="parmvaltext"),
+ParamForm = Form(Dropdown('select', CHOICES, description="Parameter"),
+                 Textbox('value', size=15, description="Value", id="parmvaltext"),
                  Button('saveParam'))
 
 
