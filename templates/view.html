@@ -1,4 +1,4 @@
-$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB, globalparams, origins)
+$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB, globalparams, pointform, origins)
 <title>
 Project $master.fontname
 </title>
@@ -262,6 +262,11 @@ jQuery(
 
     A_canvas.draw();
 
+    jQuery(document).click(function(event){
+      jQuery('#test').css({left: event.clientX + 'px', top: event.clientY + 'px'});
+      jQuery('#test').show();
+    })
+
     var B_EDGE_JSON = $:B_glyphjson;
     var B_canvas = new Canvas('canvas-b', B_EDGE_JSON.width, B_EDGE_JSON.height, 'b');
     B_canvas.renderGlyph(B_EDGE_JSON.edges);
@@ -273,3 +278,9 @@ jQuery(
   }
 );
 </script>
+
+<div id="test" style="display: none; background-color: white; position: absolute; border: solid 1px black">
+  <form action="">
+    $:pointform.render()
+  </form>
+</div>

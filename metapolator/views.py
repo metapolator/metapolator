@@ -24,7 +24,8 @@ from passlib.hash import bcrypt
 
 from config import app, cFont, is_loggedin, session, working_dir, \
     working_url, mf_filename
-from forms import FontForm, GlobalParamForm, RegisterForm, LocalParamForm
+from forms import FontForm, GlobalParamForm, RegisterForm, LocalParamForm, \
+    PointParamForm
 from tools import writeallxmlfromdb, putFontAllglyphs, \
     makefont, get_json, project_exists, writeGlyphlist
 
@@ -308,10 +309,13 @@ class View(app.page):
         a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
         b_original_glyphjson = get_edges_json_from_db(master, glyphid, 'B')
 
+        pointform = PointParamForm()
+
         return render.view(master, glyphid, A_glyphjson, B_glyphjson,
                            M_glyphjson, localparametersA, localparametersB,
-                           globalparams, origins={'a': a_original_glyphjson,
-                                                  'b': b_original_glyphjson})
+                           globalparams, pointform,
+                           origins={'a': a_original_glyphjson,
+                                    'b': b_original_glyphjson})
 
     def POST(self, name, glyphid):
         if not is_loggedin():
