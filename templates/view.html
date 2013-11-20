@@ -164,6 +164,7 @@ Canvas.prototype.onMouseDown = function(event) {
       this.currentsegment = this.paths[k];
       this.currentpointnr = k + 1;
       this.box.position = point;
+      this.isdragged = false;
       return;
     };
   }
@@ -175,11 +176,12 @@ Canvas.prototype.onMouseDrag = function(event) {
   }
   this.box.position = event.point;
   this.currentsegment.position = event.point;
+  this.isdragged = true;
 };
 
 
 Canvas.prototype.onMouseUp = function(event) {
-  if (this.currentsegment) {
+  if (this.currentsegment && this.isdragged) {
     var x = event.point.x;
     var y = event.point.y - 200;
     var xycoord = this.restore_original_coords(new this.paper.Point(x, y));
@@ -202,6 +204,7 @@ Canvas.prototype.onMouseUp = function(event) {
         }
       }.bind(this)
     );
+    this.isdragged = false;
   }
   this.currentsegment = this.currentpointnr = null;
 };
