@@ -158,6 +158,7 @@ Canvas.prototype.renderGlyph = function(edges) {
 }
 
 Canvas.prototype.onMouseDown = function(event) {
+  this.currentsegment = this.currentpointnr = null;
   jQuery('#test').hide();
   for (var k = 0; k < this.paths.length; k++) {
     var point = this.paths[k].getNearestPoint(event.point);
@@ -182,35 +183,40 @@ Canvas.prototype.onMouseDrag = function(event) {
 
 
 Canvas.prototype.onMouseUp = function(event) {
-  if (this.currentsegment && this.isdragged) {
-    var x = event.point.x;
-    var y = event.point.y - 200;
-    var xycoord = this.restore_original_coords(new this.paper.Point(x, y));
-    jQuery.post('', {
-        pointnr: this.currentsegment.data.pointnr,
-        x: xycoord.x,
-        y: 500 - xycoord.y,
-        source: this.source
-      },
-      function(data) {
-        var json = jQuery.parseJSON(data).R;
-        for (var k = 0; k < this.glyphpaths.length; k++) {
-          this.glyphpaths[k].remove();
-        }
-        this.renderGlyph(json.edges);
-        this.draw();
+  if (this.currentsegment) {
+    if (this.isdragged) {
+      var x = event.point.x;
+      var y = event.point.y - 200;
+      var xycoord = this.restore_original_coords(new this.paper.Point(x, y));
+      jQuery.post('', {
+          pointnr: this.currentsegment.data.pointnr,
+          x: xycoord.x,
+          y: 500 - xycoord.y,
+          source: this.source
+        },
+        function(data) {
+          var json = jQuery.parseJSON(data).R;
+          for (var k = 0; k < this.glyphpaths.length; k++) {
+            this.glyphpaths[k].remove();
+          }
+          this.renderGlyph(json.edges);
+          this.draw();
 
-        if (this.onGlyphLoaded) {
-          this.onGlyphLoaded(data);
-        }
-      }.bind(this)
-    );
-  } else {
-    var e = event.event;
-    jQuery('#test').css({left: parseInt(e.clientX) + 'px', top: parseInt(e.clientY) + 'px'});
-    jQuery('#test').show();
+          if (this.onGlyphLoaded) {
+            this.onGlyphLoaded(data);
+          }
+        }.bind(this)
+      );
+    } else {
+      var e = event.event;
+      jQuery('#test').css({left: parseInt(e.clientX) + 'px', top: parseInt(e.clientY) + 'px'});
+      jQuery('#test').show();
+      jQuery('#test select').change(function(event){
+        var val = jQuery(event.target).val();
+        alert('you are selected __' + val + '__:' + this.currentsegment.data[val]);
+      }.bind(this));
+    };
   };
-  this.currentsegment = this.currentpointnr = null;
 };
 
 Canvas.prototype.setZpoints = function(json) {
@@ -224,7 +230,7 @@ Canvas.prototype.setZpoints = function(json) {
     path.closed = true;
     path.selected = true;
     path.position.y += +200;
-    path.data = json.points[i];
+    path.data = json.points[i].data;
     this.paths.push(path);
   }
 };
@@ -282,7 +288,7 @@ jQuery(
 </script>
 
 <div id="test" style="display: none; background-color: white; position: absolute; padding: 8px; border: solid 1px black">
-  <form action="" class="form-horizontal">
+  <form action="" class="form-horizontal" role="form">
     <div class="form-group">
       <label for="$:pointform.select.name" class="col-sm-2 control-label">$:pointform.select.description</label>
       <div class="col-sm-10">
@@ -296,5 +302,7 @@ jQuery(
         $:pointform.value.render()
       </div>
     </div>
+
+    $:pointform.save.render()
   </form>
 </div>

@@ -34,7 +34,7 @@ PointForm = Form(Textbox('PointNr', notnull, size=3, description="nr"),
 
 ParamForm = Form(Dropdown('select', CHOICES, description="Parameter"),
                  Textbox('value', size=15, description="Value", id="parmvaltext"),
-                 Button('saveParam'))
+                 Button('save'))
 
 
 GroupParamForm = Form(Dropdown('Group', CHOICES),

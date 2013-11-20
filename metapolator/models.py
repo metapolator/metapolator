@@ -153,6 +153,9 @@ class GlyphParam(Base):
     inktrap_l = Column(Float)
     inktrap_r = Column(Float)
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     @classmethod
     def create(cls, **kwargs):
         kwargs.update({'user_id': session.user})
