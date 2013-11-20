@@ -68,8 +68,6 @@ def ufo2mf(master):
 
 
 def writeGlyphlist(master, glyphid=None):
-    ufo2mf(master)
-
     ifile = open(op.join(master.get_fonts_directory(), "glyphlist.mf"), "w")
     dirnamep1 = working_dir(op.join(master.get_fonts_directory(), "glyphs"))
 

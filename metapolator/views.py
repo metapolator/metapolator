@@ -27,7 +27,7 @@ from config import app, cFont, is_loggedin, session, working_dir, \
 from forms import FontForm, GlobalParamForm, RegisterForm, LocalParamForm, \
     ParamForm
 from tools import writeallxmlfromdb, putFontAllglyphs, \
-    makefont, get_json, project_exists, writeGlyphlist
+    makefont, get_json, project_exists, writeGlyphlist, ufo2mf
 
 
 ### Templates
@@ -771,8 +771,9 @@ class CreateProject(app.page):
                         raise
 
                 putFontAllglyphs(master)
+                ufo2mf(master)
                 writeGlyphlist(master)
-                # makefont(working_dir(), master)
+                makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
                 # if master:
