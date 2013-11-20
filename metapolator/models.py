@@ -248,6 +248,10 @@ class Master(Base):
         except NoResultFound:
             return
 
+    def get_glyphs(self, ab_source='A'):
+        q = Glyph.filter(idmaster=self.idmaster, fontsource=ab_source.upper())
+        return q.order_by(Glyph.name.asc())
+
     def get_fonts_directory(self, ab_source=None):
         """
         Return uploaded user font project directory.

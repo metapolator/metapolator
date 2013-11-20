@@ -214,7 +214,7 @@ Canvas.prototype.onMouseUp = function(event) {
       jQuery('#test').show();
       jQuery('#test select').off('change').on('change', function(event){
         var val = jQuery(event.target).val();
-        alert('you are selected __' + val + '__:' + this.currentsegment.data[val]);
+        // alert('you are selected __' + val + '__:' + this.currentsegment.data[val]);
       }.bind(this));
 
       jQuery('#test form button').off('click').on('click', function(e){
