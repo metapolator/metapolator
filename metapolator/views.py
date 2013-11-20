@@ -774,13 +774,14 @@ class CreateProject(app.page):
                 writeGlyphlist(master)
                 # makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
-                if master:
-                    models.Master.delete(idmaster=master.idmaster)
-                    models.GlyphOutline.delete(idmaster=master.idmaster)
-                    models.GlyphParam.delete(idmaster=master.idmaster)
+                raise
+                # if master:
+                #     models.Master.delete(idmaster=master.idmaster)
+                #     models.GlyphOutline.delete(idmaster=master.idmaster)
+                #     models.GlyphParam.delete(idmaster=master.idmaster)
 
-                    fontpath = master.get_fonts_directory()
-                    shutil.rmtree(fontpath)
+                #     fontpath = master.get_fonts_directory()
+                #     shutil.rmtree(fontpath)
             return seeother('/fonts/')
 
         return render.create_project(error='Please fill all fields in form')
