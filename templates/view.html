@@ -165,7 +165,9 @@ Canvas.prototype.onMouseDown = function(event) {
       this.currentpointnr = k + 1;
       this.box.position = point;
       this.isdragged = false;
-      jQuery('#test').css({left: event.event.clientX + 'px', top: event.event.clientY + event.point.y + 'px'});
+
+      var e = event.event;
+      jQuery('#test').css({left: parseInt(e.clientX) + 'px', top: parseInt(e.clientY) + 'px'});
       jQuery('#test').show();
       return;
     };
