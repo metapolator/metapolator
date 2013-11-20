@@ -236,8 +236,10 @@ Canvas.prototype.onMouseUp = function(event) {
             }
             this.renderGlyph(json.edges);
             this.draw();
-            
+
             this.onGlyphLoaded(data);
+
+            jQuery('#test').hide();
           }.bind(this));
       }.bind(this));
     };
