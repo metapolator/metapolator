@@ -165,6 +165,8 @@ Canvas.prototype.onMouseDown = function(event) {
       this.currentpointnr = k + 1;
       this.box.position = point;
       this.isdragged = false;
+      jQuery('#test').css({left: event.event.clientX + 'px', top: event.event.clientY + event.point.y + 'px'});
+      jQuery('#test').show();
       return;
     };
   }
@@ -220,7 +222,7 @@ Canvas.prototype.setZpoints = function(json) {
     path.closed = true;
     path.selected = true;
     path.position.y += +200;
-    path.data.pointnr = json.points[i].pointnr;
+    path.data = json.points[i];
     this.paths.push(path);
   }
 };
@@ -264,11 +266,6 @@ jQuery(
     A_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
 
     A_canvas.draw();
-
-    jQuery(document).click(function(event){
-      jQuery('#test').css({left: event.clientX + 'px', top: event.clientY + 'px'});
-      jQuery('#test').show();
-    })
 
     var B_EDGE_JSON = $:B_glyphjson;
     var B_canvas = new Canvas('canvas-b', B_EDGE_JSON.width, B_EDGE_JSON.height, 'b');
