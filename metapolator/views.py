@@ -150,6 +150,14 @@ class SavePointParam(app.page):
                                  pointnr=x['pointnr'],
                                  values={'%s' % x['name']: float(x['value'])})
         writeGlyphlist(master, glyphid)
+
+        glyphA = models.Glyph.get(idmaster=master.idmaster,
+                                  fontsource='A', name=glyphid)
+        glyphB = models.Glyph.get(idmaster=master.idmaster,
+                                  fontsource='A', name=glyphid)
+        import xmltomf
+        xmltomf.xmltomf1(master, glyphA, glyphB)
+
         if model.writeGlobalParam(master):
             makefont(working_dir(), master)
 

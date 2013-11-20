@@ -230,6 +230,13 @@ Canvas.prototype.onMouseUp = function(event) {
             alert("{name:" + jQuery(e.target).parents('form').find('select').val() + ", value:" + val + "}");
           })
           .success(function(data){
+            var json = jQuery.parseJSON(data).R;
+            for (var k = 0; k < this.glyphpaths.length; k++) {
+              this.glyphpaths[k].remove();
+            }
+            this.renderGlyph(json.edges);
+            this.draw();
+            
             this.onGlyphLoaded(data);
           }.bind(this));
       }.bind(this));

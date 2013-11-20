@@ -473,7 +473,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         # to group(0)
         if znamel and im == znamel.group(0):
             zzn.append(i)
-
             if istartp is not None:
                 istartpval = param.startp
                 startp.append("startp")
@@ -492,15 +491,14 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 iinktrap_rval = param.inktrap_r
                 iktrap_r.append("inktrapcut")
                 inktrap_rval.append(iinktrap_rval)
-
             if ipenwidth is not None:
                 ipenwidthval = param.penwidth
                 penwidth.append("penwidth")
                 A_penwidthval.append(ipenwidthval)
-
             else:
                 penwidth.append("")
                 penwidthval.append(0)
+                A_penwidthval.append(0)
 
             if iangle is not None:
                 iangleval = param.angle
@@ -521,7 +519,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     zeileend = ""
     semi = ";"
     close = ")"
-
     for i in range(len(zzn)):
         zitem = i + 1
 
