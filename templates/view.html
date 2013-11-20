@@ -223,12 +223,15 @@ Canvas.prototype.onMouseUp = function(event) {
         jQuery.post('/view/$master.fontname/$glyphid/save-point/',
                     {name: jQuery(e.target).parents('form').find('select').val(),
                      value: val,
-                     pointnr: this.currentpointnr,
-                     ab_source: this.source})
+                     pointnr: this.currentsegment.data.pointnr,
+                     ab_source: this.currentsegment.data.fontsource})
           .fail(function(){
             var val = jQuery(e.target).parents('form').find('input[type=text]').val();
             alert("{name:" + jQuery(e.target).parents('form').find('select').val() + ", value:" + val + "}");
-          });
+          })
+          .success(function(data){
+            this.onGlyphLoaded(data);
+          }.bind(this));
       }.bind(this));
     };
   };

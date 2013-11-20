@@ -148,7 +148,17 @@ class SavePointParam(app.page):
         models.GlyphParam.update(idmaster=master.idmaster,
                                  fontsource=x['ab_source'].upper(),
                                  pointnr=x['pointnr'],
-                                 values={'%s' % name: float(value)})
+                                 values={'%s' % x['name']: float(x['value'])})
+        writeGlyphlist(master, glyphid)
+        if model.writeGlobalParam(master):
+            makefont(working_dir(), master)
+
+        M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
+        if x.ab_source.upper() == 'A':
+            glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
+        else:
+            glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
+        return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson})
 
 
 class Settings(app.page):
@@ -777,9 +787,9 @@ class CreateProject(app.page):
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
                 # if master:
-                #     models.Master.delete(idmaster=master.idmaster)
                 #     models.GlyphOutline.delete(idmaster=master.idmaster)
                 #     models.GlyphParam.delete(idmaster=master.idmaster)
+                #     models.Master.delete(master)
 
                 #     fontpath = master.get_fonts_directory()
                 #     shutil.rmtree(fontpath)
