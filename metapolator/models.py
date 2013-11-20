@@ -176,6 +176,12 @@ class GlyphParam(Base):
     def delete(cls, instance):
         web.ctx.orm.delete(instance)
 
+    @classmethod
+    def update(cls, values={}, **kwargs):
+        if not values:
+            return
+        query(cls).filter_by(**kwargs).update(values)
+
 
 class GroupParam(Base):
 

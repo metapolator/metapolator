@@ -132,6 +132,25 @@ class SettingsRestCreate(app.page):
         raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
 
+class SavePointParam(app.page):
+
+    path = '/view/([-.\w\d]+)/(\d+)/save-point/'
+
+    def POST(self, name, glyphid):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        master = models.Master.get(fontname=name)
+        if not master:
+            return web.notfound()
+
+        x = web.input(name='', value='', pointnr='', ab_source='a')
+        models.GlyphParam.update(idmaster=master.idmaster,
+                                 fontsource=x['ab_source'].upper(),
+                                 pointnr=x['pointnr'],
+                                 values={'%s' % name: float(value)})
+
+
 class Settings(app.page):
 
     path = '/view/([-.\w\d]+)/(\d+)/settings/'
@@ -752,8 +771,8 @@ class CreateProject(app.page):
                         raise
 
                 putFontAllglyphs(master)
-                writeGlyphlist(master)
-                makefont(working_dir(), master)
+                # writeGlyphlist(master)
+                # makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
                 if master:
                     models.Master.delete(idmaster=master.idmaster)
