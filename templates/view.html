@@ -231,13 +231,13 @@ Canvas.prototype.onMouseUp = function(event) {
           })
           .success(function(data){
             var json = jQuery.parseJSON(data).R;
-            for (var k = 0; k < this.glyphpaths.length; k++) {
-              this.glyphpaths[k].remove();
-            }
+            // for (var k = 0; k < this.glyphpaths.length; k++) {
+            //   this.glyphpaths[k].remove();
+            // }
             this.renderGlyph(json.edges);
             this.draw();
 
-            this.onGlyphLoaded(data);
+            // this.onGlyphLoaded(data);
 
             jQuery('#test').hide();
           }.bind(this));
