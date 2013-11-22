@@ -129,11 +129,15 @@ function GlyphOrigin(dataGlyph) {
   this.glyphpaths = [];
 }
 
-GlyphOrigin.prototype.drawOn = function(canvas) {
-  canvas.paper.activate();
+GlyphOrigin.prototype.delete = function() {
   for (var k = 0; k < this.glyphpaths.length; k++) {
     this.glyphpaths[k].remove();
   }
+}
+
+GlyphOrigin.prototype.drawOn = function(canvas) {
+  canvas.paper.activate();
+  this.delete();
   this.glyphpaths = []
   for (var i = 0; i < this.dataGlyph.length; i++) {
       for (var j = 0; j < this.dataGlyph[i].contours.length; j++) {
@@ -283,7 +287,14 @@ Canvas.prototype.onMouseUp = function(event) {
             var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
             glyphpreview.drawOn(this);
 
-            jQuery('.' + this.canvasid).css('display', 'block');
+            var buttons = jQuery('.' + this.canvasid);
+            buttons.css('display', 'block');
+
+            buttons.find('a').off('click').on('click', function(){
+              glyphpreview.delete();
+              buttons.css('display', 'none');
+              this.draw();
+            }.bind(this));
 
             jQuery('#test').hide();
           }.bind(this));
