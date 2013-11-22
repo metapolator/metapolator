@@ -11,8 +11,8 @@ Project $master.fontname
     <canvas id="canvas-a" width="400" height="400"></canvas>
     
     <div class="canvas-a" style="display: none;">
-      <a href="javascript:;" class="btn btn-success">Apply</a>
-      <a href="javascript:;" class="btn btn-danger">Cancel</a>
+      <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
+      <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
     </div>
   
     <div class="well">
@@ -67,8 +67,8 @@ Project $master.fontname
     <canvas id="canvas-b" height="400" width="400"></canvas>
 
     <div class="canvas-b" style="display: none;">
-      <a href="javascript:;" class="btn btn-success">Apply</a>
-      <a href="javascript:;" class="btn btn-danger">Cancel</a>
+      <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
+      <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
     </div>
 
     <div class="well">
@@ -193,6 +193,8 @@ function Canvas(canvasid, width, height, source) {
   this.height = Number(height);
   this.source = source;
 
+  this.parameterform = jQuery('#test');
+
   this.tool = new this.paper.Tool();
 
   this.tool.onMouseDown = this.onMouseDown.bind(this);
@@ -217,8 +219,9 @@ Canvas.prototype.renderGlyph = function(edges) {
 
 Canvas.prototype.onMouseDown = function(event) {
   this.currentsegment = null;
-  jQuery('#test form').val("");
-  jQuery('#test').hide();
+  this.parameterform.find('form').val("");
+
+  this.parameterform.hide();
   for (var k = 0; k < this.controlpoints.paths.length; k++) {
     var point = this.controlpoints.paths[k].getNearestPoint(event.point);
     if (point.getDistance(event.point) < 5) {
@@ -264,44 +267,68 @@ Canvas.prototype.onMouseUp = function(event) {
       );
     } else {
       var e = event.event;
-      jQuery('#test').css({left: parseInt(e.clientX) + 'px', top: parseInt(e.clientY) + 'px'});
-      jQuery('#test').show();
-      jQuery('#test select').off('change').on('change', function(event){
+
+      this.parameterform.css({left: parseInt(e.clientX) + 'px',
+                              top:  parseInt(e.clientY) + 'px'});
+      this.parameterform.show();
+      this.parameterform.find('select').off('change').on('change', function(event){
         var val = jQuery(event.target).val();
-        // alert('you are selected __' + val + '__:' + this.currentsegment.data[val]);
+        this.parameterform.find('input[type=text]').val(this.currentsegment.data[val]);
       }.bind(this));
 
-      jQuery('#test form button').off('click').on('click', function(e){
+      this.parameterform.find('button').off('click').on('click', function(e){
         e.preventDefault();
-        var val = jQuery(e.target).parents('form').find('input[type=text]').val();
-        jQuery.post('/view/$master.fontname/$glyphid/save-point/',
-                    {name: jQuery(e.target).parents('form').find('select').val(),
-                     value: val,
-                     pointnr: this.currentsegment.data.pointnr,
-                     ab_source: this.currentsegment.data.fontsource})
-          .fail(function(){
-            var val = jQuery(e.target).parents('form').find('input[type=text]').val();
-            alert("{name:" + jQuery(e.target).parents('form').find('select').val() + ", value:" + val + "}");
-          })
-          .success(function(data){
-            var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
-            glyphpreview.drawOn(this);
-
-            var buttons = jQuery('.' + this.canvasid);
-            buttons.css('display', 'block');
-
-            buttons.find('a').off('click').on('click', function(){
-              glyphpreview.delete();
-              buttons.css('display', 'none');
-              this.draw();
-            }.bind(this));
-
-            jQuery('#test').hide();
-          }.bind(this));
+        var val = this.parameterform.find('input[type=text]').val();
+        this.saveParamRequest(val);
       }.bind(this));
     };
   };
 };
+
+
+Canvas.prototype.saveParamRequest = function(val, successhandler) {
+  jQuery.post('/view/$master.fontname/$glyphid/save-point/',
+              {name: this.parameterform.find('select').val(),
+               value: val,
+               pointnr: this.currentsegment.data.pointnr,
+               ab_source: this.currentsegment.data.fontsource})
+        .fail(this.saveParamException.bind(this))
+        .success(successhandler || this.saveParamSuccess.bind(this));
+}
+
+Canvas.prototype.saveParamException = function() {
+    var val = this.parameterform.find('input[type=text]').val();
+    alert("updating parameter has been failed");
+}
+
+Canvas.prototype.saveParamCanceled = function(data) {
+  var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
+    glyphpreview.drawOn(this);
+}
+
+Canvas.prototype.saveParamSuccess = function(data) {
+    var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
+    glyphpreview.drawOn(this);
+
+    var buttons = jQuery('.' + this.canvasid);
+    buttons.css('display', 'block');
+
+    buttons.find('a').off('click').on('click', function(e){
+      glyphpreview.delete();
+      buttons.css('display', 'none');
+      this.draw();
+
+      if (jQuery(e.target).attr('command') == 'cancel') {
+        var paramname = this.parameterform.find('select').val();
+        this.saveParamRequest(this.currentsegment.data[paramname], this.saveParamCanceled.bind(this));
+      } else {
+        this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
+        glyphpreview.drawOn(this);
+      }
+    }.bind(this));
+
+    this.parameterform.hide();
+}
 
 Canvas.prototype.setZpoints = function(json) {
   this.controlpoints = new ControlPoints(json);
