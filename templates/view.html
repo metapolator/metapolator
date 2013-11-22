@@ -9,7 +9,12 @@ Project $master.fontname
   <div class="col-md-4">
     <h4>Font A</h4>
     <canvas id="canvas-a" width="400" height="400"></canvas>
-
+    
+    <div class="canvas-a" style="display: none;">
+      <a href="javascript:;" class="btn btn-success">Apply</a>
+      <a href="javascript:;" class="btn btn-danger">Cancel</a>
+    </div>
+  
     <div class="well">
       <h4>Parameters Font A <small><a href="/view/$master.fontname/$glyphid/settings/">change</a></small></h4>
 
@@ -61,6 +66,11 @@ Project $master.fontname
     <h4>Font B</h4>
     <canvas id="canvas-b" height="400" width="400"></canvas>
 
+    <div class="canvas-b" style="display: none;">
+      <a href="javascript:;" class="btn btn-success">Apply</a>
+      <a href="javascript:;" class="btn btn-danger">Cancel</a>
+    </div>
+
     <div class="well">
       <h4>Parameters Font B <small><a href="/view/$master.fontname/$glyphid/settings/">change</a></small></h4>
       $if not localparametersB:
@@ -87,6 +97,75 @@ Project $master.fontname
 
 
 <script type="text/javascript">
+function ControlPoints(dataPoints) {
+  this.dataPoints = dataPoints;
+  this.paths = [];
+}
+
+
+ControlPoints.prototype.drawOn = function(canvas) {
+  for (var i = 0; i < this.dataPoints.points.length; i++) {
+    if (!this.dataPoints.points[i].iszpoint) {
+      continue;
+    }
+    this.drawPoint(canvas, this.dataPoints.points[i])
+  }
+}
+
+
+ControlPoints.prototype.drawPoint = function(canvas, datapoint) {
+    var point = canvas.getPoint(Number(datapoint.x), 500 - Number(datapoint.y), 0);
+    var path = new canvas.paper.Path.Rectangle(point, 1);
+    path.closed = true;
+    path.selected = true;
+    path.position.y += +200;
+    path.data = datapoint.data;
+    this.paths.push(path);
+}
+
+
+function GlyphOrigin(dataGlyph) {
+  this.dataGlyph = dataGlyph;
+  this.glyphpaths = [];
+}
+
+GlyphOrigin.prototype.drawOn = function(canvas) {
+  canvas.paper.activate();
+  for (var k = 0; k < this.glyphpaths.length; k++) {
+    this.glyphpaths[k].remove();
+  }
+  this.glyphpaths = []
+  for (var i = 0; i < this.dataGlyph.length; i++) {
+      for (var j = 0; j < this.dataGlyph[i].contours.length; j++) {
+          var path = new canvas.paper.Path();
+          var contours = this.dataGlyph[i].contours[j];
+          for (var k = 0; k < contours.length; k++) { // contours.length
+              contour = contours[k];
+
+              var point = canvas.getPoint(Number(contour.x), 500 - Number(contour.y));
+              var handleIn = canvas.getPoint(Number(contour.controls[0].x) - Number(contour.x),
+                                       Number(contour.y) - Number(contour.controls[0].y));
+              var handleOut = canvas.getPoint(Number(contour.controls[1].x) - Number(contour.x),
+                                        Number(contour.y) - Number(contour.controls[1].y));
+              segment = new canvas.paper.Segment(point, handleIn, handleOut);
+              path.add(segment);
+          }
+          path.fillColor = {
+              hue: 360 * Math.random(),
+              saturation: 1,
+              brightness: 1,
+              alpha: 0.5
+          };
+          path.closed = true;
+          path.strokeColor = new canvas.paper.Color(0.5, 0, 0.5);
+          path.position.y += +200;
+          this.glyphpaths.push(path);
+      }
+  }
+  canvas.draw();
+}
+
+
 function resize(x, y, width, height, newwidth, newheight) {
     ratio = width / height;
     if (width > height) {
@@ -102,6 +181,7 @@ function resize(x, y, width, height, newwidth, newheight) {
 }
 
 function Canvas(canvasid, width, height, source) {
+  this.canvasid = canvasid;
   this.paper = new paper.PaperScope();
   this.paper.setup(canvasid);
 
@@ -126,45 +206,19 @@ Canvas.prototype.restore_original_coords = function(point) {
 }
 
 Canvas.prototype.renderGlyph = function(edges) {
-  this.glyphpaths = [];
   this.paper.activate();
-  for (var i = 0; i < edges.length; i++) {
-      for (var j = 0; j < edges[i].contours.length; j++) {
-          var path = new this.paper.Path();
-          var contours = edges[i].contours[j];
-          for (var k = 0; k < contours.length; k++) { // contours.length
-              contour = contours[k];
-
-              var point = this.getPoint(Number(contour.x), 500 - Number(contour.y));
-              var handleIn = this.getPoint(Number(contour.controls[0].x) - Number(contour.x),
-                                       Number(contour.y) - Number(contour.controls[0].y));
-              var handleOut = this.getPoint(Number(contour.controls[1].x) - Number(contour.x),
-                                        Number(contour.y) - Number(contour.controls[1].y));
-              segment = new this.paper.Segment(point, handleIn, handleOut);
-              path.add(segment);
-          }
-          path.fillColor = {
-              hue: 360 * Math.random(),
-              saturation: 1,
-              brightness: 1,
-              alpha: 0.5
-          };
-          path.closed = true;
-          path.strokeColor = new this.paper.Color(0.5, 0, 0.5);
-          path.position.y += +200;
-          this.glyphpaths.push(path);
-      }
-  }
+  this.glyphorigin = new GlyphOrigin(edges);
+  this.glyphorigin.drawOn(this);
 }
 
 Canvas.prototype.onMouseDown = function(event) {
-  this.currentsegment = this.currentpointnr = null;
+  this.currentsegment = null;
   jQuery('#test form').val("");
   jQuery('#test').hide();
-  for (var k = 0; k < this.paths.length; k++) {
-    var point = this.paths[k].getNearestPoint(event.point);
+  for (var k = 0; k < this.controlpoints.paths.length; k++) {
+    var point = this.controlpoints.paths[k].getNearestPoint(event.point);
     if (point.getDistance(event.point) < 5) {
-      this.currentsegment = this.paths[k];
+      this.currentsegment = this.controlpoints.paths[k];
       this.currentpointnr = k + 1;
       this.box.position = point;
       this.isdragged = false;
@@ -196,12 +250,8 @@ Canvas.prototype.onMouseUp = function(event) {
           source: this.source
         },
         function(data) {
-          var json = jQuery.parseJSON(data).R;
-          for (var k = 0; k < this.glyphpaths.length; k++) {
-            this.glyphpaths[k].remove();
-          }
-          this.renderGlyph(json.edges);
-          this.draw();
+          this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
+          this.glyphorigin.drawOn(this);
 
           if (this.onGlyphLoaded) {
             this.onGlyphLoaded(data);
@@ -230,14 +280,10 @@ Canvas.prototype.onMouseUp = function(event) {
             alert("{name:" + jQuery(e.target).parents('form').find('select').val() + ", value:" + val + "}");
           })
           .success(function(data){
-            var json = jQuery.parseJSON(data).R;
-            // for (var k = 0; k < this.glyphpaths.length; k++) {
-            //   this.glyphpaths[k].remove();
-            // }
-            this.renderGlyph(json.edges);
-            this.draw();
+            var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
+            glyphpreview.drawOn(this);
 
-            // this.onGlyphLoaded(data);
+            jQuery('.' + this.canvasid).css('display', 'block');
 
             jQuery('#test').hide();
           }.bind(this));
@@ -247,23 +293,14 @@ Canvas.prototype.onMouseUp = function(event) {
 };
 
 Canvas.prototype.setZpoints = function(json) {
-  this.paths = [];
-  for (var i = 0; i < json.points.length; i++) {
-    if (!json.points[i].iszpoint) {
-      continue;
-    }
-    var point = this.getPoint(Number(json.points[i].x), 500 - Number(json.points[i].y), 0);
-    var path = new this.paper.Path.Rectangle(point, 1);
-    path.closed = true;
-    path.selected = true;
-    path.position.y += +200;
-    path.data = json.points[i].data;
-    this.paths.push(path);
-  }
+  this.controlpoints = new ControlPoints(json);
+  this.controlpoints.drawOn(this);
 };
 
 Canvas.prototype.showbox = function() {
-  this.box = new this.paper.Path.Rectangle(new this.paper.Point(50, 50), new this.paper.Size(50, 50));
+  this.box = new this.paper.Path.Rectangle(
+      new this.paper.Point(50, 50),
+      new this.paper.Size(50, 50));
   this.box.style = {
       strokeColor: 'red',
       strokeWidth: '5'
@@ -277,12 +314,8 @@ Canvas.prototype.draw = function() {
 
 Canvas.prototype.redrawglyph = function(data) {
   this.paper.activate();
-  var json = jQuery.parseJSON(data).M;
-  for (var k = 0; k < this.glyphpaths.length; k++) {
-    this.glyphpaths[k].removeSegments();
-  }
-  this.renderGlyph(json.edges);
-  this.draw();
+  this.glyphorigin.dataGlyph = jQuery.parseJSON(data).M.edges;
+  this.glyphorigin.drawOn(this)
 }
 
 jQuery(
