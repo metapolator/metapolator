@@ -1,3 +1,4 @@
+import datetime
 import os.path as op
 import web
 
@@ -26,6 +27,25 @@ class User(Base):
     email = Column(String)
     is_admin = Column(Boolean)
     date_joined = Column(DateTime)
+
+    @classmethod
+    def create(cls, username, password, email):
+        from passlib.hash import bcrypt
+        user = User()
+        user.password = bcrypt.encrypt(password)
+        user.username = username
+        user.email = email
+        user.date_joined = datetime.datetime.now()
+        web.ctx.orm.add(user)
+        web.ctx.orm.commit()
+        return user
+
+    @classmethod
+    def get(cls, **kwargs):
+        try:
+            return query(cls).filter_by(**kwargs).one()
+        except NoResultFound:
+            return None
 
 
 class Glyph(Base):

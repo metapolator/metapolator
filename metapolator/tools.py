@@ -2,13 +2,12 @@ import os
 import os.path as op
 import re
 import xmltomf
-import model
 import web
 from lxml import etree
 
-from config import cFont, working_dir, buildfname, mf_filename
+from config import working_dir, buildfname, mf_filename
 
-from models import Glyph, GlyphParam, GlyphOutline
+from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam
 
 
 def project_exists(master):
@@ -25,10 +24,7 @@ def makefont(working_dir, master):
     if not project_exists(master):
         return False
 
-    # ufo2mf(master)
-
     os.environ['MFINPUTS'] = master.get_fonts_directory()
-    # writeGlyphlist(master)
 
     strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sA' % master.fontname)
     os.system(strms)
@@ -148,25 +144,6 @@ def putFontAllglyphs(master, glyphid=None):
             create_glyph(glif, master, 'B')
 
 
-def writeallxmlfromdb(master, glyphs):
-    dirnamea = op.join(master.get_fonts_directory('A'), "glyphs")
-    dirnameb = op.join(master.get_fonts_directory('B'), "glyphs")
-
-    charlista = [f for f in os.listdir(dirnamea) if fnextension(f) == 'glif']
-    charlistb = [f for f in os.listdir(dirnameb) if fnextension(f) == 'glif']
-    #
-    for ch1 in charlista:
-        if ch1 in charlistb:
-            glyphname, exte = buildfname(ch1)
-            if glyphname in glyphs:
-                cFont.glyphunic = glyphname
-                cFont.glyphName = glyphname
-                #   for A and B font
-                for iwork in ['0', '1']:
-                    cFont.idwork = iwork
-                    model.writexml()
-
-
 def get_json(content, glyphid=None):
     contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
     point_pattern = re.compile(r'\(([-\d.]+),([-\d.]+)\)..controls\s'
@@ -226,3 +203,97 @@ def get_json(content, glyphid=None):
     height = abs(y_max) + abs(y_min)
     return {'total_edges': len(edges), 'edges': edges,
             'width': width, 'height': height}
+
+
+def writeParams(filename, master, globalparam, metapolation=None):
+    mean = 5.0
+    cap = 0.8
+    ascl = 0.2
+    des = 0.2
+    box = 1.0
+
+    metapolation = (metapolation is not None and metapolation) \
+        or (metapolation is None and globalparam.metapolation)
+    u = globalparam.unitwidth or 0
+    fontsize = globalparam.fontsize or 0
+    mean = globalparam.mean or mean
+    cap = globalparam.cap or cap
+    ascl = globalparam.ascl or ascl
+    des = globalparam.des or des
+    box = globalparam.box or box
+
+    ifile = open(filename, "w")
+    # global parameters
+    ifile.write("% parameter file \n")
+    ifile.write("metapolation:=%.2f;\n" % metapolation)
+    ifile.write("font_size:=%.3fpt#;\n" % fontsize)
+    ifile.write("mean#:=%.3fpt#;\n" % mean)
+    ifile.write("cap#:=%.3fpt#;\n" % cap)
+    ifile.write("asc#:=%.3fpt#;\n" % ascl)
+    ifile.write("desc#:=%.3fpt#;\n" % des)
+    ifile.write("box#:=%.3fpt#;\n" % box)
+    ifile.write("u#:=%.3fpt#;\n" % u)
+
+    # local parameters A
+    imlo = LocalParam.get(idlocal=master.idlocala)
+    hasA = False
+    if imlo:
+        ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
+        ifile.write("A_width:=%.2f;\n" % imlo.width)
+        ifile.write("A_space:=%.2f;\n" % imlo.space)
+        ifile.write("A_spacept:=%.2fpt;\n" % imlo.space)
+        ifile.write("A_xheight:=%.2f;\n" % imlo.xheight)
+        ifile.write("A_capital:=%.2f;\n" % imlo.capital)
+        ifile.write("A_ascender:=%.2f;\n" % imlo.ascender)
+        ifile.write("A_descender:=%.2f;\n" % imlo.descender)
+        ifile.write("A_inktrap:=%.2f;\n" % imlo.inktrap)
+        ifile.write("A_stemcut:=%.2f;\n" % imlo.stemcut)
+        ifile.write("A_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
+        ifile.write("A_superness:=%.2f;\n" % imlo.superness)
+        ifile.write("A_over:=%.2fpt;\n" % imlo.over)
+        hasA = True
+
+    # local parameters B
+    imlo = LocalParam.get(idlocal=master.idlocalb)
+    hasB = False
+    if imlo:
+        ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
+        ifile.write("B_width:=%.2f;\n" % imlo.width)
+        ifile.write("B_space:=%.2f;\n" % imlo.space)
+        ifile.write("B_xheight:=%.2f;\n" % imlo.xheight)
+        ifile.write("B_capital:=%.2f;\n" % imlo.capital)
+        ifile.write("B_ascender:=%.2f;\n" % imlo.ascender)
+        ifile.write("B_descender:=%.2f;\n" % imlo.descender)
+        ifile.write("B_inktrap:=%.2f;\n" % imlo.inktrap)
+        ifile.write("B_stemcut:=%.2f;\n" % imlo.stemcut)
+        ifile.write("B_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
+        ifile.write("B_superness:=%.2f;\n" % imlo.superness)
+        ifile.write("B_over:=%.2fpt;\n" % imlo.over)
+        hasB = True
+
+    ifile.write("\n")
+    ifile.write("input glyphs\n")
+    ifile.write("bye\n")
+    ifile.close()
+
+    return hasA and hasB
+
+
+def writeGlobalParam(master):
+    #
+    # prepare font.mf parameter file
+    # write the file into the directory cFont.fontpath
+    #
+    globalparam = GlobalParam.get(idglobal=master.idglobal)
+    if not globalparam:
+        return False
+
+    filename = op.join(master.get_fonts_directory(), '%s.mf' % master.fontname)
+    result1 = writeParams(filename, master, globalparam)
+
+    filename = op.join(master.get_fonts_directory(), '%sA.mf' % master.fontname)
+    result2 = writeParams(filename, master, globalparam, 0)
+
+    filename = op.join(master.get_fonts_directory(), '%sB.mf' % master.fontname)
+    result3 = writeParams(filename, master, globalparam, 1)
+    return result1 and result2 and result3

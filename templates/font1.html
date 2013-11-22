@@ -1,4 +1,4 @@
-$def with (fontlist, form, mmaster, cfont, master=None)
+$def with (projects, master=None)
 <title>Settings</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
@@ -74,39 +74,13 @@ color:red;
 }
 </style>
 
-
-<h2> fonts in directories</h2>
-<p>
-$for fontl in fontlist:
-   $fontl  <br>
 <p>
 
-<p>
-<div class="title">
-Project $cfont.idmaster:
-<span style="font-weight:normal;">
-$if cfont.idwork == '0' :
-       A $cfont.fontna
-$if cfont.idwork == '1' : 
-       B $cfont.fontnb
-       </span>
-</p>
-</div>
-<p style="color:blue;font-size:50px;">  idmaster $cfont.idmaster glyph $cfont.glyphName
-</p>
-
-<p>
-
-$for mma in mmaster:
-    $if not project_exists(mma):
+$for project in projects:
+    $if not project_exists(project):
       <span>X</span>
-    <a href="/fonts/$mma.idmaster" style="color:green;text-decoration:underline;">Project $mma.idmaster</a> projname $mma.fontname fontA $mma.fontnamea fontB $mma.fontnameb idglobal $mma.idglobal <a href="/regenerate/$mma.idmaster">Regenerate LOG</a><br>
+    <a href="/fonts/$project.idmaster" style="color:green;text-decoration:underline;">Project $project.idmaster</a> projname $project.fontname fontA $project.fontnamea fontB $project.fontnameb idglobal $project.idglobal <a href="/regenerate/$project.idmaster">Regenerate LOG</a><br>
 </p>
-<div>
-<form action="" method="post">
-$:form.render()
-</form>
-</div>
 
 
 <div>
@@ -114,7 +88,7 @@ $:form.render()
 <a href="/settings/globals/" style="color:green;text-decoration:underline;">Edit Global and Local Parameters</a>
 </p>
 
-<div>
+<!-- <div>
 <h2> import </h2>
 <p>
 <a onclick="this.style.fontWeight= 'bold'" href="/fonts/i0">import single glyph only x and y coordinates </a>
@@ -129,7 +103,7 @@ $:form.render()
 <a onclick="this.style.fontWeight= 'bold'" href="/fonts/e4">export single glyph </a>
 <br>
 <a onclick="this.style.fontWeight= 'bold'" href="/fonts/e5">export all glyphs  </a>
-<br>
+<br> -->
 </p>
 $if master:
   <h2>glyphs</h2>
@@ -142,7 +116,7 @@ $if master:
         <a href="/view/$master.fontname/$glyph.name/">&#x$glyph.unicode;</a>
   </p>
 
-<p>
+<!-- <p> 
 </p>
 <br>
 <div>
@@ -151,4 +125,4 @@ $if master:
 <a onclick="this.style.fontWeight= 'bold'" href="/fonts/20000">copy project </a>
 <br>
 </p>
-</div>
+</div> -->

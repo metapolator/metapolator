@@ -7,8 +7,6 @@
 # GPL v3 (http: //www.gnu.org/copyleft/gpl.html).
 
 """ Basic metafont point interface using webpy  """
-import glob
-import model
 import models
 import os
 import os.path as op
@@ -22,12 +20,13 @@ from web import seeother
 from passlib.hash import bcrypt
 
 
-from config import app, cFont, is_loggedin, session, working_dir, \
+from config import app, is_loggedin, session, working_dir, \
     working_url, mf_filename
-from forms import FontForm, GlobalParamForm, RegisterForm, LocalParamForm, \
+from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     ParamForm
-from tools import writeallxmlfromdb, putFontAllglyphs, \
-    makefont, get_json, project_exists, writeGlyphlist, ufo2mf
+from tools import putFontAllglyphs, \
+    makefont, get_json, project_exists, writeGlyphlist, ufo2mf, \
+    writeGlobalParam
 
 
 ### Templates
@@ -46,15 +45,7 @@ class Index(app.page):
     path = '/'
 
     def GET(self):
-        """ Show page """
         raise seeother('/fonts/')
-        if not is_loggedin():
-            raise seeother('/login')
-        posts = model.get_posts()
-        master = model.get_masters()
-        fontsource = [cFont.fontna, cFont.fontnb, cFont.glyphName]
-        webglyph = cFont.glyphName
-        return render.metap(posts, master, fontsource, webglyph)
 
 
 class Regenerate(app.page):
@@ -71,34 +62,6 @@ class Regenerate(app.page):
         putFontAllglyphs(master)
         makefont(working_dir(), master)
         raise seeother('/fonts/')
-
-
-class Metap(app.page):
-
-    path = '/metap/([0-9]+)'
-
-    def GET(self, id):
-        """ Show page """
-        if not is_loggedin():
-            raise seeother('/login')
-        posts = model.get_posts()
-        master = model.get_masters()
-
-        if id == '0':
-            # we are working on font A
-            cFont.idwork = id
-            fontsource = [cFont.fontna, cFont.glyphName]
-
-        if id == '1':
-            # we are working on font B
-            cFont.idwork = id
-            fontsource = [cFont.fontnb, cFont.glyphName]
-
-        posts = model.get_posts()
-        master = model.get_masters()
-
-        webglyph = cFont.glyphName
-        return render.metap(posts, master, fontsource, webglyph)
 
 
 class SettingsRestCreate(app.page):
@@ -158,7 +121,7 @@ class SavePointParam(app.page):
         import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
 
-        if model.writeGlobalParam(master):
+        if writeGlobalParam(master):
             makefont(working_dir(), master)
 
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
@@ -266,7 +229,7 @@ class Settings(app.page):
             models.GlobalParam.update(idglobal=idglobal, values=values)
 
         writeGlyphlist(master, glyphid)
-        if model.writeGlobalParam(master):
+        if writeGlobalParam(master):
             makefont(working_dir(), master)
         raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
 
@@ -390,14 +353,13 @@ class View(app.page):
 
 class ViewFont(app.page):
 
-    path = '/viewfont/'
+    path = '/specimen/'
 
     def GET(self):
         """ View single post """
         if not is_loggedin():
             raise seeother('/login')
-        param = cFont.glyphName
-        return render.viewfont(param)
+        return render.specimen()
 
 
 class Fonts(app.page):
@@ -407,11 +369,8 @@ class Fonts(app.page):
     def GET(self):
         if not is_loggedin():
             raise seeother('/login')
-        mmaster = models.Master.all()
-        fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
-        fontlist.sort()
-        form = FontForm()
-        return render.font1(fontlist, form, mmaster, cFont)
+        projects = models.Master.all()
+        return render.font1(projects)
 
 
 class Font(app.page):
@@ -421,75 +380,11 @@ class Font(app.page):
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
-        mmaster = models.Master.all()
+        projects = models.Master.all()
 
-        fontname = cFont.fontname
-        fontna = cFont.fontna
-        fontnb = cFont.fontnb
+        master = models.Master.get(idmaster=id)
 
-        fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
-        fontlist.sort()
-        form = FontForm()
-        form.fill({'Name': fontname, 'UFO_A': fontna, 'UFO_B': fontnb})
-
-        if id == 'i0':
-            cFont.loadoption = 0
-            cFont.loadoptionAll = 0
-            model.putFont()
-            return render.font1(fontlist, form, mmaster, cFont)
-        if id == 'i1':
-            cFont.loadoption = 1
-            cFont.loadoptionAll = 0
-            model.putFont()
-            return render.font1(fontlist, form, mmaster, cFont)
-        if id == 'i2':
-            cFont.loadoption = 0
-            cFont.loadoptionAll = 1
-            putFontAllglyphs()
-            return render.font1(fontlist, form, mmaster, cFont)
-        if id == 'i3':
-            cFont.loadoption = 1
-            cFont.loadoptionAll = 1
-            putFontAllglyphs()
-            return render.font1(fontlist, form, mmaster, cFont)
-        if id == 'e4':
-            mfoption = 0
-            model.writexml()
-            return render.font1(fontlist, form, mmaster, cFont)
-        if id == 'e5':
-            mfoption = 1
-            alist = list(get_activeglyph())
-            writeallxmlfromdb(alist)
-            return render.font1(fontlist, form, mmaster, cFont)
-        if id == '20000':
-            return render.cproject()
-
-        id = int(id)
-
-        if id > 1000 and id < 10000:
-            cFont.glyphName = chr(id - 1001 + 32)
-            cFont.glyphunic = str(id - 1001)
-
-        master = None
-        if id > 0 and id < 1000:
-            master = models.Master.get(idmaster=id)
-
-        return render.font1(fontlist, form, mmaster, cFont, master)
-
-    def POST(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-        mmaster = list(model.get_masters())
-        form = FontForm()
-        form.fill()
-        cFont.fontname = form.d.Name
-        cFont.fontna = form.d.UFO_A
-        cFont.fontnb = form.d.UFO_B
-        #
-        fontlist = [f for f in glob.glob(working_dir('fonts') + "/*/*.ufo")]
-        fontlist.sort()
-
-        return render.font1(fontlist, form, mmaster, cFont)
+        return render.font1(projects, master)
 
 
 class GlobalParams(app.page):
@@ -518,34 +413,34 @@ class GlobalParam(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        gm = list(model.get_globalparam(id))
+        gm = models.GlobalParam.get(idglobal=id)
         if not gm:
             return web.notfound()
 
         formg = GlobalParamForm()
-        formg.fill({'metapolation': gm[0].metapolation, 'fontsize': gm[0].fontsize,
-                    'mean': gm[0].mean, 'cap': gm[0].cap, 'ascl': gm[0].ascl,
-                    'des': gm[0].des, 'box': gm[0].box})
+        formg.fill(gm.as_dict())
 
-        gml = list(model.get_globalparams())
+        gml = models.GlobalParam.all()
         return render.globals(gml, formg)
 
     def POST(self, id):
         if not is_loggedin():
             raise seeother('/login')
 
-        gm = list(model.get_globalparam(id))
+        gm = models.GlobalParam.get(idglobal=id)
         if not gm:
             return web.notfound()
 
         formg = GlobalParamForm()
         if formg.validates():
-            model.update_globalparam(id, formg.d.metapolation, formg.d.fontsize,
-                                     formg.d.mean, formg.d.cap, formg.d.ascl,
-                                     formg.d.des, formg.d.box)
+            values = formg.d
+            del values['idglobal']
+            del values['save']
+
+            models.GlobalParam.update(idglobal=id, values=values)
             return seeother('/settings/globals/')
 
-        gml = list(model.get_globalparams())
+        gml = models.GlobalParam.all()
         return render.globals(gml, formg)
 
 
@@ -557,76 +452,61 @@ class LocalParams(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        return render.locals(model.get_localparams())
+        localparams = models.LocalParam.all()
+        return render.locals(localparams)
 
     def POST(self):
         if not is_loggedin():
             raise seeother('/login')
 
-        newid = model.LocalParam.insert(user_id=session.user)
-        raise seeother('/settings/locals/%s' % newid)
+        localparam = models.LocalParam.create()
+        raise seeother('/settings/locals/edit/%s' % localparam.idlocal)
 
 
 class LocalParam(app.page):
 
     path = '/settings/locals/edit/(.*)'
 
-    def getform(self, localparam):
+    def getform(self, localparam=None):
         form = LocalParamForm()
-        form.fill({'px': localparam.px, 'width': localparam.width, 'space': localparam.space,
-                   'xheight': localparam.xheight, 'capital': localparam.capital,
-                   'boxheight': localparam.boxheight, 'ascender': localparam.ascender,
-                   'descender': localparam.descender, 'inktrap': localparam.inktrap,
-                   'stemcut': localparam.stemcut, 'skeleton': localparam.skeleton,
-                   'superness': localparam.superness, 'over': localparam.over})
+        if localparam:
+            form.fill(localparam.as_dict())
         return form
 
     def GET(self, id):
         if not is_loggedin():
             raise seeother('/login')
 
-        localparam = model.get_localparam(id)
+        localparam = models.LocalParam.get(idlocal=id)
         if not localparam:
             return web.notfound()
 
         form = self.getform(localparam)
 
-        glo = list(model.get_localparams())
+        glo = models.LocalParam.all()
         return render.editlocals(localparam, glo, form)
 
     def POST(self, id):
         if not is_loggedin():
             raise seeother('/login')
 
-        localparam = model.get_localparam(id)
+        localparam = models.LocalParam.get(idlocal=id)
         if not localparam:
             return web.notfound()
 
-        form = self.getform(localparam)
+        form = self.getform()
 
         if form.validates():
-            model.update_localparam(id, form.d.px, form.d.width,
-                                    form.d.space, form.d.xheight, form.d.capital,
-                                    form.d.boxheight, form.d.ascender, form.d.descender,
-                                    form.d.inktrap, form.d.stemcut, form.d.skeleton,
-                                    form.d.superness, form.d.over)
+            values = form.d
+            del values['ab_source']
+            del values['save']
+            del values['idlocal']
+
+            models.LocalParam.update(idlocal=id, values=values)
             raise seeother('/settings/locals/')
 
-        glo = list(model.get_localparams())
+        glo = models.LocalParam.all()
         return render.editlocals(localparam, glo, form)
-
-
-class copyproject (app.page):
-
-    path = '/cproject/([0-9]+)'
-
-    def GET(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-        if id == '1001':
-            ip = model.copyproject()
-
-        return render.cproject()
 
 
 class logout(app.page):
@@ -641,7 +521,7 @@ class logout(app.page):
 
 def authorize(user):
     session.authorized = True
-    session.user = user['id']
+    session.user = user.id
     return web.seeother("/")
 
 
@@ -655,11 +535,11 @@ class Login(app.page):
 
     def POST(self):
         name, pwd = web.input().username, web.input().password
-        user = model.get_user_by_username(name)
+        user = models.User.get(username=name)
         if not user:
             return render.login(is_loggedin(), True)
 
-        if bcrypt.verify(pwd, user['password']):
+        if bcrypt.verify(pwd, user.password):
             raise authorize(user)
         return render.login(is_loggedin(), True)
 
@@ -696,10 +576,9 @@ class Register(app.page):
         form = RegisterForm()
         if not form.validates():
             return render.register(form)
-        user = model.create_user(form.d.username, form.d.password, form.d.email)
-        if not user:
-            return render.register(form)
-        seeother = authorize(user)
+
+        user = models.User.create(form.d.username, form.d.password, form.d.email)
+        seeother = authorize(user.id)
 
         prepare_environment_directory()
         raise seeother

@@ -1,9 +1,9 @@
 import re
 
 from web.form import Form, Textbox, Dropdown, Button, Validator, Password, \
-    notnull, Hidden, Dropdown
+    notnull, Hidden
 
-import model
+import models
 
 
 CHOICES = [('select', 'select'), ('startp', 'startp'),
@@ -24,28 +24,10 @@ CHOICES = [('select', 'select'), ('startp', 'startp'),
            ('stemcutter', 'stemcutter'), ('stemshift', 'stemshift'),
            ('inktrap_l', 'inktrap_l'), ('inktrap_r', 'inktrap_r')]
 
-PointForm = Form(Textbox('PointNr', notnull, size=3, description="nr"),
-                 Textbox('x', notnull, size=5, description="x"),
-                 Textbox('y', notnull, size=5, description="y"),
-                 Textbox('PointName', size=5, description="name"),
-                 Textbox('groupn', size=5, description="groupn"),
-                 Button('save'))
-
 
 ParamForm = Form(Dropdown('select', CHOICES, description="Parameter"),
                  Textbox('value', size=15, description="Value", id="parmvaltext"),
                  Button('save'))
-
-
-GroupParamForm = Form(Dropdown('Group', CHOICES),
-                      Textbox('groupval', size=15, description="groupval"),
-                      Button('saveGroup'))
-
-
-FontForm = Form(Textbox('Name', notnull, size=30, description="name", value=''),
-                Textbox('UFO_A', notnull, size=20, description="fontnameA", value=''),
-                Textbox('UFO_B', notnull, size=20, description="fontnameB", value=''),
-                Button('savefont'))
 
 
 GlobalParamForm = Form(Dropdown('idglobal', [], description='Choose parameter set'),
@@ -98,8 +80,8 @@ LocalParamForm = Form(Dropdown('idlocal', [], description='Choose parameter set'
 
 
 def validate_existing_user(item):
-    usernamecase = model.get_user_by_username(item.username)
-    emailcase = model.get_user_by_email(item.email)
+    usernamecase = models.User.get(username=item.username)
+    emailcase = models.User.get(email=item.email)
     return not bool(usernamecase) and not bool(emailcase)
 
 

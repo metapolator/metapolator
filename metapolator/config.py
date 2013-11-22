@@ -63,32 +63,6 @@ def is_loggedin():
         pass
 
 
-### preset font loading
-class cFont:
-    fontpath = "fonts/1/"
-    fontna = ""
-    fontnb = ""
-    fontname = ""
-    idglobal = 1
-    idmaster = 1
-    idwork = '0'
-    glyphName = ""
-    glyphunic = "1"
-    metapolation = 0.5
-    unitwidth = 1
-    fontsize = 10
-    mean = 0.5
-    cap = 0.8
-    ascl = 0.2
-    des = 0.2
-    box = 1
-    timestamp = 0
-    idlocalA = 1
-    idlocalB = 2
-    loadoption = '0'
-    mfoption = '0'
-
-
 def buildfname(filename):
     try:
         basename, extension = filename.split('.')
