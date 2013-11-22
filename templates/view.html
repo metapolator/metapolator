@@ -301,10 +301,7 @@ Canvas.prototype.saveParamException = function() {
     alert("updating parameter has been failed");
 }
 
-Canvas.prototype.saveParamCanceled = function(data) {
-  var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
-    glyphpreview.drawOn(this);
-}
+Canvas.prototype.saveParamCanceled = function(data) {}
 
 Canvas.prototype.saveParamSuccess = function(data) {
     var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
