@@ -112,7 +112,7 @@ ControlPoints.prototype.drawOn = function(canvas) {
     var point = canvas.getPoint(Number(datapoint.x), 500 - Number(datapoint.y), 0);
     point.y += +200;
 
-    this.paths.push({point: point, pointnr: datapoint.data.pointnr});
+    this.paths.push({point: point, pointnr: datapoint.data.pointnr, data: datapoint.data});
   }
 }
 
@@ -282,7 +282,7 @@ Canvas.prototype.onMouseUp = function(event) {
       this.parameterform.show();
       this.parameterform.find('select').off('change').on('change', function(event){
         var val = jQuery(event.target).val();
-        this.parameterform.find('input[type=text]').val(this.currentsegment.data[val]);
+        this.parameterform.find('input[type=text]').val(this.currentsegment.zpoint.data[val]);
       }.bind(this));
 
       this.parameterform.find('button').off('click').on('click', function(e){
@@ -299,8 +299,8 @@ Canvas.prototype.saveParamRequest = function(val, successhandler) {
   jQuery.post('/view/$master.fontname/$glyphid/save-point/',
               {name: this.parameterform.find('select').val(),
                value: val,
-               pointnr: this.currentsegment.data.pointnr,
-               ab_source: this.currentsegment.data.fontsource})
+               pointnr: this.currentsegment.zpoint.data.pointnr,
+               ab_source: this.currentsegment.zpoint.data.fontsource})
         .fail(this.saveParamException.bind(this))
         .success(successhandler || this.saveParamSuccess.bind(this));
 }
@@ -326,7 +326,7 @@ Canvas.prototype.saveParamSuccess = function(data) {
 
       if (jQuery(e.target).attr('command') == 'cancel') {
         var paramname = this.parameterform.find('select').val();
-        this.saveParamRequest(this.currentsegment.data[paramname], this.saveParamCanceled.bind(this));
+        this.saveParamRequest(this.currentsegment.zpoint.data[paramname], this.saveParamCanceled.bind(this));
       } else {
         this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
         this.glyphorigin.drawOn(this);
