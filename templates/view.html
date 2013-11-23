@@ -104,6 +104,7 @@ function ControlPoints(dataPoints) {
 
 
 ControlPoints.prototype.drawOn = function(canvas) {
+  this.paths = [];
   for (var i = 0; i < this.dataPoints.points.length; i++) {
     var datapoint = this.dataPoints.points[i];
     if (!datapoint.iszpoint) {
@@ -149,9 +150,9 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
               segment = new canvas.paper.Segment(point, handleIn, handleOut);
 
               if (canvas.controlpoints && this.glyphpaths.length) {
-                    var text = new canvas.paper.PointText({point: [point.x, point.y]});
-                    text.fillColor = 'black';
-                    text.content = canvas.controlpoints.paths[this.glyphpaths.length].pointnr;
+                    // var text = new canvas.paper.PointText({point: [point.x, point.y]});
+                    // text.fillColor = 'black';
+                    // text.content = canvas.controlpoints.paths[this.glyphpaths.length].pointnr;
                   this.glyphpaths.push({zpoint: canvas.controlpoints.paths[this.glyphpaths.length],
                                         segment: segment});
               } else if (canvas.controlpoints) {
@@ -266,6 +267,9 @@ Canvas.prototype.onMouseUp = function(event) {
           source: this.source
         },
         function(data) {
+            this.controlpoints.dataPoints = jQuery.parseJSON(data).zpoints;
+            this.controlpoints.drawOn(this);
+
           this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
           this.glyphorigin.drawOn(this);
 

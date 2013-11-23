@@ -111,7 +111,7 @@ class SavePointParam(app.page):
         models.GlyphParam.update(idmaster=master.idmaster,
                                  fontsource=x['ab_source'].upper(),
                                  pointnr=x['pointnr'],
-                                 values={'%s' % x['name']: float(x['value'])})
+                                 values={'%s' % x['name']: float(x['value'] or 0)})
         writeGlyphlist(master, glyphid)
 
         glyphA = models.Glyph.get(idmaster=master.idmaster,
@@ -129,7 +129,11 @@ class SavePointParam(app.page):
             glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
         else:
             glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
-        return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson})
+
+        zpoints = get_edges_json_from_db(master, glyphid,
+                                         ab_source=x['ab_source'].upper())
+        return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson,
+                                 'zpoints': zpoints})
 
 
 class Settings(app.page):
@@ -278,7 +282,7 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
         _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
                         'iszpoint': iszpoint, 'data': param.as_dict()})
 
-    return simplejson.dumps({'width': glyph.width, 'points': _points})
+    return {'width': glyph.width, 'points': _points}
 
 
 class View(app.page):
@@ -314,8 +318,8 @@ class View(app.page):
         return render.view(master, glyphid, A_glyphjson, B_glyphjson,
                            M_glyphjson, localparametersA, localparametersB,
                            globalparams, pointform,
-                           origins={'a': a_original_glyphjson,
-                                    'b': b_original_glyphjson})
+                           origins={'a': simplejson.dumps(a_original_glyphjson),
+                                    'b': simplejson.dumps(b_original_glyphjson)})
 
     def POST(self, name, glyphid):
         if not is_loggedin():
@@ -347,8 +351,11 @@ class View(app.page):
             glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
         else:
             glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
+        zpoints = get_edges_json_from_db(master, glyphid,
+                                         ab_source=x.source.upper())
         return simplejson.dumps({'M': M_glyphjson,
-                                 'R': glyphjson})
+                                 'R': glyphjson,
+                                 'zpoints': zpoints})
 
 
 class ViewFont(app.page):
