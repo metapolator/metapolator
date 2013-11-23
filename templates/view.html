@@ -332,6 +332,9 @@ Canvas.prototype.saveParamSuccess = function(data) {
         var paramname = this.parameterform.find('select').val();
         this.saveParamRequest(this.currentsegment.zpoint.data[paramname], this.saveParamCanceled.bind(this));
       } else {
+        this.controlpoints.dataPoints = jQuery.parseJSON(data).zpoints;
+        this.controlpoints.drawOn(this);
+        
         this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
         this.glyphorigin.drawOn(this);
       }
