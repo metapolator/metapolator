@@ -105,22 +105,15 @@ function ControlPoints(dataPoints) {
 
 ControlPoints.prototype.drawOn = function(canvas) {
   for (var i = 0; i < this.dataPoints.points.length; i++) {
-    if (!this.dataPoints.points[i].iszpoint) {
+    var datapoint = this.dataPoints.points[i];
+    if (!datapoint.iszpoint) {
       continue;
     }
-    this.drawPoint(canvas, this.dataPoints.points[i])
-  }
-}
-
-
-ControlPoints.prototype.drawPoint = function(canvas, datapoint) {
     var point = canvas.getPoint(Number(datapoint.x), 500 - Number(datapoint.y), 0);
-    var path = new canvas.paper.Path.Rectangle(point, 1);
-    path.closed = true;
-    path.selected = true;
-    path.position.y += +200;
-    path.data = datapoint.data;
-    this.paths.push(path);
+    point.y += +200;
+
+    this.paths.push({point: point, pointnr: datapoint.data.pointnr});
+  }
 }
 
 
@@ -131,7 +124,7 @@ function GlyphOrigin(dataGlyph) {
 
 GlyphOrigin.prototype.delete = function() {
   for (var k = 0; k < this.glyphpaths.length; k++) {
-    this.glyphpaths[k].remove();
+    this.glyphpaths[k].segment.path.remove();
   }
 }
 
@@ -139,6 +132,7 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
   canvas.paper.activate();
   this.delete();
   this.glyphpaths = []
+
   for (var i = 0; i < this.dataGlyph.length; i++) {
       for (var j = 0; j < this.dataGlyph[i].contours.length; j++) {
           var path = new canvas.paper.Path();
@@ -147,11 +141,23 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
               contour = contours[k];
 
               var point = canvas.getPoint(Number(contour.x), 500 - Number(contour.y));
+              point.y += +200;
               var handleIn = canvas.getPoint(Number(contour.controls[0].x) - Number(contour.x),
                                        Number(contour.y) - Number(contour.controls[0].y));
               var handleOut = canvas.getPoint(Number(contour.controls[1].x) - Number(contour.x),
                                         Number(contour.y) - Number(contour.controls[1].y));
               segment = new canvas.paper.Segment(point, handleIn, handleOut);
+
+              if (canvas.controlpoints && this.glyphpaths.length) {
+                    var text = new canvas.paper.PointText({point: [point.x, point.y]});
+                    text.fillColor = 'black';
+                    text.content = canvas.controlpoints.paths[this.glyphpaths.length].pointnr;
+                  this.glyphpaths.push({zpoint: canvas.controlpoints.paths[this.glyphpaths.length],
+                                        segment: segment});
+              } else if (canvas.controlpoints) {
+                this.glyphpaths.push({zpoint: canvas.controlpoints.paths[this.glyphpaths.length],
+                                        segment: segment});
+              }
               path.add(segment);
           }
           path.fillColor = {
@@ -162,10 +168,14 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
           };
           path.closed = true;
           path.strokeColor = new canvas.paper.Color(0.5, 0, 0.5);
-          path.position.y += +200;
-          this.glyphpaths.push(path);
+          path.selected = true;
       }
   }
+
+  console.log('');
+  console.log('gpoints: ' + this.glyphpaths.map(function(v){return Math.round(Number(v.segment.point.x))}));
+  console.log('zpoints: ' + this.glyphpaths.map(function(v){return Math.round(Number(v.zpoint.point.x))}));
+
   canvas.draw();
 }
 
@@ -222,13 +232,12 @@ Canvas.prototype.onMouseDown = function(event) {
   this.parameterform.find('form').val("");
 
   this.parameterform.hide();
-  for (var k = 0; k < this.controlpoints.paths.length; k++) {
-    var point = this.controlpoints.paths[k].getNearestPoint(event.point);
-    if (point.getDistance(event.point) < 5) {
-      this.currentsegment = this.controlpoints.paths[k];
-      this.currentpointnr = k + 1;
-      this.box.position = point;
+  for (var k = 0; k < this.glyphorigin.glyphpaths.length; k++) {
+    if (this.glyphorigin.glyphpaths[k].segment.point.getDistance(event.point) < 5) {
+      this.currentsegment = this.glyphorigin.glyphpaths[k];
+      this.box.position = this.glyphorigin.glyphpaths[k].segment.point;
       this.isdragged = false;
+      console.log(this.currentsegment.zpoint.pointnr);
       return;
     };
   }
@@ -239,7 +248,7 @@ Canvas.prototype.onMouseDrag = function(event) {
     return;
   }
   this.box.position = event.point;
-  this.currentsegment.position = event.point;
+  this.currentsegment.segment.point = event.point;
   this.isdragged = true;
 };
 
@@ -247,11 +256,11 @@ Canvas.prototype.onMouseDrag = function(event) {
 Canvas.prototype.onMouseUp = function(event) {
   if (this.currentsegment) {
     if (this.isdragged) {
-      var x = event.point.x;
-      var y = event.point.y - 200;
-      var xycoord = this.restore_original_coords(new this.paper.Point(x, y));
+      var x = this.currentsegment.zpoint.point.x + event.delta.x;
+      var y = this.currentsegment.zpoint.point.y + event.delta.y - 200;
+      var xycoord = this.restore_original_coords(new paper.Point(x, y));
       jQuery.post('', {
-          pointnr: this.currentsegment.data.pointnr,
+          pointnr: this.currentsegment.zpoint.pointnr,
           x: xycoord.x,
           y: 500 - xycoord.y,
           source: this.source
@@ -333,9 +342,8 @@ Canvas.prototype.setZpoints = function(json) {
 };
 
 Canvas.prototype.showbox = function() {
-  this.box = new this.paper.Path.Rectangle(
-      new this.paper.Point(50, 50),
-      new this.paper.Size(50, 50));
+  this.box = new this.paper.Path.Rectangle(new this.paper.Point(50, 50),
+                                           new this.paper.Size(50, 50));
   this.box.style = {
       strokeColor: 'red',
       strokeWidth: '5'
@@ -350,7 +358,7 @@ Canvas.prototype.draw = function() {
 Canvas.prototype.redrawglyph = function(data) {
   this.paper.activate();
   this.glyphorigin.dataGlyph = jQuery.parseJSON(data).M.edges;
-  this.glyphorigin.drawOn(this)
+  this.glyphorigin.drawOn(this);
 }
 
 jQuery(
@@ -362,8 +370,8 @@ jQuery(
 
     var A_EDGE_JSON = $:A_glyphjson;
     var A_canvas = new Canvas('canvas-a', A_EDGE_JSON.width, A_EDGE_JSON.height, 'a');
-    A_canvas.renderGlyph(A_EDGE_JSON.edges);
     A_canvas.setZpoints($:origins['a']);
+    A_canvas.renderGlyph(A_EDGE_JSON.edges);
     A_canvas.showbox();
 
     A_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
@@ -372,8 +380,8 @@ jQuery(
 
     var B_EDGE_JSON = $:B_glyphjson;
     var B_canvas = new Canvas('canvas-b', B_EDGE_JSON.width, B_EDGE_JSON.height, 'b');
-    B_canvas.renderGlyph(B_EDGE_JSON.edges);
     B_canvas.setZpoints($:origins['b']);
+    B_canvas.renderGlyph(B_EDGE_JSON.edges);
     B_canvas.showbox();
     B_canvas.draw();
 

@@ -59,7 +59,7 @@ class Regenerate(app.page):
 
         prepare_environment_directory()
 
-        putFontAllglyphs(master)
+        # putFontAllglyphs(master)
         makefont(working_dir(), master)
         raise seeother('/fonts/')
 
