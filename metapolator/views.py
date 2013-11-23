@@ -121,8 +121,8 @@ class SavePointParam(app.page):
         import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
 
-        if writeGlobalParam(master):
-            makefont(working_dir(), master)
+        # if writeGlobalParam(master):
+        makefont(working_dir(), master)
 
         M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
         if x.ab_source.upper() == 'A':
