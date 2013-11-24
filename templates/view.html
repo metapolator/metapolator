@@ -126,13 +126,6 @@ function GlyphOrigin(dataGlyph) {
 }
 
 GlyphOrigin.prototype.delete = function() {
-
-}
-
-GlyphOrigin.prototype.drawOn = function(canvas) {
-  canvas.paper.activate();
-  this.delete();
-
   for (var k = 0; k < this.texts.length; k++) {
     this.texts[k].remove();
   }
@@ -144,6 +137,11 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
   for (var k = 0; k < this.paths.length; k++) {
     this.paths[k].remove();
   }
+}
+
+GlyphOrigin.prototype.drawOn = function(canvas) {
+  canvas.paper.activate();
+  this.delete();
 
   this.gpoints = [];
   this.paths = [];
@@ -275,8 +273,8 @@ Canvas.prototype.onMouseDrag = function(event) {
 Canvas.prototype.onMouseUp = function(event) {
   if (this.currentpath) {
     if (this.isdragged) {
-      var x = this.currentpath.zpoint.point.x + event.delta.x;
-      var y = this.currentpath.zpoint.point.y + event.delta.y - 200;
+      var x = event.point.x;
+      var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
       jQuery.post('', {
           pointnr: this.currentpath.zpoint.pointnr,

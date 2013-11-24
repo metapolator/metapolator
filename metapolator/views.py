@@ -108,10 +108,15 @@ class SavePointParam(app.page):
             return web.notfound()
 
         x = web.input(name='', value='', pointnr='', ab_source='a')
+        value = x['value']
+        if value == '':
+            value = None
+        else:
+            value = float(value)
         models.GlyphParam.update(idmaster=master.idmaster,
                                  fontsource=x['ab_source'].upper(),
                                  pointnr=x['pointnr'],
-                                 values={'%s' % x['name']: float(x['value'] or 0)})
+                                 values={'%s' % x['name']: value})
         writeGlyphlist(master, glyphid)
 
         glyphA = models.Glyph.get(idmaster=master.idmaster,
