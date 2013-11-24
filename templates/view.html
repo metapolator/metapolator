@@ -120,26 +120,33 @@ ControlPoints.prototype.drawOn = function(canvas) {
 
 function GlyphOrigin(dataGlyph) {
   this.dataGlyph = dataGlyph;
-  this.glyphpaths = [];
+  this.gpoints = [];
   this.texts = [];
+  this.paths = [];
 }
 
 GlyphOrigin.prototype.delete = function() {
-  for (var k = 0; k < this.glyphpaths.length; k++) {
-    this.glyphpaths[k].gpath.removeSegments();
-    this.glyphpaths[k].gpath.remove();
-  }
+
 }
 
 GlyphOrigin.prototype.drawOn = function(canvas) {
   canvas.paper.activate();
   this.delete();
-  this.glyphpaths = [];
 
   for (var k = 0; k < this.texts.length; k++) {
     this.texts[k].remove();
   }
 
+  for (var k = 0; k < this.gpoints.length; k++) {
+    this.gpoints[k].gpath.remove();
+  }
+
+  for (var k = 0; k < this.paths.length; k++) {
+    this.paths[k].remove();
+  }
+
+  this.gpoints = [];
+  this.paths = [];
   this.texts = [];
   for (var i = 0; i < this.dataGlyph.length; i++) {
       for (var j = 0; j < this.dataGlyph[i].contours.length; j++) {
@@ -161,16 +168,16 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
               gpath.closed = true;
               gpath.selected = true;
 
-              if (canvas.controlpoints && this.glyphpaths.length) {
+              if (canvas.controlpoints && this.gpoints.length) {
                   var text = new canvas.paper.PointText(point);
-                  text.content = canvas.controlpoints.paths[this.glyphpaths.length].pointnr;
+                  text.content = canvas.controlpoints.paths[this.gpoints.length].pointnr;
                   this.texts.push(text);
 
-                  this.glyphpaths.push({zpoint: canvas.controlpoints.paths[this.glyphpaths.length],
+                  this.gpoints.push({zpoint: canvas.controlpoints.paths[this.gpoints.length],
                                         gpath: gpath});
 
               } else if (canvas.controlpoints) {
-                this.glyphpaths.push({zpoint: canvas.controlpoints.paths[this.glyphpaths.length],
+                this.gpoints.push({zpoint: canvas.controlpoints.paths[this.gpoints.length],
                                       gpath: gpath});
               }
 
@@ -184,6 +191,7 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
           };
           path.closed = true;
           path.strokeColor = new canvas.paper.Color(0.5, 0, 0.5);
+          this.paths.push(path);
       }
   }
 
@@ -243,13 +251,12 @@ Canvas.prototype.onMouseDown = function(event) {
   this.parameterform.find('form').val("");
 
   this.parameterform.hide();
-  for (var k = 0; k < this.glyphorigin.glyphpaths.length; k++) {
-    var p = this.glyphorigin.glyphpaths[k].gpath.segments[0].point;
+  for (var k = 0; k < this.glyphorigin.gpoints.length; k++) {
+    var p = this.glyphorigin.gpoints[k].gpath.segments[0].point;
     if (p.getDistance(event.point) < 5) {
-      this.currentpath = this.glyphorigin.glyphpaths[k];
+      this.currentpath = this.glyphorigin.gpoints[k];
       this.box.position = event.point;
       this.isdragged = false;
-      console.log(this.currentpath.zpoint.pointnr);
       return;
     };
   }
@@ -270,7 +277,6 @@ Canvas.prototype.onMouseUp = function(event) {
     if (this.isdragged) {
       var x = this.currentpath.zpoint.point.x + event.delta.x;
       var y = this.currentpath.zpoint.point.y + event.delta.y - 200;
-      console.log(event.delta);
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
       jQuery.post('', {
           pointnr: this.currentpath.zpoint.pointnr,
@@ -329,7 +335,7 @@ Canvas.prototype.saveParamException = function() {
 Canvas.prototype.saveParamCanceled = function(data) {}
 
 Canvas.prototype.saveParamSuccess = function(data) {
-    var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges)
+    var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges);
     glyphpreview.drawOn(this);
 
     var buttons = jQuery('.' + this.canvasid);
@@ -349,6 +355,10 @@ Canvas.prototype.saveParamSuccess = function(data) {
         
         this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
         this.glyphorigin.drawOn(this);
+      }
+
+      if (this.onGlyphLoaded) {
+        this.onGlyphLoaded(data);
       }
     }.bind(this));
 
