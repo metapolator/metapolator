@@ -16,27 +16,36 @@ Requirements
 
 ##Installation
 
+```
+$ virtualenv .venv
+$ source .venv/bin/activate ; pip install -r requirements.txt
+```
+
 Set your mysql username to root and leave password empty. You could also change these settings on line 6 in model.py.
+
 ```
 $ mysql -u root -p
 ```
 Create new database:
+
 ```
 mysql> CREATE DATABASE 'Name of database'.sql;
 ```
 
 Load the preset database:
+
 ```
-mysql> USE 'Name of database'.sql;
-mysql> SOURCE dbscript.sql;
-mysql> SOURCE mysqlview.sql;
-mysql> SOURCE dbusers.sql;
+$ .venv/bin/python metapolator/models.py
 ```
+
 Start web.py application:
+
 ```
-$ python mfg.py
+$ .venv/bin/python run.py
 ```
+
 This should give you a local webadress you can copy paste into a chrome browser, something like this:
+
 ```
 http://0.0.0.0:8080/
 ```

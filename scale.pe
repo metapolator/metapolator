@@ -1,8 +1,0 @@
-Open($1);
-SelectAll();
-ScaleToEm(1000);
-Generate($1:r + ".ufo");
-Quit(0);
-
-
-
