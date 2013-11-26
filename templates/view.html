@@ -8,6 +8,7 @@ Project $master.project.projectname
 <div class="row">
   <div class="col-md-4">
     <h4>Font A</h4>
+
     <canvas id="canvas-a" width="400" height="400"></canvas>
     
     <div class="canvas-a" style="display: none;">
@@ -41,6 +42,9 @@ Project $master.project.projectname
 
   <div class="col-md-4" style="border: solid 2px black;">
     <h4>Metapolation</h4>
+
+    <a href="" class="btn btn-large btn-success">Create master from instance</a>
+    
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
@@ -64,6 +68,7 @@ Project $master.project.projectname
 
   <div class="col-md-4">
     <h4>Font B</h4>
+
     <canvas id="canvas-b" height="400" width="400"></canvas>
 
     <div class="canvas-b" style="display: none;">
@@ -104,6 +109,9 @@ function ControlPoints(dataPoints) {
 
 
 ControlPoints.prototype.drawOn = function(canvas) {
+  for (var k = 0; k < this.paths.length; k++) {
+    this.paths[k].gpath.remove();
+  }
   this.paths = [];
   for (var i = 0; i < this.dataPoints.points.length; i++) {
     var datapoint = this.dataPoints.points[i];
@@ -113,23 +121,22 @@ ControlPoints.prototype.drawOn = function(canvas) {
     var point = canvas.getPoint(Number(datapoint.x), 500 - Number(datapoint.y), 0);
     point.y += +200;
 
-    this.paths.push({point: point, data: datapoint.data});
+    var gpath = canvas.paper.Path.Rectangle(point, 1);
+    gpath.strokeColor = 'green';
+    gpath.closed = true;
+    gpath.selected = true;
+
+    this.paths.push({gpath: gpath, point: point, data: datapoint.data});
   }
 }
 
 
 function GlyphOrigin(dataGlyph) {
   this.dataGlyph = dataGlyph;
-  this.gpoints = [];
   this.paths = [];
 }
 
 GlyphOrigin.prototype.delete = function() {
-
-  for (var k = 0; k < this.gpoints.length; k++) {
-    this.gpoints[k].gpath.remove();
-  }
-
   for (var k = 0; k < this.paths.length; k++) {
     this.paths[k].remove();
   }
@@ -139,7 +146,6 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
   canvas.paper.activate();
   this.delete();
 
-  this.gpoints = [];
   this.paths = [];
   for (var i = 0; i < this.dataGlyph.length; i++) {
       for (var j = 0; j < this.dataGlyph[i].contours.length; j++) {
@@ -154,23 +160,7 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
                                        Number(contour.y) - Number(contour.controls[0].y));
               var handleOut = canvas.getPoint(Number(contour.controls[1].x) - Number(contour.x),
                                         Number(contour.y) - Number(contour.controls[1].y));
-              segment = new canvas.paper.Segment(point, handleIn, handleOut);
-
-              if (canvas.controlpoints) {
-                var gpath = canvas.paper.Path.Rectangle(point, 1);
-                gpath.strokeColor = 'green';
-                gpath.closed = true;
-                gpath.selected = true;
-
-                if (canvas.controlpoints && this.gpoints.length) {
-                    this.gpoints.push({zpoint: canvas.controlpoints.paths[this.gpoints.length],
-                                          gpath: gpath});
-
-                } else if (canvas.controlpoints) {
-                  this.gpoints.push({zpoint: canvas.controlpoints.paths[this.gpoints.length],
-                                        gpath: gpath});
-                }
-              }
+              var segment = new canvas.paper.Segment(point, handleIn, handleOut);
 
               path.add(segment);
           }
@@ -242,10 +232,10 @@ Canvas.prototype.onMouseDown = function(event) {
   this.parameterform.find('form').val("");
 
   this.parameterform.hide();
-  for (var k = 0; k < this.glyphorigin.gpoints.length; k++) {
-    var p = this.glyphorigin.gpoints[k].gpath.segments[0].point;
+  for (var k = 0; k < this.controlpoints.paths.length; k++) {
+    var p = this.controlpoints.paths[k].gpath.segments[0].point;
     if (p.getDistance(event.point) < 5) {
-      this.currentpath = this.glyphorigin.gpoints[k];
+      this.currentpath = this.controlpoints.paths[k];
       this.box.position = event.point;
       this.isdragged = false;
       return;
@@ -270,7 +260,7 @@ Canvas.prototype.onMouseUp = function(event) {
       var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
       jQuery.post('', {
-          id: this.currentpath.zpoint.data.id,
+          id: this.currentpath.data.id,
           x: xycoord.x,
           y: 500 - xycoord.y
         },
@@ -311,7 +301,7 @@ Canvas.prototype.saveParamRequest = function(val, successhandler) {
   jQuery.post('/view/$master.project.projectname/$glyphid/save-point/',
               {name: this.parameterform.find('select').val(),
                value: val,
-               id: this.currentpath.zpoint.data.id})
+               id: this.currentpath.data.id})
         .fail(this.saveParamException.bind(this))
         .success(successhandler || this.saveParamSuccess.bind(this));
 }
