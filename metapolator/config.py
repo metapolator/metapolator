@@ -19,6 +19,15 @@ engine = create_engine('mysql+mysqldb://{0}:{1}@localhost/blog'.format(DATABASE_
 web.config.debug = False
 
 
+def load_user(handler):
+    import models
+    try:
+        web.ctx.user = models.User.get(id=session.user)
+    except AttributeError:
+        web.ctx.user = None
+    return handler()
+
+
 def load_sqla(handler):
 
     web.ctx.orm = scoped_session(sessionmaker(bind=engine))
@@ -43,6 +52,7 @@ app.add_processor(load_sqla)
 
 session = web.session.Session(app, web.session.DiskStore('sessions'),
                               {'count': 0})
+app.add_processor(load_user)
 
 
 def remove_ext(filename):
@@ -58,7 +68,7 @@ def mf_filename(filename):
 
 def is_loggedin():
     try:
-        return session.authorized
+        return web.ctx.user
     except AttributeError:
         pass
 
@@ -74,7 +84,7 @@ def buildfname(filename):
 
 def working_dir(path=None, user=None):
     if is_loggedin():
-        directory = op.join(PROJECT_ROOT, 'users', str(user or session.user))
+        directory = op.join(PROJECT_ROOT, 'users', str(user or web.ctx.user.username))
         if not op.exists(directory):
             os.makedirs(directory)
 
@@ -91,7 +101,7 @@ def working_dir(path=None, user=None):
 
 def working_url(path=None):
     if is_loggedin():
-        directory = op.join('/', 'users', str(session.user))
+        directory = op.join('/', 'users', str(web.ctx.user.username))
         if not path:
             return directory
         return op.join(directory, path)

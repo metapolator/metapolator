@@ -21,7 +21,7 @@ from passlib.hash import bcrypt
 
 
 from config import app, is_loggedin, session, working_dir, \
-    working_url, mf_filename
+    working_url, mf_filename, remove_ext
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     ParamForm
 from tools import putFontAllglyphs, \
@@ -53,13 +53,13 @@ class Regenerate(app.page):
     path = '/regenerate/(\d+)'
 
     def GET(self, id):
-        master = models.Master.get(idmaster=id)
+        master = models.Master.get(id=id)
         if not master:
             return web.notfound()
 
         prepare_environment_directory()
 
-        # putFontAllglyphs(master)
+        putFontAllglyphs(master)
         makefont(working_dir(), master)
         raise seeother('/fonts/')
 
@@ -72,27 +72,27 @@ class SettingsRestCreate(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Master.get(fontname=name)
+        master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
 
         x = web.input(create='')
         if x['create'] == 'a':
             obj = models.LocalParam.create()
-            models.Master.update(idmaster=master.idmaster,
-                                 values=dict(idlocala=obj.idlocal))
+            models.Master.update(id=master.id,
+                                 values=dict(idlocala=obj.id))
 
         if x['create'] == 'b':
             obj = models.LocalParam.create()
-            models.Master.update(idmaster=master.idmaster,
-                                 values=dict(idlocalb=obj.idlocal))
+            models.Master.update(id=master.id,
+                                 values=dict(idlocalb=obj.id))
 
         if x['create'] == 'g':
             obj = models.GlobalParam.create()
-            models.Master.update(idmaster=master.idmaster,
-                                 values=dict(idglobal=obj.idglobal))
+            models.Master.update(id=master.id,
+                                 values=dict(idglobal=obj.id))
 
-        raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
+        raise seeother('/view/{0}/{1}/settings/'.format(name, glyphid))
 
 
 class SavePointParam(app.page):
@@ -103,40 +103,35 @@ class SavePointParam(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Master.get(fontname=name)
+        master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
 
-        x = web.input(name='', value='', pointnr='', ab_source='a')
+        x = web.input(name='', value='', id='')
         value = x['value']
         if value == '':
             value = None
         else:
             value = float(value)
-        models.GlyphParam.update(idmaster=master.idmaster,
-                                 fontsource=x['ab_source'].upper(),
-                                 pointnr=x['pointnr'],
+        models.GlyphParam.update(id=x['id'],
                                  values={'%s' % x['name']: value})
         writeGlyphlist(master, glyphid)
 
-        glyphA = models.Glyph.get(idmaster=master.idmaster,
+        glyphA = models.Glyph.get(master_id=master.id,
                                   fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(idmaster=master.idmaster,
-                                  fontsource='A', name=glyphid)
+        glyphB = models.Glyph.get(master_id=master.id,
+                                  fontsource='B', name=glyphid)
         import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
-
-        # if writeGlobalParam(master):
         makefont(working_dir(), master)
-
-        M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
-        if x.ab_source.upper() == 'A':
-            glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
+        M_glyphjson = get_edges_json(u'%s.log' % master.project.projectname, glyphid)
+        glyphoutline = models.GlyphOutline.get(id=x.id)
+        if glyphoutline.fontsource == 'A':
+            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('a'))), glyphid)
         else:
-            glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
-
+            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('b'))), glyphid)
         zpoints = get_edges_json_from_db(master, glyphid,
-                                         ab_source=x['ab_source'].upper())
+                                         ab_source=glyphoutline.fontsource)
         return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson,
                                  'zpoints': zpoints})
 
@@ -149,7 +144,7 @@ class Settings(app.page):
     def get_local_params(idlocal, ab_source):
         """ Return dictionary with local parameters. Each dictionary contains
             `ab_source` key in addition. """
-        local = models.LocalParam.get(idlocal=idlocal)
+        local = models.LocalParam.get(id=idlocal)
         d = dict(ab_source=ab_source)
         if local:
             d.update(local.as_dict())
@@ -160,7 +155,7 @@ class Settings(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Master.get(fontname=name)
+        master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
 
@@ -169,21 +164,21 @@ class Settings(app.page):
 
         globalparamform = GlobalParamForm()
 
-        globalparam = models.GlobalParam.get(idglobal=master.idglobal)
-        globalparamform.idglobal.args = [(o.idglobal, o.idglobal) for o in globalparams]
+        globalparam = models.GlobalParam.get(id=master.idglobal)
+        globalparamform.idglobal.args = [(o.id, o.id) for o in globalparams]
         if globalparam:
             globalparamform.fill(globalparam)
 
         localparamform_a = LocalParamForm()
 
         local_params = Settings.get_local_params(master.idlocala, 'a')
-        localparamform_a.idlocal.args = [(o.idlocal, o.idlocal) for o in localparameters]
+        localparamform_a.idlocal.args = [(o.id, o.id) for o in localparameters]
         localparamform_a.fill(local_params)
 
         localparamform_b = LocalParamForm()
 
         local_params = Settings.get_local_params(master.idlocalb, 'b')
-        localparamform_b.idlocal.args = [(o.idlocal, o.idlocal) for o in localparameters]
+        localparamform_b.idlocal.args = [(o.id, o.id) for o in localparameters]
         localparamform_b.fill(local_params)
 
         return render.settings(master, glyphid, localparameters, globalparams,
@@ -193,7 +188,7 @@ class Settings(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Master.get(fontname=name)
+        master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
 
@@ -207,40 +202,39 @@ class Settings(app.page):
             attrs = Settings.get_local_params(x.idlocal_changed, x.ab_source)
             return simplejson.dumps(attrs)
         elif x.idglobal_changed:
-            params = models.GlobalParam.get(idglobal=x.idglobal_changed)
+            params = models.GlobalParam.get(id=x.idglobal_changed)
             return simplejson.dumps(params.as_dict())
 
         if 'ab_source' in form.d and form.validates():
             idlocal = form.d.idlocal
             fontsource = form.d.ab_source
-            models.Master.update(idmaster=master.idmaster,
+            models.Master.update(id=master.id,
                                  values={'idlocal{0}'.format(fontsource.lower()): idlocal})
-            master = models.Master.get(fontname=name)
+            master = models.Project.get_master(projectname=name)
 
             values = form.d
             del values['ab_source']
             del values['save']
             del values['idlocal']
 
-            models.LocalParam.update(idlocal=idlocal, values=values)
+            models.LocalParam.update(id=idlocal, values=values)
 
         formg = GlobalParamForm()
         if formg.validates():
             idglobal = formg.d.idglobal
-            models.Master.update(idmaster=master.idmaster,
-                                 values={'idglobal': idglobal})
-            master = models.Master.get(fontname=name)
+            models.Master.update(id=master.id, values={'idglobal': idglobal})
+            master = models.Project.get_master(projectname=name)
 
             values = formg.d
             del values['idglobal']
             del values['save']
 
-            models.GlobalParam.update(idglobal=idglobal, values=values)
+            models.GlobalParam.update(id=idglobal, values=values)
 
         writeGlyphlist(master, glyphid)
         if writeGlobalParam(master):
             makefont(working_dir(), master)
-        raise seeother('/view/{0}/{1}/settings/'.format(master.fontname, glyphid))
+        raise seeother('/view/{0}/{1}/settings/'.format(name, glyphid))
 
 
 def get_edges_json(log_filename, glyphid=None):
@@ -256,27 +250,18 @@ def get_edges_json(log_filename, glyphid=None):
 
 
 def get_edges_json_from_db(master, glyphid, ab_source='A'):
-    glyph = models.Glyph.get(idmaster=master.idmaster, name=glyphid,
+    glyph = models.Glyph.get(master_id=master.id, name=glyphid,
                              fontsource=ab_source)
 
-    points = models.GlyphOutline.filter(idmaster=master.idmaster,
-                                        fontsource=ab_source.upper(),
-                                        glyphname=glyphid)
-
+    points = models.GlyphOutline.filter(glyph_id=glyph.id)
     if ab_source.upper() == 'A':
-        localparam = models.LocalParam.get(idlocal=master.idlocala)
+        localparam = models.LocalParam.get(id=master.idlocala)
     else:
-        localparam = models.LocalParam.get(idlocal=master.idlocalb)
+        localparam = models.LocalParam.get(id=master.idlocalb)
 
     _points = []
     for point in points.order_by(models.GlyphOutline.pointnr.asc()):
-        points = models.GlyphOutline.filter(idmaster=master.idmaster,
-                                            fontsource=ab_source.upper(),
-                                            glyphname=glyphid)
-        param = models.GlyphParam.get(idmaster=master.idmaster,
-                                      fontsource=ab_source.upper(),
-                                      glyphname=glyphid,
-                                      pointnr=point.pointnr)
+        param = models.GlyphParam.get(glyphoutline_id=point.id)
         iszpoint = False
         if re.match('z(\d+)[lr]', param.pointname):
             iszpoint = True
@@ -299,21 +284,21 @@ class View(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Master.get(fontname=name)
+        master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
 
-        if not models.GlyphOutline.exists(idmaster=master.idmaster,
+        if not models.GlyphOutline.exists(master_id=master.id,
                                           glyphname=glyphid):
             return web.notfound()
 
-        A_glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
-        B_glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
-        M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
+        A_glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('a'))), glyphid)
+        B_glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('b'))), glyphid)
+        M_glyphjson = get_edges_json(u'%s.log' % master.project.projectname, glyphid)
 
-        localparametersA = models.LocalParam.get(idlocal=master.idlocala)
-        localparametersB = models.LocalParam.get(idlocal=master.idlocalb)
-        globalparams = models.GlobalParam.get(idglobal=master.idglobal)
+        localparametersA = models.LocalParam.get(id=master.idlocala)
+        localparametersB = models.LocalParam.get(id=master.idlocalb)
+        globalparams = models.GlobalParam.get(id=master.idglobal)
 
         a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
         b_original_glyphjson = get_edges_json_from_db(master, glyphid, 'B')
@@ -330,34 +315,37 @@ class View(app.page):
         if not is_loggedin():
             return web.notfound()
 
-        master = models.Master.get(fontname=name)
+        master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
 
-        x = web.input(pointnr='', source='', x='', y='')
+        if not models.GlyphOutline.exists(master_id=master.id,
+                                          glyphname=glyphid):
+            return web.notfound()
 
-        query = models.GlyphOutline.filter(idmaster=master.idmaster,
-                                           fontsource=x.source.upper(),
-                                           glyphname=glyphid,
-                                           pointnr=x.pointnr)
-        query.update(dict(x=x.x, y=x.y))
+        x = web.input(id='', x='', y='')
+
+        glyphoutline = models.GlyphOutline.get(id=x.id)
+        glyphoutline.x = x.x
+        glyphoutline.y = x.y
         web.ctx.orm.commit()
+
         writeGlyphlist(master, glyphid)
 
-        glyphA = models.Glyph.get(idmaster=master.idmaster,
+        glyphA = models.Glyph.get(master_id=master.id,
                                   fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(idmaster=master.idmaster,
-                                  fontsource='A', name=glyphid)
+        glyphB = models.Glyph.get(master_id=master.id,
+                                  fontsource='B', name=glyphid)
         import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
         makefont(working_dir(), master)
-        M_glyphjson = get_edges_json(u'%s.log' % master.fontname, glyphid)
-        if x.source.upper() == 'A':
-            glyphjson = get_edges_json(u'%sA.log' % master.fontname, glyphid)
+        M_glyphjson = get_edges_json(u'%s.log' % master.project.projectname, glyphid)
+        if glyphoutline.fontsource == 'A':
+            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('a'))), glyphid)
         else:
-            glyphjson = get_edges_json(u'%sB.log' % master.fontname, glyphid)
+            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('b'))), glyphid)
         zpoints = get_edges_json_from_db(master, glyphid,
-                                         ab_source=x.source.upper())
+                                         ab_source=glyphoutline.fontsource)
         return simplejson.dumps({'M': M_glyphjson,
                                  'R': glyphjson,
                                  'zpoints': zpoints})
@@ -394,7 +382,7 @@ class Font(app.page):
             raise seeother('/login')
         projects = models.Master.all()
 
-        master = models.Master.get(idmaster=id)
+        master = models.Master.get(id=id)
 
         return render.font1(projects, master)
 
@@ -425,7 +413,7 @@ class GlobalParam(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        gm = models.GlobalParam.get(idglobal=id)
+        gm = models.GlobalParam.get(id=id)
         if not gm:
             return web.notfound()
 
@@ -439,7 +427,7 @@ class GlobalParam(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        gm = models.GlobalParam.get(idglobal=id)
+        gm = models.GlobalParam.get(id=id)
         if not gm:
             return web.notfound()
 
@@ -449,7 +437,7 @@ class GlobalParam(app.page):
             del values['idglobal']
             del values['save']
 
-            models.GlobalParam.update(idglobal=id, values=values)
+            models.GlobalParam.update(id=id, values=values)
             return seeother('/settings/globals/')
 
         gml = models.GlobalParam.all()
@@ -489,7 +477,7 @@ class LocalParam(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        localparam = models.LocalParam.get(idlocal=id)
+        localparam = models.LocalParam.get(id=id)
         if not localparam:
             return web.notfound()
 
@@ -502,7 +490,7 @@ class LocalParam(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        localparam = models.LocalParam.get(idlocal=id)
+        localparam = models.LocalParam.get(id=id)
         if not localparam:
             return web.notfound()
 
@@ -514,7 +502,7 @@ class LocalParam(app.page):
             del values['save']
             del values['idlocal']
 
-            models.LocalParam.update(idlocal=id, values=values)
+            models.LocalParam.update(id=id, values=values)
             raise seeother('/settings/locals/')
 
         glo = models.LocalParam.all()
@@ -590,7 +578,7 @@ class Register(app.page):
             return render.register(form)
 
         user = models.User.create(form.d.username, form.d.password, form.d.email)
-        seeother = authorize(user.id)
+        seeother = authorize(user)
 
         prepare_environment_directory()
         raise seeother
@@ -612,16 +600,33 @@ class CreateProject(app.page):
             raise seeother('/login')
 
         x = web.input(zipfile={})
-        if 'name' in x and models.Master.exists(fontname=x.name):
+        if 'name' not in x or not x.name.strip():
+            return render.create_project(error='Please define name of new project')
+
+        if 'zipfile' not in x:
+            return render.create_project(error='Select archive with UFO to upload')
+
+        try:
+            rawzipcontent = x.zipfile.file.read()
+            if not rawzipcontent:
+                return render.create_project(error='Select archive with UFO to upload')
+        except AttributeError:
+            return render.create_project(error='Select archive with UFO to upload')
+
+        projectname = x.name.strip()
+
+        if models.Project.exists(projectname=projectname):
             return render.create_project(error='Project with this name already exists')
 
-        if 'zipfile' in x and 'name' in x and x.name:
-            filename = op.join(working_dir(), x.zipfile.filename)
+        project = models.Project.create(projectname=projectname)
+        if 'zipfile' in x:
+            filename = op.join(project.get_directory(), x.zipfile.filename)
 
             try:
                 with open(filename, 'w') as fp:
-                    fp.write(x.zipfile.file.read())
+                    fp.write(rawzipcontent)
             except (IOError, OSError):
+                models.Project.delete(project)  # delete created project
                 return render.create_project(error='Could not upload this file to disk')
 
             prepare_environment_directory()
@@ -647,25 +652,25 @@ class CreateProject(app.page):
                     FontNameB = ufo_dirs[1]
                 except IndexError:
                     FontNameB = ''
-                master = models.Master.create(fontname=x.name)
+                master = models.Master.create(project_id=project.id, version=1)
 
                 fontpath = master.get_fonts_directory()
                 fzip.extractall(fontpath)
 
-                shutil.move(op.join(fontpath, FontNameA),
-                            op.join(fontpath, '%sA.UFO' % x.name))
+                shutil.move(op.join(fontpath, FontNameA), master.get_ufo_path('a'))
+                FontNameA = op.basename(master.get_ufo_path('a'))
                 if FontNameB:
-                    shutil.move(op.join(fontpath, FontNameB),
-                                op.join(fontpath, '%sB.UFO' % x.name))
-                    FontNameB = '%sB.UFO' % x.name
+                    ufopath = master.get_ufo_path('b')
+                    shutil.move(op.join(fontpath, FontNameB), ufopath)
+                    FontNameB = op.basename(ufopath)
 
-                models.Master.update(idmaster=master.idmaster,
-                                     values=dict(fontnamea='%sA.UFO' % x.name,
+                models.Master.update(id=master.id,
+                                     values=dict(fontnamea=FontNameA,
                                                  fontnameb=FontNameB))
 
-                FontNameA = '%sA.UFO' % x.name
+                FontNameA = op.basename(master.get_ufo_path('a'))
                 if not FontNameB:
-                    FontNameB = '%sB.UFO' % x.name
+                    FontNameB = op.basename(master.get_ufo_path('b'))
                 for f in os.listdir(working_dir('commons', user='skel')):
                     filename = working_dir(op.join('commons', f),
                                            user='skel')
@@ -686,8 +691,8 @@ class CreateProject(app.page):
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
                 # if master:
-                #     models.GlyphOutline.delete(idmaster=master.idmaster)
-                #     models.GlyphParam.delete(idmaster=master.idmaster)
+                #     models.GlyphOutline.delete(master_id=master.id)
+                #     models.GlyphParam.delete(master_id=master.id)
                 #     models.Master.delete(master)
 
                 #     fontpath = master.get_fonts_directory()

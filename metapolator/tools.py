@@ -5,7 +5,7 @@ import xmltomf
 import web
 from lxml import etree
 
-from config import working_dir, buildfname, mf_filename
+from config import working_dir, buildfname, mf_filename, remove_ext
 
 from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam
 
@@ -26,13 +26,15 @@ def makefont(working_dir, master):
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sA' % master.fontname)
+    fontname = remove_ext(op.basename(master.get_ufo_path('a')))
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", fontname)
     os.system(strms)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", '%sB' % master.fontname)
+    fontname = remove_ext(op.basename(master.get_ufo_path('b')))
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", fontname)
     os.system(strms)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.fontname)
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.project.projectname)
     os.system(strms)
     return True
 
@@ -58,8 +60,8 @@ def ufo2mf(master):
     for ch1 in charlist1:
         if ch1 in charlist2:
             fnb, ext = buildfname(ch1)
-            glyphA = Glyph.get(idmaster=master.idmaster, fontsource='A', name=fnb)
-            glyphB = Glyph.get(idmaster=master.idmaster, fontsource='B', name=fnb)
+            glyphA = Glyph.get(master_id=master.id, fontsource='A', name=fnb)
+            glyphB = Glyph.get(master_id=master.id, fontsource='B', name=fnb)
             xmltomf.xmltomf1(master, glyphA, glyphB)
 
 
@@ -85,33 +87,41 @@ def create_glyph(glif, master, ab_source):
 
     itemlist = glif.find('unicode')
     unicode = itemlist.get('hex')
-    if not Glyph.filter(name=glyphname, idmaster=master.idmaster,
-                        fontsource=ab_source).count():
-        Glyph.create(name=glyphname, width=width, unicode=unicode,
-                     idmaster=master.idmaster, fontsource=ab_source)
+    if not Glyph.exists(name=glyphname, master_id=master.id,
+                        fontsource=ab_source):
+        glyph = Glyph.create(name=glyphname, width=width, unicode=unicode,
+                             master_id=master.id, fontsource=ab_source)
     else:
-        query = Glyph.filter(name=glyphname, idmaster=master.idmaster,
-                             fontsource=ab_source)
-        query.update({'width': width, 'unicode': unicode})
+        glyph = Glyph.get(name=glyphname, master_id=master.id,
+                          fontsource=ab_source)
+        glyph.width = width
+        glyph.unicode = unicode
+        web.ctx.orm.commit()
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):
         pointname = point.attrib.get('name')
         if not pointname:
             pointname = 'p%s' % (i + 1)
 
-        glyphoutline = GlyphOutline.get(glyphname=glyphname, idmaster=master.idmaster,
+        glyphoutline = GlyphOutline.get(glyphname=glyphname, glyph_id=glyph.id,
+                                        master_id=master.id,
                                         fontsource=ab_source, pointnr=(i + 1))
         if not glyphoutline:
-            glyphoutline = GlyphOutline.create(glyphname=glyphname, idmaster=master.idmaster,
-                                               fontsource=ab_source, pointnr=(i + 1))
+            glyphoutline = GlyphOutline.create(glyphname=glyphname,
+                                               glyph_id=glyph.id,
+                                               master_id=master.id,
+                                               fontsource=ab_source,
+                                               pointnr=(i + 1))
         glyphoutline.x = float(point.attrib['x'])
         glyphoutline.y = float(point.attrib['y'])
 
-        glyphparam = GlyphParam.get(glyphname=glyphname, idmaster=master.idmaster,
-                                    fontsource=ab_source, pointname=pointname, pointnr=(i + 1))
+        glyphparam = GlyphParam.get(glyphoutline_id=glyphoutline.id,
+                                    glyph_id=glyph.id)
         if not glyphparam:
-            glyphparam = GlyphParam.create(glyphname=glyphname, idmaster=master.idmaster,
-                                           fontsource=ab_source, pointname=pointname, pointnr=(i + 1))
+            glyphparam = GlyphParam.create(glyphoutline_id=glyphoutline.id,
+                                           master_id=master.id,
+                                           glyph_id=glyph.id,
+                                           pointname=pointname)
         for attr in point.attrib:
             if attr == 'name':
                 continue
@@ -235,7 +245,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
     ifile.write("u#:=%.3fpt#;\n" % u)
 
     # local parameters A
-    imlo = LocalParam.get(idlocal=master.idlocala)
+    imlo = LocalParam.get(id=master.idlocala)
     hasA = False
     if imlo:
         ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
@@ -254,7 +264,7 @@ def writeParams(filename, master, globalparam, metapolation=None):
         hasA = True
 
     # local parameters B
-    imlo = LocalParam.get(idlocal=master.idlocalb)
+    imlo = LocalParam.get(id=master.idlocalb)
     hasB = False
     if imlo:
         ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
@@ -284,16 +294,16 @@ def writeGlobalParam(master):
     # prepare font.mf parameter file
     # write the file into the directory cFont.fontpath
     #
-    globalparam = GlobalParam.get(idglobal=master.idglobal)
+    globalparam = GlobalParam.get(id=master.idglobal)
     if not globalparam:
         return False
 
-    filename = op.join(master.get_fonts_directory(), '%s.mf' % master.fontname)
+    filename = op.join(master.get_fonts_directory(), mf_filename(op.basename(master.get_ufo_path('a'))))
     result1 = writeParams(filename, master, globalparam)
 
-    filename = op.join(master.get_fonts_directory(), '%sA.mf' % master.fontname)
+    filename = op.join(master.get_fonts_directory(), mf_filename(op.basename(master.project.projectname)))
     result2 = writeParams(filename, master, globalparam, 0)
 
-    filename = op.join(master.get_fonts_directory(), '%sB.mf' % master.fontname)
+    filename = op.join(master.get_fonts_directory(), mf_filename(op.basename(master.get_ufo_path('b'))))
     result3 = writeParams(filename, master, globalparam, 1)
     return result1 and result2 and result3

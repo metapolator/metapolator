@@ -15,8 +15,8 @@ session.authorized = True
 web.ctx.orm = scoped_session(sessionmaker(bind=engine))
 
 master = models.Master.get(fontname='MP_Akku-angle')
-glyph = models.Glyph.get(idmaster=master.idmaster, name='71', fontsource='A')
-glyphB = models.Glyph.get(idmaster=master.idmaster, name='71', fontsource='B')
+glyph = models.Glyph.get(master_id=master.id, name='71', fontsource='A')
+glyphB = models.Glyph.get(master_id=master.id, name='71', fontsource='B')
 
 result = xmltomf.xmltomf1(master, glyph, glyphB, stdout_fip=StringIO())
 result.seek(0)

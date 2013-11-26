@@ -55,24 +55,14 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     # points for l
 
     query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-    query = query.filter(models.GlyphOutline.idmaster == master.idmaster,
-                         models.GlyphOutline.fontsource == 'A',
-                         models.GlyphOutline.glyphname == glyphA.name)
-    query = query.filter(models.GlyphParam.idmaster == master.idmaster,
-                         models.GlyphParam.fontsource == 'A',
-                         models.GlyphParam.glyphname == glyphA.name,
-                         models.GlyphParam.pointnr == models.GlyphOutline.pointnr)
+    query = query.filter(models.GlyphOutline.glyph_id == glyphA.id)
+    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
 
     fonta_outlines = list(query)
 
     query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-    query = query.filter(models.GlyphOutline.idmaster == master.idmaster,
-                         models.GlyphOutline.fontsource == 'B',
-                         models.GlyphOutline.glyphname == glyphB.name)
-    query = query.filter(models.GlyphParam.idmaster == master.idmaster,
-                         models.GlyphParam.fontsource == 'B',
-                         models.GlyphParam.glyphname == glyphB.name,
-                         models.GlyphParam.pointnr == models.GlyphOutline.pointnr)
+    query = query.filter(models.GlyphOutline.glyph_id == glyphB.id)
+    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
     fontb_outlines = list(query)
 
     for item, param in fonta_outlines:
