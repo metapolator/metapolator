@@ -35,6 +35,7 @@ class User(Base):
         user.username = username
         user.email = email
         user.date_joined = datetime.datetime.now()
+        user.is_admin = False
         web.ctx.orm.add(user)
         web.ctx.orm.commit()
         return user
