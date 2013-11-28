@@ -9,12 +9,12 @@ Project $master.project.projectname
   <div class="col-md-4">
     <h4>Font A</h4>
     
-    <select name="" id="">
+    <select name="" id="" onchange="window.location=jQuery(this).val();">
       $for m in masters:
         $if master.id == m.id:
           <option value="" selected="selected">
         $else:
-          <option value="">
+          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version)/$glyphid/">
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
@@ -79,12 +79,12 @@ Project $master.project.projectname
   <div class="col-md-4">
     <h4>Font B</h4>
 
-    <select name="" id="">
+    <select name="" id="" onchange="window.location=jQuery(this).val();">
       $for m in masters:
         $if master.id == m.id:
           <option value="" selected="selected">
         $else:
-          <option value="">
+          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version)/$glyphid/">
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
