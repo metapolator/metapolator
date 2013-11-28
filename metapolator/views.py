@@ -58,6 +58,7 @@ class Regenerate(app.page):
             return web.notfound()
 
         prepare_environment_directory()
+        prepare_master_environment(master)
 
         # putFontAllglyphs(master)
         for glyph in master.get_glyphs('a'):
