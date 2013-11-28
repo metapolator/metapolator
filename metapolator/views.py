@@ -19,9 +19,9 @@ import simplejson
 from web import seeother
 from passlib.hash import bcrypt
 
-
+import xmltomf
 from config import app, is_loggedin, session, working_dir, \
-    working_url, mf_filename, remove_ext
+    working_url
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     ParamForm
 from tools import putFontAllglyphs, \
@@ -59,7 +59,12 @@ class Regenerate(app.page):
 
         prepare_environment_directory()
 
-        putFontAllglyphs(master)
+        # putFontAllglyphs(master)
+        writeGlyphlist(master)
+        for glyph in master.get_glyphs('a'):
+            glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
+                                      name=glyph.name)
+            xmltomf.xmltomf1(master, glyph, glyphB)
         makefont(working_dir(), master)
         raise seeother('/fonts/')
 
@@ -97,17 +102,26 @@ class SettingsRestCreate(app.page):
 
 class SavePointParam(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d+)/save-point/'
+    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/save-point/'
 
-    def POST(self, name, glyphid):
+    def POST(self, name, version, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Project.get_master(projectname=name)
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        master = models.Project.get_master(projectname=name, version=version)
         if not master:
             return web.notfound()
 
         x = web.input(name='', value='', id='')
+        if not models.GlyphOutline.exists(id=x['id']):
+            return web.notfound()
+
+        glyphoutline = models.GlyphOutline.get(id=x['id'])
         value = x['value']
         if value == '':
             value = None
@@ -121,15 +135,19 @@ class SavePointParam(app.page):
                                   fontsource='A', name=glyphid)
         glyphB = models.Glyph.get(master_id=master.id,
                                   fontsource='B', name=glyphid)
-        import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
         makefont(working_dir(), master)
-        M_glyphjson = get_edges_json(u'%s.log' % master.project.projectname, glyphid)
-        glyphoutline = models.GlyphOutline.get(id=x.id)
+
+        instancelog = master.project.get_instancelog(master.version)
+        M_glyphjson = get_edges_json(instancelog, glyphid)
+
         if glyphoutline.fontsource == 'A':
-            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('a'))), glyphid)
+            instancelog = master.project.get_instancelog(master.version, 'a')
         else:
-            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('b'))), glyphid)
+            instancelog = master.project.get_instancelog(master.version, 'b')
+
+        glyphjson = get_edges_json(instancelog, glyphid)
+
         zpoints = get_edges_json_from_db(master, glyphid,
                                          ab_source=glyphoutline.fontsource)
         return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson,
@@ -240,7 +258,7 @@ class Settings(app.page):
 def get_edges_json(log_filename, glyphid=None):
     result = {'edges': []}
     try:
-        fp = open(op.join(working_dir(), log_filename))
+        fp = open(log_filename)
         content = fp.read()
         fp.close()
         return get_json(content, glyphid)
@@ -275,16 +293,21 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
     return {'width': glyph.width, 'points': _points}
 
 
-class View(app.page):
+class ViewVersion(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d+)/'
+    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/'
 
-    def GET(self, name, glyphid):
+    def GET(self, name, version, glyphid):
         """ View single post """
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Project.get_master(projectname=name)
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        master = models.Project.get_master(projectname=name, version=version)
         if not master:
             return web.notfound()
 
@@ -292,9 +315,14 @@ class View(app.page):
                                           glyphname=glyphid):
             return web.notfound()
 
-        A_glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('a'))), glyphid)
-        B_glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('b'))), glyphid)
-        M_glyphjson = get_edges_json(u'%s.log' % master.project.projectname, glyphid)
+        instancelog = master.project.get_instancelog(master.version, 'a')
+        A_glyphjson = get_edges_json(instancelog, glyphid)
+
+        instancelog = master.project.get_instancelog(master.version, 'b')
+        B_glyphjson = get_edges_json(instancelog, glyphid)
+
+        instancelog = master.project.get_instancelog(master.version)
+        M_glyphjson = get_edges_json(instancelog, glyphid)
 
         localparametersA = models.LocalParam.get(id=master.idlocala)
         localparametersB = models.LocalParam.get(id=master.idlocalb)
@@ -305,17 +333,24 @@ class View(app.page):
 
         pointform = ParamForm()
 
-        return render.view(master, glyphid, A_glyphjson, B_glyphjson,
+        masters = models.Master.filter(project_id=master.project_id)
+
+        return render.view(master, masters, glyphid, A_glyphjson, B_glyphjson,
                            M_glyphjson, localparametersA, localparametersB,
                            globalparams, pointform,
                            origins={'a': simplejson.dumps(a_original_glyphjson),
                                     'b': simplejson.dumps(b_original_glyphjson)})
 
-    def POST(self, name, glyphid):
+    def POST(self, name, version, glyphid):
         if not is_loggedin():
             return web.notfound()
 
-        master = models.Project.get_master(projectname=name)
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        master = models.Project.get_master(projectname=name, version=version)
         if not master:
             return web.notfound()
 
@@ -336,19 +371,152 @@ class View(app.page):
                                   fontsource='A', name=glyphid)
         glyphB = models.Glyph.get(master_id=master.id,
                                   fontsource='B', name=glyphid)
-        import xmltomf
         xmltomf.xmltomf1(master, glyphA, glyphB)
         makefont(working_dir(), master)
-        M_glyphjson = get_edges_json(u'%s.log' % master.project.projectname, glyphid)
+
+        instancelog = master.project.get_instancelog(master.version)
+        M_glyphjson = get_edges_json(instancelog, glyphid)
+
         if glyphoutline.fontsource == 'A':
-            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('a'))), glyphid)
+            instancelog = master.project.get_instancelog(master.version, 'a')
         else:
-            glyphjson = get_edges_json('%s.log' % remove_ext(op.basename(master.get_ufo_path('b'))), glyphid)
+            instancelog = master.project.get_instancelog(master.version, 'b')
+
+        glyphjson = get_edges_json(instancelog, glyphid)
         zpoints = get_edges_json_from_db(master, glyphid,
                                          ab_source=glyphoutline.fontsource)
-        return simplejson.dumps({'M': M_glyphjson,
-                                 'R': glyphjson,
+        return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson,
                                  'zpoints': zpoints})
+
+
+class View(app.page):
+
+    path = '/view/([-.\w\d]+)/(\d+)/'
+
+    def GET(self, name, glyphid):
+        """ View single post """
+        if not is_loggedin():
+            raise seeother('/login')
+
+        master = models.Project.get_master(projectname=name, version=1)
+        if not master:
+            return web.notfound()
+
+        if not models.GlyphOutline.exists(master_id=master.id,
+                                          glyphname=glyphid):
+            return web.notfound()
+
+        return web.seeother('/view/{0}/{1:03d}/{2}/'.format(name, master.version,
+                                                            glyphid))
+
+
+class CreateMasterVersion(app.page):
+
+    path = '/view/([-.\w\d]+)/(\d{3,})/create/'
+
+    def GET(self, projectname, version):
+        if not is_loggedin():
+            raise seeother('/login')
+
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        latestmaster = models.Project.get_master(projectname=projectname,
+                                                 version=version)
+        if not latestmaster:
+            return web.notfound()
+
+        version = models.Master.max(models.Master.version,
+                                    project_id=latestmaster.project_id)
+
+        master = models.Master.create(project_id=latestmaster.project_id,
+                                      version=(version + 1))
+        prepare_master_environment(master)
+
+        writeGlyphlist(latestmaster)
+
+        zpoints = []
+        for glyph in latestmaster.get_glyphs('a'):
+            glyphB = models.Glyph.get(master_id=latestmaster.id, fontsource='B',
+                                      name=glyph.name)
+            xmltomf.xmltomf1(latestmaster, glyph, glyphB)
+
+            models.Glyph.create(master_id=master.id, fontsource='A',
+                                name=glyph.name, width=glyph.width,
+                                unicode=glyph.unicode)
+            models.Glyph.create(master_id=master.id, fontsource='B',
+                                name=glyph.name, width=glyph.width,
+                                unicode=glyph.unicode)
+
+            query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+            query = query.filter(models.GlyphOutline.glyph_id == glyph.id)
+            query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+
+            for outline, param in query.order_by(models.GlyphOutline.pointnr.asc()):
+                if re.match('z\d+[rl]', param.pointname):
+                    zpoints.append(param)
+
+        makefont(working_dir(), latestmaster)
+
+        for glyph in master.get_glyphs('a'):
+            glyphB = models.Glyph.get(fontsource='B', master_id=master.id,
+                                      name=glyph.name)
+            logpath = latestmaster.project.get_instancelog()
+            json = get_edges_json(logpath, glyph.name)
+            i = 0
+            for contourpoints in json['edges'][0]['contours']:
+                for point in contourpoints:
+                    glyphoutline = models.GlyphOutline.create(glyph_id=glyph.id,
+                                                              master_id=master.id,
+                                                              glyphname=glyph.name,
+                                                              fontsource=glyph.fontsource,
+                                                              pointnr=(i + 1),
+                                                              x=int(float(point['x'])),
+                                                              y=int(float(point['y'])))
+
+                    models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
+                                             glyph_id=glyph.id,
+                                             fontsource=glyph.fontsource,
+                                             master_id=glyph.master_id,
+                                             pointname=zpoints[i].pointname,
+                                             startp=zpoints[i].startp)
+
+                    glyphoutline = models.GlyphOutline.create(glyph_id=glyphB.id,
+                                                              master_id=master.id,
+                                                              glyphname=glyphB.name,
+                                                              fontsource='B',
+                                                              pointnr=(i + 1),
+                                                              x=int(float(point['x'])),
+                                                              y=int(float(point['y'])))
+                    models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
+                                             glyph_id=glyphB.id,
+                                             fontsource='B',
+                                             master_id=glyphB.master_id,
+                                             pointname=zpoints[i].pointname,
+                                             startp=zpoints[i].startp)
+                    i += 1
+
+        for glyph in master.get_glyphs('a'):
+            glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
+                                      name=glyph.name)
+            xmltomf.xmltomf1(master, glyph, glyphB)
+
+        writeGlyphlist(master)
+        makefont(working_dir(), master)
+
+        for glyph in latestmaster.get_glyphs('a'):
+            glyphB = models.Glyph.get(master_id=latestmaster.id, fontsource='B',
+                                      name=glyph.name)
+
+            glyph.flushparams()
+            if glyphB:
+                glyphB.flushparams()
+            xmltomf.xmltomf1(latestmaster, glyph, glyphB)
+        makefont(working_dir(), latestmaster)
+
+        return web.seeother('/fonts/{0}/'.format(master.id))
 
 
 class ViewFont(app.page):
@@ -522,6 +690,7 @@ class logout(app.page):
 def authorize(user):
     session.authorized = True
     session.user = user.id
+    web.ctx.user = user
     return web.seeother("/")
 
 
@@ -582,6 +751,20 @@ class Register(app.page):
 
         prepare_environment_directory()
         raise seeother
+
+
+def prepare_master_environment(master):
+    for f in os.listdir(working_dir('commons', user='skel')):
+        filename = working_dir(op.join('commons', f), user='skel')
+        try:
+            if filename.endswith('font.mf'):
+                shutil.copy2(filename, master.metafont_filepath('a'))
+                shutil.copy2(filename, master.metafont_filepath('b'))
+                shutil.copy2(filename, master.metafont_filepath())
+            else:
+                shutil.copy2(filename, master.get_fonts_directory())
+        except (IOError, OSError):
+            raise
 
 
 class CreateProject(app.page):
@@ -658,31 +841,11 @@ class CreateProject(app.page):
                 fzip.extractall(fontpath)
 
                 shutil.move(op.join(fontpath, FontNameA), master.get_ufo_path('a'))
-                FontNameA = op.basename(master.get_ufo_path('a'))
                 if FontNameB:
                     ufopath = master.get_ufo_path('b')
                     shutil.move(op.join(fontpath, FontNameB), ufopath)
-                    FontNameB = op.basename(ufopath)
 
-                models.Master.update(id=master.id,
-                                     values=dict(fontnamea=FontNameA,
-                                                 fontnameb=FontNameB))
-
-                FontNameA = op.basename(master.get_ufo_path('a'))
-                if not FontNameB:
-                    FontNameB = op.basename(master.get_ufo_path('b'))
-                for f in os.listdir(working_dir('commons', user='skel')):
-                    filename = working_dir(op.join('commons', f),
-                                           user='skel')
-                    try:
-                        if filename.endswith('font.mf'):
-                            shutil.copy2(filename, op.join(fontpath, mf_filename(FontNameA)))
-                            shutil.copy2(filename, op.join(fontpath, mf_filename(FontNameB)))
-                            shutil.copy2(filename, op.join(fontpath, mf_filename(x.name)))
-                        else:
-                            shutil.copy2(filename, fontpath)
-                    except (IOError, OSError):
-                        raise
+                prepare_master_environment(master)
 
                 putFontAllglyphs(master)
                 ufo2mf(master)

@@ -77,9 +77,11 @@ color:red;
 <p>
 
 $for project in projects:
+  <div>
     $if not project_exists(project):
       <span>X</span>
-    <a href="/fonts/$project.id" style="color:green;text-decoration:underline;">Project $project.id</a> projname $project.project.projectname fontA $project.fontnamea fontB $project.fontnameb idglobal $project.idglobal <a href="/regenerate/$project.id">Regenerate LOG</a><br>
+    <a href="/fonts/$project.id" style="color:green;text-decoration:underline;">Load Master $project.project.projectname $:"{0:03d}".format(project.version)</a><a href="/regenerate/$project.id" class="btn btn-small">Regenerate LOG</a><br>
+  </div>
 </p>
 
 
@@ -111,9 +113,9 @@ $if master:
   <p class="wide">
     $for glyph in master.get_glyphs():
       $if glyph.unicode == '0020':
-        <a href="/view/$master.project.projectname/$glyph.name/">space</a>
+        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyph.name/">space</a>
       $else:
-        <a href="/view/$master.project.projectname/$glyph.name/">&#x$glyph.unicode;</a>
+        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyph.name/">&#x$glyph.unicode;</a>
   </p>
 
 <!-- <p> 

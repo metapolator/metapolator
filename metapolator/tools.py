@@ -5,19 +5,13 @@ import xmltomf
 import web
 from lxml import etree
 
-from config import working_dir, buildfname, mf_filename, remove_ext
+from config import working_dir, buildfname, mf_filename
 
 from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam
 
 
 def project_exists(master):
-    mf_file1 = op.join(master.get_fonts_directory(), mf_filename(master.fontnamea))
-    if op.exists(mf_file1):
-        return True
-
-    if master.fontnameb:
-        mf_file2 = op.join(master.get_fonts_directory(), mf_filename(master.fontnameb))
-        return op.exists(mf_file2)
+    return master.metafont_exists('a') and master.metafont_exists('b')
 
 
 def makefont(working_dir, master):
@@ -26,15 +20,16 @@ def makefont(working_dir, master):
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
 
-    fontname = remove_ext(op.basename(master.get_ufo_path('a')))
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", fontname)
+    metafont = master.get_metafont('a')
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
     os.system(strms)
 
-    fontname = remove_ext(op.basename(master.get_ufo_path('b')))
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", fontname)
+    metafont = master.get_metafont('b')
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
     os.system(strms)
 
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", master.project.projectname)
+    metafont = master.get_metafont()
+    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
     os.system(strms)
     return True
 
@@ -48,9 +43,9 @@ def fnextension(filename):
 
 
 def ufo2mf(master):
-    dirnamef1 = working_dir(op.join(master.get_fonts_directory('a'), "glyphs"))
-    dirnamef2 = working_dir(op.join(master.get_fonts_directory('b'), "glyphs"))
-    dirnamep1 = working_dir(op.join(master.get_fonts_directory(), "glyphs"))
+    dirnamef1 = op.join(master.get_ufo_path('a'), "glyphs")
+    dirnamef2 = op.join(master.get_ufo_path('b'), "glyphs")
+    dirnamep1 = op.join(master.get_fonts_directory(), "glyphs")
     if not op.exists(dirnamep1):
         os.makedirs(dirnamep1)
 
@@ -67,7 +62,7 @@ def ufo2mf(master):
 
 def writeGlyphlist(master, glyphid=None):
     ifile = open(op.join(master.get_fonts_directory(), "glyphlist.mf"), "w")
-    dirnamep1 = working_dir(op.join(master.get_fonts_directory(), "glyphs"))
+    dirnamep1 = op.join(master.get_fonts_directory(), "glyphs")
 
     charlist1 = [f for f in os.listdir(dirnamep1)]
 
@@ -135,8 +130,8 @@ def putFontAllglyphs(master, glyphid=None):
     # only the fonts (xml file) will be read when the glifs are present
     # in both fonts A and B
 
-    source_fontpath_A = op.join(master.get_fonts_directory('A'), 'glyphs')
-    source_fontpath_B = op.join(master.get_fonts_directory('B'), 'glyphs')
+    source_fontpath_A = op.join(master.get_ufo_path('a'), 'glyphs')
+    source_fontpath_B = op.join(master.get_ufo_path('b'), 'glyphs')
 
     charlista = [f for f in os.listdir(source_fontpath_A)]
     charlistb = [f for f in os.listdir(source_fontpath_B)]

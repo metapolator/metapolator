@@ -109,10 +109,19 @@ class Project(Base, UserQueryMixin):
         master = Master.filter(project_id=project.id)
         if version:
             master = master.filter_by(version=version)
-        return master.order_by(Master.version.desc()).one()
+        return master.order_by(Master.version.desc()).first()
 
-    def get_directory(self):
-        directory = op.join(working_dir(), self.projectname)
+    def get_instancelog(self, version=1, ab_source=None):
+        if ab_source:
+            return op.join(working_dir(),
+                           '%s.%s.%03d.log' % (self.projectname,
+                                               ab_source.upper(), version))
+        return op.join(working_dir(),
+                       '%s.%03d.log' % (self.projectname, version))
+
+    def get_directory(self, version=1):
+        directory = op.join(working_dir(), '%s.%03d' % (self.projectname,
+                                                        version))
         if not op.exists(directory):
             os.makedirs(directory)
         return directory
@@ -142,25 +151,32 @@ class Master(Base, UserQueryMixin):
     def get_ufo_path(self, ab_source):
         fontpath = self.get_fonts_directory()
         ab_source = ab_source.upper()
-        return op.join(fontpath, '%s%s.%03d.UFO' % (self.project.projectname,
-                                                    ab_source,
-                                                    self.version))
+        path = op.join(fontpath, '%s.%s.%03d.ufo' % (self.project.projectname,
+                                                     ab_source,
+                                                     self.version))
+        if not op.exists(path):
+            return op.join(fontpath, '%s.%s.%03d.ufo' % (self.project.projectname,
+                                                         'A', self.version))
+        return path
+
+    def get_metafont(self, ab_source=None):
+        if ab_source:
+            return '%s.%s.%03d' % (self.project.projectname,
+                                   ab_source.upper(), self.version)
+        return '%s.%03d' % (self.project.projectname, self.version)
+
+    def metafont_filepath(self, ab_source=None):
+        return op.join(self.get_fonts_directory(),
+                       self.get_metafont(ab_source) + '.mf')
+
+    def metafont_exists(self, ab_source=None):
+        try:
+            return op.exists(self.metafont_filepath(ab_source))
+        except ValueError:
+            pass
 
     def get_fonts_directory(self, ab_source=None):
-        """
-        Return uploaded user font project directory.
-
-        If ab_source set then return FontA or FontB directories in fonts
-        project directory. If FontB is not set then it returns FontA.
-        """
-        fonts_directory = op.join(self.project.get_directory())
-        if not ab_source:
-            return fonts_directory
-        if ab_source.lower() == 'a':
-            return op.join(fonts_directory, self.fontnamea)
-        elif ab_source.lower() == 'b' and self.fontnameb:
-            return op.join(fonts_directory, self.fontnameb)
-        return op.join(fonts_directory, self.fontnamea)
+        return self.project.get_directory(self.version)
 
 
 class Glyph(Base, UserQueryMixin):
@@ -175,6 +191,40 @@ class Glyph(Base, UserQueryMixin):
     name = Column(String(3), index=True)
     width = Column(Integer)
     unicode = Column(Text)
+
+    def flushparams(self):
+        GlyphParam.update(glyph_id=self.id, values=dict(doubledash=None,
+                                                        tripledash=None,
+                                                        superleft=None,
+                                                        superright=None,
+                                                        leftp=None,
+                                                        rightp=None,
+                                                        downp=None,
+                                                        upp=None,
+                                                        dir=None,
+                                                        leftp2=None,
+                                                        rightp2=None,
+                                                        downp2=None,
+                                                        upp2=None,
+                                                        dir2=None,
+                                                        tension=None,
+                                                        tensionand=None,
+                                                        cycle=None,
+                                                        penshifted=None,
+                                                        pointshifted=None,
+                                                        angle=None,
+                                                        penwidth=None,
+                                                        overx=None,
+                                                        overbase=None,
+                                                        overcap=None,
+                                                        overasc=None,
+                                                        overdesc=None,
+                                                        ascpoint=None,
+                                                        descpoint=None,
+                                                        stemcutter=None,
+                                                        stemshift=None,
+                                                        inktrap_l=None,
+                                                        inktrap_r=None))
 
 
 class GlyphOutline(Base, UserQueryMixin):

@@ -1,4 +1,4 @@
-$def with (master, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB, globalparams, pointform, origins)
+$def with (master, masters, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB, globalparams, pointform, origins)
 <title>
 Project $master.project.projectname
 </title>
@@ -8,6 +8,16 @@ Project $master.project.projectname
 <div class="row">
   <div class="col-md-4">
     <h4>Font A</h4>
+    
+    <select name="" id="">
+      $for m in masters:
+        $if master.id == m.id:
+          <option value="" selected="selected">
+        $else:
+          <option value="">
+        Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+        </option>
+    </select>
 
     <canvas id="canvas-a" width="400" height="400"></canvas>
     
@@ -43,7 +53,7 @@ Project $master.project.projectname
   <div class="col-md-4" style="border: solid 2px black;">
     <h4>Metapolation</h4>
 
-    <a href="" class="btn btn-large btn-success">Create master from instance</a>
+    <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/create/" class="btn btn-large btn-success">Create master from instance</a>
     
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
@@ -68,6 +78,16 @@ Project $master.project.projectname
 
   <div class="col-md-4">
     <h4>Font B</h4>
+
+    <select name="" id="">
+      $for m in masters:
+        $if master.id == m.id:
+          <option value="" selected="selected">
+        $else:
+          <option value="">
+        Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+        </option>
+    </select>
 
     <canvas id="canvas-b" height="400" width="400"></canvas>
 
@@ -298,7 +318,7 @@ Canvas.prototype.onMouseUp = function(event) {
 
 
 Canvas.prototype.saveParamRequest = function(val, successhandler) {
-  jQuery.post('/view/$master.project.projectname/$glyphid/save-point/',
+  jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version)/$glyphid/save-point/',
               {name: this.parameterform.find('select').val(),
                value: val,
                id: this.currentpath.data.id})

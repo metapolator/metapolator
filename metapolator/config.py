@@ -13,7 +13,7 @@ except ImportError:
     pass
 
 from sqlalchemy import create_engine
-engine = create_engine('mysql+mysqldb://{0}:{1}@localhost/blog'.format(DATABASE_USER, DATABASE_PWD), echo=False)
+engine = create_engine('mysql+mysqldb://{0}:{1}@localhost/blog'.format(DATABASE_USER, DATABASE_PWD), echo=True)
 
 ### Url mappings
 web.config.debug = False
@@ -83,7 +83,7 @@ def buildfname(filename):
 
 
 def working_dir(path=None, user=None):
-    if is_loggedin():
+    if web.ctx.user or user:
         directory = op.join(PROJECT_ROOT, 'users', str(user or web.ctx.user.username))
         if not op.exists(directory):
             os.makedirs(directory)
@@ -92,8 +92,8 @@ def working_dir(path=None, user=None):
             return directory
 
         result_path = op.join(directory, path)
-        if not op.exists(op.dirname(result_path)):
-            os.makedirs(op.dirname(result_path))
+        if not op.exists(result_path):
+            os.makedirs(result_path)
 
         return result_path
     return path

@@ -26,8 +26,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         glyphB = glyphA
 
     if not stdout_fip:
-        path = working_dir(op.join(master.get_fonts_directory(), "glyphs"))
-        fip = open(os.path.join(path, '%s.mf' % glyphA.name), 'w')
+        path = op.join(master.get_fonts_directory(), "glyphs")
+        if not op.exists(path):
+            os.makedirs(path)
+        fip = open(op.join(path, '%s.mf' % glyphA.name), 'w')
     else:
         fip = stdout_fip
 
@@ -57,7 +59,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
     query = query.filter(models.GlyphOutline.glyph_id == glyphA.id)
     query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
-
     fonta_outlines = list(query)
 
     query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
@@ -1025,7 +1026,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         # do not delete that lines while you are sure
 #        if im == znamel or im == znamer:
 
-            if istartp is not None :
+            if istartp is not None:
                 istartpval = param.startp
                 startp.append("penstroke ")
                 startpval.append(istartpval)
@@ -1509,4 +1510,4 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("endchar;")
 
     print time.time() - starttime
-    return fip
+    fip.close()

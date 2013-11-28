@@ -16,6 +16,11 @@ class UserQueryMixin(object):
         return bool(query(func.count(cls.id)).filter_by(**kwargs).scalar())
 
     @classmethod
+    def max(cls, field, **kwargs):
+        kwargs.update({'user_id': web.ctx.user.id})
+        return query(func.max(field)).filter_by(**kwargs).scalar()
+
+    @classmethod
     def filter(cls, **kwargs):
         kwargs.update({'user_id': web.ctx.user.id})
         return query(cls).filter_by(**kwargs)
