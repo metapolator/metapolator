@@ -146,6 +146,11 @@ ControlPoints.prototype.drawOn = function(canvas) {
     gpath.closed = true;
     gpath.selected = true;
 
+    var text = new canvas.paper.PointText(point);
+    text.justification = 'center';
+    text.fillColor = 'black';
+    text.content = datapoint.data.pointname;
+
     this.paths.push({gpath: gpath, point: point, data: datapoint.data});
   }
 }
