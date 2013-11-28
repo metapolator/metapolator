@@ -116,13 +116,13 @@ class Project(Base, UserQueryMixin):
     def get_instancelog(self, version=1, ab_source=None):
         if ab_source:
             return op.join(working_dir(),
-                           '%s.%s.%03d.log' % (self.projectname,
+                           '%s.%s-%03d.log' % (self.projectname,
                                                ab_source.upper(), version))
         return op.join(working_dir(),
-                       '%s.%03d.log' % (self.projectname, version))
+                       '%s-%03d.log' % (self.projectname, version))
 
     def get_directory(self, version=1):
-        directory = op.join(working_dir(), '%s.%03d' % (self.projectname,
+        directory = op.join(working_dir(), '%s-%03d' % (self.projectname,
                                                         version))
         if not op.exists(directory):
             os.makedirs(directory)
@@ -153,19 +153,19 @@ class Master(Base, UserQueryMixin):
     def get_ufo_path(self, ab_source):
         fontpath = self.get_fonts_directory()
         ab_source = ab_source.upper()
-        path = op.join(fontpath, '%s.%s.%03d.ufo' % (self.project.projectname,
+        path = op.join(fontpath, '%s.%s-%03d.ufo' % (self.project.projectname,
                                                      ab_source,
                                                      self.version))
         if not op.exists(path):
-            return op.join(fontpath, '%s.%s.%03d.ufo' % (self.project.projectname,
+            return op.join(fontpath, '%s.%s-%03d.ufo' % (self.project.projectname,
                                                          'A', self.version))
         return path
 
     def get_metafont(self, ab_source=None):
         if ab_source:
-            return '%s.%s.%03d' % (self.project.projectname,
+            return '%s.%s-%03d' % (self.project.projectname,
                                    ab_source.upper(), self.version)
-        return '%s.%03d' % (self.project.projectname, self.version)
+        return '%s-%03d' % (self.project.projectname, self.version)
 
     def metafont_filepath(self, ab_source=None):
         return op.join(self.get_fonts_directory(),
