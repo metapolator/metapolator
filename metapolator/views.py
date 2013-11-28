@@ -435,65 +435,54 @@ class CreateMasterVersion(app.page):
                                       version=(version + 1))
         prepare_master_environment(master)
 
-        writeGlyphlist(latestmaster)
-
-        zpoints = []
+        logpath = latestmaster.project.get_instancelog()
         for glyph in latestmaster.get_glyphs('a'):
             glyphB = models.Glyph.get(master_id=latestmaster.id, fontsource='B',
                                       name=glyph.name)
             xmltomf.xmltomf1(latestmaster, glyph, glyphB)
+            writeGlyphlist(latestmaster, glyph.id)
 
-            models.Glyph.create(master_id=master.id, fontsource='A',
-                                name=glyph.name, width=glyph.width,
-                                unicode=glyph.unicode)
-            models.Glyph.create(master_id=master.id, fontsource='B',
-                                name=glyph.name, width=glyph.width,
-                                unicode=glyph.unicode)
+            newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
+                                            name=glyph.name, width=glyph.width,
+                                            unicode=glyph.unicode)
+            newglyphb = models.Glyph.create(master_id=master.id, fontsource='B',
+                                            name=glyph.name, width=glyph.width,
+                                            unicode=glyph.unicode)
 
-            query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-            query = query.filter(models.GlyphOutline.glyph_id == glyph.id)
-            query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+            zpoints = glyph.get_zpoints()
 
-            for outline, param in query.order_by(models.GlyphOutline.pointnr.asc()):
-                if re.match('z\d+[rl]', param.pointname):
-                    zpoints.append(param)
+            makefont(working_dir(), latestmaster)
 
-        makefont(working_dir(), latestmaster)
-
-        for glyph in master.get_glyphs('a'):
-            glyphB = models.Glyph.get(fontsource='B', master_id=master.id,
-                                      name=glyph.name)
-            logpath = latestmaster.project.get_instancelog()
             json = get_edges_json(logpath, glyph.name)
             i = 0
             for contourpoints in json['edges'][0]['contours']:
                 for point in contourpoints:
-                    glyphoutline = models.GlyphOutline.create(glyph_id=glyph.id,
+                    glyphoutline = models.GlyphOutline.create(glyph_id=newglypha.id,
                                                               master_id=master.id,
-                                                              glyphname=glyph.name,
-                                                              fontsource=glyph.fontsource,
+                                                              glyphname=newglypha.name,
+                                                              fontsource=newglypha.fontsource,
                                                               pointnr=(i + 1),
                                                               x=int(float(point['x'])),
                                                               y=int(float(point['y'])))
 
                     models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                             glyph_id=glyph.id,
-                                             fontsource=glyph.fontsource,
-                                             master_id=glyph.master_id,
+                                             glyph_id=newglypha.id,
+                                             fontsource=newglypha.fontsource,
+                                             master_id=newglypha.master_id,
                                              pointname=zpoints[i].pointname,
                                              startp=zpoints[i].startp)
 
-                    glyphoutline = models.GlyphOutline.create(glyph_id=glyphB.id,
+                    glyphoutline = models.GlyphOutline.create(glyph_id=newglyphb.id,
                                                               master_id=master.id,
-                                                              glyphname=glyphB.name,
+                                                              glyphname=newglyphb.name,
                                                               fontsource='B',
                                                               pointnr=(i + 1),
                                                               x=int(float(point['x'])),
                                                               y=int(float(point['y'])))
                     models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                             glyph_id=glyphB.id,
+                                             glyph_id=newglyphb.id,
                                              fontsource='B',
-                                             master_id=glyphB.master_id,
+                                             master_id=newglyphb.master_id,
                                              pointname=zpoints[i].pointname,
                                              startp=zpoints[i].startp)
                     i += 1

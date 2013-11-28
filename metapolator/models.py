@@ -1,6 +1,7 @@
 import datetime
 import os
 import os.path as op
+import re
 import web
 
 from sqlalchemy import Column, Integer, String, Text, Enum, Float, \
@@ -191,6 +192,16 @@ class Glyph(Base, UserQueryMixin):
     name = Column(String(3), index=True)
     width = Column(Integer)
     unicode = Column(Text)
+
+    def get_zpoints(self):
+        points = query(GlyphOutline, GlyphParam)
+        points = points.filter(GlyphOutline.glyph_id == self.id)
+        points = points.filter(GlyphParam.glyphoutline_id == GlyphOutline.id)
+        zpoints = []
+        for outline, param in points.order_by(GlyphOutline.pointnr.asc()):
+            if re.match('z\d+[rl]', param.pointname):
+                zpoints.append(param)
+        return zpoints
 
     def flushparams(self):
         GlyphParam.update(glyph_id=self.id, values=dict(doubledash=None,
