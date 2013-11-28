@@ -5,7 +5,7 @@ import xmltomf
 import web
 from lxml import etree
 
-from config import working_dir, buildfname, mf_filename
+from config import buildfname, mf_filename
 
 from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam
 

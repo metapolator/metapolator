@@ -60,11 +60,12 @@ class Regenerate(app.page):
         prepare_environment_directory()
 
         # putFontAllglyphs(master)
-        writeGlyphlist(master)
         for glyph in master.get_glyphs('a'):
             glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
                                       name=glyph.name)
             xmltomf.xmltomf1(master, glyph, glyphB)
+
+        writeGlyphlist(master)
         makefont(working_dir(), master)
         raise seeother('/fonts/')
 
@@ -423,24 +424,24 @@ class CreateMasterVersion(app.page):
         except TypeError:
             return web.notfound()
 
-        latestmaster = models.Project.get_master(projectname=projectname,
+        sourcemaster = models.Project.get_master(projectname=projectname,
                                                  version=version)
-        if not latestmaster:
+        if not sourcemaster:
             return web.notfound()
 
         version = models.Master.max(models.Master.version,
-                                    project_id=latestmaster.project_id)
+                                    project_id=sourcemaster.project_id)
 
-        master = models.Master.create(project_id=latestmaster.project_id,
+        master = models.Master.create(project_id=sourcemaster.project_id,
                                       version=(version + 1))
         prepare_master_environment(master)
 
-        logpath = latestmaster.project.get_instancelog()
-        for glyph in latestmaster.get_glyphs('a'):
-            glyphB = models.Glyph.get(master_id=latestmaster.id, fontsource='B',
+        logpath = sourcemaster.project.get_instancelog(version=sourcemaster.version)
+        for glyph in sourcemaster.get_glyphs('a'):
+            glyphB = models.Glyph.get(master_id=sourcemaster.id, fontsource='B',
                                       name=glyph.name)
-            xmltomf.xmltomf1(latestmaster, glyph, glyphB)
-            writeGlyphlist(latestmaster, glyph.id)
+            xmltomf.xmltomf1(sourcemaster, glyph, glyphB)
+            writeGlyphlist(sourcemaster, glyph.name)
 
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
@@ -451,7 +452,7 @@ class CreateMasterVersion(app.page):
 
             zpoints = glyph.get_zpoints()
 
-            makefont(working_dir(), latestmaster)
+            makefont(working_dir(), sourcemaster)
 
             json = get_edges_json(logpath, glyph.name)
             i = 0
@@ -495,15 +496,16 @@ class CreateMasterVersion(app.page):
         writeGlyphlist(master)
         makefont(working_dir(), master)
 
-        for glyph in latestmaster.get_glyphs('a'):
-            glyphB = models.Glyph.get(master_id=latestmaster.id, fontsource='B',
+        for glyph in sourcemaster.get_glyphs('a'):
+            glyphB = models.Glyph.get(master_id=sourcemaster.id, fontsource='B',
                                       name=glyph.name)
 
             glyph.flushparams()
             if glyphB:
                 glyphB.flushparams()
-            xmltomf.xmltomf1(latestmaster, glyph, glyphB)
-        makefont(working_dir(), latestmaster)
+            xmltomf.xmltomf1(sourcemaster, glyph, glyphB)
+        writeGlyphlist(sourcemaster)
+        makefont(working_dir(), sourcemaster)
 
         return web.seeother('/fonts/{0}/'.format(master.id))
 
