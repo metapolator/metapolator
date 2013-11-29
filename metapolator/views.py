@@ -839,12 +839,17 @@ class CreateProject(app.page):
                 master = models.Master.create(project_id=project.id, version=1)
 
                 fontpath = master.get_fonts_directory()
+
                 fzip.extractall(fontpath)
 
-                shutil.move(op.join(fontpath, FontNameA), master.get_ufo_path('a'))
+                ufopath = master.get_ufo_path('a')
+                shutil.move(op.join(fontpath, FontNameA), ufopath)
                 if FontNameB:
                     ufopath = master.get_ufo_path('b')
                     shutil.move(op.join(fontpath, FontNameB), ufopath)
+                else:
+                    ufopath = master.get_ufo_path('b')
+                    shutil.copytree(master.get_ufo_path('a'), ufopath)
 
                 prepare_master_environment(master)
 

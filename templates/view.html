@@ -125,14 +125,17 @@ Project $master.project.projectname
 function ControlPoints(dataPoints) {
   this.dataPoints = dataPoints;
   this.paths = [];
+  this.texts = [];
 }
 
 
 ControlPoints.prototype.drawOn = function(canvas) {
   for (var k = 0; k < this.paths.length; k++) {
     this.paths[k].gpath.remove();
+    this.texts[k].remove();
   }
   this.paths = [];
+  this.texts = [];
   for (var i = 0; i < this.dataPoints.points.length; i++) {
     var datapoint = this.dataPoints.points[i];
     if (!datapoint.iszpoint) {
@@ -150,6 +153,7 @@ ControlPoints.prototype.drawOn = function(canvas) {
     text.justification = 'center';
     text.fillColor = 'black';
     text.content = datapoint.data.pointname;
+    this.texts.push(text);
 
     this.paths.push({gpath: gpath, point: point, data: datapoint.data});
   }

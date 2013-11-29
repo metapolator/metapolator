@@ -156,9 +156,6 @@ class Master(Base, UserQueryMixin):
         path = op.join(fontpath, '%s-%s-%03d.ufo' % (self.project.projectname,
                                                      ab_source,
                                                      self.version))
-        if not op.exists(path):
-            return op.join(fontpath, '%s-%s-%03d.ufo' % (self.project.projectname,
-                                                         ab_source, self.version))
         return path
 
     def get_metafont(self, ab_source=None):

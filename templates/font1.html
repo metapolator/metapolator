@@ -80,7 +80,7 @@ $for project in projects:
   <div>
     $if not project_exists(project):
       <span>X</span>
-    <a href="/fonts/$project.id" style="color:green;text-decoration:underline;">Load Master $project.project.projectname $:"{0:03d}".format(project.version)</a><a href="/regenerate/$project.id" class="btn btn-small">Regenerate LOG</a><br>
+    <a href="/fonts/$project.id" style="color:green;text-decoration:underline;">Load Master $project.project.projectname $:"{0:03d}".format(project.version)</a><a href="/regenerate/$project.id" class="btn btn-small">Regenerate LOG</a> <a href="/delete/$project.id" class="btn btn-small btn-danger">DELETE</a><br><br>
   </div>
 </p>
 
