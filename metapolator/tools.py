@@ -210,22 +210,62 @@ def get_json(content, glyphid=None):
             'width': width, 'height': height}
 
 
-def writeParams(filename, master, globalparam, metapolation=None):
-    mean = 5.0
-    cap = 0.8
-    ascl = 0.2
-    des = 0.2
-    box = 1.0
+GLOBAL_DEFAULTS = {
+    'metapolation': 0,
+    'unitwidth': 1,
+    'fontsize': 10,
+    'mean': 5,
+    'cap': 6,
+    'ascl': 8,
+    'desc': -2,
+    'box': 10
+}
 
-    metapolation = (metapolation is not None and metapolation) \
-        or (metapolation is None and globalparam.metapolation)
-    u = globalparam.unitwidth or 0
-    fontsize = globalparam.fontsize or 0
-    mean = globalparam.mean or mean
-    cap = globalparam.cap or cap
-    ascl = globalparam.ascl or ascl
-    des = globalparam.des or des
-    box = globalparam.box or box
+
+LOCAL_DEFAULTS = {
+    'px': 0,
+    'width': 1,
+    'space': 0,
+    'xheight': 5,
+    'capital': 6,
+    'ascender': 8,
+    'descender': -2,
+    'skeleton': 0,
+    'over': 0
+}
+
+
+def get_global_param(param, key):
+    if not param:
+        try:
+            return GLOBAL_DEFAULTS[key]
+        except KeyError:
+            return 0
+    return getattr(param, key, 0)
+
+
+def get_local_param(param, key):
+    if not param:
+        try:
+            return LOCAL_DEFAULTS[key]
+        except KeyError:
+            return 0
+    return getattr(param, key, 0)
+
+
+def writeParams(master, filename, metapolation=None):
+    globalparam = GlobalParam.get(id=master.idglobal)
+
+    metapolation = metapolation is not None \
+        or get_global_param(globalparam, 'metapolation')
+    unitwidth = get_global_param(globalparam, 'unitwidth')
+
+    fontsize = get_global_param(globalparam, 'fontsize')
+    mean = get_global_param(globalparam, 'mean')
+    cap = get_global_param(globalparam, 'cap')
+    ascl = get_global_param(globalparam, 'ascl')
+    des = get_global_param(globalparam, 'des')
+    box = get_global_param(globalparam, 'box')
 
     ifile = open(filename, "w")
     # global parameters
@@ -237,68 +277,41 @@ def writeParams(filename, master, globalparam, metapolation=None):
     ifile.write("asc#:=%.3fpt#;\n" % ascl)
     ifile.write("desc#:=%.3fpt#;\n" % des)
     ifile.write("box#:=%.3fpt#;\n" % box)
-    ifile.write("u#:=%.3fpt#;\n" % u)
+    ifile.write("u#:=%.3fpt#;\n" % unitwidth)
 
     # local parameters A
     imlo = LocalParam.get(id=master.idlocala)
-    hasA = False
-    if imlo:
-        ifile.write("A_px#:=%.2fpt#;\n" % imlo.px)
-        ifile.write("A_width:=%.2f;\n" % imlo.width)
-        ifile.write("A_space:=%.2f;\n" % imlo.space)
-        ifile.write("A_spacept:=%.2fpt;\n" % imlo.space)
-        ifile.write("A_xheight:=%.2f;\n" % imlo.xheight)
-        ifile.write("A_capital:=%.2f;\n" % imlo.capital)
-        ifile.write("A_ascender:=%.2f;\n" % imlo.ascender)
-        ifile.write("A_descender:=%.2f;\n" % imlo.descender)
-        ifile.write("A_inktrap:=%.2f;\n" % imlo.inktrap)
-        ifile.write("A_stemcut:=%.2f;\n" % imlo.stemcut)
-        ifile.write("A_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
-        ifile.write("A_superness:=%.2f;\n" % imlo.superness)
-        ifile.write("A_over:=%.2fpt;\n" % imlo.over)
-        hasA = True
+    ifile.write("A_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
+    ifile.write("A_width:=%.2f;\n" % get_local_param(imlo, 'width'))
+    ifile.write("A_space:=%.2f;\n" % get_local_param(imlo, 'space'))
+    ifile.write("A_spacept:=%.2fpt;\n" % get_local_param(imlo, 'space'))
+    ifile.write("A_xheight:=%.2f;\n" % get_local_param(imlo, 'xheight'))
+    ifile.write("A_capital:=%.2f;\n" % get_local_param(imlo, 'capital'))
+    ifile.write("A_ascender:=%.2f;\n" % get_local_param(imlo, 'ascender'))
+    ifile.write("A_descender:=%.2f;\n" % get_local_param(imlo, 'descender'))
+    ifile.write("A_skeleton#:=%.2fpt#;\n" % get_local_param(imlo, 'skeleton'))
+    ifile.write("A_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
 
     # local parameters B
     imlo = LocalParam.get(id=master.idlocalb)
-    hasB = False
-    if imlo:
-        ifile.write("B_px#:=%.2fpt#;\n" % imlo.px)
-        ifile.write("B_width:=%.2f;\n" % imlo.width)
-        ifile.write("B_space:=%.2f;\n" % imlo.space)
-        ifile.write("B_xheight:=%.2f;\n" % imlo.xheight)
-        ifile.write("B_capital:=%.2f;\n" % imlo.capital)
-        ifile.write("B_ascender:=%.2f;\n" % imlo.ascender)
-        ifile.write("B_descender:=%.2f;\n" % imlo.descender)
-        ifile.write("B_inktrap:=%.2f;\n" % imlo.inktrap)
-        ifile.write("B_stemcut:=%.2f;\n" % imlo.stemcut)
-        ifile.write("B_skeleton#:=%.2fpt#;\n" % imlo.skeleton)
-        ifile.write("B_superness:=%.2f;\n" % imlo.superness)
-        ifile.write("B_over:=%.2fpt;\n" % imlo.over)
-        hasB = True
+    ifile.write("B_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
+    ifile.write("B_width:=%.2f;\n" % get_local_param(imlo, 'width'))
+    ifile.write("B_space:=%.2f;\n" % get_local_param(imlo, 'space'))
+    ifile.write("B_spacept:=%.2fpt;\n" % get_local_param(imlo, 'space'))
+    ifile.write("B_xheight:=%.2f;\n" % get_local_param(imlo, 'xheight'))
+    ifile.write("B_capital:=%.2f;\n" % get_local_param(imlo, 'capital'))
+    ifile.write("B_ascender:=%.2f;\n" % get_local_param(imlo, 'ascender'))
+    ifile.write("B_descender:=%.2f;\n" % get_local_param(imlo, 'descender'))
+    ifile.write("B_skeleton#:=%.2fpt#;\n" % get_local_param(imlo, 'skeleton'))
+    ifile.write("B_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
 
     ifile.write("\n")
     ifile.write("input glyphs\n")
     ifile.write("bye\n")
     ifile.close()
 
-    return hasA and hasB
-
 
 def writeGlobalParam(master):
-    #
-    # prepare font.mf parameter file
-    # write the file into the directory cFont.fontpath
-    #
-    globalparam = GlobalParam.get(id=master.idglobal)
-    if not globalparam:
-        return False
-
-    filename = op.join(master.get_fonts_directory(), mf_filename(op.basename(master.get_ufo_path('a'))))
-    result1 = writeParams(filename, master, globalparam)
-
-    filename = op.join(master.get_fonts_directory(), mf_filename(op.basename(master.project.projectname)))
-    result2 = writeParams(filename, master, globalparam, 0)
-
-    filename = op.join(master.get_fonts_directory(), mf_filename(op.basename(master.get_ufo_path('b'))))
-    result3 = writeParams(filename, master, globalparam, 1)
-    return result1 and result2 and result3
+    writeParams(master, master.metafont_filepath())
+    writeParams(master, master.metafont_filepath('a'), 0)
+    writeParams(master, master.metafont_filepath('b'), 1)

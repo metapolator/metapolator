@@ -749,23 +749,10 @@ def prepare_master_environment(master):
     for f in os.listdir(working_dir('commons', user='skel')):
         filename = working_dir(op.join('commons', f), user='skel')
         try:
-            if filename.endswith('font.mf'):
-                shutil.copy2(filename, master.metafont_filepath('a'))
-                shutil.copy2(filename, master.metafont_filepath('b'))
-                fp = open(master.metafont_filepath('b'))
-                content = fp.read()
-                content = re.sub(r'metapolation:=0.00;', 'metapolation:=1.00;', content)
-                fp.close()
-
-                fp = open(master.metafont_filepath('b'), 'w')
-                fp.write(content)
-                fp.close()
-
-                shutil.copy2(filename, master.metafont_filepath())
-            else:
-                shutil.copy2(filename, master.get_fonts_directory())
+            shutil.copy2(filename, master.get_fonts_directory())
         except (IOError, OSError):
             raise
+    writeGlobalParam(master)
 
 
 class CreateProject(app.page):
