@@ -66,6 +66,10 @@ sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/su
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf
 ```
 
+##Note
+
+This project is under active development and moving to stable. Use master branch on your own risk.
+
 
 ##License
 
