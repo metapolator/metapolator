@@ -256,8 +256,7 @@ def get_local_param(param, key):
 def writeParams(master, filename, metapolation=None):
     globalparam = GlobalParam.get(id=master.idglobal)
 
-    metapolation = metapolation is not None \
-        or get_global_param(globalparam, 'metapolation')
+    metap = get_global_param(globalparam, 'metapolation')
     unitwidth = get_global_param(globalparam, 'unitwidth')
 
     fontsize = get_global_param(globalparam, 'fontsize')
@@ -270,7 +269,10 @@ def writeParams(master, filename, metapolation=None):
     ifile = open(filename, "w")
     # global parameters
     ifile.write("% parameter file \n")
-    ifile.write("metapolation:=%.2f;\n" % metapolation)
+    if metapolation is not None:
+        ifile.write("metapolation:=%.2f;\n" % metapolation)
+    else:
+        ifile.write("metapolation:=%.2f;\n" % metap)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
     ifile.write("mean#:=%.3fpt#;\n" % mean)
     ifile.write("cap#:=%.3fpt#;\n" % cap)
@@ -279,7 +281,6 @@ def writeParams(master, filename, metapolation=None):
     ifile.write("box#:=%.3fpt#;\n" % box)
     ifile.write("u#:=%.3fpt#;\n" % unitwidth)
 
-    # local parameters A
     imlo = LocalParam.get(id=master.idlocala)
     ifile.write("A_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
     ifile.write("A_width:=%.2f;\n" % get_local_param(imlo, 'width'))
