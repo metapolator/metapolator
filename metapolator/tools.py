@@ -282,7 +282,7 @@ def writeParams(master, filename, metapolation=None):
     # global parameters
     ifile.write("% parameter file \n")
     if metapolation is not None:
-        ifile.write("metapolation:=%.2f;\n" % metapolation)
+        ifile.write("metapolation:=%.2f;\n" % 0)
     else:
         ifile.write("metapolation:=%.2f;\n" % metap)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
@@ -293,7 +293,10 @@ def writeParams(master, filename, metapolation=None):
     ifile.write("box#:=%.3fpt#;\n" % box)
     ifile.write("u#:=%.3fpt#;\n" % unitwidth)
 
-    imlo = LocalParam.get(id=master.idlocala)
+    if metapolation is not None and metapolation == 1:
+        imlo = LocalParam.get(id=master.idlocalb)
+    else:
+        imlo = LocalParam.get(id=master.idlocala)
     ifile.write("A_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
     ifile.write("A_width:=%.2f;\n" % get_local_param(imlo, 'width'))
     ifile.write("A_space:=%.2f;\n" % get_local_param(imlo, 'space'))
@@ -327,4 +330,4 @@ def writeParams(master, filename, metapolation=None):
 def writeGlobalParam(master):
     writeParams(master, master.metafont_filepath())
     writeParams(master, master.metafont_filepath('a'), 0)
-    writeParams(master, master.metafont_filepath('b'), 0)
+    writeParams(master, master.metafont_filepath('b'), 1)

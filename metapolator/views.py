@@ -82,13 +82,18 @@ class Regenerate(app.page):
 
 class SettingsRestCreate(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d+)/settings/rest/create/'
+    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/settings/rest/create/'
 
-    def POST(self, name, glyphid):
+    def POST(self, name, version, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Project.get_master(projectname=name)
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        master = models.Project.get_master(projectname=name, version=version)
         if not master:
             return web.notfound()
 
@@ -108,7 +113,7 @@ class SettingsRestCreate(app.page):
             models.Master.update(id=master.id,
                                  values=dict(idglobal=obj.id))
 
-        raise seeother('/view/{0}/{1}/settings/'.format(name, glyphid))
+        raise seeother('/view/{0}/{1:03d}/{2}/settings/'.format(name, version, glyphid))
 
 
 class SavePointParam(app.page):
@@ -173,7 +178,7 @@ class SavePointParam(app.page):
 
 class Settings(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d+)/settings/'
+    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/settings/'
 
     @staticmethod
     def get_local_params(idlocal, ab_source):
@@ -186,11 +191,16 @@ class Settings(app.page):
             d.update({'idlocal': idlocal})
         return d
 
-    def GET(self, name, glyphid):
+    def GET(self, name, version, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Project.get_master(projectname=name)
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        master = models.Project.get_master(projectname=name, version=version)
         if not master:
             return web.notfound()
 
@@ -219,11 +229,16 @@ class Settings(app.page):
         return render.settings(master, glyphid, localparameters, globalparams,
                                globalparamform, localparamform_a, localparamform_b)
 
-    def POST(self, name, glyphid):
+    def POST(self, name, version, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Project.get_master(projectname=name)
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        master = models.Project.get_master(projectname=name, version=version)
         if not master:
             return web.notfound()
 
@@ -245,7 +260,7 @@ class Settings(app.page):
             fontsource = form.d.ab_source
             models.Master.update(id=master.id,
                                  values={'idlocal{0}'.format(fontsource.lower()): idlocal})
-            master = models.Project.get_master(projectname=name)
+            master = models.Project.get_master(projectname=name, version=version)
 
             values = form.d
             del values['ab_source']
@@ -258,7 +273,7 @@ class Settings(app.page):
         if formg.validates():
             idglobal = formg.d.idglobal
             models.Master.update(id=master.id, values={'idglobal': idglobal})
-            master = models.Project.get_master(projectname=name)
+            master = models.Project.get_master(projectname=name, version=version)
 
             values = formg.d
             del values['idglobal']
@@ -266,10 +281,24 @@ class Settings(app.page):
 
             models.GlobalParam.update(id=idglobal, values=values)
 
+        writeGlobalParam(master)
+
+        glyphA = models.Glyph.get(master_id=master.id,
+                                  fontsource='A', name=glyphid)
+        xmltomf.xmltomf1(master, glyphA)
         writeGlyphlist(master, glyphid)
-        if writeGlobalParam(master):
-            makefont(working_dir(), master)
-        raise seeother('/view/{0}/{1}/settings/'.format(name, glyphid))
+        makefont(working_dir(), master, 'A')
+
+        glyphB = models.Glyph.get(master_id=master.id,
+                                  fontsource='B', name=glyphid)
+        xmltomf.xmltomf1(master, glyphB or glyphA)
+        writeGlyphlist(master, glyphid)
+        makefont(working_dir(), master, 'B')
+
+        xmltomf.xmltomf1(master, glyphA, glyphB)
+        writeGlyphlist(master, glyphid)
+        makefont(working_dir(), master, 'M')
+        raise seeother('/view/{0}/{1:03d}/{2}/settings/'.format(name, version, glyphid))
 
 
 def get_edges_json(log_filename, glyphid=None):

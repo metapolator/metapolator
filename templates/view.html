@@ -27,7 +27,7 @@ Project $master.project.projectname
     </div>
   
     <div class="well">
-      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not localparametersA:
         <div class="label label-danger">This font has not specified local parameters</div>
@@ -38,13 +38,9 @@ Project $master.project.projectname
           space: $localparametersA.space<br />
           xheight: $localparametersA.xheight<br />
           capital: $localparametersA.capital<br />
-          boxheight: $localparametersA.boxheight<br />
           ascender: $localparametersA.ascender<br />
           descender: $localparametersA.descender<br />
-          inktrap: $localparametersA.inktrap<br />
-          stemcut: $localparametersA.stemcut<br />
           skeleton: $localparametersA.skeleton<br />
-          superness: $localparametersA.superness<br />
           over: $localparametersA.over
         </div>
     </div>
@@ -58,7 +54,7 @@ Project $master.project.projectname
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
-      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$glyphid/settings/">change</a></small></h4>
+      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not globalparams:
         <div class="label label-danger">This font has not specified global parameters</div>
@@ -97,7 +93,7 @@ Project $master.project.projectname
     </div>
 
     <div class="well">
-      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
       $if not localparametersB:
         <div class="label label-danger">This font has not specified local parameters</div>
       $else:
@@ -107,13 +103,9 @@ Project $master.project.projectname
           space: $localparametersB.space<br />
           xheight: $localparametersB.xheight<br />
           capital: $localparametersB.capital<br />
-          boxheight: $localparametersB.boxheight<br />
           ascender: $localparametersB.ascender<br />
           descender: $localparametersB.descender<br />
-          inktrap: $localparametersB.inktrap<br />
-          stemcut: $localparametersB.stemcut<br />
           skeleton: $localparametersB.skeleton<br />
-          superness: $localparametersB.superness<br />
           over: $localparametersB.over
         </div>
     </div>
