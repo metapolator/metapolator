@@ -59,17 +59,10 @@ def ufo2mf(master):
             fnb, ext = buildfname(ch1)
             glyphA = Glyph.get(master_id=master.id, fontsource='A', name=fnb)
             glyphB = Glyph.get(master_id=master.id, fontsource='B', name=fnb)
-            xmltomf.xmltomf1(master, glyphA)
-            writeGlyphlist(master, glyphA.name)
-            makefont(working_dir(), master, 'A')
-
-            xmltomf.xmltomf1(master, glyphB)
-            writeGlyphlist(master, glyphB.name)
-            makefont(working_dir(), master, 'B')
-
             xmltomf.xmltomf1(master, glyphA, glyphB)
-            writeGlyphlist(master, glyphA.name)
-            makefont(working_dir(), master, 'M')
+
+    writeGlyphlist(master, glyphA.name)
+    makefont(working_dir(), master)
 
 
 def writeGlyphlist(master, glyphid=None):
@@ -282,7 +275,7 @@ def writeParams(master, filename, metapolation=None):
     # global parameters
     ifile.write("% parameter file \n")
     if metapolation is not None:
-        ifile.write("metapolation:=%.2f;\n" % 0)
+        ifile.write("metapolation:=%.2f;\n" % metapolation)
     else:
         ifile.write("metapolation:=%.2f;\n" % metap)
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
@@ -293,10 +286,7 @@ def writeParams(master, filename, metapolation=None):
     ifile.write("box#:=%.3fpt#;\n" % box)
     ifile.write("u#:=%.3fpt#;\n" % unitwidth)
 
-    if metapolation is not None and metapolation == 1:
-        imlo = LocalParam.get(id=master.idlocalb)
-    else:
-        imlo = LocalParam.get(id=master.idlocala)
+    imlo = LocalParam.get(id=master.idlocala)
     ifile.write("A_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
     ifile.write("A_width:=%.2f;\n" % get_local_param(imlo, 'width'))
     ifile.write("A_space:=%.2f;\n" % get_local_param(imlo, 'space'))
