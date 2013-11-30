@@ -281,6 +281,8 @@ class Settings(app.page):
 
             models.GlobalParam.update(id=idglobal, values=values)
 
+        web.ctx.orm.commit()
+
         writeGlobalParam(master)
 
         glyphA = models.Glyph.get(master_id=master.id,
