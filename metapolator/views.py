@@ -910,7 +910,6 @@ class CreateProject(app.page):
                 putFontAllglyphs(master)
                 ufo2mf(master)
                 writeGlyphlist(master)
-                makefont(working_dir(), master)
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
                 # if master:
