@@ -491,8 +491,6 @@ class CreateMasterVersion(app.page):
         for glyph in sourcemaster.get_glyphs('a'):
             glyphB = models.Glyph.get(master_id=sourcemaster.id, fontsource='B',
                                       name=glyph.name)
-            xmltomf.xmltomf1(sourcemaster, glyph, glyphB)
-            writeGlyphlist(sourcemaster, glyph.name)
 
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
@@ -502,8 +500,6 @@ class CreateMasterVersion(app.page):
                                             unicode=glyph.unicode)
 
             zpoints = glyph.get_zpoints()
-
-            makefont(working_dir(), sourcemaster)
 
             json = get_edges_json(logpath, glyph.name)
             i = 0
@@ -555,6 +551,13 @@ class CreateMasterVersion(app.page):
             xmltomf.xmltomf1(master, glyph, glyphB)
             writeGlyphlist(master)
             makefont(working_dir(), master, 'M')
+
+        sourcemaster.idlocala = None
+        sourcemaster.idlocalb = None
+        sourcemaster.idglobal = None
+        web.ctx.orm.commit()
+
+        writeGlobalParam(sourcemaster)
 
         for glyph in sourcemaster.get_glyphs('a'):
             glyph.flushparams()
