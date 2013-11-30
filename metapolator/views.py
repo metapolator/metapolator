@@ -62,12 +62,21 @@ class Regenerate(app.page):
 
         # putFontAllglyphs(master)
         for glyph in master.get_glyphs('a'):
-            glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
-                                      name=glyph.name)
-            xmltomf.xmltomf1(master, glyph, glyphB)
-
+            xmltomf.xmltomf1(master, glyph)
         writeGlyphlist(master)
-        makefont(working_dir(), master)
+        makefont(working_dir(), master, 'A')
+
+        for glyph in master.get_glyphs('b'):
+            xmltomf.xmltomf1(master, glyph)
+        writeGlyphlist(master)
+        makefont(working_dir(), master, 'B')
+
+        for glyph in master.get_glyphs('a'):
+            glyphB = models.Glyph.get(name=glyph.name, fontsource='B',
+                                      master_id=master.id)
+            xmltomf.xmltomf1(master, glyph, glyphB)
+        writeGlyphlist(master)
+        makefont(working_dir(), master, 'M')
         raise seeother('/fonts/')
 
 
@@ -135,10 +144,16 @@ class SavePointParam(app.page):
 
         glyphA = models.Glyph.get(master_id=master.id,
                                   fontsource='A', name=glyphid)
+        xmltomf.xmltomf1(master, glyphA)
+        makefont(working_dir(), master, 'A')
+
         glyphB = models.Glyph.get(master_id=master.id,
                                   fontsource='B', name=glyphid)
+        xmltomf.xmltomf1(master, glyphB or glyphA)
+        makefont(working_dir(), master, 'B')
+
         xmltomf.xmltomf1(master, glyphA, glyphB)
-        makefont(working_dir(), master)
+        makefont(working_dir(), master, 'M')
 
         instancelog = master.project.get_instancelog(master.version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
@@ -371,10 +386,16 @@ class ViewVersion(app.page):
 
         glyphA = models.Glyph.get(master_id=master.id,
                                   fontsource='A', name=glyphid)
+        xmltomf.xmltomf1(master, glyphA)
+        makefont(working_dir(), master, 'A')
+
         glyphB = models.Glyph.get(master_id=master.id,
                                   fontsource='B', name=glyphid)
+        xmltomf.xmltomf1(master, glyphB or glyphA)
+        makefont(working_dir(), master, 'B')
+
         xmltomf.xmltomf1(master, glyphA, glyphB)
-        makefont(working_dir(), master)
+        makefont(working_dir(), master, 'M')
 
         instancelog = master.project.get_instancelog(master.version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
@@ -490,23 +511,40 @@ class CreateMasterVersion(app.page):
                     i += 1
 
         for glyph in master.get_glyphs('a'):
+            xmltomf.xmltomf1(master, glyph)
+            writeGlyphlist(master)
+            makefont(working_dir(), master, 'A')
+
+        for glyph in master.get_glyphs('b'):
+            xmltomf.xmltomf1(master, glyph)
+            writeGlyphlist(master)
+            makefont(working_dir(), master, 'B')
+
+        for glyph in master.get_glyphs('a'):
             glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
                                       name=glyph.name)
             xmltomf.xmltomf1(master, glyph, glyphB)
+            writeGlyphlist(master)
+            makefont(working_dir(), master, 'M')
 
-        writeGlyphlist(master)
-        makefont(working_dir(), master)
+        for glyph in sourcemaster.get_glyphs('a'):
+            glyph.flushparams()
+            xmltomf.xmltomf1(sourcemaster, glyph)
+            writeGlyphlist(sourcemaster)
+            makefont(working_dir(), sourcemaster, 'A')
+
+        for glyph in sourcemaster.get_glyphs('b'):
+            glyph.flushparams()
+            xmltomf.xmltomf1(sourcemaster, glyph)
+            writeGlyphlist(sourcemaster)
+            makefont(working_dir(), sourcemaster, 'B')
 
         for glyph in sourcemaster.get_glyphs('a'):
             glyphB = models.Glyph.get(master_id=sourcemaster.id, fontsource='B',
                                       name=glyph.name)
-
-            glyph.flushparams()
-            if glyphB:
-                glyphB.flushparams()
             xmltomf.xmltomf1(sourcemaster, glyph, glyphB)
-        writeGlyphlist(sourcemaster)
-        makefont(working_dir(), sourcemaster)
+            writeGlyphlist(sourcemaster)
+            makefont(working_dir(), sourcemaster, 'M')
 
         return web.seeother('/fonts/{0}/'.format(master.id))
 

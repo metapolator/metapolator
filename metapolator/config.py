@@ -55,17 +55,6 @@ session = web.session.Session(app, web.session.DiskStore('sessions'),
 app.add_processor(load_user)
 
 
-def remove_ext(filename):
-    try:
-        return op.splitext(filename)[0]
-    except IndexError:
-        return filename
-
-
-def mf_filename(filename):
-    return remove_ext(filename) + '.mf'
-
-
 def is_loggedin():
     try:
         return web.ctx.user

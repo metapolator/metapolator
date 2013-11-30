@@ -5,7 +5,7 @@ import xmltomf
 import web
 from lxml import etree
 
-from config import buildfname, mf_filename
+from config import buildfname, working_dir
 
 from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam
 
@@ -14,23 +14,25 @@ def project_exists(master):
     return master.metafont_exists('a') and master.metafont_exists('b')
 
 
-def makefont(working_dir, master):
+def makefont(working_dir, master, cell=None):
     if not project_exists(master):
         return False
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
+    if not cell or cell.upper() == 'A':
+        metafont = master.get_metafont('a')
+        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
+        os.system(strms)
 
-    metafont = master.get_metafont('a')
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-    os.system(strms)
+    if not cell or cell.upper() == 'B':
+        metafont = master.get_metafont('b')
+        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
+        os.system(strms)
 
-    metafont = master.get_metafont('b')
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-    os.system(strms)
-
-    metafont = master.get_metafont()
-    strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-    os.system(strms)
+    if not cell or cell.upper() == 'M':
+        metafont = master.get_metafont()
+        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
+        os.system(strms)
     return True
 
 
@@ -57,7 +59,17 @@ def ufo2mf(master):
             fnb, ext = buildfname(ch1)
             glyphA = Glyph.get(master_id=master.id, fontsource='A', name=fnb)
             glyphB = Glyph.get(master_id=master.id, fontsource='B', name=fnb)
+            xmltomf.xmltomf1(master, glyphA)
+            writeGlyphlist(master, glyphA.name)
+            makefont(working_dir(), master, 'A')
+
+            xmltomf.xmltomf1(master, glyphB)
+            writeGlyphlist(master, glyphB.name)
+            makefont(working_dir(), master, 'B')
+
             xmltomf.xmltomf1(master, glyphA, glyphB)
+            writeGlyphlist(master, glyphA.name)
+            makefont(working_dir(), master, 'M')
 
 
 def writeGlyphlist(master, glyphid=None):
@@ -315,4 +327,4 @@ def writeParams(master, filename, metapolation=None):
 def writeGlobalParam(master):
     writeParams(master, master.metafont_filepath())
     writeParams(master, master.metafont_filepath('a'), 0)
-    writeParams(master, master.metafont_filepath('b'), 1)
+    writeParams(master, master.metafont_filepath('b'), 0)
