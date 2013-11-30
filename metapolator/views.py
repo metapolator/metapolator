@@ -463,10 +463,6 @@ class CreateMasterVersion(app.page):
         for glyph in sourcemaster.get_glyphs('a'):
             glyphB = models.Glyph.get(master_id=sourcemaster.id, fontsource='B',
                                       name=glyph.name)
-            xmltomf.xmltomf1(master, glyph, glyphB)
-            writeGlyphlist(master, glyph.name)
-            makefont(working_dir(), master)
-
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
                                             unicode=glyph.unicode)
