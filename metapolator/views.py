@@ -378,11 +378,9 @@ class ViewVersion(app.page):
         if not master:
             return web.notfound()
 
-        if not models.GlyphOutline.exists(master_id=master.id,
-                                          glyphname=glyphid):
-            return web.notfound()
-
         x = web.input(id='', x='', y='')
+        if not models.GlyphOutline.exists(id=x.id):
+            return web.notfound()
 
         glyphoutline = models.GlyphOutline.get(id=x.id)
         glyphoutline.x = x.x

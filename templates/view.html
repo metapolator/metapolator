@@ -144,6 +144,7 @@ ControlPoints.prototype.drawOn = function(canvas) {
     var text = new canvas.paper.PointText(point);
     text.justification = 'center';
     text.fillColor = 'black';
+    // text.content = datapoint.data.glyphoutline_id + ' = ' + datapoint.data.pointname + " (" + datapoint.x + ", " + datapoint.y +")";
     text.content = datapoint.data.pointname;
     this.texts.push(text);
 
@@ -281,7 +282,7 @@ Canvas.prototype.onMouseUp = function(event) {
       var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
       jQuery.post('', {
-          id: this.currentpath.data.id,
+          id: this.currentpath.data.glyphoutline_id,
           x: xycoord.x,
           y: 500 - xycoord.y
         },
