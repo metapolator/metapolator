@@ -85,7 +85,7 @@ Project $master.project.projectname
         </option>
     </select>
 
-    <canvas id="canvas-b" height="400" width="400"></canvas>
+    <canvas id="canvas-b" width="400" height="400"></canvas>
 
     <div class="canvas-b" style="display: none;">
       <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
@@ -206,9 +206,22 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
 }
 
 
-function resize(x, y, width, height, newwidth, newheight) {
-    nx = newwidth * x / width;
-    ny = newheight * y / height;
+function resize(canvas, x, y, width, height, newwidth, newheight) {
+    var ratio = width / height;
+    var w, h, nx, ny;
+
+      // w = newwidth;
+      // h = w / ratio;
+    if (canvas.width > canvas.height) {
+      w = newwidth;
+      h = w / ratio;
+    } else {
+      h = newheight;
+      w = h * ratio;
+    }
+    console.log(w + '*' + x + '/' + width);
+    nx = w * x / width;
+    ny = h * y / height;
     return {x: nx, y: ny}
 }
 
@@ -225,18 +238,20 @@ function Canvas(canvasid, width, height, source) {
 
   this.tool = new this.paper.Tool();
 
-  this.tool.onMouseDown = this.onMouseDown.bind(this);
-  this.tool.onMouseUp = this.onMouseUp.bind(this);
-  this.tool.onMouseDrag = this.onMouseDrag.bind(this);
+  if (this.source) {
+    this.tool.onMouseDown = this.onMouseDown.bind(this);
+    this.tool.onMouseUp = this.onMouseUp.bind(this);
+    this.tool.onMouseDrag = this.onMouseDrag.bind(this);
+  }
 }
 
 Canvas.prototype.getPoint = function(x, y) {
-  var r = resize(x, y, this.width, this.height, 390 - 100, 390 - 100);
+  var r = resize(this, x, y, this.width, this.height, 390 - 100, 390 - 100);
   return new this.paper.Point(r.x, r.y);
 }
 
 Canvas.prototype.restore_original_coords = function(point) {
-  return resize(point.x, point.y, 390 - 100, 390 - 100, this.width, this.height);
+  return resize(this, point.x, point.y, 390 - 100, 390 - 100, this.width, this.height);
 }
 
 Canvas.prototype.renderGlyph = function(edges) {
@@ -377,6 +392,8 @@ Canvas.prototype.showbox = function() {
 };
 
 Canvas.prototype.draw = function() {
+  this.paper.view.viewSize.height = 500;
+  this.paper.view.viewSize.width = 400;
   this.paper.view.draw();
 };
 
