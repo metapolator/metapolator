@@ -207,16 +207,8 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
 
 
 function resize(x, y, width, height, newwidth, newheight) {
-    ratio = width / height;
-    if (width > height) {
-      w = newwidth;
-      h = w / ratio;
-    } else {
-      h = newheight;
-      w = h * ratio;
-    }
-    nx = w * x / width;
-    ny = h * y / height;
+    nx = newwidth * x / width;
+    ny = newheight * y / height;
     return {x: nx, y: ny}
 }
 
@@ -239,12 +231,12 @@ function Canvas(canvasid, width, height, source) {
 }
 
 Canvas.prototype.getPoint = function(x, y) {
-  var r = resize(x, y, Number(this.width), Number(this.height), 390 - 100, 390 - 100);
+  var r = resize(x, y, this.width, this.height, 390 - 100, 390 - 100);
   return new this.paper.Point(r.x, r.y);
 }
 
 Canvas.prototype.restore_original_coords = function(point) {
-  return resize(point.x, point.y, 390 - 100, 390 - 100, Number(this.width), Number(this.height));
+  return resize(point.x, point.y, 390 - 100, 390 - 100, this.width, this.height);
 }
 
 Canvas.prototype.renderGlyph = function(edges) {
