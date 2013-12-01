@@ -5,19 +5,19 @@
 # http://github.com/metapolator
 #
 # GPL v3 (http://www.gnu.org/copyleft/gpl.html). 
-
-import model
+import StringIO
+# import model
 from lxml import etree
 import os.path 
 import sys
 
 
-def  xmltomf1( charname, dirnamef1, dirnamef2, dirnamep1, newfilename ) :
+def  xmltomf1( charname, dirnamef1, dirnamef2):  # , dirnamep1, newfilename ) :
 
         font_a =  dirnamef1 +"/"+charname 
 	font_b =  dirnamef2 +"/"+charname 
 
-	fip=open(dirnamep1+"/"+newfilename, "w")
+	fip= StringIO.StringIO()  # open(dirnamep1+"/"+newfilename, "w")
 
 	fip.write( """% File parsed with Metapolator %
 
@@ -2352,5 +2352,13 @@ penlabels(range 1 thru 99);
 endchar;
 """)
 
-	fip.close()
-        return None
+# 	fip.close()
+        return fip
+
+
+if __name__ == '__main__':
+	f = xmltomf1('70.glif', '/home/hash/Work/Dave/metapolator/users/guest1/MP_akku-001/MP_akku-A-001.ufo/glyphs',
+				 '/home/hash/Work/Dave/metapolator/users/guest1/MP_akku-001/MP_akku-B-001.ufo/glyphs')
+	f.seek(0)
+	print f.read()
+

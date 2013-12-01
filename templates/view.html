@@ -27,7 +27,7 @@ Project $master.project.projectname
     </div>
   
     <div class="well">
-      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not localparametersA:
         <div class="label label-danger">This font has not specified local parameters</div>
@@ -38,13 +38,9 @@ Project $master.project.projectname
           space: $localparametersA.space<br />
           xheight: $localparametersA.xheight<br />
           capital: $localparametersA.capital<br />
-          boxheight: $localparametersA.boxheight<br />
           ascender: $localparametersA.ascender<br />
           descender: $localparametersA.descender<br />
-          inktrap: $localparametersA.inktrap<br />
-          stemcut: $localparametersA.stemcut<br />
           skeleton: $localparametersA.skeleton<br />
-          superness: $localparametersA.superness<br />
           over: $localparametersA.over
         </div>
     </div>
@@ -58,7 +54,7 @@ Project $master.project.projectname
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
-      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$glyphid/settings/">change</a></small></h4>
+      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not globalparams:
         <div class="label label-danger">This font has not specified global parameters</div>
@@ -97,7 +93,7 @@ Project $master.project.projectname
     </div>
 
     <div class="well">
-      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
       $if not localparametersB:
         <div class="label label-danger">This font has not specified local parameters</div>
       $else:
@@ -107,13 +103,9 @@ Project $master.project.projectname
           space: $localparametersB.space<br />
           xheight: $localparametersB.xheight<br />
           capital: $localparametersB.capital<br />
-          boxheight: $localparametersB.boxheight<br />
           ascender: $localparametersB.ascender<br />
           descender: $localparametersB.descender<br />
-          inktrap: $localparametersB.inktrap<br />
-          stemcut: $localparametersB.stemcut<br />
           skeleton: $localparametersB.skeleton<br />
-          superness: $localparametersB.superness<br />
           over: $localparametersB.over
         </div>
     </div>
@@ -141,7 +133,11 @@ ControlPoints.prototype.drawOn = function(canvas) {
     if (!datapoint.iszpoint) {
       continue;
     }
-    var point = canvas.getPoint(Number(datapoint.x), 500 - Number(datapoint.y), 0);
+
+    pp = canvas.getPoint(Number(datapoint.x), Number(datapoint.y));
+    ppr = canvas.restore_original_coords(pp);
+    console.log("{x: " + datapoint.x + ", y:" + datapoint.y + "}" + ' - ' + pp + ' - ' + "{x: " + ppr.x + ", y:" + ppr.y + "}");
+    var point = canvas.getPoint(Number(datapoint.x), 500 - Number(datapoint.y));
     point.y += +200;
 
     var gpath = canvas.paper.Path.Rectangle(point, 1);
@@ -152,6 +148,7 @@ ControlPoints.prototype.drawOn = function(canvas) {
     var text = new canvas.paper.PointText(point);
     text.justification = 'center';
     text.fillColor = 'black';
+    // text.content = datapoint.data.glyphoutline_id + ' = ' + datapoint.data.pointname + " (" + datapoint.x + ", " + datapoint.y +")";
     text.content = datapoint.data.pointname;
     this.texts.push(text);
 
@@ -210,16 +207,8 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
 
 
 function resize(x, y, width, height, newwidth, newheight) {
-    ratio = width / height;
-    if (width > height) {
-      w = newwidth;
-      h = w / ratio;
-    } else {
-      h = newheight;
-      w = h * ratio;
-    }
-    nx = w * x / width;
-    ny = h * y / height;
+    nx = newwidth * x / width;
+    ny = newheight * y / height;
     return {x: nx, y: ny}
 }
 
@@ -242,7 +231,7 @@ function Canvas(canvasid, width, height, source) {
 }
 
 Canvas.prototype.getPoint = function(x, y) {
-  var r = resize(x, y, this.width, this.height, 390 - 100, 390 - 100)
+  var r = resize(x, y, this.width, this.height, 390 - 100, 390 - 100);
   return new this.paper.Point(r.x, r.y);
 }
 
@@ -289,7 +278,7 @@ Canvas.prototype.onMouseUp = function(event) {
       var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
       jQuery.post('', {
-          id: this.currentpath.data.id,
+          id: this.currentpath.data.glyphoutline_id,
           x: xycoord.x,
           y: 500 - xycoord.y
         },
@@ -415,7 +404,11 @@ jQuery(
 
     A_canvas.draw();
 
+    console.log('');
+    console.log('FontB');
+    console.log('');
     var B_EDGE_JSON = $:B_glyphjson;
+    console.log(B_EDGE_JSON.width + ", " + B_EDGE_JSON.height);
     var B_canvas = new Canvas('canvas-b', B_EDGE_JSON.width, B_EDGE_JSON.height, 'b');
     B_canvas.setZpoints($:origins['b']);
     B_canvas.renderGlyph(B_EDGE_JSON.edges);

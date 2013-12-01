@@ -59,14 +59,10 @@ class LocalParam(Base, UserQueryMixin):
     width = Column(Float, default=1)
     space = Column(Float, default=0)
     xheight = Column(Float, default=5)
-    capital = Column(Float, default=8)
-    boxheight = Column(Float, default=10)
-    ascender = Column(Float, default=8)
-    descender = Column(Float, default=2)
-    inktrap = Column(Float, default=10)
-    stemcut = Column(Float, default=20)
+    capital = Column(Float, default=6)
+    ascender = Column(Float, default=6)
+    descender = Column(Float, default=-2)
     skeleton = Column(Float, default=0)
-    superness = Column(Float, default=1)
     over = Column(Float, default=0.1)
 
     def as_dict(self):
@@ -81,12 +77,12 @@ class GlobalParam(Base, UserQueryMixin):
     user_id = Column(Integer, ForeignKey('users.id'))
 
     metapolation = Column(Float, default=0)
-    unitwidth = Column(Float, default=0)
+    unitwidth = Column(Float, default=1)
     fontsize = Column(Float, default=10)
     mean = Column(Float, default=5, doc='height of lower case')
-    cap = Column(Float, default=8, doc='height of uppercase')
-    ascl = Column(Float, default=2, doc='highest height of talles character')
-    des = Column(Float, default=2, doc='lowest point in glyphs')
+    cap = Column(Float, default=6, doc='height of uppercase')
+    ascl = Column(Float, default=8, doc='highest height of talles character')
+    des = Column(Float, default=-2, doc='lowest point in glyphs')
     box = Column(Float, default=10)
 
     def as_dict(self):
