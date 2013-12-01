@@ -142,7 +142,7 @@ class SavePointParam(app.page):
                                   fontsource='B', name=glyphid)
 
         xmltomf.xmltomf1(master, glyphA, glyphB)
-        makefont(working_dir(), master)
+        makefont(working_dir(), master, cells=[glyphoutline.fontsource, 'M'])
 
         instancelog = master.project.get_instancelog(master.version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
@@ -252,6 +252,17 @@ class Settings(app.page):
             del values['idlocal']
 
             models.LocalParam.update(id=idlocal, values=values)
+            web.ctx.orm.commit()
+
+            writeGlobalParam(master)
+
+            glyphA = models.Glyph.get(master_id=master.id,
+                                      fontsource='A', name=glyphid)
+            glyphB = models.Glyph.get(master_id=master.id,
+                                      fontsource='B', name=glyphid)
+            xmltomf.xmltomf1(master, glyphA, glyphB)
+            writeGlyphlist(master, glyphid)
+            makefont(working_dir(), master, cells=[fontsource, 'M'])
 
         formg = GlobalParamForm()
         if formg.validates():
@@ -264,18 +275,18 @@ class Settings(app.page):
             del values['save']
 
             models.GlobalParam.update(id=idglobal, values=values)
+            web.ctx.orm.commit()
 
-        web.ctx.orm.commit()
+            writeGlobalParam(master)
 
-        writeGlobalParam(master)
+            glyphA = models.Glyph.get(master_id=master.id,
+                                      fontsource='A', name=glyphid)
+            glyphB = models.Glyph.get(master_id=master.id,
+                                      fontsource='B', name=glyphid)
+            xmltomf.xmltomf1(master, glyphA, glyphB)
+            writeGlyphlist(master, glyphid)
+            makefont(working_dir(), master)
 
-        glyphA = models.Glyph.get(master_id=master.id,
-                                  fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(master_id=master.id,
-                                  fontsource='B', name=glyphid)
-        xmltomf.xmltomf1(master, glyphA, glyphB)
-        writeGlyphlist(master, glyphid)
-        makefont(working_dir(), master)
         raise seeother('/view/{0}/{1:03d}/{2}/settings/'.format(name, version, glyphid))
 
 
@@ -394,7 +405,7 @@ class ViewVersion(app.page):
 
         xmltomf.xmltomf1(master, glyphA, glyphB)
         writeGlyphlist(master, glyphid)
-        makefont(working_dir(), master)
+        makefont(working_dir(), master, cells=[glyphoutline.fontsource, 'M'])
 
         instancelog = master.project.get_instancelog(master.version)
         M_glyphjson = get_edges_json(instancelog, glyphid)

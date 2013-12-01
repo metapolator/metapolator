@@ -14,25 +14,27 @@ def project_exists(master):
     return master.metafont_exists('a') and master.metafont_exists('b')
 
 
-def makefont(working_dir, master, cell=None):
+def makefont(working_dir, master, cells=['A', 'B', 'M']):
     if not project_exists(master):
         return False
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
-    if not cell or cell.upper() == 'A':
-        metafont = master.get_metafont('a')
-        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-        os.system(strms)
 
-    if not cell or cell.upper() == 'B':
-        metafont = master.get_metafont('b')
-        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-        os.system(strms)
+    for cell in cells:
+        if not cell or cell.upper() == 'A':
+            metafont = master.get_metafont('a')
+            strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
+            os.system(strms)
 
-    if not cell or cell.upper() == 'M':
-        metafont = master.get_metafont()
-        strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-        os.system(strms)
+        if not cell or cell.upper() == 'B':
+            metafont = master.get_metafont('b')
+            strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
+            os.system(strms)
+
+        if not cell or cell.upper() == 'M':
+            metafont = master.get_metafont()
+            strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
+            os.system(strms)
     return True
 
 
