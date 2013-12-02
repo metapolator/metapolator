@@ -53,18 +53,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("""% point coordinates font A""")
     fip.write("\n")
 
-    # points for l
-    from sqlalchemy.orm import aliased
-    glyphoutlineb_alias = aliased(models.GlyphOutline)
-    glyphparamb_alias = aliased(models.GlyphParam)
-
-    # query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam, glyphoutlineb_alias, glyphparamb_alias)
-    # query = query.outerjoin(glyphoutlineb_alias, glyphoutlineb_alias.glyph_id == glyphB.id, glyphoutlineb_alias.pointnr == models.GlyphOutline.pointnr)
-    # query = query.outerjoin(glyphparamb_alias, glyphparamb_alias.glyphoutline_id == glyphoutlineb_alias.id)
-    # query = query.filter(models.GlyphOutline.glyph_id == glyphA.id)
-    # query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
-    # import pdb ; pdb.set_trace()
-
     query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
     query = query.filter(models.GlyphOutline.glyph_id == glyphA.id)
     query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
