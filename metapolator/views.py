@@ -30,6 +30,16 @@ from tools import putFontAllglyphs, \
     writeGlobalParam, makefont_single
 
 
+def raise404_notauthorized(func):
+
+    def f(*args, **kwargs):
+        if not is_loggedin():
+            raise seeother('/login')
+        return func(*args, **kwargs)
+
+    return f
+
+
 ### Templates
 t_globals = {
     'datestr': web.datestr,
@@ -40,6 +50,102 @@ t_globals = {
 }
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
+
+
+class GlyphPageMixin(object):
+
+    _lftmaster = None
+    _rgtmaster = None
+
+    _lftversion = None
+    _rgtversion = None
+
+    _project = None
+
+    def get_lft_master(self):
+        if not self._lftmaster:
+            raise Exception('Class was not initialized')
+        return self._lftmaster
+
+    def get_rgt_master(self):
+        if not self._rgtmaster:
+            raise Exception('Class was not initialized')
+        return self._rgtmaster
+
+    def get_lft_version(self):
+        if not self._lftversion:
+            raise Exception('Class was not initialized')
+        return self._lftversion
+
+    def get_rgt_version(self):
+        if not self._rgtversion:
+            raise Exception('Class was not initialized')
+        return self._rgtversion
+
+    def get_project(self):
+        if not self._project:
+            raise Exception('Class was not initialized')
+        return self._project
+
+    def initialize(self, projectname, lft_version, rgt_version):
+        try:
+            self._lftversion = int(lft_version)
+            self._rgtversion = int(rgt_version)
+        except TypeError:
+            raise web.notfound()
+
+        self._lftmaster = models.Project.get_master(projectname=projectname,
+                                                    version=self.get_lft_version())
+        if not self._lftmaster:
+            raise web.notfound()
+
+        self._rgtmaster = models.Project.get_master(projectname=projectname,
+                                                    version=self.get_rgt_version())
+        if not self._rgtmaster:
+            raise web.notfound()
+
+        self._project = models.Project.get(projectname=projectname)
+
+    def execute_metapost_for_glyph(self, glyph_id):
+        writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
+        glyphA = models.Glyph.get(master_id=self.get_lft_master().id,
+                                  fontsource='A', name=glyph_id)
+        glyphB = models.Glyph.get(master_id=self.get_rgt_master().id,
+                                  fontsource='B', name=glyph_id)
+
+        xmltomf.xmltomf1(self.get_lft_master(), glyphA, glyphB)
+        writeGlyphlist(self.get_lft_master(), glyph_id)
+        makefont_single(self.get_lft_master())
+
+    def execute_glyph_metapost(self, glyph):
+        writeGlobalParam(glyph.master)
+        xmltomf.xmltomf1(glyph.master, glyph)
+        writeGlyphlist(glyph.master, glyph.name)
+        makefont_single(glyph.master, cell=glyph.fontsource)
+
+    def update_cells(self, glyphid, fontsource):
+        self.execute_metapost_for_glyph(glyphid)
+
+        project = self.get_project()
+
+        instancelog = project.get_instancelog(self.get_lft_version())
+        M_glyphjson = get_edges_json(instancelog, glyphid)
+
+        if fontsource == 'A':
+            glyph = models.Glyph.get(master_id=self.get_lft_master().id,
+                                     fontsource='A', name=glyphid)
+            instancelog = project.get_instancelog(self.get_lft_version(), 'a')
+        else:
+            glyph = models.Glyph.get(master_id=self.get_rgt_master().id,
+                                     fontsource='B', name=glyphid)
+            instancelog = project.get_instancelog(self.get_rgt_version(), 'b')
+
+        self.execute_glyph_metapost(glyph)
+        zpoints = get_edges_json_from_db(glyph.master, glyphid,
+                                         ab_source=fontsource)
+
+        glyphjson = get_edges_json(instancelog, glyphid)
+        return {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}
 
 
 def mime_type(filename):
@@ -90,70 +196,40 @@ class Regenerate(app.page):
         raise seeother('/fonts/')
 
 
-class SettingsRestCreate(app.page):
+class SettingsRestCreate(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/settings/rest/create/'
 
+    @raise404_notauthorized
     def POST(self, name, version, versionfontb, glyphid):
-        if not is_loggedin():
-            raise seeother('/login')
-
-        try:
-            version = int(version)
-            versionfontb = int(versionfontb)
-        except TypeError:
-            return web.notfound()
-
-        master = models.Project.get_master(projectname=name, version=version)
-        if not master:
-            return web.notfound()
-
-        masterfontb = models.Project.get_master(projectname=name,
-                                                version=versionfontb)
-        if not masterfontb:
-            return web.notfound()
+        self.initialize(name, version, versionfontb)
 
         x = web.input(create='')
         if x['create'] == 'a':
             obj = models.LocalParam.create()
-            models.Master.update(id=master.id,
-                                 values=dict(idlocala=obj.id))
+            master = self.get_lft_master()
+            models.Master.update(id=master.id, values=dict(idlocala=obj.id))
 
         if x['create'] == 'b':
             obj = models.LocalParam.create()
-            models.Master.update(id=master.id,
-                                 values=dict(idlocalb=obj.id))
+            master = self.get_rgt_master()
+            models.Master.update(id=master.id, values=dict(idlocalb=obj.id))
 
         if x['create'] == 'g':
             obj = models.GlobalParam.create()
-            models.Master.update(id=master.id,
-                                 values=dict(idglobal=obj.id))
+            master = self.get_lft_master()
+            models.Master.update(id=master.id, values=dict(idglobal=obj.id))
 
-        raise seeother('/view/{0}/{1:03d},{2:03d}/{3}/settings/'.format(name, version, versionfontb, glyphid))
+        raise seeother(u'/view/{0}/{1:03d},{2:03d}/{3}/settings/'.format(name, self.get_lft_version(), self.get_rgt_version(), glyphid))
 
 
-class SavePointParam(app.page):
+class SavePointParam(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/save-param/'
 
-    def POST(self, name, version, versionfontb, glyphid):
-        if not is_loggedin():
-            raise seeother('/login')
-
-        try:
-            version = int(version)
-            versionfontb = int(versionfontb)
-        except TypeError:
-            return web.notfound()
-
-        master = models.Project.get_master(projectname=name, version=version)
-        if not master:
-            return web.notfound()
-
-        masterfontb = models.Project.get_master(projectname=name,
-                                                version=versionfontb)
-        if not masterfontb:
-            return web.notfound()
+    @raise404_notauthorized
+    def POST(self, name, lft_version, rgt_version, glyphid):
+        self.initialize(name, lft_version, rgt_version)
 
         x = web.input(name='', value='', id='')
         if not models.GlyphOutline.exists(id=x['id']):
@@ -168,40 +244,11 @@ class SavePointParam(app.page):
         models.GlyphParam.update(id=x['id'],
                                  values={'%s' % x['name']: value})
 
-        writeGlobalParam(master, masterfontb)
-        glyphA = models.Glyph.get(master_id=master.id,
-                                  fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(master_id=masterfontb.id,
-                                  fontsource='B', name=glyphid)
-
-        xmltomf.xmltomf1(master, glyphA, glyphB)
-        writeGlyphlist(master, glyphid)
-        makefont_single(master)
-
-        instancelog = master.project.get_instancelog(master.version)
-        M_glyphjson = get_edges_json(instancelog, glyphid)
-
-        if glyphoutline.fontsource == 'A':
-            instancelog = master.project.get_instancelog(master.version, 'a')
-            xmltomf.xmltomf1(master, glyphA)
-            writeGlyphlist(master, glyphid)
-            makefont_single(master, cell='A')
-            zpoints = get_edges_json_from_db(master, glyphid,
-                                             ab_source=glyphoutline.fontsource)
-        else:
-            instancelog = masterfontb.project.get_instancelog(masterfontb.version, 'b')
-            xmltomf.xmltomf1(masterfontb, glyphB)
-            writeGlyphlist(masterfontb, glyphid)
-            makefont_single(masterfontb, cell='B')
-            zpoints = get_edges_json_from_db(masterfontb, glyphid,
-                                             ab_source=glyphoutline.fontsource)
-
-        glyphjson = get_edges_json(instancelog, glyphid)
-        return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson,
-                                 'zpoints': zpoints})
+        result = self.update_cells(glyphid, glyphoutline.fontsource)
+        return simplejson.dumps(result)
 
 
-class Settings(app.page):
+class Settings(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/settings/'
 
@@ -216,70 +263,40 @@ class Settings(app.page):
             d.update({'idlocal': idlocal})
         return d
 
+    @raise404_notauthorized
     def GET(self, name, version, versionfontb, glyphid):
-        if not is_loggedin():
-            raise seeother('/login')
-
-        try:
-            version = int(version)
-            versionfontb = int(versionfontb)
-        except TypeError:
-            return web.notfound()
-
-        master = models.Project.get_master(projectname=name, version=version)
-        if not master:
-            return web.notfound()
-
-        masterfontb = models.Project.get_master(projectname=name,
-                                                version=versionfontb)
-        if not masterfontb:
-            return web.notfound()
+        self.initialize(name, version, versionfontb)
 
         localparameters = models.LocalParam.all()
         globalparams = models.GlobalParam.all()
 
         globalparamform = GlobalParamForm()
 
-        globalparam = models.GlobalParam.get(id=master.idglobal)
+        globalparam = models.GlobalParam.get(id=self.get_lft_master().idglobal)
         globalparamform.idglobal.args = [(o.id, o.id) for o in globalparams]
         if globalparam:
             globalparamform.fill(globalparam)
 
         localparamform_a = LocalParamForm()
 
-        local_params = Settings.get_local_params(master.idlocala, 'a')
+        local_params = Settings.get_local_params(self.get_lft_master().idlocala, 'a')
         localparamform_a.idlocal.args = [(o.id, o.id) for o in localparameters]
         localparamform_a.fill(local_params)
 
         localparamform_b = LocalParamForm()
 
-        local_params = Settings.get_local_params(master.idlocalb, 'b')
+        local_params = Settings.get_local_params(self.get_rgt_master().idlocalb, 'b')
         localparamform_b.idlocal.args = [(o.id, o.id) for o in localparameters]
         localparamform_b.fill(local_params)
 
-        web.ctx.project = master.project
-
-        return render.settings(master, masterfontb, glyphid, localparameters, globalparams,
+        web.ctx.project = self.get_project()
+        return render.settings(self.get_lft_master(), self.get_rgt_master(),
+                               glyphid, localparameters, globalparams,
                                globalparamform, localparamform_a, localparamform_b)
 
+    @raise404_notauthorized
     def POST(self, name, version, versionfontb, glyphid):
-        if not is_loggedin():
-            raise seeother('/login')
-
-        try:
-            version = int(version)
-            versionfontb = int(versionfontb)
-        except TypeError:
-            return web.notfound()
-
-        master = models.Project.get_master(projectname=name, version=version)
-        if not master:
-            return web.notfound()
-
-        masterfontb = models.Project.get_master(projectname=name,
-                                                version=versionfontb)
-        if not masterfontb:
-            return web.notfound()
+        self.initialize(name, version, versionfontb)
 
         x = web.input(idlocal_changed=False, idglobal_changed=False,
                       ab_source='a')
@@ -299,10 +316,10 @@ class Settings(app.page):
             fontsource = form.d.ab_source
 
             if fontsource.upper() == 'B':
-                models.Master.update(id=master.id,
+                models.Master.update(id=self.get_rgt_master().id,
                                      values={'idlocalb': idlocal})
             else:
-                models.Master.update(id=master.id,
+                models.Master.update(id=self.get_lft_master().id,
                                      values={'idlocala': idlocal})
             values = form.d
             del values['ab_source']
@@ -314,8 +331,8 @@ class Settings(app.page):
         formg = GlobalParamForm()
         if formg.validates():
             idglobal = formg.d.idglobal
-            models.Master.update(id=master.id, values={'idglobal': idglobal})
-            master = models.Project.get_master(projectname=name, version=version)
+            models.Master.update(id=self.get_lft_master().id,
+                                 values={'idglobal': idglobal})
 
             values = formg.d
             del values['idglobal']
@@ -323,26 +340,17 @@ class Settings(app.page):
 
             models.GlobalParam.update(id=idglobal, values=values)
 
-        glyphA = models.Glyph.get(master_id=master.id,
+        self.execute_metapost_for_glyph(glyphid)
+
+        glyphA = models.Glyph.get(master_id=self.get_lft_master().id,
                                   fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(master_id=masterfontb.id,
+        self.execute_glyph_metapost(glyphA)
+
+        glyphB = models.Glyph.get(master_id=self.get_rgt_master().id,
                                   fontsource='B', name=glyphid)
+        self.execute_glyph_metapost(glyphB)
 
-        writeGlobalParam(master, masterfontb)
-
-        xmltomf.xmltomf1(master, glyphA, glyphB)
-        writeGlyphlist(master, glyphid)
-        makefont_single(master)
-
-        xmltomf.xmltomf1(master, glyphA)
-        writeGlyphlist(master, glyphid)
-        makefont_single(master, cell='A')
-
-        xmltomf.xmltomf1(masterfontb, glyphB)
-        writeGlyphlist(masterfontb, glyphid)
-        makefont_single(masterfontb, cell='B')
-
-        raise seeother('/view/{0}/{1:03d},{2:03d}/{3}/settings/'.format(name, version, versionfontb, glyphid))
+        raise seeother('/view/{0}/{1:03d},{2:03d}/{3}/settings/'.format(name, self.get_lft_version(), self.get_rgt_version(), glyphid))
 
 
 def get_edges_json(log_filename, glyphid=None):
@@ -383,98 +391,69 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
     return {'width': glyph.width, 'points': _points}
 
 
-class ViewVersion(app.page):
+class ViewVersion(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/'
 
+    @raise404_notauthorized
     def GET(self, name, version, versionfontb, glyphid):
         """ View single post """
-        if not is_loggedin():
-            raise seeother('/login')
-
-        try:
-            version = int(version)
-        except TypeError:
-            return web.notfound()
-
-        master = models.Project.get_master(projectname=name, version=version)
-        if not master:
-            return web.notfound()
-
-        if not models.GlyphOutline.exists(master_id=master.id,
+        self.initialize(name, version, versionfontb)
+        if not models.GlyphOutline.exists(master_id=self.get_lft_master().id,
                                           glyphname=glyphid):
             return web.notfound()
 
-        masterfontb = models.Project.get_master(projectname=name, version=versionfontb)
-        if not masterfontb:
-            return web.notfound()
-
-        if not models.GlyphOutline.exists(master_id=masterfontb.id,
+        if not models.GlyphOutline.exists(master_id=self.get_rgt_master().id,
                                           glyphname=glyphid):
             return web.notfound()
 
-        localparametersA = models.LocalParam.get(id=master.idlocala)
-        localparametersB = models.LocalParam.get(id=masterfontb.idlocalb)
-        globalparams = models.GlobalParam.get(id=master.idglobal)
+        localparametersA = models.LocalParam.get(id=self.get_lft_master().idlocala)
+        localparametersB = models.LocalParam.get(id=self.get_rgt_master().idlocalb)
+        globalparams = models.GlobalParam.get(id=self.get_lft_master().idglobal)
 
         pointform = ParamForm()
 
-        masters = models.Master.filter(project_id=master.project_id)
-        web.ctx.project = master.project
+        masters = models.Master.filter(project_id=self.get_project().id)
+        web.ctx.project = self.get_project()
 
-        return render.view(master, masterfontb, masters, glyphid,
-                           localparametersA, localparametersB,
-                           globalparams, pointform)
+        return render.view(self.get_lft_master(), self.get_rgt_master(),
+                           masters, glyphid, localparametersA,
+                           localparametersB, globalparams, pointform)
 
+    @raise404_notauthorized
     def POST(self, name, version, versionfontb, glyphid):
-        if not is_loggedin():
-            return web.notfound()
-
-        try:
-            version = int(version)
-            versionfontb = int(versionfontb)
-        except TypeError:
-            return web.notfound()
-
-        master = models.Project.get_master(projectname=name, version=version)
-        if not master:
-            return web.notfound()
-
-        masterfontb = models.Project.get_master(projectname=name,
-                                                version=versionfontb)
-        if not masterfontb:
-            return web.notfound()
-
-        if not models.GlyphOutline.exists(master_id=master.id,
+        self.initialize(name, version, versionfontb)
+        if not models.GlyphOutline.exists(master_id=self.get_lft_master().id,
                                           glyphname=glyphid):
             return web.notfound()
 
-        if not models.GlyphOutline.exists(master_id=masterfontb.id,
+        if not models.GlyphOutline.exists(master_id=self.get_rgt_master().id,
                                           glyphname=glyphid):
             return web.notfound()
 
-        writeGlobalParam(master, masterfontb)
+        self.execute_metapost_for_glyph(glyphid)
 
-        instancelog = master.project.get_instancelog(master.version, 'a')
+        glyphA = models.Glyph.get(master_id=self.get_lft_master().id,
+                                  fontsource='A', name=glyphid)
+        self.execute_glyph_metapost(glyphA)
+
+        glyphB = models.Glyph.get(master_id=self.get_rgt_master().id,
+                                  fontsource='B', name=glyphid)
+        self.execute_glyph_metapost(glyphB)
+
+        project = self.get_project()
+
+        instancelog = project.get_instancelog(self.get_lft_master().version, 'a')
         A_glyphjson = get_edges_json(instancelog, glyphid)
 
-        instancelog = master.project.get_instancelog(masterfontb.version, 'b')
+        instancelog = project.get_instancelog(self.get_rgt_master().version, 'b')
         B_glyphjson = get_edges_json(instancelog, glyphid)
 
-        glyphA = models.Glyph.get(master_id=master.id,
-                                  fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(master_id=masterfontb.id,
-                                  fontsource='B', name=glyphid)
-
-        xmltomf.xmltomf1(master, glyphA, glyphB)
-        writeGlyphlist(master, glyphid)
-        makefont_single(master)
-
-        instancelog = master.project.get_instancelog(master.version)
+        instancelog = project.get_instancelog(self.get_lft_master().version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
 
-        a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
-        b_original_glyphjson = get_edges_json_from_db(masterfontb, glyphid, 'B')
+        a_original_glyphjson = get_edges_json_from_db(self.get_lft_master(), glyphid, 'A')
+        b_original_glyphjson = get_edges_json_from_db(self.get_rgt_master(), glyphid, 'B')
 
         return simplejson.dumps({'zpoints': {'A': a_original_glyphjson,
                                              'B': b_original_glyphjson},
@@ -483,28 +462,13 @@ class ViewVersion(app.page):
                                             'B': B_glyphjson}})
 
 
-class SavePoint(app.page):
+class SavePoint(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/save-point/'
 
+    @raise404_notauthorized
     def POST(self, name, version, versionfontb, glyphid):
-        if not is_loggedin():
-            return web.notfound()
-
-        try:
-            version = int(version)
-            versionfontb = int(versionfontb)
-        except TypeError:
-            return web.notfound()
-
-        master = models.Project.get_master(projectname=name, version=version)
-        if not master:
-            return web.notfound()
-
-        masterfontb = models.Project.get_master(projectname=name,
-                                                version=versionfontb)
-        if not masterfontb:
-            return web.notfound()
+        self.initialize(name, version, versionfontb)
 
         x = web.input(id='', x='', y='')
         if not models.GlyphOutline.exists(id=x.id):
@@ -515,49 +479,17 @@ class SavePoint(app.page):
         glyphoutline.y = x.y
         web.ctx.orm.commit()
 
-        glyphA = models.Glyph.get(master_id=master.id,
-                                  fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(master_id=masterfontb.id,
-                                  fontsource='B', name=glyphid)
-
-        xmltomf.xmltomf1(master, glyphA, glyphB)
-        writeGlyphlist(master, glyphid)
-
-        writeGlobalParam(master, masterfontb)
-        makefont_single(master)
-
-        instancelog = master.project.get_instancelog(master.version)
-        M_glyphjson = get_edges_json(instancelog, glyphid)
-
-        if glyphoutline.fontsource == 'A':
-            instancelog = master.project.get_instancelog(master.version, 'a')
-            xmltomf.xmltomf1(master, glyphA)
-            writeGlyphlist(master, glyphid)
-            makefont_single(master, cell='A')
-            zpoints = get_edges_json_from_db(master, glyphid,
-                                             ab_source=glyphoutline.fontsource)
-        else:
-            instancelog = masterfontb.project.get_instancelog(masterfontb.version, 'b')
-            xmltomf.xmltomf1(masterfontb, glyphB)
-            writeGlyphlist(masterfontb, glyphid)
-            makefont_single(masterfontb, cell='B')
-            zpoints = get_edges_json_from_db(masterfontb, glyphid,
-                                             ab_source=glyphoutline.fontsource)
-
-        glyphjson = get_edges_json(instancelog, glyphid)
-        return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson,
-                                 'zpoints': zpoints})
+        result = self.update_cells(glyphid, glyphoutline.fontsource)
+        return simplejson.dumps(result)
 
 
 class View(app.page):
 
     path = '/view/([-.\w\d]+)/(\d+)/'
 
+    @raise404_notauthorized
     def GET(self, name, glyphid):
         """ View single post """
-        if not is_loggedin():
-            raise seeother('/login')
-
         master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
@@ -570,45 +502,36 @@ class View(app.page):
                                                                     glyphid))
 
 
-class CreateMasterVersion(app.page):
+class CreateMasterVersion(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/create/'
 
+    def create_glyphpoint(self, glyph, pointnr, pointname, startp, point):
+        kwargs = dict(glyph_id=glyph.id, master_id=glyph.master_id,
+                      glyphname=glyph.name, fontsource=glyph.fontsource,
+                      pointnr=pointnr, x=int(float(point['x'])),
+                      y=int(float(point['y'])))
+        glyphoutline = models.GlyphOutline.create(**kwargs)
+
+        kwargs = dict(glyphoutline_id=glyphoutline.id, glyph_id=glyph.id,
+                      fontsource=glyph.fontsource, master_id=glyph.master_id,
+                      pointname=pointname, startp=startp)
+        models.GlyphParam.create(**kwargs)
+
+    @raise404_notauthorized
     def GET(self, projectname, version, versionfontb):
-        if not is_loggedin():
-            raise seeother('/login')
+        self.initialize(projectname, version, versionfontb)
 
-        try:
-            version = int(version)
-        except TypeError:
-            return web.notfound()
-
-        try:
-            versionfontb = int(versionfontb)
-        except TypeError:
-            return web.notfound()
-
-        sourcemaster = models.Project.get_master(projectname=projectname,
-                                                 version=version)
-        if not sourcemaster:
-            return web.notfound()
-
-        sourcemasterfontb = models.Project.get_master(projectname=projectname,
-                                                      version=versionfontb)
-        if not sourcemasterfontb:
-            return web.notfound()
-
+        project = self.get_project()
         version = models.Master.max(models.Master.version,
-                                    project_id=sourcemaster.project_id)
+                                    project_id=project.id)
 
-        master = models.Master.create(project_id=sourcemaster.project_id,
+        master = models.Master.create(project_id=project.id,
                                       version=(version + 1))
         prepare_master_environment(master)
 
-        logpath = sourcemaster.project.get_instancelog(version=sourcemaster.version)
-        for glyph in sourcemaster.get_glyphs('a'):
-            glyphB = models.Glyph.get(master_id=sourcemasterfontb.id, fontsource='B',
-                                      name=glyph.name)
+        logpath = project.get_instancelog(version=self.get_lft_master().version)
+        for glyph in self.get_lft_master().get_glyphs('a'):
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
                                             unicode=glyph.unicode)
@@ -622,83 +545,62 @@ class CreateMasterVersion(app.page):
             i = 0
             for contourpoints in json['edges'][0]['contours']:
                 for point in contourpoints:
-                    glyphoutline = models.GlyphOutline.create(glyph_id=newglypha.id,
-                                                              master_id=master.id,
-                                                              glyphname=newglypha.name,
-                                                              fontsource=newglypha.fontsource,
-                                                              pointnr=(i + 1),
-                                                              x=int(float(point['x'])),
-                                                              y=int(float(point['y'])))
-
-                    models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                             glyph_id=newglypha.id,
-                                             fontsource=newglypha.fontsource,
-                                             master_id=newglypha.master_id,
-                                             pointname=zpoints[i].pointname,
-                                             startp=zpoints[i].startp)
-
-                    glyphoutline = models.GlyphOutline.create(glyph_id=newglyphb.id,
-                                                              master_id=master.id,
-                                                              glyphname=newglyphb.name,
-                                                              fontsource='B',
-                                                              pointnr=(i + 1),
-                                                              x=int(float(point['x'])),
-                                                              y=int(float(point['y'])))
-                    models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                             glyph_id=newglyphb.id,
-                                             fontsource='B',
-                                             master_id=newglyphb.master_id,
-                                             pointname=zpoints[i].pointname,
-                                             startp=zpoints[i].startp)
+                    self.create_glyphoutline(newglypha, (i + 1),
+                                             zpoints[i].pointname,
+                                             zpoints[i].startp, point)
+                    self.create_glyphoutline(newglyphb, (i + 1),
+                                             zpoints[i].pointname,
+                                             zpoints[i].startp, point)
                     i += 1
 
-        sourcemaster.idlocala = None
-        sourcemaster.idlocalb = None
-        sourcemaster.idglobal = None
+        self.get_lft_master().idlocala = None
+        self.get_lft_master().idlocalb = None
+        self.get_lft_master().idglobal = None
 
-        sourcemasterfontb.idlocala = None
-        sourcemasterfontb.idlocalb = None
-        sourcemasterfontb.idglobal = None
+        self.get_rgt_master().idlocala = None
+        self.get_rgt_master().idlocalb = None
+        self.get_rgt_master().idglobal = None
         web.ctx.orm.commit()
 
-        for glyph in master.get_glyphs('a'):
-            glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
-                                      name=glyph.name)
-            xmltomf.xmltomf1(master, glyph, glyphB)
-        writeGlyphlist(master)
-        makefont(working_dir(), master)
+        self.execute_metapost_for_all_glyphs(master)
 
-        writeGlobalParam(sourcemaster)
-        for glyph in sourcemaster.get_glyphs('a'):
-            glyphB = models.Glyph.get(master_id=sourcemaster.id, fontsource='B',
-                                      name=glyph.name)
-            xmltomf.xmltomf1(sourcemaster, glyph, glyphB)
-        writeGlyphlist(sourcemaster)
-        makefont(working_dir(), sourcemaster)
+        writeGlobalParam(self.get_lft_master())
+        self.execute_metapost_for_all_glyphs(self.get_lft_master())
 
-        writeGlobalParam(sourcemasterfontb)
-        for glyph in sourcemasterfontb.get_glyphs('a'):
-            glyphB = models.Glyph.get(master_id=sourcemasterfontb.id, fontsource='B',
-                                      name=glyph.name)
-            xmltomf.xmltomf1(sourcemasterfontb, glyph, glyphB)
-        writeGlyphlist(sourcemasterfontb)
-        makefont(working_dir(), sourcemasterfontb)
+        writeGlobalParam(self.get_rgt_master())
+        self.execute_metapost_for_all_glyphs(self.get_rgt_master())
 
         return web.seeother('/fonts/{0}/'.format(master.id))
+
+
+def execute_metapost_for_all_glyphs(master):
+    import time
+
+    starttime = time.time()
+    for glyph in master.get_glyphs('a'):
+        glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
+                                  name=glyph.name)
+        xmltomf.xmltomf1(master, glyph, glyphB)
+    writeGlyphlist(master)
+    makefont(working_dir(), master)
+    print '===== %s' % master.version, time.time() - starttime
 
 
 class Specimen(app.page):
 
     path = '/specimen/([-.\w\d]+)/'
 
+    @raise404_notauthorized
     def GET(self, projectname):
         """ View single post """
-        if not is_loggedin():
-            raise seeother('/login')
-
         project = models.Project.get(projectname=projectname)
         instances = models.Master.filter(project_id=project.id)
         instances = instances.order_by(models.Master.version.desc())
+
+        for master in instances:
+            writeGlobalParam(master)
+            execute_metapost_for_all_glyphs(master)
+
         web.ctx.project = project
         return render.specimen(project, instances)
 
@@ -707,9 +609,8 @@ class Fonts(app.page):
 
     path = '/fonts/'
 
+    @raise404_notauthorized
     def GET(self):
-        if not is_loggedin():
-            raise seeother('/login')
         projects = models.Master.all()
         return render.font1(projects)
 
@@ -718,9 +619,8 @@ class Font(app.page):
 
     path = '/fonts/(.+)'
 
+    @raise404_notauthorized
     def GET(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
         projects = models.Master.all()
 
         master = models.Master.get(id=id)
@@ -732,15 +632,13 @@ class GlobalParams(app.page):
 
     path = '/settings/globals/'
 
+    @raise404_notauthorized
     def GET(self):
-        if not is_loggedin():
-            raise seeother('/login')
         gml = models.GlobalParam.all()
         return render.globals(gml)
 
+    @raise404_notauthorized
     def POST(self):
-        if not is_loggedin():
-            raise seeother('/login')
         # create new one and redirect to edit page
         newid = models.GlobalParam.create()
         raise seeother('/settings/globals/%s' % newid)
@@ -750,10 +648,8 @@ class GlobalParam(app.page):
 
     path = '/settings/globals/([1-9][0-9]{0,})'
 
+    @raise404_notauthorized
     def GET(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-
         gm = models.GlobalParam.get(id=id)
         if not gm:
             return web.notfound()
@@ -764,10 +660,8 @@ class GlobalParam(app.page):
         gml = models.GlobalParam.all()
         return render.globals(gml, formg)
 
+    @raise404_notauthorized
     def POST(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-
         gm = models.GlobalParam.get(id=id)
         if not gm:
             return web.notfound()
@@ -789,17 +683,13 @@ class LocalParams(app.page):
 
     path = '/settings/locals/'
 
+    @raise404_notauthorized
     def GET(self):
-        if not is_loggedin():
-            raise seeother('/login')
-
         localparams = models.LocalParam.all()
         return render.locals(localparams)
 
+    @raise404_notauthorized
     def POST(self):
-        if not is_loggedin():
-            raise seeother('/login')
-
         localparam = models.LocalParam.create()
         raise seeother('/settings/locals/edit/%s' % localparam.idlocal)
 
@@ -814,10 +704,8 @@ class LocalParam(app.page):
             form.fill(localparam.as_dict())
         return form
 
+    @raise404_notauthorized
     def GET(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-
         localparam = models.LocalParam.get(id=id)
         if not localparam:
             return web.notfound()
@@ -827,10 +715,8 @@ class LocalParam(app.page):
         glo = models.LocalParam.all()
         return render.editlocals(localparam, glo, form)
 
+    @raise404_notauthorized
     def POST(self, id):
-        if not is_loggedin():
-            raise seeother('/login')
-
         localparam = models.LocalParam.get(id=id)
         if not localparam:
             return web.notfound()
@@ -942,15 +828,12 @@ class CreateProject(app.page):
 
     path = '/project/create/'
 
+    @raise404_notauthorized
     def GET(self):
-        if not is_loggedin():
-            raise seeother('/login')
         return render.create_project()
 
+    @raise404_notauthorized
     def POST(self):
-        if not is_loggedin():
-            raise seeother('/login')
-
         x = web.input(zipfile={})
         if 'name' not in x or not x.name.strip():
             return render.create_project(error='Please define name of new project')
