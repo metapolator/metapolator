@@ -282,7 +282,7 @@ def get_local_param(param, key):
     return getattr(param, key, 0)
 
 
-def writeParams(master, filename, metapolation=None):
+def writeParams(master, filename, metapolation=None, masterfontb=None):
     globalparam = GlobalParam.get(id=master.idglobal)
 
     metap = get_global_param(globalparam, 'metapolation')
@@ -323,7 +323,7 @@ def writeParams(master, filename, metapolation=None):
     ifile.write("A_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
 
     # local parameters B
-    imlo = LocalParam.get(id=master.idlocalb)
+    imlo = LocalParam.get(id=(masterfontb or master).idlocalb)
     ifile.write("B_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
     ifile.write("B_width:=%.2f;\n" % get_local_param(imlo, 'width'))
     ifile.write("B_space:=%.2f;\n" % get_local_param(imlo, 'space'))
@@ -341,7 +341,7 @@ def writeParams(master, filename, metapolation=None):
     ifile.close()
 
 
-def writeGlobalParam(master):
-    writeParams(master, master.metafont_filepath())
+def writeGlobalParam(master, masterfontb=None):
+    writeParams(master, master.metafont_filepath(), masterfontb=masterfontb)
     writeParams(master, master.metafont_filepath('a'), 0)
     writeParams(master, master.metafont_filepath('b'), 1)

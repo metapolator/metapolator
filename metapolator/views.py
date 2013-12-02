@@ -147,6 +147,7 @@ class SavePointParam(app.page):
         models.GlyphParam.update(id=x['id'],
                                  values={'%s' % x['name']: value})
 
+        writeGlobalParam(master, masterfontb)
         glyphA = models.Glyph.get(master_id=master.id,
                                   fontsource='A', name=glyphid)
         glyphB = models.Glyph.get(master_id=masterfontb.id,
@@ -273,9 +274,19 @@ class Settings(app.page):
         if 'ab_source' in form.d and form.validates():
             idlocal = form.d.idlocal
             fontsource = form.d.ab_source
-            models.Master.update(id=master.id,
-                                 values={'idlocal{0}'.format(fontsource.lower()): idlocal})
-            master = models.Project.get_master(projectname=name, version=version)
+
+            if fontsource.upper() == 'B':
+                models.Master.update(id=master.id,
+                                     values={'idlocalb': idlocal})
+                master = models.Project.get_master(projectname=name,
+                                                   version=versionfontb)
+            else:
+                models.Master.update(id=master.id,
+                                     values={'idlocala': idlocal})
+                master = models.Project.get_master(projectname=name,
+                                                   version=version)
+
+            writeGlobalParam(master)
 
             values = form.d
             del values['ab_source']
@@ -284,8 +295,6 @@ class Settings(app.page):
 
             models.LocalParam.update(id=idlocal, values=values)
             web.ctx.orm.commit()
-
-            writeGlobalParam(master)
 
             glyphA = models.Glyph.get(master_id=master.id,
                                       fontsource='A', name=glyphid)
@@ -428,6 +437,8 @@ class ViewVersion(app.page):
                                           glyphname=glyphid):
             return web.notfound()
 
+        writeGlobalParam(master, masterfontb)
+
         instancelog = master.project.get_instancelog(master.version, 'a')
         A_glyphjson = get_edges_json(instancelog, glyphid)
 
@@ -495,6 +506,8 @@ class SavePoint(app.page):
 
         xmltomf.xmltomf1(master, glyphA, glyphB)
         writeGlyphlist(master, glyphid)
+
+        writeGlobalParam(master, masterfontb)
         makefont_single(master)
 
         instancelog = master.project.get_instancelog(master.version)
