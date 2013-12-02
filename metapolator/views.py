@@ -7,6 +7,7 @@
 # GPL v3 (http: //www.gnu.org/copyleft/gpl.html).
 
 """ Basic metafont point interface using webpy  """
+import mimetypes
 import models
 import os
 import os.path as op
@@ -21,7 +22,7 @@ from passlib.hash import bcrypt
 
 import xmltomf
 from config import app, is_loggedin, session, working_dir, \
-    working_url
+    working_url, PROJECT_ROOT
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     ParamForm
 from tools import putFontAllglyphs, \
@@ -38,6 +39,27 @@ t_globals = {
 }
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
+
+
+def mime_type(filename):
+    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+
+
+class userstatic(app.page):
+
+    path = '/users/(.*)'
+
+    def GET(self, path):
+        # path = re.sub(r'[\.]{2,}+', '', path)
+        try:
+            file_name = web.ctx.path.split('/')[-1]
+            web.header('Content-type', mime_type(file_name))
+            print path
+            abspath = op.join(PROJECT_ROOT, 'users', path)
+            print abspath
+            return open(abspath, 'rb').read()
+        except IOError:
+            raise web.notfound()
 
 
 class Index(app.page):
@@ -278,31 +300,15 @@ class Settings(app.page):
             if fontsource.upper() == 'B':
                 models.Master.update(id=master.id,
                                      values={'idlocalb': idlocal})
-                master = models.Project.get_master(projectname=name,
-                                                   version=versionfontb)
             else:
                 models.Master.update(id=master.id,
                                      values={'idlocala': idlocal})
-                master = models.Project.get_master(projectname=name,
-                                                   version=version)
-
-            writeGlobalParam(master)
-
             values = form.d
             del values['ab_source']
             del values['save']
             del values['idlocal']
 
             models.LocalParam.update(id=idlocal, values=values)
-            web.ctx.orm.commit()
-
-            glyphA = models.Glyph.get(master_id=master.id,
-                                      fontsource='A', name=glyphid)
-            glyphB = models.Glyph.get(master_id=master.id,
-                                      fontsource='B', name=glyphid)
-            xmltomf.xmltomf1(master, glyphA, glyphB)
-            writeGlyphlist(master, glyphid)
-            makefont(working_dir(), master, cells=[fontsource, 'M'])
 
         formg = GlobalParamForm()
         if formg.validates():
@@ -315,17 +321,25 @@ class Settings(app.page):
             del values['save']
 
             models.GlobalParam.update(id=idglobal, values=values)
-            web.ctx.orm.commit()
 
-            writeGlobalParam(master)
+        glyphA = models.Glyph.get(master_id=master.id,
+                                  fontsource='A', name=glyphid)
+        glyphB = models.Glyph.get(master_id=masterfontb.id,
+                                  fontsource='B', name=glyphid)
 
-            glyphA = models.Glyph.get(master_id=master.id,
-                                      fontsource='A', name=glyphid)
-            glyphB = models.Glyph.get(master_id=master.id,
-                                      fontsource='B', name=glyphid)
-            xmltomf.xmltomf1(master, glyphA, glyphB)
-            writeGlyphlist(master, glyphid)
-            makefont(working_dir(), master)
+        writeGlobalParam(master, masterfontb)
+
+        xmltomf.xmltomf1(master, glyphA, glyphB)
+        writeGlyphlist(master, glyphid)
+        makefont_single(master)
+
+        xmltomf.xmltomf1(master, glyphA)
+        writeGlyphlist(master, glyphid)
+        makefont_single(master, cell='A')
+
+        xmltomf.xmltomf1(masterfontb, glyphB)
+        writeGlyphlist(masterfontb, glyphid)
+        makefont_single(masterfontb, cell='B')
 
         raise seeother('/view/{0}/{1:03d},{2:03d}/{3}/settings/'.format(name, version, versionfontb, glyphid))
 
@@ -673,13 +687,17 @@ class CreateMasterVersion(app.page):
 
 class ViewFont(app.page):
 
-    path = '/specimen/'
+    path = '/specimen/([-.\w\d]+)/'
 
-    def GET(self):
+    def GET(self, projectname):
         """ View single post """
         if not is_loggedin():
             raise seeother('/login')
-        return render.specimen()
+
+        project = models.Project.get(projectname=projectname)
+        instances = models.Master.filter(project_id=project.id)
+
+        return render.specimen(project, instances)
 
 
 class Fonts(app.page):
