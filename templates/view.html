@@ -27,7 +27,7 @@ Project $master.project.projectname
     </div>
   
     <div class="well">
-      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not localparametersA:
         <div class="label label-danger">This font has not specified local parameters</div>
@@ -49,12 +49,12 @@ Project $master.project.projectname
   <div class="col-md-4" style="border: solid 2px black;">
     <h4>Metapolation</h4>
 
-    <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/create/" class="btn btn-large btn-success">Create master from instance</a>
+    <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/create/" class="btn btn-large btn-success">Create master from instance</a>
     
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
-      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
+      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not globalparams:
         <div class="label label-danger">This font has not specified global parameters</div>
@@ -93,7 +93,7 @@ Project $master.project.projectname
     </div>
 
     <div class="well">
-      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
       $if not localparametersB:
         <div class="label label-danger">This font has not specified local parameters</div>
       $else:
@@ -292,7 +292,7 @@ Canvas.prototype.onMouseUp = function(event) {
       var x = event.point.x;
       var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
-      jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version)/$glyphid/save-point/', {
+      jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-point/', {
           id: this.currentpath.data.glyphoutline_id,
           x: xycoord.x,
           y: 500 - xycoord.y
@@ -331,7 +331,7 @@ Canvas.prototype.onMouseUp = function(event) {
 
 
 Canvas.prototype.saveParamRequest = function(val, successhandler) {
-  jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version)/$glyphid/save-param/',
+  jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-param/',
               {name: this.parameterform.find('select').val(),
                value: val,
                id: this.currentpath.data.id})
