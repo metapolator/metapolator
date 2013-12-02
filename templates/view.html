@@ -7,9 +7,9 @@ Project $master.project.projectname
 
 <div class="row">
   <div class="col-md-4">
-    <h4>Font A</h4>
+    <h4 class="pull-right">Font A</h4>
     
-    <select name="" id="" onchange="window.location=jQuery(this).val();">
+    <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-left">
       $for m in masters:
         $if master.id == m.id:
           <option value="" selected="selected">
@@ -73,9 +73,9 @@ Project $master.project.projectname
   </div>
 
   <div class="col-md-4">
-    <h4>Font B</h4>
+    <h4 class="pull-left">Font B</h4>
 
-    <select name="" id="" onchange="window.location=jQuery(this).val();">
+    <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-right">
       $for m in masters:
         $if masterfontb.id == m.id:
           <option value="" selected="selected">
