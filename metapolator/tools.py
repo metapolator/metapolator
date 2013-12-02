@@ -14,6 +14,28 @@ def project_exists(master):
     return master.metafont_exists('a') and master.metafont_exists('b')
 
 
+def makefont_single(master, cell=''):
+    if not project_exists(master) or not project_exists(master):
+        return False
+
+    cell = cell.upper()
+    if cell == 'A':
+        os.environ['MFINPUTS'] = master.get_fonts_directory()
+        metafont = master.get_metafont('a')
+        strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
+        os.system(strms)
+    elif cell == 'B':
+        os.environ['MFINPUTS'] = master.get_fonts_directory()
+        metafont = master.get_metafont('b')
+        strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
+        os.system(strms)
+    else:
+        os.environ['MFINPUTS'] = master.get_fonts_directory()
+        metafont = master.get_metafont()
+        strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
+        os.system(strms)
+
+
 def makefont(working_dir, master, cells=['A', 'B', 'M']):
     if not project_exists(master):
         return False
