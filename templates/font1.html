@@ -113,9 +113,9 @@ $if master:
   <p class="wide">
     $for glyph in master.get_glyphs():
       $if glyph.unicode == '0020':
-        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyph.name/">space</a>
+        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$:'{0:03d}'.format(master.version)/$glyph.name/">space</a>
       $else:
-        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyph.name/">&#x$glyph.unicode;</a>
+        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$:'{0:03d}'.format(master.version)/$glyph.name/">&#x$glyph.unicode;</a>
   </p>
 
 <!-- <p> 
