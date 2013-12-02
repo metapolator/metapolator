@@ -626,6 +626,10 @@ class CreateMasterVersion(app.page):
         sourcemaster.idlocala = None
         sourcemaster.idlocalb = None
         sourcemaster.idglobal = None
+
+        sourcemasterfontb.idlocala = None
+        sourcemasterfontb.idlocalb = None
+        sourcemasterfontb.idglobal = None
         web.ctx.orm.commit()
 
         for glyph in master.get_glyphs('a'):
@@ -642,6 +646,14 @@ class CreateMasterVersion(app.page):
             xmltomf.xmltomf1(sourcemaster, glyph, glyphB)
         writeGlyphlist(sourcemaster)
         makefont(working_dir(), sourcemaster)
+
+        writeGlobalParam(sourcemasterfontb)
+        for glyph in sourcemasterfontb.get_glyphs('a'):
+            glyphB = models.Glyph.get(master_id=sourcemasterfontb.id, fontsource='B',
+                                      name=glyph.name)
+            xmltomf.xmltomf1(sourcemasterfontb, glyph, glyphB)
+        writeGlyphlist(sourcemasterfontb)
+        makefont(working_dir(), sourcemasterfontb)
 
         return web.seeother('/fonts/{0}/'.format(master.id))
 
