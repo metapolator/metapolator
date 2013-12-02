@@ -107,19 +107,25 @@ class SettingsRestCreate(app.page):
 
 class SavePointParam(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/save-param/'
+    path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/save-param/'
 
-    def POST(self, name, version, glyphid):
+    def POST(self, name, version, versionfontb, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
         try:
             version = int(version)
+            versionfontb = int(versionfontb)
         except TypeError:
             return web.notfound()
 
         master = models.Project.get_master(projectname=name, version=version)
         if not master:
+            return web.notfound()
+
+        masterfontb = models.Project.get_master(projectname=name,
+                                                version=versionfontb)
+        if not masterfontb:
             return web.notfound()
 
         x = web.input(name='', value='', id='')
@@ -134,28 +140,35 @@ class SavePointParam(app.page):
             value = float(value)
         models.GlyphParam.update(id=x['id'],
                                  values={'%s' % x['name']: value})
-        writeGlyphlist(master, glyphid)
 
         glyphA = models.Glyph.get(master_id=master.id,
                                   fontsource='A', name=glyphid)
-        glyphB = models.Glyph.get(master_id=master.id,
+        glyphB = models.Glyph.get(master_id=masterfontb.id,
                                   fontsource='B', name=glyphid)
 
         xmltomf.xmltomf1(master, glyphA, glyphB)
-        makefont(working_dir(), master, cells=[glyphoutline.fontsource, 'M'])
+        writeGlyphlist(master, glyphid)
+        makefont_single(master)
 
         instancelog = master.project.get_instancelog(master.version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
 
         if glyphoutline.fontsource == 'A':
             instancelog = master.project.get_instancelog(master.version, 'a')
+            xmltomf.xmltomf1(master, glyphA)
+            writeGlyphlist(master, glyphid)
+            makefont_single(master, cell='A')
+            zpoints = get_edges_json_from_db(master, glyphid,
+                                             ab_source=glyphoutline.fontsource)
         else:
-            instancelog = master.project.get_instancelog(master.version, 'b')
+            instancelog = masterfontb.project.get_instancelog(masterfontb.version, 'b')
+            xmltomf.xmltomf1(masterfontb, glyphB)
+            writeGlyphlist(masterfontb, glyphid)
+            makefont_single(masterfontb, cell='B')
+            zpoints = get_edges_json_from_db(masterfontb, glyphid,
+                                             ab_source=glyphoutline.fontsource)
 
         glyphjson = get_edges_json(instancelog, glyphid)
-
-        zpoints = get_edges_json_from_db(master, glyphid,
-                                         ab_source=glyphoutline.fontsource)
         return simplejson.dumps({'M': M_glyphjson, 'R': glyphjson,
                                  'zpoints': zpoints})
 
@@ -402,6 +415,15 @@ class ViewVersion(app.page):
 
         instancelog = master.project.get_instancelog(masterfontb.version, 'b')
         B_glyphjson = get_edges_json(instancelog, glyphid)
+
+        glyphA = models.Glyph.get(master_id=master.id,
+                                  fontsource='A', name=glyphid)
+        glyphB = models.Glyph.get(master_id=masterfontb.id,
+                                  fontsource='B', name=glyphid)
+
+        xmltomf.xmltomf1(master, glyphA, glyphB)
+        writeGlyphlist(master, glyphid)
+        makefont_single(master)
 
         instancelog = master.project.get_instancelog(master.version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
