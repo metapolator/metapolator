@@ -103,7 +103,8 @@ right {
             $if is_loggedin():
               <li><a href="$working_url('static/font.otf')">Download OTF</a></li>
             <li><a href="/settings/globals/">Parameters</a></li>
-            <li><a href="/specimen/">Specimen</a></li>
+            $if webctx.get('project') and webctx.project:
+              <li><a href="/specimen/$webctx.project.projectname/">Specimen</a></li>
             <li><a href="/project/create/">Upload UFO Project</a></li>
           </ul>
         </div><!--/.nav-collapse -->

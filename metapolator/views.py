@@ -35,7 +35,8 @@ t_globals = {
     'datestr': web.datestr,
     'working_url': working_url,
     'is_loggedin': is_loggedin,
-    'project_exists': project_exists
+    'project_exists': project_exists,
+    'webctx': web.ctx
 }
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
@@ -54,9 +55,7 @@ class userstatic(app.page):
         try:
             file_name = web.ctx.path.split('/')[-1]
             web.header('Content-type', mime_type(file_name))
-            print path
             abspath = op.join(PROJECT_ROOT, 'users', path)
-            print abspath
             return open(abspath, 'rb').read()
         except IOError:
             raise web.notfound()
@@ -258,6 +257,8 @@ class Settings(app.page):
         localparamform_b.idlocal.args = [(o.id, o.id) for o in localparameters]
         localparamform_b.fill(local_params)
 
+        web.ctx.project = master.project
+
         return render.settings(master, masterfontb, glyphid, localparameters, globalparams,
                                globalparamform, localparamform_a, localparamform_b)
 
@@ -419,6 +420,7 @@ class ViewVersion(app.page):
         pointform = ParamForm()
 
         masters = models.Master.filter(project_id=master.project_id)
+        web.ctx.project = master.project
 
         return render.view(master, masterfontb, masters, glyphid,
                            localparametersA, localparametersB,
@@ -685,7 +687,7 @@ class CreateMasterVersion(app.page):
         return web.seeother('/fonts/{0}/'.format(master.id))
 
 
-class ViewFont(app.page):
+class Specimen(app.page):
 
     path = '/specimen/([-.\w\d]+)/'
 
@@ -696,7 +698,8 @@ class ViewFont(app.page):
 
         project = models.Project.get(projectname=projectname)
         instances = models.Master.filter(project_id=project.id)
-
+        instances = instances.order_by(models.Master.version.desc())
+        web.ctx.project = project
         return render.specimen(project, instances)
 
 
@@ -721,7 +724,7 @@ class Font(app.page):
         projects = models.Master.all()
 
         master = models.Master.get(id=id)
-
+        web.ctx.project = master.project
         return render.font1(projects, master)
 
 
