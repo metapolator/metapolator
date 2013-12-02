@@ -1,4 +1,4 @@
-$def with (master, glyphid, localparameters, globalparams, globalparamform, localparamform_a, localparamform_b)
+$def with (master, masterfontb, glyphid, localparameters, globalparams, globalparamform, localparamform_a, localparamform_b)
 <title>
 Project $master.project.projectname
 </title>
@@ -45,7 +45,7 @@ Project $master.project.projectname
         <h4>Font A</h4>
         <h4>Local</h4>
 
-        <form action="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/rest/create/" method="post">
+        <form action="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/rest/create/" method="post">
             <input type="submit" class="btn btn-large" value="Create Local Parameters">
             <input type="hidden" name="create" value="a">
         </form>
@@ -53,12 +53,12 @@ Project $master.project.projectname
         <form action="" method="post" class="localsettings">
         $:localparamform_a.render()
         </form>
-        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/">Back to editor</a>
+        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
         <h4>Global</h4>
 
-        <form action="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/rest/create/" method="post">
+        <form action="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/rest/create/" method="post">
             <input type="submit" class="btn btn-large" value="Create Global Parameters">
             <input type="hidden" name="create" value="g">
         </form>
@@ -67,13 +67,13 @@ Project $master.project.projectname
         $:globalparamform.render()
         </form>
 
-        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/">Back to editor</a>
+        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">Back to editor</a>
     </div>
     <div class="col-md-4">
         <h4>Font B</h4>
         <h4>Local</h4>
 
-        <form action="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/rest/create/" method="post">
+        <form action="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/rest/create/" method="post">
             <input type="submit" class="btn btn-large" value="Create Local Parameters">
             <input type="hidden" name="create" value="b">
         </form>
@@ -82,6 +82,6 @@ Project $master.project.projectname
         $:localparamform_b.render()
         </form>
 
-        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/">Back to editor</a>
+        <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">Back to editor</a>
     </div>
 </div>

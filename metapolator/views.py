@@ -71,19 +71,25 @@ class Regenerate(app.page):
 
 class SettingsRestCreate(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/settings/rest/create/'
+    path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/settings/rest/create/'
 
-    def POST(self, name, version, glyphid):
+    def POST(self, name, version, versionfontb, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
         try:
             version = int(version)
+            versionfontb = int(versionfontb)
         except TypeError:
             return web.notfound()
 
         master = models.Project.get_master(projectname=name, version=version)
         if not master:
+            return web.notfound()
+
+        masterfontb = models.Project.get_master(projectname=name,
+                                                version=versionfontb)
+        if not masterfontb:
             return web.notfound()
 
         x = web.input(create='')
@@ -102,7 +108,7 @@ class SettingsRestCreate(app.page):
             models.Master.update(id=master.id,
                                  values=dict(idglobal=obj.id))
 
-        raise seeother('/view/{0}/{1:03d}/{2}/settings/'.format(name, version, glyphid))
+        raise seeother('/view/{0}/{1:03d},{2:03d}/{3}/settings/'.format(name, version, versionfontb, glyphid))
 
 
 class SavePointParam(app.page):
@@ -175,7 +181,7 @@ class SavePointParam(app.page):
 
 class Settings(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/settings/'
+    path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/settings/'
 
     @staticmethod
     def get_local_params(idlocal, ab_source):
@@ -188,17 +194,23 @@ class Settings(app.page):
             d.update({'idlocal': idlocal})
         return d
 
-    def GET(self, name, version, glyphid):
+    def GET(self, name, version, versionfontb, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
         try:
             version = int(version)
+            versionfontb = int(versionfontb)
         except TypeError:
             return web.notfound()
 
         master = models.Project.get_master(projectname=name, version=version)
         if not master:
+            return web.notfound()
+
+        masterfontb = models.Project.get_master(projectname=name,
+                                                version=versionfontb)
+        if not masterfontb:
             return web.notfound()
 
         localparameters = models.LocalParam.all()
@@ -223,20 +235,26 @@ class Settings(app.page):
         localparamform_b.idlocal.args = [(o.id, o.id) for o in localparameters]
         localparamform_b.fill(local_params)
 
-        return render.settings(master, glyphid, localparameters, globalparams,
+        return render.settings(master, masterfontb, glyphid, localparameters, globalparams,
                                globalparamform, localparamform_a, localparamform_b)
 
-    def POST(self, name, version, glyphid):
+    def POST(self, name, version, versionfontb, glyphid):
         if not is_loggedin():
             raise seeother('/login')
 
         try:
             version = int(version)
+            versionfontb = int(versionfontb)
         except TypeError:
             return web.notfound()
 
         master = models.Project.get_master(projectname=name, version=version)
         if not master:
+            return web.notfound()
+
+        masterfontb = models.Project.get_master(projectname=name,
+                                                version=versionfontb)
+        if not masterfontb:
             return web.notfound()
 
         x = web.input(idlocal_changed=False, idglobal_changed=False,
@@ -300,7 +318,7 @@ class Settings(app.page):
             writeGlyphlist(master, glyphid)
             makefont(working_dir(), master)
 
-        raise seeother('/view/{0}/{1:03d}/{2}/settings/'.format(name, version, glyphid))
+        raise seeother('/view/{0}/{1:03d},{2:03d}/{3}/settings/'.format(name, version, versionfontb, glyphid))
 
 
 def get_edges_json(log_filename, glyphid=None):

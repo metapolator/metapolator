@@ -27,7 +27,7 @@ Project $master.project.projectname
     </div>
   
     <div class="well">
-      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not localparametersA:
         <div class="label label-danger">This font has not specified local parameters</div>
@@ -54,7 +54,7 @@ Project $master.project.projectname
     <canvas width="400" height="400" id="canvas-m"></canvas>
 
     <div class="well">
-      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
+      <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
 
       $if not globalparams:
         <div class="label label-danger">This font has not specified global parameters</div>
@@ -93,7 +93,7 @@ Project $master.project.projectname
     </div>
 
     <div class="well">
-      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version)/$glyphid/settings/">change</a></small></h4>
+      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
       $if not localparametersB:
         <div class="label label-danger">This font has not specified local parameters</div>
       $else:
