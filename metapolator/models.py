@@ -187,6 +187,8 @@ class Glyph(Base, UserQueryMixin):
     width = Column(Integer)
     unicode = Column(Text)
 
+    master = relationship('Master', backref='master')
+
     def get_zpoints(self):
         points = query(GlyphOutline, GlyphParam)
         points = points.filter(GlyphOutline.glyph_id == self.id)
