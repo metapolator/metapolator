@@ -1,4 +1,4 @@
-$def with (master, masters, glyphid, A_glyphjson, B_glyphjson, M_glyphjson, localparametersA, localparametersB, globalparams, pointform, origins)
+$def with (master, masterfontb, masters, glyphid, localparametersA, localparametersB, globalparams, pointform)
 <title>
 Project $master.project.projectname
 </title>
@@ -14,7 +14,7 @@ Project $master.project.projectname
         $if master.id == m.id:
           <option value="" selected="selected">
         $else:
-          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version)/$glyphid/">
+          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
@@ -77,15 +77,15 @@ Project $master.project.projectname
 
     <select name="" id="" onchange="window.location=jQuery(this).val();">
       $for m in masters:
-        $if master.id == m.id:
+        $if masterfontb.id == m.id:
           <option value="" selected="selected">
         $else:
-          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version)/$glyphid/">
+          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(m.version)/$glyphid/">
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
 
-    <canvas id="canvas-b" height="400" width="400"></canvas>
+    <canvas id="canvas-b" width="400" height="400"></canvas>
 
     <div class="canvas-b" style="display: none;">
       <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
@@ -206,9 +206,22 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
 }
 
 
-function resize(x, y, width, height, newwidth, newheight) {
-    nx = newwidth * x / width;
-    ny = newheight * y / height;
+function resize(canvas, x, y, width, height, newwidth, newheight) {
+    var ratio = width / height;
+    var w, h, nx, ny;
+
+      // w = newwidth;
+      // h = w / ratio;
+    if (canvas.width > canvas.height) {
+      w = newwidth;
+      h = w / ratio;
+    } else {
+      h = newheight;
+      w = h * ratio;
+    }
+    console.log(w + '*' + x + '/' + width);
+    nx = w * x / width;
+    ny = h * y / height;
     return {x: nx, y: ny}
 }
 
@@ -225,18 +238,20 @@ function Canvas(canvasid, width, height, source) {
 
   this.tool = new this.paper.Tool();
 
-  this.tool.onMouseDown = this.onMouseDown.bind(this);
-  this.tool.onMouseUp = this.onMouseUp.bind(this);
-  this.tool.onMouseDrag = this.onMouseDrag.bind(this);
+  if (this.source) {
+    this.tool.onMouseDown = this.onMouseDown.bind(this);
+    this.tool.onMouseUp = this.onMouseUp.bind(this);
+    this.tool.onMouseDrag = this.onMouseDrag.bind(this);
+  }
 }
 
 Canvas.prototype.getPoint = function(x, y) {
-  var r = resize(x, y, this.width, this.height, 390 - 100, 390 - 100);
+  var r = resize(this, x, y, this.width, this.height, 390 - 100, 390 - 100);
   return new this.paper.Point(r.x, r.y);
 }
 
 Canvas.prototype.restore_original_coords = function(point) {
-  return resize(point.x, point.y, 390 - 100, 390 - 100, this.width, this.height);
+  return resize(this, point.x, point.y, 390 - 100, 390 - 100, this.width, this.height);
 }
 
 Canvas.prototype.renderGlyph = function(edges) {
@@ -277,7 +292,7 @@ Canvas.prototype.onMouseUp = function(event) {
       var x = event.point.x;
       var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
-      jQuery.post('', {
+      jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version)/$glyphid/save-point/', {
           id: this.currentpath.data.glyphoutline_id,
           x: xycoord.x,
           y: 500 - xycoord.y
@@ -316,7 +331,7 @@ Canvas.prototype.onMouseUp = function(event) {
 
 
 Canvas.prototype.saveParamRequest = function(val, successhandler) {
-  jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version)/$glyphid/save-point/',
+  jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version)/$glyphid/save-param/',
               {name: this.parameterform.find('select').val(),
                value: val,
                id: this.currentpath.data.id})
@@ -377,6 +392,8 @@ Canvas.prototype.showbox = function() {
 };
 
 Canvas.prototype.draw = function() {
+  this.paper.view.viewSize.height = 500;
+  this.paper.view.viewSize.width = 400;
   this.paper.view.draw();
 };
 
@@ -389,33 +406,30 @@ Canvas.prototype.redrawglyph = function(data) {
 
 jQuery(
   function(){
-    var M_EDGE_JSON = $:M_glyphjson;
-    var M_canvas = new Canvas('canvas-m', M_EDGE_JSON.width, M_EDGE_JSON.height);
-    M_canvas.renderGlyph(M_EDGE_JSON.edges);
-    M_canvas.draw();
 
-    var A_EDGE_JSON = $:A_glyphjson;
-    var A_canvas = new Canvas('canvas-a', A_EDGE_JSON.width, A_EDGE_JSON.height, 'a');
-    A_canvas.setZpoints($:origins['a']);
-    A_canvas.renderGlyph(A_EDGE_JSON.edges);
-    A_canvas.showbox();
+    $$.post('', {})
+      .success(function(data){
+        var data = $$.parseJSON(data);
+        var M_canvas = new Canvas('canvas-m', data.glyphs.M.width, data.glyphs.A.height);
+        M_canvas.renderGlyph(data.glyphs.A.edges);
+        M_canvas.draw();
 
-    A_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
+        var A_canvas = new Canvas('canvas-a', data.glyphs.A.width, data.glyphs.A.height, 'a');
+        A_canvas.setZpoints(data.zpoints.A);
+        A_canvas.renderGlyph(data.glyphs.A.edges);
+        A_canvas.showbox();
+        A_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
+        A_canvas.draw();
 
-    A_canvas.draw();
+        var B_canvas = new Canvas('canvas-b', data.glyphs.B.width, data.glyphs.B.height, 'b');
+        B_canvas.setZpoints(data.zpoints.B);
+        B_canvas.renderGlyph(data.glyphs.B.edges);
+        B_canvas.showbox();
+        B_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
+        B_canvas.draw();
 
-    console.log('');
-    console.log('FontB');
-    console.log('');
-    var B_EDGE_JSON = $:B_glyphjson;
-    console.log(B_EDGE_JSON.width + ", " + B_EDGE_JSON.height);
-    var B_canvas = new Canvas('canvas-b', B_EDGE_JSON.width, B_EDGE_JSON.height, 'b');
-    B_canvas.setZpoints($:origins['b']);
-    B_canvas.renderGlyph(B_EDGE_JSON.edges);
-    B_canvas.showbox();
-    B_canvas.draw();
-
-    B_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
+      })
+      .fail(function(){alert('Bad response');})
   }
 );
 </script>

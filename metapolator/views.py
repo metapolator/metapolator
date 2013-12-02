@@ -107,7 +107,7 @@ class SettingsRestCreate(app.page):
 
 class SavePointParam(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/save-point/'
+    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/save-param/'
 
     def POST(self, name, version, glyphid):
         if not is_loggedin():
@@ -330,9 +330,9 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
 
 class ViewVersion(app.page):
 
-    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/'
+    path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/'
 
-    def GET(self, name, version, glyphid):
+    def GET(self, name, version, versionfontb, glyphid):
         """ View single post """
         if not is_loggedin():
             raise seeother('/login')
@@ -350,31 +350,74 @@ class ViewVersion(app.page):
                                           glyphname=glyphid):
             return web.notfound()
 
-        instancelog = master.project.get_instancelog(master.version, 'a')
-        A_glyphjson = get_edges_json(instancelog, glyphid)
+        masterfontb = models.Project.get_master(projectname=name, version=versionfontb)
+        if not masterfontb:
+            return web.notfound()
 
-        instancelog = master.project.get_instancelog(master.version, 'b')
-        B_glyphjson = get_edges_json(instancelog, glyphid)
-
-        instancelog = master.project.get_instancelog(master.version)
-        M_glyphjson = get_edges_json(instancelog, glyphid)
+        if not models.GlyphOutline.exists(master_id=masterfontb.id,
+                                          glyphname=glyphid):
+            return web.notfound()
 
         localparametersA = models.LocalParam.get(id=master.idlocala)
-        localparametersB = models.LocalParam.get(id=master.idlocalb)
+        localparametersB = models.LocalParam.get(id=masterfontb.idlocalb)
         globalparams = models.GlobalParam.get(id=master.idglobal)
-
-        a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
-        b_original_glyphjson = get_edges_json_from_db(master, glyphid, 'B')
 
         pointform = ParamForm()
 
         masters = models.Master.filter(project_id=master.project_id)
 
-        return render.view(master, masters, glyphid, A_glyphjson, B_glyphjson,
-                           M_glyphjson, localparametersA, localparametersB,
-                           globalparams, pointform,
-                           origins={'a': simplejson.dumps(a_original_glyphjson),
-                                    'b': simplejson.dumps(b_original_glyphjson)})
+        return render.view(master, masterfontb, masters, glyphid,
+                           localparametersA, localparametersB,
+                           globalparams, pointform)
+
+    def POST(self, name, version, versionfontb, glyphid):
+        if not is_loggedin():
+            return web.notfound()
+
+        try:
+            version = int(version)
+        except TypeError:
+            return web.notfound()
+
+        master = models.Project.get_master(projectname=name, version=version)
+        if not master:
+            return web.notfound()
+
+        if not models.GlyphOutline.exists(master_id=master.id,
+                                          glyphname=glyphid):
+            return web.notfound()
+
+        masterfontb = models.Project.get_master(projectname=name,
+                                                version=versionfontb)
+        if not masterfontb:
+            return web.notfound()
+
+        if not models.GlyphOutline.exists(master_id=masterfontb.id,
+                                          glyphname=glyphid):
+            return web.notfound()
+
+        instancelog = master.project.get_instancelog(master.version, 'a')
+        A_glyphjson = get_edges_json(instancelog, glyphid)
+
+        instancelog = master.project.get_instancelog(masterfontb.version, 'b')
+        B_glyphjson = get_edges_json(instancelog, glyphid)
+
+        instancelog = master.project.get_instancelog(master.version)
+        M_glyphjson = get_edges_json(instancelog, glyphid)
+
+        a_original_glyphjson = get_edges_json_from_db(master, glyphid, 'A')
+        b_original_glyphjson = get_edges_json_from_db(masterfontb, glyphid, 'B')
+
+        return simplejson.dumps({'zpoints': {'A': a_original_glyphjson,
+                                             'B': b_original_glyphjson},
+                                 'glyphs': {'M': M_glyphjson,
+                                            'A': A_glyphjson,
+                                            'B': B_glyphjson}})
+
+
+class SavePoint(app.page):
+
+    path = '/view/([-.\w\d]+)/(\d{3,})/(\d+)/save-point/'
 
     def POST(self, name, version, glyphid):
         if not is_loggedin():
@@ -431,7 +474,7 @@ class View(app.page):
         if not is_loggedin():
             raise seeother('/login')
 
-        master = models.Project.get_master(projectname=name, version=1)
+        master = models.Project.get_master(projectname=name)
         if not master:
             return web.notfound()
 
@@ -439,8 +482,8 @@ class View(app.page):
                                           glyphname=glyphid):
             return web.notfound()
 
-        return web.seeother('/view/{0}/{1:03d}/{2}/'.format(name, master.version,
-                                                            glyphid))
+        return web.seeother('/view/{0}/{1:03d},{1:03d}/{2}/'.format(name, master.version,
+                                                                    glyphid))
 
 
 class CreateMasterVersion(app.page):
