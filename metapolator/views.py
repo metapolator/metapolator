@@ -583,7 +583,8 @@ def execute_metapost_for_all_glyphs(master):
         xmltomf.xmltomf1(master, glyph, glyphB)
     writeGlyphlist(master)
     makefont(working_dir(), master)
-    print '===== %s' % master.version, time.time() - starttime
+    print '== makefont.sh complete === %s: %s' % (master.version,
+                                                  time.time() - starttime)
 
 
 class Specimen(app.page):
