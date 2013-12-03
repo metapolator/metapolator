@@ -1,0 +1,1735 @@
+
+<HTML>
+    <HEAD>
+        <TITLE> CloneDigger Report </TITLE>
+        <script type="text/javascript">
+        function unhide(divID) {
+            var item = document.getElementById(divID);
+            if (item) {
+                item.className=(item.className=='hidden')?'unhidden':'hidden';
+            }
+        }
+</script>
+
+<style type="text/css">
+.hidden { display: none; }
+.unhidden { display: block; }
+.preformatted {
+        border: 1px dashed #3c78b5;
+    font-size: 11px;
+        font-family: Courier;
+    margin: 10px;
+        line-height: 13px;
+}
+.preformattedHeader {
+    background-color: #f0f0f0;
+        border-bottom: 1px dashed #3c78b5;
+    padding: 3px;
+        text-align: center;
+}
+.preformattedContent {
+    background-color: #f0f0f0;
+    padding: 3px;
+}
+<!--
+<div class="preformatted"><div class="preformattedContent">
+<pre>Clone Digger
+</pre>
+</div></div>
+-->
+
+</style>
+
+    </HEAD>
+    <BODY>
+    
+    
+    <P>Source files: 1</P>
+        <a href = "javascript:unhide('files');">Click here to show/hide file names</a><div id="files" class="hidden"><P><B>Source files:</B><BR>metapolator/views.py</P></div>
+        <P>Clones detected: 50</P>
+        <P>308 of 736 lines are duplicates (41.85%) </P>
+<P>
+<B>Parameters<BR> </B>
+clustering_threshold = 10<BR>
+distance_threshold = 5<BR>
+size_threshold = 5<BR>
+hashing_depth = 1<BR>
+clusterize_using_hash = False<BR>
+clusterize_using_dcup = False<BR>
+</P> 
+        
+    <B>Time elapsed</B><BR>Construction of AST : 0.20 seconds<BR>
+Building statement hash : 0.00 seconds<BR>
+Building patterns : 0.78 seconds<BR>
+Marking similar statements : 1.04 seconds<BR>
+Finding similar sequences of statements : 0.10 seconds<BR>
+Refining candidates : 0.52 seconds<BR>
+ Total time: 2.64<BR>
+ Started at: Mon Dec  2 17:04:17 2013<BR>
+ Finished at: Mon Dec  2 17:04:19 2013
+    <P><B>Clone # 1</B><BR>Distance between two fragments = 2 <BR>Clone size = 28<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 537</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 178</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">writeGlobalParam</span>(master, <span style="color: rgb(255, 0, 0);">masterfontb</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">writeGlyphlist</span>(master, <span style="color: rgb(255, 0, 0);">glyphid</span>)</TD>
+</TR>
+<TR>
+<TD>
+makefont_single(master)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+makefont_single(master)</TD>
+</TR>
+<TR>
+<TD>
+instancelog = master.project.get_instancelog(master.version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+instancelog = master.project.get_instancelog(master.version)</TD>
+</TR>
+<TR>
+<TD>
+M_glyphjson = get_edges_json(instancelog, glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+M_glyphjson = get_edges_json(instancelog, glyphid)</TD>
+</TR>
+<TR>
+<TD>
+if glyphoutline.fontsource == 'A':<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;instancelog = master.project.get_instancelog(master.version, 'a')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(master, glyphA)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;writeGlyphlist(master, glyphid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;makefont_single(master, cell='A')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;zpoints = get_edges_json_from_db(master, glyphid, ab_source=glyphoutline.fontsource)<BR>
+else:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;instancelog = masterfontb.project.get_instancelog(masterfontb.version, 'b')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(masterfontb, glyphB)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;writeGlyphlist(masterfontb, glyphid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;makefont_single(masterfontb, cell='B')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;zpoints = get_edges_json_from_db(masterfontb, glyphid, ab_source=glyphoutline.fontsource)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if glyphoutline.fontsource == 'A':<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;instancelog = master.project.get_instancelog(master.version, 'a')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(master, glyphA)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;writeGlyphlist(master, glyphid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;makefont_single(master, cell='A')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;zpoints = get_edges_json_from_db(master, glyphid, ab_source=glyphoutline.fontsource)<BR>
+else:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;instancelog = masterfontb.project.get_instancelog(masterfontb.version, 'b')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(masterfontb, glyphB)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;writeGlyphlist(masterfontb, glyphid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;makefont_single(masterfontb, cell='B')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;zpoints = get_edges_json_from_db(masterfontb, glyphid, ab_source=glyphoutline.fontsource)</TD>
+</TR>
+<TR>
+<TD>
+glyphjson = get_edges_json(instancelog, glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+glyphjson = get_edges_json(instancelog, glyphid)</TD>
+</TR>
+<TR>
+<TD>
+result = {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+result = {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}</TD>
+</TR>
+<TR>
+<TD>
+for glyphA in models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+for glyphA in models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+</TR>
+<TR>
+<TD>
+writeGlyphlist(master)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+writeGlyphlist(master)</TD>
+</TR>
+<TR>
+<TD>
+writeGlobalParam(master, masterfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+writeGlobalParam(master, masterfontb)</TD>
+</TR>
+<TR>
+<TD>
+makefont_single(master)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+makefont_single(master)</TD>
+</TR>
+<TR>
+<TD>
+return simplejson.dumps(result)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+return simplejson.dumps(result)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 2</B><BR>Distance between two fragments = 0 <BR>Clone size = 14<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 277</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 140</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 3</B><BR>Distance between two fragments = 0 <BR>Clone size = 14<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 231</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 98</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 4</B><BR>Distance between two fragments = 0 <BR>Clone size = 14<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 231</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 277</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 5</B><BR>Distance between two fragments = 0 <BR>Clone size = 14<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 231</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 140</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 6</B><BR>Distance between two fragments = 0 <BR>Clone size = 14<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 98</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 277</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 7</B><BR>Distance between two fragments = 0 <BR>Clone size = 14<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 98</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 140</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 8</B><BR>Distance between two fragments = 0 <BR>Clone size = 14<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 441</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 502</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 9</B><BR>Distance between two fragments = 2 <BR>Clone size = 13<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 687</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 695</TD></TR><TR>
+<TD>
+for glyph in <span style="color: rgb(255, 0, 0);">master</span>.get_glyphs('a'):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, fontsource='B', name=glyph.name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);">master</span>, glyph, glyphB)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+for glyph in <span style="color: rgb(255, 0, 0);">sourcemaster</span>.get_glyphs('a'):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=<span style="color: rgb(255, 0, 0);">sourcemaster</span>.id, fontsource='B', name=glyph.name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);">sourcemaster</span>, glyph, glyphB)</TD>
+</TR>
+<TR>
+<TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);">master</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);">sourcemaster</span>)</TD>
+</TR>
+<TR>
+<TD>
+makefont(working_dir(), <span style="color: rgb(255, 0, 0);">master</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+makefont(working_dir(), <span style="color: rgb(255, 0, 0);">sourcemaster</span>)</TD>
+</TR>
+<TR>
+<TD>
+writeGlobalParam(<span style="color: rgb(255, 0, 0);">sourcemaster</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+writeGlobalParam(<span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>)</TD>
+</TR>
+<TR>
+<TD>
+for glyph in <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span>.get_glyphs('a'):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span>.id, fontsource='B', name=glyph.name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span>, glyph, glyphB)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+for glyph in <span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>.get_glyphs('a'):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=<span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>.id, fontsource='B', name=glyph.name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>, glyph, glyphB)</TD>
+</TR>
+<TR>
+<TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>)</TD>
+</TR>
+<TR>
+<TD>
+makefont(working_dir(), <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+makefont(working_dir(), <span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 10</B><BR>Distance between two fragments = 3 <BR>Clone size = 13<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 143</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 505</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">x</span> = web.input(<span style="color: rgb(255, 0, 0);">name</span>='', <span style="color: rgb(255, 0, 0);">value</span>='', <span style="color: rgb(255, 0, 0);">id</span>='')</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">x</span> = web.input(<span style="color: rgb(255, 0, 0);">id</span>='', <span style="color: rgb(255, 0, 0);">x</span>='', <span style="color: rgb(255, 0, 0);">y</span>='')</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 11</B><BR>Distance between two fragments = 0 <BR>Clone size = 12<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 280</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 505</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 12</B><BR>Distance between two fragments = 0 <BR>Clone size = 12<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 234</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 444</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 13</B><BR>Distance between two fragments = 0 <BR>Clone size = 12<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 234</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 505</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 14</B><BR>Distance between two fragments = 0 <BR>Clone size = 12<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 101</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 444</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 15</B><BR>Distance between two fragments = 0 <BR>Clone size = 12<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 101</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 505</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 16</B><BR>Distance between two fragments = 0 <BR>Clone size = 12<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 444</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 280</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 17</B><BR>Distance between two fragments = 0 <BR>Clone size = 12<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 444</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 143</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;versionfontb = int(versionfontb)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+master = models.Project.get_master(projectname=name, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+masterfontb = models.Project.get_master(projectname=name, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not masterfontb:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 18</B><BR>Distance between two fragments = 0 <BR>Clone size = 9<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 172</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 475</TD></TR><TR>
+<TD>
+glyphA = models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+glyphA = models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid)</TD>
+</TR>
+<TR>
+<TD>
+glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)</TD>
+</TR>
+<TR>
+<TD>
+xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">writeGlyphlist</span>(master, <span style="color: rgb(255, 0, 0);">glyphid</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+writeGlyphlist(master, glyphid)</TD>
+</TR>
+<TR>
+<TD>
+makefont_single(master)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+makefont_single(master)</TD>
+</TR>
+<TR>
+<TD>
+instancelog = master.project.get_instancelog(master.version)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+instancelog = master.project.get_instancelog(master.version)</TD>
+</TR>
+<TR>
+<TD>
+M_glyphjson = get_edges_json(instancelog, glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+M_glyphjson = get_edges_json(instancelog, glyphid)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 19</B><BR>Distance between two fragments = 3 <BR>Clone size = 8<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 240</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 614</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">master</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">sourcemaster</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">projectname</span>, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">sourcemaster</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">sourcemasterfontb</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">projectname</span>, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 20</B><BR>Distance between two fragments = 3 <BR>Clone size = 8<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 614</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 107</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span>, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">master</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span>, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 21</B><BR>Distance between two fragments = 3 <BR>Clone size = 8<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 614</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 450</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span>, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">master</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span>, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 22</B><BR>Distance between two fragments = 3 <BR>Clone size = 8<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 614</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 511</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span>, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">master</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span>, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 23</B><BR>Distance between two fragments = 3 <BR>Clone size = 8<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 614</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 286</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span>, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">master</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span>, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 24</B><BR>Distance between two fragments = 3 <BR>Clone size = 8<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 614</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 149</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span></span>, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">master</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span></span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span></span>, version=versionfontb)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=versionfontb)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span></span></span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 25</B><BR>Distance between two fragments = 3 <BR>Clone size = 8<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 609</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 406</TD></TR><TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);">versionfontb</span> = int(<span style="color: rgb(255, 0, 0);">versionfontb</span>)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);">version</span> = int(<span style="color: rgb(255, 0, 0);">version</span>)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span></span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span></span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projectname</span></span></span></span></span></span></span>, version=version)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">master</span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, version=version)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemaster</span></span></span></span></span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 26</B><BR>Distance between two fragments = 3 <BR>Clone size = 7<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 663</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 648</TD></TR><TR>
+<TD>
+glyphoutline = models.GlyphOutline.create(glyph_id=<span style="color: rgb(255, 0, 0);">newglyphb</span>.id, master_id=master.id, glyphname=<span style="color: rgb(255, 0, 0);">newglyphb</span>.name, fontsource=<span style="color: rgb(255, 0, 0);">'B'</span>, pointnr=(i) + (1), x=int(float(point['x'])), y=int(float(point['y'])))</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+glyphoutline = models.GlyphOutline.create(glyph_id=<span style="color: rgb(255, 0, 0);">newglypha</span>.id, master_id=master.id, glyphname=<span style="color: rgb(255, 0, 0);">newglypha</span>.name, fontsource=<span style="color: rgb(255, 0, 0);">newglypha.fontsource</span>, pointnr=(i) + (1), x=int(float(point['x'])), y=int(float(point['y'])))</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 27</B><BR>Distance between two fragments = 4 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 551</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 544</TD></TR><TR>
+<TD>
+instancelog = <span style="color: rgb(255, 0, 0);">masterfontb</span>.project.get_instancelog(<span style="color: rgb(255, 0, 0);">masterfontb</span>.version, <span style="color: rgb(255, 0, 0);">'b'</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+instancelog = <span style="color: rgb(255, 0, 0);">master</span>.project.get_instancelog(<span style="color: rgb(255, 0, 0);">master</span>.version, <span style="color: rgb(255, 0, 0);">'a'</span>)</TD>
+</TR>
+<TR>
+<TD>
+xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);">masterfontb</span>, <span style="color: rgb(255, 0, 0);">glyphB</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);">master</span>, <span style="color: rgb(255, 0, 0);">glyphA</span>)</TD>
+</TR>
+<TR>
+<TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);">masterfontb</span>, glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);">master</span>, glyphid)</TD>
+</TR>
+<TR>
+<TD>
+makefont_single(<span style="color: rgb(255, 0, 0);">masterfontb</span>, cell=<span style="color: rgb(255, 0, 0);">'B'</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+makefont_single(<span style="color: rgb(255, 0, 0);">master</span>, cell=<span style="color: rgb(255, 0, 0);">'A'</span>)</TD>
+</TR>
+<TR>
+<TD>
+zpoints = get_edges_json_from_db(<span style="color: rgb(255, 0, 0);">masterfontb</span>, glyphid, ab_source=glyphoutline.fontsource)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+zpoints = get_edges_json_from_db(<span style="color: rgb(255, 0, 0);">master</span>, glyphid, ab_source=glyphoutline.fontsource)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 28</B><BR>Distance between two fragments = 4 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 192</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 185</TD></TR><TR>
+<TD>
+instancelog = <span style="color: rgb(255, 0, 0);">masterfontb</span>.project.get_instancelog(<span style="color: rgb(255, 0, 0);">masterfontb</span>.version, <span style="color: rgb(255, 0, 0);">'b'</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+instancelog = <span style="color: rgb(255, 0, 0);">master</span>.project.get_instancelog(<span style="color: rgb(255, 0, 0);">master</span>.version, <span style="color: rgb(255, 0, 0);">'a'</span>)</TD>
+</TR>
+<TR>
+<TD>
+xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);">masterfontb</span>, <span style="color: rgb(255, 0, 0);">glyphB</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);">master</span>, <span style="color: rgb(255, 0, 0);">glyphA</span>)</TD>
+</TR>
+<TR>
+<TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);">masterfontb</span>, glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);">master</span>, glyphid)</TD>
+</TR>
+<TR>
+<TD>
+makefont_single(<span style="color: rgb(255, 0, 0);">masterfontb</span>, cell=<span style="color: rgb(255, 0, 0);">'B'</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+makefont_single(<span style="color: rgb(255, 0, 0);">master</span>, cell=<span style="color: rgb(255, 0, 0);">'A'</span>)</TD>
+</TR>
+<TR>
+<TD>
+zpoints = get_edges_json_from_db(<span style="color: rgb(255, 0, 0);">masterfontb</span>, glyphid, ab_source=glyphoutline.fontsource)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+zpoints = get_edges_json_from_db(<span style="color: rgb(255, 0, 0);">master</span>, glyphid, ab_source=glyphoutline.fontsource)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 29</B><BR>Distance between two fragments = 1 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 687</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 703</TD></TR><TR>
+<TD>
+for glyph in <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span>.get_glyphs('a'):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span>.id, fontsource='B', name=glyph.name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span>, glyph, glyphB)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+for glyph in <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span>.get_glyphs('a'):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;glyphB = models.Glyph.get(master_id=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span>.id, fontsource='B', name=glyph.name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;xmltomf.xmltomf1(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span>, glyph, glyphB)</TD>
+</TR>
+<TR>
+<TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+writeGlyphlist(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span>)</TD>
+</TR>
+<TR>
+<TD>
+makefont(working_dir(), <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+makefont(working_dir(), <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">sourcemasterfontb</span></span>)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 30</B><BR>Distance between two fragments = 2 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 411</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 419</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, <span style="color: rgb(255, 0, 0);">version</span>=<span style="color: rgb(255, 0, 0);">version</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(projectname=name, <span style="color: rgb(255, 0, 0);">version</span>=<span style="color: rgb(255, 0, 0);">versionfontb</span>)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">masterfontb</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 31</B><BR>Distance between two fragments = 2 <BR>Clone size = 7<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 411</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 454</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">version</span></span>=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">version</span></span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, <span style="color: rgb(255, 0, 0);">version</span>=<span style="color: rgb(255, 0, 0);">versionfontb</span>)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not models.GlyphOutline.exists(master_id=master.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 32</B><BR>Distance between two fragments = 1 <BR>Clone size = 7<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 419</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 454</TD></TR><TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">masterfontb</span> = models.Project.get_master(projectname=name, <span style="color: rgb(255, 0, 0);">version</span>=<span style="color: rgb(255, 0, 0);">versionfontb</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span> = models.Project.get_master(<span style="color: rgb(255, 0, 0);">projectname</span>=<span style="color: rgb(255, 0, 0);">name</span>, <span style="color: rgb(255, 0, 0);">version</span>=<span style="color: rgb(255, 0, 0);">versionfontb</span>)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);">masterfontb</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 33</B><BR>Distance between two fragments = 0 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 403</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 601</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);">version</span> = int(<span style="color: rgb(255, 0, 0);">version</span>)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+try:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;version = int(version)<BR>
+except TypeError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 34</B><BR>Distance between two fragments = 0 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 792</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 778</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+gm = models.GlobalParam.get(id=id)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+gm = models.GlobalParam.get(id=id)</TD>
+</TR>
+<TR>
+<TD>
+if not gm:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not gm:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+formg = GlobalParamForm()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+formg = GlobalParamForm()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 35</B><BR>Distance between two fragments = 4 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 814</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 757</TD></TR><TR>
+<TD>
+path = <span style="color: rgb(255, 0, 0);">'/settings/locals/'</span></TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+path = <span style="color: rgb(255, 0, 0);">'/settings/globals/'</span></TD>
+</TR>
+<TR>
+<TD>
+def GET(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);">localparams</span> = models.<span style="color: rgb(255, 0, 0);">LocalParam</span>.all()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return render.<span style="color: rgb(255, 0, 0);">locals</span>(<span style="color: rgb(255, 0, 0);">localparams</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+def GET(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);">gml</span> = models.<span style="color: rgb(255, 0, 0);">GlobalParam</span>.all()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return render.<span style="color: rgb(255, 0, 0);">globals</span>(<span style="color: rgb(255, 0, 0);">gml</span>)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 36</B><BR>Distance between two fragments = 4 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 732</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 814</TD></TR><TR>
+<TD>
+path = <span style="color: rgb(255, 0, 0);">'/fonts/'</span></TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+path = <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">'/settings/locals/'</span></span></TD>
+</TR>
+<TR>
+<TD>
+def GET(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);">projects</span> = models.<span style="color: rgb(255, 0, 0);">Master</span>.all()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return render.<span style="color: rgb(255, 0, 0);">font1</span>(<span style="color: rgb(255, 0, 0);">projects</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+def GET(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparams</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">LocalParam</span></span>.all()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return render.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">locals</span></span>(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparams</span></span>)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 37</B><BR>Distance between two fragments = 4 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 732</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 757</TD></TR><TR>
+<TD>
+path = <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">'/fonts/'</span></span></TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+path = <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">'/settings/globals/'</span></span></TD>
+</TR>
+<TR>
+<TD>
+def GET(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projects</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">Master</span></span>.all()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return render.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">font1</span></span>(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">projects</span></span>)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+def GET(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">gml</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">GlobalParam</span></span>.all()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return render.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">globals</span></span>(<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">gml</span></span>)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 38</B><BR>Distance between two fragments = 3 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 670</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 656</TD></TR><TR>
+<TD>
+models.GlyphParam.create(glyphoutline_id=glyphoutline.id, glyph_id=<span style="color: rgb(255, 0, 0);">newglyphb</span>.id, fontsource=<span style="color: rgb(255, 0, 0);">'B'</span>, master_id=<span style="color: rgb(255, 0, 0);">newglyphb</span>.master_id, pointname=zpoints[i].pointname, startp=zpoints[i].startp)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+models.GlyphParam.create(glyphoutline_id=glyphoutline.id, glyph_id=<span style="color: rgb(255, 0, 0);">newglypha</span>.id, fontsource=<span style="color: rgb(255, 0, 0);">newglypha.fontsource</span>, master_id=<span style="color: rgb(255, 0, 0);">newglypha</span>.master_id, pointname=zpoints[i].pointname, startp=zpoints[i].startp)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 39</B><BR>Distance between two fragments = 0 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 475</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 529</TD></TR><TR>
+<TD>
+glyphA = models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+glyphA = models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid)</TD>
+</TR>
+<TR>
+<TD>
+glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)</TD>
+</TR>
+<TR>
+<TD>
+xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+</TR>
+<TR>
+<TD>
+writeGlyphlist(master, glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+writeGlyphlist(master, glyphid)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 40</B><BR>Distance between two fragments = 0 <BR>Clone size = 6<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 172</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 529</TD></TR><TR>
+<TD>
+glyphA = models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+glyphA = models.Glyph.get(master_id=master.id, fontsource='A', name=glyphid)</TD>
+</TR>
+<TR>
+<TD>
+glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+glyphB = models.Glyph.get(master_id=masterfontb.id, fontsource='B', name=glyphid)</TD>
+</TR>
+<TR>
+<TD>
+xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+xmltomf.xmltomf1(master, glyphA, glyphB)</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">writeGlyphlist</span>(master, <span style="color: rgb(255, 0, 0);">glyphid</span>)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+writeGlyphlist(master, glyphid)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 41</B><BR>Distance between two fragments = 2 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 792</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 855</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">gm</span> = models.<span style="color: rgb(255, 0, 0);">GlobalParam</span>.get(id=id)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">localparam</span> = models.<span style="color: rgb(255, 0, 0);">LocalParam</span>.get(id=id)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);">gm</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">localparam</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 42</B><BR>Distance between two fragments = 2 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 778</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 855</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">gm</span> = models.<span style="color: rgb(255, 0, 0);">GlobalParam</span>.get(id=id)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparam</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">LocalParam</span></span>.get(id=id)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);">gm</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparam</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 43</B><BR>Distance between two fragments = 0 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 855</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 842</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparam</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">LocalParam</span></span>.get(id=id)</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+localparam = models.LocalParam.get(id=id)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparam</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not localparam:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 44</B><BR>Distance between two fragments = 2 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 792</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 842</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">gm</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">GlobalParam</span></span>.get(id=id)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">localparam</span> = models.<span style="color: rgb(255, 0, 0);">LocalParam</span>.get(id=id)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">gm</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);">localparam</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 45</B><BR>Distance between two fragments = 2 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 778</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 842</TD></TR><TR>
+<TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not is_loggedin():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;raise seeother('/login')</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">gm</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">GlobalParam</span></span>.get(id=id)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparam</span></span> = models.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">LocalParam</span></span>.get(id=id)</TD>
+</TR>
+<TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">gm</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">localparam</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 46</B><BR>Distance between two fragments = 0 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 412</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 585</TD></TR><TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not master:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not models.GlyphOutline.exists(master_id=master.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 47</B><BR>Distance between two fragments = 1 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 585</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 420</TD></TR><TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);">master</span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span></span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 48</B><BR>Distance between two fragments = 1 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 585</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 456</TD></TR><TR>
+<TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">master</span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+if not <span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">masterfontb</span></span></span>:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+<TR>
+<TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+if not models.GlyphOutline.exists(master_id=<span style="color: rgb(255, 0, 0);">master</span>.id, glyphname=glyphid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;return web.notfound()</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 49</B><BR>Distance between two fragments = 1 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 318</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 865</TD></TR><TR>
+<TD>
+values = form.d</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+values = form.d</TD>
+</TR>
+<TR>
+<TD>
+values['ab_source']</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+values['ab_source']</TD>
+</TR>
+<TR>
+<TD>
+values['save']</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+values['save']</TD>
+</TR>
+<TR>
+<TD>
+values['idlocal']</TD>
+<TD style="width: 10px;" BGCOLOR=AQUA> </TD><TD>
+values['idlocal']</TD>
+</TR>
+<TR>
+<TD>
+models.LocalParam.update(<span style="color: rgb(255, 0, 0);">id</span>=<span style="color: rgb(255, 0, 0);">idlocal</span>, values=values)</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+models.LocalParam.update(<span style="color: rgb(255, 0, 0);">id</span>=<span style="color: rgb(255, 0, 0);">id</span>, values=values)</TD>
+</TR>
+</TABLE> </P> <HR><BR>
+<P><B>Clone # 50</B><BR>Distance between two fragments = 4 <BR>Clone size = 5<TABLE NOWRAP WIDTH=100% BORDER=1><TD>Source file "metapolator/views.py"<BR>The first line is 678</TD><TD></TD><TD>Source file "metapolator/views.py"<BR>The first line is 679</TD></TR><TR>
+<TD>
+sourcemaster.<span style="color: rgb(255, 0, 0);">idlocala</span> = None</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+sourcemaster.<span style="color: rgb(255, 0, 0);">idlocalb</span> = None</TD>
+</TR>
+<TR>
+<TD>
+sourcemaster.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">idlocalb</span></span> = None</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+sourcemaster.<span style="color: rgb(255, 0, 0);">idglobal</span> = None</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">sourcemaster</span>.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">idglobal</span></span> = None</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+<span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>.<span style="color: rgb(255, 0, 0);">idlocala</span> = None</TD>
+</TR>
+<TR>
+<TD>
+<span style="color: rgb(255, 0, 0);">sourcemasterfontb</span>.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">idlocala</span></span> = None</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+sourcemasterfontb.<span style="color: rgb(255, 0, 0);">idlocalb</span> = None</TD>
+</TR>
+<TR>
+<TD>
+sourcemasterfontb.<span style="color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);">idlocalb</span></span> = None</TD>
+<TD style="width: 10px;" BGCOLOR=RED> </TD><TD>
+sourcemasterfontb.<span style="color: rgb(255, 0, 0);">idglobal</span> = None</TD>
+</TR>
+</TABLE> </P> <HR>
+    
+    
+    <HR>
+    Clone Digger is aimed to find software clones in Python and Java programs. It is provided under the GPL license and can be downloaded from the site <a href="http://clonedigger.sourceforge.net">http://clonedigger.sourceforge.net</a>
+    </BODY>
+</HTML>

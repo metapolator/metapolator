@@ -3,7 +3,9 @@ $def with (master, masterfontb, masters, glyphid, localparametersA, localparamet
 Project $master.project.projectname
 </title>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
+<script src="/static/js/bootstrap-slider.js"></script>
 
 <div class="row">
   <div class="col-md-4">
@@ -69,6 +71,30 @@ Project $master.project.projectname
           des: $globalparams.des<br />
           box: $globalparams.box
         </div>
+    </div>
+
+    <div style="margin-bottom: 16px;" class="row">
+       <div class="col-md-2" style="text-align: center; font-size: 21pt;">A</div>
+       <div class="col-md-8" style="text-align: center; padding-top: 8pt;">
+        <input class="slider1" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.1" data-slider-value="$:(globalparams and globalparams.metapolation or 0)" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="square">
+      </div>
+      <div class="col-md-2" style="text-align: center; font-size: 21pt;">B</div>
+    </div>
+
+    <div style="margin-bottom: 16px;" class="row">
+       <div class="col-md-2" style="text-align: center; font-size: 21pt;">C</div>
+       <div class="col-md-8" style="text-align: center; padding-top: 8pt;">
+        <input class="slider1" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.1" data-slider-value="$:(globalparams and globalparams.metapolation or 0)" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide" data-slider-handle="square">
+      </div>
+      <div class="col-md-2" style="text-align: center; font-size: 21pt;">D</div>
+    </div>
+
+    <div style="margin-bottom: 16px;" class="row">
+       <div class="col-md-2" style="text-align: center; font-size: 21pt;">A</div>
+       <div class="col-md-8" style="text-align: center; padding-top: 8pt;">
+        <input class="slider1" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.1" data-slider-value="$:(globalparams and globalparams.metapolation or 0)" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide" data-slider-handle="square">
+      </div>
+      <div class="col-md-2" style="text-align: center; font-size: 21pt;">E</div>
     </div>
   </div>
 
@@ -430,6 +456,10 @@ jQuery(
 
       })
       .fail(function(){alert('Bad response');})
+
+    $$('.slider1').slider();
+    $$('.slider2').slider();
+    $$('.slider3').slider();
   }
 );
 </script>
