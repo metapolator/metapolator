@@ -343,7 +343,7 @@ Canvas.prototype.onMouseUp = function(event) {
       this.parameterform.show();
       this.parameterform.find('select').off('change').on('change', function(event){
         var val = jQuery(event.target).val();
-        this.parameterform.find('input[type=text]').val(this.currentpath.zpoint.data[val]);
+        this.parameterform.find('input[type=text]').val(this.currentpath.data[val]);
       }.bind(this));
 
       this.parameterform.find('button').off('click').on('click', function(e){
