@@ -530,8 +530,16 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                                       version=(version + 1))
         prepare_master_environment(master)
 
+        writeGlobalParam(self.get_lft_master())
+        execute_metapost_for_all_glyphs(self.get_lft_master(),
+                                        self.get_rgt_master())
+
         logpath = project.get_instancelog(version=self.get_lft_master().version)
         for glyph in self.get_lft_master().get_glyphs('a'):
+            json = get_edges_json(logpath, glyph.name)
+            if not json['edges']:
+                continue
+
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
                                             unicode=glyph.unicode)
@@ -541,16 +549,15 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
 
             zpoints = glyph.get_zpoints()
 
-            json = get_edges_json(logpath, glyph.name)
             i = 0
             for contourpoints in json['edges'][0]['contours']:
                 for point in contourpoints:
-                    self.create_glyphoutline(newglypha, (i + 1),
-                                             zpoints[i].pointname,
-                                             zpoints[i].startp, point)
-                    self.create_glyphoutline(newglyphb, (i + 1),
-                                             zpoints[i].pointname,
-                                             zpoints[i].startp, point)
+                    self.create_glyphpoint(newglypha, (i + 1),
+                                           zpoints[i].pointname,
+                                           zpoints[i].startp, point)
+                    self.create_glyphpoint(newglyphb, (i + 1),
+                                           zpoints[i].pointname,
+                                           zpoints[i].startp, point)
                     i += 1
 
         self.get_lft_master().idlocala = None
@@ -562,23 +569,23 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
         self.get_rgt_master().idglobal = None
         web.ctx.orm.commit()
 
-        self.execute_metapost_for_all_glyphs(master)
+        execute_metapost_for_all_glyphs(master)
 
         writeGlobalParam(self.get_lft_master())
-        self.execute_metapost_for_all_glyphs(self.get_lft_master())
+        execute_metapost_for_all_glyphs(self.get_lft_master())
 
         writeGlobalParam(self.get_rgt_master())
-        self.execute_metapost_for_all_glyphs(self.get_rgt_master())
+        execute_metapost_for_all_glyphs(self.get_rgt_master())
 
         return web.seeother('/fonts/{0}/'.format(master.id))
 
 
-def execute_metapost_for_all_glyphs(master):
+def execute_metapost_for_all_glyphs(master, rgt_master=None):
     import time
 
     starttime = time.time()
     for glyph in master.get_glyphs('a'):
-        glyphB = models.Glyph.get(master_id=master.id, fontsource='B',
+        glyphB = models.Glyph.get(master_id=(rgt_master and rgt_master or master).id, fontsource='B',
                                   name=glyph.name)
         xmltomf.xmltomf1(master, glyph, glyphB)
     writeGlyphlist(master)
