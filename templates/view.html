@@ -3,6 +3,11 @@ $def with (master, masterfontb, masters, glyphid, localparametersA, localparamet
 Project $master.project.projectname
 </title>
 <style>
+  form.extended {
+    position: absolute;
+    background-color: #ccc;
+  }
+
   form.extended * {
     font-size: 8pt;
   }
@@ -13,12 +18,7 @@ Project $master.project.projectname
 <script src="/static/js/bootstrap-slider.js"></script>
 
 <div class="row">
-  <div class="col-md-1">
-    <form action="" method="post" class="extended">
-        $:webctx.pointparam_extended_form.render()
-      </form>
-  </div>
-  <div class="col-md-3" style="position: relative;">
+  <div class="col-md-4" style="position: relative;">
     <h4 class="pull-right">Font A</h4>
     
     <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-left">
@@ -30,6 +30,14 @@ Project $master.project.projectname
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
+
+    <div style="clear: both;" class="extended-form">
+      <button class="extended">show point form</button>
+      <form action="" method="post" class="extended hide">
+          $:webctx.pointparam_extended_form.render()
+      </form>
+    </div>
+
     <canvas id="canvas-a" width="400" height="400"></canvas>
     
     <div class="canvas-a" style="display: none;">
@@ -57,7 +65,7 @@ Project $master.project.projectname
     </div>
   </div>
 
-  <div class="col-md-3" style="border: solid 2px black;">
+  <div class="col-md-4" style="border: solid 2px black;">
     <h4>Metapolation</h4>
 
     <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/create/" class="btn btn-large btn-success">Create master from instance</a>
@@ -107,7 +115,7 @@ Project $master.project.projectname
     </div>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-4">
     <h4 class="pull-left">Font B</h4>
 
     <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-right">
@@ -119,6 +127,13 @@ Project $master.project.projectname
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
+
+    <div style="clear: both;" class="extended-form">
+      <button class="extended">show point form</button>
+      <form action="" method="post" class="extended hide">
+          $:webctx.pointparam_extended_form.render()
+      </form>
+    </div>
 
     <canvas id="canvas-b" width="400" height="400"></canvas>
 
@@ -145,18 +160,13 @@ Project $master.project.projectname
         </div>
     </div>
   </div>
-
-  <div class="col-md-1">
-    <form action="" method="post" class="extended">
-        $:webctx.pointparam_extended_form.render()
-      </form>
-  </div>
 </div>
 
 
 <script type="text/javascript">
-function ControlPoints(dataPoints) {
+function ControlPoints(dataPoints, canvasid) {
   this.dataPoints = dataPoints;
+  this.pointform = $$("#" + canvasid).siblings('.extended-form').find('form.extended');
   this.paths = [];
   this.texts = [];
 }
@@ -194,6 +204,13 @@ ControlPoints.prototype.drawOn = function(canvas) {
     this.texts.push(text);
 
     this.paths.push({gpath: gpath, point: point, data: datapoint.data});
+
+    this.pointform
+      .find('select')
+      .append($$('<option>', {value: datapoint.data.pointname,
+                              text: datapoint.data.pointname}));
+
+    
   }
 }
 
@@ -419,7 +436,7 @@ Canvas.prototype.saveParamSuccess = function(data) {
 }
 
 Canvas.prototype.setZpoints = function(json) {
-  this.controlpoints = new ControlPoints(json);
+  this.controlpoints = new ControlPoints(json, this.canvasid);
   this.controlpoints.drawOn(this);
 };
 
@@ -475,8 +492,15 @@ jQuery(
     $$('.slider1').slider();
     $$('.slider2').slider();
     $$('.slider3').slider();
+
+    $$('button.extended').click(toggleExtendedForm);
   }
 );
+
+
+function toggleExtendedForm() {
+  $$(this).next('form.extended').toggleClass('hide');
+}
 </script>
 
 <div id="test" style="display: none; background-color: white; position: absolute; padding: 8px; border: solid 1px black">
