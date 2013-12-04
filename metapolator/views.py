@@ -24,7 +24,7 @@ import xmltomf
 from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
-    ParamForm
+    ParamForm, PointParamExtendedForm
 from tools import putFontAllglyphs, \
     makefont, get_json, project_exists, writeGlyphlist, ufo2mf, \
     writeGlobalParam, makefont_single
@@ -413,6 +413,7 @@ class ViewVersion(app.page, GlyphPageMixin):
 
         masters = models.Master.filter(project_id=self.get_project().id)
         web.ctx.project = self.get_project()
+        web.ctx.pointparam_extended_form = PointParamExtendedForm()
 
         return render.view(self.get_lft_master(), self.get_rgt_master(),
                            masters, glyphid, localparametersA,

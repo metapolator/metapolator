@@ -267,7 +267,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         istartp = param.startp
         iangle = param.angle
 
-        if (znamel and im == znamel.group(0)) or (znamer and im == znamer.group(0)):
+        if znamel and im == znamel.group(0):
             zznb.append(i)
             if istartp is not None:
                 istartpval = param.startp
@@ -318,7 +318,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         istartp = param.startp
         iangle = param.angle
 
-        if (znamel and im == znamel.group(0)) or (znamer and im == znamer.group(0)):
+        if znamel and im == znamel.group(0):
             zzn.append(i)
             if istartp is not None:
                 istartpval = param.startp
@@ -387,7 +387,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         ipenwidth = param.penwidth
         istartp = param.startp
 
-        if (znamel and im == znamel.group(0)) or (znamer and im == znamer.group(0)):
+        if znamel and im == znamel.group(0):
             zzn.append(i)
             if istartp is not None:
                 istartpval = param.startp
@@ -459,7 +459,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         # have to check for znamel as it can raise exception when access
         # to group(0)
-        if (znamel and im == znamel.group(0)) or (znamer and im == znamer.group(0)):
+        if znamel and im == znamel.group(0):
             zzn.append(i)
             if istartp is not None:
                 istartpval = param.startp
@@ -604,7 +604,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         iascpoint = param.ascpoint
         idescpoint = param.descpoint
 
-        if (znamel and im == znamel.group(0)) or (znamer and im == znamer.group(0)):
+        if znamel and im == znamel.group(0):
             zzn.append(i)
 
         # do not delete that lines while you are sure
@@ -813,7 +813,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         isuperleft = param.superleft
         ipenshifted = param.penshifted
 
-        if (znamel and im == znamel.group(0)) or (znamer and im == znamer.group(0)):
+        if znamel and im == znamel.group(0):
             zzn.append(i)
 
         # do not delete that lines while you are sure
@@ -1032,7 +1032,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         ioverdesc = param.overdesc
         icycle = param.cycle
 
-        if (znamel and im == znamel.group(0)) or (znamer and im == znamer.group(0)):
+        if znamel and im == znamel.group(0):
             zzn.append(i)
 
         # do not delete that lines while you are sure

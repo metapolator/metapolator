@@ -8,7 +8,7 @@ Project $master.project.projectname
 <script src="/static/js/bootstrap-slider.js"></script>
 
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-4" style="position: relative;">
     <h4 class="pull-right">Font A</h4>
     
     <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-left">
@@ -21,6 +21,11 @@ Project $master.project.projectname
         </option>
     </select>
 
+    <div style="position: absolute; left: -100px; width: 100px; background-color: #667; height: 400px;">
+      <form action="" method="post">
+        $:webctx.pointparam_extended_form.render()
+      </form>
+    </div>
     <canvas id="canvas-a" width="400" height="400"></canvas>
     
     <div class="canvas-a" style="display: none;">
