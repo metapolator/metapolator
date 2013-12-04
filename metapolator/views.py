@@ -26,7 +26,7 @@ from config import app, is_loggedin, session, working_dir, \
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     ParamForm, PointParamExtendedForm
 from tools import putFontAllglyphs, \
-    makefont, get_json, project_exists, writeGlyphlist, ufo2mf, \
+    makefont, get_json, project_exists, writeGlyphlist, \
     writeGlobalParam, makefont_single
 
 

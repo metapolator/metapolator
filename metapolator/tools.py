@@ -1,7 +1,6 @@
 import os
 import os.path as op
 import re
-import xmltomf
 import web
 from lxml import etree
 
@@ -66,27 +65,6 @@ def fnextension(filename):
     except:
         extension = "garbage"
     return extension
-
-
-def ufo2mf(master):
-    dirnamef1 = op.join(master.get_ufo_path('a'), "glyphs")
-    dirnamef2 = op.join(master.get_ufo_path('b'), "glyphs")
-    dirnamep1 = op.join(master.get_fonts_directory(), "glyphs")
-    if not op.exists(dirnamep1):
-        os.makedirs(dirnamep1)
-
-    charlist1 = filter(lambda f: fnextension(f) == 'glif', os.listdir(dirnamef1))
-    charlist2 = filter(lambda f: fnextension(f) == 'glif', os.listdir(dirnamef2))
-
-    for ch1 in charlist1:
-        if ch1 in charlist2:
-            fnb, ext = buildfname(ch1)
-            glyphA = Glyph.get(master_id=master.id, fontsource='A', name=fnb)
-            glyphB = Glyph.get(master_id=master.id, fontsource='B', name=fnb)
-            xmltomf.xmltomf1(master, glyphA, glyphB)
-
-    writeGlyphlist(master, glyphA.name)
-    makefont(working_dir(), master)
 
 
 def writeGlyphlist(master, glyphid=None):
