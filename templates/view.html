@@ -33,7 +33,7 @@ Project $master.project.projectname
 
     <div style="clear: both;" class="extended-form">
       <button class="extended">show point form</button>
-      <form action="" method="post" class="extended hide">
+      <form action="" method="post" class="extended" style="display: none;">
           $:webctx.pointparam_extended_form.render()
       </form>
     </div>
@@ -130,7 +130,7 @@ Project $master.project.projectname
 
     <div style="clear: both;" class="extended-form">
       <button class="extended">show point form</button>
-      <form action="" method="post" class="extended hide">
+      <form action="" method="post" class="extended" style="display: none;">
           $:webctx.pointparam_extended_form.render()
       </form>
     </div>
@@ -203,6 +203,8 @@ ControlPoints.prototype.drawOn = function(canvas) {
     text.content = datapoint.data.pointname;
     this.texts.push(text);
 
+    datapoint.data.x = point.x;
+    datapoint.data.y = point.y;
     this.paths.push({gpath: gpath, point: point, data: datapoint.data});
 
     this.pointform
@@ -331,6 +333,7 @@ Canvas.prototype.onMouseDrag = function(event) {
   if (!this.currentpath) {
     return;
   }
+  this.controlpoints.pointform.hide();
   this.box.position = event.point;
   this.currentpath.gpath.position = event.point;
   this.isdragged = true;
@@ -375,12 +378,20 @@ Canvas.prototype.onMouseUp = function(event) {
         input.val(this.currentpath.data[input.attr('name')]);
       }
     };
+  } else {
+    this.controlpoints.pointform.hide();
   };
 };
 
 
 Canvas.prototype.saveParamRequest = function(data, successhandler) {
   data.id = this.currentpath.data.id;
+
+  var x = Number(data.x);
+  var y = Number(data.y) - 200;
+  var xycoord = this.restore_original_coords(new paper.Point(x, y));
+  data.x = xycoord.x;
+  data.y = 500 - xycoord.y;
   jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-param/',
               data)
         .fail(this.saveParamException.bind(this))
@@ -398,7 +409,7 @@ Canvas.prototype.saveParamSuccess = function(data) {
     var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges);
     glyphpreview.drawOn(this);
 
-    this.controlpoints.pointform.toggleClass('hide');
+    this.controlpoints.pointform.hide();
 
     var buttons = jQuery('.' + this.canvasid);
     buttons.css('display', 'block');
@@ -437,8 +448,8 @@ Canvas.prototype.setZpoints = function(json) {
         this.currentpath = null;
       }
       for (var k = 0; k < this.controlpoints.paths.length; k++) {
-        this.currentpath = this.controlpoints.paths[k];
-        if (this.currentpath.data.pointname == zpointname) {
+        if (this.controlpoints.paths[k].data.pointname == zpointname) {
+          this.currentpath = this.controlpoints.paths[k];
           this.box.position = this.currentpath.gpath.segments[0].point;
 
           var inputs = this.controlpoints.pointform.find('input');
@@ -455,6 +466,14 @@ Canvas.prototype.setZpoints = function(json) {
 
     this.controlpoints.pointform.on('submit', function(e){
       e.preventDefault();
+      var zpointname = $$(e.target).find('select').val();
+      for (var k = 0; k < this.controlpoints.paths.length; k++) {
+        if (this.currentpath.data.pointname == zpointname) {
+          this.currentpath = this.controlpoints.paths[k];
+          break;
+        }
+      }
+
       this.saveParamRequest($$(e.target).serializeObject());
     }.bind(this))
 };
@@ -535,6 +554,6 @@ jQuery(
 
 
 function toggleExtendedForm() {
-  $$(this).next('form.extended').toggleClass('hide');
+  $$(this).next('form.extended').toggle();
 }
 </script>
