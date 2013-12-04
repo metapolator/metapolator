@@ -19,7 +19,7 @@ Requirements
 ##Installation
 
 ```sh
-$ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server python-mysqldb t1utils;
+$ sudo apt-get install -y unzip libmysqlclient-dev git texlive-metapost mysql-client mysql-server t1utils;
 $ mkdir src;
 $ cd src;
 $ wget http://mirrors.ctan.org/support/mf2pt1.zip;
