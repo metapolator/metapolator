@@ -74,6 +74,29 @@ color:red;
 }
 </style>
 
+
+<div class="row">
+    
+    <div class="col-md-2">
+      $if not websession.get('mfparser', '') or websession.mfparser == 'counterpoints':
+        <a href="javascript:;" class="btn btn-success">counter points</a>
+      $else:
+        <form action="/mfparser-switch/counterpoints/" method="post">
+          <button class="btn btn-default">counter points</button>
+        </form>
+    </div>
+
+    <div class="col-md-2">
+    $if websession.get('mfparser', '') == 'controlpoints':
+      <a href="javascript:;" class="btn btn-success">control points</a>
+    $else:
+      <form action="/mfparser-switch/controlpoints/" method="post">
+        <button class="btn btn-default">control points</button>
+      </form>
+    </div>
+
+</div>
+
 <p>
 
 $for project in projects:

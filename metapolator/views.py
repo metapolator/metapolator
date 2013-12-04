@@ -46,7 +46,8 @@ t_globals = {
     'working_url': working_url,
     'is_loggedin': is_loggedin,
     'project_exists': project_exists,
-    'webctx': web.ctx
+    'webctx': web.ctx,
+    'websession': session
 }
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
@@ -150,6 +151,15 @@ class GlyphPageMixin(object):
 
 def mime_type(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+
+
+class SwitchMFParser(app.page):
+
+    path = '^/mfparser-switch/(counterpoints|controlpoints)/$'
+
+    def POST(self, mfparser):
+        session.mfparser = mfparser
+        raise seeother('/fonts/')
 
 
 class userstatic(app.page):
