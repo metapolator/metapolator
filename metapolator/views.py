@@ -239,8 +239,6 @@ class SavePointParam(app.page, GlyphPageMixin):
         value = x['value']
         if value == '':
             value = None
-        else:
-            value = float(value)
         models.GlyphParam.update(id=x['id'],
                                  values={'%s' % x['name']: value})
 
