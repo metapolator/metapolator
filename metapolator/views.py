@@ -231,16 +231,22 @@ class SavePointParam(app.page, GlyphPageMixin):
     def POST(self, name, lft_version, rgt_version, glyphid):
         self.initialize(name, lft_version, rgt_version)
 
-        x = web.input(name='', value='', id='')
+        form = PointParamExtendedForm()
+
+        x = web.input(id='')
         if not models.GlyphOutline.exists(id=x['id']):
             return web.notfound()
 
         glyphoutline = models.GlyphOutline.get(id=x['id'])
-        value = x['value']
-        if value == '':
-            value = None
-        models.GlyphParam.update(id=x['id'],
-                                 values={'%s' % x['name']: value})
+
+        if form.validates():
+            values = form.d
+            del values['zpoint']
+            del values['save']
+            for key in values:
+                if values[key] == '':
+                    values[key] = None
+            models.GlyphParam.update(glyphoutline_id=x['id'], values=values)
 
         result = self.update_cells(glyphid, glyphoutline.fontsource)
         return simplejson.dumps(result)

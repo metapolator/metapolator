@@ -60,7 +60,8 @@ PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint
                               Textbox('stemcutter', size=12),
                               Textbox('stemshift', size=12),
                               Textbox('inktrap_l', size=12),
-                              Textbox('inktrap_r', size=12))
+                              Textbox('inktrap_r', size=12),
+                              Button('save'))
 
 
 GlobalParamForm = Form(Dropdown('idglobal', [], description='Choose parameter set'),

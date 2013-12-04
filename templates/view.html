@@ -379,33 +379,22 @@ Canvas.prototype.onMouseUp = function(event) {
         var input = $$(inputs[idx]);
         input.val(this.currentpath.data[input.attr('name')]);
       }
-
-      this.parameterform.find('select').off('change').on('change', function(event){
-        var val = jQuery(event.target).val();
-        this.parameterform.find('input[type=text]').val(this.currentpath.data[val]);
-      }.bind(this));
-
-      this.parameterform.find('button').off('click').on('click', function(e){
-        e.preventDefault();
-        var val = this.parameterform.find('input[type=text]').val();
-        this.saveParamRequest(val);
-      }.bind(this));
     };
   };
 };
 
 
-Canvas.prototype.saveParamRequest = function(val, successhandler) {
+Canvas.prototype.saveParamRequest = function(data, successhandler) {
+
+  data.id = this.currentpath.data.id;
   jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-param/',
-              {name: this.parameterform.find('select').val(),
-               value: val,
-               id: this.currentpath.data.id})
+              data)
         .fail(this.saveParamException.bind(this))
         .success(successhandler || this.saveParamSuccess.bind(this));
 }
 
 Canvas.prototype.saveParamException = function() {
-    var val = this.parameterform.find('input[type=text]').val();
+    var val = this.controlpoints.pointform.find('input[type=text]').val();
     alert("updating parameter has been failed");
 }
 
@@ -424,8 +413,7 @@ Canvas.prototype.saveParamSuccess = function(data) {
       this.draw();
 
       if (jQuery(e.target).attr('command') == 'cancel') {
-        var paramname = this.parameterform.find('select').val();
-        this.saveParamRequest(this.currentpath.data[paramname], this.saveParamCanceled.bind(this));
+        this.saveParamRequest(this.currentpath.data, this.saveParamCanceled.bind(this));
       } else {
         this.controlpoints.dataPoints = jQuery.parseJSON(data).zpoints;
         this.controlpoints.drawOn(this);
@@ -438,8 +426,6 @@ Canvas.prototype.saveParamSuccess = function(data) {
         this.onGlyphLoaded(data);
       }
     }.bind(this));
-
-    this.parameterform.hide();
 }
 
 Canvas.prototype.setZpoints = function(json) {
@@ -452,22 +438,28 @@ Canvas.prototype.setZpoints = function(json) {
       var zpointname = $$(e.target).val();
       if (!zpointname) {
         this.controlpoints.pointform.find('input').val('');
+        this.currentpath = null;
       }
       for (var k = 0; k < this.controlpoints.paths.length; k++) {
-        var path = this.controlpoints.paths[k];
-        if (path.data.pointname == zpointname) {
-          this.box.position = path.gpath.segments[0].point;
+        this.currentpath = this.controlpoints.paths[k];
+        if (this.currentpath.data.pointname == zpointname) {
+          this.box.position = this.currentpath.gpath.segments[0].point;
 
           var inputs = this.controlpoints.pointform.find('input');
           for (var idx = 0; idx < inputs.length; idx++) {
             var input = $$(inputs[idx]);
-            input.val(path.data[input.attr('name')]);
+            input.val(this.currentpath.data[input.attr('name')]);
           }
 
           return;
         }
       }
 
+    }.bind(this))
+
+    this.controlpoints.pointform.on('submit', function(e){
+      e.preventDefault();
+      this.saveParamRequest($$(e.target).serializeObject());
     }.bind(this))
 };
 
@@ -492,6 +484,23 @@ Canvas.prototype.redrawglyph = function(data) {
   this.glyphorigin.dataGlyph = jQuery.parseJSON(data).M.edges;
   this.glyphorigin.drawOn(this);
 }
+
+$$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $$.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
 
 jQuery(
   function(){
@@ -533,23 +542,3 @@ function toggleExtendedForm() {
   $$(this).next('form.extended').toggleClass('hide');
 }
 </script>
-
-<div id="test" style="display: none; background-color: white; position: absolute; padding: 8px; border: solid 1px black">
-  <form action="" class="form-horizontal" role="form" method="post">
-    <div class="form-group">
-      <label for="$:pointform.select.name" class="col-sm-2 control-label">$:pointform.select.description</label>
-      <div class="col-sm-10">
-        $:pointform.select.render()
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="$:pointform.value.name" class="col-sm-2 control-label">$:pointform.value.description</label>
-      <div class="col-sm-10">
-        $:pointform.value.render()
-      </div>
-    </div>
-
-    $:pointform.save.render()
-  </form>
-</div>

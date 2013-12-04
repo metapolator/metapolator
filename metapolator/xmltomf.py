@@ -477,7 +477,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
             if iinktrap_r is not None:
                 iinktrap_rval = param.inktrap_r
-                iktrap_r.append("inktrapcut")
+                inktrap_r.append("inktrapcut")
                 inktrap_rval.append(iinktrap_rval)
             if ipenwidth is not None:
                 ipenwidthval = param.penwidth
