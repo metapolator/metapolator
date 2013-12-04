@@ -934,8 +934,8 @@ class CreateProject(app.page):
                 prepare_master_environment(master)
 
                 putFontAllglyphs(master)
-                ufo2mf(master)
-                writeGlyphlist(master)
+                writeGlobalParam(master)
+                execute_metapost_for_all_glyphs(master)
             except (zipfile.BadZipfile, OSError, IOError):
                 raise
                 # if master:
