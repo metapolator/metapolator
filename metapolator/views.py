@@ -243,12 +243,6 @@ class SavePointParam(app.page, GlyphPageMixin):
             values = form.d
             del values['zpoint']
             del values['save']
-            glyphoutline.x = float(values['x'])
-            glyphoutline.y = float(values['y'])
-            web.ctx.orm.commit()
-
-            del values['x']
-            del values['y']
             for key in values:
                 if values[key] == '':
                     values[key] = None
