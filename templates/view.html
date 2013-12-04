@@ -2,13 +2,23 @@ $def with (master, masterfontb, masters, glyphid, localparametersA, localparamet
 <title>
 Project $master.project.projectname
 </title>
+<style>
+  form.extended * {
+    font-size: 8pt;
+  }
+</style>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
 <script src="/static/js/bootstrap-slider.js"></script>
 
 <div class="row">
-  <div class="col-md-4" style="position: relative;">
+  <div class="col-md-1">
+    <form action="" method="post" class="extended">
+        $:webctx.pointparam_extended_form.render()
+      </form>
+  </div>
+  <div class="col-md-3" style="position: relative;">
     <h4 class="pull-right">Font A</h4>
     
     <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-left">
@@ -20,12 +30,6 @@ Project $master.project.projectname
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
-
-    <div style="position: absolute; left: -100px; width: 100px; background-color: #667; height: 400px;">
-      <form action="" method="post">
-        $:webctx.pointparam_extended_form.render()
-      </form>
-    </div>
     <canvas id="canvas-a" width="400" height="400"></canvas>
     
     <div class="canvas-a" style="display: none;">
@@ -53,7 +57,7 @@ Project $master.project.projectname
     </div>
   </div>
 
-  <div class="col-md-4" style="border: solid 2px black;">
+  <div class="col-md-3" style="border: solid 2px black;">
     <h4>Metapolation</h4>
 
     <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/create/" class="btn btn-large btn-success">Create master from instance</a>
@@ -103,7 +107,7 @@ Project $master.project.projectname
     </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-3">
     <h4 class="pull-left">Font B</h4>
 
     <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-right">
@@ -140,6 +144,12 @@ Project $master.project.projectname
           over: $localparametersB.over
         </div>
     </div>
+  </div>
+
+  <div class="col-md-1">
+    <form action="" method="post" class="extended">
+        $:webctx.pointparam_extended_form.render()
+      </form>
   </div>
 </div>
 
