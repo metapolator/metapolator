@@ -290,8 +290,6 @@ function Canvas(canvasid, width, height, source) {
   this.height = Number(height);
   this.source = source;
 
-  this.parameterform = jQuery('#test');
-
   this.tool = new this.paper.Tool();
 
   if (this.source) {
@@ -318,9 +316,6 @@ Canvas.prototype.renderGlyph = function(edges) {
 
 Canvas.prototype.onMouseDown = function(event) {
   this.currentpath = null;
-  this.parameterform.find('form').val("");
-
-  this.parameterform.hide();
   for (var k = 0; k < this.controlpoints.paths.length; k++) {
     var p = this.controlpoints.paths[k].gpath.segments[0].point;
     if (p.getDistance(event.point) < 5) {
@@ -385,7 +380,6 @@ Canvas.prototype.onMouseUp = function(event) {
 
 
 Canvas.prototype.saveParamRequest = function(data, successhandler) {
-
   data.id = this.currentpath.data.id;
   jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-param/',
               data)
@@ -403,6 +397,8 @@ Canvas.prototype.saveParamCanceled = function(data) {}
 Canvas.prototype.saveParamSuccess = function(data) {
     var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges);
     glyphpreview.drawOn(this);
+
+    this.controlpoints.pointform.toggleClass('hide');
 
     var buttons = jQuery('.' + this.canvasid);
     buttons.css('display', 'block');
