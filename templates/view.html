@@ -343,7 +343,7 @@ Canvas.prototype.onMouseUp = function(event) {
       this.parameterform.show();
       this.parameterform.find('select').off('change').on('change', function(event){
         var val = jQuery(event.target).val();
-        this.parameterform.find('input[type=text]').val(this.currentpath.zpoint.data[val]);
+        this.parameterform.find('input[type=text]').val(this.currentpath.data[val]);
       }.bind(this));
 
       this.parameterform.find('button').off('click').on('click', function(e){
@@ -386,7 +386,7 @@ Canvas.prototype.saveParamSuccess = function(data) {
 
       if (jQuery(e.target).attr('command') == 'cancel') {
         var paramname = this.parameterform.find('select').val();
-        this.saveParamRequest(this.currentpath.zpoint.data[paramname], this.saveParamCanceled.bind(this));
+        this.saveParamRequest(this.currentpath.data[paramname], this.saveParamCanceled.bind(this));
       } else {
         this.controlpoints.dataPoints = jQuery.parseJSON(data).zpoints;
         this.controlpoints.drawOn(this);
