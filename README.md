@@ -3,21 +3,35 @@
 Please refer to this [short introduction](http://metapolator.com/about) until the online version is ready.
 
 Requirements
+- [git](http://git-scm.org)
 - [Metafont and Metapost](http://www.tug.org/)
 - [MySQL](http://dev.mysql.com/downloads/mysql/)
 - [Python](http://www.python.org/)
 - [python-mysqldb](http://sourceforge.net/projects/mysql-python/)
-- [web.py](http://webpy.org/)
-- [FontForge](http://sourceforge.net/projects/fontforge/files/fontforge-source/)
-- [mf2pt1](http://www.ctan.org/tex-archive/support/mf2pt1)
 - [Type 1 utilities](http://www.lcdf.org/type/#t1utils)
+- [unzip](http://en.wikipedia.org/wiki/Zip_%28file_format%29)
+- [mf2pt1](http://www.ctan.org/tex-archive/support/mf2pt1)
+- [FontForge](http://sourceforge.net/projects/fontforge/files/fontforge-source/)
+- [web.py](http://webpy.org/)
 - Optimized for Google Chrome
 
 
 ##Installation
 
-```
-$ virtualenv .venv
+```sh
+$ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server python-mysqldb t1utils;
+$ mkdir src;
+$ cd src;
+$ wget http://mirrors.ctan.org/support/mf2pt1.zip;
+$ unzip mf2pt1.zip;
+$ git clone https://github.com/fontforge/fontforge.git;
+$ sudo apt-get install -y build-essential autoconf libtool python-dev;
+# TODO: how to install fontforge and fontforge-python from source
+$ git clone https://github.com/metapolator/metapolator.git;
+$ cd metapolator;
+$ sudo apt-get install -y python-virtualenv;
+$ virtualenv .venv;
+$ easy_install -U distribute;
 $ source .venv/bin/activate ; pip install -r requirements.txt
 ```
 
