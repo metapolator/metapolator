@@ -148,12 +148,16 @@ def putFontAllglyphs(master, glyphid=None):
 
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
+        if not glyphName or glyphName.startswith('.'):
+            continue
         if ext in ["glif"] and (not glyphid or glyphid == glyphName):
             glif = etree.parse(op.join(source_fontpath_A, ch1))
             create_glyph(glif, master, 'A')
 
     for ch1 in charlistb:
         glyphName, ext = buildfname(ch1)
+        if not glyphName or glyphName.startswith('.'):
+            continue
         if ext in ["glif"] and (not glyphid or glyphid == glyphName):
             glif = etree.parse(op.join(source_fontpath_B, ch1))
             create_glyph(glif, master, 'B')
