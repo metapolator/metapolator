@@ -203,6 +203,8 @@ ControlPoints.prototype.drawOn = function(canvas) {
     text.content = datapoint.data.pointname;
     this.texts.push(text);
 
+    datapoint.data.x = point.x;
+    datapoint.data.y = point.y;
     this.paths.push({gpath: gpath, point: point, data: datapoint.data});
 
     this.pointform
@@ -381,6 +383,12 @@ Canvas.prototype.onMouseUp = function(event) {
 
 Canvas.prototype.saveParamRequest = function(data, successhandler) {
   data.id = this.currentpath.data.id;
+
+  var x = Number(data.x);
+  var y = Number(data.y) - 200;
+  var xycoord = this.restore_original_coords(new paper.Point(x, y));
+  data.x = xycoord.x;
+  data.y = 500 - xycoord.y;
   jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-param/',
               data)
         .fail(this.saveParamException.bind(this))
@@ -437,8 +445,8 @@ Canvas.prototype.setZpoints = function(json) {
         this.currentpath = null;
       }
       for (var k = 0; k < this.controlpoints.paths.length; k++) {
-        this.currentpath = this.controlpoints.paths[k];
         if (this.currentpath.data.pointname == zpointname) {
+          this.currentpath = this.controlpoints.paths[k];
           this.box.position = this.currentpath.gpath.segments[0].point;
 
           var inputs = this.controlpoints.pointform.find('input');
@@ -455,6 +463,14 @@ Canvas.prototype.setZpoints = function(json) {
 
     this.controlpoints.pointform.on('submit', function(e){
       e.preventDefault();
+      var zpointname = $$(e.target).find('select').val();
+      for (var k = 0; k < this.controlpoints.paths.length; k++) {
+        if (this.currentpath.data.pointname == zpointname) {
+          this.currentpath = this.controlpoints.paths[k];
+          break;
+        }
+      }
+
       this.saveParamRequest($$(e.target).serializeObject());
     }.bind(this))
 };
