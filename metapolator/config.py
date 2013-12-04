@@ -12,8 +12,10 @@ try:
 except ImportError:
     pass
 
+DATABASE_ENGINE = 'mysql+mysqldb://{0}:{1}@localhost/blog'.format(DATABASE_USER, DATABASE_PWD)
+
 from sqlalchemy import create_engine
-engine = create_engine('mysql+mysqldb://{0}:{1}@localhost/blog'.format(DATABASE_USER, DATABASE_PWD), echo=False)
+engine = create_engine(DATABASE_ENGINE, echo=False)
 
 ### Url mappings
 web.config.debug = False
