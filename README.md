@@ -24,9 +24,10 @@ $ mkdir src;
 $ cd src;
 $ wget http://mirrors.ctan.org/support/mf2pt1.zip;
 $ unzip mf2pt1.zip;
-$ git clone https://github.com/fontforge/fontforge.git;
-$ sudo apt-get install -y build-essential autoconf libtool python-dev;
+# git clone https://github.com/fontforge/fontforge.git;
+# sudo apt-get install -y build-essential autoconf libtool python-dev;
 # TODO: how to install fontforge and fontforge-python from source
+$ sudo apt-get install -y fontforge python-fontforge;
 $ git clone https://github.com/metapolator/metapolator.git;
 $ cd metapolator;
 $ sudo apt-get install -y python-virtualenv;
