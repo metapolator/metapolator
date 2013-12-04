@@ -829,10 +829,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 tripledash.append(" ---")
                 tripledashvalB.append(itripledashval)
 
-            if idir is not None:
+            if idir is not None :
                 idirval = param.dir
                 dirB.append("dir")
                 dirvalB.append(idirval)
+            else :
+                dirB.append("")
+                dirvalB.append(0)
 
             if idir2 is not None:
                 idir2val = param.dir2
@@ -864,11 +867,23 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 tensionB.append("tension")
                 tensionvalB.append(itensionval)
 
-            if itensionand is not None:
+#            if itensionand is not None:
+#                itensionandval = param.tensionand
+#                tensionandB.append("tensionand")
+#                tensionandvalB.append(itensionandval[:3])
+#                tensionandval2B.append(itensionandval[-3:])
+
+            if itensionand is not None :
                 itensionandval = param.tensionand
                 tensionandB.append("tensionand")
                 tensionandvalB.append(itensionandval[:3])
                 tensionandval2B.append(itensionandval[-3:])
+            else :
+                tensionandB.append("")
+                tensionandvalB.append(0)
+                tensionandval2B.append(0)
+
+
 
             if isuperright is not None:
                 isuperrightval = param.superright
@@ -1055,14 +1070,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 tripledash.append("")
                 tripledashval.append(0)
 
-            if idir is not None :
-                idirval = param.dir
-                dir.append("dir")
-                dirval.append(idirval)
-            else :
-                dir.append("")
-                dirval.append(0)
-
             if idir2 is not None :
                 idir2val = param.dir2
                 dir2.append("dir")
@@ -1153,6 +1160,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             else :
                 tensionand.append("")
                 tensionandval.append(0)
+                tensionandval2.append(0)
+
 
             if isuperright is not None :
                 isuperrightval = param.superright
@@ -1296,12 +1305,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
             # if penshiftedy[i] != "":
             #     zeile += " shifted (0, y" + str(penshiftedyval[i]) + ")"
-
-            if superleft[i] != "":
-                zeile += strtwo + superleft[i] + "(" + str(zitem) + "e," + str(zitemsuper) + "e, [" + str(superleftval[i]) + '+ (metapolation * (' + str(superleftvalB[i]) + '-' + str(superleftval[i]) + '))])' + strtwo
-
-            if superright[i] != "":
-                zeile += strtwo + superright[i] + "(" + str(zitem) + "e," + str(zitemsuper) + "e, [" + str(superrightval[i]) + '+ (metapolation * (' + str(superrightvalB[i]) + '-' + str(superrightval[i]) + '))])' + strtwo
 
             if upp[i] != "":
                 zeile += "{up}"
