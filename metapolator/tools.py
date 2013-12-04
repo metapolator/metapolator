@@ -109,17 +109,14 @@ def create_glyph(glif, master, ab_source):
     glyph = glif.getroot()
     glyphname = glyph.get('name')
 
-    itemlist = glif.find('unicode')
-    unicode = itemlist.get('hex')
     if not Glyph.exists(name=glyphname, master_id=master.id,
                         fontsource=ab_source):
-        glyph = Glyph.create(name=glyphname, width=width, unicode=unicode,
+        glyph = Glyph.create(name=glyphname, width=width,
                              master_id=master.id, fontsource=ab_source)
     else:
         glyph = Glyph.get(name=glyphname, master_id=master.id,
                           fontsource=ab_source)
         glyph.width = width
-        glyph.unicode = unicode
         web.ctx.orm.commit()
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):
