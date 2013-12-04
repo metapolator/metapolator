@@ -33,7 +33,7 @@ Project $master.project.projectname
 
     <div style="clear: both;" class="extended-form">
       <button class="extended">show point form</button>
-      <form action="" method="post" class="extended hide">
+      <form action="" method="post" class="extended" style="display: none;">
           $:webctx.pointparam_extended_form.render()
       </form>
     </div>
@@ -130,7 +130,7 @@ Project $master.project.projectname
 
     <div style="clear: both;" class="extended-form">
       <button class="extended">show point form</button>
-      <form action="" method="post" class="extended hide">
+      <form action="" method="post" class="extended" style="display: none;">
           $:webctx.pointparam_extended_form.render()
       </form>
     </div>
@@ -333,6 +333,7 @@ Canvas.prototype.onMouseDrag = function(event) {
   if (!this.currentpath) {
     return;
   }
+  this.controlpoints.pointform.hide();
   this.box.position = event.point;
   this.currentpath.gpath.position = event.point;
   this.isdragged = true;
@@ -377,6 +378,8 @@ Canvas.prototype.onMouseUp = function(event) {
         input.val(this.currentpath.data[input.attr('name')]);
       }
     };
+  } else {
+    this.controlpoints.pointform.hide();
   };
 };
 
@@ -406,7 +409,7 @@ Canvas.prototype.saveParamSuccess = function(data) {
     var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges);
     glyphpreview.drawOn(this);
 
-    this.controlpoints.pointform.toggleClass('hide');
+    this.controlpoints.pointform.hide();
 
     var buttons = jQuery('.' + this.canvasid);
     buttons.css('display', 'block');
@@ -445,7 +448,7 @@ Canvas.prototype.setZpoints = function(json) {
         this.currentpath = null;
       }
       for (var k = 0; k < this.controlpoints.paths.length; k++) {
-        if (this.currentpath.data.pointname == zpointname) {
+        if (this.controlpoints.paths[k].data.pointname == zpointname) {
           this.currentpath = this.controlpoints.paths[k];
           this.box.position = this.currentpath.gpath.segments[0].point;
 
@@ -551,6 +554,6 @@ jQuery(
 
 
 function toggleExtendedForm() {
-  $$(this).next('form.extended').toggleClass('hide');
+  $$(this).next('form.extended').toggle();
 }
 </script>
