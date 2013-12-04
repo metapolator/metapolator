@@ -367,10 +367,19 @@ Canvas.prototype.onMouseUp = function(event) {
       );
     } else {
       var e = event.event;
+      
+      var zpointname = this.currentpath.data.pointname;
+      var inputs = this.controlpoints.pointform.find('input');
+      this.controlpoints.pointform.find('select')
+          .find('option:selected', 'select[name="options"]')
+          .removeAttr('selected');
+      this.controlpoints.pointform.find('select').val(zpointname);
 
-      this.parameterform.css({left: parseInt(e.clientX) + 'px',
-                              top:  parseInt(e.clientY) + 'px'});
-      this.parameterform.show();
+      for (var idx = 0; idx < inputs.length; idx++) {
+        var input = $$(inputs[idx]);
+        input.val(this.currentpath.data[input.attr('name')]);
+      }
+
       this.parameterform.find('select').off('change').on('change', function(event){
         var val = jQuery(event.target).val();
         this.parameterform.find('input[type=text]').val(this.currentpath.data[val]);
@@ -441,10 +450,20 @@ Canvas.prototype.setZpoints = function(json) {
     .on('change', function(e) {
       
       var zpointname = $$(e.target).val();
+      if (!zpointname) {
+        this.controlpoints.pointform.find('input').val('');
+      }
       for (var k = 0; k < this.controlpoints.paths.length; k++) {
         var path = this.controlpoints.paths[k];
         if (path.data.pointname == zpointname) {
           this.box.position = path.gpath.segments[0].point;
+
+          var inputs = this.controlpoints.pointform.find('input');
+          for (var idx = 0; idx < inputs.length; idx++) {
+            var input = $$(inputs[idx]);
+            input.val(path.data[input.attr('name')]);
+          }
+
           return;
         }
       }
