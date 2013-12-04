@@ -994,6 +994,15 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     cycle = []
     cycleval = []
 
+    type = []
+    typeval = []
+
+    control_out = []
+    control_outval = []
+
+    control_in = []
+    control_inval = []
+
     i = 1
 
     for item, param in fonta_outlines:
@@ -1031,6 +1040,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         ioverasc = param.overasc
         ioverdesc = param.overdesc
         icycle = param.cycle
+        itype = param.type
+        icontrol_out = param.control_out   
+        icontrol_in = param.control_in  
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
@@ -1222,24 +1234,33 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 overcapval.append(0)
 
 
-            if ioverasc is not None :
-                ioverascval = param.overasc
-                overasc.append("shifted")
-                overascval.append(ioverascval)
+            if itype is not None :
+                itypeval = param.type
+                type.append("type")
+                typeval.append(itypeval)
             else :
-                overasc.append("")
-                overascval.append(0)
+                type.append("")
+                typeval.append(0)
 
-            if ioverdesc is not None :
-                ioverdescval = param.overdesc
-                overdesc.append("shifted")
-                overdescval.append(ioverdescval)
+
+            if icontrol_out is not None :
+                icontrol_outval = param.control_out
+                control_out.append("control_out")
+                control_outval.append(icontrol_outval)
             else :
-                overdesc.append("")
-                overdescval.append(0)
+                control_out.append("")
+                control_outval.append(0)
+
+            if icontrol_in is not None :
+                icontrol_inval = param.control_in
+                control_in.append("control_in")
+                control_inval.append(icontrol_inval)
+            else :
+                control_in.append("")
+                control_inval.append(0)
+
 
             i += 1
-
 
     zzn.sort()
     zeile = ""
@@ -1257,13 +1278,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
             dash = " -- "
 
-            if type[i+1] <> "" :
+            if type[i+1] != "":
                 zeile += dash
 
-            if control_out[i] <> "" :
+            if control_out[i] != "":
                 zeile = " .. controls z" + str(zitem) + " and "    
 
-            if control_in[i] <> "" :
+            if control_in[i] != "":
                 zeile = " z" + str(zitem) + " .. "    
 
  #           else :
@@ -1275,7 +1296,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
        #         zeile += " .. controls " + "z"+str(zitem) + " and " + "z" +  str(zitem1) + " .. " 
 #                zeile += " .. controls " + "z"+str(zitem) + " and " + "z" +  str(zitem1)  
         else :
-          if control_out[i] <> "" :
+          if control_out[i] != "":
             zeile +=  " .. cycle" + semi + '\n'
           else :
             zeile +=  " .. cycle" + semi + '\n'
@@ -1291,6 +1312,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     if len(zzn) >= i:
 
         fip.write(zeile + " .. cycle" + semi)
+
+
+
+
 
 
     fip.write("\n")
