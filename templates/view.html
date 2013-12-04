@@ -386,7 +386,6 @@ Canvas.prototype.onMouseUp = function(event) {
 
 Canvas.prototype.saveParamRequest = function(data, successhandler) {
   data.id = this.currentpath.data.id;
-
   var x = Number(data.x);
   var y = Number(data.y) - 200;
   var xycoord = this.restore_original_coords(new paper.Point(x, y));
@@ -468,7 +467,7 @@ Canvas.prototype.setZpoints = function(json) {
       e.preventDefault();
       var zpointname = $$(e.target).find('select').val();
       for (var k = 0; k < this.controlpoints.paths.length; k++) {
-        if (this.currentpath.data.pointname == zpointname) {
+        if (this.controlpoints.paths[k].data.pointname == zpointname) {
           this.currentpath = this.controlpoints.paths[k];
           break;
         }
