@@ -30,7 +30,7 @@ ParamForm = Form(Dropdown('select', CHOICES, description="Parameter"),
                  Button('save'))
 
 
-PointParamExtendedForm = Form(Dropdown('zpoint', [], description="zpoint"),
+PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint"),
                               Textbox('doubledash', size=12),
                               Textbox('tripledash', size=12),
                               Textbox('superleft', size=12),

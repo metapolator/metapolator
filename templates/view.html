@@ -209,8 +209,6 @@ ControlPoints.prototype.drawOn = function(canvas) {
       .find('select')
       .append($$('<option>', {value: datapoint.data.pointname,
                               text: datapoint.data.pointname}));
-
-    
   }
 }
 
@@ -438,6 +436,20 @@ Canvas.prototype.saveParamSuccess = function(data) {
 Canvas.prototype.setZpoints = function(json) {
   this.controlpoints = new ControlPoints(json, this.canvasid);
   this.controlpoints.drawOn(this);
+
+  this.controlpoints.pointform.find('select')
+    .on('change', function(e) {
+      
+      var zpointname = $$(e.target).val();
+      for (var k = 0; k < this.controlpoints.paths.length; k++) {
+        var path = this.controlpoints.paths[k];
+        if (path.data.pointname == zpointname) {
+          this.box.position = path.gpath.segments[0].point;
+          return;
+        }
+      }
+
+    }.bind(this))
 };
 
 Canvas.prototype.showbox = function() {
