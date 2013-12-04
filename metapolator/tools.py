@@ -121,6 +121,9 @@ def create_glyph(glif, master, ab_source):
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):
         pointname = point.attrib.get('name')
+        type = point.attrib.get('type')
+        control_in = point.attrib.get('control_in')
+        control_out = point.attrib.get('control_out')
         if not pointname:
             pointname = 'p%s' % (i + 1)
 
@@ -142,7 +145,10 @@ def create_glyph(glif, master, ab_source):
             glyphparam = GlyphParam.create(glyphoutline_id=glyphoutline.id,
                                            master_id=master.id,
                                            glyph_id=glyph.id,
-                                           pointname=pointname)
+                                           pointname=pointname,
+                                           type=type,
+                                           control_in=control_in,
+                                           control_out=control_out)
         for attr in point.attrib:
             if attr == 'name':
                 continue

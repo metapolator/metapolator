@@ -264,6 +264,9 @@ class GlyphParam(Base, UserQueryMixin):
 
     pointname = Column(String(32))
     groupname = Column(String(32))
+    type = Column(String(32))
+    control_in = Column(String(32))
+    control_out = Column(String(32))
     startp = Column(Integer)
     doubledash = Column(String(32))
     tripledash = Column(String(32))
