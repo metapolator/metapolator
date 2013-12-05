@@ -225,18 +225,18 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
 # pen angle (A and B, for B we dont need to read from db) ################
 
-    fip.write("\n")
-    fip.write("""% pen angle Font A""")
-    fip.write("\n\n")
+#    fip.write("\n")
+#    fip.write("""% pen angle Font A""")
+#    fip.write("\n\n")
 
-    index = 1
-    for item, param in fonta_outlines:
-        znamer = re.match('z(\d+)r', param.pointname)
+#    index = 1
+#    for item, param in fonta_outlines:
+#        znamer = re.match('z(\d+)r', param.pointname)
 
-        if znamer and param.pointname == znamer.group(0):
-            zeile = "ang{0} := angle ((z{0}Br + (metapolation * (z{0}Cr - z{0}Br))) - (z{0}Bl + (metapolation * (z{0}Cl - z{0}Bl))));".format(index)
-            index += 1
-            fip.write(zeile + '\n')
+#        if znamer and param.pointname == znamer.group(0):
+#            zeile = "ang{0} := angle ((z{0}Br + (metapolation * (z{0}Cr - z{0}Br))) - (z{0}Bl + (metapolation * (z{0}Cl - z{0}Bl))));".format(index)
+#            index += 1
+#            fip.write(zeile + '\n')
 
 # reading extra pen angle Font B  ################
 
@@ -338,22 +338,22 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     zeileend = ""
     semi = ");"
 
-    if len(zzn) != len(zznb):
+#    if len(zzn) != len(zznb):
         # glyphs in A and B have different set of Z-points, so raise exception
         # to handle this case
-        raise DifferentZPointError()
+#        raise DifferentZPointError()
 
-    for i in range(len(zzn)):
-        zitem = i + 1
+#    for i in range(len(zzn)):
+#        zitem = i + 1
 
-        if angle[i]:
-            angleb = angleval_B[i]
-            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + "  " + str(angleval[i]) + "+ (metapolation * (" + str(angleb) + " - " + str(angleval[i]) + " ));"
-        else:
-            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
+#        if angle[i]:
+#            angleb = angleval_B[i]
+#            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + "  " + str(angleval[i]) + "+ (metapolation * (" + str(angleb) + " - " + str(angleval[i]) + " ));"
+#        else:
+#            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
 
-        fip.write("\n")
-        fip.write(zeile)
+#        fip.write("\n")
+#        fip.write(zeile)
 
 # reading font Pen Positions Font B
 
@@ -507,17 +507,17 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     zeileend = ""
     semi = ";"
     close = ")"
-    for i in range(len(zzn)):
-        zitem = i + 1
+#    for i in range(len(zzn)):
+#        zitem = i + 1
 
-        if penwidth[i]:
-            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
-        else:
-            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
+#        if penwidth[i]:
+#            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
+#        else:
+#            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
 
-        zeile = zeile + ", ang" + str(zitem) + ");"
-        fip.write("\n")
-        fip.write(zeile)
+#        zeile = zeile + ", ang" + str(zitem) + ");"
+#        fip.write("\n")
+#        fip.write(zeile)
 
 # testing new center points
 
@@ -707,26 +707,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         ## default string
 
-        if ascpoint[i] != '':
-            zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_ascender + metapolation * (B_ascender - A_ascender)) / asc#))"
-        if descpoint[i] != "":
-            zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_descender + metapolation * (B_descender - A_descender)) / desc#))"
-        else:
-            zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
+        zeile = "z" + str(zitem) + " = (( px" + str(zitem) + "l + metapolation * (ppx" + str(zitem) + "l - px" + str(zitem) + "l)) , ( py" + str(zitem) + "l + metapolation * (ppy" + str(zitem) + "l - py" + str(zitem) + "l))) ;"
 
-        if pointshifted[i] != '':
-            zeile = zeile + " shifted (" + str(pointshiftedval[i]) + ")"
-
-        if stemshift[i] != '':
-            zeile = zeile + " stemshift (" + str(stemshiftval[i]) + ")"
-
-        if inktrap_l[i] != '':
-            zeile = zeile + " inktrap_l (" + str(inktrap_lval[i]) + ")"
-
-        if inktrap_r[i] != '':
-            zeile = zeile + " inktrap_r (" + str(inktrap_rval[i]) + ")"
-
-        zeile = zeile + semi
         fip.write("\n")
         fip.write(zeile)
 
@@ -1052,7 +1034,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
             if istartp is not None:
                 istartpval = param.startp
-                startp.append("penstroke ")
+                startp.append("fill ")
                 startpval.append(istartpval)
             else:
                 startp.append("")
