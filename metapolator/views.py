@@ -527,16 +527,50 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/create/'
 
-    def create_glyphpoint(self, glyph, pointnr, pointname, startp, point):
+    def create_glyphpoint(self, glyph, pointnr, pointparam, point):
         kwargs = dict(glyph_id=glyph.id, master_id=glyph.master_id,
                       glyphname=glyph.name, fontsource=glyph.fontsource,
                       pointnr=pointnr, x=int(float(point['x'])),
                       y=int(float(point['y'])))
         glyphoutline = models.GlyphOutline.create(**kwargs)
 
-        kwargs = dict(glyphoutline_id=glyphoutline.id, glyph_id=glyph.id,
-                      fontsource=glyph.fontsource, master_id=glyph.master_id,
-                      pointname=pointname, startp=startp)
+        kwargs = dict(glyphoutline_id=glyphoutline.id,
+                      glyph_id=glyph.id,
+                      fontsource=glyph.fontsource,
+                      master_id=glyph.master_id,
+                      pointname=pointparam.pointname,
+                      startp=pointparam.startp,
+                      doubledash=pointparam.doubledash,
+                      superleft=pointparam.superleft,
+                      superright=pointparam.superright,
+                      leftp=pointparam.leftp,
+                      rightp=pointparam.rightp,
+                      downp=pointparam.downp,
+                      upp=pointparam.upp,
+                      dir=pointparam.dir,
+                      leftp2=pointparam.leftp2,
+                      rightp2=pointparam.rightp2,
+                      downp2=pointparam.downp2,
+                      upp2=pointparam.upp2,
+                      dir2=pointparam.dir2,
+                      tension=pointparam.tension,
+                      tensionand=pointparam.tensionand,
+                      cycle=pointparam.cycle,
+                      penshifted=pointparam.penshifted,
+                      pointshifted=pointparam.pointshifted,
+                      angle=pointparam.angle,
+                      penwidth=pointparam.penwidth,
+                      overx=pointparam.overx,
+                      overbase=pointparam.overbase,
+                      overcap=pointparam.overcap,
+                      overasc=pointparam.overasc,
+                      overdesc=pointparam.overdesc,
+                      ascpoint=pointparam.ascpoint,
+                      descpoint=pointparam.descpoint,
+                      stemcutter=pointparam.stemcutter,
+                      stemshift=pointparam.stemshift,
+                      inktrap_l=pointparam.inktrap_l,
+                      inktrap_r=pointparam.inktrap_r)
         models.GlyphParam.create(**kwargs)
 
     @raise404_notauthorized
@@ -574,11 +608,9 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
             for contourpoints in json['edges'][0]['contours']:
                 for point in contourpoints:
                     self.create_glyphpoint(newglypha, (i + 1),
-                                           zpoints[i].pointname,
-                                           zpoints[i].startp, point)
+                                           zpoints[i], point)
                     self.create_glyphpoint(newglyphb, (i + 1),
-                                           zpoints[i].pointname,
-                                           zpoints[i].startp, point)
+                                           zpoints[i], point)
                     i += 1
 
         self.get_lft_master().idlocala = None
