@@ -544,6 +544,7 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                       control_in=pointparam.control_in,
                       control_out=pointparam.control_out,
                       doubledash=pointparam.doubledash,
+                      tripledash=pointparam.tripledash,
                       superleft=pointparam.superleft,
                       superright=pointparam.superright,
                       leftp=pointparam.leftp,
