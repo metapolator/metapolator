@@ -616,22 +616,22 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                                            zpoints[i], point)
                     i += 1
 
-        self.get_lft_master().idlocala = None
-        self.get_lft_master().idlocalb = None
-        self.get_lft_master().idglobal = None
+        # self.get_lft_master().idlocala = None
+        # self.get_lft_master().idlocalb = None
+        # self.get_lft_master().idglobal = None
 
-        self.get_rgt_master().idlocala = None
-        self.get_rgt_master().idlocalb = None
-        self.get_rgt_master().idglobal = None
-        web.ctx.orm.commit()
+        # self.get_rgt_master().idlocala = None
+        # self.get_rgt_master().idlocalb = None
+        # self.get_rgt_master().idglobal = None
+        # web.ctx.orm.commit()
 
         execute_metapost_for_all_glyphs(master)
 
-        writeGlobalParam(self.get_lft_master())
-        execute_metapost_for_all_glyphs(self.get_lft_master())
+        # writeGlobalParam(self.get_lft_master())
+        # execute_metapost_for_all_glyphs(self.get_lft_master())
 
-        writeGlobalParam(self.get_rgt_master())
-        execute_metapost_for_all_glyphs(self.get_rgt_master())
+        # writeGlobalParam(self.get_rgt_master())
+        # execute_metapost_for_all_glyphs(self.get_rgt_master())
 
         return web.seeother('/fonts/{0}/'.format(master.id))
 
