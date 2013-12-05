@@ -94,7 +94,7 @@ def create_glyph(glif, master, ab_source):
     else:
         glyph = Glyph.get(name=glyphname, master_id=master.id,
                           fontsource=ab_source)
-        glyph.width = width
+        glyph.width = int(width)
         web.ctx.orm.commit()
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):

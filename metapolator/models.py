@@ -254,6 +254,8 @@ class GlyphParam(Base, UserQueryMixin):
 
     __tablename__ = 'glyphparam'
 
+    glyphoutline = relationship('GlyphOutline', backref='glyphoutline')
+
     id = Column(Integer, primary_key=True)
     glyph_id = Column(Integer, ForeignKey('glyph.id'))
     glyphoutline_id = Column(Integer, ForeignKey('glyphoutline.id'))

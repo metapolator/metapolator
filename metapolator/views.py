@@ -577,6 +577,9 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                       inktrap_r=pointparam.inktrap_r)
         models.GlyphParam.create(**kwargs)
 
+    def roundpoint(self, coord):
+        return int(round(float(coord)))
+
     @raise404_notauthorized
     def GET(self, projectname, version, versionfontb):
         self.initialize(projectname, version, versionfontb)
@@ -599,6 +602,27 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
             if not json['edges']:
                 continue
 
+            zpoints = glyph.get_zpoints()
+            metapost_points = []
+
+            for contourpoints in json['edges'][0]['contours']:
+                if not contourpoints:
+                    continue
+                for point in contourpoints:
+                    if session.get('mfparser', '') == 'controlpoints':
+                        metapost_points.append({'x': self.round(point['controls'][0]['x']),
+                                                'y': self.round(point['controls'][0]['y'])})
+                    metapost_points.append({'x': self.round(point['x']),
+                                            'y': self.round(point['y'])})
+                    if session.get('mfparser', '') == 'controlpoints':
+                        metapost_points.append({'x': self.round(point['controls'][1]['x']),
+                                                'y': self.round(point['controls'][1]['y'])})
+
+            # metapost_points = [metapost_points[-1]] + metapost_points[:-1]
+            if len(zpoints) != len(metapost_points):
+                print len(zpoints), ' zp != mp ', len(metapost_points)
+                continue
+
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
                                             unicode=glyph.unicode)
@@ -606,16 +630,11 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                                             name=glyph.name, width=glyph.width,
                                             unicode=glyph.unicode)
 
-            zpoints = glyph.get_zpoints()
-
             i = 0
-            for contourpoints in json['edges'][0]['contours']:
-                for point in contourpoints:
-                    self.create_glyphpoint(newglypha, (i + 1),
-                                           zpoints[i], point)
-                    self.create_glyphpoint(newglyphb, (i + 1),
-                                           zpoints[i], point)
-                    i += 1
+            for point in metapost_points:
+                self.create_glyphpoint(newglypha, (i + 1), zpoints[i], point)
+                self.create_glyphpoint(newglyphb, (i + 1), zpoints[i], point)
+                i += 1
 
         # self.get_lft_master().idlocala = None
         # self.get_lft_master().idlocalb = None
@@ -641,12 +660,16 @@ def execute_metapost_for_all_glyphs(master, rgt_master=None):
     import time
 
     starttime = time.time()
+    hasglyphs = False
     for glyph in master.get_glyphs('a'):
         glyphB = models.Glyph.get(master_id=(rgt_master and rgt_master or master).id, fontsource='B',
                                   name=glyph.name)
         xmltomf.xmltomf1(master, glyph, glyphB)
-    writeGlyphlist(master)
-    makefont(working_dir(), master)
+        hasglyphs = True
+
+    if hasglyphs:
+        writeGlyphlist(master)
+        makefont(working_dir(), master)
     print '== makefont.sh complete === %s: %s' % (master.version,
                                                   time.time() - starttime)
 
