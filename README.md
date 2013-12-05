@@ -19,7 +19,8 @@ Requirements
 ##Installation
 
 ```sh
-$ sudo apt-get install -y unzip libmysqlclient-dev git texlive-metapost mysql-client mysql-server t1utils;
+$ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
+# Note your mysql root password
 $ mkdir src;
 $ cd src;
 $ wget http://mirrors.ctan.org/support/mf2pt1.zip;
@@ -36,7 +37,7 @@ $ easy_install -U distribute;
 $ source .venv/bin/activate ; pip install -r requirements.txt
 ```
 
-Set your mysql username to root and leave password empty. You could also change these settings on line 6 in model.py.
+Login to your mysql database as root. You could also change these settings on line 6 in model.py.
 
 ```
 $ mysql -u root -p
@@ -44,7 +45,7 @@ $ mysql -u root -p
 Create new database:
 
 ```
-mysql> CREATE DATABASE 'Name of database'.sql;
+mysql> CREATE DATABASE metapolator-dev.sql;
 ```
 
 Load the preset database:
