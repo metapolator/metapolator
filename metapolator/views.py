@@ -591,6 +591,11 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
 
         logpath = project.get_instancelog(version=self.get_lft_master().version)
         for glyph in self.get_lft_master().get_glyphs('a'):
+            glyphb = models.Glyph.get(name=glyph.name, fontsource='B',
+                                      master_id=glyph.master_id)
+            if not glyphb:
+                glyphb = glyph
+
             json = get_edges_json(logpath, glyph.name)
             if not json['edges']:
                 continue
@@ -603,6 +608,7 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                                             unicode=glyph.unicode)
 
             zpoints = glyph.get_zpoints()
+            zpointsb = glyphb.get_zpoints()
 
             i = 0
             for contourpoints in json['edges'][0]['contours']:
@@ -610,7 +616,7 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                     self.create_glyphpoint(newglypha, (i + 1),
                                            zpoints[i], point)
                     self.create_glyphpoint(newglyphb, (i + 1),
-                                           zpoints[i], point)
+                                           zpointsb[i], point)
                     i += 1
 
         self.get_lft_master().idlocala = None
