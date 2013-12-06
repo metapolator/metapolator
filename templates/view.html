@@ -19,56 +19,60 @@ Project $master.project.projectname
 
 <div class="row">
   <div class="col-md-4">
-  
-    <div class="row layer-canvas-a">
-      <div class="col-md-1">
-        <form action="" method="post" class="extended" style="float: right;">
-            $:webctx.pointparam_extended_form.render()
-        </form>
-      </div>
 
-      <div class="col-md-11" style="z-index: 100; background-color: white;">
-        <h4 class="pull-right">Font A</h4>
+      <h4 class="pull-right">Font A</h4>
     
-        <select name="" id="" onchange="window.location=$$(this).val();" class="pull-left">
-          $for m in masters:
-            $if master.id == m.id:
-              <option value="" selected="selected">
-                Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
-              </option>
-            $else:
-              <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
+      <select name="" id="" onchange="window.location=$$(this).val();" class="pull-left">
+        $for m in masters:
+          $if master.id == m.id:
+            <option value="" selected="selected">
               Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
-              </option>
-        </select>
-
-        <canvas id="canvas-a" width="350" height="600"></canvas>
-
-        <div class="canvas-a" style="display: none;">
-          <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
-          <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
-        </div>
-
-        <div class="well">
-          <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
-
-          $if not localparametersA:
-            <div class="label label-danger">This font has not specified local parameters</div>
+            </option>
           $else:
-            <div style="font-family: monospace;">
-              px: $localparametersA.px<br />
-              width: $localparametersA.width<br />
-              space: $localparametersA.space<br />
-              xheight: $localparametersA.xheight<br />
-              capital: $localparametersA.capital<br />
-              ascender: $localparametersA.ascender<br />
-              descender: $localparametersA.descender<br />
-              skeleton: $localparametersA.skeleton<br />
-              over: $localparametersA.over
-            </div>
-        </div>
+            <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
+            Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+            </option>
+      </select>
+
+      <ul class="nav nav-tabs" style="clear: both;">
+          <li class="active"><a href="#tab-view-canvas-a" data-toggle="tab">View</a></li>
+          <li><a href="#tab-point-canvas-a" data-toggle="tab">Point</a></li>
+      </ul>
+
+      <div class="tab-content">
+          <div class="tab-pane active" id="tab-view-canvas-a">
+              <canvas id="canvas-a" width="350" height="600"></canvas>
+
+              <div class="canvas-a" style="display: none;">
+                <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
+                <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
+              </div>
+
+              <div class="well">
+                <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
+
+                $if not localparametersA:
+                  <div class="label label-danger">This font has not specified local parameters</div>
+                $else:
+                  <div style="font-family: monospace;">
+                    px: $localparametersA.px<br />
+                    width: $localparametersA.width<br />
+                    space: $localparametersA.space<br />
+                    xheight: $localparametersA.xheight<br />
+                    capital: $localparametersA.capital<br />
+                    ascender: $localparametersA.ascender<br />
+                    descender: $localparametersA.descender<br />
+                    skeleton: $localparametersA.skeleton<br />
+                    over: $localparametersA.over
+                  </div>
+              </div>
+          </div>
+          <div class="tab-pane fade" id="tab-point-canvas-a">
+              <form action="" method="post" class="extended">
+                  $:webctx.pointparam_extended_form.render()
+              </form>
+          </div>
       </div>
-    </div>
 
   </div>
 
@@ -124,63 +128,66 @@ Project $master.project.projectname
 
   <div class="col-md-4">
 
-    <div class="row layer-canvas-b">
-
-      <div class="col-md-11" style="z-index: 100; background-color: white;">
-        <h4 class="pull-right">Font B</h4>
+    <h4 class="pull-right">Font B</h4>
     
-        <select name="" id="" onchange="window.location=$$(this).val();" class="pull-left">
-          $for m in masters:
-            $if master.id == m.id:
-              <option value="" selected="selected">
-                Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
-              </option>
-            $else:
-              <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
+      <select name="" id="" onchange="window.location=$$(this).val();" class="pull-left">
+        $for m in masters:
+          $if master.id == m.id:
+            <option value="" selected="selected">
               Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
-              </option>
-        </select>
-
-        <canvas id="canvas-b" width="350" height="600"></canvas>
-
-        <div class="canvas-a" style="display: none;">
-          <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
-          <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
-        </div>
-
-        <div class="well">
-          <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
-          $if not localparametersB:
-            <div class="label label-danger">This font has not specified local parameters</div>
+            </option>
           $else:
-            <div style="font-family: monospace;">
-              px: $localparametersB.px<br />
-              width: $localparametersB.width<br />
-              space: $localparametersB.space<br />
-              xheight: $localparametersB.xheight<br />
-              capital: $localparametersB.capital<br />
-              ascender: $localparametersB.ascender<br />
-              descender: $localparametersB.descender<br />
-              skeleton: $localparametersB.skeleton<br />
-              over: $localparametersB.over
-            </div>
-        </div>
+            <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
+            Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+            </option>
+      </select>
+
+      <ul class="nav nav-tabs" style="clear: both;">
+          <li class="active"><a href="#tab-view-canvas-b" data-toggle="tab">View</a></li>
+          <li><a href="#tab-point-canvas-b" data-toggle="tab">Point</a></li>
+      </ul>
+
+      <div class="tab-content">
+          <div class="tab-pane active" id="tab-view-canvas-b">
+              <canvas id="canvas-b" width="350" height="600"></canvas>
+
+              <div class="canvas-b" style="display: none;">
+                <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
+                <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
+              </div>
+
+              <div class="well">
+                <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
+
+                $if not localparametersA:
+                  <div class="label label-danger">This font has not specified local parameters</div>
+                $else:
+                  <div style="font-family: monospace;">
+                    px: $localparametersA.px<br />
+                    width: $localparametersA.width<br />
+                    space: $localparametersA.space<br />
+                    xheight: $localparametersA.xheight<br />
+                    capital: $localparametersA.capital<br />
+                    ascender: $localparametersA.ascender<br />
+                    descender: $localparametersA.descender<br />
+                    skeleton: $localparametersA.skeleton<br />
+                    over: $localparametersA.over
+                  </div>
+              </div>
+          </div>
+          <div class="tab-pane fade" id="tab-point-canvas-b">
+              <form action="" method="post" class="extended">
+                  $:webctx.pointparam_extended_form.render()
+              </form>
+          </div>
       </div>
-
-
-      <div class="col-md-1">
-        <form action="" method="post" class="extended" style="float: left;">
-            $:webctx.pointparam_extended_form.render()
-        </form>
-      </div>
-
-    </div>
+    
   </div>
 </div>
 <script type="text/javascript">
 function ControlPoints(dataPoints, canvasid) {
   this.dataPoints = dataPoints;
-  this.pointform = $$(".layer-" + canvasid).find('form.extended');
+  this.pointform = $$("#tab-point-" + canvasid).find('form.extended');
   this.paths = [];
   this.texts = [];
 }
