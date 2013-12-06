@@ -11,14 +11,52 @@ Project $master.project.projectname
   form.extended * {
     font-size: 8pt;
   }
+
+  ul.vtabs {
+    position: absolute;
+
+    -webkit-transform: rotate(-90deg); 
+    -webkit-transform-origin: 45% 360%;
+     -moz-transform: rotate(-90deg); 
+      -ms-transform: rotate(-90deg); 
+       -o-transform: rotate(-90deg); 
+          transform: rotate(-90deg);
+  }
+
+  ul.vtabs-right {
+    -webkit-transform: rotate(90deg); 
+    -webkit-transform-origin: 90% 530%;
+     -moz-transform: rotate(90deg); 
+      -ms-transform: rotate(90deg); 
+       -o-transform: rotate(90deg); 
+          transform: rotate(90deg);
+  }
+
+  .vtabs li a {
+    white-space: nowrap;
+  }
+
 </style>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
 <script src="/static/js/bootstrap-slider.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
 <div class="row">
   <div class="col-md-4" style="position: relative;">
+
+    <ul class="nav nav-tabs vtabs">
+      <li>
+        <a href="A">Parmaters</a>
+      </li>
+      <li>
+        <a href="B">Parmaters B</a>
+      </li>
+    </ul>
+
+
     <h4 class="pull-right">Font A</h4>
     
     <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-left">
@@ -30,7 +68,7 @@ Project $master.project.projectname
         Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
         </option>
     </select>
-
+    
     <div style="clear: both;" class="extended-form">
       <button class="extended">show point form</button>
       <form action="" method="post" class="extended" style="display: none;">
@@ -38,7 +76,7 @@ Project $master.project.projectname
       </form>
     </div>
 
-    <canvas id="canvas-a" width="400" height="600"></canvas>
+    <canvas id="canvas-a" width="380" height="600"></canvas>
     
     <div class="canvas-a" style="display: none;">
       <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
@@ -70,7 +108,7 @@ Project $master.project.projectname
 
     <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/create/" class="btn btn-large btn-success">Create master from instance</a>
     
-    <canvas width="400" height="600" id="canvas-m"></canvas>
+    <canvas width="380" height="600" id="canvas-m"></canvas>
 
     <div class="well">
       <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
@@ -115,7 +153,17 @@ Project $master.project.projectname
     </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-4" style="position: relative;">
+    <ul class="nav nav-tabs vtabs vtabs-right">
+      <li>
+        <a href="A">Parmaters</a>
+      </li>
+      <li>
+        <a href="B">Parmaters B</a>
+      </li>
+    </ul>
+
+
     <h4 class="pull-left">Font B</h4>
 
     <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-right">
@@ -135,7 +183,7 @@ Project $master.project.projectname
       </form>
     </div>
 
-    <canvas id="canvas-b" width="400" height="600"></canvas>
+    <canvas id="canvas-b" width="380" height="600"></canvas>
 
     <div class="canvas-b" style="display: none;">
       <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
@@ -553,6 +601,6 @@ jQuery(
 
 
 function toggleExtendedForm() {
-  $$(this).next('form.extended').toggle();
+  $$(this).next('form.extended').toggle( 'slide', {'direction': 'right'} );
 }
 </script>
