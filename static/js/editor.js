@@ -8,7 +8,7 @@ function Editor() {
 }
 
 Editor.prototype.addAxis = function() {
-    var axis = $(this.editorAxis.outerhtml());
+    var axis = $(this.editorAxis[0].outerHTML);
     $('.editor-container').append(axis);
 
     var dropzones = axis.find('.dropzone');
@@ -25,7 +25,7 @@ Editor.prototype.addAxis = function() {
             $('.dropzone').css('background', '#ccc');
         }
     });
-    dropzones.show();
+    axis.removeClass('fade');
 
     return axis;
 }
