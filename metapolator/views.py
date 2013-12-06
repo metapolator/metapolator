@@ -577,7 +577,7 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                       inktrap_r=pointparam.inktrap_r)
         models.GlyphParam.create(**kwargs)
 
-    def roundpoint(self, coord):
+    def round(self, coord):
         return int(round(float(coord)))
 
     @raise404_notauthorized
@@ -622,6 +622,9 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
             if len(zpoints) != len(metapost_points):
                 print len(zpoints), ' zp != mp ', len(metapost_points)
                 continue
+
+            if session.get('mfparser', '') == 'controlpoints' and metapost_points:
+                metapost_points = metapost_points[1:] + [metapost_points[0]]
 
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
