@@ -4,7 +4,6 @@ Project $master.project.projectname
 </title>
 <style>
   form.extended {
-    position: absolute;
     background-color: #ccc;
   }
 
@@ -12,103 +11,86 @@ Project $master.project.projectname
     font-size: 8pt;
   }
 
-  ul.vtabs {
-    position: absolute;
-
-    -webkit-transform: rotate(-90deg); 
-    -webkit-transform-origin: 45% 360%;
-     -moz-transform: rotate(-90deg); 
-      -ms-transform: rotate(-90deg); 
-       -o-transform: rotate(-90deg); 
-          transform: rotate(-90deg);
-  }
-
-  ul.vtabs-right {
-    -webkit-transform: rotate(90deg); 
-    -webkit-transform-origin: 90% 530%;
-     -moz-transform: rotate(90deg); 
-      -ms-transform: rotate(90deg); 
-       -o-transform: rotate(90deg); 
-          transform: rotate(90deg);
-  }
-
-  .vtabs li a {
-    white-space: nowrap;
-  }
-
 </style>
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
 <script src="/static/js/bootstrap-slider.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="/static/js/jquery.tabSlideOut.v1.3.js"></script>
+
+<style type="text/css">
+.slide-out-div {
+    padding: 20px;
+    width: 200px;
+    background: #ccc;
+    border: 1px solid #29216d;
+}    
+</style>
 
 <div class="row">
-  <div class="col-md-4" style="position: relative;">
-
-    <ul class="nav nav-tabs vtabs">
-      <li>
-        <a href="A">Parmaters</a>
-      </li>
-      <li>
-        <a href="B">Parmaters B</a>
-      </li>
-    </ul>
-
-
-    <h4 class="pull-right">Font A</h4>
-    
-    <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-left">
-      $for m in masters:
-        $if master.id == m.id:
-          <option value="" selected="selected">
-        $else:
-          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
-        Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
-        </option>
-    </select>
-    
-    <div style="clear: both;" class="extended-form">
-      <button class="extended">show point form</button>
-      <form action="" method="post" class="extended" style="display: none;">
-          $:webctx.pointparam_extended_form.render()
-      </form>
-    </div>
-
-    <canvas id="canvas-a" width="380" height="600"></canvas>
-    
-    <div class="canvas-a" style="display: none;">
-      <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
-      <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
-    </div>
+  <div class="col-md-4">
   
-    <div class="well">
-      <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
+    <div class="row layer-canvas-a">
+      <div class="col-md-1" style="position: relative;">
+        <form action="" method="post" class="extended slide-out-div">
+            <a class="handle" href="javascript:;" style="background-color: black;">Parameter</a>
+            <div style="z-index: -1;">
+                $:webctx.pointparam_extended_form.render()
+            </div>
+        </form>
+      </div>
 
-      $if not localparametersA:
-        <div class="label label-danger">This font has not specified local parameters</div>
-      $else:
-        <div style="font-family: monospace;">
-          px: $localparametersA.px<br />
-          width: $localparametersA.width<br />
-          space: $localparametersA.space<br />
-          xheight: $localparametersA.xheight<br />
-          capital: $localparametersA.capital<br />
-          ascender: $localparametersA.ascender<br />
-          descender: $localparametersA.descender<br />
-          skeleton: $localparametersA.skeleton<br />
-          over: $localparametersA.over
+      <div class="col-md-11" style="z-index: 100; background-color: white;">
+        <h4 class="pull-right">Font A</h4>
+    
+        <select name="" id="" onchange="window.location=$$(this).val();" class="pull-left">
+          $for m in masters:
+            $if master.id == m.id:
+              <option value="" selected="selected">
+                Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+              </option>
+            $else:
+              <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
+              Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+              </option>
+        </select>
+
+        <canvas id="canvas-a" width="350" height="600"></canvas>
+
+        <div class="canvas-a" style="display: none;">
+          <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
+          <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
         </div>
+
+        <div class="well">
+          <h4>Parameters Font A <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
+
+          $if not localparametersA:
+            <div class="label label-danger">This font has not specified local parameters</div>
+          $else:
+            <div style="font-family: monospace;">
+              px: $localparametersA.px<br />
+              width: $localparametersA.width<br />
+              space: $localparametersA.space<br />
+              xheight: $localparametersA.xheight<br />
+              capital: $localparametersA.capital<br />
+              ascender: $localparametersA.ascender<br />
+              descender: $localparametersA.descender<br />
+              skeleton: $localparametersA.skeleton<br />
+              over: $localparametersA.over
+            </div>
+        </div>
+      </div>
     </div>
+
   </div>
 
-  <div class="col-md-4" style="border: solid 2px black;">
+  <div class="col-md-4">
     <h4>Metapolation</h4>
 
     <a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/create/" class="btn btn-large btn-success">Create master from instance</a>
     
-    <canvas width="380" height="600" id="canvas-m"></canvas>
+    <canvas width="350" height="600" id="canvas-m"></canvas>
 
     <div class="well">
       <h4>Global Parameters <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
@@ -153,68 +135,68 @@ Project $master.project.projectname
     </div>
   </div>
 
-  <div class="col-md-4" style="position: relative;">
-    <ul class="nav nav-tabs vtabs vtabs-right">
-      <li>
-        <a href="A">Parmaters</a>
-      </li>
-      <li>
-        <a href="B">Parmaters B</a>
-      </li>
-    </ul>
+  <div class="col-md-4">
 
+    <div class="row layer-canvas-b">
 
-    <h4 class="pull-left">Font B</h4>
+      <div class="col-md-11" style="z-index: 100; background-color: white;">
+        <h4 class="pull-right">Font B</h4>
+    
+        <select name="" id="" onchange="window.location=$$(this).val();" class="pull-left">
+          $for m in masters:
+            $if master.id == m.id:
+              <option value="" selected="selected">
+                Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+              </option>
+            $else:
+              <option value="/view/$master.project.projectname/$:'{0:03d}'.format(m.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/">
+              Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
+              </option>
+        </select>
 
-    <select name="" id="" onchange="window.location=jQuery(this).val();" class="pull-right">
-      $for m in masters:
-        $if masterfontb.id == m.id:
-          <option value="" selected="selected">
-        $else:
-          <option value="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(m.version)/$glyphid/">
-        Load Master $master.project.projectname $:'{0:03d}'.format(m.version)
-        </option>
-    </select>
+        <canvas id="canvas-b" width="350" height="600"></canvas>
 
-    <div style="clear: both;" class="extended-form">
-      <button class="extended">show point form</button>
-      <form action="" method="post" class="extended" style="display: none;">
-          $:webctx.pointparam_extended_form.render()
-      </form>
-    </div>
-
-    <canvas id="canvas-b" width="380" height="600"></canvas>
-
-    <div class="canvas-b" style="display: none;">
-      <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
-      <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
-    </div>
-
-    <div class="well">
-      <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
-      $if not localparametersB:
-        <div class="label label-danger">This font has not specified local parameters</div>
-      $else:
-        <div style="font-family: monospace;">
-          px: $localparametersB.px<br />
-          width: $localparametersB.width<br />
-          space: $localparametersB.space<br />
-          xheight: $localparametersB.xheight<br />
-          capital: $localparametersB.capital<br />
-          ascender: $localparametersB.ascender<br />
-          descender: $localparametersB.descender<br />
-          skeleton: $localparametersB.skeleton<br />
-          over: $localparametersB.over
+        <div class="canvas-a" style="display: none;">
+          <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
+          <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
         </div>
+
+        <div class="well">
+          <h4>Parameters Font B <small><a href="/view/$master.project.projectname/$:'{0:03d}'.format(master.version),$:'{0:03d}'.format(masterfontb.version)/$glyphid/settings/">change</a></small></h4>
+          $if not localparametersB:
+            <div class="label label-danger">This font has not specified local parameters</div>
+          $else:
+            <div style="font-family: monospace;">
+              px: $localparametersB.px<br />
+              width: $localparametersB.width<br />
+              space: $localparametersB.space<br />
+              xheight: $localparametersB.xheight<br />
+              capital: $localparametersB.capital<br />
+              ascender: $localparametersB.ascender<br />
+              descender: $localparametersB.descender<br />
+              skeleton: $localparametersB.skeleton<br />
+              over: $localparametersB.over
+            </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-1" style="position: relative;">
+        <form action="" method="post" class="extended slide-out-div left-slide-out-div">
+            <a class="left-handle" href="javascript:;" style="background-color: black;">Parameter</a>
+            <div style="z-index: -1;">
+                $:webctx.pointparam_extended_form.render()
+            </div>
+        </form>
+      </div>
+
     </div>
   </div>
 </div>
-
-
 <script type="text/javascript">
 function ControlPoints(dataPoints, canvasid) {
   this.dataPoints = dataPoints;
-  this.pointform = $$("#" + canvasid).siblings('.extended-form').find('form.extended');
+  this.pointform = $$(".layer-" + canvasid).find('form.extended');
   this.paths = [];
   this.texts = [];
 }
@@ -350,12 +332,12 @@ function Canvas(canvasid, width, height, source) {
 }
 
 Canvas.prototype.getPoint = function(x, y) {
-  var r = resize(this, x, y, this.width, this.height, 390 - 100, 390 - 100);
+  var r = resize(this, x, y, this.width, this.height, 350 - 100, 350 - 100);
   return new this.paper.Point(r.x, r.y);
 }
 
 Canvas.prototype.restore_original_coords = function(point) {
-  return resize(this, point.x, point.y, 390 - 100, 390 - 100, this.width, this.height);
+  return resize(this, point.x, point.y, 350 - 100, 350 - 100, this.width, this.height);
 }
 
 Canvas.prototype.renderGlyph = function(edges) {
@@ -381,7 +363,6 @@ Canvas.prototype.onMouseDrag = function(event) {
   if (!this.currentpath) {
     return;
   }
-  this.controlpoints.pointform.hide();
   this.box.position = event.point;
   this.currentpath.gpath.position = event.point;
   this.isdragged = true;
@@ -426,8 +407,6 @@ Canvas.prototype.onMouseUp = function(event) {
         input.val(this.currentpath.data[input.attr('name')]);
       }
     };
-  } else {
-    this.controlpoints.pointform.hide();
   };
 };
 
@@ -455,8 +434,6 @@ Canvas.prototype.saveParamCanceled = function(data) {}
 Canvas.prototype.saveParamSuccess = function(data) {
     var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges);
     glyphpreview.drawOn(this);
-
-    this.controlpoints.pointform.hide();
 
     var buttons = jQuery('.' + this.canvasid);
     buttons.css('display', 'block');
@@ -595,12 +572,31 @@ jQuery(
     $$('.slider2').slider();
     $$('.slider3').slider();
 
-    $$('button.extended').click(toggleExtendedForm);
+    $$('.slide-out-div').tabSlideOut({
+        tabHandle: '.handle',                     //class of the element that will become your tab
+        pathToTabImage: 'images/contact_tab.gif', //path to the image for the tab //Optionally can be set using css
+        imageHeight: '122px',                     //height of tab image           //Optionally can be set using css
+        imageWidth: '40px',                       //width of tab image            //Optionally can be set using css
+        tabLocation: 'right',                      //side of screen where tab lives, top, right, bottom, or left
+        speed: 300,                               //speed of animation
+        action: 'click',                          //options: 'click' or 'hover', action to trigger animation
+        topPos: '0px',                          //position from the top/ use if tabLocation is left or right
+        leftPos: '20px',                          //position from left/ use if tabLocation is bottom or top
+        fixedPosition: false                      //options: true makes it stick(fixed position) on scroll
+    });
+
+    $$('.left-slide-out-div').tabSlideOut({
+        tabHandle: '.left-handle',                     //class of the element that will become your tab
+        pathToTabImage: 'images/contact_tab.gif', //path to the image for the tab //Optionally can be set using css
+        imageHeight: '122px',                     //height of tab image           //Optionally can be set using css
+        imageWidth: '40px',                       //width of tab image            //Optionally can be set using css
+        tabLocation: 'left',                      //side of screen where tab lives, top, right, bottom, or left
+        speed: 300,                               //speed of animation
+        action: 'click',                          //options: 'click' or 'hover', action to trigger animation
+        topPos: '0px',                          //position from the top/ use if tabLocation is left or right
+        leftPos: '20px',                          //position from left/ use if tabLocation is bottom or top
+        fixedPosition: false                      //options: true makes it stick(fixed position) on scroll
+    });
   }
 );
-
-
-function toggleExtendedForm() {
-  $$(this).next('form.extended').toggle( 'slide', {'direction': 'right'} );
-}
 </script>
