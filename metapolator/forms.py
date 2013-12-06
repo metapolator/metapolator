@@ -11,8 +11,6 @@ PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint
                               Textbox('y', size=12),
                               Textbox('doubledash', size=12),
                               Textbox('tripledash', size=12),
-                              Textbox('superleft', size=12),
-                              Textbox('superright', size=12),
                               Textbox('leftp', size=12),
                               Textbox('rightp', size=12),
                               Textbox('downp', size=12),
@@ -23,9 +21,7 @@ PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint
                               Textbox('downp2', size=12),
                               Textbox('upp2', size=12),
                               Textbox('dir2', size=12),
-                              Textbox('tension', size=12),
                               Textbox('tensionand', size=12),
-                              Textbox('cycle', size=12),
                               Textbox('penshifted', size=12),
                               Textbox('pointshifted', size=12),
                               Textbox('angle', size=12),
@@ -35,12 +31,6 @@ PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint
                               Textbox('overcap', size=12),
                               Textbox('overasc', size=12),
                               Textbox('overdesc', size=12),
-                              Textbox('ascpoint', size=12),
-                              Textbox('descpoint', size=12),
-                              Textbox('stemcutter', size=12),
-                              Textbox('stemshift', size=12),
-                              Textbox('inktrap_l', size=12),
-                              Textbox('inktrap_r', size=12),
                               Button('save'))
 
 
