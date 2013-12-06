@@ -603,11 +603,12 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                 continue
 
             zpoints = glyph.get_zpoints()
-            metapost_points = []
 
+            points = []
             for contourpoints in json['edges'][0]['contours']:
                 if not contourpoints:
                     continue
+                metapost_points = []
                 for point in contourpoints:
                     if session.get('mfparser', '') == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][0]['x']),
@@ -617,14 +618,12 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                     if session.get('mfparser', '') == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][1]['x']),
                                                 'y': self.round(point['controls'][1]['y'])})
+                if session.get('mfparser', '') == 'controlpoints' and metapost_points:
+                    points = points + metapost_points[1:] + [metapost_points[0]]
 
-            # metapost_points = [metapost_points[-1]] + metapost_points[:-1]
-            if len(zpoints) != len(metapost_points):
-                print len(zpoints), ' zp != mp ', len(metapost_points)
+            if len(zpoints) != len(points):
+                print len(zpoints), ' zp != mp ', len(points)
                 continue
-
-            if session.get('mfparser', '') == 'controlpoints' and metapost_points:
-                metapost_points = metapost_points[1:] + [metapost_points[0]]
 
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
@@ -634,7 +633,7 @@ class CreateMasterVersion(app.page, GlyphPageMixin):
                                             unicode=glyph.unicode)
 
             i = 0
-            for point in metapost_points:
+            for point in points:
                 self.create_glyphpoint(newglypha, (i + 1), zpoints[i], point)
                 self.create_glyphpoint(newglyphb, (i + 1), zpoints[i], point)
                 i += 1
