@@ -24,7 +24,7 @@ import xmltomf
 from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
-    ParamForm, PointParamExtendedForm
+    PointParamExtendedForm
 from tools import putFontAllglyphs, \
     makefont, get_json, project_exists, writeGlyphlist, \
     writeGlobalParam, makefont_single
@@ -431,15 +431,21 @@ class ViewVersion(app.page, GlyphPageMixin):
         localparametersB = models.LocalParam.get(id=self.get_rgt_master().idlocalb)
         globalparams = models.GlobalParam.get(id=self.get_lft_master().idglobal)
 
-        pointform = ParamForm()
-
         masters = models.Master.filter(project_id=self.get_project().id)
         web.ctx.project = self.get_project()
         web.ctx.pointparam_extended_form = PointParamExtendedForm()
 
+        web.ctx.settings_forma = LocalParamForm()
+        if localparametersA:
+            web.ctx.settings_forma.fill(localparametersA.as_dict())
+
+        web.ctx.settings_formb = LocalParamForm()
+        if localparametersB:
+            web.ctx.settings_formb.fill(localparametersB.as_dict())
+
         return render.view(self.get_lft_master(), self.get_rgt_master(),
                            masters, glyphid, localparametersA,
-                           localparametersB, globalparams, pointform)
+                           localparametersB, globalparams)
 
     @raise404_notauthorized
     def POST(self, name, version, versionfontb, glyphid):

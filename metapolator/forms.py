@@ -6,30 +6,6 @@ from web.form import Form, Textbox, Dropdown, Button, Validator, Password, \
 import models
 
 
-CHOICES = [('select', 'select'), ('startp', 'startp'),
-           ('doubledash', 'doubledash'), ('tripledash', 'tripledash'),
-           ('superleft', 'superleft'), ('superright', 'superright'),
-           ('leftp', 'leftp'), ('rightp', 'rightp'),
-           ('downp', 'downp'), ('upp', 'upp'),
-           ('dir', 'dir'), ('leftp2', 'leftp2'),
-           ('rightp2', 'rightp2'), ('downp2', 'downp2'),
-           ('upp2', 'upp2'), ('dir2', 'dir2'),
-           ('tension', 'tension'), ('tensionand', 'tensionand'),
-           ('cycle', 'cycle'), ('penshifted', 'penshifted'),
-           ('pointshifted', 'pointshifted'), ('angle', 'angle'),
-           ('penwidth', 'penwidth'), ('overx', 'overx'),
-           ('overbase', 'overbase'), ('overcap', 'overcap'),
-           ('overasc', 'overasc'), ('overdesc', 'overdesc'),
-           ('ascpoint', 'ascpoint'), ('descpoint', 'descpoint'),
-           ('stemcutter', 'stemcutter'), ('stemshift', 'stemshift'),
-           ('inktrap_l', 'inktrap_l'), ('inktrap_r', 'inktrap_r')]
-
-
-ParamForm = Form(Dropdown('select', CHOICES, description="Parameter"),
-                 Textbox('value', size=15, description="Value", id="parmvaltext"),
-                 Button('save'))
-
-
 PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint"),
                               Textbox('x', size=12),
                               Textbox('y', size=12),

@@ -1,4 +1,4 @@
-$def with (master, masterfontb, masters, glyphid, localparametersA, localparametersB, globalparams, pointform)
+$def with (master, masterfontb, masters, glyphid, localparametersA, localparametersB, globalparams)
 <title>
 Project $master.project.projectname
 </title>
@@ -37,6 +37,7 @@ Project $master.project.projectname
       <ul class="nav nav-tabs" style="clear: both;">
           <li class="active"><a href="#tab-view-canvas-a" data-toggle="tab">View</a></li>
           <li><a href="#tab-point-canvas-a" data-toggle="tab">Point</a></li>
+          <li><a href="#tab-settings-canvas-a" data-toggle="tab">Settings</a></li>
       </ul>
 
       <div class="tab-content">
@@ -70,6 +71,11 @@ Project $master.project.projectname
           <div class="tab-pane fade" id="tab-point-canvas-a">
               <form action="" method="post" class="extended">
                   $:webctx.pointparam_extended_form.render()
+              </form>
+          </div>
+          <div class="tab-pane fade" id="tab-settings-canvas-a">
+              <form action="" method="post">
+                  $:webctx.settings_forma.render()
               </form>
           </div>
       </div>
@@ -145,6 +151,7 @@ Project $master.project.projectname
       <ul class="nav nav-tabs" style="clear: both;">
           <li class="active"><a href="#tab-view-canvas-b" data-toggle="tab">View</a></li>
           <li><a href="#tab-point-canvas-b" data-toggle="tab">Point</a></li>
+          <li><a href="#tab-settings-canvas-b" data-toggle="tab">Settings</a></li>
       </ul>
 
       <div class="tab-content">
@@ -178,6 +185,11 @@ Project $master.project.projectname
           <div class="tab-pane fade" id="tab-point-canvas-b">
               <form action="" method="post" class="extended">
                   $:webctx.pointparam_extended_form.render()
+              </form>
+          </div>
+          <div class="tab-pane fade" id="tab-settings-canvas-b">
+              <form action="" method="post">
+                  $:webctx.settings_formb.render()
               </form>
           </div>
       </div>
