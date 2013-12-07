@@ -417,6 +417,8 @@ class Editor(app.page):
 
     @raise404_notauthorized
     def GET(self):
+        web.ctx.pointparam_extended_form = PointParamExtendedForm()
+        web.ctx.settings_form = LocalParamForm()
         return render.editor()
 
 
@@ -925,6 +927,102 @@ def prepare_master_environment(master):
         except (IOError, OSError):
             raise
     writeGlobalParam(master)
+
+
+class UploadZIP(app.page, GlyphPageMixin):
+
+    path = '/upload/'
+
+    @raise404_notauthorized
+    def POST(self):
+        x = web.input(ufofile={}, project_id=None)
+        try:
+            rawzipcontent = x.ufofile.file.read()
+            if not rawzipcontent:
+                raise web.badrequest()
+            project_id = int(x.project_id)
+        except (AttributeError, TypeError):
+            raise web.badrequest()
+
+        if not project_id:
+            projects = models.Project.all()
+            count = projects.filter(models.Project.projectname.like('UntitledProject%')).count()
+            project = models.Project.create(projectname='UntitledProject%s' % (count + 1))
+        else:
+            project = models.Project.get(id=project_id)
+            if not project:
+                raise web.notfound()
+
+        filename = op.join(project.get_directory(), x.ufofile.filename)
+        try:
+            with open(filename, 'w') as fp:
+                fp.write(rawzipcontent)
+        except (IOError, OSError):
+            models.Project.delete(project)  # delete created project
+            raise web.badrequest()
+
+        prepare_environment_directory()
+
+        try:
+            fzip = zipfile.ZipFile(filename)
+
+            namelist = fzip.namelist()
+
+            iscorrect_ufo = False
+            ufo_dirs = []
+            for f in namelist:
+                if re.search(r'.ufo[\\/]$', f):
+                    ufo_dirs.append(re.sub(r'[\\/]', '', f))
+                if re.search(r'.ufo[\\/]glyphs[\\/].*?.glif$', f, re.IGNORECASE):
+                    iscorrect_ufo = True
+
+            if not iscorrect_ufo:
+                raise web.badrequest()
+
+            FontNameA = ufo_dirs[0]
+            try:
+                FontNameB = ufo_dirs[1]
+            except IndexError:
+                FontNameB = ''
+
+            version = models.Master.max(models.Master.version,
+                                        project_id=project.id)
+
+            if not version:
+                version = 0
+
+            version += 1
+            master = models.Master.create(project_id=project.id,
+                                          version=version)
+
+            fontpath = master.get_fonts_directory()
+
+            fzip.extractall(fontpath)
+
+            ufopath = master.get_ufo_path('a')
+            shutil.move(op.join(fontpath, FontNameA), ufopath)
+            if FontNameB:
+                ufopath = master.get_ufo_path('b')
+                shutil.move(op.join(fontpath, FontNameB), ufopath)
+            else:
+                ufopath = master.get_ufo_path('b')
+                shutil.copytree(master.get_ufo_path('a'), ufopath)
+
+            prepare_master_environment(master)
+
+            putFontAllglyphs(master)
+            writeGlobalParam(master)
+            execute_metapost_for_all_glyphs(master)
+        except (zipfile.BadZipfile, OSError, IOError):
+            raise web.badrequest()
+
+        fontsource = 'A'
+
+        glyph = models.Glyph.filter(fontsource=fontsource, master_id=master.id).first()
+
+        self.initialize(project.projectname, version, version)
+        result = self.update_cells(glyph.name, fontsource)
+        return simplejson.dumps({'project_id': project.id, 'data': result})
 
 
 class CreateProject(app.page):

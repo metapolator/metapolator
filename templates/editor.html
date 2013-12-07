@@ -11,40 +11,60 @@ $var title: Editor
         text-align: center;
     }
 
-    #btn-add-axis {
+    #btn-add-axes {
         margin-top: 32px;
     }
 
-    .editor-axis {
+    .editor-axes {
         margin-bottom: 32px;
     }
 </style>
 
 <div class="editor-container"></div>
 
-<button id="btn-add-axis" class="btn btn-success">Add axis</button>
+<button id="btn-add-axes" class="btn btn-success">Add axes</button>
 
-<div class="row editor-axis fade">
+<div class="row editor-axes fade">
 
-    <div class="col-md-4 dropzone">
-        Drop ZIP with UFO here
+    <div class="col-md-4 axis" axis-position="left">
+        <div class="dropzone">
+            Drop ZIP with UFO here
+        </div>
     </div>
     
     <div class="col-md-4">
 
     </div>
     
-    <div class="col-md-4 dropzone">
-        Drop ZIP with UFO here
+    <div class="col-md-4 axis" axis-position="right">
+        <div class="dropzone">
+            Drop ZIP with UFO here
+        </div>
     </div>
 
 </div>
+<link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-slider.js"></script>
 <script type="text/javascript" src="/static/js/jquery.filedrop.js"></script>
 <script type="text/javascript" src="/static/js/canvas.js"></script>
 <script type="text/javascript" src="/static/js/editor.js"></script>
 <script type="text/javascript">
     $$(function(){
         var editor = new Editor();
-        $$('#btn-add-axis').on('click', editor.addAxis.bind(editor));
+        $$('#btn-add-axes').on('click', editor.addAxes.bind(editor));
     });
 </script>
+
+
+<div class="fade" id="templateform">
+    <form action="" method="post" class="extended">
+      $:webctx.pointparam_extended_form.render()
+    </form>
+</div>
+
+<div class="fade" id="settings">
+    <form action="" method="post" class="extended">
+      $:webctx.settings_form.render()
+    </form>
+</div>

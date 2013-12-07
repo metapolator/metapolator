@@ -132,6 +132,7 @@ class Master(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
+
     idlocala = Column(Integer, ForeignKey('localparam.id'))
     idlocalb = Column(Integer, ForeignKey('localparam.id'))
     idglobal = Column(Integer, ForeignKey('globalparam.id'))
