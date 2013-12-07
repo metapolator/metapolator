@@ -411,6 +411,15 @@ def get_edges_json_from_db(master, glyphid, ab_source='A'):
     return {'width': glyph.width, 'points': _points}
 
 
+class Editor(app.page):
+
+    path = '/editor/'
+
+    @raise404_notauthorized
+    def GET(self):
+        return render.editor()
+
+
 class ViewVersion(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/'

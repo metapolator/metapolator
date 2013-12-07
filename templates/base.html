@@ -2,6 +2,7 @@ $def with (page)
 
 <html>
 <head>
+<title>$page.get("title", "")</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Expires" CONTENT="-1">
@@ -9,7 +10,8 @@ $def with (page)
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
 <style>
 @font-face {
     font-family: 'metapolator';
@@ -99,7 +101,15 @@ right {
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/fonts/">Settings</a></li>
+            $if page.get('title') == 'Fonts':
+              <li class="active"><a href="/fonts/">Fonts</a></li>
+            $else:
+              <li><a href="/fonts/">Fonts</a></li>
+
+            $if page.get('title') == 'Editor':
+              <li class="active"><a href="/editor/">Editor</a></li>
+            $else:
+              <li><a href="/editor/">Editor</a></li>
             $if is_loggedin():
               <li><a href="$working_url('static/font.otf')">Download OTF</a></li>
             <li><a href="/settings/globals/">Parameters</a></li>
