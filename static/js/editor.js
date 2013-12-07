@@ -69,6 +69,9 @@ Editor.prototype.addAxes = function() {
                                                 '  <div class="tab-pane fade" id="tab-settings-canvas-{0}">' + settings_html + '</div>' + 
                                                 '</div>', AXES_PAIRS[this.axes.length][position == 'left'? 0 : 1]));
 
+            axis_htmltemplate.find('canvas').attr('glyph-project-id', response.project_id)
+                .attr('glyph-master-id', response.master_id);
+
             var header = $('<h4>').text('Font ' + AXES_PAIRS[this.axes.length][position == 'left'? 0 : 1]);
             axis.append(header);
             axis.append(axis_htmltemplate);

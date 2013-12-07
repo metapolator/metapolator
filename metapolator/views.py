@@ -422,6 +422,81 @@ class Editor(app.page):
         return render.editor()
 
 
+class EditorSavePoint(app.page, GlyphPageMixin):
+
+    path = '/editor/save-point/'
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(project_id=0, master_id=0,
+                             id='', x='', y='')
+
+        project = models.Project.get(id=postdata.project_id)
+        if not project:
+            raise web.notfound()
+
+        master = models.Master.get(id=postdata.master_id)
+        if not master:
+            return web.notfound()
+
+        if not models.GlyphOutline.exists(id=postdata.id):
+            return web.notfound()
+
+        glyphoutline = models.GlyphOutline.get(id=postdata.id)
+        glyphoutline.x = postdata.x
+        glyphoutline.y = postdata.y
+        web.ctx.orm.commit()
+
+        fontsource = 'A'
+        self.initialize(project.projectname, master.version, master.version)
+        result = self.update_cells(glyphoutline.glyph.name, fontsource)
+        return simplejson.dumps(result)
+
+
+class SaveParam(app.page, GlyphPageMixin):
+
+    path = '/editor/save-param/'
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(project_id=0, master_id=0, id='')
+
+        project = models.Project.get(id=postdata.project_id)
+        if not project:
+            raise web.notfound()
+
+        master = models.Master.get(id=postdata.master_id)
+        if not master:
+            return web.notfound()
+
+        if not models.GlyphOutline.exists(id=postdata.id):
+            return web.notfound()
+
+        glyphoutline = models.GlyphOutline.get(id=postdata.id)
+
+        form = PointParamExtendedForm()
+        if form.validates():
+            values = form.d
+            del values['zpoint']
+            del values['save']
+            glyphoutline.x = float(values['x'])
+            glyphoutline.y = float(values['y'])
+            web.ctx.orm.commit()
+
+            del values['x']
+            del values['y']
+            for key in values:
+                if values[key] == '':
+                    values[key] = None
+            models.GlyphParam.update(glyphoutline_id=postdata.id,
+                                     values=values)
+
+        fontsource = 'A'
+        self.initialize(project.projectname, master.version, master.version)
+        result = self.update_cells(glyphoutline.glyph.name, fontsource)
+        return simplejson.dumps(result)
+
+
 class ViewVersion(app.page, GlyphPageMixin):
 
     path = '/view/([-.\w\d]+)/(\d{3,}),(\d{3,})/(\d+)/'
@@ -1018,11 +1093,13 @@ class UploadZIP(app.page, GlyphPageMixin):
 
         fontsource = 'A'
 
-        glyph = models.Glyph.filter(fontsource=fontsource, master_id=master.id).first()
+        glyph = models.Glyph.filter(fontsource=fontsource,
+                                    master_id=master.id).first()
 
         self.initialize(project.projectname, version, version)
         result = self.update_cells(glyph.name, fontsource)
-        return simplejson.dumps({'project_id': project.id, 'data': result})
+        return simplejson.dumps({'project_id': project.id, 'data': result,
+                                 'master_id': master.id, 'glyph_id': glyph.id})
 
 
 class CreateProject(app.page):

@@ -244,6 +244,8 @@ class GlyphOutline(Base, UserQueryMixin):
     master_id = Column(Integer, ForeignKey('master.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
 
+    glyph = relationship('Glyph', backref='glyph')
+
     glyphname = Column(String(3), index=True)
     fontsource = Column(Enum('A', 'B'), index=True)
     pointnr = Column(Integer, index=True)
