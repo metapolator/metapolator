@@ -179,10 +179,12 @@ Canvas.prototype.onMouseUp = function(event) {
       var x = event.point.x;
       var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
-      jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-point/', {
+      jQuery.post('save-point/', {
           id: this.currentpath.data.glyphoutline_id,
           x: xycoord.x,
-          y: 500 - xycoord.y
+          y: 500 - xycoord.y,
+          project_id: $('#' + this.canvasid).attr('glyph-project-id'),
+          master_id: $('#' + this.canvasid).attr('glyph-master-id')
         },
         function(data) {
             this.controlpoints.dataPoints = jQuery.parseJSON(data).zpoints;
@@ -222,8 +224,9 @@ Canvas.prototype.saveParamRequest = function(data, successhandler) {
   var xycoord = this.restore_original_coords(new paper.Point(x, y));
   data.x = xycoord.x;
   data.y = 500 - xycoord.y;
-  jQuery.post('/view/$master.project.projectname/$:"{0:03d}".format(master.version),$:"{0:03d}".format(masterfontb.version)/$glyphid/save-param/',
-              data)
+  data.project_id = $('#' + this.canvasid).attr('glyph-project-id');
+  data.master_id = $('#' + this.canvasid).attr('glyph-master-id');
+  jQuery.post('save-param/', data)
         .fail(this.saveParamException.bind(this))
         .success(successhandler || this.saveParamSuccess.bind(this));
 }
