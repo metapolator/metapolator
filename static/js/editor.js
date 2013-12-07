@@ -15,6 +15,18 @@ Editor.prototype.addAxes = function() {
     var axes = $(this.editorAxes[0].outerHTML);
     $('.editor-container').append(axes);
 
+    if (!this.axes.length) {
+        var metaxes = $('<div id="metapolation">' +
+                        '  <h4>Metapolation</h4>' +
+                        '  <a href="javascript:;" class="btn btn-large btn-success">Create master from instance</a>' +
+                        '  <canvas width="350" height="600" id="canvas-m"></canvas>' + 
+                        '</div>');
+        axes.find('div[axis-position=middle]').append(metaxes);
+    }
+
+    axes.find('.axis[axis-position=left]').attr('axis-label', AXES_PAIRS[this.axes.length][0]);
+    axes.find('.axis[axis-position=right]').attr('axis-label', AXES_PAIRS[this.axes.length][1]);
+
     var dropzones = axes.find('.dropzone');
     dropzones.filedrop({
         fallback_id: 'upload_button',
@@ -47,11 +59,11 @@ Editor.prototype.addAxes = function() {
             this.project_id = response.project_id;
 
             var axis = this.targetdrop.parent('div.axis');
-            var position = axis.attr('axis-position');
+            var label = axis.attr('axis-label');
             var pointform_html = $('#templateform').html();
             var settings_html = $('#settings').html();
 
-            var dom_canvas_id = 'canvas-' + AXES_PAIRS[this.axes.length][position == 'left'? 0 : 1];
+            var dom_canvas_id = 'canvas-' + label;
             axis_htmltemplate = $(String.format('<ul class="nav nav-tabs" style="clear: both;">' + 
                                                 '  <li class="active"><a href="#tab-view-canvas-{0}" data-toggle="tab">View</a></li>' +
                                                 '  <li><a href="#tab-point-canvas-{0}" data-toggle="tab">Point</a></li>' +
@@ -67,12 +79,12 @@ Editor.prototype.addAxes = function() {
                                                 '  </div>' +
                                                 '  <div class="tab-pane fade" id="tab-point-canvas-{0}">' + pointform_html + '</div>' + 
                                                 '  <div class="tab-pane fade" id="tab-settings-canvas-{0}">' + settings_html + '</div>' + 
-                                                '</div>', AXES_PAIRS[this.axes.length][position == 'left'? 0 : 1]));
+                                                '</div>', label));
 
             axis_htmltemplate.find('canvas').attr('glyph-project-id', response.project_id)
                 .attr('glyph-master-id', response.master_id);
 
-            var header = $('<h4>').text('Font ' + AXES_PAIRS[this.axes.length][position == 'left'? 0 : 1]);
+            var header = $('<h4>').text(label);
             axis.append(header);
             axis.append(axis_htmltemplate);
 
@@ -80,13 +92,20 @@ Editor.prototype.addAxes = function() {
             canvas.setZpoints(response.data.zpoints);
             canvas.renderGlyph(response.data.R.edges);
             canvas.showbox();
-            // A_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
+
+            if (!this.metapCanvas) {
+                this.metapCanvas = new Canvas('canvas-m', response.data.M.width, response.data.M.height);
+                this.metapCanvas.renderGlyph(response.data.M.edges);
+                this.metapCanvas.draw();
+            }
+            canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
             canvas.draw();
 
             this.targetdrop.hide();
         }.bind(this)
     });
     axes.removeClass('fade');
+    this.axes.push(axes);
 
     return axes;
 }
