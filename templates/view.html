@@ -4,11 +4,11 @@ $var title: $master.project.projectname
 
 <style>
   form.extended {
-    background-color: #ccc;
+    background-color: white;
   }
 
   form.extended * {
-    font-size: 8pt;
+    font-size: 10pt;
   }
 
 </style>
@@ -54,7 +54,7 @@ $var title: $master.project.projectname
                 $if not localparametersA:
                   <div class="label label-danger">This font has not specified local parameters</div>
                 $else:
-                  <div style="font-family: monospace;">
+                  <div style="font-family: monospace; ">
                     px: $localparametersA.px<br />
                     width: $localparametersA.width<br />
                     space: $localparametersA.space<br />
