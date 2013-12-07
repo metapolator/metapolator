@@ -15,6 +15,15 @@ Editor.prototype.addAxes = function() {
     var axes = $(this.editorAxes[0].outerHTML);
     $('.editor-container').append(axes);
 
+    if (!this.axes.length) {
+        var metaxes = $('<div id="metapolation">' +
+                        '  <h4>Metapolation</h4>' +
+                        '  <a href="javascript:;" class="btn btn-large btn-success">Create master from instance</a>' +
+                        '  <canvas width="350" height="600" id="canvas-m"></canvas>' + 
+                        '</div>');
+        axes.find('div[axis-position=middle]').append(metaxes);
+    }
+
     axes.find('.axis[axis-position=left]').attr('axis-label', AXES_PAIRS[this.axes.length][0]);
     axes.find('.axis[axis-position=right]').attr('axis-label', AXES_PAIRS[this.axes.length][1]);
 
@@ -83,7 +92,13 @@ Editor.prototype.addAxes = function() {
             canvas.setZpoints(response.data.zpoints);
             canvas.renderGlyph(response.data.R.edges);
             canvas.showbox();
-            // A_canvas.onGlyphLoaded = M_canvas.redrawglyph.bind(M_canvas);
+
+            if (!this.metapCanvas) {
+                this.metapCanvas = new Canvas('canvas-m', response.data.M.width, response.data.M.height);
+                this.metapCanvas.renderGlyph(response.data.M.edges);
+                this.metapCanvas.draw();
+            }
+            canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
             canvas.draw();
 
             this.targetdrop.hide();
