@@ -12,7 +12,7 @@ class DifferentZPointError(Exception):
     pass
 
 
-def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
+def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None):
     """ Save current points to mf file
 
         master is an instance of models.Master
@@ -25,6 +25,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     if not glyphB:
         glyphB = glyphA
 
+    if not glyphC:
+        glyphC = glyphA
+
+    if not glyphD:
+        glyphD = glyphA           
+
+
     if not stdout_fip:
         path = op.join(master.get_fonts_directory(), "glyphs")
         if not op.exists(path):
@@ -36,17 +43,20 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("% File parsed with Metapolator %\n")
     fip.write("% box dimension definition %\n")
 
+
     '%.2f' % (glyphA.width / 100.)
-    w = '%.2f' % (glyphA.width / 100.)
-    w2 = '%.2f' % (glyphB.width / 100.)
+    wA = '%.2f' % (glyphA.width / 100.)
+    wB = '%.2f' % (glyphB.width / 100.)
+    wC = '%.2f' % (glyphC.width / 100.)
+    wD = '%.2f' % (glyphD.width / 100.)    
+
+
     g = glyphA.name  # get from glyphA as we sure that glypha and glyphb exist in font project
 
     fip.write("\n")
 
-    str_ = ('beginfontchar({glyph}, (({width}*A_width + metapolation * '
-            '({bwidth}*B_width - {width}*A_width)) + '
-            'spacing_{glyph}R) * width_{glyph}, 0, 0 );')
-    fip.write(str_.format(width=w, glyph=glyphA.name, bwidth=w2))
+    str_ = ('beginfontchar({glyph}, ((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) / 2 ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
+    fip.write(str_.format(Awidth=wA, glyph=glyphA.name, Bwidth=wB, Cwidth=wC, Dwidth=wD))
 
     # point coordinates font A ################
 
@@ -64,19 +74,30 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
     fontb_outlines = list(query)
 
+    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+    query = query.filter(models.GlyphOutline.glyph_id == glyphC.id)
+    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    fontc_outlines = list(query)
+
+    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+    query = query.filter(models.GlyphOutline.glyph_id == glyphD.id)
+    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    fontd_outlines = list(query)
+
+
     for item, param in fonta_outlines:
 
         znamel = re.match('z(\d+)l', param.pointname)
         znamer = re.match('z(\d+)r', param.pointname)
         zeile = None
         if znamel and param.pointname == znamel.group(0):
-            zeile = "px{index}l := {xvalue}u ; py{index}l := {yvalue}u ;"
+            zeile = "Apx{index}l := {xvalue}u ; Apy{index}l := {yvalue}u ;"
             zeile = zeile.format(index=znamel.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "px{index}r := {xvalue}u ; py{index}r := {yvalue}u ;"
+            zeile = "Apx{index}r := {xvalue}u ; Apy{index}r := {yvalue}u ;"
             zeile = zeile.format(index=znamer.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
@@ -85,59 +106,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             fip.write("\n")
             fip.write(zeile)
 
-    # reading mid points font A
 
-    fip.write("\n")
-    fip.write("""% point coordinates font A""")
-    fip.write("\n\n")
 
-    index = 1
-    for item, param in fonta_outlines:
-
-        znamer = re.match('z(\d+)r', param.pointname)
-
-        if znamer and param.pointname == znamer.group(0):
-            zeile = ".5(px{0}l + px{0}r) = x2{0}0;".format(index)
-            fip.write(zeile + '\n')
-
-            zeile = ".5(py{0}l + py{0}r) = y2{0}0;".format(index)
-            fip.write(zeile + '\n')
-
-            index += 1
-
-    fip.write("\n")
-    fip.write("""% point coordinates font A""")
-    fip.write("\n\n")
-
-    index = 1
-    for item, param in fonta_outlines:
-        znamer = re.match('z(\d+)r', param.pointname)
-
-        if znamer and param.pointname == znamer.group(0):
-            zeile = "px{0}l = x{0}Bl; py{0}l = y{0}Bl;".format(index)
-            fip.write(zeile + '\n')
-
-            zeile = "px{0}r = x{0}Br; py{0}r = y{0}Br;".format(index)
-            fip.write(zeile + '\n')
-
-            index += 1
-
-    # reading pen widths Font A ################
-
-    fip.write("\n")
-    fip.write("""% pen widhts Font A """)
-    fip.write("\n\n")
-
-    index = 1
-
-    for item, param in fonta_outlines:
-        znamer = re.match('z(\d+)r', param.pointname)
-
-        if znamer and param.pointname == znamer.group(0):
-            zeile = "dist{0} := length (z{0}Bl-z{0}Br);".format(index)
-            fip.write(zeile + '\n')
-
-            index += 1
 
 # point coordinates font B ################
 
@@ -152,13 +122,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
         zeile = None
         if znamel and param.pointname == znamel.group(0):
-            zeile = "ppx{index}l := {xvalue}u ; ppy{index}l := {yvalue}u ;"
+            zeile = "Bpx{index}l := {xvalue}u ; Bpy{index}l := {yvalue}u ;"
             zeile = zeile.format(index=znamel.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "ppx{index}r := {xvalue}u ; ppy{index}r := {yvalue}u ;"
+            zeile = "Bpx{index}r := {xvalue}u ; Bpy{index}r := {yvalue}u ;"
             zeile = zeile.format(index=znamer.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
@@ -167,363 +137,70 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             fip.write("\n")
             fip.write(zeile)
 
-# reading mid points font B
+
+# point coordinates font C ################
 
     fip.write("\n")
-    fip.write("""% point coordinates font B""")
-    fip.write("\n\n")
+    fip.write("""% point coordinates font C""")
+    fip.write("\n")
 
-    index = 1
-    for item, param in fontb_outlines:
+# points for l
 
+    for item, param in fontc_outlines:
+        znamel = re.match('z(\d+)l', param.pointname)
         znamer = re.match('z(\d+)r', param.pointname)
+        zeile = None
+        if znamel and param.pointname == znamel.group(0):
+            zeile = "Cpx{index}l := {xvalue}u ; Cpy{index}l := {yvalue}u ;"
+            zeile = zeile.format(index=znamel.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = ".5(ppx{0}l + ppx{0}r) = x2{0}A;".format(index)
-            fip.write(zeile + '\n')
+            zeile = "Cpx{index}r := {xvalue}u ; Cpy{index}r := {yvalue}u ;"
+            zeile = zeile.format(index=znamer.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
 
-            zeile = ".5(ppy{0}l + ppy{0}r) = y2{0}A;".format(index)
-            fip.write(zeile + '\n')
+        if zeile:
+            fip.write("\n")
+            fip.write(zeile)
 
-            index += 1
 
-# reading fake l and r points Font B ################
+
+# point coordinates font D ################
 
     fip.write("\n")
-    fip.write("""% fake l and r points Font B""")
-    fip.write("\n\n")
+    fip.write("""% point coordinates font D""")
+    fip.write("\n")
 
-    index = 1
+# points for l
 
     for item, param in fontb_outlines:
+        znamel = re.match('z(\d+)l', param.pointname)
         znamer = re.match('z(\d+)r', param.pointname)
+        zeile = None
+        if znamel and param.pointname == znamel.group(0):
+            zeile = "Dpx{index}l := {xvalue}u ; Dpy{index}l := {yvalue}u ;"
+            zeile = zeile.format(index=znamel.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "ppx{0}l = x{0}Cl; ppy{0}l = y{0}Cl;".format(index)
-            fip.write(zeile + '\n')
+            zeile = "Dpx{index}r := {xvalue}u ; Dpy{index}r := {yvalue}u ;"
+            zeile = zeile.format(index=znamer.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
 
-            zeile = "ppx{0}r = x{0}Cr; ppy{0}r = y{0}Cr;".format(index)
-            fip.write(zeile + '\n')
+        if zeile:
+            fip.write("\n")
+            fip.write(zeile)
 
-            index += 1
 
-# reading pen widths Font B ################
+
 
     fip.write("\n")
-    fip.write("""% pen width Font B""")
-    fip.write("\n\n")
-
-    index = 1
-    for item, param in fontb_outlines:
-
-        znamer = re.match('z(\d+)r', param.pointname)
-
-        if znamer and param.pointname == znamer.group(0):
-            zeile = "dist{0}B := length (z{0}Cl - z{0}Cr);".format(index)
-            fip.write(zeile + '\n')
-
-            index += 1
-
-# pen angle (A and B, for B we dont need to read from db) ################
-
-#    fip.write("\n")
-#    fip.write("""% pen angle Font A""")
-#    fip.write("\n\n")
-
-#    index = 1
-#    for item, param in fonta_outlines:
-#        znamer = re.match('z(\d+)r', param.pointname)
-
-#        if znamer and param.pointname == znamer.group(0):
-#            zeile = "ang{0} := angle ((z{0}Br + (metapolation * (z{0}Cr - z{0}Br))) - (z{0}Bl + (metapolation * (z{0}Cl - z{0}Bl))));".format(index)
-#            index += 1
-#            fip.write(zeile + '\n')
-
-# reading extra pen angle Font B  ################
-
-    fip.write("\n")
-    fip.write("""% test extra pen angle Font B""")
-
-    inattr = 0
-    ivn = 0
-    strz = ""
-    zznb = []  # for font B save zzn
-
-    angle = []
-    angleval_B = []
-    startp = []
-    startpval = []
-
-    i = 1
-    for item, param in fontb_outlines:
-        znamer = re.match('z(\d+)r', param.pointname)
-        znamel = re.match('z(\d+)l', param.pointname)
-        zname = re.match('z(\d+)l', param.pointname)
-
-        x = item.x
-        y = item.y
-
-        im = param.pointname
-
-        istartp = param.startp
-        iangle = param.angle
-
-        if znamel and im == znamel.group(0):
-            zznb.append(i)
-            if istartp is not None:
-                istartpval = param.startp
-                startp.append("startp")
-                startpval.append(istartpval)
-
-            if iangle is not None:
-                iangleval = param.angle
-                angle.append("angle")
-                angleval_B.append(iangleval)
-            else:
-                angle.append("")
-                angleval_B.append(0)
-
-    # passing angleval_B to extra pen angle Font A
-
-
-    # reading extra pen angle Font A
-
-    fip.write("\n")
-    fip.write("""% test extra pen angle Font A""")
-
-    inattr = 0
-    ivn = 0
-    strz = ""
-    zzn = []
-
-    angle = []
-    angleval = []
-    startp = []
-    startpval = []
-
-    i = 1
-    for item, param in fonta_outlines:
-
-        znamer = re.match('z(\d+)r', param.pointname)
-        znamel = re.match('z(\d+)l', param.pointname)
-        zname = re.match('z(\d+)l', param.pointname)
-
-        x = item.x
-        y = item.y
-
-        im = param.pointname
-
-        # x and y are attributes of GlyphOutline
-        # another attributes are in GlyphParam, so we have to make query
-        # to that to get attributes
-        istartp = param.startp
-        iangle = param.angle
-
-        if znamel and im == znamel.group(0):
-            zzn.append(i)
-            if istartp is not None:
-                istartpval = param.startp
-                startp.append("startp")
-                startpval.append(istartpval)
-
-            if iangle is not None:
-                iangleval = param.angle
-                angle.append("angle")
-                angleval.append(iangleval)
-            else:
-                angle.append("")
-                angleval.append(0)
-            i += 1
-    zzn.sort()
-    zeile = ""
-    zeileend = ""
-    semi = ");"
-
-#    if len(zzn) != len(zznb):
-        # glyphs in A and B have different set of Z-points, so raise exception
-        # to handle this case
-#        raise DifferentZPointError()
-
-#    for i in range(len(zzn)):
-#        zitem = i + 1
-
-#        if angle[i]:
-#            angleb = angleval_B[i]
-#            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + "  " + str(angleval[i]) + "+ (metapolation * (" + str(angleb) + " - " + str(angleval[i]) + " ));"
-#        else:
-#            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
-
-#        fip.write("\n")
-#        fip.write(zeile)
-
-# reading font Pen Positions Font B
-
-    fip.write("\n")
-    fip.write("""% penposition font B""")
-
-    inattr = 0
-    ivn = 0
-    strz = ""
-    zzn = []
-
-    penwidth = []
-    penwidthval = []
-    B_penwidthval = []
-
-    startp = []
-    startpval = []
-
-    i = 1
-
-    for item, param in fontb_outlines:
-        znamer = re.match('z(\d+)r', param.pointname)
-        znamel = re.match('z(\d+)l', param.pointname)
-        zname = re.match('z(\d+)l', param.pointname)
-
-        x = item.x
-        y = item.y
-
-        im = param.pointname
-
-        ipenwidth = param.penwidth
-        istartp = param.startp
-
-        if znamel and im == znamel.group(0):
-            zzn.append(i)
-            if istartp is not None:
-                istartpval = param.startp
-                startp.append("startp")
-                startpval.append(istartpval)
-
-            if ipenwidth is not None:
-                ipenwidthval = param.penwidth
-                penwidth.append("penwidth")
-                B_penwidthval.append(ipenwidthval)
-            else:
-                penwidth.append("")
-                B_penwidthval.append(0)
-
-# reading Pen Positions Font A
-
-    fip.write("\n")
-    fip.write("""% penposition font A""")
-
-    inattr = 0
-    ivn = 0
-    strz = ""
-    zzn = []
-
-    stemcutter = []
-    stemcutterval = []
-
-    inktrap_l = []
-    inktrap_lval = []
-
-    inktrap_r = []
-    inktrap_rval = []
-
-    penwidth = []
-    penwidthval = []
-    A_penwidthval = []
-
-    comp = []
-    compval = []
-    A_compval = []
-
-    angle = []
-    angleval = []
-
-    startp = []
-    startpval = []
-
-    i = 1
-
-    for item, param in fonta_outlines:
-
-        znamer = re.match('z(\d+)r', param.pointname)
-        znamel = re.match('z(\d+)l', param.pointname)
-        zname = re.match('z(\d+)l', param.pointname)
-
-        x = item.x
-        y = item.y
-
-        im = param.pointname
-
-        istemcutter = param.stemcutter
-        iinktrap_l = param.inktrap_l
-        iinktrap_r = param.inktrap_r
-        ipenwidth = param.penwidth
-        iangle = param.angle
-        istartp = param.startp
-
-#        icomp = param.comp
-
-        # have to check for znamel as it can raise exception when access
-        # to group(0)
-        if znamel and im == znamel.group(0):
-            zzn.append(i)
-            if istartp is not None:
-                istartpval = param.startp
-                startp.append("startp")
-                startpval.append(istartpval)
-
-            if istemcutter is not None:
-                istemcutterval = param.stemcutter
-                stemcutterval.append(istemcutterval)
-
-            if iinktrap_l is not None:
-                iinktrap_lval = param.inktrap_l
-                inktrap_l.append("inktrap_l")
-                inktrap_lval.append(iinktrap_lval)
-
-            if iinktrap_r is not None:
-                iinktrap_rval = param.inktrap_r
-                inktrap_r.append("inktrapcut")
-                inktrap_rval.append(iinktrap_rval)
-            if ipenwidth is not None:
-                ipenwidthval = param.penwidth
-                penwidth.append("penwidth")
-                A_penwidthval.append(ipenwidthval)
-            else:
-                penwidth.append("")
-                penwidthval.append(0)
-                A_penwidthval.append(0)
-
-            if iangle is not None:
-                iangleval = param.angle
-                angle.append("angle")
-                angleval.append(iangleval)
-            else:
-                angle.append("")
-                angleval.append(0)
-
-#            if icomp is not None:
-#                icompval = param.comp
-#                comp.append("comp")
-#                compval.append(icompval)
-            i += 1
-
-    zzn.sort()
-    zeile = ""
-    zeileend = ""
-    semi = ";"
-    close = ")"
-#    for i in range(len(zzn)):
-#        zitem = i + 1
-
-#        if penwidth[i]:
-#            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
-#        else:
-#            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
-
-#        zeile = zeile + ", ang" + str(zitem) + ");"
-#        fip.write("\n")
-#        fip.write(zeile)
-
-# testing new center points
-
-    fip.write("\n")
-    fip.write( """% test new center (z) points""" )
+    fip.write( """% z points""" )
 
     mean = ['13','14','26','29','65','67','69','77','78','79','82','83','85','86','87','88','90','94','95','12','27','63','71','80','81','89','2','7','11','28','30','62','64','66','68','70','72','73','75','76','84','4','8','9','15','59','60','61','74','91','92','93']
 #des = ['12','27','63','71','80','81','89']
@@ -708,7 +385,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         ## default string
 
-        zeile = "z" + str(zitem) + " = (( px" + str(zitem) + "l + metapolation * (ppx" + str(zitem) + "l - px" + str(zitem) + "l)) , ( py" + str(zitem) + "l + metapolation * (ppy" + str(zitem) + "l - py" + str(zitem) + "l))) ;"
+        zeile = "z" + str(zitem) + " = ((( Apx" + str(zitem) + "l + metapolation * (Bpx" + str(zitem) + "l - Apx" + str(zitem) + "l)) + ( Cpx" + str(zitem) + "l + metapolationCD * (Dpx" + str(zitem) + "l - Cpx" + str(zitem) + "l)) ) / 2 ), ((( Apy" + str(zitem) + "l + metapolation * (Bpy" + str(zitem) + "l - Apy" + str(zitem) + "l)) + ( Cpy" + str(zitem) + "l + metapolationCD * (Dpy" + str(zitem) + "l - Cpy" + str(zitem) + "l)) ) / 2 );"
 
         fip.write("\n")
         fip.write(zeile)
@@ -799,8 +476,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         if znamel and im == znamel.group(0):
             zzn.append(i)
 
-        # do not delete that lines while you are sure
-#        if im == znamel or im == znamer:
 
             if idoubledash is not None:
                 idoubledashval = param.doubledash
@@ -850,11 +525,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 tensionB.append("tension")
                 tensionvalB.append(itensionval)
 
-#            if itensionand is not None:
-#                itensionandval = param.tensionand
-#                tensionandB.append("tensionand")
-#                tensionandvalB.append(itensionandval[:3])
-#                tensionandval2B.append(itensionandval[-3:])
+
 
             if itensionand is not None :
                 itensionandval = param.tensionand
@@ -1242,7 +913,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 control_in.append("")
                 control_inval.append(0)
 
-
             i += 1
 
     zzn.sort()
@@ -1255,9 +925,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         zeile = str(startp[i]) + "z" + str(zitem) 
 
 
-        # zeilec = str(startp[i]) + "z"+str(zitem)+"e"
         if startp[i + 1] == "":
-# if startp, add parameters
 
             dash = " -- "
 
@@ -1270,14 +938,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             if control_in[i] != "":
                 zeile = " z" + str(zitem) + " .. "    
 
- #           else :
-  #            if i+2 <len(zzn) :
-   #             i=i+1
-    #            zitem=zzn[i]
-     #           i=i+1                
-      #          zitem1=zzn[i]
-       #         zeile += " .. controls " + "z"+str(zitem) + " and " + "z" +  str(zitem1) + " .. " 
-#                zeile += " .. controls " + "z"+str(zitem) + " and " + "z" +  str(zitem1)  
         else :
           if control_out[i] != "":
             zeile +=  " .. cycle" + semi + '\n'
@@ -1295,8 +955,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     if len(zzn) >= i:
 
         fip.write(zeile + " .. cycle" + semi)
-
-
 
 
 
