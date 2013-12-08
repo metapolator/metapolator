@@ -58,6 +58,9 @@ Editor.prototype.addAxes = function() {
 
         uploadFinished: function(i, file, response, time) {
             this.project_id = response.project_id;
+            if (!this.editorglyph) {
+                this.editorglyph = response.glyphname;
+            }
 
             var axis = this.targetdrop.parent('div.axis');
             var label = axis.attr('axis-label');
@@ -91,7 +94,7 @@ Editor.prototype.addAxes = function() {
 
             $.post('/editor/reload/', {project_id: response.project_id,
                                        master_id: response.master_id,
-                                       glyph_id: response.glyph_id,
+                                       glyphname: this.editorglyph,
                                        masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()})
                 .success(function(response){
                     var data = $.parseJSON(response);

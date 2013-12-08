@@ -595,7 +595,7 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0, glyph_id='', masters='')
+        postdata = web.input(project_id=0, master_id=0, glyphname='', masters='')
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
@@ -616,7 +616,8 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
         self.set_masters(masters)
 
-        glyph = models.Glyph.get(id=postdata.glyph_id)
+        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id,
+                                 fontsource='A')
 
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
@@ -713,7 +714,8 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
 
         glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
         return simplejson.dumps({'project_id': project.id,
-                                 'master_id': master.id, 'glyph_id': glyph.id})
+                                 'master_id': master.id,
+                                 'glyphname': glyph.name})
 
 
 class ViewVersion(app.page, GlyphPageMixin):
