@@ -15,7 +15,7 @@ var slider_template = '<div style="margin-bottom: 16px;" class="row">' +
                       '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{0}</div>' + 
                       '  <div class="col-md-8" style="text-align: center; padding-top: 8pt;">' + 
                       '    <input class="slider slider-{2}" slider-label="{2}" type="text" value=""' + 
-                      '         data-slider-min="0" data-slider-max="1" data-slider-step="0.1"'  + 
+                      '         data-slider-min="-3" data-slider-max="3" data-slider-step="0.1"'  + 
                       '         data-slider-value="0" data-slider-orientation="horizontal"' + 
                       '         data-slider-selection="after" data-slider-tooltip="show"' + 
                       '         data-slider-handle="square" />' + 
