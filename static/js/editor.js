@@ -100,6 +100,9 @@ Editor.prototype.addAxes = function() {
                                                 '  <div class="tab-pane fade" id="tab-settings-canvas-{0}">' + settings_html + '</div>' + 
                                                 '</div>', label));
 
+            if (this.mode == 'controlpoints') {
+                $(axis_htmltemplate[0]).css('display', 'none');
+            }
             axis_htmltemplate.find('canvas').attr('glyph-project-id', response.project_id)
                 .attr('glyph-master-id', response.master_id);
 
