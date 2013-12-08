@@ -107,14 +107,17 @@ class GlyphPageMixin(object):
 
         self._project = models.Project.get(projectname=projectname)
 
-    def call_metapost(self, glyph_id):
-        writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
-        glyphA = models.Glyph.get(master_id=self.get_lft_master().id,
-                                  fontsource='A', name=glyph_id)
-        glyphB = models.Glyph.get(master_id=self.get_rgt_master().id,
-                                  fontsource='A', name=glyph_id)
+    def set_masters(self, masters):
+        self._masters = masters
 
-        xmltomf.xmltomf1(self.get_lft_master(), glyphA, glyphB)
+    def call_metapost(self, glyph_id):
+        # writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
+        glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
+        glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
+
+        import xmltomf_new_2axes as xmltomf
+        xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
+
         writeGlyphlist(self.get_lft_master(), glyph_id)
         makefont_single(self.get_lft_master())
 
@@ -487,6 +490,8 @@ class EditorSavePoint(app.page, GlyphPageMixin):
         # and raise error if unavailable
         masters = unifylist(masters)
 
+        self.set_masters(masters)
+
         glyphoutline = models.GlyphOutline.get(id=postdata.id)
         glyphoutline.x = postdata.x
         glyphoutline.y = postdata.y
@@ -508,7 +513,12 @@ def dopair(pair):
 
 
 def unifylist(masters):
-    pairs = zip(masters[::2], masters[1::2])
+    p1 = masters[::2]
+    p2 = masters[1::2]
+    if len(p1) != len(p2):
+        p2 += [None] * (len(p1) - len(p2))
+
+    pairs = zip(p1, p2)
     result = []
     for p in map(dopair, pairs):
         if p[0] is not None and p[1] is not None:
@@ -563,9 +573,46 @@ class EditorSaveParam(app.page, GlyphPageMixin):
         # and raise error if unavailable
         masters = unifylist(masters)
 
+        self.set_masters(masters)
+
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
         result = self.get_glyphs_jsondata(glyphoutline.glyph.name, master)
+        return simplejson.dumps(result)
+
+
+class EditorCanvasReload(app.page, GlyphPageMixin):
+
+    path = '/editor/reload/'
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(project_id=0, master_id=0, glyph_id='')
+
+        project = models.Project.get(id=postdata.project_id)
+        if not project:
+            raise web.notfound()
+
+        master = models.Master.get(id=postdata.master_id)
+        if not master:
+            return web.notfound()
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        masters = models.Master.all().filter(
+            models.Master.id.in_(postdata.masters.split(',')))
+
+        # we should unify masters list in case if some masters absence
+        # and raise error if unavailable
+        masters = unifylist(masters)
+
+        self.set_masters(masters)
+
+        glyph = models.Glyph.get(id=postdata.glyph_id)
+
+        self.initialize(project.projectname, masters[0].version,
+                        masters[1].version)
+        result = self.get_glyphs_jsondata(glyph.name, master)
         return simplejson.dumps(result)
 
 
@@ -657,10 +704,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
             raise web.badrequest()
 
         glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
-
-        self.initialize(project.projectname, master.version, master.version)
-        result = self.get_glyphs_jsondata(glyph.name, master)
-        return simplejson.dumps({'project_id': project.id, 'data': result,
+        return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id, 'glyph_id': glyph.id})
 
 

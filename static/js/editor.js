@@ -89,20 +89,28 @@ Editor.prototype.addAxes = function() {
             axis.append(header);
             axis.append(axis_htmltemplate);
 
-            var canvas = new Canvas(dom_canvas_id, response.data.R.width, response.data.R.height, 'a');
-            canvas.setZpoints(response.data.zpoints);
-            canvas.renderGlyph(response.data.R.edges);
-            canvas.showbox();
+            $.post('/editor/reload/', {project_id: response.project_id,
+                                       master_id: response.master_id,
+                                       glyph_id: response.glyph_id,
+                                       masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()})
+                .success(function(response){
+                    var data = $.parseJSON(response);
+                    var canvas = new Canvas(dom_canvas_id, data.R.width, data.R.height, 'a');
+                    canvas.setZpoints(data.zpoints);
+                    canvas.renderGlyph(data.R.edges);
+                    canvas.showbox();
 
-            if (!this.metapCanvas) {
-                this.metapCanvas = new Canvas('canvas-m', response.data.M.width, response.data.M.height);
-                this.metapCanvas.renderGlyph(response.data.M.edges);
-                this.metapCanvas.draw();
-            }
-            canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
-            canvas.draw();
+                    if (!this.metapCanvas) {
+                        this.metapCanvas = new Canvas('canvas-m', data.M.width, data.M.height);
+                        this.metapCanvas.renderGlyph(data.M.edges);
+                        this.metapCanvas.draw();
+                    }
+                    canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
+                    canvas.draw();
 
-            this.targetdrop.hide();
+                    this.targetdrop.hide();
+                }.bind(this))
+
         }.bind(this)
     });
     axes.removeClass('fade');
