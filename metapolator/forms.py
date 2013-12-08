@@ -6,6 +6,13 @@ from web.form import Form, Textbox, Dropdown, Button, Validator, Password, \
 import models
 
 
+ChangePointPositionForm = Form(Textbox('project_id', size=12),
+                               Textbox('master_id', size=12),
+                               Textbox('id', size=12),
+                               Textbox('x', size=12),
+                               Textbox('y', size=12))
+
+
 PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint"),
                               Textbox('x', size=12),
                               Textbox('y', size=12),

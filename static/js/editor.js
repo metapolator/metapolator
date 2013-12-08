@@ -34,7 +34,8 @@ Editor.prototype.addAxes = function() {
         paramname: 'ufofile',
         withCredentials: true,
         data: {
-            project_id: function() {return this.project_id}.bind(this)
+            project_id: function() {return this.project_id}.bind(this),
+            masters: function() {return $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()}
         },
 
         dragOver: function(e) {
@@ -71,7 +72,7 @@ Editor.prototype.addAxes = function() {
                                                 '</ul>' +
                                                 '<div class="tab-content">' +
                                                 '  <div class="tab-pane active" id="tab-view-canvas-{0}">' +
-                                                '    <canvas id="canvas-{0}" width="350" height="600"></canvas>' +
+                                                '    <canvas id="canvas-{0}" width="350" height="600" class="paper"></canvas>' +
                                                 '    <div class="canvas-{0}" style="display: none;">' +
                                                 '      <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>' +
                                                 '      <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>' +

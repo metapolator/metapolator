@@ -179,25 +179,28 @@ Canvas.prototype.onMouseUp = function(event) {
       var x = event.point.x;
       var y = event.point.y - 200;
       var xycoord = this.restore_original_coords(new paper.Point(x, y));
-      jQuery.post('save-point/', {
-          id: this.currentpath.data.glyphoutline_id,
-          x: xycoord.x,
-          y: 500 - xycoord.y,
-          project_id: $('#' + this.canvasid).attr('glyph-project-id'),
-          master_id: $('#' + this.canvasid).attr('glyph-master-id')
-        },
-        function(data) {
-            this.controlpoints.dataPoints = jQuery.parseJSON(data).zpoints;
-            this.controlpoints.drawOn(this);
+      $.ajax({
+          type: 'post',
+          data: {id: this.currentpath.data.glyphoutline_id,
+                   x: xycoord.x,
+                   y: 500 - xycoord.y,
+                   project_id: $('#' + this.canvasid).attr('glyph-project-id'),
+                   master_id: $('#' + this.canvasid).attr('glyph-master-id'),
+                   masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()
+          },
+          url: 'save-point/',
+          success: function(data) {
+              this.controlpoints.dataPoints = $.parseJSON(data).zpoints;
+              this.controlpoints.drawOn(this);
 
-          this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
-          this.glyphorigin.drawOn(this);
+              this.glyphorigin.dataGlyph = $.parseJSON(data).R.edges;
+              this.glyphorigin.drawOn(this);
 
-          if (this.onGlyphLoaded) {
-            this.onGlyphLoaded(data);
-          }
-        }.bind(this)
-      );
+              if (this.onGlyphLoaded) {
+                this.onGlyphLoaded(data);
+              }
+          }.bind(this)
+      });
     } else {
       var e = event.event;
       
@@ -226,7 +229,7 @@ Canvas.prototype.saveParamRequest = function(data, successhandler) {
   data.y = 500 - xycoord.y;
   data.project_id = $('#' + this.canvasid).attr('glyph-project-id');
   data.master_id = $('#' + this.canvasid).attr('glyph-master-id');
-  jQuery.post('save-param/', data)
+  $.post('save-param/', data)
         .fail(this.saveParamException.bind(this))
         .success(successhandler || this.saveParamSuccess.bind(this));
 }
@@ -239,10 +242,10 @@ Canvas.prototype.saveParamException = function() {
 Canvas.prototype.saveParamCanceled = function(data) {}
 
 Canvas.prototype.saveParamSuccess = function(data) {
-    var glyphpreview = new GlyphOrigin(jQuery.parseJSON(data).R.edges);
+    var glyphpreview = new GlyphOrigin($.parseJSON(data).R.edges);
     glyphpreview.drawOn(this);
 
-    var buttons = jQuery('.' + this.canvasid);
+    var buttons = $('.' + this.canvasid);
     buttons.css('display', 'block');
 
     buttons.find('a').off('click').on('click', function(e){
@@ -250,13 +253,13 @@ Canvas.prototype.saveParamSuccess = function(data) {
       buttons.css('display', 'none');
       this.draw();
 
-      if (jQuery(e.target).attr('command') == 'cancel') {
+      if ($(e.target).attr('command') == 'cancel') {
         this.saveParamRequest(this.currentpath.data, this.saveParamCanceled.bind(this));
       } else {
-        this.controlpoints.dataPoints = jQuery.parseJSON(data).zpoints;
+        this.controlpoints.dataPoints = $.parseJSON(data).zpoints;
         this.controlpoints.drawOn(this);
         
-        this.glyphorigin.dataGlyph = jQuery.parseJSON(data).R.edges;
+        this.glyphorigin.dataGlyph = $.parseJSON(data).R.edges;
         this.glyphorigin.drawOn(this);
       }
 
@@ -327,7 +330,7 @@ Canvas.prototype.draw = function() {
 
 Canvas.prototype.redrawglyph = function(data) {
   this.paper.activate();
-  this.glyphorigin.dataGlyph = jQuery.parseJSON(data).M.edges;
+  this.glyphorigin.dataGlyph = $.parseJSON(data).M.edges;
   this.glyphorigin.drawOn(this);
 }
 
