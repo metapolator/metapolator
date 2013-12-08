@@ -115,8 +115,12 @@ class GlyphPageMixin(object):
         glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
         glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
 
-        import xmltomf_new_2axes as xmltomf
-        xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
+        if session.get('mfparser', '') == 'controlpoints':
+            import xmltomf_new_2axes as xmltomf
+            xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
+        else:
+            import xmltomf
+            xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
 
         writeGlyphlist(self.get_lft_master(), glyph_id)
         makefont_single(self.get_lft_master())
@@ -136,8 +140,12 @@ class GlyphPageMixin(object):
         glyphs = models.Glyph.filter(fontsource='A', name=glyphid)
         glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
 
-        import xmltomf_new_2axes as xmltomf
-        xmltomf.xmltomf1(master, glyph)
+        if session.get('mfparser', '') == 'controlpoints':
+            import xmltomf_new_2axes as xmltomf
+            xmltomf.xmltomf1(master, glyph)
+        else:
+            import xmltomf
+            xmltomf.xmltomf1(master, glyph)
 
         writeGlyphlist(master, glyph.name)
         makefont_single(master, cell='A')
