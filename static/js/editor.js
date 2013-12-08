@@ -131,9 +131,9 @@ Editor.prototype.addAxes = function() {
                     if (!$('#metapolation').find('.slider-' + metapolation_label).length) {
                         var slider = $(String.format(slider_template, metapolation_label[0], metapolation_label[1], metapolation_label));
                         $('#metapolation').append(slider);
+                        slider.find('.slider').slider();
                     }
 
-                    slider.find('.slider').slider();
                 }.bind(this))
 
         }.bind(this)
