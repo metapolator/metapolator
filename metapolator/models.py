@@ -125,6 +125,17 @@ class Project(Base, UserQueryMixin):
         return directory
 
 
+class Metapolation(Base, UserQueryMixin):
+
+    __tablename__ = 'metapolations'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    primary_master_id = Column(Integer, ForeignKey('master.id'))
+    second_master_id = Column(Integer, ForeignKey('master.id'))
+    label = Column(String(2))
+
+
 class Master(Base, UserQueryMixin):
 
     __tablename__ = 'master'

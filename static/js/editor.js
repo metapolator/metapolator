@@ -20,7 +20,7 @@ Editor.prototype.addAxes = function() {
                         '  <h4>Metapolation</h4>' +
                         '  <a href="javascript:;" class="btn btn-large btn-success">Create master from instance</a>' +
                         '  <canvas width="350" height="600" id="canvas-m"></canvas>' + 
-                        '</div>');
+                        '</div>').css('display', 'none');
         axes.find('div[axis-position=middle]').append(metaxes);
     }
 
@@ -35,7 +35,8 @@ Editor.prototype.addAxes = function() {
         withCredentials: true,
         data: {
             project_id: function() {return this.project_id}.bind(this),
-            masters: function() {return $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()}
+            masters: function() {return $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()},
+            label: function() {return this.targetdrop.parent().attr('axis-label')}.bind(this)
         },
 
         dragOver: function(e) {
@@ -62,8 +63,8 @@ Editor.prototype.addAxes = function() {
                 this.editorglyph = response.glyphname;
             }
 
-            var axis = this.targetdrop.parent('div.axis');
-            var label = axis.attr('axis-label');
+            var axis = $('div.axis[axis-label=' + response.label + ']');
+            var label = response.label;
             var pointform_html = $('#templateform').html();
             var settings_html = $('#settings').html();
 
@@ -89,6 +90,8 @@ Editor.prototype.addAxes = function() {
                 .attr('glyph-master-id', response.master_id);
 
             var header = $('<h4>').text(label);
+            axis.find('.dropzone').hide();
+
             axis.append(header);
             axis.append(axis_htmltemplate);
 
@@ -107,11 +110,10 @@ Editor.prototype.addAxes = function() {
                         this.metapCanvas = new Canvas('canvas-m', data.M.width, data.M.height);
                         this.metapCanvas.renderGlyph(data.M.edges);
                         this.metapCanvas.draw();
+                        $('#metapolation').show();
                     }
                     canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
                     canvas.draw();
-
-                    this.targetdrop.hide();
                 }.bind(this))
 
         }.bind(this)

@@ -631,7 +631,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        x = web.input(ufofile={}, project_id=None)
+        x = web.input(ufofile={}, project_id=None, label='')
         try:
             rawzipcontent = x.ufofile.file.read()
             if not rawzipcontent:
@@ -707,15 +707,14 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
             prepare_master_environment(master)
 
             putFontAllglyphs(master)
-            writeGlobalParam(master)
-            execute_metapost_for_all_glyphs(master)
         except (zipfile.BadZipfile, OSError, IOError):
             raise web.badrequest()
 
         glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
-                                 'glyphname': glyph.name})
+                                 'glyphname': glyph.name,
+                                 'label': x.label})
 
 
 class ViewVersion(app.page, GlyphPageMixin):
