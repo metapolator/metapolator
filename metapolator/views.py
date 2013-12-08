@@ -133,8 +133,12 @@ class GlyphPageMixin(object):
                                  fontsource='A', name=glyphid)
         instancelog = project.get_instancelog(master.version, 'a')
 
+        glyphs = models.Glyph.filter(fontsource='A', name=glyphid)
+        glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
+
         import xmltomf_new_2axes as xmltomf
-        xmltomf.xmltomf1(master, glyph)
+        xmltomf.xmltomf1(master, *glyphs)
+
         writeGlyphlist(master, glyph.name)
         makefont_single(master, cell='A')
 

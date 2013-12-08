@@ -29,7 +29,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         glyphC = glyphA
 
     if not glyphD:
-        glyphD = glyphA           
+        glyphD = glyphA
 
 
     if not stdout_fip:
@@ -48,7 +48,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     wA = '%.2f' % (glyphA.width / 100.)
     wB = '%.2f' % (glyphB.width / 100.)
     wC = '%.2f' % (glyphC.width / 100.)
-    wD = '%.2f' % (glyphD.width / 100.)    
+    wD = '%.2f' % (glyphD.width / 100.)
 
 
     g = glyphA.name  # get from glyphA as we sure that glypha and glyphb exist in font project
@@ -695,8 +695,8 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         ioverdesc = param.overdesc
         icycle = param.cycle
         itype = param.type
-        icontrol_out = param.control_out   
-        icontrol_in = param.control_in  
+        icontrol_out = param.control_out
+        icontrol_in = param.control_in
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
@@ -922,7 +922,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     fip.write('\n')
     for i in range(len(zzn) - 1):
         zitem = zzn[i]
-        zeile = str(startp[i]) + "z" + str(zitem) 
+        zeile = str(startp[i]) + "z" + str(zitem)
 
 
         if startp[i + 1] == "":
@@ -933,10 +933,10 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile += dash
 
             if control_out[i] != "":
-                zeile = " .. controls z" + str(zitem) + " and "    
+                zeile = " .. controls z" + str(zitem) + " and "
 
             if control_in[i] != "":
-                zeile = " z" + str(zitem) + " .. "    
+                zeile = " z" + str(zitem) + " .. "
 
         else :
           if control_out[i] != "":
@@ -949,7 +949,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         fip.write(zeile)
 
         zitemb = zzn[i + 1]
-        zeile = "z" + str(zitemb) 
+        zeile = "z" + str(zitemb)
         i=i+1
 
     if len(zzn) >= i:
