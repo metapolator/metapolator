@@ -21,7 +21,7 @@ ControlPoints.prototype.drawOn = function(canvas) {
 
     pp = canvas.getPoint(Number(datapoint.x), Number(datapoint.y));
     ppr = canvas.restore_original_coords(pp);
-    console.log("{x: " + datapoint.x + ", y:" + datapoint.y + "}" + ' - ' + pp + ' - ' + "{x: " + ppr.x + ", y:" + ppr.y + "}");
+    // console.log("{x: " + datapoint.x + ", y:" + datapoint.y + "}" + ' - ' + pp + ' - ' + "{x: " + ppr.x + ", y:" + ppr.y + "}");
     var point = canvas.getPoint(Number(datapoint.x), 500 - Number(datapoint.y));
     point.y += +200;
 
@@ -111,7 +111,7 @@ function resize(canvas, x, y, width, height, newwidth, newheight) {
       h = newheight;
       w = h * ratio;
     }
-    console.log(w + '*' + x + '/' + width);
+    // console.log(w + '*' + x + '/' + width);
     nx = w * x / width;
     ny = h * y / height;
     return {x: nx, y: ny}

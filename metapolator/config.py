@@ -31,7 +31,8 @@ def load_user(handler):
 
 
 def load_sqla(handler):
-
+    if not session.get('mfparser'):
+        session.mfparser = 'controlpoints'
     web.ctx.orm = scoped_session(sessionmaker(bind=engine))
     try:
         return handler()

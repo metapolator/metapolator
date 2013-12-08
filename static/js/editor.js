@@ -157,6 +157,8 @@ Editor.prototype.addAxes = function() {
 
                     select.on('change', function(e) {
                         var newmasterid = $(e.target).val();
+                        canvas.htmlcanvas.attr('glyph-master-id', newmasterid);
+                        
                         $.post('/editor/reload/',{
                             project_id: this.project_id,
                             master_id: newmasterid,
@@ -164,7 +166,6 @@ Editor.prototype.addAxes = function() {
                             masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()})
                         .success(function(response){
                             canvas.reloadCanvas(response);
-                            canvas.htmlcanvas.attr('glyph-master-id', newmasterid);
                         });
                     }.bind(this))
 
