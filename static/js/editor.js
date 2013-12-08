@@ -5,10 +5,11 @@
 
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']]
 
-function Editor() {
+function Editor(mode) {
     this.editorAxes = $('.editor-axes');
     this.axes = [];
     this.project_id = 0;
+    this.mode = mode;
 }
 
 var slider_template = '<div style="margin-bottom: 16px;" class="row">' + 
@@ -152,6 +153,9 @@ Editor.prototype.addAxes = function() {
     axes.removeClass('fade');
     this.axes.push(axes);
 
+    if (this.mode != 'controlpoints' || this.axes.length > 1) {
+        $('#btn-add-axes').hide();
+    }
     return axes;
 }
 
