@@ -175,7 +175,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
 # points for l
 
-    for item, param in fontb_outlines:
+    for item, param in fontd_outlines:
         znamel = re.match('z(\d+)l', param.pointname)
         znamer = re.match('z(\d+)r', param.pointname)
         zeile = None
