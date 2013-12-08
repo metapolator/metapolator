@@ -492,18 +492,18 @@ class EditorMetapolationSave(app.page, GlyphPageMixin):
                                    values={'value': float(postdata.value)})
         web.ctx.orm.commit()
 
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        masters = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
-
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(masters)
+        _masters = unifylist(postdata.masters.split(','))
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        instances = models.Master.all().filter(
+            models.Master.id.in_(postdata.masters.split(',')))
 
         masters = []
-        for p in postdata.masters.split(','):
-            for m in _masters:
+        for p in _masters:
+            for m in instances:
                 if m.id == int(p):
                     masters.append(m)
                     break
@@ -543,18 +543,18 @@ class EditorSavePoint(app.page, GlyphPageMixin):
         if not models.GlyphOutline.exists(id=postdata.id):
             return web.notfound()
 
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        masters = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
-
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(masters)
+        _masters = unifylist(postdata.masters.split(','))
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        instances = models.Master.all().filter(
+            models.Master.id.in_(postdata.masters.split(',')))
 
         masters = []
-        for p in postdata.masters.split(','):
-            for m in _masters:
+        for p in _masters:
+            for m in instances:
                 if m.id == int(p):
                     masters.append(m)
                     break
@@ -633,18 +633,18 @@ class EditorSaveParam(app.page, GlyphPageMixin):
             models.GlyphParam.update(glyphoutline_id=postdata.id,
                                      values=values)
 
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        masters = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
-
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(masters)
+        _masters = unifylist(postdata.masters.split(','))
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        instances = models.Master.all().filter(
+            models.Master.id.in_(postdata.masters.split(',')))
 
         masters = []
-        for p in postdata.masters.split(','):
-            for m in _masters:
+        for p in _masters:
+            for m in instances:
                 if m.id == int(p):
                     masters.append(m)
                     break
@@ -673,18 +673,18 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
         if not master:
             return web.notfound()
 
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        masters = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
-
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(masters)
+        _masters = unifylist(postdata.masters.split(','))
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        instances = models.Master.all().filter(
+            models.Master.id.in_(postdata.masters.split(',')))
 
         masters = []
-        for p in postdata.masters.split(','):
-            for m in _masters:
+        for p in _masters:
+            for m in instances:
                 if m.id == int(p):
                     masters.append(m)
                     break
