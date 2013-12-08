@@ -55,7 +55,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
     fip.write("\n")
 
-    str_ = ('beginfontchar({glyph}, ((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) / 2 ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
+    str_ = ('beginfontchar({glyph}, (((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) / 2 ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
     fip.write(str_.format(Awidth=wA, glyph=glyphA.name, Bwidth=wB, Cwidth=wC, Dwidth=wD))
 
     # point coordinates font A ################
@@ -385,7 +385,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
         ## default string
 
-        zeile = "z" + str(zitem) + " = ((( Apx" + str(zitem) + "l + metapolation * (Bpx" + str(zitem) + "l - Apx" + str(zitem) + "l)) + ( Cpx" + str(zitem) + "l + metapolationCD * (Dpx" + str(zitem) + "l - Cpx" + str(zitem) + "l)) ) / 2 ), ((( Apy" + str(zitem) + "l + metapolation * (Bpy" + str(zitem) + "l - Apy" + str(zitem) + "l)) + ( Cpy" + str(zitem) + "l + metapolationCD * (Dpy" + str(zitem) + "l - Cpy" + str(zitem) + "l)) ) / 2 );"
+        zeile = "z" + str(zitem) + " = ((( Apx" + str(zitem) + "l + metapolation * (Bpx" + str(zitem) + "l - Apx" + str(zitem) + "l)) + ( Cpx" + str(zitem) + "l + metapolationCD * (Dpx" + str(zitem) + "l - Cpx" + str(zitem) + "l))) /2 , (( Apy" + str(zitem) + "l + metapolation * (Bpy" + str(zitem) + "l - Apy" + str(zitem) + "l)) + ( Cpy" + str(zitem) + "l + metapolationCD * (Dpy" + str(zitem) + "l - Cpy" + str(zitem) + "l))) /2 );"
 
         fip.write("\n")
         fip.write(zeile)

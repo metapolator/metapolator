@@ -313,11 +313,11 @@ Canvas.prototype.setZpoints = function(json) {
 };
 
 Canvas.prototype.showbox = function() {
-  this.box = new this.paper.Path.Rectangle(new this.paper.Point(50, 50),
-                                           new this.paper.Size(50, 50));
+  this.box = new this.paper.Path.Rectangle(new this.paper.Point(35, 35),
+                                           new this.paper.Size(35, 35));
   this.box.style = {
       strokeColor: 'red',
-      strokeWidth: '5'
+      strokeWidth: '1'
   };
 };
 
