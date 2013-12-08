@@ -11,6 +11,18 @@ function Editor() {
     this.project_id = 0;
 }
 
+var slider_template = '<div style="margin-bottom: 16px;" class="row">' + 
+                      '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{0}</div>' + 
+                      '  <div class="col-md-8" style="text-align: center; padding-top: 8pt;">' + 
+                      '    <input class="slider slider-{2}" type="text" value=""' + 
+                      '         data-slider-min="0" data-slider-max="1" data-slider-step="0.1"'  + 
+                      '         data-slider-value="0" data-slider-orientation="horizontal"' + 
+                      '         data-slider-selection="after" data-slider-tooltip="show"' + 
+                      '         data-slider-handle="square" />' + 
+                      '  </div>' + 
+                      '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{1}</div>' + 
+                      '</div>';
+
 Editor.prototype.addAxes = function() {
     var axes = $(this.editorAxes[0].outerHTML);
     $('.editor-container').append(axes);
@@ -67,6 +79,7 @@ Editor.prototype.addAxes = function() {
             var label = response.label;
             var pointform_html = $('#templateform').html();
             var settings_html = $('#settings').html();
+            var metapolation_label = response.metapolation;
 
             var dom_canvas_id = 'canvas-' + label;
             axis_htmltemplate = $(String.format('<ul class="nav nav-tabs" style="clear: both;">' + 
@@ -114,6 +127,13 @@ Editor.prototype.addAxes = function() {
                     }
                     canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
                     canvas.draw();
+
+                    if (!$('#metapolation').find('.slider-' + metapolation_label).length) {
+                        var slider = $(String.format(slider_template, metapolation_label[0], metapolation_label[1], metapolation_label));
+                        $('#metapolation').append(slider);
+                    }
+
+                    slider.find('.slider').slider();
                 }.bind(this))
 
         }.bind(this)

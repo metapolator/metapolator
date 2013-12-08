@@ -740,7 +740,8 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
-                                 'label': x.label})
+                                 'label': x.label,
+                                 'metapolation': label})
 
 
 class ViewVersion(app.page, GlyphPageMixin):
