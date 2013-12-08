@@ -14,7 +14,7 @@ function Editor() {
 var slider_template = '<div style="margin-bottom: 16px;" class="row">' + 
                       '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{0}</div>' + 
                       '  <div class="col-md-8" style="text-align: center; padding-top: 8pt;">' + 
-                      '    <input class="slider slider-{2}" type="text" value=""' + 
+                      '    <input class="slider slider-{2}" slider-label="{2}" type="text" value=""' + 
                       '         data-slider-min="0" data-slider-max="1" data-slider-step="0.1"'  + 
                       '         data-slider-value="0" data-slider-orientation="horizontal"' + 
                       '         data-slider-selection="after" data-slider-tooltip="show"' + 
@@ -131,7 +131,18 @@ Editor.prototype.addAxes = function() {
                     if (!$('#metapolation').find('.slider-' + metapolation_label).length) {
                         var slider = $(String.format(slider_template, metapolation_label[0], metapolation_label[1], metapolation_label));
                         $('#metapolation').append(slider);
-                        slider.find('.slider').slider();
+                        slider.find('.slider').slider().on('slideStop', function(e){
+                            $.post('/editor/save-metap/', {
+                                project_id: this.project_id,
+                                glyphname: this.editorglyph,
+                                label: $(e.target).attr('slider-label'),
+                                masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join(),
+                                value: e.value
+                            })
+                            .success(function(response){
+                                this.metapCanvas.redrawglyph(response);
+                            }.bind(this));
+                        }.bind(this));
                     }
 
                 }.bind(this))

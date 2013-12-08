@@ -134,7 +134,8 @@ class Metapolation(Base, UserQueryMixin):
     project_id = Column(Integer, ForeignKey('projects.id'))
     primary_master_id = Column(Integer, ForeignKey('master.id'))
     second_master_id = Column(Integer, ForeignKey('master.id'))
-    label = Column(String(2))
+    label = Column(String(2), index=True)
+    value = Column(Float, default=0)
 
 
 class Master(Base, UserQueryMixin):

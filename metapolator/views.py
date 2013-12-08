@@ -111,7 +111,7 @@ class GlyphPageMixin(object):
         self._masters = masters
 
     def call_metapost(self, glyph_id):
-        # writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
+        writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
         glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
         glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
 
@@ -462,6 +462,41 @@ class Editor(app.page):
         return render.editor()
 
 
+class EditorMetapolationSave(app.page, GlyphPageMixin):
+
+    path = '/editor/save-metap/'
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(project_id=0, masters='',
+                             label='', value=0, glyphname='')
+
+        project = models.Project.get(id=postdata.project_id)
+        if not project:
+            raise web.notfound()
+
+        models.Metapolation.update(label=postdata.label,
+                                   project_id=postdata.project_id,
+                                   values={'value': float(postdata.value)})
+        web.ctx.orm.commit()
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        masters = models.Master.all().filter(
+            models.Master.id.in_(postdata.masters.split(',')))
+
+        # we should unify masters list in case if some masters absence
+        # and raise error if unavailable
+        masters = unifylist(masters)
+
+        self.set_masters(masters)
+
+        self.initialize(project.projectname, masters[0].version,
+                        masters[1].version)
+        result = self.get_glyphs_jsondata(postdata.glyphname, masters[0])
+        return simplejson.dumps(result)
+
+
 class EditorSavePoint(app.page, GlyphPageMixin):
 
     path = '/editor/save-point/'
@@ -734,7 +769,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
 
             putFontAllglyphs(master)
         except (zipfile.BadZipfile, OSError, IOError):
-            raise web.badrequest()
+            raise
 
         glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
         return simplejson.dumps({'project_id': project.id,

@@ -6,7 +6,8 @@ from lxml import etree
 
 from config import buildfname, working_dir
 
-from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam
+from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam, \
+    Metapolation
 
 
 def project_exists(master):
@@ -270,9 +271,13 @@ def get_local_param(param, key):
 def writeParams(master, filename, metapolation=None, masterfontb=None):
     globalparam = GlobalParam.get(id=master.idglobal)
 
-    metap = get_global_param(globalparam, 'metapolation')
-    unitwidth = get_global_param(globalparam, 'unitwidth')
+    metap = Metapolation.get(label='AB', project_id=master.project_id)
+    if metap:
+        metap = metap.value
+    else:
+        metap = 0
 
+    unitwidth = get_global_param(globalparam, 'unitwidth')
     fontsize = get_global_param(globalparam, 'fontsize')
     mean = get_global_param(globalparam, 'mean')
     cap = get_global_param(globalparam, 'cap')
@@ -287,7 +292,13 @@ def writeParams(master, filename, metapolation=None, masterfontb=None):
         ifile.write("metapolation:=%.2f;\n" % metapolation)
     else:
         ifile.write("metapolation:=%.2f;\n" % metap)
-    ifile.write("metapolationCD:=1.0;\n")
+
+    metap = Metapolation.get(label='CD', project_id=master.project_id)
+    if metap:
+        metap = metap.value
+    else:
+        metap = 0
+    ifile.write("metapolationCD:=%.2f;\n" % metap)
 
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
     ifile.write("mean#:=%.3fpt#;\n" % mean)
