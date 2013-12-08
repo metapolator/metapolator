@@ -3,14 +3,7 @@
     @version 0.1
 **/
 
-var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']]
-
-function Editor(mode) {
-    this.editorAxes = $('.editor-axes');
-    this.axes = [];
-    this.project_id = 0;
-    this.mode = mode;
-}
+var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 var slider_template = '<div style="margin-bottom: 16px;" class="row">' + 
                       '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{0}</div>' + 
@@ -23,6 +16,14 @@ var slider_template = '<div style="margin-bottom: 16px;" class="row">' +
                       '  </div>' + 
                       '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{1}</div>' + 
                       '</div>';
+
+function Editor(mode) {
+    this.editorAxes = $('.editor-axes');
+    this.axes = [];
+    this.project_id = 0;
+    this.mode = mode;
+    this.selectOptionMasters = [];
+}
 
 Editor.prototype.addAxes = function() {
     var axes = $(this.editorAxes[0].outerHTML);
@@ -109,7 +110,30 @@ Editor.prototype.addAxes = function() {
             var header = $('<h4>').text(label);
             axis.find('.dropzone').hide();
 
+            var select = $('<select>').addClass('version');
+
             axis.append(header);
+
+            for (var k = 0; k < this.selectOptionMasters.length; k++) {
+                select.append(this.selectOptionMasters[k].clone());
+            }
+            var optionMaster = $('<option>', {
+                value: response.master_id,
+                text: 'Load master ' + response.version
+            })
+            axis.append(select);
+
+            this.selectOptionMasters.push(optionMaster);
+
+            $('select.version').append(optionMaster);
+            var options = select.find('option');
+            for (var k = 0; k < options.length; k++) {
+                if ($(options[k]).val() == response.master_id) {
+                    $(options[k]).attr('selected', 'true');
+                    break;
+                }
+            }
+
             axis.append(axis_htmltemplate);
 
             $.post('/editor/reload/', {project_id: response.project_id,
@@ -122,7 +146,6 @@ Editor.prototype.addAxes = function() {
                     canvas.setZpoints(data.zpoints);
                     canvas.renderGlyph(data.R.edges);
                     canvas.showbox();
-
                     if (!this.metapCanvas) {
                         this.metapCanvas = new Canvas('canvas-m', data.M.width, data.M.height);
                         this.metapCanvas.renderGlyph(data.M.edges);
@@ -131,6 +154,19 @@ Editor.prototype.addAxes = function() {
                     }
                     canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
                     canvas.draw();
+
+                    select.on('change', function(e) {
+                        var newmasterid = $(e.target).val();
+                        $.post('/editor/reload/',{
+                            project_id: this.project_id,
+                            master_id: newmasterid,
+                            glyphname: this.editorglyph,
+                            masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()})
+                        .success(function(response){
+                            canvas.reloadCanvas(response);
+                            canvas.htmlcanvas.attr('glyph-master-id', newmasterid);
+                        });
+                    }.bind(this))
 
                     if (!$('#metapolation').find('.slider-' + metapolation_label).length) {
                         var slider = $(String.format(slider_template, metapolation_label[0], metapolation_label[1], metapolation_label));

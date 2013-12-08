@@ -112,8 +112,16 @@ class GlyphPageMixin(object):
 
     def call_metapost(self, glyph_id):
         writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
-        glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
-        glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
+
+        _glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
+        _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
+
+        glyphs = []
+        for m in self._masters:
+            for g in _glyphs:
+                if g.master_id == m.id:
+                    glyphs.append(g)
+                    break
 
         if session.get('mfparser', '') == 'controlpoints':
             import xmltomf_new_2axes as xmltomf
@@ -136,10 +144,6 @@ class GlyphPageMixin(object):
         glyph = models.Glyph.get(master_id=master.id,
                                  fontsource='A', name=glyphid)
         instancelog = project.get_instancelog(master.version, 'a')
-
-        glyphs = models.Glyph.filter(fontsource='A', name=glyphid)
-        glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
-
         if session.get('mfparser', '') == 'controlpoints':
             import xmltomf_new_2axes as xmltomf
             xmltomf.xmltomf1(master, glyph)
@@ -495,7 +499,14 @@ class EditorMetapolationSave(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        masters = unifylist(masters)
+        _masters = unifylist(masters)
+
+        masters = []
+        for p in postdata.masters.split(','):
+            for m in _masters:
+                if m.id == int(p):
+                    masters.append(m)
+                    break
 
         self.set_masters(masters)
 
@@ -539,7 +550,14 @@ class EditorSavePoint(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        masters = unifylist(masters)
+        _masters = unifylist(masters)
+
+        masters = []
+        for p in postdata.masters.split(','):
+            for m in _masters:
+                if m.id == int(p):
+                    masters.append(m)
+                    break
 
         self.set_masters(masters)
 
@@ -622,7 +640,14 @@ class EditorSaveParam(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        masters = unifylist(masters)
+        _masters = unifylist(masters)
+
+        masters = []
+        for p in postdata.masters.split(','):
+            for m in _masters:
+                if m.id == int(p):
+                    masters.append(m)
+                    break
 
         self.set_masters(masters)
 
@@ -655,7 +680,14 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        masters = unifylist(masters)
+        _masters = unifylist(masters)
+
+        masters = []
+        for p in postdata.masters.split(','):
+            for m in _masters:
+                if m.id == int(p):
+                    masters.append(m)
+                    break
 
         self.set_masters(masters)
 
@@ -784,7 +816,8 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
                                  'label': x.label,
-                                 'metapolation': label})
+                                 'metapolation': label,
+                                 'version': '{0:03d}'.format(version)})
 
 
 class ViewVersion(app.page, GlyphPageMixin):

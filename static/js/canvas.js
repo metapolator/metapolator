@@ -126,6 +126,8 @@ function Canvas(canvasid, width, height, source) {
   this.height = Number(height);
   this.source = source;
 
+  this.htmlcanvas = $('#' + canvasid);
+
   this.tool = new this.paper.Tool();
 
   if (this.source) {
@@ -189,17 +191,7 @@ Canvas.prototype.onMouseUp = function(event) {
                    masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()
           },
           url: 'save-point/',
-          success: function(data) {
-              this.controlpoints.dataPoints = $.parseJSON(data).zpoints;
-              this.controlpoints.drawOn(this);
-
-              this.glyphorigin.dataGlyph = $.parseJSON(data).R.edges;
-              this.glyphorigin.drawOn(this);
-
-              if (this.onGlyphLoaded) {
-                this.onGlyphLoaded(data);
-              }
-          }.bind(this)
+          success: this.reloadCanvas.bind(this)
       });
     } else {
       var e = event.event;
@@ -218,6 +210,19 @@ Canvas.prototype.onMouseUp = function(event) {
     };
   };
 };
+
+
+Canvas.prototype.reloadCanvas = function(data) {
+    this.controlpoints.dataPoints = $.parseJSON(data).zpoints;
+    this.controlpoints.drawOn(this);
+
+    this.glyphorigin.dataGlyph = $.parseJSON(data).R.edges;
+    this.glyphorigin.drawOn(this);
+
+    if (this.onGlyphLoaded) {
+      this.onGlyphLoaded(data);
+    }
+}
 
 
 Canvas.prototype.saveParamRequest = function(data, successhandler) {
