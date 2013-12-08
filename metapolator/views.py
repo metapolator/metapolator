@@ -137,7 +137,7 @@ class GlyphPageMixin(object):
         glyphs = glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
 
         import xmltomf_new_2axes as xmltomf
-        xmltomf.xmltomf1(master, *glyphs)
+        xmltomf.xmltomf1(master, glyph)
 
         writeGlyphlist(master, glyph.name)
         makefont_single(master, cell='A')

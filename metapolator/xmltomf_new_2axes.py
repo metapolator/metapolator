@@ -31,7 +31,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     if not glyphD:
         glyphD = glyphA
 
-
     if not stdout_fip:
         path = op.join(master.get_fonts_directory(), "glyphs")
         if not op.exists(path):
