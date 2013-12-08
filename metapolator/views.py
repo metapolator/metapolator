@@ -625,6 +625,23 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
         return simplejson.dumps(result)
 
 
+LABELS = range(ord('A'), ord('Z') + 1)
+METAP_PAIRS = zip(map(chr, LABELS[::2]), map(chr, LABELS[1::2]))
+
+
+def get_metapolation_label(c):
+    """ Return metapolation label pair like AB, CD, EF """
+    c = c.upper()
+    try:
+        index = map(chr, LABELS[::2]).index(c)
+        return True, map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
+    except ValueError:
+        pass
+
+    index = map(chr, LABELS[1::2]).index(c)
+    return False, map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
+
+
 class EditorUploadZIP(app.page, GlyphPageMixin):
 
     path = '/upload/'
@@ -637,7 +654,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
             if not rawzipcontent:
                 raise web.badrequest()
             project_id = int(x.project_id)
-        except (AttributeError, TypeError):
+        except (AttributeError, TypeError, ValueError):
             raise web.badrequest()
 
         if not project_id:
@@ -690,6 +707,15 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
             version += 1
             master = models.Master.create(project_id=project.id,
                                           version=version)
+
+            is_primary_label, label = get_metapolation_label(x.label)
+            metapolation = models.Metapolation.get(label=label, project_id=project.id)
+            if not metapolation:
+                metapolation = models.Metapolation.create(label=label, project_id=project.id)
+            if is_primary_label:
+                metapolation.primary_master_id = master.id
+            else:
+                metapolation.second_master_id = master.id
 
             fontpath = master.get_fonts_directory()
 
