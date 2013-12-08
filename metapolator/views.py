@@ -133,7 +133,7 @@ class GlyphPageMixin(object):
                                  fontsource='A', name=glyphid)
         instancelog = project.get_instancelog(master.version, 'a')
 
-        self.execute_glyph_metapost(glyph)
+        # self.execute_glyph_metapost(glyph)
         zpoints = get_edges_json_from_db(master, glyphid, ab_source='A')
 
         glyphjson = get_edges_json(instancelog, glyphid)
@@ -532,7 +532,7 @@ class EditorSaveParam(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0, id='')
+        postdata = web.input(project_id=0, master_id=0, id='', masters='')
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
@@ -587,7 +587,7 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0, glyph_id='')
+        postdata = web.input(project_id=0, master_id=0, glyph_id='', masters='')
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
@@ -622,7 +622,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        x = web.input(ufofile={}, project_id=None, masters='')
+        x = web.input(ufofile={}, project_id=None)
         try:
             rawzipcontent = x.ufofile.file.read()
             if not rawzipcontent:
