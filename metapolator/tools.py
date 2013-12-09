@@ -4,7 +4,7 @@ import re
 import web
 from lxml import etree
 
-from config import buildfname, working_dir
+from config import buildfname, working_dir, session
 
 from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam, \
     Metapolation
@@ -19,18 +19,17 @@ def makefont_single(master, cell=''):
         return False
 
     cell = cell.upper()
+    os.environ['MFINPUTS'] = master.get_fonts_directory()
+    os.environ['MFMODE'] = session.get('mfparser', 'counterpoints')
     if cell == 'A':
-        os.environ['MFINPUTS'] = master.get_fonts_directory()
         metafont = master.get_metafont('a')
         strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
         os.system(strms)
     elif cell == 'B':
-        os.environ['MFINPUTS'] = master.get_fonts_directory()
         metafont = master.get_metafont('b')
         strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
         os.system(strms)
     else:
-        os.environ['MFINPUTS'] = master.get_fonts_directory()
         metafont = master.get_metafont()
         strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
         os.system(strms)
@@ -41,7 +40,7 @@ def makefont(working_dir, master, cells=['A', 'B', 'M']):
         return False
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
-
+    os.environ['MFMODE'] = session.get('mfparser', 'counterpoints')
     for cell in cells:
         if not cell or cell.upper() == 'A':
             metafont = master.get_metafont('a')
