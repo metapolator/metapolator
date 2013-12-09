@@ -4,6 +4,7 @@ import web
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
+DATABASE_NAME = 'metapolatordev'
 DATABASE_USER = 'root'
 DATABASE_PWD = ''
 
@@ -12,7 +13,7 @@ try:
 except ImportError:
     pass
 
-DATABASE_ENGINE = 'mysql+mysqldb://{0}:{1}@localhost/metapolatordev'.format(DATABASE_USER, DATABASE_PWD)
+DATABASE_ENGINE = 'mysql+mysqldb://{0}:{1}@localhost/{2}'.format(DATABASE_USER, DATABASE_PWD, DATABASE_NAME)
 
 from sqlalchemy import create_engine
 engine = create_engine(DATABASE_ENGINE, echo=False)
