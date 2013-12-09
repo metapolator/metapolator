@@ -20,7 +20,7 @@ def makefont_single(master, cell=''):
 
     cell = cell.upper()
     os.environ['MFINPUTS'] = master.get_fonts_directory()
-    os.environ['MFMODE'] = session.get('mfparser', 'counterpoints')
+    os.environ['MFMODE'] = session.get('mfparser', '')
     if cell == 'A':
         metafont = master.get_metafont('a')
         strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
@@ -40,7 +40,7 @@ def makefont(working_dir, master, cells=['A', 'B', 'M']):
         return False
 
     os.environ['MFINPUTS'] = master.get_fonts_directory()
-    os.environ['MFMODE'] = session.get('mfparser', 'counterpoints')
+    os.environ['MFMODE'] = session.get('mfparser', '')
     for cell in cells:
         if not cell or cell.upper() == 'A':
             metafont = master.get_metafont('a')
