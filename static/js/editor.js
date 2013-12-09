@@ -41,19 +41,11 @@ Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
         this.selectOptionMasters.push(optionMaster);
 
         var versionselects = $('select.version');
-        versionselects.append(optionMaster);
-        versionselects.find('option:selected').removeAttr('selected');
 
         for (var j = 0; j < versionselects.length; j++) {
             var select = $(versionselects[j]);
-            var options = select.find('option');
-
-            for (var k = 0; k < options.length; k++) {
-                if ($(options[k]).val() == data.master_id) {
-                    $(options[k]).attr('selected', 'true');
-                    break;
-                }
-            }
+            select.find('option:selected').removeAttr('selected');
+            select.append(optionMaster.clone().attr('selected', 'true'));
         }
         versionselects.trigger('change');
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
