@@ -825,14 +825,14 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
         for glyph in self.get_lft_master().get_glyphs('a'):
             json = get_edges_json(logpath, glyph.name)
             if not json['edges']:
-                continue
+                raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s' % logpath}))
 
             zpoints = glyph.get_zpoints()
 
             points = []
             for contourpoints in json['edges'][0]['contours']:
                 if not contourpoints:
-                    continue
+                    raise web.badrequest(simplejson.dumps({'error': 'could not find any points in contour for instance in %s' % logpath}))
                 metapost_points = []
                 for point in contourpoints:
                     if session.get('mfparser', '') == 'controlpoints':
@@ -847,8 +847,7 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                     points = points + metapost_points[1:] + [metapost_points[0]]
 
             if len(zpoints) != len(points):
-                # print len(zpoints), ' zp != mp ', len(points)
-                continue
+                raise web.badrequest(simplejson.dumps({'error': '%s zp != mp %s' % (len(zpoints), len(points))}))
 
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,

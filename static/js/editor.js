@@ -49,7 +49,10 @@ Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
         }
         versionselects.trigger('change');
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
-    }.bind(this))
+    }.bind(this)).error(function(response) {
+        $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
+        alert($.parseJSON(response.responseText).error);
+    }.bind(this));
 }
 
 Editor.prototype.addAxes = function() {
