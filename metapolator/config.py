@@ -9,7 +9,7 @@ DATABASE_USER = 'root'
 DATABASE_PWD = ''
 
 try:
-    from localconfig import DATABASE_USER, DATABASE_PWD
+    from localconfig import DATABASE_USER, DATABASE_PWD, DATABASE_NAME
 except ImportError:
     pass
 
