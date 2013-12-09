@@ -29,8 +29,6 @@ $ mkdir src;
 $ cd src;
 $ wget http://mirrors.ctan.org/support/mf2pt1.zip;
 $ unzip mf2pt1.zip;
-# git clone https://github.com/fontforge/fontforge.git;
-# sudo apt-get install -y build-essential autoconf libtool python-dev;
 $ mkdir sfnt2woff;
 $ cd sfnt2woff;
 $ wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
@@ -38,13 +36,15 @@ $ unzip woff-code-latest.zip;
 $ make;
 $ sudo cp sfnt2woff /usr/local/bin/;
 $ cd ..;
+$ sudo apt-get install -y build-essential autoconf libtool python-dev;
 # TODO: how to install fontforge and fontforge-python from source
+# git clone https://github.com/fontforge/fontforge.git;
 $ sudo apt-get install -y fontforge python-fontforge;
 $ git clone https://github.com/metapolator/metapolator.git;
 $ cd metapolator;
+$ easy_install -U distribute pip;
 $ sudo apt-get install -y python-virtualenv;
 $ virtualenv .venv;
-$ easy_install -U distribute;
 $ source .venv/bin/activate ; pip install -r requirements.txt
 ```
 
