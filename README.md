@@ -48,6 +48,34 @@ $ virtualenv .venv;
 $ source .venv/bin/activate ; pip install -r requirements.txt
 ```
 
+### Mac OS X 
+
+```sh
+# Install Homebrew
+$ brew install mysql t1utils libffi libevent libxml2 libxslt;
+$ ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+$ launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+$ mkdir src;
+$ cd src;
+$ wget http://mirrors.ctan.org/support/mf2pt1.zip;
+$ unzip mf2pt1.zip;
+$ mkdir sfnt2woff;
+$ cd sfnt2woff;
+$ wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
+$ unzip woff-code-latest.zip;
+$ make;
+$ sudo cp sfnt2woff /usr/local/bin/;
+$ cd ..;
+$ brew install autoconf automake libtool python;
+$ brew install fontforge --with-x --HEAD;
+$ git clone https://github.com/metapolator/metapolator.git;
+$ cd metapolator;
+$ easy_install -U distribute pip;
+$ pip install virtualenv;
+$ virtualenv .venv;
+$ source .venv/bin/activate ; pip install -r requirements.txt
+````
+
 Login to your mysql database as root. You could also change these settings on line 6 in model.py.
 
 ```
