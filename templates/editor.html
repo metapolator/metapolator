@@ -51,7 +51,7 @@ $var title: Editor
 <script type="text/javascript" src="/static/js/editor.js?v2"></script>
 <script type="text/javascript">
     $$(function(){
-        var editor = new Editor("$websession.get('mfparser', 'counterpoints')");
+        var editor = new Editor("$websession.get('mfparser', 'pen')");
         $$('#btn-add-axes').on('click', editor.addAxes.bind(editor));
     });
 </script>

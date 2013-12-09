@@ -232,7 +232,7 @@ def mime_type(filename):
 
 class SwitchMFParser(app.page):
 
-    path = '^/mfparser-switch/(counterpoints|controlpoints)/$'
+    path = '^/mfparser-switch/(pen|controlpoints)/$'
 
     def POST(self, mfparser):
         session.mfparser = mfparser
