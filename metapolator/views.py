@@ -897,15 +897,19 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                     raise web.badrequest(simplejson.dumps({'error': 'could not find any points in contour for instance in %s' % logpath}))
                 metapost_points = []
                 for point in contourpoints:
-                    metapost_points.append({'x': self.round(point['x']),
-                                            'y': self.round(point['y'])})
                     if session.get('mfparser', '') == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][0]['x']),
                                                 'y': self.round(point['controls'][0]['y'])})
+
+                    metapost_points.append({'x': self.round(point['x']),
+                                            'y': self.round(point['y'])})
+
+                    if session.get('mfparser', '') == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][1]['x']),
                                                 'y': self.round(point['controls'][1]['y'])})
+
                 if session.get('mfparser', '') == 'controlpoints' and metapost_points:
-                    points = points + metapost_points[1:] + [metapost_points[0]]
+                    points = points + metapost_points[:2][::-1] + metapost_points[2:][::-1]
 
             if len(zpoints) != len(points):
                 raise web.badrequest(simplejson.dumps({'error': '%s zp != mp %s' % (len(zpoints), len(points))}))
@@ -1041,7 +1045,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
+        glyph = models.Glyph.filter(fontsource='A', master_id=master.id, name='215').first()
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
