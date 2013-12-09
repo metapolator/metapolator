@@ -117,6 +117,9 @@ class Project(Base, UserQueryMixin):
         return op.join(working_dir(),
                        '%s-%03d.log' % (self.projectname, version))
 
+    def get_basename(self, version=1):
+        return '%s-%03d' % (self.projectname, version)
+
     def get_directory(self, version=1):
         directory = op.join(working_dir(), '%s-%03d' % (self.projectname,
                                                         version))
@@ -136,6 +139,15 @@ class Metapolation(Base, UserQueryMixin):
     second_master_id = Column(Integer, ForeignKey('master.id'))
     label = Column(String(2), index=True)
     value = Column(Float, default=0)
+
+
+class Instance(Base, UserQueryMixin):
+
+    __tablename__ = 'instances'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
 
 
 class Master(Base, UserQueryMixin):

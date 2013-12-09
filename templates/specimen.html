@@ -4,10 +4,10 @@ $def with (project, instances)
 <style>
 	$for instance in instances:
 		@font-face {
-		  font-family: '$project.projectname.$instance.version';
+		  font-family: '$webctx.project.projectname.$instance.id';
 		  font-style: normal;
 		  font-weight: normal;
-		  src: local('$project.projectname.$instance.version'), url("$working_url()$:'/static/'$instance.get_metafont()$:'.otf'") format('opentype');
+		  src: local('$webctx.project.projectname.$instance.id'), url("$working_url()$:'/instances/'$instance.id$:'.otf'") format('opentype');
 		}
 </style>
 
@@ -15,8 +15,8 @@ $def with (project, instances)
 
 
 $for instance in instances:
-	instance $instance.version from $project.projectname
+	instance $instance.id from $webctx.project.projectname
 
-	<div contenteditable="true" style="font-size: 162pt; font-family: '$project.projectname.$instance.version'">
+	<div contenteditable="true" style="font-size: 162pt; font-family: '$webctx.project.projectname.$instance.id'">
 	Hamburger
 	</div>

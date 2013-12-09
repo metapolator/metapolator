@@ -55,6 +55,19 @@ Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
     }.bind(this));
 }
 
+
+Editor.prototype.onCreateInstanceClick = function(e) {
+    $(e.target).off('click').attr('disabled', 'disabled');
+    $.post('/editor/create-instance/', {
+        project_id: this.project_id,
+        masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()
+    }).success(function(response) {
+        $(e.target).on('click', this.onCreateInstanceClick.bind(this)).removeAttr('disabled');
+    }.bind(this)).error(function() {
+        $(e.target).on('click', this.onCreateInstanceClick.bind(this)).removeAttr('disabled');
+    }.bind(this));
+}
+
 Editor.prototype.addAxes = function() {
     var axes = $(this.editorAxes[0].outerHTML);
     $('.editor-container').append(axes);
@@ -68,6 +81,7 @@ Editor.prototype.addAxes = function() {
                         '</div>').css('display', 'none');
         axes.find('div[axis-position=middle]').append(metaxes);
         metaxes.find('#btn-master-from-instance').on('click', this.onCreateMasterFromInstanceClick.bind(this));
+        metaxes.find('#btn-instance').on('click', this.onCreateInstanceClick.bind(this));
     }
 
     axes.find('.axis[axis-position=left]').attr('axis-label', AXES_PAIRS[this.axes.length][0]);
