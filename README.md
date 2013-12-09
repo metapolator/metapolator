@@ -45,7 +45,7 @@ $ mysql -u root -p
 Create new database:
 
 ```
-mysql> CREATE DATABASE metapolator-dev.sql;
+mysql> CREATE DATABASE metapolatordev;
 ```
 
 Load the preset database:
