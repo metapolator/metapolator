@@ -110,6 +110,31 @@ class GlyphPageMixin(object):
     def set_masters(self, masters):
         self._masters = masters
 
+    def call_metapost_all_glyphs(self, master):
+        hasglyphs = False
+        for glyph in master.get_glyphs('a'):
+            _glyphs = models.Glyph.filter(fontsource='a', name=glyph.name)
+            _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
+
+            glyphs = []
+            for m in self._masters:
+                for g in _glyphs:
+                    if g.master_id == m.id:
+                        glyphs.append(g)
+                        break
+
+            if session.get('mfparser', '') == 'controlpoints':
+                import xmltomf_new_2axes as xmltomf
+                xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
+            else:
+                import xmltomf
+                xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
+            hasglyphs = True
+
+        if hasglyphs:
+            writeGlyphlist(master)
+            makefont(working_dir(), master, ['M'])
+
     def call_metapost(self, glyph_id):
         writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
 
@@ -698,6 +723,151 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
                         masters[1].version)
         result = self.get_glyphs_jsondata(glyph.name, master)
         return simplejson.dumps(result)
+
+
+class EditorCreateMaster(app.page, GlyphPageMixin):
+
+    path = '/editor/create-master/'
+
+    def create_glyphpoint(self, glyph, pointnr, pointparam, point):
+        kwargs = dict(glyph_id=glyph.id, master_id=glyph.master_id,
+                      glyphname=glyph.name, fontsource=glyph.fontsource,
+                      pointnr=pointnr, x=int(float(point['x'])),
+                      y=int(float(point['y'])))
+        glyphoutline = models.GlyphOutline.create(**kwargs)
+
+        kwargs = dict(glyphoutline_id=glyphoutline.id,
+                      glyph_id=glyph.id,
+                      fontsource=glyph.fontsource,
+                      master_id=glyph.master_id,
+                      pointname=pointparam.pointname,
+                      startp=pointparam.startp,
+                      type=pointparam.type,
+                      control_in=pointparam.control_in,
+                      control_out=pointparam.control_out,
+                      doubledash=pointparam.doubledash,
+                      tripledash=pointparam.tripledash,
+                      superleft=pointparam.superleft,
+                      superright=pointparam.superright,
+                      leftp=pointparam.leftp,
+                      rightp=pointparam.rightp,
+                      downp=pointparam.downp,
+                      upp=pointparam.upp,
+                      dir=pointparam.dir,
+                      leftp2=pointparam.leftp2,
+                      rightp2=pointparam.rightp2,
+                      downp2=pointparam.downp2,
+                      upp2=pointparam.upp2,
+                      dir2=pointparam.dir2,
+                      tension=pointparam.tension,
+                      tensionand=pointparam.tensionand,
+                      cycle=pointparam.cycle,
+                      penshifted=pointparam.penshifted,
+                      pointshifted=pointparam.pointshifted,
+                      angle=pointparam.angle,
+                      penwidth=pointparam.penwidth,
+                      overx=pointparam.overx,
+                      overbase=pointparam.overbase,
+                      overcap=pointparam.overcap,
+                      overasc=pointparam.overasc,
+                      overdesc=pointparam.overdesc,
+                      ascpoint=pointparam.ascpoint,
+                      descpoint=pointparam.descpoint,
+                      stemcutter=pointparam.stemcutter,
+                      stemshift=pointparam.stemshift,
+                      inktrap_l=pointparam.inktrap_l,
+                      inktrap_r=pointparam.inktrap_r)
+        models.GlyphParam.create(**kwargs)
+
+    def round(self, coord):
+        return int(round(float(coord)))
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(masters='', project_id=0, glyphname='')
+
+        project = models.Project.get(id=postdata.project_id)
+        if not project:
+            raise web.notfound()
+
+        # we should unify masters list in case if some masters absence
+        # and raise error if unavailable
+        _masters = unifylist(postdata.masters.split(','))
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        instances = models.Master.all().filter(
+            models.Master.id.in_(postdata.masters.split(',')))
+
+        masters = []
+        for p in _masters:
+            for m in instances:
+                if m.id == int(p):
+                    masters.append(m)
+                    break
+
+        self.set_masters(masters)
+
+        version = models.Master.max(models.Master.version,
+                                    project_id=project.id)
+
+        master = models.Master.create(project_id=project.id,
+                                      version=(version + 1))
+        prepare_master_environment(master)
+
+        self.initialize(project.projectname, masters[0].version,
+                        masters[1].version)
+
+        writeGlobalParam(self.get_lft_master())
+        self.call_metapost_all_glyphs(self.get_lft_master())
+
+        logpath = project.get_instancelog(version=self.get_lft_master().version)
+        for glyph in self.get_lft_master().get_glyphs('a'):
+            json = get_edges_json(logpath, glyph.name)
+            if not json['edges']:
+                continue
+
+            zpoints = glyph.get_zpoints()
+
+            points = []
+            for contourpoints in json['edges'][0]['contours']:
+                if not contourpoints:
+                    continue
+                metapost_points = []
+                for point in contourpoints:
+                    if session.get('mfparser', '') == 'controlpoints':
+                        metapost_points.append({'x': self.round(point['controls'][0]['x']),
+                                                'y': self.round(point['controls'][0]['y'])})
+                    metapost_points.append({'x': self.round(point['x']),
+                                            'y': self.round(point['y'])})
+                    if session.get('mfparser', '') == 'controlpoints':
+                        metapost_points.append({'x': self.round(point['controls'][1]['x']),
+                                                'y': self.round(point['controls'][1]['y'])})
+                if session.get('mfparser', '') == 'controlpoints' and metapost_points:
+                    points = points + metapost_points[1:] + [metapost_points[0]]
+
+            if len(zpoints) != len(points):
+                # print len(zpoints), ' zp != mp ', len(points)
+                continue
+
+            newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
+                                            name=glyph.name, width=glyph.width,
+                                            unicode=glyph.unicode)
+            newglyphb = models.Glyph.create(master_id=master.id, fontsource='B',
+                                            name=glyph.name, width=glyph.width,
+                                            unicode=glyph.unicode)
+
+            i = 0
+            for point in points:
+                self.create_glyphpoint(newglypha, (i + 1), zpoints[i], point)
+                self.create_glyphpoint(newglyphb, (i + 1), zpoints[i], point)
+                i += 1
+
+        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id,
+                                 fontsource='A')
+        result = self.get_glyphs_jsondata(glyph.name, master)
+        return simplejson.dumps({'version': '{0:03d}'.format(master.version),
+                                 'master_id': master.id, 'glyphdata': result})
 
 
 LABELS = range(ord('A'), ord('Z') + 1)

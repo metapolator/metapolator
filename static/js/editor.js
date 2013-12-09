@@ -25,6 +25,41 @@ function Editor(mode) {
     this.selectOptionMasters = [];
 }
 
+Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
+    $(e.target).off('click').attr('disabled', 'disabled');
+    $.post('/editor/create-master/', {
+        project_id: this.project_id,
+        masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join(),
+        glyphname: this.editorglyph
+    }).success(function(response) {
+        var data = $.parseJSON(response);
+        var optionMaster = $('<option>', {
+            value: data.master_id,
+            text: 'Load master ' + data.version
+        });
+
+        this.selectOptionMasters.push(optionMaster);
+
+        var versionselects = $('select.version');
+        versionselects.append(optionMaster);
+        versionselects.find('option:selected').removeAttr('selected');
+
+        for (var j = 0; j < versionselects.length; j++) {
+            var select = $(versionselects[j]);
+            var options = select.find('option');
+
+            for (var k = 0; k < options.length; k++) {
+                if ($(options[k]).val() == data.master_id) {
+                    $(options[k]).attr('selected', 'true');
+                    break;
+                }
+            }
+        }
+        versionselects.trigger('change');
+        $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
+    }.bind(this))
+}
+
 Editor.prototype.addAxes = function() {
     var axes = $(this.editorAxes[0].outerHTML);
     $('.editor-container').append(axes);
@@ -32,10 +67,11 @@ Editor.prototype.addAxes = function() {
     if (!this.axes.length) {
         var metaxes = $('<div id="metapolation">' +
                         '  <h4>Metapolation</h4>' +
-                        '  <a href="javascript:;" class="btn btn-large btn-success">Create master from instance</a>' +
+                        '  <a href="javascript:;" id="btn-master-from-instance" class="btn btn-large btn-success">Create master from instance</a>' +
                         '  <canvas width="350" height="600" id="canvas-m"></canvas>' + 
                         '</div>').css('display', 'none');
         axes.find('div[axis-position=middle]').append(metaxes);
+        metaxes.find('#btn-master-from-instance').on('click', this.onCreateMasterFromInstanceClick.bind(this));
     }
 
     axes.find('.axis[axis-position=left]').attr('axis-label', AXES_PAIRS[this.axes.length][0]);
@@ -117,16 +153,16 @@ Editor.prototype.addAxes = function() {
             for (var k = 0; k < this.selectOptionMasters.length; k++) {
                 select.append(this.selectOptionMasters[k].clone());
             }
+            axis.append(select);
+
             var optionMaster = $('<option>', {
                 value: response.master_id,
                 text: 'Load master ' + response.version
             })
-            axis.append(select);
-
             this.selectOptionMasters.push(optionMaster);
-
             $('select.version').append(optionMaster);
             var options = select.find('option');
+
             for (var k = 0; k < options.length; k++) {
                 if ($(options[k]).val() == response.master_id) {
                     $(options[k]).attr('selected', 'true');
