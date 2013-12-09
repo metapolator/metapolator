@@ -59,7 +59,7 @@ Editor.prototype.addAxes = function() {
     if (!this.axes.length) {
         var metaxes = $('<div id="metapolation">' +
                         '  <h4>Metapolation</h4>' +
-                        '  <a href="javascript:;" id="btn-master-from-instance" class="btn btn-large btn-success">Create master from instance</a>' +
+                        '  <a href="javascript:;" id="btn-master-from-instance" class="btn btn-xs btn-success">Create master from instance</a>' +
                         '  <canvas width="350" height="600" id="canvas-m"></canvas>' + 
                         '</div>').css('display', 'none');
         axes.find('div[axis-position=middle]').append(metaxes);
