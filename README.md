@@ -1,8 +1,10 @@
-##About
+Metapolator
+==============
 
-Please refer to this [short introduction](http://metapolator.com/about) until the online version is ready.
+Please refer to this [short introduction](http://metapolator.com/about) until the new version is ready.
 
-Requirements
+Requirements: 
+
 - [git](http://git-scm.org)
 - [Metafont and Metapost](http://www.tug.org/)
 - [MySQL](http://dev.mysql.com/downloads/mysql/)
@@ -16,7 +18,9 @@ Requirements
 - Optimized for Google Chrome
 
 
-##Installation
+## Installation
+
+### Ubuntu or Debian
 
 ```sh
 $ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
@@ -40,8 +44,9 @@ $ source .venv/bin/activate ; pip install -r requirements.txt
 Login to your mysql database as root. You could also change these settings on line 6 in model.py.
 
 ```
-$ mysql -u root -p
+$ mysql -uroot -p
 ```
+
 Create new database:
 
 ```
@@ -60,10 +65,10 @@ Start web.py application:
 $ .venv/bin/python run.py
 ```
 
-This should give you a local webadress you can copy paste into a chrome browser, something like this:
+This should give you a local web server you can visit with Chrome:
 
 ```
-http://0.0.0.0:8080/
+[http://0.0.0.0:8080/](http://0.0.0.0:8080/)
 ```
 
 ### Deployment
@@ -78,21 +83,18 @@ sudo apt-get install supervisor
 Create symlinks for configuration file. Notice that your project directory is not different from configs
 
 ```
-sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/supervisor/conf.d/metapolator.conf
-sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf
+sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/supervisor/conf.d/metapolator.conf;
+sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf;
 ```
 
-##Note
+## License
 
-This project is under active development and moving to stable. Use master branch on your own risk.
+This project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html).
 
+## Credits
 
-##License
+Authors: Simon Egli, Vitaly Volkov
 
-The sourcecode of this project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html).
+Contributors: Walter Egli, Nicolas Pauly, Wei Huang
 
-##Credits
-
-Authors: Simon Egli, Dave Crossland
-
-Contributors: Vitaly Volkov, Walter Egli, Nicolas Pauly, Wei Huang
+Thanks to Dave Crossland for inspiring this project!
