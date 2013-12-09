@@ -1045,7 +1045,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id, name='215').first()
+        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
