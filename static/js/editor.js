@@ -161,7 +161,7 @@ Editor.prototype.addAxes = function() {
                         
                         $.post('/editor/reload/',{
                             project_id: this.project_id,
-                            master_id: newmasterid,
+                            master_id: canvas.htmlcanvas.attr('glyph-master-id'),
                             glyphname: this.editorglyph,
                             masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()})
                         .success(function(response){
