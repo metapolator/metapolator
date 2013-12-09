@@ -63,6 +63,7 @@ Editor.prototype.onCreateInstanceClick = function(e) {
         masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()
     }).success(function(response) {
         $(e.target).on('click', this.onCreateInstanceClick.bind(this)).removeAttr('disabled');
+        window.open('/specimen/' + this.project_id + '/');
     }.bind(this)).error(function() {
         $(e.target).on('click', this.onCreateInstanceClick.bind(this)).removeAttr('disabled');
     }.bind(this));

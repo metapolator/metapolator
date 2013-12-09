@@ -1335,8 +1335,7 @@ class Specimen(app.page):
 
         web.ctx.project = project
         instances = models.Instance.filter(project_id=project.id)
-        return render.specimen(project,
-            instances)
+        return render.specimen(project, instances.order_by(models.Instance.id.desc()))
 
 
 class Fonts(app.page):
