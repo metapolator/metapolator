@@ -908,7 +908,7 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                         metapost_points.append({'x': self.round(point['controls'][1]['x']),
                                                 'y': self.round(point['controls'][1]['y'])})
                 if session.get('mfparser', '') == 'controlpoints' and metapost_points:
-                    if i % 2 != 0:
+                    if i != 0:
                         points_ = metapost_points[1:] + metapost_points[:1]
                         points += points_
                     else:
@@ -1051,7 +1051,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id, name=137).first()
+        glyph = models.Glyph.filter(fontsource='A', master_id=master.id, name='174').first()
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
