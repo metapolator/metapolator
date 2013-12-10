@@ -910,6 +910,8 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
 
                 if session.get('mfparser', '') == 'controlpoints' and metapost_points:
                     points = points + metapost_points[:2][::-1] + metapost_points[2:][::-1]
+                else:
+                    points += metapost_points
 
             if len(zpoints) != len(points):
                 raise web.badrequest(simplejson.dumps({'error': '%s zp != mp %s' % (len(zpoints), len(points))}))
