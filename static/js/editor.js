@@ -19,35 +19,44 @@ var slider_template = '<div style="margin-bottom: 16px;" class="row">' +
 
 function Editor(mode) {
     this.editorAxes = $('.editor-axes');
+    this.mode = mode;
+    this.metapCanvas = new Canvas('canvas-m');
+    this.init();
+}
+
+
+Editor.prototype.init = function() {
     this.axes = [];
     this.project_id = 0;
-    this.mode = mode;
     this.selectOptionMasters = [];
+    this.editorglyph = 0;
+    this.canvases = [];
 }
 
 Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
     $(e.target).off('click').attr('disabled', 'disabled');
     $.post('/editor/create-master/', {
         project_id: this.project_id,
-        masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join(),
+        masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join(),
         glyphname: this.editorglyph
     }).success(function(response) {
         var data = $.parseJSON(response);
-        var optionMaster = $('<option>', {
-            value: data.master_id,
-            text: 'Load master ' + data.version
-        });
+        this.create_select_versions(data.versions);
+        var select = $('select.version');
+        for (var i = 0; i < select.length; i++) {
+            $(select[i]).find('option:selected').removeAttr('selected');
+            $(select[i]).attr('master-id', data.master_id);
 
-        this.selectOptionMasters.push(optionMaster);
-
-        var versionselects = $('select.version');
-
-        for (var j = 0; j < versionselects.length; j++) {
-            var select = $(versionselects[j]);
-            select.find('option:selected').removeAttr('selected');
-            select.append(optionMaster.clone().attr('selected', 'true'));
+            var options = $(select[i]).find('option');
+            for (var k = 0; k < options.length; k++) {
+                var option = $(options[k]);
+                if (option.val() == data.master_id) {
+                    option.attr('selected', 'true');
+                    break;
+                }
+            }
         }
-        versionselects.trigger('change');
+        select.trigger('change');
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
     }.bind(this)).error(function(response) {
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
@@ -60,7 +69,7 @@ Editor.prototype.onCreateInstanceClick = function(e) {
     $(e.target).off('click').attr('disabled', 'disabled');
     $.post('/editor/create-instance/', {
         project_id: this.project_id,
-        masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()
+        masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
     }).success(function(response) {
         $(e.target).on('click', this.onCreateInstanceClick.bind(this)).removeAttr('disabled');
         window.open('/specimen/' + this.project_id + '/');
@@ -79,7 +88,7 @@ Editor.prototype.addAxes = function() {
                         '  <a href="javascript:;" id="btn-master-from-instance" class="btn btn-xs btn-success">Create master</a>' +
                         '  <a href="javascript:;" id="btn-instance" class="btn btn-xs btn-success">Create instance</a>' +
                         '  <canvas width="350" height="600" id="canvas-m"></canvas>' + 
-                        '</div>').css('display', 'none');
+                        '</div>');
         axes.find('div[axis-position=middle]').append(metaxes);
         metaxes.find('#btn-master-from-instance').on('click', this.onCreateMasterFromInstanceClick.bind(this));
         metaxes.find('#btn-instance').on('click', this.onCreateInstanceClick.bind(this));
@@ -88,7 +97,20 @@ Editor.prototype.addAxes = function() {
     axes.find('.axis[axis-position=left]').attr('axis-label', AXES_PAIRS[this.axes.length][0]);
     axes.find('.axis[axis-position=right]').attr('axis-label', AXES_PAIRS[this.axes.length][1]);
 
-    var dropzones = axes.find('.dropzone');
+    axes.removeClass('fade');
+    this.axes.push(axes);
+
+    if (this.mode != 'controlpoints' || this.axes.length > 1) {
+        $('#btn-add-axes').hide();
+    }
+
+    this.initializeDropzone(axes);
+
+    return axes;
+}
+
+Editor.prototype.initializeDropzone = function(axes) {
+    var dropzones = axes.find('.filedrop');
     dropzones.filedrop({
         fallback_id: 'upload_button',
         url: '/upload/',
@@ -96,8 +118,8 @@ Editor.prototype.addAxes = function() {
         withCredentials: true,
         data: {
             project_id: function() {return this.project_id}.bind(this),
-            masters: function() {return $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()},
-            label: function() {return this.targetdrop.parent().attr('axis-label')}.bind(this)
+            masters: function() {return $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()},
+            label: function() {return this.dropzone_label}.bind(this)
         },
 
         dragOver: function(e) {
@@ -111,139 +133,173 @@ Editor.prototype.addAxes = function() {
         },
 
         drop: function(e) {
-            this.targetdrop = $(e.target);
+            this.dropzone_label = $(e.target).parents('.axis').attr('axis-label');
         }.bind(this),
 
         error: function(err, file) {
-            $('.dropzone').css('background', '#fff');
+            $('.filedrop').css('background', '#fff');
         }.bind(this),
 
         uploadFinished: function(i, file, response, time) {
-            this.project_id = response.project_id;
-            if (!this.editorglyph) {
-                this.editorglyph = response.glyphname;
-            }
+            if (!this.project_id) {
+                location.hash = '#project/' + response.project_id;
+            } else {
+                var exists = this.canvases.filter(function(){
+                    return this.canvasid == 'canvas-' + response.label;
+                })
+                if (!exists.length){
+                    this.initializeWorkspace(response);
+                } else {
+                    this.create_select_versions(response.versions);
+                    $.post('/editor/reload/', 
+                           {project_id: response.project_id,
+                            master_id: response.master_id,
+                            glyphname: this.editorglyph,
+                            masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
+                    }).success(function(masterdata, response){
+                        for (var k = 0; k < this.canvases.length; k++) {
+                            if (this.canvases[k].canvasid == 'canvas-' + masterdata.label) {
+                                this.canvases[k].reloadCanvas(response);
+                                var select = $('#canvas-' + masterdata.label).parents('.axis').find('select.version')
+                                select.find('option:selected').removeAttr('selected');
+                                select.attr('master-id', masterdata.master_id);
 
-            var axis = $('div.axis[axis-label=' + response.label + ']');
-            var label = response.label;
-            var pointform_html = $('#templateform').html();
-            var settings_html = $('#settings').html();
-            var metapolation_label = response.metapolation;
-
-            var dom_canvas_id = 'canvas-' + label;
-            axis_htmltemplate = $(String.format('<ul class="nav nav-tabs" style="clear: both;">' + 
-                                                '  <li class="active"><a href="#tab-view-canvas-{0}" data-toggle="tab">View</a></li>' +
-                                                '  <li><a href="#tab-point-canvas-{0}" data-toggle="tab">Point</a></li>' +
-                                                '  <li><a href="#tab-settings-canvas-{0}" data-toggle="tab">Settings</a></li>' +
-                                                '</ul>' +
-                                                '<div class="tab-content">' +
-                                                '  <div class="tab-pane active" id="tab-view-canvas-{0}">' +
-                                                '    <canvas id="canvas-{0}" width="350" height="600" class="paper"></canvas>' +
-                                                '    <div class="canvas-{0}" style="display: none;">' +
-                                                '      <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>' +
-                                                '      <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>' +
-                                                '    </div>' +
-                                                '  </div>' +
-                                                '  <div class="tab-pane fade" id="tab-point-canvas-{0}">' + pointform_html + '</div>' + 
-                                                '  <div class="tab-pane fade" id="tab-settings-canvas-{0}">' + settings_html + '</div>' + 
-                                                '</div>', label));
-
-            if (this.mode == 'controlpoints') {
-                $(axis_htmltemplate[0]).css('display', 'none');
-            }
-            axis_htmltemplate.find('canvas').attr('glyph-project-id', response.project_id)
-                .attr('glyph-master-id', response.master_id);
-
-            var header = $('<h4>').text(label);
-            axis.find('.dropzone').hide();
-
-            var select = $('<select>').addClass('version');
-
-            axis.append(header);
-
-            for (var k = 0; k < this.selectOptionMasters.length; k++) {
-                select.append(this.selectOptionMasters[k].clone());
-            }
-            axis.append(select);
-
-            var optionMaster = $('<option>', {
-                value: response.master_id,
-                text: 'Load master ' + response.version
-            })
-            this.selectOptionMasters.push(optionMaster);
-            $('select.version').append(optionMaster);
-            var options = select.find('option');
-
-            for (var k = 0; k < options.length; k++) {
-                if ($(options[k]).val() == response.master_id) {
-                    $(options[k]).attr('selected', 'true');
-                    break;
+                                var options = select.find('option');
+                                for (var k = 0; k < options.length; k++) {
+                                    var option = $(options[k]);
+                                    if (option.val() == masterdata.master_id) {
+                                        option.attr('selected', 'true');
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }.bind(this, response));
                 }
             }
-
-            axis.append(axis_htmltemplate);
-
-            $.post('/editor/reload/', {project_id: response.project_id,
-                                       master_id: response.master_id,
-                                       glyphname: this.editorglyph,
-                                       masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()})
-                .success(function(response){
-                    var data = $.parseJSON(response);
-                    var canvas = new Canvas(dom_canvas_id, data.R.width, data.R.height, 'a');
-                    canvas.setZpoints(data.zpoints);
-                    canvas.renderGlyph(data.R.edges);
-                    canvas.showbox();
-                    if (!this.metapCanvas) {
-                        this.metapCanvas = new Canvas('canvas-m', data.M.width, data.M.height);
-                        this.metapCanvas.renderGlyph(data.M.edges);
-                        this.metapCanvas.draw();
-                        $('#metapolation').show();
-                    }
-                    canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
-                    canvas.draw();
-
-                    select.on('change', function(e) {
-                        var newmasterid = $(e.target).val();
-                        canvas.htmlcanvas.attr('glyph-master-id', newmasterid);
-                        
-                        $.post('/editor/reload/',{
-                            project_id: this.project_id,
-                            master_id: canvas.htmlcanvas.attr('glyph-master-id'),
-                            glyphname: this.editorglyph,
-                            masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()})
-                        .success(function(response){
-                            canvas.reloadCanvas(response);
-                        });
-                    }.bind(this))
-
-                    if (!$('#metapolation').find('.slider-' + metapolation_label).length) {
-                        var slider = $(String.format(slider_template, metapolation_label[0], metapolation_label[1], metapolation_label));
-                        $('#metapolation').append(slider);
-                        slider.find('.slider').slider().on('slideStop', function(e){
-                            $.post('/editor/save-metap/', {
-                                project_id: this.project_id,
-                                glyphname: this.editorglyph,
-                                label: $(e.target).attr('slider-label'),
-                                masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join(),
-                                value: e.value
-                            })
-                            .success(function(response){
-                                this.metapCanvas.redrawglyph(response);
-                            }.bind(this));
-                        }.bind(this));
-                    }
-
-                }.bind(this))
-
         }.bind(this)
     });
-    axes.removeClass('fade');
-    this.axes.push(axes);
+}
 
-    if (this.mode != 'controlpoints' || this.axes.length > 1) {
-        $('#btn-add-axes').hide();
+
+Editor.prototype.create_select_versions = function(versions, $axis) {
+    for (var k = 0; k < versions.length; k++) {
+        var optionMaster = $('<option>', {
+            value: versions[k].master_id,
+            text: 'Load master ' + versions[k].version
+        })
+        $('select.version').each(function() {
+            var option = $(optionMaster.clone());
+            var $this = $(this);
+            if (option.val() == $(this).attr('master-id')) {
+                option.attr('selected', 'true');
+            }
+            if (!$this.find('option[value="'+option.val()+'"]').length)
+                $this.append(option);
+        });
     }
-    return axes;
+}
+
+
+Editor.prototype.initializeWorkspace = function(response) {
+    this.project_id = response.project_id;
+    if (!this.editorglyph) {
+        this.editorglyph = response.glyphname;
+    }
+
+    var axis = $('div.axis[axis-label=' + response.label + ']');
+    var label = response.label;
+    var pointform_html = $('#templateform').html();
+    var settings_html = $('#settings').html();
+
+    axis_htmltemplate = $(String.format('<ul class="nav nav-tabs" style="clear: both;">' + 
+                                        '  <li class="active"><a href="#tab-view-canvas-{0}" data-toggle="tab">View</a></li>' +
+                                        '  <li><a href="#tab-point-canvas-{0}" data-toggle="tab">Point</a></li>' +
+                                        '  <li><a href="#tab-settings-canvas-{0}" data-toggle="tab">Settings</a></li>' +
+                                        '</ul>' +
+                                        '<div class="tab-content">' +
+                                        '  <div class="tab-pane active" id="tab-view-canvas-{0}">' +
+                                        '    <canvas id="canvas-{0}" width="350" height="600" class="paper"></canvas>' +
+                                        '    <div class="canvas-{0}" style="display: none;">' +
+                                        '      <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>' +
+                                        '      <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>' +
+                                        '    </div>' +
+                                        '  </div>' +
+                                        '  <div class="tab-pane fade" id="tab-point-canvas-{0}">' + pointform_html + '</div>' + 
+                                        '  <div class="tab-pane fade" id="tab-settings-canvas-{0}">' + settings_html + '</div>' + 
+                                        '</div>', label));
+
+    if (this.mode == 'controlpoints') {
+        $(axis_htmltemplate[0]).css('display', 'none');
+    }
+    axis_htmltemplate.find('canvas').attr('glyph-project-id', response.project_id)
+        .attr('glyph-master-id', response.master_id);
+
+    var header = $('<h4>').text(label);
+    axis.find('.dropzone').hide();
+    axis.append(header);
+
+    var select = $('<select>').attr('master-id', response.master_id).addClass('version');
+    axis.append(select);
+
+    this.create_select_versions(response.versions, axis);
+
+    axis.append(axis_htmltemplate);
+
+    $.post('/editor/reload/', {project_id: response.project_id,
+                               master_id: response.master_id,
+                               glyphname: this.editorglyph,
+                               masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
+    })
+    .success(this.onCanvasDataReceived.bind(this, label, response.metapolation))
+    .error(function(){ alert('Could not receive data from server'); });
+}
+
+Editor.prototype.onCanvasVersionChanged = function(canvas, e) {
+    var newmasterid = $(e.target).val();
+    $(e.target).attr('master-id', newmasterid);
+    
+    $.post('/editor/reload/',{
+        project_id: this.project_id,
+        master_id: newmasterid,
+        glyphname: this.editorglyph,
+        masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
+    }).success(canvas.reloadCanvas.bind(canvas));
+}
+
+Editor.prototype.onCanvasDataReceived = function(canvaslabel, sliderlabel, response) {
+    var data = $.parseJSON(response);
+    var canvas = new Canvas('canvas-' + canvaslabel, 'a');
+    canvas.initialize()
+    canvas.renderGlyph(data.R);
+    canvas.setZpoints(data.zpoints);
+    canvas.showbox();
+    canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
+    canvas.draw();
+
+    this.canvases.push(canvas);
+
+    this.metapCanvas.initialize();
+    this.metapCanvas.redrawglyph(response);
+
+    $('div.axis[axis-label=' + canvaslabel + ']').find('select').on('change',this.onCanvasVersionChanged.bind(this, canvas));
+
+    if (!$('#metapolation').find('.slider-' + sliderlabel).length) {
+        var slider = $(String.format(slider_template, sliderlabel[0], sliderlabel[1], sliderlabel));
+        $('#metapolation').append(slider);
+        slider.find('.slider').slider().on('slideStop', function(e){
+            $.post('/editor/save-metap/', {
+                project_id: this.project_id,
+                glyphname: this.editorglyph,
+                label: $(e.target).attr('slider-label'),
+                masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join(),
+                value: e.value
+            })
+            .success(this.metapCanvas.redrawglyph.bind(this.metapCanvas))
+            .error(function(){ alert('Could not change metapolation value') });
+        }.bind(this));
+    }
 }
 
 if (!String.format) {

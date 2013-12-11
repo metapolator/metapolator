@@ -26,7 +26,7 @@ $var title: Editor
 
 <div class="row editor-axes fade">
 
-    <div class="col-md-4 axis" axis-position="left">
+    <div class="col-md-4 axis filedrop" axis-position="left">
         <div class="dropzone">
             Drop ZIP with UFO here
         </div>
@@ -36,7 +36,7 @@ $var title: Editor
 
     </div>
     
-    <div class="col-md-4 axis" axis-position="right">
+    <div class="col-md-4 axis filedrop" axis-position="right">
         <div class="dropzone">
             Drop ZIP with UFO here
         </div>
@@ -47,12 +47,52 @@ $var title: Editor
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap-slider.js"></script>
 <script type="text/javascript" src="/static/js/jquery.filedrop.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/jquery.ba-hashchange.min.js"></script>
 <script type="text/javascript" src="/static/js/canvas.js"></script>
 <script type="text/javascript" src="/static/js/editor.js?v2"></script>
 <script type="text/javascript">
     $$(function(){
         var editor = new Editor("$websession.get('mfparser', 'pen')");
-        $$('#btn-add-axes').on('click', editor.addAxes.bind(editor));
+        $$('#btn-add-axes').on('click', function(){
+            var axes = editor.addAxes();
+        });
+
+        $$(window).hashchange(function(){
+            $$('.editor-container').empty();
+            editor.init();
+            $$.post('/editor/' + location.hash.replace('#', ''), {
+                project_id: location.hash.replace('#', '')
+            }).success(function(response){
+                var data = $$.parseJSON(response);
+                for (var k = 0; k < data.axes.length; k++) {
+                    var axes = editor.addAxes();
+                    axes.find('.dropzone').hide();
+
+                    $$.post('/editor/get-master/', {
+                        project_id: data.project_id,
+                        master_id: data.axes[k][0],
+                        label: axes.find('.axis[axis-position=left]').attr('axis-label')
+                    }).success(function(response){
+                        editor.initializeWorkspace($$.parseJSON(response));
+                    });
+
+                    $$.post('/editor/get-master/', {
+                        project_id: data.project_id,
+                        master_id: data.axes[k][1],
+                        label: axes.find('.axis[axis-position=right]').attr('axis-label')
+                    }).success(function(response){
+                        editor.initializeWorkspace($$.parseJSON(response));
+                    });
+
+                }
+            }).error(function(){
+                alert('something wrong')
+            });
+        });
+
+        if (location.hash.replace('#', '') != '') {
+            $$(window).hashchange();
+        }
     });
 </script>
 

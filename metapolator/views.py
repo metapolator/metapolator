@@ -717,6 +717,9 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
         instances = models.Master.all().filter(
             models.Master.id.in_(postdata.masters.split(',')))
 
+        project.masters = postdata.masters
+        web.ctx.orm.commit()
+
         masters = []
         for p in _masters:
             for m in instances:
@@ -785,6 +788,72 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
                 pass
 
         return simplejson.dumps({})
+
+
+class EditorGetProjectAxes(app.page):
+
+    path = '/editor/project/(\d+)'
+
+    @raise404_notauthorized
+    def POST(self, project_id):
+        project = models.Project.get(id=project_id)
+        if not project:
+            raise web.notfound()
+
+        # masters = models.Master.filter(project_id=project.id, editable=True)
+        # masters = masters.order_by(models.Master.editor_ordering.asc())
+
+        if not project.masters:
+            masters = models.Master.filter(project_id=project.id)
+            project.masters = ','.join(map(lambda x: str(x.id), masters))
+            web.ctx.orm.commit()
+
+        masters = []
+        for p in project.masters.split(','):
+            for m in models.Master.filter(project_id=project.id):
+                if m.id == int(p):
+                    masters.append(m)
+                    break
+
+        masters = map(lambda x: int(x.id), unifylist(masters))
+        zipped = zip(masters[::2], masters[1::2])
+        return simplejson.dumps({'axes': map(list, zipped),
+                                 'project_id': project_id})
+
+
+def get_versions(project_id):
+    masters = models.Master.filter(project_id=project_id)
+    return map(lambda master: {'version': '{0:03d}'.format(master.version), 'master_id': master.id}, masters)
+
+
+class EditorMaster(app.page):
+
+    path = '/editor/get-master/'
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(project_id='', master_id='', label='')
+
+        project = models.Project.get(id=postdata.project_id)
+        if not project:
+            raise web.notfound()
+
+        master = models.Master.get(id=postdata.master_id,
+                                   project_id=postdata.project_id)
+        if not master:
+            raise web.notfound()
+
+        is_primary_label, label = get_metapolation_label(postdata.label)
+        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
+
+        versions = get_versions(postdata.project_id)
+        return simplejson.dumps({'project_id': project.id,
+                                 'master_id': master.id,
+                                 'glyphname': glyph.name,
+                                 'label': postdata.label,
+                                 'metapolation': label,
+                                 'version': '{0:03d}'.format(master.version),
+                                 'versions': versions})
 
 
 class EditorCreateMaster(app.page, GlyphPageMixin):
@@ -933,11 +1002,15 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                 self.create_glyphpoint(newglyphb, (i + 1), zpoints[i], point)
                 i += 1
 
+        project.masters = ','.join([str(master.id)] * len(project.masters.split(',')))
+        web.ctx.orm.commit()
+
         glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id,
                                  fontsource='A')
         result = self.get_glyphs_jsondata(glyph.name, master)
         return simplejson.dumps({'version': '{0:03d}'.format(master.version),
-                                 'master_id': master.id, 'glyphdata': result})
+                                 'master_id': master.id, 'glyphdata': result,
+                                 'versions': get_versions(master.project_id)})
 
 
 LABELS = range(ord('A'), ord('Z') + 1)
@@ -1051,13 +1124,23 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id, name='174').first()
+        index = LABELS.index(ord(x.label))
+        masters = project.masters.split(',')
+        if index > len(masters) - 1:
+            masters.append(master.id)
+        else:
+            masters[index] = master.id
+        project.masters = ','.join(map(str, masters))
+        web.ctx.orm.commit()
+
+        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
                                  'label': x.label,
                                  'metapolation': label,
-                                 'version': '{0:03d}'.format(version)})
+                                 'version': '{0:03d}'.format(version),
+                                 'versions': get_versions(master.project_id)})
 
 
 class ViewVersion(app.page, GlyphPageMixin):

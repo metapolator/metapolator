@@ -117,17 +117,20 @@ function resize(canvas, x, y, width, height, newwidth, newheight) {
     return {x: nx, y: ny}
 }
 
-function Canvas(canvasid, width, height, source) {
+function Canvas(canvasid, source) {
   this.canvasid = canvasid;
-  this.paper = new paper.PaperScope();
-  this.paper.setup(canvasid);
-
-  this.width = Number(width);
-  this.height = Number(height);
+  this.initialized = false;
+  
+  this.width = 0;
+  this.height = 0;
   this.source = source;
+}
 
-  this.htmlcanvas = $('#' + canvasid);
-
+Canvas.prototype.initialize = function() {
+  if (this.initialized) return;
+  this.paper = new paper.PaperScope();
+  this.paper.setup(this.canvasid);
+  this.htmlcanvas = $('#' + this.canvasid);
   this.tool = new this.paper.Tool();
 
   if (this.source) {
@@ -135,6 +138,7 @@ function Canvas(canvasid, width, height, source) {
     this.tool.onMouseUp = this.onMouseUp.bind(this);
     this.tool.onMouseDrag = this.onMouseDrag.bind(this);
   }
+  this.initialized = true;
 }
 
 Canvas.prototype.getPoint = function(x, y) {
@@ -146,9 +150,13 @@ Canvas.prototype.restore_original_coords = function(point) {
   return resize(this, point.x, point.y, 350 - 100, 350 - 100, this.width, this.height);
 }
 
-Canvas.prototype.renderGlyph = function(edges) {
+Canvas.prototype.renderGlyph = function(glyphdata) {
+  // glyphdata = {'edges': [], width: 1234, height: 456}
   this.paper.activate();
-  this.glyphorigin = new GlyphOrigin(edges);
+  this.width = glyphdata.width;
+  this.height = glyphdata.height;
+
+  this.glyphorigin = new GlyphOrigin(glyphdata.edges);
   this.glyphorigin.drawOn(this);
 }
 
@@ -187,8 +195,8 @@ Canvas.prototype.onMouseUp = function(event) {
                    x: xycoord.x,
                    y: 500 - xycoord.y,
                    project_id: $('#' + this.canvasid).attr('glyph-project-id'),
-                   master_id: $('#' + this.canvasid).attr('glyph-master-id'),
-                   masters: $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join()
+                   master_id: $('#' + this.canvasid).parents('.axis').find('select option:selected').val(),
+                   masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
           },
           url: 'save-point/',
           success: this.reloadCanvas.bind(this)
@@ -233,8 +241,8 @@ Canvas.prototype.saveParamRequest = function(data, successhandler) {
   data.x = xycoord.x;
   data.y = 500 - xycoord.y;
   data.project_id = $('#' + this.canvasid).attr('glyph-project-id');
-  data.master_id = $('#' + this.canvasid).attr('glyph-master-id');
-  data.masters = $('canvas.paper').map(function(e, k){return $(k).attr('glyph-master-id')}).toArray().join();
+  data.master_id = $('#' + this.canvasid).parents('.axis').find('select option:selected').val();
+  data.masters = $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join();
   $.post('save-param/', data)
         .fail(this.saveParamException.bind(this))
         .success(successhandler || this.saveParamSuccess.bind(this));
@@ -328,15 +336,20 @@ Canvas.prototype.showbox = function() {
 };
 
 Canvas.prototype.draw = function() {
-  this.paper.view.viewSize.height = 500;
-  this.paper.view.viewSize.width = 400;
   this.paper.view.draw();
 };
 
 
 Canvas.prototype.redrawglyph = function(data) {
   this.paper.activate();
-  this.glyphorigin.dataGlyph = $.parseJSON(data).M.edges;
+  var data = $.parseJSON(data);
+
+  this.width = data.M.width;
+  this.height = data.M.height;
+  if (!this.glyphorigin) {
+    this.glyphorigin = new GlyphOrigin(data.M.edges);
+  }
+  this.glyphorigin.dataGlyph = data.M.edges;
   this.glyphorigin.drawOn(this);
 }
 
