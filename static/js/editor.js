@@ -144,13 +144,10 @@ Editor.prototype.initializeDropzone = function(axes) {
             if (!this.project_id) {
                 location.hash = '#project/' + response.project_id;
             } else {
-                var exists = this.canvases.filter(function(){
-                    return this.canvasid == 'canvas-' + response.label;
-                })
+                var exists = $(this.canvases).filter(function(){return this.canvasid == 'canvas-' + response.label});
                 if (!exists.length){
                     this.initializeWorkspace(response);
                 } else {
-                    this.create_select_versions(response.versions);
                     $.post('/editor/reload/', 
                            {project_id: response.project_id,
                             master_id: response.master_id,
@@ -161,20 +158,11 @@ Editor.prototype.initializeDropzone = function(axes) {
                             if (this.canvases[k].canvasid == 'canvas-' + masterdata.label) {
                                 this.canvases[k].reloadCanvas(response);
                                 var select = $('#canvas-' + masterdata.label).parents('.axis').find('select.version')
-                                select.find('option:selected').removeAttr('selected');
                                 select.attr('master-id', masterdata.master_id);
-
-                                var options = select.find('option');
-                                for (var k = 0; k < options.length; k++) {
-                                    var option = $(options[k]);
-                                    if (option.val() == masterdata.master_id) {
-                                        option.attr('selected', 'true');
-                                        break;
-                                    }
-                                }
                                 break;
                             }
                         }
+                        this.create_select_versions(masterdata.versions);
                     }.bind(this, response));
                 }
             }
@@ -189,6 +177,7 @@ Editor.prototype.create_select_versions = function(versions, $axis) {
             value: versions[k].master_id,
             text: 'Load master ' + versions[k].version
         })
+        $('select.version option:selected').removeAttr('selected');
         $('select.version').each(function() {
             var option = $(optionMaster.clone());
             var $this = $(this);
