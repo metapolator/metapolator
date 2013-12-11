@@ -41,22 +41,11 @@ Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
         glyphname: this.editorglyph
     }).success(function(response) {
         var data = $.parseJSON(response);
+        
+        $('select.version').attr('master-id', data.master_id);
         this.create_select_versions(data.versions);
-        var select = $('select.version');
-        for (var i = 0; i < select.length; i++) {
-            $(select[i]).find('option:selected').removeAttr('selected');
-            $(select[i]).attr('master-id', data.master_id);
 
-            var options = $(select[i]).find('option');
-            for (var k = 0; k < options.length; k++) {
-                var option = $(options[k]);
-                if (option.val() == data.master_id) {
-                    option.attr('selected', 'true');
-                    break;
-                }
-            }
-        }
-        select.trigger('change');
+        $('select.version').trigger('change');
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
     }.bind(this)).error(function(response) {
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
@@ -172,20 +161,19 @@ Editor.prototype.initializeDropzone = function(axes) {
 
 
 Editor.prototype.create_select_versions = function(versions, $axis) {
+    $('select.version').empty();
     for (var k = 0; k < versions.length; k++) {
         var optionMaster = $('<option>', {
             value: versions[k].master_id,
             text: 'Load master ' + versions[k].version
         })
-        $('select.version option:selected').removeAttr('selected');
         $('select.version').each(function() {
             var option = $(optionMaster.clone());
             var $this = $(this);
             if (option.val() == $(this).attr('master-id')) {
                 option.attr('selected', 'true');
             }
-            if (!$this.find('option[value="'+option.val()+'"]').length)
-                $this.append(option);
+            $this.append(option);
         });
     }
 }
