@@ -105,17 +105,10 @@ right {
               <li class="active"><a href="/projects/">Projects</a></li>
             $else:
               <li><a href="/projects/">Projects</a></li>
-            $if page.get('title') == 'Fonts':
-              <li class="active"><a href="/fonts/">Fonts</a></li>
-            $else:
-              <li><a href="/fonts/">Fonts</a></li>
-
             $if page.get('title') == 'Editor':
               <li class="active"><a href="/editor/">Editor</a></li>
             $else:
               <li><a href="/editor/">Editor</a></li>
-            $if is_loggedin():
-              <li><a href="$working_url('static/font.otf')">Download OTF</a></li>
             <li><a href="/settings/globals/">Parameters</a></li>
             $if webctx.get('project') and webctx.project:
               <li><a href="/specimen/$webctx.project.projectname/">Specimen</a></li>
