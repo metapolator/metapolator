@@ -236,7 +236,7 @@ class SwitchMFParser(app.page):
 
     def POST(self, mfparser):
         session.mfparser = mfparser
-        raise seeother('/fonts/')
+        raise seeother('/projects/')
 
 
 class userstatic(app.page):
