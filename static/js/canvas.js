@@ -5,7 +5,6 @@ function ControlPoints(dataPoints, canvasid) {
   this.texts = [];
 }
 
-
 ControlPoints.prototype.drawOn = function(canvas) {
   for (var k = 0; k < this.paths.length; k++) {
     this.paths[k].gpath.remove();
@@ -124,6 +123,27 @@ function Canvas(canvasid, source) {
   this.width = 0;
   this.height = 0;
   this.source = source;
+
+  this.localparamform = $('#tab-settings-' + canvasid).find('form.extended');
+  if (this.localparamform.length) {
+    this.localparamform.on('submit', this.onLocalParametersFormSubmit.bind(this));
+    // GET: http://server.am/editor/settings/?master_id=12
+    // Response: {'px': 1.0}
+    $.get('/editor/settings/', {
+      'master_id': this.localparamform.parents('.axis').find('select.version').attr('master-id')
+    }).success(function(response){
+      var data = $.parseJSON(response);
+      this.localparamform.find('input').each(function(){
+        var $this = $(this);
+        $this.val(data[$this.attr('name')]);
+      });
+    });
+  }
+}
+
+
+Canvas.prototype.onLocalParametersFormSubmit = function(e) {
+  e.preventDefault();
 }
 
 Canvas.prototype.initialize = function() {
