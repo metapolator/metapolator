@@ -355,8 +355,7 @@ class EditorMetapolationSave(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, masters='',
-                             label='', value=0, glyphname='')
+        postdata = web.input(project_id=0, label='', value=0, glyphname='')
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
@@ -369,12 +368,12 @@ class EditorMetapolationSave(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(postdata.masters.split(','))
+        _masters = unifylist(project.masters.split(','))
 
         # masters are passed here as ordered array of masters ids as they
         # placed on editor page
         instances = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
+            models.Master.id.in_(project.masters.split(',')))
 
         masters = []
         for p in _masters:
@@ -397,8 +396,7 @@ class EditorSavePoint(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0,
-                             id='', x='', y='', masters='')
+        postdata = web.input(project_id=0, master_id=0, id='', x='', y='')
 
         # @FIXME: must be changed to form with validation of available
         # arguments values.
@@ -420,12 +418,12 @@ class EditorSavePoint(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(postdata.masters.split(','))
+        _masters = unifylist(project.masters.split(','))
 
         # masters are passed here as ordered array of masters ids as they
         # placed on editor page
         instances = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
+            models.Master.id.in_(project.masters.split(',')))
 
         masters = []
         for p in _masters:
@@ -510,12 +508,12 @@ class EditorSaveParam(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(postdata.masters.split(','))
+        _masters = unifylist(project.masters.split(','))
 
         # masters are passed here as ordered array of masters ids as they
         # placed on editor page
         instances = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
+            models.Master.id.in_(project.masters.split(',')))
 
         masters = []
         for p in _masters:
@@ -548,7 +546,8 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0, glyphname='', masters='')
+        postdata = web.input(project_id=0, master_id=0,
+                             glyphname='', axislabel='')
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
@@ -558,16 +557,22 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
         if not master:
             return web.notfound()
 
+        index = LABELS.index(ord(postdata.axislabel))
+        masters = project.masters.split(',')
+        if index > len(masters) - 1:
+            masters.append(master.id)
+        else:
+            masters[index] = master.id
+        project.masters = ','.join(map(str, masters))
+        web.ctx.orm.commit()
+
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
         _masters = unifylist(project.masters.split(','))
 
         # masters are passed here as ordered array of masters ids as they
         # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        web.ctx.orm.commit()
+        instances = models.Master.all().filter(models.Master.id.in_(masters))
 
         masters = []
         for p in _masters:
@@ -601,12 +606,12 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
 
         # we should unify masters list in case if some masters absence
         # and raise error if unavailable
-        _masters = unifylist(postdata.masters.split(','))
+        _masters = unifylist(project.masters.split(','))
 
         # masters are passed here as ordered array of masters ids as they
         # placed on editor page
         instances = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
+            models.Master.id.in_(project.masters.split(',')))
 
         masters = []
         for p in _masters:

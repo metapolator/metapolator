@@ -141,7 +141,7 @@ Editor.prototype.initializeDropzone = function(axes) {
                            {project_id: response.project_id,
                             master_id: response.master_id,
                             glyphname: this.editorglyph,
-                            masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
+                            axislabel: response.label
                     }).success(function(masterdata, response){
                         for (var k = 0; k < this.canvases.length; k++) {
                             if (this.canvases[k].canvasid == 'canvas-' + masterdata.label) {
@@ -236,8 +236,7 @@ Editor.prototype.initializeWorkspace = function(response) {
     $.post('/editor/reload/', {project_id: response.project_id,
                                master_id: response.master_id,
                                glyphname: this.editorglyph,
-                               masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
-    })
+                               axislabel: response.label})
     .success(this.onCanvasDataReceived.bind(this, label, response.metapolation))
     .error(function(){ alert('Could not receive data from server'); });
 }
@@ -250,7 +249,7 @@ Editor.prototype.onCanvasVersionChanged = function(canvas, e) {
         project_id: this.project_id,
         master_id: newmasterid,
         glyphname: this.editorglyph,
-        masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
+        axislabel: $(e.target).parents('.axis').attr('axis-label')
     }).success(canvas.reloadCanvas.bind(canvas));
 }
 
@@ -279,7 +278,6 @@ Editor.prototype.onCanvasDataReceived = function(canvaslabel, sliderlabel, respo
                 project_id: this.project_id,
                 glyphname: this.editorglyph,
                 label: $(e.target).attr('slider-label'),
-                masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join(),
                 value: e.value
             })
             .success(this.metapCanvas.redrawglyph.bind(this.metapCanvas))
