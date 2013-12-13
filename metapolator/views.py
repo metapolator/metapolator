@@ -264,7 +264,7 @@ class userstatic(app.page):
         # path = re.sub(r'[\.]{2,}+', '', path)
         try:
             file_name = web.ctx.path.split('/')[-1]
-            web.header('Content-type', mime_type(file_name))
+            web.header('Content-Type', mime_type(file_name))
             abspath = op.join(PROJECT_ROOT, 'users', path)
             return open(abspath, 'rb').read()
         except IOError:
