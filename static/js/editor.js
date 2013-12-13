@@ -269,7 +269,7 @@ Editor.prototype.onCanvasDataReceived = function(canvaslabel, sliderlabel, respo
     this.metapCanvas.initialize();
     this.metapCanvas.redrawglyph(response);
 
-    $('div.axis[axis-label=' + canvaslabel + ']').find('select').on('change',this.onCanvasVersionChanged.bind(this, canvas));
+    $('div.axis[axis-label=' + canvaslabel + ']').find('select.version').on('change',this.onCanvasVersionChanged.bind(this, canvas));
 
     if (!$('#metapolation').find('.slider-' + sliderlabel).length) {
         var slider = $(String.format(slider_template, sliderlabel[0], sliderlabel[1], sliderlabel));

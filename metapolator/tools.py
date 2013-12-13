@@ -39,6 +39,7 @@ def makefont_single(master, cell=''):
     while True:
         line = process.stdout.readline()
         if not line or '<to be read again>' in line:
+            process.kill()
             break
 
 
