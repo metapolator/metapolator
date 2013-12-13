@@ -49,6 +49,7 @@ $var title: Editor
 <script type="text/javascript" src="/static/js/jquery.filedrop.js"></script>
 <script type="text/javascript" src="/static/js/3rdparty/jquery.ba-hashchange.min.js"></script>
 <script type="text/javascript" src="/static/js/canvas.js"></script>
+<script type="text/javascript" src="/static/js/localparamform.js"></script>
 <script type="text/javascript" src="/static/js/editor.js?v2"></script>
 <script type="text/javascript">
     $$(function(){
@@ -104,7 +105,7 @@ $var title: Editor
 </div>
 
 <div class="fade" id="settings">
-    <form action="" method="post" class="extended">
+    <form action="" method="post" class="extended localparamform">
       $:webctx.settings_form.render()
     </form>
 </div>

@@ -239,6 +239,65 @@ class SwitchMFParser(app.page):
         raise seeother('/projects/')
 
 
+class EditorLocals(app.page):
+
+    path = '/editor/locals/'
+
+    @raise404_notauthorized
+    def GET(self):
+        x = web.input(local_id=0)
+        localparams = models.LocalParam.get(id=x.local_id)
+        if not localparams:
+            return simplejson.dumps({})
+        return simplejson.dumps(localparams.as_dict())
+
+    @raise404_notauthorized
+    def POST(self):
+        x = web.input(master_id=0)
+        master = models.Master.get(id=x.master_id)
+        if not master:
+            return web.notfound()
+
+        localparams = models.LocalParam.all()
+        result = []
+        for i, k in enumerate(localparams):
+            dict_ = {'val': k.id, 'idx': i + 1}
+            if k.id == master.idlocala:
+                dict_.update({'selected': True})
+            result.append(dict_)
+        return simplejson.dumps(result)
+
+    @raise404_notauthorized
+    def PUT(self):
+        x = web.input()
+
+        master = models.Master.get(id=x.get('master_id'))
+        if not master:
+            return web.notfound()
+
+        form = LocalParamForm()
+        if form.validates():
+            idlocal = form.d.idlocal
+            values = form.d
+
+            del values['idlocal']
+            del values['save']
+            del values['ab_source']
+
+            if not int(idlocal):
+                localparam = models.LocalParam.create(**values)
+                master.idlocala = localparam.id
+                return simplejson.dumps([{'val': localparam.id,
+                                          'idx': models.LocalParam.all().count() + 1}])
+            else:
+                models.LocalParam.update(id=idlocal, values=values)
+                localparam = models.LocalParam.get(id=idlocal)
+                master.idlocala = localparam.id
+            # writeGlobalParam(master)
+
+        return simplejson.dumps([])
+
+
 class userstatic(app.page):
 
     path = '/users/(.*)'

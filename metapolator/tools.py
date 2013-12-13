@@ -23,16 +23,23 @@ def makefont_single(master, cell=''):
     os.environ['MFMODE'] = session.get('mfparser', '')
     if cell == 'A':
         metafont = master.get_metafont('a')
-        strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
-        os.system(strms)
     elif cell == 'B':
         metafont = master.get_metafont('b')
-        strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
-        os.system(strms)
     else:
         metafont = master.get_metafont()
-        strms = "cd %s; sh %s %s" % (working_dir(), "makefont.sh", metafont)
-        os.system(strms)
+
+    import subprocess
+    process = subprocess.Popen(
+        ["sh", "makefont.sh", metafont],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        cwd=working_dir()
+    )
+
+    while True:
+        line = process.stdout.readline()
+        if not line or '<to be read again>' in line:
+            break
 
 
 def makefont(working_dir, master, cells=['A', 'B', 'M']):

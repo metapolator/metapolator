@@ -222,7 +222,16 @@ Editor.prototype.initializeWorkspace = function(response) {
 
     this.create_select_versions(response.versions, axis);
 
+    var form = new LocalParamForm($(axis_htmltemplate.find('form.localparamform')));
+
+    var sw1 = new LocalParamSwitcher({
+        source: $(axis_htmltemplate.find('select#idlocal')),
+        listener: form,
+        master_id: response.master_id
+    });
+
     axis.append(axis_htmltemplate);
+
 
     $.post('/editor/reload/', {project_id: response.project_id,
                                master_id: response.master_id,
