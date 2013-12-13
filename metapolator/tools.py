@@ -23,8 +23,6 @@ def makefont_single(master, cell=''):
     os.environ['MFMODE'] = session.get('mfparser', '')
     if cell == 'A':
         metafont = master.get_metafont('a')
-    elif cell == 'B':
-        metafont = master.get_metafont('b')
     else:
         metafont = master.get_metafont()
 
@@ -328,7 +326,7 @@ def writeParams(master, filename, metapolation=None, masterfontb=None):
     ifile.write("A_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
 
     # local parameters B
-    imlo = LocalParam.get(id=(masterfontb or master).idlocalb)
+    imlo = LocalParam.get(id=(masterfontb or master).idlocala)
     ifile.write("B_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
     ifile.write("B_width:=%.2f;\n" % get_local_param(imlo, 'width'))
     ifile.write("B_space:=%.2f;\n" % get_local_param(imlo, 'space'))

@@ -133,7 +133,7 @@ class GlyphPageMixin(object):
 
         if hasglyphs:
             writeGlyphlist(master)
-            makefont(working_dir(), master, ['M'])
+            makefont_single(self.get_lft_master())
 
     def call_metapost(self, glyph_id):
         writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
@@ -293,7 +293,6 @@ class EditorLocals(app.page):
                 models.LocalParam.update(id=idlocal, values=values)
                 localparam = models.LocalParam.get(id=idlocal)
                 master.idlocala = localparam.id
-            # writeGlobalParam(master)
 
         return simplejson.dumps([])
 
@@ -836,7 +835,7 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
         instance = models.Instance.create(project_id=project.id)
 
         for extension in ['-webfont.eot', '-webfont.ttf', '.otf']:
-            source = project.get_basename(self.get_lft_version()) + extension
+            source = project.get_basename() + extension
             dest_dir = op.join(working_dir(), 'instances')
             if not op.exists(dest_dir):
                 os.makedirs(dest_dir)

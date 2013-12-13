@@ -117,10 +117,10 @@ class Project(Base, UserQueryMixin):
                            '%s-%s-%03d.log' % (self.projectname,
                                                ab_source.upper(), version))
         return op.join(working_dir(),
-                       '%s-%03d.log' % (self.projectname, version))
+                       '%s.log' % (self.projectname))
 
-    def get_basename(self, version=1):
-        return '%s-%03d' % (self.projectname, version)
+    def get_basename(self):
+        return self.projectname
 
     def get_directory(self, version=1):
         directory = op.join(working_dir(), '%s-%03d' % (self.projectname,
@@ -186,7 +186,7 @@ class Master(Base, UserQueryMixin):
         if ab_source:
             return '%s-%s-%03d' % (self.project.projectname,
                                    ab_source.upper(), self.version)
-        return '%s-%03d' % (self.project.projectname, self.version)
+        return self.project.projectname
 
     def metafont_filepath(self, ab_source=None):
         return op.join(self.get_fonts_directory(),
