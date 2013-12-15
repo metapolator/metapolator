@@ -83,6 +83,8 @@ LocalParamSwitcher.prototype.localParamDataReceived = function(response) {
         return;
     }
     this.config.listener.echo(data);
+    if (this.config.onFormSubmitted)
+        this.config.onFormSubmitted();
 }
 
 

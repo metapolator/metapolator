@@ -227,17 +227,26 @@ Editor.prototype.initializeWorkspace = function(response) {
     var sw1 = new LocalParamSwitcher({
         source: $(axis_htmltemplate.find('select#idlocal')),
         listener: form,
-        master_id: response.master_id
+        master_id: response.master_id,
+        onFormSubmitted: this.localParamsSaved.bind(this, response.master_id, response.label, response.metapolation)
     });
 
     axis.append(axis_htmltemplate);
-
 
     $.post('/editor/reload/', {project_id: response.project_id,
                                master_id: response.master_id,
                                glyphname: this.editorglyph,
                                axislabel: response.label})
     .success(this.onCanvasDataReceived.bind(this, label, response.metapolation))
+    .error(function(){ alert('Could not receive data from server'); });
+}
+
+Editor.prototype.localParamsSaved = function(master_id, label, metapolation, e) {
+    $.post('/editor/reload/', {project_id: this.project_id,
+                               master_id: master_id,
+                               glyphname: this.editorglyph,
+                               axislabel: label})
+    .success(this.onCanvasDataReceived.bind(this, label, metapolation))
     .error(function(){ alert('Could not receive data from server'); });
 }
 
