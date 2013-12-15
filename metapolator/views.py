@@ -111,6 +111,8 @@ class GlyphPageMixin(object):
         self._masters = masters
 
     def call_metapost_all_glyphs(self, master):
+        writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
+
         hasglyphs = False
         for glyph in master.get_glyphs('a'):
             _glyphs = models.Glyph.filter(fontsource='a', name=glyph.name)
@@ -625,7 +627,6 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
 
-        writeGlobalParam(self.get_lft_master())
         self.call_metapost_all_glyphs(self.get_lft_master())
 
         instance = models.Instance.create(project_id=project.id)
@@ -803,7 +804,6 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
 
-        writeGlobalParam(self.get_lft_master())
         self.call_metapost_all_glyphs(self.get_lft_master())
 
         logpath = project.get_instancelog(version=self.get_lft_master().version)
