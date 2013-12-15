@@ -68,17 +68,17 @@ LocalParamSwitcher.prototype.sendLocalParamRequest = function(e) {
 
 LocalParamSwitcher.prototype.localParamDataReceived = function(response) {
     var data = $.parseJSON(response);
-    if (!$.isEmptyObject(data)) {
+    if ($.isEmptyObject(data)) {
         this.config.listener.echo({
-            px: 1,
-            width: 2,
-            space: 3,
-            xheight: 4.5,
-            capital: 1,
-            ascender: 4,
-            descender: 2,
-            skeleton: -1,
-            over: 12
+            px: 0,
+            width: 1,
+            space: 0,
+            xheight: 5,
+            capital: 6,
+            ascender: 6,
+            descender: -2,
+            skeleton: 0,
+            over: 0.1
         });
         return;
     }
