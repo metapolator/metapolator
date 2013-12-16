@@ -249,7 +249,8 @@ class EditorLocals(app.page):
                 localparam = models.LocalParam.create(**values)
                 master.idlocala = localparam.id
                 return simplejson.dumps([{'val': localparam.id,
-                                          'idx': models.LocalParam.all().count() + 1}])
+                                          'idx': models.LocalParam.all().count() + 1,
+                                          'selected': True}])
             else:
                 models.LocalParam.update(id=idlocal, values=values)
                 localparam = models.LocalParam.get(id=idlocal)
