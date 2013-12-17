@@ -6,8 +6,8 @@ from lxml import etree
 
 from config import buildfname, working_dir, session
 
-from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam, \
-    Metapolation
+from models import Glyph, GlyphParam, GlyphOutline, LocalParam, \
+    Metapolation, Master
 
 
 def project_exists(master):
@@ -273,14 +273,10 @@ def get_local_param(param, key):
     return getattr(param, key, 0)
 
 
-def writeParams(master, filename, metapolation=None, masterfontb=None):
-    globalparam = GlobalParam.get(id=master.idglobal)
+def writeParams(project, filename, masters, is_concrete_master=False, metapolation=0):
 
-    metap = Metapolation.get(label='AB', project_id=master.project_id)
-    if metap:
-        metap = metap.value
-    else:
-        metap = 0
+    # TODO: make global parameter to project related and not master
+    globalparam = None
 
     unitwidth = get_global_param(globalparam, 'unitwidth')
     fontsize = get_global_param(globalparam, 'fontsize')
@@ -293,12 +289,15 @@ def writeParams(master, filename, metapolation=None, masterfontb=None):
     ifile = open(filename, "w")
     # global parameters
     ifile.write("% parameter file \n")
-    if metapolation is not None:
+    if is_concrete_master:
         ifile.write("metapolation:=%.2f;\n" % metapolation)
     else:
+        metap = Metapolation.get(label='AB', project_id=project.id) or 0
+        if metap:
+            metap = metap.value
         ifile.write("metapolation:=%.2f;\n" % metap)
 
-    metap = Metapolation.get(label='CD', project_id=master.project_id)
+    metap = Metapolation.get(label='CD', project_id=project.id)
     if metap:
         metap = metap.value
     else:
@@ -313,57 +312,19 @@ def writeParams(master, filename, metapolation=None, masterfontb=None):
     ifile.write("box#:=%.3fpt#;\n" % box)
     ifile.write("u#:=%.3fpt#;\n" % unitwidth)
 
-    imlo = LocalParam.get(id=master.idlocala)
-    ifile.write("A_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
-    ifile.write("A_width:=%.2f;\n" % get_local_param(imlo, 'width'))
-    ifile.write("A_space:=%.2f;\n" % get_local_param(imlo, 'space'))
-    ifile.write("A_spacept:=%.2fpt;\n" % get_local_param(imlo, 'space'))
-    ifile.write("A_xheight:=%.2f;\n" % get_local_param(imlo, 'xheight'))
-    ifile.write("A_capital:=%.2f;\n" % get_local_param(imlo, 'capital'))
-    ifile.write("A_ascender:=%.2f;\n" % get_local_param(imlo, 'ascender'))
-    ifile.write("A_descender:=%.2f;\n" % get_local_param(imlo, 'descender'))
-    ifile.write("A_skeleton#:=%.2fpt#;\n" % get_local_param(imlo, 'skeleton'))
-    ifile.write("A_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
-
-    # local parameters B
-    imlo = LocalParam.get(id=(masterfontb or master).idlocala)
-    ifile.write("B_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
-    ifile.write("B_width:=%.2f;\n" % get_local_param(imlo, 'width'))
-    ifile.write("B_space:=%.2f;\n" % get_local_param(imlo, 'space'))
-    ifile.write("B_spacept:=%.2fpt;\n" % get_local_param(imlo, 'space'))
-    ifile.write("B_xheight:=%.2f;\n" % get_local_param(imlo, 'xheight'))
-    ifile.write("B_capital:=%.2f;\n" % get_local_param(imlo, 'capital'))
-    ifile.write("B_ascender:=%.2f;\n" % get_local_param(imlo, 'ascender'))
-    ifile.write("B_descender:=%.2f;\n" % get_local_param(imlo, 'descender'))
-    ifile.write("B_skeleton#:=%.2fpt#;\n" % get_local_param(imlo, 'skeleton'))
-    ifile.write("B_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
-
-    ifile.write('C_px#:=2.00pt#;\n')
-    ifile.write('C_width:=1.00;\n')
-    ifile.write('C_space:=0;\n')
-    ifile.write('C_spacept:=0.00pt;\n')
-    ifile.write('C_xheight:=5.00;\n')
-    ifile.write('C_capital:=8.00;\n')
-    ifile.write('C_ascender:=8.00;\n')
-    ifile.write('C_descender:=2.00;\n')
-    ifile.write('C_inktrap:=10.00;\n')
-    ifile.write('C_stemcut:=20.00;\n')
-    ifile.write('C_skeleton#:=0.00pt#;\n')
-    ifile.write('C_superness:=1.00;\n')
-    ifile.write('C_over:=0.10pt;\n')
-
-    ifile.write('D_px#:=0.0pt#;\n')
-    ifile.write('D_width:=1.00;\n')
-    ifile.write('D_space:=0.00;\n')
-    ifile.write('D_xheight:=5.00;\n')
-    ifile.write('D_capital:=8.00;\n')
-    ifile.write('D_ascender:=8.00;\n')
-    ifile.write('D_descender:=2.00;\n')
-    ifile.write('D_inktrap:=10.00;\n')
-    ifile.write('D_stemcut:=20.00;\n')
-    ifile.write('D_skeleton#:=0.0pt#;\n')
-    ifile.write('D_superness:=1.00;\n')
-    ifile.write('D_over:=0.10pt;\n')
+    for i, master in enumerate(masters):
+        imlo = LocalParam.get(id=master.idlocala)
+        uniqletter = chr(ord('A') + i)
+        ifile.write("%s_px#:=%.2fpt#;\n" % (uniqletter, get_local_param(imlo, 'px')))
+        ifile.write("%s_width:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'width')))
+        ifile.write("%s_space:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'space')))
+        ifile.write("%s_spacept:=%.2fpt;\n" % (uniqletter, get_local_param(imlo, 'space')))
+        ifile.write("%s_xheight:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'xheight')))
+        ifile.write("%s_capital:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'capital')))
+        ifile.write("%s_ascender:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'ascender')))
+        ifile.write("%s_descender:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'descender')))
+        ifile.write("%s_skeleton#:=%.2fpt#;\n" % (uniqletter, get_local_param(imlo, 'skeleton')))
+        ifile.write("%s_over:=%.2fpt;\n" % (uniqletter, get_local_param(imlo, 'over')))
 
     ifile.write("\n")
     ifile.write("input glyphs\n")
@@ -371,7 +332,50 @@ def writeParams(master, filename, metapolation=None, masterfontb=None):
     ifile.close()
 
 
-def writeGlobalParam(master, masterfontb=None):
-    writeParams(master, master.metafont_filepath(), masterfontb=masterfontb)
-    writeParams(master, master.metafont_filepath('a'), 0)
-    writeParams(master, master.metafont_filepath('b'), 1)
+def writeGlobalParam(project):
+    # we should unify masters list in case if some masters absence
+    # and raise error if unavailable
+    _masters = unifylist(project.masters.split(','))
+
+    # masters are passed here as ordered array of masters ids as they
+    # placed on editor page
+    instances = Master.all().filter(Master.id.in_(project.masters.split(',')))
+
+    masters = []
+    for p in _masters:
+        for m in instances:
+            if m.id == int(p):
+                masters.append(m)
+                break
+
+    for i, m in enumerate(masters):
+        if not i:
+            writeParams(project, m.metafont_filepath(), masters)
+        if i == 1:
+            metapolation = 1
+        else:
+            metapolation = 0
+        writeParams(project, m.metafont_filepath('a'), masters, is_concrete_master=True, metapolation=metapolation)
+
+
+def dopair(pair):
+    pair = list(pair)
+    if pair[0] is None:
+        pair[0] = pair[1]
+    if pair[1] is None:
+        pair[1] = pair[0]
+    return pair
+
+
+def unifylist(masters):
+    p1 = masters[::2]
+    p2 = masters[1::2]
+    if len(p1) != len(p2):
+        p2 += [None] * (len(p1) - len(p2))
+
+    pairs = zip(p1, p2)
+    result = []
+    for p in map(dopair, pairs):
+        if p[0] is not None and p[1] is not None:
+            result += p
+    return result

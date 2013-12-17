@@ -27,7 +27,7 @@ from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     PointParamExtendedForm
 from tools import putFontAllglyphs, \
     makefont, get_json, project_exists, writeGlyphlist, \
-    writeGlobalParam, makefont_single
+    writeGlobalParam, makefont_single, unifylist
 
 
 def raise404_notauthorized(func):
@@ -111,7 +111,7 @@ class GlyphPageMixin(object):
         self._masters = masters
 
     def call_metapost_all_glyphs(self, master):
-        writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
+        writeGlobalParam(self.get_project())
 
         hasglyphs = False
         for glyph in master.get_glyphs('a'):
@@ -138,7 +138,7 @@ class GlyphPageMixin(object):
             makefont_single(self.get_lft_master())
 
     def call_metapost(self, glyph_id):
-        writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
+        writeGlobalParam(self.get_project())
 
         _glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
         _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
@@ -446,29 +446,6 @@ class EditorSavePoint(app.page, GlyphPageMixin):
                         masters[1].version)
         result = self.get_glyphs_jsondata(glyphoutline.glyph.name, master)
         return simplejson.dumps(result)
-
-
-def dopair(pair):
-    pair = list(pair)
-    if pair[0] is None:
-        pair[0] = pair[1]
-    if pair[1] is None:
-        pair[1] = pair[0]
-    return pair
-
-
-def unifylist(masters):
-    p1 = masters[::2]
-    p2 = masters[1::2]
-    if len(p1) != len(p2):
-        p2 += [None] * (len(p1) - len(p2))
-
-    pairs = zip(p1, p2)
-    result = []
-    for p in map(dopair, pairs):
-        if p[0] is not None and p[1] is not None:
-            result += p
-    return result
 
 
 class EditorSaveParam(app.page, GlyphPageMixin):
@@ -1012,8 +989,6 @@ def execute_metapost_for_all_glyphs(master, rgt_master=None):
     if hasglyphs:
         writeGlyphlist(master)
         makefont(working_dir(), master)
-    print '== makefont.sh complete === %s: %s' % (master.version,
-                                                  time.time() - starttime)
 
 
 class Specimen(app.page):
@@ -1223,4 +1198,4 @@ def prepare_master_environment(master):
             shutil.copy2(filename, master.get_fonts_directory())
         except (IOError, OSError):
             raise
-    writeGlobalParam(master)
+    writeGlobalParam(master.project)
