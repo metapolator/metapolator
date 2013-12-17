@@ -20,7 +20,6 @@ import simplejson
 from web import seeother
 from passlib.hash import bcrypt
 
-import xmltomf
 from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
@@ -280,27 +279,6 @@ class Index(app.page):
 
     def GET(self):
         raise seeother('/projects/')
-
-
-class Regenerate(app.page):
-
-    path = '/regenerate/(\d+)'
-
-    def GET(self, id):
-        master = models.Master.get(id=id)
-        if not master:
-            return web.notfound()
-
-        prepare_environment_directory()
-        prepare_master_environment(master)
-
-        for glyph in master.get_glyphs('a'):
-            glyphB = models.Glyph.get(name=glyph.name, fontsource='B',
-                                      master_id=master.id)
-            xmltomf.xmltomf1(master, glyph, glyphB)
-        writeGlyphlist(master)
-        makefont(working_dir(), master)
-        raise seeother('/fonts/')
 
 
 def get_edges_json(log_filename, glyphid=None):
@@ -755,14 +733,10 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
                                             unicode=glyph.unicode)
-            newglyphb = models.Glyph.create(master_id=master.id, fontsource='B',
-                                            name=glyph.name, width=glyph.width,
-                                            unicode=glyph.unicode)
 
             i = 0
             for point in points:
                 self.create_glyphpoint(newglypha, (i + 1), zpoints[i], point)
-                self.create_glyphpoint(newglyphb, (i + 1), zpoints[i], point)
                 i += 1
 
         project.masters = ','.join([str(master.id)] * len(project.masters.split(',')))

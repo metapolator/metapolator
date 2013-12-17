@@ -147,10 +147,8 @@ def putFontAllglyphs(master, glyphid=None):
     # in both fonts A and B
 
     source_fontpath_A = op.join(master.get_ufo_path('a'), 'glyphs')
-    source_fontpath_B = op.join(master.get_ufo_path('b'), 'glyphs')
 
     charlista = [f for f in os.listdir(source_fontpath_A)]
-    charlistb = [f for f in os.listdir(source_fontpath_B)]
 
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
@@ -159,14 +157,6 @@ def putFontAllglyphs(master, glyphid=None):
         if ext in ["glif"] and (not glyphid or glyphid == glyphName):
             glif = etree.parse(op.join(source_fontpath_A, ch1))
             create_glyph(glif, master, 'A')
-
-    for ch1 in charlistb:
-        glyphName, ext = buildfname(ch1)
-        if not glyphName or glyphName.startswith('.'):
-            continue
-        if ext in ["glif"] and (not glyphid or glyphid == glyphName):
-            glif = etree.parse(op.join(source_fontpath_B, ch1))
-            create_glyph(glif, master, 'B')
 
 
 def get_json(content, glyphid=None):
