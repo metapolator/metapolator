@@ -10,8 +10,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
 
-from config import engine, working_dir
-from dbapi import UserQueryMixin, query
+from metapolator.config import engine, working_dir
+from metapolator.dbapi import UserQueryMixin, query
+
 
 Base = declarative_base()
 
@@ -99,6 +100,24 @@ class Project(Base, UserQueryMixin):
     # mfparser = Column(String(128), default='')
 
     projectname = Column(String(128), index=True)
+
+    def get_ordered_masters(self):
+        from tools import unifylist
+        # we should unify masters list in case if some masters absence
+        # and raise error if unavailable
+        _masters = unifylist(self.masters.split(','))
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        instances = Master.all().filter(Master.id.in_(self.masters.split(',')))
+
+        masters = []
+        for p in _masters:
+            for m in instances:
+                if m.id == int(p):
+                    masters.append(m)
+                    break
+        return masters
 
     @classmethod
     def get_master(cls, projectname, version=False):

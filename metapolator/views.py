@@ -369,21 +369,7 @@ class EditorMetapolationSave(app.page, GlyphPageMixin):
                                    values={'value': float(postdata.value)})
         web.ctx.orm.commit()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
+        masters = project.get_ordered_masters()
 
         self.set_masters(masters)
 
@@ -419,21 +405,7 @@ class EditorSavePoint(app.page, GlyphPageMixin):
         if not models.GlyphOutline.exists(id=postdata.id):
             return web.notfound()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
+        masters = project.get_ordered_masters()
 
         self.set_masters(masters)
 
@@ -486,21 +458,7 @@ class EditorSaveParam(app.page, GlyphPageMixin):
             models.GlyphParam.update(glyphoutline_id=postdata.id,
                                      values=values)
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
+        masters = project.get_ordered_masters()
 
         self.set_masters(masters)
 
@@ -546,20 +504,7 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
         project.masters = ','.join(map(str, masters))
         web.ctx.orm.commit()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(models.Master.id.in_(masters))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
+        masters = project.get_ordered_masters()
 
         self.set_masters(masters)
 
@@ -584,21 +529,7 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
         if not project:
             raise web.notfound()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
+        masters = project.get_ordered_masters()
 
         self.set_masters(masters)
 

@@ -333,20 +333,7 @@ def writeParams(project, filename, masters, is_concrete_master=False, metapolati
 
 
 def writeGlobalParam(project):
-    # we should unify masters list in case if some masters absence
-    # and raise error if unavailable
-    _masters = unifylist(project.masters.split(','))
-
-    # masters are passed here as ordered array of masters ids as they
-    # placed on editor page
-    instances = Master.all().filter(Master.id.in_(project.masters.split(',')))
-
-    masters = []
-    for p in _masters:
-        for m in instances:
-            if m.id == int(p):
-                masters.append(m)
-                break
+    masters = project.get_ordered_masters()
 
     for i, m in enumerate(masters):
         if not i:
