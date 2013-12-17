@@ -25,7 +25,7 @@ from config import app, is_loggedin, session, working_dir, \
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     PointParamExtendedForm
 from tools import putFontAllglyphs, \
-    makefont, get_json, project_exists, writeGlyphlist, \
+    get_json, project_exists, writeGlyphlist, \
     writeGlobalParam, makefont_single, unifylist
 
 
@@ -878,22 +878,6 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
                                  'metapolation': label,
                                  'version': '{0:03d}'.format(version),
                                  'versions': get_versions(master.project_id)})
-
-
-def execute_metapost_for_all_glyphs(master, rgt_master=None):
-    import time
-
-    starttime = time.time()
-    hasglyphs = False
-    for glyph in master.get_glyphs('a'):
-        glyphB = models.Glyph.get(master_id=(rgt_master and rgt_master or master).id, fontsource='B',
-                                  name=glyph.name)
-        xmltomf.xmltomf1(master, glyph, glyphB)
-        hasglyphs = True
-
-    if hasglyphs:
-        writeGlyphlist(master)
-        makefont(working_dir(), master)
 
 
 class Specimen(app.page):
