@@ -196,6 +196,8 @@ class Glyph(app.page):
     def GET(self):
         x = web.input(project_id='')
         glyphs = models.Glyph.filter(project_id=x.project_id)
+        glyphs = glyphs.group_by(models.Glyph.name)
+        glyphs = glyphs.order_by(models.Glyph.name.asc())
         return simplejson.dumps(map(lambda x: {'val': self.glyphrepr(x.name),
                                                'id': x.name}, glyphs))
 
