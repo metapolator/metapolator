@@ -273,8 +273,14 @@ def writeParams(project, filename, masters, is_concrete_master=False, metapolati
     ifile.write("box#:=%.3fpt#;\n" % box)
     ifile.write("u#:=%.3fpt#;\n" % unitwidth)
 
-    for i, master in enumerate(masters):
-        imlo = LocalParam.get(id=master.idlocala)
+    lmast = masters[:]
+    if len(lmast) < 4:
+        lmast += [None] * (4 - len(masters))
+
+    for i, master in enumerate(lmast):
+        imlo = None
+        if master:
+            imlo = LocalParam.get(id=master.idlocala)
         uniqletter = chr(ord('A') + i)
         ifile.write("%s_px#:=%.2fpt#;\n" % (uniqletter, get_local_param(imlo, 'px')))
         ifile.write("%s_width:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'width')))
@@ -303,6 +309,7 @@ def writeGlobalParam(project):
             metapolation = 1
         else:
             metapolation = 0
+
         writeParams(project, m.metafont_filepath('a'), masters, is_concrete_master=True, metapolation=metapolation)
 
 
