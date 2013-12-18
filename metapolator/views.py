@@ -168,6 +168,7 @@ class GlyphPageMixin(object):
         M_glyphjson = get_edges_json(instancelog, glyphid)
 
         glyph = models.Glyph.get(master_id=master.id, name=glyphid)
+
         instancelog = project.get_instancelog(master.version, 'a')
         if session.get('mfparser', '') == 'controlpoints':
             import xmltomf_new_2axes as xmltomf

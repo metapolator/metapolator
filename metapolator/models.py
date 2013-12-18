@@ -133,10 +133,8 @@ class Project(Base, UserQueryMixin):
     def get_instancelog(self, version=1, ab_source=None):
         if ab_source:
             return op.join(working_dir(),
-                           '%s-%s-%03d.log' % (self.projectname,
-                                               ab_source.upper(), version))
-        return op.join(working_dir(),
-                       '%s.log' % (self.projectname))
+                           '%s-%03d.log' % (self.projectname, version))
+        return op.join(working_dir(), '%s.log' % (self.projectname))
 
     def get_basename(self):
         return self.projectname
@@ -295,7 +293,6 @@ class GlyphParam(Base, UserQueryMixin):
     overcap = Column(String(32))
     overasc = Column(String(32))
     overdesc = Column(String(32))
-    ascpoint = Column(String(32))
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
