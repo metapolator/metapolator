@@ -1,7 +1,6 @@
 #!/bin/sh
 
-rm -rf users
-git reset --hard
+rm -rf users/guest1
 git pull origin master
 mysql --user=root -e 'drop database blog; create database blog;'
 python metapolator/models.py
