@@ -99,7 +99,7 @@ $var title: Editor
                 return;
             }
             $$.post('/editor/project/' + params.project)
-            .success(function(response){
+            .done(function(response){
                 var data = $$.parseJSON(response);
 
                 var glyph = params.glyph;
@@ -115,7 +115,7 @@ $var title: Editor
                         master_id: data.axes[k][0],
                         label: axes.find('.axis[axis-position=left]').attr('axis-label'),
                         glyph: glyph
-                    }).success(function(response){
+                    }).done(function(response){
                         editor.initializeWorkspace($$.parseJSON(response));
                     });
 
@@ -124,12 +124,12 @@ $var title: Editor
                         master_id: data.axes[k][1],
                         label: axes.find('.axis[axis-position=right]').attr('axis-label'),
                         glyph: glyph
-                    }).success(function(response){
+                    }).done(function(response){
                         editor.initializeWorkspace($$.parseJSON(response));
                     });
 
                 }
-            }).error(function(){
+            }).fail(function(){
                 alert('something wrong')
             });
         });

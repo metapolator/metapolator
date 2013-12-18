@@ -58,7 +58,7 @@ Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
         project_id: this.project_id,
         masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join(),
         glyphname: this.editorglyph
-    }).success(function(response) {
+    }).done(function(response) {
         var data = $.parseJSON(response);
         
         $('select.version').attr('master-id', data.master_id);
@@ -66,7 +66,7 @@ Editor.prototype.onCreateMasterFromInstanceClick = function(e) {
 
         $('select.version').trigger('change');
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
-    }.bind(this)).error(function(response) {
+    }.bind(this)).fail(function(response) {
         $(e.target).on('click', this.onCreateMasterFromInstanceClick.bind(this)).removeAttr('disabled');
         alert($.parseJSON(response.responseText).error);
     }.bind(this));
@@ -78,10 +78,10 @@ Editor.prototype.onCreateInstanceClick = function(e) {
     $.post('/editor/create-instance/', {
         project_id: this.project_id,
         masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
-    }).success(function(response) {
+    }).done(function(response) {
         $(e.target).on('click', this.onCreateInstanceClick.bind(this)).removeAttr('disabled');
         window.open('/specimen/' + this.project_id + '/');
-    }.bind(this)).error(function() {
+    }.bind(this)).fail(function() {
         $(e.target).on('click', this.onCreateInstanceClick.bind(this)).removeAttr('disabled');
     }.bind(this));
 }
@@ -161,7 +161,7 @@ Editor.prototype.initializeDropzone = function(axes) {
                             master_id: response.master_id,
                             glyphname: this.editorglyph,
                             axislabel: response.label
-                    }).success(function(masterdata, response){
+                    }).done(function(masterdata, response){
                         for (var k = 0; k < this.canvases.length; k++) {
                             if (this.canvases[k].canvasid == 'canvas-' + masterdata.label) {
                                 this.canvases[k].reloadCanvas(response);
@@ -203,7 +203,7 @@ Editor.prototype.initializeWorkspace = function(response) {
         this.project_id = response.project_id;
 
         $.get('/editor/glyphs/', {project_id: this.project_id})
-        .success(function(response){
+        .done(function(response){
             var data = $.parseJSON(response);
             for (var k = 0; k < data.length; k++) {
                 var span = $('<span>');
@@ -269,8 +269,8 @@ Editor.prototype.initializeWorkspace = function(response) {
                                master_id: response.master_id,
                                glyphname: this.editorglyph,
                                axislabel: response.label})
-    .success(this.onCanvasDataReceived.bind(this, label, response.metapolation))
-    .error(function(){ alert('Could not receive data from server'); });
+    .done(this.onCanvasDataReceived.bind(this, label, response.metapolation))
+    .fail(function(){ alert('Could not receive data from server'); });
 }
 
 Editor.prototype.localParamsSaved = function(master_id, label, metapolation, e) {
@@ -278,8 +278,8 @@ Editor.prototype.localParamsSaved = function(master_id, label, metapolation, e) 
                                master_id: master_id,
                                glyphname: this.editorglyph,
                                axislabel: label})
-    .success(this.onCanvasDataReceived.bind(this, label, metapolation))
-    .error(function(){ alert('Could not receive data from server'); });
+    .done(this.onCanvasDataReceived.bind(this, label, metapolation))
+    .fail(function(){ alert('Could not receive data from server'); });
 }
 
 Editor.prototype.onCanvasVersionChanged = function(canvas, e) {
@@ -291,7 +291,7 @@ Editor.prototype.onCanvasVersionChanged = function(canvas, e) {
         master_id: newmasterid,
         glyphname: this.editorglyph,
         axislabel: $(e.target).parents('.axis').attr('axis-label')
-    }).success(canvas.reloadCanvas.bind(canvas));
+    }).done(canvas.reloadCanvas.bind(canvas));
 }
 
 Editor.prototype.onCanvasDataReceived = function(canvaslabel, sliderlabel, response) {
@@ -321,8 +321,8 @@ Editor.prototype.onCanvasDataReceived = function(canvaslabel, sliderlabel, respo
                 label: $(e.target).attr('slider-label'),
                 value: e.value
             })
-            .success(this.metapCanvas.redrawglyph.bind(this.metapCanvas))
-            .error(function(){ alert('Could not change metapolation value') });
+            .done(this.metapCanvas.redrawglyph.bind(this.metapCanvas))
+            .fail(function(){ alert('Could not change metapolation value') });
         }.bind(this));
     }
 }

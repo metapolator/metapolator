@@ -261,7 +261,7 @@ Canvas.prototype.saveParamRequest = function(data, successhandler) {
   data.masters = $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join();
   $.post('save-param/', data)
         .fail(this.saveParamException.bind(this))
-        .success(successhandler || this.saveParamSuccess.bind(this));
+        .done(successhandler || this.saveParamSuccess.bind(this));
 }
 
 Canvas.prototype.saveParamException = function() {

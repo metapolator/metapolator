@@ -85,7 +85,7 @@ function LocalParamSwitcher(config) {
     this.config.source.append($('<option>', {val: 0, text: 'Create new locals ...'}));
 
     $.post('/editor/locals/', config.data)
-    .success(this.listLocalParamsReceived.bind(this));
+    .done(this.listLocalParamsReceived.bind(this));
 }
 
 
@@ -112,8 +112,8 @@ LocalParamSwitcher.prototype.listLocalParamsReceived = function (response) {
 
 LocalParamSwitcher.prototype.sendRequest = function (e) {
     $.get('/editor/locals/', {'local_id': $(e.target).val()})
-    .success(this.localParamDataReceived.bind(this))
-    .error(function(response){
+    .done(this.localParamDataReceived.bind(this))
+    .fail(function(response){
         if (response.status != 404)
             alert('Unable to retrieve local parameters');
     });
@@ -125,7 +125,7 @@ LocalParamSwitcher.prototype.sendLocalParamRequest = function(e) {
     var data = this.config.listener.form.serializeObject();
     data = $.extend(data, this.config.data);
     $.ajax({url: '/editor/locals/', type: 'PUT', data: data})
-    .success(this.listLocalParamsReceived.bind(this));
+    .done(this.listLocalParamsReceived.bind(this));
 }
 
 
