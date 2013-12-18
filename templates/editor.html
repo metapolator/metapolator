@@ -24,9 +24,30 @@ $var title: Editor
     }
 </style>
 
-<div id="glyph-switcher">
-    
-</div>
+<!-- Button trigger modal -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#listglyphmodal">
+  Show Glyphs
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="listglyphmodal" tabindex="-1" role="dialog" aria-labelledby="glyphmodallabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="glyphmodallabel">Available glyphs</h4>
+      </div>
+      <div class="modal-body">
+        <div id="glyph-switcher">
+            
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <div class="editor-container">
     
