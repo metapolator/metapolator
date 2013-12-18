@@ -16,6 +16,30 @@
  *     Set 1: px = 0, skeleton = -1
  *     Set 2: px = 1, skeleton = 0
  *
+ *   Getting list of local parameters
+ *
+ *     Request URL: http://domain.ltd/editor/locals/
+ *     Request Method: POST
+ *     Response: [{"selected": true, "idx": 1, "val": 1},
+ *                {"idx": 2, "val": 2},
+ *                {"idx": 3, "val": 3}]
+ *
+ *   Getting values for selected set from dropdown
+ *     
+ *     Request URL: http://domain.ltd/editor/locals/?local_id=1
+ *     Request Method: GET
+ *     Response: {"descender": -2.0, "over": 0.1, "user_id": 1, 
+ *                "skeleton": -1.0, "space": 0.0, "px": 0.0, 
+ *                "ascender": 6.0, "width": 1.0, "xheight": 5.0,
+ *                "capital": 6.0, "id": 1}
+ *
+ *   Put new values for selected set, to create new local parameter set
+ *   use local_id=0
+ *
+ *     Request URL: http://domain.ltd/editor/locals/
+ *     Request Method: PUT
+ *     Response: [{"selected": true, "idx": 3, "val": 2}]
+ *
  * Usage:
  *
  *  `sample.js`
@@ -30,8 +54,8 @@
  *
  *  `sample.html`
  *  
- *  <select></select>
  *  <form>
+ *    <select name="idlocal"></select>
  *    <input type="text" name="examplename" />
  *  </form>
  */
