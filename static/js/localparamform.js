@@ -1,3 +1,41 @@
+/*
+ * Author: Vitaly Volkov
+ *
+ * Email: hash.3g@gmail.com
+ *
+ * Project home:
+ *   http://www.github.com/metapolator/metapolator
+ *
+ * Version: 0.1
+ *
+ * Description:
+ *
+ *   Interface to use form based on several set of values. In common case
+ *   you can have sets with several related values:
+ *
+ *     Set 1: px = 0, skeleton = -1
+ *     Set 2: px = 1, skeleton = 0
+ *
+ * Usage:
+ *
+ *  `sample.js`
+ *
+ *  var form = new LocalParamForm(jQuery('form'));
+ *  var switcher = new LocalParamSwitcher({
+ *       source: jQuery('select'),
+ *       listener: form,
+ *       data: {arg1: value1, arg2: value2},
+ *       onFormSubmitted: function(){alert('form submitted');}
+ *  });
+ *
+ *  `sample.html`
+ *  
+ *  <select></select>
+ *  <form>
+ *    <input type="text" name="examplename" />
+ *  </form>
+ */
+
 function LocalParamForm(form) {
     this.form = form;
 }
@@ -21,7 +59,8 @@ function LocalParamSwitcher(config) {
     this.config.listener.form.on('submit', this.sendLocalParamRequest.bind(this));
 
     this.config.source.append($('<option>', {val: 0, text: 'Create new locals ...'}));
-    $.post('/editor/locals/', {master_id: config.master_id})
+
+    $.post('/editor/locals/', config.data)
     .success(this.listLocalParamsReceived.bind(this));
 }
 
@@ -60,7 +99,7 @@ LocalParamSwitcher.prototype.sendRequest = function (e) {
 LocalParamSwitcher.prototype.sendLocalParamRequest = function(e) {
     e.preventDefault();
     var data = this.config.listener.form.serializeObject();
-    data.master_id = this.config.master_id;
+    data = $.extend(data, this.config.data);
     $.ajax({url: '/editor/locals/', type: 'PUT', data: data})
     .success(this.listLocalParamsReceived.bind(this));
 }
@@ -86,13 +125,3 @@ LocalParamSwitcher.prototype.localParamDataReceived = function(response) {
     if (this.config.onFormSubmitted)
         this.config.onFormSubmitted();
 }
-
-
-// $(function(){
-//     var form = LocalParamForm($('form#local-param-form-1'));
-
-//     var sw1 = new LocalParamSwitcher({
-//         source: $('select#local-param-switcher-1'),
-//         listener: form
-//     });
-// });

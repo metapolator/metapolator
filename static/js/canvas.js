@@ -1,3 +1,15 @@
+/*
+ * Author: Vitaly Volkov
+ *
+ * Email: hash.3g@gmail.com
+ *
+ * Project home:
+ *   http://www.github.com/metapolator/metapolator
+ *
+ * Version: 0.1
+ *
+ */
+
 function ControlPoints(dataPoints, canvasid) {
   this.dataPoints = dataPoints;
   this.pointform = $("#tab-point-" + canvasid).find('form.extended');

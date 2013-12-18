@@ -1,7 +1,14 @@
-/**
-    @authors Vitaly Volkov (hash.3g@gmail.com)
-    @version 0.1
-**/
+/*
+ * Author: Vitaly Volkov
+ *
+ * Email: hash.3g@gmail.com
+ *
+ * Project home:
+ *   http://www.github.com/metapolator/metapolator
+ *
+ * Version: 0.1
+ *
+ */
 
 
 function dict_from_locationhash() {
@@ -252,7 +259,7 @@ Editor.prototype.initializeWorkspace = function(response) {
     var sw1 = new LocalParamSwitcher({
         source: $(axis_htmltemplate.find('select#idlocal')),
         listener: form,
-        master_id: response.master_id,
+        data: {master_id: response.master_id},
         onFormSubmitted: this.localParamsSaved.bind(this, response.master_id, response.label, response.metapolation)
     });
 

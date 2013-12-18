@@ -457,9 +457,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         im = param.pointname
 
-        istemcutter = param.stemcutter
-        iinktrap_l = param.inktrap_l
-        iinktrap_r = param.inktrap_r
+        # istemcutter = param.stemcutter
+        # iinktrap_l = param.inktrap_l
+        # iinktrap_r = param.inktrap_r
         ipenwidth = param.penwidth
         iangle = param.angle
         istartp = param.startp
@@ -475,19 +475,20 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 startp.append("startp")
                 startpval.append(istartpval)
 
-            if istemcutter is not None:
-                istemcutterval = param.stemcutter
-                stemcutterval.append(istemcutterval)
+            # if istemcutter is not None:
+            #     istemcutterval = param.stemcutter
+            #     stemcutterval.append(istemcutterval)
 
-            if iinktrap_l is not None:
-                iinktrap_lval = param.inktrap_l
-                inktrap_l.append("inktrap_l")
-                inktrap_lval.append(iinktrap_lval)
+            # if iinktrap_l is not None:
+            #     iinktrap_lval = param.inktrap_l
+            #     inktrap_l.append("inktrap_l")
+            #     inktrap_lval.append(iinktrap_lval)
 
-            if iinktrap_r is not None:
-                iinktrap_rval = param.inktrap_r
-                inktrap_r.append("inktrapcut")
-                inktrap_rval.append(iinktrap_rval)
+            # if iinktrap_r is not None:
+            #     iinktrap_rval = param.inktrap_r
+            #     inktrap_r.append("inktrapcut")
+            #     inktrap_rval.append(iinktrap_rval)
+
             if ipenwidth is not None:
                 ipenwidthval = param.penwidth
                 penwidth.append("penwidth")
@@ -606,11 +607,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         ioverx = param.overx
         ioverbase = param.overbase
         iovercap = param.overcap
-        iinktrap_l = param.inktrap_l
-        iinktrap_r = param.inktrap_r
-        istemshift = param.stemshift
-        iascpoint = param.ascpoint
-        idescpoint = param.descpoint
+        # iinktrap_l = param.inktrap_l
+        # iinktrap_r = param.inktrap_r
+        # istemshift = param.stemshift
+        # iascpoint = param.ascpoint
+        # idescpoint = param.descpoint
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
@@ -656,45 +657,45 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 overcap.append("shifted")
                 overcapval.append(iovercapval)
 
-            if iinktrap_l is not None:
-                iinktrap_lval = param.inktrap_l
-                inktrap_l.append("inktrapcut")
-                inktrap_lval.append(iinktrap_lval)
-            else:
-                inktrap_l.append("")
-                inktrap_lval.append(0)
+            # if iinktrap_l is not None:
+            #     iinktrap_lval = param.inktrap_l
+            #     inktrap_l.append("inktrapcut")
+            #     inktrap_lval.append(iinktrap_lval)
+            # else:
+            #     inktrap_l.append("")
+            #     inktrap_lval.append(0)
 
-            if iinktrap_r is not None:
-                iinktrap_rval = param.inktrap_r
-                inktrap_r.append("inktrapcut")
-                inktrap_rval.append(iinktrap_rval)
-            else:
-                inktrap_r.append("")
-                inktrap_rval.append(0)
+            # if iinktrap_r is not None:
+            #     iinktrap_rval = param.inktrap_r
+            #     inktrap_r.append("inktrapcut")
+            #     inktrap_rval.append(iinktrap_rval)
+            # else:
+            #     inktrap_r.append("")
+            #     inktrap_rval.append(0)
 
-            if istemshift is not None:
-                istemshiftval = param.stemshift
-                stemshift.append("stemshift")
-                stemshiftval.append(istemshiftval)
-            else:
-                stemshift.append("")
-                stemshiftval.append(0)
+            # if istemshift is not None:
+            #     istemshiftval = param.stemshift
+            #     stemshift.append("stemshift")
+            #     stemshiftval.append(istemshiftval)
+            # else:
+            #     stemshift.append("")
+            #     stemshiftval.append(0)
 
-            if iascpoint is not None:
-                iascpointval = param.ascpoint
-                ascpoint.append("ascpoint")
-                ascpointval.append(iascpointval)
-            else:
-                ascpoint.append("")
-                ascpointval.append(0)
+            # if iascpoint is not None:
+            #     iascpointval = param.ascpoint
+            #     ascpoint.append("ascpoint")
+            #     ascpointval.append(iascpointval)
+            # else:
+            #     ascpoint.append("")
+            #     ascpointval.append(0)
 
-            if idescpoint is not None:
-                idescpointval = param.descpoint
-                descpoint.append("descpoint")
-                descpointval.append(idescpointval)
-            else:
-                descpoint.append('')
-                descpointval.append(0)
+            # if idescpoint is not None:
+            #     idescpointval = param.descpoint
+            #     descpoint.append("descpoint")
+            #     descpointval.append(idescpointval)
+            # else:
+            #     descpoint.append('')
+            #     descpointval.append(0)
 
             i += 1
 
@@ -715,24 +716,24 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         ## default string
 
-        if ascpoint[i] != '':
-            zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_ascender + metapolation * (B_ascender - A_ascender)) / asc#))"
-        if descpoint[i] != "":
-            zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_descender + metapolation * (B_descender - A_descender)) / desc#))"
-        else:
-            zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
+        # if ascpoint[i] != '':
+        #     zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_ascender + metapolation * (B_ascender - A_ascender)) / asc#))"
+        # if descpoint[i] != "":
+        #     zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_descender + metapolation * (B_descender - A_descender)) / desc#))"
+        # else:
+        zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
 
         if pointshifted[i] != '':
             zeile = zeile + " shifted (" + str(pointshiftedval[i]) + ")"
 
-        if stemshift[i] != '':
-            zeile = zeile + " stemshift (" + str(stemshiftval[i]) + ")"
+        # if stemshift[i] != '':
+        #     zeile = zeile + " stemshift (" + str(stemshiftval[i]) + ")"
 
-        if inktrap_l[i] != '':
-            zeile = zeile + " inktrap_l (" + str(inktrap_lval[i]) + ")"
+        # if inktrap_l[i] != '':
+        #     zeile = zeile + " inktrap_l (" + str(inktrap_lval[i]) + ")"
 
-        if inktrap_r[i] != '':
-            zeile = zeile + " inktrap_r (" + str(inktrap_rval[i]) + ")"
+        # if inktrap_r[i] != '':
+        #     zeile = zeile + " inktrap_r (" + str(inktrap_rval[i]) + ")"
 
         zeile = zeile + semi
         fip.write("\n")
@@ -815,10 +816,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         iupp = param.upp
         irightp = param.rightp
         idownp = param.downp
-        itension = param.tension
+        # itension = param.tension
         itensionand = param.tensionand
-        isuperright = param.superright
-        isuperleft = param.superleft
+        # isuperright = param.superright
+        # isuperleft = param.superleft
         ipenshifted = param.penshifted
 
         if znamel and im == znamel.group(0):
@@ -870,10 +871,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 downp.append("down")
                 downpvalB.append(idownpval)
 
-            if itension is not None:
-                itensionval = param.tension
-                tensionB.append("tension")
-                tensionvalB.append(itensionval)
+            # if itension is not None:
+            #     itensionval = param.tension
+            #     tensionB.append("tension")
+            #     tensionvalB.append(itensionval)
 
 #            if itensionand is not None:
 #                itensionandval = param.tensionand
@@ -893,15 +894,15 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
 
 
-            if isuperright is not None:
-                isuperrightval = param.superright
-                superright.append("superright")
-                superrightvalB.append(isuperrightval)
+            # if isuperright is not None:
+            #     isuperrightval = param.superright
+            #     superright.append("superright")
+            #     superrightvalB.append(isuperrightval)
 
-            if isuperleft is not None:
-                isuperleftval = param.superleft
-                superleft.append("superleft")
-                superleftvalB.append(isuperleftval)
+            # if isuperleft is not None:
+            #     isuperleftval = param.superleft
+            #     superleft.append("superleft")
+            #     superleftvalB.append(isuperleftval)
 
             if idir is not None:
                 idirval = param.dir
@@ -1028,17 +1029,17 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         irightp2 = param.rightp2
         idownp = param.downp
         idownp2 = param.downp2
-        itension = param.tension
+        # itension = param.tension
         itensionand = param.tensionand
-        isuperright = param.superright
-        isuperleft = param.superleft
+        # isuperright = param.superright
+        # isuperleft = param.superleft
         ipenshifted = param.penshifted
         ioverx = param.overx
         ioverbase = param.overbase
         iovercap = param.overcap
         ioverasc = param.overasc
         ioverdesc = param.overdesc
-        icycle = param.cycle
+        # icycle = param.cycle
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
@@ -1054,13 +1055,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 startp.append("")
                 startpval.append(0)
 
-            if icycle is not None :
-                icycleval = param.cycle
-                cycle.append("cycle")
-                cycleval.append(icycleval)
-            else :
-                cycle.append("")
-                cycleval.append(0)
+            # if icycle is not None :
+            #     icycleval = param.cycle
+            #     cycle.append("cycle")
+            #     cycleval.append(icycleval)
+            # else :
+            #     cycle.append("")
+            #     cycleval.append(0)
 
             if idoubledash is not None :
                 idoubledashval = param.doubledash
@@ -1152,13 +1153,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 rightp2val.append(0)
 
 
-            if itension is not None :
-                itensionval = param.tension
-                tension.append("tension")
-                tensionval.append(itensionval)
-            else :
-                tension.append("")
-                tensionval.append(0)
+            # if itension is not None :
+            #     itensionval = param.tension
+            #     tension.append("tension")
+            #     tensionval.append(itensionval)
+            # else :
+            #     tension.append("")
+            #     tensionval.append(0)
 
             if itensionand is not None :
                 itensionandval = param.tensionand
@@ -1171,21 +1172,21 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 tensionandval2.append(0)
 
 
-            if isuperright is not None :
-                isuperrightval = param.superright
-                superright.append("super_qr")
-                superrightval.append(isuperrightval)
-            else :
-                superright.append("")
-                superrightval.append(0)
+            # if isuperright is not None :
+            #     isuperrightval = param.superright
+            #     superright.append("super_qr")
+            #     superrightval.append(isuperrightval)
+            # else :
+            #     superright.append("")
+            #     superrightval.append(0)
 
-            if isuperleft is not None :
-                isuperleftval = param.superleft
-                superleft.append("super_ql")
-                superleftval.append(isuperleftval)
-            else :
-                superleft.append("")
-                superleftval.append(0)
+            # if isuperleft is not None :
+            #     isuperleftval = param.superleft
+            #     superleft.append("super_ql")
+            #     superleftval.append(isuperleftval)
+            # else :
+            #     superleft.append("")
+            #     superleftval.append(0)
 
             if idir is not None :
                 idirval = param.dir
@@ -1274,14 +1275,14 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 dash = " --- "
             elif doubledash[i] != "":
                 dash = " -- "
-            elif tension[i] != "":
-                dash = ""
+            # elif tension[i] != "":
+            #     dash = ""
             elif tensionand[i] != "":
                 dash = ""
-            elif superleft[i] != "":
-                dash = ""
-            elif superright[i] != "":
-                dash = ""
+            # elif superleft[i] != "":
+            #     dash = ""
+            # elif superright[i] != "":
+            #     dash = ""
             elif dir2[i] != "":
                 dash = ""
             elif upp2[i] != "":
@@ -1329,11 +1330,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             if dir[i] != "":
                 zeile += " {dir (" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"
 
-            if tension[i] != "" and leftp2[i] != "":
-                if tensionB[i] != "":
-                    zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{left}"
-                else:
-                    zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{left}"
+            # if tension[i] != "" and leftp2[i] != "":
+            #     if tensionB[i] != "":
+            #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{left}"
+            #     else:
+            #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{left}"
 
             # tabs here
             if tensionand[i] != "" and downp2[i] != "":
@@ -1349,11 +1350,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
                     ## tension and upp2
 
-                    if tension[i] != "" and upp2[i] != "":
-                        if tensionB[i] != "":
-                            zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{up}"
-                        else:
-                            zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{up}"
+                    # if tension[i] != "" and upp2[i] != "":
+                    #     if tensionB[i] != "":
+                    #         zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{up}"
+                    #     else:
+                    #         zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{up}"
 
                     if tensionand[i] != "" and upp2[i] != "":
                         if tensionandB[i] != "":
@@ -1365,19 +1366,19 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                             zeile += ' ... ' + upp2[i]
                         else:
                             ## tension and dir2
-                            if tension[i] != "" and dir2[i] != "":
-                                zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
+                            # if tension[i] != "" and dir2[i] != "":
+                            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
 
                             if tensionand[i] != "" and dir2[i] != "":
                                 zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
                             else:
                                 if dir2[i] != "":
                                     zeile += " ... {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
-                                else:
-                                    if tension[i] != "":
-                                        zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
-                                    elif tensionand[i] != "":
-                                        zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
+                                # else:
+                                #     if tension[i] != "":
+                                #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
+                                #     elif tensionand[i] != "":
+                                #         zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
 
             zeile += dash
         else:
@@ -1402,43 +1403,44 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             if penshifted[i] != "":
                 zeile = zeile + " shifted (" + str(penshiftedval[i]) + ")"
 
-            if tension[i] != ""and upp2[i] != "":
-                zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{up}"
-            elif upp2[i] != "":
-                zeile += dash + "{up}"
+            # if tension[i] != ""and upp2[i] != "":
+            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{up}"
+            # elif upp2[i] != "":
+            #     zeile += dash + "{up}"
 
-            if tension[i] != ""and downp2[i] != "":
-                zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{down}"
-            elif downp2[i] != "":
-                zeile += dash + "{down}"
+            # if tension[i] != ""and downp2[i] != "":
+            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{down}"
+            # elif downp2[i] != "":
+            #     zeile += dash + "{down}"
 
-            if tension[i] != ""and rightp2[i] != "":
-                zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{right}"
-            elif rightp2[i] != "":
-                zeile += dash + "{right}"
+            # if tension[i] != ""and rightp2[i] != "":
+            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{right}"
+            # elif rightp2[i] != "":
+            #     zeile += dash + "{right}"
 
-            if tension[i] != ""and leftp2[i] != "":
-                zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{left}"
-            elif leftp2[i] != "":
-                zeile += dash + "{left}"
+            # if tension[i] != ""and leftp2[i] != "":
+            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{left}"
+            # elif leftp2[i] != "":
+            #     zeile += dash + "{left}"
 
-            if tension[i] != ""and dir2[i] != "":
-                zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{dir " + str(dir2val[i]) + "}"
-            elif dir2[i] != "":
-                zeile += dash + "{dir " + str(dir2val[i]) + "}"
+            # if tension[i] != ""and dir2[i] != "":
+            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{dir " + str(dir2val[i]) + "}"
+            # elif dir2[i] != "":
+            #     zeile += dash + "{dir " + str(dir2val[i]) + "}"
 
-            if tension[i] != ""and cycle[i] != "":
-                zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "cycle"
-            else:
-                if tensionand[i] != ""and cycle[i] != "":
-                    zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "cycle"
-                else:
-                    if cycle[i] != "":
-                        zeile += dash + "cycle"
-                    elif tension[i] != "":
-                        zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
-                    elif tensionand[i] != "":
-                        zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
+            # if tension[i] != ""and cycle[i] != "":
+            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "cycle"
+            # else:
+                # if tensionand[i] != ""and cycle[i] != "":
+                #     zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "cycle"
+                # else:
+                #     if cycle[i] != "":
+                #         zeile += dash + "cycle"
+                #     elif tension[i] != "":
+                #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
+
+            if tensionand[i] != "":
+                zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
 
             zeile += semi + '\n'
 
@@ -1473,20 +1475,20 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         if overdesc[i] != "":
             zeile += " shifted (0, (A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) - " + str(overdescval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
 
-        if tension[i] != "" and upp2[i] != "":
-            zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{up}"
+        # if tension[i] != "" and upp2[i] != "":
+        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{up}"
 
-        if tension[i] != ""and downp2[i] != "":
-            zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{down}"
+        # if tension[i] != ""and downp2[i] != "":
+        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{down}"
 
-        if tension[i] != ""and rightp2[i] != "":
-            zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{right}"
+        # if tension[i] != ""and rightp2[i] != "":
+        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{right}"
 
-        if tension[i] != ""and leftp2[i] != "":
-            zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{left}"
+        # if tension[i] != ""and leftp2[i] != "":
+        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{left}"
 
-        if tension[i] != ""and dir2[i] != "":
-            zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{dir " + str(dir2val[i]) + "}"
+        # if tension[i] != ""and dir2[i] != "":
+        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{dir " + str(dir2val[i]) + "}"
 
         if tensionand[i] != ""and dir2[i] != "":
             zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
@@ -1503,12 +1505,12 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             zeile += dash + leftp2[i]
         elif rightp2[i] != "":
             zeile += dash + rightp2[i]
-        elif tension[i] != "":
-            zeile += strtwo + "tension" + " (" + tensionval[i] + '/100 + (metapolation * (' + tensionvalB[i] + '/100-' + tensionval[i] + '/100)))' + strtwo + downp2[i]
+        # elif tension[i] != "":
+        #     zeile += strtwo + "tension" + " (" + tensionval[i] + '/100 + (metapolation * (' + tensionvalB[i] + '/100-' + tensionval[i] + '/100)))' + strtwo + downp2[i]
         elif tensionand[i] != ""and cycle[i] != "":
             zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "cycle"
-        elif cycle[i] != "":
-            zeile += dash + cycle[i]
+        # elif cycle[i] != "":
+        #     zeile += dash + cycle[i]
 
         fip.write(zeile + semi)
 
