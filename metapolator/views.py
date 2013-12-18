@@ -113,8 +113,8 @@ class GlyphPageMixin(object):
         writeGlobalParam(self.get_project())
 
         hasglyphs = False
-        for glyph in master.get_glyphs('a'):
-            _glyphs = models.Glyph.filter(fontsource='a', name=glyph.name)
+        for glyph in master.get_glyphs():
+            _glyphs = models.Glyph.filter(name=glyph.name)
             _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
 
             glyphs = []
@@ -139,7 +139,7 @@ class GlyphPageMixin(object):
     def call_metapost(self, glyph_id):
         writeGlobalParam(self.get_project())
 
-        _glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
+        _glyphs = models.Glyph.filter(name=glyph_id)
         _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
 
         glyphs = []
@@ -167,8 +167,7 @@ class GlyphPageMixin(object):
         instancelog = project.get_instancelog(self.get_lft_version())
         M_glyphjson = get_edges_json(instancelog, glyphid)
 
-        glyph = models.Glyph.get(master_id=master.id,
-                                 fontsource='A', name=glyphid)
+        glyph = models.Glyph.get(master_id=master.id, name=glyphid)
         instancelog = project.get_instancelog(master.version, 'a')
         if session.get('mfparser', '') == 'controlpoints':
             import xmltomf_new_2axes as xmltomf
@@ -310,8 +309,7 @@ def get_edges_json(log_filename, glyphid=None):
 
 
 def get_edges_json_from_db(master, glyphid, ab_source='A'):
-    glyph = models.Glyph.get(master_id=master.id, name=glyphid,
-                             fontsource=ab_source)
+    glyph = models.Glyph.get(master_id=master.id, name=glyphid)
 
     points = models.GlyphOutline.filter(glyph_id=glyph.id)
     if ab_source.upper() == 'A':
@@ -502,8 +500,7 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
         self.set_masters(masters)
 
-        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id,
-                                 fontsource='A')
+        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id)
 
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
@@ -601,7 +598,8 @@ class EditorMaster(app.page):
         if not master:
             raise web.notfound()
 
-        is_primary_label, label = get_metapolation_label(postdata.label)
+        label = get_metapolation_label(postdata.label)
+
         glyph = models.Glyph.filter(master_id=master.id)
         if not postdata.glyph:
             glyph = glyph.order_by(models.Glyph.name.asc()).first()
@@ -624,14 +622,13 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
 
     def create_glyphpoint(self, glyph, pointnr, pointparam, point):
         kwargs = dict(glyph_id=glyph.id, master_id=glyph.master_id,
-                      glyphname=glyph.name, fontsource=glyph.fontsource,
+                      glyphname=glyph.name,
                       pointnr=pointnr, x=int(float(point['x'])),
                       y=int(float(point['y'])))
         glyphoutline = models.GlyphOutline.create(**kwargs)
 
         kwargs = dict(glyphoutline_id=glyphoutline.id,
                       glyph_id=glyph.id,
-                      fontsource=glyph.fontsource,
                       master_id=glyph.master_id,
                       pointname=pointparam.pointname,
                       startp=pointparam.startp,
@@ -640,8 +637,6 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                       control_out=pointparam.control_out,
                       doubledash=pointparam.doubledash,
                       tripledash=pointparam.tripledash,
-                      superleft=pointparam.superleft,
-                      superright=pointparam.superright,
                       leftp=pointparam.leftp,
                       rightp=pointparam.rightp,
                       downp=pointparam.downp,
@@ -652,9 +647,7 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                       downp2=pointparam.downp2,
                       upp2=pointparam.upp2,
                       dir2=pointparam.dir2,
-                      tension=pointparam.tension,
                       tensionand=pointparam.tensionand,
-                      cycle=pointparam.cycle,
                       penshifted=pointparam.penshifted,
                       pointshifted=pointparam.pointshifted,
                       angle=pointparam.angle,
@@ -663,13 +656,7 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                       overbase=pointparam.overbase,
                       overcap=pointparam.overcap,
                       overasc=pointparam.overasc,
-                      overdesc=pointparam.overdesc,
-                      ascpoint=pointparam.ascpoint,
-                      descpoint=pointparam.descpoint,
-                      stemcutter=pointparam.stemcutter,
-                      stemshift=pointparam.stemshift,
-                      inktrap_l=pointparam.inktrap_l,
-                      inktrap_r=pointparam.inktrap_r)
+                      overdesc=pointparam.overdesc)
         models.GlyphParam.create(**kwargs)
 
     def round(self, coord):
@@ -714,7 +701,7 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
         self.call_metapost_all_glyphs(self.get_lft_master())
 
         logpath = project.get_instancelog(version=self.get_lft_master().version)
-        for glyph in self.get_lft_master().get_glyphs('a'):
+        for glyph in self.get_lft_master().get_glyphs():
             json = get_edges_json(logpath, glyph.name)
             if not json['edges']:
                 raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s' % logpath}))
@@ -750,8 +737,9 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
             if len(zpoints) != len(points):
                 raise web.badrequest(simplejson.dumps({'error': '%s zp != mp %s' % (len(zpoints), len(points))}))
 
-            newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
-                                            name=glyph.name, width=glyph.width,
+            newglypha = models.Glyph.create(master_id=master.id,
+                                            name=glyph.name,
+                                            width=glyph.width,
                                             project_id=glyph.project_id)
 
             i = 0
@@ -760,10 +748,8 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                 i += 1
 
         project.masters = ','.join([str(master.id)] * len(project.masters.split(',')))
-        web.ctx.orm.commit()
 
-        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id,
-                                 fontsource='A')
+        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id)
         result = self.get_glyphs_jsondata(glyph.name, master)
         return simplejson.dumps({'version': '{0:03d}'.format(master.version),
                                  'master_id': master.id, 'glyphdata': result,
@@ -779,12 +765,12 @@ def get_metapolation_label(c):
     c = c.upper()
     try:
         index = map(chr, LABELS[::2]).index(c)
-        return True, map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
+        return map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
     except ValueError:
         pass
 
     index = map(chr, LABELS[1::2]).index(c)
-    return False, map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
+    return map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
 
 
 class EditorUploadZIP(app.page, GlyphPageMixin):
@@ -838,10 +824,6 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
                 raise web.badrequest()
 
             FontNameA = ufo_dirs[0]
-            try:
-                FontNameB = ufo_dirs[1]
-            except IndexError:
-                FontNameB = ''
 
             version = models.Master.max(models.Master.version,
                                         project_id=project.id)
@@ -853,27 +835,17 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
             master = models.Master.create(project_id=project.id,
                                           version=version)
 
-            is_primary_label, label = get_metapolation_label(x.label)
+            label = get_metapolation_label(x.label)
             metapolation = models.Metapolation.get(label=label, project_id=project.id)
             if not metapolation:
                 metapolation = models.Metapolation.create(label=label, project_id=project.id)
-            if is_primary_label:
-                metapolation.primary_master_id = master.id
-            else:
-                metapolation.second_master_id = master.id
 
             fontpath = master.get_fonts_directory()
 
             fzip.extractall(fontpath)
 
-            ufopath = master.get_ufo_path('a')
+            ufopath = master.get_ufo_path()
             shutil.move(op.join(fontpath, FontNameA), ufopath)
-            if FontNameB:
-                ufopath = master.get_ufo_path('b')
-                shutil.move(op.join(fontpath, FontNameB), ufopath)
-            else:
-                ufopath = master.get_ufo_path('b')
-                shutil.copytree(master.get_ufo_path('a'), ufopath)
 
             prepare_master_environment(master)
 
@@ -890,7 +862,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         project.masters = ','.join(map(str, masters))
         web.ctx.orm.commit()
 
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
+        glyph = models.Glyph.filter(master_id=master.id).first()
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,

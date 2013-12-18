@@ -10,7 +10,7 @@ from models import Glyph, GlyphParam, GlyphOutline, LocalParam, Metapolation
 
 
 def project_exists(master):
-    return master.metafont_exists('a')
+    return master.metafont_exists()
 
 
 def makefont_single(master, cell=''):
@@ -40,14 +40,6 @@ def makefont_single(master, cell=''):
             break
 
 
-def fnextension(filename):
-    try:
-        basename, extension = filename.split('.')
-    except:
-        extension = "garbage"
-    return extension
-
-
 def writeGlyphlist(master, glyphid=None):
     ifile = open(op.join(master.get_fonts_directory(), "glyphlist.mf"), "w")
     dirnamep1 = op.join(master.get_fonts_directory(), "glyphs")
@@ -61,23 +53,20 @@ def writeGlyphlist(master, glyphid=None):
     ifile.close()
 
 
-def create_glyph(glif, master, ab_source):
+def create_glyph(glif, master):
     itemlist = glif.find('advance')
     width = itemlist.get('width')
 
     glyph = glif.getroot()
     glyphname = glyph.get('name')
 
-    if not Glyph.exists(name=glyphname, master_id=master.id,
-                        fontsource=ab_source):
+    if not Glyph.exists(name=glyphname, master_id=master.id):
         glyph = Glyph.create(name=glyphname, width=width,
-                             master_id=master.id, fontsource=ab_source,
+                             master_id=master.id,
                              project_id=master.project_id)
     else:
-        glyph = Glyph.get(name=glyphname, master_id=master.id,
-                          fontsource=ab_source)
-        glyph.width = int(width)
-        web.ctx.orm.commit()
+        glyph = Glyph.update(name=glyphname, master_id=master.id,
+                             values={'width': glyph.width})
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):
         pointname = point.attrib.get('name')
@@ -89,12 +78,11 @@ def create_glyph(glif, master, ab_source):
 
         glyphoutline = GlyphOutline.get(glyphname=glyphname, glyph_id=glyph.id,
                                         master_id=master.id,
-                                        fontsource=ab_source, pointnr=(i + 1))
+                                        pointnr=(i + 1))
         if not glyphoutline:
             glyphoutline = GlyphOutline.create(glyphname=glyphname,
                                                glyph_id=glyph.id,
                                                master_id=master.id,
-                                               fontsource=ab_source,
                                                pointnr=(i + 1))
         glyphoutline.x = float(point.attrib['x'])
         glyphoutline.y = float(point.attrib['y'])
@@ -117,17 +105,17 @@ def create_glyph(glif, master, ab_source):
 
 
 def putFontAllglyphs(master, glyphid=None):
-    source_fontpath_A = op.join(master.get_ufo_path('a'), 'glyphs')
+    fontpath = op.join(master.get_ufo_path(), 'glyphs')
 
-    charlista = [f for f in os.listdir(source_fontpath_A)]
+    charlista = [f for f in os.listdir(fontpath)]
 
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
         if not glyphName or glyphName.startswith('.'):
             continue
         if ext in ["glif"] and (not glyphid or glyphid == glyphName):
-            glif = etree.parse(op.join(source_fontpath_A, ch1))
-            create_glyph(glif, master, 'A')
+            glif = etree.parse(op.join(fontpath, ch1))
+            create_glyph(glif, master)
 
 
 def get_json(content, glyphid=None):

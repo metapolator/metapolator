@@ -156,8 +156,6 @@ class Metapolation(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
-    primary_master_id = Column(Integer, ForeignKey('master.id'))
-    second_master_id = Column(Integer, ForeignKey('master.id'))
     label = Column(String(2), index=True)
     value = Column(Float, default=0)
 
@@ -189,35 +187,30 @@ class Master(Base, UserQueryMixin):
 
     project = relationship('Project', backref='projects')
 
-    def get_glyphs(self, ab_source='A'):
-        q = Glyph.filter(master_id=self.id, fontsource=ab_source.upper())
-        return q.order_by(Glyph.name.asc())
+    def get_glyphs(self):
+        return Glyph.filter(master_id=self.id).order_by(Glyph.name.asc())
 
-    def get_ufo_path(self, ab_source):
+    def get_ufo_path(self):
         fontpath = self.get_fonts_directory()
-        ab_source = ab_source.upper()
-        path = op.join(fontpath, '%s-%s-%03d.ufo' % (self.project.projectname,
-                                                     ab_source,
-                                                     self.version))
-        return path
+        return op.join(fontpath, '%s-%03d.ufo' % (self.project.projectname,
+                                                  self.version))
 
     def get_metafont(self, ab_source=None):
         if ab_source:
-            return '%s-%s-%03d' % (self.project.projectname,
-                                   ab_source.upper(), self.version)
+            return '%s-%03d' % (self.project.projectname, self.version)
         return self.project.projectname
 
     def metafont_filepath(self, ab_source=None):
         return op.join(self.get_fonts_directory(),
                        self.get_metafont(ab_source) + '.mf')
 
-    def metafont_exists(self, ab_source=None):
+    def metafont_exists(self):
         try:
-            return op.exists(self.metafont_filepath(ab_source))
+            return op.exists(self.metafont_filepath('a'))
         except ValueError:
             pass
 
-    def get_fonts_directory(self, ab_source=None):
+    def get_fonts_directory(self):
         return self.project.get_directory(self.version)
 
 
@@ -280,15 +273,12 @@ class GlyphParam(Base, UserQueryMixin):
     master_id = Column(Integer, ForeignKey('master.id'))
 
     pointname = Column(String(32))
-    groupname = Column(String(32))
     type = Column(String(32))
     control_in = Column(String(32))
     control_out = Column(String(32))
     startp = Column(Integer)
     doubledash = Column(String(32))
     tripledash = Column(String(32))
-    superleft = Column(String(32))
-    superright = Column(String(32))
     leftp = Column(String(32))
     rightp = Column(String(32))
     downp = Column(String(32))
@@ -299,9 +289,7 @@ class GlyphParam(Base, UserQueryMixin):
     downp2 = Column(String(32))
     upp2 = Column(String(32))
     dir2 = Column(String(32))
-    tension = Column(String(32))
     tensionand = Column(String(32))
-    cycle = Column(String(32))
     penshifted = Column(String(32))
     pointshifted = Column(String(32))
     angle = Column(String(32))
@@ -312,11 +300,6 @@ class GlyphParam(Base, UserQueryMixin):
     overasc = Column(String(32))
     overdesc = Column(String(32))
     ascpoint = Column(String(32))
-    descpoint = Column(String(32))
-    stemcutter = Column(String(32))
-    stemshift = Column(String(32))
-    inktrap_l = Column(String(32))
-    inktrap_r = Column(String(32))
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
