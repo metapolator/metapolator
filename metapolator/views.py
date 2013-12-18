@@ -21,7 +21,7 @@ from web import seeother
 from passlib.hash import bcrypt
 
 from config import app, is_loggedin, session, working_dir, \
-    working_url, PROJECT_ROOT
+    working_url, PROJECT_ROOT, MFLIST
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     PointParamExtendedForm
 from tools import putFontAllglyphs, \
@@ -184,6 +184,20 @@ class GlyphPageMixin(object):
 
         glyphjson = get_edges_json(instancelog, glyphid)
         return {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}
+
+
+class Glyph(app.page):
+
+    path = '/editor/glyphs/'
+
+    def glyphrepr(self, id):
+        return MFLIST[int(id)]
+
+    def GET(self):
+        x = web.input(project_id='')
+        glyphs = models.Glyph.filter(project_id=x.project_id)
+        return simplejson.dumps(map(lambda x: {'val': self.glyphrepr(x.name),
+                                               'id': x.name}, glyphs))
 
 
 def mime_type(filename):
@@ -574,7 +588,7 @@ class EditorMaster(app.page):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id='', master_id='', label='')
+        postdata = web.input(project_id='', master_id='', label='', glyph='')
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
@@ -586,7 +600,11 @@ class EditorMaster(app.page):
             raise web.notfound()
 
         is_primary_label, label = get_metapolation_label(postdata.label)
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
+        glyph = models.Glyph.filter(master_id=master.id)
+        if not postdata.glyph:
+            glyph = glyph.order_by(models.Glyph.name.asc()).first()
+        else:
+            glyph = glyph.filter(models.Glyph.name == postdata.glyph).first()
 
         versions = get_versions(postdata.project_id)
         return simplejson.dumps({'project_id': project.id,
@@ -732,7 +750,7 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
 
             newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
                                             name=glyph.name, width=glyph.width,
-                                            unicode=glyph.unicode)
+                                            project_id=glyph.project_id)
 
             i = 0
             for point in points:

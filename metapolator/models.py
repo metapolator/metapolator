@@ -228,11 +228,11 @@ class Glyph(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     master_id = Column(Integer, ForeignKey('master.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
 
     fontsource = Column(Enum('A', 'B'), index=True)
     name = Column(String(3), index=True)
     width = Column(Integer)
-    unicode = Column(Text)
 
     master = relationship('Master', backref='master')
 
@@ -245,40 +245,6 @@ class Glyph(Base, UserQueryMixin):
             if re.match('z\d+[rl]', param.pointname):
                 zpoints.append(param)
         return zpoints
-
-    def flushparams(self):
-        GlyphParam.update(glyph_id=self.id, values=dict(doubledash=None,
-                                                        tripledash=None,
-                                                        superleft=None,
-                                                        superright=None,
-                                                        leftp=None,
-                                                        rightp=None,
-                                                        downp=None,
-                                                        upp=None,
-                                                        dir=None,
-                                                        leftp2=None,
-                                                        rightp2=None,
-                                                        downp2=None,
-                                                        upp2=None,
-                                                        dir2=None,
-                                                        tension=None,
-                                                        tensionand=None,
-                                                        cycle=None,
-                                                        penshifted=None,
-                                                        pointshifted=None,
-                                                        angle=None,
-                                                        penwidth=None,
-                                                        overx=None,
-                                                        overbase=None,
-                                                        overcap=None,
-                                                        overasc=None,
-                                                        overdesc=None,
-                                                        ascpoint=None,
-                                                        descpoint=None,
-                                                        stemcutter=None,
-                                                        stemshift=None,
-                                                        inktrap_l=None,
-                                                        inktrap_r=None))
 
 
 class GlyphOutline(Base, UserQueryMixin):

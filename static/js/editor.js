@@ -3,6 +3,18 @@
     @version 0.1
 **/
 
+
+function dict_from_locationhash() {
+    var r = location.hash.replace('#', '');
+    var parts = r.split('/');
+    var dict = {};
+    for (var k = 0; k < parts.length; k += 2) {
+        dict[parts[k]] = parts[k + 1];
+    }
+    return dict;
+}
+
+
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 var slider_template = '<div style="margin-bottom: 16px;" class="row">' + 
@@ -180,7 +192,20 @@ Editor.prototype.create_select_versions = function(versions, $axis) {
 
 
 Editor.prototype.initializeWorkspace = function(response) {
-    this.project_id = response.project_id;
+    if (!this.project_id) {
+        this.project_id = response.project_id;
+
+        $.get('/editor/glyphs/', {project_id: this.project_id})
+        .success(function(response){
+            var data = $.parseJSON(response);
+            for (var k = 0; k < data.length; k++) {
+                var span = $('<span>');
+                var link = $('<a>').attr('href', '/editor/#project/' + this.project_id + '/glyph/' + data[k].id).text(data[k].val);
+                span.append(link)
+                $('#glyph-switcher').append(span.css('margin-right', '12px'));
+            }
+        }.bind(this));
+    }
     if (!this.editorglyph) {
         this.editorglyph = response.glyphname;
     }

@@ -18,9 +18,19 @@ $var title: Editor
     .editor-axes {
         margin-bottom: 32px;
     }
+
+    #glyph-switcher span {
+        margin-right: 16px;
+    }
 </style>
 
-<div class="editor-container"></div>
+<div id="glyph-switcher">
+    
+</div>
+
+<div class="editor-container">
+    
+</div>
 
 <button id="btn-add-axes" class="btn btn-xs btn-success">Add axes</button>
 
@@ -60,11 +70,21 @@ $var title: Editor
 
         $$(window).hashchange(function(){
             $$('.editor-container').empty();
+            $$('#glyph-switcher').empty();
             editor.init();
-            $$.post('/editor/' + location.hash.replace('#', ''), {
-                project_id: location.hash.replace('#', '')
-            }).success(function(response){
+
+            var params = dict_from_locationhash();
+            if (!params.project) {
+                return;
+            }
+            $$.post('/editor/project/' + params.project)
+            .success(function(response){
                 var data = $$.parseJSON(response);
+
+                var glyph = params.glyph;
+                if (!glyph) {
+                    glyph = ''
+                }
                 for (var k = 0; k < data.axes.length; k++) {
                     var axes = editor.addAxes();
                     axes.find('.dropzone').hide();
@@ -72,7 +92,8 @@ $var title: Editor
                     $$.post('/editor/get-master/', {
                         project_id: data.project_id,
                         master_id: data.axes[k][0],
-                        label: axes.find('.axis[axis-position=left]').attr('axis-label')
+                        label: axes.find('.axis[axis-position=left]').attr('axis-label'),
+                        glyph: glyph
                     }).success(function(response){
                         editor.initializeWorkspace($$.parseJSON(response));
                     });
@@ -80,7 +101,8 @@ $var title: Editor
                     $$.post('/editor/get-master/', {
                         project_id: data.project_id,
                         master_id: data.axes[k][1],
-                        label: axes.find('.axis[axis-position=right]').attr('axis-label')
+                        label: axes.find('.axis[axis-position=right]').attr('axis-label'),
+                        glyph: glyph
                     }).success(function(response){
                         editor.initializeWorkspace($$.parseJSON(response));
                     });

@@ -71,7 +71,8 @@ def create_glyph(glif, master, ab_source):
     if not Glyph.exists(name=glyphname, master_id=master.id,
                         fontsource=ab_source):
         glyph = Glyph.create(name=glyphname, width=width,
-                             master_id=master.id, fontsource=ab_source)
+                             master_id=master.id, fontsource=ab_source,
+                             project_id=master.project_id)
     else:
         glyph = Glyph.get(name=glyphname, master_id=master.id,
                           fontsource=ab_source)
