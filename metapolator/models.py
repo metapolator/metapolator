@@ -178,12 +178,8 @@ class Master(Base, UserQueryMixin):
     user_id = Column(Integer, ForeignKey('users.id'))
 
     idlocala = Column(Integer, ForeignKey('localparam.id'))
-    idlocalb = Column(Integer, ForeignKey('localparam.id'))
     idglobal = Column(Integer, ForeignKey('globalparam.id'))
     version = Column(Integer, default=0, index=True)
-
-    fontnamea = Column(Text)
-    fontnameb = Column(Text)
 
     project = relationship('Project', backref='projects')
 

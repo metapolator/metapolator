@@ -179,7 +179,7 @@ class GlyphPageMixin(object):
         writeGlyphlist(master, glyph.name)
         makefont_single(master, cell='A')
 
-        zpoints = get_edges_json_from_db(master, glyphid, ab_source='A')
+        zpoints = get_edges_json_from_db(master, glyphid)
 
         glyphjson = get_edges_json(instancelog, glyphid)
         return {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}
@@ -308,14 +308,11 @@ def get_edges_json(log_filename, glyphid=None):
     return result
 
 
-def get_edges_json_from_db(master, glyphid, ab_source='A'):
+def get_edges_json_from_db(master, glyphid):
     glyph = models.Glyph.get(master_id=master.id, name=glyphid)
 
     points = models.GlyphOutline.filter(glyph_id=glyph.id)
-    if ab_source.upper() == 'A':
-        localparam = models.LocalParam.get(id=master.idlocala)
-    else:
-        localparam = models.LocalParam.get(id=master.idlocalb)
+    localparam = models.LocalParam.get(id=master.idlocala)
 
     _points = []
     for point in points.order_by(models.GlyphOutline.pointnr.asc()):
