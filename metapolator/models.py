@@ -10,8 +10,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
 
-from metapolator.config import engine, working_dir
-from metapolator.dbapi import UserQueryMixin, query
+from config import engine, working_dir
+from dbapi import UserQueryMixin, query
 
 
 Base = declarative_base()

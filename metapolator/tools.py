@@ -117,11 +117,6 @@ def create_glyph(glif, master, ab_source):
 
 
 def putFontAllglyphs(master, glyphid=None):
-    # read all fonts (xml files with glif extension) in unix directory
-    # and put the xml data into db using the rule applied in loadoption
-    # only the fonts (xml file) will be read when the glifs are present
-    # in both fonts A and B
-
     source_fontpath_A = op.join(master.get_ufo_path('a'), 'glyphs')
 
     charlista = [f for f in os.listdir(source_fontpath_A)]
