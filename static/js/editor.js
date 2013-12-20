@@ -24,17 +24,13 @@ function dict_from_locationhash() {
 
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
-var slider_template = '<div style="margin-bottom: 16px;" class="row">' + 
-                      '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{0}</div>' + 
-                      '  <div class="col-md-8" style="text-align: center; padding-top: 8pt;">' + 
-                      '    <input class="slider slider-{2}" slider-label="{2}" type="text" value=""' + 
-                      '         data-slider-min="-3" data-slider-max="3" data-slider-step="0.1"'  + 
-                      '         data-slider-value="0" data-slider-orientation="horizontal"' + 
+var slider_template = '<div class="well"><b style="padding-right: 32px;">{0}</b> ' + 
+                      '<input class="span2 slider-{2}" slider-label="{2}" type="text" value="1"' + 
+                      '         data-slider-min="-3" data-slider-max="3" data-slider-step="0.2"'  + 
+                      '         data-slider-value="1" data-slider-orientation="horizontal"' + 
                       '         data-slider-selection="after" data-slider-tooltip="show"' + 
-                      '         data-slider-handle="square" />' + 
-                      '  </div>' + 
-                      '  <div class="col-md-2" style="text-align: center; font-size: 21pt;">{1}</div>' + 
-                      '</div>';
+                      '         data-slider-handle="square" />' +
+                      ' <b style="padding-left: 32px;">{1}</b></div>';
 
 function Editor(mode) {
     this.editorAxes = $('.editor-axes');
@@ -254,13 +250,17 @@ Editor.prototype.initializeWorkspace = function(response) {
 
     this.create_select_versions(response.versions, axis);
 
+    var canvas = new Canvas('canvas-' + label, 'a');
+    canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
+    this.canvases.push(canvas);
+
     var form = new LocalParamForm($(axis_htmltemplate.find('form.localparamform')));
 
     var sw1 = new LocalParamSwitcher({
         source: $(axis_htmltemplate.find('select#idlocal')),
         listener: form,
         data: {master_id: response.master_id},
-        onFormSubmitted: this.localParamsSaved.bind(this, response.master_id, response.label, response.metapolation)
+        onFormSubmitted: this.localParamsSaved.bind(this, response.master_id, canvas, response.label)
     });
 
     axis.append(axis_htmltemplate);
@@ -269,16 +269,33 @@ Editor.prototype.initializeWorkspace = function(response) {
                                master_id: response.master_id,
                                glyphname: this.editorglyph,
                                axislabel: response.label})
-    .done(this.onCanvasDataReceived.bind(this, label, response.metapolation))
+    .done(this.onCanvasDataReceived.bind(this, canvas))
     .fail(function(){ alert('Could not receive data from server'); });
+
+    if (!$('#interpolations').find('.slider-' + response.metapolation).length) {
+        var slider = $(String.format(slider_template, response.metapolation[0], response.metapolation[1], response.metapolation));
+        $('#interpolations').append(slider);
+        slider.find('input').slider().on('slideStop', function(e){
+            $.post('/editor/save-metap/', {
+                project_id: this.project_id,
+                glyphname: this.editorglyph,
+                label: $(e.target).attr('slider-label'),
+                value: e.value
+            })
+            .done(this.metapCanvas.redrawglyph.bind(this.metapCanvas))
+            .fail(function(){ alert('Could not change metapolation value') });
+        }.bind(this));
+    }
+
+    $('div.axis[axis-label=' + label + ']').find('select.version').on('change',this.onCanvasVersionChanged.bind(this, canvas));
 }
 
-Editor.prototype.localParamsSaved = function(master_id, label, metapolation, e) {
+Editor.prototype.localParamsSaved = function(master_id, canvas, label, e) {
     $.post('/editor/reload/', {project_id: this.project_id,
                                master_id: master_id,
                                glyphname: this.editorglyph,
                                axislabel: label})
-    .done(this.onCanvasDataReceived.bind(this, label, metapolation))
+    .done(this.onCanvasDataReceived.bind(this, canvas))
     .fail(function(){ alert('Could not receive data from server'); });
 }
 
@@ -294,37 +311,16 @@ Editor.prototype.onCanvasVersionChanged = function(canvas, e) {
     }).done(canvas.reloadCanvas.bind(canvas));
 }
 
-Editor.prototype.onCanvasDataReceived = function(canvaslabel, sliderlabel, response) {
+Editor.prototype.onCanvasDataReceived = function(canvas, response) {
     var data = $.parseJSON(response);
-    var canvas = new Canvas('canvas-' + canvaslabel, 'a');
-    canvas.initialize()
+    canvas.initialize();
     canvas.renderGlyph(data.R);
     canvas.setZpoints(data.zpoints);
     canvas.showbox();
-    canvas.onGlyphLoaded = this.metapCanvas.redrawglyph.bind(this.metapCanvas);
     canvas.draw();
-
-    this.canvases.push(canvas);
 
     this.metapCanvas.initialize();
     this.metapCanvas.redrawglyph(response);
-
-    $('div.axis[axis-label=' + canvaslabel + ']').find('select.version').on('change',this.onCanvasVersionChanged.bind(this, canvas));
-
-    if (!$('#metapolation').find('.slider-' + sliderlabel).length) {
-        var slider = $(String.format(slider_template, sliderlabel[0], sliderlabel[1], sliderlabel));
-        $('#metapolation').append(slider);
-        slider.find('.slider').slider().on('slideStop', function(e){
-            $.post('/editor/save-metap/', {
-                project_id: this.project_id,
-                glyphname: this.editorglyph,
-                label: $(e.target).attr('slider-label'),
-                value: e.value
-            })
-            .done(this.metapCanvas.redrawglyph.bind(this.metapCanvas))
-            .fail(function(){ alert('Could not change metapolation value') });
-        }.bind(this));
-    }
 }
 
 if (!String.format) {

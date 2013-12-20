@@ -1,7 +1,7 @@
 $def with ()
 
 $var title: Editor
-
+<link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
 <style>
     .dropzone {
         padding: 32px;
@@ -22,12 +22,20 @@ $var title: Editor
     #glyph-switcher span {
         margin-right: 16px;
     }
+
+    input.span2 {
+        width: 500px;
+    }
 </style>
 
 <!-- Button trigger modal -->
 <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#listglyphmodal">
   Show Glyphs
 </button>
+
+<div id="interpolations"></div>
+
+<div class="editor-container"></div>
 
 <!-- Modal -->
 <div class="modal fade" id="listglyphmodal" tabindex="-1" role="dialog" aria-labelledby="glyphmodallabel" aria-hidden="true">
@@ -49,9 +57,6 @@ $var title: Editor
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div class="editor-container">
-    
-</div>
 
 <button id="btn-add-axes" class="btn btn-xs btn-success">Add axes</button>
 
@@ -74,10 +79,10 @@ $var title: Editor
     </div>
 
 </div>
-<link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
+
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
-<script type="text/javascript" src="/static/js/bootstrap-slider.js"></script>
-<script type="text/javascript" src="/static/js/jquery.filedrop.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/bootstrap-slider.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/jquery.filedrop.js"></script>
 <script type="text/javascript" src="/static/js/3rdparty/jquery.ba-hashchange.min.js"></script>
 <script type="text/javascript" src="/static/js/canvas.js"></script>
 <script type="text/javascript" src="/static/js/localparamform.js"></script>
