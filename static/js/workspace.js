@@ -10,12 +10,7 @@ function dict_from_locationhash() {
 
 
 var Workspace = function() {
-    // Events:
-    this.onzpointchange = null; // values of zpoint have been changed
-    this.onlparamchange = null; // values of lparam have been changed
-
     this.htmldoc = new View('');
-
     this.urldata = dict_from_locationhash();
 }
 
@@ -26,7 +21,27 @@ Workspace.prototype = {
      * Send request about zpoint changes to server and save result 
      * into local storage
      */
-    onzpointchange: function(zpoint) {},
+    onzpointchange: function(glyph, zpoint) {
+        if (! (typeof DEMOEDGE == 'undefined') ) {
+            glyph.render(DEMOEDGE.R.edges[0].contours);
+            return;
+        }
+
+
+        $.ajax({
+            type: 'post',
+            data: {
+                id: zpoint.params.glyphoutline_id,
+                x: zpoint.x,
+                y: zpoint.y
+            },
+            url: '/editor/save-point/',
+            success: function(response) {
+                var data = $.parseJSON(response);
+                glyph.render(DEMOEDGE.R.edges[0].contours);
+            }
+        });
+    },
 
     /*
      * Load completed project data. It includes all list of 
@@ -74,13 +89,12 @@ Workspace.prototype = {
                 this.createAxisGlyph('A', DEMOEDGES.glyphs.edges[2]);
                 return;
             }
-            else {
-                var data = {'label': 'a'};
-                new Dropzone(startpage.find('.dropzone'), data, function(response) {
-                    this.htmldoc.addAxes();
-                    this.createAxisGlyph('A', response.glyphs.edges[0]);
-                }.bind(this));
-            }
+
+            var data = {'label': 'a'};
+            new Dropzone(startpage.find('.dropzone'), data, function(response) {
+                this.htmldoc.addAxes();
+                this.createAxisGlyph('A', response.glyphs.edges[0]);
+            }.bind(this));
         }.bind(this));
     },
 
@@ -88,6 +102,8 @@ Workspace.prototype = {
         var axis = $('div[axis-label=' + axislabel + ']');
         var glyph = new Glyph(axis.find('canvas')[0],
                               {width: glyphdata.width, height: glyphdata.height});
+        glyph.onZPointChanged = this.onzpointchange.bind(this);
+
         glyph.render(glyphdata.contours);
         glyph.renderZPoints(glyphdata.zpoints.points);
     }
