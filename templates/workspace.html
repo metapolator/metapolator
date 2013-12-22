@@ -1,0 +1,95 @@
+$def with ()
+
+$var title: Workspace
+
+<style>
+    .dropzone {
+        padding: 32px;
+        font-size: 22px;
+        color: ccc;
+        border: dashed 2px #ccc;
+        text-align: center;
+    }
+
+    #workspace, #startpage, .editor-axes, .metapolation, #templates {
+        display: none;
+    }
+</style>
+
+<div style="text-align: center; font-size: 32pt;" id="loading" class="alert alert-info">Loading...</div>
+
+<div id="startpage" style="display: none;">
+    <!-- empty project, single dropdown zone -->
+    <div class="dropzone">Drop ZIP with UFO here</div>
+</div>
+
+<div id="workspace" style="display: none;">
+    <div>
+        <button id="btn-add-axes" class="btn btn-xs btn-success">Add axes</button>
+    </div>
+</div>
+
+<div id="templates">
+    <!-- Row for axes -->
+    <div class="row editor-axes">
+
+        <div class="col-md-4 axis" axis-position="left">
+            
+        </div>
+        
+        <div class="col-md-4" axis-position="middle">
+            
+        </div>
+        
+        <div class="col-md-4 axis" axis-position="right">
+        
+        </div>
+
+    </div>
+
+    <div class="metapolation">
+        <h4>Metapolation</h4>
+        <a href="javascript:;" id="btn-master-from-instance" class="btn btn-xs btn-success">Create master</a>
+        <a href="javascript:;" id="btn-instance" class="btn btn-xs btn-success">Create instance</a>
+        <canvas width="350" height="600" id="canvas-m"></canvas>
+    </div>
+
+    <div id="view">
+        <ul class="nav nav-tabs" style="clear: both;"> 
+          <li class="active">
+            <a data-toggle="tab">View</a>
+          </li>
+          <li><a data-toggle="tab">Point</a></li>
+          <li><a data-toggle="tab">Settings</a></li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active">
+            <canvas width="350" height="600" class="paper"></canvas>
+            <div style="display: none;">
+              <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
+              <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
+            </div>
+          </div>
+          <div class="tab-pane">
+              <form action="" method="post" class="extended">
+              $:webctx.pointparam_extended_form.render()
+              </form>
+          </div> 
+          <div class="tab-pane">
+              <form action="" method="post" class="extended localparamform">
+                $:webctx.settings_form.render()
+              </form>
+          </div> 
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/jquery.filedrop.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/jquery.ba-hashchange.min.js"></script>
+
+<script type="text/javascript" src="/static/js/demodata.js"></script>
+<script type="text/javascript" src="/static/js/glyph.js"></script>
+<script type="text/javascript" src="/static/js/view.js"></script>
+<script type="text/javascript" src="/static/js/workspace.js"></script>

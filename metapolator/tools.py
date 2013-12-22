@@ -40,7 +40,7 @@ def makefont_single(master, cell=''):
             break
 
 
-def writeGlyphlist(master, glyphid=None):
+def write_glyph_list(master, glyphid=None):
     ifile = open(op.join(master.get_fonts_directory(), "glyphlist.mf"), "w")
     dirnamep1 = op.join(master.get_fonts_directory(), "glyphs")
 
@@ -104,7 +104,7 @@ def create_glyph(glif, master):
         web.ctx.orm.commit()
 
 
-def putFontAllglyphs(master, glyphid=None):
+def put_font_all_glyphs(master, glyphid=None):
     fontpath = op.join(master.get_ufo_path(), 'glyphs')
 
     charlista = [f for f in os.listdir(fontpath)]
@@ -116,67 +116,6 @@ def putFontAllglyphs(master, glyphid=None):
         if ext in ["glif"] and (not glyphid or glyphid == glyphName):
             glif = etree.parse(op.join(fontpath, ch1))
             create_glyph(glif, master)
-
-
-def get_json(content, glyphid=None):
-    contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
-    point_pattern = re.compile(r'\(([-\d.]+),([-\d.]+)\)..controls\s'
-                               r'\(([-\d.]+),([-\d.]+)\)\sand\s'
-                               r'\(([-\d.]+),([-\d.]+)\)')
-
-    pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
-                         re.I | re.DOTALL | re.M)
-    edges = []
-    x_min = 0
-    y_min = 0
-    x_max = 0
-    y_max = 0
-    for glyph, edge in pattern:
-        if glyphid and int(glyphid) != int(glyph):
-            continue
-        contours = []
-        for contour in contour_pattern.findall(edge.strip()):
-            contour = re.sub('\n(\S)', '\\1', contour)
-            _contours = []
-            handleIn_X, handleIn_Y = None, None
-            for point in contour.split('\n'):
-                point = point.strip().strip('..')
-                match = point_pattern.match(point)
-                if not match:
-                    continue
-
-                X = match.group(1)
-                Y = match.group(2)
-
-                handleOut_X = match.group(3)
-                handleOut_Y = match.group(4)
-
-                controlpoints = [{'x': 0, 'y': 0},
-                                 {'x': handleOut_X, 'y': handleOut_Y}]
-                if handleIn_X is not None and handleIn_Y is not None:
-                    controlpoints[0] = {'x': handleIn_X, 'y': handleIn_Y}
-
-                _contours.append({'x': X, 'y': Y,
-                                  'controls': controlpoints})
-                handleIn_X = match.group(5)
-                handleIn_Y = match.group(6)
-
-                x_min = min(x_min, float(X), float(handleOut_X), float(handleIn_X))
-                y_min = min(y_min, float(Y), float(handleOut_Y), float(handleIn_Y))
-                x_max = max(x_max, float(X), float(handleOut_X), float(handleIn_X))
-                y_max = max(y_max, float(Y), float(handleOut_Y), float(handleIn_Y))
-
-            if handleIn_X and handleIn_Y:
-                _contours[0]['controls'][0] = {'x': handleIn_X,
-                                               'y': handleIn_Y}
-
-            contours.append(_contours)
-        edges.append({'glyph': glyph, 'contours': contours})
-
-    width = abs(x_max) + abs(x_min)
-    height = abs(y_max) + abs(y_min)
-    return {'total_edges': len(edges), 'edges': edges,
-            'width': width, 'height': height}
 
 
 GLOBAL_DEFAULTS = {
@@ -287,7 +226,7 @@ def writeParams(project, filename, masters, is_concrete_master=False, metapolati
     ifile.close()
 
 
-def writeGlobalParam(project):
+def write_global_param(project):
     masters = project.get_ordered_masters()
 
     for i, m in enumerate(masters):
@@ -322,3 +261,104 @@ def unifylist(masters):
         if p[0] is not None and p[1] is not None:
             result += p
     return result
+
+
+def get_edges_json(log_filename, glyphid=None, master=None):
+    result = {'edges': []}
+    try:
+        fp = open(log_filename)
+        content = fp.read()
+        fp.close()
+        return get_json(content, glyphid=glyphid, master=master)
+    except (IOError, OSError):
+        pass
+    return result
+
+
+def get_edges_json_from_db(master, glyphid):
+    glyph = Glyph.get(master_id=master.id, name=glyphid)
+
+    points = GlyphOutline.filter(glyph_id=glyph.id)
+    localparam = LocalParam.get(id=master.idlocala)
+
+    _points = []
+    for point in points.order_by(GlyphOutline.pointnr.asc()):
+        param = GlyphParam.get(glyphoutline_id=point.id)
+        iszpoint = False
+        if re.match('z(\d+)[lr]', param.pointname):
+            iszpoint = True
+
+        x = point.x
+        if localparam:
+            x += localparam.px
+        _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
+                        'iszpoint': iszpoint, 'data': param.as_dict()})
+
+    return {'width': glyph.width, 'points': _points}
+
+
+def get_json(content, glyphid=None, master=None):
+    contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
+    point_pattern = re.compile(r'\(([-\d.]+),([-\d.]+)\)..controls\s'
+                               r'\(([-\d.]+),([-\d.]+)\)\sand\s'
+                               r'\(([-\d.]+),([-\d.]+)\)')
+
+    pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
+                         re.I | re.DOTALL | re.M)
+    edges = []
+    for glyph, edge in pattern:
+        if glyphid and int(glyphid) != int(glyph):
+            continue
+        x_min = 0
+        y_min = 0
+        x_max = 0
+        y_max = 0
+
+        contours = []
+        for contour in contour_pattern.findall(edge.strip()):
+            contour = re.sub('\n(\S)', '\\1', contour)
+            _contours = []
+            handleIn_X, handleIn_Y = None, None
+            for point in contour.split('\n'):
+                point = point.strip().strip('..')
+                match = point_pattern.match(point)
+                if not match:
+                    continue
+
+                X = match.group(1)
+                Y = match.group(2)
+
+                handleOut_X = match.group(3)
+                handleOut_Y = match.group(4)
+
+                controlpoints = [{'x': 0, 'y': 0},
+                                 {'x': handleOut_X, 'y': handleOut_Y}]
+                if handleIn_X is not None and handleIn_Y is not None:
+                    controlpoints[0] = {'x': handleIn_X, 'y': handleIn_Y}
+
+                _contours.append({'x': X, 'y': Y,
+                                  'controls': controlpoints})
+                handleIn_X = match.group(5)
+                handleIn_Y = match.group(6)
+
+                x_min = min(x_min, float(X), float(handleOut_X), float(handleIn_X))
+                y_min = min(y_min, float(Y), float(handleOut_Y), float(handleIn_Y))
+                x_max = max(x_max, float(X), float(handleOut_X), float(handleIn_X))
+                y_max = max(y_max, float(Y), float(handleOut_Y), float(handleIn_Y))
+
+            if handleIn_X and handleIn_Y:
+                _contours[0]['controls'][0] = {'x': handleIn_X,
+                                               'y': handleIn_Y}
+
+            contours.append(_contours)
+
+        width = abs(x_max) + abs(x_min)
+        height = abs(y_max) + abs(y_min)
+
+        zpoints = []
+        if master:
+            zpoints = get_edges_json_from_db(master, glyph)
+        edges.append({'glyph': glyph, 'contours': contours, 'zpoints': zpoints,
+                      'width': width, 'height': height})
+
+    return {'total_edges': len(edges), 'edges': edges}

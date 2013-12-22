@@ -10,9 +10,9 @@
  *
  */
 
-function ControlPoints(dataPoints, canvasid) {
+function ControlPoints(dataPoints, label) {
   this.dataPoints = dataPoints;
-  this.pointform = $("#tab-point-" + canvasid).find('form.extended');
+  this.pointform = $("#point-" + label).find('form.extended');
   this.paths = [];
   this.texts = [];
 }
@@ -76,33 +76,31 @@ GlyphOrigin.prototype.drawOn = function(canvas) {
   this.delete();
 
   this.paths = [];
-  for (var i = 0; i < this.dataGlyph.length; i++) {
-      for (var j = 0; j < this.dataGlyph[i].contours.length; j++) {
-          var path = new canvas.paper.Path();
-          var contours = this.dataGlyph[i].contours[j];
-          for (var k = 0; k < contours.length; k++) { // contours.length
-              contour = contours[k];
+  for (var j = 0; j < this.dataGlyph.contours.length; j++) {
+      var path = new canvas.paper.Path();
+      var contours = this.dataGlyph.contours[j];
+      for (var k = 0; k < contours.length; k++) { // contours.length
+          contour = contours[k];
 
-              var point = canvas.getPoint(Number(contour.x), 500 - Number(contour.y));
-              point.y += +200;
-              var handleIn = canvas.getPoint(Number(contour.controls[0].x) - Number(contour.x),
-                                       Number(contour.y) - Number(contour.controls[0].y));
-              var handleOut = canvas.getPoint(Number(contour.controls[1].x) - Number(contour.x),
-                                        Number(contour.y) - Number(contour.controls[1].y));
-              var segment = new canvas.paper.Segment(point, handleIn, handleOut);
+          var point = canvas.getPoint(Number(contour.x), 500 - Number(contour.y));
+          point.y += +200;
+          var handleIn = canvas.getPoint(Number(contour.controls[0].x) - Number(contour.x),
+                                   Number(contour.y) - Number(contour.controls[0].y));
+          var handleOut = canvas.getPoint(Number(contour.controls[1].x) - Number(contour.x),
+                                    Number(contour.y) - Number(contour.controls[1].y));
+          var segment = new canvas.paper.Segment(point, handleIn, handleOut);
 
-              path.add(segment);
-          }
-          path.fillColor = {
-              hue: 360 * Math.random(),
-              saturation: 1,
-              brightness: 1,
-              alpha: 0.5
-          };
-          path.closed = true;
-          path.strokeColor = new canvas.paper.Color(0.5, 0, 0.5);
-          this.paths.push(path);
+          path.add(segment);
       }
+      path.fillColor = {
+          hue: 360 * Math.random(),
+          saturation: 1,
+          brightness: 1,
+          alpha: 0.5
+      };
+      path.closed = true;
+      path.strokeColor = new canvas.paper.Color(0.5, 0, 0.5);
+      this.paths.push(path);
   }
 
   canvas.draw();
@@ -128,8 +126,9 @@ function resize(canvas, x, y, width, height, newwidth, newheight) {
     return {x: nx, y: ny}
 }
 
-function Canvas(canvasid, source) {
-  this.canvasid = canvasid;
+function Canvas(canvas, axislabel, source) {
+  this.canvas = $(canvas);
+  this.axislabel = axislabel;
   this.initialized = false;
   
   this.width = 0;
@@ -145,8 +144,8 @@ Canvas.prototype.onLocalParametersFormSubmit = function(e) {
 Canvas.prototype.initialize = function() {
   if (this.initialized) return;
   this.paper = new paper.PaperScope();
-  this.paper.setup(this.canvasid);
-  this.htmlcanvas = $('#' + this.canvasid);
+  this.paper.setup(this.canvas);
+
   this.tool = new this.paper.Tool();
 
   if (this.source) {
@@ -172,7 +171,7 @@ Canvas.prototype.renderGlyph = function(glyphdata) {
   this.width = glyphdata.width;
   this.height = glyphdata.height;
 
-  this.glyphorigin = new GlyphOrigin(glyphdata.edges);
+  this.glyphorigin = new GlyphOrigin(glyphdata);
   this.glyphorigin.drawOn(this);
 }
 
@@ -210,8 +209,8 @@ Canvas.prototype.onMouseUp = function(event) {
           data: {id: this.currentpath.data.glyphoutline_id,
                    x: xycoord.x,
                    y: 500 - xycoord.y,
-                   project_id: $('#' + this.canvasid).attr('glyph-project-id'),
-                   master_id: $('#' + this.canvasid).parents('.axis').find('select option:selected').val(),
+                   project_id: this.canvas.attr('glyph-project-id'),
+                   master_id: this.canvas.parents('.axis').find('select option:selected').val(),
                    masters: $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join()
           },
           url: 'save-point/',
@@ -256,8 +255,8 @@ Canvas.prototype.saveParamRequest = function(data, successhandler) {
   var xycoord = this.restore_original_coords(new paper.Point(x, y));
   data.x = xycoord.x;
   data.y = 500 - xycoord.y;
-  data.project_id = $('#' + this.canvasid).attr('glyph-project-id');
-  data.master_id = $('#' + this.canvasid).parents('.axis').find('select option:selected').val();
+  data.project_id = this.canvas.attr('glyph-project-id');
+  data.master_id = this.canvas.parents('.axis').find('select option:selected').val();
   data.masters = $('select.version option:selected').map(function(e, k){return $(k).val()}).toArray().join();
   $.post('save-param/', data)
         .fail(this.saveParamException.bind(this))
@@ -275,32 +274,32 @@ Canvas.prototype.saveParamSuccess = function(data) {
     var glyphpreview = new GlyphOrigin($.parseJSON(data).R.edges);
     glyphpreview.drawOn(this);
 
-    var buttons = $('.' + this.canvasid);
-    buttons.css('display', 'block');
+    // var buttons = $('.' + this.canvasid);
+    // buttons.css('display', 'block');
 
-    buttons.find('a').off('click').on('click', function(e){
-      glyphpreview.delete();
-      buttons.css('display', 'none');
-      this.draw();
+    // buttons.find('a').off('click').on('click', function(e){
+    //   glyphpreview.delete();
+    //   buttons.css('display', 'none');
+    //   this.draw();
 
-      if ($(e.target).attr('command') == 'cancel') {
-        this.saveParamRequest(this.currentpath.data, this.saveParamCanceled.bind(this));
-      } else {
-        this.controlpoints.dataPoints = $.parseJSON(data).zpoints;
-        this.controlpoints.drawOn(this);
+    //   if ($(e.target).attr('command') == 'cancel') {
+    //     this.saveParamRequest(this.currentpath.data, this.saveParamCanceled.bind(this));
+    //   } else {
+    //     this.controlpoints.dataPoints = $.parseJSON(data).zpoints;
+    //     this.controlpoints.drawOn(this);
         
-        this.glyphorigin.dataGlyph = $.parseJSON(data).R.edges;
-        this.glyphorigin.drawOn(this);
-      }
+    //     this.glyphorigin.dataGlyph = $.parseJSON(data).R.edges;
+    //     this.glyphorigin.drawOn(this);
+    //   }
 
-      if (this.onGlyphLoaded) {
-        this.onGlyphLoaded(data);
-      }
-    }.bind(this));
+    //   if (this.onGlyphLoaded) {
+    //     this.onGlyphLoaded(data);
+    //   }
+    // }.bind(this));
 }
 
 Canvas.prototype.setZpoints = function(json) {
-  this.controlpoints = new ControlPoints(json, this.canvasid);
+  this.controlpoints = new ControlPoints(json, this.axislabel);
   this.controlpoints.drawOn(this);
 
   this.controlpoints.pointform.find('select')

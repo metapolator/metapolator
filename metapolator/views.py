@@ -24,9 +24,9 @@ from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT, MFLIST
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     PointParamExtendedForm
-from tools import putFontAllglyphs, \
-    get_json, project_exists, writeGlyphlist, \
-    writeGlobalParam, makefont_single, unifylist
+from tools import put_font_all_glyphs, project_exists, write_glyph_list, \
+    write_global_param, makefont_single, unifylist, get_edges_json, \
+    get_edges_json_from_db
 
 
 def raise404_notauthorized(func):
@@ -109,8 +109,8 @@ class GlyphPageMixin(object):
     def set_masters(self, masters):
         self._masters = masters
 
-    def call_metapost_all_glyphs(self, master):
-        writeGlobalParam(self.get_project())
+    def call_metapost_all_glyphs(self, master, cell=''):
+        write_global_param(self.get_project())
 
         hasglyphs = False
         for glyph in master.get_glyphs():
@@ -133,11 +133,11 @@ class GlyphPageMixin(object):
             hasglyphs = True
 
         if hasglyphs:
-            writeGlyphlist(master)
-            makefont_single(self.get_lft_master())
+            write_glyph_list(master)
+            makefont_single(self.get_lft_master(), cell=cell)
 
     def call_metapost(self, glyph_id):
-        writeGlobalParam(self.get_project())
+        write_global_param(self.get_project())
 
         _glyphs = models.Glyph.filter(name=glyph_id)
         _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
@@ -156,7 +156,7 @@ class GlyphPageMixin(object):
             import xmltomf
             xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
 
-        writeGlyphlist(self.get_lft_master(), glyph_id)
+        write_glyph_list(self.get_lft_master(), glyph_id)
         makefont_single(self.get_lft_master())
 
     def get_glyphs_jsondata(self, glyphid, master):
@@ -177,13 +177,23 @@ class GlyphPageMixin(object):
             import xmltomf
             xmltomf.xmltomf1(master, glyph)
 
-        writeGlyphlist(master, glyph.name)
+        write_glyph_list(master, glyph.name)
         makefont_single(master, cell='A')
 
         zpoints = get_edges_json_from_db(master, glyphid)
 
         glyphjson = get_edges_json(instancelog, glyphid)
         return {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}
+
+
+class Workspace(app.page):
+
+    path = '/workspace/'
+
+    def GET(self):
+        web.ctx.pointparam_extended_form = PointParamExtendedForm()
+        web.ctx.settings_form = LocalParamForm()
+        return render.workspace()
 
 
 class Glyph(app.page):
@@ -295,40 +305,6 @@ class Index(app.page):
 
     def GET(self):
         raise seeother('/projects/')
-
-
-def get_edges_json(log_filename, glyphid=None):
-    result = {'edges': []}
-    try:
-        fp = open(log_filename)
-        content = fp.read()
-        fp.close()
-        return get_json(content, glyphid)
-    except (IOError, OSError):
-        pass
-    return result
-
-
-def get_edges_json_from_db(master, glyphid):
-    glyph = models.Glyph.get(master_id=master.id, name=glyphid)
-
-    points = models.GlyphOutline.filter(glyph_id=glyph.id)
-    localparam = models.LocalParam.get(id=master.idlocala)
-
-    _points = []
-    for point in points.order_by(models.GlyphOutline.pointnr.asc()):
-        param = models.GlyphParam.get(glyphoutline_id=point.id)
-        iszpoint = False
-        if re.match('z(\d+)[lr]', param.pointname):
-            iszpoint = True
-
-        x = point.x
-        if localparam:
-            x += localparam.px
-        _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
-                        'iszpoint': iszpoint, 'data': param.as_dict()})
-
-    return {'width': glyph.width, 'points': _points}
 
 
 class Editor(app.page):
@@ -777,7 +753,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        x = web.input(ufofile={}, project_id=None, label='')
+        x = web.input(ufofile={}, project_id=0, label='')
         try:
             rawzipcontent = x.ufofile.file.read()
             if not rawzipcontent:
@@ -847,12 +823,13 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
 
             prepare_master_environment(master)
 
-            putFontAllglyphs(master)
+            put_font_all_glyphs(master)
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        index = LABELS.index(ord(x.label))
+        index = LABELS.index(ord(x.label.upper()))
         masters = project.masters.split(',')
+
         if index > len(masters) - 1:
             masters.append(master.id)
         else:
@@ -861,11 +838,21 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         web.ctx.orm.commit()
 
         glyph = models.Glyph.filter(master_id=master.id).first()
+
+        masters = project.get_ordered_masters()
+        self.set_masters(masters)
+
+        self.initialize(project.projectname, masters[0].version,
+                        masters[1].version)
+
+        self.call_metapost_all_glyphs(self.get_lft_master(), cell='A')
+        instancelog = project.get_instancelog(master.version, 'a')
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
                                  'label': x.label,
                                  'metapolation': label,
+                                 'glyphs': get_edges_json(instancelog, master=master),
                                  'version': '{0:03d}'.format(version),
                                  'versions': get_versions(master.project_id)})
 
@@ -1077,4 +1064,4 @@ def prepare_master_environment(master):
             shutil.copy2(filename, master.get_fonts_directory())
         except (IOError, OSError):
             raise
-    writeGlobalParam(master.project)
+    write_global_param(master.project)
