@@ -73,17 +73,20 @@ Workspace.prototype = {
             this.cleanrun();
             return;
         }
+
         for (var k = 0; k < data.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data[k].label);
 
             var view = this.htmldoc.addView(axes, data[k].label.toUpperCase() == 'B' ? 'right': 'left');
 
-            new Dropzone(axes.find('.axis'), {
-                project_id: function() {return this.project_id || 0;}.bind(this)
-            });
-
             this.updateGlyphView(view, data[k]);
         }
+
+        new Dropzone($('.axis'), {
+            project_id: function() {return this.project_id || 0;}.bind(this)
+        });
+
+        $('#loading').hide();
     },
 
     /*
