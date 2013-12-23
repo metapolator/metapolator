@@ -51,7 +51,7 @@ $var title: Workspace
         <h4>Metapolation</h4>
         <a href="javascript:;" id="btn-master-from-instance" class="btn btn-xs btn-success">Create master</a>
         <a href="javascript:;" id="btn-instance" class="btn btn-xs btn-success">Create instance</a>
-        <canvas width="350" height="600" id="canvas-m"></canvas>
+        <canvas id="canvas-m"></canvas>
     </div>
 
     <div id="view">
@@ -65,14 +65,14 @@ $var title: Workspace
 
         <div class="tab-content">
           <div class="tab-pane active">
-            <canvas width="350" height="600" class="paper"></canvas>
+            <canvas class="paper"></canvas>
             <div style="display: none;">
               <a href="javascript:;" command="apply" class="btn btn-success">Apply</a>
               <a href="javascript:;" command="cancel" class="btn btn-danger">Cancel</a>
             </div>
           </div>
           <div class="tab-pane">
-              <form action="" method="post" class="extended">
+              <form action="" method="post" class="extended pointform">
               $:webctx.pointparam_extended_form.render()
               </form>
           </div> 

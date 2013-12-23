@@ -309,6 +309,7 @@ def get_json(content, glyphid=None, master=None):
     for glyph, edge in pattern:
         if glyphid and int(glyphid) != int(glyph):
             continue
+
         x_min = 0
         y_min = 0
         x_max = 0
@@ -352,8 +353,8 @@ def get_json(content, glyphid=None, master=None):
 
             contours.append(_contours)
 
-        width = abs(x_max) + abs(x_min)
-        height = abs(y_max) + abs(y_min)
+        width = abs(x_max - x_min)
+        height = abs(y_max - y_min)
 
         zpoints = []
         if master:

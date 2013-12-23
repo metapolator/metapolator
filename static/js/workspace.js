@@ -10,7 +10,7 @@ function dict_from_locationhash() {
 
 
 var Workspace = function() {
-    this.htmldoc = new View('');
+    this.htmldoc = new WorkspaceDocument('');
     this.urldata = dict_from_locationhash();
 }
 
@@ -27,11 +27,10 @@ Workspace.prototype = {
             return;
         }
 
-
         $.ajax({
             type: 'post',
             data: {
-                id: zpoint.params.glyphoutline_id,
+                id: zpoint.data.glyphoutline_id,
                 x: zpoint.x,
                 y: zpoint.y
             },
@@ -85,23 +84,36 @@ Workspace.prototype = {
             startpage.show();
 
             if (! (typeof DEMOEDGES == 'undefined') ) {
-                this.htmldoc.addAxes();
-                this.createAxisGlyph('A', DEMOEDGES.glyphs.edges[2]);
+                this.buildView(DEMOEDGES);
                 return;
             }
 
             var data = {'label': 'a'};
-            new Dropzone(startpage.find('.dropzone'), data, function(response) {
-                this.htmldoc.addAxes();
-                this.createAxisGlyph('A', response.glyphs.edges[0]);
-            }.bind(this));
+            new Dropzone(startpage.find('.dropzone'), data, this.buildView.bind(this));
         }.bind(this));
     },
 
-    createAxisGlyph: function(axislabel, glyphdata) {
-        var axis = $('div[axis-label=' + axislabel + ']');
-        var glyph = new Glyph(axis.find('canvas')[0],
-                              {width: glyphdata.width, height: glyphdata.height});
+    /*
+     * Put view onto the workspace
+     */
+    buildView: function(data) {
+        this.project_id = data.project_id;
+
+        var axes = this.htmldoc.addAxes();
+        var view = this.htmldoc.addView(axes, 'left');
+
+        this.createViewGlyph(view, data.glyphs.edges[0]);
+    },
+
+    /*
+     * Put glyph onto the view
+     *
+     * Parameters:
+     * view - view element on the page
+     * glyphdata - json describing the glyph and zpoints
+     */
+    createViewGlyph: function(view, glyphdata) {
+        var glyph = new Glyph(view, {width: glyphdata.width, height: glyphdata.height});
         glyph.onZPointChanged = this.onzpointchange.bind(this);
 
         glyph.render(glyphdata.contours);
@@ -137,30 +149,6 @@ var Dropzone = function(element, data, uploadFinished) {
             uploadFinished(response);
         }
     });
-}
-
-
-var ZPoint = function() {
-    this.params = {};
-}
-
-ZPoint.prototype = {
-
-    /*
-     * Called when user changed zpoint parameter
-     */
-    onchanged: function() {
-
-    },
-
-    /*
-     * Put point to new position
-     */
-    move: function(x, y) {
-        this.params.x = x;
-        this.params.y = y;
-        this.onchanged();
-    }
 }
 
 $(function() {
