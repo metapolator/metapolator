@@ -10,6 +10,9 @@ $var title: Workspace
         border: dashed 2px #ccc;
         text-align: center;
     }
+    .dropzone:before {
+        content: "Drop archive with UFO here";
+    }
 
     #workspace, #startpage, .editor-axes, .metapolation, #templates {
         display: none;
@@ -20,7 +23,7 @@ $var title: Workspace
 
 <div id="startpage" style="display: none;">
     <!-- empty project, single dropdown zone -->
-    <div class="dropzone">Drop ZIP with UFO here</div>
+    <div class="dropzone"></div>
 </div>
 
 <div id="workspace" style="display: none;">

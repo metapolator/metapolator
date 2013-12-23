@@ -80,34 +80,36 @@ Workspace.prototype = {
      */
     cleanrun: function() {
         $('#loading').fadeOut(220, function(){
-            var startpage = $('#startpage');
-            startpage.show();
+
+            var axes = this.htmldoc.addAxes();
 
             if (! (typeof DEMOEDGES == 'undefined') ) {
-                this.buildView(DEMOEDGES);
+                this.buildView(axes, DEMOEDGES);
                 return;
             }
 
-            var data = {'label': 'a'};
-            new Dropzone(startpage.find('.dropzone'), data, this.buildView.bind(this));
+            new Dropzone(axes.find('.axis'), {
+                project_id: function() {return this.project_id || 0;}.bind(this)
+            }, this.buildView.bind(this, axes));
         }.bind(this));
     },
 
     /*
      * Put view onto the workspace
      */
-    buildView: function(data) {
+    buildView: function(axes, data) {
         this.project_id = data.project_id;
 
-        var axes = this.htmldoc.addAxes();
-        var view = this.htmldoc.addView(axes, 'left');
+        var view = this.htmldoc.addView(axes, data.label == 'B' ? 'right': 'left');
+
+        view.getElement().removeClass('dropzone');
 
         var metaview = this.htmldoc.getMetapolationView();
 
         glyphdata = data.glyphs.edges[0];
         var gl = new Glyph(metaview, {width: glyphdata.width, height: glyphdata.height});
         gl.render(glyphdata.contours);
-        
+
         this.createViewGlyph(view, glyphdata);
     },
 
@@ -129,6 +131,17 @@ Workspace.prototype = {
 
 
 var Dropzone = function(element, data, uploadFinished) {
+    $(element).each(function(i, element) {
+        var el = $(element)
+        if (!$.trim(el.html())) {
+            el.addClass('dropzone');
+        }
+    });
+
+    $.extend(data, {label: function(){
+        return this.dropzone_label || 'a';
+    }.bind(this)});
+
     $(element).filedrop({
         fallback_id: 'upload_button',
         url: '/upload/',
@@ -136,6 +149,10 @@ var Dropzone = function(element, data, uploadFinished) {
         withCredentials: true,
 
         data: data,
+
+        drop: function(e) {
+            this.dropzone_label = $(e.target).attr('axis-label');
+        }.bind(this),
 
         dragOver: function(e) {
             var target = e.target;
@@ -152,7 +169,7 @@ var Dropzone = function(element, data, uploadFinished) {
         },
 
         uploadFinished: function(i, file, response, time) {
-            uploadFinished(response);
+            uploadFinished && uploadFinished(response);
         }
     });
 }

@@ -14,6 +14,10 @@ function View(element) {
 
 View.prototype = {
 
+    getElement: function() {
+        return this.element;
+    },
+
     getLabel: function() {
         return this.element.attr('axis-label');
     },
