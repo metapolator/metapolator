@@ -102,7 +102,13 @@ Workspace.prototype = {
         var axes = this.htmldoc.addAxes();
         var view = this.htmldoc.addView(axes, 'left');
 
-        this.createViewGlyph(view, data.glyphs.edges[0]);
+        var metaview = this.htmldoc.getMetapolationView();
+
+        glyphdata = data.glyphs.edges[0];
+        var gl = new Glyph(metaview, {width: glyphdata.width, height: glyphdata.height});
+        gl.render(glyphdata.contours);
+        
+        this.createViewGlyph(view, glyphdata);
     },
 
     /*

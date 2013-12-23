@@ -4,7 +4,7 @@ var Graph = function() {}
 
 
 Graph.createCanvas = function(canvas, size) {
-    var width = $($(canvas).parents('.tab-content .tab-pane')).outerWidth();
+    var width = $($(canvas).parent()).outerWidth();
 
     var ratio = size.width / size.height;
     var height = Math.round(width / ratio);

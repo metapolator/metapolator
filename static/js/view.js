@@ -84,10 +84,16 @@ function WorkspaceDocument(mode) {
     this.axes = [];
     
     this.mode = mode;
+
+    this.metaView = null;
 }
 
 
 WorkspaceDocument.prototype = {
+
+    getMetapolationView: function() {
+        return this.metaView;
+    },
     
     /*
      * Put to the page new row with axes
@@ -97,7 +103,7 @@ WorkspaceDocument.prototype = {
         this.workspace.append(axes);
 
         if (!this.axes.length) {
-            this.addView(axes, 'middle');
+            this.metaView = this.addView(axes, 'middle');
         }
 
         if (this.mode != 'controlpoints' || this.axes.length > 1) {
@@ -164,7 +170,7 @@ WorkspaceDocument.prototype = {
     },
 
     findPositionedAxis: function(axes, position) {
-        return axes.find('.axis[axis-position=' + position + ']')
+        return axes.find('div[axis-position=' + position + ']')
     },
 
     /*
