@@ -20,6 +20,8 @@ def makefont_single(master, cell=''):
     cell = cell.upper()
     os.environ['MFINPUTS'] = master.get_fonts_directory()
     os.environ['MFMODE'] = session.get('mfparser', '')
+
+    print os.environ['MFINPUTS']
     if cell == 'A':
         metafont = master.get_metafont('a')
     else:

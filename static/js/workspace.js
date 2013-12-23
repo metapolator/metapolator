@@ -62,16 +62,27 @@ Workspace.prototype = {
     },
 
     setWorkspaceConfiguration: function(data) {
-        this.run();
+        this.run(data);
     },
 
     /*
      * Build html document with editor based on received data
      */
-    run: function() {
+    run: function(data) {
         if (!this.urldata.project) {
             this.cleanrun();
             return;
+        }
+        for (var k = 0; k < data.length; k++) {
+            var axes = this.htmldoc.getOrCreateAxes(data[k].label);
+
+            var view = this.htmldoc.addView(axes, data[k].label.toUpperCase() == 'B' ? 'right': 'left');
+
+            new Dropzone(axes.find('.axis'), {
+                project_id: function() {return this.project_id || 0;}.bind(this)
+            });
+
+            this.updateGlyphView(view, data[k]);
         }
     },
 
@@ -94,23 +105,33 @@ Workspace.prototype = {
         }.bind(this));
     },
 
+
     /*
      * Put view onto the workspace
      */
     buildView: function(axes, data) {
         this.project_id = data.project_id;
 
-        var view = this.htmldoc.addView(axes, data.label == 'B' ? 'right': 'left');
+        var view = this.htmldoc.addView(axes, data.label.toUpperCase() == 'B' ? 'right': 'left');
 
         view.getElement().removeClass('dropzone');
 
+        this.updateGlyphView(view);
+    },
+
+    updateGlyphView: function(view, data) {
         var metaview = this.htmldoc.getMetapolationView();
 
         glyphdata = data.glyphs.edges[0];
-        var gl = new Glyph(metaview, {width: glyphdata.width, height: glyphdata.height});
-        gl.render(glyphdata.contours);
-
         this.createViewGlyph(view, glyphdata);
+
+        var metaglyphdata = data.metaglyphs.edges[0];
+
+        if (!this.metapolationGlyph) {
+            this.metapolationGlyph = new Glyph(metaview, {width: metaglyphdata.width, height: metaglyphdata.height});
+        }
+        
+        this.metapolationGlyph.render(metaglyphdata.contours);
     },
 
     /*

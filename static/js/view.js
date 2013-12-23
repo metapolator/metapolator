@@ -95,6 +95,14 @@ function WorkspaceDocument(mode) {
 
 WorkspaceDocument.prototype = {
 
+    getOrCreateAxes: function(label) {
+        var axis = $('.axis[axis-label=' + label + ']');
+        if (!axis.length) {
+            return this.addAxes();
+        }
+        return $(axis.parents('.editor-axes'));
+    },
+
     getMetapolationView: function() {
         return this.metaView;
     },

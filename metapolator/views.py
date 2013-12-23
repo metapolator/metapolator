@@ -126,15 +126,15 @@ class GlyphPageMixin(object):
 
             if session.get('mfparser', '') == 'controlpoints':
                 import xmltomf_new_2axes as xmltomf
-                xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
+                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
             else:
                 import xmltomf
-                xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
+                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
             hasglyphs = True
 
         if hasglyphs:
             write_glyph_list(master)
-            makefont_single(self.get_lft_master(), cell=cell)
+            makefont_single(master or self.get_lft_master(), cell=cell)
 
     def call_metapost(self, glyph_id):
         write_global_param(self.get_project())
@@ -210,6 +210,44 @@ class Glyph(app.page):
         glyphs = glyphs.order_by(models.Glyph.name.asc())
         return simplejson.dumps(map(lambda x: {'val': self.glyphrepr(x.name),
                                                'id': x.name}, glyphs))
+
+
+class Project(app.page, GlyphPageMixin):
+
+    path = '/editor/project/'
+
+    def GET(self):
+        x = web.input(project=0)
+
+        project = models.Project.get(id=x.project)
+        if not project:
+            raise web.notfound()
+
+        masters = project.get_ordered_masters()
+
+        self.set_masters(masters)
+
+        self.initialize(project.projectname, masters[0].version,
+                        masters[1].version)
+
+        resultmasters = []
+
+        self.call_metapost_all_glyphs(self.get_lft_master())
+        instancelog = project.get_instancelog(self.get_lft_master().version)
+        metaglyphs = get_edges_json(instancelog)
+
+        for i, master in enumerate(masters):
+
+            prepare_master_environment(master)
+
+            self.call_metapost_all_glyphs(master, cell='A')
+            master_instancelog = project.get_instancelog(master.version, 'a')
+            glyphsdata = get_edges_json(master_instancelog, master=master)
+
+            resultmasters.append({'glyphs': glyphsdata, 'metaglyphs': metaglyphs,
+                                  'label': chr(LABELS[i])})
+
+        return '%s(%s)' % (x.callback, simplejson.dumps(resultmasters))
 
 
 def mime_type(filename):
@@ -770,6 +808,8 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
             if not project:
                 raise web.notfound()
 
+        prepare_environment_directory()
+
         filename = op.join(project.get_directory(), x.ufofile.filename)
         try:
             with open(filename, 'w') as fp:
@@ -777,8 +817,6 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         except (IOError, OSError):
             models.Project.delete(project)  # delete created project
             raise web.badrequest()
-
-        prepare_environment_directory()
 
         try:
             fzip = zipfile.ZipFile(filename)
@@ -844,14 +882,20 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
 
-        self.call_metapost_all_glyphs(self.get_lft_master(), cell='A')
-        instancelog = project.get_instancelog(master.version, 'a')
+        self.call_metapost_all_glyphs(master, cell='A')
+        master_instancelog = project.get_instancelog(master.version, 'a')
+        glyphsdata = get_edges_json(master_instancelog, master=master)
+
+        self.call_metapost_all_glyphs(self.get_lft_master())
+        instancelog = project.get_instancelog(master.version)
+        metaglyphs = get_edges_json(instancelog)
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
                                  'glyphname': glyph.name,
                                  'label': x.label,
                                  'metapolation': label,
-                                 'glyphs': get_edges_json(instancelog, master=master),
+                                 'glyphs': glyphsdata,
+                                 'metaglyphs': metaglyphs,
                                  'version': '{0:03d}'.format(version),
                                  'versions': get_versions(master.project_id)})
 
