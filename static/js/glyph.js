@@ -118,6 +118,7 @@ PaperJSGraph.prototype = {
      *   {x: N, y: M, controls: [{x: K, y: L}, {x: G, y: H}]}
      */
     drawcontour: function(points) {
+        this.ppscope.activate();
         var element = this.ppscope.getView().getElement();
 
         var path = new this.ppscope.Path();
@@ -168,6 +169,8 @@ PaperJSGraph.prototype = {
      * point - concrete point in json format {x: N, y: M, iszpoint: boolean}
      */
     drawpoint: function(point) {
+        this.ppscope.activate();
+        
         if ( !point.iszpoint )
             return;
 

@@ -122,6 +122,13 @@ Workspace.prototype = {
         this.updateGlyphView(view);
     },
 
+    /*
+     * Put glyph to view
+     * 
+     * Parameters:
+     * view - View instance
+     * data - glyph data. See `Glyph Data Json`
+     */
     updateGlyphView: function(view, data) {
         var metaview = this.htmldoc.getMetapolationView();
 
