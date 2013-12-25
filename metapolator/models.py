@@ -65,6 +65,11 @@ class LocalParam(Base, UserQueryMixin):
     descender = Column(Float, default=-2)
     skeleton = Column(Float, default=0)
     over = Column(Float, default=0.1)
+    jut = Column(Float, default=1)
+    slab = Column(Float, default=1)
+    bracket = Column(Float, default=1)
+    serif_darkness = Column(Float, default=1)
+    slant = Column(Float, default=1)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -293,6 +298,12 @@ class GlyphParam(Base, UserQueryMixin):
     overcap = Column(String(32))
     overasc = Column(String(32))
     overdesc = Column(String(32))
+
+    theta = Column(String(32))
+    serif_h_bot = Column(String(32))
+    serif_h_top = Column(String(32))
+    serif_v_left = Column(String(32))
+    serif_v_right = Column(String(32))
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

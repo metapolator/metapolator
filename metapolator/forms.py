@@ -1,7 +1,7 @@
 import re
 
 from web.form import Form, Textbox, Dropdown, Button, Validator, Password, \
-    notnull, Hidden
+    notnull
 
 import models
 
@@ -31,6 +31,13 @@ PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint
                               Textbox('overcap', size=12),
                               Textbox('overasc', size=12),
                               Textbox('overdesc', size=12),
+
+                              Textbox('theta', size=12),
+                              Textbox('serif_h_bot', size=12),
+                              Textbox('serif_h_top', size=12),
+                              Textbox('serif_v_left', size=12),
+                              Textbox('serif_v_right', size=12),
+
                               Button('save'))
 
 
@@ -73,7 +80,16 @@ LocalParamForm = Form(Dropdown('idlocal', [], description='Choose parameter set'
                               description="skeleton", value="0"),
                       Textbox('over', notnull, size=5,
                               description="over", value="0.1"),
-                      Hidden('ab_source', notnull, value='a'),
+                      Textbox('jut', notnull, size=5,
+                              description="jut", value="1"),
+                      Textbox('slab', notnull, size=5,
+                              description="slab", value="1"),
+                      Textbox('bracket', notnull, size=5,
+                              description="bracket", value="1"),
+                      Textbox('serif_darkness', notnull, size=5,
+                              description="serif_darkness", value="1"),
+                      Textbox('slant', notnull, size=5,
+                              description="slant", value="1"),
                       Button('save'))
 
 

@@ -200,7 +200,13 @@ LOCAL_DEFAULTS = {
     'ascender': 8,
     'descender': -2,
     'skeleton': 0,
-    'over': 0
+    'over': 0,
+    'jut': 1,
+    'slab': 1,
+    'bracket': 1,
+    'serif_darkness': 1,
+    'slant': 1
+
 }
 
 
@@ -280,6 +286,11 @@ def writeParams(project, filename, masters, is_concrete_master=False, metapolati
         ifile.write("%s_descender:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'descender')))
         ifile.write("%s_skeleton#:=%.2fpt#;\n" % (uniqletter, get_local_param(imlo, 'skeleton')))
         ifile.write("%s_over:=%.2fpt;\n" % (uniqletter, get_local_param(imlo, 'over')))
+        ifile.write("%s_jut:=%.2fpt;\n" % (uniqletter, get_local_param(imlo, 'jut')))
+        ifile.write("%s_slab:=%.2fpt;\n" % (uniqletter, get_local_param(imlo, 'slab')))
+        ifile.write("%s_bracket:=%.2fpt;\n" % (uniqletter, get_local_param(imlo, 'bracket')))
+        ifile.write("%s_serif_darkness:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'serif_darkness')))
+        ifile.write("%s_slant:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'slant')))
 
     ifile.write("\n")
     ifile.write("input glyphs\n")
