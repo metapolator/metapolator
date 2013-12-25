@@ -306,7 +306,6 @@ class EditorLocals(app.page):
 
             del values['idlocal']
             del values['save']
-            del values['ab_source']
 
             if not int(idlocal):
                 localparam = models.LocalParam.create(**values)
@@ -1013,7 +1012,6 @@ class LocalParam(app.page):
 
         if form.validates():
             values = form.d
-            del values['ab_source']
             del values['save']
             del values['idlocal']
 
