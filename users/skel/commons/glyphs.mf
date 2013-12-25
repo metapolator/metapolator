@@ -1,3 +1,7 @@
+%newinternal slant,fudge,math_spread,superness,superpull,beak_darkness,ligs;
+boolean square_dots,hefty,serifs,monospace,variant_g,low_asterisk,math_fitting;
+
+
 def loggingall =                % puts tracing info into the log
 %  tracingcommands:=3; 
 %  tracingedges:=2; 
@@ -21,9 +25,48 @@ def tracingall =                % turns on every form of tracing
 
 tracingall
 
-% slant
-slant:=0;
-font_slant slant;
+slant:=A_slant+metapolation*(B_slant-A_slant);
+font_slant = slant;
+
+jut:=A_jut+metapolation*(B_jut-A_jut);
+slab:=A_slab+metapolation*(B_slab-A_slab);
+bracket:=A_bracket+metapolation*(B_bracket-A_bracket);
+serif_darkness:=A_serif_darkness+metapolation*(B_serif_darkness-A_serif_darkness);
+
+% for perfect curve use serif_darkness = 0.5; .. in def serif_bracket instead --
+
+serifs:=true;
+
+def serif_h(suffix $)(expr breadth, theta , left_jut , right_jut, left, right ) = 
+   % penpos$ (breadth /abs sind theta , 0);      % comment this if penpos already known 
+    z$a- left - z$l = z$f - z$r  = (bracket/abs sind theta) * dir theta;
+    y$c =y$d; 
+    y$b =y$e =y$; 
+    y$b - y$c = if theta < 0 : - fi slab;
+    x$b =x$c =x$l - left_jut; 
+    x$d =x$e =x$r + right_jut;
+
+labels($a,$b,$c,$d,$e,$f) enddef;
+
+def serif_v(suffix $)(expr breadth, theta , right_jut ,left_jut, down, up  ) = 
+ %   penpos$ (whatever,whatever);      % comment this if penpos already known 
+    z$a- down - z$r = z$f - z$l  = (0.1bracket/abs sind theta) * dir theta;
+    x$c =x$d; 
+    x$b =x$e =x$; 
+    x$b - x$c = if theta < 0 : - fi slab;
+    y$b =y$c =y$r + right_jut; 
+    y$d =y$e =y$l - left_jut;
+ 
+labels($a,$b,$c,$d,$e,$f) enddef;
+
+def serif_edge suffix $ =
+    (serif_bracket ($a, $l, $b) -- z$c -- z$d -- reverse serif_bracket($f, $r, $e)) enddef ;
+
+def serif_bracket(suffix i, j, k) =
+    (z.i{z.j - z.i} -- serif_darkness [z.j, .5[z.i, z.k] ]{z.k - z.i}
+    -- z.k{z.k - z.j}) enddef;
+
+
 
 % meta parameters
 mpx:=A_px#+metapolation*(B_px#-A_px#);
@@ -138,3 +181,4 @@ input spacing
 
 % glyph input
 input glyphlist
+
