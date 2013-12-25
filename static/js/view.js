@@ -52,6 +52,7 @@ View.prototype = {
 
         var obj = $(e.target).serializeObject();
 
+
         $.extend(data.data, obj);
         var data = {
             x: obj.x,
@@ -59,6 +60,8 @@ View.prototype = {
             data: data.data
         };
 
+        delete data.data.x;
+        delete data.data.y;
         this.onPointParamSubmit && this.onPointParamSubmit(data);
     },
 

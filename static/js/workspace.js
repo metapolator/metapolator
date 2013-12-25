@@ -27,13 +27,17 @@ Workspace.prototype = {
             return;
         }
 
+        var postdata = {
+            id: zpoint.data.glyphoutline_id,
+            x: zpoint.x,
+            y: zpoint.y
+        }
+
+        $.extend(postdata, zpoint.data)
+
         $.ajax({
             type: 'post',
-            data: {
-                id: zpoint.data.glyphoutline_id,
-                x: zpoint.x,
-                y: zpoint.y
-            },
+            data: postdata,
             url: '/editor/save-point/'
         })
         .done(function(response) {

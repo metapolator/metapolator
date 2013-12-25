@@ -153,12 +153,29 @@ PaperJSGraph.prototype = {
             if (this.zpoints[k].data.pointname == pointname) {
                 this.selectedzpoint = this.zpoints[k];
                 this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
+                this.selectedzpoint.label.point = new this.ppscope.Point(x, y);
                 this.box.position = this.zpoints[k].segment.point;
                 this.isdragged = false;
                 return;
             }
         }
         this.ppscope.view.draw();
+    },
+
+    getElementPoint: function(zpoint) {
+        var gpath = new this.ppscope.Path.Rectangle(zpoint, 1);
+        gpath.strokeColor = 'green';
+        gpath.closed = true;
+        gpath.selected = true;
+        return gpath.segments[0];
+    },
+
+    getPointLabel: function(zpoint, pointname) {
+        var text = new this.ppscope.PointText(zpoint);
+        text.justification = 'center';
+        text.fillColor = 'black';
+        text.content = pointname;
+        return text;
     },
 
     /*
@@ -174,22 +191,13 @@ PaperJSGraph.prototype = {
             return;
 
         var element = this.getElement();
-        var zpoint = this.getPoint(Number(point.x), $(element).attr('height') - Number(point.y));
+        var zpoint = this.getPoint(Number(point.x), this.getElementHeight() - Number(point.y));
         zpoint.y += +Y_OFFSET;
 
-        var gpath = new this.ppscope.Path.Rectangle(zpoint, 1);
-        gpath.strokeColor = 'green';
-        gpath.closed = true;
-        gpath.selected = true;
+        var spoint = this.getElementPoint(zpoint);
+        var text = this.getPointLabel(zpoint, point.data.pointname);
 
-        var text = new this.ppscope.PointText(zpoint);
-        text.justification = 'center';
-        text.fillColor = 'black';
-        text.content = point.data.pointname;
-
-        this.zpoints.push({segment: gpath.segments[0],
-                           data: point.data,
-                           label: text});
+        this.zpoints.push({segment: spoint, data: point.data, label: text});
 
         this.ppscope.view.draw();
         return {x: Math.round(zpoint.x), y: Math.round(zpoint.y), data: point.data};
@@ -259,21 +267,25 @@ Glyph.prototype = {
     },
 
     pointChanged: function(data) {
-        this.graph.setPointByName(data.x, data.y, data.data.pointname);
+        this.graph.setPointByName(Math.round(data.x), Math.round(data.y), data.data.pointname);
     },
 
     pointFormSubmit: function(pointform_data, isdragged) {
         var xycoord = this.graph.restore_original_coords(pointform_data.x, pointform_data.y);
 
         var element = this.graph.getElement();
+
         var data = {
-            x: xycoord.x,
-            y: this.graph.getElementHeight() - xycoord.y,
+            x: Math.round(xycoord.x),
+            y: this.graph.getElementHeight() - Math.round(xycoord.y),
             data: pointform_data.data
         };
         if (isdragged) {
             this.view.updatePointOption(pointform_data);
+        } else {
+            this.pointChanged(pointform_data);
         }
+
         this.onZPointChanged && this.onZPointChanged(this, data);
     },
 
