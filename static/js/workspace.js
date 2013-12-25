@@ -34,12 +34,13 @@ Workspace.prototype = {
                 x: zpoint.x,
                 y: zpoint.y
             },
-            url: '/editor/save-point/',
-            success: function(response) {
-                var data = $.parseJSON(response);
-                glyph.render(DEMOEDGE.R.edges[0].contours);
-            }
-        });
+            url: '/editor/save-point/'
+        })
+        .done(function(response) {
+            var data = $.parseJSON(response);
+            glyph.render(data.R.edges[0].contours);
+            this.metapolationGlyph.render(data.M.edges[0].contours);
+        }.bind(this));
     },
 
     /*

@@ -26,6 +26,11 @@ View.prototype = {
         return this.element.find('canvas')[0];
     },
 
+    updatePointOption: function(zpoint) {
+        var option = this.pointform.find('select option:selected');
+        option.attr('point-params', JSON.stringify(zpoint));
+    },
+
     addPointToOption: function(zpoint) {
         if (!this.pointform.length)
             return;
@@ -42,7 +47,19 @@ View.prototype = {
         if (!this.zpointdropdown.val()) {
             return;
         }
-        console.log($(e.target).serializeObject());
+        var option = $(e.target).find('option:selected');
+        var data = $.parseJSON(option.attr('point-params'));
+
+        var obj = $(e.target).serializeObject();
+
+        $.extend(data.data, obj);
+        var data = {
+            x: obj.x,
+            y: obj.y,
+            data: data.data
+        };
+
+        this.onPointParamSubmit && this.onPointParamSubmit(data);
     },
 
     onzpointchanged: function(e) {

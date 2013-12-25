@@ -57,6 +57,14 @@ var PaperJSGraph = function(size, paperscope) {
 
 PaperJSGraph.prototype = {
 
+    getElement: function() {
+        return this.ppscope.getView().getElement();
+    },
+
+    getElementHeight: function() {
+        return $(this.getElement()).attr('height');
+    },
+
     firedMouseDown: function(event) {
         this.selectedzpoint = null;
         for (var k = 0; k < this.zpoints.length; k++) {
@@ -84,28 +92,17 @@ PaperJSGraph.prototype = {
         if (!this.selectedzpoint) 
             return;
 
-        
-        var x = event.point.x;
-        var y = event.point.y - Y_OFFSET;
-        var xycoord = this.restore_original_coords(new this.ppscope.Point(x, y));
-
-        var element = this.ppscope.getView().getElement();
-        var data = {
-            x: xycoord.x,
-            y: $(element).attr('height') - xycoord.y,
-            data: this.selectedzpoint.data
-        };
-
-        this.onMouseUp ? this.onMouseUp(event.event, this.isdragged, data) : false;
+        var pointdata = {x: event.point.x, y: event.point.y, data: this.selectedzpoint.data};
+        this.onMouseUp ? this.onMouseUp(event.event, this.isdragged, pointdata) : false;
     },
 
-    restore_original_coords: function(point) {
-        var element = this.ppscope.getView().getElement();
-        return Graph.resize(point.x, point.y, $(element).attr('width'), $(element).attr('height') - 50, this.size.width, this.size.height);
+    restore_original_coords: function(x, y) {
+        var element = this.getElement();
+        return Graph.resize(x, y - Y_OFFSET, $(element).attr('width'), $(element).attr('height') - 50, this.size.width, this.size.height);
     },
 
     getPoint: function(x, y) {
-        var element = this.ppscope.getView().getElement();
+        var element = this.getElement();
         var r = Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width'), $(element).attr('height') - 50);
         return new this.ppscope.Point(r.x, r.y);
     },
@@ -119,7 +116,7 @@ PaperJSGraph.prototype = {
      */
     drawcontour: function(points) {
         this.ppscope.activate();
-        var element = this.ppscope.getView().getElement();
+        var element = this.getElement();
 
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
@@ -150,16 +147,18 @@ PaperJSGraph.prototype = {
         this.glyphpathes.push(path);
     },
 
-    setPointByName: function(pointname) {
+    setPointByName: function(x, y, pointname) {
+        this.ppscope.activate();
         for (var k = 0; k < this.zpoints.length; k++) {
             if (this.zpoints[k].data.pointname == pointname) {
                 this.selectedzpoint = this.zpoints[k];
+                this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
                 this.box.position = this.zpoints[k].segment.point;
                 this.isdragged = false;
                 return;
             }
         }
-
+        this.ppscope.view.draw();
     },
 
     /*
@@ -174,7 +173,7 @@ PaperJSGraph.prototype = {
         if ( !point.iszpoint )
             return;
 
-        var element = this.ppscope.getView().getElement();
+        var element = this.getElement();
         var zpoint = this.getPoint(Number(point.x), $(element).attr('height') - Number(point.y));
         zpoint.y += +Y_OFFSET;
 
@@ -193,7 +192,7 @@ PaperJSGraph.prototype = {
                            label: text});
 
         this.ppscope.view.draw();
-        return true;
+        return {x: Math.round(zpoint.x), y: Math.round(zpoint.y), data: point.data};
     },
 
 
@@ -236,6 +235,7 @@ var Glyph = function(view, glyphsize) {
     this.graph.onMouseDrag = this.onMouseDrag.bind(this);
 
     this.view.afterPointChanged = this.pointChanged.bind(this);
+    this.view.onPointParamSubmit = this.pointFormSubmit.bind(this);
 }
 
 
@@ -251,14 +251,30 @@ Glyph.prototype = {
     renderZPoints: function(points) {
         this.graph.deletepoints();
         for (var k = 0; k < points.length; k++) {
-            if (this.graph.drawpoint(points[k])) {
-                this.view.addPointToOption(points[k]);
+            var point = this.graph.drawpoint(points[k]);
+            if (point) {
+                this.view.addPointToOption(point);
             }
         }
     },
 
     pointChanged: function(data) {
-        this.graph.setPointByName(data.data.pointname);
+        this.graph.setPointByName(data.x, data.y, data.data.pointname);
+    },
+
+    pointFormSubmit: function(pointform_data, isdragged) {
+        var xycoord = this.graph.restore_original_coords(pointform_data.x, pointform_data.y);
+
+        var element = this.graph.getElement();
+        var data = {
+            x: xycoord.x,
+            y: this.graph.getElementHeight() - xycoord.y,
+            data: pointform_data.data
+        };
+        if (isdragged) {
+            this.view.updatePointOption(pointform_data);
+        }
+        this.onZPointChanged && this.onZPointChanged(this, data);
     },
 
     onMouseDown: function() {
@@ -267,7 +283,7 @@ Glyph.prototype = {
 
     onMouseUp: function(event, isdragged, data) {
         if (isdragged) {
-            this.onZPointChanged ? this.onZPointChanged(this, data) : false;
+            this.pointFormSubmit(data, isdragged);
         }
         this.view.setPointFormValues(data);
     },
