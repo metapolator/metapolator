@@ -70,6 +70,10 @@ Workspace.prototype = {
         this.run(data);
     },
 
+    getPositionByLabel: function(label) {
+        return ['A', 'C', 'E'].indexOf(label.toUpperCase()) >= 0 ? 'left': 'right';
+    },
+
     /*
      * Build html document with editor based on received data
      */
@@ -81,7 +85,7 @@ Workspace.prototype = {
 
         for (var k = 0; k < data.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data[k].label);
-            var view = this.htmldoc.addView(axes, data[k].label.toUpperCase() == 'B' ? 'right': 'left');
+            var view = this.htmldoc.addView(axes, this.getPositionByLabel(data[k].label));
             this.updateGlyphView(view, data[k]);
         }
 
@@ -120,7 +124,7 @@ Workspace.prototype = {
 
         this.project_id = data.project_id;
 
-        var view = this.htmldoc.addView(axes, data.label.toUpperCase() == 'B' ? 'right': 'left');
+        var view = this.htmldoc.addView(axes, this.getPositionByLabel(data.label));
 
         view.getElement().removeClass('dropzone');
 

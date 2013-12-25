@@ -18,7 +18,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         master is an instance of models.Master
         glyph is an instance of models.Glyph
     """
-    if session.get('mfparser', '') == 'controlpoints':
+    if master.project.mfparser == 'controlpoints':
         import xmltomf_new
         return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
                                     stdout_fip=stdout_fip)

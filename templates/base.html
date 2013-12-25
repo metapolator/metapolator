@@ -106,9 +106,9 @@ right {
             $else:
               <li><a href="/projects/">Projects</a></li>
             $if page.get('title') == 'Editor':
-              <li class="active"><a href="/editor/">Editor</a></li>
+              <li class="active"><a href="/workspace/">Editor</a></li>
             $else:
-              <li><a href="/editor/">Editor</a></li>
+              <li><a href="/workspace/">Editor</a></li>
             <li><a href="/settings/globals/">Parameters</a></li>
             $if webctx.get('project') and webctx.project:
               <li><a href="/specimen/$webctx.project.projectname/">Specimen</a></li>

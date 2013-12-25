@@ -102,7 +102,7 @@ class Project(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     masters = Column(String(128), default='')
-    # mfparser = Column(String(128), default='')
+    mfparser = Column(String(128), default='')
 
     projectname = Column(String(128), index=True)
 

@@ -124,7 +124,7 @@ class GlyphPageMixin(object):
                         glyphs.append(g)
                         break
 
-            if session.get('mfparser', '') == 'controlpoints':
+            if self.get_project().mfparser == 'controlpoints':
                 import xmltomf_new_2axes as xmltomf
                 xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
             else:
@@ -149,7 +149,7 @@ class GlyphPageMixin(object):
                     glyphs.append(g)
                     break
 
-        if session.get('mfparser', '') == 'controlpoints':
+        if self.get_project().mfparser == 'controlpoints':
             import xmltomf_new_2axes as xmltomf
             xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
         else:
@@ -170,7 +170,7 @@ class GlyphPageMixin(object):
         glyph = models.Glyph.get(master_id=master.id, name=glyphid)
 
         instancelog = project.get_instancelog(master.version, 'a')
-        if session.get('mfparser', '') == 'controlpoints':
+        if self.get_project().mfparser == 'controlpoints':
             import xmltomf_new_2axes as xmltomf
             xmltomf.xmltomf1(master, glyph)
         else:
@@ -764,7 +764,8 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         if not project_id:
             projects = models.Project.all()
             count = projects.filter(models.Project.projectname.like('UntitledProject%')).count()
-            project = models.Project.create(projectname='UntitledProject%s' % (count + 1))
+            project = models.Project.create(projectname='UntitledProject%s' % (count + 1),
+                                            mfparser=session.get('mfparser'))
         else:
             project = models.Project.get(id=project_id)
             if not project:
