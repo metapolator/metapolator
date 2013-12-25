@@ -39,7 +39,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         fip = stdout_fip
 
     fip.write("% File parsed with Metapolator %\n")
-    fip.write("% box dimension definition %\n")
 
     '%.2f' % (glyphA.width / 100.)
     w = '%.2f' % (glyphA.width / 100.)
@@ -56,6 +55,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             'spacing_{glyph}R) * width_{glyph}, 0, 0 );')
     fip.write(str_.format(width=w, glyph=glyphA.name, bwidth=w2))
 
+    fip.write("\n")
+    fip.write("""currenttransform := identity slanted slant;
+                 italcorr slant - .5u#;""")
     # point coordinates font A ################
 
     fip.write("\n")
@@ -258,6 +260,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     zznb = []  # for font B save zzn
 
     angle = []
+    angleB = []
+
     angleval_B = []
     startp = []
     startpval = []
@@ -274,7 +278,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         im = param.pointname
 
         istartp = param.startp
-        iangle = param.angle
+        iangleB = param.angle
 
         if znamel and im == znamel.group(0):
             zznb.append(i)
@@ -283,12 +287,12 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 startp.append("startp")
                 startpval.append(istartpval)
 
-            if iangle is not None:
-                iangleval = param.angle
-                angle.append("angle")
-                angleval_B.append(iangleval)
+            if iangleB is not None:
+                iangleval_B = param.angle
+                angleB.append("angle")
+                angleval_B.append(iangleval_B)
             else:
-                angle.append("")
+                angleB.append("")
                 angleval_B.append(0)
 
     # passing angleval_B to extra pen angle Font A
@@ -341,6 +345,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             else:
                 angle.append("")
                 angleval.append(0)
+
             i += 1
     zzn.sort()
     zeile = ""
@@ -356,8 +361,8 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         zitem = i + 1
 
         if angle[i]:
-            angleb = angleval_B[i]
-            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + "  " + str(angleval[i]) + "+ (metapolation * (" + str(angleb) + " - " + str(angleval[i]) + " ));"
+#            angleb = angleval_B[i]
+            zeile = "ang" + str(zitem) + " := " + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ));"
         else:
             zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
 
@@ -846,10 +851,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 dirB.append("")
                 dirvalB.append(0)
 
-            if idir2 is not None:
-                idir2val = param.dir2
-                dir2B.append("dir")
-                dir2valB.append(idir2val)
 
             if iupp is not None:
                 iuppval = param.upp
@@ -904,10 +905,15 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             #     superleft.append("superleft")
             #     superleftvalB.append(isuperleftval)
 
-            if idir is not None:
-                idirval = param.dir
-                dir.append("dir")
-                dirvalB.append(idirval)
+
+            if idir2 is not None :
+                idir2val = param.dir2
+                dir2B.append("dir")
+                dir2valB.append(idir2val)
+            else :
+                dir2B.append("")
+                dir2valB.append(0)
+
 
             if ipenshifted is not None:
                 ipenshiftedval = param.penshifted
@@ -1086,6 +1092,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             else :
                 dir2.append("")
                 dir2val.append(0)
+
 
             if iupp is not None :
                 iuppval = param.upp
@@ -1517,6 +1524,232 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("\n")
     fip.write("% pen labels\n")
     fip.write("penlabels(range 1 thru 99);\n")
+
+
+
+# routines for serifs  ################
+
+    fip.write("\n")
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zznb = []  # for font B save zzn
+
+    theta = []
+    thetaB = []
+    thetaval_B = []    
+    thetaval = []
+
+    serif_h_bot = []
+    serif_h_top = []
+    serif_v_left = []
+    serif_v_right = []
+
+    serif_h_botB = []
+    serif_h_topB = []
+    serif_v_leftB = []
+    serif_v_rightB = []
+
+    serif_h_botval = []
+    serif_h_topval = []
+    serif_v_leftval = []
+    serif_v_rightval = []
+
+
+    serif_h_botval_B = []
+    serif_h_topval_B = []
+    serif_v_leftval_B = []
+    serif_v_rightval_B = []
+
+
+    i = 1
+    for item, param in fontb_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        itheta = param.theta
+        iserif_h_bot = param.serif_h_bot
+        iserif_h_top = param.serif_h_top
+        iserif_v_left = param.serif_v_left
+        iserif_v_right = param.serif_v_right
+
+
+        if znamel and im == znamel.group(0):
+            zznb.append(i)
+
+            if itheta is not None:
+                ithetaval_B = param.theta
+                thetaB.append("theta")
+                thetaval_B.append(ithetaval_B)
+            else:
+                thetaB.append("")
+                thetaval_B.append(0)
+
+            if iserif_h_bot is not None:
+                iserif_h_botval_B = param.serif_h_bot
+                serif_h_botB.append("serif_h_bot")
+                serif_h_botval_B.append(iserif_h_botval_B)
+            else:
+                serif_h_botB.append("")
+                serif_h_botval_B.append(0)
+
+            if iserif_h_top is not None:
+                iserif_h_topval_B = param.serif_h_top
+                serif_h_topB.append("serif_h_top")
+                serif_h_topval_B.append(iserif_h_topval_B)
+            else:
+                serif_h_topB.append("")
+                serif_h_topval_B.append(0)
+
+            if iserif_v_left is not None:
+                iserif_v_leftval_B = param.serif_v_left
+                serif_v_leftB.append("serif_v_left")
+                serif_v_leftval_B.append(iserif_v_leftval_B)
+            else:
+                serif_v_leftB.append("")
+                serif_v_leftval_B.append(0)
+
+            if iserif_v_right is not None:
+                iserif_v_rightval_B = param.serif_v_right
+                serif_v_rightB.append("serif_v_right")
+                serif_v_rightval_B.append(iserif_v_rightval_B)
+            else:
+                serif_v_rightB.append("")
+                serif_v_rightval_B.append(0)
+
+    # passing val_B to Font A
+  
+    # reading Font A
+
+    fip.write("\n")
+    fip.write("""% serifs """)
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zzn = []
+
+    theta = []
+    serif_h_bot = []
+    serif_h_top = []
+    serif_v_left = []
+    serif_v_right = []
+
+    i = 1
+    for item, param in fonta_outlines:
+
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        itheta = param.theta
+        iserif_h_bot = param.serif_h_bot
+        iserif_h_top = param.serif_h_top
+        iserif_v_left = param.serif_v_left
+        iserif_v_right = param.serif_v_right
+
+
+        if znamel and im == znamel.group(0):
+            zzn.append(i)
+
+            if itheta is not None:
+                ithetaval = param.theta
+                theta.append("theta")
+                thetaval.append(ithetaval)
+            else:
+                theta.append("")
+                thetaval.append(0)
+
+            if iserif_h_bot is not None:
+                iserif_h_botval = param.serif_h_bot
+                serif_h_bot.append("serif_h_bot")
+                serif_h_botval.append(iserif_h_botval)
+            else:
+                serif_h_bot.append("")
+                serif_h_botval.append(0)
+
+            if iserif_h_top is not None:
+                iserif_h_topval = param.serif_h_top
+                serif_h_top.append("serif_h_top")
+                serif_h_topval.append(iserif_h_topval)
+            else:
+                serif_h_top.append("")
+                serif_h_topval.append(0)
+
+            if iserif_v_left is not None:
+                iserif_v_leftval = param.serif_v_left
+                serif_v_left.append("serif_v_left")
+                serif_v_leftval.append(iserif_v_leftval)
+            else:
+                serif_v_left.append("")
+                serif_v_leftval.append(0)
+
+            if iserif_v_right is not None:
+                iserif_v_rightval = param.serif_v_right
+                serif_v_right.append("serif_v_right")
+                serif_v_rightval.append(iserif_v_rightval)
+            else:
+                serif_v_right.append("")
+                serif_v_rightval.append(0)
+
+
+
+
+            i += 1
+    zzn.sort()
+    zeile = ""
+    zeileend = ""
+    semi = ");"
+
+    if len(zzn) != len(zznb):
+        # glyphs in A and B have different set of Z-points, so raise exception
+        # to handle this case
+        raise DifferentZPointError()
+
+    for i in range(len(zzn)):
+        zitem = i + 1
+
+
+        if theta[i]:
+            zeile = "numeric theta[];"
+        fip.write(zeile)
+        
+        if theta[i]:
+            zeile = "theta" + str(zitem) + " := angle(" + str(thetaval[i]) + ");"
+        else:
+            zeile = ""
+
+
+        if serif_h_bot[i]:
+
+            zeile = "ang" + str(zitem) + " := " + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ));"
+        else:
+            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
+
+
+        fip.write("\n")
+        fip.write(zeile)
+
+
+
+
+
+
+
+
+
     fip.write("endchar;")
 
     print time.time() - starttime
