@@ -388,7 +388,7 @@ class EditorSavePoint(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(id='', x='', y='')
+        postdata = web.input(id='')
 
         # @FIXME: must be changed to form with validation of available
         # arguments values.
@@ -412,46 +412,13 @@ class EditorSavePoint(app.page, GlyphPageMixin):
 
         self.set_masters(masters)
 
-        glyphoutline.x = postdata.x
-        glyphoutline.y = postdata.y
-        web.ctx.orm.commit()
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-        result = self.get_glyphs_jsondata(glyphoutline.glyph.name, master)
-        return simplejson.dumps(result)
-
-
-class EditorSaveParam(app.page, GlyphPageMixin):
-
-    path = '/editor/save-param/'
-
-    @raise404_notauthorized
-    def POST(self):
-        postdata = web.input(project_id=0, master_id=0, id='', masters='')
-
-        project = models.Project.get(id=postdata.project_id)
-        if not project:
-            raise web.notfound()
-
-        master = models.Master.get(id=postdata.master_id)
-        if not master:
-            return web.notfound()
-
-        if not models.GlyphOutline.exists(id=postdata.id):
-            return web.notfound()
-
-        glyphoutline = models.GlyphOutline.get(id=postdata.id)
-
         form = PointParamExtendedForm()
         if form.validates():
             values = form.d
-            del values['zpoint']
-            del values['save']
             glyphoutline.x = float(values['x'])
             glyphoutline.y = float(values['y'])
-            web.ctx.orm.commit()
 
+            del values['zpoint']
             del values['x']
             del values['y']
             for key in values:
@@ -459,10 +426,6 @@ class EditorSaveParam(app.page, GlyphPageMixin):
                     values[key] = None
             models.GlyphParam.update(glyphoutline_id=postdata.id,
                                      values=values)
-
-        masters = project.get_ordered_masters()
-
-        self.set_masters(masters)
 
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)

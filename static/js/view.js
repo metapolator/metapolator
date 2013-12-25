@@ -8,7 +8,7 @@ function View(element) {
     this.zpointdropdown = this.pointform.find('select#zpoint');
 
     this.zpointdropdown.on('change', this.onzpointchanged.bind(this));
-    this.pointform.on('submit', this.onpointformsubmit.bind(this));
+    this.pointform.on('keydown', this.onpointformsubmit.bind(this));
 }
 
 
@@ -43,14 +43,17 @@ View.prototype = {
     },
 
     onpointformsubmit: function(e) {
-        e.preventDefault();
-        if (!this.zpointdropdown.val()) {
-            return;
+        if (e.which != 13) {
+            return true;
         }
-        var option = $(e.target).find('option:selected');
+
+        if (!this.zpointdropdown.val()) {
+            return false;
+        }
+        var option = this.pointform.find('option:selected');
         var data = $.parseJSON(option.attr('point-params'));
 
-        var obj = $(e.target).serializeObject();
+        var obj = this.pointform.serializeObject();
 
 
         $.extend(data.data, obj);
