@@ -81,9 +81,7 @@ Workspace.prototype = {
 
         for (var k = 0; k < data.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data[k].label);
-
             var view = this.htmldoc.addView(axes, data[k].label.toUpperCase() == 'B' ? 'right': 'left');
-
             this.updateGlyphView(view, data[k]);
         }
 
@@ -118,13 +116,15 @@ Workspace.prototype = {
      * Put view onto the workspace
      */
     buildView: function(axes, data) {
+        location.hash = '#project/' + data.project_id;
+
         this.project_id = data.project_id;
 
         var view = this.htmldoc.addView(axes, data.label.toUpperCase() == 'B' ? 'right': 'left');
 
         view.getElement().removeClass('dropzone');
 
-        this.updateGlyphView(view);
+        this.updateGlyphView(view, data);
     },
 
     /*
