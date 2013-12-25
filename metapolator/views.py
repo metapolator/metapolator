@@ -242,6 +242,7 @@ class Project(app.page, GlyphPageMixin):
 
             self.call_metapost_all_glyphs(master, cell='A')
             master_instancelog = project.get_instancelog(master.version, 'a')
+
             glyphsdata = get_edges_json(master_instancelog, master=master)
 
             resultmasters.append({'glyphs': glyphsdata, 'metaglyphs': metaglyphs,
