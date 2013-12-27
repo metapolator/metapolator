@@ -351,7 +351,8 @@ class EditorLocals(app.page, GlyphPageMixin):
         return simplejson.dumps({'glyphs': glyphsdata,
                                  'metaglyphs': metaglyphs,
                                  'master_id': master.id,
-                                 'params': params})
+                                 'params': params,
+                                 'label': x.axislabel})
 
 
 class userstatic(app.page):
@@ -522,7 +523,8 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
         return simplejson.dumps({'glyphs': glyphsdata,
                                  'metaglyphs': metaglyphs,
-                                 'master_id': master.id})
+                                 'master_id': master.id,
+                                 'label': postdata.axislabel})
 
 
 class EditorCreateInstance(app.page, GlyphPageMixin):

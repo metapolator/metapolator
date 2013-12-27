@@ -43,7 +43,9 @@ Workspace.prototype = {
         .done(function(response) {
             var data = $.parseJSON(response);
             glyph.render(data.R.edges[0].contours);
-            this.metapolationGlyph.render(data.M.edges[0].contours);
+
+            var metaview = this.htmldoc.getMetapolationView();
+            metaview.glyph.render(data.M.edges[0].contours);
         }.bind(this));
     },
 
@@ -100,8 +102,10 @@ Workspace.prototype = {
 
     addView: function(axes, data, versions) {
         var view = this.htmldoc.addView(axes, data.glyphs.edges[0].glyph, versions, data.master_id, this.getPositionByLabel(data.label));
-        view.onLocalParamFormSubmit = function(view, data) {
-            this.updateGlyphView(view, data);
+        view.onGlyphChanged = function(view, data) {
+            view.element.empty();
+            var newview = this.addView(axes, data, versions);
+            this.updateGlyphView(newview, data);
         }.bind(this);
         return view;
     },

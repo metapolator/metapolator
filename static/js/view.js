@@ -26,7 +26,7 @@ function View(element, glyphname, versions, master_id) {
                 }
             ).done(function(response){
                 var data = $.parseJSON(response);
-                this.onLocalParamFormSubmit && this.onLocalParamFormSubmit(this, data);
+                this.onGlyphChanged && this.onGlyphChanged(this, data);
             }.bind(this));
         }.bind(this));
     }
@@ -43,7 +43,7 @@ function View(element, glyphname, versions, master_id) {
     var sw1 = new LocalParamSwitcher({
         source: $(this.settingsform.find('select#idlocal')),
         listener: form,
-        data: {master_id: master_id},
+        data: {master_id: master_id, axislabel: this.getLabel()},
         onFormSubmitted: this.onlocalparam_formsubmit.bind(this)
     });
 
@@ -60,7 +60,7 @@ View.prototype = {
     },
 
     onlocalparam_formsubmit: function(response) {
-        this.onLocalParamFormSubmit && this.onLocalParamFormSubmit(this, response);
+        this.onGlyphChanged && this.onGlyphChanged(this, response);
     },
 
     getElement: function() {
