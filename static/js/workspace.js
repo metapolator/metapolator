@@ -10,7 +10,7 @@ function dict_from_locationhash() {
 
 
 var Workspace = function() {
-    this.htmldoc = new WorkspaceDocument('');
+    this.htmldoc = new WorkspaceDocument(window.MFPARSER);
     this.urldata = dict_from_locationhash();
 }
 
@@ -44,8 +44,7 @@ Workspace.prototype = {
             var data = $.parseJSON(response);
             glyph.render(data.R.edges[0].contours);
 
-            var metaview = this.htmldoc.getMetapolationView();
-            metaview.glyph.render(data.M.edges[0].contours);
+            this.metapolationView.glyph.render(data.M.edges[0].contours);
         }.bind(this));
     },
 
@@ -73,6 +72,9 @@ Workspace.prototype = {
     },
 
     getPositionByLabel: function(label) {
+        if (!label) {
+            return 'middle';
+        }
         return ['A', 'C', 'E'].indexOf(label.toUpperCase()) >= 0 ? 'left': 'right';
     },
 
@@ -89,9 +91,10 @@ Workspace.prototype = {
 
         for (var k = 0; k < data.projects.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data.projects[k].label);
-            var view = this.addView(axes, data.projects[k], data.versions);
-            this.updateGlyphView(view, data.projects[k]);
+            this.addView(axes, data.projects[k].glyphs, data.projects[k].master_id, data.versions, data.projects[k].label);
         }
+
+        this.metapolationView = this.addView(axes, data.metaglyphs);
 
         new Dropzone($('.axis'), {
             project_id: function() {return this.project_id || 0;}.bind(this)
@@ -100,12 +103,22 @@ Workspace.prototype = {
         $('#loading').hide();
     },
 
-    addView: function(axes, data, versions) {
-        var view = this.htmldoc.addView(axes, data.glyphs.edges[0].glyph, versions, data.master_id, this.getPositionByLabel(data.label));
+    addView: function(axes, data, master_id, versions, label) {
+        var view = this.htmldoc.addView(axes, data.edges[0].glyph, data.edges[0], this.getPositionByLabel(label));
+
+        view.glyph.render(data.edges[0].contours);
+
+        if (versions) {
+            view.setMaster(master_id);
+            view.appendVersions(versions);
+            view.appendLocalParameters();
+            view.glyph.renderZPoints(data.edges[0].zpoints.points);
+            view.onzpointdatachanged = this.onzpointchange.bind(this);
+        }
+
         view.onGlyphChanged = function(view, data) {
             view.element.empty();
-            var newview = this.addView(axes, data, versions);
-            this.updateGlyphView(newview, data);
+            this.addView(axes, data.glyphs, view.getMaster(), versions, view.getLabel());
         }.bind(this);
         return view;
     },
@@ -135,45 +148,11 @@ Workspace.prototype = {
      */
     buildView: function(axes, data) {
         location.hash = '#project/' + data.project_id;
-
         this.project_id = data.project_id;
 
-        var view = this.addView(axes, data, data.versions);
-
+        var view = this.addView(axes, data, data.versions, data.label);
         view.getElement().removeClass('dropzone');
-
-        this.updateGlyphView(view, data);
     },
-
-    /*
-     * Put glyph to view
-     * 
-     * Parameters:
-     * view - View instance
-     * data - glyph data. See `Glyph Data Json`
-     */
-    updateGlyphView: function(view, data) {
-        glyphdata = data.glyphs.edges[0];
-        this.createViewGlyph(view, glyphdata);
-
-        var metaview = this.htmldoc.getMetapolationView();
-        var metaglyphdata = data.metaglyphs.edges[0];
-        this.createViewGlyph(metaview, metaglyphdata);
-    },
-
-    /*
-     * Put glyph onto the view
-     *
-     * Parameters:
-     * view - view element on the page
-     * glyphdata - json describing the glyph and zpoints
-     */
-    createViewGlyph: function(view, glyphdata) {
-        glyph = view.getGlyph(glyphdata);
-        glyph.render(glyphdata.contours);
-        glyph.renderZPoints(glyphdata.zpoints.points);
-        glyph.onZPointChanged = this.onzpointchange.bind(this);
-    }
 }
 
 

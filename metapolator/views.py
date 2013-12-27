@@ -113,7 +113,7 @@ class GlyphPageMixin(object):
         write_global_param(self.get_project())
 
         hasglyphs = False
-        for glyph in master.get_glyphs():
+        for glyph in (master or self.get_lft_master()).get_glyphs():
             _glyphs = models.Glyph.filter(name=glyph.name)
             _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
 
@@ -133,7 +133,7 @@ class GlyphPageMixin(object):
             hasglyphs = True
 
         if hasglyphs:
-            write_glyph_list(master)
+            write_glyph_list(master or self.get_lft_master())
             makefont_single(master or self.get_lft_master(), cell=cell)
 
     def call_metapost(self, glyph_id):
@@ -220,6 +220,8 @@ class Project(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def GET(self):
+        prepare_environment_directory()
+
         x = web.input(project=0)
 
         project = models.Project.get(id=x.project)
@@ -235,28 +237,29 @@ class Project(app.page, GlyphPageMixin):
 
         resultmasters = []
 
-        self.call_metapost_all_glyphs(self.get_lft_master())
-        instancelog = project.get_instancelog(self.get_lft_master().version)
-        metaglyphs = get_edges_json(instancelog)
-
         for i, master in enumerate(masters):
 
             prepare_master_environment(master)
 
             self.call_metapost_all_glyphs(master, cell='A')
-            master_instancelog = project.get_instancelog(master.version, 'a')
+            master_instancelog = project.get_instancelog(master.version, 'A')
 
             glyphsdata = get_edges_json(master_instancelog, master=master)
 
             resultmasters.append({'glyphs': glyphsdata,
-                                  'metaglyphs': metaglyphs,
                                   'label': chr(LABELS[i]),
                                   'master_id': master.id})
+
+        self.call_metapost_all_glyphs(self.get_lft_master())
+        instancelog = project.get_instancelog(self.get_lft_master().version)
+        metaglyphs = get_edges_json(instancelog)
 
         import operator
         masters = map(operator.attrgetter('id', 'version'),
                       models.Master.filter(project_id=project.id))
-        return '%s(%s)' % (x.callback, simplejson.dumps({'projects': resultmasters, 'versions': get_versions(project.id)}))
+        return '%s(%s)' % (x.callback, simplejson.dumps({'projects': resultmasters,
+                                                         'versions': get_versions(project.id),
+                                                         'metaglyphs': metaglyphs}))
 
 
 def mime_type(filename):
@@ -483,16 +486,13 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0,
-                             glyphname='', axislabel='')
-
-        project = models.Project.get(id=postdata.project_id)
-        if not project:
-            raise web.notfound()
+        postdata = web.input(master_id=0, glyphname='', axislabel='')
 
         master = models.Master.get(id=postdata.master_id)
         if not master:
             return web.notfound()
+
+        project = master.project
 
         index = LABELS.index(ord(postdata.axislabel))
         masters = project.masters.split(',')

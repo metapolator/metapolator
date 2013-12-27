@@ -9,8 +9,11 @@ Returns JSON large data for project.
 See ``json project data`` for documentation::
 
     [
+        // master json data
         {
+            "label": "A",
             "glyphs": {
+                // list of available glyphs
                 "total_edges": 8, 
                 "edges": [
                     {
@@ -116,7 +119,6 @@ See ``json project data`` for documentation::
                         "glyph": "147"
                     }
                 ]
-            },
-            "label": "A"
+            }
         }
     ]

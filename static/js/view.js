@@ -1,25 +1,67 @@
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 
-function View(element, glyphname, versions, master_id) {
+function View(element, glyphname, glyphdata) {
     this.element = element;
     this.glyphname = glyphname;
 
-    if (master_id && versions) {
+    this.pointform = element.find('form.pointform');
+    this.zpointdropdown = this.pointform.find('select#zpoint');
+
+    this.settingsform = $(element.find('.localparamform'));
+    
+    this.zpointdropdown.on('change', this.onzpointselected.bind(this));
+    this.pointform.on('keydown', this.onpointformsubmit.bind(this));
+
+    this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
+    this.glyph.onZPointChanged = this.onzpointchange.bind(this);
+}
+
+
+View.prototype = {
+
+    onzpointchange: function(glyph, zpoint) {
+        this.onzpointdatachanged && this.onzpointdatachanged(glyph, zpoint);
+    },
+
+    getMaster: function() {
+        return this.master_id;
+    },
+
+    setMaster: function(master_id) {
+        this.master_id = master_id;
+    },
+
+    appendLocalParameters: function() {
+        var form = new LocalParamForm(this.settingsform);
+
+        var sw1 = new LocalParamSwitcher({
+            source: $(this.settingsform.find('select#idlocal')),
+            listener: form,
+            data: {
+                master_id: function() {return this.getMaster();}.bind(this), 
+                axislabel: this.getLabel()
+            },
+            onFormSubmitted: this.onlocalparam_formsubmit.bind(this)
+        });
+
+    },
+
+    appendVersions: function(versions) {
         this.versionselect = $('<select>').addClass('version').css('margin-bottom', '16px');
         for (var k = 0; k < versions.length; k++) {
             var optionMaster = $('<option>', {
                 value: versions[k].master_id,
                 text: 'Load master ' + versions[k].version
             });
-            if (versions[k].master_id == master_id) {
+            if (versions[k].master_id == this.master_id) {
                 optionMaster.attr('selected', 'true');
             }
             this.versionselect.append(optionMaster);
         }
+
         this.versionselect.on('change', function(e) {
             $.post('/editor/reload/', {
-                'project_id': 1, 
                 'master_id': $(e.target).val(),
                 'glyphname': this.glyphname,
                 'axislabel': this.getLabel()
@@ -29,33 +71,11 @@ function View(element, glyphname, versions, master_id) {
                 this.onGlyphChanged && this.onGlyphChanged(this, data);
             }.bind(this));
         }.bind(this));
-    }
 
-    element.prepend(this.versionselect);
-
-    this.pointform = element.find('form.pointform');
-    this.zpointdropdown = this.pointform.find('select#zpoint');
-
-    this.settingsform = $(element.find('.localparamform'));
-
-    var form = new LocalParamForm(this.settingsform);
-
-    var sw1 = new LocalParamSwitcher({
-        source: $(this.settingsform.find('select#idlocal')),
-        listener: form,
-        data: {master_id: master_id, axislabel: this.getLabel()},
-        onFormSubmitted: this.onlocalparam_formsubmit.bind(this)
-    });
-
-    this.zpointdropdown.on('change', this.onzpointchanged.bind(this));
-    this.pointform.on('keydown', this.onpointformsubmit.bind(this));
-}
-
-
-View.prototype = {
+        this.getElement().prepend(this.versionselect);
+    },
 
     getGlyph: function(glyphdata) {
-        this.glyph = this.glyph || new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
         return this.glyph;
     },
 
@@ -117,7 +137,7 @@ View.prototype = {
         this.onPointParamSubmit && this.onPointParamSubmit(data);
     },
 
-    onzpointchanged: function(e) {
+    onzpointselected: function(e) {
         var option = $(e.target).find('option:selected');
         var data = $.parseJSON(option.attr('point-params'))
         this.setPointFormValues(data);
@@ -186,10 +206,6 @@ WorkspaceDocument.prototype = {
         var axes = this.tmplAxes.clone().css('display', 'block');
         this.workspace.append(axes);
 
-        if (!this.axes.length) {
-            this.metaView = this.addView(axes, this.glyphname, [], 0, 'middle');
-        }
-
         if (this.mode != 'controlpoints' || this.axes.length > 1) {
             $('#btn-add-axes').hide();
         }
@@ -209,7 +225,7 @@ WorkspaceDocument.prototype = {
     /*
      * Put to axis view with tabs navigation or single canvas
      */
-    addView: function(axes, glyphname, versions, master_id, position) {
+    addView: function(axes, glyphname, glyphdata, position) {
         var axis = this.findPositionedAxis(axes, position);
 
         if (this.mode != 'controlpoints' && position != 'middle') {
@@ -221,7 +237,7 @@ WorkspaceDocument.prototype = {
         $(this.startpage).hide();
         $(this.workspace).show();
 
-        return new View(axis, glyphname, versions, master_id);
+        return new View(axis, glyphname, glyphdata);
     },
 
     /*
