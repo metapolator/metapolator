@@ -100,9 +100,9 @@ Workspace.prototype = {
 
     addView: function(axes, data) {
         var view = this.htmldoc.addView(axes, data.master_id, this.getPositionByLabel(data.label));
-        view.onLocalParamFormSubmit = function() {
-            debugger;
-        };
+        view.onLocalParamFormSubmit = function(view, data) {
+            this.updateGlyphView(view, data);
+        }.bind(this);
         return view;
     },
 

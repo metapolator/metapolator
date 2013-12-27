@@ -304,7 +304,7 @@ class EditorLocals(app.page, GlyphPageMixin):
         if not master:
             return web.notfound()
 
-        params = {}
+        params = []
 
         form = LocalParamForm()
         if form.validates():
@@ -317,9 +317,9 @@ class EditorLocals(app.page, GlyphPageMixin):
             if not int(idlocal):
                 localparam = models.LocalParam.create(**values)
                 master.idlocala = localparam.id
-                params = {'val': localparam.id,
+                params = [{'val': localparam.id,
                           'idx': models.LocalParam.all().count(),
-                          'selected': True}
+                          'selected': True}]
             else:
                 models.LocalParam.update(id=idlocal, values=values)
                 localparam = models.LocalParam.get(id=idlocal)
@@ -348,7 +348,7 @@ class EditorLocals(app.page, GlyphPageMixin):
         return simplejson.dumps({'glyphs': glyphsdata,
                                  'metaglyphs': metaglyphs,
                                  'master_id': master.id,
-                                 'params': [params]})
+                                 'params': params})
 
 
 class userstatic(app.page):

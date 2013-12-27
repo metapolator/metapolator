@@ -30,9 +30,8 @@ View.prototype = {
         return this.glyph;
     },
 
-    onlocalparam_formsubmit: function() {
-        debugger;
-        this.onLocalParamFormSubmit && this.onLocalParamFormSubmit();
+    onlocalparam_formsubmit: function(response) {
+        this.onLocalParamFormSubmit && this.onLocalParamFormSubmit(this, response);
     },
 
     getElement: function() {
