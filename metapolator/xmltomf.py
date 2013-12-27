@@ -1754,4 +1754,3 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     print time.time() - starttime
     fip.close()
-

@@ -177,3 +177,8 @@ def inktrap_r(expr a)=
 shifted (0.5*a*(A_inktrap + metapolation * (B_inktrap-A_inktrap)),0) enddef;
 
 % width and sidebearing settings for each glyph
+input spacing
+
+% glyph input
+input glyphlist
+
