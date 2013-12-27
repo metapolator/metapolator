@@ -59,7 +59,7 @@ GlobalParamForm = Form(Dropdown('idglobal', [], description='Choose parameter se
                        Button('save', value='Save Parameter Set'))
 
 
-LocalParamForm = Form(Dropdown('idlocal', [], description='Choose parameter set'),
+LocalParamForm = Form(Dropdown('idlocal', [(0, u'Create new local parameter')], description='Choose parameter set'),
                       Textbox('px', notnull, size=5,
                               description="px", value="0"),
                       Textbox('width', notnull, size=5,

@@ -1,11 +1,21 @@
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 
-function View(element) {
+function View(element, master_id) {
     this.element = element;
 
-    this.pointform = $(element).find('form.pointform');
+    this.pointform = element.find('form.pointform');
     this.zpointdropdown = this.pointform.find('select#zpoint');
+
+    this.settingsform = $(element.find('.localparamform'));
+
+    var form = new LocalParamForm(this.settingsform);
+
+    var sw1 = new LocalParamSwitcher({
+        source: $(this.settingsform.find('select#idlocal')),
+        listener: form,
+        data: {master_id: master_id}
+    });
 
     this.zpointdropdown.on('change', this.onzpointchanged.bind(this));
     this.pointform.on('keydown', this.onpointformsubmit.bind(this));
@@ -138,7 +148,7 @@ WorkspaceDocument.prototype = {
         this.workspace.append(axes);
 
         if (!this.axes.length) {
-            this.metaView = this.addView(axes, 'middle');
+            this.metaView = this.addView(axes, 0, 'middle');
         }
 
         if (this.mode != 'controlpoints' || this.axes.length > 1) {
@@ -160,7 +170,7 @@ WorkspaceDocument.prototype = {
     /*
      * Put to axis view with tabs navigation or single canvas
      */
-    addView: function(axes, position) {
+    addView: function(axes, master_id, position) {
         var axis = this.findPositionedAxis(axes, position);
 
         if (this.mode != 'controlpoints' && position != 'middle') {
@@ -172,7 +182,7 @@ WorkspaceDocument.prototype = {
         $(this.startpage).hide();
         $(this.workspace).show();
 
-        return new View(axis);
+        return new View(axis, master_id);
     },
 
     /*

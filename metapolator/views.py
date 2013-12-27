@@ -190,6 +190,7 @@ class Workspace(app.page):
 
     path = '/workspace/'
 
+    @raise404_notauthorized
     def GET(self):
         web.ctx.pointparam_extended_form = PointParamExtendedForm()
         web.ctx.settings_form = LocalParamForm()
@@ -203,6 +204,7 @@ class Glyph(app.page):
     def glyphrepr(self, id):
         return MFLIST[int(id)]
 
+    @raise404_notauthorized
     def GET(self):
         x = web.input(project_id='')
         glyphs = models.Glyph.filter(project_id=x.project_id)
@@ -216,6 +218,7 @@ class Project(app.page, GlyphPageMixin):
 
     path = '/editor/project/'
 
+    @raise404_notauthorized
     def GET(self):
         x = web.input(project=0)
 
@@ -245,8 +248,10 @@ class Project(app.page, GlyphPageMixin):
 
             glyphsdata = get_edges_json(master_instancelog, master=master)
 
-            resultmasters.append({'glyphs': glyphsdata, 'metaglyphs': metaglyphs,
-                                  'label': chr(LABELS[i])})
+            resultmasters.append({'glyphs': glyphsdata,
+                                  'metaglyphs': metaglyphs,
+                                  'label': chr(LABELS[i]),
+                                  'master_id': master.id})
 
         return '%s(%s)' % (x.callback, simplejson.dumps(resultmasters))
 
@@ -279,16 +284,15 @@ class EditorLocals(app.page):
     @raise404_notauthorized
     def POST(self):
         x = web.input(master_id=0)
-        master = models.Master.get(id=x.master_id)
-        if not master:
-            return web.notfound()
 
         localparams = models.LocalParam.all()
         result = []
         for i, k in enumerate(localparams):
             dict_ = {'val': k.id, 'idx': i + 1}
-            if k.id == master.idlocala:
-                dict_.update({'selected': True})
+            if x.master_id:
+                master = models.Master.get(id=x.master_id)
+                if master and k.id == master.idlocala:
+                    dict_.update({'selected': True})
             result.append(dict_)
         return simplejson.dumps(result)
 
@@ -312,7 +316,7 @@ class EditorLocals(app.page):
                 localparam = models.LocalParam.create(**values)
                 master.idlocala = localparam.id
                 return simplejson.dumps([{'val': localparam.id,
-                                          'idx': models.LocalParam.all().count() + 1,
+                                          'idx': models.LocalParam.all().count(),
                                           'selected': True}])
             else:
                 models.LocalParam.update(id=idlocal, values=values)

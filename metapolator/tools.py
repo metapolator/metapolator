@@ -146,7 +146,7 @@ LOCAL_DEFAULTS = {
     'slab': 1,
     'bracket': 1,
     'serif_darkness': 1,
-    'slant': 1
+    'slant': 0
 
 }
 

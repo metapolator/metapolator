@@ -82,8 +82,6 @@ function LocalParamSwitcher(config) {
     this.config.source.on('change', this.sendRequest.bind(this));
     this.config.listener.form.on('submit', this.sendLocalParamRequest.bind(this));
 
-    this.config.source.append($('<option>', {val: 0, text: 'Create new locals ...'}));
-
     $.post('/editor/locals/', config.data)
     .done(this.listLocalParamsReceived.bind(this));
 }

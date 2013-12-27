@@ -83,9 +83,11 @@ Workspace.prototype = {
             return;
         }
 
+        this.project_id = this.urldata.project;
+
         for (var k = 0; k < data.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data[k].label);
-            var view = this.htmldoc.addView(axes, this.getPositionByLabel(data[k].label));
+            var view = this.htmldoc.addView(axes, data[k].master_id, this.getPositionByLabel(data[k].label));
             this.updateGlyphView(view, data[k]);
         }
 
@@ -124,7 +126,7 @@ Workspace.prototype = {
 
         this.project_id = data.project_id;
 
-        var view = this.htmldoc.addView(axes, this.getPositionByLabel(data.label));
+        var view = this.htmldoc.addView(axes, data.master_id, this.getPositionByLabel(data.label));
 
         view.getElement().removeClass('dropzone');
 
@@ -146,7 +148,7 @@ Workspace.prototype = {
 
         var metaglyphdata = data.metaglyphs.edges[0];
 
-        if (!this.metapolationGlyph) {
+        if (!this.metapolationGlyph && metaglyphdata.width) {
             this.metapolationGlyph = new Glyph(metaview, {width: metaglyphdata.width, height: metaglyphdata.height});
         }
         
@@ -191,7 +193,12 @@ var Dropzone = function(element, data, uploadFinished) {
         data: data,
 
         drop: function(e) {
-            this.dropzone_label = $(e.target).attr('axis-label');
+            var target = $(e.target);
+            if (!target.hasClass('axis')) { 
+                this.dropzone_label = target.parents('.axis').attr('axis-label');
+            } else {
+                this.dropzone_label = target.attr('axis-label');
+            }
         }.bind(this),
 
         dragOver: function(e) {
