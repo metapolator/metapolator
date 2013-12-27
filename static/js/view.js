@@ -1,8 +1,37 @@
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 
-function View(element, master_id) {
+function View(element, glyphname, versions, master_id) {
     this.element = element;
+    this.glyphname = glyphname;
+
+    if (master_id && versions) {
+        this.versionselect = $('<select>').addClass('version').css('margin-bottom', '16px');
+        for (var k = 0; k < versions.length; k++) {
+            var optionMaster = $('<option>', {
+                value: versions[k].master_id,
+                text: 'Load master ' + versions[k].version
+            });
+            if (versions[k].master_id == master_id) {
+                optionMaster.attr('selected', 'true');
+            }
+            this.versionselect.append(optionMaster);
+        }
+        this.versionselect.on('change', function(e) {
+            $.post('/editor/reload/', {
+                'project_id': 1, 
+                'master_id': $(e.target).val(),
+                'glyphname': this.glyphname,
+                'axislabel': this.getLabel()
+                }
+            ).done(function(response){
+                var data = $.parseJSON(response);
+                this.onLocalParamFormSubmit && this.onLocalParamFormSubmit(this, data);
+            }.bind(this));
+        }.bind(this));
+    }
+
+    element.prepend(this.versionselect);
 
     this.pointform = element.find('form.pointform');
     this.zpointdropdown = this.pointform.find('select#zpoint');
@@ -158,7 +187,7 @@ WorkspaceDocument.prototype = {
         this.workspace.append(axes);
 
         if (!this.axes.length) {
-            this.metaView = this.addView(axes, 0, 'middle');
+            this.metaView = this.addView(axes, this.glyphname, [], 0, 'middle');
         }
 
         if (this.mode != 'controlpoints' || this.axes.length > 1) {
@@ -180,7 +209,7 @@ WorkspaceDocument.prototype = {
     /*
      * Put to axis view with tabs navigation or single canvas
      */
-    addView: function(axes, master_id, position) {
+    addView: function(axes, glyphname, versions, master_id, position) {
         var axis = this.findPositionedAxis(axes, position);
 
         if (this.mode != 'controlpoints' && position != 'middle') {
@@ -192,7 +221,7 @@ WorkspaceDocument.prototype = {
         $(this.startpage).hide();
         $(this.workspace).show();
 
-        return new View(axis, master_id);
+        return new View(axis, glyphname, versions, master_id);
     },
 
     /*

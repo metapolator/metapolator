@@ -253,7 +253,10 @@ class Project(app.page, GlyphPageMixin):
                                   'label': chr(LABELS[i]),
                                   'master_id': master.id})
 
-        return '%s(%s)' % (x.callback, simplejson.dumps(resultmasters))
+        import operator
+        masters = map(operator.attrgetter('id', 'version'),
+                      models.Master.filter(project_id=project.id))
+        return '%s(%s)' % (x.callback, simplejson.dumps({'projects': resultmasters, 'versions': get_versions(project.id)}))
 
 
 def mime_type(filename):
@@ -503,12 +506,23 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
         self.set_masters(masters)
 
-        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id)
-
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
-        result = self.get_glyphs_jsondata(glyph.name, master)
-        return simplejson.dumps(result)
+
+        self.call_metapost_all_glyphs(self.get_lft_master())
+        instancelog = project.get_instancelog(self.get_lft_master().version)
+        metaglyphs = get_edges_json(instancelog)
+
+        prepare_master_environment(master)
+
+        self.call_metapost_all_glyphs(master, cell='A')
+        master_instancelog = project.get_instancelog(master.version, 'a')
+
+        glyphsdata = get_edges_json(master_instancelog, master=master)
+
+        return simplejson.dumps({'glyphs': glyphsdata,
+                                 'metaglyphs': metaglyphs,
+                                 'master_id': master.id})
 
 
 class EditorCreateInstance(app.page, GlyphPageMixin):

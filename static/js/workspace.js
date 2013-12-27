@@ -85,10 +85,10 @@ Workspace.prototype = {
 
         this.project_id = this.urldata.project;
 
-        for (var k = 0; k < data.length; k++) {
-            var axes = this.htmldoc.getOrCreateAxes(data[k].label);
-            var view = this.addView(axes, data[k]);
-            this.updateGlyphView(view, data[k]);
+        for (var k = 0; k < data.projects.length; k++) {
+            var axes = this.htmldoc.getOrCreateAxes(data.projects[k].label);
+            var view = this.addView(axes, data.projects[k], data.versions);
+            this.updateGlyphView(view, data.projects[k]);
         }
 
         new Dropzone($('.axis'), {
@@ -98,8 +98,8 @@ Workspace.prototype = {
         $('#loading').hide();
     },
 
-    addView: function(axes, data) {
-        var view = this.htmldoc.addView(axes, data.master_id, this.getPositionByLabel(data.label));
+    addView: function(axes, data, versions) {
+        var view = this.htmldoc.addView(axes, data.glyphs.edges[0].glyph, versions, data.master_id, this.getPositionByLabel(data.label));
         view.onLocalParamFormSubmit = function(view, data) {
             this.updateGlyphView(view, data);
         }.bind(this);
@@ -134,7 +134,7 @@ Workspace.prototype = {
 
         this.project_id = data.project_id;
 
-        var view = this.addView(axes, data);
+        var view = this.addView(axes, data, data.versions);
 
         view.getElement().removeClass('dropzone');
 
