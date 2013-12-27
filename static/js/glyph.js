@@ -257,6 +257,9 @@ Glyph.prototype = {
     },
 
     renderZPoints: function(points) {
+        if (!points) {
+            return;
+        }
         this.graph.deletepoints();
         for (var k = 0; k < points.length; k++) {
             var point = this.graph.drawpoint(points[k]);

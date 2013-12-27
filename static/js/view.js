@@ -14,7 +14,8 @@ function View(element, master_id) {
     var sw1 = new LocalParamSwitcher({
         source: $(this.settingsform.find('select#idlocal')),
         listener: form,
-        data: {master_id: master_id}
+        data: {master_id: master_id},
+        onFormSubmitted: this.onlocalparam_formsubmit.bind(this)
     });
 
     this.zpointdropdown.on('change', this.onzpointchanged.bind(this));
@@ -23,6 +24,16 @@ function View(element, master_id) {
 
 
 View.prototype = {
+
+    getGlyph: function(glyphdata) {
+        this.glyph = this.glyph || new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
+        return this.glyph;
+    },
+
+    onlocalparam_formsubmit: function() {
+        debugger;
+        this.onLocalParamFormSubmit && this.onLocalParamFormSubmit();
+    },
 
     getElement: function() {
         return this.element;

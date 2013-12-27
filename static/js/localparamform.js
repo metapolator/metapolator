@@ -129,7 +129,7 @@ LocalParamSwitcher.prototype.sendLocalParamRequest = function(e) {
 
 LocalParamSwitcher.prototype.localParamDataReceived = function(response) {
     var data = $.parseJSON(response);
-    if ($.isEmptyObject(data)) {
+    if ($.isEmptyObject(data.params)) {
         this.config.listener.echo({
             px: 0,
             width: 1,
@@ -143,7 +143,7 @@ LocalParamSwitcher.prototype.localParamDataReceived = function(response) {
         });
         return;
     }
-    this.config.listener.echo(data);
+    this.config.listener.echo(data.params);
     if (this.config.onFormSubmitted)
-        this.config.onFormSubmitted();
+        this.config.onFormSubmitted(data);
 }

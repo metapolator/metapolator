@@ -87,7 +87,7 @@ Workspace.prototype = {
 
         for (var k = 0; k < data.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data[k].label);
-            var view = this.htmldoc.addView(axes, data[k].master_id, this.getPositionByLabel(data[k].label));
+            var view = this.addView(axes, data[k]);
             this.updateGlyphView(view, data[k]);
         }
 
@@ -96,6 +96,14 @@ Workspace.prototype = {
         });
 
         $('#loading').hide();
+    },
+
+    addView: function(axes, data) {
+        var view = this.htmldoc.addView(axes, data.master_id, this.getPositionByLabel(data.label));
+        view.onLocalParamFormSubmit = function() {
+            debugger;
+        };
+        return view;
     },
 
     /*
@@ -126,7 +134,7 @@ Workspace.prototype = {
 
         this.project_id = data.project_id;
 
-        var view = this.htmldoc.addView(axes, data.master_id, this.getPositionByLabel(data.label));
+        var view = this.addView(axes, data);
 
         view.getElement().removeClass('dropzone');
 
@@ -141,18 +149,12 @@ Workspace.prototype = {
      * data - glyph data. See `Glyph Data Json`
      */
     updateGlyphView: function(view, data) {
-        var metaview = this.htmldoc.getMetapolationView();
-
         glyphdata = data.glyphs.edges[0];
         this.createViewGlyph(view, glyphdata);
 
+        var metaview = this.htmldoc.getMetapolationView();
         var metaglyphdata = data.metaglyphs.edges[0];
-
-        if (!this.metapolationGlyph && metaglyphdata.width) {
-            this.metapolationGlyph = new Glyph(metaview, {width: metaglyphdata.width, height: metaglyphdata.height});
-        }
-        
-        this.metapolationGlyph.render(metaglyphdata.contours);
+        this.createViewGlyph(metaview, metaglyphdata);
     },
 
     /*
@@ -163,11 +165,10 @@ Workspace.prototype = {
      * glyphdata - json describing the glyph and zpoints
      */
     createViewGlyph: function(view, glyphdata) {
-        var glyph = new Glyph(view, {width: glyphdata.width, height: glyphdata.height});
-        glyph.onZPointChanged = this.onzpointchange.bind(this);
-
+        glyph = view.getGlyph(glyphdata);
         glyph.render(glyphdata.contours);
         glyph.renderZPoints(glyphdata.zpoints.points);
+        glyph.onZPointChanged = this.onzpointchange.bind(this);
     }
 }
 
