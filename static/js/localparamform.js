@@ -109,6 +109,9 @@ LocalParamSwitcher.prototype.listLocalParamsReceived = function (response) {
 
 
 LocalParamSwitcher.prototype.sendRequest = function (e) {
+    if (!$(e.target).val() == '0') {
+        return;
+    }
     $.get('/editor/locals/', {'local_id': $(e.target).val()})
     .done(function(response){
         var data = $.parseJSON(response);

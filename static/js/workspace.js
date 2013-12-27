@@ -98,9 +98,16 @@ Workspace.prototype = {
 
         new Dropzone($('.axis'), {
             project_id: function() {return this.project_id || 0;}.bind(this)
-        });
+        }, this.dataUploaded.bind(this));
 
         $('#loading').hide();
+    },
+
+    dataUploaded: function(data) {
+        var axes = this.htmldoc.getOrCreateAxes(data.label);
+        axes.find('div[axis-label=' + data.label + ']').empty();
+        var view = this.addView(axes, data.glyphs, data.master_id, data.versions, data.label);
+        view.getElement().removeClass('dropzone');
     },
 
     addView: function(axes, data, master_id, versions, label) {
@@ -118,7 +125,7 @@ Workspace.prototype = {
 
         view.onGlyphChanged = function(view, data) {
             view.element.empty();
-            this.addView(axes, data.glyphs, view.getMaster(), versions, view.getLabel());
+            this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
         }.bind(this);
         return view;
     },
