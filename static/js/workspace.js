@@ -12,6 +12,14 @@ function dict_from_locationhash() {
 var Workspace = function() {
     this.htmldoc = new WorkspaceDocument(window.MFPARSER);
     this.urldata = dict_from_locationhash();
+
+    $('#btn-add-axes').on('click', function() {
+        var axes = this.htmldoc.addAxes();
+
+        new Dropzone(axes.find('.axis'), {
+            project_id: function() {return this.project_id || 0;}.bind(this)
+        }, this.dataUploaded.bind(this));
+    }.bind(this));
 }
 
 
@@ -88,6 +96,7 @@ Workspace.prototype = {
         }
 
         this.project_id = this.urldata.project;
+        this.htmldoc.setMode(data.mode);
 
         for (var k = 0; k < data.projects.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data.projects[k].label);
@@ -111,7 +120,7 @@ Workspace.prototype = {
     },
 
     addView: function(axes, data, master_id, versions, label) {
-        var view = this.htmldoc.addView(axes, data.edges[0].glyph, data.edges[0], this.getPositionByLabel(label));
+        var view = this.htmldoc.addView(axes, data.edges[0], this.getPositionByLabel(label));
 
         view.glyph.render(data.edges[0].contours);
 
@@ -126,6 +135,7 @@ Workspace.prototype = {
         view.onGlyphChanged = function(view, data) {
             view.element.empty();
             this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
+            this.metapolationView.glyph.render(data.metaglyphs.edges[0].contours);
         }.bind(this);
         return view;
     },
@@ -135,31 +145,13 @@ Workspace.prototype = {
      */
     cleanrun: function() {
         $('#loading').fadeOut(220, function(){
-
             var axes = this.htmldoc.addAxes();
-
-            if (! (typeof DEMOEDGES == 'undefined') ) {
-                this.buildView(axes, DEMOEDGES);
-                return;
-            }
 
             new Dropzone(axes.find('.axis'), {
                 project_id: function() {return this.project_id || 0;}.bind(this)
-            }, this.buildView.bind(this, axes));
+            }, this.dataUploaded.bind(this));
         }.bind(this));
-    },
-
-
-    /*
-     * Put view onto the workspace
-     */
-    buildView: function(axes, data) {
-        location.hash = '#project/' + data.project_id;
-        this.project_id = data.project_id;
-
-        var view = this.addView(axes, data, data.versions, data.label);
-        view.getElement().removeClass('dropzone');
-    },
+    }
 }
 
 

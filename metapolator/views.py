@@ -259,7 +259,8 @@ class Project(app.page, GlyphPageMixin):
                       models.Master.filter(project_id=project.id))
         return '%s(%s)' % (x.callback, simplejson.dumps({'projects': resultmasters,
                                                          'versions': get_versions(project.id),
-                                                         'metaglyphs': metaglyphs}))
+                                                         'metaglyphs': metaglyphs,
+                                                         'mode': project.mfparser}))
 
 
 def mime_type(filename):

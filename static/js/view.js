@@ -9,7 +9,7 @@ function View(element, glyphname, glyphdata) {
     this.zpointdropdown = this.pointform.find('select#zpoint');
 
     this.settingsform = $(element.find('.localparamform'));
-    
+
     this.zpointdropdown.on('change', this.onzpointselected.bind(this));
     this.pointform.on('keydown', this.onpointformsubmit.bind(this));
 
@@ -187,6 +187,14 @@ function WorkspaceDocument(mode) {
 
 WorkspaceDocument.prototype = {
 
+    setMode: function(mode) {
+        this.mode = mode;
+    },
+
+    getMode: function() {
+        return this.mode;
+    },
+
     getOrCreateAxes: function(label) {
         var axis = $('.axis[axis-label=' + label + ']');
         if (!axis.length) {
@@ -206,14 +214,16 @@ WorkspaceDocument.prototype = {
         var axes = this.tmplAxes.clone().css('display', 'block');
         this.workspace.append(axes);
 
-        if (this.mode != 'controlpoints' || this.axes.length > 1) {
-            $('#btn-add-axes').hide();
-        }
-
         this.assignPositionedAxisLabel(axes, 'left');
         this.assignPositionedAxisLabel(axes, 'right');
 
         this.axes.push(axes);
+
+        if (this.mode != 'controlpoints' || this.axes.length > 1) {
+            $('#btn-add-axes').hide();
+        }
+
+        $(this.workspace).show();
 
         return axes;
     },
@@ -225,7 +235,7 @@ WorkspaceDocument.prototype = {
     /*
      * Put to axis view with tabs navigation or single canvas
      */
-    addView: function(axes, glyphname, glyphdata, position) {
+    addView: function(axes, glyphdata, position) {
         var axis = this.findPositionedAxis(axes, position);
 
         if (this.mode != 'controlpoints' && position != 'middle') {
@@ -237,7 +247,7 @@ WorkspaceDocument.prototype = {
         $(this.startpage).hide();
         $(this.workspace).show();
 
-        return new View(axis, glyphname, glyphdata);
+        return new View(axis, glyphdata.glyph, glyphdata);
     },
 
     /*
