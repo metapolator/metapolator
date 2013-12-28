@@ -803,7 +803,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     i = 1
 
-    for item, param in fonta_outlines:
+    for item, param in fontb_outlines:
         znamer = re.match('z(\d+)r', param.pointname)
         znamel = re.match('z(\d+)l', param.pointname)
         zname = re.match('z(\d+)l', param.pointname)
@@ -1630,6 +1630,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     fip.write("\n")
     fip.write("""% serifs """)
+#        if theta[i] != "":
+    fip.write("\n") 
+    fip.write("numeric theta[];")
+    fip.write("\n")        
 
     inattr = 0
     ivn = 0
@@ -1721,32 +1725,65 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     for i in range(len(zzn)):
         zitem = i + 1
 
-
-        if theta[i]:
-            zeile = "numeric theta[];"
-        fip.write(zeile)
         
-        if theta[i]:
-            zeile = "theta" + str(zitem) + " := angle(" + str(thetaval[i]) + ");"
+        if theta[i] != "":
+            zeile += "theta" + str(zitem) + " := angle(" + str(thetaval[i]) + ");" + "\n"
+
+ #       fip.write(zeile)
+ #       fip.write("\n")        
+
+        if serif_h_bot[i] != "":
+            zeile += "serif_h (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_h_botval[i]) + ");" 
+ #       fip.write(zeile)
+ #       fip.write("\n")
+
+        if serif_h_bot[i] != "":
+            zeile += "fill serif_edge" + str(zitem) + " shifted (0,+slab) -- cycle;"  + "\n"
+ #       else:
+  #          zeile = "" 
         else:
-            zeile = ""
+#            zeile = ""  
+
+            if serif_h_top[i] != "":
+                zeile += "serif_h (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_h_topval[i]) + ");" 
+ #       fip.write(zeile)
+ #       fip.write("\n")
+
+            if serif_h_top[i] != "":
+                zeile += "fill serif_edge" + str(zitem) + " shifted (0,-slab) -- cycle;"  + "\n"
+ #       else:
+  #          zeile = "" 
+
+     #  else:
+      #      zeile = ""
 
 
-        if serif_h_bot[i]:
+            else:
+                if serif_v_left[i] != "":
+                    zeile += "serif_v (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_v_leftval[i]) + ");" + "\n"
+#        fip.write(zeile)
+#        fip.write("\n")
 
-            zeile = "ang" + str(zitem) + " := " + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ));"
-        else:
-            zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
+                if serif_v_left[i] != "":
+                    zeile += "fill serif_edge" + str(zitem) + " shifted (+slab,0) -- cycle;"  + "\n"
+ #       else:
+ #            zeile = "" 
+    #    else:
+   #         zeile = ""
 
+                else:
+                    if serif_v_right[i] != "":
+                        zeile += "serif_v (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_v_rightval[i]) + ");" + "\n"
+#        fip.write(zeile)
+#        fip.write("\n")
 
-        fip.write("\n")
-        fip.write(zeile)
+                    if serif_v_right[i] != "":
+                        zeile += "fill serif_edge" + str(zitem) + " shifted (-slab,0) -- cycle;"  + "\n"
+ #       else:
+ #            zeile = "" 
 
-
-
-
-
-
+    fip.write(zeile)
+    fip.write("\n")
 
 
 
