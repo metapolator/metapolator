@@ -113,10 +113,18 @@ Workspace.prototype = {
     },
 
     dataUploaded: function(data) {
+        location.hash = '#project/' + data.project_id;
+        this.project_id = data.project_id;
+
         var axes = this.htmldoc.getOrCreateAxes(data.label);
         axes.find('div[axis-label=' + data.label + ']').empty();
         var view = this.addView(axes, data.glyphs, data.master_id, data.versions, data.label);
         view.getElement().removeClass('dropzone');
+
+        if (!this.metapolationView) {
+            this.metapolationView = this.addView(axes, data.metaglyphs);
+        }
+        this.metapolationView.glyph.render(data.metaglyphs.edges[0].contours);
     },
 
     addView: function(axes, data, master_id, versions, label) {
