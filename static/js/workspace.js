@@ -147,7 +147,7 @@ Workspace.prototype = {
             slider.find('input').slider().on('slideStop', function(e){
                 $.post('/editor/save-metap/', {
                     project_id: this.project_id,
-                    glyphname: this.editorglyph,
+                    glyphname: this.glyphname,
                     label: $(e.target).attr('slider-label'),
                     value: e.value
                 })
@@ -167,6 +167,7 @@ Workspace.prototype = {
         var $glyph = this.urldata.glyph;
 
         if (!this.urldata.glyph) {
+            this.glyphname = edges[0].glyph;
             return edges[0];
         }
 
@@ -175,9 +176,11 @@ Workspace.prototype = {
         });
 
         if (!result.length) {
+            this.glyphname = edges[0].glyph;
             return edges[0];
         };
 
+        this.glyphname = result[0].glyph;
         return result[0];
     },
 
