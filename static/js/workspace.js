@@ -106,7 +106,6 @@ Workspace.prototype = {
             this.addView(axes, data.projects[k].glyphs, data.projects[k].master_id, data.versions, data.projects[k].label);
         }
 
-
         new Dropzone($('.axis'), {
             project_id: function() {return this.project_id || 0;}.bind(this)
         }, this.dataUploaded.bind(this));
@@ -130,6 +129,40 @@ Workspace.prototype = {
     },
 
     addView: function(axes, data, master_id, versions, label) {
+        var slider_template = '<div class="well"><b style="padding-right: 32px;">{0}</b> ' + 
+                      '<input class="span2 slider-{2}" slider-label="{2}" type="text" value=""' + 
+                      '         data-slider-min="-3" data-slider-max="3" data-slider-step="0.2"'  + 
+                      '         data-slider-value="0" data-slider-orientation="horizontal"' + 
+                      '         data-slider-selection="after" data-slider-tooltip="show"' + 
+                      '         data-slider-handle="square" />' +
+                      ' <b style="padding-left: 32px;">{1}</b></div>';
+
+        var metap = axes.find('[axis-label]').map(function(i, el){
+            return $(el).attr('axis-label');
+        });
+
+        metap = metap.get().join("");
+
+        if (!$('#interpolations').find('.slider-' + metap).length) {
+            var slider = $(String.format(slider_template, metap[0], metap[1], metap));
+            $('#interpolations').append(slider);
+
+            slider.find('input').slider().on('slideStop', function(e){
+                $.post('/editor/save-metap/', {
+                    project_id: this.project_id,
+                    glyphname: this.editorglyph,
+                    label: $(e.target).attr('slider-label'),
+                    value: e.value
+                })
+                .done(function(response){
+                    var data = $.parseJSON(response);
+                    this.metapolationView.glyph.render(data.M.edges[0].contours);
+                }.bind(this))
+                .fail(function(){ alert('Could not change metapolation value') });
+            }.bind(this));
+            $('#interpolations').show();
+        }
+
         var view = this.htmldoc.addView(axes, data.edges[0], this.getPositionByLabel(label));
 
         view.glyph.render(data.edges[0].contours);
@@ -147,6 +180,8 @@ Workspace.prototype = {
             this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
             this.metapolationView.glyph.render(data.metaglyphs.edges[0].contours);
         }.bind(this);
+
+        this.editorglyph = data.edges[0].glyph;
         return view;
     },
 
@@ -212,6 +247,18 @@ var Dropzone = function(element, data, uploadFinished) {
             uploadFinished && uploadFinished(response);
         }
     });
+}
+
+if (!String.format) {
+  String.format = function(format) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, function(match, number) { 
+      return typeof args[number] != 'undefined'
+        ? args[number] 
+        : match
+      ;
+    });
+  };
 }
 
 $(function() {

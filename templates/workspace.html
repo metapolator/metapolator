@@ -1,7 +1,7 @@
 $def with ()
 
 $var title: Workspace
-
+<link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
 <style>
     .dropzone {
         padding: 32px;
@@ -19,26 +19,28 @@ $var title: Workspace
       padding-top: 24px;
     }
 
-    #workspace, #startpage, .editor-axes, .metapolation, #templates {
+    input.span2 {
+        width: 500px;
+    }
+
+    #workspace, .editor-axes, .metapolation, #templates  {
         display: none;
     }
 </style>
 
 <div style="text-align: center; font-size: 32pt;" id="loading" class="alert alert-info">Loading...</div>
 
-<div id="startpage" style="display: none;">
-    <!-- empty project, single dropdown zone -->
-    <div class="dropzone"></div>
-</div>
-
 <div id="workspace" style="display: none;">
+    <div id="interpolations" style="display: none;">
+
+    </div>
     <div class="editor">
       
     </div>
     <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
 </div>
 
-<div id="templates">
+<div id="templates" style="display: none;">
     <!-- Row for axes -->
     <div class="row editor-axes">
 
@@ -100,6 +102,7 @@ window.MFPARSER = "$:websession.get('mfparser')";
 
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
 <script type="text/javascript" src="/static/js/3rdparty/jquery.filedrop.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/bootstrap-slider.js"></script>
 <script type="text/javascript" src="/static/js/3rdparty/jquery.ba-hashchange.min.js"></script>
 
 <!-- <script type="text/javascript" src="/static/js/demodata.js"></script> -->

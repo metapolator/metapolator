@@ -252,8 +252,11 @@ class Project(app.page, GlyphPageMixin):
 
             glyphsdata = get_edges_json(master_instancelog, master=master)
 
+            metalabel = get_metapolation_label(chr(LABELS[i]))
+
             resultmasters.append({'glyphs': glyphsdata,
                                   'label': chr(LABELS[i]),
+                                  'metapolation': metalabel,
                                   'master_id': master.id})
 
         self.call_metapost_all_glyphs(self.get_lft_master())
@@ -528,9 +531,12 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
         glyphsdata = get_edges_json(master_instancelog, master=master)
 
+        metalabel = get_metapolation_label(postdata.axislabel)
+
         return simplejson.dumps({'glyphs': glyphsdata,
                                  'metaglyphs': metaglyphs,
                                  'master_id': master.id,
+                                 'metapolation': metalabel,
                                  'label': postdata.axislabel})
 
 

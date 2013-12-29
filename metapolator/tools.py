@@ -4,7 +4,7 @@ import re
 import web
 from lxml import etree
 
-from config import buildfname, working_dir, session
+from config import buildfname, working_dir
 
 from models import Glyph, GlyphParam, GlyphOutline, LocalParam, Metapolation
 
@@ -21,7 +21,6 @@ def makefont_single(master, cell=''):
     os.environ['MFINPUTS'] = master.get_fonts_directory()
     os.environ['MFMODE'] = master.project.mfparser
 
-    print 'directory', os.environ['MFINPUTS']
     if cell.upper() == 'A':
         metafont = master.get_metafont('a')
     else:

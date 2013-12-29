@@ -167,21 +167,14 @@ View.prototype = {
 
 
 function WorkspaceDocument(mode) {
-    var templates = $('#templates');
-    
     this.workspace = $('#workspace');
     
+    var templates = $('#templates');
     this.tmplAxes = templates.find('.editor-axes');
-
-    this.startpage = $('#startpage');
-
     this.tmplTabs = $($('#view').html());
-
     this.axes = [];
-    
     this.mode = mode;
-
-    this.metaView = null;
+    this.interpolationsliders = $('#interpolations');
 }
 
 
@@ -201,10 +194,6 @@ WorkspaceDocument.prototype = {
             return this.addAxes();
         }
         return $(axis.parents('.editor-axes'));
-    },
-
-    getMetapolationView: function() {
-        return this.metaView;
     },
     
     /*
@@ -244,8 +233,8 @@ WorkspaceDocument.prototype = {
             this.appendAxisSingleCanvas(axis);
         }
 
-        $(this.startpage).hide();
         $(this.workspace).show();
+        $(this.interpolationsliders).show();
 
         return new View(axis, glyphdata.glyph, glyphdata);
     },
