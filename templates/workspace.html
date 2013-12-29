@@ -16,7 +16,7 @@ $var title: Workspace
     }
 
     .editor-axes {
-      padding-top: 24px;
+        padding-top: 24px;
     }
 
     input.span2 {
@@ -26,11 +26,19 @@ $var title: Workspace
     #workspace, .editor-axes, .metapolation, #templates  {
         display: none;
     }
+
+    #glyph-switcher span {
+        margin-right: 16px;
+    }
 </style>
 
 <div style="text-align: center; font-size: 32pt;" id="loading" class="alert alert-info">Loading...</div>
 
 <div id="workspace" style="display: none;">
+    <!-- Button trigger modal -->
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#listglyphmodal">
+      Show Glyphs
+    </button>
     <div id="interpolations" style="display: none;">
 
     </div>
@@ -39,6 +47,26 @@ $var title: Workspace
     </div>
     <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="listglyphmodal" tabindex="-1" role="dialog" aria-labelledby="glyphmodallabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="glyphmodallabel">Available glyphs</h4>
+      </div>
+      <div class="modal-body">
+        <div id="glyph-switcher">
+            
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <div id="templates" style="display: none;">
     <!-- Row for axes -->

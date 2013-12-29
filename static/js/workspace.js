@@ -30,11 +30,6 @@ Workspace.prototype = {
      * into local storage
      */
     onzpointchange: function(glyph, zpoint) {
-        if (! (typeof DEMOEDGE == 'undefined') ) {
-            glyph.render(DEMOEDGE.R.edges[0].contours);
-            return;
-        }
-
         var postdata = {
             id: zpoint.data.glyphoutline_id,
             x: zpoint.x,
@@ -51,7 +46,6 @@ Workspace.prototype = {
         .done(function(response) {
             var data = $.parseJSON(response);
             glyph.render(data.R.edges[0].contours);
-
             this.metapolationView.glyph.render(data.M.edges[0].contours);
         }.bind(this));
     },
@@ -166,7 +160,6 @@ Workspace.prototype = {
             $('#interpolations').show();
         }
     },
-
 
     addView: function(axes, data, master_id, versions, label) {
         this.addInterpolationSlider(axes);

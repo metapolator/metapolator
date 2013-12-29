@@ -188,8 +188,8 @@ class GlyphPageMixin(object):
 
         zpoints = get_edges_json_from_db(master, glyphid)
 
-        glyphjson = get_edges_json(instancelog, glyphid)
-        return {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}
+        glyphjson = get_edges_json(instancelog, glyphid, master)
+        return {'M': M_glyphjson, 'R': glyphjson, 'master_id': master.id}
 
 
 class Workspace(app.page):
@@ -269,7 +269,8 @@ class Project(app.page, GlyphPageMixin):
         return '%s(%s)' % (x.callback, simplejson.dumps({'projects': resultmasters,
                                                          'versions': get_versions(project.id),
                                                          'metaglyphs': metaglyphs,
-                                                         'mode': project.mfparser}))
+                                                         'mode': project.mfparser,
+                                                         'project_id': project.id}))
 
 
 def mime_type(filename):
@@ -389,17 +390,6 @@ class Index(app.page):
 
     def GET(self):
         raise seeother('/projects/')
-
-
-class Editor(app.page):
-
-    path = '/editor/'
-
-    @raise404_notauthorized
-    def GET(self):
-        web.ctx.pointparam_extended_form = PointParamExtendedForm()
-        web.ctx.settings_form = LocalParamForm()
-        return render.editor()
 
 
 class EditorMetapolationSave(app.page, GlyphPageMixin):
