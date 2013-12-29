@@ -21,10 +21,32 @@ var Workspace = function() {
             project_id: function() {return this.project_id || 0;}.bind(this)
         }, this.dataUploaded.bind(this));
     }.bind(this));
+
+    $(window).hashchange(this.hashchanged.bind(this));
 }
 
 
 Workspace.prototype = {
+
+    hashchanged: function() {
+        var d = dict_from_locationhash();
+        if (this.urldata && this.urldata.project != d.project) {
+            this.glyphlist = [];
+            $('#glyph-switcher').empty();
+        };
+
+        this.metapolationView = null;
+        this.htmldoc = new WorkspaceDocument(window.MFPARSER);
+
+        this.urldata = dict_from_locationhash();
+        $('#workspace').hide();
+        $('#loading').show();
+        
+        $('#workspace').empty();
+        $('#workspace').html($('#empty-workspace').html());
+
+        this.loadprojectdata();
+    },
 
     /*
      * Send request about zpoint changes to server and save result 
@@ -117,7 +139,6 @@ Workspace.prototype = {
         var axes = this.htmldoc.getOrCreateAxes(data.label);
         axes.find('div[axis-label=' + data.label + ']').empty();
         var view = this.addView(axes, data.glyphs, data.master_id, data.versions, data.label);
-        view.getElement().removeClass('dropzone');
 
         if (!this.metapolationView) {
             this.metapolationView = this.addView(axes, data.metaglyphs);
@@ -219,6 +240,8 @@ Workspace.prototype = {
             this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
             this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs.edges).contours);
         }.bind(this);
+
+        view.getElement().removeClass('dropzone');
 
         return view;
     },
