@@ -41,9 +41,17 @@ Workspace.prototype = {
         this.urldata = dict_from_locationhash();
         $('#workspace').hide();
         $('#loading').show();
-        
+
         $('#workspace').empty();
         $('#workspace').html($('#empty-workspace').html());
+
+        $('#btn-add-axes').on('click', function() {
+            var axes = this.htmldoc.addAxes();
+
+            new Dropzone(axes.find('.axis'), {
+                project_id: function() {return this.project_id || 0;}.bind(this)
+            }, this.dataUploaded.bind(this));
+        }.bind(this));
 
         this.loadprojectdata();
     },
