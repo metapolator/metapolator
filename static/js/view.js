@@ -212,7 +212,7 @@ WorkspaceDocument.prototype = {
      */
     addAxes: function() {
         var axes = this.tmplAxes.clone().css('display', 'block');
-        this.workspace.append(axes);
+        this.workspace.find('.editor').append(axes);
 
         this.assignPositionedAxisLabel(axes, 'left');
         this.assignPositionedAxisLabel(axes, 'right');

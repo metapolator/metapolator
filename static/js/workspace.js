@@ -100,10 +100,12 @@ Workspace.prototype = {
 
         for (var k = 0; k < data.projects.length; k++) {
             var axes = this.htmldoc.getOrCreateAxes(data.projects[k].label);
+            if (!this.metapolationView) {
+                this.metapolationView = this.addView(axes, data.metaglyphs);
+            }
             this.addView(axes, data.projects[k].glyphs, data.projects[k].master_id, data.versions, data.projects[k].label);
         }
 
-        this.metapolationView = this.addView(axes, data.metaglyphs);
 
         new Dropzone($('.axis'), {
             project_id: function() {return this.project_id || 0;}.bind(this)

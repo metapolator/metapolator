@@ -10,8 +10,13 @@ $var title: Workspace
         border: dashed 2px #ccc;
         text-align: center;
     }
+    
     .dropzone:before {
         content: "Drop archive with UFO here";
+    }
+
+    .editor-axes {
+      padding-top: 24px;
     }
 
     #workspace, #startpage, .editor-axes, .metapolation, #templates {
@@ -27,9 +32,10 @@ $var title: Workspace
 </div>
 
 <div id="workspace" style="display: none;">
-    <div>
-        <button id="btn-add-axes" class="btn btn-xs btn-success">Add axes</button>
+    <div class="editor">
+      
     </div>
+    <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
 </div>
 
 <div id="templates">
