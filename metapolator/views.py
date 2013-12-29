@@ -126,10 +126,16 @@ class GlyphPageMixin(object):
 
             if self.get_project().mfparser == 'controlpoints':
                 import xmltomf_new_2axes as xmltomf
-                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
+                if cell:
+                    xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
+                else:
+                    xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
             else:
                 import xmltomf
-                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
+                if cell:
+                    xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
+                else:
+                    xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
             hasglyphs = True
 
         if hasglyphs:
