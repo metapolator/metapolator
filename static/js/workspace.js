@@ -128,7 +128,8 @@ Workspace.prototype = {
         this.metapolationView.glyph.render(data.metaglyphs.edges[0].contours);
     },
 
-    addView: function(axes, data, master_id, versions, label) {
+
+    addInterpolationSlider: function(axes) {
         var slider_template = '<div class="well"><b style="padding-right: 32px;">{0}</b> ' + 
                       '<input class="span2 slider-{2}" slider-label="{2}" type="text" value=""' + 
                       '         data-slider-min="-3" data-slider-max="3" data-slider-step="0.2"'  + 
@@ -156,12 +157,19 @@ Workspace.prototype = {
                 })
                 .done(function(response){
                     var data = $.parseJSON(response);
-                    this.metapolationView.glyph.render(data.M.edges[0].contours);
+                    this.metapolationView.element.empty();
+                    var axes = this.htmldoc.getOrCreateAxes('A');
+                    this.metapolationView = this.addView(axes, data.M);
                 }.bind(this))
                 .fail(function(){ alert('Could not change metapolation value') });
             }.bind(this));
             $('#interpolations').show();
         }
+    },
+
+
+    addView: function(axes, data, master_id, versions, label) {
+        this.addInterpolationSlider(axes);
 
         var view = this.htmldoc.addView(axes, data.edges[0], this.getPositionByLabel(label));
 
