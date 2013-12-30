@@ -26,7 +26,7 @@ var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 var slider_template = '<div class="well"><b style="padding-right: 32px;">{0}</b> ' + 
                       '<input class="span2 slider-{2}" slider-label="{2}" type="text" value="1"' + 
-                      '         data-slider-min="0" data-slider-max="1" data-slider-step="0.1"'  + 
+                      '         data-slider-min="0" data-slider-max="1" data-slider-step="0.01"'  + 
                       '         data-slider-value="1" data-slider-orientation="horizontal"' + 
                       '         data-slider-selection="after" data-slider-tooltip="show"' + 
                       '         data-slider-handle="square" />' +
