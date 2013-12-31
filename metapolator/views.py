@@ -536,7 +536,7 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(masters='', project_id=0)
+        postdata = web.input(project_id=0)
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
