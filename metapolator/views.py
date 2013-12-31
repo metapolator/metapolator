@@ -685,17 +685,17 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                     raise web.badrequest(simplejson.dumps({'error': 'could not find any points in contour for instance in %s' % logpath}))
                 metapost_points = []
                 for point in contourpoints:
-                    if session.get('mfparser', '') == 'controlpoints':
+                    if project.mfparser == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][0]['x']),
                                                 'y': self.round(point['controls'][0]['y'])})
 
                     metapost_points.append({'x': self.round(point['x']),
                                             'y': self.round(point['y'])})
 
-                    if session.get('mfparser', '') == 'controlpoints':
+                    if project.mfparser == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][1]['x']),
                                                 'y': self.round(point['controls'][1]['y'])})
-                if session.get('mfparser', '') == 'controlpoints' and metapost_points:
+                if project.mfparser == 'controlpoints' and metapost_points:
                     if i != 0:
                         points_ = metapost_points[1:] + metapost_points[:1]
                         points += points_
