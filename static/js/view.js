@@ -76,7 +76,7 @@ View.prototype = {
         for (var k = 0; k < versions.length; k++) {
             var optionMaster = $('<option>', {
                 value: versions[k].master_id,
-                text: 'Load master ' + versions[k].version
+                text: versions[k].name + ' ' + versions[k].version
             });
             if (versions[k].master_id == this.master_id) {
                 optionMaster.attr('selected', 'true');

@@ -154,6 +154,9 @@ Workspace.prototype = {
         }.bind(this));
     },
 
+    /*
+     * Called when user uploaded ZIP file with UFO inside
+     */
     dataUploaded: function(data) {
         if (!this.project_id) {
             location.hash = '#project/' + data.project_id;
@@ -170,10 +173,15 @@ Workspace.prototype = {
                 onInstanceCreated: this.onInstanceCreated.bind(this),
                 onMasterCreated: this.onMasterCreated.bind(this)
             });
+        } else {
+            this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs.edges).contours);
         }
-        this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs.edges).contours);
 
-        // this.updateVersions();
+        this.updateVersions(data.versions);
+    },
+
+    updateVersions: function(versions) {
+        debugger;
     },
 
     onInstanceCreated: function(donecallback) {

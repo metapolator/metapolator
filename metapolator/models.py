@@ -184,6 +184,8 @@ class Master(Base, UserQueryMixin):
     idglobal = Column(Integer, ForeignKey('globalparam.id'))
     version = Column(Integer, default=0, index=True)
 
+    name = Column(String(128), default='')
+
     project = relationship('Project', backref='projects')
 
     def get_glyphs(self):

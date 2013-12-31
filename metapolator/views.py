@@ -598,7 +598,9 @@ class EditorGetProjectAxes(app.page):
 
 def get_versions(project_id):
     masters = models.Master.filter(project_id=project_id)
-    return map(lambda master: {'version': '{0:03d}'.format(master.version), 'master_id': master.id}, masters)
+    return map(lambda master: {'version': '{0:03d}'.format(master.version),
+                               'name': master.name,
+                               'master_id': master.id}, masters)
 
 
 class EditorCreateMaster(app.page, GlyphPageMixin):
@@ -671,6 +673,7 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
 
         self.call_metapost_all_glyphs(self.get_lft_master())
 
+        master.name = self.get_lft_master().name
         logpath = project.get_instancelog(version=self.get_lft_master().version)
         for glyph in self.get_lft_master().get_glyphs():
             json = get_edges_json(logpath, glyph.name)
@@ -719,7 +722,6 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                 i += 1
 
         project.masters = ','.join([str(master.id)] * len(masters))
-        print project.masters
         web.ctx.orm.commit()
         return simplejson.dumps({})
 
@@ -801,8 +803,10 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
                 version = 0
 
             version += 1
+            name, ext = op.splitext(op.basename(FontNameA))
             master = models.Master.create(project_id=project.id,
-                                          version=version)
+                                          version=version,
+                                          name=name)
 
             label = get_metapolation_label(x.label)
             metapolation = models.Metapolation.get(label=label, project_id=project.id)
@@ -849,6 +853,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         metaglyphs = get_edges_json(instancelog)
         return simplejson.dumps({'project_id': project.id,
                                  'master_id': master.id,
+                                 'master_name': master.name,
                                  'glyphname': glyph.name,
                                  'label': x.label,
                                  'metapolation': label,
