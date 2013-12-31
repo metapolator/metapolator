@@ -61,6 +61,13 @@ View.prototype = {
             });
         }.bind(this));
 
+        div.find('#btn-master-from-instance').on('click', function(e){
+            $(e.target).attr('disabled', 'disabled');
+            handlers.onMasterCreated(function(){
+                $(e.target).removeAttr('disabled');
+            });
+        }.bind(this));
+
         this.getElement().prepend(div);
     },
 

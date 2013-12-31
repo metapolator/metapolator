@@ -186,8 +186,6 @@ class GlyphPageMixin(object):
         write_glyph_list(master, glyph.name)
         makefont_single(master, cell='A')
 
-        zpoints = get_edges_json_from_db(master, glyphid)
-
         glyphjson = get_edges_json(instancelog, glyphid, master)
         return {'M': M_glyphjson, 'R': glyphjson, 'master_id': master.id}
 
@@ -603,41 +601,6 @@ def get_versions(project_id):
     return map(lambda master: {'version': '{0:03d}'.format(master.version), 'master_id': master.id}, masters)
 
 
-class EditorMaster(app.page):
-
-    path = '/editor/get-master/'
-
-    @raise404_notauthorized
-    def POST(self):
-        postdata = web.input(project_id='', master_id='', label='', glyph='')
-
-        project = models.Project.get(id=postdata.project_id)
-        if not project:
-            raise web.notfound()
-
-        master = models.Master.get(id=postdata.master_id,
-                                   project_id=postdata.project_id)
-        if not master:
-            raise web.notfound()
-
-        label = get_metapolation_label(postdata.label)
-
-        glyph = models.Glyph.filter(master_id=master.id)
-        if not postdata.glyph:
-            glyph = glyph.order_by(models.Glyph.name.asc()).first()
-        else:
-            glyph = glyph.filter(models.Glyph.name == postdata.glyph).first()
-
-        versions = get_versions(postdata.project_id)
-        return simplejson.dumps({'project_id': project.id,
-                                 'master_id': master.id,
-                                 'glyphname': glyph.name,
-                                 'label': postdata.label,
-                                 'metapolation': label,
-                                 'version': '{0:03d}'.format(master.version),
-                                 'versions': versions})
-
-
 class EditorCreateMaster(app.page, GlyphPageMixin):
 
     path = '/editor/create-master/'
@@ -686,27 +649,13 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(masters='', project_id=0, glyphname='')
+        postdata = web.input(project_id=0)
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
             raise web.notfound()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(postdata.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
+        masters = project.get_ordered_masters()
 
         self.set_masters(masters)
 
@@ -769,13 +718,10 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                 self.create_glyphpoint(newglypha, (i + 1), zpoints[i], point)
                 i += 1
 
-        project.masters = ','.join([str(master.id)] * len(project.masters.split(',')))
-
-        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id)
-        result = self.get_glyphs_jsondata(glyph.name, master)
-        return simplejson.dumps({'version': '{0:03d}'.format(master.version),
-                                 'master_id': master.id, 'glyphdata': result,
-                                 'versions': get_versions(master.project_id)})
+        project.masters = ','.join([str(master.id)] * len(masters))
+        print project.masters
+        web.ctx.orm.commit()
+        return simplejson.dumps({})
 
 
 LABELS = range(ord('A'), ord('Z') + 1)

@@ -127,7 +127,10 @@ Workspace.prototype = {
             var axes = this.htmldoc.getOrCreateAxes(data.projects[k].label);
             if (!this.metapolationView) {
                 this.metapolationView = this.addView(axes, data.metaglyphs);
-                this.metapolationView.appendActionButtons({onInstanceCreated: this.onInstanceCreated.bind(this)});
+                this.metapolationView.appendActionButtons({
+                    onInstanceCreated: this.onInstanceCreated.bind(this),
+                    onMasterCreated: this.onMasterCreated.bind(this)
+                });
             }
             this.addView(axes, data.projects[k].glyphs, data.projects[k].master_id, data.versions, data.projects[k].label);
         }
@@ -137,6 +140,18 @@ Workspace.prototype = {
         }, this.dataUploaded.bind(this));
 
         $('#loading').hide();
+    },
+
+    onMasterCreated: function(donecallback) {
+        $.post('/editor/create-master/', {
+            project_id: this.project_id,
+            glyphname: this.glyphname
+        }).done(function() {
+            donecallback();
+            this.hashchanged();
+        }.bind(this)).fail(function() {
+            donecallback();
+        }.bind(this));
     },
 
     dataUploaded: function(data) {
@@ -151,7 +166,10 @@ Workspace.prototype = {
 
         if (!this.metapolationView) {
             this.metapolationView = this.addView(axes, data.metaglyphs);
-            this.metapolationView.appendActionButtons({onInstanceCreated: this.onInstanceCreated.bind(this)});
+            this.metapolationView.appendActionButtons({
+                onInstanceCreated: this.onInstanceCreated.bind(this),
+                onMasterCreated: this.onMasterCreated.bind(this)
+            });
         }
         this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs.edges).contours);
 
@@ -200,7 +218,10 @@ Workspace.prototype = {
                     this.metapolationView.getElement().empty();
                     var axes = this.htmldoc.getOrCreateAxes('A');
                     this.metapolationView = this.addView(axes, data.M);
-                    this.metapolationView.appendActionButtons({onInstanceCreated: this.onInstanceCreated.bind(this)});
+                    this.metapolationView.appendActionButtons({
+                        onInstanceCreated: this.onInstanceCreated.bind(this),
+                        onMasterCreated: this.onMasterCreated.bind(this)
+                    });
                 }.bind(this))
                 .fail(function(){ alert('Could not change metapolation value') });
             }.bind(this));
