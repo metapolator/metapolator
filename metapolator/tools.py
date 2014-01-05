@@ -138,7 +138,7 @@ def get_json(content, glyphid=None, master=None):
 
     pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
                          re.I | re.DOTALL | re.M)
-    edges = []
+    glyphs = []
     for glyph, edge in pattern:
         if glyphid and int(glyphid) != int(glyph):
             continue
@@ -196,7 +196,7 @@ def get_json(content, glyphid=None, master=None):
         zpoints = []
         if master:
             zpoints = get_edges_json_from_db(master, glyph)
-        edges.append({'glyph': glyph, 'contours': contours, 'zpoints': zpoints,
-                      'width': width, 'height': height})
+        glyphs.append({'name': glyph, 'contours': contours,
+                       'zpoints': zpoints, 'width': width, 'height': height})
 
-    return {'total_edges': len(edges), 'edges': edges}
+    return glyphs

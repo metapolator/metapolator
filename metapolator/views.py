@@ -23,7 +23,7 @@ from passlib.hash import bcrypt
 from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
 from forms import RegisterForm, LocalParamForm, PointParamExtendedForm
-from tools import put_font_all_glyphs, write_global_param, get_edges_json
+from tools import put_font_all_glyphs, get_edges_json
 from metapolator.metapost import Metapost
 
 
@@ -137,7 +137,14 @@ class Project(app.page):
         import operator
         masters = map(operator.attrgetter('id', 'version'),
                       models.Master.filter(project_id=project.id))
-        return simplejson.dumps({'projects': masters_list,
+
+        glyphs = models.Glyph.filter(project_id=project.id)
+        glyphs = glyphs.group_by(models.Glyph.name)
+        glyphs = glyphs.order_by(models.Glyph.name.asc())
+
+        glyphs_list = map(operator.attrgetter('name'), glyphs)
+        return simplejson.dumps({'glyphs': glyphs_list,
+                                 'masters': masters_list,
                                  'versions': get_versions(project.id),
                                  'metaglyphs': metaglyphs,
                                  'mode': project.mfparser,
@@ -677,6 +684,7 @@ class EditorUploadZIP(app.page):
         metaglyphs = get_edges_json(instancelog)
         return simplejson.dumps({'project_id': project.id,
                                  'glyphname': glyph.name,
+                                 'master_id': master.id,
                                  'label': x.label,
                                  'metapolation': label,
                                  'glyphs': glyphsdata,
@@ -784,4 +792,3 @@ def prepare_master_environment(master):
             shutil.copy2(filename, master.get_fonts_directory())
         except (IOError, OSError):
             raise
-    write_global_param(master.project)

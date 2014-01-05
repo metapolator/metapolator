@@ -32,6 +32,7 @@ Workspace.prototype = {
     hashchanged: function() {
         var d = dict_from_locationhash();
         if (this.urldata && this.urldata.project != d.project) {
+            console.log('empty');
             this.glyphlist = [];
             $('#glyph-switcher').empty();
         };
@@ -78,8 +79,8 @@ Workspace.prototype = {
         })
         .done(function(response) {
             var data = $.parseJSON(response);
-            glyph.render(data.R.edges[0].contours);
-            this.metapolationView.glyph.render(data.M.edges[0].contours);
+            glyph.render(data.R[0].contours);
+            this.metapolationView.glyph.render(data.M[0].contours);
         }.bind(this));
     },
 
@@ -104,6 +105,8 @@ Workspace.prototype = {
 
     setWorkspaceConfiguration: function(data) {
         this.run($.parseJSON(data));
+
+        // start request to retrive complete list of glyph data
         $.ajax({
             url: '/editor/project/',
             type: 'GET',
@@ -118,7 +121,21 @@ Workspace.prototype = {
     },
 
     saveDataToStorage: function(response) {
-        
+        this.updateGlyphList(response.glyphs);
+        if (typeof Storage == 'undefined') return;
+
+        for (var k = 0; k < response.masters.length; k++) {
+            var master = response.masters[k];
+            for (var j = 0; j < master.glyphs; j++) {
+                var glyph = master.glyphs[k];
+                var cachekey = 'masters:' + master.master_id + ':glyphs:' + glyph.name;
+
+                Storage.set(cachekey + ':zpoints', glyph.zpoints);
+                Storage.set(cachekey + ':contours', glyph.contours);
+                Storage.set(cachekey + ':width', width);
+                Storage.set(cachekey + ':height', height);
+            }
+        }
     },
 
     getPositionByLabel: function(label) {
@@ -140,8 +157,10 @@ Workspace.prototype = {
         this.project_id = this.urldata.project;
         this.htmldoc.setMode(data.mode);
 
-        for (var k = 0; k < data.projects.length; k++) {
-            var axes = this.htmldoc.getOrCreateAxes(data.projects[k].label);
+        for (var k = 0; k < data.masters.length; k++) {
+            var master = data.masters[k];
+
+            var axes = this.htmldoc.getOrCreateAxes(master.label);
             if (!this.metapolationView) {
                 this.metapolationView = this.addView(axes, data.metaglyphs);
                 this.metapolationView.appendActionButtons({
@@ -149,7 +168,7 @@ Workspace.prototype = {
                     onMasterCreated: this.onMasterCreated.bind(this)
                 });
             }
-            this.addView(axes, data.projects[k].glyphs, data.projects[k].master_id, data.versions, data.projects[k].label);
+            this.addView(axes, master.glyphs, master.master_id, data.versions, master.label);
         }
 
         new Dropzone($('.axis'), {
@@ -193,7 +212,7 @@ Workspace.prototype = {
                 onMasterCreated: this.onMasterCreated.bind(this)
             });
         } else {
-            this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs.edges).contours);
+            this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
         }
 
         this.updateVersions(data.versions);
@@ -260,31 +279,31 @@ Workspace.prototype = {
         var $glyph = this.urldata.glyph;
 
         if (!this.urldata.glyph) {
-            this.glyphname = edges[0].glyph;
+            this.glyphname = edges[0].name;
             return edges[0];
         }
 
         result = edges.filter(function(el){
-            return el.glyph == $glyph;
+            return el.name == $glyph;
         });
 
         if (!result.length) {
-            this.glyphname = edges[0].glyph;
+            this.glyphname = edges[0].name;
             return edges[0];
         };
 
-        this.glyphname = result[0].glyph;
+        this.glyphname = result[0].name;
         return result[0];
     },
 
     updateGlyphList: function(glyphs) {
         for (var k = 0; k < glyphs.length; k++) {
-            if (this.glyphlist.indexOf(glyphs[k].glyph) < 0) {
-                this.glyphlist.push(glyphs[k].glyph);
+            if (this.glyphlist.indexOf(glyphs[k]) < 0) {
+                this.glyphlist.push(glyphs[k]);
 
                 var span = $('<span>');
                 span.append(
-                    $('<a>', {href: '#project/' + this.project_id + '/glyph/' + glyphs[k].glyph}).html(MFLIST[glyphs[k].glyph - 1])
+                    $('<a>', {href: '#project/' + this.project_id + '/glyph/' + glyphs[k]}).html(MFLIST[glyphs[k] - 1])
                 );
                 $('#glyph-switcher').append(span);
                 $('#glyph-switcher').append(" ");
@@ -296,9 +315,7 @@ Workspace.prototype = {
     addView: function(axes, data, master_id, versions, label) {
         this.addInterpolationSlider(axes);
 
-        this.updateGlyphList(data.edges);
-
-        var edgedata = this.getEdgeData(data.edges);
+        var edgedata = this.getEdgeData(data);
 
         var view = this.htmldoc.addView(axes, edgedata, this.getPositionByLabel(label));
 
@@ -315,7 +332,7 @@ Workspace.prototype = {
         view.onGlyphChanged = function(view, data) {
             view.element.empty();
             this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
-            this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs.edges).contours);
+            this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
         }.bind(this);
 
         view.getElement().removeClass('dropzone');

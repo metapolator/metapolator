@@ -15,14 +15,13 @@ API
     .. sourcecode:: http
 
         {
-            "projects": [
+            "masters": [
                 {
                     "label": "A",
                     "master_id": 6,
                     "metapolation": "AB",
-                    "glyphs": {
-                        "total_edges": 1,
-                        "edges": [
+                    "glyphs": [
+                        {
                             "contours": [
                                 [
                                     {
@@ -35,7 +34,7 @@ API
                                     }
                                 ]
                             ],
-                            "glyph": "1",
+                            "name": "1",
                             "height": 592.99956,
                             "width": 782.00111,
                             "zpoints": {
@@ -85,8 +84,8 @@ API
                                     "user_id": 1
                                 }
                             }
-                        ]
-                    }
+                        }
+                    ]
                 }
             ],
             "versions": [
