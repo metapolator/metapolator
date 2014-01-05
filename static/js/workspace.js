@@ -95,7 +95,8 @@ Workspace.prototype = {
         $.ajax({
             url: '/editor/project/',
             type: 'GET',
-            data: {project: this.urldata.project, glyph: this.urldata.glyph || ''},
+            data: {project: this.urldata.project,
+                   glyph: this.urldata.glyph || '', preload: true},
             dataType: 'jsonp',
         }).done(this.setWorkspaceConfiguration.bind(this));
     },
@@ -161,6 +162,7 @@ Workspace.prototype = {
         if (!this.project_id) {
             location.hash = '#project/' + data.project_id;
             this.project_id = data.project_id;
+            return;
         }
 
         var axes = this.htmldoc.getOrCreateAxes(data.label);
@@ -181,7 +183,7 @@ Workspace.prototype = {
     },
 
     updateVersions: function(versions) {
-        debugger;
+        // debugger;
     },
 
     onInstanceCreated: function(donecallback) {

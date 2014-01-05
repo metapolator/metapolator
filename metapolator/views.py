@@ -25,8 +25,7 @@ from config import app, is_loggedin, session, working_dir, \
 from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
     PointParamExtendedForm
 from tools import put_font_all_glyphs, project_exists, write_glyph_list, \
-    write_global_param, makefont_single, unifylist, get_edges_json, \
-    get_edges_json_from_db
+    write_global_param, makefont_single, unifylist, get_edges_json
 
 
 def raise404_notauthorized(func):
@@ -142,6 +141,33 @@ class GlyphPageMixin(object):
             write_glyph_list(master or self.get_lft_master())
             makefont_single(master or self.get_lft_master(), cell=cell)
 
+    def call_metapost_single_glyph(self, master, glyph, cell=''):
+        _glyphs = models.Glyph.filter(name=glyph.name)
+        _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
+
+        glyphs = []
+        for m in self._masters:
+            for g in _glyphs:
+                if g.master_id == m.id:
+                    glyphs.append(g)
+                    break
+
+        if self.get_project().mfparser == 'controlpoints':
+            import xmltomf_new_2axes as xmltomf
+            if cell:
+                xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
+            else:
+                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
+        else:
+            import xmltomf
+            if cell:
+                xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
+            else:
+                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
+
+        write_glyph_list(master or self.get_lft_master())
+        makefont_single(master or self.get_lft_master(), cell=cell)
+
     def call_metapost(self, glyph_id):
         write_global_param(self.get_project())
 
@@ -245,7 +271,21 @@ class Project(app.page, GlyphPageMixin):
 
             prepare_master_environment(master)
 
-            self.call_metapost_all_glyphs(master, cell='A')
+            if 'preload' not in x:
+                self.call_metapost_all_glyphs(master, cell='A')
+            else:
+                if not x.get('glyph'):
+                    try:
+                        glyph = master.get_glyphs()[0]
+                    except IndexError:
+                        raise web.notfound()
+                else:
+                    try:
+                        glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph)[0]
+                    except IndexError:
+                        raise web.notfound()
+                self.call_metapost_single_glyph(master, glyph, cell='A')
+
             master_instancelog = project.get_instancelog(master.version, 'A')
 
             glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -257,7 +297,22 @@ class Project(app.page, GlyphPageMixin):
                                   'metapolation': metalabel,
                                   'master_id': master.id})
 
-        self.call_metapost_all_glyphs(self.get_lft_master())
+        if 'preload' not in x:
+            self.call_metapost_all_glyphs(self.get_lft_master())
+        else:
+            if not x.get('glyph'):
+                try:
+                    glyph = self.get_lft_master().get_glyphs()[0]
+                except IndexError:
+                    raise web.notfound()
+            else:
+                try:
+                    glyph = self.get_lft_master().get_glyphs().filter(models.Glyph.name == x.glyph)[0]
+                except IndexError:
+                    raise web.notfound()
+
+            self.call_metapost_single_glyph(self.get_lft_master(), glyph)
+
         instancelog = project.get_instancelog(self.get_lft_master().version)
         metaglyphs = get_edges_json(instancelog)
 
