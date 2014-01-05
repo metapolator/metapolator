@@ -22,10 +22,8 @@ from passlib.hash import bcrypt
 
 from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
-from forms import RegisterForm, LocalParamForm, \
-    PointParamExtendedForm
-from tools import put_font_all_glyphs, project_exists, \
-    write_global_param, get_edges_json
+from forms import RegisterForm, LocalParamForm, PointParamExtendedForm
+from tools import put_font_all_glyphs, write_global_param, get_edges_json
 from metapolator.metapost import Metapost
 
 
@@ -44,7 +42,6 @@ t_globals = {
     'datestr': web.datestr,
     'working_url': working_url,
     'is_loggedin': is_loggedin,
-    'project_exists': project_exists,
     'webctx': web.ctx,
     'websession': session
 }
@@ -100,7 +97,7 @@ class Project(app.page):
 
         masters = project.get_ordered_masters()
 
-        resultmasters = []
+        masters_list = []
 
         metapost = Metapost(project)
 
@@ -121,10 +118,10 @@ class Project(app.page):
 
             metalabel = get_metapolation_label(chr(LABELS[i]))
 
-            resultmasters.append({'glyphs': glyphsdata,
-                                  'label': chr(LABELS[i]),
-                                  'metapolation': metalabel,
-                                  'master_id': master.id})
+            masters_list.append({'glyphs': glyphsdata,
+                                 'label': chr(LABELS[i]),
+                                 'metapolation': metalabel,
+                                 'master_id': master.id})
 
         if 'preload' not in x:
             metapost.execute_interpolated_bulk()
@@ -140,7 +137,7 @@ class Project(app.page):
         import operator
         masters = map(operator.attrgetter('id', 'version'),
                       models.Master.filter(project_id=project.id))
-        return simplejson.dumps({'projects': resultmasters,
+        return simplejson.dumps({'projects': masters_list,
                                  'versions': get_versions(project.id),
                                  'metaglyphs': metaglyphs,
                                  'mode': project.mfparser,

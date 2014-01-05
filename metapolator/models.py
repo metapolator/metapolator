@@ -124,17 +124,6 @@ class Project(Base, UserQueryMixin):
                     break
         return masters
 
-    @classmethod
-    def get_master(cls, projectname, version=False):
-        project = Project.get(projectname=projectname)
-        if not project:
-            return
-
-        master = Master.filter(project_id=project.id)
-        if version:
-            master = master.filter_by(version=version)
-        return master.order_by(Master.version.desc()).first()
-
     def get_instancelog(self, version=1, ab_source=None):
         if ab_source:
             return op.join(working_dir(),
