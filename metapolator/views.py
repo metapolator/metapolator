@@ -24,8 +24,8 @@ from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT, MFLIST
 from forms import RegisterForm, LocalParamForm, \
     PointParamExtendedForm
-from tools import put_font_all_glyphs, project_exists, write_glyph_list, \
-    write_global_param, makefont_single, get_edges_json
+from tools import put_font_all_glyphs, project_exists, \
+    write_global_param, get_edges_json
 from metapolator.metapost import Metapost
 
 
@@ -54,106 +54,22 @@ render = web.template.render('templates', base='base', globals=t_globals)
 
 class GlyphPageMixin(object):
 
-    _lftmaster = None
-    _rgtmaster = None
-
-    _lftversion = None
-    _rgtversion = None
-
-    _project = None
-
-    def get_lft_master(self):
-        if not self._lftmaster:
-            raise Exception('Class was not initialized')
-        return self._lftmaster
-
-    def get_rgt_master(self):
-        if not self._rgtmaster:
-            raise Exception('Class was not initialized')
-        return self._rgtmaster
-
-    def get_lft_version(self):
-        if not self._lftversion:
-            raise Exception('Class was not initialized')
-        return self._lftversion
-
-    def get_rgt_version(self):
-        if not self._rgtversion:
-            raise Exception('Class was not initialized')
-        return self._rgtversion
-
-    def get_project(self):
-        if not self._project:
-            raise Exception('Class was not initialized')
-        return self._project
-
-    def initialize(self, projectname, lft_version, rgt_version):
-        try:
-            self._lftversion = int(lft_version)
-            self._rgtversion = int(rgt_version)
-        except TypeError:
-            raise web.notfound()
-
-        self._lftmaster = models.Project.get_master(projectname=projectname,
-                                                    version=self.get_lft_version())
-        if not self._lftmaster:
-            raise web.notfound()
-
-        self._rgtmaster = models.Project.get_master(projectname=projectname,
-                                                    version=self.get_rgt_version())
-        if not self._rgtmaster:
-            raise web.notfound()
-
-        self._project = models.Project.get(projectname=projectname)
-
-    def set_masters(self, masters):
-        self._masters = masters
-
-    def call_metapost(self, glyph_id):
-        write_global_param(self.get_project())
-
-        _glyphs = models.Glyph.filter(name=glyph_id)
-        _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
-
-        glyphs = []
-        for m in self._masters:
-            for g in _glyphs:
-                if g.master_id == m.id:
-                    glyphs.append(g)
-                    break
-
-        if self.get_project().mfparser == 'controlpoints':
-            import xmltomf_new_2axes as xmltomf
-            xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
-        else:
-            import xmltomf
-            xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
-
-        write_glyph_list(self.get_lft_master(), glyph_id)
-        makefont_single(self.get_lft_master())
-
     def get_glyphs_jsondata(self, glyphid, master):
-        self.call_metapost(glyphid)
-
-        project = self.get_project()
-
-        instancelog = project.get_instancelog(self.get_lft_version())
-        M_glyphjson = get_edges_json(instancelog, glyphid)
+        project = master.project
+        masters = project.get_ordered_masters()
 
         glyph = models.Glyph.get(master_id=master.id, name=glyphid)
 
+        metapost = Metapost(project)
+        metapost.execute_interpolated_single(masters, glyph)
+
+        instancelog = project.get_instancelog(masters[0].version)
+        M_glyphjson = get_edges_json(instancelog, glyphid)
+
+        metapost.execute_single(master, glyph)
         instancelog = project.get_instancelog(master.version, 'a')
-        if self.get_project().mfparser == 'controlpoints':
-            import xmltomf_new_2axes as xmltomf
-            xmltomf.xmltomf1(master, glyph)
-        else:
-            import xmltomf
-            xmltomf.xmltomf1(master, glyph)
-
-        write_glyph_list(master, glyph.name)
-        makefont_single(master, cell='A')
-
         glyphjson = get_edges_json(instancelog, glyphid, master)
+
         return {'M': M_glyphjson, 'R': glyphjson, 'master_id': master.id}
 
 
@@ -384,11 +300,6 @@ class EditorMetapolationSave(app.page, GlyphPageMixin):
         web.ctx.orm.commit()
 
         masters = project.get_ordered_masters()
-
-        self.set_masters(masters)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
         result = self.get_glyphs_jsondata(postdata.glyphname, masters[0])
         return simplejson.dumps(result)
 
@@ -419,10 +330,6 @@ class EditorSavePoint(app.page, GlyphPageMixin):
         if not master:
             return web.notfound()
 
-        masters = project.get_ordered_masters()
-
-        self.set_masters(masters)
-
         form = PointParamExtendedForm()
         if form.validates():
             values = form.d
@@ -437,9 +344,6 @@ class EditorSavePoint(app.page, GlyphPageMixin):
                     values[key] = None
             models.GlyphParam.update(glyphoutline_id=postdata.id,
                                      values=values)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
         result = self.get_glyphs_jsondata(glyphoutline.glyph.name, master)
         return simplejson.dumps(result)
 
