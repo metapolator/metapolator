@@ -50,10 +50,12 @@ class Metapost:
                 process.kill()
                 break
 
-    def execute_interpolated_bulk(self, masters):
+    def execute_interpolated_bulk(self):
         """ Run metapost for all glyphs with mf files containing points
             from all project masters.
         """
+        masters = self.project.get_ordered_masters()
+
         idmasters = map(lambda x: x.id, masters)
         primary_master = masters[0]
 
@@ -80,7 +82,9 @@ class Metapost:
 
         self._execute(master)
 
-    def execute_interpolated_single(self, masters, glyph):
+    def execute_interpolated_single(self, glyph):
+        masters = self.project.get_ordered_masters()
+
         idmasters = map(lambda x: x.id, masters)
         primary_master = masters[0]
 

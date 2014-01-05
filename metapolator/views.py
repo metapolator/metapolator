@@ -21,7 +21,7 @@ from web import seeother
 from passlib.hash import bcrypt
 
 from config import app, is_loggedin, session, working_dir, \
-    working_url, PROJECT_ROOT, MFLIST
+    working_url, PROJECT_ROOT
 from forms import RegisterForm, LocalParamForm, \
     PointParamExtendedForm
 from tools import put_font_all_glyphs, project_exists, \
@@ -61,7 +61,7 @@ class GlyphPageMixin(object):
         glyph = models.Glyph.get(master_id=master.id, name=glyphid)
 
         metapost = Metapost(project)
-        metapost.execute_interpolated_single(masters, glyph)
+        metapost.execute_interpolated_single(glyph)
 
         instancelog = project.get_instancelog(masters[0].version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
@@ -82,23 +82,6 @@ class Workspace(app.page):
         web.ctx.pointparam_extended_form = PointParamExtendedForm()
         web.ctx.settings_form = LocalParamForm()
         return render.workspace()
-
-
-class Glyph(app.page):
-
-    path = '/editor/glyphs/'
-
-    def glyphrepr(self, id):
-        return MFLIST[int(id)]
-
-    @raise404_notauthorized
-    def GET(self):
-        x = web.input(project_id='')
-        glyphs = models.Glyph.filter(project_id=x.project_id)
-        glyphs = glyphs.group_by(models.Glyph.name)
-        glyphs = glyphs.order_by(models.Glyph.name.asc())
-        return simplejson.dumps(map(lambda x: {'val': self.glyphrepr(x.name),
-                                               'id': x.name}, glyphs))
 
 
 class Project(app.page):
@@ -128,11 +111,10 @@ class Project(app.page):
             if 'preload' not in x:
                 metapost.execute_bulk(master)
             else:
-                if not x.get('glyph'):
-                    glyph = master.get_glyphs().first()
-                else:
-                    glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph).first()
-                metapost.execute_single(master, glyph)
+                glyphs = master.get_glyphs()
+                if x.get('glyph'):
+                    glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+                metapost.execute_single(master, glyphs.first())
 
             master_instancelog = project.get_instancelog(master.version, 'A')
             glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -145,13 +127,12 @@ class Project(app.page):
                                   'master_id': master.id})
 
         if 'preload' not in x:
-            metapost.execute_interpolated_bulk(masters)
+            metapost.execute_interpolated_bulk()
         else:
-            if not x.get('glyph'):
-                glyph = masters[0].get_glyphs().first()
-            else:
-                glyph = masters[0].get_glyphs().filter(models.Glyph.name == x.glyph).first()
-            metapost.execute_single(masters[0], glyph)
+            glyphs = masters[0].get_glyphs()
+            if x.get('glyph'):
+                glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+            metapost.execute_single(masters[0], glyphs.first())
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
@@ -240,7 +221,7 @@ class EditorLocals(app.page):
         masters = project.get_ordered_masters()
 
         metapost = Metapost(project)
-        metapost.execute_interpolated_bulk(masters)
+        metapost.execute_interpolated_bulk()
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
@@ -385,7 +366,7 @@ class EditorCanvasReload(app.page):
 
         metapost = Metapost(project)
 
-        metapost.execute_interpolated_bulk(masters)
+        metapost.execute_interpolated_bulk()
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
 
@@ -417,10 +398,8 @@ class EditorCreateInstance(app.page):
         if not project:
             raise web.notfound()
 
-        masters = project.get_ordered_masters()
-
         metapost = Metapost(project)
-        metapost.execute_interpolated_bulk(masters)
+        metapost.execute_interpolated_bulk()
 
         instance = models.Instance.create(project_id=project.id)
 
@@ -509,7 +488,7 @@ class EditorCreateMaster(app.page):
         prepare_master_environment(master)
 
         metapost = Metapost(project)
-        metapost.execute_interpolated_bulk(masters)
+        metapost.execute_interpolated_bulk()
 
         primary_master = masters[0]
 
@@ -695,7 +674,7 @@ class EditorUploadZIP(app.page):
         else:
             glyph = masters[0].get_glyphs().first()
 
-        metapost.execute_interpolated_single(masters, glyph)
+        metapost.execute_interpolated_single(glyph)
 
         instancelog = project.get_instancelog(master.version)
         metaglyphs = get_edges_json(instancelog)
