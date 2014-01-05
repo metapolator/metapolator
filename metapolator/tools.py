@@ -61,13 +61,11 @@ def create_glyph(glif, master):
     glyph = glif.getroot()
     glyphname = glyph.get('name')
 
-    if not Glyph.exists(name=glyphname, master_id=master.id):
-        glyph = Glyph.create(name=glyphname, width=width,
-                             master_id=master.id,
-                             project_id=master.project_id)
-    else:
-        glyph = Glyph.update(name=glyphname, master_id=master.id,
-                             values={'width': glyph.width})
+    if Glyph.exists(name=glyphname, master_id=master.id):
+        return
+
+    glyph = Glyph.create(name=glyphname, width=width,
+                         master_id=master.id, project_id=master.project_id)
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):
         pointname = point.attrib.get('name')

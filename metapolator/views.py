@@ -319,11 +319,11 @@ class Project(app.page, GlyphPageMixin):
         import operator
         masters = map(operator.attrgetter('id', 'version'),
                       models.Master.filter(project_id=project.id))
-        return '%s(%s)' % (x.callback, simplejson.dumps({'projects': resultmasters,
-                                                         'versions': get_versions(project.id),
-                                                         'metaglyphs': metaglyphs,
-                                                         'mode': project.mfparser,
-                                                         'project_id': project.id}))
+        return simplejson.dumps({'projects': resultmasters,
+                                 'versions': get_versions(project.id),
+                                 'metaglyphs': metaglyphs,
+                                 'mode': project.mfparser,
+                                 'project_id': project.id})
 
 
 def mime_type(filename):
@@ -804,7 +804,7 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        x = web.input(ufofile={}, project_id=0, label='')
+        x = web.input(ufofile={}, project_id=0, label='', glyph='')
         try:
             rawzipcontent = x.ufofile.file.read()
             if not rawzipcontent:
@@ -899,11 +899,33 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         self.initialize(project.projectname, masters[0].version,
                         masters[1].version)
 
-        self.call_metapost_all_glyphs(master, cell='A')
+        if x.glyph:
+            try:
+                glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph)[0]
+            except IndexError:
+                raise
+        else:
+            try:
+                glyph = master.get_glyphs()[0]
+            except IndexError:
+                raise
+
+        self.call_metapost_single_glyph(master, glyph, cell='A')
         master_instancelog = project.get_instancelog(master.version, 'a')
         glyphsdata = get_edges_json(master_instancelog, master=master)
 
-        self.call_metapost_all_glyphs(self.get_lft_master())
+        if x.glyph:
+            try:
+                glyph = self.get_lft_master().get_glyphs().filter(models.Glyph.name == x.glyph)[0]
+            except IndexError:
+                raise
+        else:
+            try:
+                glyph = self.get_lft_master().get_glyphs()[0]
+            except IndexError:
+                raise
+
+        self.call_metapost_single_glyph(self.get_lft_master(), glyph)
         instancelog = project.get_instancelog(master.version)
         metaglyphs = get_edges_json(instancelog)
         return simplejson.dumps({'project_id': project.id,

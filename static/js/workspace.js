@@ -18,7 +18,8 @@ var Workspace = function() {
         var axes = this.htmldoc.addAxes();
 
         new Dropzone(axes.find('.axis'), {
-            project_id: function() {return this.project_id || 0;}.bind(this)
+            project_id: function() {return this.project_id || 0;}.bind(this),
+            glyph: function() {return this.glyphname || '';}.bind(this)
         }, this.dataUploaded.bind(this));
     }.bind(this));
 
@@ -49,7 +50,8 @@ Workspace.prototype = {
             var axes = this.htmldoc.addAxes();
 
             new Dropzone(axes.find('.axis'), {
-                project_id: function() {return this.project_id || 0;}.bind(this)
+                project_id: function() {return this.project_id || 0;}.bind(this),
+                glyph: function() {return this.glyphname || '';}.bind(this)
             }, this.dataUploaded.bind(this));
         }.bind(this));
 
@@ -96,13 +98,12 @@ Workspace.prototype = {
             url: '/editor/project/',
             type: 'GET',
             data: {project: this.urldata.project,
-                   glyph: this.urldata.glyph || '', preload: true},
-            dataType: 'jsonp',
+                   glyph: this.urldata.glyph || '', preload: true}
         }).done(this.setWorkspaceConfiguration.bind(this));
     },
 
     setWorkspaceConfiguration: function(data) {
-        this.run(data);
+        this.run($.parseJSON(data));
     },
 
     getPositionByLabel: function(label) {
@@ -137,7 +138,8 @@ Workspace.prototype = {
         }
 
         new Dropzone($('.axis'), {
-            project_id: function() {return this.project_id || 0;}.bind(this)
+            project_id: function() {return this.project_id || 0;}.bind(this),
+            glyph: function() {return this.glyphname || '';}.bind(this)
         }, this.dataUploaded.bind(this));
 
         $('#loading').hide();
@@ -310,7 +312,8 @@ Workspace.prototype = {
             var axes = this.htmldoc.addAxes();
 
             new Dropzone(axes.find('.axis'), {
-                project_id: function() {return this.project_id || 0;}.bind(this)
+                project_id: function() {return this.project_id || 0;}.bind(this),
+                glyph: function() {return this.glyphname || '';}.bind(this)
             }, this.dataUploaded.bind(this));
         }.bind(this));
     }

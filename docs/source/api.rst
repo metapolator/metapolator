@@ -1,124 +1,102 @@
 API
 ===
 
+.. http:get:: /editor/project/
 
-:/editor/project/
+    Retrieve project data
 
-Returns JSON large data for project.
+    :query integer project_id: id of project to retrieve data
+    :query boolean preload: when query contains this it will return first
+        or concrete glyph defined in `glyph`
+    :query integer glyph: in preload returns concrete glyph data
 
-See ``json project data`` for documentation::
+    **Example response**
 
-    [
-        // master json data
+    .. sourcecode:: http
+
         {
-            "label": "A",
-            "glyphs": {
-                // list of available glyphs
-                "total_edges": 8, 
-                "edges": [
-                    {
-                        "width": 523,
-                        "height": 766, 
-                        "zpoints": {
-                            "width": 555, 
-                            "points": [
-                                {
-                                    "y": 244, 
-                                    "x": 145,
-                                    "iszpoint": true,
-                                    "data": {
-                                        "upp2": null,
-                                        "dir2": null,
-                                        "tensionand": null,
-                                        "overasc": null,
-                                        "rightp2": null,
-                                        "doubledash": null,
-                                        "serif_h_top": null,
-                                        "overcap": null,
-                                        "id": 1169,
-                                        "pointname": "z1l",
-                                        "glyph_id": 34,
-                                        "user_id": 1,
-                                        "overbase": null,
-                                        "overdesc": null,
-                                        "serif_v_left": null,
-                                        "pointshifted": null,
-                                        "leftp2": null,
-                                        "theta": null,
-                                        "serif_v_right": null,
-                                        "master_id": 5,
-                                        "type": "line",
-                                        "penwidth": null,
-                                        "control_in": null,
-                                        "penshifted": null,
-                                        "leftp": null,
-                                        "glyphoutline_id": 1169,
-                                        "downp": null,
-                                        "control_out": null,
-                                        "tripledash": null,
-                                        "downp2": null,
-                                        "overx": null,
-                                        "angle": null,
-                                        "rightp": null,
-                                        "startp": 1,
-                                        "dir": null,
-                                        "serif_h_bot": null,
-                                        "fontsource": null,
-                                        "upp": null
-                                    }, 
-                                    "pointnr": 1
+            "projects": [
+                {
+                    "label": "A",
+                    "master_id": 6,
+                    "metapolation": "AB",
+                    "glyphs": {
+                        "total_edges": 1,
+                        "edges": [
+                            "contours": [
+                                [
+                                    {
+                                        "y":0, 
+                                        "x":282.00085, 
+                                        "controls": [
+                                            {"y": 0, "x": 195.0008},
+                                            {"y": 197.6665, "x": 340.00056}
+                                        ]
+                                    }
+                                ]
+                            ],
+                            "glyph": "1",
+                            "height": 592.99956,
+                            "width": 782.00111,
+                            "zpoints": {
+                                "width": 801,
+                                "iszpoint": true,
+                                "pointnr": 1,
+                                "x": 282,
+                                "y": 0,
+                                "data": {
+                                    "angle": null,
+                                    "control_in": null,
+                                    "control_out": null,
+                                    "dir": null,
+                                    "dir2": null,
+                                    "doubledash": null,
+                                    "downp": null,
+                                    "downp2": null,
+                                    "fontsource": null,
+                                    "glyph_id": 713,
+                                    "glyphoutline_id": 18405,
+                                    "id": 18405,
+                                    "leftp": null,
+                                    "leftp2": null,
+                                    "master_id": 6,
+                                    "overasc": null,
+                                    "overbase": null,
+                                    "overcap": null,
+                                    "overdesc": null,
+                                    "overx": null,
+                                    "penshifted": null,
+                                    "penwidth": null,
+                                    "pointname": "z1l",
+                                    "pointshifted": null,
+                                    "rightp": null,
+                                    "rightp2": null,
+                                    "serif_h_bot": null,
+                                    "serif_h_top": null,
+                                    "serif_v_left": null,
+                                    "serif_v_right": null,
+                                    "startp": 1,
+                                    "tensionand": null,
+                                    "theta": null,
+                                    "tripledash": null,
+                                    "type": "line",
+                                    "upp": null,
+                                    "upp2": null,
+                                    "user_id": 1
                                 }
-                            ]
-                        }, 
-                        "contours": [
-                            [
-                                {
-                                    "y": "244.00035",
-                                    "x": "144.99977",
-                                    "controls": [
-                                        {
-                                            "y": "244.00035",
-                                            "x": "123.66644"
-                                        }, 
-                                        {
-                                            "y": "337.5411",
-                                            "x": "118.91687"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "y": "420",
-                                    "x": "291.00066",
-                                    "controls": [
-                                        {
-                                            "y": "428.35483",
-                                            "x": "194.25156"
-                                        }, 
-                                        {
-                                            "y": "412.73715",
-                                            "x": "375.10513"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "y": "244.99982", 
-                                    "x": "430.99998",
-                                    "controls": [
-                                        {
-                                            "y": "332.7636",
-                                            "x": "430.99257"
-                                        }, 
-                                        {
-                                            "y": "157.2235",
-                                            "x": "431.0074"
-                                        }
-                                    ]
-                                }
-                            ]
-                        ],
-                        "glyph": "147"
+                            }
+                        ]
                     }
-                ]
-            }
+                }
+            ],
+            "versions": [
+                {
+                    "master_id": 1,
+                    "version": "001",
+                    "name": "Sean"
+                }
+            ],
+            "metaglyphs": metaglyphs,
+            "mode": "pen",
+            "project_id": 6
         }
-    ]
