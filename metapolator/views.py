@@ -132,7 +132,7 @@ class Project(app.page):
             glyphs = masters[0].get_glyphs()
             if x.get('glyph'):
                 glyphs = glyphs.filter(models.Glyph.name == x.glyph)
-            metapost.execute_single(masters[0], glyphs.first())
+            metapost.execute_interpolated_single(glyphs.first())
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
