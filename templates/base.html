@@ -109,10 +109,8 @@ right {
               <li class="active"><a href="/workspace/">Editor</a></li>
             $else:
               <li><a href="/workspace/">Editor</a></li>
-            <li><a href="/settings/globals/">Parameters</a></li>
             $if webctx.get('project') and webctx.project:
               <li><a href="/specimen/$webctx.project.projectname/">Specimen</a></li>
-            <li><a href="/project/create/">Upload UFO Project</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
