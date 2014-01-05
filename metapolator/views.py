@@ -22,10 +22,11 @@ from passlib.hash import bcrypt
 
 from config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT, MFLIST
-from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
+from forms import RegisterForm, LocalParamForm, \
     PointParamExtendedForm
 from tools import put_font_all_glyphs, project_exists, write_glyph_list, \
-    write_global_param, makefont_single, unifylist, get_edges_json
+    write_global_param, makefont_single, get_edges_json
+from metapolator.metapost import Metapost
 
 
 def raise404_notauthorized(func):
@@ -108,66 +109,6 @@ class GlyphPageMixin(object):
     def set_masters(self, masters):
         self._masters = masters
 
-    def call_metapost_all_glyphs(self, master, cell=''):
-        write_global_param(self.get_project())
-
-        hasglyphs = False
-        for glyph in (master or self.get_lft_master()).get_glyphs():
-            _glyphs = models.Glyph.filter(name=glyph.name)
-            _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
-
-            glyphs = []
-            for m in self._masters:
-                for g in _glyphs:
-                    if g.master_id == m.id:
-                        glyphs.append(g)
-                        break
-
-            if self.get_project().mfparser == 'controlpoints':
-                import xmltomf_new_2axes as xmltomf
-                if cell:
-                    xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
-                else:
-                    xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
-            else:
-                import xmltomf
-                if cell:
-                    xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
-                else:
-                    xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
-            hasglyphs = True
-
-        if hasglyphs:
-            write_glyph_list(master or self.get_lft_master())
-            makefont_single(master or self.get_lft_master(), cell=cell)
-
-    def call_metapost_single_glyph(self, master, glyph, cell=''):
-        _glyphs = models.Glyph.filter(name=glyph.name)
-        _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
-
-        glyphs = []
-        for m in self._masters:
-            for g in _glyphs:
-                if g.master_id == m.id:
-                    glyphs.append(g)
-                    break
-
-        if self.get_project().mfparser == 'controlpoints':
-            import xmltomf_new_2axes as xmltomf
-            if cell:
-                xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
-            else:
-                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
-        else:
-            import xmltomf
-            if cell:
-                xmltomf.xmltomf1(master or self.get_lft_master(), glyph)
-            else:
-                xmltomf.xmltomf1(master or self.get_lft_master(), *list(glyphs))
-
-        write_glyph_list(master or self.get_lft_master())
-        makefont_single(master or self.get_lft_master(), cell=cell)
-
     def call_metapost(self, glyph_id):
         write_global_param(self.get_project())
 
@@ -244,7 +185,7 @@ class Glyph(app.page):
                                                'id': x.name}, glyphs))
 
 
-class Project(app.page, GlyphPageMixin):
+class Project(app.page):
 
     path = '/editor/project/'
 
@@ -260,34 +201,24 @@ class Project(app.page, GlyphPageMixin):
 
         masters = project.get_ordered_masters()
 
-        self.set_masters(masters)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-
         resultmasters = []
+
+        metapost = Metapost(project)
 
         for i, master in enumerate(masters):
 
             prepare_master_environment(master)
 
             if 'preload' not in x:
-                self.call_metapost_all_glyphs(master, cell='A')
+                metapost.execute_bulk(master)
             else:
                 if not x.get('glyph'):
-                    try:
-                        glyph = master.get_glyphs()[0]
-                    except IndexError:
-                        raise web.notfound()
+                    glyph = master.get_glyphs().first()
                 else:
-                    try:
-                        glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph)[0]
-                    except IndexError:
-                        raise web.notfound()
-                self.call_metapost_single_glyph(master, glyph, cell='A')
+                    glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph).first()
+                metapost.execute_single(master, glyph)
 
             master_instancelog = project.get_instancelog(master.version, 'A')
-
             glyphsdata = get_edges_json(master_instancelog, master=master)
 
             metalabel = get_metapolation_label(chr(LABELS[i]))
@@ -298,22 +229,15 @@ class Project(app.page, GlyphPageMixin):
                                   'master_id': master.id})
 
         if 'preload' not in x:
-            self.call_metapost_all_glyphs(self.get_lft_master())
+            metapost.execute_interpolated_bulk(masters)
         else:
             if not x.get('glyph'):
-                try:
-                    glyph = self.get_lft_master().get_glyphs()[0]
-                except IndexError:
-                    raise web.notfound()
+                glyph = masters[0].get_glyphs().first()
             else:
-                try:
-                    glyph = self.get_lft_master().get_glyphs().filter(models.Glyph.name == x.glyph)[0]
-                except IndexError:
-                    raise web.notfound()
+                glyph = masters[0].get_glyphs().filter(models.Glyph.name == x.glyph).first()
+            metapost.execute_single(masters[0], glyph)
 
-            self.call_metapost_single_glyph(self.get_lft_master(), glyph)
-
-        instancelog = project.get_instancelog(self.get_lft_master().version)
+        instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
 
         import operator
@@ -339,7 +263,7 @@ class SwitchMFParser(app.page):
         raise seeother('/projects/')
 
 
-class EditorLocals(app.page, GlyphPageMixin):
+class EditorLocals(app.page):
 
     path = '/editor/locals/'
 
@@ -399,18 +323,15 @@ class EditorLocals(app.page, GlyphPageMixin):
 
         masters = project.get_ordered_masters()
 
-        self.set_masters(masters)
+        metapost = Metapost(project)
+        metapost.execute_interpolated_bulk(masters)
 
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-
-        self.call_metapost_all_glyphs(self.get_lft_master())
-        instancelog = project.get_instancelog(self.get_lft_master().version)
+        instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
 
         prepare_master_environment(master)
 
-        self.call_metapost_all_glyphs(master, cell='A')
+        metapost.execute_bulk(master)
         master_instancelog = project.get_instancelog(master.version, 'a')
 
         glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -533,7 +454,7 @@ class Projects(app.page):
         return render.projects(projects)
 
 
-class EditorCanvasReload(app.page, GlyphPageMixin):
+class EditorCanvasReload(app.page):
 
     path = '/editor/reload/'
 
@@ -558,18 +479,15 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
 
         masters = project.get_ordered_masters()
 
-        self.set_masters(masters)
+        metapost = Metapost(project)
 
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-
-        self.call_metapost_all_glyphs(self.get_lft_master())
-        instancelog = project.get_instancelog(self.get_lft_master().version)
+        metapost.execute_interpolated_bulk(masters)
+        instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
 
         prepare_master_environment(master)
 
-        self.call_metapost_all_glyphs(master, cell='A')
+        metapost.execute_bulk(master)
         master_instancelog = project.get_instancelog(master.version, 'a')
 
         glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -583,7 +501,7 @@ class EditorCanvasReload(app.page, GlyphPageMixin):
                                  'label': postdata.axislabel})
 
 
-class EditorCreateInstance(app.page, GlyphPageMixin):
+class EditorCreateInstance(app.page):
 
     path = '/editor/create-instance/'
 
@@ -597,12 +515,8 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
 
         masters = project.get_ordered_masters()
 
-        self.set_masters(masters)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-
-        self.call_metapost_all_glyphs(self.get_lft_master())
+        metapost = Metapost(project)
+        metapost.execute_interpolated_bulk(masters)
 
         instance = models.Instance.create(project_id=project.id)
 
@@ -620,37 +534,6 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
         return simplejson.dumps({})
 
 
-class EditorGetProjectAxes(app.page):
-
-    path = '/editor/project/(\d+)'
-
-    @raise404_notauthorized
-    def POST(self, project_id):
-        project = models.Project.get(id=project_id)
-        if not project:
-            raise web.notfound()
-
-        # masters = models.Master.filter(project_id=project.id, editable=True)
-        # masters = masters.order_by(models.Master.editor_ordering.asc())
-
-        if not project.masters:
-            masters = models.Master.filter(project_id=project.id)
-            project.masters = ','.join(map(lambda x: str(x.id), masters[:2]))
-            web.ctx.orm.commit()
-
-        masters = []
-        for p in project.masters.split(','):
-            for m in models.Master.filter(project_id=project.id):
-                if m.id == int(p):
-                    masters.append(m)
-                    break
-
-        masters = map(lambda x: int(x.id), unifylist(masters))
-        zipped = zip(masters[::2], masters[1::2])
-        return simplejson.dumps({'axes': map(list, zipped),
-                                 'project_id': project_id})
-
-
 def get_versions(project_id):
     masters = models.Master.filter(project_id=project_id)
     return map(lambda master: {'version': '{0:03d}'.format(master.version),
@@ -658,7 +541,7 @@ def get_versions(project_id):
                                'master_id': master.id}, masters)
 
 
-class EditorCreateMaster(app.page, GlyphPageMixin):
+class EditorCreateMaster(app.page):
 
     path = '/editor/create-master/'
 
@@ -714,8 +597,6 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
 
         masters = project.get_ordered_masters()
 
-        self.set_masters(masters)
-
         version = models.Master.max(models.Master.version,
                                     project_id=project.id)
 
@@ -723,14 +604,14 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
                                       version=(version + 1))
         prepare_master_environment(master)
 
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
+        metapost = Metapost(project)
+        metapost.execute_interpolated_bulk(masters)
 
-        self.call_metapost_all_glyphs(self.get_lft_master())
+        primary_master = masters[0]
 
-        master.name = self.get_lft_master().name
-        logpath = project.get_instancelog(version=self.get_lft_master().version)
-        for glyph in self.get_lft_master().get_glyphs():
+        master.name = primary_master.name
+        logpath = project.get_instancelog(version=primary_master.version)
+        for glyph in primary_master.get_glyphs():
             json = get_edges_json(logpath, glyph.name)
             if not json['edges']:
                 raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s' % logpath}))
@@ -798,7 +679,7 @@ def get_metapolation_label(c):
     return map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
 
 
-class EditorUploadZIP(app.page, GlyphPageMixin):
+class EditorUploadZIP(app.page):
 
     path = '/upload/'
 
@@ -891,46 +772,30 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
         project.masters = ','.join(map(str, masters))
         web.ctx.orm.commit()
 
-        glyph = models.Glyph.filter(master_id=master.id).first()
-
-        masters = project.get_ordered_masters()
-        self.set_masters(masters)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
+        metapost = Metapost(project)
 
         if x.glyph:
-            try:
-                glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph)[0]
-            except IndexError:
-                raise
+            glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph).first()
         else:
-            try:
-                glyph = master.get_glyphs()[0]
-            except IndexError:
-                raise
+            glyph = master.get_glyphs().first()
 
-        self.call_metapost_single_glyph(master, glyph, cell='A')
+        metapost.execute_single(master, glyph)
+
+        masters = project.get_ordered_masters()
+
         master_instancelog = project.get_instancelog(master.version, 'a')
         glyphsdata = get_edges_json(master_instancelog, master=master)
 
         if x.glyph:
-            try:
-                glyph = self.get_lft_master().get_glyphs().filter(models.Glyph.name == x.glyph)[0]
-            except IndexError:
-                raise
+            glyph = masters[0].get_glyphs().filter(models.Glyph.name == x.glyph).first()
         else:
-            try:
-                glyph = self.get_lft_master().get_glyphs()[0]
-            except IndexError:
-                raise
+            glyph = masters[0].get_glyphs().first()
 
-        self.call_metapost_single_glyph(self.get_lft_master(), glyph)
+        metapost.execute_interpolated_single(masters, glyph)
+
         instancelog = project.get_instancelog(master.version)
         metaglyphs = get_edges_json(instancelog)
         return simplejson.dumps({'project_id': project.id,
-                                 'master_id': master.id,
-                                 'master_name': master.name,
                                  'glyphname': glyph.name,
                                  'label': x.label,
                                  'metapolation': label,

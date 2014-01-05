@@ -104,6 +104,21 @@ Workspace.prototype = {
 
     setWorkspaceConfiguration: function(data) {
         this.run($.parseJSON(data));
+        $.ajax({
+            url: '/editor/project/',
+            type: 'GET',
+            data: {
+                project: this.urldata.project,
+                glyph: this.urldata.glyph || ''
+            }
+        })
+        .done(function(response) {
+            this.saveDataToStorage($.parseJSON(response));
+        }.bind(this));
+    },
+
+    saveDataToStorage: function(response) {
+        
     },
 
     getPositionByLabel: function(label) {
@@ -262,22 +277,26 @@ Workspace.prototype = {
         return result[0];
     },
 
-    addView: function(axes, data, master_id, versions, label) {
-        this.addInterpolationSlider(axes);
-
-        for (var k = 0; k < data.edges.length; k++) {
-            if (this.glyphlist.indexOf(data.edges[k].glyph) < 0) {
-                this.glyphlist.push(data.edges[k].glyph);
+    updateGlyphList: function(glyphs) {
+        for (var k = 0; k < glyphs.length; k++) {
+            if (this.glyphlist.indexOf(glyphs[k].glyph) < 0) {
+                this.glyphlist.push(glyphs[k].glyph);
 
                 var span = $('<span>');
                 span.append(
-                    $('<a>', {href: '#project/' + this.project_id + '/glyph/' + data.edges[k].glyph}).html(MFLIST[data.edges[k].glyph - 1])
+                    $('<a>', {href: '#project/' + this.project_id + '/glyph/' + glyphs[k].glyph}).html(MFLIST[glyphs[k].glyph - 1])
                 );
                 $('#glyph-switcher').append(span);
                 $('#glyph-switcher').append(" ");
             }
             $('#btn-show-glyphs').show();
         }
+    },
+
+    addView: function(axes, data, master_id, versions, label) {
+        this.addInterpolationSlider(axes);
+
+        this.updateGlyphList(data.edges);
 
         var edgedata = this.getEdgeData(data.edges);
 
