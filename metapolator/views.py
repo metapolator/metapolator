@@ -367,16 +367,21 @@ class EditorCanvasReload(app.page):
         web.ctx.orm.commit()
 
         masters = project.get_ordered_masters()
+        prepare_master_environment(masters[0])
+        prepare_master_environment(master)
 
         metapost = Metapost(project)
 
-        metapost.execute_interpolated_bulk()
+        glyphs = masters[0].get_glyphs()
+        glyphs = glyphs.filter(models.Glyph.name == postdata.glyphname)
+        metapost.execute_single(masters[0], glyphs.first())
+
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
 
-        prepare_master_environment(master)
-
-        metapost.execute_bulk(master)
+        glyphs = master.get_glyphs()
+        glyphs = glyphs.filter(models.Glyph.name == postdata.glyphname)
+        metapost.execute_single(master, glyphs.first())
         master_instancelog = project.get_instancelog(master.version, 'a')
 
         glyphsdata = get_edges_json(master_instancelog, master=master)

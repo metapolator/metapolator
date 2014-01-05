@@ -1,9 +1,9 @@
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 
-function View(element, glyphname, glyphdata) {
+function View(element, glyphdata) {
     this.element = element;
-    this.glyphname = glyphname;
+    this.glyphname = glyphdata.name;
 
     this.pointform = element.find('form.pointform');
     this.zpointdropdown = this.pointform.find('select#zpoint');
@@ -260,7 +260,7 @@ WorkspaceDocument.prototype = {
         $(this.workspace).show();
         $(this.interpolationsliders).show();
 
-        return new View(axis, glyphdata.glyph, glyphdata);
+        return new View(axis, glyphdata);
     },
 
     /*
