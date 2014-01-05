@@ -12,6 +12,10 @@ function dict_from_locationhash() {
 var Workspace = function() {
     this.htmldoc = new WorkspaceDocument(window.MFPARSER);
     this.urldata = dict_from_locationhash();
+    
+    var storage_ns = $.initNamespaceStorage('metapolator');
+    this.storage = storage_ns.localStorage;
+
     this.glyphlist = [];
 
     $('#btn-add-axes').on('click', function() {
@@ -122,19 +126,26 @@ Workspace.prototype = {
 
     saveDataToStorage: function(response) {
         this.updateGlyphList(response.glyphs);
-        if (typeof Storage == 'undefined') return;
 
         for (var k = 0; k < response.masters.length; k++) {
             var master = response.masters[k];
-            for (var j = 0; j < master.glyphs; j++) {
-                var glyph = master.glyphs[k];
-                var cachekey = 'masters:' + master.master_id + ':glyphs:' + glyph.name;
+            for (var j = 0; j < master.glyphs.length; j++) {
+                var glyph = master.glyphs[j];
+                var cachekey = 'master:' + master.master_id + ':glyph:' + glyph.name;
 
-                Storage.set(cachekey + ':zpoints', glyph.zpoints);
-                Storage.set(cachekey + ':contours', glyph.contours);
-                Storage.set(cachekey + ':width', width);
-                Storage.set(cachekey + ':height', height);
+                this.storage.set(cachekey + ':zpoints', glyph.zpoints);
+                this.storage.set(cachekey + ':contours', glyph.contours);
+                this.storage.set(cachekey + ':width', glyph.width);
+                this.storage.set(cachekey + ':height', glyph.height);
             }
+        }
+
+        for (var k = 0; k < response.metaglyphs.length; k++) {
+            var glyph = response.metaglyphs[k];
+            var cachekey = 'meta:glyph:' + glyph.name
+            this.storage.set(cachekey + ':contours', glyph.contours);
+            this.storage.set(cachekey + ':width', glyph.width);
+            this.storage.set(cachekey + ':height', glyph.height);
         }
     },
 
