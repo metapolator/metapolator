@@ -56,20 +56,26 @@ def create_glyph(glif, master):
                 continue
             setattr(glyphparam, attr, point.attrib[attr])
         web.ctx.orm.commit()
+    return glyph
 
 
-def put_font_all_glyphs(master, glyphid=None):
+def put_font_all_glyphs(master, glyph=None, preload=False):
     fontpath = op.join(master.get_ufo_path(), 'glyphs')
 
     charlista = [f for f in os.listdir(fontpath)]
 
+    if glyph:
+        charlista = filter(lambda f: f == '%s.glif' % glyph, charlista)
+
+    if preload and charlista:
+        charlista = [charlista[0]]
+
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
-        if not glyphName or glyphName.startswith('.'):
+        if not glyphName or glyphName.startswith('.') or ext not in ["glif"]:
             continue
-        if ext in ["glif"] and (not glyphid or glyphid == glyphName):
-            glif = etree.parse(op.join(fontpath, ch1))
-            create_glyph(glif, master)
+        glif = etree.parse(op.join(fontpath, ch1))
+        create_glyph(glif, master)
 
 
 def dopair(pair):
@@ -96,7 +102,6 @@ def unifylist(masters):
 
 
 def get_edges_json(log_filename, glyphid=None, master=None):
-    result = {'edges': []}
     try:
         fp = open(log_filename)
         content = fp.read()
@@ -104,7 +109,7 @@ def get_edges_json(log_filename, glyphid=None, master=None):
         return get_json(content, glyphid=glyphid, master=master)
     except (IOError, OSError):
         pass
-    return result
+    return []
 
 
 def get_edges_json_from_db(master, glyphid):

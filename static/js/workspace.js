@@ -103,7 +103,7 @@ Workspace.prototype = {
             url: '/editor/project/',
             type: 'GET',
             data: {project: this.urldata.project,
-                   glyph: this.urldata.glyph || '', preload: true}
+                   glyph: this.urldata.glyph || ''}
         }).done(this.setWorkspaceConfiguration.bind(this));
     },
 
@@ -178,10 +178,24 @@ Workspace.prototype = {
         }.bind(this));
     },
 
+    startLoadingMasterProgress: function(project_id, master_id, task_id) {
+        var args = {'master_id': master_id, 'project_id': project_id, 'task_id': task_id || ''};
+        $.ajax({url: "/a/master/loading", type: "POST", dataType: "text",
+                data: $.param(args)})
+        .done(function(response){
+            var data = $.parseJSON(response);
+            if (!data.done) {
+                window.setTimeout(this.startLoadingMasterProgress.bind(this, project_id, master_id, data.task_id), 3000);
+            }
+        }.bind(this));
+    },
+
     /*
      * Called when user uploaded ZIP file with UFO inside
      */
     dataUploaded: function(data) {
+        this.startLoadingMasterProgress(data.project_id, data.master_id);
+
         if (!this.project_id) {
             location.hash = '#project/' + data.project_id;
             this.project_id = data.project_id;

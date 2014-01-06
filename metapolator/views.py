@@ -20,10 +20,12 @@ import simplejson
 from web import seeother
 from passlib.hash import bcrypt
 
-from config import app, is_loggedin, session, working_dir, \
+import metapolator.tasks as tasks
+
+from metapolator.config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
-from forms import RegisterForm, LocalParamForm, PointParamExtendedForm
-from tools import put_font_all_glyphs, get_edges_json
+from metapolator.forms import RegisterForm, LocalParamForm, PointParamExtendedForm
+from metapolator.tools import put_font_all_glyphs, get_edges_json
 from metapolator.metapost import Metapost
 
 
@@ -514,13 +516,13 @@ class EditorCreateMaster(app.page):
         logpath = project.get_instancelog(version=primary_master.version)
         for glyph in primary_master.get_glyphs():
             json = get_edges_json(logpath, glyph.name)
-            if not json['edges']:
+            if not json:
                 raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s' % logpath}))
 
             zpoints = glyph.get_zpoints()
 
             points = []
-            for i, contourpoints in enumerate(json['edges'][0]['contours']):
+            for i, contourpoints in enumerate(json[0]['contours']):
                 if not contourpoints:
                     raise web.badrequest(simplejson.dumps({'error': 'could not find any points in contour for instance in %s' % logpath}))
                 metapost_points = []
@@ -659,7 +661,7 @@ class EditorUploadZIP(app.page):
 
             prepare_master_environment(master)
 
-            put_font_all_glyphs(master)
+            put_font_all_glyphs(master, x.glyph, preload=True)
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
@@ -705,6 +707,37 @@ class EditorUploadZIP(app.page):
                                  'metaglyphs': metaglyphs,
                                  'version': '{0:03d}'.format(version),
                                  'versions': get_versions(master.project_id)})
+
+
+class MasterAsyncLoading(app.page):
+
+    path = '/a/master/loading'
+
+    @raise404_notauthorized
+    def POST(self):
+        x = web.input(master_id='', project_id='', task_id='')
+        project = models.Project.get(id=x.project_id)
+        if not project:
+            raise web.notfound()
+
+        master = models.Master.get(id=x.master_id)
+        if not master:
+            return web.notfound()
+
+        if x.task_id:
+            from celery.result import AsyncResult
+            from metapolator.config import celery
+            res = AsyncResult(x.task_id, backend=celery.backend)
+
+            if res.ready():
+                return simplejson.dumps({'done': True})
+            else:
+                return simplejson.dumps({'done': False, 'task_id': x.task_id})
+
+        asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
+                                                          web.ctx.user.id)
+        return simplejson.dumps({'done': False,
+                                 'task_id': asyncresult.task_id})
 
 
 class Specimen(app.page):
