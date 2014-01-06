@@ -110,6 +110,10 @@ Workspace.prototype = {
     setWorkspaceConfiguration: function(data) {
         this.run($.parseJSON(data));
 
+        this.requestGlyphList();
+    },
+
+    requestGlyphList: function() {
         // start request to retrive complete list of glyph data
         $.ajax({
             url: '/editor/glyphs/',
@@ -186,6 +190,8 @@ Workspace.prototype = {
             var data = $.parseJSON(response);
             if (!data.done) {
                 window.setTimeout(this.startLoadingMasterProgress.bind(this, project_id, master_id, data.task_id), 3000);
+            } else {
+                this.requestGlyphList();
             }
         }.bind(this));
     },
