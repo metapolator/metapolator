@@ -106,6 +106,12 @@ This should give you a local web server you can visit with Chrome:
 [http://0.0.0.0:8080/](http://0.0.0.0:8080/)
 ```
 
+Start celery server
+
+```
+$ .venv/bin/celery -A metapolator.tasks worker --loglevel=info
+```
+
 ### Deployment
 
 Install supervisor and nginx
