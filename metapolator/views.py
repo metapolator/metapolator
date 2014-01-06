@@ -105,13 +105,10 @@ class Project(app.page):
 
             prepare_master_environment(master)
 
-            if 'preload' not in x:
-                metapost.execute_bulk(master)
-            else:
-                glyphs = master.get_glyphs()
-                if x.get('glyph'):
-                    glyphs = glyphs.filter(models.Glyph.name == x.glyph)
-                metapost.execute_single(master, glyphs.first())
+            glyphs = master.get_glyphs()
+            if x.get('glyph'):
+                glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+            metapost.execute_single(master, glyphs.first())
 
             master_instancelog = project.get_instancelog(master.version, 'A')
             glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -123,13 +120,10 @@ class Project(app.page):
                                  'metapolation': metalabel,
                                  'master_id': master.id})
 
-        if 'preload' not in x:
-            metapost.execute_interpolated_bulk()
-        else:
-            glyphs = masters[0].get_glyphs()
-            if x.get('glyph'):
-                glyphs = glyphs.filter(models.Glyph.name == x.glyph)
-            metapost.execute_interpolated_single(glyphs.first())
+        glyphs = masters[0].get_glyphs()
+        if x.get('glyph'):
+            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+        metapost.execute_interpolated_single(glyphs.first())
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
@@ -138,17 +132,32 @@ class Project(app.page):
         masters = map(operator.attrgetter('id', 'version'),
                       models.Master.filter(project_id=project.id))
 
-        glyphs = models.Glyph.filter(project_id=project.id)
-        glyphs = glyphs.group_by(models.Glyph.name)
-        glyphs = glyphs.order_by(models.Glyph.name.asc())
-
-        glyphs_list = map(operator.attrgetter('name'), glyphs)
-        return simplejson.dumps({'glyphs': glyphs_list,
-                                 'masters': masters_list,
+        return simplejson.dumps({'masters': masters_list,
                                  'versions': get_versions(project.id),
                                  'metaglyphs': metaglyphs,
                                  'mode': project.mfparser,
                                  'project_id': project.id})
+
+
+class GlyphList(app.page):
+
+    path = '/editor/glyphs/'
+
+    @raise404_notauthorized
+    def GET(self):
+        x = web.input(project=0)
+
+        project = models.Project.get(id=x.project)
+        if not project:
+            raise web.notfound()
+
+        glyphs = models.Glyph.filter(project_id=project.id)
+        glyphs = glyphs.group_by(models.Glyph.name)
+        glyphs = glyphs.order_by(models.Glyph.name.asc())
+
+        import operator
+        glyphs_list = map(operator.attrgetter('name'), glyphs)
+        return simplejson.dumps({'glyphs': glyphs_list})
 
 
 def mime_type(filename):
