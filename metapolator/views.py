@@ -7,6 +7,7 @@
 # GPL v3 (http: //www.gnu.org/copyleft/gpl.html).
 
 """ Basic metafont point interface using webpy  """
+import datetime
 import mimetypes
 import models
 import os
@@ -732,12 +733,19 @@ class MasterAsyncLoading(app.page):
             res = AsyncResult(x.task_id, backend=celery.backend)
 
             if res.ready():
+                master.task_completed = True
+                web.ctx.orm.commit()
                 return simplejson.dumps({'done': True})
             else:
+                master.task_updated = datetime.datetime.now()
+                web.ctx.orm.commit()
                 return simplejson.dumps({'done': False, 'task_id': x.task_id})
 
         asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
                                                           web.ctx.user.id)
+        master.task_id = asyncresult.task_id
+        master.task_created = datetime.datetime.now()
+        web.ctx.orm.commit()
         return simplejson.dumps({'done': False,
                                  'task_id': asyncresult.task_id})
 

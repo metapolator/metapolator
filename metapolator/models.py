@@ -4,6 +4,12 @@ import os.path as op
 import re
 import web
 
+if __name__ == "__main__":
+    import sys
+    PATH = op.dirname(op.abspath(__file__))
+    sys.path.append(op.join(PATH, '..'))
+
+
 from sqlalchemy import Column, Integer, String, Text, Enum, Float, \
     Boolean, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -176,6 +182,11 @@ class Master(Base, UserQueryMixin):
     name = Column(String(128), default='')
 
     project = relationship('Project', backref='projects')
+
+    task_id = Column(String(128), default='')
+    task_created = Column(DateTime)
+    task_completed = Column(Boolean, default=False)
+    task_updated = Column(DateTime)
 
     def get_glyphs(self):
         return Glyph.filter(master_id=self.id).order_by(Glyph.name.asc())
