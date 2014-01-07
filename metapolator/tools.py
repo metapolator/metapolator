@@ -180,13 +180,13 @@ def get_json(content, glyphid=None, master=None):
                 handleIn_X = match.group(5)
                 handleIn_Y = match.group(6)
 
-                x_min = min(x_min, float(X),
+                x_min = min(x_min, x_max, float(X),
                             float(handleOut_X), float(handleIn_X))
-                y_min = min(y_min, float(Y),
+                y_min = min(y_min, y_max, float(Y),
                             float(handleOut_Y), float(handleIn_Y))
-                x_max = max(x_max, float(X),
+                x_max = max(x_max, x_min, float(X),
                             float(handleOut_X), float(handleIn_X))
-                y_max = max(y_max, float(Y),
+                y_max = max(y_max, y_min, float(Y),
                             float(handleOut_Y), float(handleIn_Y))
 
             if handleIn_X and handleIn_Y:
@@ -195,12 +195,32 @@ def get_json(content, glyphid=None, master=None):
 
             contours.append(_contours)
 
-        width = abs(x_max) - abs(x_min)
-        height = abs(y_max) - abs(y_min)
-
         zpoints = []
         if master:
             zpoints = get_edges_json_from_db(master, glyph)
+
+            g = Glyph.get(master_id=master.id, name=glyph)
+            maxx, minx = GlyphOutline.minmax(GlyphOutline.x, glyph_id=g.id)[0]
+            maxy, miny = GlyphOutline.minmax(GlyphOutline.y, glyph_id=g.id)[0]
+
+            if maxx is not None and minx is not None and maxy is not None and miny is not None:
+                x_min = min(x_min, minx, x_max, maxx)
+                x_max = max(x_min, minx, x_max, maxx)
+                y_min = min(y_max, maxy, y_min, miny)
+                y_max = max(y_max, maxy, y_min, miny)
+
+        if x_min < 0:
+            width = abs(x_max) + abs(x_min)
+        else:
+            width = abs(x_max)
+
+        if y_min < 0:
+            height = abs(y_max) + abs(y_min)
+        else:
+            height = abs(y_max)
+
+        print 'Width:', width, 'Height:', height
+
         glyphs.append({'name': glyph, 'contours': contours,
                        'zpoints': zpoints, 'width': width, 'height': height})
 

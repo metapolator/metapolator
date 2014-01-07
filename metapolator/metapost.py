@@ -45,7 +45,6 @@ class Metapost:
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=working_dir()
         )
 
-        print '----------------------------------METAPOST'
         while True:
             line = process.stdout.readline()
             if not line or '<to be read again>' in line:

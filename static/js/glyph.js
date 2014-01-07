@@ -1,4 +1,4 @@
-var Y_OFFSET = 160;
+var Y_OFFSET = 0;
 
 var Graph = function() {}
 
@@ -6,6 +6,7 @@ var Graph = function() {}
 Graph.createCanvas = function(canvas, size) {
     var width = $($(canvas).parent()).outerWidth();
 
+    console.log(size);
     var ratio = size.width / size.height;
     var height = Math.round(width / ratio);
 
@@ -98,12 +99,16 @@ PaperJSGraph.prototype = {
 
     restore_original_coords: function(x, y) {
         var element = this.getElement();
-        return Graph.resize(x, y - Y_OFFSET, $(element).attr('width'), $(element).attr('height') - 50, this.size.width, this.size.height);
+        return Graph.resize(x, y - Y_OFFSET, $(element).attr('width'), $(element).attr('height'), this.size.width, this.size.height);
     },
 
-    getPoint: function(x, y) {
+    getPoint: function(x, y, reverted) {
         var element = this.getElement();
-        var r = Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width'), $(element).attr('height') - 50);
+        if (reverted) {
+            y = this.size.height - y;
+        }
+        var r = Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width'), $(element).attr('height'));
+
         return new this.ppscope.Point(r.x, r.y);
     },
 
@@ -121,8 +126,7 @@ PaperJSGraph.prototype = {
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
             var point = points[k];
-
-            var ppoint = this.getPoint(Number(point.x), $(element).attr('height') - Number(point.y));
+            var ppoint = this.getPoint(Number(point.x), Number(point.y), true);
             ppoint.y += +Y_OFFSET;
             console.log(JSON.stringify(ppoint));
 
@@ -191,7 +195,7 @@ PaperJSGraph.prototype = {
             return;
 
         var element = this.getElement();
-        var zpoint = this.getPoint(Number(point.x), this.getElementHeight() - Number(point.y));
+        var zpoint = this.getPoint(Number(point.x), Number(point.y), true);
         zpoint.y += +Y_OFFSET;
 
         var spoint = this.getElementPoint(zpoint);
@@ -280,7 +284,7 @@ Glyph.prototype = {
 
         var data = {
             x: Math.round(xycoord.x),
-            y: this.graph.getElementHeight() - Math.round(xycoord.y),
+            y: this.graph.size.height - Math.round(xycoord.y),
             data: pointform_data.data
         };
         if (isdragged) {
