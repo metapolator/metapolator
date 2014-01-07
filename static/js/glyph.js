@@ -87,19 +87,15 @@ PaperJSGraph.prototype = {
 
     firedMouseDrag: function(event) {
         if (!this.selectedzpoint) {
-            event.delta.x = -event.delta.x;
-            event.delta.y = -event.delta.y;
-            this.ppscope.view.scrollBy(event.delta);
+            var vectorX = event.delta.x > 0 ? -2 : (event.delta.x == 0 ? 0 : 2);
+            var vectorY = event.delta.y > 0 ? -2 : (event.delta.y == 0 ? 0 : 2);
+            this.ppscope.view.scrollBy(new this.ppscope.Point(vectorX, vectorY));
             return;
         }
         this.selectedzpoint.segment.path.position = event.point;
         this.selectedzpoint.label.point = event.point;
         this.box.position = event.point;
         this.isdragged = true;
-
-        if (event.point.x < 0) {
-            this.ppscope.view.scrollBy(new this.ppscope.Point(-10, 0));
-        }
     },
 
     firedMouseUp: function(event) {

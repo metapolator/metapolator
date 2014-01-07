@@ -115,7 +115,6 @@ class Project(app.page):
             metapost.execute_single(master, glyphs.first())
 
             master_instancelog = project.get_instancelog(master.version, 'a')
-            print '1. ', master_instancelog
             glyphsdata = get_edges_json(master_instancelog, master=master)
 
             metalabel = get_metapolation_label(chr(LABELS[i]))
@@ -125,10 +124,10 @@ class Project(app.page):
                                  'metapolation': metalabel,
                                  'master_id': master.id})
 
-        glyphs = masters[0].get_glyphs()
-        if x.get('glyph'):
-            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
-        metapost.execute_interpolated_single(glyphs.first())
+        # glyphs = masters[0].get_glyphs()
+        # if x.get('glyph'):
+        #     glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+        # metapost.execute_interpolated_single(glyphs.first())
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
