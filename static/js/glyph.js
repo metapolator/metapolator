@@ -51,14 +51,6 @@ var PaperJSGraph = function(size, paperscope) {
             event.item.selected = true;
         }
     }.bind(this);
-
-    this.box = new this.ppscope.Path.Rectangle(new this.ppscope.Point(35, 35),
-                                               new this.ppscope.Size(35, 35));
-
-    this.box.style = {
-        strokeColor: 'red',
-        strokeWidth: '1'
-    };
 }
 
 
@@ -78,7 +70,6 @@ PaperJSGraph.prototype = {
             var p = this.zpoints[k].segment.point;
             if (p.getDistance(event.point) < 5) {
                 this.selectedzpoint = this.zpoints[k];
-                this.box.position = event.point;
                 this.isdragged = false;
                 return;
             };
@@ -94,7 +85,6 @@ PaperJSGraph.prototype = {
         }
         this.selectedzpoint.segment.path.position = event.point;
         this.selectedzpoint.label.point = event.point;
-        this.box.position = event.point;
         this.isdragged = true;
     },
 
@@ -168,7 +158,6 @@ PaperJSGraph.prototype = {
                 this.selectedzpoint = this.zpoints[k];
                 this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
                 this.selectedzpoint.label.point = new this.ppscope.Point(x, y);
-                this.box.position = this.zpoints[k].segment.point;
                 this.isdragged = false;
                 return;
             }

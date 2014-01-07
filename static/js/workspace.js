@@ -189,6 +189,7 @@ Workspace.prototype = {
         .done(function(response){
             var data = $.parseJSON(response);
             if (!data.done) {
+                this.requestGlyphList();
                 window.setTimeout(this.startLoadingMasterProgress.bind(this, project_id, master_id, data.task_id), 3000);
             } else {
                 this.requestGlyphList();

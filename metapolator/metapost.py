@@ -20,8 +20,8 @@ class Metapost:
         dirnamep1 = op.join(fontdirectory, "glyphs")
 
         charlist1 = [f for f in os.listdir(dirnamep1)]
-        # if glyphname:
-        #     charlist1 = filter(lambda f: f == '%s.mf' % glyphname, charlist1)
+        if glyphname:
+            charlist1 = filter(lambda f: f == '%s.mf' % glyphname, charlist1)
 
         for ch1 in charlist1:
             fnb, ext = buildfname(ch1)
@@ -108,7 +108,7 @@ class Metapost:
             import xmltomf_new_2axes as xmltomf
             xmltomf.xmltomf1(master, glyph)
 
-        self.write_glyph_list(master, glyph)
+        self.write_glyph_list(master, glyph.name)
         self._execute(master)
 
     def interpolated_metafont_generate(self, masters, *args):
