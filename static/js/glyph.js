@@ -45,6 +45,12 @@ var PaperJSGraph = function(size, paperscope) {
     this.tool.onMouseDown = this.firedMouseDown.bind(this);
     this.tool.onMouseUp = this.firedMouseUp.bind(this);
     this.tool.onMouseDrag = this.firedMouseDrag.bind(this);
+    this.tool.onMouseMove = function(event) {
+        this.ppscope.project.activeLayer.selected = false;
+        if (event.item) {
+            event.item.selected = true;
+        }
+    }.bind(this);
 
     this.box = new this.ppscope.Path.Rectangle(new this.ppscope.Point(35, 35),
                                                new this.ppscope.Size(35, 35));
@@ -81,12 +87,19 @@ PaperJSGraph.prototype = {
 
     firedMouseDrag: function(event) {
         if (!this.selectedzpoint) {
+            event.delta.x = -event.delta.x;
+            event.delta.y = -event.delta.y;
+            this.ppscope.view.scrollBy(event.delta);
             return;
         }
         this.selectedzpoint.segment.path.position = event.point;
         this.selectedzpoint.label.point = event.point;
         this.box.position = event.point;
         this.isdragged = true;
+
+        if (event.point.x < 0) {
+            this.ppscope.view.scrollBy(new this.ppscope.Point(-10, 0));
+        }
     },
 
     firedMouseUp: function(event) {
