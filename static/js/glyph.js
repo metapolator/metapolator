@@ -1,4 +1,4 @@
-var Y_OFFSET = 0;
+var MARGIN = 20;
 
 var Graph = function() {}
 
@@ -99,7 +99,7 @@ PaperJSGraph.prototype = {
 
     restore_original_coords: function(x, y) {
         var element = this.getElement();
-        return Graph.resize(x, y - Y_OFFSET, $(element).attr('width'), $(element).attr('height'), this.size.width, this.size.height);
+        return Graph.resize(x - MARGIN, y - MARGIN, $(element).attr('width') - MARGIN * 2, $(element).attr('height') - MARGIN * 2, this.size.width, this.size.height);
     },
 
     getPoint: function(x, y, reverted) {
@@ -107,7 +107,7 @@ PaperJSGraph.prototype = {
         if (reverted) {
             y = this.size.height - y;
         }
-        var r = Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width'), $(element).attr('height'));
+        var r = Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width') - MARGIN * 2, $(element).attr('height') - MARGIN * 2);
 
         return new this.ppscope.Point(r.x, r.y);
     },
@@ -127,7 +127,8 @@ PaperJSGraph.prototype = {
         for (var k = 0; k < points.length; k++) {
             var point = points[k];
             var ppoint = this.getPoint(Number(point.x), Number(point.y), true);
-            ppoint.y += +Y_OFFSET;
+            ppoint.y += +MARGIN;
+            ppoint.x += + MARGIN;
             console.log(JSON.stringify(ppoint));
 
             var handleIn = this.getPoint(Number(point.controls[0].x) - Number(point.x),
@@ -196,7 +197,8 @@ PaperJSGraph.prototype = {
 
         var element = this.getElement();
         var zpoint = this.getPoint(Number(point.x), Number(point.y), true);
-        zpoint.y += +Y_OFFSET;
+        zpoint.y += +MARGIN;
+        zpoint.x += +MARGIN;
 
         var spoint = this.getElementPoint(zpoint);
         var text = this.getPointLabel(zpoint, point.data.pointname);
