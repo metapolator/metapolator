@@ -195,8 +195,8 @@ def get_json(content, glyphid=None, master=None):
 
             contours.append(_contours)
 
-        width = abs(x_max - x_min)
-        height = abs(y_max - y_min)
+        width = abs(x_max) - abs(x_min)
+        height = abs(y_max) - abs(y_min)
 
         zpoints = []
         if master:

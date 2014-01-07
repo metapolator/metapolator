@@ -13,13 +13,15 @@ class Metapost:
         self.mfparser = project.mfparser
         self.project = project
 
-    def write_glyph_list(self, master):
+    def write_glyph_list(self, master, glyphname=None):
         fontdirectory = master.get_fonts_directory()
 
         ifile = open(op.join(fontdirectory, "glyphlist.mf"), "w")
         dirnamep1 = op.join(fontdirectory, "glyphs")
 
         charlist1 = [f for f in os.listdir(dirnamep1)]
+        # if glyphname:
+        #     charlist1 = filter(lambda f: f == '%s.mf' % glyphname, charlist1)
 
         for ch1 in charlist1:
             fnb, ext = buildfname(ch1)
@@ -28,7 +30,6 @@ class Metapost:
         ifile.close()
 
     def _execute(self, master, interpolated=False):
-        self.write_glyph_list(master)
         self.write_global_params()
 
         os.environ['MFINPUTS'] = master.get_fonts_directory()
@@ -44,6 +45,7 @@ class Metapost:
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=working_dir()
         )
 
+        print '----------------------------------METAPOST'
         while True:
             line = process.stdout.readline()
             if not line or '<to be read again>' in line:
@@ -65,6 +67,7 @@ class Metapost:
 
             self.interpolated_metafont_generate(masters, *_glyphs)
 
+        self.write_glyph_list(primary_master)
         self._execute(primary_master, interpolated=True)
 
     def execute_bulk(self, master):
@@ -80,6 +83,7 @@ class Metapost:
                 import xmltomf_new_2axes as xmltomf
             xmltomf.xmltomf1(master, glyph)
 
+        self.write_glyph_list(master)
         self._execute(master)
 
     def execute_interpolated_single(self, glyph):
@@ -93,6 +97,7 @@ class Metapost:
 
         self.interpolated_metafont_generate(masters, *_glyphs)
 
+        self.write_glyph_list(primary_master, glyph.name)
         self._execute(primary_master, interpolated=True)
 
     def execute_single(self, master, glyph):
@@ -104,6 +109,7 @@ class Metapost:
             import xmltomf_new_2axes as xmltomf
             xmltomf.xmltomf1(master, glyph)
 
+        self.write_glyph_list(master, glyph)
         self._execute(master)
 
     def interpolated_metafont_generate(self, masters, *args):
