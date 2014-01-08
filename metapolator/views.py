@@ -64,12 +64,10 @@ class GlyphPageMixin(object):
         metapost.execute_interpolated_single(glyph)
 
         instancelog = project.get_instancelog(masters[0].version)
-        print '1. ', instancelog
         M_glyphjson = get_edges_json(instancelog, glyphid)
 
         metapost.execute_single(master, glyph)
         instancelog = project.get_instancelog(master.version, 'a')
-        print '2. ', instancelog
         glyphjson = get_edges_json(instancelog, glyphid, master)
 
         return {'M': M_glyphjson, 'R': glyphjson, 'master_id': master.id}
