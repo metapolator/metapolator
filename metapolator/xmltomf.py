@@ -18,7 +18,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         master is an instance of models.Master
         glyph is an instance of models.Glyph
     """
-    if master.project.mfparser == 'controlpoints':
+    if session.get('mfparser', '') == 'controlpoints':
         import xmltomf_new
         return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
                                     stdout_fip=stdout_fip)
@@ -386,6 +386,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     startp = []
     startpval = []
 
+    pointshifted = []
+    pointshiftedval = []
+    B_pointshiftedval = []
+
+
     i = 1
 
     for item, param in fontb_outlines:
@@ -401,6 +406,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         ipenwidth = param.penwidth
         istartp = param.startp
 
+        ipointshifted = param.pointshifted
+
+
         if znamel and im == znamel.group(0):
             zzn.append(i)
             if istartp is not None:
@@ -415,6 +423,15 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             else:
                 penwidth.append("")
                 B_penwidthval.append(0)
+
+            if ipointshifted is not None:
+                ipointshiftedval = param.pointshifted
+                pointshifted.append("shifted")
+                B_pointshiftedval.append(ipointshiftedval)
+            else:
+                pointshifted.append("")
+                B_pointshiftedval.append(0)
+
 
 # reading Pen Positions Font A
 
@@ -539,10 +556,14 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("\n")
     fip.write( """% test new center (z) points""" )
 
-    mean = ['13','14','26','29','65','67','69','77','78','79','82','83','85','86','87','88','90','94','95','12','27','63','71','80','81','89','2','7','11','28','30','62','64','66','68','70','72','73','75','76','84','4','8','9','15','59','60','61','74','91','92','93']
-#des = ['12','27','63','71','80','81','89']
+    mean = ['198', '232', '136', '138', '244', '243', '249', '175', '200', '205', '151', '250', '255', '162', '216', '215', '213', '262', '268', '220', '150']
+    mean_acc = [ '264', '190', '163','234', '235', '236', '233', '144', '142', '143', '140', '141', '182', '183', '186', '184', '185', '201', '207', '206', '208', '139', '251', '164', '165', '166', '210', '252' ] 
+    #des = ['12','27','63','71','80','81','89']
+    asc = ['192', '148', '171', '180', '194', '265', '226', '159' ]
 #asc = ['2','7','11','28','30','62','64','66','68','70','72','73','75','76','84']
-    cap = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99', '100', '101', '102', '103', '104', '105', '106', '107', '108', '109', '110', '111', '112', '113', '114', '115', '116', '117', '118', '119', '120', '121', '122', '123', '124', '125', '126', '127', '128', '129', '130', '131', '132', '133', '134', '135', '136', '137', '138', '139', '140', '141', '142', '143', '144', '145', '146', '147', '148', '149', '150', '151', '152', '153', '154', '155', '156', '157', '158', '159', '160', '161', '162', '163', '164', '165', '166', '167', '168', '169', '170', '171', '172', '173', '174', '175', '176', '177', '178', '179', '180', '181', '182', '183', '184', '185', '186', '187', '188', '189', '190', '191', '192', '193', '194', '195', '196', '197', '198', '199', '200', '201', '202', '203', '204', '205', '206', '207', '208', '209', '210', '211', '212', '213', '214', '215', '216', '217', '218', '219', '220', '221', '222', '223', '224', '225', '226', '227', '228', '229', '230', '231', '232', '233', '234', '235', '236', '237', '238', '239', '240', '241', '242', '243', '244', '245', '246', '247', '248', '249', '250', '251', '252', '253', '254', '255', '256', '257', '258', '259', '260', '261', '262', '263', '264', '265', '266', '267', '268', '269', '270', '271', '272', '273', '274', '275', '276', '277', '278', '279', '280', '281', '282', '283', '284', '285', '286', '287', '288', '289', '290', '291', '292', '293', '294', '295', '296', '297', '298', '299', '300', '301', '302', '303', '304', '305', '306', '307', '308', '309', '310', '311', '312', '313', '314', '315', '316', '317', '318', '319', '320', '321', '322', '323', '324', '325', '326', '327', '328', '329', '330', '331', '332', '333', '334', '335', '336', '337', '338', '339', '340', '341', '342', '343', '344', '345', '346', '347', '348', '349', '350', '351', '352', '353', '354', '355', '356', '357', '358', '359', '360', '361', '362', '363', '364', '365', '366', '367', '368', '369', '370', '371', '372', '373', '374', '375', '376', '377', '378', '379', '380', '381', '382', '383', '384', '385', '386', '387', '388', '389', '390', '391', '392', '393', '394', '395', '396', '397', '398', '399', '400', '401', '402', '403', '404', '405', '406', '407', '408', '409', '410', '411', '412', '413', '414', '415', '416', '417', '418', '419', '420', '421', '422', '423', '424', '425', '426', '427', '428', '429', '430', '431', '432', '433', '434', '435', '436', '437', '438', '439', '440', '441', '442', '443', '444', '445', '446', '447', '448', '449', '450', '451', '452', '453', '454', '455', '456', '457', '458', '459', '460', '461', '462', '463', '464', '465', '466', '467', '468', '469', '470', '471', '472', '473', '474', '475', '476', '477', '478', '479', '480', '481', '482', '483', '484', '485', '486', '487', '488', '489', '490', '491', '492', '493', '494', '495', '496', '497', '498', '499', '500', '501', '502', '503', '504', '505', '506', '507', '508', '509', '510', '511', '512', '513', '514', '515', '516', '517', '518', '519', '520', '521', '522', '523', '524', '525', '526', '527', '528', '529', '530', '531', '532', '533', '534', '535', '536', '537', '538', '539', '540', '541', '542', '543', '544', '545', '546', '547', '548', '549', '550', '551', '552', '553', '554', '555', '556', '557', '558', '559', '560', '561', '562', '563', '564', '565', '566', '567', '568', '569', '570', '571', '572', '573', '574', '575', '576', '577', '578', '579', '580', '581', '582', '583', '584', '585', '586', '587', '588', '589', '590', '591', '592', '593', '594', '595', '596', '597', '598', '599', '600', '601', '602', '603', '604', '605', '606', '607', '608', '609', '610', '611', '612', '613', '614', '615', '616', '617', '618', '619', '620', '621', '622', '623', '624', '625', '626', '627', '628', '629', '630', '631', '632', '633', '634', '635', '636', '637', '638', '639', '640', '641', '642', '643', '644', '645', '646', '647', '648', '649', '650', '651', '652', '653', '654', '655', '656', '657', '658', '659', '660', '661', '662', '663', '664', '665', '666', '667', '668', '669', '670', '671', '672', '673', '674', '675', '676', '677', '678', '679', '680', '681', '682', '683', '684', '685', '686', '687', '688', '689', '690', '691', '692', '693', '694', '695', '696', '697', '698', '699', '700', '701', '702', '703', '704', '705', '706', '707', '708', '709', '710', '711', '712', '713', '714', '715', '716', '717', '718', '719', '720', '721', '722', '723', '724', '725', '726', '727', '728', '729', '730', '731', '732', '733' ]#box = ['4','8','9','15','59','60','61','74','91','92','93']
+#    cap = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99', '100', '101', '102', '103', '104', '105', '106', '107', '108', '109', '110', '111', '112', '113', '114', '115', '116', '117', '118', '119', '120', '121', '122', '123', '124', '125', '126', '127', '128', '129', '130', '131', '132', '133', '134', '135', '136', '137', '138', '139', '140', '141', '142', '143', '144', '145', '146', '147', '148', '149', '150', '151', '152', '153', '154', '155', '156', '157', '158', '159', '160', '161', '162', '163', '164', '165', '166', '167', '168', '169', '170', '171', '172', '173', '174', '175', '176', '177', '178', '179', '180', '181', '182', '183', '184', '185', '186', '187', '188', '189', '190', '191', '192', '193', '194', '195', '196', '197', '198', '199', '200', '201', '202', '203', '204', '205', '206', '207', '208', '209', '210', '211', '212', '213', '214', '215', '216', '217', '218', '219', '220', '221', '222', '223', '224', '225', '226', '227', '228', '229', '230', '231', '232', '233', '234', '235', '236', '237', '238', '239', '240', '241', '242', '243', '244', '245', '246', '247', '248', '249', '250', '251', '252', '253', '254', '255', '256', '257', '258', '259', '260', '261', '262', '263', '264', '265', '266', '267', '268', '269', '270', '271', '272', '273', '274', '275', '276', '277', '278', '279', '280', '281', '282', '283', '284', '285', '286', '287', '288', '289', '290', '291', '292', '293', '294', '295', '296', '297', '298', '299', '300', '301', '302', '303', '304', '305', '306', '307', '308', '309', '310', '311', '312', '313', '314', '315', '316', '317', '318', '319', '320', '321', '322', '323', '324', '325', '326', '327', '328', '329', '330', '331', '332', '333', '334', '335', '336', '337', '338', '339', '340', '341', '342', '343', '344', '345', '346', '347', '348', '349', '350', '351', '352', '353', '354', '355', '356', '357', '358', '359', '360', '361', '362', '363', '364', '365', '366', '367', '368', '369', '370', '371', '372', '373', '374', '375', '376', '377', '378', '379', '380', '381', '382', '383', '384', '385', '386', '387', '388', '389', '390', '391', '392', '393', '394', '395', '396', '397', '398', '399', '400', '401', '402', '403', '404', '405', '406', '407', '408', '409', '410', '411', '412', '413', '414', '415', '416', '417', '418', '419', '420', '421', '422', '423', '424', '425', '426', '427', '428', '429', '430', '431', '432', '433', '434', '435', '436', '437', '438', '439', '440', '441', '442', '443', '444', '445', '446', '447', '448', '449', '450', '451', '452', '453', '454', '455', '456', '457', '458', '459', '460', '461', '462', '463', '464', '465', '466', '467', '468', '469', '470', '471', '472', '473', '474', '475', '476', '477', '478', '479', '480', '481', '482', '483', '484', '485', '486', '487', '488', '489', '490', '491', '492', '493', '494', '495', '496', '497', '498', '499', '500', '501', '502', '503', '504', '505', '506', '507', '508', '509', '510', '511', '512', '513', '514', '515', '516', '517', '518', '519', '520', '521', '522', '523', '524', '525', '526', '527', '528', '529', '530', '531', '532', '533', '534', '535', '536', '537', '538', '539', '540', '541', '542', '543', '544', '545', '546', '547', '548', '549', '550', '551', '552', '553', '554', '555', '556', '557', '558', '559', '560', '561', '562', '563', '564', '565', '566', '567', '568', '569', '570', '571', '572', '573', '574', '575', '576', '577', '578', '579', '580', '581', '582', '583', '584', '585', '586', '587', '588', '589', '590', '591', '592', '593', '594', '595', '596', '597', '598', '599', '600', '601', '602', '603', '604', '605', '606', '607', '608', '609', '610', '611', '612', '613', '614', '615', '616', '617', '618', '619', '620', '621', '622', '623', '624', '625', '626', '627', '628', '629', '630', '631', '632', '633', '634', '635', '636', '637', '638', '639', '640', '641', '642', '643', '644', '645', '646', '647', '648', '649', '650', '651', '652', '653', '654', '655', '656', '657', '658', '659', '660', '661', '662', '663', '664', '665', '666', '667', '668', '669', '670', '671', '672', '673', '674', '675', '676', '677', '678', '679', '680', '681', '682', '683', '684', '685', '686', '687', '688', '689', '690', '691', '692', '693', '694', '695', '696', '697', '698', '699', '700', '701', '702', '703', '704', '705', '706', '707', '708', '709', '710', '711', '712', '713', '714', '715', '716', '717', '718', '719', '720', '721', '722', '723', '724', '725', '726', '727', '728', '729', '730', '731', '732', '733' ]#box = ['4','8','9','15','59','60','61','74','91','92','93']
+    cap_acc = ['209', '90', '108', '6', '91', '93', '92', '24', '25', '26', '23', '7', '2', '3', '60', '65', '66', '67', '68', '69', '42', '4', '44', '43', '41', '5']
+    cap = ['599', '598', '38', '33', '31', '107', '106', '101', '100', '1', '718', '716', '715', '713', '595', '597', '596', '610', '611', '616', '617', '615', '689', '688', '685', '687', '686', '498', '494', '495', '496', '492', '493', '22', '705', '700', '703', '89', '85', '586', '585', '623', '622', '621', '627', '626', '625', '624', '629', '628', '11', '13', '14', '19', '75', '74', '72', '79', '669', '668', '667', '666', '665', '664', '663', '662', '696', '697', '695', '698', '699', '499', '497', '604', '259', '731', '730', '500', '501', '630', '631', '632', '633', '634', '635', '636', '637', '638', '677', '670', '671', '263', '261', '260', '59', '57', '51', '53', '64', '117', '116', '112', '119', '118', '565', '566', '567', '724', '605', '606', '609', '49', '40', '488', '487']
 
     ggroup=""
     gggroup =""
@@ -551,9 +572,21 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         ggroup = 'xheight'
         gggroup = 'mean'
 
+    if g in cap_acc:
+        ggroup = 'capital_acc'
+        gggroup = 'cap_acc'
+
     if g in cap:
         ggroup = 'capital'
         gggroup = 'cap'
+
+    if g in mean_acc:
+        ggroup = 'xheight_acc'
+        gggroup = 'mean_acc'
+
+    if g in asc:
+        ggroup = 'ascender'
+        gggroup = 'asc'
 
     inattr=0
     ivn = 0
@@ -729,6 +762,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
 
         if pointshifted[i] != '':
+#            zeile = zeile + " shifted (" + str(pointshiftedval[i]) + " + metapolation * (" + str(B_pointshiftedval[i]) + " - " + str(pointshiftedval[i]) + "))"
             zeile = zeile + " shifted (" + str(pointshiftedval[i]) + ")"
 
         # if stemshift[i] != '':
@@ -920,7 +954,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 penshifted.append("shifted")
                 penshiftedvalB.append(ipenshiftedval)
 
-
+            else :
+                penshifted.append("")
+                penshiftedvalB.append("0,0")
 
 
 # reading font penstrokes Font A
@@ -1209,7 +1245,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 penshiftedval.append(ipenshiftedval)
             else :
                 penshifted.append("")
-                penshiftedval.append(0)
+                penshiftedval.append("0,0")
 
             if ioverx is not None :
                 ioverxval = param.overx
@@ -1302,7 +1338,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 dash = ""
 
             if penshifted[i] != "":
-                zeile += " shifted (" + str(penshiftedval[i]) + ")"
+                zeile += " shifted ((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + ")))"
 
             if overx[i] != "":
                 zeile += " shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - " + str(overxval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
@@ -1337,50 +1373,15 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             if dir[i] != "":
                 zeile += " {dir (" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"
 
-            # if tension[i] != "" and leftp2[i] != "":
-            #     if tensionB[i] != "":
-            #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{left}"
-            #     else:
-            #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{left}"
+#            if tensionand[i] != "" and dir2[i] != "":
 
-            # tabs here
-            if tensionand[i] != "" and downp2[i] != "":
-                if tensionandB[i] != "":
-                    zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "{down}"
-                else:
-                    zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandval[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "{down}"
-            else:
-                if downp2[i] != "":
-                    zeile = zeile + ' ... ' + downp2[i]
-                else:
-                    zeile = zeile
-
-                    ## tension and upp2
-
-                    # if tension[i] != "" and upp2[i] != "":
-                    #     if tensionB[i] != "":
-                    #         zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{up}"
-                    #     else:
-                    #         zeile = zeile + strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionval[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + "{up}"
-
-                    if tensionand[i] != "" and upp2[i] != "":
-                        if tensionandB[i] != "":
-                            zeile = zeile + strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "{up}"
-                        else:
-                            zeile = zeile + strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandval[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "{up}"
-                    else:
-                        if upp2[i] != "":
-                            zeile += ' ... ' + upp2[i]
-                        else:
-                            ## tension and dir2
-                            # if tension[i] != "" and dir2[i] != "":
-                            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
-
-                            if tensionand[i] != "" and dir2[i] != "":
-                                zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
-                            else:
-                                if dir2[i] != "":
-                                    zeile += " ... {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
+            if tensionand[i] != "":
+                zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo 
+          #      + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
+#                    else:
+#                        
+            if dir2[i] != "":
+                zeile += " ... {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
                                 # else:
                                 #     if tension[i] != "":
                                 #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
@@ -1407,8 +1408,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             if overdesc[i] != "":
                 zeile = zeile + " shifted (0, (A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) - " + str(overdescval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
 
+#            if penshifted[i] != "":
+ #               zeile = zeile + " shifted (" + str(penshiftedval[i]) + ")"
+
             if penshifted[i] != "":
-                zeile = zeile + " shifted (" + str(penshiftedval[i]) + ")"
+                zeile += " shifted ((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + ")))"
 
             # if tension[i] != ""and upp2[i] != "":
             #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{up}"
@@ -1461,8 +1465,11 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         i += 1
 
         # write final point with zzn[i + 1]
+#        if penshifted[i] != "":
+#            zeile += " shifted (" + str(penshiftedval[i]) + ")"
+
         if penshifted[i] != "":
-            zeile += " shifted (" + str(penshiftedval[i]) + ")"
+            zeile += " shifted ((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + ")))"
 
         if dir[i] != "":
             zeile += " {dir (" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"
@@ -1629,7 +1636,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     # reading Font A
 
     fip.write("\n")
-    fip.write("""% serifs """)
+    #fip.write("""% serifs """)
+    fip.write("if serifs :")
+
 #        if theta[i] != "":
     fip.write("\n") 
     fip.write("numeric theta[];")
@@ -1738,7 +1747,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
  #       fip.write("\n")
 
         if serif_h_bot[i] != "":
-            zeile += "fill serif_edge" + str(zitem) + " shifted (0,+slab) -- cycle;"  + "\n"
+            zeile += "fill serif_edge" + str(zitem) + " shifted (0,+slab) shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
  #       else:
   #          zeile = "" 
         else:
@@ -1750,7 +1759,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
  #       fip.write("\n")
 
             if serif_h_top[i] != "":
-                zeile += "fill serif_edge" + str(zitem) + " shifted (0,-slab) -- cycle;"  + "\n"
+                zeile += "fill serif_edge" + str(zitem) + " shifted (0,-slab) shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
  #       else:
   #          zeile = "" 
 
@@ -1765,7 +1774,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 #        fip.write("\n")
 
                 if serif_v_left[i] != "":
-                    zeile += "fill serif_edge" + str(zitem) + " shifted (+slab,0) -- cycle;"  + "\n"
+                    zeile += "fill serif_edge_v" + str(zitem) + " shifted (+slab,0) shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
  #       else:
  #            zeile = "" 
     #    else:
@@ -1777,12 +1786,17 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 #        fip.write(zeile)
 #        fip.write("\n")
 
+#                    if serif_v_right[i] != "":
+#                        zeile += "fill serif_edge" + str(zitem) + " shifted (0,0) shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
+
                     if serif_v_right[i] != "":
-                        zeile += "fill serif_edge" + str(zitem) + " shifted (-slab,0) -- cycle;"  + "\n"
+                        zeile += "fill serif_edge_v" + str(zitem) + " shifted (-slab,0)  shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
+
  #       else:
  #            zeile = "" 
 
     fip.write(zeile)
+    fip.write("fi;")
     fip.write("\n")
 
 
