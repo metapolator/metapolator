@@ -18,7 +18,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         master is an instance of models.Master
         glyph is an instance of models.Glyph
     """
-    if session.get('mfparser', '') == 'controlpoints':
+    if master.project.mfparser == 'controlpoints':
         import xmltomf_new
         return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
                                     stdout_fip=stdout_fip)
@@ -557,7 +557,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write( """% test new center (z) points""" )
 
     mean = ['198', '232', '136', '138', '244', '243', '249', '175', '200', '205', '151', '250', '255', '162', '216', '215', '213', '262', '268', '220', '150']
-    mean_acc = [ '264', '190', '163','234', '235', '236', '233', '144', '142', '143', '140', '141', '182', '183', '186', '184', '185', '201', '207', '206', '208', '139', '251', '164', '165', '166', '210', '252' ] 
+    mean_acc = [ '264', '190', '163','234', '235', '236', '233', '144', '142', '143', '140', '141', '182', '183', '186', '184', '185', '201', '207', '206', '208', '139', '251', '164', '165', '166', '210', '252' ]
     #des = ['12','27','63','71','80','81','89']
     asc = ['192', '148', '171', '180', '194', '265', '226', '159' ]
 #asc = ['2','7','11','28','30','62','64','66','68','70','72','73','75','76','84']
@@ -1376,10 +1376,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 #            if tensionand[i] != "" and dir2[i] != "":
 
             if tensionand[i] != "":
-                zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo 
+                zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
           #      + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
 #                    else:
-#                        
+#
             if dir2[i] != "":
                 zeile += " ... {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
                                 # else:
@@ -1545,7 +1545,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     theta = []
     thetaB = []
-    thetaval_B = []    
+    thetaval_B = []
     thetaval = []
 
     serif_h_bot = []
@@ -1632,7 +1632,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 serif_v_rightval_B.append(0)
 
     # passing val_B to Font A
-  
+
     # reading Font A
 
     fip.write("\n")
@@ -1640,9 +1640,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     fip.write("if serifs :")
 
 #        if theta[i] != "":
-    fip.write("\n") 
+    fip.write("\n")
     fip.write("numeric theta[];")
-    fip.write("\n")        
+    fip.write("\n")
 
     inattr = 0
     ivn = 0
@@ -1734,34 +1734,34 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     for i in range(len(zzn)):
         zitem = i + 1
 
-        
+
         if theta[i] != "":
             zeile += "theta" + str(zitem) + " := angle(" + str(thetaval[i]) + ");" + "\n"
 
  #       fip.write(zeile)
- #       fip.write("\n")        
+ #       fip.write("\n")
 
         if serif_h_bot[i] != "":
-            zeile += "serif_h (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_h_botval[i]) + ");" 
+            zeile += "serif_h (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_h_botval[i]) + ");"
  #       fip.write(zeile)
  #       fip.write("\n")
 
         if serif_h_bot[i] != "":
             zeile += "fill serif_edge" + str(zitem) + " shifted (0,+slab) shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
  #       else:
-  #          zeile = "" 
+  #          zeile = ""
         else:
-#            zeile = ""  
+#            zeile = ""
 
             if serif_h_top[i] != "":
-                zeile += "serif_h (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_h_topval[i]) + ");" 
+                zeile += "serif_h (" + str(zitem) + ", dist" + str(zitem) + ", theta" + str(zitem) + ", " + str(serif_h_topval[i]) + ");"
  #       fip.write(zeile)
  #       fip.write("\n")
 
             if serif_h_top[i] != "":
                 zeile += "fill serif_edge" + str(zitem) + " shifted (0,-slab) shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
  #       else:
-  #          zeile = "" 
+  #          zeile = ""
 
      #  else:
       #      zeile = ""
@@ -1776,7 +1776,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 if serif_v_left[i] != "":
                     zeile += "fill serif_edge_v" + str(zitem) + " shifted (+slab,0) shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
  #       else:
- #            zeile = "" 
+ #            zeile = ""
     #    else:
    #         zeile = ""
 
@@ -1793,7 +1793,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                         zeile += "fill serif_edge_v" + str(zitem) + " shifted (-slab,0)  shifted (" + str(penshiftedval[i]) + ") -- cycle;"  + "\n"
 
  #       else:
- #            zeile = "" 
+ #            zeile = ""
 
     fip.write(zeile)
     fip.write("fi;")
