@@ -239,14 +239,22 @@ class EditorLocals(app.page):
         masters = project.get_ordered_masters()
 
         metapost = Metapost(project)
-        metapost.execute_interpolated_bulk()
+
+        glyphs = masters[0].get_glyphs()
+        if x.get('glyph'):
+            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+        metapost.execute_interpolated_single(glyphs.first())
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
 
         prepare_master_environment(master)
 
-        metapost.execute_bulk(master)
+        glyphs = master.get_glyphs()
+        if x.get('glyph'):
+            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+        metapost.execute_single(master, glyphs.first())
+
         master_instancelog = project.get_instancelog(master.version, 'a')
 
         glyphsdata = get_edges_json(master_instancelog, master=master)

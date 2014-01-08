@@ -40,6 +40,7 @@ View.prototype = {
             listener: form,
             data: {
                 master_id: function() {return this.getMaster();}.bind(this), 
+                glyph: function() {return this.glyphname;}.bind(this),
                 axislabel: this.getLabel()
             },
             onFormSubmitted: this.onlocalparam_formsubmit.bind(this)
