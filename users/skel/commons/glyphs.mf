@@ -1,6 +1,18 @@
 %newinternal slant,fudge,math_spread,superness,superpull,beak_darkness,ligs;
 boolean square_dots,hefty,serifs,monospace,variant_g,low_asterisk,math_fitting;
 
+base#:=0.000pt#;
+on:=1;
+off:=0;
+
+mean_acc#:=5.000pt#;
+cap_acc#:=6.000pt#;
+
+A_xheight_acc:=5.00;
+A_capital_acc:=6.00;
+
+B_xheight_acc:=5.00;
+B_capital_acc:=6.00;
 
 def loggingall =                % puts tracing info into the log
 %  tracingcommands:=3; 
@@ -35,7 +47,8 @@ serif_darkness:=A_serif_darkness+metapolation*(B_serif_darkness-A_serif_darkness
 
 % for perfect curve use serif_darkness = 0.5; .. in def serif_bracket instead --
 
-serifs:=true;
+serifs:=false;
+
 
 def serif_h(suffix $)(expr breadth, theta , left_jut , right_jut, left, right ) = 
    % penpos$ (breadth /abs sind theta , 0);      % comment this if penpos already known 
@@ -48,12 +61,12 @@ def serif_h(suffix $)(expr breadth, theta , left_jut , right_jut, left, right ) 
 
 labels($a,$b,$c,$d,$e,$f) enddef;
 
-def serif_v(suffix $)(expr breadth, theta , right_jut ,left_jut, down, up  ) = 
+def serif_v(suffix $)(expr breadth, theta ,  right_jut, left_jut, down, up  ) = 
  %   penpos$ (whatever,whatever);      % comment this if penpos already known 
-    z$a- down - z$r = z$f - z$l  = (0.1bracket/abs sind theta) * dir theta;
-    x$c =x$d; 
+    z$a- down - z$r = z$f - z$l = bracket * dir theta;
+    x$d =x$c; 
     x$b =x$e =x$; 
-    x$b - x$c = if theta < 0 : - fi slab;
+    x$b - x$c = if theta < 0 : - fi - slab;
     y$b =y$c =y$r + right_jut; 
     y$d =y$e =y$l - left_jut;
  
@@ -62,9 +75,14 @@ labels($a,$b,$c,$d,$e,$f) enddef;
 def serif_edge suffix $ =
     (serif_bracket ($a, $l, $b) -- z$c -- z$d -- reverse serif_bracket($f, $r, $e)) enddef ;
 
+def serif_edge_v suffix $ =
+    (serif_bracket($a, $r, $b) -- z$c -- z$d -- reverse serif_bracket($f, $l, $e)) enddef ;
+
+
 def serif_bracket(suffix i, j, k) =
     (z.i{z.j - z.i} -- serif_darkness [z.j, .5[z.i, z.k] ]{z.k - z.i}
     -- z.k{z.k - z.j}) enddef;
+
 
 
 
@@ -82,7 +100,6 @@ mdescenderpt:=A_descenderpt+metapolation*(B_descenderpt-A_descenderpt);
 mskeleton:=A_skeleton+metapolation*(B_skeleton-A_skeleton);
 mover:=A_over+metapolation*(B_over-A_over);
 
-% this file contains all defenitions outside glyphs and extra parameters not listed on metaflop.com
 % py#:=px#;
 A_py#:=A_px#;
 B_py#:=B_px#;
@@ -120,7 +137,7 @@ define_pixels(s,u);
 define_pixels(px,py);
 define_pixels(A_px,A_py,A_skeleton);
 define_pixels(B_px,B_py,B_skeleton);
-define_good_y_pixels(mean,cap,asc,desc,box);
+define_good_y_pixels(mean,cap,asc,desc,box,base);
 
 vardef tanh(expr x) =
 numeric ee_;

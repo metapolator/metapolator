@@ -151,7 +151,7 @@ GLOBAL_DEFAULTS = {
     'fontsize': 10,
     'mean': 5,
     'cap': 6,
-    'ascl': 8,
+    'asc': 6.5,
     'desc': -2,
     'box': 10
 }
@@ -163,7 +163,7 @@ LOCAL_DEFAULTS = {
     'space': 0,
     'xheight': 5,
     'capital': 6,
-    'ascender': 8,
+    'ascender': 6.5,
     'descender': -2,
     'skeleton': 0,
     'over': 0,
@@ -202,7 +202,7 @@ def writeParams(project, filename, masters, is_concrete_master=False, metapolati
     fontsize = get_global_param(globalparam, 'fontsize')
     mean = get_global_param(globalparam, 'mean')
     cap = get_global_param(globalparam, 'cap')
-    ascl = get_global_param(globalparam, 'ascl')
+    asc = get_global_param(globalparam, 'asc')
     des = get_global_param(globalparam, 'des')
     box = get_global_param(globalparam, 'box')
 
@@ -227,7 +227,7 @@ def writeParams(project, filename, masters, is_concrete_master=False, metapolati
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
     ifile.write("mean#:=%.3fpt#;\n" % mean)
     ifile.write("cap#:=%.3fpt#;\n" % cap)
-    ifile.write("asc#:=%.3fpt#;\n" % ascl)
+    ifile.write("asc#:=%.3fpt#;\n" % asc)
     ifile.write("desc#:=%.3fpt#;\n" % des)
     ifile.write("box#:=%.3fpt#;\n" % box)
     ifile.write("u#:=%.3fpt#;\n" % unitwidth)
