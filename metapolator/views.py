@@ -7,6 +7,7 @@
 # GPL v3 (http: //www.gnu.org/copyleft/gpl.html).
 
 """ Basic metafont point interface using webpy  """
+import datetime
 import mimetypes
 import models
 import os
@@ -63,12 +64,10 @@ class GlyphPageMixin(object):
         metapost.execute_interpolated_single(glyph)
 
         instancelog = project.get_instancelog(masters[0].version)
-        print '1. ', instancelog
         M_glyphjson = get_edges_json(instancelog, glyphid)
 
         metapost.execute_single(master, glyph)
         instancelog = project.get_instancelog(master.version, 'a')
-        print '2. ', instancelog
         glyphjson = get_edges_json(instancelog, glyphid, master)
 
         return {'M': M_glyphjson, 'R': glyphjson, 'master_id': master.id}
@@ -238,14 +237,22 @@ class EditorLocals(app.page):
         masters = project.get_ordered_masters()
 
         metapost = Metapost(project)
-        metapost.execute_interpolated_bulk()
+
+        glyphs = masters[0].get_glyphs()
+        if x.get('glyph'):
+            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+        metapost.execute_interpolated_single(glyphs.first())
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
 
         prepare_master_environment(master)
 
-        metapost.execute_bulk(master)
+        glyphs = master.get_glyphs()
+        if x.get('glyph'):
+            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+        metapost.execute_single(master, glyphs.first())
+
         master_instancelog = project.get_instancelog(master.version, 'a')
 
         glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -732,12 +739,19 @@ class MasterAsyncLoading(app.page):
             res = AsyncResult(x.task_id, backend=celery.backend)
 
             if res.ready():
+                master.task_completed = True
+                web.ctx.orm.commit()
                 return simplejson.dumps({'done': True})
             else:
+                master.task_updated = datetime.datetime.now()
+                web.ctx.orm.commit()
                 return simplejson.dumps({'done': False, 'task_id': x.task_id})
 
         asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
                                                           web.ctx.user.id)
+        master.task_id = asyncresult.task_id
+        master.task_created = datetime.datetime.now()
+        web.ctx.orm.commit()
         return simplejson.dumps({'done': False,
                                  'task_id': asyncresult.task_id})
 

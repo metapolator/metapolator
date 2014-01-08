@@ -152,7 +152,7 @@ Workspace.prototype = {
             var master = data.masters[k];
 
             var axes = this.htmldoc.getOrCreateAxes(master.label);
-            if (!this.metapolationView) {
+            if (!this.metapolationView && data.metaglyphs.length) {
                 this.metapolationView = this.addView(axes, data.metaglyphs);
                 this.metapolationView.appendActionButtons({
                     onInstanceCreated: this.onInstanceCreated.bind(this),
@@ -213,14 +213,16 @@ Workspace.prototype = {
         axes.find('div[axis-label=' + data.label + ']').empty();
         var view = this.addView(axes, data.glyphs, data.master_id, data.versions, data.label);
 
-        if (!this.metapolationView) {
-            this.metapolationView = this.addView(axes, data.metaglyphs);
-            this.metapolationView.appendActionButtons({
-                onInstanceCreated: this.onInstanceCreated.bind(this),
-                onMasterCreated: this.onMasterCreated.bind(this)
-            });
-        } else {
-            this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
+        if (data.metaglyphs.length) {
+            if (!this.metapolationView) {
+                this.metapolationView = this.addView(axes, data.metaglyphs);
+                this.metapolationView.appendActionButtons({
+                    onInstanceCreated: this.onInstanceCreated.bind(this),
+                    onMasterCreated: this.onMasterCreated.bind(this)
+                });
+            } else {
+                this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
+            }
         }
 
         this.updateVersions(data.versions);
@@ -321,6 +323,10 @@ Workspace.prototype = {
     },
 
     addView: function(axes, data, master_id, versions, label) {
+        if (!data.length) {
+            return;
+        }
+
         this.addInterpolationSlider(axes);
 
         var edgedata = this.getEdgeData(data);
@@ -340,7 +346,9 @@ Workspace.prototype = {
         view.onGlyphChanged = function(view, data) {
             view.element.empty();
             this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
-            this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
+            if (data.metaglyphs.length) {
+                this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
+            }
         }.bind(this);
 
         view.getElement().removeClass('dropzone');
