@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/nprogress/css/nprogress.css" />
+    <style>
+    .dropzone:before {
+        content: "Drop archive with UFO here";
+    }
+
+    .demo-dropzone {
+    }
+    </style>
+</head>
+<body>
+    <div class="col-md-4 demo-dropzone">
+        drop here
+    </div>
+</body>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/jquery.filedrop.js"></script>
+<script type="text/javascript" src="/static/js/dropzone.js"></script>
+<script type="text/javascript" src="/static/nprogress/js/nprogress.js"></script>
+<script>
+    $(function(){
+        var element = $('.demo-dropzone');
+        element.on('upload', function(){
+            alert('successfully uploaded');
+        });
+
+        element.dropzone({label: 'a', master_id: 12, project_id: function(){return 3;}});
+    });
+</script>
+</html>

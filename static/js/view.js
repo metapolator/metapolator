@@ -1,24 +1,54 @@
 var AXES_PAIRS = [['A', 'B'], ['C', 'D'], ['E', 'F']];
 
 
-function View(element, glyphdata) {
-    this.element = element;
-    this.glyphname = glyphdata.name;
+function BaseView(element) {
+    this.element = $(element);
+}
 
-    this.pointform = element.find('form.pointform');
-    this.zpointdropdown = this.pointform.find('select#zpoint');
+BaseView.prototype = {
+    attachGlyph: function(glyphdata) {
+        this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
+        this.glyphname = glyphdata.name;
+    },
 
-    this.settingsform = $(element.find('.localparamform'));
+    getElement: function() {
+        return this.element;
+    },
 
-    this.zpointdropdown.on('change', this.onzpointselected.bind(this));
-    this.pointform.on('keydown', this.onpointformsubmit.bind(this));
+    getDrawing: function() {
+        return this.element.find('canvas')[0];
+    }
+}
 
-    this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
-    this.glyph.onZPointChanged = this.onzpointchange.bind(this);
+
+function View(element, master_id) {
+    this.element = $(element);
+    this.setMaster(master_id);
+
+    this.element.on('upload', function() {
+        // alert('ok');
+    });
+    this.element.dropzone({master_id: master_id,
+                           label: this.element.attr('axis-label')});
 }
 
 
 View.prototype = {
+
+    attachForms: function() {
+        this.pointform = this.element.find('form.pointform');
+        this.zpointdropdown = this.pointform.find('select#zpoint');
+        this.settingsform = this.element.find('.localparamform');
+
+        this.zpointdropdown.on('change', this.onzpointselected.bind(this));
+        this.pointform.on('keydown', this.onpointformsubmit.bind(this));
+    },
+
+    attachGlyph: function(glyphdata) {
+        this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
+        this.glyph.onZPointChanged = this.onzpointchange.bind(this);
+        this.glyphname = glyphdata.name;
+    },
 
     onzpointchange: function(glyph, zpoint) {
         this.onzpointdatachanged && this.onzpointdatachanged(glyph, zpoint);
@@ -262,6 +292,17 @@ WorkspaceDocument.prototype = {
         $(this.interpolationsliders).show();
 
         return new View(axis, glyphdata);
+    },
+
+    createView: function(axis, master_id) {
+        return new View(axis, master_id);
+    },
+
+    createMetapolationView: function() {
+        if (!this.axes.length)
+            return;
+        var axis = this.axes[0].find('div[axis-position=middle]')
+        return new BaseView(axis);
     },
 
     /*

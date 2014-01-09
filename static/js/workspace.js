@@ -148,26 +148,31 @@ Workspace.prototype = {
         this.project_id = this.urldata.project;
         this.htmldoc.setMode(data.mode);
 
-        for (var k = 0; k < data.masters.length; k++) {
-            var master = data.masters[k];
+        for (var k = 0; k < data.masters.length; k += 2) {
+            var axes = this.htmldoc.getOrCreateAxes(data.masters[k].label);
+            axes.find('.axis').each(function(index, axis_element){
+                
+                var view = this.htmldoc.createView(axis_element, data.masters[k].master_id);
+                this.htmldoc.appendAxisTabNavigation($(axis_element));
 
-            var axes = this.htmldoc.getOrCreateAxes(master.label);
-            if (!this.metapolationView && data.metaglyphs.length) {
-                this.metapolationView = this.addView(axes, data.metaglyphs);
-                this.metapolationView.appendActionButtons({
-                    onInstanceCreated: this.onInstanceCreated.bind(this),
-                    onMasterCreated: this.onMasterCreated.bind(this)
-                });
-            }
-            this.addView(axes, master.glyphs, master.master_id, data.versions, master.label);
+                view.attachForms();
+
+                var glyphdata = this.getEdgeData(data.masters[k + index].glyphs);
+                view.attachGlyph(glyphdata);
+                view.glyph.render(glyphdata.contours);
+
+            }.bind(this));
         }
 
-        new Dropzone($('.axis'), {
-            project_id: function() {return this.project_id || 0;}.bind(this),
-            glyph: function() {return this.glyphname || '';}.bind(this)
-        }, this.dataUploaded.bind(this));
+        this.metapolationView = this.htmldoc.createMetapolationView();
+        this.htmldoc.appendAxisSingleCanvas(this.metapolationView.getElement());
+
+        var glyphdata = this.getEdgeData(data.metaglyphs);
+        this.metapolationView.attachGlyph(glyphdata);
+        this.metapolationView.glyph.render(glyphdata.contours);
 
         $('#loading').hide();
+
     },
 
     onMasterCreated: function(donecallback) {
@@ -369,56 +374,6 @@ Workspace.prototype = {
             }, this.dataUploaded.bind(this));
         }.bind(this));
     }
-}
-
-
-var Dropzone = function(element, data, uploadFinished) {
-    $(element).each(function(i, element) {
-        var el = $(element)
-        if (!$.trim(el.html())) {
-            el.addClass('dropzone');
-        }
-    });
-
-    $.extend(data, {label: function(){
-        return this.dropzone_label || 'a';
-    }.bind(this)});
-
-    $(element).filedrop({
-        fallback_id: 'upload_button',
-        url: '/upload/',
-        paramname: 'ufofile',
-        withCredentials: true,
-
-        data: data,
-
-        drop: function(e) {
-            var target = $(e.target);
-            if (!target.hasClass('axis')) {
-                this.dropzone_label = target.parents('.axis').attr('axis-label');
-            } else {
-                this.dropzone_label = target.attr('axis-label');
-            }
-        }.bind(this),
-
-        dragOver: function(e) {
-            var target = e.target;
-            $(target).css('background', '#eee');
-        },
-
-        dragLeave: function(e) {
-            var target = e.target;
-            $(target).css('background', '#fff');
-        },
-
-        error: function(err, file) {
-            $('.dropzone').css('background', '#fff');
-        },
-
-        uploadFinished: function(i, file, response, time) {
-            uploadFinished && uploadFinished(response);
-        }
-    });
 }
 
 if (!String.format) {
