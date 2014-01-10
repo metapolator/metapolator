@@ -25,9 +25,10 @@ function View(element, master_id) {
     this.element = $(element);
     this.setMaster(master_id);
 
-    this.element.on('upload', function() {
-        // alert('ok');
-    });
+    this.element.on('upload', function(e, response) {
+        this.onfileuploaded && this.onfileuploaded(this, response);
+    }.bind(this));
+
     this.element.dropzone({master_id: master_id,
                            label: this.element.attr('axis-label')});
 }

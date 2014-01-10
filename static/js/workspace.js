@@ -151,28 +151,53 @@ Workspace.prototype = {
         for (var k = 0; k < data.masters.length; k += 2) {
             var axes = this.htmldoc.getOrCreateAxes(data.masters[k].label);
             axes.find('.axis').each(function(index, axis_element){
-                
-                var view = this.htmldoc.createView(axis_element, data.masters[k].master_id);
-                this.htmldoc.appendAxisTabNavigation($(axis_element));
-
-                view.attachForms();
-
-                var glyphdata = this.getEdgeData(data.masters[k + index].glyphs);
-                view.attachGlyph(glyphdata);
-                view.glyph.render(glyphdata.contours);
-
+                this.createView(axis_element, data.mode, data.masters[k + index]);
             }.bind(this));
         }
 
         this.metapolationView = this.htmldoc.createMetapolationView();
         this.htmldoc.appendAxisSingleCanvas(this.metapolationView.getElement());
 
-        var glyphdata = this.getEdgeData(data.metaglyphs);
+        var glyphdata = this.getGlyphData(data.metaglyphs);
         this.metapolationView.attachGlyph(glyphdata);
         this.metapolationView.glyph.render(glyphdata.contours);
 
         $('#loading').hide();
 
+    },
+
+    createView: function(axis, mode, data) {
+        var $axis = $(axis);
+
+        var view = this.htmldoc.createView($axis, data.master_id);
+        view.onfileuploaded = this.onMasterUploaded.bind(this);
+
+        if (mode == 'pen') {
+            this.htmldoc.appendAxisTabNavigation($axis);
+        } else {
+            this.htmldoc.appendAxisSingleCanvas($axis);
+        }
+
+        view.attachForms();
+
+        var glyphdata = this.getGlyphData(data.glyphs);
+        view.attachGlyph(glyphdata);
+        view.glyph.render(glyphdata.contours);
+    },
+
+    /*
+     * Fires when file has been uploaded to server
+     * Arguments:
+     * view - View instance (see view.js)
+     * response - response from server
+     */
+    onMasterUploaded: function(view, response) {
+        this.startLoadingMasterProgress(response.project_id, response.master_id);
+        var $element = view.getElement();
+        $element.removeClass('dropzone');
+        $element.empty();
+
+        this.createView($element, response.mode, response);
     },
 
     onMasterCreated: function(donecallback) {
@@ -226,7 +251,7 @@ Workspace.prototype = {
                     onMasterCreated: this.onMasterCreated.bind(this)
                 });
             } else {
-                this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
+                this.metapolationView.glyph.render(this.getGlyphData(data.metaglyphs).contours);
             }
         }
 
@@ -290,21 +315,21 @@ Workspace.prototype = {
         }
     },
 
-    getEdgeData: function(edges) {
+    getGlyphData: function(glyphs) {
         var $glyph = this.urldata.glyph;
 
         if (!this.urldata.glyph) {
-            this.glyphname = edges[0].name;
-            return edges[0];
+            this.glyphname = glyphs[0].name;
+            return glyphs[0];
         }
 
-        result = edges.filter(function(el){
+        result = glyphs.filter(function(el){
             return el.name == $glyph;
         });
 
         if (!result.length) {
-            this.glyphname = edges[0].name;
-            return edges[0];
+            this.glyphname = glyphs[0].name;
+            return glyphs[0];
         };
 
         this.glyphname = result[0].name;
@@ -334,7 +359,7 @@ Workspace.prototype = {
 
         this.addInterpolationSlider(axes);
 
-        var edgedata = this.getEdgeData(data);
+        var edgedata = this.getGlyphData(data);
 
         var view = this.htmldoc.addView(axes, edgedata, this.getPositionByLabel(label));
 
@@ -352,7 +377,7 @@ Workspace.prototype = {
             view.element.empty();
             this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
             if (data.metaglyphs.length) {
-                this.metapolationView.glyph.render(this.getEdgeData(data.metaglyphs).contours);
+                this.metapolationView.glyph.render(this.getGlyphData(data.metaglyphs).contours);
             }
         }.bind(this);
 
@@ -366,12 +391,16 @@ Workspace.prototype = {
      */
     cleanrun: function() {
         $('#loading').fadeOut(220, function(){
-            var axes = this.htmldoc.addAxes();
+            var $axes = this.htmldoc.addAxes();
 
-            new Dropzone(axes.find('.axis'), {
-                project_id: function() {return this.project_id || 0;}.bind(this),
-                glyph: function() {return this.glyphname || '';}.bind(this)
-            }, this.dataUploaded.bind(this));
+            $axes.find('.axis').each(function(index, axis) {
+                var $axis = $(axis);
+
+                var view = this.htmldoc.createView($axis);
+                view.onfileuploaded = this.onMasterUploaded.bind(this);
+
+                $axis.addClass('dropzone');
+            }.bind(this));
         }.bind(this));
     }
 }
