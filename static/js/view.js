@@ -93,7 +93,7 @@ View.prototype = {
                 }
             ).done(function(response){
                 var data = $.parseJSON(response);
-                this.onGlyphChanged && this.onGlyphChanged(this, data);
+                this.onGlyphChanged && this.onGlyphChanged(this, data.versions, data);
             }.bind(this));
         }.bind(this));
 
@@ -129,7 +129,7 @@ View.prototype = {
     },
 
     onlocalparam_formsubmit: function(response) {
-        this.onGlyphChanged && this.onGlyphChanged(this, response);
+        this.onGlyphChanged && this.onGlyphChanged(this, response.versions, response);
     },
 
     getElement: function() {

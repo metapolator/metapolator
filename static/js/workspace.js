@@ -343,7 +343,7 @@ Workspace.prototype = {
             view.onzpointdatachanged = this.onzpointchange.bind(this);
         }
 
-        view.onGlyphChanged = function(view, data) {
+        view.onGlyphChanged = function(view, versions, data) {
             view.element.empty();
             this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
             if (data.metaglyphs.length) {

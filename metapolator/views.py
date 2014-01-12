@@ -274,7 +274,8 @@ class EditorLocals(app.page):
                                  'metaglyphs': metaglyphs,
                                  'master_id': master.id,
                                  'params': params,
-                                 'label': x.axislabel})
+                                 'label': x.axislabel,
+                                 'versions': get_versions(project.id)})
 
 
 class userstatic(app.page):
@@ -407,7 +408,8 @@ def get_master_data(master, glyph, axislabel):
             'master_version': '{0:03d}'.format(master.version),
             'master_id': master.id,
             'metapolation': metalabel,
-            'label': axislabel}
+            'label': axislabel,
+            'versions': get_versions(project.id)}
 
 
 class EditorCanvasReload(app.page):
