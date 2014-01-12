@@ -117,6 +117,7 @@ View.prototype = {
                 });
 
                 this.versionselect.val(data.master_id);
+                this.versionselect.trigger('change');
             }.bind(this));
         }.bind(this));
 
