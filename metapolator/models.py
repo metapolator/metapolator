@@ -20,6 +20,9 @@ from config import engine, working_dir
 from dbapi import UserQueryMixin, query
 
 
+LABELS = range(ord('A'), ord('Z') + 1)
+
+
 Base = declarative_base()
 
 
@@ -191,6 +194,18 @@ class Master(Base, UserQueryMixin):
     task_created = Column(DateTime)
     task_completed = Column(Boolean, default=False)
     task_updated = Column(DateTime)
+
+    def update_masters_ordering(self, axislabel):
+        project = self.project
+
+        index = LABELS.index(ord(axislabel))
+        masters = project.masters.split(',')
+        if index > len(masters) - 1:
+            masters.append(self.id)
+        else:
+            masters[index] = self.id
+        project.masters = ','.join(map(str, masters))
+        web.ctx.orm.commit()
 
     def get_glyphs(self):
         return Glyph.filter(master_id=self.id).order_by(Glyph.name.asc())
