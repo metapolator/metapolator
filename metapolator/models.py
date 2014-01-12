@@ -112,6 +112,10 @@ class Project(Base, UserQueryMixin):
 
     projectname = Column(String(128), index=True)
 
+    def create_master(self):
+        version = Master.max(Master.version, project_id=self.id)
+        return Master.create(project_id=self.id, version=(version + 1))
+
     def get_ordered_masters(self):
         from tools import unifylist
         # we should unify masters list in case if some masters absence
@@ -306,6 +310,46 @@ class GlyphParam(Base, UserQueryMixin):
     serif_h_top = Column(String(32))
     serif_v_left = Column(String(32))
     serif_v_right = Column(String(32))
+
+    def copy(self, newglyphoutline_obj):
+
+        return GlyphParam.create(
+            glyph_id=newglyphoutline_obj.glyph_id,
+            glyphoutline_id=newglyphoutline_obj.id,
+            master_id=newglyphoutline_obj.master_id,
+
+            pointname=self.pointname,
+            type=self.type,
+            control_in=self.control_in,
+            control_out=self.control_out,
+            startp=self.startp,
+            doubledash=self.doubledash,
+            tripledash=self.tripledash,
+            leftp=self.leftp,
+            rightp=self.rightp,
+            downp=self.downp,
+            upp=self.upp,
+            dir=self.dir,
+            leftp2=self.leftp2,
+            rightp2=self.rightp2,
+            downp2=self.downp2,
+            upp2=self.upp2,
+            dir2=self.dir2,
+            tensionand=self.tensionand,
+            penshifted=self.penshifted,
+            pointshifted=self.pointshifted,
+            angle=self.angle,
+            penwidth=self.penwidth,
+            overx=self.overx,
+            overbase=self.overbase,
+            overcap=self.overcap,
+            overasc=self.overasc,
+            overdesc=self.overdesc,
+            theta=self.theta,
+            serif_h_bot=self.serif_h_bot,
+            serif_h_top=self.serif_h_top,
+            serif_v_left=self.serif_v_left,
+            serif_v_right=self.serif_v_right)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

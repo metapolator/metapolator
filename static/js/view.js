@@ -98,6 +98,20 @@ View.prototype = {
         }.bind(this));
 
         this.getElement().prepend(this.versionselect);
+
+        var btnCopyMaster = $('<button>');
+        btnCopyMaster.css({'margin-right': '16px'}).text('Copy master');
+        btnCopyMaster.addClass('btn btn-success btn-xs').on('click', function(){
+            $.post('/editor/copy-master/', {master_id: this.getMaster(),
+                                            glyphname: this.glyphname,
+                                            axislabel: this.getLabel()})
+            .success(function(response){
+                var data = $.parseJSON(response);
+                this.onGlyphChanged && this.onGlyphChanged(this, data);
+            }.bind(this));
+        }.bind(this));
+
+        this.getElement().prepend(btnCopyMaster);
     },
 
     getGlyph: function(glyphdata) {
