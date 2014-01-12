@@ -401,8 +401,12 @@ def get_master_data(master, glyph, axislabel):
 
     metalabel = get_metapolation_label(axislabel)
 
-    return {'glyphs': glyphsdata, 'metaglyphs': metaglyphs,
-            'master_id': master.id, 'metapolation': metalabel,
+    return {'glyphs': glyphsdata,
+            'metaglyphs': metaglyphs,
+            'master_name': master.name,
+            'master_version': '{0:03d}'.format(master.version),
+            'master_id': master.id,
+            'metapolation': metalabel,
             'label': axislabel}
 
 
@@ -469,7 +473,9 @@ class EditorCopyMaster(app.page):
                 param.copy(newglyphoutline_obj)
 
         newmaster_obj.update_masters_ordering(postdata.axislabel)
-        data = get_master_data(newmaster_obj, postdata.glyphname, postdata.axislabel)
+        data = {'master_name': newmaster_obj.name,
+                'master_version': '{0:03d}'.format(newmaster_obj.version),
+                'master_id': newmaster_obj.id}
 
         return simplejson.dumps(data)
 

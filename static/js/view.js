@@ -107,7 +107,16 @@ View.prototype = {
                                             axislabel: this.getLabel()})
             .success(function(response){
                 var data = $.parseJSON(response);
-                this.onGlyphChanged && this.onGlyphChanged(this, data);
+
+                var option = $('<option>', {
+                    value: data.master_id,
+                    text: data.master_name + ' ' + data.master_version
+                });
+                $('select.version').each(function(idx, element) {
+                    $(element).append(option.clone());
+                });
+
+                this.versionselect.val(data.master_id);
             }.bind(this));
         }.bind(this));
 
