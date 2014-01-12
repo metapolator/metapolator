@@ -233,7 +233,7 @@ WorkspaceDocument.prototype = {
 
         this.axes.push(axes);
 
-        if (this.mode != 'controlpoints' || this.axes.length > 1) {
+        if (this.axes.length > 1) {
             $('#btn-add-axes').hide();
         }
 
