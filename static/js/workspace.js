@@ -17,6 +17,7 @@ var Workspace = function() {
     this.storage = storage_ns.localStorage;
 
     this.glyphlist = [];
+    this.versions = [];
 
     $('#btn-add-axes').on('click', this.createEmptyAxes.bind(this));
 
@@ -30,6 +31,7 @@ Workspace.prototype = {
         var d = dict_from_locationhash();
         if (this.urldata && this.urldata.project != d.project) {
             this.glyphlist = [];
+            this.versions = [];
             $('#glyph-switcher').empty();
         };
 
@@ -136,6 +138,9 @@ Workspace.prototype = {
         for (var k = 0; k < data.masters.length; k += 2) {
             var axes = this.htmldoc.getOrCreateAxes(data.masters[k].label);
             axes.find('.axis').each(function(index, axis_element){
+                if (!this.versions.length) {
+                    this.versions = data.versions;
+                }
                 this.createView(axis_element, data.mode, data.masters[k + index]);
             }.bind(this));
         }
@@ -157,6 +162,9 @@ Workspace.prototype = {
         var view = this.htmldoc.createView($axis, this.urldata.project);
         view.onfileuploaded = this.onMasterUploaded.bind(this);
 
+        if (this.project_id && this.versions.length) 
+            view.appendVersions(this.versions);
+
         $axis.addClass('dropzone');
     },
 
@@ -174,12 +182,15 @@ Workspace.prototype = {
 
         view.attachForms();
 
+        view.appendVersions(this.versions);
+
         var glyphdata = this.getGlyphData(data.glyphs);
         view.attachGlyph(glyphdata);
         view.glyph.render(glyphdata.contours);
         view.glyph.renderZPoints(glyphdata.zpoints.points);
         view.onzpointdatachanged = this.onzpointchange.bind(this);
         view.onGlyphChanged = this.onGlyphChanged.bind(this);
+        return view;
     },
 
     onGlyphChanged: function(view, versions, data) {
