@@ -21,7 +21,7 @@ BaseView.prototype = {
 }
 
 
-function View(element, master_id) {
+function View(element, project_id, master_id) {
     this.element = $(element);
     this.setMaster(master_id);
 
@@ -30,7 +30,8 @@ function View(element, master_id) {
     }.bind(this));
 
     this.element.dropzone({master_id: master_id,
-                           label: this.element.attr('axis-label')});
+                           label: this.element.attr('axis-label'),
+                           project_id: project_id || 0});
 }
 
 
@@ -319,8 +320,8 @@ WorkspaceDocument.prototype = {
         return new View(axis, glyphdata);
     },
 
-    createView: function(axis, master_id) {
-        return new View(axis, master_id);
+    createView: function(axis, project_id, master_id) {
+        return new View(axis, project_id, master_id);
     },
 
     createMetapolationView: function() {

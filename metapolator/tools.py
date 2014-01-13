@@ -70,12 +70,20 @@ def put_font_all_glyphs(master, glyph=None, preload=False):
     if preload and charlista:
         charlista = [charlista[0]]
 
+    glyphs = []
     for ch1 in charlista:
         glyphName, ext = buildfname(ch1)
         if not glyphName or glyphName.startswith('.') or ext not in ["glif"]:
             continue
         glif = etree.parse(op.join(fontpath, ch1))
-        create_glyph(glif, master)
+        newglyph_obj = create_glyph(glif, master)
+        if newglyph_obj:
+            glyphs.append(newglyph_obj.name)
+
+    try:
+        return glyphs[0]
+    except IndexError:
+        return
 
 
 def dopair(pair):

@@ -112,6 +112,7 @@ class Project(Base, UserQueryMixin):
     user_id = Column(Integer, ForeignKey('users.id'))
     masters = Column(String(128), default='')
     mfparser = Column(String(128), default='')
+    currentglyph = Column(String(128), index=True, default='')
 
     projectname = Column(String(128), index=True)
 

@@ -18,14 +18,7 @@ var Workspace = function() {
 
     this.glyphlist = [];
 
-    $('#btn-add-axes').on('click', function() {
-        var axes = this.htmldoc.addAxes();
-
-        new Dropzone(axes.find('.axis'), {
-            project_id: function() {return this.project_id || 0;}.bind(this),
-            glyph: function() {return this.glyphname || '';}.bind(this)
-        }, this.dataUploaded.bind(this));
-    }.bind(this));
+    $('#btn-add-axes').on('click', this.createEmptyAxes.bind(this));
 
     $(window).hashchange(this.hashchanged.bind(this));
 }
@@ -36,7 +29,6 @@ Workspace.prototype = {
     hashchanged: function() {
         var d = dict_from_locationhash();
         if (this.urldata && this.urldata.project != d.project) {
-            console.log('empty');
             this.glyphlist = [];
             $('#glyph-switcher').empty();
         };
@@ -51,14 +43,7 @@ Workspace.prototype = {
         $('#workspace').empty();
         $('#workspace').html($('#empty-workspace').html());
 
-        $('#btn-add-axes').on('click', function() {
-            var axes = this.htmldoc.addAxes();
-
-            new Dropzone(axes.find('.axis'), {
-                project_id: function() {return this.project_id || 0;}.bind(this),
-                glyph: function() {return this.glyphname || '';}.bind(this)
-            }, this.dataUploaded.bind(this));
-        }.bind(this));
+        $('#btn-add-axes').on('click', this.createEmptyAxes.bind(this));
 
         this.loadprojectdata();
     },
@@ -166,10 +151,19 @@ Workspace.prototype = {
 
     },
 
+    createEmptyView: function(axis) {
+        var $axis = $(axis);
+
+        var view = this.htmldoc.createView($axis, this.urldata.project);
+        view.onfileuploaded = this.onMasterUploaded.bind(this);
+
+        $axis.addClass('dropzone');
+    },
+
     createView: function(axis, mode, data) {
         var $axis = $(axis);
 
-        var view = this.htmldoc.createView($axis, data.master_id);
+        var view = this.htmldoc.createView($axis, this.urldata.project, data.master_id);
         view.onfileuploaded = this.onMasterUploaded.bind(this);
 
         if (mode == 'pen') {
@@ -193,6 +187,13 @@ Workspace.prototype = {
      */
     onMasterUploaded: function(view, response) {
         this.startLoadingMasterProgress(response.project_id, response.master_id);
+
+        if (!this.project_id) {
+            location.hash = '#project/' + response.project_id;
+            this.project_id = response.project_id;
+            return;
+        }
+
         var $element = view.getElement();
         $element.removeClass('dropzone');
         $element.empty();
@@ -224,6 +225,14 @@ Workspace.prototype = {
             } else {
                 this.requestGlyphList();
             }
+        }.bind(this));
+    },
+
+    createEmptyAxes: function() {
+        var $axes = this.htmldoc.addAxes();
+
+        $axes.find('.axis').each(function(index, axis) {
+            this.createEmptyView(axis);
         }.bind(this));
     },
 
@@ -390,18 +399,7 @@ Workspace.prototype = {
      * Build html document with a single dropzone to upload UFO
      */
     cleanrun: function() {
-        $('#loading').fadeOut(220, function(){
-            var $axes = this.htmldoc.addAxes();
-
-            $axes.find('.axis').each(function(index, axis) {
-                var $axis = $(axis);
-
-                var view = this.htmldoc.createView($axis);
-                view.onfileuploaded = this.onMasterUploaded.bind(this);
-
-                $axis.addClass('dropzone');
-            }.bind(this));
-        }.bind(this));
+        $('#loading').fadeOut(220, this.createEmptyAxes.bind(this));
     }
 }
 

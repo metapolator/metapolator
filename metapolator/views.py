@@ -17,6 +17,7 @@ import shutil
 import web
 import zipfile
 import simplejson
+import cStringIO as StringIO
 
 from web import seeother
 from passlib.hash import bcrypt
@@ -111,6 +112,14 @@ class Project(app.page):
         if not project:
             raise web.notfound()
 
+        if x.get('glyph'):
+            currentglyph = models.Glyph.get(name=x.get('glyph'),
+                                            project_id=project.id)
+            if not currentglyph:
+                raise web.notfound()
+            project.currentglyph = currentglyph.name
+            web.ctx.orm.commit()
+
         masters = project.get_ordered_masters()
 
         masters_list = []
@@ -122,8 +131,8 @@ class Project(app.page):
             prepare_master_environment(master)
 
             glyphs = master.get_glyphs()
-            if x.get('glyph'):
-                glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+            glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
+
             metapost.execute_single(master, glyphs.first())
 
             master_instancelog = project.get_instancelog(master.version, 'a')
@@ -137,8 +146,9 @@ class Project(app.page):
                                  'master_id': master.id})
 
         glyphs = masters[0].get_glyphs()
-        if x.get('glyph'):
-            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
+
+        glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
+
         metapost.execute_interpolated_single(glyphs.first())
 
         instancelog = project.get_instancelog(masters[0].version)
@@ -649,9 +659,14 @@ class EditorUploadZIP(app.page):
             rawzipcontent = x.ufofile.file.read()
             if not rawzipcontent:
                 raise web.badrequest()
-            project_id = int(x.project_id)
+            zipcontent = StringIO.StringIO(rawzipcontent)
         except (AttributeError, TypeError, ValueError):
             raise web.badrequest()
+
+        try:
+            project_id = int(x.project_id)
+        except TypeError:
+            project_id = 0
 
         if not project_id:
             projects = models.Project.all()
@@ -665,16 +680,8 @@ class EditorUploadZIP(app.page):
 
         prepare_environment_directory()
 
-        filename = op.join(project.get_directory(), x.ufofile.filename)
         try:
-            with open(filename, 'w') as fp:
-                fp.write(rawzipcontent)
-        except (IOError, OSError):
-            models.Project.delete(project)  # delete created project
-            raise web.badrequest()
-
-        try:
-            fzip = zipfile.ZipFile(filename)
+            fzip = zipfile.ZipFile(zipcontent)
 
             namelist = fzip.namelist()
 
@@ -717,7 +724,8 @@ class EditorUploadZIP(app.page):
 
             prepare_master_environment(master)
 
-            put_font_all_glyphs(master, x.glyph, preload=True)
+            currentglyph = put_font_all_glyphs(master, project.currentglyph,
+                                               preload=True)
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
@@ -729,6 +737,7 @@ class EditorUploadZIP(app.page):
         else:
             masters[index] = master.id
         project.masters = ','.join(map(str, masters))
+        project.currentglyph = currentglyph
         web.ctx.orm.commit()
 
         metapost = Metapost(project)
