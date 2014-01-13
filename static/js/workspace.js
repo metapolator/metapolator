@@ -143,6 +143,7 @@ Workspace.prototype = {
                 }
                 this.createView(axis_element, data.mode, data.masters[k + index]);
             }.bind(this));
+            this.addInterpolationSlider(axes);
         }
 
         this.metapolationView = this.htmldoc.createMetapolationView();
@@ -156,14 +157,61 @@ Workspace.prototype = {
 
     },
 
+    appendVersions: function(view) {
+        if (!this.versions.length) 
+            return;
+
+        var versionselect = $('<select>').addClass('version').css('margin-bottom', '16px');
+
+        var createNewMasterOption = $('<option>', {
+            value: "",
+            text: "Create new master from zip"
+        });
+        versionselect.append(createNewMasterOption);
+
+        for (var k = 0; k < this.versions.length; k++) {
+            var optionMaster = $('<option>', {
+                value: this.versions[k].master_id,
+                text: this.versions[k].name + ' ' + this.versions[k].version
+            });
+            if (this.versions[k].master_id == view.master_id) {
+                optionMaster.attr('selected', 'true');
+            }
+            versionselect.append(optionMaster);
+        }
+
+        versionselect.on('change', function(e) {
+            var $element = view.getElement();
+            $element.removeClass('dropzone');
+
+            if (!$(e.target).val()) {
+                $element.empty();
+
+                this.createEmptyView($element);
+                return;
+            }
+
+            $.post('/editor/reload/', {
+                'master_id': $(e.target).val(),
+                'glyphname': this.glyphname,
+                'axislabel': view.getLabel()
+                }
+            ).done(function(response){
+                var data = $.parseJSON(response);
+                this.onGlyphChanged(view, data);
+            }.bind(this));
+        }.bind(this));
+
+        view.getElement().prepend(versionselect);
+    },
+
     createEmptyView: function(axis) {
         var $axis = $(axis);
 
         var view = this.htmldoc.createView($axis, this.urldata.project);
         view.onfileuploaded = this.onMasterUploaded.bind(this);
 
-        if (this.project_id && this.versions.length) 
-            view.appendVersions(this.versions);
+        this.appendVersions(view);
 
         $axis.addClass('dropzone');
     },
@@ -182,18 +230,19 @@ Workspace.prototype = {
 
         view.attachForms();
 
-        view.appendVersions(this.versions);
+        this.appendVersions(view);
 
         var glyphdata = this.getGlyphData(data.glyphs);
         view.attachGlyph(glyphdata);
         view.glyph.render(glyphdata.contours);
         view.glyph.renderZPoints(glyphdata.zpoints.points);
+
         view.onzpointdatachanged = this.onzpointchange.bind(this);
         view.onGlyphChanged = this.onGlyphChanged.bind(this);
         return view;
     },
 
-    onGlyphChanged: function(view, versions, data) {
+    onGlyphChanged: function(view, data) {
         var $element = view.getElement();
         $element.empty();
 
@@ -252,6 +301,7 @@ Workspace.prototype = {
 
     createEmptyAxes: function() {
         var $axes = this.htmldoc.addAxes();
+        this.addInterpolationSlider($axes);
 
         $axes.find('.axis').each(function(index, axis) {
             this.createEmptyView(axis);
@@ -297,13 +347,7 @@ Workspace.prototype = {
                 })
                 .done(function(response){
                     var data = $.parseJSON(response);
-                    this.metapolationView.getElement().empty();
-                    var axes = this.htmldoc.getOrCreateAxes('A');
-                    this.metapolationView = this.addView(axes, data.M);
-                    this.metapolationView.appendActionButtons({
-                        onInstanceCreated: this.onInstanceCreated.bind(this),
-                        onMasterCreated: this.onMasterCreated.bind(this)
-                    });
+                    this.metapolationView.glyph.render(data.M[0].contours);
                 }.bind(this))
                 .fail(function(){ alert('Could not change metapolation value') });
             }.bind(this));

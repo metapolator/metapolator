@@ -25,7 +25,7 @@ function View(element, project_id, master_id) {
     this.element = $(element);
     this.setMaster(master_id);
 
-    this.element.on('upload', function(e, response) {
+    this.element.off('upload').on('upload', function(e, response) {
         this.onfileuploaded && this.onfileuploaded(this, response);
     }.bind(this));
 
@@ -106,32 +106,6 @@ View.prototype = {
     },
 
     appendVersions: function(versions) {
-        this.versionselect = $('<select>').addClass('version').css('margin-bottom', '16px');
-        for (var k = 0; k < versions.length; k++) {
-            var optionMaster = $('<option>', {
-                value: versions[k].master_id,
-                text: versions[k].name + ' ' + versions[k].version
-            });
-            if (versions[k].master_id == this.master_id) {
-                optionMaster.attr('selected', 'true');
-            }
-            this.versionselect.append(optionMaster);
-        }
-
-        this.versionselect.on('change', function(e) {
-            $.post('/editor/reload/', {
-                'master_id': $(e.target).val(),
-                'glyphname': this.glyphname,
-                'axislabel': this.getLabel()
-                }
-            ).done(function(response){
-                var data = $.parseJSON(response);
-                this.onGlyphChanged && this.onGlyphChanged(this, data.versions, data);
-            }.bind(this));
-        }.bind(this));
-
-        this.getElement().prepend(this.versionselect);
-
         if (this.master_id) {
             var btnCopyMaster = $('<button>');
             btnCopyMaster.css({'margin-right': '16px'}).text('Copy master');
@@ -140,18 +114,18 @@ View.prototype = {
                                                 glyphname: this.glyphname,
                                                 axislabel: this.getLabel()})
                 .success(function(response){
-                    var data = $.parseJSON(response);
+                    // var data = $.parseJSON(response);
 
-                    var option = $('<option>', {
-                        value: data.master_id,
-                        text: data.master_name + ' ' + data.master_version
-                    });
-                    $('select.version').each(function(idx, element) {
-                        $(element).append(option.clone());
-                    });
+                    // var option = $('<option>', {
+                    //     value: data.master_id,
+                    //     text: data.master_name + ' ' + data.master_version
+                    // });
+                    // $('select.version').each(function(idx, element) {
+                    //     $(element).append(option.clone());
+                    // });
 
-                    this.versionselect.val(data.master_id);
-                    this.versionselect.trigger('change');
+                    // this.versionselect.val(data.master_id);
+                    // this.versionselect.trigger('change');
                 }.bind(this));
             }.bind(this));
 
@@ -164,7 +138,7 @@ View.prototype = {
     },
 
     onlocalparam_formsubmit: function(response) {
-        this.onGlyphChanged && this.onGlyphChanged(this, response.versions, response);
+        this.onGlyphChanged && this.onGlyphChanged(this, response);
     },
 
     getElement: function() {
