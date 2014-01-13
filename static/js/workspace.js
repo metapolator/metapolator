@@ -177,6 +177,8 @@ Workspace.prototype = {
         var glyphdata = this.getGlyphData(data.glyphs);
         view.attachGlyph(glyphdata);
         view.glyph.render(glyphdata.contours);
+        view.glyph.renderZPoints(glyphdata.zpoints.points);
+        view.onzpointdatachanged = this.onzpointchange.bind(this);
     },
 
     /*
@@ -234,41 +236,6 @@ Workspace.prototype = {
         $axes.find('.axis').each(function(index, axis) {
             this.createEmptyView(axis);
         }.bind(this));
-    },
-
-    /*
-     * Called when user uploaded ZIP file with UFO inside
-     */
-    dataUploaded: function(data) {
-        this.startLoadingMasterProgress(data.project_id, data.master_id);
-
-        if (!this.project_id) {
-            location.hash = '#project/' + data.project_id;
-            this.project_id = data.project_id;
-            return;
-        }
-
-        var axes = this.htmldoc.getOrCreateAxes(data.label);
-        axes.find('div[axis-label=' + data.label + ']').empty();
-        var view = this.addView(axes, data.glyphs, data.master_id, data.versions, data.label);
-
-        if (data.metaglyphs.length) {
-            if (!this.metapolationView) {
-                this.metapolationView = this.addView(axes, data.metaglyphs);
-                this.metapolationView.appendActionButtons({
-                    onInstanceCreated: this.onInstanceCreated.bind(this),
-                    onMasterCreated: this.onMasterCreated.bind(this)
-                });
-            } else {
-                this.metapolationView.glyph.render(this.getGlyphData(data.metaglyphs).contours);
-            }
-        }
-
-        this.updateVersions(data.versions);
-    },
-
-    updateVersions: function(versions) {
-        // debugger;
     },
 
     onInstanceCreated: function(donecallback) {
@@ -359,40 +326,6 @@ Workspace.prototype = {
             }
             $('#btn-show-glyphs').show();
         }
-    },
-
-    addView: function(axes, data, master_id, versions, label) {
-        if (!data.length) {
-            return;
-        }
-
-        this.addInterpolationSlider(axes);
-
-        var edgedata = this.getGlyphData(data);
-
-        var view = this.htmldoc.addView(axes, edgedata, this.getPositionByLabel(label));
-
-        view.glyph.render(edgedata.contours);
-
-        if (versions) {
-            view.setMaster(master_id);
-            view.appendVersions(versions);
-            view.appendLocalParameters();
-            view.glyph.renderZPoints(edgedata.zpoints.points);
-            view.onzpointdatachanged = this.onzpointchange.bind(this);
-        }
-
-        view.onGlyphChanged = function(view, versions, data) {
-            view.element.empty();
-            this.addView(axes, data.glyphs, data.master_id, versions, view.getLabel());
-            if (data.metaglyphs.length) {
-                this.metapolationView.glyph.render(this.getGlyphData(data.metaglyphs).contours);
-            }
-        }.bind(this);
-
-        view.getElement().removeClass('dropzone');
-
-        return view;
     },
 
     /*
