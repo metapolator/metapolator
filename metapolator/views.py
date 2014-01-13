@@ -84,6 +84,19 @@ class Workspace(app.page):
         return render.workspace()
 
 
+def get_metapolation_label(c):
+    """ Return metapolation label pair like AB, CD, EF """
+    c = c.upper()
+    try:
+        index = map(chr, models.LABELS[::2]).index(c)
+        return map(chr, models.LABELS[::2])[index] + map(chr, models.LABELS[1::2])[index]
+    except ValueError:
+        pass
+
+    index = map(chr, models.LABELS[1::2]).index(c)
+    return map(chr, models.LABELS[::2])[index] + map(chr, models.LABELS[1::2])[index]
+
+
 class Project(app.page):
 
     path = '/editor/project/'
@@ -116,10 +129,10 @@ class Project(app.page):
             master_instancelog = project.get_instancelog(master.version, 'a')
             glyphsdata = get_edges_json(master_instancelog, master=master)
 
-            metalabel = get_metapolation_label(chr(LABELS[i]))
+            metalabel = get_metapolation_label(chr(models.LABELS[i]))
 
             masters_list.append({'glyphs': glyphsdata,
-                                 'label': chr(LABELS[i]),
+                                 'label': chr(models.LABELS[i]),
                                  'metapolation': metalabel,
                                  'master_id': master.id})
 
@@ -261,7 +274,8 @@ class EditorLocals(app.page):
                                  'metaglyphs': metaglyphs,
                                  'master_id': master.id,
                                  'params': params,
-                                 'label': x.axislabel})
+                                 'label': x.axislabel,
+                                 'versions': get_versions(project.id)})
 
 
 class userstatic(app.page):
@@ -363,6 +377,41 @@ class Projects(app.page):
         return render.projects(projects)
 
 
+def get_master_data(master, glyph, axislabel):
+    project = master.project
+
+    masters = project.get_ordered_masters()
+    prepare_master_environment(masters[0])
+    prepare_master_environment(master)
+
+    metapost = Metapost(project)
+
+    glyphs = masters[0].get_glyphs()
+    glyphs = glyphs.filter(models.Glyph.name == glyph)
+    metapost.execute_single(masters[0], glyphs.first())
+
+    instancelog = project.get_instancelog(masters[0].version)
+    metaglyphs = get_edges_json(instancelog)
+
+    glyphs = master.get_glyphs()
+    glyphs = glyphs.filter(models.Glyph.name == glyph)
+    metapost.execute_single(master, glyphs.first())
+    master_instancelog = project.get_instancelog(master.version, 'a')
+
+    glyphsdata = get_edges_json(master_instancelog, master=master)
+
+    metalabel = get_metapolation_label(axislabel)
+
+    return {'glyphs': glyphsdata,
+            'metaglyphs': metaglyphs,
+            'master_name': master.name,
+            'master_version': '{0:03d}'.format(master.version),
+            'master_id': master.id,
+            'metapolation': metalabel,
+            'label': axislabel,
+            'versions': get_versions(project.id)}
+
+
 class EditorCanvasReload(app.page):
 
     path = '/editor/reload/'
@@ -375,44 +424,62 @@ class EditorCanvasReload(app.page):
         if not master:
             return web.notfound()
 
-        project = master.project
+        master.update_masters_ordering(postdata.axislabel)
 
-        index = LABELS.index(ord(postdata.axislabel))
-        masters = project.masters.split(',')
-        if index > len(masters) - 1:
-            masters.append(master.id)
-        else:
-            masters[index] = master.id
-        project.masters = ','.join(map(str, masters))
+        data = get_master_data(master, postdata.glyphname, postdata.axislabel)
+
+        return simplejson.dumps(data)
+
+
+class EditorCopyMaster(app.page):
+
+    path = '/editor/copy-master/'
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(master_id=0, glyphname='', axislabel='')
+
+        master = models.Master.get(id=postdata.master_id)
+        if not master:
+            return web.notfound()
+
+        newmaster_obj = master.project.create_master()
+        newmaster_obj.name = master.name
+        newmaster_obj.user_id = master.user_id
+        newmaster_obj.idlocala = master.idlocala
         web.ctx.orm.commit()
 
-        masters = project.get_ordered_masters()
-        prepare_master_environment(masters[0])
-        prepare_master_environment(master)
+        for glyph in master.get_glyphs():
 
-        metapost = Metapost(project)
+            newglyph_obj = models.Glyph.create(master_id=newmaster_obj.id,
+                                               name=glyph.name,
+                                               width=glyph.width,
+                                               project_id=glyph.project_id)
 
-        glyphs = masters[0].get_glyphs()
-        glyphs = glyphs.filter(models.Glyph.name == postdata.glyphname)
-        metapost.execute_single(masters[0], glyphs.first())
+            query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+            query = query.filter(models.GlyphOutline.glyph_id == glyph.id)
+            query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
 
-        instancelog = project.get_instancelog(masters[0].version)
-        metaglyphs = get_edges_json(instancelog)
+            outlines = list(query)
 
-        glyphs = master.get_glyphs()
-        glyphs = glyphs.filter(models.Glyph.name == postdata.glyphname)
-        metapost.execute_single(master, glyphs.first())
-        master_instancelog = project.get_instancelog(master.version, 'a')
+            for outline, param in outlines:
 
-        glyphsdata = get_edges_json(master_instancelog, master=master)
+                newglyphoutline_obj = models.GlyphOutline.create(
+                    glyph_id=newglyph_obj.id,
+                    master_id=newmaster_obj.id,
+                    glyphname=newglyph_obj.name,
+                    pointnr=outline.pointnr,
+                    x=outline.x,
+                    y=outline.y)
 
-        metalabel = get_metapolation_label(postdata.axislabel)
+                param.copy(newglyphoutline_obj)
 
-        return simplejson.dumps({'glyphs': glyphsdata,
-                                 'metaglyphs': metaglyphs,
-                                 'master_id': master.id,
-                                 'metapolation': metalabel,
-                                 'label': postdata.axislabel})
+        newmaster_obj.update_masters_ordering(postdata.axislabel)
+        data = {'master_name': newmaster_obj.name,
+                'master_version': '{0:03d}'.format(newmaster_obj.version),
+                'master_id': newmaster_obj.id}
+
+        return simplejson.dumps(data)
 
 
 class EditorCreateInstance(app.page):
@@ -509,11 +576,8 @@ class EditorCreateMaster(app.page):
 
         masters = project.get_ordered_masters()
 
-        version = models.Master.max(models.Master.version,
-                                    project_id=project.id)
+        master = project.create_master()
 
-        master = models.Master.create(project_id=project.id,
-                                      version=(version + 1))
         prepare_master_environment(master)
 
         metapost = Metapost(project)
@@ -572,23 +636,6 @@ class EditorCreateMaster(app.page):
         project.masters = ','.join([str(master.id)] * len(masters))
         web.ctx.orm.commit()
         return simplejson.dumps({})
-
-
-LABELS = range(ord('A'), ord('Z') + 1)
-METAP_PAIRS = zip(map(chr, LABELS[::2]), map(chr, LABELS[1::2]))
-
-
-def get_metapolation_label(c):
-    """ Return metapolation label pair like AB, CD, EF """
-    c = c.upper()
-    try:
-        index = map(chr, LABELS[::2]).index(c)
-        return map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
-    except ValueError:
-        pass
-
-    index = map(chr, LABELS[1::2]).index(c)
-    return map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
 
 
 class EditorUploadZIP(app.page):
@@ -674,7 +721,7 @@ class EditorUploadZIP(app.page):
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        index = LABELS.index(ord(x.label.upper()))
+        index = models.LABELS.index(ord(x.label.upper()))
         masters = project.masters.split(',')
 
         if index > len(masters) - 1:

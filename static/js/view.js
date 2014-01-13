@@ -124,11 +124,35 @@ View.prototype = {
                 }
             ).done(function(response){
                 var data = $.parseJSON(response);
-                this.onGlyphChanged && this.onGlyphChanged(this, data);
+                this.onGlyphChanged && this.onGlyphChanged(this, data.versions, data);
             }.bind(this));
         }.bind(this));
 
         this.getElement().prepend(this.versionselect);
+
+        var btnCopyMaster = $('<button>');
+        btnCopyMaster.css({'margin-right': '16px'}).text('Copy master');
+        btnCopyMaster.addClass('btn btn-success btn-xs').on('click', function(){
+            $.post('/editor/copy-master/', {master_id: this.getMaster(),
+                                            glyphname: this.glyphname,
+                                            axislabel: this.getLabel()})
+            .success(function(response){
+                var data = $.parseJSON(response);
+
+                var option = $('<option>', {
+                    value: data.master_id,
+                    text: data.master_name + ' ' + data.master_version
+                });
+                $('select.version').each(function(idx, element) {
+                    $(element).append(option.clone());
+                });
+
+                this.versionselect.val(data.master_id);
+                this.versionselect.trigger('change');
+            }.bind(this));
+        }.bind(this));
+
+        this.getElement().prepend(btnCopyMaster);
     },
 
     getGlyph: function(glyphdata) {
@@ -136,7 +160,7 @@ View.prototype = {
     },
 
     onlocalparam_formsubmit: function(response) {
-        this.onGlyphChanged && this.onGlyphChanged(this, response);
+        this.onGlyphChanged && this.onGlyphChanged(this, response.versions, response);
     },
 
     getElement: function() {
@@ -264,7 +288,7 @@ WorkspaceDocument.prototype = {
 
         this.axes.push(axes);
 
-        if (this.mode != 'controlpoints' || this.axes.length > 1) {
+        if (this.axes.length > 1) {
             $('#btn-add-axes').hide();
         }
 
