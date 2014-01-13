@@ -17,6 +17,31 @@ BaseView.prototype = {
 
     getDrawing: function() {
         return this.element.find('canvas')[0];
+    },
+
+    /*
+     * Put to metapolation cell buttons to create master from instance
+     * and create instance.
+     */
+    appendActionButtons: function(handlers) {
+        var div = $('<div>').addClass('action-buttons');
+        div.append($('#metapolation-buttons').html());
+
+        div.find('#btn-instance').on('click', function(e){
+            $(e.target).attr('disabled', 'disabled');
+            handlers.onInstanceCreated(function(){
+                $(e.target).removeAttr('disabled');
+            });
+        }.bind(this));
+
+        div.find('#btn-master-from-instance').on('click', function(e){
+            $(e.target).attr('disabled', 'disabled');
+            handlers.onMasterCreated(function(){
+                $(e.target).removeAttr('disabled');
+            });
+        }.bind(this));
+
+        this.getElement().prepend(div);
     }
 }
 
@@ -78,31 +103,6 @@ View.prototype = {
             },
             onFormSubmitted: this.onlocalparam_formsubmit.bind(this)
         });
-    },
-
-    /*
-     * Put to metapolation cell buttons to create master from instance
-     * and create instance.
-     */
-    appendActionButtons: function(handlers) {
-        var div = $('<div>').addClass('action-buttons');
-        div.append($('#metapolation-buttons').html());
-
-        div.find('#btn-instance').on('click', function(e){
-            $(e.target).attr('disabled', 'disabled');
-            handlers.onInstanceCreated(function(){
-                $(e.target).removeAttr('disabled');
-            });
-        }.bind(this));
-
-        div.find('#btn-master-from-instance').on('click', function(e){
-            $(e.target).attr('disabled', 'disabled');
-            handlers.onMasterCreated(function(){
-                $(e.target).removeAttr('disabled');
-            });
-        }.bind(this));
-
-        this.getElement().prepend(div);
     },
 
     appendVersions: function(versions) {

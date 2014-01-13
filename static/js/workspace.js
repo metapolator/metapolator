@@ -152,6 +152,10 @@ Workspace.prototype = {
         var glyphdata = this.getGlyphData(data.metaglyphs);
         this.metapolationView.attachGlyph(glyphdata);
         this.metapolationView.glyph.render(glyphdata.contours);
+        this.metapolationView.appendActionButtons({
+            onInstanceCreated: this.onInstanceCreated.bind(this),
+            onMasterCreated: this.onMasterCreated.bind(this)
+        });
 
         $('#loading').hide();
 
@@ -320,6 +324,8 @@ Workspace.prototype = {
     },
 
     addInterpolationSlider: function(axes) {
+        if (!this.project_id)
+            return;
         var slider_template = '<div class="well"><b style="padding-right: 32px;">{0}</b> ' +
                       '<input class="span2 slider-{2}" slider-label="{2}" type="text" value=""' +
                       '         data-slider-min="0" data-slider-max="1" data-slider-step="0.01"'  +
