@@ -179,6 +179,15 @@ Workspace.prototype = {
         view.glyph.render(glyphdata.contours);
         view.glyph.renderZPoints(glyphdata.zpoints.points);
         view.onzpointdatachanged = this.onzpointchange.bind(this);
+        view.onGlyphChanged = this.onGlyphChanged.bind(this);
+    },
+
+    onGlyphChanged: function(view, versions, data) {
+        var $element = view.getElement();
+        $element.empty();
+
+        this.createView($element, this.htmldoc.getMode(), data);
+        this.metapolationView.glyph.render(data.metaglyphs[0].contours);
     },
 
     /*

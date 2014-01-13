@@ -41,6 +41,7 @@ View.prototype = {
         this.pointform = this.element.find('form.pointform');
         this.zpointdropdown = this.pointform.find('select#zpoint');
         this.settingsform = this.element.find('.localparamform');
+        this.appendLocalParameters();
 
         this.zpointdropdown.on('change', this.onzpointselected.bind(this));
         this.pointform.on('keydown', this.onpointformsubmit.bind(this));
