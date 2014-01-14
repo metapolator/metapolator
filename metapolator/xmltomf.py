@@ -22,7 +22,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 #    if session.get('mfparser', '') == 'controlpoints':
 #        import xmltomf_new
 #        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
-                                    # stdout_fip=stdout_fip)
+#                                    stdout_fip=stdout_fip)
 
 
     if master.project.mfparser == 'controlpoints':
@@ -950,13 +950,13 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         if penwidth[i]:
 #            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
 
-            zeile = """penpos"""  + str(zitem) + "(((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + ")) /2) * " + "(((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
+            zeile = """penpos"""  + str(zitem) + "(((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + ")) /2) * " + "(((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
 
         else:
 
 #            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
 
-            zeile = """penpos"""  + str(zitem) + "(((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
+            zeile = """penpos"""  + str(zitem) + "(((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
 
 
         zeile = zeile + ", ang" + str(zitem) + ");"
