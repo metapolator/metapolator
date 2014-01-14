@@ -22,12 +22,12 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 #    if session.get('mfparser', '') == 'controlpoints':
 #        import xmltomf_new
 #        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
-                                    stdout_fip=stdout_fip)
+                                    # stdout_fip=stdout_fip)
 
 
     if master.project.mfparser == 'controlpoints':
         import xmltomf_new
-        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB, glyphC=glyphC, glyphD=glyphD, 
+        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB, glyphC=glyphC, glyphD=glyphD,
                                     stdout_fip=stdout_fip)
 
     import time
@@ -1167,7 +1167,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         # if descpoint[i] != "":
         #     zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_descender + metapolation * (B_descender - A_descender)) / desc#))"
         # else:
- 
+
 #       zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
 
         zeile = "z" + str(zitem) + "=(((A_width + metapolation * (B_width - A_width)) + (C_width + metapolationCD * (D_width - C_width)) /2 ) * (((x" + str(zitem) + "A + metapolation * (x" + str(zitem) + "B - x" + str(zitem) + "A)) + (x" + str(zitem) + "C + metapolationCD * (x" + str(zitem) + "D - x" + str(zitem) + "C)) /2 ) + spacing_" + g + "L) * width_" + g + ", ((y" + str(zitem) + "A + metapolation *(y" + str(zitem) + "B - y" + str(zitem) + "A)) + (y" + str(zitem) + "C + metapolationCD *(y" + str(zitem) + "D - y" + str(zitem) + "C)) /2 ) * (((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) + (C_" + ggroup + " + metapolationCD * (D_" + ggroup + " - C_" + ggroup + ")) /2 ) / " + gggroup + "#))"

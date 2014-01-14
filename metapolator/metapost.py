@@ -86,6 +86,7 @@ class Metapost:
         self._execute(master)
 
     def execute_interpolated_single(self, glyph):
+        print self.mfparser
         masters = self.project.get_ordered_masters()
 
         idmasters = map(lambda x: x.id, masters)
@@ -100,6 +101,8 @@ class Metapost:
         self._execute(primary_master, interpolated=True)
 
     def execute_single(self, master, glyph):
+        print self.mfparser
+
         if self.mfparser == 'pen':
             import xmltomf
             xmltomf.xmltomf1(master, glyph)
