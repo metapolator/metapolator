@@ -14,6 +14,13 @@ A_capital_acc:=6.00;
 B_xheight_acc:=5.00;
 B_capital_acc:=6.00;
 
+C_xheight_acc:=5.00;
+C_capital_acc:=6.00;
+
+D_xheight_acc:=5.00;
+D_capital_acc:=6.00;
+
+
 def loggingall =                % puts tracing info into the log
 %  tracingcommands:=3; 
 %  tracingedges:=2; 
@@ -37,13 +44,13 @@ def tracingall =                % turns on every form of tracing
 
 tracingall
 
-slant:=A_slant+metapolation*(B_slant-A_slant);
+slant:=(A_slant+metapolation*(B_slant-A_slant)) + (C_slant+metapolation*(D_slant-C_slant)) /2;
 font_slant = slant;
 
-jut:=A_jut+metapolation*(B_jut-A_jut);
-slab:=A_slab+metapolation*(B_slab-A_slab);
-bracket:=A_bracket+metapolation*(B_bracket-A_bracket);
-serif_darkness:=A_serif_darkness+metapolation*(B_serif_darkness-A_serif_darkness);
+jut:=(A_jut+metapolation*(B_jut-A_jut)) + (C_jut+metapolationCD*(D_jut-C_jut)) /2;
+slab:=(A_slab+metapolation*(B_slab-A_slab)) + (C_slab+metapolationCD*(D_slab-C_slab)) /2;
+bracket:=(A_bracket+metapolation*(B_bracket-A_bracket)) + (C_bracket+metapolationCD*(D_bracket-C_bracket)) /2;
+serif_darkness:=(A_serif_darkness+metapolation*(B_serif_darkness-A_serif_darkness)) + (C_serif_darkness+metapolationCD*(D_serif_darkness-C_serif_darkness)) /2;
 
 % for perfect curve use serif_darkness = 0.5; .. in def serif_bracket instead --
 
@@ -104,6 +111,9 @@ mover:=A_over+metapolation*(B_over-A_over);
 A_py#:=A_px#;
 B_py#:=B_px#;
 
+C_py#:=C_px#;
+D_py#:=D_px#;
+
 % some defenitions for the output and proof sheets
 def endchar =
  scantokens extra_endchar;
@@ -135,8 +145,7 @@ mode_setup;
 define_pixels(s,u);
 
 define_pixels(px,py);
-define_pixels(A_px,A_py,A_skeleton);
-define_pixels(B_px,B_py,B_skeleton);
+define_pixels(A_px,A_py,B_px,B_py,C_px,C_py,D_px,D_py,A_skeleton,B_skeleton,C_skeleton,D_skeleton);
 define_good_y_pixels(mean,cap,asc,desc,box,base);
 
 vardef tanh(expr x) =

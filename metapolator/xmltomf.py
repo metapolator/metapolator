@@ -11,16 +11,23 @@ from sqlalchemy import func
 class DifferentZPointError(Exception):
     pass
 
-
-def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
+#def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
+def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None):
     """ Save current points to mf file
 
         master is an instance of models.Master
         glyph is an instance of models.Glyph
     """
+
+#    if session.get('mfparser', '') == 'controlpoints':
+#        import xmltomf_new
+#        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
+                                    # stdout_fip=stdout_fip)
+
+
     if master.project.mfparser == 'controlpoints':
         import xmltomf_new
-        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
+        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB, glyphC=glyphC, glyphD=glyphD,
                                     stdout_fip=stdout_fip)
 
     import time
@@ -29,6 +36,12 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
     if not glyphB:
         glyphB = glyphA
+
+    if not glyphC:
+        glyphC = glyphA
+
+    if not glyphD:
+        glyphD = glyphA
 
     if not stdout_fip:
         path = op.join(master.get_fonts_directory(), "glyphs")
@@ -44,20 +57,24 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     w = '%.2f' % (glyphA.width / 100.)
     w2 = '%.2f' % (glyphB.width / 100.)
 
+    wA = '%.2f' % (glyphA.width / 100.)
+    wB = '%.2f' % (glyphB.width / 100.)
+    wC = '%.2f' % (glyphC.width / 100.)
+    wD = '%.2f' % (glyphD.width / 100.)
+
 #    w = str(glyphA.width / 100)
 #    w2 = str(glyphB.width / 100)
     g = glyphA.name  # get from glyphA as we sure that glypha and glyphb exist in font project
 
     fip.write("\n")
 
-    str_ = ('beginfontchar({glyph}, (({width}*A_width + metapolation * '
-            '({bwidth}*B_width - {width}*A_width)) + '
-            'spacing_{glyph}R) * width_{glyph}, 0, 0 );')
-    fip.write(str_.format(width=w, glyph=glyphA.name, bwidth=w2))
+    str_ = ('beginfontchar({glyph}, (((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) / 2 ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
+    fip.write(str_.format(Awidth=wA, glyph=glyphA.name, Bwidth=wB, Cwidth=wC, Dwidth=wD))
 
     fip.write("\n")
     fip.write("""currenttransform := identity slanted slant;
                  italcorr slant - .5u#;""")
+
     # point coordinates font A ################
 
     fip.write("\n")
@@ -74,19 +91,30 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
     fontb_outlines = list(query)
 
+    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+    query = query.filter(models.GlyphOutline.glyph_id == glyphC.id)
+    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    fontc_outlines = list(query)
+
+    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+    query = query.filter(models.GlyphOutline.glyph_id == glyphD.id)
+    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    fontd_outlines = list(query)
+
+
     for item, param in fonta_outlines:
 
         znamel = re.match('z(\d+)l', param.pointname)
         znamer = re.match('z(\d+)r', param.pointname)
         zeile = None
         if znamel and param.pointname == znamel.group(0):
-            zeile = "px{index}l := {xvalue}u ; py{index}l := {yvalue}u ;"
+            zeile = "Apx{index}l := {xvalue}u ; Apy{index}l := {yvalue}u ;"
             zeile = zeile.format(index=znamel.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "px{index}r := {xvalue}u ; py{index}r := {yvalue}u ;"
+            zeile = "Apx{index}r := {xvalue}u ; Apy{index}r := {yvalue}u ;"
             zeile = zeile.format(index=znamer.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
@@ -98,7 +126,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     # reading mid points font A
 
     fip.write("\n")
-    fip.write("""% point coordinates font A""")
+    fip.write("""% mid points font A""")
     fip.write("\n\n")
 
     index = 1
@@ -107,16 +135,16 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = ".5(px{0}l + px{0}r) = x2{0}0;".format(index)
+            zeile = ".5(Apx{0}l + Apx{0}r) = x{0}A;".format(index)
             fip.write(zeile + '\n')
 
-            zeile = ".5(py{0}l + py{0}r) = y2{0}0;".format(index)
+            zeile = ".5(Apy{0}l + Apy{0}r) = y{0}A;".format(index)
             fip.write(zeile + '\n')
 
             index += 1
 
     fip.write("\n")
-    fip.write("""% point coordinates font A""")
+    fip.write("""%  extra points font A""")
     fip.write("\n\n")
 
     index = 1
@@ -124,10 +152,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "px{0}l = x{0}Bl; py{0}l = y{0}Bl;".format(index)
+            zeile = "Apx{0}l = x{0}Al; Apy{0}l = y{0}Al;".format(index)
             fip.write(zeile + '\n')
 
-            zeile = "px{0}r = x{0}Br; py{0}r = y{0}Br;".format(index)
+            zeile = "Apx{0}r = x{0}Ar; Apy{0}r = y{0}Ar;".format(index)
             fip.write(zeile + '\n')
 
             index += 1
@@ -144,7 +172,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "dist{0} := length (z{0}Bl-z{0}Br);".format(index)
+            zeile = "dist{0}A := length (z{0}Al-z{0}Ar);".format(index)
             fip.write(zeile + '\n')
 
             index += 1
@@ -162,13 +190,13 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
         zeile = None
         if znamel and param.pointname == znamel.group(0):
-            zeile = "ppx{index}l := {xvalue}u ; ppy{index}l := {yvalue}u ;"
+            zeile = "Bpx{index}l := {xvalue}u ; Bpy{index}l := {yvalue}u ;"
             zeile = zeile.format(index=znamel.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "ppx{index}r := {xvalue}u ; ppy{index}r := {yvalue}u ;"
+            zeile = "Bpx{index}r := {xvalue}u ; Bpy{index}r := {yvalue}u ;"
             zeile = zeile.format(index=znamer.group(1),
                                  xvalue='%.2f' % (item.x / 100.),
                                  yvalue='%.2f' % (item.y / 100.))
@@ -176,6 +204,63 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         if zeile:
             fip.write("\n")
             fip.write(zeile)
+
+# point coordinates font C ################
+
+    fip.write("\n")
+    fip.write("""% point coordinates font C""")
+    fip.write("\n")
+
+# points for l
+
+    for item, param in fontc_outlines:
+        znamel = re.match('z(\d+)l', param.pointname)
+        znamer = re.match('z(\d+)r', param.pointname)
+        zeile = None
+        if znamel and param.pointname == znamel.group(0):
+            zeile = "Cpx{index}l := {xvalue}u ; Cpy{index}l := {yvalue}u ;"
+            zeile = zeile.format(index=znamel.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "Cpx{index}r := {xvalue}u ; Cpy{index}r := {yvalue}u ;"
+            zeile = zeile.format(index=znamer.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
+
+        if zeile:
+            fip.write("\n")
+            fip.write(zeile)
+
+# point coordinates font D ################
+
+    fip.write("\n")
+    fip.write("""% point coordinates font D""")
+    fip.write("\n")
+
+# points for l and r
+
+    for item, param in fontd_outlines:
+        znamel = re.match('z(\d+)l', param.pointname)
+        znamer = re.match('z(\d+)r', param.pointname)
+        zeile = None
+        if znamel and param.pointname == znamel.group(0):
+            zeile = "Dpx{index}l := {xvalue}u ; Dpy{index}l := {yvalue}u ;"
+            zeile = zeile.format(index=znamel.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "Dpx{index}r := {xvalue}u ; Dpy{index}r := {yvalue}u ;"
+            zeile = zeile.format(index=znamer.group(1),
+                                 xvalue='%.2f' % (item.x / 100.),
+                                 yvalue='%.2f' % (item.y / 100.))
+
+        if zeile:
+            fip.write("\n")
+            fip.write(zeile)
+
 
 # reading mid points font B
 
@@ -189,10 +274,50 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = ".5(ppx{0}l + ppx{0}r) = x2{0}A;".format(index)
+            zeile = ".5(Bpx{0}l + Bpx{0}r) = x{0}B;".format(index)
             fip.write(zeile + '\n')
 
-            zeile = ".5(ppy{0}l + ppy{0}r) = y2{0}A;".format(index)
+            zeile = ".5(Bpy{0}l + Bpy{0}r) = y{0}B;".format(index)
+            fip.write(zeile + '\n')
+
+            index += 1
+
+# reading mid points font C
+
+    fip.write("\n")
+    fip.write("""% point coordinates font C""")
+    fip.write("\n\n")
+
+    index = 1
+    for item, param in fontc_outlines:
+
+        znamer = re.match('z(\d+)r', param.pointname)
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = ".5(Cpx{0}l + Cpx{0}r) = x{0}C;".format(index)
+            fip.write(zeile + '\n')
+
+            zeile = ".5(Cpy{0}l + Cpy{0}r) = y{0}C;".format(index)
+            fip.write(zeile + '\n')
+
+            index += 1
+
+# reading mid points font D
+
+    fip.write("\n")
+    fip.write("""% point coordinates font D""")
+    fip.write("\n\n")
+
+    index = 1
+    for item, param in fontd_outlines:
+
+        znamer = re.match('z(\d+)r', param.pointname)
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = ".5(Dpx{0}l + Dpx{0}r) = x{0}D;".format(index)
+            fip.write(zeile + '\n')
+
+            zeile = ".5(Dpy{0}l + Dpy{0}r) = y{0}D;".format(index)
             fip.write(zeile + '\n')
 
             index += 1
@@ -209,10 +334,50 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "ppx{0}l = x{0}Cl; ppy{0}l = y{0}Cl;".format(index)
+            zeile = "Bpx{0}l = x{0}Bl; Bpy{0}l = y{0}Bl;".format(index)
             fip.write(zeile + '\n')
 
-            zeile = "ppx{0}r = x{0}Cr; ppy{0}r = y{0}Cr;".format(index)
+            zeile = "Bpx{0}r = x{0}Br; Bpy{0}r = y{0}Br;".format(index)
+            fip.write(zeile + '\n')
+
+            index += 1
+
+# reading fake l and r points Font C ################
+
+    fip.write("\n")
+    fip.write("""% fake l and r points Font C""")
+    fip.write("\n\n")
+
+    index = 1
+
+    for item, param in fontc_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "Cpx{0}l = x{0}Cl; Cpy{0}l = y{0}Cl;".format(index)
+            fip.write(zeile + '\n')
+
+            zeile = "Cpx{0}r = x{0}Cr; Cpy{0}r = y{0}Cr;".format(index)
+            fip.write(zeile + '\n')
+
+            index += 1
+
+# reading fake l and r points Font D ################
+
+    fip.write("\n")
+    fip.write("""% fake l and r points Font D""")
+    fip.write("\n\n")
+
+    index = 1
+
+    for item, param in fontd_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "Dpx{0}l = x{0}Dl; Dpy{0}l = y{0}Dl;".format(index)
+            fip.write(zeile + '\n')
+
+            zeile = "Dpx{0}r = x{0}Dr; Dpy{0}r = y{0}Dr;".format(index)
             fip.write(zeile + '\n')
 
             index += 1
@@ -229,10 +394,46 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "dist{0}B := length (z{0}Cl - z{0}Cr);".format(index)
+            zeile = "dist{0}B := length (z{0}Bl - z{0}Br);".format(index)
             fip.write(zeile + '\n')
 
             index += 1
+
+# reading pen widths Font C ################
+
+    fip.write("\n")
+    fip.write("""% pen width Font C""")
+    fip.write("\n\n")
+
+    index = 1
+    for item, param in fontc_outlines:
+
+        znamer = re.match('z(\d+)r', param.pointname)
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "dist{0}C := length (z{0}Cl - z{0}Cr);".format(index)
+            fip.write(zeile + '\n')
+
+            index += 1
+
+# reading pen widths Font D ################
+
+    fip.write("\n")
+    fip.write("""% pen width Font D""")
+    fip.write("\n\n")
+
+    index = 1
+    for item, param in fontd_outlines:
+
+        znamer = re.match('z(\d+)r', param.pointname)
+
+        if znamer and param.pointname == znamer.group(0):
+            zeile = "dist{0}D := length (z{0}Dl - z{0}Dr);".format(index)
+            fip.write(zeile + '\n')
+
+            index += 1
+
+
 
 # pen angle (A and B, for B we dont need to read from db) ################
 
@@ -245,14 +446,14 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "ang{0} := angle ((z{0}Br + (metapolation * (z{0}Cr - z{0}Br))) - (z{0}Bl + (metapolation * (z{0}Cl - z{0}Bl))));".format(index)
+            zeile = "ang{0} := angle (((z{0}Ar + (metapolation * (z{0}Br - z{0}Ar))) + (z{0}Cr + (metapolationCD * (z{0}Dr - z{0}Cr))) / 2) - ((z{0}Al + (metapolation * (z{0}Bl - z{0}Al))) + (z{0}Cl + (metapolationCD * (z{0}Dl - z{0}Cl))) / 2));".format(index)
             index += 1
             fip.write(zeile + '\n')
 
 # reading extra pen angle Font B  ################
 
-    fip.write("\n")
-    fip.write("""% test extra pen angle Font B""")
+#    fip.write("\n")
+#    fip.write("""% test extra pen angle Font B""")
 
     inattr = 0
     ivn = 0
@@ -296,6 +497,102 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 angleval_B.append(0)
 
     # passing angleval_B to extra pen angle Font A
+
+# reading extra pen angle Font C  ################
+
+#    fip.write("\n")
+#    fip.write("""% test extra pen angle Font C""")
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zznc = []  # for font B save zzn
+
+    angle = []
+    angleC = []
+
+    angleval_C = []
+    startp = []
+    startpval = []
+
+    i = 1
+    for item, param in fontc_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        istartp = param.startp
+        iangleC = param.angle
+
+        if znamel and im == znamel.group(0):
+            zznc.append(i)
+            if istartp is not None:
+                istartpval = param.startp
+                startp.append("startp")
+                startpval.append(istartpval)
+
+            if iangleC is not None:
+                iangleval_C = param.angle
+                angleC.append("angle")
+                angleval_C.append(iangleval_C)
+            else:
+                angleC.append("")
+                angleval_C.append(0)
+
+    # passing angleval_C to extra pen angle Font A
+
+# reading extra pen angle Font D  ################
+
+#    fip.write("\n")
+#    fip.write("""% test extra pen angle Font D""")
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zznd = []  # for font B save zzn
+
+    angle = []
+    angleD = []
+
+    angleval_D = []
+    startp = []
+    startpval = []
+
+    i = 1
+    for item, param in fontd_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        istartp = param.startp
+        iangleD = param.angle
+
+        if znamel and im == znamel.group(0):
+            zznd.append(i)
+            if istartp is not None:
+                istartpval = param.startp
+                startp.append("startp")
+                startpval.append(istartpval)
+
+            if iangleD is not None:
+                iangleval_D = param.angle
+                angleD.append("angle")
+                angleval_D.append(iangleval_D)
+            else:
+                angleD.append("")
+                angleval_D.append(0)
+
+    # passing angleval_D to extra pen angle Font A
 
 
     # reading extra pen angle Font A
@@ -362,7 +659,7 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         if angle[i]:
 #            angleb = angleval_B[i]
-            zeile = "ang" + str(zitem) + " := " + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ));"
+            zeile = "ang" + str(zitem) + " := (" + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ))) + (" + str(angleval_C[i]) + "+ (metapolationCD * (" + str(angleval_D[i]) + " - " + str(angleval_C[i]) + " ))) / 2;"
         else:
             zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
 
@@ -371,8 +668,9 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
 # reading font Pen Positions Font B
 
-    fip.write("\n")
-    fip.write("""% penposition font B""")
+
+#    fip.write("\n")
+#    fip.write("""% penposition font B""")
 
     inattr = 0
     ivn = 0
@@ -432,11 +730,139 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 pointshifted.append("")
                 B_pointshiftedval.append(0)
 
+# reading font Pen Positions Font C
+
+
+#    fip.write("\n")
+#    fip.write("""% penposition font C""")
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zzn = []
+
+    penwidth = []
+    penwidthval = []
+    C_penwidthval = []
+
+    startp = []
+    startpval = []
+
+    pointshifted = []
+    pointshiftedval = []
+    C_pointshiftedval = []
+
+
+    i = 1
+
+    for item, param in fontc_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        ipenwidth = param.penwidth
+        istartp = param.startp
+
+        ipointshifted = param.pointshifted
+
+
+        if znamel and im == znamel.group(0):
+            zzn.append(i)
+            if istartp is not None:
+                istartpval = param.startp
+                startp.append("startp")
+                startpval.append(istartpval)
+
+            if ipenwidth is not None:
+                ipenwidthval = param.penwidth
+                penwidth.append("penwidth")
+                C_penwidthval.append(ipenwidthval)
+            else:
+                penwidth.append("")
+                C_penwidthval.append(0)
+
+            if ipointshifted is not None:
+                ipointshiftedval = param.pointshifted
+                pointshifted.append("shifted")
+                C_pointshiftedval.append(ipointshiftedval)
+            else:
+                pointshifted.append("")
+                C_pointshiftedval.append(0)
+
+
+# reading font Pen Positions Font D
+
+#    fip.write("\n")
+#    fip.write("""% penposition font D""")
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zzn = []
+
+    penwidth = []
+    penwidthval = []
+    D_penwidthval = []
+
+    startp = []
+    startpval = []
+
+    pointshifted = []
+    pointshiftedval = []
+    D_pointshiftedval = []
+
+
+    i = 1
+
+    for item, param in fontd_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        ipenwidth = param.penwidth
+        istartp = param.startp
+
+        ipointshifted = param.pointshifted
+
+
+        if znamel and im == znamel.group(0):
+            zzn.append(i)
+            if istartp is not None:
+                istartpval = param.startp
+                startp.append("startp")
+                startpval.append(istartpval)
+
+            if ipenwidth is not None:
+                ipenwidthval = param.penwidth
+                penwidth.append("penwidth")
+                D_penwidthval.append(ipenwidthval)
+            else:
+                penwidth.append("")
+                D_penwidthval.append(0)
+
+            if ipointshifted is not None:
+                ipointshiftedval = param.pointshifted
+                pointshifted.append("shifted")
+                D_pointshiftedval.append(ipointshiftedval)
+            else:
+                pointshifted.append("")
+                D_pointshiftedval.append(0)
+
 
 # reading Pen Positions Font A
 
     fip.write("\n")
-    fip.write("""% penposition font A""")
+    fip.write("""% penpositions""")
 
     inattr = 0
     ivn = 0
@@ -479,9 +905,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
         im = param.pointname
 
-        # istemcutter = param.stemcutter
-        # iinktrap_l = param.inktrap_l
-        # iinktrap_r = param.inktrap_r
         ipenwidth = param.penwidth
         iangle = param.angle
         istartp = param.startp
@@ -496,20 +919,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 istartpval = param.startp
                 startp.append("startp")
                 startpval.append(istartpval)
-
-            # if istemcutter is not None:
-            #     istemcutterval = param.stemcutter
-            #     stemcutterval.append(istemcutterval)
-
-            # if iinktrap_l is not None:
-            #     iinktrap_lval = param.inktrap_l
-            #     inktrap_l.append("inktrap_l")
-            #     inktrap_lval.append(iinktrap_lval)
-
-            # if iinktrap_r is not None:
-            #     iinktrap_rval = param.inktrap_r
-            #     inktrap_r.append("inktrapcut")
-            #     inktrap_rval.append(iinktrap_rval)
 
             if ipenwidth is not None:
                 ipenwidthval = param.penwidth
@@ -528,10 +937,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 angle.append("")
                 angleval.append(0)
 
-#            if icomp is not None:
-#                icompval = param.comp
-#                comp.append("comp")
-#                compval.append(icompval)
             i += 1
 
     zzn.sort()
@@ -543,13 +948,21 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         zitem = i + 1
 
         if penwidth[i]:
-            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
+#            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
+
+            zeile = """penpos"""  + str(zitem) + "(((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + ")) /2) * " + "(((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
+
         else:
-            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
+
+#            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
+
+            zeile = """penpos"""  + str(zitem) + "(((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
+
 
         zeile = zeile + ", ang" + str(zitem) + ");"
         fip.write("\n")
         fip.write(zeile)
+
 
 # testing new center points
 
@@ -670,11 +1083,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 pointshifted.append("")
                 pointshiftedval.append(0)
 
-#       if ipointshiftedy is not None:
-#           ipointshiftedyval = param.pointshiftedy
-#           pointshiftedy.append("shifted")
-#           pointshiftedyval.append(ipointshiftedyval)
-
             if ioverx is not None:
                 ioverxval = param.overx
                 overx.append("shifted")
@@ -759,7 +1167,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         # if descpoint[i] != "":
         #     zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_descender + metapolation * (B_descender - A_descender)) / desc#))"
         # else:
-        zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
+
+#       zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
+
+        zeile = "z" + str(zitem) + "=(((A_width + metapolation * (B_width - A_width)) + (C_width + metapolationCD * (D_width - C_width)) /2 ) * (((x" + str(zitem) + "A + metapolation * (x" + str(zitem) + "B - x" + str(zitem) + "A)) + (x" + str(zitem) + "C + metapolationCD * (x" + str(zitem) + "D - x" + str(zitem) + "C)) /2 ) + spacing_" + g + "L) * width_" + g + ", ((y" + str(zitem) + "A + metapolation *(y" + str(zitem) + "B - y" + str(zitem) + "A)) + (y" + str(zitem) + "C + metapolationCD *(y" + str(zitem) + "D - y" + str(zitem) + "C)) /2 ) * (((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) + (C_" + ggroup + " + metapolationCD * (D_" + ggroup + " - C_" + ggroup + ")) /2 ) / " + gggroup + "#))"
 
         if pointshifted[i] != '':
 #            zeile = zeile + " shifted (" + str(pointshiftedval[i]) + " + metapolation * (" + str(B_pointshiftedval[i]) + " - " + str(pointshiftedval[i]) + "))"
@@ -778,7 +1189,10 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
         fip.write("\n")
         fip.write(zeile)
 
+
+
 # reading penstrokes font B
+
 
     inattr = 0
     ivn = 0
@@ -911,12 +1325,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             #     tensionB.append("tension")
             #     tensionvalB.append(itensionval)
 
-#            if itensionand is not None:
-#                itensionandval = param.tensionand
-#                tensionandB.append("tensionand")
-#                tensionandvalB.append(itensionandval[:3])
-#                tensionandval2B.append(itensionandval[-3:])
-
             if itensionand is not None :
                 itensionandval = param.tensionand
                 tensionandB.append("tensionand")
@@ -926,8 +1334,6 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 tensionandB.append("")
                 tensionandvalB.append(0)
                 tensionandval2B.append(0)
-
-
 
             # if isuperright is not None:
             #     isuperrightval = param.superright
@@ -957,6 +1363,358 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
             else :
                 penshifted.append("")
                 penshiftedvalB.append("0,0")
+
+
+# reading penstrokes font C
+
+    inattr = 0
+    ivn = 0
+    stre = " ... "
+    strtwo = " .. "
+    stline = " -- "
+    strz = ""
+    zzn = []
+
+    startp = []
+    startpval = []
+
+    doubledash = []
+    doubledashvalC = []
+
+    tripledash = []
+    tripledashvalC = []
+
+    tension = []
+    tensionC = []
+    tensionvalC = []
+
+    tensionand = []
+    tensionandC = []
+    tensionandvalC = []
+    tensionandval2C = []
+
+    superright = []
+    superrightvalC = []
+
+    superleft = []
+    superleftvalC = []
+
+    dir = []
+    dirC = []
+    dirvalC = []
+
+    dir2 = []
+    dir2C = []
+    dir2valC = []
+
+    leftp = []
+    leftpvalC = []
+
+    rightp = []
+    rightpvalC = []
+
+    upp = []
+    uppvalC = []
+
+    downp = []
+    downpvalC = []
+
+    penshifted = []
+    penshiftedvalC = []
+
+    i = 1
+
+    for item, param in fontc_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        idoubledash = param.doubledash
+        itripledash = param.tripledash
+        idir = param.dir
+        idir2 = param.dir2
+        ileftp = param.leftp
+        iupp = param.upp
+        irightp = param.rightp
+        idownp = param.downp
+        # itension = param.tension
+        itensionand = param.tensionand
+        # isuperright = param.superright
+        # isuperleft = param.superleft
+        ipenshifted = param.penshifted
+
+        if znamel and im == znamel.group(0):
+            zzn.append(i)
+
+        # do not delete that lines while you are sure
+#        if im == znamel or im == znamer:
+
+            if idoubledash is not None:
+                idoubledashval = param.doubledash
+                doubledash.append("doubledash")
+                doubledashvalC.append(idoubledashval)
+
+            if itripledash is not None:
+                itripledashval = param.tripledash
+                tripledash.append(" ---")
+                tripledashvalC.append(itripledashval)
+
+            if idir is not None :
+                idirval = param.dir
+                dirC.append("dir")
+                dirvalC.append(idirval)
+            else :
+                dirC.append("")
+                dirvalC.append(0)
+
+
+            if iupp is not None:
+                iuppval = param.upp
+                upp.append("up")
+                uppvalC.append(iuppval)
+
+            if ileftp is not None:
+                ileftpval = param.leftp
+                leftp.append("left")
+                leftpvalC.append(ileftpval)
+
+            if irightp is not None:
+                irightpval = param.rightp
+                rightp.append("right")
+                rightpvalC.append(irightpval)
+
+            if idownp is not None:
+                idownpval = param.downp
+                downp.append("down")
+                downpvalC.append(idownpval)
+
+            # if itension is not None:
+            #     itensionval = param.tension
+            #     tensionC.append("tension")
+            #     tensionvalC.append(itensionval)
+
+
+            if itensionand is not None :
+                itensionandval = param.tensionand
+                tensionandC.append("tensionand")
+                tensionandvalC.append(itensionandval[:3])
+                tensionandval2C.append(itensionandval[-3:])
+            else :
+                tensionandC.append("")
+                tensionandvalC.append(0)
+                tensionandval2C.append(0)
+
+
+
+            # if isuperright is not None:
+            #     isuperrightval = param.superright
+            #     superright.append("superright")
+            #     superrightvalC.append(isuperrightval)
+
+            # if isuperleft is not None:
+            #     isuperleftval = param.superleft
+            #     superleft.append("superleft")
+            #     superleftvalC.append(isuperleftval)
+
+
+            if idir2 is not None :
+                idir2val = param.dir2
+                dir2C.append("dir")
+                dir2valC.append(idir2val)
+            else :
+                dir2C.append("")
+                dir2valC.append(0)
+
+
+            if ipenshifted is not None:
+                ipenshiftedval = param.penshifted
+                penshifted.append("shifted")
+                penshiftedvalC.append(ipenshiftedval)
+
+            else :
+                penshifted.append("")
+                penshiftedvalC.append("0,0")
+
+
+# reading penstrokes font D
+
+
+    inattr = 0
+    ivn = 0
+    stre = " ... "
+    strtwo = " .. "
+    stline = " -- "
+    strz = ""
+    zzn = []
+
+    startp = []
+    startpval = []
+
+    doubledash = []
+    doubledashvalD = []
+
+    tripledash = []
+    tripledashvalD = []
+
+    tension = []
+    tensionD = []
+    tensionvalD = []
+
+    tensionand = []
+    tensionandD = []
+    tensionandvalD = []
+    tensionandval2D = []
+
+    superright = []
+    superrightvalD = []
+
+    superleft = []
+    superleftvalD = []
+
+    dir = []
+    dirD = []
+    dirvalD = []
+
+    dir2 = []
+    dir2D = []
+    dir2valD = []
+
+    leftp = []
+    leftpvalD = []
+
+    rightp = []
+    rightpvalD = []
+
+    upp = []
+    uppvalD = []
+
+    downp = []
+    downpvalD = []
+
+    penshifted = []
+    penshiftedvalD = []
+
+    i = 1
+
+    for item, param in fontd_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        idoubledash = param.doubledash
+        itripledash = param.tripledash
+        idir = param.dir
+        idir2 = param.dir2
+        ileftp = param.leftp
+        iupp = param.upp
+        irightp = param.rightp
+        idownp = param.downp
+        # itension = param.tension
+        itensionand = param.tensionand
+        # isuperright = param.superright
+        # isuperleft = param.superleft
+        ipenshifted = param.penshifted
+
+        if znamel and im == znamel.group(0):
+            zzn.append(i)
+
+        # do not delete that lines while you are sure
+#        if im == znamel or im == znamer:
+
+            if idoubledash is not None:
+                idoubledashval = param.doubledash
+                doubledash.append("doubledash")
+                doubledashvalD.append(idoubledashval)
+
+            if itripledash is not None:
+                itripledashval = param.tripledash
+                tripledash.append(" ---")
+                tripledashvalD.append(itripledashval)
+
+            if idir is not None :
+                idirval = param.dir
+                dirD.append("dir")
+                dirvalD.append(idirval)
+            else :
+                dirD.append("")
+                dirvalD.append(0)
+
+
+            if iupp is not None:
+                iuppval = param.upp
+                upp.append("up")
+                uppvalD.append(iuppval)
+
+            if ileftp is not None:
+                ileftpval = param.leftp
+                leftp.append("left")
+                leftpvalD.append(ileftpval)
+
+            if irightp is not None:
+                irightpval = param.rightp
+                rightp.append("right")
+                rightpvalD.append(irightpval)
+
+            if idownp is not None:
+                idownpval = param.downp
+                downp.append("down")
+                downpvalD.append(idownpval)
+
+            # if itension is not None:
+            #     itensionval = param.tension
+            #     tensionD.append("tension")
+            #     tensionvalD.append(itensionval)
+
+
+            if itensionand is not None :
+                itensionandval = param.tensionand
+                tensionandD.append("tensionand")
+                tensionandvalD.append(itensionandval[:3])
+                tensionandval2D.append(itensionandval[-3:])
+            else :
+                tensionandD.append("")
+                tensionandvalD.append(0)
+                tensionandval2D.append(0)
+
+
+            # if isuperright is not None:
+            #     isuperrightval = param.superright
+            #     superright.append("superright")
+            #     superrightvalD.append(isuperrightval)
+
+            # if isuperleft is not None:
+            #     isuperleftval = param.superleft
+            #     superleft.append("superleft")
+            #     superleftvalD.append(isuperleftval)
+
+
+            if idir2 is not None :
+                idir2val = param.dir2
+                dir2D.append("dir")
+                dir2valD.append(idir2val)
+            else :
+                dir2D.append("")
+                dir2valD.append(0)
+
+
+            if ipenshifted is not None:
+                ipenshiftedval = param.penshifted
+                penshifted.append("shifted")
+                penshiftedvalD.append(ipenshiftedval)
+
+            else :
+                penshifted.append("")
+                penshiftedvalD.append("0,0")
 
 
 # reading font penstrokes Font A
@@ -1318,144 +2076,72 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
                 dash = " --- "
             elif doubledash[i] != "":
                 dash = " -- "
-            # elif tension[i] != "":
-            #     dash = ""
+
             elif tensionand[i] != "":
                 dash = ""
-            # elif superleft[i] != "":
-            #     dash = ""
-            # elif superright[i] != "":
-            #     dash = ""
+
             elif dir2[i] != "":
                 dash = ""
-            elif upp2[i] != "":
-                dash = ""
-            elif downp2[i] != "":
-                dash = ""
-            elif rightp2[i] != "":
-                dash = ""
-            elif leftp2[i] != "":
-                dash = ""
+
+
 
             if penshifted[i] != "":
-                zeile += " shifted ((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + ")))"
+                zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
 
             if overx[i] != "":
-                zeile += " shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - " + str(overxval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+                zeile += " shifted (0, ((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt)) /2) - " + str(overxval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overbase[i] != "":
-                zeile += " shifted (0, - " + str(overbaseval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
+                zeile += " shifted (0, - " + str(overbaseval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overcap[i] != "":
-                zeile += " shifted (0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) - " + str(overcapval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+                zeile += " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /2) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overasc[i] != "":
-                zeile += " shifted (0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt )) - " + str(overascval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+                zeile += " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /2) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overdesc[i] != "":
-                zeile += " shifted (0, (A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) - " + str(overdescval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
-
-            # if penshiftedy[i] != "":
-            #     zeile += " shifted (0, y" + str(penshiftedyval[i]) + ")"
-
-            if upp[i] != "":
-                zeile += "{up}"
-
-            if downp[i] != "":
-                zeile += "{down}"
-
-            if leftp[i] != "":
-                zeile += "{left}"
-
-            if rightp[i] != "":
-                zeile += "{right}"
+                zeile += " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if dir[i] != "":
-                zeile += " {dir (" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"
-
-#            if tensionand[i] != "" and dir2[i] != "":
+                zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/2)}"
 
             if tensionand[i] != "":
-                zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
-          #      + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
-#                    else:
-#
+                zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)' + strtwo
+
             if dir2[i] != "":
-                zeile += " ... {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
-                                # else:
-                                #     if tension[i] != "":
-                                #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
-                                #     elif tensionand[i] != "":
-                                #         zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
+                zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
 
             zeile += dash
+
         else:
+
             if dir[i] != "":
-                zeile = zeile + " {dir (" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"
+                zeile = zeile + " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/2)}"
 
             if overx[i] != "":
-                zeile = zeile + " shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - " + str(overxval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+                zeile = zeile + " shifted (0, ((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt)) /2) - " + str(overxval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overbase[i] != "":
-                zeile = zeile + " shifted (0, - " + str(overbaseval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
+                zeile = zeile + " shifted (0, - " + str(overbaseval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overcap[i] != "":
-                zeile = zeile + " shifted (0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) - " + str(overcapval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+                zeile = zeile + " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /2) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overasc[i] != "":
-                zeile = zeile + " shifted (0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt )) - " + str(overascval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+                zeile = zeile + " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /2) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if overdesc[i] != "":
-                zeile = zeile + " shifted (0, (A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) - " + str(overdescval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
-
-#            if penshifted[i] != "":
- #               zeile = zeile + " shifted (" + str(penshiftedval[i]) + ")"
+                zeile = zeile + " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if penshifted[i] != "":
-                zeile += " shifted ((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + ")))"
-
-            # if tension[i] != ""and upp2[i] != "":
-            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{up}"
-            # elif upp2[i] != "":
-            #     zeile += dash + "{up}"
-
-            # if tension[i] != ""and downp2[i] != "":
-            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{down}"
-            # elif downp2[i] != "":
-            #     zeile += dash + "{down}"
-
-            # if tension[i] != ""and rightp2[i] != "":
-            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{right}"
-            # elif rightp2[i] != "":
-            #     zeile += dash + "{right}"
-
-            # if tension[i] != ""and leftp2[i] != "":
-            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{left}"
-            # elif leftp2[i] != "":
-            #     zeile += dash + "{left}"
-
-            # if tension[i] != ""and dir2[i] != "":
-            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{dir " + str(dir2val[i]) + "}"
-            # elif dir2[i] != "":
-            #     zeile += dash + "{dir " + str(dir2val[i]) + "}"
-
-            # if tension[i] != ""and cycle[i] != "":
-            #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "cycle"
-            # else:
-                # if tensionand[i] != ""and cycle[i] != "":
-                #     zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "cycle"
-                # else:
-                #     if cycle[i] != "":
-                #         zeile += dash + "cycle"
-                #     elif tension[i] != "":
-                #         zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100 -' + str(tensionval[i]) + '/100 )))' + strtwo
+                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
 
             if tensionand[i] != "":
-                zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo
+                zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)' + strtwo
 
             zeile += semi + '\n'
 
-        # fip.write("\n")
         fip.write(zeile)
 
         zitemb = zzn[i + 1]
@@ -1464,65 +2150,51 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
     if len(zzn) >= i:
         i += 1
 
-        # write final point with zzn[i + 1]
-#        if penshifted[i] != "":
-#            zeile += " shifted (" + str(penshiftedval[i]) + ")"
+        # write final point with i + 1
+
 
         if penshifted[i] != "":
-            zeile += " shifted ((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + ")))"
+            zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
 
         if dir[i] != "":
-            zeile += " {dir (" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + "))}"
+            zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/2)}"
 
         if overx[i] != "":
-            zeile += " shifted (0, (A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) - " + str(overxval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+            zeile += " shifted (0, ((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt)) /2) - " + str(overxval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
         if overbase[i] != "":
-            zeile += " shifted (0, - " + str(overbaseval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
+            zeile += " shifted (0, - " + str(overbaseval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
         if overcap[i] != "":
-            zeile += " shifted (0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) - " + str(overcapval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+            zeile += " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /2) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
         if overasc[i] != "":
-            zeile += " shifted (0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt )) - " + str(overascval[i]) + ") + (0, A_over + metapolation * (B_over - A_over))"
+            zeile += " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /2) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
         if overdesc[i] != "":
-            zeile += " shifted (0, (A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) - " + str(overdescval[i]) + ") - (0, A_over + metapolation * (B_over - A_over))"
-
-        # if tension[i] != "" and upp2[i] != "":
-        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{up}"
-
-        # if tension[i] != ""and downp2[i] != "":
-        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{down}"
-
-        # if tension[i] != ""and rightp2[i] != "":
-        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{right}"
-
-        # if tension[i] != ""and leftp2[i] != "":
-        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{left}"
-
-        # if tension[i] != ""and dir2[i] != "":
-        #     zeile += strtwo + "tension" + " (" + str(tensionval[i]) + '/100 + (metapolation * (' + str(tensionvalB[i]) + '/100-' + str(tensionval[i]) + '/100)))' + strtwo + "{dir " + str(dir2val[i]) + "}"
+            zeile += " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
         if tensionand[i] != ""and dir2[i] != "":
-            zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + " {dir (" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + "))}"
+            zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)'
+            zeile += strtwo + " {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
 
-        if upp2[i] != "":
-            zeile += dash + upp2[i]
+#        if upp2[i] != "":
+#            zeile += dash + upp2[i]
         elif dir2[i] != "":
-            zeile += " ... {dir " + str(dir2val[i]) + "}"
-        elif downp2[i] != "":
-            zeile += dash + downp2[i]
-        elif upp2[i] != "":
-            zeile += dash + upp2[i]
-        elif leftp2[i] != "":
-            zeile += dash + leftp2[i]
-        elif rightp2[i] != "":
-            zeile += dash + rightp2[i]
+            zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
+
+#        elif downp2[i] != "":
+#            zeile += dash + downp2[i]
+#        elif upp2[i] != "":
+#            zeile += dash + upp2[i]
+#        elif leftp2[i] != "":
+#            zeile += dash + leftp2[i]
+#        elif rightp2[i] != "":
+#            zeile += dash + rightp2[i]
         # elif tension[i] != "":
         #     zeile += strtwo + "tension" + " (" + tensionval[i] + '/100 + (metapolation * (' + tensionvalB[i] + '/100-' + tensionval[i] + '/100)))' + strtwo + downp2[i]
-        elif tensionand[i] != ""and cycle[i] != "":
-            zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "cycle"
+#        elif tensionand[i] != ""and cycle[i] != "":
+#            zeile += strtwo + "tension" + " ((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100))))' + " and ((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100))))' + strtwo + "cycle"
         # elif cycle[i] != "":
         #     zeile += dash + cycle[i]
 
@@ -1534,6 +2206,199 @@ def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 
 
 
+# routines for serifs  ################
+
+    fip.write("\n")
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zznd = []  # for font D save zzn
+
+    theta = []
+    thetaD = []
+    thetaval_D = []
+    thetaval = []
+
+    serif_h_bot = []
+    serif_h_top = []
+    serif_v_left = []
+    serif_v_right = []
+
+    serif_h_botD = []
+    serif_h_topD = []
+    serif_v_leftD = []
+    serif_v_rightD = []
+
+    serif_h_botval = []
+    serif_h_topval = []
+    serif_v_leftval = []
+    serif_v_rightval = []
+
+
+    serif_h_botval_D = []
+    serif_h_topval_D = []
+    serif_v_leftval_D = []
+    serif_v_rightval_D = []
+
+
+    i = 1
+    for item, param in fontd_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        itheta = param.theta
+        iserif_h_bot = param.serif_h_bot
+        iserif_h_top = param.serif_h_top
+        iserif_v_left = param.serif_v_left
+        iserif_v_right = param.serif_v_right
+
+
+        if znamel and im == znamel.group(0):
+            zznb.append(i)
+
+            if itheta is not None:
+                ithetaval_D = param.theta
+                thetaD.append("theta")
+                thetaval_D.append(ithetaval_D)
+            else:
+                thetaD.append("")
+                thetaval_D.append(0)
+
+            if iserif_h_bot is not None:
+                iserif_h_botval_D = param.serif_h_bot
+                serif_h_botD.append("serif_h_bot")
+                serif_h_botval_D.append(iserif_h_botval_D)
+            else:
+                serif_h_botD.append("")
+                serif_h_botval_D.append(0)
+
+            if iserif_h_top is not None:
+                iserif_h_topval_D = param.serif_h_top
+                serif_h_topD.append("serif_h_top")
+                serif_h_topval_D.append(iserif_h_topval_D)
+            else:
+                serif_h_topD.append("")
+                serif_h_topval_D.append(0)
+
+            if iserif_v_left is not None:
+                iserif_v_leftval_D = param.serif_v_left
+                serif_v_leftD.append("serif_v_left")
+                serif_v_leftval_D.append(iserif_v_leftval_D)
+            else:
+                serif_v_leftD.append("")
+                serif_v_leftval_D.append(0)
+
+            if iserif_v_right is not None:
+                iserif_v_rightval_D = param.serif_v_right
+                serif_v_rightD.append("serif_v_right")
+                serif_v_rightval_D.append(iserif_v_rightval_D)
+            else:
+                serif_v_rightD.append("")
+                serif_v_rightval_D.append(0)
+
+# routines for serifs  ################
+
+    fip.write("\n")
+
+    inattr = 0
+    ivn = 0
+    strz = ""
+    zznc = []  # for font C save zzn
+
+    theta = []
+    thetaC = []
+    thetaval_C = []
+    thetaval = []
+
+    serif_h_bot = []
+    serif_h_top = []
+    serif_v_left = []
+    serif_v_right = []
+
+    serif_h_botC = []
+    serif_h_topC = []
+    serif_v_leftC = []
+    serif_v_rightC = []
+
+    serif_h_botval = []
+    serif_h_topval = []
+    serif_v_leftval = []
+    serif_v_rightval = []
+
+
+    serif_h_botval_C = []
+    serif_h_topval_C = []
+    serif_v_leftval_C = []
+    serif_v_rightval_C = []
+
+
+    i = 1
+    for item, param in fontc_outlines:
+        znamer = re.match('z(\d+)r', param.pointname)
+        znamel = re.match('z(\d+)l', param.pointname)
+        zname = re.match('z(\d+)l', param.pointname)
+
+        x = item.x
+        y = item.y
+
+        im = param.pointname
+
+        itheta = param.theta
+        iserif_h_bot = param.serif_h_bot
+        iserif_h_top = param.serif_h_top
+        iserif_v_left = param.serif_v_left
+        iserif_v_right = param.serif_v_right
+
+
+        if znamel and im == znamel.group(0):
+            zznb.append(i)
+
+            if itheta is not None:
+                ithetaval_C = param.theta
+                thetaC.append("theta")
+                thetaval_C.append(ithetaval_C)
+            else:
+                thetaC.append("")
+                thetaval_C.append(0)
+
+            if iserif_h_bot is not None:
+                iserif_h_botval_C = param.serif_h_bot
+                serif_h_botC.append("serif_h_bot")
+                serif_h_botval_C.append(iserif_h_botval_C)
+            else:
+                serif_h_botC.append("")
+                serif_h_botval_C.append(0)
+
+            if iserif_h_top is not None:
+                iserif_h_topval_C = param.serif_h_top
+                serif_h_topC.append("serif_h_top")
+                serif_h_topval_C.append(iserif_h_topval_C)
+            else:
+                serif_h_topC.append("")
+                serif_h_topval_C.append(0)
+
+            if iserif_v_left is not None:
+                iserif_v_leftval_C = param.serif_v_left
+                serif_v_leftC.append("serif_v_left")
+                serif_v_leftval_C.append(iserif_v_leftval_C)
+            else:
+                serif_v_leftC.append("")
+                serif_v_leftval_C.append(0)
+
+            if iserif_v_right is not None:
+                iserif_v_rightval_C = param.serif_v_right
+                serif_v_rightC.append("serif_v_right")
+                serif_v_rightval_C.append(iserif_v_rightval_C)
+            else:
+                serif_v_rightC.append("")
+                serif_v_rightval_C.append(0)
 # routines for serifs  ################
 
     fip.write("\n")
