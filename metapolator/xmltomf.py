@@ -11,7 +11,7 @@ from sqlalchemy import func
 class DifferentZPointError(Exception):
     pass
 
-
+#def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
 def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None):
     """ Save current points to mf file
 
@@ -20,7 +20,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     """
     if master.project.mfparser == 'controlpoints':
         import xmltomf_new
-        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
+        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB, glyphC=glyphC, glyphD=glyphD, 
                                     stdout_fip=stdout_fip)
 
     import time
@@ -439,7 +439,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "ang{0} := angle (((z{0}Ar + (metapolation * (z{0}Br - z{0}Ar))) + (z{0}Cr + (metapolationCD * (z{0}Dr - z{0}Cr))) / 2) - ((z{0}Al + (metapolation * (z{0}Bl - z{0}Al))) + (z{0}Cl + (metapolationCD * (z{0}Dl - z{0}Cl))) / 2);".format(index)
+            zeile = "ang{0} := angle (((z{0}Ar + (metapolation * (z{0}Br - z{0}Ar))) + (z{0}Cr + (metapolationCD * (z{0}Dr - z{0}Cr))) / 2) - ((z{0}Al + (metapolation * (z{0}Bl - z{0}Al))) + (z{0}Cl + (metapolationCD * (z{0}Dl - z{0}Cl))) / 2));".format(index)
             index += 1
             fip.write(zeile + '\n')
 
@@ -523,7 +523,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         iangleC = param.angle
 
         if znamel and im == znamel.group(0):
-            zznb.append(i)
+            zznc.append(i)
             if istartp is not None:
                 istartpval = param.startp
                 startp.append("startp")
@@ -571,7 +571,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         iangleD = param.angle
 
         if znamel and im == znamel.group(0):
-            zznb.append(i)
+            zznd.append(i)
             if istartp is not None:
                 istartpval = param.startp
                 startp.append("startp")
@@ -943,13 +943,13 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         if penwidth[i]:
 #            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
 
-            zeile = """penpos"""  + str(zitem) + "(((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + ")) /2) * " + "(((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
+            zeile = """penpos"""  + str(zitem) + "(((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + ")) /2) * " + "(((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
 
         else:
 
 #            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
 
-            zeile = """penpos"""  + str(zitem) + "(((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
+            zeile = """penpos"""  + str(zitem) + "(((((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2) + ((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px)) /2) + (((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50)) /2) * ((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C)) /2 ))))"
 
 
         zeile = zeile + ", ang" + str(zitem) + ");"
@@ -2127,6 +2127,13 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
             if overdesc[i] != "":
                 zeile = zeile + " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
+            if penshifted[i] != "":
+                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
+
+            if tensionand[i] != "":
+                zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)' + strtwo
+
+            zeile += semi + '\n'
 
         fip.write(zeile)
 
