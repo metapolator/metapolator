@@ -3,7 +3,7 @@ import os.path as op
 import subprocess
 
 from metapolator.config import buildfname, working_dir
-from metapolator.models import Glyph, LocalParam, Metapolation
+from metapolator.models import Glyph, LocalParam, Metapolation, LABELS
 
 
 class Metapost:
@@ -86,7 +86,6 @@ class Metapost:
         self._execute(master)
 
     def execute_interpolated_single(self, glyph):
-        print self.mfparser
         masters = self.project.get_ordered_masters()
 
         idmasters = map(lambda x: x.id, masters)
@@ -101,8 +100,6 @@ class Metapost:
         self._execute(primary_master, interpolated=True)
 
     def execute_single(self, master, glyph):
-        print self.mfparser
-
         if self.mfparser == 'pen':
             import xmltomf
             xmltomf.xmltomf1(master, glyph)
@@ -139,13 +136,9 @@ class Metapost:
         for i, m in enumerate(masters):
             if not i:
                 writeParams(self.project, m.metafont_filepath(), masters)
-            if i == 1:
-                metapolation = 1
-            else:
-                metapolation = 0
 
-            writeParams(self.project, m.metafont_filepath('a'), masters,
-                        is_concrete_master=True, metapolation=metapolation)
+            writeParams(self.project, m.metafont_filepath('a'),
+                        masters, label=i)
 
 
 GLOBAL_DEFAULTS = {
@@ -196,10 +189,14 @@ def get_local_param(param, key):
     return getattr(param, key, 0)
 
 
-def writeParams(project, filename, masters, is_concrete_master=False, metapolation=0):
-
+def writeParams(project, filename, masters, label=None):
     # TODO: make global parameter to project related and not master
     globalparam = None
+
+    # A: metapolation 0, metapolationCD -1 (minus!)
+    # B: metapolation 1, metapolationCD -1
+    # C: metapolation -1, metapolationCD 0
+    # D: metapolation -1, metapolationCD 1
 
     unitwidth = get_global_param(globalparam, 'unitwidth')
     fontsize = get_global_param(globalparam, 'fontsize')
@@ -212,20 +209,32 @@ def writeParams(project, filename, masters, is_concrete_master=False, metapolati
     ifile = open(filename, "w")
     # global parameters
     ifile.write("% parameter file \n")
-    if is_concrete_master:
+    if label is not None:
+        if label in [0, 1]:
+            metapolationCD = 0
+            metapolation = 0
+            if label == 1:
+                metapolation = 1
+        if label in [2, 3]:
+            metapolation = 0
+            metapolationCD = 0
+            if label == 3:
+                metapolationCD = 1
+
         ifile.write("metapolation:=%.2f;\n" % metapolation)
+        ifile.write("metapolationCD:=%.2f;\n" % metapolationCD)
     else:
         metap = Metapolation.get(label='AB', project_id=project.id) or 0
         if metap:
             metap = metap.value
         ifile.write("metapolation:=%.2f;\n" % metap)
 
-    metap = Metapolation.get(label='CD', project_id=project.id)
-    if metap:
-        metap = metap.value
-    else:
-        metap = 0
-    ifile.write("metapolationCD:=%.2f;\n" % metap)
+        metap = Metapolation.get(label='CD', project_id=project.id)
+        if metap:
+            metap = metap.value
+        else:
+            metap = 0
+        ifile.write("metapolationCD:=%.2f;\n" % metap)
 
     ifile.write("font_size:=%.3fpt#;\n" % fontsize)
     ifile.write("mean#:=%.3fpt#;\n" % mean)
