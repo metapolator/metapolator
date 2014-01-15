@@ -7,7 +7,7 @@ from metapolator.tools import put_font_all_glyphs
 
 
 @celery.task(name='metapolator.tasks.fill_master_with_glyphs')
-def fill_master_with_glyphs(master_id, user_id):
+def fill_master_with_glyphs(master_id, user_id, force_update=False):
     session.user = user_id
 
     load_sqla()
@@ -16,7 +16,7 @@ def fill_master_with_glyphs(master_id, user_id):
     master = Master.get(id=master_id)
     if not master:
         return
-    put_font_all_glyphs(master)
+    put_font_all_glyphs(master, force_update=force_update)
 
     metapost = Metapost(master.project)
     metapost.execute_interpolated_bulk()

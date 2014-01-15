@@ -730,6 +730,22 @@ class EditorUploadZIP(app.page):
                                                    preload=True)
                 project.currentglyph = currentglyph
                 web.ctx.orm.commit()
+
+                asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
+                                                                  web.ctx.user.id)
+                master.task_id = asyncresult.task_id
+                master.task_created = datetime.datetime.now()
+                web.ctx.orm.commit()
+            else:
+                put_font_all_glyphs(master, project.currentglyph,
+                                    preload=True, force_update=True)
+
+                asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
+                                                                  web.ctx.user.id,
+                                                                  True)
+                master.task_id = asyncresult.task_id
+                master.task_created = datetime.datetime.now()
+                web.ctx.orm.commit()
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
@@ -760,7 +776,8 @@ class EditorUploadZIP(app.page):
                                  'glyphs': glyphsdata,
                                  'metaglyphs': metaglyphs,
                                  'version': '{0:03d}'.format(master.version),
-                                 'versions': get_versions(master.project_id)})
+                                 'versions': get_versions(master.project_id),
+                                 'task_id': asyncresult.task_id})
 
 
 class MasterAsyncLoading(app.page):
@@ -792,13 +809,9 @@ class MasterAsyncLoading(app.page):
                 web.ctx.orm.commit()
                 return simplejson.dumps({'done': False, 'task_id': x.task_id})
 
-        asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
-                                                          web.ctx.user.id)
-        master.task_id = asyncresult.task_id
-        master.task_created = datetime.datetime.now()
+        master.task_completed = True
         web.ctx.orm.commit()
-        return simplejson.dumps({'done': False,
-                                 'task_id': asyncresult.task_id})
+        return simplejson.dumps({'done': True})
 
 
 class Specimen(app.page):

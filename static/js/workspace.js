@@ -263,7 +263,7 @@ Workspace.prototype = {
      * response - response from server
      */
     onMasterUploaded: function(view, response) {
-        this.startLoadingMasterProgress(response.project_id, response.master_id);
+        this.startLoadingMasterProgress(response.project_id, response.master_id, response.task_id);
 
         if (!this.project_id) {
             location.hash = '#project/' + response.project_id;

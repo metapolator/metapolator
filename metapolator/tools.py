@@ -59,7 +59,7 @@ def create_glyph(glif, master):
     return glyph
 
 
-def put_font_all_glyphs(master, glyph=None, preload=False):
+def extract_gliflist_from_ufo(master, glyph=None, extract_first=False):
     fontpath = op.join(master.get_ufo_path(), 'glyphs')
 
     charlista = [f for f in os.listdir(fontpath)]
@@ -67,14 +67,29 @@ def put_font_all_glyphs(master, glyph=None, preload=False):
     if glyph:
         charlista = filter(lambda f: f == '%s.glif' % glyph, charlista)
 
-    if preload and charlista:
+    if extract_first and charlista:
         charlista = [charlista[0]]
 
+    return charlista
+
+
+def put_font_all_glyphs(master, glyph=None, preload=False, force_update=False):
+    gliflist = extract_gliflist_from_ufo(master, glyph, extract_first=preload)
+    fontpath = op.join(master.get_ufo_path(), 'glyphs')
+
     glyphs = []
-    for ch1 in charlista:
+    for ch1 in gliflist:
         glyphName, ext = buildfname(ch1)
         if not glyphName or glyphName.startswith('.') or ext not in ["glif"]:
             continue
+
+        if force_update:
+            glyph_obj = Glyph.get(name=glyphName, master_id=master.id)
+            if glyph_obj:
+                GlyphParam.filter(glyph_id=glyph_obj.id).delete()
+                GlyphOutline.filter(glyph_id=glyph_obj.id).delete()
+                Glyph.delete(glyph_obj)
+
         glif = etree.parse(op.join(fontpath, ch1))
         newglyph_obj = create_glyph(glif, master)
         if newglyph_obj:
