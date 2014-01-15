@@ -34,10 +34,14 @@
                 that.removeClass('dragging dropzone');
             },
 
-            uploadFinished: function(i, file, response, time) {
+            uploadFinished: function(i, file, response, time, xhr) {
                 NProgress.done();
                 that.removeClass('dragging dropzone');
-                that.trigger('upload', [response]);
+                if (xhr.status != 200) {
+                    alert('could not upload this file');
+                } else {
+                    that.trigger('upload', [response]);
+                }
             }
         });
     }

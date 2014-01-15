@@ -117,7 +117,7 @@ class Project(Base, UserQueryMixin):
     projectname = Column(String(128), index=True)
 
     def create_master(self):
-        version = Master.max(Master.version, project_id=self.id)
+        version = Master.max(Master.version, project_id=self.id) or 0
         return Master.create(project_id=self.id, version=(version + 1))
 
     def get_ordered_masters(self):
