@@ -643,7 +643,7 @@ class EditorCreateMaster(app.page):
 
         project.masters = ','.join([str(master.id)] * len(masters))
         web.ctx.orm.commit()
-        return simplejson.dumps({})
+        return simplejson.dumps({'versions': get_versions(project.id)})
 
 
 class EditorUploadZIP(app.page):

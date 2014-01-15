@@ -284,8 +284,9 @@ Workspace.prototype = {
         $.post('/editor/create-master/', {
             project_id: this.project_id,
             glyphname: this.glyphname
-        }).done(function() {
+        }).done(function(response) {
             donecallback();
+            this.versions = $.parseJSON(response).versions;
             this.hashchanged();
         }.bind(this)).fail(function() {
             donecallback();
