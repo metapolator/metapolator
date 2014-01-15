@@ -151,13 +151,14 @@ PaperJSGraph.prototype = {
         this.glyphpathes.push(path);
     },
 
-    setPointByName: function(x, y, pointname) {
+    setPointByName: function(x, y, pointname, data) {
         this.ppscope.activate();
         for (var k = 0; k < this.zpoints.length; k++) {
             if (this.zpoints[k].data.pointname == pointname) {
                 this.selectedzpoint = this.zpoints[k];
                 this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
                 this.selectedzpoint.label.point = new this.ppscope.Point(x, y);
+                this.zpoints[k].data = data;
                 this.isdragged = false;
                 return;
             }
@@ -274,7 +275,7 @@ Glyph.prototype = {
     },
 
     pointChanged: function(data) {
-        this.graph.setPointByName(Math.round(data.x), Math.round(data.y), data.data.pointname);
+        this.graph.setPointByName(Math.round(data.x), Math.round(data.y), data.data.pointname, data);
     },
 
     pointFormSubmit: function(pointform_data, isdragged) {
