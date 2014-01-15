@@ -169,7 +169,7 @@ Workspace.prototype = {
 
         var createNewMasterOption = $('<option>', {
             value: "",
-            text: "Create new master from zip"
+            text: "Upload new master"
         });
         versionselect.append(createNewMasterOption);
 
@@ -270,7 +270,7 @@ Workspace.prototype = {
         }
 
         var $element = view.getElement();
-        $element.removeClass('dropzone');
+        $element.removeClass('dragging dropzone');
         $element.empty();
 
         this.createView($element, response.mode, response);

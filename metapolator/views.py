@@ -113,11 +113,9 @@ class Project(app.page):
             raise web.notfound()
 
         if x.get('glyph'):
-            currentglyph = models.Glyph.get(name=x.get('glyph'),
-                                            project_id=project.id)
-            if not currentglyph:
+            if not models.Glyph.exists(name=x.get('glyph'), project_id=project.id):
                 raise web.notfound()
-            project.currentglyph = currentglyph.name
+            project.currentglyph = x.glyph
             web.ctx.orm.commit()
 
         masters = project.get_ordered_masters()
