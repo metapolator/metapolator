@@ -680,7 +680,7 @@ class EditorUploadZIP(app.page):
         master_exists = False
         try:
             master = models.Master.get(id=x.master_id, project_id=project.id)
-            master_exists = True
+            master_exists = bool(master)
         except AttributeError:
             master = None
 

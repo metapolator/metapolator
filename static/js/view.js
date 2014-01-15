@@ -54,7 +54,7 @@ function View(element, project_id, master_id) {
         this.onfileuploaded && this.onfileuploaded(this, response);
     }.bind(this));
 
-    this.element.dropzone({master_id: function() {return this.getMaster();}.bind(this),
+    this.element.dropzone({master_id: function() {return this.getMaster() || 0;}.bind(this),
                            label: this.element.attr('axis-label'),
                            project_id: project_id || 0});
 }
