@@ -652,7 +652,8 @@ class EditorUploadZIP(app.page):
 
     @raise404_notauthorized
     def POST(self):
-        x = web.input(ufofile={}, project_id=0, label='', glyph='')
+        x = web.input(ufofile={}, project_id=0, label='', glyph='',
+                      master_id=0)
         try:
             rawzipcontent = x.ufofile.file.read()
             if not rawzipcontent:
@@ -676,6 +677,13 @@ class EditorUploadZIP(app.page):
             if not project:
                 raise web.notfound()
 
+        master_exists = False
+        try:
+            master = models.Master.get(id=x.master_id, project_id=project.id)
+            master_exists = True
+        except AttributeError:
+            master = None
+
         prepare_environment_directory()
 
         try:
@@ -695,18 +703,12 @@ class EditorUploadZIP(app.page):
                 raise web.badrequest()
 
             FontNameA = ufo_dirs[0]
-
-            version = models.Master.max(models.Master.version,
-                                        project_id=project.id)
-
-            if not version:
-                version = 0
-
-            version += 1
             name, ext = op.splitext(op.basename(FontNameA))
-            master = models.Master.create(project_id=project.id,
-                                          version=version,
-                                          name=name)
+
+            if not master:
+                master = project.create_master()
+                master.name = name
+                web.ctx.orm.commit()
 
             label = get_metapolation_label(x.label)
             metapolation = models.Metapolation.get(label=label, project_id=project.id)
@@ -714,6 +716,7 @@ class EditorUploadZIP(app.page):
                 metapolation = models.Metapolation.create(label=label, project_id=project.id)
 
             fontpath = master.get_fonts_directory()
+            shutil.rmtree(fontpath, ignore_errors=True)
 
             fzip.extractall(fontpath)
 
@@ -722,53 +725,41 @@ class EditorUploadZIP(app.page):
 
             prepare_master_environment(master)
 
-            currentglyph = put_font_all_glyphs(master, project.currentglyph,
-                                               preload=True)
+            if not master_exists:
+                currentglyph = put_font_all_glyphs(master, project.currentglyph,
+                                                   preload=True)
+                project.currentglyph = currentglyph
+                web.ctx.orm.commit()
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        index = models.LABELS.index(ord(x.label.upper()))
-        masters = project.masters.split(',')
-
-        if index > len(masters) - 1:
-            masters.append(master.id)
-        else:
-            masters[index] = master.id
-        project.masters = ','.join(map(str, masters))
-        project.currentglyph = currentglyph
-        web.ctx.orm.commit()
+        master.update_masters_ordering(x.label)
 
         metapost = Metapost(project)
 
-        if x.glyph:
-            glyph = master.get_glyphs().filter(models.Glyph.name == x.glyph).first()
-        else:
-            glyph = master.get_glyphs().first()
-
-        metapost.execute_single(master, glyph)
-
-        masters = project.get_ordered_masters()
-
+        glyphs = master.get_glyphs()
+        if project.currentglyph:
+            glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
+        metapost.execute_single(master, glyphs.first())
         master_instancelog = project.get_instancelog(master.version, 'a')
         glyphsdata = get_edges_json(master_instancelog, master=master)
 
-        if x.glyph:
-            glyph = masters[0].get_glyphs().filter(models.Glyph.name == x.glyph).first()
-        else:
-            glyph = masters[0].get_glyphs().first()
-
-        metapost.execute_interpolated_single(glyph)
-
+        masters = project.get_ordered_masters()
+        glyphs = masters[0].get_glyphs()
+        if project.currentglyph:
+            glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
+        metapost.execute_interpolated_single(glyphs.first())
         instancelog = project.get_instancelog(master.version)
         metaglyphs = get_edges_json(instancelog)
+
         return simplejson.dumps({'project_id': project.id,
-                                 'glyphname': glyph.name,
+                                 'glyphname': project.currentglyph,
                                  'master_id': master.id,
                                  'label': x.label,
                                  'metapolation': label,
                                  'glyphs': glyphsdata,
                                  'metaglyphs': metaglyphs,
-                                 'version': '{0:03d}'.format(version),
+                                 'version': '{0:03d}'.format(master.version),
                                  'versions': get_versions(master.project_id)})
 
 
