@@ -731,21 +731,12 @@ class EditorUploadZIP(app.page):
                 project.currentglyph = currentglyph
                 web.ctx.orm.commit()
 
-                asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
-                                                                  web.ctx.user.id)
-                master.task_id = asyncresult.task_id
-                master.task_created = datetime.datetime.now()
-                web.ctx.orm.commit()
-            else:
-                put_font_all_glyphs(master, project.currentglyph,
-                                    preload=True, force_update=True)
-
-                asyncresult = tasks.fill_master_with_glyphs.delay(x.master_id,
-                                                                  web.ctx.user.id,
-                                                                  True)
-                master.task_id = asyncresult.task_id
-                master.task_created = datetime.datetime.now()
-                web.ctx.orm.commit()
+            asyncresult = tasks.fill_master_with_glyphs.delay(master.id,
+                                                              web.ctx.user.id,
+                                                              force_update=master_exists)
+            master.task_id = asyncresult.task_id
+            master.task_created = datetime.datetime.now()
+            web.ctx.orm.commit()
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 

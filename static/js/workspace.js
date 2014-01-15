@@ -161,6 +161,33 @@ Workspace.prototype = {
 
     },
 
+    appendCopyMasterBtn: function(view) {
+        if (view.getMaster()) {
+            var btnCopyMaster = $('<button>');
+            btnCopyMaster.css({'margin-right': '16px'}).text('Copy master');
+            btnCopyMaster.addClass('btn btn-success btn-xs').on('click', function(){
+                $.post('/editor/copy-master/', {master_id: view.getMaster(),
+                                                glyphname: this.glyphname,
+                                                axislabel: view.getLabel()})
+                .success(function(response){
+                    
+                    $.post('/editor/reload/', {
+                        'master_id': $(e.target).val(),
+                        'glyphname': this.glyphname,
+                        'axislabel': view.getLabel()
+                        }
+                    ).done(function(response){
+                        var data = $.parseJSON(response);
+                        this.onGlyphChanged(view, data);
+                    }.bind(this));
+
+                }.bind(this));
+            }.bind(this));
+
+            view.getElement().prepend(btnCopyMaster);
+        }
+    },
+
     appendVersions: function(view) {
         if (!this.versions.length) 
             return;
@@ -187,7 +214,6 @@ Workspace.prototype = {
                 this.onGlyphChanged(view, data);
             }.bind(this));
         }.bind(this));
-
 
         versionselect.find('option').remove();
 
@@ -237,6 +263,7 @@ Workspace.prototype = {
         view.attachForms();
 
         this.appendVersions(view);
+        this.appendCopyMasterBtn(view);
 
         var glyphdata = this.getGlyphData(data.glyphs);
         view.attachGlyph(glyphdata);

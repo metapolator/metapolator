@@ -74,7 +74,7 @@ def extract_gliflist_from_ufo(master, glyph=None, extract_first=False):
 
 
 def put_font_all_glyphs(master, glyph=None, preload=False, force_update=False):
-    gliflist = extract_gliflist_from_ufo(master, glyph, extract_first=preload)
+    gliflist = extract_gliflist_from_ufo(master, glyph=glyph, extract_first=preload)
     fontpath = op.join(master.get_ufo_path(), 'glyphs')
 
     glyphs = []

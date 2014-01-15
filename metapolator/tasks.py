@@ -15,7 +15,7 @@ def fill_master_with_glyphs(master_id, user_id, force_update=False):
 
     master = Master.get(id=master_id)
     if not master:
-        return
+        return False
     put_font_all_glyphs(master, force_update=force_update)
 
     metapost = Metapost(master.project)
@@ -23,3 +23,4 @@ def fill_master_with_glyphs(master_id, user_id, force_update=False):
 
     master.task_completed = True
     web.ctx.orm.commit()
+    return True
