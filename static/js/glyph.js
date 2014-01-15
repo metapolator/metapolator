@@ -128,7 +128,6 @@ PaperJSGraph.prototype = {
             var ppoint = this.getPoint(Number(point.x), Number(point.y), true);
             ppoint.y += +MARGIN;
             ppoint.x += + MARGIN;
-            console.log(JSON.stringify(ppoint));
 
             var handleIn = this.getPoint(Number(point.controls[0].x) - Number(point.x),
                                          Number(point.y) - Number(point.controls[0].y));
@@ -158,7 +157,7 @@ PaperJSGraph.prototype = {
                 this.selectedzpoint = this.zpoints[k];
                 this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
                 this.selectedzpoint.label.point = new this.ppscope.Point(x, y);
-                this.zpoints[k].data = data;
+                this.zpoints[k].data = data.data;
                 this.isdragged = false;
                 return;
             }
