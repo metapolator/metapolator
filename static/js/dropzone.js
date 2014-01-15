@@ -3,6 +3,9 @@
     $.fn.dropzone = function(data) {
         var that = this;
 
+        this.off('drop').off('dragstart').off('dragenter').off('dragover').off('dragleave');
+        $(document).off('drop').off('dragenter').off('dragover').off('dragleave');
+
         that.filedrop({
             fallback_id: 'upload_button',
             url: '/upload/',

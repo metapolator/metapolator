@@ -165,25 +165,7 @@ Workspace.prototype = {
         if (!this.versions.length) 
             return;
 
-        var versionselect = $('<select>').addClass('version').css('margin-bottom', '16px');
-
-        var createNewMasterOption = $('<option>', {
-            value: "",
-            text: "Upload new master"
-        });
-        versionselect.append(createNewMasterOption);
-
-        for (var k = 0; k < this.versions.length; k++) {
-            var optionMaster = $('<option>', {
-                value: this.versions[k].master_id,
-                text: this.versions[k].name + ' ' + this.versions[k].version
-            });
-            if (this.versions[k].master_id == view.master_id) {
-                optionMaster.attr('selected', 'true');
-            }
-            versionselect.append(optionMaster);
-        }
-
+        versionselect = $('<select>').addClass('versions').css('margin-bottom', '16px');
         versionselect.on('change', function(e) {
             var $element = view.getElement();
             $element.removeClass('dropzone');
@@ -205,6 +187,26 @@ Workspace.prototype = {
                 this.onGlyphChanged(view, data);
             }.bind(this));
         }.bind(this));
+
+
+        versionselect.find('option').remove();
+
+        var createNewMasterOption = $('<option>', {
+            value: "",
+            text: "Upload new master"
+        });
+        versionselect.append(createNewMasterOption);
+
+        for (var k = 0; k < this.versions.length; k++) {
+            var optionMaster = $('<option>', {
+                value: this.versions[k].master_id,
+                text: this.versions[k].name + ' ' + this.versions[k].version
+            });
+            if (this.versions[k].master_id == view.master_id) {
+                optionMaster.attr('selected', 'true');
+            }
+            versionselect.append(optionMaster);
+        }
 
         view.getElement().prepend(versionselect);
     },
@@ -272,6 +274,8 @@ Workspace.prototype = {
         var $element = view.getElement();
         $element.removeClass('dragging dropzone');
         $element.empty();
+
+        this.versions = response.versions;
 
         this.createView($element, response.mode, response);
     },
