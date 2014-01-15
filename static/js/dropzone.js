@@ -3,56 +3,54 @@
     $.fn.dropzone = function(data) {
         var that = this;
 
-        that.on('mouse over', function(){
-            var div = $('<div>').css({
-                'padding': '32px',
-                'font-size': '22px',
-                'color': '#ccc',
-                'border': 'dashed 2px #ccc',
-                'background': '#eee',
-                'text-align': 'center',
-                'position': 'absolute',
-                'top': '0',
-                'left': '0',
-                'z-index': 100,
-                'width': that.outerWidth() + 'px',
-                'height': that.outerHeight() + 'px'
-            }).addClass('dropzone');
+        // var $div = $('<div>').css({
+        //     'padding': '32px',
+        //     'font-size': '22px',
+        //     'color': '#ccc',
+        //     'border': 'dashed 2px #ccc',
+        //     'background': '#eee',
+        //     'text-align': 'center',
+        //     'position': 'absolute',
+        //     'top': '0',
+        //     'left': '0',
+        //     'z-index': 100,
+        //     'width': that.outerWidth() + 'px',
+        //     'height': that.outerHeight() + 'px'
+        // }).addClass('dropzone').attr('drop', 'drop');
 
-            div.filedrop({
-                fallback_id: 'upload_button',
-                url: '/upload/',
-                paramname: 'ufofile',
-                withCredentials: true,
+        that.filedrop({
+            fallback_id: 'upload_button',
+            url: '/upload/',
+            paramname: 'ufofile',
+            withCredentials: true,
 
-                data: data,
+            data: data,
 
-                drop: function(){
-                    NProgress.configure({
-                        appendTo: that
-                    });
-                    NProgress.start();
-                },
+            dragEnter: function() {
+                that.addClass('dragging dropzone');
+            },
 
-                error: function(err, file) {
-                    NProgress.done();
-                    that.find('.dropzone').remove();
-                    that.removeAttr('dropzone');
-                },
+            dragLeave: function() {
+                that.removeClass('dragging dropzone');
+            },
 
-                uploadFinished: function(i, file, response, time) {
-                    NProgress.done();
-                    that.find('.dropzone').remove();
-                    that.removeAttr('dropzone');
+            drop: function(){
+                NProgress.configure({
+                    appendTo: that
+                });
+                NProgress.start();
+            },
 
-                    that.trigger('upload', [response]);
-                }
-            });
+            error: function(err, file) {
+                NProgress.done();
+                that.removeClass('dragging dropzone');
+            },
 
-            that.append(div);
-        })
-        .mouseleave(function(){
-            that.find('.dropzone').remove();
+            uploadFinished: function(i, file, response, time) {
+                NProgress.done();
+                that.removeClass('dragging dropzone');
+                that.trigger('upload', [response]);
+            }
         });
     }
 
