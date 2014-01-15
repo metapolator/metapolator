@@ -211,12 +211,12 @@ def writeParams(project, filename, masters, label=None):
     ifile.write("% parameter file \n")
     if label is not None:
         if label in [0, 1]:
-            metapolationCD = -1
+            metapolationCD = 0
             metapolation = 0
             if label == 1:
                 metapolation = 1
         if label in [2, 3]:
-            metapolation = -1
+            metapolation = 0
             metapolationCD = 0
             if label == 3:
                 metapolationCD = 1
