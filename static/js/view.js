@@ -182,7 +182,6 @@ View.prototype = {
 
         var obj = this.pointform.serializeObject();
 
-
         $.extend(data.data, obj);
         var data = {
             x: obj.x,
@@ -192,6 +191,10 @@ View.prototype = {
 
         delete data.data.x;
         delete data.data.y;
+
+        var option = this.zpointdropdown.find('option:selected');
+        option.attr('point-params', JSON.stringify(data));
+
         this.onPointParamSubmit && this.onPointParamSubmit(data);
     },
 

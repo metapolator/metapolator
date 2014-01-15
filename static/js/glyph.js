@@ -6,7 +6,6 @@ var Graph = function() {}
 Graph.createCanvas = function(canvas, size) {
     var width = $($(canvas).parent()).outerWidth();
 
-    console.log(size);
     var ratio = size.width / size.height;
     var height = Math.round(width / ratio);
 
@@ -128,7 +127,6 @@ PaperJSGraph.prototype = {
             var ppoint = this.getPoint(Number(point.x), Number(point.y), true);
             ppoint.y += +MARGIN;
             ppoint.x += + MARGIN;
-            console.log(JSON.stringify(ppoint));
 
             var handleIn = this.getPoint(Number(point.controls[0].x) - Number(point.x),
                                          Number(point.y) - Number(point.controls[0].y));
@@ -151,13 +149,14 @@ PaperJSGraph.prototype = {
         this.glyphpathes.push(path);
     },
 
-    setPointByName: function(x, y, pointname) {
+    setPointByName: function(x, y, pointname, data) {
         this.ppscope.activate();
         for (var k = 0; k < this.zpoints.length; k++) {
             if (this.zpoints[k].data.pointname == pointname) {
                 this.selectedzpoint = this.zpoints[k];
                 this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
                 this.selectedzpoint.label.point = new this.ppscope.Point(x, y);
+                this.zpoints[k].data = data;
                 this.isdragged = false;
                 return;
             }
@@ -274,7 +273,8 @@ Glyph.prototype = {
     },
 
     pointChanged: function(data) {
-        this.graph.setPointByName(Math.round(data.x), Math.round(data.y), data.data.pointname);
+        this.graph.setPointByName(Math.round(data.x), Math.round(data.y),
+                                  data.data.pointname, data.data);
     },
 
     pointFormSubmit: function(pointform_data, isdragged) {
@@ -287,9 +287,7 @@ Glyph.prototype = {
             y: this.graph.size.height - Math.round(xycoord.y),
             data: pointform_data.data
         };
-        if (isdragged) {
-            this.view.updatePointOption(pointform_data);
-        } else {
+        if (!isdragged) {
             this.pointChanged(pointform_data);
         }
 
