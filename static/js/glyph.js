@@ -153,10 +153,11 @@ PaperJSGraph.prototype = {
         this.ppscope.activate();
         for (var k = 0; k < this.zpoints.length; k++) {
             if (this.zpoints[k].data.pointname == pointname) {
+                this.zpoints[k].data = data;
+
                 this.selectedzpoint = this.zpoints[k];
                 this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
                 this.selectedzpoint.label.point = new this.ppscope.Point(x, y);
-                this.zpoints[k].data = data;
                 this.isdragged = false;
                 return;
             }
@@ -287,7 +288,9 @@ Glyph.prototype = {
             y: this.graph.size.height - Math.round(xycoord.y),
             data: pointform_data.data
         };
-        if (!isdragged) {
+        if (isdragged) {
+            this.view.updatePointOption(pointform_data);
+        } else {
             this.pointChanged(pointform_data);
         }
 
