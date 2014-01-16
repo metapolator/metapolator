@@ -278,9 +278,6 @@ def writeParams(project, filename, masters, label=None):
         ifile.write("%s_slant:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'slant')))
 
     ifile.write("\n")
-    if label:
-        ifile.write("input glyphs\n")
-    else:
-        ifile.write("input metaglyphs\n")
+    ifile.write("input glyphs\n")
     ifile.write("bye\n")
     ifile.close()
