@@ -3,7 +3,7 @@ import os.path as op
 import subprocess
 
 from metapolator.config import buildfname, working_dir
-from metapolator.models import Glyph, LocalParam, Metapolation, LABELS
+from metapolator.models import Glyph, LocalParam, Metapolation
 
 
 class Metapost:
@@ -13,11 +13,14 @@ class Metapost:
         self.mfparser = project.mfparser
         self.project = project
 
-    def write_glyph_list(self, master, glyphname=None):
+    def write_glyph_list(self, master, glyphname=None, interpolated=False):
         fontdirectory = master.get_fonts_directory()
 
         ifile = open(op.join(fontdirectory, "glyphlist.mf"), "w")
-        dirnamep1 = op.join(fontdirectory, "glyphs")
+
+        glyphsdir = "metaglyphs" if interpolated else "glyphs"
+
+        dirnamep1 = op.join(fontdirectory, glyphsdir)
 
         charlist1 = [f for f in os.listdir(dirnamep1)]
         if glyphname:
@@ -26,7 +29,7 @@ class Metapost:
         for ch1 in charlist1:
             fnb, ext = buildfname(ch1)
             if ext in ["mf"]:
-                ifile.write("input glyphs/" + ch1 + "\n")
+                ifile.write("input %s/%s\n" % (glyphsdir, ch1))
         ifile.close()
 
     def _execute(self, master, interpolated=False):
@@ -37,6 +40,7 @@ class Metapost:
 
         if not interpolated:
             metafont = master.get_metafont('a')
+            print metafont
         else:
             metafont = master.get_metafont()
 
@@ -64,9 +68,10 @@ class Metapost:
             _glyphs = Glyph.filter(name=glyph.name)
             _glyphs = _glyphs.filter(Glyph.master_id.in_(idmasters))
 
-            self.interpolated_metafont_generate(masters, *_glyphs)
+            self.interpolated_metafont_generate(masters, *_glyphs,
+                                                interpolated=True)
 
-        self.write_glyph_list(primary_master)
+        self.write_glyph_list(primary_master, interpolated=True)
         self._execute(primary_master, interpolated=True)
 
     def execute_bulk(self, master):
@@ -94,9 +99,10 @@ class Metapost:
         _glyphs = Glyph.filter(name=glyph.name)
         _glyphs = _glyphs.filter(Glyph.master_id.in_(idmasters))
 
-        self.interpolated_metafont_generate(masters, *_glyphs)
+        self.interpolated_metafont_generate(masters,
+                                            *_glyphs, interpolated=True)
 
-        self.write_glyph_list(primary_master, glyph.name)
+        self.write_glyph_list(primary_master, glyph.name, interpolated=True)
         self._execute(primary_master, interpolated=True)
 
     def execute_single(self, master, glyph):
@@ -111,10 +117,12 @@ class Metapost:
         self.write_glyph_list(master, glyph.name)
         self._execute(master)
 
-    def interpolated_metafont_generate(self, masters, *args):
+    def interpolated_metafont_generate(self, masters, *args, **kwargs):
         """ Fill mf files related on project mfparser with coords and
             needed metapost rules.
         """
+        interpolated = kwargs.get('interpolated')
+
         glyphs = []
         for m in masters:
             for g in list(args):
@@ -125,18 +133,18 @@ class Metapost:
         primary_master = masters[0]
         if self.mfparser == 'controlpoints':
             import xmltomf_new_2axes as xmltomf
-            xmltomf.xmltomf1(primary_master, *list(glyphs))
+            xmltomf.xmltomf1(primary_master, *list(glyphs),
+                             interpolated=interpolated)
         else:
             import xmltomf
-            xmltomf.xmltomf1(primary_master, *list(glyphs))
+            xmltomf.xmltomf1(primary_master, *list(glyphs),
+                             interpolated=interpolated)
 
     def write_global_params(self):
         masters = self.project.get_ordered_masters()
-
         for i, m in enumerate(masters):
             if not i:
                 writeParams(self.project, m.metafont_filepath(), masters)
-
             writeParams(self.project, m.metafont_filepath('a'),
                         masters, label=i)
 
@@ -270,6 +278,9 @@ def writeParams(project, filename, masters, label=None):
         ifile.write("%s_slant:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'slant')))
 
     ifile.write("\n")
-    ifile.write("input glyphs\n")
+    if label:
+        ifile.write("input glyphs\n")
+    else:
+        ifile.write("input metaglyphs\n")
     ifile.write("bye\n")
     ifile.close()

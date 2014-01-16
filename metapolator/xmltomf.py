@@ -4,15 +4,13 @@ import re
 import web
 
 import models
-from config import working_dir, session
-from sqlalchemy import func
 
 
 class DifferentZPointError(Exception):
     pass
 
 #def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
-def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None):
+def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None, interpolated=False):
     """ Save current points to mf file
 
         master is an instance of models.Master
@@ -23,7 +21,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 #        import xmltomf_new
 #        return xmltomf_new.xmltomf1(master, glyphA, glyphB=glyphB,
 #                                    stdout_fip=stdout_fip)
-
 
     if master.project.mfparser == 'controlpoints':
         import xmltomf_new
@@ -44,7 +41,8 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         glyphD = glyphA
 
     if not stdout_fip:
-        path = op.join(master.get_fonts_directory(), "glyphs")
+        glyphsdir = "metaglyphs" if interpolated else "glyphs"
+        path = op.join(master.get_fonts_directory(), glyphsdir)
         if not op.exists(path):
             os.makedirs(path)
         fip = open(op.join(path, '%s.mf' % glyphA.name), 'w')
@@ -52,11 +50,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         fip = stdout_fip
 
     fip.write("% File parsed with Metapolator %\n")
-
-    '%.2f' % (glyphA.width / 100.)
-    w = '%.2f' % (glyphA.width / 100.)
-    w2 = '%.2f' % (glyphB.width / 100.)
-
     wA = '%.2f' % (glyphA.width / 100.)
     wB = '%.2f' % (glyphB.width / 100.)
     wC = '%.2f' % (glyphC.width / 100.)
