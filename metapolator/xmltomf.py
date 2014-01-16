@@ -68,7 +68,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
     fip.write("\n")
 
-    str_ = ('beginfontchar({glyph}, (((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) / 2 ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
+    str_ = ('beginfontchar({glyph}, (((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) /divider ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
     fip.write(str_.format(Awidth=wA, glyph=glyphA.name, Bwidth=wB, Cwidth=wC, Dwidth=wD))
 
     fip.write("\n")
@@ -446,7 +446,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         znamer = re.match('z(\d+)r', param.pointname)
 
         if znamer and param.pointname == znamer.group(0):
-            zeile = "ang{0} := angle ((((z{0}Ar + (metapolation * (z{0}Br - z{0}Ar))) + (z{0}Cr + (metapolationCD * (z{0}Dr - z{0}Cr)))) / 2) - (((z{0}Al + (metapolation * (z{0}Bl - z{0}Al))) + (z{0}Cl + (metapolationCD * (z{0}Dl - z{0}Cl)))) / 2));".format(index)
+            zeile = "ang{0} := angle ((((z{0}Ar + (metapolation * (z{0}Br - z{0}Ar))) + (z{0}Cr + (metapolationCD * (z{0}Dr - z{0}Cr)))) /divider) - (((z{0}Al + (metapolation * (z{0}Bl - z{0}Al))) + (z{0}Cl + (metapolationCD * (z{0}Dl - z{0}Cl)))) /divider));".format(index)
             index += 1
             fip.write(zeile + '\n')
 
@@ -659,7 +659,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
         if angle[i]:
 #            angleb = angleval_B[i]
-            zeile = "ang" + str(zitem) + " := ((" + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ))) + (" + str(angleval_C[i]) + "+ (metapolationCD * (" + str(angleval_D[i]) + " - " + str(angleval_C[i]) + " )))) / 2;"
+            zeile = "ang" + str(zitem) + " := ((" + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ))) + (" + str(angleval_C[i]) + "+ (metapolationCD * (" + str(angleval_D[i]) + " - " + str(angleval_C[i]) + " )))) /divider;"
         else:
             zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
 
@@ -949,12 +949,12 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
         if penwidth[i]:
 #            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
-#            zeile = """penpos"""  + str(zitem) + "((((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + "))) /2) * " + "((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /2) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /2) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2 ))))"
-            zeile = """penpos"""  + str(zitem) + "((((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + "))) /2) * " + "(((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2)) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /2) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /2) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2 )))"
+#            zeile = """penpos"""  + str(zitem) + "((((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + "))) /divider) * " + "((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /divider) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /divider) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /divider) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /divider ))))"
+            zeile = """penpos"""  + str(zitem) + "((((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + "))) /divider) * " + "(((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /divider)) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /divider) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /divider) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /divider )))"
 
         else:
 #            zeile = """penpos"""  + str(zitem) + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")))"
-            zeile = """penpos"""  + str(zitem) + "((((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2)) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /2) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /2) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2 )))"
+            zeile = """penpos"""  + str(zitem) + "((((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /divider)) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /divider) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /divider) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /divider )))"
 
         zeile = zeile + ", ang" + str(zitem) + ");"
         fip.write("\n")
@@ -1167,7 +1167,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
 #       zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
 
-        zeile = "z" + str(zitem) + "=((((A_width + metapolation * (B_width - A_width)) + (C_width + metapolationCD * (D_width - C_width))) /2 ) * ((((x" + str(zitem) + "A + metapolation * (x" + str(zitem) + "B - x" + str(zitem) + "A)) + (x" + str(zitem) + "C + metapolationCD * (x" + str(zitem) + "D - x" + str(zitem) + "C))) /2 ) + spacing_" + g + "L) * width_" + g + ", (((y" + str(zitem) + "A + metapolation *(y" + str(zitem) + "B - y" + str(zitem) + "A)) + (y" + str(zitem) + "C + metapolationCD *(y" + str(zitem) + "D - y" + str(zitem) + "C))) /2 ) * ((((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) + (C_" + ggroup + " + metapolationCD * (D_" + ggroup + " - C_" + ggroup + "))) /2 ) / " + gggroup + "#))"
+        zeile = "z" + str(zitem) + "=((((A_width + metapolation * (B_width - A_width)) + (C_width + metapolationCD * (D_width - C_width))) /divider ) * ((((x" + str(zitem) + "A + metapolation * (x" + str(zitem) + "B - x" + str(zitem) + "A)) + (x" + str(zitem) + "C + metapolationCD * (x" + str(zitem) + "D - x" + str(zitem) + "C))) /divider ) + spacing_" + g + "L) * width_" + g + ", (((y" + str(zitem) + "A + metapolation *(y" + str(zitem) + "B - y" + str(zitem) + "A)) + (y" + str(zitem) + "C + metapolationCD *(y" + str(zitem) + "D - y" + str(zitem) + "C))) /divider ) * ((((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) + (C_" + ggroup + " + metapolationCD * (D_" + ggroup + " - C_" + ggroup + "))) /divider ) / " + gggroup + "#))"
 
         if pointshifted[i] != '':
 #            zeile = zeile + " shifted (" + str(pointshiftedval[i]) + " + metapolation * (" + str(B_pointshiftedval[i]) + " - " + str(pointshiftedval[i]) + "))"
@@ -2083,59 +2083,59 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
 
             if penshifted[i] != "":
-                zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /2)"
+                zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /divider)"
 
             if overx[i] != "":
-                zeile += " shifted (0, (((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt))) /2) - " + str(overxval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /2)"
+                zeile += " shifted (0, (((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt))) /divider) - " + str(overxval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
 
             if overbase[i] != "":
-                zeile += " shifted (0, - " + str(overbaseval[i]) + ") - (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /2)"
+                zeile += " shifted (0, - " + str(overbaseval[i]) + ") - (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
 
             if overcap[i] != "":
-                zeile += " shifted (0, (((A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt))) /2) - " + str(overcapval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /2)"
+                zeile += " shifted (0, (((A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt))) /divider) - " + str(overcapval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
 
             if overasc[i] != "":
-                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /2) - " + str(overascval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /2)"
+                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
 
             if overdesc[i] != "":
-                zeile += " shifted (0, (((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt ))) /2) - " + str(overdescval[i]) + ") - (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /2)"
+                zeile += " shifted (0, (((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt ))) /divider) - " + str(overdescval[i]) + ") - (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
 
             if dir[i] != "":
-                zeile += " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/2)}"
+                zeile += " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/divider)}"
 
             if tensionand[i] != "":
-                zeile += strtwo + "tension" + " ((((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100))))) /2)' + " and ((((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100))))) /2)' + strtwo
+                zeile += strtwo + "tension" + " ((((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100))))) /divider)' + " and ((((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100))))) /divider)' + strtwo
 
             if dir2[i] != "":
-                zeile += " ... {dir (((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + "))) /2)}"
+                zeile += " ... {dir (((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + "))) /divider)}"
 
             zeile += dash
 
         else:
 
             if dir[i] != "":
-                zeile = zeile + " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/2)}"
+                zeile = zeile + " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/divider)}"
 
             if overx[i] != "":
-                zeile = zeile + " shifted (0, (((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt))) /2) - " + str(overxval[i]) + ") + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /2))"
+                zeile = zeile + " shifted (0, (((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt))) /divider) - " + str(overxval[i]) + ") + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
 
             if overbase[i] != "":
-                zeile = zeile + " shifted (0, - " + str(overbaseval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+                zeile = zeile + " shifted (0, - " + str(overbaseval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if overcap[i] != "":
-                zeile = zeile + " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /2) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+                zeile = zeile + " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /divider) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if overasc[i] != "":
-                zeile = zeile + " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /2) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+                zeile = zeile + " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /divider) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if overdesc[i] != "":
-                zeile = zeile + " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+                zeile = zeile + " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /divider) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if penshifted[i] != "":
-                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
+                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
 
             if tensionand[i] != "":
-                zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)' + strtwo
+                zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /divider)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /divider)' + strtwo
 
             zeile += semi + '\n'
 
@@ -2151,34 +2151,34 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
 
         if penshifted[i] != "":
-            zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
+            zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
 
         if dir[i] != "":
-            zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/2)}"
+            zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/divider)}"
 
         if overx[i] != "":
-            zeile += " shifted (0, ((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt)) /2) - " + str(overxval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+            zeile += " shifted (0, ((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt)) /divider) - " + str(overxval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
         if overbase[i] != "":
-            zeile += " shifted (0, - " + str(overbaseval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+            zeile += " shifted (0, - " + str(overbaseval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
         if overcap[i] != "":
-            zeile += " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /2) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+            zeile += " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /divider) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
         if overasc[i] != "":
-            zeile += " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /2) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+            zeile += " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /divider) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
         if overdesc[i] != "":
-            zeile += " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
+            zeile += " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /divider) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
         if tensionand[i] != ""and dir2[i] != "":
-            zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)'
-            zeile += strtwo + " {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
+            zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /divider)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /divider)'
+            zeile += strtwo + " {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /divider)}"
 
 #        if upp2[i] != "":
 #            zeile += dash + upp2[i]
         elif dir2[i] != "":
-            zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
+            zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /divider)}"
 
 #        elif downp2[i] != "":
 #            zeile += dash + downp2[i]
