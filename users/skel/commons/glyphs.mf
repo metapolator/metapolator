@@ -1,6 +1,7 @@
 %newinternal slant,fudge,math_spread,superness,superpull,beak_darkness,ligs;
 boolean square_dots,hefty,serifs,monospace,variant_g,low_asterisk,math_fitting;
 
+divider:=2;
 base#:=0.000pt#;
 on:=1;
 off:=0;
@@ -44,7 +45,7 @@ def tracingall =                % turns on every form of tracing
 
 tracingall
 
-slant:=(A_slant+metapolation*(B_slant-A_slant)) + (C_slant+metapolation*(D_slant-C_slant)) /2;
+slant:=((A_slant+metapolation*(B_slant-A_slant)) + (C_slant+metapolation*(D_slant-C_slant))/2);
 font_slant = slant;
 
 jut:=(A_jut+metapolation*(B_jut-A_jut)) + (C_jut+metapolationCD*(D_jut-C_jut)) /2;
