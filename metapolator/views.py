@@ -337,7 +337,7 @@ class EditorSavePoint(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(id='')
+        postdata = web.input(glyphoutline_id='')
 
         # @FIXME: must be changed to form with validation of available
         # arguments values.
@@ -345,9 +345,9 @@ class EditorSavePoint(app.page, GlyphPageMixin):
         # >>> form = EditorSavePointForm()
         # >>> if not form.validates():
         # >>>     raise web.notfound()
-        if not models.GlyphOutline.exists(id=postdata.id):
+        if not models.GlyphOutline.exists(id=postdata.glyphoutline_id):
             return web.notfound()
-        glyphoutline = models.GlyphOutline.get(id=postdata.id)
+        glyphoutline = models.GlyphOutline.get(id=postdata.glyphoutline_id)
 
         project = models.Project.get(id=glyphoutline.glyph.project_id)
         if not project:
@@ -369,7 +369,7 @@ class EditorSavePoint(app.page, GlyphPageMixin):
             for key in values:
                 if values[key] == '':
                     values[key] = None
-            models.GlyphParam.update(glyphoutline_id=postdata.id,
+            models.GlyphParam.update(glyphoutline_id=postdata.glyphoutline_id,
                                      values=values)
         result = self.get_glyphs_jsondata(glyphoutline.glyph.name, master)
         return simplejson.dumps(result)
