@@ -193,10 +193,6 @@ def writeParams(project, filename, masters, label=None):
     # TODO: make global parameter to project related and not master
     globalparam = None
 
-    # A: metapolation 0, metapolationCD -1 (minus!)
-    # B: metapolation 1, metapolationCD -1
-    # C: metapolation -1, metapolationCD 0
-    # D: metapolation -1, metapolationCD 1
 
     unitwidth = get_global_param(globalparam, 'unitwidth')
     fontsize = get_global_param(globalparam, 'fontsize')
