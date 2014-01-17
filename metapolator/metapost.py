@@ -263,10 +263,10 @@ def writeParams(project, filename, masters, label=None, master=None):
 
     for i, master_obj in enumerate(lmast):
         imlo = None
-        if master_obj and not master:
+        if master_obj:
             imlo = LocalParam.get(id=master_obj.idlocala)
-        elif master: 
-            imlo = LocalParam.get(id=master.idlocala)
+        if master and master_obj.id != master.id:
+            imlo = None
         uniqletter = chr(ord('A') + i)
         ifile.write("%s_px#:=%.2fpt#;\n" % (uniqletter, get_local_param(imlo, 'px')))
         ifile.write("%s_width:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'width')))
