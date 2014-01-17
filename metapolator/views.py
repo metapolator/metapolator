@@ -743,34 +743,11 @@ class EditorUploadZIP(app.page):
             raise
 
         master.update_masters_ordering(x.label)
-
-        metapost = Metapost(project)
-
-        glyphs = master.get_glyphs()
-        if project.currentglyph:
-            glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
-        metapost.execute_single(master, glyphs.first())
-        master_instancelog = project.get_instancelog(master.version, 'a')
-        glyphsdata = get_edges_json(master_instancelog, master=master)
-
-        masters = project.get_ordered_masters()
-        glyphs = masters[0].get_glyphs()
-        if project.currentglyph:
-            glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
-        metapost.execute_interpolated_single(glyphs.first())
-        instancelog = project.get_instancelog(master.version)
-        metaglyphs = get_edges_json(instancelog)
-
         return simplejson.dumps({'project_id': project.id,
                                  'glyphname': project.currentglyph,
                                  'master_id': master.id,
                                  'label': x.label,
-                                 'metapolation': label,
-                                 'glyphs': glyphsdata,
-                                 'metaglyphs': metaglyphs,
-                                 'version': '{0:03d}'.format(master.version),
-                                 'versions': get_versions(master.project_id),
-                                 'task_id': asyncresult.task_id})
+                                 'metapolation': label})
 
 
 class MasterAsyncLoading(app.page):

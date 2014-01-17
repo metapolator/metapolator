@@ -298,13 +298,17 @@ Workspace.prototype = {
             return;
         }
 
-        var $element = view.getElement();
-        $element.removeClass('dragging dropzone');
-        $element.empty();
+        $.post('/editor/reload/', {
+            'master_id': response.master_id,
+            'glyphname': response.glyphname,
+            'axislabel': response.label
+            }
+        ).done(function(response){
+            var data = $.parseJSON(response);
+            this.versions = data.versions;
+            this.onGlyphChanged(view, data);
+        }.bind(this));
 
-        this.versions = response.versions;
-
-        this.createView($element, response.mode, response);
     },
 
     onMasterCreated: function(donecallback) {

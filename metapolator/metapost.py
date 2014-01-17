@@ -40,7 +40,6 @@ class Metapost:
 
         if not interpolated:
             metafont = master.get_metafont('a')
-            print metafont
         else:
             metafont = master.get_metafont()
 
@@ -54,6 +53,8 @@ class Metapost:
             if not line or '<to be read again>' in line:
                 process.kill()
                 break
+
+        return True
 
     def execute_interpolated_bulk(self):
         """ Run metapost for all glyphs with mf files containing points
@@ -72,7 +73,7 @@ class Metapost:
                                                 interpolated=True)
 
         self.write_glyph_list(primary_master, interpolated=True)
-        self._execute(primary_master, interpolated=True)
+        return self._execute(primary_master, interpolated=True)
 
     def execute_bulk(self, master):
         """ Run metapost for all glyphs with mf files containing points
@@ -88,9 +89,12 @@ class Metapost:
             xmltomf.xmltomf1(master, glyph)
 
         self.write_glyph_list(master)
-        self._execute(master)
+        return self._execute(master)
 
     def execute_interpolated_single(self, glyph):
+        if not glyph:
+            return None
+
         masters = self.project.get_ordered_masters()
 
         idmasters = map(lambda x: x.id, masters)
@@ -103,9 +107,12 @@ class Metapost:
                                             *_glyphs, interpolated=True)
 
         self.write_glyph_list(primary_master, glyph.name, interpolated=True)
-        self._execute(primary_master, interpolated=True)
+        return self._execute(primary_master, interpolated=True)
 
     def execute_single(self, master, glyph):
+        if not glyph:
+            return None
+
         if self.mfparser == 'pen':
             import xmltomf
             xmltomf.xmltomf1(master, glyph)
@@ -115,7 +122,7 @@ class Metapost:
             xmltomf.xmltomf1(master, glyph)
 
         self.write_glyph_list(master, glyph.name)
-        self._execute(master)
+        return self._execute(master)
 
     def interpolated_metafont_generate(self, masters, *args, **kwargs):
         """ Fill mf files related on project mfparser with coords and
