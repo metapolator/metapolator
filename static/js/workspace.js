@@ -170,12 +170,12 @@ Workspace.prototype = {
                                                 glyphname: this.glyphname,
                                                 axislabel: view.getLabel()})
                 .done(function(response){
-                    
+                    var data = $.parseJSON(response);
                     this.reloadView(view, {
-                        'master_id': $(e.target).val(),
-                        'glyphname': this.glyphname,
-                        'axislabel': view.getLabel()
-                        })
+                        master_id: data.master_id,
+                        glyphname: this.glyphname,
+                        label: view.getLabel()
+                    })
 
                 }.bind(this));
             }.bind(this));
