@@ -310,12 +310,6 @@ class EditorSavePoint(app.page, GlyphPageMixin):
     def POST(self):
         postdata = web.input(glyphoutline_id='')
 
-        # @FIXME: must be changed to form with validation of available
-        # arguments values.
-        #
-        # >>> form = EditorSavePointForm()
-        # >>> if not form.validates():
-        # >>>     raise web.notfound()
         if not models.GlyphOutline.exists(id=postdata.glyphoutline_id):
             return web.notfound()
         glyphoutline = models.GlyphOutline.get(id=postdata.glyphoutline_id)
@@ -334,9 +328,12 @@ class EditorSavePoint(app.page, GlyphPageMixin):
             glyphoutline.x = float(values['x'])
             glyphoutline.y = float(values['y'])
 
+            glyphoutline.glyph.width = int(values['width'])
+
             del values['zpoint']
             del values['x']
             del values['y']
+            del values['width']
             for key in values:
                 if values[key] == '':
                     values[key] = None

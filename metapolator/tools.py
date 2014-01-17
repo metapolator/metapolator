@@ -152,8 +152,11 @@ def get_edges_json_from_db(master, glyphid):
         x = point.x
         if localparam:
             x += localparam.px
+
+        params = param.as_dict()
+        params.update({'width': glyph.width})
         _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
-                        'iszpoint': iszpoint, 'data': param.as_dict()})
+                        'iszpoint': iszpoint, 'data': params})
 
     return {'width': glyph.width, 'points': _points}
 
