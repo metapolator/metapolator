@@ -33,7 +33,7 @@ class Metapost:
         ifile.close()
 
     def _execute(self, master, interpolated=False):
-        self.write_global_params()
+        self.write_global_params(master)
 
         os.environ['MFINPUTS'] = master.get_fonts_directory()
         os.environ['MFMODE'] = self.mfparser
@@ -147,11 +147,14 @@ class Metapost:
             xmltomf.xmltomf1(primary_master, *list(glyphs),
                              interpolated=interpolated)
 
-    def write_global_params(self):
+    def write_global_params(self, master):
         masters = self.project.get_ordered_masters()
         for i, m in enumerate(masters):
             if not i:
                 writeParams(self.project, m.metafont_filepath(), masters)
+
+            if m.id != master.id:
+                continue
             writeParams(self.project, m.metafont_filepath('a'),
                         masters, label=i)
 
