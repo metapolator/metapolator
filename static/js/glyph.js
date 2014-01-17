@@ -84,6 +84,8 @@ PaperJSGraph.prototype = {
         }
         this.selectedzpoint.segment.path.position = event.point;
         this.selectedzpoint.label.point = event.point;
+        this.selectedzpoint.x = parseInt(event.point.x);
+        this.selectedzpoint.y = parseInt(event.point.y);
         this.isdragged = true;
     },
 
@@ -91,8 +93,8 @@ PaperJSGraph.prototype = {
         if (!this.selectedzpoint) 
             return;
 
-        var pointdata = {x: parseInt(this.selectedzpoint.segment.point.x),
-                         y: parseInt(this.selectedzpoint.segment.point.y),
+        var pointdata = {x: parseInt(this.selectedzpoint.x),
+                         y: parseInt(this.selectedzpoint.y),
                          data: this.selectedzpoint.data};
         this.onMouseUp ? this.onMouseUp(event.event, this.isdragged, pointdata) : false;
     },
@@ -203,7 +205,7 @@ PaperJSGraph.prototype = {
         var spoint = this.getElementPoint(zpoint);
         var text = this.getPointLabel(zpoint, point.data.pointname);
 
-        this.zpoints.push({segment: spoint, data: point.data, label: text});
+        this.zpoints.push({segment: spoint, data: point.data, label: text, x: zpoint.x, y: zpoint.y});
 
         this.ppscope.view.draw();
         return {x: parseInt(zpoint.x), y: parseInt(zpoint.y), data: point.data};
