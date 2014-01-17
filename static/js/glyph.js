@@ -126,14 +126,14 @@ PaperJSGraph.prototype = {
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
             var point = points[k];
-            var ppoint = this.getPoint(Number(point.x), Number(point.y), true);
+            var ppoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
             ppoint.y += +MARGIN;
             ppoint.x += + MARGIN;
 
-            var handleIn = this.getPoint(Number(point.controls[0].x) - Number(point.x),
-                                         Number(point.y) - Number(point.controls[0].y));
-            var handleOut = this.getPoint(Number(point.controls[1].x) - Number(point.x),
-                                          Number(point.y) - Number(point.controls[1].y));
+            var handleIn = this.getPoint(parseInt(point.controls[0].x) - parseInt(point.x),
+                                         parseInt(point.y) - parseInt(point.controls[0].y));
+            var handleOut = this.getPoint(parseInt(point.controls[1].x) - parseInt(point.x),
+                                          parseInt(point.y) - parseInt(point.controls[1].y));
             var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
 
             path.add(segment);
@@ -196,7 +196,7 @@ PaperJSGraph.prototype = {
             return;
 
         var element = this.getElement();
-        var zpoint = this.getPoint(Number(point.x), Number(point.y), true);
+        var zpoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
         zpoint.y += +MARGIN;
         zpoint.x += +MARGIN;
 
@@ -206,7 +206,7 @@ PaperJSGraph.prototype = {
         this.zpoints.push({segment: spoint, data: point.data, label: text});
 
         this.ppscope.view.draw();
-        return {x: Math.round(zpoint.x), y: Math.round(zpoint.y), data: point.data};
+        return {x: parseInt(zpoint.x), y: parseInt(zpoint.y), data: point.data};
     },
 
 
@@ -276,7 +276,7 @@ Glyph.prototype = {
     },
 
     pointChanged: function(data) {
-        this.graph.setPointByName(Math.round(data.x), Math.round(data.y),
+        this.graph.setPointByName(parseInt(data.x), parseInt(data.y),
                                   data.data.pointname, data.data);
     },
 
@@ -286,7 +286,7 @@ Glyph.prototype = {
         var element = this.graph.getElement();
 
         var data = {
-            x: Math.round(xycoord.x),
+            x: parseInt(xycoord.x),
             y: this.graph.size.height - Math.round(xycoord.y),
             data: pointform_data.data
         };

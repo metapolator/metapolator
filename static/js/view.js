@@ -136,7 +136,6 @@ View.prototype = {
 
         var dropdown = this.pointform.find('select');
         var option = $('<option>').text(zpoint.data.pointname).val(zpoint.data.pointname);
-
         option.attr('point-params', JSON.stringify(zpoint));
         dropdown.append(option);
     },
