@@ -234,8 +234,6 @@ class EditorLocals(app.page):
         if not master:
             return web.notfound()
 
-        params = []
-
         form = LocalParamForm()
         if form.validates():
             idlocal = form.d.idlocal
@@ -247,45 +245,16 @@ class EditorLocals(app.page):
             if not int(idlocal):
                 localparam = models.LocalParam.create(**values)
                 master.idlocala = localparam.id
-                params = [{'val': localparam.id,
-                          'idx': models.LocalParam.all().count(),
-                          'selected': True}]
             else:
                 models.LocalParam.update(id=idlocal, values=values)
                 localparam = models.LocalParam.get(id=idlocal)
                 master.idlocala = localparam.id
 
         project = master.project
-
-        masters = project.get_ordered_masters()
-
-        metapost = Metapost(project)
-
-        glyphs = masters[0].get_glyphs()
-        if x.get('glyph'):
-            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
-        metapost.execute_interpolated_single(glyphs.first())
-
-        instancelog = project.get_instancelog(masters[0].version)
-        metaglyphs = get_edges_json(instancelog)
-
-        prepare_master_environment(master)
-
-        glyphs = master.get_glyphs()
-        if x.get('glyph'):
-            glyphs = glyphs.filter(models.Glyph.name == x.glyph)
-        metapost.execute_single(master, glyphs.first())
-
-        master_instancelog = project.get_instancelog(master.version, 'a')
-
-        glyphsdata = get_edges_json(master_instancelog, master=master)
-
-        return simplejson.dumps({'glyphs': glyphsdata,
-                                 'metaglyphs': metaglyphs,
-                                 'master_id': master.id,
-                                 'params': params,
+        web.ctx.orm.commit()
+        return simplejson.dumps({'master_id': master.id,
                                  'label': x.axislabel,
-                                 'versions': get_versions(project.id)})
+                                 'glyphname': project.currentglyph})
 
 
 class userstatic(app.page):

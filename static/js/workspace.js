@@ -169,17 +169,13 @@ Workspace.prototype = {
                 $.post('/editor/copy-master/', {master_id: view.getMaster(),
                                                 glyphname: this.glyphname,
                                                 axislabel: view.getLabel()})
-                .success(function(response){
+                .done(function(response){
                     
-                    $.post('/editor/reload/', {
+                    this.reloadView(view, {
                         'master_id': $(e.target).val(),
                         'glyphname': this.glyphname,
                         'axislabel': view.getLabel()
-                        }
-                    ).done(function(response){
-                        var data = $.parseJSON(response);
-                        this.onGlyphChanged(view, data);
-                    }.bind(this));
+                        })
 
                 }.bind(this));
             }.bind(this));
@@ -271,7 +267,7 @@ Workspace.prototype = {
         view.glyph.renderZPoints(glyphdata.zpoints.points);
 
         view.onzpointdatachanged = this.onzpointchange.bind(this);
-        view.onGlyphChanged = this.onGlyphChanged.bind(this);
+        view.onGlyphChanged = this.reloadView.bind(this);
         return view;
     },
 
@@ -298,17 +294,21 @@ Workspace.prototype = {
             return;
         }
 
+        this.reloadView(view, response);
+
+    },
+
+    reloadView: function(view, data) {
         $.post('/editor/reload/', {
-            'master_id': response.master_id,
-            'glyphname': response.glyphname,
-            'axislabel': response.label
+            'master_id': data.master_id,
+            'glyphname': data.glyphname,
+            'axislabel': data.label
             }
         ).done(function(response){
             var data = $.parseJSON(response);
             this.versions = data.versions;
             this.onGlyphChanged(view, data);
         }.bind(this));
-
     },
 
     onMasterCreated: function(donecallback) {
