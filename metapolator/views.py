@@ -131,7 +131,8 @@ class Project(app.page):
             glyphs = master.get_glyphs()
             glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
 
-            metapost.execute_single(master, glyphs.first())
+            if not metapost.execute_single(master, glyphs.first()):
+                return web.badrequest()
 
             master_instancelog = project.get_instancelog(master.version, 'a')
             glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -147,7 +148,8 @@ class Project(app.page):
 
         glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
 
-        metapost.execute_interpolated_single(glyphs.first())
+        if not metapost.execute_interpolated_single(glyphs.first()):
+            return web.badrequest()
 
         instancelog = project.get_instancelog(masters[0].version)
         metaglyphs = get_edges_json(instancelog)
@@ -396,14 +398,16 @@ def get_master_data(master, glyph, axislabel):
 
     glyphs = masters[0].get_glyphs()
     glyphs = glyphs.filter(models.Glyph.name == glyph)
-    metapost.execute_single(masters[0], glyphs.first())
+    if not metapost.execute_single(masters[0], glyphs.first()):
+        return
 
     instancelog = project.get_instancelog(masters[0].version)
     metaglyphs = get_edges_json(instancelog)
 
     glyphs = master.get_glyphs()
     glyphs = glyphs.filter(models.Glyph.name == glyph)
-    metapost.execute_single(master, glyphs.first())
+    if not metapost.execute_single(master, glyphs.first()):
+        return
     master_instancelog = project.get_instancelog(master.version, 'a')
 
     glyphsdata = get_edges_json(master_instancelog, master=master)
@@ -435,7 +439,8 @@ class EditorCanvasReload(app.page):
         master.update_masters_ordering(postdata.axislabel)
 
         data = get_master_data(master, postdata.glyphname, postdata.axislabel)
-
+        if not data:
+            return web.badrequest()
         return simplejson.dumps(data)
 
 
