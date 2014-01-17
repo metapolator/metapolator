@@ -660,14 +660,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         zitem = i + 1
 
         if angle[i]:
-<<<<<<< HEAD
-#            angleb = angleval_B[i]
-            zeile = "ang" + str(zitem) + " := ((" + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ))) + (" + str(angleval_C[i]) + "+ (metapolationCD * (" + str(angleval_D[i]) + " - " + str(angleval_C[i]) + " )))) /divider;"
-=======
             set_value_for_index(i, angleval, angleval_B,
                                 angleval_C, angleval_D)
-            zeile = "ang" + str(zitem) + " := ((" + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ))) + (" + str(angleval_C[i]) + "+ (metapolationCD * (" + str(angleval_D[i]) + " - " + str(angleval_C[i]) + " )))) / 2;"
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+            zeile = "ang" + str(zitem) + " := ((" + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ))) + (" + str(angleval_C[i]) + "+ (metapolationCD * (" + str(angleval_D[i]) + " - " + str(angleval_C[i]) + " )))) /divider;"
         else:
             zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
 
@@ -2086,13 +2081,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 dash = ""
 
             if penshifted[i] != "":
-<<<<<<< HEAD
-                zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /divider)"
-=======
                 set_value_for_index(i, penshiftedval, penshiftedvalB,
                                     penshiftedvalC, penshiftedvalD)
-                zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /2)"
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+                zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /divider)"
 
             if overx[i] != "":
                 zeile += " shifted (0, (((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt))) /divider) - " + str(overxval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
@@ -2110,42 +2101,30 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile += " shifted (0, (((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt ))) /divider) - " + str(overdescval[i]) + ") - (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
 
             if dir[i] != "":
-<<<<<<< HEAD
-                zeile += " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/divider)}"
-
-            if tensionand[i] != "":
-                zeile += strtwo + "tension" + " ((((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100))))) /divider)' + " and ((((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100))))) /divider)' + strtwo
-
-            if dir2[i] != "":
-                zeile += " ... {dir (((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + "))) /divider)}"
-=======
                 set_value_for_index(i, dirval, dirvalB,
                                     dirvalC, dirvalD)
-                zeile += " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/2)}"
+                zeile += " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/divider)}"
 
             if tensionand[i] != "":
                 set_value_for_index(i, tensionandval, tensionandvalB,
                                     tensionandvalC, tensionandvalD)
-                zeile += strtwo + "tension" + " ((((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100))))) /2)' + " and ((((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100))))) /2)' + strtwo
+                set_value_for_index(i, tensionandval2, tensionandval2B,
+                                    tensionandval2C, tensionandval2D)
+                zeile += strtwo + "tension" + " ((((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100))))) /divider)' + " and ((((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100))))) /divider)' + strtwo
 
             if dir2[i] != "":
                 set_value_for_index(i, dir2val, dir2valB,
                                     dir2valC, dir2valD)
-                zeile += " ... {dir (((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + "))) /2)}"
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+                zeile += " ... {dir (((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + "))) /divider)}"
 
             zeile += dash
 
         else:
 
             if dir[i] != "":
-<<<<<<< HEAD
-                zeile = zeile + " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/divider)}"
-=======
                 set_value_for_index(i, dirval, dirvalB,
                                     dirvalC, dirvalD)
-                zeile = zeile + " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/2)}"
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+                zeile = zeile + " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/divider)}"
 
             if overx[i] != "":
                 zeile = zeile + " shifted (0, (((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt))) /divider) - " + str(overxval[i]) + ") + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
@@ -2163,21 +2142,16 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile = zeile + " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /divider) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if penshifted[i] != "":
-<<<<<<< HEAD
-                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
-
-            if tensionand[i] != "":
-                zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /divider)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /divider)' + strtwo
-=======
                 set_value_for_index(i, penshiftedval, penshiftedvalB,
                                     penshiftedvalC, penshiftedvalD)
-                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
+                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
 
             if tensionand[i] != "":
                 set_value_for_index(i, tensionandval, tensionandvalB,
                                     tensionandvalC, tensionandvalD)
-                zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)' + strtwo
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+                set_value_for_index(i, tensionandval2, tensionandval2B,
+                                    tensionandval2C, tensionandval2D)
+                zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /divider)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /divider)' + strtwo
 
             zeile += semi + '\n'
 
@@ -2190,24 +2164,15 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         i += 1
 
         # write final point with i + 1
-
-
         if penshifted[i] != "":
-<<<<<<< HEAD
-            zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
-
-        if dir[i] != "":
-            zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/divider)}"
-=======
             set_value_for_index(i, penshiftedval, penshiftedvalB,
                                 penshiftedvalC, penshiftedvalD)
-            zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
+            zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
 
         if dir[i] != "":
             set_value_for_index(i, dirval, dirvalB,
                                 dirvalC, dirvalD)
-            zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/2)}"
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+            zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/divider)}"
 
         if overx[i] != "":
             zeile += " shifted (0, ((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt)) /divider) - " + str(overxval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
@@ -2225,26 +2190,19 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
             zeile += " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /divider) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
         if tensionand[i] != ""and dir2[i] != "":
-<<<<<<< HEAD
-            zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /divider)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /divider)'
-            zeile += strtwo + " {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /divider)}"
-=======
             set_value_for_index(i, dir2val, dir2valB, dir2valC, dir2valD)
             set_value_for_index(i, tensionandval, tensionandvalB,
                                 tensionandvalC, tensionandvalD)
-            zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)'
-            zeile += strtwo + " {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+            set_value_for_index(i, tensionandval2, tensionandval2B,
+                                tensionandval2C, tensionandval2D)
+            zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /divider)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /divider)'
+            zeile += strtwo + " {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /divider)}"
 
 #        if upp2[i] != "":
 #            zeile += dash + upp2[i]
         elif dir2[i] != "":
-<<<<<<< HEAD
-            zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /divider)}"
-=======
             set_value_for_index(i, dir2val, dir2valB, dir2valC, dir2valD)
-            zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
->>>>>>> fb891051f1d6a9c0ffcc36986055950c0b66305c
+            zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /divider)}"
 
 #        elif downp2[i] != "":
 #            zeile += dash + downp2[i]
