@@ -265,6 +265,8 @@ def writeParams(project, filename, masters, label=None, master=None):
         imlo = None
         if master_obj:
             imlo = LocalParam.get(id=master_obj.idlocala)
+        if master and master_obj.id != master.id:
+            imlo = None
         uniqletter = chr(ord('A') + i)
         ifile.write("%s_px#:=%.2fpt#;\n" % (uniqletter, get_local_param(imlo, 'px')))
         ifile.write("%s_width:=%.2f;\n" % (uniqletter, get_local_param(imlo, 'width')))

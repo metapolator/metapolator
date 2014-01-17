@@ -91,7 +91,9 @@ PaperJSGraph.prototype = {
         if (!this.selectedzpoint) 
             return;
 
-        var pointdata = {x: event.point.x, y: event.point.y, data: this.selectedzpoint.data};
+        var pointdata = {x: parseInt(this.selectedzpoint.segment.point.x),
+                         y: parseInt(this.selectedzpoint.segment.point.y),
+                         data: this.selectedzpoint.data};
         this.onMouseUp ? this.onMouseUp(event.event, this.isdragged, pointdata) : false;
     },
 
