@@ -55,7 +55,8 @@ def create_glyph(glif, master):
             if attr == 'name':
                 continue
             setattr(glyphparam, attr, point.attrib[attr])
-        web.ctx.orm.commit()
+
+    web.ctx.orm.commit()
     return glyph
 
 
