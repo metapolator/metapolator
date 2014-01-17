@@ -730,6 +730,9 @@ class EditorUploadZIP(app.page):
                                                    preload=True)
                 project.currentglyph = currentglyph
                 web.ctx.orm.commit()
+            else:
+                put_font_all_glyphs(master, project.currentglyph,
+                                    preload=True, force_update=True)
 
             asyncresult = tasks.fill_master_with_glyphs.delay(master.id,
                                                               web.ctx.user.id,
