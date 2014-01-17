@@ -155,8 +155,8 @@ class Metapost:
 
             if m.id != master.id:
                 continue
-            writeParams(self.project, m.metafont_filepath('a'),
-                        masters, label=i)
+            writeParams(self.project, m.metafont_filepath('a'), masters,
+                        label=i, master=master)
 
 
 GLOBAL_DEFAULTS = {
@@ -207,10 +207,9 @@ def get_local_param(param, key):
     return getattr(param, key, 0)
 
 
-def writeParams(project, filename, masters, label=None):
+def writeParams(project, filename, masters, label=None, master=None):
     # TODO: make global parameter to project related and not master
     globalparam = None
-
 
     unitwidth = get_global_param(globalparam, 'unitwidth')
     fontsize = get_global_param(globalparam, 'fontsize')
@@ -262,9 +261,11 @@ def writeParams(project, filename, masters, label=None):
     if len(lmast) < 4:
         lmast += [None] * (4 - len(masters))
 
-    for i, master in enumerate(lmast):
+    for i, master_obj in enumerate(lmast):
         imlo = None
-        if master:
+        if master_obj and not master:
+            imlo = LocalParam.get(id=master_obj.idlocala)
+        elif master:
             imlo = LocalParam.get(id=master.idlocala)
         uniqletter = chr(ord('A') + i)
         ifile.write("%s_px#:=%.2fpt#;\n" % (uniqletter, get_local_param(imlo, 'px')))
