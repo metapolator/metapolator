@@ -28,10 +28,9 @@ $ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server l
 $ sudo apt-get install -y woff-tools
 $ sudo apt-get install -y fontforge python-fontforge;
 $ sudo apt-get install -y build-essential autoconf libtool python-dev;
-$ sudo apt-get install -y python-virtualenv;
+$ sudo apt-get install -y python-virtualenv python-setuptools python-pip
 $ git clone https://github.com/metapolator/metapolator.git;
 $ cd metapolator;
-$ easy_install -U distribute pip;
 $ virtualenv .venv;
 $ source .venv/bin/activate ; pip install -r requirements.txt
 ```
