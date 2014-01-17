@@ -63,7 +63,7 @@ def create_glyph(glif, master):
 def extract_gliflist_from_ufo(master, glyph=None, extract_first=False):
     fontpath = op.join(master.get_ufo_path(), 'glyphs')
 
-    charlista = [f for f in os.listdir(fontpath)]
+    charlista = filter(lambda f: op.splitext(f)[1] == '.glif', os.listdir(fontpath))
 
     if glyph:
         charlista = filter(lambda f: f == '%s.glif' % glyph, charlista)
