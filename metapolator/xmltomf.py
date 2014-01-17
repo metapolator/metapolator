@@ -6,10 +6,19 @@ import web
 import models
 
 
+def set_value_for_index(index, primary, *args):
+
+    for arg in list(args):
+        try:
+            arg[index]
+        except IndexError:
+            arg[index] = primary[index]
+
+
 class DifferentZPointError(Exception):
     pass
 
-#def xmltomf1(master, glyphA, glyphB=None, stdout_fip=None):
+
 def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None, interpolated=False):
     """ Save current points to mf file
 
@@ -642,16 +651,17 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     zeileend = ""
     semi = ");"
 
-    if len(zzn) != len(zznb):
-        # glyphs in A and B have different set of Z-points, so raise exception
-        # to handle this case
-        raise DifferentZPointError()
+    # if len(zzn) != len(zznb):
+    #     # glyphs in A and B have different set of Z-points, so raise exception
+    #     # to handle this case
+    #     raise DifferentZPointError()
 
     for i in range(len(zzn)):
         zitem = i + 1
 
         if angle[i]:
-#            angleb = angleval_B[i]
+            set_value_for_index(i, angleval, angleval_B,
+                                angleval_C, angleval_D)
             zeile = "ang" + str(zitem) + " := ((" + str(angleval[i]) + "+ (metapolation * (" + str(angleval_B[i]) + " - " + str(angleval[i]) + " ))) + (" + str(angleval_C[i]) + "+ (metapolationCD * (" + str(angleval_D[i]) + " - " + str(angleval_C[i]) + " )))) / 2;"
         else:
             zeile = "ang" + str(zitem) + " := ang" + str(zitem) + ";"
@@ -660,10 +670,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         fip.write(zeile)
 
 # reading font Pen Positions Font B
-
-
-#    fip.write("\n")
-#    fip.write("""% penposition font B""")
 
     inattr = 0
     ivn = 0
@@ -681,7 +687,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     pointshiftedval = []
     B_pointshiftedval = []
 
-
     i = 1
 
     for item, param in fontb_outlines:
@@ -698,7 +703,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         istartp = param.startp
 
         ipointshifted = param.pointshifted
-
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
@@ -941,6 +945,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         zitem = i + 1
 
         if penwidth[i]:
+            set_value_for_index(i, A_penwidthval, B_penwidthval,
+                                C_penwidthval, D_penwidthval)
+
 #            zeile = """penpos"""  + str(zitem) + "((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) * " + "((dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + ")) + (A_px + metapolation * (B_px - A_px)) + ((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) * (dist" +str(zitem) + " + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "))))"
 #            zeile = """penpos"""  + str(zitem) + "((((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + "))) /2) * " + "((((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /2) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /2) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2 ))))"
             zeile = """penpos"""  + str(zitem) + "((((((" + str(A_penwidthval[i]) +" + metapolation * (" + str(B_penwidthval[i]) + " - " + str(A_penwidthval[i]) + ")) + (" + str(C_penwidthval[i]) +" + metapolationCD * (" + str(D_penwidthval[i]) + " - " + str(C_penwidthval[i]) + "))) /2) * " + "(((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2)) + (((A_px + metapolation * (B_px - A_px)) + (C_px + metapolationCD * (D_px - C_px))) /2) + ((((A_skeleton/50 + metapolation * (B_skeleton/50-A_skeleton/50)) + (C_skeleton/50 + metapolationCD * (D_skeleton/50-C_skeleton/50))) /2) * (((dist" +str(zitem) + "A + metapolation * (dist" +str(zitem) + "B - dist" +str(zitem) + "A)) + (dist" +str(zitem) + "C + metapolationCD * (dist" +str(zitem) + "D - dist" +str(zitem) + "C))) /2 )))"
@@ -2073,9 +2080,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
             elif dir2[i] != "":
                 dash = ""
 
-
-
             if penshifted[i] != "":
+                set_value_for_index(i, penshiftedval, penshiftedvalB,
+                                    penshiftedvalC, penshiftedvalD)
                 zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /2)"
 
             if overx[i] != "":
@@ -2094,12 +2101,18 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile += " shifted (0, (((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt ))) /2) - " + str(overdescval[i]) + ") - (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /2)"
 
             if dir[i] != "":
+                set_value_for_index(i, dirval, dirvalB,
+                                    dirvalC, dirvalD)
                 zeile += " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/2)}"
 
             if tensionand[i] != "":
+                set_value_for_index(i, tensionandval, tensionandvalB,
+                                    tensionandvalC, tensionandvalD)
                 zeile += strtwo + "tension" + " ((((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100))))) /2)' + " and ((((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100))))) /2)' + strtwo
 
             if dir2[i] != "":
+                set_value_for_index(i, dir2val, dir2valB,
+                                    dir2valC, dir2valD)
                 zeile += " ... {dir (((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + "))) /2)}"
 
             zeile += dash
@@ -2107,6 +2120,8 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         else:
 
             if dir[i] != "":
+                set_value_for_index(i, dirval, dirvalB,
+                                    dirvalC, dirvalD)
                 zeile = zeile + " {dir (((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + ")))/2)}"
 
             if overx[i] != "":
@@ -2125,9 +2140,13 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile = zeile + " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
             if penshifted[i] != "":
+                set_value_for_index(i, penshiftedval, penshiftedvalB,
+                                    penshiftedvalC, penshiftedvalD)
                 zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
 
             if tensionand[i] != "":
+                set_value_for_index(i, tensionandval, tensionandvalB,
+                                    tensionandvalC, tensionandvalD)
                 zeile = zeile + strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)' + strtwo
 
             zeile += semi + '\n'
@@ -2144,9 +2163,13 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
 
         if penshifted[i] != "":
+            set_value_for_index(i, penshiftedval, penshiftedvalB,
+                                penshiftedvalC, penshiftedvalD)
             zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /2)"
 
         if dir[i] != "":
+            set_value_for_index(i, dirval, dirvalB,
+                                dirvalC, dirvalD)
             zeile += " {dir ((" + str(dirval[i]) + " + metapolation * (" + str(dirvalB[i]) + " - " + str(dirval[i]) + ")) + (" + str(dirvalC[i]) + " + metapolationCD * (" + str(dirvalD[i]) + " - " + str(dirvalC[i]) + "))/2)}"
 
         if overx[i] != "":
@@ -2165,12 +2188,16 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
             zeile += " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /2) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /2)"
 
         if tensionand[i] != ""and dir2[i] != "":
+            set_value_for_index(i, dir2val, dir2valB, dir2valC, dir2valD)
+            set_value_for_index(i, tensionandval, tensionandvalB,
+                                tensionandvalC, tensionandvalD)
             zeile += strtwo + "tension" + " (((" + str(tensionandval[i]) + '/100) + (metapolation * ((' + str(tensionandvalB[i]) + '/100) - (' + str(tensionandval[i]) + '/100)))) + ((' + str(tensionandvalC[i]) + '/100) + (metapolationCD * ((' + str(tensionandvalD[i]) + '/100) - (' + str(tensionandvalC[i]) + '/100)))) /2)' + " and (((" + str(tensionandval2[i]) + '/100) + (metapolation * ((' + str(tensionandval2B[i]) + '/100) - (' + str(tensionandval2[i]) + '/100)))) + ((' + str(tensionandval2C[i]) + '/100) + (metapolationCD * ((' + str(tensionandval2D[i]) + '/100) - (' + str(tensionandval2C[i]) + '/100)))) /2)'
             zeile += strtwo + " {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
 
 #        if upp2[i] != "":
 #            zeile += dash + upp2[i]
         elif dir2[i] != "":
+            set_value_for_index(i, dir2val, dir2valB, dir2valC, dir2valD)
             zeile += " ... {dir ((" + str(dir2val[i]) + " + metapolation * (" + str(dir2valB[i]) + " - " + str(dir2val[i]) + ")) + (" + str(dir2valC[i]) + " + metapolationCD * (" + str(dir2valD[i]) + " - " + str(dir2valC[i]) + ")) /2)}"
 
 #        elif downp2[i] != "":
@@ -2581,10 +2608,10 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     zeileend = ""
     semi = ");"
 
-    if len(zzn) != len(zznb):
-        # glyphs in A and B have different set of Z-points, so raise exception
-        # to handle this case
-        raise DifferentZPointError()
+    # if len(zzn) != len(zznb):
+    #     # glyphs in A and B have different set of Z-points, so raise exception
+    #     # to handle this case
+    #     raise DifferentZPointError()
 
     for i in range(len(zzn)):
         zitem = i + 1
