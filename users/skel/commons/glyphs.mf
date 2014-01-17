@@ -45,14 +45,13 @@ def tracingall =                % turns on every form of tracing
 
 tracingall
 
-slant:=((A_slant+metapolation*(B_slant-A_slant)) + (C_slant+metapolation*(D_slant-C_slant))/2);
+slant:=((A_slant+metapolation*(B_slant-A_slant)) + (C_slant+metapolationCD*(D_slant-C_slant))) /2;
 font_slant = slant;
 
-jut:=(A_jut+metapolation*(B_jut-A_jut)) + (C_jut+metapolationCD*(D_jut-C_jut)) /2;
-slab:=(A_slab+metapolation*(B_slab-A_slab)) + (C_slab+metapolationCD*(D_slab-C_slab)) /2;
-bracket:=(A_bracket+metapolation*(B_bracket-A_bracket)) + (C_bracket+metapolationCD*(D_bracket-C_bracket)) /2;
-serif_darkness:=(A_serif_darkness+metapolation*(B_serif_darkness-A_serif_darkness)) + (C_serif_darkness+metapolationCD*(D_serif_darkness-C_serif_darkness)) /2;
-
+jut:=((A_jut+metapolation*(B_jut-A_jut)) + (C_jut+metapolationCD*(D_jut-C_jut))) /2;
+slab:=((A_slab+metapolation*(B_slab-A_slab)) + (C_slab+metapolationCD*(D_slab-C_slab))) /2;
+bracket:=((A_bracket+metapolation*(B_bracket-A_bracket)) + (C_bracket+metapolationCD*(D_bracket-C_bracket))) /2;
+serif_darkness:=((A_serif_darkness+metapolation*(B_serif_darkness-A_serif_darkness)) + (C_serif_darkness+metapolationCD*(D_serif_darkness-C_serif_darkness))) /2;
 % for perfect curve use serif_darkness = 0.5; .. in def serif_bracket instead --
 
 serifs:=false;
