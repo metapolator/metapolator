@@ -44,14 +44,16 @@ var PaperJSGraph = function(size, paperscope) {
     this.tool.onMouseDown = this.firedMouseDown.bind(this);
     this.tool.onMouseUp = this.firedMouseUp.bind(this);
     this.tool.onMouseDrag = this.firedMouseDrag.bind(this);
+
     this.tool.onMouseMove = function(event) {
-        this.ppscope.project.activeLayer.selected = false;
-        if (event.item) {
-            switch (event.item.type) {
-                case 'path':
-                    break
-                case 'point-text':
-                    break;
+        for (var k = 0; k < this.zpoints.length; k++) {
+            var p = this.zpoints[k].getSegmentPoint();
+            if (!this.zpoints[k].hardselected) {
+                if (p.getDistance(event.point) <= 6) {
+                    this.zpoints[k].markselected();
+                } else {
+                    this.zpoints[k].resetselected();
+                }
             }
         }
     }.bind(this);
@@ -69,10 +71,15 @@ PaperJSGraph.prototype = {
     },
 
     firedMouseDown: function(event) {
-        this.selectedzpoint = null;
+        if (this.selectedzpoint) {
+            this.selectedzpoint.resetselected();
+            this.selectedzpoint = null;
+        }
+
         for (var k = 0; k < this.zpoints.length; k++) {
             var p = this.zpoints[k].getSegmentPoint();
-            if (p.getDistance(event.point) < 5) {
+            if (p.getDistance(event.point) <= 6) {
+                this.zpoints[k].markselected(true);
                 this.selectedzpoint = this.zpoints[k];
                 this.isdragged = false;
                 return;
@@ -208,10 +215,10 @@ PaperJSGraph.prototype = {
 
 
 function Point(ppscope, zpoint, pointpreset) {
-    this.point_circle = new ppscope.Path.Circle({center: [zpoint.x, zpoint.y],
-                                                 radius: 2, fillColor: 'black'});
     this.large_circle = new ppscope.Path.Circle({center: [zpoint.x, zpoint.y],
                                                  radius: 6, strokeColor: 'black'});
+    this.point_circle = new ppscope.Path.Circle({center: [zpoint.x, zpoint.y],
+                                                 radius: 2, fillColor: 'black'});
     this.pointText = new ppscope.PointText({point: [zpoint.x, zpoint.y - 8]});
     this.pointText.justification = 'center';
     this.pointText.fillColor = 'black';
@@ -235,6 +242,17 @@ Point.prototype.moveTo = function(point) {
 
     this.point_circle.position = point;
     this.large_circle.position = point;
+}
+
+Point.prototype.markselected = function(hardselected) {
+    this.large_circle.fillColor = 'gray';
+    this.hardselected = hardselected;
+}
+
+
+Point.prototype.resetselected = function() {
+    this.large_circle.fillColor = 'white';
+    this.hardselected = false;
 }
 
 
