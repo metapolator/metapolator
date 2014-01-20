@@ -245,13 +245,17 @@ Point.prototype.moveTo = function(point) {
 }
 
 Point.prototype.markselected = function(hardselected) {
-    this.large_circle.fillColor = 'gray';
+    this.large_circle.fillColor = 'navy';
+    this.large_circle.fillColor.alpha = 0.5;
+    this.large_circle.fillColor.strokeWidth = 2;
     this.hardselected = hardselected;
 }
 
 
 Point.prototype.resetselected = function() {
     this.large_circle.fillColor = 'white';
+    this.large_circle.fillColor.alpha = 0;
+    this.large_circle.fillColor.strokeWidth = 1;
     this.hardselected = false;
 }
 
