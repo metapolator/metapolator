@@ -2081,9 +2081,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 dash = ""
 
             if penshifted[i] != "":
-                set_value_for_index(i, penshiftedval, penshiftedvalB,
-                                    penshiftedvalC, penshiftedvalD)
-                zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /divider)"
+#                set_value_for_index(i, penshiftedval, penshiftedvalB,
+#                                    penshiftedvalC, penshiftedvalD)
+                zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))))/divider)"
 
             if overx[i] != "":
                 zeile += " shifted (0, (((A_xheight*pt + metapolation * (B_xheight*pt - A_xheight*pt)) + (C_xheight*pt + metapolationCD * (D_xheight*pt - C_xheight*pt))) /divider) - " + str(overxval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
@@ -2095,7 +2095,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile += " shifted (0, (((A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt))) /divider) - " + str(overcapval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
 
             if overasc[i] != "":
-                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
+#                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
+                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")" 
+                zeile += " + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
 
             if overdesc[i] != "":
                 zeile += " shifted (0, (((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt ))) /divider) - " + str(overdescval[i]) + ") - (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
@@ -2136,15 +2138,16 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile = zeile + " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /divider) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if overasc[i] != "":
-                zeile = zeile + " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /divider) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
+                zeile = zeile +  " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")" 
+                zeile = zeile +  " + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
 
             if overdesc[i] != "":
                 zeile = zeile + " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /divider) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if penshifted[i] != "":
-                set_value_for_index(i, penshiftedval, penshiftedvalB,
-                                    penshiftedvalC, penshiftedvalD)
-                zeile = zeile + " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
+#                set_value_for_index(i, penshiftedval, penshiftedvalB,
+#                                    penshiftedvalC, penshiftedvalD)
+                zeile = zeile +  " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /divider)"
 
             if tensionand[i] != "":
                 set_value_for_index(i, tensionandval, tensionandvalB,
@@ -2165,9 +2168,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
         # write final point with i + 1
         if penshifted[i] != "":
-            set_value_for_index(i, penshiftedval, penshiftedvalB,
-                                penshiftedvalC, penshiftedvalD)
-            zeile += " shifted (((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + "))) /divider)"
+#            set_value_for_index(i, penshiftedval, penshiftedvalB,
+#                                penshiftedvalC, penshiftedvalD)
+            zeile += " shifted ((((" + str(penshiftedval[i]) + ") + metapolation * ((" + str(penshiftedvalB[i]) + ") - (" + str(penshiftedval[i]) + "))) + ((" + str(penshiftedvalC[i]) + ") + metapolationCD * ((" + str(penshiftedvalD[i]) + ") - (" + str(penshiftedvalC[i]) + ")))) /divider)"
 
         if dir[i] != "":
             set_value_for_index(i, dirval, dirvalB,
@@ -2184,7 +2187,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
             zeile += " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /divider) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
         if overasc[i] != "":
-            zeile += " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /divider) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
+#            zeile += " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /divider) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
+            zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")" 
+            zeile += " + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
 
         if overdesc[i] != "":
             zeile += " shifted (0, ((A_descender*pt + metapolation * (B_descender*pt  - A_descender*pt )) + (C_descender*pt + metapolationCD * (D_descender*pt  - C_descender*pt )) /divider) - " + str(overdescval[i]) + ") - ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
