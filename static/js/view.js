@@ -125,18 +125,16 @@ View.prototype = {
         return this.element.find('canvas')[0];
     },
 
-    updatePointOption: function(zpoint) {
-        var option = this.pointform.find('select option:selected');
-        option.attr('point-params', JSON.stringify(zpoint));
-    },
-
-    addPointToOption: function(zpoint) {
+    addPointToOption: function(point) {
         if (!this.pointform.length)
             return;
 
         var dropdown = this.pointform.find('select');
-        var option = $('<option>').text(zpoint.data.pointname).val(zpoint.data.pointname);
-        option.attr('point-params', JSON.stringify(zpoint));
+        var option = $('<option>', {
+            value: point.config.pointname,
+            text: point.config.pointname
+        });
+
         dropdown.append(option);
     },
 
@@ -148,47 +146,39 @@ View.prototype = {
         if (!this.zpointdropdown.val()) {
             return false;
         }
-        var option = this.pointform.find('option:selected');
-        var data = $.parseJSON(option.attr('point-params'));
+
+        var point = this.glyph.getZPointByName(this.zpointdropdown.val());
 
         var obj = this.pointform.serializeObject();
+        point.moveTo({x: obj.x, y: obj.y});
 
-        $.extend(data.data, obj);
-        var data = {
-            x: obj.x,
-            y: obj.y,
-            data: data.data
-        };
+        delete obj['x'];
+        delete obj['y'];
+        $.extend(point.config, obj);
 
-        delete data.data.x;
-        delete data.data.y;
-
-        var option = this.zpointdropdown.find('option:selected');
-        option.attr('point-params', JSON.stringify(data));
-
-        this.onPointParamSubmit && this.onPointParamSubmit(data);
+        this.onPointParamSubmit && this.onPointParamSubmit(point);
     },
 
     onzpointselected: function(e) {
-        var option = $(e.target).find('option:selected');
-        var data = $.parseJSON(option.attr('point-params'))
-        this.setPointFormValues(data);
+        var point = this.glyph.getZPointByName($(e.target).val());
 
-        this.afterPointChanged && this.afterPointChanged(data);
+        this.setPointFormValues(point);
+
+        this.afterPointChanged && this.afterPointChanged(point);
     },
 
-    setPointFormValues: function(data) {
+    setPointFormValues: function(point) {
         this.pointform.find('select option:selected').removeAttr('selected');
 
-        this.zpointdropdown.val(data.data.pointname);
+        this.zpointdropdown.val(point.config.pointname);
 
         var inputs = this.pointform.find('input');
         for (var idx = 0; idx < inputs.length; idx++) {
             var input = $(inputs[idx]);
             if (input.attr('name') != 'x' && input.attr('name') != 'y') {
-                input.val(data.data[input.attr('name')]);
+                input.val(point.config[input.attr('name')]);
             } else {
-                input.val(data[input.attr('name')]);
+                input.val(parseInt(point.zpoint[input.attr('name')]));
             }
         }
 

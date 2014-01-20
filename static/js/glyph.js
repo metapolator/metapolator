@@ -69,7 +69,6 @@ PaperJSGraph.prototype = {
     },
 
     firedMouseDown: function(event) {
-        console.log(event.item);
         this.selectedzpoint = null;
         for (var k = 0; k < this.zpoints.length; k++) {
             var p = this.zpoints[k].getSegmentPoint();
@@ -96,10 +95,7 @@ PaperJSGraph.prototype = {
         if (!this.selectedzpoint) 
             return;
 
-        var pointdata = {x: parseInt(this.selectedzpoint.x),
-                         y: parseInt(this.selectedzpoint.y),
-                         data: this.selectedzpoint.data};
-        this.onMouseUp ? this.onMouseUp(event.event, this.isdragged, pointdata) : false;
+        this.onMouseUp ? this.onMouseUp(this.selectedzpoint, this.isdragged) : false;
     },
 
     restore_original_coords: function(x, y) {
@@ -156,19 +152,12 @@ PaperJSGraph.prototype = {
         this.glyphpathes.push(path);
     },
 
-    setPointByName: function(x, y, pointname, data) {
+    setPointByName: function(point) {
         this.ppscope.activate();
-        for (var k = 0; k < this.zpoints.length; k++) {
-            if (this.zpoints[k].data.pointname == pointname) {
-                this.zpoints[k].data = data;
 
-                this.selectedzpoint = this.zpoints[k];
-                this.selectedzpoint.segment.path.position = new this.ppscope.Point(x, y);
-                this.selectedzpoint.label.point = new this.ppscope.Point(x, y);
-                this.isdragged = false;
-                return;
-            }
-        }
+        this.selectedzpoint = point;
+        this.isdragged = false;
+        
         this.ppscope.view.draw();
     },
 
@@ -188,10 +177,11 @@ PaperJSGraph.prototype = {
         zpoint.y += +MARGIN;
         zpoint.x += +MARGIN;
 
-        this.zpoints.push(new Point(this.ppscope, zpoint, point.data));
+        var point = new Point(this.ppscope, zpoint, point.data);
+        this.zpoints.push(point);
         
         this.ppscope.view.draw();
-        return {x: parseInt(zpoint.x), y: parseInt(zpoint.y), data: point.data};
+        return point;
     },
 
 
@@ -219,9 +209,9 @@ PaperJSGraph.prototype = {
 
 function Point(ppscope, zpoint, pointpreset) {
     this.point_circle = new ppscope.Path.Circle({center: [zpoint.x, zpoint.y],
-                                                      radius: 2, fillColor: 'black'});
+                                                 radius: 2, fillColor: 'black'});
     this.large_circle = new ppscope.Path.Circle({center: [zpoint.x, zpoint.y],
-                                                      radius: 6, strokeColor: 'black'});
+                                                 radius: 6, strokeColor: 'black'});
     this.pointText = new ppscope.PointText({point: [zpoint.x, zpoint.y - 8]});
     this.pointText.justification = 'center';
     this.pointText.fillColor = 'black';
@@ -261,12 +251,21 @@ var Glyph = function(view, glyphsize) {
     this.graph = Graph.createCanvas(this.canvas, glyphsize);
     this.graph.onMouseUp = this.onMouseUp.bind(this);
 
-    this.view.afterPointChanged = this.pointChanged.bind(this);
+    this.view.afterPointChanged = this.pointSelect.bind(this);
     this.view.onPointParamSubmit = this.pointFormSubmit.bind(this);
 }
 
 
 Glyph.prototype = {
+
+    getZPointByName: function(pointname) {
+        var points = this.graph.zpoints.filter(function(point){
+            return point.config.pointname == pointname;
+        });
+        if (!points.length)
+            return;
+        return points[0];
+    },
 
     render: function(contours) {
         this.graph.deletepathes();
@@ -288,35 +287,30 @@ Glyph.prototype = {
         }
     },
 
-    pointChanged: function(data) {
-        this.graph.setPointByName(parseInt(data.x), parseInt(data.y),
-                                  data.data.pointname, data.data);
+    pointSelect: function(point) {
+        this.graph.setPointByName(point);
     },
 
-    pointFormSubmit: function(pointform_data, isdragged) {
-        var xycoord = this.graph.restore_original_coords(pointform_data.x, pointform_data.y);
-
-        var element = this.graph.getElement();
+    pointFormSubmit: function(point, isdragged) {
+        var xycoord = this.graph.restore_original_coords(point.zpoint.x, point.zpoint.y);
 
         var data = {
             x: parseInt(xycoord.x),
             y: this.graph.size.height - Math.round(xycoord.y),
-            data: pointform_data.data
+            data: point.config
         };
-        if (isdragged) {
-            this.view.updatePointOption(pointform_data);
-        } else {
-            this.pointChanged(pointform_data);
+        if (!isdragged) {
+            this.pointSelect(point);
         }
 
         this.onZPointChanged && this.onZPointChanged(this, data);
     },
 
-    onMouseUp: function(event, isdragged, data) {
+    onMouseUp: function(point, isdragged) {
         if (isdragged) {
-            this.pointFormSubmit(data, isdragged);
+            this.pointFormSubmit(point, isdragged);
         }
-        this.view.setPointFormValues(data);
+        this.view.setPointFormValues(point);
     }
 
 }
