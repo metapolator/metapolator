@@ -173,6 +173,7 @@ class Instance(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
+    archived = Column(Boolean, index=True, default=False)
 
 
 class Master(Base, UserQueryMixin):

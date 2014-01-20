@@ -767,8 +767,18 @@ class Specimen(app.page):
             raise web.notfound()
 
         web.ctx.project = project
-        instances = models.Instance.filter(project_id=project.id)
+        instances = models.Instance.filter(project_id=project.id,
+                                           archived=False)
         return render.specimen(project, instances.order_by(models.Instance.id.desc()))
+
+    @raise404_notauthorized
+    def POST(self, id):
+        x = web.input(id='')
+        project = models.Project.get(id=id)
+        if not project:
+            raise web.notfound()
+        models.Instance.update(id=x.id, values={'archived': True})
+        raise web.seeother("/specimen/%s/" % project.id)
 
 
 class logout(app.page):
