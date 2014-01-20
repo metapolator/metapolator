@@ -367,7 +367,7 @@ Workspace.prototype = {
                       '         data-slider-min="-2" data-slider-max="2" data-slider-step="0.01"'  +
                       '         data-slider-value="0" data-slider-orientation="horizontal"' +
                       '         data-slider-selection="after" data-slider-tooltip="show"' +
-                      '         data-slider-handle="square" />' +
+                      '         data-slider-handle="round" />' +
                       ' <b style="padding-left: 32px;">{1}</b></div>';
 
         var metap = axes.find('[axis-label]').map(function(i, el){

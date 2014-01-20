@@ -165,7 +165,7 @@ GLOBAL_DEFAULTS = {
     'fontsize': 10,
     'mean': 5,
     'cap': 6,
-    'asc': 6.5,
+    'asc': 7,
     'desc': -2,
     'box': 10
 }
@@ -177,7 +177,7 @@ LOCAL_DEFAULTS = {
     'space': 0,
     'xheight': 5,
     'capital': 6,
-    'ascender': 6.5,
+    'ascender': 7,
     'descender': -2,
     'skeleton': 0,
     'over': 0,

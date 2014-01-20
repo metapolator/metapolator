@@ -1,6 +1,11 @@
 %newinternal slant,fudge,math_spread,superness,superpull,beak_darkness,ligs;
 boolean square_dots,hefty,serifs,monospace,variant_g,low_asterisk,math_fitting;
 
+mean#:=5.000pt#;
+cap#:=5.930pt#;
+asc#:=6.430pt#;
+desc#:=0.000pt#;
+
 divider:=2;
 base#:=0.000pt#;
 on:=1;
