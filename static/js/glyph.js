@@ -216,17 +216,22 @@ PaperJSGraph.prototype = {
 
 function Point(ppscope, zpoint, pointpreset) {
     this.large_circle = new ppscope.Path.Circle({center: [zpoint.x, zpoint.y],
-                                                 radius: 6, strokeColor: 'black'});
+                                                 radius: 6, strokeColor: 'blue'});
     this.point_circle = new ppscope.Path.Circle({center: [zpoint.x, zpoint.y],
-                                                 radius: 2, fillColor: 'black'});
+                                                 radius: 3, strokeColor: 'red'});
     this.pointText = new ppscope.PointText({point: [zpoint.x, zpoint.y - 8]});
     this.pointText.justification = 'center';
-    this.pointText.fillColor = 'black';
+    this.pointText.fillColor = 'blue';
     this.pointText.content = pointpreset.pointname;
 
     this.config = pointpreset;
 
     this.zpoint = zpoint;
+
+    this.large_circle.strokeColor.alpha = 0.5;
+    this.point_circle.strokeColor.alpha = 0.5;
+    this.pointText.fillColor.alpha = 0.5;
+
 }
 
 Point.prototype.getSegmentPoint = function() {
@@ -245,17 +250,17 @@ Point.prototype.moveTo = function(point) {
 }
 
 Point.prototype.markselected = function(hardselected) {
-    this.large_circle.fillColor = 'navy';
-    this.large_circle.fillColor.alpha = 0.5;
-    this.large_circle.fillColor.strokeWidth = 2;
+    this.point_circle.fillColor = 'black';
+    this.point_circle.fillColor.alpha = 0.5;
+    this.point_circle.fillColor.strokeWidth = 2;
     this.hardselected = hardselected;
 }
 
 
 Point.prototype.resetselected = function() {
-    this.large_circle.fillColor = 'white';
-    this.large_circle.fillColor.alpha = 0;
-    this.large_circle.fillColor.strokeWidth = 1;
+    this.point_circle.fillColor = 'white';
+    this.point_circle.fillColor.alpha = 0.1;
+    this.point_circle.fillColor.strokeWidth = 1;
     this.hardselected = false;
 }
 
