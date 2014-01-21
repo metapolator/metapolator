@@ -20,7 +20,9 @@ def create_glyph(glif, master):
         return
 
     glyph = Glyph.create(name=glyphname, width=width,
-                         master_id=master.id, project_id=master.project_id)
+                         master_id=master.id,
+                         project_id=master.project_id,
+                         width_new=width)
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):
         pointname = point.attrib.get('name')
