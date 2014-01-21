@@ -65,10 +65,10 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     wC = '%.2f' % (glyphC.width / 100.)
     wD = '%.2f' % (glyphD.width / 100.)
 
-    wA_new = '%.2f' % (glyphA.width_new / 100.)
-    wB_new = '%.2f' % (glyphB.width_new / 100.)
-    wC_new = '%.2f' % (glyphC.width_new / 100.)
-    wD_new = '%.2f' % (glyphD.width_new / 100.)
+    wA_new = '%.2f' % (glyphA.width / 100.)
+    wB_new = '%.2f' % (glyphB.width / 100.)
+    wC_new = '%.2f' % (glyphC.width / 100.)
+    wD_new = '%.2f' % (glyphD.width / 100.)
 
 #    w = str(glyphA.width / 100)
 #    w2 = str(glyphB.width / 100)
@@ -1178,7 +1178,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 #       zeile = "z" + str(zitem) + "=((A_width + metapolation * (B_width - A_width)) * (x2" + str(zitem) + "0 + metapolation * (x2" + str(zitem) + "A - x2" + str(zitem) + "0) + spacing_" + g + "L) * width_" + g + ", (y2" + str(zitem) + "0 + metapolation *(y2" + str(zitem) + "A - y2" + str(zitem) + "0))*((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) / " + gggroup + "#))"
 
 #        zeile = "z" + str(zitem) + "=((((A_width + metapolation * (B_width - A_width)) + (C_width + metapolationCD * (D_width - C_width))) /divider ) * ((((x" + str(zitem) + "A + metapolation * (x" + str(zitem) + "B - x" + str(zitem) + "A)) + (x" + str(zitem) + "C + metapolationCD * (x" + str(zitem) + "D - x" + str(zitem) + "C))) /divider ) + spacing_" + g + "L) * width_" + g + ", (((y" + str(zitem) + "A + metapolation *(y" + str(zitem) + "B - y" + str(zitem) + "A)) + (y" + str(zitem) + "C + metapolationCD *(y" + str(zitem) + "D - y" + str(zitem) + "C))) /divider ) * ((((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) + (C_" + ggroup + " + metapolationCD * (D_" + ggroup + " - C_" + ggroup + "))) /divider ) / " + gggroup + "#))"
-        zeile = "z" + str(zitem) + "=((((A_width + metapolation * (B_width - A_width)) + (C_width + metapolationCD * (D_width - C_width))) /divider ) * ((((x" + str(zitem) + "A + metapolation * (x" + str(zitem) + "B - x" + str(zitem) + "A)) + (x" + str(zitem) + "C + metapolationCD * (x" + str(zitem) + "D - x" + str(zitem) + "C))) /divider ) + spacing_" + g + "L) * width_" + g + " / " + "(((" + wA + " + metapolation *(" + wB + "-" + wA + ")) + ((" + wC + " + metapolation * (" + wD + "-" + wC + ")))) / 2) * (((" + wA_new + " + metapolation *(" + wB_new + "-" + wA_new + ")) + ((" + wC_new + " + metapolation * (" + wD_new + "-" + wC_new + ")))) / 2) ,"
+        zeile = "z" + str(zitem) + "=((((A_width + metapolation * (B_width - A_width)) + (C_width + metapolationCD * (D_width - C_width))) /divider ) * ((((x" + str(zitem) + "A + metapolation * (x" + str(zitem) + "B - x" + str(zitem) + "A)) + (x" + str(zitem) + "C + metapolationCD * (x" + str(zitem) + "D - x" + str(zitem) + "C))) /divider ) + spacing_" + g + "L) * width_" + g + " / " + "(((" + wA + " + metapolation *(" + wB + "-" + wA + ")) + ((" + wC + " + metapolation * (" + wD + "-" + wC + ")))) / 2) * (((" + wA_new + " + metapolation *(" + wB_new + "-" + wA_new + ")) + ((" + wC_new + " + metapolation * (" + wD_new + "-" + wC_new + ")))) / 2) , (((y" + str(zitem) + "A + metapolation *(y" + str(zitem) + "B - y" + str(zitem) + "A)) + (y" + str(zitem) + "C + metapolationCD *(y" + str(zitem) + "D - y" + str(zitem) + "C))) /divider ) * ((((A_" + ggroup + " + metapolation * (B_" + ggroup + " - A_" + ggroup + ")) + (C_" + ggroup + " + metapolationCD * (D_" + ggroup + " - C_" + ggroup + "))) /divider ) / " + gggroup + "#))"
 
 
 
