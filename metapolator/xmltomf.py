@@ -69,6 +69,10 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     g = glyphA.name  # get from glyphA as we sure that glypha and glyphb exist in font project
 
     fip.write("\n")
+    print 'width A -', wA
+    print 'width B -', wB
+    print 'width C -', wC
+    print 'width D -', wD
 
     str_ = ('beginfontchar({glyph}, (((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) /divider ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
     fip.write(str_.format(Awidth=wA, glyph=glyphA.name, Bwidth=wB, Cwidth=wC, Dwidth=wD))
@@ -2096,7 +2100,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
             if overasc[i] != "":
 #                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ") + (((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over))) /divider)"
-                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")" 
+                zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")"
                 zeile += " + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
 
             if overdesc[i] != "":
@@ -2138,7 +2142,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 zeile = zeile + " shifted ((0, (A_capital*pt + metapolation * (B_capital*pt - A_capital*pt)) + (C_capital*pt + metapolationCD * (D_capital*pt - C_capital*pt)) /divider) - " + str(overcapval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
 
             if overasc[i] != "":
-                zeile = zeile +  " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")" 
+                zeile = zeile +  " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")"
                 zeile = zeile +  " + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
 
             if overdesc[i] != "":
@@ -2188,7 +2192,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
         if overasc[i] != "":
 #            zeile += " shifted ((0, (A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt)) /divider) - " + str(overascval[i]) + ") + ((0, A_over + metapolation * (B_over - A_over)) + (0, C_over + metapolationCD * (D_over - C_over)) /divider)"
-            zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")" 
+            zeile += " shifted (0, (((A_ascender*pt + metapolation * (B_ascender*pt - A_ascender*pt)) + (C_ascender*pt + metapolationCD * (D_ascender*pt - C_ascender*pt))) /divider) - " + str(overascval[i]) + ")"
             zeile += " + (0, (((A_over + metapolation * (B_over - A_over)) + (C_over + metapolationCD * (D_over - C_over))) /divider))"
 
         if overdesc[i] != "":

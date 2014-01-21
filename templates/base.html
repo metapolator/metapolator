@@ -113,21 +113,21 @@ right {
               <li><a href="/specimen/$webctx.project.projectname/">Specimen</a></li>
           </ul>
 
-            <ul class="nav navbar-nav navbar-right">
-              $if not websession.get('mfparser') or websession.mfparser == 'pen':
-                <li class="active">
-                  <a href="javascript:;">pen mode</a>
-                </li>
-              $else:
-                <li><a href="javascript:;" onclick="setmfparser('pen')">pen mode</a></li>
+          <ul class="nav navbar-nav navbar-right">
+            $if not websession.get('mfparser') or websession.mfparser == 'pen':
+              <li class="active">
+                <a href="javascript:;">pen mode</a>
+              </li>
+            $else:
+              <li><a href="javascript:;" onclick="setmfparser('pen')">pen mode</a></li>
 
-              $if websession.get('mfparser') == 'controlpoints':
-                <li class="active">
-                  <a href="javascript:;">controlpoints mode</a>
-                </li>
-              $else:
-                <li><a href="javascript:;" onclick="setmfparser('controlpoints')">controlpoints mode</a></li>
-            </ul>
+            $if websession.get('mfparser') == 'controlpoints':
+              <li class="active">
+                <a href="javascript:;">controlpoints mode</a>
+              </li>
+            $else:
+              <li><a href="javascript:;" onclick="setmfparser('controlpoints')">controlpoints mode</a></li>
+          </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
