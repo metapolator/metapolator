@@ -247,7 +247,8 @@ class Glyph(Base, UserQueryMixin):
 
     fontsource = Column(Enum('A', 'B'), index=True)
     name = Column(String(3), index=True)
-    width = Column(Integer)
+    width = Column(Integer, default=0)
+    width_new = Column(Integer, default=0)
 
     master = relationship('Master', backref='master')
 

@@ -329,11 +329,13 @@ class EditorSavePoint(app.page, GlyphPageMixin):
             glyphoutline.y = float(values['y'])
 
             glyphoutline.glyph.width = int(values['width'])
+            glyphoutline.glyph.width_new = int(values['width_new'])
 
             del values['zpoint']
             del values['x']
             del values['y']
             del values['width']
+            del values['width_new']
             for key in values:
                 if values[key] == '':
                     values[key] = None

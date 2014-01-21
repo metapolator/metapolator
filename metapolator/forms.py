@@ -10,6 +10,7 @@ PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint
                               Textbox('x', size=12),
                               Textbox('y', size=12),
                               Textbox('width', size=12),
+                              Textbox('width_new', size=12),
                               Textbox('doubledash', size=12),
                               Textbox('tripledash', size=12),
                               Textbox('leftp', size=12),
