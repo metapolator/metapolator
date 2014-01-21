@@ -435,6 +435,7 @@ class EditorCopyMaster(app.page):
             newglyph_obj = models.Glyph.create(master_id=newmaster_obj.id,
                                                name=glyph.name,
                                                width=glyph.width,
+                                               width_new=glyph.width_new,
                                                project_id=glyph.project_id)
 
             query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
