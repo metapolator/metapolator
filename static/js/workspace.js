@@ -362,7 +362,7 @@ Workspace.prototype = {
     addInterpolationSlider: function(axes) {
         if (!this.project_id)
             return;
-        var slider_template = '<div class="well"><b style="padding-right: 32px;">{0}</b> ' +
+        var slider_template = '<div><b style="padding-right: 32px;">{0}</b> ' +
                       '<input class="span2 slider-{2}" slider-label="{2}" type="text" value=""' +
                       '         data-slider-min="-2" data-slider-max="2" data-slider-step="0.01"'  +
                       '         data-slider-value="0" data-slider-orientation="horizontal"' +
