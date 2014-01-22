@@ -375,7 +375,7 @@ Glyph.prototype = {
 
     render: function(contours) {
         this.graph.deletepathes();
-
+        this.graph.centerlines = [];
         for (var k = 0; k < contours.length; k++) {
             this.graph.centerlines.push(
                 this.graph.drawcontour(contours[k]));
