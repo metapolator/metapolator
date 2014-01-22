@@ -65,10 +65,22 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     wC = '%.2f' % (glyphC.width / 100.)
     wD = '%.2f' % (glyphD.width / 100.)
 
-    wA_new = '%.2f' % (glyphA.width / 100.)
-    wB_new = '%.2f' % (glyphB.width / 100.)
-    wC_new = '%.2f' % (glyphC.width / 100.)
-    wD_new = '%.2f' % (glyphD.width / 100.)
+    wA_new = '%.2f' % (glyphA.width_new / 100.)
+    wB_new = '%.2f' % (glyphB.width_new / 100.)
+    wC_new = '%.2f' % (glyphC.width_new / 100.)
+    wD_new = '%.2f' % (glyphD.width_new / 100.)
+ 
+    if not wA_new:
+        wA_new = wA
+
+    if not wB_new:
+        wB_new = wB
+
+    if not wC_new:
+        wC_new = wC
+
+    if not wD_new:
+        wD_new = wD        
 
 #    w = str(glyphA.width / 100)
 #    w2 = str(glyphB.width / 100)
