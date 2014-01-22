@@ -18,20 +18,22 @@
 <script type="text/paperscript" canvas="myCanvas">
   var lines = {};
   
-  function getLines(point, coords) {
+  function getLines(point, coords, handleIn, handleOut) {
     var regex = /(z\d+)([lr])/;
     var match = point.match(regex);
     if (match) {
         var pointname = match[1];
 
         if (!lines[pointname]) {
-          lines[pointname] = [undefined, undefined];
+          lines[pointname] = [undefined, undefined, undefined, undefined];
         }
         
         if (match[2] == 'r') {
           lines[pointname][1] = coords;
         } else if (match[2] == 'l') {
           lines[pointname][0] = coords;
+          lines[pointname][2] = handleIn;
+          lines[pointname][3] = handleOut;
         }
     }
   }
@@ -59,7 +61,7 @@
 
     path.add(segment);
 
-    getLines(point.pointname, ppoint);
+    getLines(point.pointname, ppoint, handleIn, handleOut);
   }
   path.fillColor = {
       hue: 360 * Math.random(),
@@ -104,7 +106,7 @@
 
       new Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: 'black'});
       var ppoint = new Point(Xc, Yc);
-      var segment = new Segment(ppoint);
+      var segment = new Segment(ppoint, lines[v][2], lines[v][3]);
       centerlinepath.add(segment)
       console.log(Xc + ', ' + Yc);
     }
