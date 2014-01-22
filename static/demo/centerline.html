@@ -1,21 +1,50 @@
-$def with (page)
-
 <html>
 <head>
-<title>$page.get("title", "")</title>
+<title></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Expires" CONTENT="-1">
 <link rel="icon" href="/static/favicon.ico" type="image/x-icon"/>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
 </head>
 <body>
   
+<canvas id="myCanvas" resize="resize"></canvas>
 
 </body>
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
+
+<script type="text/paperscript" canvas="myCanvas">
+  var points = [
+    {y:4.0205, x:155.24983, controls:[{y:2.6878, x:93.58315}, {y:220.48691, x:165.66643}]},
+    {y:653.41971, x:186.4996, controls:[{y:436.9533, x:176.08302}, {y:676.7534, x:115.1667}]},
+    {y:723.42075, x:-27.49915, controls:[{y:700.08705, x:43.83377}, {y:482.28795, x:-28.24951}]},
+    {y:0.0224, x:-29.75024, controls:[{y:241.1552, x:-28.99988}, {y:1.35509, x:31.91643}]}
+  ];
+
+  var path = new Path();
+
+  for(var k = 0; k < points.length; k++) {
+          var point = points[k];
+          var ppoint = new Point(500 + point.x, 800 - point.y);
+
+          var handleIn = new Point(parseInt(point.controls[0].x) - parseInt(point.x),
+                                       parseInt(point.y) - parseInt(point.controls[0].y));
+          var handleOut = new Point(parseInt(point.controls[1].x) - parseInt(point.x),
+                                        parseInt(point.y) - parseInt(point.controls[1].y));
+          var segment = new Segment(ppoint, handleIn, handleOut);
+
+          path.add(segment);
+  }
+  path.fillColor = {
+      hue: 360 * Math.random(),
+      saturation: 1,
+      brightness: 1,
+      alpha: 0.5
+  };
+  path.closed = true;
+  path.strokeColor = new Color(0.5, 0, 0.5);
+
+</script>
 </html>
