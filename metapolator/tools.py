@@ -184,6 +184,14 @@ def get_json(content, glyphid=None, master=None):
         y_max = 0
 
         contours = []
+
+        zpoints_names = []
+        if master:
+            glyph_obj = Glyph.get(master_id=master.id, name=glyph)
+            zpoints_names = map(lambda x: x.pointname,
+                                glyph_obj.get_zpoints())
+
+        number = 0
         for contour in contour_pattern.findall(edge.strip()):
             contour = re.sub('\n(\S)', '\\1', contour)
             _contours = []
@@ -205,8 +213,11 @@ def get_json(content, glyphid=None, master=None):
                 if handleIn_X is not None and handleIn_Y is not None:
                     controlpoints[0] = {'x': handleIn_X, 'y': handleIn_Y}
 
-                _contours.append({'x': X, 'y': Y,
-                                  'controls': controlpoints})
+                pointdict = {'x': X, 'y': Y, 'controls': controlpoints}
+                if zpoints_names:
+                    pointdict.update({'pointname': zpoints_names[number]})
+                _contours.append(pointdict)
+
                 handleIn_X = match.group(5)
                 handleIn_Y = match.group(6)
 
@@ -218,6 +229,7 @@ def get_json(content, glyphid=None, master=None):
                             float(handleOut_X), float(handleIn_X))
                 y_max = max(y_max, y_min, float(Y),
                             float(handleOut_Y), float(handleIn_Y))
+                number += 1
 
             if handleIn_X and handleIn_Y:
                 _contours[0]['controls'][0] = {'x': handleIn_X,

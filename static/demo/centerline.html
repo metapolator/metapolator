@@ -16,26 +16,50 @@
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
 
 <script type="text/paperscript" canvas="myCanvas">
+  var lines = {};
+  
+  function getLines(point, coords) {
+    var regex = /(z\d+)([lr])/;
+    var match = point.match(regex);
+    if (match) {
+        var pointname = match[1];
+
+        if (!lines[pointname]) {
+          lines[pointname] = [undefined, undefined];
+        }
+        
+        if (match[2] == 'r') {
+          lines[pointname][1] = coords;
+        } else if (match[2] == 'l') {
+          lines[pointname][0] = coords;
+        }
+    }
+  }
+
   var points = [
-    {y:4.0205, x:155.24983, controls:[{y:2.6878, x:93.58315}, {y:220.48691, x:165.66643}]},
-    {y:653.41971, x:186.4996, controls:[{y:436.9533, x:176.08302}, {y:676.7534, x:115.1667}]},
-    {y:723.42075, x:-27.49915, controls:[{y:700.08705, x:43.83377}, {y:482.28795, x:-28.24951}]},
-    {y:0.0224, x:-29.75024, controls:[{y:241.1552, x:-28.99988}, {y:1.35509, x:31.91643}]}
+      {"y": "608.36649", "x": "547.0003", "pointname": "z3l", "controls": [{"y": "566.36613", "x": "547.0003"}, {"y": "654.04443", "x": "444.66063"}]},
+      {"y": "557.551", "x": "242.99918", "pointname": "z4l", "controls": [{"y": "634.02908", "x": "324.91978"}, {"y": "557.53513", "x": "242.98218"}]},
+      {"y": "362.4366", "x": "33.99959", "pointname": "z5l", "controls": [{"y": "362.45247", "x": "34.01659"}, {"y": "317.10323", "x": "33.99959"}]},
+      {"y": "226.43648", "x": "33.99959", "pointname": "z5r", "controls": [{"y": "271.76985", "x": "33.99959"}, {"y": "226.45007", "x": "34.01773"}]},
+      {"y": "393.55214", "x": "257.00104", "pointname": "z4r", "controls": [{"y": "393.53854", "x": "256.98291"}, {"y": "456.03008", "x": "340.37248"}]},
+      {"y": "482.36543", "x": "547.0003", "pointname": "z3r", "controls": [{"y": "487.44177", "x": "442.94011"}, {"y": "524.36578", "x": "547.0003"}]}
   ];
 
   var path = new Path();
 
   for(var k = 0; k < points.length; k++) {
-          var point = points[k];
-          var ppoint = new Point(500 + point.x, 800 - point.y);
+    var point = points[k];
+    var ppoint = new Point(500 + parseInt(point.x), 800 - parseInt(point.y));
 
-          var handleIn = new Point(parseInt(point.controls[0].x) - parseInt(point.x),
-                                       parseInt(point.y) - parseInt(point.controls[0].y));
-          var handleOut = new Point(parseInt(point.controls[1].x) - parseInt(point.x),
-                                        parseInt(point.y) - parseInt(point.controls[1].y));
-          var segment = new Segment(ppoint, handleIn, handleOut);
+    var handleIn = new Point(parseInt(point.controls[0].x) - parseInt(point.x),
+                                 parseInt(point.y) - parseInt(point.controls[0].y));
+    var handleOut = new Point(parseInt(point.controls[1].x) - parseInt(point.x),
+                                  parseInt(point.y) - parseInt(point.controls[1].y));
+    var segment = new Segment(ppoint, handleIn, handleOut);
 
-          path.add(segment);
+    path.add(segment);
+
+    getLines(point.pointname, ppoint);
   }
   path.fillColor = {
       hue: 360 * Math.random(),
@@ -45,6 +69,55 @@
   };
   path.closed = true;
   path.strokeColor = new Color(0.5, 0, 0.5);
+
+
+  centerlinepath = new Path();
+  centerlinepath.closed = false;
+
+  function setCenterLines() {
+    for (v in lines) {
+      console.log(lines[v]);
+
+      var x1 = parseInt(lines[v][0].x);
+      var y1 = parseInt(lines[v][0].y);
+      
+      var x2 = parseInt(lines[v][1].x);
+      var y2 = parseInt(lines[v][1].y);
+
+      var k,
+          b,
+          Xc,
+          Yc;
+
+      if (x2 == x1) {
+        Xc = x1;
+        Yc = y2 - (y2 - y1) / 2;
+      } 
+      else if (y1 == y2) {
+        Xc = x2 - (x2 - x1) / 2;
+        Yc = y1;
+      }
+      else {
+        Xc = x2 - (x2 - x1) / 2;
+        Yc = y2 - (y2 - y1) / 2;
+      }
+
+      new Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: 'black'});
+      var ppoint = new Point(Xc, Yc);
+      var segment = new Segment(ppoint);
+      centerlinepath.add(segment)
+      console.log(Xc + ', ' + Yc);
+    }
+    centerlinepath.strokeColor = {
+        hue: 360 * Math.random(),
+        saturation: 1,
+        brightness: 1,
+        alpha: 1
+    };
+  }
+
+
+  setCenterLines()
 
 </script>
 </html>
