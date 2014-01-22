@@ -39,6 +39,7 @@ var PaperJSGraph = function(size, paperscope) {
     this.tool = new this.ppscope.Tool();
 
     this.centerlines = [];
+    this.centerlinespathes = [];
 
     this.zpoints = [];
     this.glyphpathes = [];
@@ -125,6 +126,15 @@ PaperJSGraph.prototype = {
     toggleCenterline: function() {
         this.ppscope.activate();
 
+        if (this.centerlinespathes.length){
+            $(this.centerlinespathes).each(function(i, el){
+                el.remove();
+            });
+            this.centerlinespathes = [];
+            this.ppscope.view.draw();
+            return;
+        }
+
         for (var k = 0; k < this.centerlines.length; k++) {
             var centerlinepath = new this.ppscope.Path();
             centerlinepath.closed = false;
@@ -132,7 +142,6 @@ PaperJSGraph.prototype = {
             for (v in this.centerlines[k]) {
               var line = this.centerlines[k][v];
 
-              console.log(line);
               var x1 = parseInt(line[0].x);
               var y1 = parseInt(line[0].y);
               
@@ -144,14 +153,15 @@ PaperJSGraph.prototype = {
                   Xc,
                   Yc;
 
-              Xc = x2 - (x2 - x1) / 2;
-              Yc = y2 - (y2 - y1) / 2;
+              var Xc = x2 - (x2 - x1) / 2,
+                  Yc = y2 - (y2 - y1) / 2;
 
-              new this.ppscope.Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: '#11d'});
+              // var circle = new this.ppscope.Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: '#11d'});
               var ppoint = new this.ppscope.Point(Xc, Yc);
               var segment = new this.ppscope.Segment(ppoint, line[2], line[3]);
               centerlinepath.add(segment);
             }
+            this.centerlinespathes.push(centerlinepath);
             centerlinepath.strokeColor = '#11d';
         }
 
