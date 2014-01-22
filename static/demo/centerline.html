@@ -73,12 +73,12 @@
   path.strokeColor = new Color(0.5, 0, 0.5);
 
 
-  centerlinepath = new Path();
-  centerlinepath.closed = false;
 
   function setCenterLines() {
+    centerlinepath = new Path();
+    centerlinepath.closed = false;
+    
     for (v in lines) {
-      console.log(lines[v]);
 
       var x1 = parseInt(lines[v][0].x);
       var y1 = parseInt(lines[v][0].y);
@@ -104,18 +104,12 @@
         Yc = y2 - (y2 - y1) / 2;
       }
 
-      new Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: 'black'});
+      new Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: '#11d'});
       var ppoint = new Point(Xc, Yc);
       var segment = new Segment(ppoint, lines[v][2], lines[v][3]);
-      centerlinepath.add(segment)
-      console.log(Xc + ', ' + Yc);
+      centerlinepath.add(segment);
     }
-    centerlinepath.strokeColor = {
-        hue: 360 * Math.random(),
-        saturation: 1,
-        brightness: 1,
-        alpha: 1
-    };
+    centerlinepath.strokeColor = '#11d';
   }
 
 

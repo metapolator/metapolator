@@ -38,6 +38,8 @@ var PaperJSGraph = function(size, paperscope) {
     this.size = size;
     this.tool = new this.ppscope.Tool();
 
+    this.centerlines = [];
+
     this.zpoints = [];
     this.glyphpathes = [];
 
@@ -120,6 +122,62 @@ PaperJSGraph.prototype = {
         return new this.ppscope.Point(r.x, r.y);
     },
 
+    toggleCenterline: function() {
+        this.ppscope.activate();
+
+        for (var k = 0; k < this.centerlines.length; k++) {
+            var centerlinepath = new this.ppscope.Path();
+            centerlinepath.closed = false;
+            
+            for (v in this.centerlines[k]) {
+              var line = this.centerlines[k][v];
+
+              console.log(line);
+              var x1 = parseInt(line[0].x);
+              var y1 = parseInt(line[0].y);
+              
+              var x2 = parseInt(line[1].x);
+              var y2 = parseInt(line[1].y);
+
+              var k,
+                  b,
+                  Xc,
+                  Yc;
+
+              Xc = x2 - (x2 - x1) / 2;
+              Yc = y2 - (y2 - y1) / 2;
+
+              new this.ppscope.Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: '#11d'});
+              var ppoint = new this.ppscope.Point(Xc, Yc);
+              var segment = new this.ppscope.Segment(ppoint, line[2], line[3]);
+              centerlinepath.add(segment);
+            }
+            centerlinepath.strokeColor = '#11d';
+        }
+
+        this.ppscope.view.draw();
+    },
+
+    getLines: function(centerlines, point, coords, handleIn, handleOut) {
+        var regex = /(z\d+)([lr])/;
+        var match = point.match(regex);
+        if (match) {
+            var pointname = match[1];
+
+            if (!centerlines[pointname]) {
+              centerlines[pointname] = [undefined, undefined, undefined, undefined];
+            }
+            
+            if (match[2] == 'r') {
+              centerlines[pointname][1] = coords;
+            } else if (match[2] == 'l') {
+              centerlines[pointname][0] = coords;
+              centerlines[pointname][2] = handleIn;
+              centerlines[pointname][3] = handleOut;
+            }
+        }
+    },
+
     /*
      * Draw on canvas concrete contour.
      * 
@@ -130,6 +188,8 @@ PaperJSGraph.prototype = {
     drawcontour: function(points) {
         this.ppscope.activate();
         var element = this.getElement();
+
+        var centerlines = {};
 
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
@@ -145,6 +205,10 @@ PaperJSGraph.prototype = {
             var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
 
             path.add(segment);
+
+            if (point.pointname) {
+                this.getLines(centerlines, point.pointname, ppoint, handleIn, handleOut);
+            }
         }
         path.fillColor = {
             hue: 360 * Math.random(),
@@ -157,6 +221,7 @@ PaperJSGraph.prototype = {
         this.ppscope.view.draw();
 
         this.glyphpathes.push(path);
+        return centerlines;
     },
 
     setPointByName: function(point) {
@@ -285,6 +350,10 @@ var Glyph = function(view, glyphsize) {
 
 Glyph.prototype = {
 
+    toggleCenterline: function() {
+        this.graph.toggleCenterline();
+    },
+
     getZPointByName: function(pointname) {
         var points = this.graph.zpoints.filter(function(point){
             return point.config.pointname == pointname;
@@ -296,8 +365,10 @@ Glyph.prototype = {
 
     render: function(contours) {
         this.graph.deletepathes();
+
         for (var k = 0; k < contours.length; k++) {
-            this.graph.drawcontour(contours[k]);
+            this.graph.centerlines.push(
+                this.graph.drawcontour(contours[k]));
         }
     },
 

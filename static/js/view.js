@@ -76,6 +76,24 @@ View.prototype = {
         this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
         this.glyph.onZPointChanged = this.onzpointchange.bind(this);
         this.glyphname = glyphdata.name;
+
+        var element = this.getElement();
+        var switchCenterLineButton = $('<input>', {
+            'type': 'checkbox',
+            'id': 'cn-' + this.getLabel()
+        });
+        
+        var labelCenterLineButton = $('<label>', {
+            'text': 'Show on / off center line',
+            'for': 'cn-' + this.getLabel()
+        });
+
+        switchCenterLineButton.on('change', function(){
+            this.glyph.toggleCenterline();
+        }.bind(this));
+
+        element.append(switchCenterLineButton);
+        element.append(labelCenterLineButton);
     },
 
     onzpointchange: function(glyph, zpoint) {
