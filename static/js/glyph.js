@@ -151,15 +151,27 @@ PaperJSGraph.prototype = {
                   Xc = x2 - (x2 - x1) / 2,
                   Yc = y2 - (y2 - y1) / 2;
 
-              var XhINc = parseInt((line[4].x - line[2].x) / 2);
-              var YhINc = parseInt((line[4].y - line[2].y) / 2);
+              var XhINc = parseInt(line[1].controls[0].x - (line[1].controls[0].x - line[0].controls[0].x) / 2);
+              var YhINc = parseInt(line[1].controls[0].y - (line[1].controls[0].y - line[0].controls[0].y) / 2);
 
-              var XhOUTc = parseInt((line[5].x - line[3].x) / 2);
-              var YhOUTc = parseInt((line[5].y - line[3].y) / 2);
+              var XhOUTc = parseInt(line[1].controls[1].x - (line[1].controls[1].x - line[0].controls[1].x) / 2);
+              var YhOUTc = parseInt(line[1].controls[1].y - (line[1].controls[1].y - line[0].controls[1].y) / 2);
 
-              var circle = new this.ppscope.Path.Circle({center: [Xc, Yc], radius: 6, strokeColor: '#11d'});
+              var ppoint = this.getPoint(parseInt(Xc), parseInt(Yc), true);
+              ppoint.y += +MARGIN;
+              ppoint.x += + MARGIN;
 
-              var ppoint = new this.ppscope.Point(Xc, Yc);
+              var handleIn = this.getPoint(parseInt(XhINc) - parseInt(Xc),
+                                           parseInt(Yc) - parseInt(YhINc));
+              var handleOut = this.getPoint(parseInt(XhOUTc) - parseInt(Xc),
+                                            parseInt(Yc) - parseInt(YhOUTc));
+              var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
+
+              var circle = new this.ppscope.Path.Circle({center: [ppoint.x, ppoint.y], radius: 6, strokeColor: '#11d'});
+
+              var ppoint = new this.ppscope.Point(ppoint.x, ppoint.y);
+
+
               var segment = new this.ppscope.Segment(ppoint, new this.ppscope.Point(XhINc, YhINc), new this.ppscope.Point(XhOUTc, YhOUTc));
               centerlinepath.add(segment);
             }
@@ -170,24 +182,20 @@ PaperJSGraph.prototype = {
         this.ppscope.view.draw();
     },
 
-    getLines: function(centerlines, point, coords, handleIn, handleOut) {
+    getLines: function(centerline, point) {
         var regex = /(z\d+)([lr])/;
-        var match = point.match(regex);
+        var match = point.pointname.match(regex);
         if (match) {
             var pointname = match[1];
 
-            if (!centerlines[pointname]) {
-              centerlines[pointname] = [undefined, undefined, undefined, undefined, undefined, undefined];
+            if (!centerline[pointname]) {
+              centerline[pointname] = [undefined, undefined];
             }
             
             if (match[2] == 'r') {
-              centerlines[pointname][1] = coords;
-              centerlines[pointname][4] = handleIn;
-              centerlines[pointname][5] = handleOut;
+              centerline[pointname][1] = point;
             } else if (match[2] == 'l') {
-              centerlines[pointname][0] = coords;
-              centerlines[pointname][2] = handleIn;
-              centerlines[pointname][3] = handleOut;
+              centerline[pointname][0] = point;
             }
         }
     },
@@ -221,7 +229,7 @@ PaperJSGraph.prototype = {
             path.add(segment);
 
             if (point.pointname) {
-                this.getLines(centerlines, point.pointname, ppoint, handleIn, handleOut);
+                this.getLines(centerlines, point);
             }
         }
         path.fillColor = {

@@ -214,7 +214,7 @@ def get_json(content, glyphid=None, master=None):
                     controlpoints[0] = {'x': handleIn_X, 'y': handleIn_Y}
 
                 pointdict = {'x': X, 'y': Y, 'controls': controlpoints}
-                if zpoints_names:
+                if zpoints_names and length(zpoints_names) > number:
                     pointdict.update({'pointname': zpoints_names[number]})
                 _contours.append(pointdict)
 
