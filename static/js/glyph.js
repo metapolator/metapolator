@@ -211,8 +211,20 @@ PaperJSGraph.prototype = {
                 ll.strokeColor = 'black';
     },
 
-    toggleCenterline: function() {
+    toggleCenterline: function(show) {
         this.ppscope.activate();
+
+        if (show) {
+            $(this.centerlinespathes).each(function(i, el){
+                el.remove();
+            });
+            $(this.centercircles).each(function(i, el){
+                el.remove();
+            });
+            this.centerlinespathes = [];
+            this.centercircles = [];
+            this.ppscope.view.draw();
+        }
 
         if (this.centerlinespathes.length){
             $(this.centerlinespathes).each(function(i, el){
@@ -483,8 +495,8 @@ var Glyph = function(view, glyphsize) {
 
 Glyph.prototype = {
 
-    toggleCenterline: function() {
-        this.graph.toggleCenterline();
+    toggleCenterline: function(show) {
+        this.graph.toggleCenterline(show);
     },
 
     getZPointByName: function(pointname) {

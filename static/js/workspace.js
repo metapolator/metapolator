@@ -71,6 +71,7 @@ Workspace.prototype = {
         .done(function(response) {
             var data = $.parseJSON(response);
             glyph.render(data.R[0].contours);
+            glyph.toggleCenterline(true);
             this.metapolationView.glyph.render(data.M[0].contours);
         }.bind(this));
     },
