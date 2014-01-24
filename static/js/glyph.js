@@ -40,6 +40,7 @@ var PaperJSGraph = function(size, paperscope) {
 
     this.centerlines = [];
     this.centerlinespathes = [];
+    this.centercircles = [];
 
     this.zpoints = [];
     this.glyphpathes = [];
@@ -130,7 +131,11 @@ PaperJSGraph.prototype = {
             $(this.centerlinespathes).each(function(i, el){
                 el.remove();
             });
+            $(this.centercircles).each(function(i, el){
+                el.remove();
+            });
             this.centerlinespathes = [];
+            this.centercircles = [];
             this.ppscope.view.draw();
             return;
         }
@@ -148,8 +153,8 @@ PaperJSGraph.prototype = {
                   x2 = parseInt(line[1].x),
                   y2 = parseInt(line[1].y),
 
-                  Xc = x2 - (x2 - x1) / 2,
-                  Yc = y2 - (y2 - y1) / 2;
+                  Xc = parseInt(x2 - (x2 - x1) / 2),
+                  Yc = parseInt(y2 - (y2 - y1) / 2);
 
               var XhINc = parseInt(line[1].controls[0].x - (line[1].controls[0].x - line[0].controls[0].x) / 2);
               var YhINc = parseInt(line[1].controls[0].y - (line[1].controls[0].y - line[0].controls[0].y) / 2);
@@ -157,25 +162,21 @@ PaperJSGraph.prototype = {
               var XhOUTc = parseInt(line[1].controls[1].x - (line[1].controls[1].x - line[0].controls[1].x) / 2);
               var YhOUTc = parseInt(line[1].controls[1].y - (line[1].controls[1].y - line[0].controls[1].y) / 2);
 
-              var ppoint = this.getPoint(parseInt(Xc), parseInt(Yc), true);
+              var ppoint = this.getPoint(Xc, Yc, true);
               ppoint.y += +MARGIN;
               ppoint.x += + MARGIN;
 
-              var handleIn = this.getPoint(parseInt(XhINc) - parseInt(Xc),
-                                           parseInt(Yc) - parseInt(YhINc));
-              var handleOut = this.getPoint(parseInt(XhOUTc) - parseInt(Xc),
-                                            parseInt(Yc) - parseInt(YhOUTc));
+              var handleIn = this.getPoint(XhINc - Xc, Yc - YhINc);
+              var handleOut = this.getPoint(XhOUTc - Xc, Yc - YhOUTc);
               var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
 
               var circle = new this.ppscope.Path.Circle({center: [ppoint.x, ppoint.y], radius: 6, strokeColor: '#11d'});
+              this.centercircles.push(circle);
 
-              var ppoint = new this.ppscope.Point(ppoint.x, ppoint.y);
-
-
-              var segment = new this.ppscope.Segment(ppoint, new this.ppscope.Point(XhINc, YhINc), new this.ppscope.Point(XhOUTc, YhOUTc));
               centerlinepath.add(segment);
             }
             this.centerlinespathes.push(centerlinepath);
+
             centerlinepath.strokeColor = '#11d';
         }
 
