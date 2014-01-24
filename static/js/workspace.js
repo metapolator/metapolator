@@ -363,7 +363,7 @@ Workspace.prototype = {
     addInterpolationSlider: function(axes) {
         if (!this.project_id)
             return;
-        var slider_template = '<div style="margin-bottom: 12px;"><b style="padding-right: 32px;">{0}</b> ' +
+        var slider_template = '<div class="well"><b style="padding-right: 32px;">{0}</b> ' +
                       '<input class="span2 slider-{2}" slider-label="{2}" type="text" value=""' +
                       '         data-slider-min="-2" data-slider-max="2" data-slider-step="0.01"'  +
                       '         data-slider-value="0" data-slider-orientation="horizontal"' +
@@ -381,7 +381,11 @@ Workspace.prototype = {
             var slider = $(String.format(slider_template, metap[0], metap[1], metap));
             $('#interpolations').append(slider);
 
-            slider.find('input').slider().on('slideStop', function(e){
+            function formatter(value) {
+                return value.toFixed(2);
+            }
+
+            slider.find('input').slider({formater: formatter}).on('slideStop', function(e){
                 $.post('/editor/save-metap/', {
                     project_id: this.project_id,
                     glyphname: this.glyphname,
