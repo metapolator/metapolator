@@ -9,9 +9,10 @@ from metapolator.models import Glyph, LocalParam, Metapolation
 class Metapost:
     """ Make operations after calling metapost utility with existed glyphs """
 
-    def __init__(self, project):
+    def __init__(self, project, version=None):
         self.mfparser = project.mfparser
         self.project = project
+        self.version = str(version or 'font')
 
     def write_glyph_list(self, master, glyphname=None, interpolated=False):
         fontdirectory = master.get_fonts_directory()
@@ -44,7 +45,7 @@ class Metapost:
             metafont = master.get_metafont()
 
         process = subprocess.Popen(
-            ["sh", "makefont.sh", metafont],
+            ["sh", "makefont.sh", metafont, self.version],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=working_dir()
         )
 

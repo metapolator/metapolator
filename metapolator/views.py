@@ -476,10 +476,11 @@ class EditorCreateInstance(app.page):
         if not project:
             raise web.notfound()
 
-        metapost = Metapost(project)
-        metapost.execute_interpolated_bulk()
-
         instance = models.Instance.create(project_id=project.id)
+        indexname = models.Instance.filter(project_id=project.id).count()
+
+        metapost = Metapost(project, version=indexname)
+        metapost.execute_interpolated_bulk()
 
         for extension in ['-webfont.eot', '-webfont.ttf', '.otf']:
             source = project.get_basename() + extension

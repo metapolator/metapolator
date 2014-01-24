@@ -379,8 +379,13 @@ PaperJSGraph.prototype = {
 
         delete this.glyphpathes;
         this.glyphpathes = [];
-    }
+    },
 
+    makeFaintPaths: function() {
+        $(this.glyphpathes).each(function(i, el) {
+            el.fillColor.alpha = 0.1;
+        });
+    }
 }
 
 
@@ -469,6 +474,12 @@ Glyph.prototype = {
     },
 
     render: function(contours) {
+        // if (true || this.view.isShowFaint()) {
+        //     this.graph.makeFaintPaths();
+        // }
+
+        this.prevGlyphContours = contours;
+
         this.graph.deletepathes();
         this.graph.centerlines = [];
         for (var k = 0; k < contours.length; k++) {
