@@ -117,9 +117,9 @@ PaperJSGraph.prototype = {
     getPoint: function(x, y, reverted) {
         var element = this.getElement();
         if (reverted) {
-            y = this.size.height - y;
+            y = this.size.height - Number(y);
         }
-        var r = Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width') - MARGIN * 2, $(element).attr('height') - MARGIN * 2);
+        var r = Graph.resize(Number(x), Number(y), this.size.width, this.size.height, $(element).attr('width') - MARGIN * 2, $(element).attr('height') - MARGIN * 2);
 
         return new this.ppscope.Point(r.x, r.y);
     },
@@ -214,7 +214,7 @@ PaperJSGraph.prototype = {
     toggleCenterline: function(show) {
         this.ppscope.activate();
 
-        if (show) {
+        if (this.centerlinespathes.length && show) {
             $(this.centerlinespathes).each(function(i, el){
                 el.remove();
             });
@@ -224,9 +224,7 @@ PaperJSGraph.prototype = {
             this.centerlinespathes = [];
             this.centercircles = [];
             this.ppscope.view.draw();
-        }
-
-        if (this.centerlinespathes.length){
+        } else if (this.centerlinespathes.length){
             $(this.centerlinespathes).each(function(i, el){
                 el.remove();
             });
@@ -236,6 +234,8 @@ PaperJSGraph.prototype = {
             this.centerlinespathes = [];
             this.centercircles = [];
             this.ppscope.view.draw();
+            return;
+        } else if (show && !this.centerlinespathes.length) {
             return;
         }
 
@@ -338,9 +338,9 @@ PaperJSGraph.prototype = {
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
             var point = points[k];
-            var ppoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
+            var ppoint = this.getPoint(point.x, point.y, true);
             ppoint.y += +MARGIN;
-            ppoint.x += + MARGIN;
+            ppoint.x += +MARGIN;
 
             var handleIn = this.getPoint(parseInt(point.controls[0].x) - parseInt(point.x),
                                          parseInt(point.y) - parseInt(point.controls[0].y));
