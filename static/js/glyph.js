@@ -138,27 +138,27 @@ PaperJSGraph.prototype = {
     showDebugLines: function(x1, y1, x2, y2, line) {
 
 
-                var from = this.getPoint(x1, y1, true);
-                from.y += +MARGIN;
-                from.x += + MARGIN;
+                // var from = this.getPoint(x1, y1, true);
+                // from.y += +MARGIN;
+                // from.x += + MARGIN;
 
-                var to = this.getPoint(parseInt(line[1].controls[0].x), parseInt(line[1].controls[0].y), true);
-                to.y += +MARGIN;
-                to.x += + MARGIN;
+                // var to = this.getPoint(parseInt(line[1].controls[0].x), parseInt(line[1].controls[0].y), true);
+                // to.y += +MARGIN;
+                // to.x += + MARGIN;
 
-                var ll = new this.ppscope.Path.Line(from, to);
-                ll.strokeColor = 'black';
+                // var ll = new this.ppscope.Path.Line(from, to);
+                // ll.strokeColor = 'black';
 
-                var from = this.getPoint(x2, y2, true);
-                from.y += +MARGIN;
-                from.x += + MARGIN;
+                // var from = this.getPoint(x2, y2, true);
+                // from.y += +MARGIN;
+                // from.x += + MARGIN;
 
-                var to = this.getPoint(parseInt(line[0].controls[1].x), parseInt(line[0].controls[1].y), true);
-                to.y += +MARGIN;
-                to.x += + MARGIN;
+                // var to = this.getPoint(parseInt(line[0].controls[1].x), parseInt(line[0].controls[1].y), true);
+                // to.y += +MARGIN;
+                // to.x += + MARGIN;
 
-                var ll = new this.ppscope.Path.Line(from, to);
-                ll.strokeColor = 'black';
+                // var ll = new this.ppscope.Path.Line(from, to);
+                // ll.strokeColor = 'black';
 
                 var from = this.getPoint(line[0].controls[0].x, line[0].controls[0].y, true);
                 from.y += +MARGIN;
@@ -171,11 +171,11 @@ PaperJSGraph.prototype = {
                 var ll = new this.ppscope.Path.Line(from, to);
                 ll.strokeColor = 'black';
 
-                var from = this.getPoint(line[1].controls[0].x, line[1].controls[0].y, true);
+                var from = this.getPoint(line[0].controls[1].x, line[0].controls[1].y, true);
                 from.y += +MARGIN;
                 from.x += + MARGIN;
 
-                var to = this.getPoint(parseInt(line[0].controls[1].x), parseInt(line[0].controls[1].y), true);
+                var to = this.getPoint(parseInt(line[1].controls[0].x), parseInt(line[1].controls[0].y), true);
                 to.y += +MARGIN;
                 to.x += + MARGIN;
 
@@ -214,8 +214,6 @@ PaperJSGraph.prototype = {
         for (var k = 0; k < this.centerlines.length; k++) {
             var centerlinepath = new this.ppscope.Path();
             centerlinepath.closed = false;
-            console.log(this.centerlines[k]);
-
             for (v in this.centerlines[k]) {
 
               var line = this.centerlines[k][v];
@@ -269,7 +267,7 @@ PaperJSGraph.prototype = {
             if (!centerline[pointname]) {
               centerline[pointname] = [undefined, undefined];
             }
-            
+
             if (match[2] == 'r') {
               centerline[pointname][1] = point;
             } else if (match[2] == 'l') {
@@ -308,7 +306,7 @@ PaperJSGraph.prototype = {
             path.add(segment);
 
             if (point.pointname) {
-                console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
+                // console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
                 this.getLines(centerlines, point);
             }
         }
@@ -348,7 +346,7 @@ PaperJSGraph.prototype = {
 
         this.ppscope.activate();
 
-        console.log(point.data.pointname + ' : ' + point.x + ', ' + point.y);
+        // console.log(point.data.pointname + ' : ' + point.x + ', ' + point.y);
 
         var zpoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
         zpoint.y += +MARGIN;

@@ -192,10 +192,11 @@ def get_json(content, glyphid=None, master=None):
                                 glyph_obj.get_zpoints())
 
         number = 0
-        for contour in contour_pattern.findall(edge.strip()):
+        for ix, contour in enumerate(contour_pattern.findall(edge.strip())):
             contour = re.sub('\n(\S)', '\\1', contour)
             _contours = []
             handleIn_X, handleIn_Y = None, None
+
             for point in contour.split('\n'):
                 point = point.strip().strip('..')
                 match = point_pattern.match(point)
@@ -214,8 +215,6 @@ def get_json(content, glyphid=None, master=None):
                     controlpoints[0] = {'x': handleIn_X, 'y': handleIn_Y}
 
                 pointdict = {'x': X, 'y': Y, 'controls': controlpoints}
-                if zpoints_names and len(zpoints_names) > number:
-                    pointdict.update({'pointname': zpoints_names[number]})
                 _contours.append(pointdict)
 
                 handleIn_X = match.group(5)
@@ -229,7 +228,20 @@ def get_json(content, glyphid=None, master=None):
                             float(handleOut_X), float(handleIn_X))
                 y_max = max(y_max, y_min, float(Y),
                             float(handleOut_Y), float(handleIn_Y))
-                number += 1
+
+            if zpoints_names:
+                zpoints = []
+                ll = zpoints_names[number + 1: len(_contours) + number]
+                if len(zpoints_names) > number:
+                    zpoints = [zpoints_names[number]] + ll
+
+                number += len(_contours)
+
+                for zix, point in enumerate(_contours):
+                    try:
+                        point['pointname'] = zpoints[zix]
+                    except IndexError:
+                        pass
 
             if handleIn_X and handleIn_Y:
                 _contours[0]['controls'][0] = {'x': handleIn_X,
