@@ -14,6 +14,7 @@ Graph.createCanvas = function(canvas, size) {
 
     var ppscope = new paper.PaperScope();
     ppscope.setup(canvas);
+    console.log(size);
     return new PaperJSGraph(size, ppscope);
 }
 
@@ -35,6 +36,7 @@ Graph.resize = function(x, y, srcwidth, srcheight, destwidth, destheight) {
 
 var PaperJSGraph = function(size, paperscope) {
     this.ppscope = paperscope;
+
     this.size = size;
     this.tool = new this.ppscope.Tool();
 
@@ -61,6 +63,15 @@ var PaperJSGraph = function(size, paperscope) {
             }
         }
     }.bind(this);
+
+    offsetx = typeof size.offsetx == "undefined" ? 0: parseInt(size.offsetx);
+    offsety = typeof size.offsety == "undefined" ? 0: parseInt(size.offsety);
+
+    if (offsetx || offsety) {
+        var point = this.getPoint(Math.abs(parseInt(offsetx)),
+                                  Math.abs(parseInt(offsety)));
+        this.ppscope.view.scrollBy(point);
+    }
 }
 
 
@@ -117,50 +128,11 @@ PaperJSGraph.prototype = {
     getPoint: function(x, y, reverted) {
         var element = this.getElement();
         if (reverted) {
-            y = this.size.height - Number(y);
+            y = this.size.height - y;
         }
-        var r = Graph.resize(Number(x), Number(y), this.size.width, this.size.height, $(element).attr('width') - MARGIN * 2, $(element).attr('height') - MARGIN * 2);
+        var r = Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width') - MARGIN * 2, $(element).attr('height') - MARGIN * 2);
 
         return new this.ppscope.Point(r.x, r.y);
-    },
-
-    checkLineIntersection: function(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
-        // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
-        var denominator, a, b, numerator1, numerator2, result = {
-            x: null,
-            y: null,
-            onLine1: false,
-            onLine2: false
-        };
-        denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
-        if (denominator == 0) {
-            return result;
-        }
-        a = line1StartY - line2StartY;
-        b = line1StartX - line2StartX;
-        numerator1 = ((line2EndX - line2StartX) * a) - ((line2EndY - line2StartY) * b);
-        numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
-        a = numerator1 / denominator;
-        b = numerator2 / denominator;
-
-        // if we cast these lines infinitely in both directions, they intersect here:
-        result.x = line1StartX + (a * (line1EndX - line1StartX));
-        result.y = line1StartY + (a * (line1EndY - line1StartY));
-    /*
-            // it is worth noting that this should be the same as:
-            x = line2StartX + (b * (line2EndX - line2StartX));
-            y = line2StartX + (b * (line2EndY - line2StartY));
-            */
-        // if line1 is a segment and line2 is infinite, they intersect if:
-        if (a > 0 && a < 1) {
-            result.onLine1 = true;
-        }
-        // if line2 is a segment and line1 is infinite, they intersect if:
-        if (b > 0 && b < 1) {
-            result.onLine2 = true;
-        }
-        // if line1 and line2 are segments, they intersect if both of the above are true
-        return result;
     },
     
     showDebugLines: function(x1, y1, x2, y2, line) {
@@ -259,23 +231,6 @@ PaperJSGraph.prototype = {
 
                   // this.showDebugLines(x1, y1, x2, y2, line);
 
-              // var hINc = this.checkLineIntersection(x1, y1, parseInt(line[1].controls[0].x), parseInt(line[1].controls[0].y),
-              //                          x2, y2, parseInt(line[0].controls[1].x), parseInt(line[0].controls[1].y));
-
-              // var hIN1 = this.checkLineIntersection(parseInt(line[1].controls[0].x), parseInt(line[1].controls[0].y),
-              //                                       parseInt(line[0].controls[1].x), parseInt(line[0].controls[1].y),
-              //                                       Xc, Yc, hINc.x, hINc.y);
-              // console.log(hIN1);
-
-              // var hOUTc = this.checkLineIntersection(x1, y1, parseInt(line[1].controls[1].x), parseInt(line[1].controls[1].y),
-              //                           x2, y2, parseInt(line[0].controls[0].x), parseInt(line[0].controls[0].y));
-
-              // var hOUT1 = this.checkLineIntersection(parseInt(line[1].controls[1].x), parseInt(line[1].controls[1].y),
-              //                                        parseInt(line[0].controls[0].x), parseInt(line[0].controls[0].y),
-              //                                        Xc, Yc, hOUTc.x, hOUTc.y);
-
-              // console.log(hOUT1);
-
               var hInx = parseInt(line[1].controls[0].x) - (parseInt(line[1].controls[0].x) - parseInt(line[0].controls[1].x)) / 2;
               var hIny = parseInt(line[1].controls[0].y) - (parseInt(line[1].controls[0].y) - parseInt(line[0].controls[1].y)) / 2;
 
@@ -290,7 +245,8 @@ PaperJSGraph.prototype = {
               var handleIn = this.getPoint(hOUTx - Xc, Yc - hOUTy);
               var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
 
-              var circle = new this.ppscope.Path.Circle({center: [ppoint.x, ppoint.y], radius: 6, strokeColor: '#11d'});
+              var circle = new this.ppscope.Path.Circle({center: [ppoint.x, ppoint.y],
+                                                         radius: 6, strokeColor: '#11d'});
               this.centercircles.push(circle);
 
               centerlinepath.add(segment);
@@ -338,7 +294,8 @@ PaperJSGraph.prototype = {
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
             var point = points[k];
-            var ppoint = this.getPoint(point.x, point.y, true);
+
+            var ppoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
             ppoint.y += +MARGIN;
             ppoint.x += +MARGIN;
 
@@ -351,6 +308,7 @@ PaperJSGraph.prototype = {
             path.add(segment);
 
             if (point.pointname) {
+                console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
                 this.getLines(centerlines, point);
             }
         }
@@ -389,6 +347,8 @@ PaperJSGraph.prototype = {
             return;
 
         this.ppscope.activate();
+
+        console.log(point.data.pointname + ' : ' + point.x + ', ' + point.y);
 
         var zpoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
         zpoint.y += +MARGIN;
@@ -556,41 +516,4 @@ Glyph.prototype = {
         this.view.setPointFormValues(point);
     }
 
-}
-
-
-window.linear = {
-    slope: function (x1, y1, x2, y2) {
-        if (x1 == x2) return false;
-        return (y1 - y2) / (x1 - x2);
-    },
-    yInt: function (x1, y1, x2, y2) {
-        if (x1 === x2) return y1 === 0 ? 0 : false;
-        if (y1 === y2) return y1;
-        return y1 - this.slope(x1, y1, x2, y2) * x1 ;
-    },
-    getXInt: function (x1, y1, x2, y2) {
-        var slope;
-        if (y1 === y2) return x1 == 0 ? 0 : false;
-        if (x1 === x2) return x1;
-        return (-1 * ((slope = this.slope(x1, y1, x2, y2)) * x1 - y1)) / slope;
-    },
-    getIntersection: function (x11, y11, x12, y12, x21, y21, x22, y22) {
-        var slope1, slope2, yint1, yint2, intx, inty;
-        if (x11 == x21 && y11 == y21) return [x11, y11];
-        if (x12 == x22 && y12 == y22) return [x12, y22];
-
-        slope1 = this.slope(x11, y11, x12, y12);
-        slope2 = this.slope(x21, y21, x22, y22);
-        if (slope1 === slope2) return false;
-
-        yint1 = this.yInt(x11, y11, x12, y12);
-        yint2 = this.yInt(x21, y21, x22, y22);
-        if (yint1 === yint2) return yint1 === false ? false : [0, yint1];
-
-        if (slope1 === false) return [y21, slope2 * y21 + yint2];
-        if (slope2 === false) return [y11, slope1 * y11 + yint1];
-        intx = (slope1 * x11 + yint1 - yint2)/ slope2;
-        return [intx, slope1 * intx + yint1];
-    }
 }

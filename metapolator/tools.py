@@ -261,7 +261,8 @@ def get_json(content, glyphid=None, master=None):
         else:
             height = abs(y_max)
 
-        glyphs.append({'name': glyph, 'contours': contours,
-                       'zpoints': zpoints, 'width': width, 'height': height})
+        glyphs.append({'name': glyph, 'contours': contours, 'minx': x_min,
+                       'miny': y_min, 'zpoints': zpoints,
+                       'width': width, 'height': height})
 
     return glyphs

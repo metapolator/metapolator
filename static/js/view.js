@@ -7,7 +7,9 @@ function BaseView(element) {
 
 BaseView.prototype = {
     attachGlyph: function(glyphdata) {
-        this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
+        this.glyph = new Glyph(this, {width: glyphdata.width,
+                                      height: glyphdata.height,
+                                      offsetx: glyphdata.minx, offsety: glyphdata.miny});
         this.glyphname = glyphdata.name;
     },
 
@@ -73,7 +75,8 @@ View.prototype = {
     },
 
     attachGlyph: function(glyphdata) {
-        this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height});
+        this.glyph = new Glyph(this, {width: glyphdata.width, height: glyphdata.height,
+                                      offsetx: glyphdata.minx, offsety: glyphdata.miny});
         this.glyph.onZPointChanged = this.onzpointchange.bind(this);
         this.glyphname = glyphdata.name;
 
