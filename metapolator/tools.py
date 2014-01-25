@@ -9,20 +9,124 @@ from config import buildfname
 from models import Glyph, GlyphParam, GlyphOutline, LocalParam
 
 
-def create_glyph(glif, master):
-    itemlist = glif.find('advance')
-    width = itemlist.get('width')
+zpoint_re = re.compile('(?P<name>z[\d]+)(?P<side>[lr])')
 
-    glyph = glif.getroot()
-    glyphname = glyph.get('name')
 
-    if Glyph.exists(name=glyphname, master_id=master.id):
-        return
+class PointSet(object):
 
-    glyph = Glyph.create(name=glyphname, width=width,
-                         master_id=master.id,
-                         project_id=master.project_id,
-                         width_new=width)
+    def __init__(self):
+        self.points = []
+        self._zpoints = []
+
+    @property
+    def zpoints(self):
+        return self._zpoints
+
+    @zpoints.setter
+    def zpoints(self, value):
+        self._zpoints = value
+
+    def add_point(self, x, y, name, preset):
+        """ Put to current set new point with name and its (x, y)-coords """
+        self.points.append({'name': name,
+                            'coords': {'x': x, 'y': y},
+                            'preset': preset})
+
+    def extract_zpoints(self):
+        self.zpoints = filter(lambda point: bool(zpoint_re.match(point['name'])),
+                              self.points)
+
+    def save_to_database(self, glyph):
+        """ Save list of point dictionary to database """
+        # if self.is_counterclockwise():
+        #     self.castling()
+
+        for i, point in enumerate(self.points):
+            glyphoutline = GlyphOutline.get(glyphname=glyph.name, glyph_id=glyph.id,
+                                            master_id=glyph.master_id,
+                                            pointnr=(i + 1))
+            if not glyphoutline:
+                glyphoutline = GlyphOutline.create(glyphname=glyph.name,
+                                                   glyph_id=glyph.id,
+                                                   master_id=glyph.master_id,
+                                                   pointnr=(i + 1))
+            glyphoutline.x = self.x(point)
+            glyphoutline.y = self.y(point)
+
+            glyphparam = GlyphParam.get(glyphoutline_id=glyphoutline.id,
+                                        glyph_id=glyph.id)
+            if not glyphparam:
+                glyphparam = GlyphParam.create(glyphoutline_id=glyphoutline.id,
+                                               master_id=glyph.master_id,
+                                               glyph_id=glyph.id,
+                                               pointname=self.name(point))
+            for attr in point['preset']:
+                if attr == 'name':
+                    continue
+                setattr(glyphparam, attr, point['preset'][attr])
+
+        web.ctx.orm.commit()
+
+    def castling(self):
+        for number, point in enumerate(self.points):
+            m = zpoint_re.match(self.name(point))
+            if not m:
+                continue
+
+            if m.group('side') == 'l':
+                self.points[number]['name'] = m.group('name') + 'r'
+                self.points[number]['preset']['pointname'] = m.group('name') + 'r'
+            else:
+                self.points[number]['name'] = m.group('name') + 'l'
+                self.points[number]['preset']['pointname'] = m.group('name') + 'l'
+
+    def extract_pairs(self):
+        """ Returns dictionary with sequence of (xl, yl), (xr, yr) coordinates
+            zpoints. If it is empty then False """
+        pairs = {}
+        empty_pairs = True
+        for point in self.zpoints:
+            m = zpoint_re.match(self.name(point))
+            name = m.group('name')
+            side = m.group('side')
+            if name not in pairs:
+                pairs[name] = [None, None]
+            if side == 'l':
+                pairs[name][0] = point
+            else:
+                pairs[name][1] = point
+            empty_pairs = False
+
+        if empty_pairs:
+            return False
+        return pairs
+
+    def segments(self):
+        """A sequence of (x,y) numeric coordinates pairs """
+        poly = map(lambda point: (self.x(point), self.y(point)),
+                   self.zpoints)
+        return zip(poly, poly[1:] + [poly[0]])
+
+    def is_counterclockwise(self):
+        clockwise = False
+        s = sum(x0 * y1 - x1 * y0
+                for ((x0, y0), (x1, y1)) in self.segments())
+        if s < 0:
+            clockwise = not clockwise
+        return clockwise
+
+    def name(self, point):
+        return point['name']
+
+    def x(self, point):
+        return float(point['coords']['x'])
+
+    def y(self, point):
+        return float(point['coords']['y'])
+
+
+def get_pointset(glif):
+    pointset = PointSet()
 
     for i, point in enumerate(glif.xpath('//outline/contour/point')):
         pointname = point.attrib.get('name')
@@ -32,33 +136,43 @@ def create_glyph(glif, master):
         if not pointname:
             pointname = 'p%s' % (i + 1)
 
-        glyphoutline = GlyphOutline.get(glyphname=glyphname, glyph_id=glyph.id,
-                                        master_id=master.id,
-                                        pointnr=(i + 1))
-        if not glyphoutline:
-            glyphoutline = GlyphOutline.create(glyphname=glyphname,
-                                               glyph_id=glyph.id,
-                                               master_id=master.id,
-                                               pointnr=(i + 1))
-        glyphoutline.x = float(point.attrib['x'])
-        glyphoutline.y = float(point.attrib['y'])
+        preset = {'type': type,
+                  'control_out': control_out,
+                  'control_in': control_in,
+                  'pointname': pointname}
 
-        glyphparam = GlyphParam.get(glyphoutline_id=glyphoutline.id,
-                                    glyph_id=glyph.id)
-        if not glyphparam:
-            glyphparam = GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                           master_id=master.id,
-                                           glyph_id=glyph.id,
-                                           pointname=pointname,
-                                           type=type,
-                                           control_in=control_in,
-                                           control_out=control_out)
         for attr in point.attrib:
             if attr == 'name':
                 continue
-            setattr(glyphparam, attr, point.attrib[attr])
+            preset[attr] = point.attrib[attr]
 
-    web.ctx.orm.commit()
+        pointset.add_point(float(point.attrib['x']),
+                           float(point.attrib['y']),
+                           pointname, preset)
+
+    pointset.extract_zpoints()
+    return pointset
+
+
+def create_glyph(glif, master):
+    itemlist = glif.find('advance')
+    width = itemlist.get('width')
+
+    glyph = glif.getroot()
+    glyphname = glyph.get('name')
+
+    pointset = get_pointset(glif)
+
+    if Glyph.exists(name=glyphname, master_id=master.id):
+        return
+
+    glyph = Glyph.create(name=glyphname, width=width,
+                         master_id=master.id,
+                         project_id=master.project_id,
+                         width_new=width)
+
+    pointset.save_to_database(glyph)
+
     return glyph
 
 

@@ -35,7 +35,6 @@ class UserQueryMixin(object):
         kwargs.update({'user_id': web.ctx.user.id})
         instance = cls(**kwargs)
         web.ctx.orm.add(instance)
-        web.ctx.orm.commit()
         return instance
 
     @classmethod
