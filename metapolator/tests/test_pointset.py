@@ -2,7 +2,7 @@ import unittest
 import lxml.etree
 import os.path as op
 
-from metapolator.tools import get_pointset
+from metapolator.tools import get_pointsets
 
 
 datapath = op.abspath(op.join(op.dirname(__file__), 'data'))
@@ -21,16 +21,15 @@ with open(op.join(datapath, 'J.glif')) as f:
 class PointSetTestCase(unittest.TestCase):
 
     def test_create_pointset(self):
-        pointset = get_pointset(xml_at)
+        pointset = get_pointsets(xml_at)[0]
         self.assertTrue(not pointset.is_counterclockwise())
         print 'at', pointset.castling()
 
-        pointset = get_pointset(xml_nine)
+        pointset = get_pointsets(xml_nine)[0]
         self.assertTrue(pointset.is_counterclockwise())
         print 'nine', pointset.castling()
 
-        pointset = get_pointset(xml_J)
+        pointset = get_pointsets(xml_J)[0]
         self.assertTrue(not pointset.is_counterclockwise())
         print 'J', pointset.castling()
 
-        self.assertTrue(False)

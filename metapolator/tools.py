@@ -26,11 +26,12 @@ class PointSet(object):
     def zpoints(self, value):
         self._zpoints = value
 
-    def add_point(self, x, y, name, preset):
+    def add_point(self, x, y, name, number, preset):
         """ Put to current set new point with name and its (x, y)-coords """
         self.points.append({'name': name,
                             'coords': {'x': x, 'y': y},
-                            'preset': preset})
+                            'preset': preset,
+                            'number': number})
 
     def extract_zpoints(self):
         self.zpoints = filter(lambda point: bool(zpoint_re.match(point['name'])),
@@ -41,15 +42,15 @@ class PointSet(object):
         # if self.is_counterclockwise():
         #     self.castling()
 
-        for i, point in enumerate(self.points):
+        for point in self.points:
             glyphoutline = GlyphOutline.get(glyphname=glyph.name, glyph_id=glyph.id,
                                             master_id=glyph.master_id,
-                                            pointnr=(i + 1))
+                                            pointnr=point['number'])
             if not glyphoutline:
                 glyphoutline = GlyphOutline.create(glyphname=glyph.name,
                                                    glyph_id=glyph.id,
                                                    master_id=glyph.master_id,
-                                                   pointnr=(i + 1))
+                                                   pointnr=point['number'])
             glyphoutline.x = self.x(point)
             glyphoutline.y = self.y(point)
 
@@ -125,33 +126,38 @@ class PointSet(object):
         return float(point['coords']['y'])
 
 
-def get_pointset(glif):
-    pointset = PointSet()
+def get_pointsets(glif):
+    pointnr = 0
+    pointsets = []
+    for contour in glif.xpath('//outline/contour'):
 
-    for i, point in enumerate(glif.xpath('//outline/contour/point')):
-        pointname = point.attrib.get('name')
-        type = point.attrib.get('type')
-        control_in = point.attrib.get('control_in')
-        control_out = point.attrib.get('control_out')
-        if not pointname:
-            pointname = 'p%s' % (i + 1)
+        pointset = PointSet()
+        for point in contour.findall('point'):
+            pointname = point.attrib.get('name')
+            type = point.attrib.get('type')
+            control_in = point.attrib.get('control_in')
+            control_out = point.attrib.get('control_out')
+            if not pointname:
+                pointname = 'p%s' % (pointnr + 1)
 
-        preset = {'type': type,
-                  'control_out': control_out,
-                  'control_in': control_in,
-                  'pointname': pointname}
+            preset = {'type': type,
+                      'control_out': control_out,
+                      'control_in': control_in,
+                      'pointname': pointname}
 
-        for attr in point.attrib:
-            if attr == 'name':
-                continue
-            preset[attr] = point.attrib[attr]
+            for attr in point.attrib:
+                if attr == 'name':
+                    continue
+                preset[attr] = point.attrib[attr]
 
-        pointset.add_point(float(point.attrib['x']),
-                           float(point.attrib['y']),
-                           pointname, preset)
+            pointset.add_point(float(point.attrib['x']),
+                               float(point.attrib['y']),
+                               pointname, pointnr + 1, preset)
+            pointnr += 1
 
-    pointset.extract_zpoints()
-    return pointset
+        pointset.extract_zpoints()
+        pointsets.append(pointset)
+    return pointsets
 
 
 def create_glyph(glif, master):
@@ -161,7 +167,7 @@ def create_glyph(glif, master):
     glyph = glif.getroot()
     glyphname = glyph.get('name')
 
-    pointset = get_pointset(glif)
+    pointsets = get_pointsets(glif)
 
     if Glyph.exists(name=glyphname, master_id=master.id):
         return
@@ -171,7 +177,8 @@ def create_glyph(glif, master):
                          project_id=master.project_id,
                          width_new=width)
 
-    pointset.save_to_database(glyph)
+    for pointset in pointsets:
+        pointset.save_to_database(glyph)
 
     return glyph
 
