@@ -9,7 +9,7 @@ from config import buildfname
 from models import Glyph, GlyphParam, GlyphOutline, LocalParam
 
 
-zpoint_re = re.compile('(?P<name>z[\d]+)(?P<side>[lr])')
+zpoint_re = re.compile('(?P<name>z(?P<number>[\d]+))(?P<side>[lr])')
 
 
 class PointSet(object):
@@ -28,10 +28,10 @@ class PointSet(object):
 
     def add_point(self, x, y, name, number, preset):
         """ Put to current set new point with name and its (x, y)-coords """
-        self.points.append({'name': name,
-                            'coords': {'x': x, 'y': y},
-                            'preset': preset,
-                            'number': number})
+        point = {'name': name, 'coords': {'x': x, 'y': y}, 'preset': preset,
+                 'number': number}
+        print name, ':', preset
+        self.points.append(point)
 
     def extract_zpoints(self):
         self.zpoints = filter(lambda point: bool(zpoint_re.match(point['name'])),
@@ -69,33 +69,56 @@ class PointSet(object):
         web.ctx.orm.commit()
 
     def castling(self):
-        for number, point in enumerate(self.points):
-            m = zpoint_re.match(self.name(point))
-            if not m:
-                continue
+        import copy
+        pairs = self.extract_pairs()
 
-            if m.group('side') == 'l':
-                self.points[number]['name'] = m.group('name') + 'r'
-                self.points[number]['preset']['pointname'] = m.group('name') + 'r'
-            else:
-                self.points[number]['name'] = m.group('name') + 'l'
-                self.points[number]['preset']['pointname'] = m.group('name') + 'l'
+        points = []
+        for i, pair in enumerate(pairs[::-1]):
+            point = copy.deepcopy(pair['l'])
+            point['name'] = '%sl' % pairs[i]['name']
+            point['number'] = pairs[i]['l']['number']
+            point['preset']['pointname'] = point['name']
+            if not i:
+                point['preset']['startp'] = True
+                point['preset']['tripledash'] = None
+            elif point['preset'].get('startp'):
+                del point['preset']['startp']
+                point['preset']['tripledash'] = 1
+            points.append(point)
+
+        for i, pair in enumerate(pairs):
+            point = copy.deepcopy(pair['r'])
+            point['name'] = '%sr' % pairs[len(pairs) - i - 1]['name']
+            point['number'] = pairs[len(pairs) - i - 1]['r']['number']
+            point['preset']['pointname'] = point['name']
+            points.append(point)
+
+        self.points = points
 
     def extract_pairs(self):
         """ Returns dictionary with sequence of (xl, yl), (xr, yr) coordinates
             zpoints. If it is empty then False """
-        pairs = {}
+        pairs = []
+
+        def find_pair(name):
+            for index, pair in enumerate(pairs):
+                if pair['name'] == name:
+                    return index
+            return -1
+
         empty_pairs = True
         for point in self.zpoints:
             m = zpoint_re.match(self.name(point))
-            name = m.group('name')
-            side = m.group('side')
-            if name not in pairs:
-                pairs[name] = [None, None]
-            if side == 'l':
-                pairs[name][0] = point
+
+            index = find_pair(m.group('name'))
+            if index < 0:
+                pairs.append({'name': m.group('name'),
+                              'l': None, 'r': None})
+
+            if m.group('side') == 'l':
+                pairs[index]['l'] = point
             else:
-                pairs[name][1] = point
+                pairs[index]['r'] = point
             empty_pairs = False
 
         if empty_pairs:
@@ -129,33 +152,83 @@ class PointSet(object):
 def get_pointsets(glif):
     pointnr = 0
     pointsets = []
+
+    # total count of points in all contours in glyph
+    # total_glyph_points = len(glif.xpath('//outline/contour/point[@type]'))
+
+    # Links to index of both-sided z-point.
+    zpoint_current_offset = 0
+
     for contour in glif.xpath('//outline/contour'):
 
         pointset = PointSet()
+
+        total_contour_points = len(contour.xpath('point[@type]'))
+
+        # Start loop for each point in contour. If this point has attribute
+        # `type` then we calculate sided z-name
+
+        zindex = 0
         for point in contour.findall('point'):
             pointname = point.attrib.get('name')
+
             type = point.attrib.get('type')
-            control_in = point.attrib.get('control_in')
-            control_out = point.attrib.get('control_out')
-            if not pointname:
-                pointname = 'p%s' % (pointnr + 1)
 
             preset = {'type': type,
-                      'control_out': control_out,
-                      'control_in': control_in,
-                      'pointname': pointname}
+                      'control_out': point.attrib.get('control_out'),
+                      'control_in': point.attrib.get('control_in'),
+                      'pointname': pointname,
+                      'startp': None,
+                      'tripledash': None}
 
+            if type is not None:
+                if not zindex:
+                    # if this is first then set to point preset startp attribute
+                    preset['startp'] = True
+                    preset['tripledash'] = None
+                elif type == 'line':
+                    preset['tripledash'] = 1
+
+                # number of contours is calculated by offset of points from
+                # first point
+                if zindex > (total_contour_points / 2 - 1):
+                    number = zpoint_current_offset + total_contour_points - zindex
+                    pointname = 'z%sr' % number
+                else:
+                    number = zpoint_current_offset + zindex + 1
+                    pointname = 'z%sl' % number
+
+                preset['pointname'] = pointname
+                zindex += 1
+            else:
+                preset['pointname'] = 'p%s' % (pointnr + 1)
+
+            attribs = {}
             for attr in point.attrib:
                 if attr == 'name':
+                    # Ignore name and startp attribute as its generated
+                    # before
                     continue
-                preset[attr] = point.attrib[attr]
+                attribs[attr] = point.attrib[attr]
+
+            attribs.update(preset)
 
             pointset.add_point(float(point.attrib['x']),
                                float(point.attrib['y']),
-                               pointname, pointnr + 1, preset)
+                               preset['pointname'], pointnr + 1, attribs)
             pointnr += 1
 
+        # Make current offset to half of z-points count. In this case next
+        # z-points in contour will have correct index
+        zpoint_current_offset += total_contour_points / 2
+
         pointset.extract_zpoints()
+
+        # Final accord is to check correct direction of glyph points
+        # If glyph points are not clockwise then make castling
+        if pointset.is_counterclockwise():
+            pointset.castling()
+
         pointsets.append(pointset)
     return pointsets
 
