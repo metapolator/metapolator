@@ -30,7 +30,6 @@ class PointSet(object):
         """ Put to current set new point with name and its (x, y)-coords """
         point = {'name': name, 'coords': {'x': x, 'y': y}, 'preset': preset,
                  'number': number}
-        print name, ':', preset
         self.points.append(point)
 
     def extract_zpoints(self):
@@ -39,8 +38,6 @@ class PointSet(object):
 
     def save_to_database(self, glyph):
         """ Save list of point dictionary to database """
-        # if self.is_counterclockwise():
-        #     self.castling()
 
         for point in self.points:
             glyphoutline = GlyphOutline.get(glyphname=glyph.name, glyph_id=glyph.id,
@@ -149,29 +146,52 @@ class PointSet(object):
         return float(point['coords']['y'])
 
 
+def compare(a, b):
+    am = zpoint_re.match(a.attrib['name'])
+    bm = zpoint_re.match(b.attrib['name'])
+
+    if int(am.group('number')) < int(bm.group('number')):
+        return -1
+    return 1
+
+
+def get_sorted_points(points):
+
+    lpoints = []
+    rpoints = []
+
+    # Collect points partially and sort each part
+    for p in points:
+        if not p.attrib.get('name'):
+            continue
+        m = zpoint_re.match(p.attrib['name'])
+        if m.group('side') == 'l':
+            lpoints.append(p)
+        if m.group('side') == 'r':
+            rpoints.append(p)
+
+    return sorted(lpoints, cmp=compare) + sorted(rpoints, cmp=compare, reverse=True)
+
+
 def get_pointsets(glif):
     pointnr = 0
     pointsets = []
 
-    # total count of points in all contours in glyph
-    # total_glyph_points = len(glif.xpath('//outline/contour/point[@type]'))
-
-    # Links to index of both-sided z-point.
+    # Links to index of both-sided z-point
     zpoint_current_offset = 0
 
     for contour in glif.xpath('//outline/contour'):
-
-        pointset = PointSet()
 
         total_contour_points = len(contour.xpath('point[@type]'))
 
         # Start loop for each point in contour. If this point has attribute
         # `type` then we calculate sided z-name
 
-        zindex = 0
-        for point in contour.findall('point'):
-            pointname = point.attrib.get('name')
+        pointset = PointSet()
 
+        zindex = 0
+        for point in get_sorted_points(contour.findall('point')):
+            pointname = point.attrib.get('name')
             type = point.attrib.get('type')
 
             preset = {'type': type,
@@ -180,6 +200,9 @@ def get_pointsets(glif):
                       'pointname': pointname,
                       'startp': None,
                       'tripledash': None}
+
+            if not pointname:
+                preset['pointname'] = 'p%s' % (pointnr + 1)
 
             if type is not None:
                 if not zindex:
@@ -200,14 +223,10 @@ def get_pointsets(glif):
 
                 preset['pointname'] = pointname
                 zindex += 1
-            else:
-                preset['pointname'] = 'p%s' % (pointnr + 1)
 
             attribs = {}
             for attr in point.attrib:
                 if attr == 'name':
-                    # Ignore name and startp attribute as its generated
-                    # before
                     continue
                 attribs[attr] = point.attrib[attr]
 
