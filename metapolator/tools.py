@@ -68,6 +68,8 @@ class PointSet(object):
     def castling(self):
         import copy
         pairs = self.extract_pairs()
+        if not pairs:
+            return False
 
         points = []
         for i, pair in enumerate(pairs[::-1]):
@@ -147,6 +149,9 @@ class PointSet(object):
 
 
 def compare(a, b):
+    if not a.attrib.get('name') or not b.attrib.get('name'):
+        return 0
+
     am = zpoint_re.match(a.attrib['name'])
     bm = zpoint_re.match(b.attrib['name'])
 
@@ -163,6 +168,7 @@ def get_sorted_points(points):
     # Collect points partially and sort each part
     for p in points:
         if not p.attrib.get('name'):
+            lpoints.append(p)
             continue
         m = zpoint_re.match(p.attrib['name'])
         if m.group('side') == 'l':
