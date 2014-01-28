@@ -17,10 +17,9 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         python-virtualenv python-setuptools python-pip \
         redis-server wget
 
-RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
-RUN     cd sfnt2woff && unzip woff-code-latest.zip && make
+RUN     wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
+RUN     unzip woff-code-latest.zip && make
 
-ADD    sfnt2woff/sfnt2woff /usr/local/bin/
-
-ADD    buildapp        /usr/local/bin/metap-build
-ADD    runapp        /usr/local/bin/metap-run
+ADD    sfnt2woff    /usr/local/bin/
+ADD    buildapp     /usr/local/bin/metap-build
+ADD    runapp       /usr/local/bin/metap-run
