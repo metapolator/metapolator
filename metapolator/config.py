@@ -13,7 +13,7 @@ celery.config_from_object(metapolator.celeryconfig)
 PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
 DATABASE_NAME = 'metapolatordev'
 DATABASE_USER = 'root'
-DATABASE_PWD = ''
+DATABASE_PWD = 'temprootpath'
 
 try:
     from localconfig import DATABASE_USER, DATABASE_PWD, DATABASE_NAME
