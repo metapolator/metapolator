@@ -15,7 +15,7 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libxml2-dev libxslt-dev fontforge python-fontforge \
         build-essential autoconf libtool python-dev \
         python-virtualenv python-setuptools python-pip \
-        redis-server
+        redis-server wget
 
 RUN     mkdir -p /usr/local/src/sfnt2woff && cd /usr/local/src/sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
 RUN     cd /usr/local/src/sfnt2woff && make
