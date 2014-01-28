@@ -554,6 +554,8 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
     fip.write("\n")
     fip.write("""% penstrokes""")
+ 
+    fip.write("""fill""")
 
     inattr = 0
     ivn = 0
