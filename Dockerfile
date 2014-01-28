@@ -1,11 +1,17 @@
-FROM        ubuntu
+FROM        ubuntu:12.04
+
+ENV MYSQLTMPROOT temprootpass
+
 MAINTAINER  Vitaly Volkov <hash.3g@gmail.com> (@hash3g)
 
 RUN     echo "deb http://mirror.bytemark.co.uk/ubuntu/ precise main restricted universe multiverse" >> /etc/apt/sources.list
 
+RUN echo mysql-server mysql-server/root_password password $MYSQLTMPROOT | debconf-set-selections;\
+  echo mysql-server mysql-server/root_password_again password $MYSQLTMPROOT | debconf-set-selections;\
+  apt-get install -y mysql-server mysql-client libmysqlclient-dev
+
 RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        unzip git texlive-metapost mysql-client mysql-server \
-        libmysqlclient-dev t1utils libffi-dev libevent-dev \
+        unzip git texlive-metapost t1utils libffi-dev libevent-dev \
         libxml2-dev libxslt-dev fontforge python-fontforge \
         build-essential autoconf libtool python-dev \
         python-virtualenv python-setuptools python-pip \
@@ -16,5 +22,5 @@ RUN     cd /usr/local/src/sfnt2woff && make
 
 COPY    /usr/local/src/sfnt2woff/sfnt2woff /usr/local/bin/
 
-copy    buildapp        /usr/local/bin/metap-build
-copy    runapp        /usr/local/bin/metap-run
+COPY    buildapp        /usr/local/bin/metap-build
+COPY    runapp        /usr/local/bin/metap-run
