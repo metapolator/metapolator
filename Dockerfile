@@ -20,6 +20,6 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN     wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
 RUN     unzip woff-code-latest.zip && make
 
-ADD    sfnt2woff    /usr/local/bin/
+# ADD    sfnt2woff    /usr/local/bin/
 ADD    buildapp     /usr/local/bin/metap-build
 ADD    runapp       /usr/local/bin/metap-run
