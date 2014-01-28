@@ -1,6 +1,8 @@
 FROM        ubuntu
 MAINTAINER  Vitaly Volkov <hash.3g@gmail.com> (@hash3g)
 
+RUN     echo "deb http://mirror.bytemark.co.uk/ubuntu/ precise main restricted universe multiverse" >> /etc/apt/sources.list
+
 RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         unzip git texlive-metapost mysql-client mysql-server \
         libmysqlclient-dev t1utils libffi-dev libevent-dev \

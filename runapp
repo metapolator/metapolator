@@ -2,7 +2,7 @@
 
 set -e
 
-cd www
+cd www/metapolator && source .venv/bin/activate
 
 app=`find . -name 'metap-run.py' | head -n 1`
 
