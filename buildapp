@@ -1,6 +1,9 @@
 #!/bin/sh
 mkdir www && cd www
-git clone https://github.com/metapolator/metapolator 
+git clone https://github.com/metapolator/metapolator
+
+cd metapolator
+virtualenv .venv && source .venv/bin/activate
 
 dir=`find . -name requirements.txt | sed 's/requirements.txt$//'`
 

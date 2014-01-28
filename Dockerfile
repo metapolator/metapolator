@@ -1,7 +1,7 @@
 FROM        ubuntu
 MAINTAINER  Vitaly Volkov <hash.3g@gmail.com> (@hash3g)
 
-RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -yq \
+RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y \
         unzip git texlive-metapost mysql-client mysql-server \
         libmysqlclient-dev t1utils libffi-dev libevent-dev \
         libxml2-dev libxslt-dev woff-tools fontforge python-fontforge \
