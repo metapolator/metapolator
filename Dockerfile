@@ -9,5 +9,5 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         python-virtualenv python-setuptools python-pip \
         redis-server --no-install-recommends
 
-copy    buildapp        /usr/local/bin/buildapp
-copy    runapp        /usr/local/bin/runapp
+copy    buildapp        /usr/local/bin/metap-build
+copy    runapp        /usr/local/bin/metap-run
