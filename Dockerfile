@@ -18,7 +18,7 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         redis-server wget
 
 RUN     mkdir -p /usr/local/src/sfnt2woff && cd /usr/local/src/sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
-RUN     cd /usr/local/src/sfnt2woff && make
+RUN     cd /usr/local/src/sfnt2woff && unzip woff-code-latest.zip && make
 
 COPY    /usr/local/src/sfnt2woff/sfnt2woff /usr/local/bin/
 
