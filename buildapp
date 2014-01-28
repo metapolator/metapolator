@@ -1,0 +1,14 @@
+#!/bin/sh
+mkdir www && cd www
+git clone https://github.com/metapolator/metapolator 
+
+dir=`find . -name requirements.txt | sed 's/requirements.txt$//'`
+
+if [ -z "$dir" ]; then
+        echo "No requirements.txt"
+        exit 1
+fi
+
+cd $dir
+
+pip install -r requirements.txt

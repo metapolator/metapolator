@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+cd www
+
+app=`find . -name 'metap-run.py' | head -n 1`
+
+if [ -z "$app" ]; then
+        echo "Couldn't locate app.py"
+        exit 1
+fi
+
+python $app

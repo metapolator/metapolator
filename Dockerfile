@@ -1,0 +1,13 @@
+FROM        ubuntu
+MAINTAINER  Vitaly Volkov <hash.3g@gmail.com> (@hash3g)
+
+RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -yq \
+        unzip git texlive-metapost mysql-client mysql-server \
+        libmysqlclient-dev t1utils libffi-dev libevent-dev \
+        libxml2-dev libxslt-dev woff-tools fontforge python-fontforge \
+        build-essential autoconf libtool python-dev \
+        python-virtualenv python-setuptools python-pip \
+        redis-server --no-install-recommends
+
+copy    buildapp        /usr/local/bin/buildapp
+copy    runapp        /usr/local/bin/runapp
