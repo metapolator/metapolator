@@ -21,5 +21,5 @@ RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jk
 RUN     cd sfnt2woff && unzip woff-code-latest.zip && make
 RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
-ADD    buildapp        /usr/local/bin/metap-build
-ADD    runapp        /usr/local/bin/metap-run
+ADD    buildapp        /usr/local/bin/buildapp
+ADD    runapp        /usr/local/bin/runapp
