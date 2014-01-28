@@ -7,7 +7,7 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libxml2-dev libxslt-dev woff-tools fontforge python-fontforge \
         build-essential autoconf libtool python-dev \
         python-virtualenv python-setuptools python-pip \
-        redis-server --no-install-recommends
+        redis-server
 
 copy    buildapp        /usr/local/bin/metap-build
 copy    runapp        /usr/local/bin/metap-run
