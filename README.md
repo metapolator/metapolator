@@ -115,6 +115,13 @@ sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/su
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf;
 ```
 
+## Docker instruction
+
+```
+$ docker pull  metapolator/docker
+
+```
+
 ## License
 
 This project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html).
