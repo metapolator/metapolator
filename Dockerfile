@@ -28,9 +28,6 @@ RUN    unzip master.zip
 RUN    mkdir -p /var/www/
 RUN    cp -R metapolator-master /var/www/metapolator
 
-RUN    mkdir /var/log/supervisor/
-RUN    mkdir /var/run/sshd/
-
 EXPOSE  8080
 
 CMD    ["/bin/bash", "/usr/local/bin/runapp"]
