@@ -1,6 +1,7 @@
 import os
 import os.path as op
 import re
+import simplejson
 import web
 from lxml import etree
 
@@ -546,9 +547,8 @@ def get_json(content, glyphid=None, master=None):
                 'height': height}
 
         if master and glyph_obj and not glyph_obj.original_glyph_contours:
-            glyph_obj.original_glyph_contours = contours
+            glyph_obj.original_glyph_contours = simplejson.dumps(contours)
 
         glyphs.append(json)
 
-    web.ctx.orm.commit()
     return glyphs
