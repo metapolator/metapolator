@@ -1,23 +1,34 @@
 #!/bin/sh
 set -e
 
-cd www/metapolator
+cd /var/www
 
-app=`find . -name 'metap-run.py' | head -n 1`
+app=`find . -name 'run.py' | head -n 1`
 
 if [ -z "$app" ]; then
-        echo "Couldn't locate metap-run.py"
-        exit 1
+    git clone https://github.com/metapolator/metapolator
+    pip install -r requirements.txt
 fi
 
-# if [ ! -f metapolator/localconfig.py ]; then
-#     MYSQL_PASSWORD=`pwgen -c -n -1 12`
-#     METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
-    # Start mysql server
-    # /usr/bin/mysqld_safe &
-    # mysqladmin -u root password $MYSQL_PASSWORD 
-    # mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE metapolator; GRANT ALL PRIVILEGES ON metapolator.* TO 'root'@'localhost' IDENTIFIED BY '$METAPOLATOR_PASSWORD'; FLUSH PRIVILEGES;"
+cd metapolator
 
-/usr/bin/mysqld_safe &
-sleep 10s
-python $app
+if [ ! -f metapolator/localconfig.py ]; then
+    METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
+    echo mysql root password: $METAPOLATOR_PASSWORD
+
+    # Start mysql server
+    /usr/bin/mysqld_safe &
+    mysqladmin -u root password $METAPOLATOR_PASSWORD
+    mysql -uroot -p$METAPOLATOR_PASSWORD -e "CREATE DATABASE metapolator;"
+
+    echo """DATABASE_USER='root'
+DATABASE_PWD='$METAPOLATOR_PASSWORD'
+DATABASE_NAME='metapolator'""" > metapolator/localconfig.py
+
+    python metapolator/models.py
+
+    killall mysqld
+    sleep 10s
+fi
+
+supervisord -n

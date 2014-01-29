@@ -13,13 +13,13 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libxml2-dev libxslt-dev fontforge python-fontforge \
         build-essential autoconf libtool python-dev \
         python-virtualenv python-setuptools python-pip \
-        redis-server wget mysql-server mysql-client libmysqlclient-dev
+        redis-server wget mysql-server mysql-client libmysqlclient-dev \
+        uwsgi supervisor
 
 RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
 RUN     cd sfnt2woff && unzip woff-code-latest.zip && make
 RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
-ADD    buildapp        /usr/local/bin/
 ADD    runapp        /usr/local/bin/
 
-CMD    ["/bin/bash", "/usr/bin/mysqld_safe", "&"]
+CMD    ["/bin/bash", "/usr/local/bin/runapp"]
