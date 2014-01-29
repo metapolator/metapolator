@@ -215,12 +215,13 @@ class EditorLocals(app.page):
     def POST(self):
         x = web.input(master_id=0)
 
+        master = models.Master.get(id=x.master_id)
+
         localparams = models.LocalParam.all()
         result = []
         for i, k in enumerate(localparams):
             dict_ = {'val': k.id, 'idx': i + 1}
             if x.master_id:
-                master = models.Master.get(id=x.master_id)
                 if master and k.id == master.idlocala:
                     dict_.update({'selected': True})
             result.append(dict_)
@@ -244,17 +245,17 @@ class EditorLocals(app.page):
 
             if not int(idlocal):
                 localparam = models.LocalParam.create(**values)
+                web.ctx.orm.commit()
                 master.idlocala = localparam.id
             else:
                 models.LocalParam.update(id=idlocal, values=values)
                 localparam = models.LocalParam.get(id=idlocal)
+                web.ctx.orm.commit()
                 master.idlocala = localparam.id
 
         project = master.project
-        web.ctx.orm.commit()
-        return simplejson.dumps({'master_id': master.id,
-                                 'label': x.axislabel,
-                                 'glyphname': project.currentglyph})
+        result = self.get_glyphs_jsondata(project.currentglyph, master)
+        return simplejson.dumps(result)
 
 
 class userstatic(app.page):
