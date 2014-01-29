@@ -22,5 +22,6 @@ RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
 ADD    supervisord.conf     /etc/supervisord.conf
 ADD    runapp               /usr/local/bin/
+RUN    chmod 755 /usr/local/bin/runapp
 
 CMD    ["/bin/bash", "/usr/local/bin/runapp"]
