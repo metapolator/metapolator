@@ -11,6 +11,8 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         python-virtualenv python-setuptools python-pip \
         redis-server wget mysql-server mysql-client libmysqlclient-dev
 
+CMD     ["/usr/bin/mysqld_safe"]
+
 RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
 RUN     cd sfnt2woff && unzip woff-code-latest.zip && make
 RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
