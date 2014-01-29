@@ -254,9 +254,8 @@ class EditorLocals(app.page):
                 master.idlocala = localparam.id
 
         project = master.project
-        return simplejson.dumps({'master_id': master.id,
-                                 'label': x.axislabel,
-                                 'glyphname': project.currentglyph})
+        result = self.get_glyphs_jsondata(project.currentglyph, master)
+        return simplejson.dumps(result)
 
 
 class userstatic(app.page):
