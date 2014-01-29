@@ -433,6 +433,7 @@ PaperJSGraph.prototype = {
         });
 
         this.faintPathes = [];
+        this.ppscope.view.draw();
     },
 }
 

@@ -305,16 +305,10 @@ Workspace.prototype = {
     },
 
     reloadView: function(view, data) {
-        $.post('/editor/reload/', {
-            'master_id': data.master_id,
-            'glyphname': data.glyphname,
-            'axislabel': data.label
-            }
-        ).done(function(response){
-            var data = $.parseJSON(response);
-            this.versions = data.versions;
-            this.onGlyphChanged(view, data);
-        }.bind(this));
+        view.glyph.toggleFaintPaths(view.glyph.graph.faint, true);
+        view.glyph.render(data.R[0].contours);
+        view.glyph.toggleCenterline(true);
+        this.metapolationView.glyph.render(data.M[0].contours);
     },
 
     onMasterCreated: function(donecallback) {
