@@ -20,6 +20,7 @@ RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jk
 RUN     cd sfnt2woff && unzip woff-code-latest.zip && make
 RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
-ADD    runapp        /usr/local/bin/
+ADD    supervisord.conf     /etc/supervisord.conf
+ADD    runapp               /usr/local/bin/
 
 CMD    ["/bin/bash", "/usr/local/bin/runapp"]
