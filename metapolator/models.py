@@ -250,7 +250,7 @@ class Glyph(Base, UserQueryMixin):
     width = Column(Integer, default=0)
     width_new = Column(Integer)
 
-    original_glyph_contours = Column(Text, default='')
+    original_glyph_contours = Column(Text)
 
     master = relationship('Master', backref='master')
 
