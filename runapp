@@ -20,6 +20,8 @@ if [ ! -f metapolator/localconfig.py ]; then
 
     # Start mysql server
     /usr/bin/mysqld_safe &
+    sleep 10s
+    
     mysqladmin -u root password $METAPOLATOR_PASSWORD
     mysql -uroot -p$METAPOLATOR_PASSWORD -e "CREATE DATABASE metapolator;"
 
