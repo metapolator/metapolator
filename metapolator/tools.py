@@ -122,7 +122,13 @@ class PointSet(object):
 
         if empty_pairs:
             return False
-        return pairs
+
+        result = []
+        for p in pairs:
+            if not p['l'] or not p['r']:
+                continue
+            result.append(p)
+        return result
 
     def segments(self):
         """A sequence of (x,y) numeric coordinates pairs """
@@ -177,6 +183,45 @@ def get_sorted_points(points):
             rpoints.append(p)
 
     return sorted(lpoints, cmp=compare) + sorted(rpoints, cmp=compare, reverse=True)
+
+
+def get_controlpmode_pointsets(glif):
+    pointnr = 0
+    pointsets = []
+
+    for contour in glif.xpath('//outline/contour'):
+
+        pointset = PointSet()
+
+        for point in contour.findall('point'):
+            pointname = point.attrib.get('name')
+            type = point.attrib.get('type')
+
+            preset = {'type': type,
+                      'control_out': point.attrib.get('control_out'),
+                      'control_in': point.attrib.get('control_in'),
+                      'pointname': pointname,
+                      'startp': None,
+                      'tripledash': None}
+
+            if not pointname:
+                preset['pointname'] = 'p%s' % (pointnr + 1)
+
+            attribs = {}
+            for attr in point.attrib:
+                if attr == 'name':
+                    continue
+                attribs[attr] = point.attrib[attr]
+
+            attribs.update(preset)
+
+            pointset.add_point(float(point.attrib['x']),
+                               float(point.attrib['y']),
+                               preset['pointname'], pointnr + 1, attribs)
+            pointnr += 1
+
+        pointsets.append(pointset)
+    return pointsets
 
 
 def get_pointsets(glif):
@@ -265,7 +310,10 @@ def create_glyph(glif, master):
     glyph = glif.getroot()
     glyphname = glyph.get('name')
 
-    pointsets = get_pointsets(glif)
+    if master.project.mfparser == 'pen':
+        pointsets = get_pointsets(glif)
+    else:
+        pointsets = get_controlpmode_pointsets(glif)
 
     if Glyph.exists(name=glyphname, master_id=master.id):
         return
