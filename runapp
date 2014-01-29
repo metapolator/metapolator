@@ -1,8 +1,4 @@
 #!/bin/sh
-
-# Start mysql server
-/usr/bin/mysqld_safe &
-
 set -e
 
 cd www/metapolator
@@ -10,8 +6,18 @@ cd www/metapolator
 app=`find . -name 'metap-run.py' | head -n 1`
 
 if [ -z "$app" ]; then
-        echo "Couldn't locate app.py"
+        echo "Couldn't locate metap-run.py"
         exit 1
 fi
 
+# if [ ! -f metapolator/localconfig.py ]; then
+#     MYSQL_PASSWORD=`pwgen -c -n -1 12`
+#     METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
+    # Start mysql server
+    # /usr/bin/mysqld_safe &
+    # mysqladmin -u root password $MYSQL_PASSWORD 
+    # mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE metapolator; GRANT ALL PRIVILEGES ON metapolator.* TO 'root'@'localhost' IDENTIFIED BY '$METAPOLATOR_PASSWORD'; FLUSH PRIVILEGES;"
+
+/usr/bin/mysqld_safe &
+sleep 10s
 python $app
