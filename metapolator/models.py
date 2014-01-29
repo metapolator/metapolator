@@ -250,6 +250,8 @@ class Glyph(Base, UserQueryMixin):
     width = Column(Integer, default=0)
     width_new = Column(Integer)
 
+    original_glyph_contours = Column(Text, default='')
+
     master = relationship('Master', backref='master')
 
     def get_zpoints(self):

@@ -524,7 +524,8 @@ def get_json(content, glyphid=None, master=None):
             maxx, minx = GlyphOutline.minmax(GlyphOutline.x, glyph_id=g.id)[0]
             maxy, miny = GlyphOutline.minmax(GlyphOutline.y, glyph_id=g.id)[0]
 
-            if maxx is not None and minx is not None and maxy is not None and miny is not None:
+            if maxx is not None and minx is not None \
+                    and maxy is not None and miny is not None:
                 x_min = min(x_min, minx, x_max, maxx)
                 x_max = max(x_min, minx, x_max, maxx)
                 y_min = min(y_max, maxy, y_min, miny)
@@ -540,8 +541,14 @@ def get_json(content, glyphid=None, master=None):
         else:
             height = abs(y_max)
 
-        glyphs.append({'name': glyph, 'contours': contours, 'minx': x_min,
-                       'miny': y_min, 'zpoints': zpoints,
-                       'width': width, 'height': height})
+        json = {'name': glyph, 'contours': contours, 'minx': x_min,
+                'miny': y_min, 'zpoints': zpoints, 'width': width,
+                'height': height}
 
+        if not glyph.original_glyph_contours:
+            glyph.original_glyph_contours = contours
+
+        glyphs.append(json)
+
+    web.ctx.orm.commit()
     return glyphs

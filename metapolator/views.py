@@ -258,6 +258,21 @@ class EditorLocals(app.page, GlyphPageMixin):
         return simplejson.dumps(result)
 
 
+class GlyphOrigin(app.page):
+
+    path = '/a/glyph/origins/'
+
+    @raise404_notauthorized
+    def GET(self):
+        x = web.input(project=0, master_id=0)
+        glyph = models.Glyph.get(project_id=x.project,
+                                 master_id=x.master_id)
+
+        if not glyph:
+            raise web.notfound()
+        return glyph.original_glyph_contours
+
+
 class userstatic(app.page):
 
     path = '/users/(.*)'
