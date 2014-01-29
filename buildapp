@@ -1,5 +1,10 @@
 #!/bin/sh
+
+# start mysql server
+/usr/bin/mysqld_safe &
+
 mkdir www
+
 cd www
 
 git clone https://github.com/metapolator/metapolator
