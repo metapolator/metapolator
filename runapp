@@ -12,13 +12,15 @@ fi
 
 cd metapolator
 
+/usr/bin/mysqld_safe &
+sleep 5s
+
 if [ ! -f metapolator/localconfig.py ]; then
     METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
     echo mysql root password: $METAPOLATOR_PASSWORD
 
     # Start mysql server
-    /usr/bin/mysqld_safe &
-    sleep 10s
+    
 
     mysqladmin -u root password $METAPOLATOR_PASSWORD
     mysql -uroot -p$METAPOLATOR_PASSWORD -e "CREATE DATABASE metapolator;"
@@ -30,9 +32,6 @@ DATABASE_NAME='metapolator'""" > metapolator/localconfig.py
     cat metapolator/localconfig.py
 
     python metapolator/models.py
-
-    killall mysqld
-    sleep 10s
 fi
 
-supervisord -n
+python run.py
