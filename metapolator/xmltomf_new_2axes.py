@@ -4,15 +4,13 @@ import re
 import web
 
 import models
-from config import working_dir
-from sqlalchemy import func
 
 
 class DifferentZPointError(Exception):
     pass
 
 
-def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None):
+def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None, interpolated=False):
     """ Save current points to mf file
 
         master is an instance of models.Master
@@ -32,7 +30,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         glyphD = glyphA
 
     if not stdout_fip:
-        path = op.join(master.get_fonts_directory(), "glyphs")
+        glyphsdir = "metaglyphs" if interpolated else "glyphs"
+
+        path = op.join(master.get_fonts_directory(), glyphsdir)
         if not op.exists(path):
             os.makedirs(path)
         fip = open(op.join(path, '%s.mf' % glyphA.name), 'w')
@@ -554,6 +554,8 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
     fip.write("\n")
     fip.write("""% penstrokes""")
+ 
+    fip.write("""fill""")
 
     inattr = 0
     ivn = 0

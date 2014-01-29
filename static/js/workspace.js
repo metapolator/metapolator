@@ -12,7 +12,7 @@ function dict_from_locationhash() {
 var Workspace = function() {
     this.htmldoc = new WorkspaceDocument(window.MFPARSER);
     this.urldata = dict_from_locationhash();
-    
+
     var storage_ns = $.initNamespaceStorage('metapolator');
     this.storage = storage_ns.localStorage;
 
@@ -70,10 +70,13 @@ Workspace.prototype = {
         })
         .done(function(response) {
             var data = $.parseJSON(response);
-            
+
+            glyph.toggleFaintPaths(glyph.graph.faint, true);
+
             glyph.render(data.R[0].contours);
 
             glyph.toggleCenterline(true);
+
             this.metapolationView.glyph.render(data.M[0].contours);
         }.bind(this));
     },
@@ -188,7 +191,7 @@ Workspace.prototype = {
     },
 
     appendVersions: function(view) {
-        if (!this.versions.length) 
+        if (!this.versions.length)
             return;
 
         versionselect = $('<select>').addClass('versions').css('margin-bottom', '16px');

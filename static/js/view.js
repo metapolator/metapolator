@@ -85,18 +85,34 @@ View.prototype = {
             'type': 'checkbox',
             'id': 'cn-' + this.getLabel()
         });
-        
+
         var labelCenterLineButton = $('<label>', {
             'text': 'Show on / off center line',
             'for': 'cn-' + this.getLabel()
+        });
+
+        var switchFaintButton = $('<input>', {
+            'type': 'checkbox',
+            'id': 'faint-' + this.getLabel()
+        });
+        var labelFaintToggle = $('<label>', {
+            'text': 'Show on / off faint contour',
+            'for': 'faint-' + this.getLabel()
         });
 
         switchCenterLineButton.on('change', function(){
             this.glyph.toggleCenterline();
         }.bind(this));
 
+        switchFaintButton.on('change', function(e){
+            this.glyph.toggleFaintPaths($(e.target).prop('checked'));
+        }.bind(this));
+
         element.append(switchCenterLineButton);
         element.append(labelCenterLineButton);
+        element.append($('<br>'));
+        element.append(switchFaintButton);
+        element.append(labelFaintToggle);
     },
 
     onzpointchange: function(glyph, zpoint) {
@@ -118,7 +134,7 @@ View.prototype = {
             source: $(this.settingsform.find('select#idlocal')),
             listener: form,
             data: {
-                master_id: function() {return this.getMaster();}.bind(this), 
+                master_id: function() {return this.getMaster();}.bind(this),
                 glyph: function() {return this.glyphname;}.bind(this),
                 axislabel: this.getLabel()
             },
@@ -211,7 +227,7 @@ View.prototype = {
 
 function WorkspaceDocument(mode) {
     this.workspace = $('#workspace');
-    
+
     var templates = $('#templates');
     this.tmplAxes = templates.find('.editor-axes');
     this.tmplTabs = $($('#view').html());
@@ -238,7 +254,7 @@ WorkspaceDocument.prototype = {
         }
         return $(axis.parents('.editor-axes'));
     },
-    
+
     /*
      * Put to the page new row with axes
      */
@@ -294,7 +310,7 @@ WorkspaceDocument.prototype = {
     },
 
     /*
-     * Append to axis single canvas. This method related to active 
+     * Append to axis single canvas. This method related to active
      * tab on template as it make a copy of this one.
      */
     appendAxisSingleCanvas: function(axis) {
@@ -303,7 +319,7 @@ WorkspaceDocument.prototype = {
     },
 
     /*
-     * Append to axis tab navigation. Each tab has unique label 
+     * Append to axis tab navigation. Each tab has unique label
      * that used to make tabs unique in page with several axis.
      */
     appendAxisTabNavigation: function(axis) {
