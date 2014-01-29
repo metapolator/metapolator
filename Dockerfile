@@ -21,7 +21,7 @@ RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
 EXPOSE 3306
 
-ENTRYPOINT ["/usr/bin/mysqld_safe"]
+ENTRYPOINT ["/usr/bin/mysqld_safe", "&"]
 
 ADD    buildapp        /usr/local/bin/
 ADD    runapp        /usr/local/bin/
