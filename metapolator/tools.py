@@ -545,8 +545,8 @@ def get_json(content, glyphid=None, master=None):
                 'miny': y_min, 'zpoints': zpoints, 'width': width,
                 'height': height}
 
-        if not glyph.original_glyph_contours:
-            glyph.original_glyph_contours = contours
+        if master and glyph_obj and not glyph_obj.original_glyph_contours:
+            glyph_obj.original_glyph_contours = contours
 
         glyphs.append(json)
 
