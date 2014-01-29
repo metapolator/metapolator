@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Start mysql server
+/usr/bin/mysqld_safe &
+
 set -e
 
 cd www/metapolator && source .venv/bin/activate
