@@ -43,6 +43,7 @@ var PaperJSGraph = function(size, paperscope) {
     this.centerlines = [];
     this.centerlinespathes = [];
     this.centercircles = [];
+    this.faintPathes = [];
 
     this.zpoints = [];
     this.glyphpathes = [];
@@ -114,7 +115,7 @@ PaperJSGraph.prototype = {
     },
 
     firedMouseUp: function(event) {
-        if (!this.selectedzpoint) 
+        if (!this.selectedzpoint)
             return;
 
         this.onMouseUp ? this.onMouseUp(this.selectedzpoint, this.isdragged) : false;
@@ -134,7 +135,7 @@ PaperJSGraph.prototype = {
 
         return new this.ppscope.Point(r.x, r.y);
     },
-    
+
     showDebugLines: function(x1, y1, x2, y2, line) {
 
 
@@ -258,6 +259,17 @@ PaperJSGraph.prototype = {
         this.ppscope.view.draw();
     },
 
+    toggleFaintPaths: function(show, prevGlyphContours){
+        if (show && prevGlyphContours) {
+            this.deleteFaint();
+            $.each(prevGlyphContours, function(i, points){
+                this.drawFaintCountour(show, points);
+            }.bind(this));
+        } else if (this.faintPathes.length) {
+            this.deleteFaint();
+        }
+    },
+
     getLines: function(centerline, point) {
         var regex = /(z\d+)([lr])/;
         var match = point.pointname.match(regex);
@@ -276,14 +288,45 @@ PaperJSGraph.prototype = {
         }
     },
 
+    drawFaintCountour: function (show, points) {
+        this.ppscope.activate();
+        var element = this.getElement();
+
+        var faint = {};
+        var path = new this.ppscope.Path();
+        for (var k = 0; k < points.length; k++) {
+            var point = points[k];
+            var ppoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
+            ppoint.y += +MARGIN;
+            ppoint.x += +MARGIN;
+
+            var handleIn = this.getPoint(parseInt(point.controls[0].x) - parseInt(point.x),
+                                         parseInt(point.y) - parseInt(point.controls[0].y));
+            var handleOut = this.getPoint(parseInt(point.controls[1].x) - parseInt(point.x),
+                                          parseInt(point.y) - parseInt(point.controls[1].y));
+            var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
+
+            path.add(segment);
+
+            if (point.pointname) {
+                // console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
+                this.getLines(faint, point);
+            }
+        }
+        path = this.pathColorfy(path, 0.1);
+        this.ppscope.view.draw();
+
+        this.faintPathes.push(path);
+    },
+
     /*
      * Draw on canvas concrete contour.
-     * 
+     *
      * Parameters:
      * points - array of contour points in json format
      *   {x: N, y: M, controls: [{x: K, y: L}, {x: G, y: H}]}
      */
-    drawcontour: function(points) {
+    drawcontour: function(points, alpha) {
         this.ppscope.activate();
         var element = this.getElement();
 
@@ -310,19 +353,24 @@ PaperJSGraph.prototype = {
                 this.getLines(centerlines, point);
             }
         }
-        path.fillColor = {
-            hue: 360 * Math.random(),
-            saturation: 1,
-            brightness: 1,
-            alpha: 0.5
-        };
-        path.closed = true;
-        path.strokeColor = new this.ppscope.Color(0.5, 0, 0.5);
-        // path.fullySelected = true;
+        path = this.pathColorfy(path, alpha);
         this.ppscope.view.draw();
 
         this.glyphpathes.push(path);
         return centerlines;
+    },
+
+    pathColorfy: function(path, alpha){
+        path.fillColor = {
+            hue: 360 * Math.random(),
+            saturation: 1,
+            brightness: 1,
+            alpha: (alpha !== 'undefined')? alpha : 0.5,
+        };
+        path.closed = true;
+        path.strokeColor = new this.ppscope.Color(0.5, 0, 0.5);
+        path.fullySelected = true;
+        return path;
     },
 
     setPointByName: function(point) {
@@ -330,13 +378,13 @@ PaperJSGraph.prototype = {
 
         this.selectedzpoint = point;
         this.isdragged = false;
-        
+
         this.ppscope.view.draw();
     },
 
     /*
      * Draw z-point in canvas
-     * 
+     *
      * Parameters:
      * point - concrete point in json format {x: N, y: M, iszpoint: boolean}
      */
@@ -354,7 +402,7 @@ PaperJSGraph.prototype = {
 
         var point = new Point(this.ppscope, zpoint, point.data);
         this.zpoints.push(point);
-        
+
         this.ppscope.view.draw();
         return point;
     },
@@ -379,11 +427,14 @@ PaperJSGraph.prototype = {
         this.glyphpathes = [];
     },
 
-    makeFaintPaths: function() {
-        $(this.glyphpathes).each(function(i, el) {
-            el.fillColor.alpha = 0.1;
+    deleteFaint: function() {
+        $(this.faintPathes).each(function(i, el){
+            el.remove();
         });
-    }
+
+        this.faintPathes = [];
+        this.ppscope.view.draw();
+    },
 }
 
 
@@ -414,7 +465,7 @@ Point.prototype.getSegmentPoint = function() {
 Point.prototype.moveTo = function(point) {
     this.pointText.point.x = point.x;
     this.pointText.point.y = point.y - 8;
-    
+
     this.zpoint.x = parseInt(point.x);
     this.zpoint.y = parseInt(point.y);
 
@@ -462,6 +513,15 @@ Glyph.prototype = {
         this.graph.toggleCenterline(show);
     },
 
+    toggleFaintPaths: function(show, cont) {
+        this.graph.faint = show;
+        if (!cont) {
+            this.graph.toggleFaintPaths(show, this.pastGlyphControus);
+        } else {
+            this.graph.toggleFaintPaths(show, this.prevGlyphContours);
+        }
+    },
+
     getZPointByName: function(pointname) {
         var points = this.graph.zpoints.filter(function(point){
             return point.config.pointname == pointname;
@@ -472,13 +532,11 @@ Glyph.prototype = {
     },
 
     render: function(contours) {
-        // if (true || this.view.isShowFaint()) {
-        //     this.graph.makeFaintPaths();
-        // }
+        this.graph.deletepathes();
 
+        this.pastGlyphControus = this.prevGlyphContours;
         this.prevGlyphContours = contours;
 
-        this.graph.deletepathes();
         this.graph.centerlines = [];
         for (var k = 0; k < contours.length; k++) {
             this.graph.centerlines.push(

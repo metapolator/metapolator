@@ -199,7 +199,7 @@ class SwitchMFParser(app.page):
         raise seeother('/projects/')
 
 
-class EditorLocals(app.page):
+class EditorLocals(app.page, GlyphPageMixin):
 
     path = '/editor/locals/'
 
