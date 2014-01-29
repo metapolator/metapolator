@@ -27,6 +27,8 @@ if [ ! -f metapolator/localconfig.py ]; then
 DATABASE_PWD='$METAPOLATOR_PASSWORD'
 DATABASE_NAME='metapolator'""" > metapolator/localconfig.py
 
+    cat metapolator/localconfig.py
+
     python metapolator/models.py
 
     killall mysqld
