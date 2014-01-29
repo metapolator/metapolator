@@ -20,7 +20,7 @@ RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
 EXPOSE  80
 
-ADD    supervisord.conf     /etc/supervisor/conf.d/supervisord.conf
+ADD    supervisord.conf     /etc/supervisord.conf
 ADD    runapp               /usr/local/bin/
 ADD    nginx.conf           /etc/nginx/sites-enabled/nginx.conf
 RUN    chmod 755 /usr/local/bin/runapp
