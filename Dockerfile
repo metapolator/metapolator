@@ -2,10 +2,6 @@ FROM        ubuntu:12.04
 
 MAINTAINER  Vitaly Volkov <hash.3g@gmail.com> (@hash3g)
 
-RUN dpkg-divert --local --rename --add /sbin/initctl
-
-RUN ln -s /bin/true /sbin/initctl
-
 RUN     echo "deb http://mirror.bytemark.co.uk/ubuntu/ precise main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -14,7 +10,10 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         build-essential autoconf libtool python-dev \
         python-virtualenv python-setuptools python-pip \
         redis-server wget mysql-server mysql-client libmysqlclient-dev \
-        uwsgi uwsgi-plugin-python supervisor pwgen perl nginx
+        pwgen perl nginx
+
+RUN     pip install supervisor
+RUN     pip install uwsgi==2.0
 
 RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
 RUN     cd sfnt2woff && unzip woff-code-latest.zip && make
