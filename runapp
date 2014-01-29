@@ -15,8 +15,6 @@ cd metapolator
 /usr/bin/mysqld_safe &
 sleep 5s
 
-
-
 if [ ! -f metapolator/localconfig.py ]; then
     METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
     echo mysql root password: $METAPOLATOR_PASSWORD
@@ -36,10 +34,6 @@ DATABASE_NAME='metapolator'""" > metapolator/localconfig.py
     python metapolator/models.py
 fi
 
-redis-server &
-sleep 5s
-
-celery worker -A metapolator.tasks --workdir `pwd` &
-sleep 5s
-
+supervisord
+sleep 10s
 python run.py
