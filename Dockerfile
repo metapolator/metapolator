@@ -25,6 +25,7 @@ RUN    chmod 755 /usr/local/bin/runapp
 RUN    rm -rf /var/www/
 ADD    https://github.com/metapolator/metapolator/archive/master.zip /master.zip
 RUN    unzip master.zip
+RUN    mkdir -p /var/www/
 RUN    mv metapolation-master /var/www/metapolation
 
 RUN    mkdir /var/log/supervisor/
