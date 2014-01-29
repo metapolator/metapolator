@@ -264,8 +264,11 @@ class GlyphOrigin(app.page):
 
     @raise404_notauthorized
     def GET(self):
-        x = web.input(master_id=0)
-        glyph = models.Glyph.get(project_id=x.project,
+        x = web.input(master_id=0, glyphname='')
+        if not x.get('glyphname'):
+            raise web.notfound()
+
+        glyph = models.Glyph.get(name=x.glyphname,
                                  master_id=x.master_id)
 
         if not glyph:
