@@ -1,39 +1,34 @@
 #!/bin/sh
-mkdir -p /var/www && cd /var/www
-
-app=`find . -name 'run.py' | head -n 1`
-
-if [ -z "$app" ]; then
-    git clone https://github.com/metapolator/metapolator
-    cd metapolator
-    pip install -r requirements.txt
-    cd ..
-fi
-
-cd metapolator
-
 /usr/bin/mysqld_safe &
 sleep 5s
 
-if [ ! -f metapolator/localconfig.py ]; then
+if [ ! -f /var/www/metapolator/metapolator/localconfig.py ]; then
+    SSH_USERPASS=`pwgen -c -n -1 8`
+
+    mkdir /home/user
+    useradd -G sudo -d /home/user user
+    chown user /home/user
+    echo user:$SSH_USERPASS | chpasswd
+    echo ssh user password: $SSH_USERPASS
+
     METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
     echo mysql root password: $METAPOLATOR_PASSWORD
 
     # Start mysql server
-    
-
     mysqladmin -u root password $METAPOLATOR_PASSWORD
     mysql -uroot -p$METAPOLATOR_PASSWORD -e "CREATE DATABASE metapolator;"
 
     echo """DATABASE_USER='root'
 DATABASE_PWD='$METAPOLATOR_PASSWORD'
-DATABASE_NAME='metapolator'""" > metapolator/localconfig.py
+DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
 
-    cat metapolator/localconfig.py
+    cat /var/www/metapolator/metapolator/localconfig.py
 
-    python metapolator/models.py
+    python /var/www/metapolator/metapolator/models.py
+
+    pip install -r /var/www/metapolator/requirements.txt
+
+    chown -R user:user /var/www/metapolator
 fi
 
-supervisord
-sleep 10s
-python run.py
+supervisord -n
