@@ -855,6 +855,10 @@ def prepare_environment_directory(force=False):
         except (OSError, IOError):
             raise
 
+    import subprocess
+    subprocess.Popen(["mpost", "-progname=mpost", "-ini", "mf2pt1", "\\dump"],
+                     cwd=working_dir())
+
 
 class Register(app.page):
     """ Registration processes of users with username and password """
