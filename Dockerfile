@@ -7,8 +7,7 @@ RUN     echo "deb http://mirror.bytemark.co.uk/ubuntu/ precise main restricted u
 RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         automake unzip git texlive-metapost t1utils libffi-dev libevent-dev \
         libxml2-dev libxslt-dev fontforge python-fontforge \
-        build-essential autoconf libtool python-dev \
-        python-virtualenv python-setuptools python-pip \
+        build-essential autoconf libtool python-dev python-pip \
         redis-server wget mysql-server mysql-client libmysqlclient-dev \
         pwgen perl nginx
 
