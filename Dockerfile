@@ -21,3 +21,5 @@ RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
 ADD    buildapp        /usr/local/bin/
 ADD    runapp        /usr/local/bin/
+
+CMD    ["/bin/bash", "/usr/bin/mysqld_safe", "&"]
