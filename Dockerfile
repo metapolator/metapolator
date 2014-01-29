@@ -26,7 +26,7 @@ RUN    rm -rf /var/www/
 ADD    https://github.com/metapolator/metapolator/archive/master.zip /master.zip
 RUN    unzip master.zip
 RUN    mkdir -p /var/www/
-RUN    cp -R metapolation-master /var/www/metapolation
+RUN    cp -R metapolator-master /var/www/metapolator
 
 RUN    mkdir /var/log/supervisor/
 RUN    mkdir /var/run/sshd/
