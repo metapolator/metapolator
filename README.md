@@ -118,7 +118,8 @@ sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/s
 ## Docker instruction
 
 ```
-$ docker build -rm -t metapolator git://github.com/metapolator/docker.git
+$ sudo docker build -rm -t metapolator git://github.com/metapolator/docker.git
+$ sudo docker run -p 8080:80 -t metapolator
 ```
 
 ## License
