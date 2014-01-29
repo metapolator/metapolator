@@ -1,6 +1,4 @@
 #!/bin/sh
-set -e
-
 mkdir -p /var/www && cd /var/www
 
 app=`find . -name 'run.py' | head -n 1`
@@ -21,7 +19,7 @@ if [ ! -f metapolator/localconfig.py ]; then
     # Start mysql server
     /usr/bin/mysqld_safe &
     sleep 10s
-    
+
     mysqladmin -u root password $METAPOLATOR_PASSWORD
     mysql -uroot -p$METAPOLATOR_PASSWORD -e "CREATE DATABASE metapolator;"
 
