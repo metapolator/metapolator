@@ -24,10 +24,9 @@ DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
 
     cat /var/www/metapolator/metapolator/localconfig.py
 
-    python /var/www/metapolator/metapolator/models.py
-
     pip install -r /var/www/metapolator/requirements.txt
 
+    python /var/www/metapolator/metapolator/models.py
     chown -R user:user /var/www/metapolator
 fi
 
