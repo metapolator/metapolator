@@ -1,10 +1,22 @@
 %newinternal slant,fudge,math_spread,superness,superpull,beak_darkness,ligs;
 boolean square_dots,hefty,serifs,monospace,variant_g,low_asterisk,math_fitting;
 
+mdir:=1.35;
+mang:=1.15;
+
 mean#:=5.000pt#;
 cap#:=5.930pt#;
 asc#:=6.430pt#;
 desc#:=0.000pt#;
+
+mpx:=A_px#+metapolation*(B_px#-A_px#);
+capu#:=6.930pt#-0.5mpx;
+meanu#:=5.000pt#-0.5mpx;
+baseu#:=0pt#+0.5mpx;
+
+%	0,(capu+0.5dist2A)-y2l
+%	0,(baseu-0.5dist4A)-y4l
+% 	0,(meanu+0.5dist1A)-y1r
 
 divider:=2;
 base#:=0.000pt#;
@@ -151,7 +163,7 @@ define_pixels(s,u);
 
 define_pixels(px,py);
 define_pixels(A_px,A_py,B_px,B_py,C_px,C_py,D_px,D_py,A_skeleton,B_skeleton,C_skeleton,D_skeleton);
-define_good_y_pixels(mean,cap,asc,desc,box,base);
+define_good_y_pixels(mean,cap,asc,desc,box,base,capu,baseu,meanu);
 
 vardef tanh(expr x) =
 numeric ee_;
