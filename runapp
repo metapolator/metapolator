@@ -1,4 +1,6 @@
 #!/bin/sh
+sysctl vm.overcommit_memory=1
+
 /usr/bin/mysqld_safe &
 sleep 5s
 
