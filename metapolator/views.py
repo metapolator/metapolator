@@ -454,6 +454,8 @@ class EditorCopyMaster(app.page):
                                                width_new=glyph.width_new,
                                                project_id=glyph.project_id)
 
+            web.ctx.orm.commit()
+
             query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
             query = query.filter(models.GlyphOutline.glyph_id == glyph.id)
             query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
@@ -469,8 +471,10 @@ class EditorCopyMaster(app.page):
                     pointnr=outline.pointnr,
                     x=outline.x,
                     y=outline.y)
+                web.ctx.orm.commit()
 
                 param.copy(newglyphoutline_obj)
+                web.ctx.orm.commit()
 
         newmaster_obj.update_masters_ordering(postdata.axislabel)
         data = {'master_name': newmaster_obj.name,
