@@ -263,7 +263,7 @@ PaperJSGraph.prototype = {
         if (show && prevGlyphContours) {
             this.deleteFaint();
             $.each(prevGlyphContours, function(i, points){
-                this.drawFaintCountour(show, points);
+                this.drawFaintCountour(show, points, 0.1);
             }.bind(this));
         } else if (this.faintPathes.length) {
             this.deleteFaint();
@@ -365,7 +365,7 @@ PaperJSGraph.prototype = {
             hue: 360 * Math.random(),
             saturation: 1,
             brightness: 1,
-            alpha: (alpha !== 'undefined')? alpha : 0.5,
+            alpha: (alpha !== undefined)? alpha : 0.5,
         };
         path.closed = true;
         path.strokeColor = new this.ppscope.Color(0.5, 0, 0.5);
@@ -410,9 +410,8 @@ PaperJSGraph.prototype = {
 
     deletepoints: function() {
         $(this.zpoints).each(function(i, el){
-            el.segment.path.remove();
+            el.remove();
         });
-
         delete this.zpoints;
         this.zpoints = [];
     },
@@ -486,6 +485,12 @@ Point.prototype.resetselected = function() {
     this.point_circle.fillColor.alpha = 0.1;
     this.point_circle.fillColor.strokeWidth = 1;
     this.hardselected = false;
+}
+
+Point.prototype.remove = function() {
+    this.large_circle.remove();
+    this.point_circle.remove();
+    this.pointText.remove();
 }
 
 

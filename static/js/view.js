@@ -96,7 +96,7 @@ View.prototype = {
             'id': 'faint-' + this.getLabel()
         });
         var labelFaintToggle = $('<label>', {
-            'text': 'Show on / off faint contour',
+            'text': 'Show last step',
             'for': 'faint-' + this.getLabel()
         });
 

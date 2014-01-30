@@ -76,7 +76,8 @@ Workspace.prototype = {
             glyph.render(data.R[0].contours);
 
             glyph.toggleCenterline(true);
-
+            console.log(data);
+            glyph.renderZPoints(data.R[0].zpoints.points);
             this.metapolationView.glyph.render(data.M[0].contours);
         }.bind(this));
     },
@@ -271,7 +272,6 @@ Workspace.prototype = {
         view.attachGlyph(glyphdata);
         view.glyph.render(glyphdata.contours);
         view.glyph.renderZPoints(glyphdata.zpoints.points);
-
         view.onzpointdatachanged = this.onzpointchange.bind(this);
         view.onGlyphChanged = this.reloadView.bind(this);
         return view;
@@ -305,6 +305,7 @@ Workspace.prototype = {
     },
 
     reloadView: function(view, data) {
+        console.log(view, data);
         view.glyph.toggleFaintPaths(view.glyph.graph.faint, true);
         view.glyph.render(data.R[0].contours);
         view.glyph.toggleCenterline(true);
