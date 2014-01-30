@@ -80,7 +80,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
     fontd_outlines = list(query)
 
-
     for item, param in fonta_outlines:
 
         znamel = re.match('z(\d+)l', param.pointname)
@@ -554,7 +553,8 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
     fip.write("\n")
     fip.write("""% penstrokes""")
- 
+
+    fip.write("\n")
     fip.write("""fill""")
 
     inattr = 0
