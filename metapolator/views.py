@@ -529,39 +529,36 @@ class EditorCreateMaster(app.page):
                       pointnr=pointnr, x=int(float(point['x'])),
                       y=int(float(point['y'])))
         glyphoutline = models.GlyphOutline.create(**kwargs)
-
-        kwargs = dict(glyphoutline_id=glyphoutline.id,
-                      glyph_id=glyph.id,
-                      master_id=glyph.master_id,
-                      pointname=pointparam.pointname,
-                      startp=pointparam.startp,
-                      type=pointparam.type,
-                      control_in=pointparam.control_in,
-                      control_out=pointparam.control_out,
-                      doubledash=pointparam.doubledash,
-                      tripledash=pointparam.tripledash,
-                      leftp=pointparam.leftp,
-                      rightp=pointparam.rightp,
-                      downp=pointparam.downp,
-                      upp=pointparam.upp,
-                      dir=pointparam.dir,
-                      leftp2=pointparam.leftp2,
-                      rightp2=pointparam.rightp2,
-                      downp2=pointparam.downp2,
-                      upp2=pointparam.upp2,
-                      dir2=pointparam.dir2,
-                      tensionand=pointparam.tensionand,
-                      penshifted=pointparam.penshifted,
-                      pointshifted=pointparam.pointshifted,
-                      angle=pointparam.angle,
-                      penwidth=pointparam.penwidth,
-                      overx=pointparam.overx,
-                      overbase=pointparam.overbase,
-                      overcap=pointparam.overcap,
-                      overasc=pointparam.overasc,
-                      overdesc=pointparam.overdesc)
-        models.GlyphParam.create(**kwargs)
-        web.ctx.orm.commit()
+        models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
+                                 glyph_id=glyph.id,
+                                 master_id=glyph.master_id,
+                                 pointname=pointparam.pointname,
+                                 startp=pointparam.startp,
+                                 type=pointparam.type,
+                                 control_in=pointparam.control_in,
+                                 control_out=pointparam.control_out,
+                                 doubledash=pointparam.doubledash,
+                                 tripledash=pointparam.tripledash,
+                                 leftp=pointparam.leftp,
+                                 rightp=pointparam.rightp,
+                                 downp=pointparam.downp,
+                                 upp=pointparam.upp,
+                                 dir=pointparam.dir,
+                                 leftp2=pointparam.leftp2,
+                                 rightp2=pointparam.rightp2,
+                                 downp2=pointparam.downp2,
+                                 upp2=pointparam.upp2,
+                                 dir2=pointparam.dir2,
+                                 tensionand=pointparam.tensionand,
+                                 penshifted=pointparam.penshifted,
+                                 pointshifted=pointparam.pointshifted,
+                                 angle=pointparam.angle,
+                                 penwidth=pointparam.penwidth,
+                                 overx=pointparam.overx,
+                                 overbase=pointparam.overbase,
+                                 overcap=pointparam.overcap,
+                                 overasc=pointparam.overasc,
+                                 overdesc=pointparam.overdesc)
 
     def round(self, coord):
         return int(round(float(coord)))
@@ -577,6 +574,7 @@ class EditorCreateMaster(app.page):
         masters = project.get_ordered_masters()
 
         master = project.create_master()
+        web.ctx.orm.commit()
 
         prepare_master_environment(master)
 
@@ -590,7 +588,7 @@ class EditorCreateMaster(app.page):
         for glyph in primary_master.get_glyphs():
             json = get_edges_json(logpath, glyph.name)
             if not json:
-                raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s' % logpath}))
+                raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s for %s' % (logpath, glyph.name)}))
 
             zpoints = glyph.get_zpoints()
 
