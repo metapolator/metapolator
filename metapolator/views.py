@@ -561,6 +561,7 @@ class EditorCreateMaster(app.page):
                       overasc=pointparam.overasc,
                       overdesc=pointparam.overdesc)
         models.GlyphParam.create(**kwargs)
+        web.ctx.orm.commit()
 
     def round(self, coord):
         return int(round(float(coord)))
