@@ -87,16 +87,26 @@ View.prototype = {
         });
 
         var labelCenterLineButton = $('<label>', {
-            'text': 'Show on / off center line',
+            'text': 'center',
             'for': 'cn-' + this.getLabel()
         });
 
-        var switchFaintButton = $('<input>', {
+        var switchHistoryButton = $('<input>', {
             'type': 'checkbox',
             'id': 'faint-' + this.getLabel()
         });
-        var labelFaintToggle = $('<label>', {
-            'text': 'Show last step',
+        var labelHistoryToggle = $('<label>', {
+            'text': 'last step',
+            'for': 'faint-' + this.getLabel()
+        });
+
+
+        var switchSourceButton = $('<input>', {
+            'type': 'checkbox',
+            'id': 'faint-' + this.getLabel()
+        });
+        var labelSourceToggle = $('<label>', {
+            'text': 'source',
             'for': 'faint-' + this.getLabel()
         });
 
@@ -104,15 +114,20 @@ View.prototype = {
             this.glyph.toggleCenterline();
         }.bind(this));
 
-        switchFaintButton.on('change', function(e){
-            this.glyph.toggleFaintPaths($(e.target).prop('checked'));
+        switchHistoryButton.on('change', function(e){
+            this.glyph.toggleHistoryPaths($(e.target).prop('checked'));
+        }.bind(this));
+
+        switchSourceButton.on('change', function(e){
+            this.glyph.toggleSource($(e.target).prop('checked'));
         }.bind(this));
 
         element.append(switchCenterLineButton);
         element.append(labelCenterLineButton);
-        element.append($('<br>'));
-        element.append(switchFaintButton);
-        element.append(labelFaintToggle);
+        element.append(switchHistoryButton);
+        element.append(labelHistoryToggle);
+        element.append(switchSourceButton);
+        element.append(labelSourceToggle);
     },
 
     onzpointchange: function(glyph, zpoint) {

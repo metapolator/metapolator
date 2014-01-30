@@ -71,7 +71,7 @@ Workspace.prototype = {
         .done(function(response) {
             var data = $.parseJSON(response);
 
-            glyph.toggleFaintPaths(glyph.graph.faint, true);
+            glyph.toggleHistoryPaths(glyph.graph.faint, true);
 
             glyph.render(data.R[0].contours);
 
@@ -305,8 +305,7 @@ Workspace.prototype = {
     },
 
     reloadView: function(view, data) {
-        console.log(view, data);
-        view.glyph.toggleFaintPaths(view.glyph.graph.faint, true);
+        view.glyph.toggleHistoryPaths(view.glyph.graph.faint, true);
         view.glyph.render(data.R[0].contours);
         view.glyph.toggleCenterline(true);
         this.metapolationView.glyph.render(data.M[0].contours);

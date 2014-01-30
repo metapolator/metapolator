@@ -43,7 +43,7 @@ var PaperJSGraph = function(size, paperscope) {
     this.centerlines = [];
     this.centerlinespathes = [];
     this.centercircles = [];
-    this.faintPathes = [];
+    this.historyPathes = [];
 
     this.zpoints = [];
     this.glyphpathes = [];
@@ -259,15 +259,19 @@ PaperJSGraph.prototype = {
         this.ppscope.view.draw();
     },
 
-    toggleFaintPaths: function(show, prevGlyphContours){
+    toggleHistoryPaths: function(show, prevGlyphContours){
         if (show && prevGlyphContours) {
-            this.deleteFaint();
+            this.deleteHistory();
             $.each(prevGlyphContours, function(i, points){
-                this.drawFaintCountour(show, points, 0.1);
+                this.drawHistoryCountour(show, points, 0.1);
             }.bind(this));
-        } else if (this.faintPathes.length) {
-            this.deleteFaint();
+        } else if (this.historyPathes.length) {
+            this.deleteHistory();
         }
+    },
+
+    toggleSource: function(show) {
+        console.log('source');
     },
 
     getLines: function(centerline, point) {
@@ -288,11 +292,11 @@ PaperJSGraph.prototype = {
         }
     },
 
-    drawFaintCountour: function (show, points) {
+    drawHistoryCountour: function (show, points) {
         this.ppscope.activate();
         var element = this.getElement();
 
-        var faint = {};
+        var history = {};
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
             var point = points[k];
@@ -310,13 +314,13 @@ PaperJSGraph.prototype = {
 
             if (point.pointname) {
                 // console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
-                this.getLines(faint, point);
+                this.getLines(history, point);
             }
         }
         path = this.pathColorfy(path, 0.1);
         this.ppscope.view.draw();
 
-        this.faintPathes.push(path);
+        this.historyPathes.push(path);
     },
 
     /*
@@ -426,12 +430,12 @@ PaperJSGraph.prototype = {
         this.glyphpathes = [];
     },
 
-    deleteFaint: function() {
-        $(this.faintPathes).each(function(i, el){
+    deleteHistory: function() {
+        $(this.historyPathes).each(function(i, el){
             el.remove();
         });
 
-        this.faintPathes = [];
+        this.historyPathes = [];
         this.ppscope.view.draw();
     },
 }
@@ -518,13 +522,18 @@ Glyph.prototype = {
         this.graph.toggleCenterline(show);
     },
 
-    toggleFaintPaths: function(show, cont) {
-        this.graph.faint = show;
+    toggleHistoryPaths: function(show, cont) {
+        this.graph.history = show;
         if (!cont) {
-            this.graph.toggleFaintPaths(show, this.pastGlyphControus);
+            this.graph.toggleHistoryPaths(show, this.pastGlyphControus);
         } else {
-            this.graph.toggleFaintPaths(show, this.prevGlyphContours);
+            this.graph.toggleHistoryPaths(show, this.prevGlyphContours);
         }
+    },
+
+    toggleSource: function(show){
+        this.graph.source = show;
+        this.graph.toggleSource(show);
     },
 
     getZPointByName: function(pointname) {
