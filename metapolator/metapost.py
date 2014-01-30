@@ -87,7 +87,7 @@ class Metapost:
 
             if self.mfparser == 'controlpoints':
                 import xmltomf_new_2axes as xmltomf
-            xmltomf.xmltomf1(master, glyph)
+                xmltomf.xmltomf1(master, glyph)
 
         self.write_glyph_list(master)
         return self._execute(master)

@@ -369,7 +369,7 @@ PaperJSGraph.prototype = {
         };
         path.closed = true;
         path.strokeColor = new this.ppscope.Color(0.5, 0, 0.5);
-        path.fullySelected = true;
+        // path.fullySelected = true;
         return path;
     },
 
