@@ -55,8 +55,6 @@ $var title: Workspace
     }
 </style>
 
-<div style="text-align: center; font-size: 32pt;" id="loading" class="alert alert-info">Loading...</div>
-
 <!-- Button trigger modal -->
 <div id="btn-show-glyphs" style="display: none; padding-bottom: 16px;">
   <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#listglyphmodal">
@@ -68,16 +66,22 @@ $var title: Workspace
   <div id="glyph-switcher" class="span0 well">
   </div>
 
-  <div id="workspace" style="display: none;">
+  <div id="paper">
+    <div style="text-align: center; font-size: 32pt;" id="loading" class="alert alert-info">Loading...</div>
 
-      <div id="interpolations" style="display: none;">
+    <div id="workspace" style="display: none;">
 
-      </div>
-      <div class="editor">
+        <div id="interpolations" style="display: none;">
 
-      </div>
-      <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
+        </div>
+        <div class="editor">
+
+        </div>
+        <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
+    </div>
+
   </div>
+
 </div>
 
 <div id="empty-workspace" style="display: none;">
@@ -154,7 +158,7 @@ $var title: Workspace
 <script type="text/javascript">
 window.MFPARSER = "$:websession.get('mfparser')";
 $$('#btn-show-glyphs').on('click', function(){
-    $$('#workspace').toggleClass('col-xs-12 col-xs-10');
+    $$('#paper').toggleClass('col-xs-12 col-xs-10');
     $$('#glyph-switcher').toggleClass('span0 col-xs-2');
 });
 </script>
