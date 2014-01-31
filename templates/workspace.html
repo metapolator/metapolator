@@ -12,7 +12,7 @@ $var title: Workspace
         border: dashed 2px #ccc;
         text-align: center;
     }
-    
+
     .dropzone:before {
         content: "Drop archive with UFO here";
     }
@@ -37,8 +37,21 @@ $var title: Workspace
         display: none;
     }
 
+    .row div {
+      -webkit-transition: width 0.3s ease, margin 0.3s ease;
+      -moz-transition: width 0.3s ease, margin 0.3s ease;
+      -o-transition: width 0.3s ease, margin 0.3s ease;
+      transition: width 0.3s ease, margin 0.3s ease;
+    }
+
     #glyph-switcher span {
-        margin-right: 16px;
+        margin-right: 8px;
+    }
+
+    .span0 {
+        width: 0;
+        display: none;
+        margin-left: 0;
     }
 </style>
 
@@ -51,21 +64,26 @@ $var title: Workspace
   </button>
 </div>
 
-<div id="workspace" style="display: none;">
+<div class="row">
+  <div id="glyph-switcher" class="span0 well">
+  </div>
 
-    <div id="interpolations" style="display: none;">
+  <div id="workspace" style="display: none;">
 
-    </div>
-    <div class="editor">
-      
-    </div>
-    <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
+      <div id="interpolations" style="display: none;">
+
+      </div>
+      <div class="editor">
+
+      </div>
+      <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
+  </div>
 </div>
 
 <div id="empty-workspace" style="display: none;">
   <!-- Button trigger modal -->
     <div id="btn-show-glyphs" style="display: none; padding-bottom: 16px;">
-      <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#listglyphmodal">
+      <button class="btn btn-primary btn-xs">
         Show Glyphs
       </button>
     </div>
@@ -74,45 +92,25 @@ $var title: Workspace
 
     </div>
     <div class="editor">
-      
+
     </div>
     <div style="padding-top: 32px;"><button id="btn-add-axes" class="btn btn-large btn-success">Add axes</button></div>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="listglyphmodal" tabindex="-1" role="dialog" aria-labelledby="glyphmodallabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="glyphmodallabel">Available glyphs</h4>
-      </div>
-      <div class="modal-body">
-        <div id="glyph-switcher">
-            
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <div id="templates" style="display: none;">
     <!-- Row for axes -->
     <div class="row editor-axes">
 
         <div class="col-md-4 axis" axis-position="left">
-            
+
         </div>
-        
+
         <div class="col-md-4" axis-position="middle">
-            
+
         </div>
-        
+
         <div class="col-md-4 axis" axis-position="right">
-        
+
         </div>
 
     </div>
@@ -123,7 +121,7 @@ $var title: Workspace
     </div>
 
     <div id="view">
-        <ul class="nav nav-tabs" style="clear: both;"> 
+        <ul class="nav nav-tabs" style="clear: both;">
           <li class="active">
             <a data-toggle="tab">View</a>
           </li>
@@ -143,18 +141,22 @@ $var title: Workspace
               <form action="" method="post" class="extended pointform">
               $:webctx.pointparam_extended_form.render()
               </form>
-          </div> 
+          </div>
           <div class="tab-pane">
               <form action="" method="post" class="extended localparamform">
                 $:webctx.settings_form.render()
               </form>
-          </div> 
+          </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
 window.MFPARSER = "$:websession.get('mfparser')";
+$$('#btn-show-glyphs').on('click', function(){
+    $$('#workspace').toggleClass('col-xs-12 col-xs-10');
+    $$('#glyph-switcher').toggleClass('span0 col-xs-2');
+});
 </script>
 
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.9/paper.js"></script>
