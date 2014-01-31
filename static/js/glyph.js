@@ -44,6 +44,7 @@ var PaperJSGraph = function(size, paperscope) {
     this.centerlinespathes = [];
     this.centercircles = [];
     this.historyPathes = [];
+    this.sourcePathes = [];
 
     this.zpoints = [];
     this.glyphpathes = [];
@@ -270,10 +271,6 @@ PaperJSGraph.prototype = {
         }
     },
 
-    toggleSource: function(show) {
-        console.log('source');
-    },
-
     getLines: function(centerline, point) {
         var regex = /(z\d+)([lr])/;
         var match = point.pointname.match(regex);
@@ -323,6 +320,37 @@ PaperJSGraph.prototype = {
         this.historyPathes.push(path);
     },
 
+    drawSourceContour: function(points){
+      this.ppscope.activate();
+        var element = this.getElement();
+
+        var source = {};
+        var path = new this.ppscope.Path();
+        for (var k = 0; k < points.length; k++) {
+            var point = points[k];
+            var ppoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
+            ppoint.y += +MARGIN;
+            ppoint.x += +MARGIN;
+
+            var handleIn = this.getPoint(parseInt(point.controls[0].x) - parseInt(point.x),
+                                         parseInt(point.y) - parseInt(point.controls[0].y));
+            var handleOut = this.getPoint(parseInt(point.controls[1].x) - parseInt(point.x),
+                                          parseInt(point.y) - parseInt(point.controls[1].y));
+            var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
+
+            path.add(segment);
+
+            if (point.pointname) {
+                // console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
+                this.getLines(source, point);
+            }
+        }
+        path = this.pathColorfy(path, 0.2, '#505055');
+        this.ppscope.view.draw();
+
+        this.sourcePathes.push(path);
+    },
+
     /*
      * Draw on canvas concrete contour.
      *
@@ -364,13 +392,17 @@ PaperJSGraph.prototype = {
         return centerlines;
     },
 
-    pathColorfy: function(path, alpha){
-        path.fillColor = {
-            hue: 360 * Math.random(),
-            saturation: 1,
-            brightness: 1,
-            alpha: (alpha !== undefined)? alpha : 0.5,
-        };
+    pathColorfy: function(path, alpha, color){
+        if (color !== undefined) {
+            path.fillColor = color;
+        } else {
+            path.fillColor = 'red';
+            path.fillColor.hue =  360 * Math.random();
+            path.fillColor.saturation = 1;
+            path.fillColor.brightness = 1;
+        }
+        path.fillColor.alpha = (alpha !== undefined)? alpha : 0.5;
+
         path.closed = true;
         path.strokeColor = new this.ppscope.Color(0.5, 0, 0.5);
         // path.fullySelected = true;
@@ -418,6 +450,15 @@ PaperJSGraph.prototype = {
         });
         delete this.zpoints;
         this.zpoints = [];
+    },
+
+    deleteSource: function() {
+        $(this.sourcePathes).each(function(i, el){
+            el.remove();
+        });
+        delete this.sourcePathes;
+        this.sourcePathes = [];
+        this.ppscope.view.draw();
     },
 
 
@@ -531,11 +572,6 @@ Glyph.prototype = {
         }
     },
 
-    toggleSource: function(show){
-        this.graph.source = show;
-        this.graph.toggleSource(show);
-    },
-
     getZPointByName: function(pointname) {
         var points = this.graph.zpoints.filter(function(point){
             return point.config.pointname == pointname;
@@ -543,6 +579,14 @@ Glyph.prototype = {
         if (!points.length)
             return;
         return points[0];
+    },
+
+    renderSource: function(contours) {
+        this.graph.deleteSource();
+
+        for (var i = 0; i < contours.length; i++) {
+            this.graph.drawSourceContour(contours[i]);
+        }
     },
 
     render: function(contours) {

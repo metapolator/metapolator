@@ -93,21 +93,21 @@ View.prototype = {
 
         var switchHistoryButton = $('<input>', {
             'type': 'checkbox',
-            'id': 'faint-' + this.getLabel()
+            'id': 'history-' + this.getLabel()
         });
         var labelHistoryToggle = $('<label>', {
             'text': 'last step',
-            'for': 'faint-' + this.getLabel()
+            'for': 'history-' + this.getLabel()
         });
 
 
         var switchSourceButton = $('<input>', {
             'type': 'checkbox',
-            'id': 'faint-' + this.getLabel()
+            'id': 'source-' + this.getLabel()
         });
         var labelSourceToggle = $('<label>', {
             'text': 'source',
-            'for': 'faint-' + this.getLabel()
+            'for': 'source-' + this.getLabel()
         });
 
         switchCenterLineButton.on('change', function(){
@@ -119,7 +119,8 @@ View.prototype = {
         }.bind(this));
 
         switchSourceButton.on('change', function(e){
-            this.glyph.toggleSource($(e.target).prop('checked'));
+            this.glyph.showMaster = $(e.target).prop('checked');
+            this.glyph.toggleSource(this);
         }.bind(this));
 
         element.append(switchCenterLineButton);
