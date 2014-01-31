@@ -71,12 +71,13 @@ Workspace.prototype = {
         .done(function(response) {
             var data = $.parseJSON(response);
 
-            glyph.toggleFaintPaths(glyph.graph.faint, true);
+            glyph.toggleHistoryPaths(glyph.graph.history, true);
 
             glyph.render(data.R[0].contours);
 
             glyph.toggleCenterline(true);
 
+            glyph.renderZPoints(data.R[0].zpoints.points);
             this.metapolationView.glyph.render(data.M[0].contours);
         }.bind(this));
     },
@@ -271,10 +272,28 @@ Workspace.prototype = {
         view.attachGlyph(glyphdata);
         view.glyph.render(glyphdata.contours);
         view.glyph.renderZPoints(glyphdata.zpoints.points);
-
         view.onzpointdatachanged = this.onzpointchange.bind(this);
+        view.glyph.toggleSource = this.toggleSource.bind(this);
         view.onGlyphChanged = this.reloadView.bind(this);
         return view;
+    },
+
+    toggleSource: function(view){
+        var data = {glyphname: view.glyphname, master_id: view.master_id}
+        if (view.glyph.masterContures && view.glyph.showMaster) {
+            view.glyph.renderSource(view.glyph.masterContures);
+        }
+        else if (!view.glyph.masterContures && view.glyph.showMaster) {
+            $.get('/a/glyph/origins/', $.param(data))
+                        .done(function(response) {
+                            var response = $.parseJSON(response);
+                            view.glyph.masterContures = response;
+                            view.glyph.renderSource(response);
+                        }.bind(this));
+        }
+        else if (!view.glyph.showMaster) {
+            view.glyph.graph.deleteSource();
+        }
     },
 
     onGlyphChanged: function(view, data) {
@@ -305,9 +324,10 @@ Workspace.prototype = {
     },
 
     reloadView: function(view, data) {
-        view.glyph.toggleFaintPaths(view.glyph.graph.faint, true);
+        view.glyph.toggleHistoryPaths(view.glyph.graph.history, true);
         view.glyph.render(data.R[0].contours);
         view.glyph.toggleCenterline(true);
+        view.glyph.toggleSource(view);
         this.metapolationView.glyph.render(data.M[0].contours);
     },
 

@@ -43,7 +43,8 @@ var PaperJSGraph = function(size, paperscope) {
     this.centerlines = [];
     this.centerlinespathes = [];
     this.centercircles = [];
-    this.faintPathes = [];
+    this.historyPathes = [];
+    this.sourcePathes = [];
 
     this.zpoints = [];
     this.glyphpathes = [];
@@ -259,14 +260,14 @@ PaperJSGraph.prototype = {
         this.ppscope.view.draw();
     },
 
-    toggleFaintPaths: function(show, prevGlyphContours){
+    toggleHistoryPaths: function(show, prevGlyphContours){
         if (show && prevGlyphContours) {
-            this.deleteFaint();
+            this.deleteHistory();
             $.each(prevGlyphContours, function(i, points){
-                this.drawFaintCountour(show, points);
+                this.drawHistoryCountour(show, points, 0.1);
             }.bind(this));
-        } else if (this.faintPathes.length) {
-            this.deleteFaint();
+        } else if (this.historyPathes.length) {
+            this.deleteHistory();
         }
     },
 
@@ -288,11 +289,11 @@ PaperJSGraph.prototype = {
         }
     },
 
-    drawFaintCountour: function (show, points) {
+    drawHistoryCountour: function (show, points) {
         this.ppscope.activate();
         var element = this.getElement();
 
-        var faint = {};
+        var history = {};
         var path = new this.ppscope.Path();
         for (var k = 0; k < points.length; k++) {
             var point = points[k];
@@ -310,13 +311,44 @@ PaperJSGraph.prototype = {
 
             if (point.pointname) {
                 // console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
-                this.getLines(faint, point);
+                this.getLines(history, point);
             }
         }
         path = this.pathColorfy(path, 0.1);
         this.ppscope.view.draw();
 
-        this.faintPathes.push(path);
+        this.historyPathes.push(path);
+    },
+
+    drawSourceContour: function(points){
+      this.ppscope.activate();
+        var element = this.getElement();
+
+        var source = {};
+        var path = new this.ppscope.Path();
+        for (var k = 0; k < points.length; k++) {
+            var point = points[k];
+            var ppoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
+            ppoint.y += +MARGIN;
+            ppoint.x += +MARGIN;
+
+            var handleIn = this.getPoint(parseInt(point.controls[0].x) - parseInt(point.x),
+                                         parseInt(point.y) - parseInt(point.controls[0].y));
+            var handleOut = this.getPoint(parseInt(point.controls[1].x) - parseInt(point.x),
+                                          parseInt(point.y) - parseInt(point.controls[1].y));
+            var segment = new this.ppscope.Segment(ppoint, handleIn, handleOut);
+
+            path.add(segment);
+
+            if (point.pointname) {
+                // console.log(point.pointname + ' : ' + point.x + ', ' + point.y);
+                this.getLines(source, point);
+            }
+        }
+        path = this.pathColorfy(path, 0.2, '#505055');
+        this.ppscope.view.draw();
+
+        this.sourcePathes.push(path);
     },
 
     /*
@@ -360,13 +392,17 @@ PaperJSGraph.prototype = {
         return centerlines;
     },
 
-    pathColorfy: function(path, alpha){
-        path.fillColor = {
-            hue: 360 * Math.random(),
-            saturation: 1,
-            brightness: 1,
-            alpha: (alpha !== 'undefined')? alpha : 0.5,
-        };
+    pathColorfy: function(path, alpha, color){
+        if (color !== undefined) {
+            path.fillColor = color;
+        } else {
+            path.fillColor = 'red';
+            path.fillColor.hue =  360 * Math.random();
+            path.fillColor.saturation = 1;
+            path.fillColor.brightness = 1;
+        }
+        path.fillColor.alpha = (alpha !== undefined)? alpha : 0.5;
+
         path.closed = true;
         path.strokeColor = new this.ppscope.Color(0.5, 0, 0.5);
         // path.fullySelected = true;
@@ -410,11 +446,19 @@ PaperJSGraph.prototype = {
 
     deletepoints: function() {
         $(this.zpoints).each(function(i, el){
-            el.segment.path.remove();
+            el.remove();
         });
-
         delete this.zpoints;
         this.zpoints = [];
+    },
+
+    deleteSource: function() {
+        $(this.sourcePathes).each(function(i, el){
+            el.remove();
+        });
+        delete this.sourcePathes;
+        this.sourcePathes = [];
+        this.ppscope.view.draw();
     },
 
 
@@ -427,12 +471,12 @@ PaperJSGraph.prototype = {
         this.glyphpathes = [];
     },
 
-    deleteFaint: function() {
-        $(this.faintPathes).each(function(i, el){
+    deleteHistory: function() {
+        $(this.historyPathes).each(function(i, el){
             el.remove();
         });
 
-        this.faintPathes = [];
+        this.historyPathes = [];
         this.ppscope.view.draw();
     },
 }
@@ -488,6 +532,12 @@ Point.prototype.resetselected = function() {
     this.hardselected = false;
 }
 
+Point.prototype.remove = function() {
+    this.large_circle.remove();
+    this.point_circle.remove();
+    this.pointText.remove();
+}
+
 
 var Glyph = function(view, glyphsize) {
     this.graph = new Graph();
@@ -513,12 +563,12 @@ Glyph.prototype = {
         this.graph.toggleCenterline(show);
     },
 
-    toggleFaintPaths: function(show, cont) {
-        this.graph.faint = show;
+    toggleHistoryPaths: function(show, cont) {
+        this.graph.history = show;
         if (!cont) {
-            this.graph.toggleFaintPaths(show, this.pastGlyphControus);
+            this.graph.toggleHistoryPaths(show, this.pastGlyphControus);
         } else {
-            this.graph.toggleFaintPaths(show, this.prevGlyphContours);
+            this.graph.toggleHistoryPaths(show, this.prevGlyphContours);
         }
     },
 
@@ -529,6 +579,14 @@ Glyph.prototype = {
         if (!points.length)
             return;
         return points[0];
+    },
+
+    renderSource: function(contours) {
+        this.graph.deleteSource();
+
+        for (var i = 0; i < contours.length; i++) {
+            this.graph.drawSourceContour(contours[i]);
+        }
     },
 
     render: function(contours) {
