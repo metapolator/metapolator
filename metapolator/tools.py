@@ -201,9 +201,7 @@ def get_controlpmode_pointsets(glif):
             preset = {'type': type,
                       'control_out': point.attrib.get('control_out'),
                       'control_in': point.attrib.get('control_in'),
-                      'pointname': pointname,
-                      'startp': None,
-                      'tripledash': None}
+                      'pointname': pointname}
 
             if not pointname:
                 preset['pointname'] = 'p%s' % (pointnr + 1)

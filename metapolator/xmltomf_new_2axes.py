@@ -554,8 +554,8 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     fip.write("\n")
     fip.write("""% penstrokes""")
 
-    fip.write("\n")
-    fip.write("""fill""")
+    # fip.write("\n")
+    # fip.write("""fill""")
 
     inattr = 0
     ivn = 0
@@ -696,7 +696,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
             if istartp is not None:
                 istartpval = param.startp
-                startp.append("fill ")
+                startp.append("\nfill\n")
                 startpval.append(istartpval)
             else:
                 startp.append("")
@@ -910,10 +910,10 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     semi = ";"
 
     fip.write('\n')
+
     for i in range(len(zzn) - 1):
         zitem = zzn[i]
         zeile = str(startp[i]) + "z" + str(zitem)
-
 
         if startp[i + 1] == "":
 
