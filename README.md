@@ -20,7 +20,17 @@ Requirements:
 
 ## Installation
 
-### Ubuntu or Debian
+### Docker
+
+The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
+
+1. [Install Docker](http://www.docker.io/gettingstarted/)
+2. `sudo docker build -rm -t metapolator git://github.com/metapolator/docker.git;`
+3. `sudo docker run -p 8080 -t metapolator;`
+
+### Traditional Installation
+
+#### Ubuntu/Debian
 
 ```sh
 $ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
@@ -35,7 +45,7 @@ $ virtualenv .venv;
 $ source .venv/bin/activate ; pip install -r requirements.txt
 ```
 
-### Mac OS X 
+#### Mac OS X 
 
 ```sh
 # Install Homebrew
@@ -62,6 +72,8 @@ $ pip install virtualenv;
 $ virtualenv .venv;
 $ source .venv/bin/activate ; pip install -r requirements.txt
 ````
+
+### Setup
 
 Login to your mysql database as root. You could also change these settings on line 6 in model.py.
 
@@ -99,7 +111,7 @@ Start celery server
 $ .venv/bin/celery -A metapolator.tasks worker --loglevel=info
 ```
 
-### Deployment
+### Ubuntu/Debian Server Deployment
 
 Install supervisor and nginx
 
@@ -113,13 +125,6 @@ Create symlinks for configuration file. Notice that your project directory is no
 ```
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/supervisor/conf.d/metapolator.conf;
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf;
-```
-
-## Docker instruction
-
-```
-$ sudo docker build -rm -t metapolator git://github.com/metapolator/docker.git
-$ sudo docker run -p 8080 -t metapolator
 ```
 
 ## License
