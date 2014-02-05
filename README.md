@@ -23,57 +23,57 @@ Requirements:
 ### Ubuntu or Debian
 
 ```sh
-$ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
+sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
 # Note your mysql root password
-$ mkdir src;
-$ cd src;
-$ wget http://mirrors.ctan.org/support/mf2pt1.zip;
-$ unzip mf2pt1.zip;
-$ mkdir sfnt2woff;
-$ cd sfnt2woff;
-$ wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
-$ unzip woff-code-latest.zip;
-$ make;
-$ sudo cp sfnt2woff /usr/local/bin/;
-$ cd ..;
-$ sudo apt-get install -y build-essential autoconf libtool python-dev;
+mkdir src;
+cd src;
+wget http://mirrors.ctan.org/support/mf2pt1.zip;
+unzip mf2pt1.zip;
+mkdir sfnt2woff;
+cd sfnt2woff;
+wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
+unzip woff-code-latest.zip;
+make;
+sudo cp sfnt2woff /usr/local/bin/;
+cd ..;
+sudo apt-get install -y build-essential autoconf libtool python-dev;
 # TODO: how to install fontforge and fontforge-python from source
 # git clone https://github.com/fontforge/fontforge.git;
-$ sudo apt-get install -y fontforge python-fontforge;
-$ git clone https://github.com/metapolator/metapolator.git;
-$ cd metapolator;
-$ easy_install -U distribute pip;
-$ sudo apt-get install -y python-virtualenv;
-$ virtualenv .venv;
-$ source .venv/bin/activate ; pip install -r requirements.txt
+sudo apt-get install -y fontforge python-fontforge;
+git clone https://github.com/metapolator/metapolator.git;
+cd metapolator;
+easy_install -U distribute pip;
+sudo apt-get install -y python-virtualenv;
+virtualenv .venv;
+source .venv/bin/activate ; pip install -r requirements.txt;
 ```
 
 ### Mac OS X 
 
 ```sh
 # Install Homebrew
-$ brew install mysql t1utils libffi libevent libxml2 libxslt;
-$ ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
-$ launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-$ mkdir src;
-$ cd src;
-$ wget http://mirrors.ctan.org/support/mf2pt1.zip;
-$ unzip mf2pt1.zip;
-$ mkdir sfnt2woff;
-$ cd sfnt2woff;
-$ wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
-$ unzip woff-code-latest.zip;
-$ make;
-$ sudo cp sfnt2woff /usr/local/bin/;
-$ cd ..;
-$ brew install autoconf automake libtool python;
-$ brew install fontforge --with-x --HEAD;
-$ git clone https://github.com/metapolator/metapolator.git;
-$ cd metapolator;
-$ easy_install -U distribute pip;
-$ pip install virtualenv;
-$ virtualenv .venv;
-$ source .venv/bin/activate ; pip install -r requirements.txt
+brew install mysql t1utils libffi libevent libxml2 libxslt;
+ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
+mkdir src;
+cd src;
+wget http://mirrors.ctan.org/support/mf2pt1.zip;
+unzip mf2pt1.zip;
+mkdir sfnt2woff;
+cd sfnt2woff;
+wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
+unzip woff-code-latest.zip;
+make;
+sudo cp sfnt2woff /usr/local/bin/;
+cd ..;
+brew install autoconf automake libtool python;
+brew install fontforge --with-x --HEAD;
+git clone https://github.com/metapolator/metapolator.git;
+cd metapolator;
+easy_install -U distribute pip;
+pip install virtualenv;
+virtualenv .venv;
+source .venv/bin/activate ; pip install -r requirements.txt
 ````
 
 Login to your mysql database as root. You could also change these settings on line 6 in model.py.
@@ -90,20 +90,20 @@ mysql> CREATE DATABASE metapolatordev;
 
 Load the preset database:
 
-```
-$ .venv/bin/python metapolator/models.py
+```sh
+.venv/bin/python metapolator/models.py;
 ```
 
 Start web.py application:
 
-```
-$ .venv/bin/python run.py
+```sh
+.venv/bin/python run.py;
 ```
 
 This should give you a local web server you can visit with Chrome:
 
-```
-[http://0.0.0.0:8080/](http://0.0.0.0:8080/)
+```sh
+open [http://0.0.0.0:8080](http://0.0.0.0:8080);
 ```
 
 ### Deployment
