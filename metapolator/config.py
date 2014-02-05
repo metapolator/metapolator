@@ -1,7 +1,14 @@
 import os
 import os.path as op
 import web
+
 from sqlalchemy.orm import scoped_session, sessionmaker
+from celery import Celery
+
+import metapolator.celeryconfig
+
+celery = Celery('metapolator.tasks')
+celery.config_from_object(metapolator.celeryconfig)
 
 PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
 DATABASE_NAME = 'metapolatordev'
@@ -9,7 +16,7 @@ DATABASE_USER = 'root'
 DATABASE_PWD = ''
 
 try:
-    from localconfig import DATABASE_USER, DATABASE_PWD, DATABASE_NAME
+    from metapolator.localconfig import DATABASE_USER, DATABASE_PWD, DATABASE_NAME
 except ImportError:
     pass
 
@@ -22,21 +29,21 @@ engine = create_engine(DATABASE_ENGINE, echo=False)
 web.config.debug = False
 
 
-def load_user(handler):
+def load_user(handler=None):
     import models
     try:
         web.ctx.user = models.User.get(id=session.user)
     except AttributeError:
         web.ctx.user = None
-    return handler()
+    return handler and handler()
 
 
-def load_sqla(handler):
+def load_sqla(handler=None):
     if not session.get('mfparser'):
         session.mfparser = 'controlpoints'
     web.ctx.orm = scoped_session(sessionmaker(bind=engine))
     try:
-        return handler()
+        return handler and handler()
     except web.HTTPError:
         web.ctx.orm.commit()
         raise
@@ -57,6 +64,11 @@ app.add_processor(load_sqla)
 session = web.session.Session(app, web.session.DiskStore('sessions'),
                               {'count': 0})
 app.add_processor(load_user)
+
+
+def absolute(path):
+    PATH = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(PATH, path)
 
 
 def is_loggedin():

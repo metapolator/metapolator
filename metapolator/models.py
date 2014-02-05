@@ -4,6 +4,12 @@ import os.path as op
 import re
 import web
 
+if __name__ == "__main__":
+    import sys
+    PATH = op.dirname(op.abspath(__file__))
+    sys.path.append(op.join(PATH, '..'))
+
+
 from sqlalchemy import Column, Integer, String, Text, Enum, Float, \
     Boolean, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -12,6 +18,10 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from config import engine, working_dir
 from dbapi import UserQueryMixin, query
+
+
+LABELS = range(ord('A'), ord('Z') + 1)
+
 
 Base = declarative_base()
 
@@ -60,10 +70,15 @@ class LocalParam(Base, UserQueryMixin):
     space = Column(Float, default=0)
     xheight = Column(Float, default=5)
     capital = Column(Float, default=6)
-    ascender = Column(Float, default=6)
+    ascender = Column(Float, default=6.5)
     descender = Column(Float, default=-2)
     skeleton = Column(Float, default=0)
     over = Column(Float, default=0.1)
+    jut = Column(Float, default=1)
+    slab = Column(Float, default=1)
+    bracket = Column(Float, default=1)
+    serif_darkness = Column(Float, default=1)
+    slant = Column(Float, default=1)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -81,7 +96,7 @@ class GlobalParam(Base, UserQueryMixin):
     fontsize = Column(Float, default=10)
     mean = Column(Float, default=5, doc='height of lower case')
     cap = Column(Float, default=6, doc='height of uppercase')
-    ascl = Column(Float, default=8, doc='highest height of talles character')
+    asc = Column(Float, default=6.5, doc='height of talle characters')
     des = Column(Float, default=-2, doc='lowest point in glyphs')
     box = Column(Float, default=10)
 
@@ -96,28 +111,38 @@ class Project(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     masters = Column(String(128), default='')
-    # mfparser = Column(String(128), default='')
+    mfparser = Column(String(128), default='')
+    currentglyph = Column(String(128), index=True, default='')
 
     projectname = Column(String(128), index=True)
 
-    @classmethod
-    def get_master(cls, projectname, version=False):
-        project = Project.get(projectname=projectname)
-        if not project:
-            return
+    def create_master(self):
+        version = Master.max(Master.version, project_id=self.id) or 0
+        return Master.create(project_id=self.id, version=(version + 1))
 
-        master = Master.filter(project_id=project.id)
-        if version:
-            master = master.filter_by(version=version)
-        return master.order_by(Master.version.desc()).first()
+    def get_ordered_masters(self):
+        from tools import unifylist
+        # we should unify masters list in case if some masters absence
+        # and raise error if unavailable
+        _masters = unifylist(self.masters.split(','))
+
+        # masters are passed here as ordered array of masters ids as they
+        # placed on editor page
+        instances = Master.all().filter(Master.id.in_(self.masters.split(',')))
+
+        masters = []
+        for p in _masters:
+            for m in instances:
+                if m.id == int(p):
+                    masters.append(m)
+                    break
+        return masters
 
     def get_instancelog(self, version=1, ab_source=None):
         if ab_source:
             return op.join(working_dir(),
-                           '%s-%s-%03d.log' % (self.projectname,
-                                               ab_source.upper(), version))
-        return op.join(working_dir(),
-                       '%s.log' % (self.projectname))
+                           '%s-%03d.log' % (self.projectname, version))
+        return op.join(working_dir(), '%s.log' % (self.projectname))
 
     def get_basename(self):
         return self.projectname
@@ -137,8 +162,6 @@ class Metapolation(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
-    primary_master_id = Column(Integer, ForeignKey('master.id'))
-    second_master_id = Column(Integer, ForeignKey('master.id'))
     label = Column(String(2), index=True)
     value = Column(Float, default=0)
 
@@ -150,6 +173,7 @@ class Instance(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
+    archived = Column(Boolean, index=True, default=False)
 
 
 class Master(Base, UserQueryMixin):
@@ -161,44 +185,54 @@ class Master(Base, UserQueryMixin):
     user_id = Column(Integer, ForeignKey('users.id'))
 
     idlocala = Column(Integer, ForeignKey('localparam.id'))
-    idlocalb = Column(Integer, ForeignKey('localparam.id'))
     idglobal = Column(Integer, ForeignKey('globalparam.id'))
     version = Column(Integer, default=0, index=True)
 
-    fontnamea = Column(Text)
-    fontnameb = Column(Text)
+    name = Column(String(128), default='')
 
     project = relationship('Project', backref='projects')
 
-    def get_glyphs(self, ab_source='A'):
-        q = Glyph.filter(master_id=self.id, fontsource=ab_source.upper())
-        return q.order_by(Glyph.name.asc())
+    task_id = Column(String(128), default='')
+    task_created = Column(DateTime)
+    task_completed = Column(Boolean, default=False)
+    task_updated = Column(DateTime)
 
-    def get_ufo_path(self, ab_source):
+    def update_masters_ordering(self, axislabel):
+        project = self.project
+
+        index = LABELS.index(ord(axislabel))
+        masters = project.masters.split(',')
+        if index > len(masters) - 1:
+            masters.append(self.id)
+        else:
+            masters[index] = self.id
+        project.masters = ','.join(map(str, masters))
+        web.ctx.orm.commit()
+
+    def get_glyphs(self):
+        return Glyph.filter(master_id=self.id).order_by(Glyph.name.asc())
+
+    def get_ufo_path(self):
         fontpath = self.get_fonts_directory()
-        ab_source = ab_source.upper()
-        path = op.join(fontpath, '%s-%s-%03d.ufo' % (self.project.projectname,
-                                                     ab_source,
-                                                     self.version))
-        return path
+        return op.join(fontpath, '%s-%03d.ufo' % (self.project.projectname,
+                                                  self.version))
 
     def get_metafont(self, ab_source=None):
         if ab_source:
-            return '%s-%s-%03d' % (self.project.projectname,
-                                   ab_source.upper(), self.version)
+            return '%s-%03d' % (self.project.projectname, self.version)
         return self.project.projectname
 
     def metafont_filepath(self, ab_source=None):
         return op.join(self.get_fonts_directory(),
                        self.get_metafont(ab_source) + '.mf')
 
-    def metafont_exists(self, ab_source=None):
+    def metafont_exists(self):
         try:
-            return op.exists(self.metafont_filepath(ab_source))
+            return op.exists(self.metafont_filepath('a'))
         except ValueError:
             pass
 
-    def get_fonts_directory(self, ab_source=None):
+    def get_fonts_directory(self):
         return self.project.get_directory(self.version)
 
 
@@ -209,11 +243,14 @@ class Glyph(Base, UserQueryMixin):
     id = Column(Integer, primary_key=True)
     master_id = Column(Integer, ForeignKey('master.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
 
     fontsource = Column(Enum('A', 'B'), index=True)
     name = Column(String(3), index=True)
-    width = Column(Integer)
-    unicode = Column(Text)
+    width = Column(Integer, default=0)
+    width_new = Column(Integer)
+
+    original_glyph_contours = Column(Text)
 
     master = relationship('Master', backref='master')
 
@@ -226,40 +263,6 @@ class Glyph(Base, UserQueryMixin):
             if re.match('z\d+[rl]', param.pointname):
                 zpoints.append(param)
         return zpoints
-
-    def flushparams(self):
-        GlyphParam.update(glyph_id=self.id, values=dict(doubledash=None,
-                                                        tripledash=None,
-                                                        superleft=None,
-                                                        superright=None,
-                                                        leftp=None,
-                                                        rightp=None,
-                                                        downp=None,
-                                                        upp=None,
-                                                        dir=None,
-                                                        leftp2=None,
-                                                        rightp2=None,
-                                                        downp2=None,
-                                                        upp2=None,
-                                                        dir2=None,
-                                                        tension=None,
-                                                        tensionand=None,
-                                                        cycle=None,
-                                                        penshifted=None,
-                                                        pointshifted=None,
-                                                        angle=None,
-                                                        penwidth=None,
-                                                        overx=None,
-                                                        overbase=None,
-                                                        overcap=None,
-                                                        overasc=None,
-                                                        overdesc=None,
-                                                        ascpoint=None,
-                                                        descpoint=None,
-                                                        stemcutter=None,
-                                                        stemshift=None,
-                                                        inktrap_l=None,
-                                                        inktrap_r=None))
 
 
 class GlyphOutline(Base, UserQueryMixin):
@@ -295,15 +298,12 @@ class GlyphParam(Base, UserQueryMixin):
     master_id = Column(Integer, ForeignKey('master.id'))
 
     pointname = Column(String(32))
-    groupname = Column(String(32))
     type = Column(String(32))
     control_in = Column(String(32))
     control_out = Column(String(32))
     startp = Column(Integer)
     doubledash = Column(String(32))
     tripledash = Column(String(32))
-    superleft = Column(String(32))
-    superright = Column(String(32))
     leftp = Column(String(32))
     rightp = Column(String(32))
     downp = Column(String(32))
@@ -314,9 +314,7 @@ class GlyphParam(Base, UserQueryMixin):
     downp2 = Column(String(32))
     upp2 = Column(String(32))
     dir2 = Column(String(32))
-    tension = Column(String(32))
     tensionand = Column(String(32))
-    cycle = Column(String(32))
     penshifted = Column(String(32))
     pointshifted = Column(String(32))
     angle = Column(String(32))
@@ -326,12 +324,52 @@ class GlyphParam(Base, UserQueryMixin):
     overcap = Column(String(32))
     overasc = Column(String(32))
     overdesc = Column(String(32))
-    ascpoint = Column(String(32))
-    descpoint = Column(String(32))
-    stemcutter = Column(String(32))
-    stemshift = Column(String(32))
-    inktrap_l = Column(String(32))
-    inktrap_r = Column(String(32))
+
+    theta = Column(String(32))
+    serif_h_bot = Column(String(32))
+    serif_h_top = Column(String(32))
+    serif_v_left = Column(String(32))
+    serif_v_right = Column(String(32))
+
+    def copy(self, newglyphoutline_obj):
+
+        return GlyphParam.create(
+            glyph_id=newglyphoutline_obj.glyph_id,
+            glyphoutline_id=newglyphoutline_obj.id,
+            master_id=newglyphoutline_obj.master_id,
+
+            pointname=self.pointname,
+            type=self.type,
+            control_in=self.control_in,
+            control_out=self.control_out,
+            startp=self.startp,
+            doubledash=self.doubledash,
+            tripledash=self.tripledash,
+            leftp=self.leftp,
+            rightp=self.rightp,
+            downp=self.downp,
+            upp=self.upp,
+            dir=self.dir,
+            leftp2=self.leftp2,
+            rightp2=self.rightp2,
+            downp2=self.downp2,
+            upp2=self.upp2,
+            dir2=self.dir2,
+            tensionand=self.tensionand,
+            penshifted=self.penshifted,
+            pointshifted=self.pointshifted,
+            angle=self.angle,
+            penwidth=self.penwidth,
+            overx=self.overx,
+            overbase=self.overbase,
+            overcap=self.overcap,
+            overasc=self.overasc,
+            overdesc=self.overdesc,
+            theta=self.theta,
+            serif_h_bot=self.serif_h_bot,
+            serif_h_top=self.serif_h_top,
+            serif_v_left=self.serif_v_left,
+            serif_v_right=self.serif_v_right)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

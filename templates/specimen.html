@@ -15,8 +15,8 @@ $def with (project, instances)
 
 
 $for instance in instances:
-	instance $instance.id from $webctx.project.projectname
+	<form action="" method="post"><input type="hidden" name="id" value="$instance.id"><button class="btn btn-success btn-xs">Put to archive</button></form> instance $instance.id from $webctx.project.projectname
 
-	<div contenteditable="true" style="font-size: 162pt; font-family: '$webctx.project.projectname.$instance.id'">
-	Hamburger
+	<div contenteditable="true" style="font-size: 28pt; font-family: '$webctx.project.projectname.$instance.id'">
+	People should consider using a cold, wet cloth to treat insect bites instead of turning to over-the-counter remedies, experts say. Prof Michael Siva-Jothy, from Sheffield University's Department of Animal and Plant Sciences, recruited 89 brave volunteers to test the theory further, watching the bedbugs as they found a place to feed and removing them only as they were about to bite.
 	</div>

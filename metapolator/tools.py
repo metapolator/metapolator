@@ -1,195 +1,468 @@
 import os
 import os.path as op
 import re
+import simplejson
 import web
 from lxml import etree
 
-from config import buildfname, working_dir, session
+from config import buildfname
 
-from models import Glyph, GlyphParam, GlyphOutline, GlobalParam, LocalParam, \
-    Metapolation
-
-
-def project_exists(master):
-    return master.metafont_exists('a') and master.metafont_exists('b')
+from models import Glyph, GlyphParam, GlyphOutline, LocalParam
 
 
-def makefont_single(master, cell=''):
-    if not project_exists(master) or not project_exists(master):
-        return False
-
-    cell = cell.upper()
-    os.environ['MFINPUTS'] = master.get_fonts_directory()
-    os.environ['MFMODE'] = session.get('mfparser', '')
-    if cell == 'A':
-        metafont = master.get_metafont('a')
-    else:
-        metafont = master.get_metafont()
-
-    import subprocess
-    process = subprocess.Popen(
-        ["sh", "makefont.sh", metafont],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        cwd=working_dir()
-    )
-
-    while True:
-        line = process.stdout.readline()
-        if not line or '<to be read again>' in line:
-            process.kill()
-            break
+zpoint_re = re.compile('(?P<name>z(?P<number>[\d]+))(?P<side>[lr])')
 
 
-def makefont(working_dir, master, cells=['A', 'B', 'M']):
-    if not project_exists(master):
-        return False
+class PointSet(object):
 
-    os.environ['MFINPUTS'] = master.get_fonts_directory()
-    os.environ['MFMODE'] = session.get('mfparser', '')
-    for cell in cells:
-        if not cell or cell.upper() == 'A':
-            metafont = master.get_metafont('a')
-            strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-            os.system(strms)
+    def __init__(self):
+        self.points = []
+        self._zpoints = []
 
-        if not cell or cell.upper() == 'B':
-            metafont = master.get_metafont('b')
-            strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-            os.system(strms)
+    @property
+    def zpoints(self):
+        return self._zpoints
 
-        if not cell or cell.upper() == 'M':
-            metafont = master.get_metafont()
-            strms = "cd %s; sh %s %s" % (working_dir, "makefont.sh", metafont)
-            os.system(strms)
-    return True
+    @zpoints.setter
+    def zpoints(self, value):
+        self._zpoints = value
+
+    def add_point(self, x, y, name, number, preset):
+        """ Put to current set new point with name and its (x, y)-coords """
+        point = {'name': name, 'coords': {'x': x, 'y': y}, 'preset': preset,
+                 'number': number}
+        self.points.append(point)
+
+    def extract_zpoints(self):
+        self.zpoints = filter(lambda point: bool(zpoint_re.match(point['name'])),
+                              self.points)
+
+    def save_to_database(self, glyph):
+        """ Save list of point dictionary to database """
+
+        for point in self.points:
+            glyphoutline = GlyphOutline.get(glyphname=glyph.name, glyph_id=glyph.id,
+                                            master_id=glyph.master_id,
+                                            pointnr=point['number'])
+            if not glyphoutline:
+                glyphoutline = GlyphOutline.create(glyphname=glyph.name,
+                                                   glyph_id=glyph.id,
+                                                   master_id=glyph.master_id,
+                                                   pointnr=point['number'])
+            glyphoutline.x = self.x(point)
+            glyphoutline.y = self.y(point)
+
+            glyphparam = GlyphParam.get(glyphoutline_id=glyphoutline.id,
+                                        glyph_id=glyph.id)
+            if not glyphparam:
+                glyphparam = GlyphParam.create(glyphoutline_id=glyphoutline.id,
+                                               master_id=glyph.master_id,
+                                               glyph_id=glyph.id,
+                                               pointname=self.name(point))
+            for attr in point['preset']:
+                if attr == 'name':
+                    continue
+                setattr(glyphparam, attr, point['preset'][attr])
+
+        web.ctx.orm.commit()
+
+    def castling(self):
+        import copy
+        pairs = self.extract_pairs()
+        if not pairs:
+            return False
+
+        points = []
+        for i, pair in enumerate(pairs[::-1]):
+            point = copy.deepcopy(pair['l'])
+            point['name'] = '%sl' % pairs[i]['name']
+            point['number'] = pairs[i]['l']['number']
+            point['preset']['pointname'] = point['name']
+            if not i:
+                point['preset']['startp'] = True
+                point['preset']['tripledash'] = None
+            elif point['preset'].get('startp'):
+                del point['preset']['startp']
+                point['preset']['tripledash'] = 1
+            points.append(point)
+
+        for i, pair in enumerate(pairs):
+            point = copy.deepcopy(pair['r'])
+            point['name'] = '%sr' % pairs[len(pairs) - i - 1]['name']
+            point['number'] = pairs[len(pairs) - i - 1]['r']['number']
+            point['preset']['pointname'] = point['name']
+            points.append(point)
+
+        self.points = points
+
+    def extract_pairs(self):
+        """ Returns dictionary with sequence of (xl, yl), (xr, yr) coordinates
+            zpoints. If it is empty then False """
+        pairs = []
+
+        def find_pair(name):
+            for index, pair in enumerate(pairs):
+                if pair['name'] == name:
+                    return index
+            return -1
+
+        empty_pairs = True
+        for point in self.zpoints:
+            m = zpoint_re.match(self.name(point))
+
+            index = find_pair(m.group('name'))
+            if index < 0:
+                pairs.append({'name': m.group('name'),
+                              'l': None, 'r': None})
+
+            if m.group('side') == 'l':
+                pairs[index]['l'] = point
+            else:
+                pairs[index]['r'] = point
+            empty_pairs = False
+
+        if empty_pairs:
+            return False
+
+        result = []
+        for p in pairs:
+            if not p['l'] or not p['r']:
+                continue
+            result.append(p)
+        return result
+
+    def segments(self):
+        """A sequence of (x,y) numeric coordinates pairs """
+        poly = map(lambda point: (self.x(point), self.y(point)),
+                   self.zpoints)
+        return zip(poly, poly[1:] + [poly[0]])
+
+    def is_counterclockwise(self):
+        clockwise = False
+        s = sum(x0 * y1 - x1 * y0
+                for ((x0, y0), (x1, y1)) in self.segments())
+        if s < 0:
+            clockwise = not clockwise
+        return clockwise
+
+    def name(self, point):
+        return point['name']
+
+    def x(self, point):
+        return float(point['coords']['x'])
+
+    def y(self, point):
+        return float(point['coords']['y'])
 
 
-def fnextension(filename):
-    try:
-        basename, extension = filename.split('.')
-    except:
-        extension = "garbage"
-    return extension
+def compare(a, b):
+    if not a.attrib.get('name') or not b.attrib.get('name'):
+        return 0
+
+    am = zpoint_re.match(a.attrib['name'])
+    bm = zpoint_re.match(b.attrib['name'])
+
+    if int(am.group('number')) < int(bm.group('number')):
+        return -1
+    return 1
 
 
-def writeGlyphlist(master, glyphid=None):
-    ifile = open(op.join(master.get_fonts_directory(), "glyphlist.mf"), "w")
-    dirnamep1 = op.join(master.get_fonts_directory(), "glyphs")
+def get_sorted_points(points):
 
-    charlist1 = [f for f in os.listdir(dirnamep1)]
+    lpoints = []
+    rpoints = []
 
-    for ch1 in charlist1:
-        fnb, ext = buildfname(ch1)
-        if (not glyphid or str(glyphid) == fnb) and ext in ["mf"]:
-            ifile.write("input glyphs/" + ch1 + "\n")
-    ifile.close()
+    # Collect points partially and sort each part
+    for p in points:
+        if not p.attrib.get('name'):
+            lpoints.append(p)
+            continue
+        m = zpoint_re.match(p.attrib['name'])
+        if m.group('side') == 'l':
+            lpoints.append(p)
+        if m.group('side') == 'r':
+            rpoints.append(p)
+
+    return sorted(lpoints, cmp=compare) + sorted(rpoints, cmp=compare, reverse=True)
 
 
-def create_glyph(glif, master, ab_source):
+def get_controlpmode_pointsets(glif):
+    pointnr = 0
+    pointsets = []
+
+    for contour in glif.xpath('//outline/contour'):
+
+        pointset = PointSet()
+
+        for point in contour.findall('point'):
+            pointname = point.attrib.get('name')
+            type = point.attrib.get('type')
+
+            preset = {'type': type,
+                      'control_out': point.attrib.get('control_out'),
+                      'control_in': point.attrib.get('control_in'),
+                      'pointname': pointname}
+
+            if not pointname:
+                preset['pointname'] = 'p%s' % (pointnr + 1)
+
+            attribs = {}
+            for attr in point.attrib:
+                if attr == 'name':
+                    continue
+                attribs[attr] = point.attrib[attr]
+
+            attribs.update(preset)
+
+            pointset.add_point(float(point.attrib['x']),
+                               float(point.attrib['y']),
+                               preset['pointname'], pointnr + 1, attribs)
+            pointnr += 1
+
+        pointsets.append(pointset)
+    return pointsets
+
+
+def get_pointsets(glif):
+    pointnr = 0
+    pointsets = []
+
+    # Links to index of both-sided z-point
+    zpoint_current_offset = 0
+
+    for contour in glif.xpath('//outline/contour'):
+
+        total_contour_points = len(contour.xpath('point[@type]'))
+
+        # Start loop for each point in contour. If this point has attribute
+        # `type` then we calculate sided z-name
+
+        pointset = PointSet()
+
+        zindex = 0
+        for point in get_sorted_points(contour.findall('point')):
+            pointname = point.attrib.get('name')
+            type = point.attrib.get('type')
+
+            preset = {'type': type,
+                      'control_out': point.attrib.get('control_out'),
+                      'control_in': point.attrib.get('control_in'),
+                      'pointname': pointname,
+                      'startp': None,
+                      'tripledash': None}
+
+            if not pointname:
+                preset['pointname'] = 'p%s' % (pointnr + 1)
+
+            if type is not None:
+                if not zindex:
+                    # if this is first then set to point preset startp attribute
+                    preset['startp'] = True
+                    preset['tripledash'] = None
+                elif type == 'line':
+                    preset['tripledash'] = 1
+
+                # number of contours is calculated by offset of points from
+                # first point
+                if zindex > (total_contour_points / 2 - 1):
+                    number = zpoint_current_offset + total_contour_points - zindex
+                    pointname = 'z%sr' % number
+                else:
+                    number = zpoint_current_offset + zindex + 1
+                    pointname = 'z%sl' % number
+
+                preset['pointname'] = pointname
+                zindex += 1
+
+            attribs = {}
+            for attr in point.attrib:
+                if attr == 'name':
+                    continue
+                attribs[attr] = point.attrib[attr]
+
+            attribs.update(preset)
+
+            pointset.add_point(float(point.attrib['x']),
+                               float(point.attrib['y']),
+                               preset['pointname'], pointnr + 1, attribs)
+            pointnr += 1
+
+        # Make current offset to half of z-points count. In this case next
+        # z-points in contour will have correct index
+        zpoint_current_offset += total_contour_points / 2
+
+        pointset.extract_zpoints()
+
+        # Final accord is to check correct direction of glyph points
+        # If glyph points are not clockwise then make castling
+        if pointset.is_counterclockwise():
+            pointset.castling()
+
+        pointsets.append(pointset)
+    return pointsets
+
+
+def create_glyph(glif, master):
     itemlist = glif.find('advance')
     width = itemlist.get('width')
 
     glyph = glif.getroot()
     glyphname = glyph.get('name')
 
-    if not Glyph.exists(name=glyphname, master_id=master.id,
-                        fontsource=ab_source):
-        glyph = Glyph.create(name=glyphname, width=width,
-                             master_id=master.id, fontsource=ab_source)
+    if master.project.mfparser == 'pen':
+        pointsets = get_pointsets(glif)
     else:
-        glyph = Glyph.get(name=glyphname, master_id=master.id,
-                          fontsource=ab_source)
-        glyph.width = int(width)
-        web.ctx.orm.commit()
+        pointsets = get_controlpmode_pointsets(glif)
 
-    for i, point in enumerate(glif.xpath('//outline/contour/point')):
-        pointname = point.attrib.get('name')
-        type = point.attrib.get('type')
-        control_in = point.attrib.get('control_in')
-        control_out = point.attrib.get('control_out')
-        if not pointname:
-            pointname = 'p%s' % (i + 1)
+    if Glyph.exists(name=glyphname, master_id=master.id):
+        return
 
-        glyphoutline = GlyphOutline.get(glyphname=glyphname, glyph_id=glyph.id,
-                                        master_id=master.id,
-                                        fontsource=ab_source, pointnr=(i + 1))
-        if not glyphoutline:
-            glyphoutline = GlyphOutline.create(glyphname=glyphname,
-                                               glyph_id=glyph.id,
-                                               master_id=master.id,
-                                               fontsource=ab_source,
-                                               pointnr=(i + 1))
-        glyphoutline.x = float(point.attrib['x'])
-        glyphoutline.y = float(point.attrib['y'])
+    glyph = Glyph.create(name=glyphname, width=width,
+                         master_id=master.id,
+                         project_id=master.project_id,
+                         width_new=width)
 
-        glyphparam = GlyphParam.get(glyphoutline_id=glyphoutline.id,
-                                    glyph_id=glyph.id)
-        if not glyphparam:
-            glyphparam = GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                           master_id=master.id,
-                                           glyph_id=glyph.id,
-                                           pointname=pointname,
-                                           type=type,
-                                           control_in=control_in,
-                                           control_out=control_out)
-        for attr in point.attrib:
-            if attr == 'name':
-                continue
-            setattr(glyphparam, attr, point.attrib[attr])
-        web.ctx.orm.commit()
+    for pointset in pointsets:
+        pointset.save_to_database(glyph)
+
+    return glyph
 
 
-def putFontAllglyphs(master, glyphid=None):
-    # read all fonts (xml files with glif extension) in unix directory
-    # and put the xml data into db using the rule applied in loadoption
-    # only the fonts (xml file) will be read when the glifs are present
-    # in both fonts A and B
+def extract_gliflist_from_ufo(master, glyph=None, extract_first=False):
+    fontpath = op.join(master.get_ufo_path(), 'glyphs')
 
-    source_fontpath_A = op.join(master.get_ufo_path('a'), 'glyphs')
-    source_fontpath_B = op.join(master.get_ufo_path('b'), 'glyphs')
+    charlista = filter(lambda f: op.splitext(f)[1] == '.glif', os.listdir(fontpath))
 
-    charlista = [f for f in os.listdir(source_fontpath_A)]
-    charlistb = [f for f in os.listdir(source_fontpath_B)]
+    if glyph:
+        charlista = filter(lambda f: f == '%s.glif' % glyph, charlista)
 
-    for ch1 in charlista:
+    if extract_first and charlista:
+        charlista = [charlista[0]]
+
+    return charlista
+
+
+def put_font_all_glyphs(master, glyph=None, preload=False, force_update=False):
+    gliflist = extract_gliflist_from_ufo(master, glyph=glyph, extract_first=preload)
+    fontpath = op.join(master.get_ufo_path(), 'glyphs')
+
+    glyphs = []
+    for ch1 in gliflist:
         glyphName, ext = buildfname(ch1)
-        if not glyphName or glyphName.startswith('.'):
+        if not glyphName or glyphName.startswith('.') or ext not in ["glif"]:
             continue
-        if ext in ["glif"] and (not glyphid or glyphid == glyphName):
-            glif = etree.parse(op.join(source_fontpath_A, ch1))
-            create_glyph(glif, master, 'A')
 
-    for ch1 in charlistb:
-        glyphName, ext = buildfname(ch1)
-        if not glyphName or glyphName.startswith('.'):
-            continue
-        if ext in ["glif"] and (not glyphid or glyphid == glyphName):
-            glif = etree.parse(op.join(source_fontpath_B, ch1))
-            create_glyph(glif, master, 'B')
+        if force_update:
+            glyph_obj = Glyph.get(name=glyphName, master_id=master.id)
+            if glyph_obj:
+                GlyphParam.filter(glyph_id=glyph_obj.id).delete()
+                GlyphOutline.filter(glyph_id=glyph_obj.id).delete()
+                Glyph.delete(glyph_obj)
+
+        glif = etree.parse(op.join(fontpath, ch1))
+        newglyph_obj = create_glyph(glif, master)
+        if newglyph_obj:
+            glyphs.append(newglyph_obj.name)
+
+    try:
+        return glyphs[0]
+    except IndexError:
+        return
 
 
-def get_json(content, glyphid=None):
-    contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle', re.I | re.S | re.M)
+def dopair(pair):
+    pair = list(pair)
+    if pair[0] is None:
+        pair[0] = pair[1]
+    if pair[1] is None:
+        pair[1] = pair[0]
+    return pair
+
+
+def unifylist(masters):
+    p1 = masters[::2]
+    p2 = masters[1::2]
+    if len(p1) != len(p2):
+        p2 += [None] * (len(p1) - len(p2))
+
+    pairs = zip(p1, p2)
+    result = []
+    for p in map(dopair, pairs):
+        if p[0] is not None and p[1] is not None:
+            result += p
+    return result
+
+
+def get_edges_json(log_filename, glyphid=None, master=None):
+    try:
+        fp = open(log_filename)
+        content = fp.read()
+        fp.close()
+        return get_json(content, glyphid=glyphid, master=master)
+    except (IOError, OSError):
+        pass
+    return []
+
+
+def get_edges_json_from_db(master, glyphid):
+    glyph = Glyph.get(master_id=master.id, name=glyphid)
+
+    points = GlyphOutline.filter(glyph_id=glyph.id)
+    localparam = LocalParam.get(id=master.idlocala)
+
+    _points = []
+    for point in points.order_by(GlyphOutline.pointnr.asc()):
+        param = GlyphParam.get(glyphoutline_id=point.id)
+        iszpoint = False
+        if re.match('z(\d+)[lr]', param.pointname):
+            iszpoint = True
+
+        x = point.x
+        if localparam:
+            x += localparam.px
+
+        params = param.as_dict()
+        params.update({'width': glyph.width})
+        params.update({'width_new': glyph.width_new})
+        _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
+                        'iszpoint': iszpoint, 'data': params})
+
+    return {'width': glyph.width, 'points': _points}
+
+
+def get_json(content, glyphid=None, master=None):
+    contour_pattern = re.compile(r'Filled\scontour\s:\n(.*?)..cycle',
+                                 re.I | re.S | re.M)
     point_pattern = re.compile(r'\(([-\d.]+),([-\d.]+)\)..controls\s'
                                r'\(([-\d.]+),([-\d.]+)\)\sand\s'
                                r'\(([-\d.]+),([-\d.]+)\)')
 
     pattern = re.findall(r'\[(\d+)\]\s+Edge structure(.*?)End edge', content,
                          re.I | re.DOTALL | re.M)
-    edges = []
-    x_min = 0
-    y_min = 0
-    x_max = 0
-    y_max = 0
+    glyphs = []
     for glyph, edge in pattern:
         if glyphid and int(glyphid) != int(glyph):
             continue
+
+        x_min = 0
+        y_min = 0
+        x_max = 0
+        y_max = 0
+
         contours = []
-        for contour in contour_pattern.findall(edge.strip()):
+
+        zpoints_names = []
+        if master:
+            glyph_obj = Glyph.get(master_id=master.id, name=glyph)
+            zpoints_names = map(lambda x: x.pointname,
+                                glyph_obj.get_zpoints())
+
+        number = 0
+        for ix, contour in enumerate(contour_pattern.findall(edge.strip())):
             contour = re.sub('\n(\S)', '\\1', contour)
             _contours = []
             handleIn_X, handleIn_Y = None, None
+
             for point in contour.split('\n'):
                 point = point.strip().strip('..')
                 match = point_pattern.match(point)
@@ -207,171 +480,73 @@ def get_json(content, glyphid=None):
                 if handleIn_X is not None and handleIn_Y is not None:
                     controlpoints[0] = {'x': handleIn_X, 'y': handleIn_Y}
 
-                _contours.append({'x': X, 'y': Y,
-                                  'controls': controlpoints})
+                pointdict = {'x': X, 'y': Y, 'controls': controlpoints}
+                _contours.append(pointdict)
+
                 handleIn_X = match.group(5)
                 handleIn_Y = match.group(6)
 
-                x_min = min(x_min, float(X), float(handleOut_X), float(handleIn_X))
-                y_min = min(y_min, float(Y), float(handleOut_Y), float(handleIn_Y))
-                x_max = max(x_max, float(X), float(handleOut_X), float(handleIn_X))
-                y_max = max(y_max, float(Y), float(handleOut_Y), float(handleIn_Y))
+                x_min = min(x_min, x_max, float(X),
+                            float(handleOut_X), float(handleIn_X))
+                y_min = min(y_min, y_max, float(Y),
+                            float(handleOut_Y), float(handleIn_Y))
+                x_max = max(x_max, x_min, float(X),
+                            float(handleOut_X), float(handleIn_X))
+                y_max = max(y_max, y_min, float(Y),
+                            float(handleOut_Y), float(handleIn_Y))
+
+            if zpoints_names:
+                zpoints = []
+                ll = zpoints_names[number + 1: len(_contours) + number]
+                if len(zpoints_names) > number:
+                    zpoints = [zpoints_names[number]] + ll
+
+                number += len(_contours)
+
+                for zix, point in enumerate(_contours):
+                    try:
+                        point['pointname'] = zpoints[zix]
+                    except IndexError:
+                        pass
 
             if handleIn_X and handleIn_Y:
                 _contours[0]['controls'][0] = {'x': handleIn_X,
                                                'y': handleIn_Y}
 
             contours.append(_contours)
-        edges.append({'glyph': glyph, 'contours': contours})
 
-    width = abs(x_max) + abs(x_min)
-    height = abs(y_max) + abs(y_min)
-    return {'total_edges': len(edges), 'edges': edges,
-            'width': width, 'height': height}
+        zpoints = []
+        if master:
+            zpoints = get_edges_json_from_db(master, glyph)
 
+            g = Glyph.get(master_id=master.id, name=glyph)
+            maxx, minx = GlyphOutline.minmax(GlyphOutline.x, glyph_id=g.id)[0]
+            maxy, miny = GlyphOutline.minmax(GlyphOutline.y, glyph_id=g.id)[0]
 
-GLOBAL_DEFAULTS = {
-    'metapolation': 0,
-    'unitwidth': 1,
-    'fontsize': 10,
-    'mean': 5,
-    'cap': 6,
-    'ascl': 8,
-    'desc': -2,
-    'box': 10
-}
+            if maxx is not None and minx is not None \
+                    and maxy is not None and miny is not None:
+                x_min = min(x_min, minx, x_max, maxx)
+                x_max = max(x_min, minx, x_max, maxx)
+                y_min = min(y_max, maxy, y_min, miny)
+                y_max = max(y_max, maxy, y_min, miny)
 
+        if x_min < 0:
+            width = abs(x_max) + abs(x_min)
+        else:
+            width = abs(x_max)
 
-LOCAL_DEFAULTS = {
-    'px': 0,
-    'width': 1,
-    'space': 0,
-    'xheight': 5,
-    'capital': 6,
-    'ascender': 8,
-    'descender': -2,
-    'skeleton': 0,
-    'over': 0
-}
+        if y_min < 0:
+            height = abs(y_max) + abs(y_min)
+        else:
+            height = abs(y_max)
 
+        json = {'name': glyph, 'contours': contours, 'minx': x_min,
+                'miny': y_min, 'zpoints': zpoints, 'width': width,
+                'height': height}
 
-def get_global_param(param, key):
-    if not param:
-        try:
-            return GLOBAL_DEFAULTS[key]
-        except KeyError:
-            return 0
-    return getattr(param, key, 0)
+        if master and glyph_obj and not glyph_obj.original_glyph_contours:
+            glyph_obj.original_glyph_contours = simplejson.dumps(contours)
 
+        glyphs.append(json)
 
-def get_local_param(param, key):
-    if not param:
-        try:
-            return LOCAL_DEFAULTS[key]
-        except KeyError:
-            return 0
-    return getattr(param, key, 0)
-
-
-def writeParams(master, filename, metapolation=None, masterfontb=None):
-    globalparam = GlobalParam.get(id=master.idglobal)
-
-    metap = Metapolation.get(label='AB', project_id=master.project_id)
-    if metap:
-        metap = metap.value
-    else:
-        metap = 0
-
-    unitwidth = get_global_param(globalparam, 'unitwidth')
-    fontsize = get_global_param(globalparam, 'fontsize')
-    mean = get_global_param(globalparam, 'mean')
-    cap = get_global_param(globalparam, 'cap')
-    ascl = get_global_param(globalparam, 'ascl')
-    des = get_global_param(globalparam, 'des')
-    box = get_global_param(globalparam, 'box')
-
-    ifile = open(filename, "w")
-    # global parameters
-    ifile.write("% parameter file \n")
-    if metapolation is not None:
-        ifile.write("metapolation:=%.2f;\n" % metapolation)
-    else:
-        ifile.write("metapolation:=%.2f;\n" % metap)
-
-    metap = Metapolation.get(label='CD', project_id=master.project_id)
-    if metap:
-        metap = metap.value
-    else:
-        metap = 0
-    ifile.write("metapolationCD:=%.2f;\n" % metap)
-
-    ifile.write("font_size:=%.3fpt#;\n" % fontsize)
-    ifile.write("mean#:=%.3fpt#;\n" % mean)
-    ifile.write("cap#:=%.3fpt#;\n" % cap)
-    ifile.write("asc#:=%.3fpt#;\n" % ascl)
-    ifile.write("desc#:=%.3fpt#;\n" % des)
-    ifile.write("box#:=%.3fpt#;\n" % box)
-    ifile.write("u#:=%.3fpt#;\n" % unitwidth)
-
-    imlo = LocalParam.get(id=master.idlocala)
-    ifile.write("A_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
-    ifile.write("A_width:=%.2f;\n" % get_local_param(imlo, 'width'))
-    ifile.write("A_space:=%.2f;\n" % get_local_param(imlo, 'space'))
-    ifile.write("A_spacept:=%.2fpt;\n" % get_local_param(imlo, 'space'))
-    ifile.write("A_xheight:=%.2f;\n" % get_local_param(imlo, 'xheight'))
-    ifile.write("A_capital:=%.2f;\n" % get_local_param(imlo, 'capital'))
-    ifile.write("A_ascender:=%.2f;\n" % get_local_param(imlo, 'ascender'))
-    ifile.write("A_descender:=%.2f;\n" % get_local_param(imlo, 'descender'))
-    ifile.write("A_skeleton#:=%.2fpt#;\n" % get_local_param(imlo, 'skeleton'))
-    ifile.write("A_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
-
-    # local parameters B
-    imlo = LocalParam.get(id=(masterfontb or master).idlocala)
-    ifile.write("B_px#:=%.2fpt#;\n" % get_local_param(imlo, 'px'))
-    ifile.write("B_width:=%.2f;\n" % get_local_param(imlo, 'width'))
-    ifile.write("B_space:=%.2f;\n" % get_local_param(imlo, 'space'))
-    ifile.write("B_spacept:=%.2fpt;\n" % get_local_param(imlo, 'space'))
-    ifile.write("B_xheight:=%.2f;\n" % get_local_param(imlo, 'xheight'))
-    ifile.write("B_capital:=%.2f;\n" % get_local_param(imlo, 'capital'))
-    ifile.write("B_ascender:=%.2f;\n" % get_local_param(imlo, 'ascender'))
-    ifile.write("B_descender:=%.2f;\n" % get_local_param(imlo, 'descender'))
-    ifile.write("B_skeleton#:=%.2fpt#;\n" % get_local_param(imlo, 'skeleton'))
-    ifile.write("B_over:=%.2fpt;\n" % get_local_param(imlo, 'over'))
-
-    ifile.write('C_px#:=2.00pt#;\n')
-    ifile.write('C_width:=1.00;\n')
-    ifile.write('C_space:=0;\n')
-    ifile.write('C_spacept:=0.00pt;\n')
-    ifile.write('C_xheight:=5.00;\n')
-    ifile.write('C_capital:=8.00;\n')
-    ifile.write('C_ascender:=8.00;\n')
-    ifile.write('C_descender:=2.00;\n')
-    ifile.write('C_inktrap:=10.00;\n')
-    ifile.write('C_stemcut:=20.00;\n')
-    ifile.write('C_skeleton#:=0.00pt#;\n')
-    ifile.write('C_superness:=1.00;\n')
-    ifile.write('C_over:=0.10pt;\n')
-
-    ifile.write('D_px#:=0.0pt#;\n')
-    ifile.write('D_width:=1.00;\n')
-    ifile.write('D_space:=0.00;\n')
-    ifile.write('D_xheight:=5.00;\n')
-    ifile.write('D_capital:=8.00;\n')
-    ifile.write('D_ascender:=8.00;\n')
-    ifile.write('D_descender:=2.00;\n')
-    ifile.write('D_inktrap:=10.00;\n')
-    ifile.write('D_stemcut:=20.00;\n')
-    ifile.write('D_skeleton#:=0.0pt#;\n')
-    ifile.write('D_superness:=1.00;\n')
-    ifile.write('D_over:=0.10pt;\n')
-
-    ifile.write("\n")
-    ifile.write("input glyphs\n")
-    ifile.write("bye\n")
-    ifile.close()
-
-
-def writeGlobalParam(master, masterfontb=None):
-    writeParams(master, master.metafont_filepath(), masterfontb=masterfontb)
-    writeParams(master, master.metafont_filepath('a'), 0)
-    writeParams(master, master.metafont_filepath('b'), 1)
+    return glyphs

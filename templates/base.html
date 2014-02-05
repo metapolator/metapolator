@@ -106,13 +106,27 @@ right {
             $else:
               <li><a href="/projects/">Projects</a></li>
             $if page.get('title') == 'Editor':
-              <li class="active"><a href="/editor/">Editor</a></li>
+              <li class="active"><a href="/workspace/">Editor</a></li>
             $else:
-              <li><a href="/editor/">Editor</a></li>
-            <li><a href="/settings/globals/">Parameters</a></li>
+              <li><a href="/workspace/">Editor</a></li>
             $if webctx.get('project') and webctx.project:
               <li><a href="/specimen/$webctx.project.projectname/">Specimen</a></li>
-            <li><a href="/project/create/">Upload UFO Project</a></li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            $if not websession.get('mfparser') or websession.mfparser == 'pen':
+              <li class="active">
+                <a href="javascript:;">pen mode</a>
+              </li>
+            $else:
+              <li><a href="javascript:;" onclick="setmfparser('pen')">pen mode</a></li>
+
+            $if websession.get('mfparser') == 'controlpoints':
+              <li class="active">
+                <a href="javascript:;">controlpoints mode</a>
+              </li>
+            $else:
+              <li><a href="javascript:;" onclick="setmfparser('controlpoints')">controlpoints mode</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -121,4 +135,13 @@ right {
     $:page
     </div>
 </body>
+
+<script>
+  function setmfparser(mode) {
+    $$.post('/mfparser-switch/' + mode + '/')
+    .done(function(){
+      window.location.reload();
+    })
+  }
+</script>
 </html>

@@ -21,6 +21,11 @@ class UserQueryMixin(object):
         return query(func.max(field)).filter_by(**kwargs).scalar()
 
     @classmethod
+    def minmax(cls, field, **kwargs):
+        kwargs.update({'user_id': web.ctx.user.id})
+        return query(func.max(field), func.min(field)).filter_by(**kwargs)
+
+    @classmethod
     def filter(cls, **kwargs):
         kwargs.update({'user_id': web.ctx.user.id})
         return query(cls).filter_by(**kwargs)
@@ -30,7 +35,6 @@ class UserQueryMixin(object):
         kwargs.update({'user_id': web.ctx.user.id})
         instance = cls(**kwargs)
         web.ctx.orm.add(instance)
-        web.ctx.orm.commit()
         return instance
 
     @classmethod

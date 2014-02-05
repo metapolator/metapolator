@@ -4,15 +4,13 @@ import re
 import web
 
 import models
-from config import working_dir
-from sqlalchemy import func
 
 
 class DifferentZPointError(Exception):
     pass
 
 
-def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None):
+def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=None, interpolated=False):
     """ Save current points to mf file
 
         master is an instance of models.Master
@@ -32,7 +30,9 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         glyphD = glyphA
 
     if not stdout_fip:
-        path = op.join(master.get_fonts_directory(), "glyphs")
+        glyphsdir = "metaglyphs" if interpolated else "glyphs"
+
+        path = op.join(master.get_fonts_directory(), glyphsdir)
         if not op.exists(path):
             os.makedirs(path)
         fip = open(op.join(path, '%s.mf' % glyphA.name), 'w')
@@ -42,13 +42,10 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     fip.write("% File parsed with Metapolator %\n")
     fip.write("% box dimension definition %\n")
 
-
-    '%.2f' % (glyphA.width / 100.)
     wA = '%.2f' % (glyphA.width / 100.)
     wB = '%.2f' % (glyphB.width / 100.)
     wC = '%.2f' % (glyphC.width / 100.)
     wD = '%.2f' % (glyphD.width / 100.)
-
 
     g = glyphA.name  # get from glyphA as we sure that glypha and glyphb exist in font project
 
@@ -82,7 +79,6 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     query = query.filter(models.GlyphOutline.glyph_id == glyphD.id)
     query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
     fontd_outlines = list(query)
-
 
     for item, param in fonta_outlines:
 
@@ -275,11 +271,11 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         ioverx = param.overx
         ioverbase = param.overbase
         iovercap = param.overcap
-        iinktrap_l = param.inktrap_l
-        iinktrap_r = param.inktrap_r
-        istemshift = param.stemshift
-        iascpoint = param.ascpoint
-        idescpoint = param.descpoint
+        # iinktrap_l = param.inktrap_l
+        # iinktrap_r = param.inktrap_r
+        # istemshift = param.stemshift
+        # iascpoint = param.ascpoint
+        # idescpoint = param.descpoint
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
@@ -325,45 +321,45 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 overcap.append("shifted")
                 overcapval.append(iovercapval)
 
-            if iinktrap_l is not None:
-                iinktrap_lval = param.inktrap_l
-                inktrap_l.append("inktrapcut")
-                inktrap_lval.append(iinktrap_lval)
-            else:
-                inktrap_l.append("")
-                inktrap_lval.append(0)
+            # if iinktrap_l is not None:
+            #     iinktrap_lval = param.inktrap_l
+            #     inktrap_l.append("inktrapcut")
+            #     inktrap_lval.append(iinktrap_lval)
+            # else:
+            #     inktrap_l.append("")
+            #     inktrap_lval.append(0)
 
-            if iinktrap_r is not None:
-                iinktrap_rval = param.inktrap_r
-                inktrap_r.append("inktrapcut")
-                inktrap_rval.append(iinktrap_rval)
-            else:
-                inktrap_r.append("")
-                inktrap_rval.append(0)
+            # if iinktrap_r is not None:
+            #     iinktrap_rval = param.inktrap_r
+            #     inktrap_r.append("inktrapcut")
+            #     inktrap_rval.append(iinktrap_rval)
+            # else:
+            #     inktrap_r.append("")
+            #     inktrap_rval.append(0)
 
-            if istemshift is not None:
-                istemshiftval = param.stemshift
-                stemshift.append("stemshift")
-                stemshiftval.append(istemshiftval)
-            else:
-                stemshift.append("")
-                stemshiftval.append(0)
+            # if istemshift is not None:
+            #     istemshiftval = param.stemshift
+            #     stemshift.append("stemshift")
+            #     stemshiftval.append(istemshiftval)
+            # else:
+            #     stemshift.append("")
+            #     stemshiftval.append(0)
 
-            if iascpoint is not None:
-                iascpointval = param.ascpoint
-                ascpoint.append("ascpoint")
-                ascpointval.append(iascpointval)
-            else:
-                ascpoint.append("")
-                ascpointval.append(0)
+            # if iascpoint is not None:
+            #     iascpointval = param.ascpoint
+            #     ascpoint.append("ascpoint")
+            #     ascpointval.append(iascpointval)
+            # else:
+            #     ascpoint.append("")
+            #     ascpointval.append(0)
 
-            if idescpoint is not None:
-                idescpointval = param.descpoint
-                descpoint.append("descpoint")
-                descpointval.append(idescpointval)
-            else:
-                descpoint.append('')
-                descpointval.append(0)
+            # if idescpoint is not None:
+            #     idescpointval = param.descpoint
+            #     descpoint.append("descpoint")
+            #     descpointval.append(idescpointval)
+            # else:
+            #     descpoint.append('')
+            #     descpointval.append(0)
 
             i += 1
 
@@ -466,15 +462,14 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         iupp = param.upp
         irightp = param.rightp
         idownp = param.downp
-        itension = param.tension
+        # itension = param.tension
         itensionand = param.tensionand
-        isuperright = param.superright
-        isuperleft = param.superleft
+        # isuperright = param.superright
+        # isuperleft = param.superleft
         ipenshifted = param.penshifted
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
-
 
             if idoubledash is not None:
                 idoubledashval = param.doubledash
@@ -486,11 +481,11 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 tripledash.append(" ---")
                 tripledashvalB.append(itripledashval)
 
-            if idir is not None :
+            if idir is not None:
                 idirval = param.dir
                 dirB.append("dir")
                 dirvalB.append(idirval)
-            else :
+            else:
                 dirB.append("")
                 dirvalB.append(0)
 
@@ -519,34 +514,30 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 downp.append("down")
                 downpvalB.append(idownpval)
 
-            if itension is not None:
-                itensionval = param.tension
-                tensionB.append("tension")
-                tensionvalB.append(itensionval)
+            # if itension is not None:
+            #     itensionval = param.tension
+            #     tensionB.append("tension")
+            #     tensionvalB.append(itensionval)
 
-
-
-            if itensionand is not None :
+            if itensionand is not None:
                 itensionandval = param.tensionand
                 tensionandB.append("tensionand")
                 tensionandvalB.append(itensionandval[:3])
                 tensionandval2B.append(itensionandval[-3:])
-            else :
+            else:
                 tensionandB.append("")
                 tensionandvalB.append(0)
                 tensionandval2B.append(0)
 
+            # if isuperright is not None:
+            #     isuperrightval = param.superright
+            #     superright.append("superright")
+            #     superrightvalB.append(isuperrightval)
 
-
-            if isuperright is not None:
-                isuperrightval = param.superright
-                superright.append("superright")
-                superrightvalB.append(isuperrightval)
-
-            if isuperleft is not None:
-                isuperleftval = param.superleft
-                superleft.append("superleft")
-                superleftvalB.append(isuperleftval)
+            # if isuperleft is not None:
+            #     isuperleftval = param.superleft
+            #     superleft.append("superleft")
+            #     superleftvalB.append(isuperleftval)
 
             if idir is not None:
                 idirval = param.dir
@@ -558,15 +549,15 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 penshifted.append("shifted")
                 penshiftedvalB.append(ipenshiftedval)
 
-
-
-
-# reading font penstrokes Font A
+    # reading font penstrokes Font A
 
     fip.write("\n")
-    fip.write( """% penstrokes""")
+    fip.write("""% penstrokes""")
 
-    inattr=0
+    # fip.write("\n")
+    # fip.write("""fill""")
+
+    inattr = 0
     ivn = 0
     stre = " ... "
     tripledash = "---"
@@ -623,7 +614,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     upp2 = []
     upp2val = []
 
-    downp2= []
+    downp2 = []
     downp2val = []
 
     penshifted = []
@@ -682,17 +673,17 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         irightp2 = param.rightp2
         idownp = param.downp
         idownp2 = param.downp2
-        itension = param.tension
+        # itension = param.tension
         itensionand = param.tensionand
-        isuperright = param.superright
-        isuperleft = param.superleft
+        # isuperright = param.superright
+        # isuperleft = param.superleft
         ipenshifted = param.penshifted
         ioverx = param.overx
         ioverbase = param.overbase
         iovercap = param.overcap
         ioverasc = param.overasc
         ioverdesc = param.overdesc
-        icycle = param.cycle
+        # icycle = param.cycle
         itype = param.type
         icontrol_out = param.control_out
         icontrol_in = param.control_in
@@ -705,19 +696,19 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
             if istartp is not None:
                 istartpval = param.startp
-                startp.append("fill ")
+                startp.append("\nfill\n")
                 startpval.append(istartpval)
             else:
                 startp.append("")
                 startpval.append(0)
 
-            if icycle is not None :
-                icycleval = param.cycle
-                cycle.append("cycle")
-                cycleval.append(icycleval)
-            else :
-                cycle.append("")
-                cycleval.append(0)
+            # if icycle is not None :
+            #     icycleval = param.cycle
+            #     cycle.append("cycle")
+            #     cycleval.append(icycleval)
+            # else :
+            #     cycle.append("")
+            #     cycleval.append(0)
 
             if idoubledash is not None :
                 idoubledashval = param.doubledash
@@ -809,13 +800,13 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 rightp2val.append(0)
 
 
-            if itension is not None :
-                itensionval = param.tension
-                tension.append("tension")
-                tensionval.append(itensionval)
-            else :
-                tension.append("")
-                tensionval.append(0)
+            # if itension is not None :
+            #     itensionval = param.tension
+            #     tension.append("tension")
+            #     tensionval.append(itensionval)
+            # else :
+            #     tension.append("")
+            #     tensionval.append(0)
 
             if itensionand is not None :
                 itensionandval = param.tensionand
@@ -828,21 +819,21 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
                 tensionandval2.append(0)
 
 
-            if isuperright is not None :
-                isuperrightval = param.superright
-                superright.append("super_qr")
-                superrightval.append(isuperrightval)
-            else :
-                superright.append("")
-                superrightval.append(0)
+            # if isuperright is not None :
+            #     isuperrightval = param.superright
+            #     superright.append("super_qr")
+            #     superrightval.append(isuperrightval)
+            # else :
+            #     superright.append("")
+            #     superrightval.append(0)
 
-            if isuperleft is not None :
-                isuperleftval = param.superleft
-                superleft.append("super_ql")
-                superleftval.append(isuperleftval)
-            else :
-                superleft.append("")
-                superleftval.append(0)
+            # if isuperleft is not None :
+            #     isuperleftval = param.superleft
+            #     superleft.append("super_ql")
+            #     superleftval.append(isuperleftval)
+            # else :
+            #     superleft.append("")
+            #     superleftval.append(0)
 
             if idir is not None :
                 idirval = param.dir
@@ -919,10 +910,10 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     semi = ";"
 
     fip.write('\n')
+
     for i in range(len(zzn) - 1):
         zitem = zzn[i]
         zeile = str(startp[i]) + "z" + str(zitem)
-
 
         if startp[i + 1] == "":
 

@@ -1,7 +1,7 @@
 import re
 
 from web.form import Form, Textbox, Dropdown, Button, Validator, Password, \
-    notnull, Hidden
+    notnull
 
 import models
 
@@ -9,6 +9,8 @@ import models
 PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint"),
                               Textbox('x', size=12),
                               Textbox('y', size=12),
+                              Textbox('width', size=12),
+                              Textbox('width_new', size=12),
                               Textbox('doubledash', size=12),
                               Textbox('tripledash', size=12),
                               Textbox('leftp', size=12),
@@ -31,7 +33,12 @@ PointParamExtendedForm = Form(Dropdown('zpoint', [('', '')], description="zpoint
                               Textbox('overcap', size=12),
                               Textbox('overasc', size=12),
                               Textbox('overdesc', size=12),
-                              Button('save'))
+
+                              Textbox('theta', size=12),
+                              Textbox('serif_h_bot', size=12),
+                              Textbox('serif_h_top', size=12),
+                              Textbox('serif_v_left', size=12),
+                              Textbox('serif_v_right', size=12))
 
 
 GlobalParamForm = Form(Dropdown('idglobal', [], description='Choose parameter set'),
@@ -45,8 +52,8 @@ GlobalParamForm = Form(Dropdown('idglobal', [], description='Choose parameter se
                                description="mean", value="5"),
                        Textbox('cap', notnull, size=5,
                                description="cap", value="6"),
-                       Textbox('ascl', notnull, size=5,
-                               description="asc", value="8"),
+                       Textbox('asc', notnull, size=5,
+                               description="asc", value="6.5"),
                        Textbox('des', notnull, size=5,
                                description="desc", value="-2"),
                        Textbox('box', notnull, size=5,
@@ -54,7 +61,7 @@ GlobalParamForm = Form(Dropdown('idglobal', [], description='Choose parameter se
                        Button('save', value='Save Parameter Set'))
 
 
-LocalParamForm = Form(Dropdown('idlocal', [], description='Choose parameter set'),
+LocalParamForm = Form(Dropdown('idlocal', [(0, u'Create new local parameter')], description='Choose parameter set'),
                       Textbox('px', notnull, size=5,
                               description="px", value="0"),
                       Textbox('width', notnull, size=5,
@@ -66,14 +73,23 @@ LocalParamForm = Form(Dropdown('idlocal', [], description='Choose parameter set'
                       Textbox('capital', notnull, size=5,
                               description="capital", value="6"),
                       Textbox('ascender', notnull, size=5,
-                              description="ascender", value="6"),
+                              description="ascender", value="6.5"),
                       Textbox('descender', notnull, size=5,
                               description="descender", value="-2"),
                       Textbox('skeleton', notnull, size=5,
                               description="skeleton", value="0"),
                       Textbox('over', notnull, size=5,
-                              description="over", value="0.1"),
-                      Hidden('ab_source', notnull, value='a'),
+                              description="over", value="0"),
+                      Textbox('jut', notnull, size=5,
+                              description="jut", value="1"),
+                      Textbox('slab', notnull, size=5,
+                              description="slab", value="1"),
+                      Textbox('bracket', notnull, size=5,
+                              description="bracket", value="1"),
+                      Textbox('serif_darkness', notnull, size=5,
+                              description="serif_darkness", value="1"),
+                      Textbox('slant', notnull, size=5,
+                              description="slant", value="0"),
                       Button('save'))
 
 

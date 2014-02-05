@@ -1,12 +1,13 @@
 # Metapolator
 # Beta 0.1
-# (c) 2013 by Simon Egli, Walter Egli, Wei Huang
+# (c) 2013 by Simon Egli, Walter Egli, Wei Huang, Vitaly Volkov
 #
 # http: //github.com/metapolator
 #
 # GPL v3 (http: //www.gnu.org/copyleft/gpl.html).
 
 """ Basic metafont point interface using webpy  """
+import datetime
 import mimetypes
 import models
 import os
@@ -16,18 +17,18 @@ import shutil
 import web
 import zipfile
 import simplejson
+import cStringIO as StringIO
 
 from web import seeother
 from passlib.hash import bcrypt
 
-import xmltomf
-from config import app, is_loggedin, session, working_dir, \
+import metapolator.tasks as tasks
+
+from metapolator.config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
-from forms import GlobalParamForm, RegisterForm, LocalParamForm, \
-    PointParamExtendedForm
-from tools import putFontAllglyphs, \
-    makefont, get_json, project_exists, writeGlyphlist, \
-    writeGlobalParam, makefont_single
+from metapolator.forms import RegisterForm, LocalParamForm, PointParamExtendedForm
+from metapolator.tools import put_font_all_glyphs, get_edges_json
+from metapolator.metapost import Metapost
 
 
 def raise404_notauthorized(func):
@@ -45,7 +46,6 @@ t_globals = {
     'datestr': web.datestr,
     'working_url': working_url,
     'is_loggedin': is_loggedin,
-    'project_exists': project_exists,
     'webctx': web.ctx,
     'websession': session
 }
@@ -55,134 +55,135 @@ render = web.template.render('templates', base='base', globals=t_globals)
 
 class GlyphPageMixin(object):
 
-    _lftmaster = None
-    _rgtmaster = None
-
-    _lftversion = None
-    _rgtversion = None
-
-    _project = None
-
-    def get_lft_master(self):
-        if not self._lftmaster:
-            raise Exception('Class was not initialized')
-        return self._lftmaster
-
-    def get_rgt_master(self):
-        if not self._rgtmaster:
-            raise Exception('Class was not initialized')
-        return self._rgtmaster
-
-    def get_lft_version(self):
-        if not self._lftversion:
-            raise Exception('Class was not initialized')
-        return self._lftversion
-
-    def get_rgt_version(self):
-        if not self._rgtversion:
-            raise Exception('Class was not initialized')
-        return self._rgtversion
-
-    def get_project(self):
-        if not self._project:
-            raise Exception('Class was not initialized')
-        return self._project
-
-    def initialize(self, projectname, lft_version, rgt_version):
-        try:
-            self._lftversion = int(lft_version)
-            self._rgtversion = int(rgt_version)
-        except TypeError:
-            raise web.notfound()
-
-        self._lftmaster = models.Project.get_master(projectname=projectname,
-                                                    version=self.get_lft_version())
-        if not self._lftmaster:
-            raise web.notfound()
-
-        self._rgtmaster = models.Project.get_master(projectname=projectname,
-                                                    version=self.get_rgt_version())
-        if not self._rgtmaster:
-            raise web.notfound()
-
-        self._project = models.Project.get(projectname=projectname)
-
-    def set_masters(self, masters):
-        self._masters = masters
-
-    def call_metapost_all_glyphs(self, master):
-        hasglyphs = False
-        for glyph in master.get_glyphs('a'):
-            _glyphs = models.Glyph.filter(fontsource='a', name=glyph.name)
-            _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
-
-            glyphs = []
-            for m in self._masters:
-                for g in _glyphs:
-                    if g.master_id == m.id:
-                        glyphs.append(g)
-                        break
-
-            if session.get('mfparser', '') == 'controlpoints':
-                import xmltomf_new_2axes as xmltomf
-                xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
-            else:
-                import xmltomf
-                xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
-            hasglyphs = True
-
-        if hasglyphs:
-            writeGlyphlist(master)
-            makefont_single(self.get_lft_master())
-
-    def call_metapost(self, glyph_id):
-        writeGlobalParam(self.get_lft_master(), self.get_rgt_master())
-
-        _glyphs = models.Glyph.filter(fontsource='A', name=glyph_id)
-        _glyphs = _glyphs.filter(models.Glyph.master_id.in_(map(lambda x: x.id, self._masters)))
-
-        glyphs = []
-        for m in self._masters:
-            for g in _glyphs:
-                if g.master_id == m.id:
-                    glyphs.append(g)
-                    break
-
-        if session.get('mfparser', '') == 'controlpoints':
-            import xmltomf_new_2axes as xmltomf
-            xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
-        else:
-            import xmltomf
-            xmltomf.xmltomf1(self.get_lft_master(), *list(glyphs))
-
-        writeGlyphlist(self.get_lft_master(), glyph_id)
-        makefont_single(self.get_lft_master())
-
     def get_glyphs_jsondata(self, glyphid, master):
-        self.call_metapost(glyphid)
+        project = master.project
+        masters = project.get_ordered_masters()
 
-        project = self.get_project()
+        glyph = models.Glyph.get(master_id=master.id, name=glyphid)
 
-        instancelog = project.get_instancelog(self.get_lft_version())
+        metapost = Metapost(project)
+        metapost.execute_interpolated_single(glyph)
+
+        instancelog = project.get_instancelog(masters[0].version)
         M_glyphjson = get_edges_json(instancelog, glyphid)
 
-        glyph = models.Glyph.get(master_id=master.id,
-                                 fontsource='A', name=glyphid)
+        metapost.execute_single(master, glyph)
         instancelog = project.get_instancelog(master.version, 'a')
-        if session.get('mfparser', '') == 'controlpoints':
-            import xmltomf_new_2axes as xmltomf
-            xmltomf.xmltomf1(master, glyph)
-        else:
-            import xmltomf
-            xmltomf.xmltomf1(master, glyph)
+        glyphjson = get_edges_json(instancelog, glyphid, master)
 
-        writeGlyphlist(master, glyph.name)
-        makefont_single(master, cell='A')
+        return {'M': M_glyphjson, 'R': glyphjson, 'master_id': master.id}
 
-        zpoints = get_edges_json_from_db(master, glyphid, ab_source='A')
 
-        glyphjson = get_edges_json(instancelog, glyphid)
-        return {'M': M_glyphjson, 'R': glyphjson, 'zpoints': zpoints}
+class Workspace(app.page):
+
+    path = '/workspace/'
+
+    @raise404_notauthorized
+    def GET(self):
+        web.ctx.pointparam_extended_form = PointParamExtendedForm()
+        web.ctx.settings_form = LocalParamForm()
+        return render.workspace()
+
+
+def get_metapolation_label(c):
+    """ Return metapolation label pair like AB, CD, EF """
+    c = c.upper()
+    try:
+        index = map(chr, models.LABELS[::2]).index(c)
+        return map(chr, models.LABELS[::2])[index] + map(chr, models.LABELS[1::2])[index]
+    except ValueError:
+        pass
+
+    index = map(chr, models.LABELS[1::2]).index(c)
+    return map(chr, models.LABELS[::2])[index] + map(chr, models.LABELS[1::2])[index]
+
+
+class Project(app.page):
+
+    path = '/editor/project/'
+
+    @raise404_notauthorized
+    def GET(self):
+        prepare_environment_directory()
+
+        x = web.input(project=0)
+
+        project = models.Project.get(id=x.project)
+        if not project:
+            raise web.notfound()
+
+        if x.get('glyph'):
+            if not models.Glyph.exists(name=x.get('glyph'), project_id=project.id):
+                raise web.notfound()
+            project.currentglyph = x.glyph
+            web.ctx.orm.commit()
+
+        masters = project.get_ordered_masters()
+
+        masters_list = []
+
+        metapost = Metapost(project)
+
+        for i, master in enumerate(masters):
+
+            prepare_master_environment(master)
+
+            glyphs = master.get_glyphs()
+            glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
+
+            if not metapost.execute_single(master, glyphs.first()):
+                return web.badrequest()
+
+            master_instancelog = project.get_instancelog(master.version, 'a')
+            glyphsdata = get_edges_json(master_instancelog, master=master)
+
+            metalabel = get_metapolation_label(chr(models.LABELS[i]))
+
+            masters_list.append({'glyphs': glyphsdata,
+                                 'label': chr(models.LABELS[i]),
+                                 'metapolation': metalabel,
+                                 'master_id': master.id})
+
+        glyphs = masters[0].get_glyphs()
+
+        glyphs = glyphs.filter(models.Glyph.name == project.currentglyph)
+
+        if not metapost.execute_interpolated_single(glyphs.first()):
+            return web.badrequest()
+
+        instancelog = project.get_instancelog(masters[0].version)
+        metaglyphs = get_edges_json(instancelog)
+
+        import operator
+        masters = map(operator.attrgetter('id', 'version'),
+                      models.Master.filter(project_id=project.id))
+
+        return simplejson.dumps({'masters': masters_list,
+                                 'versions': get_versions(project.id),
+                                 'metaglyphs': metaglyphs,
+                                 'mode': project.mfparser,
+                                 'project_id': project.id})
+
+
+class GlyphList(app.page):
+
+    path = '/editor/glyphs/'
+
+    @raise404_notauthorized
+    def GET(self):
+        x = web.input(project=0)
+
+        project = models.Project.get(id=x.project)
+        if not project:
+            raise web.notfound()
+
+        glyphs = models.Glyph.filter(project_id=project.id)
+        glyphs = glyphs.group_by(models.Glyph.name)
+        glyphs = glyphs.order_by(models.Glyph.name.asc())
+
+        import operator
+        glyphs_list = map(operator.attrgetter('name'), glyphs)
+        return simplejson.dumps({'glyphs': glyphs_list})
 
 
 def mime_type(filename):
@@ -198,7 +199,7 @@ class SwitchMFParser(app.page):
         raise seeother('/projects/')
 
 
-class EditorLocals(app.page):
+class EditorLocals(app.page, GlyphPageMixin):
 
     path = '/editor/locals/'
 
@@ -213,16 +214,16 @@ class EditorLocals(app.page):
     @raise404_notauthorized
     def POST(self):
         x = web.input(master_id=0)
+
         master = models.Master.get(id=x.master_id)
-        if not master:
-            return web.notfound()
 
         localparams = models.LocalParam.all()
         result = []
         for i, k in enumerate(localparams):
             dict_ = {'val': k.id, 'idx': i + 1}
-            if k.id == master.idlocala:
-                dict_.update({'selected': True})
+            if x.master_id:
+                if master and k.id == master.idlocala:
+                    dict_.update({'selected': True})
             result.append(dict_)
         return simplejson.dumps(result)
 
@@ -241,19 +242,38 @@ class EditorLocals(app.page):
 
             del values['idlocal']
             del values['save']
-            del values['ab_source']
 
             if not int(idlocal):
                 localparam = models.LocalParam.create(**values)
+                web.ctx.orm.commit()
                 master.idlocala = localparam.id
-                return simplejson.dumps([{'val': localparam.id,
-                                          'idx': models.LocalParam.all().count() + 1}])
             else:
                 models.LocalParam.update(id=idlocal, values=values)
                 localparam = models.LocalParam.get(id=idlocal)
+                web.ctx.orm.commit()
                 master.idlocala = localparam.id
 
-        return simplejson.dumps([])
+        project = master.project
+        result = self.get_glyphs_jsondata(project.currentglyph, master)
+        return simplejson.dumps(result)
+
+
+class GlyphOrigin(app.page):
+
+    path = '/a/glyph/origins/'
+
+    @raise404_notauthorized
+    def GET(self):
+        x = web.input(master_id=0, glyphname='')
+        if not x.get('glyphname'):
+            raise web.notfound()
+
+        glyph = models.Glyph.get(name=x.glyphname,
+                                 master_id=x.master_id)
+
+        if not glyph:
+            raise web.notfound()
+        return glyph.original_glyph_contours
 
 
 class userstatic(app.page):
@@ -279,76 +299,6 @@ class Index(app.page):
         raise seeother('/projects/')
 
 
-class Regenerate(app.page):
-
-    path = '/regenerate/(\d+)'
-
-    def GET(self, id):
-        master = models.Master.get(id=id)
-        if not master:
-            return web.notfound()
-
-        prepare_environment_directory()
-        prepare_master_environment(master)
-
-        for glyph in master.get_glyphs('a'):
-            glyphB = models.Glyph.get(name=glyph.name, fontsource='B',
-                                      master_id=master.id)
-            xmltomf.xmltomf1(master, glyph, glyphB)
-        writeGlyphlist(master)
-        makefont(working_dir(), master)
-        raise seeother('/fonts/')
-
-
-def get_edges_json(log_filename, glyphid=None):
-    result = {'edges': []}
-    try:
-        fp = open(log_filename)
-        content = fp.read()
-        fp.close()
-        return get_json(content, glyphid)
-    except (IOError, OSError):
-        pass
-    return result
-
-
-def get_edges_json_from_db(master, glyphid, ab_source='A'):
-    glyph = models.Glyph.get(master_id=master.id, name=glyphid,
-                             fontsource=ab_source)
-
-    points = models.GlyphOutline.filter(glyph_id=glyph.id)
-    if ab_source.upper() == 'A':
-        localparam = models.LocalParam.get(id=master.idlocala)
-    else:
-        localparam = models.LocalParam.get(id=master.idlocalb)
-
-    _points = []
-    for point in points.order_by(models.GlyphOutline.pointnr.asc()):
-        param = models.GlyphParam.get(glyphoutline_id=point.id)
-        iszpoint = False
-        if re.match('z(\d+)[lr]', param.pointname):
-            iszpoint = True
-
-        x = point.x
-        if localparam:
-            x += localparam.px
-        _points.append({'x': x, 'y': point.y, 'pointnr': point.pointnr,
-                        'iszpoint': iszpoint, 'data': param.as_dict()})
-
-    return {'width': glyph.width, 'points': _points}
-
-
-class Editor(app.page):
-
-    path = '/editor/'
-
-    @raise404_notauthorized
-    def GET(self):
-        web.ctx.pointparam_extended_form = PointParamExtendedForm()
-        web.ctx.settings_form = LocalParamForm()
-        return render.editor()
-
-
 class EditorMetapolationSave(app.page, GlyphPageMixin):
 
     path = '/editor/save-metap/'
@@ -366,26 +316,7 @@ class EditorMetapolationSave(app.page, GlyphPageMixin):
                                    values={'value': float(postdata.value)})
         web.ctx.orm.commit()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
-
-        self.set_masters(masters)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
+        masters = project.get_ordered_masters()
         result = self.get_glyphs_jsondata(postdata.glyphname, masters[0])
         return simplejson.dumps(result)
 
@@ -396,136 +327,39 @@ class EditorSavePoint(app.page, GlyphPageMixin):
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0, id='', x='', y='')
+        postdata = web.input(glyphoutline_id='')
 
-        # @FIXME: must be changed to form with validation of available
-        # arguments values.
-        #
-        # >>> form = EditorSavePointForm()
-        # >>> if not form.validates():
-        # >>>     raise web.notfound()
+        if not models.GlyphOutline.exists(id=postdata.glyphoutline_id):
+            return web.notfound()
+        glyphoutline = models.GlyphOutline.get(id=postdata.glyphoutline_id)
 
-        project = models.Project.get(id=postdata.project_id)
+        project = models.Project.get(id=glyphoutline.glyph.project_id)
         if not project:
             raise web.notfound()
 
-        master = models.Master.get(id=postdata.master_id)
+        master = models.Master.get(id=glyphoutline.glyph.master_id)
         if not master:
             return web.notfound()
-
-        if not models.GlyphOutline.exists(id=postdata.id):
-            return web.notfound()
-
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
-
-        self.set_masters(masters)
-
-        glyphoutline = models.GlyphOutline.get(id=postdata.id)
-        glyphoutline.x = postdata.x
-        glyphoutline.y = postdata.y
-        web.ctx.orm.commit()
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-        result = self.get_glyphs_jsondata(glyphoutline.glyph.name, master)
-        return simplejson.dumps(result)
-
-
-def dopair(pair):
-    pair = list(pair)
-    if pair[0] is None:
-        pair[0] = pair[1]
-    if pair[1] is None:
-        pair[1] = pair[0]
-    return pair
-
-
-def unifylist(masters):
-    p1 = masters[::2]
-    p2 = masters[1::2]
-    if len(p1) != len(p2):
-        p2 += [None] * (len(p1) - len(p2))
-
-    pairs = zip(p1, p2)
-    result = []
-    for p in map(dopair, pairs):
-        if p[0] is not None and p[1] is not None:
-            result += p
-    return result
-
-
-class EditorSaveParam(app.page, GlyphPageMixin):
-
-    path = '/editor/save-param/'
-
-    @raise404_notauthorized
-    def POST(self):
-        postdata = web.input(project_id=0, master_id=0, id='', masters='')
-
-        project = models.Project.get(id=postdata.project_id)
-        if not project:
-            raise web.notfound()
-
-        master = models.Master.get(id=postdata.master_id)
-        if not master:
-            return web.notfound()
-
-        if not models.GlyphOutline.exists(id=postdata.id):
-            return web.notfound()
-
-        glyphoutline = models.GlyphOutline.get(id=postdata.id)
 
         form = PointParamExtendedForm()
         if form.validates():
             values = form.d
-            del values['zpoint']
-            del values['save']
             glyphoutline.x = float(values['x'])
             glyphoutline.y = float(values['y'])
-            web.ctx.orm.commit()
 
+            glyphoutline.glyph.width = int(values['width'])
+            glyphoutline.glyph.width_new = int(values['width_new'])
+
+            del values['zpoint']
             del values['x']
             del values['y']
+            del values['width']
+            del values['width_new']
             for key in values:
                 if values[key] == '':
                     values[key] = None
-            models.GlyphParam.update(glyphoutline_id=postdata.id,
+            models.GlyphParam.update(glyphoutline_id=postdata.glyphoutline_id,
                                      values=values)
-
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
-
-        self.set_masters(masters)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
         result = self.get_glyphs_jsondata(glyphoutline.glyph.name, master)
         return simplejson.dumps(result)
 
@@ -540,95 +374,136 @@ class Projects(app.page):
         return render.projects(projects)
 
 
-class EditorCanvasReload(app.page, GlyphPageMixin):
+def get_master_data(master, glyph, axislabel):
+    project = master.project
+
+    masters = project.get_ordered_masters()
+    prepare_master_environment(masters[0])
+    prepare_master_environment(master)
+
+    metapost = Metapost(project)
+
+    glyphs = masters[0].get_glyphs()
+    glyphs = glyphs.filter(models.Glyph.name == glyph)
+    if not metapost.execute_single(masters[0], glyphs.first()):
+        return
+
+    instancelog = project.get_instancelog(masters[0].version)
+    metaglyphs = get_edges_json(instancelog)
+
+    glyphs = master.get_glyphs()
+    glyphs = glyphs.filter(models.Glyph.name == glyph)
+    if not metapost.execute_single(master, glyphs.first()):
+        return
+    master_instancelog = project.get_instancelog(master.version, 'a')
+
+    glyphsdata = get_edges_json(master_instancelog, master=master)
+
+    metalabel = get_metapolation_label(axislabel)
+
+    return {'glyphs': glyphsdata,
+            'metaglyphs': metaglyphs,
+            'master_name': master.name,
+            'master_version': '{0:03d}'.format(master.version),
+            'master_id': master.id,
+            'metapolation': metalabel,
+            'label': axislabel,
+            'versions': get_versions(project.id)}
+
+
+class EditorCanvasReload(app.page):
 
     path = '/editor/reload/'
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(project_id=0, master_id=0,
-                             glyphname='', axislabel='')
-
-        project = models.Project.get(id=postdata.project_id)
-        if not project:
-            raise web.notfound()
+        postdata = web.input(master_id=0, glyphname='', axislabel='')
 
         master = models.Master.get(id=postdata.master_id)
         if not master:
             return web.notfound()
 
-        index = LABELS.index(ord(postdata.axislabel))
-        masters = project.masters.split(',')
-        if index > len(masters) - 1:
-            masters.append(master.id)
-        else:
-            masters[index] = master.id
-        project.masters = ','.join(map(str, masters))
+        master.update_masters_ordering(postdata.axislabel)
+
+        data = get_master_data(master, postdata.glyphname, postdata.axislabel)
+        if not data:
+            return web.badrequest()
+        return simplejson.dumps(data)
+
+
+class EditorCopyMaster(app.page):
+
+    path = '/editor/copy-master/'
+
+    @raise404_notauthorized
+    def POST(self):
+        postdata = web.input(master_id=0, glyphname='', axislabel='')
+
+        master = models.Master.get(id=postdata.master_id)
+        if not master:
+            return web.notfound()
+
+        newmaster_obj = master.project.create_master()
+        newmaster_obj.name = master.name
+        newmaster_obj.user_id = master.user_id
+        newmaster_obj.idlocala = master.idlocala
         web.ctx.orm.commit()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
+        for glyph in master.get_glyphs():
 
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(models.Master.id.in_(masters))
+            newglyph_obj = models.Glyph.create(master_id=newmaster_obj.id,
+                                               name=glyph.name,
+                                               width=glyph.width,
+                                               width_new=glyph.width_new,
+                                               project_id=glyph.project_id)
 
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
+            web.ctx.orm.commit()
 
-        self.set_masters(masters)
+            query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
+            query = query.filter(models.GlyphOutline.glyph_id == glyph.id)
+            query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
 
-        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id,
-                                 fontsource='A')
+            outlines = list(query)
 
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-        result = self.get_glyphs_jsondata(glyph.name, master)
-        return simplejson.dumps(result)
+            for outline, param in outlines:
+
+                newglyphoutline_obj = models.GlyphOutline.create(
+                    glyph_id=newglyph_obj.id,
+                    master_id=newmaster_obj.id,
+                    glyphname=newglyph_obj.name,
+                    pointnr=outline.pointnr,
+                    x=outline.x,
+                    y=outline.y)
+                web.ctx.orm.commit()
+
+                param.copy(newglyphoutline_obj)
+                web.ctx.orm.commit()
+
+        newmaster_obj.update_masters_ordering(postdata.axislabel)
+        data = {'master_name': newmaster_obj.name,
+                'master_version': '{0:03d}'.format(newmaster_obj.version),
+                'master_id': newmaster_obj.id}
+
+        return simplejson.dumps(data)
 
 
-class EditorCreateInstance(app.page, GlyphPageMixin):
+class EditorCreateInstance(app.page):
 
     path = '/editor/create-instance/'
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(masters='', project_id=0)
+        postdata = web.input(project_id=0)
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
             raise web.notfound()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(project.masters.split(','))
-
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(project.masters.split(',')))
-
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
-
-        self.set_masters(masters)
-
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
-
-        writeGlobalParam(self.get_lft_master())
-        self.call_metapost_all_glyphs(self.get_lft_master())
-
         instance = models.Instance.create(project_id=project.id)
+        indexname = models.Instance.filter(project_id=project.id).count()
+
+        metapost = Metapost(project, version=indexname)
+        metapost.execute_interpolated_bulk()
 
         for extension in ['-webfont.eot', '-webfont.ttf', '.otf']:
             source = project.get_basename() + extension
@@ -644,193 +519,103 @@ class EditorCreateInstance(app.page, GlyphPageMixin):
         return simplejson.dumps({})
 
 
-class EditorGetProjectAxes(app.page):
-
-    path = '/editor/project/(\d+)'
-
-    @raise404_notauthorized
-    def POST(self, project_id):
-        project = models.Project.get(id=project_id)
-        if not project:
-            raise web.notfound()
-
-        # masters = models.Master.filter(project_id=project.id, editable=True)
-        # masters = masters.order_by(models.Master.editor_ordering.asc())
-
-        if not project.masters:
-            masters = models.Master.filter(project_id=project.id)
-            project.masters = ','.join(map(lambda x: str(x.id), masters[:2]))
-            web.ctx.orm.commit()
-
-        masters = []
-        for p in project.masters.split(','):
-            for m in models.Master.filter(project_id=project.id):
-                if m.id == int(p):
-                    masters.append(m)
-                    break
-
-        masters = map(lambda x: int(x.id), unifylist(masters))
-        zipped = zip(masters[::2], masters[1::2])
-        return simplejson.dumps({'axes': map(list, zipped),
-                                 'project_id': project_id})
-
-
 def get_versions(project_id):
     masters = models.Master.filter(project_id=project_id)
-    return map(lambda master: {'version': '{0:03d}'.format(master.version), 'master_id': master.id}, masters)
+    return map(lambda master: {'version': '{0:03d}'.format(master.version),
+                               'name': master.name,
+                               'master_id': master.id}, masters)
 
 
-class EditorMaster(app.page):
-
-    path = '/editor/get-master/'
-
-    @raise404_notauthorized
-    def POST(self):
-        postdata = web.input(project_id='', master_id='', label='')
-
-        project = models.Project.get(id=postdata.project_id)
-        if not project:
-            raise web.notfound()
-
-        master = models.Master.get(id=postdata.master_id,
-                                   project_id=postdata.project_id)
-        if not master:
-            raise web.notfound()
-
-        is_primary_label, label = get_metapolation_label(postdata.label)
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
-
-        versions = get_versions(postdata.project_id)
-        return simplejson.dumps({'project_id': project.id,
-                                 'master_id': master.id,
-                                 'glyphname': glyph.name,
-                                 'label': postdata.label,
-                                 'metapolation': label,
-                                 'version': '{0:03d}'.format(master.version),
-                                 'versions': versions})
-
-
-class EditorCreateMaster(app.page, GlyphPageMixin):
+class EditorCreateMaster(app.page):
 
     path = '/editor/create-master/'
 
     def create_glyphpoint(self, glyph, pointnr, pointparam, point):
         kwargs = dict(glyph_id=glyph.id, master_id=glyph.master_id,
-                      glyphname=glyph.name, fontsource=glyph.fontsource,
+                      glyphname=glyph.name,
                       pointnr=pointnr, x=int(float(point['x'])),
                       y=int(float(point['y'])))
         glyphoutline = models.GlyphOutline.create(**kwargs)
-
-        kwargs = dict(glyphoutline_id=glyphoutline.id,
-                      glyph_id=glyph.id,
-                      fontsource=glyph.fontsource,
-                      master_id=glyph.master_id,
-                      pointname=pointparam.pointname,
-                      startp=pointparam.startp,
-                      type=pointparam.type,
-                      control_in=pointparam.control_in,
-                      control_out=pointparam.control_out,
-                      doubledash=pointparam.doubledash,
-                      tripledash=pointparam.tripledash,
-                      superleft=pointparam.superleft,
-                      superright=pointparam.superright,
-                      leftp=pointparam.leftp,
-                      rightp=pointparam.rightp,
-                      downp=pointparam.downp,
-                      upp=pointparam.upp,
-                      dir=pointparam.dir,
-                      leftp2=pointparam.leftp2,
-                      rightp2=pointparam.rightp2,
-                      downp2=pointparam.downp2,
-                      upp2=pointparam.upp2,
-                      dir2=pointparam.dir2,
-                      tension=pointparam.tension,
-                      tensionand=pointparam.tensionand,
-                      cycle=pointparam.cycle,
-                      penshifted=pointparam.penshifted,
-                      pointshifted=pointparam.pointshifted,
-                      angle=pointparam.angle,
-                      penwidth=pointparam.penwidth,
-                      overx=pointparam.overx,
-                      overbase=pointparam.overbase,
-                      overcap=pointparam.overcap,
-                      overasc=pointparam.overasc,
-                      overdesc=pointparam.overdesc,
-                      ascpoint=pointparam.ascpoint,
-                      descpoint=pointparam.descpoint,
-                      stemcutter=pointparam.stemcutter,
-                      stemshift=pointparam.stemshift,
-                      inktrap_l=pointparam.inktrap_l,
-                      inktrap_r=pointparam.inktrap_r)
-        models.GlyphParam.create(**kwargs)
+        models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
+                                 glyph_id=glyph.id,
+                                 master_id=glyph.master_id,
+                                 pointname=pointparam.pointname,
+                                 startp=pointparam.startp,
+                                 type=pointparam.type,
+                                 control_in=pointparam.control_in,
+                                 control_out=pointparam.control_out,
+                                 doubledash=pointparam.doubledash,
+                                 tripledash=pointparam.tripledash,
+                                 leftp=pointparam.leftp,
+                                 rightp=pointparam.rightp,
+                                 downp=pointparam.downp,
+                                 upp=pointparam.upp,
+                                 dir=pointparam.dir,
+                                 leftp2=pointparam.leftp2,
+                                 rightp2=pointparam.rightp2,
+                                 downp2=pointparam.downp2,
+                                 upp2=pointparam.upp2,
+                                 dir2=pointparam.dir2,
+                                 tensionand=pointparam.tensionand,
+                                 penshifted=pointparam.penshifted,
+                                 pointshifted=pointparam.pointshifted,
+                                 angle=pointparam.angle,
+                                 penwidth=pointparam.penwidth,
+                                 overx=pointparam.overx,
+                                 overbase=pointparam.overbase,
+                                 overcap=pointparam.overcap,
+                                 overasc=pointparam.overasc,
+                                 overdesc=pointparam.overdesc)
 
     def round(self, coord):
         return int(round(float(coord)))
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(masters='', project_id=0, glyphname='')
+        postdata = web.input(project_id=0)
 
         project = models.Project.get(id=postdata.project_id)
         if not project:
             raise web.notfound()
 
-        # we should unify masters list in case if some masters absence
-        # and raise error if unavailable
-        _masters = unifylist(postdata.masters.split(','))
+        masters = project.get_ordered_masters()
 
-        # masters are passed here as ordered array of masters ids as they
-        # placed on editor page
-        instances = models.Master.all().filter(
-            models.Master.id.in_(postdata.masters.split(',')))
+        master = project.create_master()
+        web.ctx.orm.commit()
 
-        masters = []
-        for p in _masters:
-            for m in instances:
-                if m.id == int(p):
-                    masters.append(m)
-                    break
-
-        self.set_masters(masters)
-
-        version = models.Master.max(models.Master.version,
-                                    project_id=project.id)
-
-        master = models.Master.create(project_id=project.id,
-                                      version=(version + 1))
         prepare_master_environment(master)
 
-        self.initialize(project.projectname, masters[0].version,
-                        masters[1].version)
+        metapost = Metapost(project)
+        metapost.execute_interpolated_bulk()
 
-        writeGlobalParam(self.get_lft_master())
-        self.call_metapost_all_glyphs(self.get_lft_master())
+        primary_master = masters[0]
 
-        logpath = project.get_instancelog(version=self.get_lft_master().version)
-        for glyph in self.get_lft_master().get_glyphs('a'):
+        master.name = primary_master.name
+        logpath = project.get_instancelog(version=primary_master.version)
+        for glyph in primary_master.get_glyphs():
             json = get_edges_json(logpath, glyph.name)
-            if not json['edges']:
-                raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s' % logpath}))
+            if not json:
+                raise web.badrequest(simplejson.dumps({'error': 'could not find any contours for instance in %s for %s' % (logpath, glyph.name)}))
 
             zpoints = glyph.get_zpoints()
 
             points = []
-            for i, contourpoints in enumerate(json['edges'][0]['contours']):
+            for i, contourpoints in enumerate(json[0]['contours']):
                 if not contourpoints:
                     raise web.badrequest(simplejson.dumps({'error': 'could not find any points in contour for instance in %s' % logpath}))
                 metapost_points = []
                 for point in contourpoints:
-                    if session.get('mfparser', '') == 'controlpoints':
+                    if project.mfparser == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][0]['x']),
                                                 'y': self.round(point['controls'][0]['y'])})
 
                     metapost_points.append({'x': self.round(point['x']),
                                             'y': self.round(point['y'])})
 
-                    if session.get('mfparser', '') == 'controlpoints':
+                    if project.mfparser == 'controlpoints':
                         metapost_points.append({'x': self.round(point['controls'][1]['x']),
                                                 'y': self.round(point['controls'][1]['y'])})
-                if session.get('mfparser', '') == 'controlpoints' and metapost_points:
+                if project.mfparser == 'controlpoints' and metapost_points:
                     if i != 0:
                         points_ = metapost_points[1:] + metapost_points[:1]
                         points += points_
@@ -843,83 +628,63 @@ class EditorCreateMaster(app.page, GlyphPageMixin):
             if len(zpoints) != len(points):
                 raise web.badrequest(simplejson.dumps({'error': '%s zp != mp %s' % (len(zpoints), len(points))}))
 
-            newglypha = models.Glyph.create(master_id=master.id, fontsource='A',
-                                            name=glyph.name, width=glyph.width,
-                                            unicode=glyph.unicode)
-            newglyphb = models.Glyph.create(master_id=master.id, fontsource='B',
-                                            name=glyph.name, width=glyph.width,
-                                            unicode=glyph.unicode)
+            newglypha = models.Glyph.create(master_id=master.id,
+                                            name=glyph.name,
+                                            width=glyph.width,
+                                            project_id=glyph.project_id)
 
             i = 0
             for point in points:
                 self.create_glyphpoint(newglypha, (i + 1), zpoints[i], point)
-                self.create_glyphpoint(newglyphb, (i + 1), zpoints[i], point)
                 i += 1
 
-        project.masters = ','.join([str(master.id)] * len(project.masters.split(',')))
+        project.masters = ','.join([str(master.id)] * len(masters))
         web.ctx.orm.commit()
-
-        glyph = models.Glyph.get(name=postdata.glyphname, master_id=master.id,
-                                 fontsource='A')
-        result = self.get_glyphs_jsondata(glyph.name, master)
-        return simplejson.dumps({'version': '{0:03d}'.format(master.version),
-                                 'master_id': master.id, 'glyphdata': result,
-                                 'versions': get_versions(master.project_id)})
+        return simplejson.dumps({'versions': get_versions(project.id)})
 
 
-LABELS = range(ord('A'), ord('Z') + 1)
-METAP_PAIRS = zip(map(chr, LABELS[::2]), map(chr, LABELS[1::2]))
-
-
-def get_metapolation_label(c):
-    """ Return metapolation label pair like AB, CD, EF """
-    c = c.upper()
-    try:
-        index = map(chr, LABELS[::2]).index(c)
-        return True, map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
-    except ValueError:
-        pass
-
-    index = map(chr, LABELS[1::2]).index(c)
-    return False, map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
-
-
-class EditorUploadZIP(app.page, GlyphPageMixin):
+class EditorUploadZIP(app.page):
 
     path = '/upload/'
 
     @raise404_notauthorized
     def POST(self):
-        x = web.input(ufofile={}, project_id=None, label='')
+        x = web.input(ufofile={}, project_id=0, label='', glyph='',
+                      master_id=0)
         try:
             rawzipcontent = x.ufofile.file.read()
             if not rawzipcontent:
                 raise web.badrequest()
-            project_id = int(x.project_id)
+            zipcontent = StringIO.StringIO(rawzipcontent)
         except (AttributeError, TypeError, ValueError):
             raise web.badrequest()
+
+        try:
+            project_id = int(x.project_id)
+        except TypeError:
+            project_id = 0
 
         if not project_id:
             projects = models.Project.all()
             count = projects.filter(models.Project.projectname.like('UntitledProject%')).count()
-            project = models.Project.create(projectname='UntitledProject%s' % (count + 1))
+            project = models.Project.create(projectname='UntitledProject%s' % (count + 1),
+                                            mfparser=session.get('mfparser'))
         else:
             project = models.Project.get(id=project_id)
             if not project:
                 raise web.notfound()
 
-        filename = op.join(project.get_directory(), x.ufofile.filename)
+        master_exists = False
         try:
-            with open(filename, 'w') as fp:
-                fp.write(rawzipcontent)
-        except (IOError, OSError):
-            models.Project.delete(project)  # delete created project
-            raise web.badrequest()
+            master = models.Master.get(id=x.master_id, project_id=project.id)
+            master_exists = bool(master)
+        except AttributeError:
+            master = None
 
         prepare_environment_directory()
 
         try:
-            fzip = zipfile.ZipFile(filename)
+            fzip = zipfile.ZipFile(zipcontent)
 
             namelist = fzip.namelist()
 
@@ -935,84 +700,85 @@ class EditorUploadZIP(app.page, GlyphPageMixin):
                 raise web.badrequest()
 
             FontNameA = ufo_dirs[0]
-            try:
-                FontNameB = ufo_dirs[1]
-            except IndexError:
-                FontNameB = ''
+            name, ext = op.splitext(op.basename(FontNameA))
 
-            version = models.Master.max(models.Master.version,
-                                        project_id=project.id)
+            if not master:
+                master = project.create_master()
+                master.name = name
+                web.ctx.orm.commit()
 
-            if not version:
-                version = 0
-
-            version += 1
-            master = models.Master.create(project_id=project.id,
-                                          version=version)
-
-            is_primary_label, label = get_metapolation_label(x.label)
+            label = get_metapolation_label(x.label)
             metapolation = models.Metapolation.get(label=label, project_id=project.id)
             if not metapolation:
                 metapolation = models.Metapolation.create(label=label, project_id=project.id)
-            if is_primary_label:
-                metapolation.primary_master_id = master.id
-            else:
-                metapolation.second_master_id = master.id
 
             fontpath = master.get_fonts_directory()
+            shutil.rmtree(fontpath, ignore_errors=True)
 
             fzip.extractall(fontpath)
 
-            ufopath = master.get_ufo_path('a')
+            ufopath = master.get_ufo_path()
             shutil.move(op.join(fontpath, FontNameA), ufopath)
-            if FontNameB:
-                ufopath = master.get_ufo_path('b')
-                shutil.move(op.join(fontpath, FontNameB), ufopath)
-            else:
-                ufopath = master.get_ufo_path('b')
-                shutil.copytree(master.get_ufo_path('a'), ufopath)
 
             prepare_master_environment(master)
 
-            putFontAllglyphs(master)
+            if not master_exists:
+                currentglyph = put_font_all_glyphs(master, project.currentglyph,
+                                                   preload=True)
+                project.currentglyph = currentglyph
+            else:
+                put_font_all_glyphs(master, project.currentglyph,
+                                    preload=True, force_update=True)
+
+            asyncresult = tasks.fill_master_with_glyphs.delay(master.id,
+                                                              web.ctx.user.id,
+                                                              force_update=master_exists)
+            master.task_id = asyncresult.task_id
+            master.task_created = datetime.datetime.now()
+            web.ctx.orm.commit()
         except (zipfile.BadZipfile, OSError, IOError):
             raise
 
-        index = LABELS.index(ord(x.label))
-        masters = project.masters.split(',')
-        if index > len(masters) - 1:
-            masters.append(master.id)
-        else:
-            masters[index] = master.id
-        project.masters = ','.join(map(str, masters))
-        web.ctx.orm.commit()
-
-        glyph = models.Glyph.filter(fontsource='A', master_id=master.id).first()
+        master.update_masters_ordering(x.label)
         return simplejson.dumps({'project_id': project.id,
+                                 'glyphname': project.currentglyph,
                                  'master_id': master.id,
-                                 'glyphname': glyph.name,
                                  'label': x.label,
-                                 'metapolation': label,
-                                 'version': '{0:03d}'.format(version),
-                                 'versions': get_versions(master.project_id)})
+                                 'metapolation': label})
 
 
-def execute_metapost_for_all_glyphs(master, rgt_master=None):
-    import time
+class MasterAsyncLoading(app.page):
 
-    starttime = time.time()
-    hasglyphs = False
-    for glyph in master.get_glyphs('a'):
-        glyphB = models.Glyph.get(master_id=(rgt_master and rgt_master or master).id, fontsource='B',
-                                  name=glyph.name)
-        xmltomf.xmltomf1(master, glyph, glyphB)
-        hasglyphs = True
+    path = '/a/master/loading'
 
-    if hasglyphs:
-        writeGlyphlist(master)
-        makefont(working_dir(), master)
-    print '== makefont.sh complete === %s: %s' % (master.version,
-                                                  time.time() - starttime)
+    @raise404_notauthorized
+    def POST(self):
+        x = web.input(master_id='', project_id='', task_id='')
+        project = models.Project.get(id=x.project_id)
+        if not project:
+            raise web.notfound()
+
+        master = models.Master.get(id=x.master_id)
+        if not master:
+            return web.notfound()
+
+        if x.task_id:
+            from celery.result import AsyncResult
+            from metapolator.config import celery
+            res = AsyncResult(x.task_id, backend=celery.backend)
+
+            if res.ready():
+                master.task_completed = True
+                web.ctx.orm.commit()
+                return simplejson.dumps({'done': True})
+            else:
+                master.task_updated = datetime.datetime.now()
+                web.ctx.orm.commit()
+                return simplejson.dumps({'done': False, 'task_id': x.task_id})
+
+        master.task_completed = True
+        web.ctx.orm.commit()
+        return simplejson.dumps({'done': True})
 
 
 class Specimen(app.page):
@@ -1027,116 +793,18 @@ class Specimen(app.page):
             raise web.notfound()
 
         web.ctx.project = project
-        instances = models.Instance.filter(project_id=project.id)
+        instances = models.Instance.filter(project_id=project.id,
+                                           archived=False)
         return render.specimen(project, instances.order_by(models.Instance.id.desc()))
 
-
-class GlobalParams(app.page):
-
-    path = '/settings/globals/'
-
-    @raise404_notauthorized
-    def GET(self):
-        gml = models.GlobalParam.all()
-        return render.globals(gml)
-
-    @raise404_notauthorized
-    def POST(self):
-        # create new one and redirect to edit page
-        newid = models.GlobalParam.create()
-        raise seeother('/settings/globals/%s' % newid)
-
-
-class GlobalParam(app.page):
-
-    path = '/settings/globals/([1-9][0-9]{0,})'
-
-    @raise404_notauthorized
-    def GET(self, id):
-        gm = models.GlobalParam.get(id=id)
-        if not gm:
-            return web.notfound()
-
-        formg = GlobalParamForm()
-        formg.fill(gm.as_dict())
-
-        gml = models.GlobalParam.all()
-        return render.globals(gml, formg)
-
     @raise404_notauthorized
     def POST(self, id):
-        gm = models.GlobalParam.get(id=id)
-        if not gm:
-            return web.notfound()
-
-        formg = GlobalParamForm()
-        if formg.validates():
-            values = formg.d
-            del values['idglobal']
-            del values['save']
-
-            models.GlobalParam.update(id=id, values=values)
-            return seeother('/settings/globals/')
-
-        gml = models.GlobalParam.all()
-        return render.globals(gml, formg)
-
-
-class LocalParams(app.page):
-
-    path = '/settings/locals/'
-
-    @raise404_notauthorized
-    def GET(self):
-        localparams = models.LocalParam.all()
-        return render.locals(localparams)
-
-    @raise404_notauthorized
-    def POST(self):
-        localparam = models.LocalParam.create()
-        raise seeother('/settings/locals/edit/%s' % localparam.idlocal)
-
-
-class LocalParam(app.page):
-
-    path = '/settings/locals/edit/(.*)'
-
-    def getform(self, localparam=None):
-        form = LocalParamForm()
-        if localparam:
-            form.fill(localparam.as_dict())
-        return form
-
-    @raise404_notauthorized
-    def GET(self, id):
-        localparam = models.LocalParam.get(id=id)
-        if not localparam:
-            return web.notfound()
-
-        form = self.getform(localparam)
-
-        glo = models.LocalParam.all()
-        return render.editlocals(localparam, glo, form)
-
-    @raise404_notauthorized
-    def POST(self, id):
-        localparam = models.LocalParam.get(id=id)
-        if not localparam:
-            return web.notfound()
-
-        form = self.getform()
-
-        if form.validates():
-            values = form.d
-            del values['ab_source']
-            del values['save']
-            del values['idlocal']
-
-            models.LocalParam.update(id=id, values=values)
-            raise seeother('/settings/locals/')
-
-        glo = models.LocalParam.all()
-        return render.editlocals(localparam, glo, form)
+        x = web.input(id='')
+        project = models.Project.get(id=id)
+        if not project:
+            raise web.notfound()
+        models.Instance.update(id=x.id, values={'archived': True})
+        raise web.seeother("/specimen/%s/" % project.id)
 
 
 class logout(app.page):
@@ -1193,6 +861,10 @@ def prepare_environment_directory(force=False):
         except (OSError, IOError):
             raise
 
+    import subprocess
+    subprocess.Popen(["mpost", "-progname=mpost", "-ini", "mf2pt1", "\\dump"],
+                     cwd=working_dir())
+
 
 class Register(app.page):
     """ Registration processes of users with username and password """
@@ -1222,4 +894,3 @@ def prepare_master_environment(master):
             shutil.copy2(filename, master.get_fonts_directory())
         except (IOError, OSError):
             raise
-    writeGlobalParam(master)
