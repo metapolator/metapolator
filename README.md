@@ -13,6 +13,18 @@ Furthermore instead of using prepared fonts it will be possible to enhance norma
 
 Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
 
+## Installation
+
+### Docker
+
+The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
+
+1. [Install Docker](http://www.docker.io/gettingstarted/)
+2. `sudo docker build -rm -t metapolator git://github.com/metapolator/docker.git;`
+3. `sudo docker run -p 8080 -t metapolator;`
+
+### Traditional Installation
+
 Requirements: 
 
 - [git](http://git-scm.org)
@@ -27,38 +39,26 @@ Requirements:
 - [web.py](http://webpy.org/)
 - Optimized for Google Chrome
 
-
-## Installation
-
-### Ubuntu or Debian
+#### Ubuntu/Debian
 
 ```sh
 sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
 # Note your mysql root password
-mkdir src;
-cd src;
-wget http://mirrors.ctan.org/support/mf2pt1.zip;
-unzip mf2pt1.zip;
-mkdir sfnt2woff;
-cd sfnt2woff;
-wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
-unzip woff-code-latest.zip;
-make;
-sudo cp sfnt2woff /usr/local/bin/;
-cd ..;
-sudo apt-get install -y build-essential autoconf libtool python-dev;
+sudo apt-get install -y woff-tools
 # TODO: how to install fontforge and fontforge-python from source
 # git clone https://github.com/fontforge/fontforge.git;
 sudo apt-get install -y fontforge python-fontforge;
+sudo apt-get install -y build-essential autoconf libtool python-dev;
+sudo apt-get install -y python-virtualenv python-setuptools python-pip;
+mkdir ~/src;
+cd ~/src;
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
-easy_install -U distribute pip;
-sudo apt-get install -y python-virtualenv;
 virtualenv .venv;
-source .venv/bin/activate ; pip install -r requirements.txt;
+source .venv/bin/activate ; pip install -r requirements.txt
 ```
 
-### Mac OS X 
+#### Mac OS X 
 
 ```sh
 # Install Homebrew
@@ -83,8 +83,10 @@ cd metapolator;
 easy_install -U distribute pip;
 pip install virtualenv;
 virtualenv .venv;
-source .venv/bin/activate ; pip install -r requirements.txt
+source .venv/bin/activate ; pip install -r requirements.txt;
 ````
+
+### Setup
 
 Create new database:
 
@@ -98,10 +100,11 @@ Load the preset database:
 .venv/bin/python metapolator/models.py;
 ```
 
-Start web.py application:
+Start web.py application and celery server:
 
 ```sh
 .venv/bin/python run.py;
+.venv/bin/celery -A metapolator.tasks worker --loglevel=info;
 ```
 
 This should give you a local web server you can visit with Chrome:
@@ -110,7 +113,7 @@ This should give you a local web server you can visit with Chrome:
 open [http://0.0.0.0:8080](http://0.0.0.0:8080);
 ```
 
-### Deployment
+### Ubuntu/Debian Server Deployment
 
 Install supervisor and nginx
 
@@ -132,8 +135,8 @@ This project is licensed under the [GNU General Public License v3.0](http://www.
 
 ## Credits
 
-Authors: Simon Egli, Vitaly Volkov
+Core Development Team: Simon Egli, Vitaly Volkov
 
-Contributors: Walter Egli, Nicolas Pauly, Wei Huang
+Contributors: Walter Egli, Nicolas Pauly, Wei Huang, 
 
 Thanks to Dave Crossland for inspiring this project!
