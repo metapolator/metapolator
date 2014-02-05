@@ -76,16 +76,10 @@ virtualenv .venv;
 source .venv/bin/activate ; pip install -r requirements.txt
 ````
 
-Login to your mysql database as root. You could also change these settings on line 6 in model.py.
-
-```
-$ mysql -uroot -p
-```
-
 Create new database:
 
-```
-mysql> CREATE DATABASE metapolatordev;
+```sh
+mysql --user=root -e "DROP DATABASE metapolatordev; CREATE DATABASE metapolatordev;";
 ```
 
 Load the preset database:
