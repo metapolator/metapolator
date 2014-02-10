@@ -51,15 +51,17 @@ t_globals = {
 }
 
 render = web.template.render('templates', base='base', globals=t_globals)
+
+render_template = web.template.render('templates')
 ###  classes
 
 
 class OpentypeJSInterpolationPage(app.page):
 
-    path = '/opentype/'
+    path = '/test/'
 
     def GET(self):
-        return render.opentype_js()
+        return render_template.opentype_js()
 
 
 class GlyphPageMixin(object):

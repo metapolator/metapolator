@@ -1,24 +1,46 @@
-<link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
 
-<style>
-    .slider {
-        margin-bottom: 48px;
-    }
-</style>
+    <style>
+        .slider {
+            margin-bottom: 48px;
+        }
 
-<div class="row">
+        .container-fluid {
+            margin-top: 200px;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
 
-    <div class="col-xs-3 slider">
-        <input id="slider" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-3 offset1 slider">
+                <div>
+                    <input id="slider" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                </div>
+                <div>
+                    <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="72" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                </div>
+            </div>
 
-        <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="72" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+            <div id="glyphs" class="col-xs-8">
+
+            </div>
+
+        </div>
     </div>
+</body>
 
-    <div id="glyphs" class="col-xs-9">
-
-    </div>
-
-</div>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 
 <script type="text/javascript" src="/static/js/3rdparty/bootstrap-slider.js"></script>
 <script type="text/javascript" src="/static/js/3rdparty/opentype.js"></script>
@@ -27,8 +49,8 @@
 <script>
 
 function formatter(value) {
-                return value.toFixed(2);
-            }
+    return value.toFixed(2);
+}
 
 $$(document).ready(function(){
 
@@ -63,3 +85,4 @@ $$(document).ready(function(){
 
 });
 </script>
+</html>
