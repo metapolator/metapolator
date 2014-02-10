@@ -1,7 +1,5 @@
-function createGlyphCanvas(glyph, size) {
-    var canvasId, html, glyphsDiv, wrap, canvas, ctx;
-
-    var canvas = $('<canvas width="' + size + '" height="' + size + '"></canvas>');
+function createCanvas() {
+    var canvas = $('<canvas width="940" height="300"></canvas>');
     $('#glyphs').append(
         $('<div class="wrapper"></div>').append(canvas))
 
@@ -12,17 +10,15 @@ function getFontInstance(fontinstance) {
 
     return {
         font: fontinstance,
-        glyphIndex: 48,
+        text: 'Natalia',
         fontSize: 72,
         interpolationValue: 0.2,
 
         interpolate: function(instance) {
             $('#glyphs').html('');
-            var glyph = this.font.glyphs[this.glyphIndex],
-                ctx = createGlyphCanvas(glyph, 300),
-
-                pathA = this.getPath(),
-                pathB = instance.getPath();
+            var pathA = this.getPath(),
+                pathB = instance.getPath(),
+                ctx = createCanvas();
 
             for (var i = 0; i < pathA.commands.length; i++) {
                 var B_command = pathB.commands[i] || pathA.commands[i];
@@ -48,7 +44,7 @@ function getFontInstance(fontinstance) {
         },
 
         getPath: function() {
-            return this.font.glyphs[this.glyphIndex].getPath(50, 120, this.fontSize);
+            return this.font.getPath(this.text, 50, 120, this.fontSize);
         }
     }
 }
