@@ -10,9 +10,9 @@ function getFontInstance(fontinstance) {
 
     return {
         font: fontinstance,
-        text: 'Natalia',
+        text: 'Natalie',
         fontSize: 72,
-        interpolationValue: 0.2,
+        interpolationValue: 0,
 
         interpolate: function(instance) {
             $('#glyphs').html('');
@@ -29,7 +29,13 @@ function getFontInstance(fontinstance) {
                     pathA.commands[i].x1 = this.interpolateValue(pathA.commands[i].x1, B_command.x1);
                 }
                 if (pathA.commands[i].y1) {
-                    pathA.commands[i].y1 = this.interpolateValue(pathA.commands[i].x1, B_command.y1);
+                    pathA.commands[i].y1 = this.interpolateValue(pathA.commands[i].y1, B_command.y1);
+                }
+                if (pathA.commands[i].x2) {
+                    pathA.commands[i].x2 = this.interpolateValue(pathA.commands[i].x2, B_command.x2);
+                }
+                if (pathA.commands[i].y2) {
+                    pathA.commands[i].y2 = this.interpolateValue(pathA.commands[i].y2, B_command.y2);
                 }
                 if (pathA.commands[i].y) {
                     pathA.commands[i].y = this.interpolateValue(pathA.commands[i].y, B_command.y);
@@ -40,7 +46,7 @@ function getFontInstance(fontinstance) {
         },
 
         interpolateValue: function(A, B) {
-            return parseInt(A + this.interpolationValue * ( B - A ));
+            return A + this.interpolationValue * ( B - A );
         },
 
         getPath: function() {
