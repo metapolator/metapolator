@@ -1,5 +1,5 @@
 function createCanvas() {
-    var canvas = $('<canvas width="940" height="300"></canvas>');
+    var canvas = $('<canvas width="1000" height="500"></canvas>');
     $('#glyphs').append(
         $('<div class="wrapper"></div>').append(canvas))
 
@@ -50,7 +50,7 @@ function getFontInstance(fontinstance) {
         },
 
         getPath: function() {
-            return this.font.getPath(this.text, 50, 120, this.fontSize);
+            return this.font.getPath(this.text, 50, 252 - this.fontSize * 0.2, this.fontSize);
         }
     }
 }
