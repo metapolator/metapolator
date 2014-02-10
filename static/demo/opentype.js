@@ -12,7 +12,7 @@ function getFontInstance(fontinstance) {
 
     return {
         font: fontinstance,
-        glyphIndex: 49,
+        glyphIndex: 48,
         fontSize: 72,
         interpolationValue: 0.2,
 

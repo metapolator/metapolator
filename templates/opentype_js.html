@@ -7,6 +7,8 @@ $var title: opentype
 
     <div class="col-xs-3">
         <input id="slider" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+
+        <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="72" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
     </div>
 
     <div id="glyphs" class="col-xs-9">
@@ -27,13 +29,13 @@ function formatter(value) {
 
 $$(document).ready(function(){
 
-    opentype.load('/static/demo/Inconsolata-Regular.ttf', function (err, font) {
+    opentype.load('/static/demo/Exo-Regular.otf', function (err, font) {
         if (err) {
              alert('Font could not be loaded: ' + err);
         } else {
             instances.push(getFontInstance(font));
 
-            opentype.load('/static/demo/Inconsolata-Bold.ttf', function (err, font) {
+            opentype.load('/static/demo/Exo-Medium.otf', function (err, font) {
                 if (err) {
                      alert('Font could not be loaded: ' + err);
                 } else {
@@ -45,6 +47,13 @@ $$(document).ready(function(){
 
         $$('#slider').slider({formatter: formatter}).on('slide', function(e){
             instances[0].interpolationValue = e.value;
+            funStart();
+        });
+
+        $$('#sliderFontsize').slider({formatter: formatter}).on('slide', function(e){
+            $$(instances).each(function(idx, instance){
+                instance.fontSize = e.value
+            });
             funStart();
         });
     });
