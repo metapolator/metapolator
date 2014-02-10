@@ -14,7 +14,7 @@ function getFontInstance(fontinstance) {
         font: fontinstance,
         glyphIndex: 49,
         fontSize: 72,
-        interpolationValue: 0,
+        interpolationValue: 0.2,
 
         interpolate: function(instance) {
             $('#glyphs').html('');
@@ -24,24 +24,22 @@ function getFontInstance(fontinstance) {
                 pathA = this.getPath(),
                 pathB = instance.getPath();
 
-            console.log(JSON.stringify(pathA.commands));
-
             for (var i = 0; i < pathA.commands.length; i++) {
+                var B_command = pathB.commands[i] || pathA.commands[i];
                 if (pathA.commands[i].x) {
-                    pathA.commands[i].x = this.interpolateValue(pathA.commands[i].x, (pathB.commands[i] || pathA.commands[i]).x);
+                    pathA.commands[i].x = this.interpolateValue(pathA.commands[i].x, B_command.x);
                 }
                 if (pathA.commands[i].x1) {
-                    pathA.commands[i].x1 = this.interpolateValue(pathA.commands[i].x1, (pathB.commands[i] || pathA.commands[i]).x1);
+                    pathA.commands[i].x1 = this.interpolateValue(pathA.commands[i].x1, B_command.x1);
                 }
                 if (pathA.commands[i].y1) {
-                    pathA.commands[i].y1 = this.interpolateValue(pathA.commands[i].x1, (pathB.commands[i] || pathA.commands[i]).y1);
+                    pathA.commands[i].y1 = this.interpolateValue(pathA.commands[i].x1, B_command.y1);
                 }
                 if (pathA.commands[i].y) {
-                    pathA.commands[i].y = this.interpolateValue(pathA.commands[i].y, (pathB.commands[i] || pathA.commands[i]).y);
+                    pathA.commands[i].y = this.interpolateValue(pathA.commands[i].y, B_command.y);
                 }
             }
 
-            console.log(JSON.stringify(pathA.commands));
             pathA.draw(ctx);
         },
 

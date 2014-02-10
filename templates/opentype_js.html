@@ -1,20 +1,29 @@
 $def with ()
 
 $var title: opentype
-<style>
-    .wrapper {
-        float: left;
-        margin-right: 48px;
-    }
-</style>
+<link rel="stylesheet" type="text/css" href="/static/css/slider.css"/>
 
-<div id="glyphs">
+<div class="row">
+
+    <div class="col-xs-3">
+        <input id="slider" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+    </div>
+
+    <div id="glyphs" class="col-xs-9">
+
+    </div>
 
 </div>
 
-<script src="/static/js/3rdparty/opentype.js"></script>
-<script src="/static/demo/opentype.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/bootstrap-slider.js"></script>
+<script type="text/javascript" src="/static/js/3rdparty/opentype.js"></script>
+<script type="text/javascript" src="/static/demo/opentype.js"></script>
+
 <script>
+
+function formatter(value) {
+                return value.toFixed(2);
+            }
 
 $$(document).ready(function(){
 
@@ -33,7 +42,12 @@ $$(document).ready(function(){
                 }
             });
         }
+
+        $$('#slider').slider({formatter: formatter}).on('slide', function(e){
+            instances[0].interpolationValue = e.value;
+            funStart();
+        });
     });
 
-})
+});
 </script>
