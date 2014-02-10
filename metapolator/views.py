@@ -49,8 +49,17 @@ t_globals = {
     'webctx': web.ctx,
     'websession': session
 }
+
 render = web.template.render('templates', base='base', globals=t_globals)
 ###  classes
+
+
+class OpentypeJSInterpolationPage(app.page):
+
+    path = '/opentype/'
+
+    def GET(self):
+        return render.opentype_js()
 
 
 class GlyphPageMixin(object):

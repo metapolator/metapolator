@@ -1,0 +1,97 @@
+$def with ()
+
+$var title: opentype
+<style>
+    .wrapper {
+        float: left;
+        margin-right: 48px;
+    }
+</style>
+
+<div id="glyphs">
+
+</div>
+
+<script src="/static/js/3rdparty/opentype.js"></script>
+<!-- <script src="http://nodebox.github.io/opentype.js/opentype.js"></script> -->
+
+<script>
+
+function createGlyphCanvas(glyph, size) {
+    var canvasId, html, glyphsDiv, wrap, canvas, ctx;
+
+    var canvas = $$('<canvas width="' + size + '" height="' + size + '"></canvas>');
+    $$('#glyphs').append(
+        $$('<div class="wrapper"></div>').append(canvas))
+
+    return canvas[0].getContext('2d');
+}
+
+function getFontInstance(fontinstance) {
+
+    return {
+        font: fontinstance,
+        glyphIndex: 39,
+        fontSize: 72,
+        interpolationValue: 0.2,
+
+        interpolate: function(instance) {
+            $$('#glyphs').html('');
+            var glyph = this.font.glyphs[this.glyphIndex],
+                ctx = createGlyphCanvas(glyph, 300),
+
+                pathA = this.getPath(),
+                pathB = instance.getPath();
+
+            // glyph.draw(ctx, 50, 120, this.fontSize);
+            console.log(JSON.stringify(pathA));
+
+            for (var i = 0; i < pathA.commands.length; i++) {
+                pathA.commands[i].x = this.interpolateValue(pathA.commands[i].x, pathB.commands[i].x);
+                pathA.commands[i].y = this.interpolateValue(pathA.commands[i].y, pathB.commands[i].y);
+            }
+
+            pathA.draw(ctx);
+
+            console.log(JSON.stringify(pathA));
+        },
+
+        interpolateValue: function(A, B) {
+            return A + this.interpolationValue * ( B - A );
+        },
+
+        getPath: function() {
+            return this.font.glyphs[this.glyphIndex].getPath(50, 120, this.fontSize);
+        }
+    }
+}
+
+var instances = [];
+
+
+function funStart() {
+    instances[0].interpolate(instances[1]);
+}
+
+
+$$(document).ready(function(){
+
+    opentype.load('/static/demo/Inconsolata-Regular.ttf', function (err, font) {
+        if (err) {
+             alert('Font could not be loaded: ' + err);
+        } else {
+            instances.push(getFontInstance(font));
+
+            opentype.load('/static/demo/Inconsolata-Bold.ttf', function (err, font) {
+                if (err) {
+                     alert('Font could not be loaded: ' + err);
+                } else {
+                    instances.push(getFontInstance(font));
+                    funStart();
+                }
+            });
+        }
+    });
+
+})
+</script>
