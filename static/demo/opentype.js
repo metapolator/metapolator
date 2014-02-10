@@ -12,7 +12,7 @@ function getFontInstance(fontinstance) {
 
     return {
         font: fontinstance,
-        glyphIndex: 80,
+        glyphIndex: 49,
         fontSize: 72,
         interpolationValue: 0,
 
@@ -46,7 +46,7 @@ function getFontInstance(fontinstance) {
         },
 
         interpolateValue: function(A, B) {
-            return A + this.interpolationValue * ( B - A );
+            return parseInt(A + this.interpolationValue * ( B - A ));
         },
 
         getPath: function() {
