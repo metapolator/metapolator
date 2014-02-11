@@ -55,13 +55,13 @@ function formatter(value) {
 
 $(document).ready(function(){
 
-    opentype.load('fonts/Exo-Regular.otf', function (err, font) {
+    opentype.load('fonts/Roboto-Regular.otf', function (err, font) {
         if (err) {
              alert('Font could not be loaded: ' + err);
         } else {
             instances.push(getFontInstance(font));
 
-            opentype.load('fonts/Exo-Medium.otf', function (err, font) {
+            opentype.load('fonts/Roboto-Bold.otf', function (err, font) {
                 if (err) {
                      alert('Font could not be loaded: ' + err);
                 } else {
