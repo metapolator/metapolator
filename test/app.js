@@ -11,7 +11,7 @@ function getFontInstance(fontinstance) {
     return {
         font: fontinstance,
         text: 'Hanna',
-        fontSize: 172,
+        fontSize: 124,
         interpolationValue: 0,
 
         interpolate: function(instance) {
