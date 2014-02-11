@@ -1,5 +1,5 @@
 function createCanvas() {
-    var canvas = $('<canvas width="1000" height="500"></canvas>');
+    var canvas = $('<canvas width="850" height="300"></canvas>');
     $('#glyphs').append(
         $('<div class="wrapper"></div>').append(canvas))
 
