@@ -38,13 +38,6 @@
                     <option value="#space">change space</option>
                     <option value="#all">change all</option>
                   </select>
-                  <!-- <ul class="dropdown-menu invert" role="menu">
-                    <li><a href="#height">change x-height</a></li>
-                    <li><a href="#weight">change weight</a></li>
-                    <li><a href="#size">change size</a></li>
-                    <li><a href="#space">change space</a></li>
-                    <li><a href="#all">change all</a></li>
-                  </ul> -->
                 </div></li>
               </ul>
               <ul class="col-md-2 masthead-nav">
@@ -104,7 +97,10 @@
 <script type="text/javascript" src="/static/demo/opentype.js"></script>
 
 <script>
-var sliderKlass = window.location.hash;
+if (!window.location.hash){
+    window.location.hash = '#height';
+}
+var sliderKlass = window.location.hash.replace('#','');
 
 function formatter(value) {
     return Number(value).toFixed(2);
@@ -116,12 +112,20 @@ $$(window).on('hashchange', function(e){
     }
     sliderKlass = window.location.hash.replace('#','');
     $$('.sliders').addClass(sliderKlass);
+    $$('#sliderPicker option').filter(function() {
+                return this.value && this.value == window.location.hash;
+        }).prop('selected', true);
 });
 
 $$(document).ready(function(){
     $$('#sliderPicker').on('change', function(){
         window.location.hash = $$(this).val();
+        instances.interpolate();
     });
+    $$('#sliderPicker option').filter(function() {
+                return this.value && this.value == window.location.hash;
+        }).prop('selected', true);
+
     if (window.location.hash){
         $$('.sliders').addClass(window.location.hash.replace('#',''));
     }

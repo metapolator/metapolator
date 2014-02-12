@@ -18,6 +18,8 @@ function Instances(length) {
         interpolationValueAB: 0.2,
         interpolationValueAC: 0.2,
         interpolationValueAD: 0.2,
+        maxX:0,
+        maxY:0,
 
         add: function(index, font) {
             this.fonts[index] = font;
@@ -31,10 +33,6 @@ function Instances(length) {
                 pathC = this.getPath(this.fonts[2]),
                 pathD = this.getPath(this.fonts[3]);
 
-            var maxX = 0,
-                maxY = 0;
-
-
             // console.log(this.interpolationValueAD);
 
             for (var i = 0; i < pathA.commands.length; i++) {
@@ -42,8 +40,7 @@ function Instances(length) {
                 var C_command = pathC.commands[i] || pathA.commands[i];
                 var D_command = pathD.commands[i] || pathA.commands[i];
                 if (pathA.commands[i].x) {
-                    console.log(maxX, pathA.commands[i].x);
-                    maxX = Math.max(maxX, pathA.commands[i].x);
+                    maxX = Math.max(this.maxX, pathA.commands[i].x);
 
                     pathA.commands[i].x = this.interpolateExtValue(
                         pathA.commands[i].x, B_command.x, C_command.x, D_command.x);
@@ -53,7 +50,7 @@ function Instances(length) {
                         pathA.commands[i].x1, B_command.x1, C_command.x1, D_command.x1);
                 }
                 if (pathA.commands[i].y1) {
-                    maxY = Math.max(maxY, pathA.commands[i].y1);
+                    maxY = Math.max(this.maxY, pathA.commands[i].y1);
                     pathA.commands[i].y1 = this.interpolateExtValue(
                         pathA.commands[i].y1, B_command.y1, C_command.y1, D_command.y1);
                 }
