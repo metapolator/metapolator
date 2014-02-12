@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,38 +5,88 @@
     <title>Document</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="slider.css"/>
+    <link rel="stylesheet" type="text/css" href="demo.css"/>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:100italic,500,300,700,400' rel='stylesheet' type='text/css'>
 
-    <style>
-        .slider {
-            margin-bottom: 48px;
-        }
-
-        .container-fluid {
-            margin-top: 200px;
-            width: 100%;
-            text-align: center;
-        }
-    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 
 <body>
+<div id="wrap">
+    <div class="masthead clearfix">
+            <div class="inner">
+              <h5 class="col-md-3 masthead-brand">
+                <span style="font-family: 'Roboto', sans-serif; font-weight: 700;">META</span><!---
+                --><span style="font-family: 'Roboto', sans-serif; font-weight: 500;">PO</span><!---
+                --><span style="font-family: 'Roboto', sans-serif; font-weight: 300;">LATOR</span>
+                <span style="font-family: 'Roboto', sans-serif; font-weight: 100; font-style: italic;">DEMO</span>
+            </h5>
+            <!-- Top center dropdown menu for selectiong action -->
+              <ul class="col-md-5 col-md-offset-2 feature-nav">
+                <li>What do you want to try?</li>
+                <li>
+                <div class="btn-group">
+                  <select id="sliderPicker" class="btn-black" data-toggle="dropdown"><!--
+                    -->changing x-height <span class="caret"></span>
+                    <option value="#height">change x-height</option>
+                    <option value="#weight">change weight</option>
+                    <option value="#size">change size</option>
+                    <option value="#space">change space</option>
+                    <option value="#all">change all</option>
+                  </select>
+                </div></li>
+              </ul>
+              <ul class="col-md-2 masthead-nav">
+                <li><a href="http://github.com/metapolator/metapolator" title="Download"><span class="glyphicon glyphicon-circle-arrow-down"></span></a>   </li>
+                <li><a href="http://metapolator.com/about" title="About"><span class="glyphicon glyphicon-user"></span></a></li>
+                <li><a href="https://plus.google.com/u/0/communities/110027004108709154749" title="Google+"><span class="glyphicon glyphicon-globe"></span></a></li>
+                <li><a href="http://metapolator.com/atom.xml" title="Atom RSS"><span class="glyphicon glyphicon-send"></span></a></li>
+              </ul>
+            </div>
+          </div>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-3 offset1 slider">
-                <div>
-                    <input id="slider" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
-                </div>
-                <div>
-                    <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+        <div class="container">
+            <div class="row">
+                <div id="glyphs">
                 </div>
             </div>
-
-            <div id="glyphs" class="col-xs-8">
-
+        <div class="row sliders">
+                <div id="weightSlider" class="row">
+                        <div class="col-md-3">weight:</div>
+                        <div class="col-md-5">
+                            <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                        </div>
+                        <div class="col-md-3"><span id="sliderABValue">0.2</span></div>
+                </div>
+                <div id="spaceSlider" class="row">
+                    <div class="col-md-3">space:</div>
+                    <div class="col-md-5">
+                        <input id="sliderAC" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                    </div>
+                    <div class="col-md-3"><span id="sliderACValue">0.2</span></div>
+                </div>
+                <div id="heightSlider" class="row">
+                    <div class="col-md-3">x-height:</div>
+                    <div class="col-md-5">
+                        <input id="sliderAD" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                    </div>
+                    <div class="col-md-3"><span id="sliderADValue">0.2</span></div>
+                </div>
+                <div id="sizeSlider" class="row">
+                    <div class="col-md-3">size:</div>
+                    <div class="col-md-5">
+                        <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="150" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                    </div>
+                    <div class="col-md-3"><span id="sliderFontValue">124</span></div>
+                </div>
             </div>
-
         </div>
     </div>
+</div>
 </body>
 
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -48,42 +97,104 @@
 <script type="text/javascript" src="app.js"></script>
 
 <script>
+if (!window.location.hash){
+    window.location.hash = '#height';
+}
+var sliderKlass = window.location.hash.replace('#','');
 
 function formatter(value) {
-    return value.toFixed(2);
+    return Number(value).toFixed(2);
 }
 
+$(window).on('hashchange', function(e){
+    if (sliderKlass) {
+       $('.sliders').removeClass(sliderKlass);
+    }
+    sliderKlass = window.location.hash.replace('#','');
+    $('.sliders').addClass(sliderKlass);
+    $('#sliderPicker option').filter(function() {
+                return this.value && this.value == window.location.hash;
+        }).prop('selected', true);
+});
+
 $(document).ready(function(){
+    $('#sliderPicker').on('change', function(){
+        window.location.hash = $(this).val();
+        instances.interpolate();
+    });
+    $('#sliderPicker option').filter(function() {
+                return this.value && this.value == window.location.hash;
+        }).prop('selected', true);
 
-    opentype.load('fonts/Roboto-Regular.otf', function (err, font) {
+    if (window.location.hash){
+        $('.sliders').addClass(window.location.hash.replace('#',''));
+    }
+    var fonts = [
+        'fonts/Roboto-Regular.otf',
+        'fonts/Roboto-Bold.otf',
+        'fonts/Roboto-Regular-space.otf'
+        // '/static/demo/fonts/Roboto-Bold.otf'
+    ];
+
+    var sliderABValue = $('#sliderABValue');
+    var sliderADValue = $('#sliderADValue');
+    var sliderACValue = $('#sliderACValue');
+    var sliderFontsize = $('#sliderFontValue');
+
+    var instances = Instances(fonts);
+
+    for (var i = 0; i < fonts.length; i++) {
+        opentype.load(fonts[i], onload.bind(instances, i));
+    }
+
+    fonts = [
+       'fonts/Roboto-Regular-x-low.otf',
+       'fonts/Roboto-Regular-x-high.otf'
+    ]
+
+    var simpleinstances = SimpleInstances(fonts);
+
+    for (var i = 0; i < fonts.length; i++) {
+        opentype.load(fonts[i], onload.bind(simpleinstances, i));
+    }
+
+    function onload(index, err, font) {
         if (err) {
-             alert('Font could not be loaded: ' + err);
+            this.failed = true
         } else {
-            instances.push(getFontInstance(font));
-
-            opentype.load('fonts/Roboto-Bold.otf', function (err, font) {
-                if (err) {
-                     alert('Font could not be loaded: ' + err);
-                } else {
-                    instances.push(getFontInstance(font));
-                    funStart();
-                }
-            });
+            this.add(index, font);
+            if (this.loaded() && !this.failed)
+                this.interpolate();
         }
+    }
 
-        $('#slider').slider({formatter: formatter}).on('slide', function(e){
-            instances[0].interpolationValue = e.value;
-            funStart();
-        });
+    $('#sliderAB').slider({formater: formatter}).on('slide', function(e){
+        instances.interpolationValueAB = e.value;
+        sliderABValue.text((e.value).toFixed(2));
+        instances.interpolate();
+    });
 
-        $('#sliderFontsize').slider({formatter: formatter}).on('slide', function(e){
-            $(instances).each(function(idx, instance){
-                instance.fontSize = e.value
-            });
-            funStart();
+    $('#sliderAC').slider({formater: formatter}).on('slide', function(e){
+        instances.interpolationValueAC = e.value;
+        sliderABValue.text((e.value).toFixed(2));
+        instances.interpolate();
+    });
+
+    $('#sliderAD').slider({formater: formatter}).on('slide', function(e){
+        simpleinstances.interpolationValueAB = e.value;
+        sliderADValue.text((e.value).toFixed(2));
+        simpleinstances.interpolate();
+    });
+
+    $('#sliderFontsize').slider({formater: formatter}).on('slide', function(e){
+        $(instances).each(function(idx, instance){
+            instance.fontSize = e.value
         });
+        instances.interpolate();
+        $(sliderFontValue).text((e.value).toFixed(2));
     });
 
 });
+
 </script>
 </html>
