@@ -15,7 +15,8 @@ function Instances(length) {
         counter: 0,
         fonts: new Array(length),
         interpolationValueAB: 0.2,
-        interpolationValueCD: 0.2,
+        interpolationValueAC: 0.2,
+        interpolationValueAD: 0.2,
 
         add: function(index, font) {
             this.fonts[index] = font;
@@ -29,6 +30,8 @@ function Instances(length) {
                 pathC = this.getPath(this.fonts[2]),
                 pathD = this.getPath(this.fonts[3]),
                 ctx = createCanvas();
+
+            console.log(this.interpolationValueAD);
 
             for (var i = 0; i < pathA.commands.length; i++) {
                 var B_command = pathB.commands[i] || pathA.commands[i];
@@ -67,7 +70,7 @@ function Instances(length) {
         },
 
         interpolateExtValue: function(A, B, C, D) {
-            return (A + this.interpolationValueAB * ( B - A ) ); // + (C + this.interpolationValueCD * ( D - C ) ) / 2;
+            return (A + this.interpolationValueAB * ( B - A ) ) + this.interpolationValueAC * ( C - A ) + this.interpolationValueAD * ( D - A );
         },
 
         getPath: function(font) {

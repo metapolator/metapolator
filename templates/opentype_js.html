@@ -24,12 +24,19 @@
         <div class="row">
             <div class="col-xs-3 offset1 slider">
                 <div>
+                    <div>Bold:</div>
                     <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
                 </div>
                 <div>
-                    <input id="sliderCD" type="text" value="" data-slider-min="-2" data-slider-max="2" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                    <div>Spacing:</div>
+                    <input id="sliderAC" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
                 </div>
                 <div>
+                    <div>X-height:</div>
+                    <input id="sliderAD" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                </div>
+                <div>
+                    <div>Fontsize:</div>
                     <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
                 </div>
             </div>
@@ -62,8 +69,8 @@ $$(document).ready(function(){
 
     var fonts = [
         '/static/demo/fonts/Roboto-Regular.otf',
+        '/static/demo/fonts/Roboto-Bold.otf',
         '/static/demo/fonts/Roboto-Regular-space.otf',
-        '/static/demo/fonts/Roboto-Regular-x-low.otf',
         '/static/demo/fonts/Roboto-Regular-x-high.otf'
     ];
 
@@ -88,8 +95,13 @@ $$(document).ready(function(){
         instances.interpolate();
     });
 
-    $$('#sliderCD').slider({formater: formatter}).on('slide', function(e){
-        instances.interpolationValueCD = e.value;
+    $$('#sliderAC').slider({formater: formatter}).on('slide', function(e){
+        instances.interpolationValueAC = e.value;
+        instances.interpolate();
+    });
+
+    $$('#sliderAD').slider({formater: formatter}).on('slide', function(e){
+        instances.interpolationValueAD = e.value;
         instances.interpolate();
     });
 
