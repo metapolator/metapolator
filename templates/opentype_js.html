@@ -132,8 +132,8 @@ $$(document).ready(function(){
     var fonts = [
         '/static/demo/fonts/Roboto-Regular.otf',
         '/static/demo/fonts/Roboto-Bold.otf',
-        '/static/demo/fonts/Roboto-Regular-space.otf',
-        '/static/demo/fonts/Roboto-Bold.otf'
+        '/static/demo/fonts/Roboto-Regular-space.otf'
+        // '/static/demo/fonts/Roboto-Bold.otf'
     ];
 
     var sliderABValue = $$('#sliderABValue');
@@ -141,19 +141,30 @@ $$(document).ready(function(){
     var sliderACValue = $$('#sliderACValue');
     var sliderFontsize = $$('#sliderFontValue');
 
-    var instances = Instances(fonts.length);
+    var instances = Instances(fonts);
 
     for (var i = 0; i < fonts.length; i++) {
         opentype.load(fonts[i], onload.bind(instances, i));
     }
 
+    fonts = [
+       '/static/demo/fonts/Roboto-Regular-x-low.otf',
+       '/static/demo/fonts/Roboto-Regular-x-high.otf'
+    ]
+
+    var simpleinstances = SimpleInstances(fonts);
+
+    for (var i = 0; i < fonts.length; i++) {
+        opentype.load(fonts[i], onload.bind(simpleinstances, i));
+    }
+
     function onload(index, err, font) {
         if (err) {
-            instances.failed = true
+            this.failed = true
         } else {
-            instances.add(index, font);
-            if (instances.loaded() && !instances.failed)
-                instances.interpolate();
+            this.add(index, font);
+            if (this.loaded() && !this.failed)
+                this.interpolate();
         }
     }
 
@@ -170,9 +181,9 @@ $$(document).ready(function(){
     });
 
     $$('#sliderAD').slider({formater: formatter}).on('slide', function(e){
-        instances.interpolationValueAD = e.value;
+        simpleinstances.interpolationValueAB = e.value;
         sliderADValue.text((e.value).toFixed(2));
-        instances.interpolate();
+        simpleinstances.interpolate();
     });
 
     $$('#sliderFontsize').slider({formater: formatter}).on('slide', function(e){
