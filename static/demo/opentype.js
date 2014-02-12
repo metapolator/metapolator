@@ -1,6 +1,7 @@
-function createCanvas() {
-    var canvas = $('<canvas width="1000" height="500"></canvas>');
-    $('#glyphs').append(
+function createCanvas(x,y) {
+    x = x + 50;
+    var canvas = $('<canvas></canvas>').attr({width:x, height:y});
+    $('#glyphs').attr({width:x, height:y}).append(
         $('<div class="wrapper"></div>').append(canvas))
 
     return canvas[0].getContext('2d');
@@ -28,8 +29,11 @@ function Instances(length) {
             var pathA = this.getPath(this.fonts[0]),
                 pathB = this.getPath(this.fonts[1]),
                 pathC = this.getPath(this.fonts[2]),
-                pathD = this.getPath(this.fonts[3]),
-                ctx = createCanvas();
+                pathD = this.getPath(this.fonts[3]);
+
+            var maxX = 0,
+                maxY = 0;
+
 
             // console.log(this.interpolationValueAD);
 
@@ -38,6 +42,9 @@ function Instances(length) {
                 var C_command = pathC.commands[i] || pathA.commands[i];
                 var D_command = pathD.commands[i] || pathA.commands[i];
                 if (pathA.commands[i].x) {
+                    console.log(maxX, pathA.commands[i].x);
+                    maxX = Math.max(maxX, pathA.commands[i].x);
+
                     pathA.commands[i].x = this.interpolateExtValue(
                         pathA.commands[i].x, B_command.x, C_command.x, D_command.x);
                 }
@@ -46,6 +53,7 @@ function Instances(length) {
                         pathA.commands[i].x1, B_command.x1, C_command.x1, D_command.x1);
                 }
                 if (pathA.commands[i].y1) {
+                    maxY = Math.max(maxY, pathA.commands[i].y1);
                     pathA.commands[i].y1 = this.interpolateExtValue(
                         pathA.commands[i].y1, B_command.y1, C_command.y1, D_command.y1);
                 }
@@ -62,6 +70,7 @@ function Instances(length) {
                         pathA.commands[i].y, B_command.y, C_command.y, D_command.y);
                 }
             }
+            ctx = createCanvas(maxX, maxY);
             pathA.draw(ctx);
         },
 
