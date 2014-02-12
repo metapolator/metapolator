@@ -18,7 +18,30 @@
 <body>
    <!--   <div class="container-fluid">
         <div class="row">
+<<<<<<< HEAD
             <div id="glyphs">
+=======
+            <div class="col-xs-3 offset1 slider">
+                <div>
+                    <div>Bold:</div>
+                    <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                </div>
+                <div>
+                    <div>Spacing:</div>
+                    <input id="sliderAC" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                </div>
+                <div>
+                    <div>X-height:</div>
+                    <input id="sliderAD" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                </div>
+                <div>
+                    <div>Fontsize:</div>
+                    <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
+                </div>
+            </div>
+
+            <div id="glyphs" class="col-xs-8">
+>>>>>>> master
 
             </div>
         </div>
@@ -29,12 +52,14 @@
 <div id="wrap">
     <div class="masthead clearfix">
             <div class="inner">
-              <h3 class="col-md-2 masthead-brand">
-                <span style="font-family: 'Roboto', sans-serif; font-weight: 700;">meta</span><!---
-                --><span style="font-family: 'Roboto', sans-serif; font-weight: 500;">po</span><!---
-                --><span style="font-family: 'Roboto', sans-serif; font-weight: 300;">lator</span>
-            </h3>
-              <ul class="col-md-5 col-md-offset-2 feature-nav">
+              <h5 class="col-md-3 masthead-brand">
+                <span style="font-family: 'Roboto', sans-serif; font-weight: 700;">META</span><!---
+                --><span style="font-family: 'Roboto', sans-serif; font-weight: 500;">PO</span><!---
+                --><span style="font-family: 'Roboto', sans-serif; font-weight: 300;">LATOR</span>
+                <span style="font-family: 'Roboto', sans-serif; font-weight: 100; font-style: italic;">DEMO</span>
+            </h5>
+            <!-- Top center dropdown menu for selectiong action -->
+              <!-- <ul class="col-md-5 col-md-offset-2 feature-nav">
                 <li>What do you want to try?</li>
                 <li>
                 <div class="btn-group">
@@ -47,12 +72,12 @@
                     <li><a href="#">changing x-height</a></li>
                   </ul>
                 </div></li>
-              </ul>
-              <ul class="col-md-2 nav masthead-nav">
-                <li><span class="glyphicon glyphicon-circle-arrow-down"></span></li>
-                <li><span class="glyphicon glyphicon-user"></span></li>
-                <li><span class="glyphicon glyphicon-globe"></span></li>
-                <li><span class="glyphicon glyphicon-send"></span></li>
+              </ul> -->
+              <ul class="col-md-2 masthead-nav">
+                <li><a href="http://github.com/metapolator/metapolator" title="Download"><span class="glyphicon glyphicon-circle-arrow-down"></span></a>   </li>
+                <li><a href="http://metapolator.com/about" title="About"><span class="glyphicon glyphicon-user"></span></a></li>
+                <li><a href="https://plus.google.com/u/0/communities/110027004108709154749" title="Google+"><span class="glyphicon glyphicon-globe"></span></a></li>
+                <li><a href="http://metapolator.com/atom.xml" title="Atom RSS"><span class="glyphicon glyphicon-send"></span></a></li>
               </ul>
             </div>
           </div>
@@ -64,19 +89,33 @@
             </div>
         <div class="row">
                 <div class="row">
-                    <div class="col-md-2">
-                        <span>x-height</span>
-                    </div>
-                    <div class="col-md-7">
-                        <input id="slider" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:350px;">
-                    </div>
-                    <div class="col-md-2">
-                        <span id="sliderValue">0.2</span>
-                    </div>
+                        <div class="col-md-3">weight:</div>
+                        <div class="col-md-5">
+                            <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                        </div>
+                        <div class="col-md-3"><span id="sliderABValue">0.2</span></div>
                 </div>
-<!--                 <div class="row">
-                    <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="172" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:350px;">
-                </div> -->
+                <div class="row">
+                    <div class="col-md-3">space:</div>
+                    <div class="col-md-5">
+                        <input id="sliderAC" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                    </div>
+                    <div class="col-md-3"><span id="sliderACValue">0.2</span></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">x-height:</div>
+                    <div class="col-md-5">
+                        <input id="sliderAD" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                    </div>
+                    <div class="col-md-3"><span id="sliderADValue">0.2</span></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">size:</div>
+                    <div class="col-md-5">
+                        <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="150" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                    </div>
+                    <div class="col-md-3"><span id="sliderFontValue">124</span></div>
+                </div>
             </div>
         </div>
     </div>
@@ -92,42 +131,68 @@
 
 <script>
 
+
 function formatter(value) {
-    return value.toFixed(1);
+    return Number(value).toFixed(2);
 }
 
-$(document).ready(function(){
+$$(document).ready(function(){
 
-    opentype.load('/static/demo/Exo-Regular.otf', function (err, font) {
+    var fonts = [
+        '/static/demo/fonts/Roboto-Regular.otf',
+        '/static/demo/fonts/Roboto-Bold.otf',
+        '/static/demo/fonts/Roboto-Regular-space.otf',
+        '/static/demo/fonts/Roboto-Bold.otf'
+    ];
+
+    var sliderABValue = $$('#sliderABValue');
+    var sliderADValue = $$('#sliderADValue');
+    var sliderACValue = $$('#sliderACValue');
+    var sliderFontsize = $$('#sliderFontValue');
+
+    var instances = Instances(fonts.length);
+
+    for (var i = 0; i < fonts.length; i++) {
+        opentype.load(fonts[i], onload.bind(instances, i));
+    }
+
+    function onload(index, err, font) {
         if (err) {
-             alert('Font could not be loaded: ' + err);
+            instances.failed = true
         } else {
-            instances.push(getFontInstance(font));
-
-            opentype.load('/static/demo/Exo-Medium.otf', function (err, font) {
-                if (err) {
-                     alert('Font could not be loaded: ' + err);
-                } else {
-                    instances.push(getFontInstance(font));
-                    funStart();
-                }
-            });
+            instances.add(index, font);
+            if (instances.loaded() && !instances.failed)
+                instances.interpolate();
         }
+    }
 
-        $('#slider').slider({formatter: formatter}).on('slide', function(e){
-            instances[0].interpolationValue = e.value;
-            $('#sliderValue').text(e.value.toFixed(1));
-            funStart();
-        });
+    $$('#sliderAB').slider({formater: formatter}).on('slide', function(e){
+        instances.interpolationValueAB = e.value;
+        sliderABValue.text((e.value).toFixed(2));
+        instances.interpolate();
+    });
 
-        $('#sliderFontsize').slider({formatter: formatter}).on('slide', function(e){
-            $(instances).each(function(idx, instance){
-                instance.fontSize = e.value
-            });
-            funStart();
+    $$('#sliderAC').slider({formater: formatter}).on('slide', function(e){
+        instances.interpolationValueAC = e.value;
+        sliderABValue.text((e.value).toFixed(2));
+        instances.interpolate();
+    });
+
+    $$('#sliderAD').slider({formater: formatter}).on('slide', function(e){
+        instances.interpolationValueAD = e.value;
+        sliderADValue.text((e.value).toFixed(2));
+        instances.interpolate();
+    });
+
+    $$('#sliderFontsize').slider({formater: formatter}).on('slide', function(e){
+        $$(instances).each(function(idx, instance){
+            instance.fontSize = e.value
         });
+        instances.interpolate();
+        $$(sliderFontValue).text((e.value).toFixed(2));
     });
 
 });
+
 </script>
 </html>

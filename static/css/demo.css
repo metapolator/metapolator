@@ -1,0 +1,102 @@
+body {
+    background-color: #fffeef;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+}
+a {
+    color:#2b2b2b;
+    text-decoration:none;
+}
+.slider {
+    margin-bottom: 48px;
+}
+
+#glyphs {
+    margin-top:10px;
+    margin-bottom:50px;
+}
+
+.container-fluid {
+    width: 100%;
+    text-align: center;
+}
+#wrap {
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto -60px;
+  /* Pad bottom by footer height */
+  padding: 0 0 60px;
+}
+.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+
+/*
+ * Header
+ */
+.masthead-brand {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.masthead-nav > li {
+  display: inline-block;
+}
+.masthead-nav > li + li {
+  margin-left: 20px;
+}
+
+.masthead-nav > a {
+    decoration: none;
+    margin:0;
+}
+
+@media (min-width: 768px) {
+  .masthead-brand {
+    margin-top: 7px;
+    float: left;
+  }
+  .masthead-nav {
+    margin-top: 5px;
+    float: right;
+  }
+  .masthead {
+    background-color: #eeeeee;
+    height: 30px;
+  }
+}
+@media (max-width: 768px) {
+    .masthead {
+        height: 80px;
+    }
+}
+.masthead {
+    background-color: #eeeeee;
+}
+
+.masthead .feature-nav {
+    width:350px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.masthead .feature-nav > li {
+  display: inline;
+}
+
+.btn-black {
+    background-color: #57595b;
+    color:white;
+    border-radius: 50px;
+    padding:0px 6px 0px 6px;
+}
+
+.slider-block {
+    display:inline;
+    width:400px;
+}
+
+
