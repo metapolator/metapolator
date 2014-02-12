@@ -53,7 +53,7 @@
 
 
 function formatter(value) {
-    return value.toFixed(2);
+    return Number(value).toFixed(2);
 }
 
 var fontsLoaded = false;
@@ -78,28 +78,22 @@ $$(document).ready(function(){
             instances.failed = true
         } else {
             instances.add(index, font);
+            if (instances.loaded() && !instances.failed)
+                instances.interpolate();
         }
     }
 
-    function startpoint() {
-        if (instances.failed) {return;}
-        if (!instances.loaded()){setTimeout(startpoint, 0); return;};
-        instances.interpolate();
-    }
-
-    setTimeout(startpoint, 0);
-
-    $$('#sliderAB').slider({formatter: formatter}).on('slide', function(e){
+    $$('#sliderAB').slider({formater: formatter}).on('slide', function(e){
         instances.interpolationValueAB = e.value;
         instances.interpolate();
     });
 
-    $$('#sliderCD').slider({formatter: formatter}).on('slide', function(e){
+    $$('#sliderCD').slider({formater: formatter}).on('slide', function(e){
         instances.interpolationValueCD = e.value;
         instances.interpolate();
     });
 
-    $$('#sliderFontsize').slider({formatter: formatter}).on('slide', function(e){
+    $$('#sliderFontsize').slider({formater: formatter}).on('slide', function(e){
         $$(instances).each(function(idx, instance){
             instance.fontSize = e.value
         });
