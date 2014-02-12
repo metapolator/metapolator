@@ -30,16 +30,21 @@
                 <li>What do you want to try?</li>
                 <li>
                 <div class="btn-group">
-                  <select type="button" class="btn btn-default dropdown-toggle btn-black" data-toggle="dropdown">
-                    changing x-height <span class="caret"></span>
+                  <select id="sliderPicker" class="btn-black" data-toggle="dropdown"><!--
+                    -->changing x-height <span class="caret"></span>
+                    <option value="#height">change x-height</option>
+                    <option value="#weight">change weight</option>
+                    <option value="#size">change size</option>
+                    <option value="#space">change space</option>
+                    <option value="#all">change all</option>
                   </select>
-                  <ul class="dropdown-menu" role="menu">
+                  <!-- <ul class="dropdown-menu invert" role="menu">
                     <li><a href="#height">change x-height</a></li>
                     <li><a href="#weight">change weight</a></li>
                     <li><a href="#size">change size</a></li>
                     <li><a href="#space">change space</a></li>
                     <li><a href="#all">change all</a></li>
-                  </ul>
+                  </ul> -->
                 </div></li>
               </ul>
               <ul class="col-md-2 masthead-nav">
@@ -114,6 +119,9 @@ $$(window).on('hashchange', function(e){
 });
 
 $$(document).ready(function(){
+    $$('#sliderPicker').on('change', function(){
+        window.location.hash = $$(this).val();
+    });
     if (window.location.hash){
         $$('.sliders').addClass(window.location.hash.replace('#',''));
     }
