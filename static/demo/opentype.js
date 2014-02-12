@@ -6,58 +6,78 @@ function createCanvas() {
     return canvas[0].getContext('2d');
 }
 
-function getFontInstance(fontinstance) {
+
+function Instances(length) {
 
     return {
-        font: fontinstance,
-        text: 'Natalie',
-        fontSize: 172,
-        interpolationValue: 0,
+        text: 'Hanna',
+        fontSize: 124,
+        counter: 0,
+        fonts: new Array(length),
+        interpolationValueAB: 0.2,
+        interpolationValueCD: 0.2,
 
-        interpolate: function(instance) {
+        add: function(index, font) {
+            this.fonts[index] = font;
+            this.counter++;
+        },
+
+        interpolate: function() {
             $('#glyphs').html('');
-            var pathA = this.getPath(),
-                pathB = instance.getPath(),
+            var pathA = this.getPath(this.fonts[0]),
+                pathB = this.getPath(this.fonts[1]),
+                pathC = this.getPath(this.fonts[2]),
+                pathD = this.getPath(this.fonts[3]),
                 ctx = createCanvas();
 
             for (var i = 0; i < pathA.commands.length; i++) {
                 var B_command = pathB.commands[i] || pathA.commands[i];
+                var C_command = pathC.commands[i] || pathA.commands[i];
+                var D_command = pathD.commands[i] || pathA.commands[i];
                 if (pathA.commands[i].x) {
-                    pathA.commands[i].x = this.interpolateValue(pathA.commands[i].x, B_command.x);
+                    pathA.commands[i].x = this.interpolateExtValue(
+                        pathA.commands[i].x, B_command.x, C_command.x, D_command.x);
                 }
                 if (pathA.commands[i].x1) {
-                    pathA.commands[i].x1 = this.interpolateValue(pathA.commands[i].x1, B_command.x1);
+                    pathA.commands[i].x1 = this.interpolateExtValue(
+                        pathA.commands[i].x1, B_command.x1, C_command.x1, D_command.x1);
                 }
                 if (pathA.commands[i].y1) {
-                    pathA.commands[i].y1 = this.interpolateValue(pathA.commands[i].y1, B_command.y1);
+                    pathA.commands[i].y1 = this.interpolateExtValue(
+                        pathA.commands[i].y1, B_command.y1, C_command.y1, D_command.y1);
                 }
                 if (pathA.commands[i].x2) {
-                    pathA.commands[i].x2 = this.interpolateValue(pathA.commands[i].x2, B_command.x2);
+                    pathA.commands[i].x2 = this.interpolateExtValue(
+                        pathA.commands[i].x2, B_command.x2, C_command.x2, D_command.x2);
                 }
                 if (pathA.commands[i].y2) {
-                    pathA.commands[i].y2 = this.interpolateValue(pathA.commands[i].y2, B_command.y2);
+                    pathA.commands[i].y2 = this.interpolateExtValue(
+                        pathA.commands[i].y2, B_command.y2, C_command.y2, D_command.y2);
                 }
                 if (pathA.commands[i].y) {
-                    pathA.commands[i].y = this.interpolateValue(pathA.commands[i].y, B_command.y);
+                    pathA.commands[i].y = this.interpolateExtValue(
+                        pathA.commands[i].y, B_command.y, C_command.y, D_command.y);
                 }
             }
-
             pathA.draw(ctx);
         },
 
         interpolateValue: function(A, B) {
-            return A + this.interpolationValue * ( B - A );
+            return A + this.interpolationValueAB * ( B - A );
         },
 
-        getPath: function() {
-            return this.font.getPath(this.text, 50, 252 - this.fontSize * 0.2, this.fontSize);
+        interpolateExtValue: function(A, B, C, D) {
+            return (A + this.interpolationValueAB * ( B - A ) ) + (C + this.interpolationValueCD * ( D - C ) ) / 2;
+        },
+
+        getPath: function(font) {
+            return font.getPath(this.text, 50, 252 - this.fontSize * 0.2, this.fontSize);
+        },
+
+        loaded: function() {
+            console.log('counter ' + this.counter);
+            console.log('length ' + this.fonts.length);
+            return this.counter >= this.fonts.length;
         }
     }
-}
-
-var instances = [];
-
-
-function funStart() {
-    instances[0].interpolate(instances[1]);
 }
