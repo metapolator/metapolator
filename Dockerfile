@@ -9,7 +9,7 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libxml2-dev libxslt-dev fontforge python-fontforge \
         build-essential autoconf libtool python-dev python-pip \
         redis-server wget mysql-server mysql-client libmysqlclient-dev \
-        pwgen perl nginx sudo supervisor
+        pwgen perl nginx sudo supervisor openssh-server
 
 RUN     echo %sudo        ALL=NOPASSWD: ALL >> /etc/sudoers
 
@@ -29,5 +29,6 @@ RUN    mkdir -p /var/www/
 RUN    cp -R metapolator-master /var/www/metapolator
 
 EXPOSE  8080
+EXPOSE  22
 
 CMD    ["/bin/bash", "/usr/local/bin/runapp"]
