@@ -11,6 +11,8 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         redis-server wget mysql-server mysql-client libmysqlclient-dev \
         pwgen perl nginx sudo supervisor openssh-server
 
+RUN     mkdir /var/run/sshd
+
 RUN     echo %sudo        ALL=NOPASSWD: ALL >> /etc/sudoers
 
 RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
