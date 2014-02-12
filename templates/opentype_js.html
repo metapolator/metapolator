@@ -16,39 +16,6 @@
 </head>
 
 <body>
-   <!--   <div class="container-fluid">
-        <div class="row">
-<<<<<<< HEAD
-            <div id="glyphs">
-=======
-            <div class="col-xs-3 offset1 slider">
-                <div>
-                    <div>Bold:</div>
-                    <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
-                </div>
-                <div>
-                    <div>Spacing:</div>
-                    <input id="sliderAC" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
-                </div>
-                <div>
-                    <div>X-height:</div>
-                    <input id="sliderAD" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
-                </div>
-                <div>
-                    <div>Fontsize:</div>
-                    <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="250" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="">
-                </div>
-            </div>
-
-            <div id="glyphs" class="col-xs-8">
->>>>>>> master
-
-            </div>
-        </div>
-
-        <div class="row">
-                    </div>
-    </div> -->
 <div id="wrap">
     <div class="masthead clearfix">
             <div class="inner">
@@ -59,20 +26,22 @@
                 <span style="font-family: 'Roboto', sans-serif; font-weight: 100; font-style: italic;">DEMO</span>
             </h5>
             <!-- Top center dropdown menu for selectiong action -->
-              <!-- <ul class="col-md-5 col-md-offset-2 feature-nav">
+              <ul class="col-md-5 col-md-offset-2 feature-nav">
                 <li>What do you want to try?</li>
                 <li>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle btn-black" data-toggle="dropdown">
+                  <select type="button" class="btn btn-default dropdown-toggle btn-black" data-toggle="dropdown">
                     changing x-height <span class="caret"></span>
-                  </button>
+                  </select>
                   <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">changing x-height</a></li>
-                    <li><a href="#">changing x-height</a></li>
-                    <li><a href="#">changing x-height</a></li>
+                    <li><a href="#height">change x-height</a></li>
+                    <li><a href="#weight">change weight</a></li>
+                    <li><a href="#size">change size</a></li>
+                    <li><a href="#space">change space</a></li>
+                    <li><a href="#all">change all</a></li>
                   </ul>
                 </div></li>
-              </ul> -->
+              </ul>
               <ul class="col-md-2 masthead-nav">
                 <li><a href="http://github.com/metapolator/metapolator" title="Download"><span class="glyphicon glyphicon-circle-arrow-down"></span></a>   </li>
                 <li><a href="http://metapolator.com/about" title="About"><span class="glyphicon glyphicon-user"></span></a></li>
@@ -87,29 +56,29 @@
                 <div id="glyphs">
                 </div>
             </div>
-        <div class="row">
-                <div class="row">
+        <div class="row sliders">
+                <div id="weightSlider" class="row">
                         <div class="col-md-3">weight:</div>
                         <div class="col-md-5">
                             <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
                         </div>
                         <div class="col-md-3"><span id="sliderABValue">0.2</span></div>
                 </div>
-                <div class="row">
+                <div id="spaceSlider" class="row">
                     <div class="col-md-3">space:</div>
                     <div class="col-md-5">
                         <input id="sliderAC" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
                     </div>
                     <div class="col-md-3"><span id="sliderACValue">0.2</span></div>
                 </div>
-                <div class="row">
+                <div id="heightSlider" class="row">
                     <div class="col-md-3">x-height:</div>
                     <div class="col-md-5">
                         <input id="sliderAD" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
                     </div>
                     <div class="col-md-3"><span id="sliderADValue">0.2</span></div>
                 </div>
-                <div class="row">
+                <div id="sizeSlider" class="row">
                     <div class="col-md-3">size:</div>
                     <div class="col-md-5">
                         <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="150" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
@@ -130,14 +99,24 @@
 <script type="text/javascript" src="/static/demo/opentype.js"></script>
 
 <script>
-
+var sliderKlass = window.location.hash;
 
 function formatter(value) {
     return Number(value).toFixed(2);
 }
 
-$$(document).ready(function(){
+$$(window).on('hashchange', function(e){
+    if (sliderKlass) {
+       $$('.sliders').removeClass(sliderKlass);
+    }
+    sliderKlass = window.location.hash.replace('#','');
+    $$('.sliders').addClass(sliderKlass);
+});
 
+$$(document).ready(function(){
+    if (window.location.hash){
+        $$('.sliders').addClass(window.location.hash.replace('#',''));
+    }
     var fonts = [
         '/static/demo/fonts/Roboto-Regular.otf',
         '/static/demo/fonts/Roboto-Bold.otf',
