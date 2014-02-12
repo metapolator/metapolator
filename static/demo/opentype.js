@@ -31,7 +31,7 @@ function Instances(length) {
                 pathD = this.getPath(this.fonts[3]),
                 ctx = createCanvas();
 
-            console.log(this.interpolationValueAD);
+            // console.log(this.interpolationValueAD);
 
             for (var i = 0; i < pathA.commands.length; i++) {
                 var B_command = pathB.commands[i] || pathA.commands[i];
@@ -78,8 +78,6 @@ function Instances(length) {
         },
 
         loaded: function() {
-            console.log('counter ' + this.counter);
-            console.log('length ' + this.fonts.length);
             return this.counter >= this.fonts.length;
         }
     }
