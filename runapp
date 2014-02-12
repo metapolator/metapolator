@@ -11,10 +11,8 @@ if [ ! -f /var/www/metapolator/metapolator/localconfig.py ]; then
     useradd -G sudo -d /home/user user
     chown user /home/user
     echo user:$SSH_USERPASS | chpasswd
-    echo ssh user password: $SSH_USERPASS
 
     METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
-    echo mysql root password: $METAPOLATOR_PASSWORD
 
     # Start mysql server
     mysqladmin -u root password $METAPOLATOR_PASSWORD
@@ -30,6 +28,9 @@ DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
 
     python /var/www/metapolator/metapolator/models.py
     chown -R user:user /var/www/metapolator
+
+    echo ssh user password: $SSH_USERPASS
+    echo mysql root password: $METAPOLATOR_PASSWORD
 fi
 
 supervisord -n
