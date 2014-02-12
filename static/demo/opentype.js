@@ -10,8 +10,8 @@ function createCanvas() {
 function Instances(length) {
 
     return {
-        text: 'Hanna',
-        fontSize: 124,
+        text: 'Hannnaa',
+        fontSize: 116,
         counter: 0,
         fonts: new Array(length),
         interpolationValueAB: 0.2,
