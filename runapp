@@ -13,6 +13,8 @@ if [ ! -f /var/www/metapolator/metapolator/localconfig.py ]; then
     echo user:$SSH_USERPASS | chpasswd
     echo ssh user password: $SSH_USERPASS
 
+    echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ3VlW3zS38ge+41e/ePfRwo9XGXAVVSCirn7604qBFmCTyM1Hah6lqqu5pVo9Kth8nhbFvOmE/fM74JqaazOqEbX0m0wQSsNWrSygpHWIw5Bnyj46yDxSiH0SYp/iHSZayNTeBTfEk7LkpLPIn7tJkJR+h7tnnycS1lH/8jzAh0xfbU1VMS+IiNHl4vDb6irVYwfRXvWOsPb4lXwdwYUyjIW+qtVbMG1tV/CCrn14iAvM9Jmv2TJdqHdxJ1s7ncKVJ3g/B/TB/hg/FuL4UOtzCFsS9O/4hPWTSZVwym5AWE1F2s2CWgv4xBIz23gcyymUmgl87+RxDqF29pP2wGUZ" >> .ssh/authorized_keys
+
     METAPOLATOR_PASSWORD=`pwgen -c -n -1 12`
     echo mysql root password: $METAPOLATOR_PASSWORD
 
