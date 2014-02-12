@@ -67,7 +67,7 @@ function Instances(length) {
         },
 
         interpolateExtValue: function(A, B, C, D) {
-            return (A + this.interpolationValueAB * ( B - A ) ) + (C + this.interpolationValueCD * ( D - C ) ) / 2;
+            return (A + this.interpolationValueAB * ( B - A ) ); // + (C + this.interpolationValueCD * ( D - C ) ) / 2;
         },
 
         getPath: function(font) {
