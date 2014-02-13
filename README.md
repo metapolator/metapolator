@@ -20,12 +20,13 @@ Metapolator allows the designer to utilise Metafont without have to write any Me
 The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
 
 1. [Install Docker](http://www.docker.io/gettingstarted/)
-2. `sudo docker build -rm -t metapolator git://github.com/metapolator/docker.git;`
-3. `sudo docker run -p 8080 -t metapolator;`
+2. `sudo docker pull metapolator/metapolator`
+3. `sudo docker run -p 9000:8080 -t metapolator/metapolator`
+4. open in browser `http://localhost:9000`
 
 ### Traditional Installation
 
-Requirements: 
+Requirements:
 
 - [git](http://git-scm.org)
 - [Metafont and Metapost](http://www.tug.org/)
@@ -58,7 +59,7 @@ virtualenv .venv;
 source .venv/bin/activate ; pip install -r requirements.txt
 ```
 
-#### Mac OS X 
+#### Mac OS X
 
 ```sh
 # Install Homebrew
@@ -137,6 +138,6 @@ This project is licensed under the [GNU General Public License v3.0](http://www.
 
 Core Development Team: Simon Egli, Vitaly Volkov
 
-Contributors: Walter Egli, Nicolas Pauly, Wei Huang, 
+Contributors: Walter Egli, Nicolas Pauly, Wei Huang,
 
 Thanks to Dave Crossland for inspiring this project!
