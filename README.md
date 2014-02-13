@@ -15,7 +15,7 @@ Metapolator allows the designer to utilise Metafont without have to write any Me
 
 ## Installation
 
-### Docker
+### The Simple Way
 
 The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
 
@@ -23,7 +23,7 @@ The simple way to install and run metapolator is with [docker.io](http://www.doc
 2. `sudo docker build -rm -t metapolator git://github.com/metapolator/docker.git;`
 3. `sudo docker run -p 8080 -t metapolator;`
 
-### Traditional Installation
+### The Traditional Way
 
 Requirements: 
 
@@ -86,7 +86,9 @@ virtualenv .venv;
 source .venv/bin/activate ; pip install -r requirements.txt;
 ````
 
-### Setup
+#### Setup
+
+On either Mac OS X or GNU+Linux...
 
 Create new database:
 
@@ -107,13 +109,23 @@ Start web.py application and celery server:
 .venv/bin/celery -A metapolator.tasks worker --loglevel=info;
 ```
 
-This should give you a local web server you can visit with Chrome:
+This should give you a local web server you can visit with a modern web browser:
 
 ```sh
 open [http://0.0.0.0:8080](http://0.0.0.0:8080);
 ```
 
-### Ubuntu/Debian Server Deployment
+## Deployment
+
+#### The Simple Way
+
+Deploy metapolator to your own server easily with [drone.io](https://drone.io/) 
+
+Check out <https://drone.io/github.com/metapolator/metapolator> to see how we continuously deploy the central metapolator master to <http://beta.metapolator.com>
+
+### The Traditional Way 
+
+To deploy metapolator on a Ubuntu or Debian server...
 
 Install supervisor and nginx
 
@@ -131,12 +143,12 @@ sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/s
 
 ## License
 
-This project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html).
+This project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html) and your contributions are welcome via Github at <https://github.com/metapolator/metapolator>
 
-## Credits
+## Thanks
 
-Core Development Team: Simon Egli, Vitaly Volkov
+Core Development Team: Simon Egli, Dave Crossland, Vitaly Volkov, Alex Troush
 
 Contributors: Walter Egli, Nicolas Pauly, Wei Huang, 
 
-Thanks to Dave Crossland for inspiring this project!
+Thanks to the [metaflop](http://www.metaflop.com) project and Dave Crossland for inspiring this one!
