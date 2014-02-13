@@ -1,4 +1,4 @@
-FROM        ubuntu:latest
+FROM        ubuntu:12.04
 
 MAINTAINER  Vitaly Volkov <hash.3g@gmail.com> (@hash3g)
 
@@ -14,6 +14,10 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN     mkdir /var/run/sshd
 
 RUN     echo %sudo        ALL=NOPASSWD: ALL >> /etc/sudoers
+
+RUN     mkdir -p sfnt2woff && cd sfnt2woff && wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip
+RUN     cd sfnt2woff && unzip woff-code-latest.zip && make
+RUN     cp sfnt2woff/sfnt2woff /usr/local/bin/
 
 ADD    supervisord.conf     /etc/supervisor/conf.d/
 ADD    runapp               /usr/local/bin/
