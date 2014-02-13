@@ -25,6 +25,7 @@ ADD    https://github.com/metapolator/metapolator/archive/master.zip /master.zip
 RUN    unzip master.zip
 RUN    mkdir -p /var/www/
 RUN    cp -R metapolator-master /var/www/metapolator
+RUN    echo LANG="en_US.UTF-8" > /etc/default/locale
 
 EXPOSE  8080
 EXPOSE  22
