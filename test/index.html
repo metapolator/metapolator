@@ -26,20 +26,20 @@
                 <span style="font-family: 'Roboto', sans-serif; font-weight: 100; font-style: italic;">DEMO</span>
             </h5>
             <!-- Top center dropdown menu for selectiong action -->
-              <ul class="col-md-5 col-md-offset-1 feature-nav">
-                <li>What do you want to try?</li>
-                <li>
-                <div class="btn-group">
-                  <select id="sliderPicker" class="btn-black" data-toggle="dropdown"><!--
-                    -->changing x-height <span class="caret"></span>
-                    <option value="#height">change x-height</option>
-                    <option value="#weight">change weight</option>
-                    <option value="#size">change size</option>
-                    <option value="#space">change space</option>
-                    <option value="#all">change all</option>
-                  </select>
-                </div></li>
-              </ul>
+              <!--<ul class="col-md-5 col-md-offset-1 feature-nav">-->
+                <!--<li>What do you want to try?</li>-->
+                <!--<li>-->
+                <!--<div class="btn-group">-->
+                  <!--<select id="sliderPicker" class="btn-black" data-toggle="dropdown">&lt;!&ndash;-->
+                    <!--&ndash;&gt;changing x-height <span class="caret"></span>-->
+                    <!--<option value="#height">change x-height</option>-->
+                    <!--<option value="#weight">change weight</option>-->
+                    <!--<option value="#size">change size</option>-->
+                    <!--<option value="#space">change space</option>-->
+                    <!--<option value="#all">change all</option>-->
+                  <!--</select>-->
+                <!--</div></li>-->
+              <!--</ul>-->
               <ul class="col-md-2 masthead-nav">
                 <li><a href="http://github.com/metapolator/metapolator" title="Download"><span class="glyphicon glyphicon-circle-arrow-down"></span></a>   </li>
                 <li><a href="http://metapolator.com/about" title="About"><span class="glyphicon glyphicon-user"></span></a></li>
@@ -48,45 +48,35 @@
               </ul>
             </div>
           </div>
-    <div class="container-fluid">
-        <div class="container">
-            <div class="row">
-                <div id="glyphs">
-                </div>
-            </div>
-        <div class="row sliders">
-                <div id="weightSlider" class="row">
-                        <div class="col-md-3">weight:</div>
-                        <div class="col-md-5">
-                            <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+        <div class="container-fluid">
+            <div class="container">
+                <div class="row">
+                    <div class="row">
+                        <div id="glyphs">
                         </div>
-                        <div class="col-md-3"><span id="sliderABValue">0.2</span></div>
-                </div>
-                <div id="spaceSlider" class="row">
-                    <div class="col-md-3">space:</div>
-                    <div class="col-md-5">
-                        <input id="sliderAC" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
                     </div>
-                    <div class="col-md-3"><span id="sliderACValue">0.2</span></div>
-                </div>
-                <div id="heightSlider" class="row">
-                    <div class="col-md-3">x-height:</div>
-                    <div class="col-md-5">
-                        <input id="sliderAD" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-3">weight:</div>
+                            <div class="col-md-5">
+                                <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                            </div>
+                            <div class="col-md-3"><span id="sliderABValue">0.2</span></div>
+                        </div>
+                        <div class="row">
+                            <div class="lead" style="text-align:left">
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ac tellus nunc. Sed a massa ut massa pulvinar venenatis nec sit amet mi. Donec nec dapibus arcu, vel auctor urna. Nullam lacus ligula, volutpat id eros interdum, sodales blandit lectus. Fusce sit amet ultricies quam. Fusce tempor arcu at est vehicula, eu consectetur dui volutpat. Nam nulla lacus, laoreet sed magna id, egestas elementum metus. Quisque ac lectus ac lectus blandit laoreet nec vel elit. Vivamus at suscipit leo. Vestibulum semper eros erat. Proin eget hendrerit erat, quis cursus dolor. Quisque ultricies erat leo.
+                                </p>
+                                <p>
+                                    Suspendisse nec leo eget mi pretium tincidunt ac at tortor. Morbi iaculis, erat ac aliquam lobortis, velit libero scelerisque justo, eget sagittis tellus quam vel dolor. Nullam rutrum elementum sapien sed tristique. Proin at tempus dolor, et aliquam est. Praesent vitae sollicitudin eros. Suspendisse interdum mi sapien, quis porta neque luctus vel. Nulla tellus metus, laoreet eget metus sagittis, posuere volutpat eros. Nam eu arcu a metus commodo porta.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3"><span id="sliderADValue">0.2</span></div>
-                </div>
-                <div id="sizeSlider" class="row">
-                    <div class="col-md-3">size:</div>
-                    <div class="col-md-5">
-                        <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="150" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
-                    </div>
-                    <div class="col-md-3"><span id="sliderFontValue">124</span></div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 </body>
 
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
