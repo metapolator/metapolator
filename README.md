@@ -152,3 +152,25 @@ Core Development Team: Simon Egli, Dave Crossland, Vitaly Volkov, Alex Troush
 Contributors: Walter Egli, Nicolas Pauly, Wei Huang, 
 
 Thanks to the [metaflop](http://www.metaflop.com) project and Dave Crossland for inspiring this one!
+
+## Related Projects
+
+### For Users
+
+* http://fontforge.github.io impressive font editor
+* http://mondrian.io impressive illustration tool
+* https://code.google.com/p/svg-edit/ impressive drawing tool
+* http://popcornjs.org impressive video editor
+* http://plucked.de impressive audio editor
+
+### For Developers
+
+* http://en.wikipedia.org/wiki/MetaFont impressive parametric font system
+* http://en.wikipedia.org/wiki/MetaPost impressive parametric graphics system
+* http://fontforge.org/python.html impressive font editor Python module
+* http://github.com/behdad/fonttools impressive font binary Python module
+* http://nodebox.github.io/opentype.js useful canvas library for displaying fonts
+* http://paperjs.org useful canvas library
+* http://jonobr1.github.io/two.js useful canvas library
+* http://www.createjs.com/#!/EaselJS useful canvas library from Adobe
+* http://snapsvg.io/ useful SVG library from Adobe
