@@ -1,9 +1,9 @@
-function createCanvas(x,y) {
+function createCanvas(el, x, y) {
     // x = x + 50;
     var x = 900,
-        y = 300;
+        y = 130;
     var canvas = $('<canvas></canvas>').attr({width:x, height:y});
-    $('#glyphs').attr({width:x, height:y}).append(
+    $(el).attr({width:x, height:y}).append(
         $('<div class="wrapper"></div>').append(canvas))
 
     return canvas[0].getContext('2d');
@@ -13,7 +13,7 @@ function createCanvas(x,y) {
 function Instances(fontslist, config) {
 
     return $.extend(config, {
-        fontSize: 116,
+        fontSize: 76,
         counter: 0,
         fonts: new Array(fontslist.length),
         interpolationValueAB: 0.2,
@@ -27,12 +27,11 @@ function Instances(fontslist, config) {
 
         interpolate: function() {
             $(this.canvas).html('');
+
             var pathA = this.getPath(this.fonts[0]),
                 pathB = this.getPath(this.fonts[1]),
                 pathC = this.getPath(this.fonts[2]);//,
                 // pathD = this.getPath(this.fonts[3]);
-
-            console.log(this.text.split(/[.,\s]+/));
 
             var maxX = 0,
                 maxY = 0;
@@ -69,8 +68,9 @@ function Instances(fontslist, config) {
                         pathA.commands[i].y, B_command.y, C_command.y, D_command.y);
                 }
             }
-            ctx = createCanvas(maxX, maxY);
+            ctx = createCanvas(this.canvas, maxX, maxY);
             pathA.draw(ctx);
+
         },
 
         interpolateValue: function(A, B) {
@@ -81,8 +81,11 @@ function Instances(fontslist, config) {
             return (A + this.interpolationValueAB * ( B - A ) ) + this.interpolationValueAC * ( C - A );// + this.interpolationValueAD * ( D - A );
         },
 
-        getPath: function(font) {
-            return font.getPath(this.text, 50, 252 - this.fontSize * 0.2, this.fontSize);
+        getPath: function(font, word) {
+            if (typeof word == 'undefined') {
+                word = this.text;
+            }
+            return font.getPath(word, 50, 90, this.fontSize);
         },
 
         loaded: function() {
@@ -94,18 +97,7 @@ function Instances(fontslist, config) {
 
 function SimpleInstances(fontslist, config) {
 
-    return $.extend(config, {
-        fontSize: 116,
-        counter: 0,
-        fonts: new Array(fontslist.length),
-        interpolationValueAB: 0.2,
-        interpolationValueAC: 0.2,
-        interpolationValueAD: 0.2,
-
-        add: function(index, font) {
-            this.fonts[index] = font;
-            this.counter++;
-        },
+    return $.extend(Instances(fontslist, config), {
 
         interpolate: function() {
             // debugger;
@@ -148,20 +140,8 @@ function SimpleInstances(fontslist, config) {
                         pathA.commands[i].y, B_command.y);
                 }
             }
-            ctx = createCanvas(maxX, maxY);
+            ctx = createCanvas(this.canvas, maxX, maxY);
             pathA.draw(ctx);
-        },
-
-        interpolateValue: function(A, B) {
-            return A + this.interpolationValueAB * ( B - A );
-        },
-
-        getPath: function(font) {
-            return font.getPath(this.text, 50, 252 - this.fontSize * 0.2, this.fontSize);
-        },
-
-        loaded: function() {
-            return this.counter >= this.fonts.length;
         }
     });
 }

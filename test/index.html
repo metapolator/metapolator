@@ -82,13 +82,13 @@
                     </div>
                     <div class="col-md-3"><span id="sliderADValue">0.2</span></div>
                 </div>
-                <div id="sizeSlider" class="row">
+                <!-- div id="sizeSlider" class="row">
                     <div class="col-md-3">size:</div>
                     <div class="col-md-5">
                         <input id="sliderFontsize" type="text" value="" data-slider-min="72" data-slider-max="150" data-slider-step="4" data-slider-value="124" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
                     </div>
                     <div class="col-md-3"><span id="sliderFontValue">124</span></div>
-                </div>
+                </div -->
             </div>
         </div>
     </div>
@@ -136,10 +136,10 @@ $(document).ready(function(){
         $('.sliders').addClass(window.location.hash.replace('#',''));
     }
     var fonts = [
-        'fonts/Roboto-Regular.otf',
-        'fonts/Roboto-Bold.otf',
-        'fonts/Roboto-Regular-space.otf'
-        // '/static/demo/fonts/Roboto-Bold.otf'
+        'fonts/Roboto_Bold.ttf',
+        'fonts/Roboto_Bold.ttf',
+        'fonts/Roboto_Bold.ttf',
+        'fonts/Roboto_Bold.ttf'
     ];
 
     var sliderABValue = $('#sliderABValue');
@@ -147,23 +147,11 @@ $(document).ready(function(){
     var sliderACValue = $('#sliderACValue');
     var sliderFontsize = $('#sliderFontValue');
 
-    var instances = Instances(fonts, {text: 'Hanna',
+    var instances = Instances(fonts, {text: 'Donald Ervin Knuth (born January 10, 1938) is an American computer scientist, mathematician, and Professor Emeritus at Stanford University. He is the author of the multi-volume work The Art of Computer Programming. Knuth has been called the "father" of the analysis of algorithms. He contributed to the development of the rigorous analysis of the computational complexity of algorithms and systematized formal mathematical techniques for it. In the process he also popularized the asymptotic notation. In addition to fundamental contributions in several branches of theoretical computer science, Knuth is the creator of the TeX computer typesetting system, the related METAFONT font definition language and rendering system, and the Computer Modern family of typefaces. As a writer and scholar, Knuth created the WEB and CWEB computer programming systems designed to encourage and facilitate literate programming, and designed the MIX/MMIX instruction set architectures. As a member of the academic and scientific community, Knuth is strongly opposed to the policy of granting software patents. He has expressed his disagreement directly to both the United States Patent and Trademark Office and European Patent Organization.',
                                       canvas: '#glyphs'});
 
     for (var i = 0; i < fonts.length; i++) {
         opentype.load(fonts[i], onload.bind(instances, i));
-    }
-
-    fonts = [
-       'fonts/Roboto-Regular-x-low.otf',
-       'fonts/Roboto-Regular-x-high.otf'
-    ]
-
-    var simpleinstances = SimpleInstances(fonts, {text: 'Hanna',
-                                                  canvas: '#glyphs'});
-
-    for (var i = 0; i < fonts.length; i++) {
-        opentype.load(fonts[i], onload.bind(simpleinstances, i));
     }
 
     function onload(index, err, font) {
@@ -189,18 +177,18 @@ $(document).ready(function(){
     });
 
     $('#sliderAD').slider({formater: formatter}).on('slide', function(e){
-        simpleinstances.interpolationValueAB = e.value;
+        instances.interpolationValueAB = e.value;
         sliderADValue.text((e.value).toFixed(2));
-        simpleinstances.interpolate();
+        instances.interpolate();
     });
 
-    $('#sliderFontsize').slider({formater: formatter}).on('slide', function(e){
-        $(instances).each(function(idx, instance){
-            instance.fontSize = e.value
-        });
-        instances.interpolate();
-        $(sliderFontValue).text((e.value).toFixed(2));
-    });
+    // $('#sliderFontsize').slider({formater: formatter}).on('slide', function(e){
+    //     $(instances).each(function(idx, instance){
+    //         instance.fontSize = e.value
+    //     });
+    //     instances.interpolate();
+    //     $(sliderFontValue).text((e.value).toFixed(2));
+    // });
 
 });
 
