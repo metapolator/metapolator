@@ -1,5 +1,7 @@
 function createCanvas(x,y) {
-    x = x + 50;
+    // x = x + 50;
+    var x = 900,
+        y = 300;
     var canvas = $('<canvas></canvas>').attr({width:x, height:y});
     $('#glyphs').attr({width:x, height:y}).append(
         $('<div class="wrapper"></div>').append(canvas))
@@ -8,10 +10,9 @@ function createCanvas(x,y) {
 }
 
 
-function Instances(fontslist) {
+function Instances(fontslist, config) {
 
-    return {
-        text: 'Hanna',
+    return $.extend(config, {
         fontSize: 116,
         counter: 0,
         fonts: new Array(fontslist.length),
@@ -25,17 +26,16 @@ function Instances(fontslist) {
         },
 
         interpolate: function() {
-            $('#glyphs').html('');
+            $(this.canvas).html('');
             var pathA = this.getPath(this.fonts[0]),
                 pathB = this.getPath(this.fonts[1]),
                 pathC = this.getPath(this.fonts[2]);//,
                 // pathD = this.getPath(this.fonts[3]);
 
+            console.log(this.text.split(/[.,\s]+/));
+
             var maxX = 0,
                 maxY = 0;
-
-
-            // console.log(this.interpolationValueAD);
 
             for (var i = 0; i < pathA.commands.length; i++) {
                 var B_command = pathB.commands[i] || pathA.commands[i];
@@ -88,14 +88,13 @@ function Instances(fontslist) {
         loaded: function() {
             return this.counter >= this.fonts.length;
         }
-    }
+    });
 }
 
 
-function SimpleInstances(fontslist) {
+function SimpleInstances(fontslist, config) {
 
-    return {
-        text: 'Hanna',
+    return $.extend(config, {
         fontSize: 116,
         counter: 0,
         fonts: new Array(fontslist.length),
@@ -110,7 +109,7 @@ function SimpleInstances(fontslist) {
 
         interpolate: function() {
             // debugger;
-            $('#glyphs').html('');
+            $(this.canvas).html('');
             var pathA = this.getPath(this.fonts[0]),
                 pathB = this.getPath(this.fonts[1]);
 
@@ -164,5 +163,5 @@ function SimpleInstances(fontslist) {
         loaded: function() {
             return this.counter >= this.fonts.length;
         }
-    }
+    });
 }

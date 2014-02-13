@@ -53,6 +53,12 @@
             <div class="row">
                 <div id="glyphs">
                 </div>
+
+                <div id="glyphs-B">
+                </div>
+
+                <div id="glyphs-C">
+                </div>
             </div>
         <div class="row sliders">
                 <div id="weightSlider" class="row">
@@ -141,7 +147,8 @@ $(document).ready(function(){
     var sliderACValue = $('#sliderACValue');
     var sliderFontsize = $('#sliderFontValue');
 
-    var instances = Instances(fonts);
+    var instances = Instances(fonts, {text: 'Hanna',
+                                      canvas: '#glyphs'});
 
     for (var i = 0; i < fonts.length; i++) {
         opentype.load(fonts[i], onload.bind(instances, i));
@@ -152,7 +159,8 @@ $(document).ready(function(){
        'fonts/Roboto-Regular-x-high.otf'
     ]
 
-    var simpleinstances = SimpleInstances(fonts);
+    var simpleinstances = SimpleInstances(fonts, {text: 'Hanna',
+                                                  canvas: '#glyphs'});
 
     for (var i = 0; i < fonts.length; i++) {
         opentype.load(fonts[i], onload.bind(simpleinstances, i));
