@@ -1,6 +1,10 @@
-docker
-======
+Metapolator Docker Files
+======================
 
+> Docker is an open-source project to easily create lightweight, portable, self-sufficient containers from any application. The same container that a developer builds and tests on a laptop can run at scale, in production, on VMs, bare metal, OpenStack clusters, public clouds and more. 
+– https://www.docker.io
+
+Installing metapolator with Docker is easy:
 
 ```
 $ sudo docker pull metapolator/metapolator
@@ -10,3 +14,5 @@ $ sudo docker ps -a
 --------- 0.0.0.0:49161->8080/tcp --------
 # open in browser localhost:49161
 ```
+
+To learn more about Docker, spend 15 minutes with the [interactive tutorial introduction.](https://www.docker.io/gettingstarted/)
