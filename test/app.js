@@ -1,18 +1,17 @@
-function createCanvas(x,y) {
-    x = x + 50;
-    var canvas = $('<canvas></canvas>').attr({width:x, height:y});
-    $('#glyphs').attr({width:x, height:y}).append(
-        $('<div class="wrapper"></div>').append(canvas))
+function createCanvas(canvas,x,y) {
+//    var x = 900,
+//        y = 300;
+    var canvasView = $('<canvas></canvas>').attr({width: x, height: y});
+    $(canvas).attr({width:x, height:y}).append(
+        $('<div class="wrapper"></div>').append(canvasView))
 
-    return canvas[0].getContext('2d');
+    return canvasView[0].getContext('2d');
 }
 
 
-function Instances(fontslist) {
+function Instances(fontslist, config) {
 
-    return {
-        text: 'Hanna',
-        fontSize: 116,
+    return $.extend(config, {
         counter: 0,
         fonts: new Array(fontslist.length),
         interpolationValueAB: 0.2,
@@ -25,7 +24,7 @@ function Instances(fontslist) {
         },
 
         interpolate: function() {
-            $('#glyphs').html('');
+            $(this.canvas).html('');
             var pathA = this.getPath(this.fonts[0]),
                 pathB = this.getPath(this.fonts[1]),
                 pathC = this.getPath(this.fonts[2]);//,
@@ -34,15 +33,11 @@ function Instances(fontslist) {
             var maxX = 0,
                 maxY = 0;
 
-
-            // console.log(this.interpolationValueAD);
-
             for (var i = 0; i < pathA.commands.length; i++) {
                 var B_command = pathB.commands[i] || pathA.commands[i];
                 var C_command = pathC.commands[i] || pathA.commands[i];
                 var D_command = pathA.commands[i];// pathD.commands[i] || pathA.commands[i];
                 if (pathA.commands[i].x) {
-                    maxX = Math.max(maxX, pathA.commands[i].x);
 
                     pathA.commands[i].x = this.interpolateExtValue(
                         pathA.commands[i].x, B_command.x, C_command.x, D_command.x);
@@ -57,6 +52,7 @@ function Instances(fontslist) {
                         pathA.commands[i].y1, B_command.y1, C_command.y1, D_command.y1);
                 }
                 if (pathA.commands[i].x2) {
+                    maxX = Math.max(maxX, pathA.commands[i].x);
                     pathA.commands[i].x2 = this.interpolateExtValue(
                         pathA.commands[i].x2, B_command.x2, C_command.x2, D_command.x2);
                 }
@@ -69,7 +65,7 @@ function Instances(fontslist) {
                         pathA.commands[i].y, B_command.y, C_command.y, D_command.y);
                 }
             }
-            ctx = createCanvas(maxX, maxY);
+            ctx = createCanvas(this.canvas, maxX, maxY);
             pathA.draw(ctx);
         },
 
@@ -88,14 +84,13 @@ function Instances(fontslist) {
         loaded: function() {
             return this.counter >= this.fonts.length;
         }
-    }
+    });
 }
 
 
-function SimpleInstances(fontslist) {
+function SimpleInstances(fontslist, config) {
 
-    return {
-        text: 'Hanna',
+    return $.extend(config, {
         fontSize: 116,
         counter: 0,
         fonts: new Array(fontslist.length),
@@ -110,7 +105,7 @@ function SimpleInstances(fontslist) {
 
         interpolate: function() {
             // debugger;
-            $('#glyphs').html('');
+            $(this.canvas).html('');
             var pathA = this.getPath(this.fonts[0]),
                 pathB = this.getPath(this.fonts[1]);
 
@@ -149,7 +144,7 @@ function SimpleInstances(fontslist) {
                         pathA.commands[i].y, B_command.y);
                 }
             }
-            ctx = createCanvas(maxX, maxY);
+            ctx = createCanvas(this.canvas, maxX, maxY);
             pathA.draw(ctx);
         },
 
@@ -164,5 +159,5 @@ function SimpleInstances(fontslist) {
         loaded: function() {
             return this.counter >= this.fonts.length;
         }
-    }
+    });
 }
