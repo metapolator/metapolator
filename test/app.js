@@ -65,7 +65,7 @@ function Instances(fontslist, config) {
             var $fonts = this.fonts;
             var $this = this;
 
-            var $canvasWidth = $(this.canvas).find('canvas').attr('width');
+            var $canvasWidth = parseInt($(this.canvas).find('canvas').attr('width'));
             this.forEachGlyph(text, 0, this.lineHeight, this.fontSize, {}, function (glyph, x, y, fontSize) {
                 var glyphB = $fonts[1].charToGlyph(text[j]);
                 var glyphC = $fonts[2].charToGlyph(text[j]);
@@ -73,8 +73,9 @@ function Instances(fontslist, config) {
                 var width = (glyph.advanceWidth *(1 / $fonts[0].unitsPerEm * fontSize));
                 var widthB = (glyphB.advanceWidth * (1/ $fonts[1].unitsPerEm * fontSize));
                 var widthC = (glyphC.advanceWidth * (1 / $fonts[2].unitsPerEm * fontSize));
+
                 var value = $this.interpolateExtValue(width, widthB, widthC);
-                if ((x + value) > (parseInt($canvasWidth) * lines.length)) {
+                if ((x + value) >= $canvasWidth * lines.length) {
                     console.log(text[j], width, value, x);
                     i = i + 1, lines[i] = '';
                 }
