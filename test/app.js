@@ -9,10 +9,19 @@ function createCanvas(el, x, y) {
     return canvas[0].getContext('2d');
 }
 
+function onload(index, err, font) {
+    if (err) {
+        this.failed = true
+    } else {
+        this.add(index, font);
+        if (this.loaded() && !this.failed)
+            this.interpolate();
+    }
+}
 
 function Instances(fontslist, config) {
 
-    return $.extend(config, {
+    var instances = $.extend(config, {
         counter: 0,
         fonts: new Array(fontslist.length),
         interpolationValueAB: 0.2,
@@ -159,4 +168,8 @@ function Instances(fontslist, config) {
             return this.counter >= this.fonts.length;
         }
     });
+
+    for (var i = 0; i < fontslist.length; i++) {
+        opentype.load(fontslist[i], onload.bind(instances, i));
+    }
 }
