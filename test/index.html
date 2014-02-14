@@ -52,8 +52,6 @@
             <div class="col-md-offset-1">
                 <div class="row">
                     <div class="row">
-                        <div id="glyphsSentence"></div>
-
                         <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px">
                             <div class="row">
                                     <div id="glyphs"></div>
@@ -116,6 +114,41 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px">
+                            <div class="row">
+                                <div id="glyphsSentence"></div>
+                                <div class="col-md-4">weight:</div>
+                                <div class="col-md-5">
+                                    <input id="sliderABSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                                </div>
+                                <div class="col-md-3"><span id="sliderABSentenceValue">0.2</span></div>
+                                <div class="col-md-4">space:</div>
+                                <div class="col-md-5">
+                                    <input id="sliderACSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
+                                </div>
+                                <div class="col-md-3"><span id="sliderADSentenceValue">0.2</span></div>
+                                <div class="lead col-md-11" style="text-align:left">
+                                    <p>
+
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ac tellus nunc. Sed a massa ut massa pulvinar venenatis nec sit amet mi. Donec nec dapibus arcu, vel auctor urna. Nullam lacus ligula, volutpat id eros interdum, sodales blandit lectus. Fusce sit amet ultricies quam. Fusce tempor arcu at est vehicula, eu consectetur dui volutpat. Nam nulla lacus, laoreet sed magna id, egestas elementum metus. Quisque ac lectus ac lectus blandit laoreet nec vel elit. Vivamus at suscipit leo. Vestibulum semper eros erat. Proin eget hendrerit erat, quis cursus dolor. Quisque ultricies erat leo.
+                                    </p>
+                                    <p>
+                                        Suspendisse nec leo eget mi pretium tincidunt ac at tortor. Morbi iaculis, erat ac aliquam lobortis, velit libero scelerisque justo, eget sagittis tellus quam vel dolor. Nullam rutrum elementum sapien sed tristique. Proin at tempus dolor, et aliquam est. Praesent vitae sollicitudin eros. Suspendisse interdum mi sapien, quis porta neque luctus vel. Nulla tellus metus, laoreet eget metus sagittis, posuere volutpat eros. Nam eu arcu a metus commodo porta.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <div class="row">
+                                <div class="lead">
+                                    <p>something</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -144,6 +177,8 @@ $(document).ready(function(){
     var sliderABValue = $('#sliderABValue');
     var sliderABWordValue = $('#sliderABWordValue');
     var sliderACWordValue = $('#sliderACWordValue');
+    var sliderABSentenceValue = $('#sliderABSentenceValue');
+    var sliderACSentenceValue = $('#sliderACSentenceValue');
 
 
     var instancesGlyph = Instances(fonts, {text: 'a', canvas: '#glyphs',
@@ -180,14 +215,17 @@ $(document).ready(function(){
         instancesWord.interpolate();
     });
 
-    // $('#sliderFontsize').slider({formater: formatter}).on('slide', function(e){
-    //     $(instances).each(function(idx, instance){
-    //         instance.fontSize = e.value
-    //     });
-    //     instances.interpolate();
-    //     $(sliderFontValue).text((e.value).toFixed(2));
-    // });
+    $('#sliderABSentence').slider({formater: formatter}).on('slide', function(e){
+        instancesSentance.interpolationValueAB = e.value;
+        sliderABSentenceValue.text((e.value).toFixed(2));
+        instancesSentance.interpolate();
+    });
 
+    $('#sliderACSentence').slider({formater: formatter}).on('slide', function(e){
+        instancesSentance.interpolationValueAC = e.value;
+        sliderADSentenceValue.text((e.value).toFixed(2));
+        instancesSentance.interpolate();
+    });
 });
 
 </script>
