@@ -172,4 +172,6 @@ function Instances(fontslist, config) {
     for (var i = 0; i < fontslist.length; i++) {
         opentype.load(fontslist[i], onload.bind(instances, i));
     }
+
+    return instances;
 }
