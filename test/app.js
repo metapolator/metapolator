@@ -41,7 +41,6 @@ function Instances(fontslist, config) {
             var $canvasWidth = $(this.canvas).find('canvas').attr('width');
             this.fonts[0].forEachGlyph(text, 0, this.lineHeight, this.fontSize, {}, function (glyph, x, y, fontSize) {
                 var width = x + (glyph.advanceWidth * 1 / font.unitsPerEm * fontSize);
-                console.log(text[j] + ' - ' + width);
                 if (width > (parseInt($canvasWidth) * lines.length)) {
                     i = i + 1, lines[i] = '';
                 }
