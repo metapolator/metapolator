@@ -33,20 +33,56 @@ function Instances(fontslist, config) {
             this.counter++;
         },
 
+        forEachGlyph: function (text, x, y, fontSize, options, callback) {
+            var kerning, fontScale, glyphs, i, glyph, kerningValue;
+            if (!this.fonts[0].supported) {
+                return;
+            }
+            x = x !== undefined ? x : 0;
+            y = y !== undefined ? y : 0;
+            fontSize = fontSize !== undefined ? fontSize : 72;
+            options = options || {};
+            kerning = options.kerning === undefined ? true : options.kerning;
+            fontScale = 1 / this.fonts[0].unitsPerEm * fontSize;
+            glyphs = this.fonts[0].stringToGlyphs(text);
+            for (i = 0; i < glyphs.length; i += 1) {
+                glyph = glyphs[i];
+                value = callback(glyph, x, y, fontSize, options);
+                if (glyph.advanceWidth) {
+                    x += value;
+                }
+                if (kerning && i < glyphs.length - 1) {
+                    kerningValue = this.fonts[0].getKerningValue(glyph, glyphs[i + 1]);
+                    x += kerningValue * fontScale;
+                }
+            }
+        },
+
         metrics: function(text) {
             var lines = [''];
             var i = 0, j = 0;
             var font = this.fonts[0];
+            var $fonts = this.fonts;
+            var $this = this;
 
             var $canvasWidth = $(this.canvas).find('canvas').attr('width');
-            this.fonts[0].forEachGlyph(text, 0, this.lineHeight, this.fontSize, {}, function (glyph, x, y, fontSize) {
-                var width = x + (glyph.advanceWidth * 1 / font.unitsPerEm * fontSize);
-                if (width > (parseInt($canvasWidth) * lines.length)) {
+            this.forEachGlyph(text, 0, this.lineHeight, this.fontSize, {}, function (glyph, x, y, fontSize) {
+                var glyphB = $fonts[1].charToGlyph(text[j]);
+                var glyphC = $fonts[2].charToGlyph(text[j]);
+
+                var width = (glyph.advanceWidth *(1 / $fonts[0].unitsPerEm * fontSize));
+                var widthB = (glyphB.advanceWidth * (1/ $fonts[1].unitsPerEm * fontSize));
+                var widthC = (glyphC.advanceWidth * (1 / $fonts[2].unitsPerEm * fontSize));
+                var value = $this.interpolateExtValue(width, widthB, widthC);
+                if ((x + value) > (parseInt($canvasWidth) * lines.length)) {
+                    console.log(text[j], width, value, x);
                     i = i + 1, lines[i] = '';
                 }
                 lines[i] = lines[i] + text[j];
                 j++;
+                return value;
             });
+            console.log(lines);
             return lines;
         },
 
