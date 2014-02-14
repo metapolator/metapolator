@@ -27,6 +27,9 @@ RUN    mkdir -p /var/www/
 RUN    cp -R metapolator-master /var/www/metapolator
 RUN    echo LANG="en_US.UTF-8" > /etc/default/locale
 
+RUN    cat /etc/pam.d/sshd > /sshd.pam.bak
+RUN    sed 's/required     pam_loginuid.so/optional     pam_loginuid.so/g' /sshd.pam.bak > /etc/pam.d/sshd
+
 EXPOSE  8080
 EXPOSE  22
 
