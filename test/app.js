@@ -41,8 +41,9 @@ function Instances(fontslist, config) {
             var $canvasWidth = $(this.canvas).find('canvas').attr('width');
             this.fonts[0].forEachGlyph(text, 0, this.lineHeight, this.fontSize, {}, function (glyph, x, y, fontSize) {
                 var width = x + (glyph.advanceWidth * 1 / font.unitsPerEm * fontSize);
+                console.log(text[j] + ' - ' + width);
                 if (width > (parseInt($canvasWidth) * lines.length)) {
-                    i++, lines[i] = '';
+                    i = i + 1, lines[i] = '';
                 }
                 lines[i] = lines[i] + text[j];
                 j++;
@@ -159,7 +160,7 @@ function Instances(fontslist, config) {
                 word = this.text;
             }
             if (typeof y_offset !== 'undefined') {
-                return font.getPath(word, 50, y_offset, this.fontSize);
+                return font.getPath(word, 0, y_offset, this.fontSize);
             }
             return font.getPath(word, 0, this.lineHeight, this.fontSize);
         },
