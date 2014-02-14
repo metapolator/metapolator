@@ -6,6 +6,15 @@ body {
 canvas {
     background-color: #fffeef;
 }
+
+.caption {
+    font-size: 11px;
+}
+
+.lead {
+    font-size: 14px;
+}
+
 a {
     color:#2b2b2b;
     text-decoration:none;
