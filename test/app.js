@@ -59,7 +59,7 @@ function Instances(fontslist, config) {
             for (var k = 0; k < lines.length; k++) {
                 var pathA = this.getPath(this.fonts[0], lines[k], this.lineHeight + (k * this.lineHeight)),
                     pathB = this.getPath(this.fonts[1], lines[k], this.lineHeight + (k * this.lineHeight)),
-                    pathC = this.getPath(this.fonts[1], lines[k], this.lineHeight + (k * this.lineHeight));
+                    pathC = this.getPath(this.fonts[2], lines[k], this.lineHeight + (k * this.lineHeight));
 
                 for (var i = 0; i < pathA.commands.length; i++) {
                     var B_command = pathB.commands[i] || pathA.commands[i];
