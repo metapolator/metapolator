@@ -15,9 +15,19 @@ a {
 }
 
 #glyphs {
+    background-color: #fffeef;
     margin-top:10px;
     margin-bottom:50px;
-    margin-left: -60px;
+}
+
+#glyphsWord {
+    background-color: #fffeef;
+    margin-bottom:50px;
+}
+
+#glyphsSentence {
+    background-color: #fffeef;
+    margin-bottom:50px;
 }
 
 .container-fluid {
