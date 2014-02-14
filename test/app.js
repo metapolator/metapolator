@@ -21,7 +21,7 @@ function onload(index, err, font) {
 
 function Instances(fontslist, config) {
 
-    var instances = $.extend(config, {
+    var instances = $.extend({
         counter: 0,
         fonts: new Array(fontslist.length),
         interpolationValueAB: 0.2,
@@ -202,7 +202,7 @@ function Instances(fontslist, config) {
         loaded: function() {
             return this.counter >= this.fonts.length;
         }
-    });
+    }, config);
 
     for (var i = 0; i < fontslist.length; i++) {
         opentype.load(fontslist[i], onload.bind(instances, i));
