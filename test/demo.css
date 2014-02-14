@@ -1,8 +1,10 @@
 body {
-    background-color: #fffeef;
     height: 100%;
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
+}
+canvas {
+    background-color: #fffeef;
 }
 a {
     color:#2b2b2b;

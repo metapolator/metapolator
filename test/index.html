@@ -123,7 +123,12 @@
                             <div class="col-md-5">
                                 <input id="sliderACSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
                             </div>
-                            <div class="col-md-3"><span id="sliderADSentenceValue">0.2</span></div>
+                            <div class="col-md-3"><span id="sliderACSentenceValue">0.2</span></div>
+                            <!--<div class="col-md-4">x-height:</div>-->
+                            <!--<div class="col-md-5">-->
+                                <!--<input id="sliderADSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">-->
+                            <!--</div>-->
+                            <!--<div class="col-md-3"><span id="sliderADSentenceValue">0.2</span></div>-->
                             <div class="lead col-md-11" style="text-align:left">
                                 <p>
 
@@ -217,9 +222,15 @@ $(document).ready(function(){
 
     $('#sliderACSentence').slider({formater: formatter}).on('slide', function(e){
         instancesSentance.interpolationValueAC = e.value;
-        sliderADSentenceValue.text((e.value).toFixed(2));
+        sliderACSentenceValue.text((e.value).toFixed(2));
         instancesSentance.interpolate();
     });
+
+//    $('#sliderADSentence').slider({formater: formatter}).on('slide', function(e){
+//        instancesSentance.interpolationValueAD = e.value;
+//        sliderADSentenceValue.text((e.value).toFixed(2));
+//        instancesSentance.interpolate();
+//    });
 });
 
 </script>
