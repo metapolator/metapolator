@@ -23,6 +23,8 @@ a {
 #glyphsWord {
     background-color: #fffeef;
     margin-bottom:50px;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 #glyphsSentence {
