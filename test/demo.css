@@ -79,6 +79,10 @@ a {
   margin-bottom: 2px;
 }
 
+.masthead-brand h1 {
+  font-size: 1.5em;
+}
+
 .masthead-nav > li {
   display: inline-block;
 }
