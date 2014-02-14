@@ -27,29 +27,28 @@ a {
 
 #glyphs {
     background-color: #fffeef;
-    margin-top:10px;
-    margin-bottom:50px;
+    margin-bottom:20px;
     padding-top:50px;
     padding-bottom:50px;
 }
 
 #glyphsWord {
     background-color: #fffeef;
-    margin-bottom:50px;
+    margin-bottom:20px;
     padding-top: 80px;
     padding-bottom: 80px;
 }
 
 #glyphsWordHeight {
     background-color: #fffeef;
-    margin-bottom:50px;
+    margin-bottom:20px;
     padding-top: 80px;
     padding-bottom: 80px;
 }
 
 #glyphsSentence {
     background-color: #fffeef;
-    margin-bottom:50px;
+    margin-bottom:20px;
     padding-top:5px;
 }
 
