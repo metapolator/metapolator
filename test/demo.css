@@ -9,6 +9,8 @@ canvas {
 
 .caption {
     font-size: 11px;
+    text-align: left;
+    padding-left: 10px;
 }
 
 .lead {
@@ -27,18 +29,28 @@ a {
     background-color: #fffeef;
     margin-top:10px;
     margin-bottom:50px;
+    padding-top:50px;
+    padding-bottom:50px;
 }
 
 #glyphsWord {
     background-color: #fffeef;
     margin-bottom:50px;
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+#glyphsWordHeight {
+    background-color: #fffeef;
+    margin-bottom:50px;
+    padding-top: 80px;
+    padding-bottom: 80px;
 }
 
 #glyphsSentence {
     background-color: #fffeef;
     margin-bottom:50px;
+    padding-top:5px;
 }
 
 .container-fluid {
