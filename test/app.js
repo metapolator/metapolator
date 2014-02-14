@@ -76,14 +76,12 @@ function Instances(fontslist, config) {
 
                 var value = $this.interpolateExtValue(width, widthB, widthC);
                 if ((x + value) >= $canvasWidth * lines.length) {
-                    console.log(text[j], width, value, x);
                     i = i + 1, lines[i] = '';
                 }
                 lines[i] = lines[i] + text[j];
                 j++;
                 return value;
             });
-            console.log(lines);
             return lines;
         },
 
