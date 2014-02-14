@@ -1,7 +1,7 @@
 function createCanvas(el, x, y) {
     // x = x + 50;
     var x = 900,
-        y = 130;
+        y = 300;
     var canvas = $('<canvas></canvas>').attr({width:x, height:y});
     $(el).attr({width:x, height:y}).append(
         $('<div class="wrapper"></div>').append(canvas))
@@ -13,7 +13,7 @@ function createCanvas(el, x, y) {
 function Instances(fontslist, config) {
 
     return $.extend(config, {
-        fontSize: 76,
+        fontSize: 14,
         counter: 0,
         fonts: new Array(fontslist.length),
         interpolationValueAB: 0.2,
@@ -25,8 +25,25 @@ function Instances(fontslist, config) {
             this.counter++;
         },
 
+        metrics: function(text) {
+            var lines = [''];
+            var i = 0, j = 0;
+            var font = this.fonts[0];
+            this.fonts[0].forEachGlyph(text, 0, this.lineHeight, this.fontSize, {}, function (glyph, x, y, fontSize) {
+                var width = x + (glyph.advanceWidth * 1 / font.unitsPerEm * fontSize);
+                if (width > (900 * lines.length)) {
+                    i++, lines[i] = '';
+                }
+                lines[i] = lines[i] + text[j];
+                j++;
+            });
+            console.log(lines);
+            return lines;
+        },
+
         interpolate: function() {
             $(this.canvas).html('');
+            this.metrics(this.text, 0);
 
             var pathA = this.getPath(this.fonts[0]),
                 pathB = this.getPath(this.fonts[1]),
@@ -81,11 +98,14 @@ function Instances(fontslist, config) {
             return (A + this.interpolationValueAB * ( B - A ) ) + this.interpolationValueAC * ( C - A );// + this.interpolationValueAD * ( D - A );
         },
 
-        getPath: function(font, word) {
+        getPath: function(font, word, y_offset) {
             if (typeof word == 'undefined') {
                 word = this.text;
             }
-            return font.getPath(word, 50, 90, this.fontSize);
+            if (typeof y_offset !== 'undefined') {
+                return font.getPath(word, 50, y_offset, this.fontSize);
+            }
+            return font.getPath(word, 0, this.lineHeight, this.fontSize);
         },
 
         loaded: function() {
@@ -98,50 +118,57 @@ function Instances(fontslist, config) {
 function SimpleInstances(fontslist, config) {
 
     return $.extend(Instances(fontslist, config), {
-
+        lineHeight: 24,
         interpolate: function() {
             // debugger;
             $(this.canvas).html('');
-            var pathA = this.getPath(this.fonts[0]),
-                pathB = this.getPath(this.fonts[1]);
+            ctx = createCanvas(this.canvas);
 
-            var maxX = 0,
-                maxY = 0;
+            var lines = this.metrics(this.text);
+            for (var k = 0; k < lines.length; k++) {
 
-            // console.log(this.interpolationValueAD);
+                var pathA = this.getPath(this.fonts[0], lines[k], this.lineHeight + (k * this.lineHeight)),
+                    pathB = this.getPath(this.fonts[1], lines[k], this.lineHeight + (k * this.lineHeight));
 
-            for (var i = 0; i < pathA.commands.length; i++) {
-                var B_command = pathB.commands[i] || pathA.commands[i];
-                if (pathA.commands[i].x) {
-                    maxX = Math.max(maxX, pathA.commands[i].x);
+                var maxX = 0,
+                    maxY = 0;
 
-                    pathA.commands[i].x = this.interpolateValue(
-                        pathA.commands[i].x, B_command.x);
+                // console.log(this.interpolationValueAD);
+
+                for (var i = 0; i < pathA.commands.length; i++) {
+                    var B_command = pathB.commands[i] || pathA.commands[i];
+                    if (pathA.commands[i].x) {
+                        maxX = Math.max(maxX, pathA.commands[i].x);
+
+                        pathA.commands[i].x = this.interpolateValue(
+                            pathA.commands[i].x, B_command.x);
+                    }
+                    if (pathA.commands[i].x1) {
+                        pathA.commands[i].x1 = this.interpolateValue(
+                            pathA.commands[i].x1, B_command.x1);
+                    }
+                    if (pathA.commands[i].y1) {
+                        maxY = Math.max(maxY, pathA.commands[i].y1);
+                        pathA.commands[i].y1 = this.interpolateValue(
+                            pathA.commands[i].y1, B_command.y1);
+                    }
+                    if (pathA.commands[i].x2) {
+                        pathA.commands[i].x2 = this.interpolateValue(
+                            pathA.commands[i].x2, B_command.x2);
+                    }
+                    if (pathA.commands[i].y2) {
+                        pathA.commands[i].y2 = this.interpolateValue(
+                            pathA.commands[i].y2, B_command.y2);
+                    }
+                    if (pathA.commands[i].y) {
+                        pathA.commands[i].y = this.interpolateValue(
+                            pathA.commands[i].y, B_command.y);
+                    }
                 }
-                if (pathA.commands[i].x1) {
-                    pathA.commands[i].x1 = this.interpolateValue(
-                        pathA.commands[i].x1, B_command.x1);
-                }
-                if (pathA.commands[i].y1) {
-                    maxY = Math.max(maxY, pathA.commands[i].y1);
-                    pathA.commands[i].y1 = this.interpolateValue(
-                        pathA.commands[i].y1, B_command.y1);
-                }
-                if (pathA.commands[i].x2) {
-                    pathA.commands[i].x2 = this.interpolateValue(
-                        pathA.commands[i].x2, B_command.x2);
-                }
-                if (pathA.commands[i].y2) {
-                    pathA.commands[i].y2 = this.interpolateValue(
-                        pathA.commands[i].y2, B_command.y2);
-                }
-                if (pathA.commands[i].y) {
-                    pathA.commands[i].y = this.interpolateValue(
-                        pathA.commands[i].y, B_command.y);
-                }
+                pathA.draw(ctx);
+
             }
-            ctx = createCanvas(this.canvas, maxX, maxY);
-            pathA.draw(ctx);
+
         }
     });
 }
