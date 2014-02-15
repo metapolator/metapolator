@@ -13,6 +13,18 @@ Furthermore instead of using prepared fonts it will be possible to enhance norma
 
 Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
 
+Metapolator is built with many libre software components:
+
+- [Chromium Canary](http://www.chromium.org/getting-involved/dev-channel) or [Firefox Aurora](http://www.mozilla.org/en-US/firefox/aurora/) to run the UI
+- [git](http://git-scm.org) to manage the code
+- [web.py](http://webpy.org/) to run the webserver
+- [unzip](http://en.wikipedia.org/wiki/Zip_%28file_format%29) to unzip the `ufo.zip`s
+- [python](http://www.python.org/) to metapolate (convert) the `ufo`s into `metafont`s
+- [mysql](http://dev.mysql.com/downloads/mysql/) (and [python-mysqldb](http://sourceforge.net/projects/mysql-python/)) to store the parameters (TODO: Confirm this with Simon)
+- [metapost](http://www.tug.org/) to apply parameters to metafonts
+- [mf2pt1](http://www.ctan.org/tex-archive/support/mf2pt1) (and [Type 1 utilities](http://www.lcdf.org/type/#t1utils)) to convert the metafont back into a Type 1 font
+- [FontForge](http://sourceforge.net/projects/fontforge/files/fontforge-source/) to convert the Type 1 font to UFO and OTF
+
 ## Installation
 
 ### The Simple Way
@@ -25,20 +37,6 @@ The simple way to install and run metapolator is with [docker.io](http://www.doc
 4. open in browser `http://localhost:9000`
 
 ### The Traditional Way
-
-Requirements:
-
-- [git](http://git-scm.org)
-- [Metafont and Metapost](http://www.tug.org/)
-- [MySQL](http://dev.mysql.com/downloads/mysql/)
-- [Python](http://www.python.org/)
-- [python-mysqldb](http://sourceforge.net/projects/mysql-python/)
-- [Type 1 utilities](http://www.lcdf.org/type/#t1utils)
-- [unzip](http://en.wikipedia.org/wiki/Zip_%28file_format%29)
-- [mf2pt1](http://www.ctan.org/tex-archive/support/mf2pt1)
-- [FontForge](http://sourceforge.net/projects/fontforge/files/fontforge-source/)
-- [web.py](http://webpy.org/)
-- Optimized for Google Chrome
 
 #### Ubuntu/Debian
 
@@ -142,9 +140,21 @@ sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/su
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf;
 ```
 
-## License
+## Contributing
+
+### License
 
 This project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html) and your contributions are welcome via Github at <https://github.com/metapolator/metapolator>
+
+### Front End
+
+HTML templates are in [`/templates`](https://github.com/metapolator/metapolator/tree/master/templates) using [web.py's native template system](http://webpy.org/docs/0.3/templetor).
+
+JS and CSS are in [`/static`](https://github.com/metapolator/metapolator/tree/master/static/js)
+
+## Back End
+
+TODO: Add Code review youtube video link
 
 ## Thanks
 
