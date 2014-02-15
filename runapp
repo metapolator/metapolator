@@ -21,6 +21,7 @@ if [ ! -f /home/user ]; then
     echo """DATABASE_USER='root'
 DATABASE_PWD='$METAPOLATOR_PASSWORD'
 DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
+    cp /var/www/metapolator/metapolator/localconfig.py /var/www/
 
     cat /var/www/metapolator/metapolator/localconfig.py
 
@@ -29,10 +30,6 @@ DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
     python /var/www/metapolator/metapolator/models.py
     chown -R user:user /var/www/metapolator
 
-    export METAP_DATABASE_NAME="metapolator"
-    export METAP_DATABASE_USER="root"
-    export METAP_DATABASE_PWD="$METAPOLATOR_PASSWORD"
-    
     echo ssh user password: $SSH_USERPASS
     echo mysql root password: $METAPOLATOR_PASSWORD
 fi
