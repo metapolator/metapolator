@@ -4,7 +4,7 @@ sysctl vm.overcommit_memory=1
 /usr/bin/mysqld_safe &
 sleep 5s
 
-if [ ! -f /var/www/metapolator/metapolator/localconfig.py ]; then
+if [ ! -f /home/user ]; then
     SSH_USERPASS=`pwgen -c -n -1 8`
 
     mkdir /home/user
@@ -29,6 +29,10 @@ DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
     python /var/www/metapolator/metapolator/models.py
     chown -R user:user /var/www/metapolator
 
+    export METAP_DATABASE_NAME="metapolator"
+    export METAP_DATABASE_USER="root"
+    export METAP_DATABASE_PWD="$METAPOLATOR_PASSWORD"
+    
     echo ssh user password: $SSH_USERPASS
     echo mysql root password: $METAPOLATOR_PASSWORD
 fi
