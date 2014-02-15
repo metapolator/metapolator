@@ -11,14 +11,13 @@ celery = Celery('metapolator.tasks')
 celery.config_from_object(metapolator.celeryconfig)
 
 PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
-DATABASE_NAME = 'metapolatordev'
-DATABASE_USER = 'root'
-DATABASE_PWD = ''
 
 try:
     from metapolator.localconfig import DATABASE_USER, DATABASE_PWD, DATABASE_NAME
 except ImportError:
-    pass
+    DATABASE_USER = os.environ.get('METAP_DATABASE_USER', 'root')
+    DATABASE_PWD = os.environ.get('METAP_DATABASE_PWD', '')
+    DATABASE_NAME = os.environ.get('METAP_DATABASE_NAME', 'metapolatordev')
 
 DATABASE_ENGINE = 'mysql+mysqldb://{0}:{1}@localhost/{2}'.format(DATABASE_USER, DATABASE_PWD, DATABASE_NAME)
 
