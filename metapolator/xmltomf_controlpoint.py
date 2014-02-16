@@ -3,7 +3,7 @@ import os.path as op
 import re
 import web
 
-import models
+from metapolator import models
 
 
 class DifferentZPointError(Exception):

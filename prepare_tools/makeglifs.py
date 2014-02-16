@@ -15,17 +15,16 @@ os.chdir(ufo)
 for files in os.listdir("."):
   if files.endswith(".glif"):
     glif = etree.parse(files)
-    glyph = glif.getroot() 
-    g = glyph.get('name')  
+    glyph = glif.getroot()
+    g = glyph.get('name')
 #    uni = glif.find('unicode')
  #   u = uni.get('hex')
  #   name = glyph.attrib
 
-  
+
     for i, j in enumerate(mflist) :
       if j == g :
         print i
         newname = str(i)
         glyph.set('name', newname)
         glif.write(newname + '.glif')
-

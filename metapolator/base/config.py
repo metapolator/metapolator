@@ -5,12 +5,12 @@ import web
 from sqlalchemy.orm import scoped_session, sessionmaker
 from celery import Celery
 
-import metapolator.celeryconfig
+from metapolator.base import celeryconfig
 
 celery = Celery('metapolator.tasks')
-celery.config_from_object(metapolator.celeryconfig)
+celery.config_from_object(celeryconfig)
 
-PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..'))
+PROJECT_ROOT = op.abspath(op.join(op.dirname(__file__), '..', '..'))
 
 DATABASE_USER = 'root'
 DATABASE_NAME = 'metapolatordev'
@@ -30,7 +30,7 @@ web.config.debug = False
 
 
 def load_user(handler=None):
-    import models
+    from metapolator import models
     try:
         web.ctx.user = models.User.get(id=session.user)
     except AttributeError:
