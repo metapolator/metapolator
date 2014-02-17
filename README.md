@@ -25,6 +25,16 @@ Metapolator is built with many libre software components:
 - [mf2pt1](http://www.ctan.org/tex-archive/support/mf2pt1) (and [Type 1 utilities](http://www.lcdf.org/type/#t1utils)) to convert the metafont back into a Type 1 font
 - [FontForge](http://sourceforge.net/projects/fontforge/files/fontforge-source/) to convert the Type 1 font to UFO and OTF
 
+More concisely:
+
+```
+ufo files -input-to-> xml2mf.py =outputs=> 
+mf files -> metapost.c => 
+mf files -> mf2pt1.pl => 
+pfb files -> fontforge.c 
+=> [ufo,otf] files
+```
+
 ## Installation
 
 ### The Simple Way
