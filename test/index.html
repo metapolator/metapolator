@@ -1,12 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="metapolatortestApp">
 <head>
     <meta charset="UTF-8">
     <title>Metapolator: Design typeface families</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="slider.css"/>
-    <link rel="stylesheet" type="text/css" href="demo.css"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="app/css/slider.css"/>
+    <link rel="stylesheet" type="text/css" href="app/css/demo.css"/>
+    <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css"/>
     <link href='http://fonts.googleapis.com/css?family=Roboto:100italic,500,300,700,400' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="app/js/app.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -15,40 +18,30 @@
     <![endif]-->
 </head>
 
-<body>
+<body  >
 <div id="wrap">
     <div class="masthead clearfix">
         <div class="inner">
           <h1 class="masthead-brand col-md-1">
             <span style="font-family: 'Roboto', sans-serif; font-weight: 700;">META</span><span style="font-family: 'Roboto', sans-serif; font-weight: 500;">PO</span><span style="font-family: 'Roboto', sans-serif; font-weight: 300;">LATOR</span>
           </h1>
-        <!-- Top center dropdown menu for selectiong action -->
-          <!--<ul class="col-md-5 col-md-offset-1 feature-nav">-->
-            <!--<li>What do you want to try?</li>-->
-            <!--<li>-->
-            <!--<div class="btn-group">-->
-              <!--<select id="sliderPicker" class="btn-black" data-toggle="dropdown">&lt;!&ndash;-->
-                <!--&ndash;&gt;changing x-height <span class="caret"></span>-->
-                <!--<option value="#height">change x-height</option>-->
-                <!--<option value="#weight">change weight</option>-->
-                <!--<option value="#size">change size</option>-->
-                <!--<option value="#space">change space</option>-->
-                <!--<option value="#all">change all</option>-->
-              <!--</select>-->
-            <!--</div></li>-->
-          <!--</ul>-->
           <ul class="col-md-2 masthead-nav">
             <li><a href="http://github.com/metapolator/metapolator" title="Github"><span class="glyphicon glyphicon-github"></span></a>   </li>
             <li><a href="https://plus.google.com/u/0/communities/110027004108709154749" title="Google+"><span class="glyphicon glyphicon-google-plus"></span></a></li>
           </ul>
         </div>
       </div>
-
-
         <div class="container-fluid">
-            <div class="col-md-offset-3">
+            <div class="row">
+            <div class="slider-menu" ng-controller="SliderCtrl">
+                <div class="sliders">
+                    <input font-slider="0"/>
+                </div>
+            </div>
+
+            <div class="col-md-8 col-lg-offset-4">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px">
+                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px">
                         <div class="row" style="margin-top:20px">
                                 <div id="glyphs"></div>
                                 <div class="col-md-1">weight:</div>
@@ -61,7 +54,7 @@
                                 Metapolator is a font editor for designing typeface families. Many families vary only by weight, and even then only in a simple linear way, as above.
                                 </p>
                                 <p>
-                                We wanted a way to draw fonts yet have the power of Metafont – a programming language for specifying typefaces with algorithms. 
+                                We wanted a way to draw fonts yet have the power of Metafont – a programming language for specifying typefaces with algorithms.
                                 </p>
                                 <p>
                                 For classical interpolation using multiple masters and axes, Metapolator can load normal UFO fonts (without any modifications.) It can create new instances and save them in the UFO format or OTF/TTF binaries to use straight away.
@@ -115,11 +108,6 @@
                                 <input id="sliderACSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
                             </div>
                             <div class="col-md-1"><span id="sliderACSentenceValue">0.2</span></div>
-                            <!--<div class="col-md-4">x-height:</div>-->
-                            <!--<div class="col-md-5">-->
-                                <!--<input id="sliderADSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">-->
-                            <!--</div>-->
-                            <!--<div class="col-md-3"><span id="sliderADSentenceValue">0.2</span></div>-->
                             <div class="lead col-md-11" style="text-align:left">
 
                                 <p>
@@ -168,117 +156,106 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
     </div>
 </body>
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 
-<script type="text/javascript" src="bootstrap-slider.js"></script>
-<script type="text/javascript" src="opentype.js"></script>
-<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="app/js/bootstrap-slider.js"></script>
+<script type="text/javascript" src="app/js/opentype.js"></script>
+
 
 <script>
 
-function formatter(value) {
-    return Number(value).toFixed(2);
-}
-
-$(document).ready(function(){
-    var fonts = [
-        'fonts/RobotoSlab_Thin.otf',
-        'fonts/RobotoSlab_Bold.otf',
-        'fonts/RobotoSlab_Thin.otf'
-    ];
-
-    var sliderABValue = $('#sliderABValue');
-    var sliderABWordValue = $('#sliderABWordValue');
-    var sliderACWordValue = $('#sliderACWordValue');
-    var sliderABSentenceValue = $('#sliderABSentenceValue');
-    var sliderACSentenceValue = $('#sliderACSentenceValue');
-    var sliderABWordHeightValue = $('#sliderABWordHeightValue')
 
 
-    var instancesGlyph = Instances(fonts, {text: 'a', canvas: '#glyphs',
-                                           fontSize: 400, lineHeight: 215});
-
-    var wordFonts = [
-        'fonts/Roboto-Regular.otf',
-        'fonts/Roboto-Bold.otf',
-        'fonts/Roboto-Regular-space.otf'
-    ];
-   var instancesWord = Instances(wordFonts, {text: 'Hanna', canvas: '#glyphsWord',
-                                         fontSize: 80, lineHeight: 110});
-
-    var heightFonts = [
-        'fonts/Roboto-Regular-x-low.otf',
-        'fonts/Roboto-Regular-x-high.otf',
-        'fonts/Roboto-Regular-x-high.otf'
-    ];
-
-    var instancesWordHeight = Instances(heightFonts, {text: 'Hanna', canvas: '#glyphsWordHeight',
-        fontSize: 80, lineHeight: 110});
-
-    var parafonts = [
-        'fonts/RobotoSlab_Thin.otf',
-        'fonts/RobotoSlab_Bold.otf',
-        'fonts/RobotoSlab_Thin_Space.otf'
-    ];
-
-    var instancesSentance = Instances(parafonts, {linebreaks: true, text: 'Donald Ervin Knuth (born January 10, 1938) is an American computer scientist, mathematician, and Professor Emeritus at Stanford University. He is the author of the multi-volume work The Art of Computer Programming. Knuth has been called the "father" of the analysis of algorithms. He contributed to the development of the rigorous analysis of the computational complexity of algorithms and systematized formal mathematical techniques for it. In the process he also popularized the asymptotic notation. In addition to fundamental contributions in several branches of theoretical computer science, Knuth is the creator of the TeX computer typesetting system, the related METAFONT font definition language and rendering system, and the Computer Modern family of typefaces.',
-        canvas: '#glyphsSentence', fontSize: 20, lineHeight: 32,
-                                   width: 690, height: 400});
-
-    // $(window).on('resize', function() {
-    //     instancesSentance.width = $('.col-xs-12 .col-sm-6 .col-md-2').outerWidth();
-    //     console.log(instancesSentance.width);
-    //     instancesSentance.interpolate();
-    // });
-
-
-    $('#sliderAB').slider({formater: formatter}).on('slide', function(e){
-        instancesGlyph.interpolationValueAB = e.value;
-        sliderABValue.text((e.value).toFixed(2));
-        instancesGlyph.interpolate();
-    });
-
-    $('#sliderABWord').slider({formater: formatter}).on('slide', function(e){
-        instancesWord.interpolationValueAB = e.value;
-        sliderABWordValue.text((e.value).toFixed(2));
-        instancesWord.interpolate();
-    });
-
-    $('#sliderACWord').slider({formater: formatter}).on('slide', function(e){
-        instancesWord.interpolationValueAC = e.value;
-        sliderACWordValue.text((e.value).toFixed(2));
-        instancesWord.interpolate();
-    });
-
-    $('#sliderABSentence').slider({formater: formatter}).on('slide', function(e){
-        instancesSentance.interpolationValueAB = e.value;
-        sliderABSentenceValue.text((e.value).toFixed(2));
-        instancesSentance.interpolate();
-    });
-
-    $('#sliderACSentence').slider({formater: formatter}).on('slide', function(e){
-        instancesSentance.interpolationValueAC = e.value;
-        sliderACSentenceValue.text((e.value).toFixed(2));
-        instancesSentance.interpolate();
-    });
-
-    $('#sliderABWordHeight').slider({formater: formatter}).on('slide', function(e){
-        instancesWordHeight.interpolationValueAB = e.value;
-        sliderABWordHeightValue.text((e.value).toFixed(2));
-        instancesWordHeight.interpolate();
-    });
-
-//    $('#sliderADSentence').slider({formater: formatter}).on('slide', function(e){
-//        instancesSentance.interpolationValueAD = e.value;
-//        sliderADSentenceValue.text((e.value).toFixed(2));
+//$(document).ready(function(){
+//    var fonts = [
+//        'app/fonts/RobotoSlab_Thin.otf',
+//        'app/fonts/RobotoSlab_Bold.otf',
+//        'app/fonts/RobotoSlab_Thin.otf'
+//    ];
+//
+//    var sliderABValue = $('#sliderABValue');
+//    var sliderABWordValue = $('#sliderABWordValue');
+//    var sliderACWordValue = $('#sliderACWordValue');
+//    var sliderABSentenceValue = $('#sliderABSentenceValue');
+//    var sliderACSentenceValue = $('#sliderACSentenceValue');
+//    var sliderABWordHeightValue = $('#sliderABWordHeightValue')
+//
+//
+//    var instancesGlyph = Instances(fonts, {text: 'a', canvas: '#glyphs',
+//                                           fontSize: 400, lineHeight: 215});
+//
+//    var wordFonts = [
+//        'app/fonts/Roboto-Regular.otf',
+//        'app/fonts/Roboto-Bold.otf',
+//        'app/fonts/Roboto-Regular-space.otf'
+//    ];
+//   var instancesWord = Instances(wordFonts, {text: 'Hanna', canvas: '#glyphsWord',
+//                                         fontSize: 80, lineHeight: 110});
+//
+//    var heightFonts = [
+//        'app/fonts/Roboto-Regular-x-low.otf',
+//        'app/fonts/Roboto-Regular-x-high.otf',
+//        'app/fonts/Roboto-Regular-x-high.otf'
+//    ];
+//
+//    var instancesWordHeight = Instances(heightFonts, {text: 'Hanna', canvas: '#glyphsWordHeight',
+//        fontSize: 80, lineHeight: 110});
+//
+//    var parafonts = [
+//        'app/fonts/RobotoSlab_Thin.otf',
+//        'app/fonts/RobotoSlab_Bold.otf',
+//        'app/fonts/RobotoSlab_Thin_Space.otf'
+//    ];
+//
+//    var instancesSentance = Instances(parafonts, {linebreaks: true, text: 'Donald Ervin Knuth (born January 10, 1938) is an American computer scientist, mathematician, and Professor Emeritus at Stanford University. He is the author of the multi-volume work The Art of Computer Programming. Knuth has been called the "father" of the analysis of algorithms. He contributed to the development of the rigorous analysis of the computational complexity of algorithms and systematized formal mathematical techniques for it. In the process he also popularized the asymptotic notation. In addition to fundamental contributions in several branches of theoretical computer science, Knuth is the creator of the TeX computer typesetting system, the related METAFONT font definition language and rendering system, and the Computer Modern family of typefaces.',
+//        canvas: '#glyphsSentence', fontSize: 20, lineHeight: 32,
+//                                   width: 690, height: 400});
+//
+//
+//    $('#sliderAB').slider({formater: formatter}).on('slide', function(e){
+//        instancesGlyph.interpolationValueAB = e.value;
+//        sliderABValue.text((e.value).toFixed(2));
+//        instancesGlyph.interpolate();
+//    });
+//
+//    $('#sliderABWord').slider({formater: formatter}).on('slide', function(e){
+//        instancesWord.interpolationValueAB = e.value;
+//        sliderABWordValue.text((e.value).toFixed(2));
+//        instancesWord.interpolate();
+//    });
+//
+//    $('#sliderACWord').slider({formater: formatter}).on('slide', function(e){
+//        instancesWord.interpolationValueAC = e.value;
+//        sliderACWordValue.text((e.value).toFixed(2));
+//        instancesWord.interpolate();
+//    });
+//
+//    $('#sliderABSentence').slider({formater: formatter}).on('slide', function(e){
+//        instancesSentance.interpolationValueAB = e.value;
+//        sliderABSentenceValue.text((e.value).toFixed(2));
 //        instancesSentance.interpolate();
 //    });
-});
+//
+//    $('#sliderACSentence').slider({formater: formatter}).on('slide', function(e){
+//        instancesSentance.interpolationValueAC = e.value;
+//        sliderACSentenceValue.text((e.value).toFixed(2));
+//        instancesSentance.interpolate();
+//    });
+//
+//    $('#sliderABWordHeight').slider({formater: formatter}).on('slide', function(e){
+//        instancesWordHeight.interpolationValueAB = e.value;
+//        sliderABWordHeightValue.text((e.value).toFixed(2));
+//        instancesWordHeight.interpolate();
+//    });
+//
+//});
 
 </script>
 </html>

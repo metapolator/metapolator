@@ -3,6 +3,21 @@ body {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
 }
+.slider-menu {
+    width:360px;
+    display:block;
+    height:100%;
+    border-right: 2px solid #eeeeee;
+    position:fixed;
+}
+.sliders {
+    padding: 30px;
+}
+.sliders span {
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
 canvas {
     background-color: #fffeef;
 }
@@ -53,6 +68,7 @@ a {
 }
 
 .container-fluid {
+    padding-top: 30px;
     width: 100%;
     text-align: center;
 }
@@ -101,6 +117,9 @@ a {
     float: right;
   }
   .masthead {
+    z-index:1;
+    position: fixed;
+    width:100%;
     background-color: #eeeeee;
     height: 30px;
   }

@@ -10,6 +10,8 @@
   display: inline-block;
   vertical-align: middle;
   position: relative;
+  padding-right: 10px;
+  padding-left: 10px;
 }
 .slider.slider-horizontal {
   width: 210px;
@@ -18,7 +20,7 @@
 .slider.slider-horizontal .slider-track {
   height: 2px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 20px;
   top: 50%;
   left: 0;
 }
