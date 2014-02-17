@@ -1,6 +1,6 @@
 import web
 
-from metapolator.config import celery, load_sqla, load_user, session
+from metapolator.base.config import celery, load_sqla, load_user, session
 from metapolator.models import Master
 from metapolator.tools import put_font_all_glyphs
 

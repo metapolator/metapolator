@@ -5,9 +5,9 @@ import simplejson
 import web
 from lxml import etree
 
-from config import buildfname
+from metapolator.base.config import buildfname
 
-from models import Glyph, GlyphParam, GlyphOutline, LocalParam
+from metapolator.models import Glyph, GlyphParam, GlyphOutline, LocalParam
 
 
 zpoint_re = re.compile('(?P<name>z(?P<number>[\d]+))(?P<side>[lr])')

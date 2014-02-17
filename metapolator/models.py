@@ -16,8 +16,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
 
-from config import engine, working_dir
-from dbapi import UserQueryMixin, query
+from metapolator.base.config import engine, working_dir
+from metapolator.base.dbapi import UserQueryMixin, query
 
 
 LABELS = range(ord('A'), ord('Z') + 1)

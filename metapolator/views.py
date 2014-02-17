@@ -24,7 +24,7 @@ from passlib.hash import bcrypt
 
 import metapolator.tasks as tasks
 
-from metapolator.config import app, is_loggedin, session, working_dir, \
+from metapolator.base.config import app, is_loggedin, session, working_dir, \
     working_url, PROJECT_ROOT
 from metapolator.forms import RegisterForm, LocalParamForm, PointParamExtendedForm
 from metapolator.tools import put_font_all_glyphs, get_edges_json

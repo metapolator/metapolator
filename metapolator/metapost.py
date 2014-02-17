@@ -2,7 +2,7 @@ import os
 import os.path as op
 import subprocess
 
-from metapolator.config import buildfname, working_dir
+from metapolator.base.config import buildfname, working_dir
 from metapolator.models import Glyph, LocalParam, Metapolation
 
 
@@ -37,6 +37,7 @@ class Metapost:
         self.write_global_params(master)
 
         os.environ['MFINPUTS'] = master.get_fonts_directory()
+        os.environ['WORKDIR'] = working_dir()
         os.environ['MFMODE'] = self.mfparser
 
         if not interpolated:
@@ -82,11 +83,11 @@ class Metapost:
         """
         for glyph in master.get_glyphs():
             if self.mfparser == 'pen':
-                import xmltomf
+                import xmltomf_pen as xmltomf
                 xmltomf.xmltomf1(master, glyph)
 
             if self.mfparser == 'controlpoints':
-                import xmltomf_new_2axes as xmltomf
+                import xmltomf_controlpoint as xmltomf
                 xmltomf.xmltomf1(master, glyph)
 
         self.write_glyph_list(master)
@@ -115,11 +116,11 @@ class Metapost:
             return None
 
         if self.mfparser == 'pen':
-            import xmltomf
+            import xmltomf_pen as xmltomf
             xmltomf.xmltomf1(master, glyph)
 
         if self.mfparser == 'controlpoints':
-            import xmltomf_new_2axes as xmltomf
+            import xmltomf_controlpoint as xmltomf
             xmltomf.xmltomf1(master, glyph)
 
         self.write_glyph_list(master, glyph.name)
@@ -140,11 +141,11 @@ class Metapost:
 
         primary_master = masters[0]
         if self.mfparser == 'controlpoints':
-            import xmltomf_new_2axes as xmltomf
+            import xmltomf_controlpoint as xmltomf
             xmltomf.xmltomf1(primary_master, *list(glyphs),
                              interpolated=interpolated)
         else:
-            import xmltomf
+            import xmltomf_pen as xmltomf
             xmltomf.xmltomf1(primary_master, *list(glyphs),
                              interpolated=interpolated)
 

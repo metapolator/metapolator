@@ -3,7 +3,7 @@ import os.path as op
 import re
 import web
 
-import models
+from metapolator import models
 
 
 def set_value_for_index(index, primary, *args):
@@ -59,7 +59,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         fip = stdout_fip
 
     fip.write("% File parsed with Metapolator %\n")
-    
+
     wA = '%.2f' % (glyphA.width / 100.)
     wB = '%.2f' % (glyphB.width / 100.)
     wC = '%.2f' % (glyphC.width / 100.)
@@ -69,7 +69,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     wB_new = '%.2f' % (glyphB.width_new / 100.)
     wC_new = '%.2f' % (glyphC.width_new / 100.)
     wD_new = '%.2f' % (glyphD.width_new / 100.)
- 
+
     if not wA_new:
         wA_new = wA
 
@@ -80,7 +80,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
         wC_new = wC
 
     if not wD_new:
-        wD_new = wD        
+        wD_new = wD
 
 #    w = str(glyphA.width / 100)
 #    w2 = str(glyphB.width / 100)
@@ -1198,7 +1198,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
             B_pointshiftedval = pointshiftedval
 
         if not C_pointshiftedval:
-            C_pointshiftedval = pointshiftedval    
+            C_pointshiftedval = pointshiftedval
 
         if not D_pointshiftedval:
             D_pointshiftedval = pointshiftedval
