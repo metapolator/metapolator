@@ -5,7 +5,7 @@ import web
 from sqlalchemy.orm import scoped_session, sessionmaker
 from celery import Celery
 
-from metapolator.base import celeryconfig
+from metapolator.base import celeryconfig, rediswebpy
 
 celery = Celery('metapolator.tasks')
 celery.config_from_object(celeryconfig)
@@ -61,8 +61,11 @@ app = web.auto_application()
 app.add_processor(load_sqla)
 
 
-session = web.session.Session(app, web.session.DiskStore('sessions'),
-                              {'count': 0})
+# session = web.session.Session(app, web.session.DiskStore('sessions'),
+#                               {'count': 0})
+session = web.session.Session(app, rediswebpy.RedisStore(),
+                              initializer={'count': 0})
+
 app.add_processor(load_user)
 
 
