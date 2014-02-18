@@ -1,6 +1,8 @@
 Metapolator
 ==============
 
+## Introduction
+
 Metapolator is a web-based parametric font editor.
 
 It provides a GUI for designing with UFO fonts and Metafont – a language for semi-algorithmic specification of typefaces. Metapolator was created out of the need to create large font families efficiently.
@@ -12,6 +14,38 @@ To use the full potential of parametrising fonts, Metapolator can parse already 
 Furthermore instead of using prepared fonts it will be possible to enhance normal UFO fonts by adding parameters on request and only parametrise certain parts of a glyph.
 
 Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
+
+## Terminology
+
+### Metapolator
+
+A wordplay referring to Erik van Blokland's [Superpolator](http://superpolator.com/) and Pablo Impallari's [Simplepolator](http://www.impallari.com/projects/overview/simplepolator) interpolation font tools, and the font programming language [Metafont](http://en.wikipedia.org/wiki/Metafont)
+
+### UFO
+
+[Unified Font Object](http://unifiedfontobject.org/) font format for font-application interchange, used for loading and saving fonts in Metapolator.
+
+### Master
+
+A Master can be compared and interpolated with another Master along an axis.
+
+### Axis
+
+Distance between two masters, for example between `A` and `B`: `A ----- B`
+
+### Instance
+
+A new font created at a certain position on an axis, or between multiple axes.
+
+## How It Works
+
+```
+ufo fonts -input-to-> xml2mf.py =outputs=> 
+mf files -> metapost.c => 
+mf files -> mf2pt1.pl => 
+pfb fonts -> fontforge.c => 
+ufo + otf fonts
+```
 
 Metapolator is built with many libre software components:
 
@@ -25,15 +59,16 @@ Metapolator is built with many libre software components:
 - [mf2pt1](http://www.ctan.org/tex-archive/support/mf2pt1) (and [Type 1 utilities](http://www.lcdf.org/type/#t1utils)) to convert the metafont back into a Type 1 font
 - [FontForge](http://sourceforge.net/projects/fontforge/files/fontforge-source/) to convert the Type 1 font to UFO and OTF
 
-More concisely:
 
-```
-ufo files -input-to-> xml2mf.py =outputs=> 
-mf files -> metapost.c => 
-mf files -> mf2pt1.pl => 
-pfb files -> fontforge.c 
-=> [ufo,otf] files
-```
+## Roadmap
+
+### Command Line interface
+
+https://github.com/metapolator/metapolator/issues/46
+
+###
+
+
 
 ## Installation
 
