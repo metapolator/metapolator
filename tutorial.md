@@ -1,5 +1,5 @@
 ---
-layout: page.html
+layout: layout
 ---
 
 Metapolator Manual
