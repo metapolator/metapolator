@@ -15,7 +15,13 @@ Furthermore instead of using prepared fonts it will be possible to enhance norma
 
 Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
 
+## Tutorial
+
+A now-obsolete tutorial is at http://metapolator.com/tutorial.html
+
 ## Terminology
+
+Superness? Overshoot? Instance? We're describing the terminology below to shed some light onto some frequently used terms.
 
 ### Metapolator
 
