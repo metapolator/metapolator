@@ -47,7 +47,8 @@ def parse_argument_master(master_string):
     ufofile, width_desc, weight_desc = master_string.split('|')
     _, widthvalue = width_desc.split(':')
     _, weightvalue = width_desc.split(':')
-    return dict(width=widthvalue, weight=weightvalue, name=ufofile, glyphs={})
+    return dict(width=float(widthvalue), weight=float(weightvalue),
+                name=ufofile, glyphs={}, alias=os.path.splitext(ufofile)[0])
 
 
 def main():
@@ -60,13 +61,16 @@ def main():
             data['glyphs'][glyph['name']] = glyph
         masters.append(data)
 
+    # collect masters pair for each axes
     for ax in argv.axis:
         axis, masterlist, values = ax.split('|')
         try:
             f, s = masterlist.split(':')
         except ValueError:
             f = s = masterlist
-        axes[re.sub(r'name:', '', axis, re.I)] = {'masters': (f, s)}
+        l_master = filter(lambda m: m['name'] == f, masters)[0]
+        r_master = filter(lambda m: m['name'] == s, masters)[0]
+        axes[re.sub(r'name:', '', axis, re.I)] = [l_master, r_master]
 
     for arg in argv.instance.split('|'):
         try:
@@ -75,7 +79,7 @@ def main():
             key = arg
             value = 0
         if key in axes.keys():
-            axes[key]['value'] = float(value)
+            axes[key].append(float(value))
             continue
         if key.lower() in ['family', 'stylename']:
             font[key.lower()] = value if value else ''
@@ -88,7 +92,7 @@ def main():
             # if it does not, so just ignore it
             # from generating new ufo
             continue
-        print xmltomf.xmltomf(glyphname, *masters)
+        print xmltomf.xmltomf(glyphname, axes)
 
         # pprint.pprint(glyph)
 
@@ -169,7 +173,9 @@ def glif2json(fp):
 
         contours.append(points)
 
-    return {'contours': contours, 'name': doctree.getroot().attrib['name']}
+    return {'contours': contours,
+            'name': doctree.getroot().attrib['name'],
+            'advanceWidth': doctree.find('advance').attrib['width']}
 
 
 def parse_command_line_arguments():
