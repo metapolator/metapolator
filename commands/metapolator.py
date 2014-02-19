@@ -20,9 +20,10 @@ import argparse
 import lxml.etree
 import os
 import re
+import subprocess
 import sys
 import tempfile
-import subprocess
+import xmltomf
 
 fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
 axes = {}  # contains description of axes
