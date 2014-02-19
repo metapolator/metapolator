@@ -57,6 +57,11 @@ In the UFO its writen like this:
 <point x="340" y="295"/>
 ```
 
+### Parameters
+
+A parameter is a characteristic, feature, or measurable factor that can help in defining a particular system. We use parameters on various levels to define fonts: `Global parameters` are on a font level, for example `font size`. `Glyphs arameters` are on a glyph level, for example `glyph width`. `Point parameters` are on a point and curve level of a glyph shape, for example the position or `coordinate` of a point.
+
+
 
 
 ## How It Works
