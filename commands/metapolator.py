@@ -23,7 +23,7 @@ import re
 import subprocess
 import sys
 import tempfile
-import xmltomf
+import json2mf
 
 fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
 axes = {}  # contains description of axes
@@ -96,7 +96,7 @@ def main():
             # if it does not, so just ignore it
             # from generating new ufo
             continue
-        print xmltomf.xmltomf(glyphname, axes)
+        print json2mf.json2mf(glyphname, axes)
 
         # pprint.pprint(glyph)
 

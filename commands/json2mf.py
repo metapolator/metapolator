@@ -1,4 +1,4 @@
-def xmltomf(glyphname, axes):
+def json2mf(glyphname, axes):
     """ Returns metafont formatted content for interpolated glyph
 
         Arguments:
