@@ -45,10 +45,15 @@ def parse_argument_master(master_string):
     """ Parse string master description and returns dictionary
         of master's description """
     ufofile, width_desc, weight_desc = master_string.split('|')
-    _, widthvalue = width_desc.split(':')
-    _, weightvalue = width_desc.split(':')
-    return dict(width=float(widthvalue), weight=float(weightvalue),
-                name=ufofile, glyphs={}, alias=os.path.splitext(ufofile)[0])
+    result = dict(name=ufofile, glyphs={}, alias=os.path.splitext(ufofile)[0])
+
+    axisalias, value = width_desc.split(':')
+    result.update({axisalias: float(value)})
+
+    axisalias, value = weight_desc.split(':')
+    result.update({axisalias: float(value)})
+    print result
+    return result
 
 
 def main():
