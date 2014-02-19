@@ -35,8 +35,8 @@ def xmltomf(glyphname, axes):
         axis = axes[axisalias]
         lglyph = axis[0]['glyphs'][glyphname]
         rglyph = axis[1]['glyphs'][glyphname]
-        beginfontchar.append(listwidth.format(W1=lglyph['advanceWidth'],
-                                              W2=rglyph['advanceWidth'],
+        beginfontchar.append(listwidth.format(W1='%.2f' % (lglyph['advanceWidth'] / 100.),
+                                              W2='%.2f' % (rglyph['advanceWidth'] / 100.),
                                               AXIS=axisalias,
                                               A1=axis[0]['alias'],
                                               A2=axis[1]['alias']))

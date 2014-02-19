@@ -52,7 +52,6 @@ def parse_argument_master(master_string):
 
     axisalias, value = weight_desc.split(':')
     result.update({axisalias: float(value)})
-    print result
     return result
 
 
@@ -180,7 +179,7 @@ def glif2json(fp):
 
     return {'contours': contours,
             'name': doctree.getroot().attrib['name'],
-            'advanceWidth': doctree.find('advance').attrib['width']}
+            'advanceWidth': float(doctree.find('advance').attrib['width'])}
 
 
 def parse_command_line_arguments():
