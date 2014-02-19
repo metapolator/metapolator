@@ -1,0 +1,227 @@
+%newinternal slant,fudge,math_spread,superness,superpull,beak_darkness,ligs;
+boolean square_dots,hefty,serifs,monospace,variant_g,low_asterisk,math_fitting;
+
+mdir:=1.35;
+mang:=1.15;
+
+mean#:=5.000pt#;
+cap#:=5.930pt#;
+asc#:=6.430pt#;
+desc#:=0.000pt#;
+
+mpx:=A_px#+metapolation*(B_px#-A_px#);
+capu#:=6.930pt#-0.5mpx;
+meanu#:=5.000pt#-0.5mpx;
+baseu#:=0pt#+0.5mpx;
+
+%	0,(capu+0.5dist2A)-y2l
+%	0,(baseu-0.5dist4A)-y4l
+% 	0,(meanu+0.5dist1A)-y1r
+
+divider:=2;
+base#:=0.000pt#;
+on:=1;
+off:=0;
+
+mean_acc#:=5.000pt#;
+cap_acc#:=6.000pt#;
+
+A_xheight_acc:=5.00;
+A_capital_acc:=6.00;
+
+B_xheight_acc:=5.00;
+B_capital_acc:=6.00;
+
+C_xheight_acc:=5.00;
+C_capital_acc:=6.00;
+
+D_xheight_acc:=5.00;
+D_capital_acc:=6.00;
+
+
+def loggingall =                % puts tracing info into the log
+%  tracingcommands:=3; 
+%  tracingedges:=2; 
+%  tracingtitles:=1;
+%  tracingequations:=1;
+%  tracingcapsules:=1; 
+%  tracingspecs:=1;
+%  tracingpens:=1; 
+%  tracingchoices:=1; 
+%  tracingstats:=1;
+  tracingoutput:=1; 
+%  tracingmacros:=1; 
+%  tracingrestores:=1;
+  enddef;
+
+def tracingall =                % turns on every form of tracing
+  tracingonline:=1; 
+  showstopping:=1; 
+  loggingall 
+  enddef;
+
+tracingall
+
+slant:=((A_slant+metapolation*(B_slant-A_slant)) + (C_slant+metapolationCD*(D_slant-C_slant))) /2;
+font_slant = slant;
+
+jut:=((A_jut+metapolation*(B_jut-A_jut)) + (C_jut+metapolationCD*(D_jut-C_jut))) /2;
+slab:=((A_slab+metapolation*(B_slab-A_slab)) + (C_slab+metapolationCD*(D_slab-C_slab))) /2;
+bracket:=((A_bracket+metapolation*(B_bracket-A_bracket)) + (C_bracket+metapolationCD*(D_bracket-C_bracket))) /2;
+serif_darkness:=((A_serif_darkness+metapolation*(B_serif_darkness-A_serif_darkness)) + (C_serif_darkness+metapolationCD*(D_serif_darkness-C_serif_darkness))) /2;
+% for perfect curve use serif_darkness = 0.5; .. in def serif_bracket instead --
+
+serifs:=false;
+
+
+def serif_h(suffix $)(expr breadth, theta , left_jut , right_jut, left, right ) = 
+   % penpos$ (breadth /abs sind theta , 0);      % comment this if penpos already known 
+    z$a- left - z$l = z$f - z$r  = (bracket/abs sind theta) * dir theta;
+    y$c =y$d; 
+    y$b =y$e =y$; 
+    y$b - y$c = if theta < 0 : - fi slab;
+    x$b =x$c =x$l - left_jut; 
+    x$d =x$e =x$r + right_jut;
+
+labels($a,$b,$c,$d,$e,$f) enddef;
+
+def serif_v(suffix $)(expr breadth, theta ,  right_jut, left_jut, down, up  ) = 
+ %   penpos$ (whatever,whatever);      % comment this if penpos already known 
+    z$a- down - z$r = z$f - z$l = bracket * dir theta;
+    x$d =x$c; 
+    x$b =x$e =x$; 
+    x$b - x$c = if theta < 0 : - fi - slab;
+    y$b =y$c =y$r + right_jut; 
+    y$d =y$e =y$l - left_jut;
+ 
+labels($a,$b,$c,$d,$e,$f) enddef;
+
+def serif_edge suffix $ =
+    (serif_bracket ($a, $l, $b) -- z$c -- z$d -- reverse serif_bracket($f, $r, $e)) enddef ;
+
+def serif_edge_v suffix $ =
+    (serif_bracket($a, $r, $b) -- z$c -- z$d -- reverse serif_bracket($f, $l, $e)) enddef ;
+
+
+def serif_bracket(suffix i, j, k) =
+    (z.i{z.j - z.i} -- serif_darkness [z.j, .5[z.i, z.k] ]{z.k - z.i}
+    -- z.k{z.k - z.j}) enddef;
+
+
+
+
+% meta parameters
+mpx:=A_px#+metapolation*(B_px#-A_px#);
+mwidth:=A_width+metapolation*(B_width-A_width);
+mxheight:=A_xheight+metapolation*(B_xheight-A_xheight);
+mxheightpt:=A_xheightpt+metapolation*(B_xheightpt-A_xheightpt);
+mcapital:=A_capital+metapolation*(B_capital-A_capital);
+mcapitalpt:=A_capitalpt+metapolation*(B_capitalpt-A_capitalpt);
+mascender:=A_ascender+metapolation*(B_ascender-A_ascender);
+mascenderpt:=A_ascenderpt+metapolation*(B_ascenderpt-A_ascenderpt);
+mdescender:=A_descender+metapolation*(B_descender-A_descender);
+mdescenderpt:=A_descenderpt+metapolation*(B_descenderpt-A_descenderpt);
+mskeleton:=A_skeleton+metapolation*(B_skeleton-A_skeleton);
+mover:=A_over+metapolation*(B_over-A_over);
+
+% py#:=px#;
+A_py#:=A_px#;
+B_py#:=B_px#;
+
+C_py#:=C_px#;
+D_py#:=D_px#;
+
+% some defenitions for the output and proof sheets
+def endchar =
+ scantokens extra_endchar;
+ chardx:=w;
+% makebox(proofrule);
+ shipit;
+ endgroup enddef;
+
+% box and guide lines on proof sheet
+
+% def makebox(text r) = 
+% for y=0,h.o_,-d.o_, mean, cap, -des, asc, : r((0,y),(w,y)); endfor % horizontals 
+% for x=0,w, :	r((x,-des),(x,asc)); endfor % verticals 
+
+% for x=0,w, 0.1w, 0.2w, 0.3w, 0.4w, 0.5w, 0.6w, 0.7w, 0.8w, 0.9w:	r((x,-des),(x,asc)); endfor % verticals 
+%%%%for x=0,w, 0.2w, 0.4w, 0.6w, 0.8w:	r((x,-d.o_),(x,h.o_)); endfor % verticals 
+
+%if charic<>0: r((w+charic*hppp,h.o_),(w+charic*hppp,.5h.o_)); 
+%fi enddef;
+
+% initiate output mode
+
+%mode=localfont;
+mode=luxo;
+mode_setup;
+
+% pixel conversions into real points %
+% metafont needs these pixel definitions to calculate the final dimensions of the parameter values
+define_pixels(s,u);
+
+define_pixels(px,py);
+define_pixels(A_px,A_py,B_px,B_py,C_px,C_py,D_px,D_py,A_skeleton,B_skeleton,C_skeleton,D_skeleton);
+define_good_y_pixels(mean,cap,asc,desc,box,base,capu,baseu,meanu);
+
+vardef tanh(expr x) =
+numeric ee_;
+ee_ = mexp (256.0 * 2.0 * x);
+((ee_-1.0)/(ee_+1.0))
+enddef;
+
+% begin character macros %
+def beginfontchar(expr code, unit_width, h, d) =
+beginchar(code,unit_width*u#,h,d);
+pickup font_pen;
+enddef;
+
+% fixed pen settings %
+%pickup pencircle xscaled px yscaled py rotated 15;
+%font_pen:=savepen;
+
+% fixed pen settings %
+pickup pencircle xscaled (A_px + metapolation*(B_px-A_px)) yscaled (A_py + metapolation*(B_py-A_py)) rotated 15;
+font_pen:=savepen;
+
+
+% calculation for diagonal stems, like in uppercase A
+vardef diag_ratio(expr a,b,y,c) =
+numeric aa_, bb_, cc_; bb_=b/y; cc_=c/y; aa_=a-(b/y)*(b/y);
+(a*(cc_++sqrt aa_)-bb_*cc_)/aa_ enddef;
+
+% superness macros, can be used for quarter circle segments %
+mtsuperness:=A_superness+metapolation*(B_superness-A_superness);
+
+% left curves (superness) %
+def super_ql(suffix i,j,m) =
+z.i{0,y.j-y.i} ... ( ( m * mtsuperness) [x.j,x.i], (m * mtsuperness) [y.i,y.j] ) {z.j-z.i}...z.j{x.j-x.i,0} enddef;
+
+% right curves ((A_superness + metapolation * (B_superness - A_superness)) %
+def super_qr(suffix j,k, m) =
+z.j{x.k-x.j,0} ... ( ( m * mtsuperness) [x.j,x.k], (m * mtsuperness) [y.k,y.j] ) {z.k-z.j}...z.k{0,y.k-y.j} enddef;
+
+
+% stem cut and ink trap macros
+def stemcutter(expr a) =
+a*(A_stemcut+metapolation*(B_stemcut-A_stemcut)) enddef;
+
+def stemshift(expr a) =
+shifted (0.5*a*(A_stemcut+metapolation*(B_stemcut-A_stemcut)),0) enddef;
+
+def inktrapcut(expr a) =
+a*(A_inktrap + metapolation * (B_inktrap-A_inktrap)) enddef;
+ 
+def inktrap_l(expr a)=
+shifted (-0.5*a*(A_inktrap + metapolation * (B_inktrap-A_inktrap)),0) enddef;
+
+def inktrap_r(expr a)=
+shifted (0.5*a*(A_inktrap + metapolation * (B_inktrap-A_inktrap)),0) enddef;
+
+% width and sidebearing settings for each glyph
+input spacing
+
+% glyph input
+input glyphlist
+

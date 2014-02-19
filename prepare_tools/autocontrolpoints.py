@@ -18,11 +18,11 @@ dirnamea = 'MPI_Exo-Regular.ufo/glyphs/'
 
 
 charlista = [f for f in os.listdir(dirnamea) ]
-for ch1 in charlista : 
+for ch1 in charlista :
     fnb,ext=buildfname (ch1)
     if ext in ["glif"]  :
 
-        glyphsource = dirnamea+ch1  
+        glyphsource = dirnamea+ch1
         xmldoc = etree.parse(glyphsource)
         outline = xmldoc.find("outline")
 
@@ -40,7 +40,7 @@ for ch1 in charlista :
             numout=numout+1
             print "outline",numout
             isp = 0
-            itypes=itype 
+            itypes=itype
             inout = 0
             ns=0
             yyy=[]
@@ -67,16 +67,16 @@ for ch1 in charlista :
                 inum = inum +1
                 if s.get('type') > 0 :
                     itype=itype+1
-                    if isp == 0 : 
+                    if isp == 0 :
                         print "line",inum, "startp"
                         isp=isp+1
                 else :
                     if s.get('extra') == "1" :
-                       s.attrib['x'] = xxx[ns-2]                   
-                       s.attrib['y'] = yyy[ns-2]                   
+                       s.attrib['x'] = xxx[ns-2]
+                       s.attrib['y'] = yyy[ns-2]
                     if s.get('extra') == "2" :
-                       s.attrib['x'] = xxx[ns]                   
-                       s.attrib['y'] = yyy[ns]                   
+                       s.attrib['x'] = xxx[ns]
+                       s.attrib['y'] = yyy[ns]
                     inout = inout+1
                     if  inout % 2 == 1 :
                        s.attrib['control_out']="1"
@@ -84,7 +84,7 @@ for ch1 in charlista :
                        s.attrib['control_in']="1"
 #  second loop
             inout = 0
-            isp=0 
+            isp=0
             itype=itypes
             for s in ioutline:
                 if s.get('type') <> 0 :
@@ -92,7 +92,7 @@ for ch1 in charlista :
                     if isp == 0:
                         s.attrib['startp']='1'
                         isp=isp+1
-        
+
                     if itype < itypes+1 :
                         zznam=zznam+1
                         zzn = "z"+str(zznam)+"r"
@@ -102,7 +102,7 @@ for ch1 in charlista :
                         s.attrib['name']=zzn
 
 
-            
+
         print "glyphsource", glyphsource
         with codecs.open(glyphsource, "w", "utf-8") as out:
             xmldoc.write(out)
