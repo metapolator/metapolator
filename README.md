@@ -43,6 +43,22 @@ Distance between two masters, for example between `A` and `B`: `A ----- B`
 
 A new font created at a certain position on an axis, or between multiple axes.
 
+### Point 
+
+![
+](https://github.com/metapolator/metapolator/tree/gh-pages/images/curve.png)
+
+Depending on the nature of a [point](http://unifiedfontobject.org/versions/ufo1/glif.html), we can have a control-in and / or a control-out point. The direction of a path defines wheter its an 'in' or 'out' point. In this example we have a curve point (orange) with a control-in (red) and control-out (green) point. The arrow indicates the curve direction.
+In the UFO its writen like this:
+
+```
+<point x="340" y="65"/>
+<point x="340" y="184" type="curve"/>
+<point x="340" y="295"/>
+```
+
+
+
 ## How It Works
 
 ```
