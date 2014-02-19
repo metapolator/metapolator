@@ -47,7 +47,7 @@ def parse_argument_master(master_string):
     ufofile, width_desc, weight_desc = master_string.split('|')
     _, widthvalue = width_desc.split(':')
     _, weightvalue = width_desc.split(':')
-    return dict(width=widthvalue, weight=weightvalue, name=ufofile)
+    return dict(width=widthvalue, weight=weightvalue, name=ufofile, glyphs={})
 
 
 def main():
@@ -55,10 +55,10 @@ def main():
 
     masters = []
     for master in argv.master:
-        masters.append(parse_argument_master(master))
-        # master_data['points'] = get_glyph_contours(master)
-
-    print masters
+        data = parse_argument_master(master)
+        for glyph in iterate_glyphs(data):
+            data['glyphs'][glyph['name']] = glyph
+        masters.append(data)
 
     for ax in argv.axis:
         axis, masterlist, values = ax.split('|')
@@ -80,10 +80,15 @@ def main():
         if key.lower() in ['family', 'stylename']:
             font[key.lower()] = value if value else ''
 
-    # loop the glyph in primary master ufo
+    # loop the glyph in primary master glyphs
     # import pprint
-    for glyph in iterate_glyphs(masters[0]):
-        print xmltomf.xmltomf(*masters, glyph=glyph)
+    for glyphname in masters[0]['glyphs']:
+        if not glyph_exist(glyphname, *masters[1:]):
+            # check that glyph exist in another masters
+            # if it does not, so just ignore it
+            # from generating new ufo
+            continue
+        print xmltomf.xmltomf(glyphname, *masters)
 
         # pprint.pprint(glyph)
 
@@ -96,12 +101,19 @@ def main():
     # )
 
 
+def glyph_exist(glyphname, *masters):
+    """ Returns True if ALL masters contain glyph with name """
+    for m in masters:
+        if glyphname not in m['glyphs']:
+            return False
+    return True
+
+
 def iterate_glyphs(master):
     """ Returns JSON with glyphs description for master """
     assert isinstance(master, dict)
     glyphsdir = os.path.join(fwd, master['name'], 'glyphs')
     for filename in os.listdir(glyphsdir):
-        print filename
         if os.path.splitext(filename)[1].lower() != '.glif':
             continue
         yield glif2json(open(os.path.join(glyphsdir, filename)))
@@ -157,7 +169,7 @@ def glif2json(fp):
 
         contours.append(points)
 
-    return contours
+    return {'contours': contours, 'name': doctree.getroot().attrib['name']}
 
 
 def parse_command_line_arguments():
