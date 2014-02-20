@@ -3,32 +3,38 @@ def json2mf(glyphname, axes):
 
         Arguments:
 
-        - `glyphname`
-            Name of glyph to lookup in each masters
-        - `axes`
-            Dictionary with axis values of masters pair.
+        glyphname:  # Name of glyph to lookup in each masters
+        axes:  # Dictionary with axis values of masters pair.
+            [<master>, <master>]
 
-            Each master in axis is a dictionary with values:
+            master dictionary described as
 
-            - `width` axis value for extrapolated width
-            - `weight` axis value for extrapolated weight
-            - `name` is a name of master ufo
-            - `glyphs`
-                Dictionary with key as glyphname and values
-                - `name`
-                    Name of glyph
-                - `contours`
-                    List of contours defined in glif-//contours/outline.
+                master:
+                    axis:
+                        [<float>, <float>]
+                    name:
+                        <string>
+                    glyphs:
+                        [<glyph>]
 
-                    Each point in glyph contour MUST contain coordinates (x, y)
-                    and next optional coordinates (x1, y1), (x2, y2).
+                glyph:
+                    name:
+                        <string>
+                    contours:
+                        [[<point>, ...], ...]
+
+                point:
+                    x:
+                    y:
+                      <float>
+                    x1:
+                    y1:
+                    x2:
+                    y2:
+                      <float>
     """
-
+    content = ''
     listwidth = '{W1}*{A1}_width + {AXIS} * ({W2}*{A2}_width - {W1}*{A1}_width)'
-
-    # beginfontchar (three, (388*A_width + foo * (493*B_width - 388*A_width)
-    # + 519*C_width + bar * (671*D_width - 519*C_width)) + spacing_threeR)
-    # * width_three, 0, 0 );
 
     beginfontchar = []
     for axisalias in axes:
@@ -43,5 +49,39 @@ def json2mf(glyphname, axes):
                                               A1=lmaster['alias'],
                                               A2=rmaster['alias']))
 
-    begin = 'beginfontchar ({g}, ({args}) + spacing_{g}R) * width_{g}, 0, 0 );'
-    return begin.format(args=' + '.join(beginfontchar), g=glyphname)
+    begin = 'beginfontchar ({g}, ({args}) + spacing_{g}R) * width_{g}, 0, 0 );\n'
+    content += begin.format(args=' + '.join(beginfontchar), g=glyphname)
+
+    for axisalias in axes:
+        axis = axes[axisalias]
+
+        lmaster = axis[0]
+        rmaster = axis[1]
+
+        index = 1
+        for contour in lmaster['glyphs'][glyphname]['contours']:
+            for point in contour:
+                str = '{A}px{n}={x:.2f} * {EX};Apy{n}={y:.2f} * {EY}\n'
+                str = str.format(A=lmaster['alias'], n=index,
+                                 EX=lmaster['axis'][0] or 1,
+                                 EY=lmaster['axis'][1] or 1,
+                                 x=point['x'] / 100.,
+                                 y=point['y'] / 100.)
+                content += str
+                index += 1
+
+        index = 1
+        for contour in rmaster['glyphs'][glyphname]['contours']:
+            for point in contour:
+                str = '{A}px{n}={x:.2f} * {EX};Apy{n}={y:.2f} * {EY}\n'
+                str = str.format(A=rmaster['alias'], n=index,
+                                 EX=rmaster['axis'][0] or 1,
+                                 EY=rmaster['axis'][1] or 1,
+                                 x=point['x'] / 100.,
+                                 y=point['y'] / 100.)
+                content += str
+                index += 1
+
+    return content
+
+

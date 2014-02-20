@@ -45,13 +45,15 @@ def parse_argument_master(master_string):
     """ Parse string master description and returns dictionary
         of master's description """
     ufofile, width_desc, weight_desc = master_string.split('|')
-    result = dict(name=ufofile, glyphs={}, alias=os.path.splitext(ufofile)[0])
+    result = dict(name=ufofile, glyphs={},
+                  alias=os.path.splitext(ufofile)[0],
+                  axis=[])
 
     axisalias, value = width_desc.split(':')
-    result.update({axisalias: float(value)})
+    result['axis'].append(value)
 
     axisalias, value = weight_desc.split(':')
-    result.update({axisalias: float(value)})
+    result['axis'].append(value)
     return result
 
 
@@ -142,13 +144,14 @@ def glif2json(fp):
             point = xml_points[index]
             pointtype = point.attrib.get('type', 'offcurve')
             if pointtype != 'offcurve':
-                coords = {'x': point.attrib['x'], 'y': point.attrib['y']}
+                coords = {'x': float(point.attrib['x']),
+                          'y': float(point.attrib['y'])}
                 if pointtype == 'line':
                     try:
                         checkpoint = xml_points[index + 1]
                         if checkpoint.attrib.get('type', 'offcurve') == 'offcurve':
-                            coords.update({'x1': checkpoint.attrib['x'],
-                                           'y1': checkpoint.attrib['y']})
+                            coords.update({'x1': float(checkpoint.attrib['x']),
+                                           'y1': float(checkpoint.attrib['y'])})
                             offset = 2  # next offset is a 2 as we have control point
                     except IndexError:
                         pass
@@ -157,8 +160,8 @@ def glif2json(fp):
                     try:
                         checkpoint = xml_points[index + 1]
                         if checkpoint.attrib.get('type', 'offcurve') == 'offcurve':
-                            coords.update({'x2': checkpoint.attrib['x'],
-                                           'y2': checkpoint.attrib['y']})
+                            coords.update({'x2': float(checkpoint.attrib['x']),
+                                           'y2': float(checkpoint.attrib['y'])})
                             offset = 2  # next offset is a 2 as we have control point
                     except IndexError:
                         pass
@@ -166,8 +169,8 @@ def glif2json(fp):
                     try:
                         checkpoint = xml_points[index - 1]
                         if checkpoint.attrib.get('type', 'offcurve') == 'offcurve':
-                            coords.update({'x1': checkpoint.attrib['x'],
-                                           'y1': checkpoint.attrib['y']})
+                            coords.update({'x1': float(checkpoint.attrib['x']),
+                                           'y1': float(checkpoint.attrib['y'])})
                             offset = 2  # next offset is a 2 as we have control point
                     except IndexError:
                         pass
