@@ -61,7 +61,9 @@ In the UFO its writen like this:
 
 A parameter is a characteristic, feature, or measurable factor that can help in defining a particular system. We use parameters on various levels to define fonts: `Global parameters` are on a font level, for example `font size`. `Glyph parameters` are on a glyph level, for example `glyph width`. `Point parameters` are on a point and curve level of a glyph shape, for example the position or `coordinate` of a point.
 
-
+### Z-Point
+Point in a two dimensional cartesian coordinate system, defined by x and y coordinates: 
+`z=(x,y)`
 
 
 ## How It Works
