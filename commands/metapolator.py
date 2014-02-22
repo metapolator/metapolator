@@ -12,8 +12,7 @@ $ metapolator.py \
   --master "B.ufo|foo:0.0|bar:1.0" \
   --master "C.ufo|foo:1.0|bar:0.0" \
   --master "D.ufo|foo:1.0|bar:1.0" \
-  --instance "foo:0.75|bar:0.29030000000000001|family:EncodeNormal-Beta70|stylename:400 Regular"
-  I.ufo
+  --instance "foo:0.75|bar:0.29030000000000001|family:EncodeNormal-Beta70|stylename:400 Regular|filename:I.ufo"
 $
 """
 import argparse
