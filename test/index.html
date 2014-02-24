@@ -35,20 +35,16 @@
             <div class="row">
             <div class="slider-menu" ng-controller="SliderCtrl">
                 <div class="sliders">
-                    <input font-slider="0"/>
+                    <input id="sliderAB" font-slider />
                 </div>
             </div>
 
             <div class="col-md-8 col-lg-offset-4">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px">
+                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="canvasCtrl">
                         <div class="row" style="margin-top:20px">
-                                <div id="glyphs"></div>
-                                <div class="col-md-1">weight:</div>
-                                <div class="col-md-5">
-                                    <input id="sliderAB" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
-                                </div>
-                                <div class="col-md-1"><span id="sliderABValue">0.2</span></div>
+                                <div id="glyph"></div>
+                            <p ng-bind="canvasInstances.interpolationValueAB"></p>
                                 <div class="lead col-md-11" style="text-align:left">
                                 <p>
                                 Metapolator is a font editor for designing typeface families. Many families vary only by weight, and even then only in a simple linear way, as above.
@@ -164,7 +160,7 @@
 
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-
+<script type="text/javascript" src="app/js/instance.js"></script>
 <script type="text/javascript" src="app/js/bootstrap-slider.js"></script>
 <script type="text/javascript" src="app/js/opentype.js"></script>
 
