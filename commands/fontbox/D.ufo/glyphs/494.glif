@@ -1,0 +1,59 @@
+<glyph name="494" format="1">
+  <advance width="671"/>
+  <unicode hex="0033"/>
+  <outline>
+    <contour>
+      <point x="285" y="-13" type="curve" smooth="yes" startp="1" name="z1l"/>
+      <point x="514" y="-13" control_out="1" name="z2l"/>
+      <point x="634" y="62" control_in="1" name="z3l"/>
+      <point x="634" y="207" type="curve" smooth="yes" name="z4l"/>
+      <point x="634" y="289" control_out="1" name="z5l"/>
+      <point x="575" y="355" control_in="1" name="z6l"/>
+      <point x="482" y="376" type="curve" name="z7l"/>
+      <point x="482" y="386" type="line" name="z8l"/>
+      <point x="566" y="413" control_out="1" name="z9l"/>
+      <point x="614" y="470" control_in="1" name="z10l"/>
+      <point x="614" y="543" type="curve" smooth="yes" name="z11l"/>
+      <point x="614" y="681" control_out="1" name="z12l"/>
+      <point x="503" y="750" control_in="1" name="z13l"/>
+      <point x="281" y="750" type="curve" smooth="yes" name="z14l"/>
+      <point x="231" y="750" control_out="1" name="z15l"/>
+      <point x="105" y="739" control_in="1" name="z16l"/>
+      <point x="46" y="730" type="curve" name="z17l"/>
+      <point x="46" y="555" type="line" name="z18l"/>
+      <point x="50" y="555" type="line" name="z19l"/>
+      <point x="110" y="564" control_out="1" name="z20l"/>
+      <point x="195" y="572" control_in="1" name="z21l"/>
+      <point x="240" y="572" type="curve" smooth="yes" name="z22l"/>
+      <point x="346" y="572" control_out="1" name="z23l"/>
+      <point x="372" y="561" control_in="1" name="z24l"/>
+      <point x="372" y="516" type="curve" smooth="yes" name="z25l"/>
+      <point x="372" y="465" control_out="1" name="z26l"/>
+      <point x="346" y="454" control_in="1" name="z27l"/>
+      <point x="219" y="454" type="curve" smooth="yes" name="z28l"/>
+      <point x="141" y="454" type="line" name="z29l"/>
+      <point x="141" y="296" type="line" name="z30l"/>
+      <point x="220" y="296" type="line" smooth="yes" name="z31l"/>
+      <point x="362" y="296" control_out="1" name="z32l"/>
+      <point x="391" y="284" control_in="1" name="z33l"/>
+      <point x="391" y="225" type="curve" smooth="yes" name="z34l"/>
+      <point x="391" y="169" control_out="1" name="z35l"/>
+      <point x="369" y="159" control_in="1" name="z36l"/>
+      <point x="243" y="159" type="curve" smooth="yes" name="z37l"/>
+      <point x="191" y="159" control_out="1" name="z38l"/>
+      <point x="89" y="169" control_in="1" name="z39l"/>
+      <point x="50" y="177" type="curve" name="z40l"/>
+      <point x="46" y="177" type="line" name="z41l"/>
+      <point x="46" y="4" type="line" name="z42l"/>
+      <point x="79" y="-5" control_out="1" name="z43l"/>
+      <point x="195" y="-13" control_in="1" name="z44l"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

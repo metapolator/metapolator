@@ -14,15 +14,15 @@ def buildfname ( filename ):
 
 #dirnamea = 'MP_a.ufo/glyphs/'
 #dirnamea = 'MPExo-ExtraBold.ufo/glyphs/'
-dirnamea = 'MPI_Exo-LightItalic.ufo/glyphs/'
+dirnamea = '../commands/fontbox/D.ufo/glyphs/'
 
 
 charlista = [f for f in os.listdir(dirnamea) ]
-for ch1 in charlista : 
+for ch1 in charlista :
     fnb,ext=buildfname (ch1)
     if ext in ["glif"]  :
 
-        fname = dirnamea+ch1  
+        fname = dirnamea+ch1
         aa = []
         bb = []
         with open(fname) as f:
@@ -38,9 +38,9 @@ for ch1 in charlista :
             if l.count("<contour>")>0 :
                 ics = 1
                 lt = 0
-  
+
             if (l.count ("<point") >0 and l.count ("type") > 0) :
-                lt=lt+1   
+                lt=lt+1
                 if lt == 1 :
                     it =i
 
@@ -51,7 +51,7 @@ for ch1 in charlista :
                     it =i
 
             if l.count("</contour>")>0 :
-      # check end  
+      # check end
                 if ((lt == 1) and ((i-1) == it)) :
            # insert extra controlpoints
                     bb[it]=1
@@ -60,7 +60,7 @@ for ch1 in charlista :
 
         f=open(fname, "w")
 
-        i = -1 
+        i = -1
         for a in aa:
             i= i+1
             f.write(a)
@@ -68,6 +68,6 @@ for ch1 in charlista :
                 f.write('      <point extra="1" /> \n')
                 f.write('      <point extra="2" /> \n')
 
-        f.close() 
-  
- 
+        f.close()
+
+

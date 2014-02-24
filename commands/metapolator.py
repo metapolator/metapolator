@@ -12,7 +12,8 @@ $ metapolator.py \
   --master "B.ufo|foo:0.0|bar:1.0" \
   --master "C.ufo|foo:1.0|bar:0.0" \
   --master "D.ufo|foo:1.0|bar:1.0" \
-  --instance "foo:0.75|bar:0.29030000000000001|family:EncodeNormal-Beta70|stylename:400 Regular|filename:I.ufo"
+  --instance "foo:0.75|bar:0.29030000000000001|family:EncodeNormal-Beta70|stylename:400 Regular"
+  I.ufo
 $
 """
 import argparse
@@ -22,7 +23,7 @@ import re
 import subprocess
 import sys
 import tempfile
-import json2mf
+import points2mf as json2mf
 
 cwd = os.path.dirname(__file__)
 fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
@@ -108,11 +109,9 @@ def main():
             continue
         print 'processing {0}.mf'.format(glyphname)
         with open(os.path.join(directory, '%s.mf' % glyphname), 'w') as fp:
-            fp.write(json2mf.json2mf(glyphname, axes))
+            # fp.write(json2mf.json2mf(glyphname, axes))
+            fp.write(json2mf.json2mf(*map(lambda x: x['glyphs'][glyphname], masters)))
 
-        # pprint.pprint(glyph)
-
-    print os.path.realpath(fwd)
     os.environ['MFINPUTS'] = os.path.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'
 
@@ -139,14 +138,31 @@ def glyph_exist(glyphname, *masters):
 def iterate_glyphs(master):
     """ Returns JSON with glyphs description for master """
     assert isinstance(master, dict)
+    import glif2json
     glyphsdir = os.path.join(fwd, master['name'], 'glyphs')
     for filename in os.listdir(glyphsdir):
         if os.path.splitext(filename)[1].lower() != '.glif':
             continue
-        yield glif2json(open(os.path.join(glyphsdir, filename)))
+        yield glif2json.glif2json(open(os.path.join(glyphsdir, filename)))
 
 
-def glif2json(fp):
+def parse_command_line_arguments():
+    parser = argparse.ArgumentParser(description=('Interpolates several ufos '
+                                                  'into a new one '
+                                                  'with custom axis'))
+    if len(sys.argv) == 1:
+        print 'Metapolator (https://github.com/metapolator/metapolator)'
+        parser.print_help()
+        sys.exit(1)
+
+    parser.add_argument('--axis', type=str, action='append')
+    parser.add_argument('--master', type=str, action='append')
+    parser.add_argument('--instance', type=str, default='')
+    parser.add_argument('output_ufo', metavar='output_ufo', type=str)
+    return parser.parse_args()
+
+
+def __glif2json(fp):
     doctree = lxml.etree.parse(fp)
 
     points = []
@@ -200,22 +216,6 @@ def glif2json(fp):
     return {'points': points,
             'name': doctree.getroot().attrib['name'],
             'advanceWidth': float(doctree.find('advance').attrib['width'])}
-
-
-def parse_command_line_arguments():
-    parser = argparse.ArgumentParser(description=('Interpolates several ufos '
-                                                  'into a new one '
-                                                  'with custom axis'))
-    if len(sys.argv) == 1:
-        print 'Metapolator (https://github.com/metapolator/metapolator)'
-        parser.print_help()
-        sys.exit(1)
-
-    parser.add_argument('--axis', type=str, action='append')
-    parser.add_argument('--master', type=str, action='append')
-    parser.add_argument('--instance', type=str, default='')
-    parser.add_argument('output_ufo', metavar='output_ufo', type=str)
-    return parser.parse_args()
 
 
 if __name__ == '__main__':
