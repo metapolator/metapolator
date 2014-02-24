@@ -42,7 +42,7 @@ def json2mf(glyphname, axes):
 
         sum(axis<Lpx * LExtra + value * (Rpx * RExtra - Lpx * LExtra)>)
     """
-    divider = 1  # len(axes)
+    divider = 2  # len(axes)
 
     content = ''
     listwidth = '{W1}*{A1}_width + {AXIS} * ({W2}*{A2}_width - {W1}*{A1}_width)'
@@ -91,6 +91,13 @@ def json2mf(glyphname, axes):
                 coords[i]['controls_y1'].append(coordstr.format(Ap=point['y1'],
                                                                 metapolation=axis['alias'],
                                                                 Bp=rglyph['points'][i]['y1']))
+            else:
+                coords[i]['controls_x1'].append(coordstr.format(Ap=point['x'],
+                                                                metapolation=axis['alias'],
+                                                                Bp=rglyph['points'][i]['x']))
+                coords[i]['controls_y1'].append(coordstr.format(Ap=point['y'],
+                                                                metapolation=axis['alias'],
+                                                                Bp=rglyph['points'][i]['y']))
 
             if 'x2' in point:
                 coords[i]['controls_x2'].append(coordstr.format(Ap=point['x2'],
@@ -99,6 +106,13 @@ def json2mf(glyphname, axes):
                 coords[i]['controls_y2'].append(coordstr.format(Ap=point['y2'],
                                                                 metapolation=axis['alias'],
                                                                 Bp=rglyph['points'][i]['y2']))
+            else:
+                coords[i]['controls_x2'].append(coordstr.format(Ap=point['x'],
+                                                                metapolation=axis['alias'],
+                                                                Bp=rglyph['points'][i]['x']))
+                coords[i]['controls_y2'].append(coordstr.format(Ap=point['y'],
+                                                                metapolation=axis['alias'],
+                                                                Bp=rglyph['points'][i]['y']))
 
     # zpoints = []
     for i, zcoords in enumerate(coords):
@@ -110,7 +124,7 @@ def json2mf(glyphname, axes):
             divider)
 
         if zcoords['controls_x1']:
-            content += 'c1_%s = (((%s) / %s), ((%s) / %s));\n' % (
+            content += 'z1_%s = (((%s) / %s), ((%s) / %s));\n' % (
                 i + 1,
                 ' + '.join(zcoords['controls_x1']),
                 divider,
@@ -118,7 +132,7 @@ def json2mf(glyphname, axes):
                 divider)
 
         if zcoords['controls_x2']:
-            content += 'c2_%s = (((%s) / %s), ((%s) / %s));\n' % (
+            content += 'z2_%s = (((%s) / %s), ((%s) / %s));\n' % (
                 i + 1,
                 ' + '.join(zcoords['controls_x2']),
                 divider,
@@ -134,11 +148,11 @@ def json2mf(glyphname, axes):
             content += 'fill\n'
         content += 'z%s' % (i + 1)
         if zcoord['controls_x1']:
-            content += ' .. controls c1_%s' % (i + 1)
+            content += ' .. controls z1_%s' % (i + 1)
             if zcoord['controls_x2']:
-                content += ' and c2_%s' % (i + 1)
+                content += ' and z2_%s' % (i + 1)
             else:
-                content += ' and c1_%s' % (i + 1)
+                content += ' and z1_%s' % (i + 1)
         try:
             if coords[i + 1].get('start'):
                 content += ' cycle;\n'
@@ -147,6 +161,7 @@ def json2mf(glyphname, axes):
         except IndexError:
             content += ' .. cycle;\n'
 
+    content += 'penlabels(range 1 thru 99);\n'
     content += 'endchar;'
 
     return content
