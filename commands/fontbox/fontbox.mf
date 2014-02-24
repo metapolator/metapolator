@@ -1,6 +1,6 @@
 % parameter file
-metapolation:=$AB;
-metapolationCD:=$CD;
+metapolation:=0;
+metapolationCD:=0;
 font_size:=10.000pt#;
 mean#:=5.000pt#;
 cap#:=6.000pt#;

@@ -25,18 +25,24 @@ import sys
 import tempfile
 import json2mf
 
+cwd = os.path.dirname(__file__)
 fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
-axes = {}  # contains description of axes
+
+axes = []  # contains description of axes
 font = {}  # contains description of new ufo
 
 
 def get_temp_dir():
-    d = os.path.join(tempfile.gettempdir(), 'mp-glyphs')
-    try:
-        os.removedirs(d)
-    except OSError, e:
-        if e.errno != 2:
-            raise
+    # dir = tempfile.gettempdir()
+    dir = fwd
+    d = os.path.join(dir, 'glyphs')
+    if os.path.exists(d):
+        return d
+    # try:
+    #     os.removedirs(d)
+    # except OSError, e:
+    #     if e.errno != 2:
+    #         raise
     os.mkdir(d)
     return d
 
@@ -50,10 +56,10 @@ def parse_argument_master(master_string):
                   axis=[])
 
     axisalias, value = width_desc.split(':')
-    result['axis'].append(value)
+    result['axis'].append(float(value))
 
     axisalias, value = weight_desc.split(':')
-    result['axis'].append(value)
+    result['axis'].append(float(value))
     return result
 
 
@@ -76,7 +82,9 @@ def main():
             f = s = masterlist
         l_master = filter(lambda m: m['name'] == f, masters)[0]
         r_master = filter(lambda m: m['name'] == s, masters)[0]
-        axes[re.sub(r'name:', '', axis, re.I)] = [l_master, r_master]
+
+        axes.append({'masters': [l_master, r_master],
+                     'alias': re.sub(r'name:', '', axis, re.I)})
 
     for arg in argv.instance.split('|'):
         try:
@@ -84,31 +92,41 @@ def main():
         except ValueError:
             key = arg
             value = 0
-        if key in axes.keys():
-            axes[key].append(float(value))
-            continue
+        # if key in axes.keys():
+        #     axes[key].append(float(value))
+        #     continue
         if key.lower() in ['family', 'stylename']:
             font[key.lower()] = value if value else ''
 
     # loop the glyph in primary master glyphs
     # import pprint
+    directory = get_temp_dir()
     for glyphname in masters[0]['glyphs']:
         if not glyph_exist(glyphname, *masters[1:]):
             # check that glyph exist in another masters
             # if it does not, so just ignore it
             # from generating new ufo
             continue
-        print json2mf.json2mf(glyphname, axes)
+        print 'processing {0}.mf'.format(glyphname)
+        with open(os.path.join(directory, '%s.mf' % glyphname), 'w') as fp:
+            fp.write(json2mf.json2mf(glyphname, axes))
 
         # pprint.pprint(glyph)
 
-    # os.environ['MFINPUTS'] = get_temp_dir()
-    # os.environ['MFMODE'] = 'controlpoints'
+    print os.path.realpath(fwd)
+    os.environ['MFINPUTS'] = os.path.realpath(fwd)
+    os.environ['MFMODE'] = 'controlpoints'
 
-    # process = subprocess.Popen(
-    #     ["sh", "makefont.sh", metafont, self.version],
-    #     stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=working_dir()
-    # )
+    process = subprocess.Popen(
+        ["sh", "makefont.sh", 'fontbox', '1'],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
+    )
+
+    while True:
+        line = process.stdout.readline()
+        if not line or '<to be read again>' in line:
+            process.kill()
+            break
 
 
 def glyph_exist(glyphname, *masters):
@@ -132,12 +150,12 @@ def iterate_glyphs(master):
 def glif2json(fp):
     doctree = lxml.etree.parse(fp)
 
-    contours = []
+    points = []
     for contour in doctree.xpath('.//outline/contour'):
-        points = []
 
         xml_points = list(contour.findall('point'))
         index = 0
+        startp = True
         while index < len(xml_points):
             offset = 1  # reset offset each time of while-loop
 
@@ -145,7 +163,9 @@ def glif2json(fp):
             pointtype = point.attrib.get('type', 'offcurve')
             if pointtype != 'offcurve':
                 coords = {'x': float(point.attrib['x']),
-                          'y': float(point.attrib['y'])}
+                          'y': float(point.attrib['y']),
+                          'start': startp}
+                startp = False  # reset startp
                 if pointtype == 'line':
                     try:
                         checkpoint = xml_points[index + 1]
@@ -178,9 +198,7 @@ def glif2json(fp):
                 points.append(coords)
             index += offset
 
-        contours.append(points)
-
-    return {'contours': contours,
+    return {'points': points,
             'name': doctree.getroot().attrib['name'],
             'advanceWidth': float(doctree.find('advance').attrib['width'])}
 
