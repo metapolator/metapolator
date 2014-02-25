@@ -39,9 +39,9 @@
                 </div>
             </div>
 
-            <div class="col-md-8 col-lg-offset-4">
+            <div class="col-md-8 col-lg-offset-4" ng-controller="canvasCtrl">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="canvasCtrl">
+                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="glyphCtrl">
                         <div class="row" style="margin-top:20px">
                                 <div id="glyph"></div>
                             <p ng-bind="canvasInstances.interpolationValueAB"></p>
@@ -67,19 +67,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px">
+                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="wordCtrl">
                         <div class="row">
                             <div id="glyphsWord"></div>
-                            <div class="col-md-1">weight:</div>
-                            <div class="col-md-4">
-                                <input id="sliderABWord" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
-                            </div>
-                            <div class="col-md-1"><span id="sliderABWordValue">0.2</span></div>
-                            <div class="col-md-1">space:</div>
-                            <div class="col-md-4">
-                                <input id="sliderACWord" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
-                            </div>
-                            <div class="col-md-1"><span id="sliderADWordValue">0.2</span></div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-2">
@@ -91,19 +81,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px">
+                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="paragraphCtrl">
                         <div class="row">
-                            <div id="glyphsSentence"></div>
-                            <div class="col-md-1">weight:</div>
-                            <div class="col-md-4">
-                                <input id="sliderABSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
-                            </div>
-                            <div class="col-md-1"><span id="sliderABSentenceValue">0.2</span></div>
-                            <div class="col-md-1">space:</div>
-                            <div class="col-md-4">
-                                <input id="sliderACSentence" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
-                            </div>
-                            <div class="col-md-1"><span id="sliderACSentenceValue">0.2</span></div>
+                            <div id="paragraphWord"></div>
                             <div class="lead col-md-11" style="text-align:left">
 
                                 <p>
@@ -131,16 +111,6 @@
                     <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px">
                         <div class="row">
                             <div id="glyphsWordHeight"></div>
-                            <div class="col-md-2">x-height:</div>
-                            <div class="col-md-4">
-                                <input id="sliderABWordHeight" type="text" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.2" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="show" data-slider-handle="round" style="width:250px;">
-                            </div>
-                            <div class="col-md-1"><span id="sliderABWordHeightValue">0.2</span></div>
-                            <div class="lead col-md-11" style="text-align:left">
-                                <p>
-                                    <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
-                                </p>
-                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-2">
