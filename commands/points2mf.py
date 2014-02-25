@@ -37,7 +37,7 @@ class DifferentZPointError(Exception):
     pass
 
 
-def json2mf(glyphA, glyphB=None, glyphC=None, glyphD=None):
+def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
     """ Save current points to mf file
 
         master is an instance of models.Master
@@ -47,14 +47,19 @@ def json2mf(glyphA, glyphB=None, glyphC=None, glyphD=None):
 
     starttime = time.time()
 
-    if not glyphB:
-        glyphB = glyphA
+    if not masterB:
+        masterB = masterA
 
-    if not glyphC:
-        glyphC = glyphA
+    if not masterC:
+        masterC = masterA
 
-    if not glyphD:
-        glyphD = glyphA
+    if not masterD:
+        masterD = masterA
+
+    glyphA = masterA['glyphs'][glyphname]
+    glyphB = masterB['glyphs'][glyphname]
+    glyphC = masterC['glyphs'][glyphname]
+    glyphD = masterD['glyphs'][glyphname]
 
     fip = FIP()
 

@@ -110,7 +110,7 @@ def main():
         print 'processing {0}.mf'.format(glyphname)
         with open(os.path.join(directory, '%s.mf' % glyphname), 'w') as fp:
             # fp.write(json2mf.json2mf(glyphname, axes))
-            fp.write(json2mf.json2mf(*map(lambda x: x['glyphs'][glyphname], masters)))
+            fp.write(json2mf.json2mf(glyphname, *masters))
 
     os.environ['MFINPUTS'] = os.path.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'
