@@ -17,12 +17,10 @@ $ metapolator.py \
 $
 """
 import argparse
-import lxml.etree
 import os
 import re
 import subprocess
 import sys
-import tempfile
 import points2mf as json2mf
 
 cwd = os.path.dirname(__file__)
@@ -160,62 +158,6 @@ def parse_command_line_arguments():
     parser.add_argument('--instance', type=str, default='')
     parser.add_argument('output_ufo', metavar='output_ufo', type=str)
     return parser.parse_args()
-
-
-def __glif2json(fp):
-    doctree = lxml.etree.parse(fp)
-
-    points = []
-    for contour in doctree.xpath('.//outline/contour'):
-
-        xml_points = list(contour.findall('point'))
-        index = 0
-        startp = True
-        while index < len(xml_points):
-            offset = 1  # reset offset each time of while-loop
-
-            point = xml_points[index]
-            pointtype = point.attrib.get('type', 'offcurve')
-            if pointtype != 'offcurve':
-                coords = {'x': float(point.attrib['x']),
-                          'y': float(point.attrib['y']),
-                          'start': startp}
-                startp = False  # reset startp
-                if pointtype == 'line':
-                    try:
-                        checkpoint = xml_points[index + 1]
-                        if checkpoint.attrib.get('type', 'offcurve') == 'offcurve':
-                            coords.update({'x1': float(checkpoint.attrib['x']),
-                                           'y1': float(checkpoint.attrib['y'])})
-                            offset = 2  # next offset is a 2 as we have control point
-                    except IndexError:
-                        pass
-
-                elif pointtype == 'curve':
-                    try:
-                        checkpoint = xml_points[index + 1]
-                        if checkpoint.attrib.get('type', 'offcurve') == 'offcurve':
-                            coords.update({'x2': float(checkpoint.attrib['x']),
-                                           'y2': float(checkpoint.attrib['y'])})
-                            offset = 2  # next offset is a 2 as we have control point
-                    except IndexError:
-                        pass
-
-                    try:
-                        checkpoint = xml_points[index - 1]
-                        if checkpoint.attrib.get('type', 'offcurve') == 'offcurve':
-                            coords.update({'x1': float(checkpoint.attrib['x']),
-                                           'y1': float(checkpoint.attrib['y'])})
-                            offset = 2  # next offset is a 2 as we have control point
-                    except IndexError:
-                        pass
-
-                points.append(coords)
-            index += offset
-
-    return {'points': points,
-            'name': doctree.getroot().attrib['name'],
-            'advanceWidth': float(doctree.find('advance').attrib['width'])}
 
 
 if __name__ == '__main__':
