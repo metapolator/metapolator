@@ -153,6 +153,9 @@ a {
     display:inline;
     width:400px;
 }
+.dg.main {
+    padding-top: 40px;
+}
 
 /*.sliders.weight #spaceSlider {*/
     /*display:none;*/
