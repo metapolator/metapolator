@@ -1,4 +1,4 @@
-import lxml
+import lxml.etree
 
 
 class PointSet(object):

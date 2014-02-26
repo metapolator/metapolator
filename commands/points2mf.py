@@ -307,7 +307,26 @@ def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
 
         ## default string
 
-        zeile = "z" + str(zitem) + " = ((( Apx" + str(zitem) + "l + metapolation * (Bpx" + str(zitem) + "l - Apx" + str(zitem) + "l)) + ( Cpx" + str(zitem) + "l + metapolationCD * (Dpx" + str(zitem) + "l - Cpx" + str(zitem) + "l))) /2 , (( Apy" + str(zitem) + "l + metapolation * (Bpy" + str(zitem) + "l - Apy" + str(zitem) + "l)) + ( Cpy" + str(zitem) + "l + metapolationCD * (Dpy" + str(zitem) + "l - Cpy" + str(zitem) + "l))) /2 );"
+        mABx = "1 * (Apx{i}l + 0 * (Bpx{i}l - Apx{i}l))".format(i=zitem)
+        mACx = "0 * (Apx{i}l + 0 * (Cpx{i}l - Apx{i}l))".format(i=zitem)
+        mBCx = "0 * (Bpx{i}l + 0 * (Cpx{i}l - Bpx{i}l))".format(i=zitem)
+        mCDx = "0 * (Cpx{i}l + 0 * (Dpx{i}l - Cpx{i}l))".format(i=zitem)
+        mBDx = "0 * (Bpx{i}l + 0 * (Dpx{i}l - Bpx{i}l))".format(i=zitem)
+        mADx = "0 * (Apx{i}l + 0 * (Dpx{i}l - Apx{i}l))".format(i=zitem)
+
+        mABy = "0 * (Apy{i}l + 0 * (Bpy{i}l - Apy{i}l))".format(i=zitem)
+        mACy = "0 * (Apy{i}l + 0 * (Cpy{i}l - Apy{i}l))".format(i=zitem)
+        mBCy = "0 * (Bpy{i}l + 0 * (Cpy{i}l - Bpy{i}l))".format(i=zitem)
+        mCDy = "0 * (Cpy{i}l + 0 * (Dpy{i}l - Cpy{i}l))".format(i=zitem)
+        mBDy = "0 * (Bpy{i}l + 0 * (Dpy{i}l - Bpy{i}l))".format(i=zitem)
+        mADy = "0 * (Apy{i}l + 0 * (Dpy{i}l - Apy{i}l))".format(i=zitem)
+
+        zeile = "z{i} = (({ABx} + {ACx} + {BCx} + {CDx} + {BDx} + {ADx}), ({ABy} + {ACy} + {BCy} + {CDy} + {BDy} + {ADy}));"
+        zeile = zeile.format(ABx=mABx, ACx=mACx, BCx=mBCx,
+                             CDx=mCDx, BDx=mBDx, ADx=mADx,
+                             ABy=mABy, ACy=mACy, BCy=mBCy,
+                             CDy=mCDy, BDy=mBDy, ADy=mADy,
+                             i=zitem)
 
         fip.write("\n")
         fip.write(zeile)

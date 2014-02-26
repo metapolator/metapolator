@@ -1,0 +1,3 @@
+input glyphs/492.mf
+input glyphs/493.mf
+input glyphs/494.mf
