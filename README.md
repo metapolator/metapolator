@@ -105,7 +105,7 @@ https://github.com/metapolator/metapolator/issues/46
 
 The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
 
-1. [Install Docker](http://www.docker.io/gettingstarted/)
+1. [Install Docker](http://www.docker.io/gettingstarted/), perhaps with [HomeBrew](http://brew.sh): `brew install docker`
 2. `sudo docker pull metapolator/metapolator`
 3. `sudo docker run -p 9000:8080 -t metapolator/metapolator`
 4. open in browser `http://localhost:9000`
@@ -140,8 +140,6 @@ ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
 mkdir src;
 cd src;
-wget http://mirrors.ctan.org/support/mf2pt1.zip;
-unzip mf2pt1.zip;
 mkdir sfnt2woff;
 cd sfnt2woff;
 wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
@@ -153,10 +151,9 @@ brew install autoconf automake libtool python;
 brew install fontforge --with-x --HEAD;
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
-easy_install -U distribute pip;
+sudo easy_install -U distribute pip;
 pip install virtualenv;
-virtualenv .venv;
-source .venv/bin/activate ; pip install -r requirements.txt;
+make setup;
 ````
 
 #### Setup
@@ -178,8 +175,8 @@ Load the preset database:
 Start web.py application and celery server:
 
 ```sh
-.venv/bin/python run.py;
-.venv/bin/celery -A metapolator.tasks worker --loglevel=info;
+make run;
+make celery;
 ```
 
 This should give you a local web server you can visit with a modern web browser:
