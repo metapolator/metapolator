@@ -2,12 +2,14 @@ import os
 import os.path as op
 import re
 import simplejson
+import shutil
 import web
 from lxml import etree
 
-from metapolator.base.config import buildfname
-
-from metapolator.models import Glyph, GlyphParam, GlyphOutline, LocalParam
+from metapolator.base.config import buildfname, is_loggedin, working_dir
+from metapolator.metapost import Metapost
+from metapolator.models import Glyph, GlyphParam, GlyphOutline, LocalParam, \
+    LABELS, Master
 
 
 zpoint_re = re.compile('(?P<name>z(?P<number>[\d]+))(?P<side>[lr])')
@@ -550,3 +552,85 @@ def get_json(content, glyphid=None, master=None):
         glyphs.append(json)
 
     return glyphs
+
+
+def get_metapolation_label(c):
+    """ Return metapolation label pair like AB, CD, EF """
+    c = c.upper()
+    try:
+        index = map(chr, LABELS[::2]).index(c)
+        return map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
+    except ValueError:
+        pass
+
+    index = map(chr, LABELS[1::2]).index(c)
+    return map(chr, LABELS[::2])[index] + map(chr, LABELS[1::2])[index]
+
+
+def get_glyphs_jsondata(glyphid, master):
+    project = master.project
+    masters = project.get_ordered_masters()
+
+    glyph = Glyph.get(master_id=master.id, name=glyphid)
+
+    metapost = Metapost(project)
+    metapost.execute_interpolated_single(glyph)
+
+    instancelog = project.get_instancelog(masters[0].version)
+    M_glyphjson = get_edges_json(instancelog, glyphid)
+
+    metapost.execute_single(master, glyph)
+    instancelog = project.get_instancelog(master.version, 'a')
+    glyphjson = get_edges_json(instancelog, glyphid, master)
+
+    return {'M': M_glyphjson, 'R': glyphjson, 'master_id': master.id}
+
+
+def raise404_notauthorized(func):
+
+    def f(*args, **kwargs):
+        if not is_loggedin():
+            from web import seeother
+            raise seeother('/login')
+        return func(*args, **kwargs)
+
+    return f
+
+
+def get_versions(project_id):
+    masters = Master.filter(project_id=project_id)
+    return map(lambda master: {'version': '{0:03d}'.format(master.version),
+                               'name': master.name,
+                               'master_id': master.id}, masters)
+
+
+def prepare_master_environment(master):
+    for f in os.listdir(working_dir('commons', user='skel')):
+        filename = working_dir(op.join('commons', f), user='skel')
+        try:
+            shutil.copy2(filename, master.get_fonts_directory())
+        except (IOError, OSError):
+            raise
+
+
+def prepare_environment_directory(force=False):
+    filelist = ['makefont.sh', 'mf2pt1.mp', 'mf2pt1.pl', 'mf2pt1.texi',
+                'mtp.enc']
+
+    static_directory = op.join(working_dir(), 'static')
+    if not op.exists(static_directory):
+        os.makedirs(static_directory)
+
+    if op.exists(op.join(working_dir(), 'makefont.sh')) and not force:
+        return
+
+    for filename in filelist:
+        try:
+            shutil.copy2(op.join(working_dir(user='skel'), filename),
+                         op.join(working_dir()))
+        except (OSError, IOError):
+            raise
+
+    import subprocess
+    subprocess.Popen(["mpost", "-progname=mpost", "-ini", "mf2pt1", "\\dump"],
+                     cwd=working_dir())

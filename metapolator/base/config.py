@@ -6,6 +6,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from celery import Celery
 
 from metapolator.base import celeryconfig, rediswebpy
+from metapolator.urls import urls
 
 celery = Celery('metapolator.tasks')
 celery.config_from_object(celeryconfig)
@@ -57,7 +58,7 @@ def load_sqla(handler=None):
         # the following line:
         #web.ctx.orm.expunge_all()
 
-app = web.auto_application()
+app = web.application(urls)
 app.add_processor(load_sqla)
 
 
