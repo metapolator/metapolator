@@ -153,8 +153,7 @@ git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 sudo easy_install -U distribute pip;
 pip install virtualenv;
-virtualenv .venv;
-source .venv/bin/activate ; pip install -r requirements.txt;
+make setup;
 ````
 
 #### Setup
@@ -176,8 +175,8 @@ Load the preset database:
 Start web.py application and celery server:
 
 ```sh
-.venv/bin/python run.py;
-.venv/bin/celery -A metapolator.tasks worker --loglevel=info;
+make run;
+make celery;
 ```
 
 This should give you a local web server you can visit with a modern web browser:
