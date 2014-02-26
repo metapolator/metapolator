@@ -307,14 +307,14 @@ def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
 
         ## default string
 
-        mABx = "1 * (Apx{i}l + 0 * (Bpx{i}l - Apx{i}l))".format(i=zitem)
+        mABx = "1 * (Apx{i}l + 1 * (Bpx{i}l - Apx{i}l))".format(i=zitem)
         mACx = "0 * (Apx{i}l + 0 * (Cpx{i}l - Apx{i}l))".format(i=zitem)
         mBCx = "0 * (Bpx{i}l + 0 * (Cpx{i}l - Bpx{i}l))".format(i=zitem)
         mCDx = "0 * (Cpx{i}l + 0 * (Dpx{i}l - Cpx{i}l))".format(i=zitem)
         mBDx = "0 * (Bpx{i}l + 0 * (Dpx{i}l - Bpx{i}l))".format(i=zitem)
         mADx = "0 * (Apx{i}l + 0 * (Dpx{i}l - Apx{i}l))".format(i=zitem)
 
-        mABy = "0 * (Apy{i}l + 0 * (Bpy{i}l - Apy{i}l))".format(i=zitem)
+        mABy = "1 * (Apy{i}l + 1 * (Bpy{i}l - Apy{i}l))".format(i=zitem)
         mACy = "0 * (Apy{i}l + 0 * (Cpy{i}l - Apy{i}l))".format(i=zitem)
         mBCy = "0 * (Bpy{i}l + 0 * (Cpy{i}l - Bpy{i}l))".format(i=zitem)
         mCDy = "0 * (Cpy{i}l + 0 * (Dpy{i}l - Cpy{i}l))".format(i=zitem)
