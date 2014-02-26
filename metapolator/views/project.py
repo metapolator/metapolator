@@ -2,10 +2,11 @@ import simplejson
 import web
 
 from metapolator import models
+from metapolator.log2json import get_edges_json
 from metapolator.metapost import Metapost
-from metapolator.tools import raise404_notauthorized, get_metapolation_label, \
-    get_edges_json, prepare_master_environment, get_versions, \
-    prepare_environment_directory
+from metapolator.tools import get_metapolation_label, \
+    prepare_master_environment, prepare_environment_directory
+from metapolator.views import raise404_notauthorized
 
 
 class Project:
@@ -21,7 +22,8 @@ class Project:
             raise web.notfound()
 
         if x.get('glyph'):
-            if not models.Glyph.exists(name=x.get('glyph'), project_id=project.id):
+            if not models.Glyph.exists(name=x.get('glyph'),
+                                       project_id=project.id):
                 raise web.notfound()
             project.currentglyph = x.glyph
             web.ctx.orm.commit()
@@ -67,7 +69,7 @@ class Project:
                       models.Master.filter(project_id=project.id))
 
         return simplejson.dumps({'masters': masters_list,
-                                 'versions': get_versions(project.id),
+                                 'versions': project.get_versions(),
                                  'metaglyphs': metaglyphs,
                                  'mode': project.mfparser,
                                  'project_id': project.id})

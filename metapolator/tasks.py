@@ -2,7 +2,7 @@ import web
 
 from metapolator.base.config import celery, load_sqla, load_user, session
 from metapolator.models import Master
-from metapolator.tools import put_font_all_glyphs
+from metapolator.glif2db import put_font_all_glyphs
 
 
 @celery.task(name='metapolator.tasks.fill_master_with_glyphs')

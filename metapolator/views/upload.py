@@ -10,8 +10,9 @@ import zipfile
 from metapolator import models
 from metapolator import tasks
 from metapolator.base.config import session
+from metapolator.glif2db import put_font_all_glyphs
 from metapolator.tools import prepare_environment_directory, \
-    prepare_master_environment, get_metapolation_label, put_font_all_glyphs
+    prepare_master_environment, get_metapolation_label
 from metapolator.views import raise404_notauthorized
 
 

@@ -18,9 +18,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from metapolator.base.config import engine, working_dir
 from metapolator.base.dbapi import UserQueryMixin, query
-
-
-LABELS = range(ord('A'), ord('Z') + 1)
+from metapolator.tools import LABELS
 
 
 Base = declarative_base()
@@ -153,6 +151,12 @@ class Project(Base, UserQueryMixin):
         if not op.exists(directory):
             os.makedirs(directory)
         return directory
+
+    def get_versions(self):
+        masters = Master.filter(project_id=self.id)
+        return map(lambda master: {'version': '{0:03d}'.format(master.version),
+                                   'name': master.name,
+                                   'master_id': master.id}, masters)
 
 
 class Metapolation(Base, UserQueryMixin):

@@ -2,9 +2,9 @@ import simplejson
 import web
 
 from metapolator import models
+from metapolator.log2json import get_edges_json
 from metapolator.metapost import Metapost
-from metapolator.tools import prepare_master_environment, get_edges_json, \
-    get_versions
+from metapolator.tools import prepare_master_environment
 from metapolator.views import raise404_notauthorized
 
 
@@ -127,4 +127,4 @@ class CreateMaster:
 
         project.masters = ','.join([str(master.id)] * len(masters))
         web.ctx.orm.commit()
-        return simplejson.dumps({'versions': get_versions(project.id)})
+        return simplejson.dumps({'versions': project.get_versions()})
