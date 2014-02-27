@@ -1,9 +1,8 @@
 var metapolatortestApp = angular.module('metapolatortestApp', []);
 
-
 metapolatortestApp.controller('SliderCtrl', ['$scope',
-                                             'instancesListService',
-    function($scope, instancesListService){
+                                             'instanceListService',
+    function($scope, instanceListService){
         $scope.sliders = [
             {
                 name:'width',
@@ -12,6 +11,7 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 max: 1,
                 selection:'after',
                 canvasConfig: 'glyphConfig',
+                canvas: 'glyph',
                 interpolationValueAB: 0.2,
                 formatter: function(value){
                     return Number(value).toFixed(2);
@@ -23,8 +23,9 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 min: 0,
                 max: 1,
                 selection:'after',
+                canvasConfig: 'wordConfig',
                 interpolationValueAB: 0.2,
-                interpolationValueAС: 0.2,
+                interpolationValueAD: 0.2,
                 formatter: function(value){
                     return Number(value).toFixed(2);
                 }
@@ -35,8 +36,9 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 min: 0,
                 max: 1,
                 selection:'after',
+                canvasConfig: 'paragraphGlyphConfig',
                 interpolationValueAB: 0.2,
-                interpolationValueAС: 0.2,
+                interpolationValueAD: 0.2,
                 formatter: function(value){
                     return Number(value).toFixed(2);
                 }
@@ -52,19 +54,21 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
             var gui = new dat.GUI();
             var sliderFunct = objectToFunc(slider, new Function());
             var controllers = [];
+            var sliderEl = document.getElementById(slider.id);
+            var canvasEl = document.getElementById(slider.canvas);
             angular.forEach(slider, function(key, index){
-                console.log(index);
                 if (index.indexOf('interpolationValue') > -1) {
                     controllers.push(gui.add(sliderFunct, index, slider.min, slider.max));
                 }
             });
             angular.forEach(controllers, function(control, index){
-                console.log(control);
                 control.onChange(function(value){
-                    console.log($scope);
+                    var canvasModel = instanceListService.getInstance(slider.canvasConfig);
+                    canvasModel[control.property] = value;
+                    canvasModel.interpolate();
                 });
             });
-            var sliderEl = document.getElementById(slider.id);
+
             sliderEl.appendChild(gui.domElement);
 
         });
@@ -72,18 +76,19 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
 }]);
 
 metapolatortestApp.controller('canvasCtrl', ['$scope',
-                                            'instancesListService',
-    function($scope, instancesListService) {
+                                            'instanceListService',
+    function($scope, instanceListService) {
         $scope.canvasConfig = {};
         $scope.init = function (model) {
-                var instanceObj = instancesListService.createInstance(model);
+                var instanceObj = Instance(model);
                 if (instanceObj.loaded()){
                     instanceObj.interpolate();
                 }
+                instanceListService.addInstance(instanceObj);
             return instanceObj;
         }
         $scope.watchConf = function(instanceObj, newVal){
-                if (instanceObj.loaded()) {
+            if (instanceObj.loaded()) {
                     instanceObj = newVal;
                     instanceObj.interpolate();
                 }
@@ -91,9 +96,10 @@ metapolatortestApp.controller('canvasCtrl', ['$scope',
     }]);
 
 metapolatortestApp.controller('glyphCtrl', ['$scope',
-                                            'instancesListService',
-    function($scope, instancesListService) {
+                                            'instanceListService',
+    function($scope, instanceListService) {
         $scope.glyphConfig = {
+                name: 'glyphConfig',
                 canvas: '#glyph',
                 slider: '#sliderAB',
                 fontslist: [
@@ -112,9 +118,10 @@ metapolatortestApp.controller('glyphCtrl', ['$scope',
         });
     }]);
 metapolatortestApp.controller('wordCtrl', ['$scope',
-                                            'instancesListService',
-    function($scope, instancesListService) {
-        $scope.glyphConfig = {
+                                            'instanceListService',
+    function($scope, instanceListService) {
+        $scope.wordConfig = {
+            name: 'wordConfig',
             canvas: '#glyphsWord',
             slider: '#sliderAB',
             fontslist: [
@@ -126,39 +133,19 @@ metapolatortestApp.controller('wordCtrl', ['$scope',
             fontSize: 80,
             lineHeight: 110,
             interpolationValueAB: 0.2,
+            interpolationValueAC: 0.2,
         };
-        var glyphInstance = $scope.init($scope.glyphConfig);
-        $scope.$watchCollection('glyphConfig', function(newVal, oldVal){
-            $scope.watchConf(glyphInstance, newVal);
-        });
-    }]);
-
-metapolatortestApp.controller('wordCtrl', ['$scope',
-    'instancesListService',
-    function($scope, instancesListService) {
-        $scope.wordGlyphConfig = {
-            canvas: '#glyphsWord',
-            slider: '#sliderAB',
-            fontslist: [
-                'app/fonts/Roboto-Regular.otf',
-                'app/fonts/Roboto-Bold.otf',
-                'app/fonts/Roboto-Regular-space.otf'
-            ],
-            text: 'Hanna',
-            fontSize: 80,
-            lineHeight: 110,
-            interpolationValueAB: 0.2,
-        };
-        var glyphInstance = $scope.init($scope.wordGlyphConfig);
+        var glyphInstance = $scope.init($scope.wordConfig);
         $scope.$watchCollection('glyphConfig', function(newVal, oldVal){
             $scope.watchConf(glyphInstance, newVal);
         });
     }]);
 
 metapolatortestApp.controller('paragraphCtrl', ['$scope',
-                                                'instancesListService',
-    function($scope, instancesListService) {
+                                                'instanceListService',
+    function($scope, instanceListService) {
         $scope.paragraphGlyphConfig = {
+            name: 'paragraphGlyphConfig',
             canvas: '#paragraphWord',
             slider: '#sliderAB',
             fontslist: [
@@ -173,6 +160,7 @@ metapolatortestApp.controller('paragraphCtrl', ['$scope',
             height: 400,
             linebreaks: true,
             interpolationValueAB: 0.2,
+            interpolationValueAC: 0.2,
         };
         var glyphInstance = $scope.init($scope.paragraphGlyphConfig);
         $scope.$watchCollection('glyphConfig', function(newVal, oldVal){
@@ -180,16 +168,14 @@ metapolatortestApp.controller('paragraphCtrl', ['$scope',
         });
     }]);
 
-metapolatortestApp.service('instancesListService', function(){
-   var list = [];
+metapolatortestApp.service('instanceListService', function(){
+   var list = {};
    return {
        addInstance : function (instance) {
-           list.push(instance);
+           list[instance.name] = instance;
        },
-       createInstance : function (config){
-           var instance = Instance(config);
-           list.push(instance);
-           return instance;
-       }
+       getInstance: function (name){
+        return list[name]
+    }
    }
 });
