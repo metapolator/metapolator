@@ -18,10 +18,10 @@ $
 """
 import argparse
 import os
+import points2mf
 import re
 import subprocess
 import sys
-import points2mf as json2mf
 
 cwd = os.path.dirname(__file__)
 fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
@@ -48,16 +48,17 @@ def get_temp_dir():
 def parse_argument_master(master_string):
     """ Parse string master description and returns dictionary
         of master's description """
-    ufofile, width_desc, weight_desc = master_string.split('|')
+    ufofile, axis = master_string.split('|', 1)
     result = dict(name=ufofile, glyphs={},
                   alias=os.path.splitext(ufofile)[0],
                   axis=[])
 
-    axisalias, value = width_desc.split(':')
-    result['axis'].append(float(value))
+    def cc(value):
+        k, v = value.split(':')
+        return {k: v}
 
-    axisalias, value = weight_desc.split(':')
-    result['axis'].append(float(value))
+    result['axis'] = map(cc, axis.split('|'))
+
     return result
 
 
@@ -107,8 +108,7 @@ def main():
             continue
         print 'processing {0}.mf'.format(glyphname)
         with open(os.path.join(directory, '%s.mf' % glyphname), 'w') as fp:
-            # fp.write(json2mf.json2mf(glyphname, axes))
-            fp.write(json2mf.json2mf(glyphname, *masters))
+            fp.write(points2mf.points2mf(glyphname, *masters))
 
     os.environ['MFINPUTS'] = os.path.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'

@@ -1,3 +1,4 @@
+import random
 import re
 
 
@@ -13,6 +14,14 @@ class FIP:
 
     def getcontents(self):
         return self.content
+
+
+def iterate(objlist):
+    # collect all pairs so that master appeared in pair once with one master
+    # so that in list should not exist pairs [A,B] and [B,A]
+    for i in range(len(objlist) - 1):
+        for j in range(i + 1, len(objlist)):
+            yield objlist[i], objlist[j]
 
 
 def getcoords_zeile(point, glyphletter):
@@ -37,7 +46,29 @@ class DifferentZPointError(Exception):
     pass
 
 
-def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
+cachekoef = {}
+
+
+def getcoefficient(left, right):
+    axis = ''.join([left['alias'], right['alias']])
+    if axis in cachekoef:
+        return cachekoef[axis]
+    cachekoef[axis] = random.random()
+    return cachekoef[axis]
+
+
+metapolationcache = {}
+
+
+def getmetapolation(left, right):
+    axis = ''.join([left['alias'], right['alias']])
+    if axis in metapolationcache:
+        return metapolationcache[axis]
+    metapolationcache[axis] = random.random()
+    return metapolationcache[axis]
+
+
+def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, masterD=None):
     """ Save current points to mf file
 
         master is an instance of models.Master
@@ -47,14 +78,19 @@ def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
 
     starttime = time.time()
 
-    if not masterB:
-        masterB = masterA
+    if len(masters) < 1:
+        return ''
 
-    if not masterC:
-        masterC = masterA
+    masterA = masterB = masterC = masterD = masters[0]
 
-    if not masterD:
-        masterD = masterA
+    if len(masters) > 1:
+        masterB = masters[1]
+
+    if len(masters) > 2:
+        masterC = masters[2]
+
+    if len(masters) > 3:
+        masterD = masters[3]
 
     glyphA = masterA['glyphs'][glyphname]
     glyphB = masterB['glyphs'][glyphname]
@@ -66,17 +102,25 @@ def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
     fip.write("% File parsed with Metapolator %\n")
     fip.write("% box dimension definition %\n")
 
-    wA = '%.2f' % (glyphA['advanceWidth'] / 100.)
-    wB = '%.2f' % (glyphB['advanceWidth'] / 100.)
-    wC = '%.2f' % (glyphC['advanceWidth'] / 100.)
-    wD = '%.2f' % (glyphD['advanceWidth'] / 100.)
-
     g = glyphA['name']  # get from glyphA as we sure that glypha and glyphb exist in font project
 
     fip.write("\n")
 
-    str_ = ('beginfontchar({glyph}, (((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) / 2 ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
-    fip.write(str_.format(Awidth=wA, glyph=glyphA['name'], Bwidth=wB, Cwidth=wC, Dwidth=wD))
+    formulas = "{k} * ({A} * {Aalias}_width + {M} * ({B} * {Balias}_width - {A} * {Aalias}_width))"
+    ar = []  # array for definition of formulas
+
+    for left, right in iterate(masters):
+        leftglyph = left['glyphs'][glyphname]
+        rightglyph = right['glyphs'][glyphname]
+        p = formulas.format(Aalias=left['alias'], Balias=right['alias'],
+                            A='%.2f' % (leftglyph['advanceWidth'] / 100.),
+                            B='%.2f' % (rightglyph['advanceWidth'] / 100.),
+                            k=getcoefficient(left, right),
+                            M=getmetapolation(left, right))
+        ar.append(p)
+
+    str_ = 'beginfontchar({glyph}, {p}, 0, 0)'
+    fip.write(str_.format(glyph=glyphA['name'], p='+'.join(ar)))
 
     # point coordinates font A ################
 
@@ -182,7 +226,7 @@ def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
 
 # search for parameters
 
-    for item in glyphA['points']:
+    for item in masters[0]['glyphs'][glyphname]['points']:
         znamer = re.match('z(\d+)r', item['preset'].get('pointname'))
         znamel = re.match('z(\d+)l', item['preset'].get('pointname'))
         zname = re.match('z(\d+)l', item['preset'].get('pointname'))
@@ -298,6 +342,8 @@ def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
     semi = ";"
     close = ")"
 
+    mffunc = '{k} * ({A} + {m} * ({B} - {A}))'
+
     for i in range(len(zzn)):
         zitem = i + 1
 
@@ -305,28 +351,55 @@ def json2mf(glyphname, masterA, masterB=None, masterC=None, masterD=None):
         #   zitemc = zzn[i-1]
         zeile = ''
 
+        ar = {'x': [], 'y': []}
+        divider = 0
+
+        for left, right in iterate(masters):
+            leftpoint = left['glyphs'][glyphname]['points'][i]['coords']
+            rightpoint = right['glyphs'][glyphname]['points'][i]['coords']
+            koef = getcoefficient(left, right)
+            metapolation = getmetapolation(left, right)
+            divider += koef
+
+            f = mffunc.format(k=koef, m=metapolation, A=leftpoint['x'],
+                              B=rightpoint['x'])
+            ar['x'].append(f)
+
+            f = mffunc.format(k=koef, m=metapolation, A=leftpoint['y'],
+                              B=rightpoint['y'])
+            ar['y'].append(f)
+
+        if not divider:
+            divider = 1
+
+        zeile = 'z{i} = ( (({fx}) / {d}), (({fy}) / {d}) );'
+        zeile = zeile.format(fx='+'.join(ar['x']), fy='+'.join(ar['y']),
+                             d=divider, i=zitem)
+
+
+
         ## default string
 
-        mABx = "1 * (Apx{i}l + 1 * (Bpx{i}l - Apx{i}l))".format(i=zitem)
-        mACx = "0 * (Apx{i}l + 0 * (Cpx{i}l - Apx{i}l))".format(i=zitem)
-        mBCx = "0 * (Bpx{i}l + 0 * (Cpx{i}l - Bpx{i}l))".format(i=zitem)
-        mCDx = "0 * (Cpx{i}l + 0 * (Dpx{i}l - Cpx{i}l))".format(i=zitem)
-        mBDx = "0 * (Bpx{i}l + 0 * (Dpx{i}l - Bpx{i}l))".format(i=zitem)
-        mADx = "0 * (Apx{i}l + 0 * (Dpx{i}l - Apx{i}l))".format(i=zitem)
+        # mABx = "1 * (Apx{i}l + 1 * (Bpx{i}l - Apx{i}l))".format(i=zitem)
+        # mACx = "1 * (Apx{i}l + 0 * (Cpx{i}l - Apx{i}l))".format(i=zitem)
+        # mBCx = "0 * (Bpx{i}l + 0 * (Cpx{i}l - Bpx{i}l))".format(i=zitem)
+        # mCDx = "0 * (Cpx{i}l + 0 * (Dpx{i}l - Cpx{i}l))".format(i=zitem)
+        # mBDx = "0 * (Bpx{i}l + 0 * (Dpx{i}l - Bpx{i}l))".format(i=zitem)
+        # mADx = "0 * (Apx{i}l + 0 * (Dpx{i}l - Apx{i}l))".format(i=zitem)
 
-        mABy = "1 * (Apy{i}l + 1 * (Bpy{i}l - Apy{i}l))".format(i=zitem)
-        mACy = "0 * (Apy{i}l + 0 * (Cpy{i}l - Apy{i}l))".format(i=zitem)
-        mBCy = "0 * (Bpy{i}l + 0 * (Cpy{i}l - Bpy{i}l))".format(i=zitem)
-        mCDy = "0 * (Cpy{i}l + 0 * (Dpy{i}l - Cpy{i}l))".format(i=zitem)
-        mBDy = "0 * (Bpy{i}l + 0 * (Dpy{i}l - Bpy{i}l))".format(i=zitem)
-        mADy = "0 * (Apy{i}l + 0 * (Dpy{i}l - Apy{i}l))".format(i=zitem)
+        # mABy = "1 * (Apy{i}l + 1 * (Bpy{i}l - Apy{i}l))".format(i=zitem)
+        # mACy = "1 * (Apy{i}l + 0 * (Cpy{i}l - Apy{i}l))".format(i=zitem)
+        # mBCy = "0 * (Bpy{i}l + 0 * (Cpy{i}l - Bpy{i}l))".format(i=zitem)
+        # mCDy = "0 * (Cpy{i}l + 0 * (Dpy{i}l - Cpy{i}l))".format(i=zitem)
+        # mBDy = "0 * (Bpy{i}l + 0 * (Dpy{i}l - Bpy{i}l))".format(i=zitem)
+        # mADy = "0 * (Apy{i}l + 0 * (Dpy{i}l - Apy{i}l))".format(i=zitem)
 
-        zeile = "z{i} = (({ABx} + {ACx} + {BCx} + {CDx} + {BDx} + {ADx}), ({ABy} + {ACy} + {BCy} + {CDy} + {BDy} + {ADy}));"
-        zeile = zeile.format(ABx=mABx, ACx=mACx, BCx=mBCx,
-                             CDx=mCDx, BDx=mBDx, ADx=mADx,
-                             ABy=mABy, ACy=mACy, BCy=mBCy,
-                             CDy=mCDy, BDy=mBDy, ADy=mADy,
-                             i=zitem)
+        # zeile = "z{i} = (({ABx} + {ACx} + {BCx} + {CDx} + {BDx} + {ADx}) / 2, ({ABy} + {ACy} + {BCy} + {CDy} + {BDy} + {ADy}) / 2);"
+        # zeile = zeile.format(ABx=mABx, ACx=mACx, BCx=mBCx,
+        #                      CDx=mCDx, BDx=mBDx, ADx=mADx,
+        #                      ABy=mABy, ACy=mACy, BCy=mBCy,
+        #                      CDy=mCDy, BDy=mBDy, ADy=mADy,
+        #                      i=zitem)
 
         fip.write("\n")
         fip.write(zeile)
