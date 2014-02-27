@@ -129,7 +129,7 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
     if not divider:
         divider = 1
 
-    str_ = 'beginfontchar({glyph}, {p} / {divider}, 0, 0)'
+    str_ = 'beginfontchar({glyph}, {p} / {divider} + spacing_{glyph}R * width_{glyph}, 0, 0)'
     fip.write(str_.format(glyph=glyphA['name'], p='+'.join(ar),
                           divider=divider))
 
