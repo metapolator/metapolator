@@ -107,8 +107,8 @@ The simple way to install and run metapolator is with [docker.io](http://www.doc
 
 1. [Install Docker](http://www.docker.io/gettingstarted/), perhaps with [HomeBrew](http://brew.sh): `brew install docker`
 2. `sudo docker pull metapolator/metapolator`
-3. `sudo docker run -p 9000:8080 -t metapolator/metapolator`
-4. open in browser `http://localhost:9000`
+3. `sudo docker run -p 80:8080 -t metapolator/metapolator`
+4. open in browser `http://localhost`
 
 ### The Traditional Way
 
