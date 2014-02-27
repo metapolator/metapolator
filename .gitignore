@@ -1,25 +1,5 @@
 .*
 *.py[cod]
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-lib
-lib64
-
-# Installer logs
-pip-log.txt
-
-nosetests.xml
-/font.pfb
-/font.log
-/font.afm
-/font.tfm
-glyphlist.mf
 /users
 localconfig.py
 /node_modules
