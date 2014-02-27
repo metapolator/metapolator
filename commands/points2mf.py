@@ -109,18 +109,29 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
     formulas = "{k} * ({A} * {Aalias}_width + {M} * ({B} * {Balias}_width - {A} * {Aalias}_width))"
     ar = []  # array for definition of formulas
 
+    divider = 0
+
     for left, right in iterate(masters):
         leftglyph = left['glyphs'][glyphname]
         rightglyph = right['glyphs'][glyphname]
+
+        koef = getcoefficient(left, right)
+        divider += koef
+        metapolation = getmetapolation(left, right)
+
         p = formulas.format(Aalias=left['alias'], Balias=right['alias'],
                             A='%.2f' % (leftglyph['advanceWidth'] / 100.),
                             B='%.2f' % (rightglyph['advanceWidth'] / 100.),
-                            k=getcoefficient(left, right),
-                            M=getmetapolation(left, right))
+                            k=koef,
+                            M=metapolation)
         ar.append(p)
 
-    str_ = 'beginfontchar({glyph}, {p}, 0, 0)'
-    fip.write(str_.format(glyph=glyphA['name'], p='+'.join(ar)))
+    if not divider:
+        divider = 1
+
+    str_ = 'beginfontchar({glyph}, {p} / {divider}, 0, 0)'
+    fip.write(str_.format(glyph=glyphA['name'], p='+'.join(ar),
+                          divider=divider))
 
     # point coordinates font A ################
 
