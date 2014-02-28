@@ -53,7 +53,7 @@ def getcoefficient(left, right):
     axis = ''.join([left['alias'], right['alias']])
     if axis in cachekoef:
         return cachekoef[axis]
-    cachekoef[axis] = random.random()
+    cachekoef[axis] = random.choice([0, 1])
     return cachekoef[axis]
 
 
@@ -68,7 +68,7 @@ def getmetapolation(left, right):
     return metapolationcache[axis]
 
 
-def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, masterD=None):
+def points2mf(glyphname, *masters):
     """ Save current points to mf file
 
         master is an instance of models.Master
@@ -81,28 +81,12 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
     if len(masters) < 1:
         return ''
 
-    masterA = masterB = masterC = masterD = masters[0]
-
-    if len(masters) > 1:
-        masterB = masters[1]
-
-    if len(masters) > 2:
-        masterC = masters[2]
-
-    if len(masters) > 3:
-        masterD = masters[3]
-
-    glyphA = masterA['glyphs'][glyphname]
-    glyphB = masterB['glyphs'][glyphname]
-    glyphC = masterC['glyphs'][glyphname]
-    glyphD = masterD['glyphs'][glyphname]
+    primarymaster = masters[0]
 
     fip = FIP()
 
     fip.write("% File parsed with Metapolator %\n")
     fip.write("% box dimension definition %\n")
-
-    g = glyphA['name']  # get from glyphA as we sure that glypha and glyphb exist in font project
 
     fip.write("\n")
 
@@ -129,55 +113,13 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
     if not divider:
         divider = 1
 
-    str_ = 'beginfontchar({glyph}, {p} / {divider} + spacing_{glyph}R * width_{glyph}, 0, 0)'
-    fip.write(str_.format(glyph=glyphA['name'], p='+'.join(ar),
-                          divider=divider))
+    glyph = primarymaster['glyphs'][glyphname]
 
-    # point coordinates font A ################
-
-    fip.write("\n")
-    fip.write("""% point coordinates font A""")
-    fip.write("\n")
-
-    for item in glyphA['points']:
-        fip.write(getcoords_zeile(item, 'A'))
-
-# point coordinates font B ################
-
-    fip.write("\n")
-    fip.write("""% point coordinates font B""")
-    fip.write("\n")
-
-# points for l
-
-    for item in glyphB['points']:
-        fip.write(getcoords_zeile(item, 'B'))
-
-# point coordinates font C ################
-
-    fip.write("\n")
-    fip.write("""% point coordinates font C""")
-    fip.write("\n")
-
-# points for l
-
-    for item in glyphC['points']:
-        fip.write(getcoords_zeile(item, 'C'))
-
-# point coordinates font D ################
-
-    fip.write("\n")
-    fip.write("""% point coordinates font D""")
-    fip.write("\n")
-
-# points for l
-
-    for item in glyphD['points']:
-        fip.write(getcoords_zeile(item, 'D'))
-
-
-    fip.write("\n")
-    fip.write( """% z points""" )
+    str_ = 'beginfontchar({glyph}, ({p} / {divider} + spacing_{glyph}R) * width_{glyph}, 0, 0)'
+    fip.write(str_.format(glyph=glyph['name'],
+                          p='+'.join(ar), divider=divider))
+    fip.write('\n')
+    fip.write("""% z points""")
 
     mean = ['13','14','26','29','65','67','69','77','78','79','82','83','85','86','87','88','90','94','95','12','27','63','71','80','81','89','2','7','11','28','30','62','64','66','68','70','72','73','75','76','84','4','8','9','15','59','60','61','74','91','92','93']
 #des = ['12','27','63','71','80','81','89']
@@ -188,11 +130,11 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
     ggroup=""
     gggroup =""
 
-    if g in mean:
+    if glyph['name'] in mean:
         ggroup = 'xheight'
         gggroup = 'mean'
 
-    if g in cap:
+    if glyph['name'] in cap:
         ggroup = 'capital'
         gggroup = 'cap'
 
@@ -474,7 +416,7 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
 
     i = 1
 
-    for item in glyphA['points']:
+    for item in glyph['points']:
         znamer = re.match('z(\d+)r', item['preset'].get('pointname'))
         znamel = re.match('z(\d+)l', item['preset'].get('pointname'))
         zname = re.match('z(\d+)l', item['preset'].get('pointname'))
@@ -679,7 +621,7 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
 
     i = 1
 
-    for item in glyphA['points']:
+    for item in glyph['points']:
 
         znamer = re.match('z(\d+)r', item['preset'].get('pointname'))
         znamel = re.match('z(\d+)l', item['preset'].get('pointname'))
@@ -969,12 +911,11 @@ def points2mf(glyphname, *masters):  # masterA, masterB=None, masterC=None, mast
 
         zitemb = zzn[i + 1]
         zeile = "z" + str(zitemb)
-        i=i+1
+        i = i + 1
 
     if len(zzn) >= i:
 
         fip.write(zeile + " .. cycle" + semi)
-
 
     fip.write("\n")
     fip.write("% pen labels\n")
