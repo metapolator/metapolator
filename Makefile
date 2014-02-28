@@ -18,6 +18,12 @@ setup:
 	mysql --user=root -e "CREATE DATABASE metapolatordev;";
 	.venv/bin/python metapolator/models.py;
 
+clean:
+	mv users/skel .
+	rm -rf users/*
+	mv skel users/
+	mysql --user=root -e "DROP DATABASE metapolatordev;";
+
 	. .venv/bin/activate; python run.py
 
 celery: venv/bin/activate requirements.txt
