@@ -1,11 +1,9 @@
 all: setup
 
-
 ifdef VENVRUN
 else
 VENVRUN=virtualenv
 endif
-
 
 venv/bin/activate:
 	$(VENVRUN) .venv
@@ -16,7 +14,10 @@ install:
 	. .venv/bin/activate requirements.txt
 	. .venv/bin/activate; pip install -Ur requirements.txt
 
-run: venv/bin/activate requirements.txt
+setup:
+	mysql --user=root -e "CREATE DATABASE metapolatordev;";
+	.venv/bin/python metapolator/models.py;
+
 	. .venv/bin/activate; python run.py
 
 celery: venv/bin/activate requirements.txt
