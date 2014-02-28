@@ -115,8 +115,8 @@ def points2mf(glyphname, *masters):
 
     glyph = primarymaster['glyphs'][glyphname]
 
-    str_ = 'beginfontchar({glyph}, ({p} / {divider} + spacing_{glyph}R) * width_{glyph}, 0, 0)'
-    fip.write(str_.format(glyph=glyph['name'],
+    str_ = 'beginfontchar({glyph}, ((({p}) / {divider}) + spacing_{glyph}R) * width_{glyph}, 0, 0)'
+    fip.write(str_.format(glyph=int(glyph['name']) + 1,
                           p='+'.join(ar), divider=divider))
     fip.write('\n')
     fip.write("""% z points""")
