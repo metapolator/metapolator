@@ -13,9 +13,6 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 canvasConfig: 'glyphConfig',
                 canvas: 'glyph',
                 interpolationValueAB: 0.2,
-                formatter: function(value){
-                    return Number(value).toFixed(2);
-                }
             },
             {
                 name:'width',
@@ -25,25 +22,32 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 selection:'after',
                 canvasConfig: 'wordConfig',
                 interpolationValueAB: 0.2,
-                interpolationValueAD: 0.2,
-                formatter: function(value){
-                    return Number(value).toFixed(2);
-                }
+                interpolationValueAC: 0.2,
             },
             {
-                name:'width',
                 id:'paragraphSlider',
                 min: 0,
                 max: 1,
                 selection:'after',
                 canvasConfig: 'paragraphGlyphConfig',
                 interpolationValueAB: 0.2,
-                interpolationValueAD: 0.2,
-                formatter: function(value){
-                    return Number(value).toFixed(2);
-                }
+                interpolationValueAC: 0.2,
+            },
+            {
+                id:'xheightSlider',
+                min: 0,
+                max: 1,
+                selection:'after',
+                canvasConfig: 'xheightConfig',
+                interpolationValueAB: 0.2,
             }
+
         ];
+        var interLn = {
+          interpolationValueAB: 'bold',
+          interpolationValueAC: 'space',
+          interpolationValueAD: 'x-height'
+        };
         var objectToFunc = function(object, funct) {
             for (key in object){
                 funct[key] = object[key];
@@ -62,6 +66,7 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 }
             });
             angular.forEach(controllers, function(control, index){
+              control.name(interLn[control.property]);
                 control.onChange(function(value){
                     var canvasModel = instanceListService.getInstance(slider.canvasConfig);
                     canvasModel[control.property] = value;
@@ -136,7 +141,7 @@ metapolatortestApp.controller('wordCtrl', ['$scope',
             interpolationValueAC: 0.2,
         };
         var glyphInstance = $scope.init($scope.wordConfig);
-        $scope.$watchCollection('glyphConfig', function(newVal, oldVal){
+        $scope.$watchCollection('wordConfig', function(newVal, oldVal){
             $scope.watchConf(glyphInstance, newVal);
         });
     }]);
@@ -163,10 +168,35 @@ metapolatortestApp.controller('paragraphCtrl', ['$scope',
             interpolationValueAC: 0.2,
         };
         var glyphInstance = $scope.init($scope.paragraphGlyphConfig);
-        $scope.$watchCollection('glyphConfig', function(newVal, oldVal){
+        $scope.$watchCollection('paragraphGlyphConfig', function(newVal, oldVal){
             $scope.watchConf(glyphInstance, newVal);
         });
     }]);
+
+metapolatortestApp.controller('xheightCtrl', ['$scope',
+                                            'instanceListService',
+    function($scope, instanceListService) {
+        $scope.xheightConfig = {
+                name: 'xheightConfig',
+                canvas: '#xheight',
+                slider: '#xheightSlider',
+                fontslist: [
+                'app/fonts/Roboto-Regular-x-low.otf',
+                'app/fonts/Roboto-Regular-x-high.otf',
+                'app/fonts/Roboto-Regular-x-high.otf'
+                ],
+                text: 'Hanna',
+                fontSize: 80,
+                lineHeight: 120,
+                interpolationValueAB: 0.2,
+            };
+        var glyphInstance = $scope.init($scope.xheightConfig);
+        $scope.$watchCollection('xheightConfig', function(newVal, oldVal){
+            $scope.watchConf(glyphInstance, newVal);
+        });
+    }]);
+
+
 
 metapolatortestApp.service('instanceListService', function(){
    var list = {};

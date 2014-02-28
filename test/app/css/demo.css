@@ -12,6 +12,10 @@ body {
 }
 .sliders {
     padding: 30px;
+    width: 100%;
+}
+#glyphSlider {
+  width: 100%;
 }
 .sliders span {
     padding-right: 10px;
@@ -36,9 +40,6 @@ a {
     color:#2b2b2b;
     text-decoration:none;
 }
-.slider {
-    margin-bottom: 48px;
-}
 
 #glyph {
     background-color: #fffeef;
@@ -54,7 +55,7 @@ a {
     padding-bottom: 80px;
 }
 
-#glyphsWordHeight {
+#xheight {
     background-color: #fffeef;
     margin-bottom:20px;
     padding-top: 80px;

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Metapolator: Design typeface families</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="app/css/slider.css"/>
     <link rel="stylesheet" type="text/css" href="app/css/demo.css"/>
     <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css"/>
     <link href='http://fonts.googleapis.com/css?family=Roboto:100italic,500,300,700,400' rel='stylesheet' type='text/css'>
@@ -38,7 +37,7 @@
                    <div id="glyphSlider"></div>
                     <div id="wordSlider"></div>
                     <div id="paragraphSlider"></div>
-
+                    <div id="xheightSlider"></div>
                 </div>
             </div>
 
@@ -111,9 +110,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px">
+                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="xheightCtrl">
                         <div class="row">
-                            <div id="glyphsWordHeight"></div>
+                            <div id="xheight"></div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-2">
@@ -136,7 +135,7 @@
 <script type="text/javascript" src="app/js/instance.js"></script>
 <script type="text/javascript" src="app/js/bootstrap-slider.js"></script>
 <script type="text/javascript" src="app/js/opentype.js"></script>
-<script type="text/javascript" src="app/js/dat.gui.min.js"></script>
+<script type="text/javascript" src="app/js/dat.gui.js"></script>
 
 
 <script>
