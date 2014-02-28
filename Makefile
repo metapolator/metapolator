@@ -10,7 +10,10 @@ endif
 venv/bin/activate:
 	$(VENVRUN) .venv
 
-setup: venv/bin/activate requirements.txt
+install:
+	easy_install -U distribute pip
+	pip install virtualenv
+	. .venv/bin/activate requirements.txt
 	. .venv/bin/activate; pip install -Ur requirements.txt
 
 run: venv/bin/activate requirements.txt
