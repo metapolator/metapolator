@@ -90,7 +90,7 @@ def points2mf(glyphname, *masters):
 
     fip.write("\n")
 
-    formulas = "{k} * ({A} * {Aalias}_width + {M} * ({B} * {Balias}_width - {A} * {Aalias}_width))"
+    formulas = "{k} * ({A} + {M} * ({B} - {A}))"
     ar = []  # array for definition of formulas
 
     divider = 0
@@ -103,8 +103,7 @@ def points2mf(glyphname, *masters):
         divider += koef
         metapolation = getmetapolation(left, right)
 
-        p = formulas.format(Aalias=left['alias'], Balias=right['alias'],
-                            A='%.2f' % (leftglyph['advanceWidth'] / 100.),
+        p = formulas.format(A='%.2f' % (leftglyph['advanceWidth'] / 100.),
                             B='%.2f' % (rightglyph['advanceWidth'] / 100.),
                             k=koef,
                             M=metapolation)
@@ -115,7 +114,7 @@ def points2mf(glyphname, *masters):
 
     glyph = primarymaster['glyphs'][glyphname]
 
-    str_ = 'beginfontchar({glyph}, ((({p}) / {divider}) + spacing_{glyph}R) * width_{glyph}, 0, 0)'
+    str_ = 'beginfontchar({glyph}, ({p}) / {divider}, 0, 0)'
     fip.write(str_.format(glyph=int(glyph['name']) + 1,
                           p='+'.join(ar), divider=divider))
     fip.write('\n')
