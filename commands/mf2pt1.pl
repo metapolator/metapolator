@@ -902,13 +902,13 @@ else {
     print FFSCRIPT <<'AUTOHINT';
 Open($1);
 SelectAll();
-AddExtrema();
-RemoveOverlap();
-Simplify(0, 2);
-CorrectDirection();
-Simplify(0, 2);
-# Inline(0,2);
-RoundToInt();
+# AddExtrema();
+# RemoveOverlap();
+# Simplify(0, 2);
+# CorrectDirection();
+# Simplify(0, 2);
+Inline(0,2);
+# RoundToInt();
 AutoHint();
 foreach
   SetCharName(NameFromUnicode(GlyphInfo("Unicode")))
