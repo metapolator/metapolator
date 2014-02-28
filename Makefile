@@ -24,6 +24,7 @@ clean:
 	mv skel users/
 	mysql --user=root -e "DROP DATABASE metapolatordev;";
 
+web: venv/bin/activate requirements.txt
 	. .venv/bin/activate; python run.py
 
 celery: venv/bin/activate requirements.txt
