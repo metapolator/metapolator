@@ -29,22 +29,22 @@ class DifferentZPointError(Exception):
 
 
 cachekoef = {
-    'AB': 1,
-    'AC': 0,
-    'AD': 0,
-    'BC': 0,
-    'BD': 0,
-    'CD': 0
+    'AB': 1.0,
+    'AC': 0.0,
+    'AD': 0.0,
+    'BC': 0.0,
+    'BD': 0.0,
+    'CD': 0.0
 }
 
 
 metapolationcache = {
-    'AB': 0,
-    'AC': 0,
-    'AD': 0,
-    'BC': 0,
-    'BD': 0,
-    'CD': 0
+    'AB': 0.0,
+    'AC': 0.0,
+    'AD': 0.0,
+    'BC': 0.0,
+    'BD': 0.0,
+    'CD': 0.0
 }
 
 

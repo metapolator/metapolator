@@ -5,18 +5,18 @@ autorounding := 0;
 smoothing := 0;
 
 def loggingall =                % puts tracing info into the log
-%  tracingcommands:=3;
-%  tracingedges:=2;
-%  tracingtitles:=1;
-%  tracingequations:=1;
-%  tracingcapsules:=1;
-%  tracingspecs:=1;
-%  tracingpens:=1;
-%  tracingchoices:=1;
-%  tracingstats:=1;
+  tracingcommands:=3;
+  tracingedges:=2;
+  tracingtitles:=1;
+  tracingequations:=1;
+  tracingcapsules:=1;
+  tracingspecs:=1;
+  tracingpens:=1;
+  tracingchoices:=1;
+  tracingstats:=1;
   tracingoutput:=1;
-%  tracingmacros:=1;
-%  tracingrestores:=1;
+  tracingmacros:=1;
+  tracingrestores:=1;
   enddef;
 
 def tracingall =                % turns on every form of tracing

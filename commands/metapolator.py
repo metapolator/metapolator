@@ -8,7 +8,7 @@ Example command line usage
 $ metapolator.py \
   --axis   "name:foo|A.ufo:B.ufo|-0.2,1.2" \
   --axis   "name:bar|A.ufo:C.ufo|-0.2,1.2" \
-  --master "A.ufo|AB:0.3|AC:0.2" \
+  --master "A.ufo|foo:0.3|bar:0.2" \
   --master "B.ufo|foo:0.0|bar:1.0" \
   --master "C.ufo|foo:1.0|bar:0.0" \
   --master "D.ufo|foo:1.0|bar:1.0" \
@@ -49,17 +49,8 @@ def parse_argument_master(master_string):
     """ Parse string master description and returns dictionary
         of master's description """
     ufofile, axis = master_string.split('|', 1)
-    result = dict(name=ufofile, glyphs={},
-                  alias=os.path.splitext(ufofile)[0],
-                  axis=[])
-
-    def cc(value):
-        k, v = value.split(':')
-        return {k: v}
-
-    result['axis'] = map(cc, axis.split('|'))
-
-    return result
+    return dict(name=ufofile, glyphs={},
+                alias=re.sub('\W', '', os.path.splitext(ufofile)[0]))
 
 
 def main():
