@@ -115,12 +115,14 @@ def main():
 
     process = subprocess.Popen(
         ["sh", "makefont.sh", 'fontbox', '1'],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
+        stdout=subprocess.PIPE, stderr=open('test.err', 'w'), cwd=cwd
     )
 
+    errorcontent = ''
     while True:
         line = process.stdout.readline()
-        if not line or '<to be read again>' in line:
+        errorcontent += line
+        if not line or '<to be read again>' in errorcontent:
             process.kill()
             break
 

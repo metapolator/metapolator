@@ -28,7 +28,24 @@ class DifferentZPointError(Exception):
     pass
 
 
-cachekoef = {}
+cachekoef = {
+    'AB': 1,
+    'AC': 0,
+    'AD': 0,
+    'BC': 0,
+    'BD': 0,
+    'CD': 0
+}
+
+
+metapolationcache = {
+    'AB': 0,
+    'AC': 0,
+    'AD': 0,
+    'BC': 0,
+    'BD': 0,
+    'CD': 0
+}
 
 
 def getcoefficient(left, right):
@@ -37,9 +54,6 @@ def getcoefficient(left, right):
         return cachekoef[axis]
     cachekoef[axis] = random.choice([0, 1])
     return cachekoef[axis]
-
-
-metapolationcache = {}
 
 
 def getmetapolation(left, right):
@@ -96,7 +110,9 @@ def points2mf(glyphname, *masters):
 
     glyph = primarymaster['glyphs'][glyphname]
 
-    str_ = 'beginfontchar({glyph}, ({p}) / {divider}, 0, 0)'
+    # fip.write("beginfontchar({0}, (3.88)*pt#, 0, 0 )".format(int(glyph['name']) + 1))
+
+    str_ = 'beginfontchar({glyph}, (({p}) / {divider}), 0, 0)'
     fip.write(str_.format(glyph=int(glyph['name']) + 1,
                           p='+'.join(ar), divider=divider))
     fip.write('\n')
@@ -164,7 +180,7 @@ def points2mf(glyphname, *masters):
 
     semi = ";"
 
-    mffunc = '{k} * ({A} + {m} * ({B} - {A}))'
+    mffunc = '{k} * ({A}u + {m} * ({B}u - {A}u))'
 
     for i in range(len(zzn)):
         zitem = i + 1
@@ -179,12 +195,12 @@ def points2mf(glyphname, *masters):
             metapolation = getmetapolation(left, right)
             divider += koef
 
-            f = mffunc.format(k=koef, m=metapolation, A=leftpoint['x'],
-                              B=rightpoint['x'])
+            f = mffunc.format(k=koef, m=metapolation, A='%.2f' % (leftpoint['x'] / 100.),
+                              B='%.2f' % (rightpoint['x'] / 100.))
             ar['x'].append(f)
 
-            f = mffunc.format(k=koef, m=metapolation, A=leftpoint['y'],
-                              B=rightpoint['y'])
+            f = mffunc.format(k=koef, m=metapolation, A='%.2f' % (leftpoint['y'] / 100.),
+                              B='%.2f' % (rightpoint['y'] / 100.))
             ar['y'].append(f)
 
         if not divider:
