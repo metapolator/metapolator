@@ -52,7 +52,7 @@ def getcoefficient(left, right):
     axis = ''.join([left['alias'], right['alias']])
     if axis in cachekoef:
         return cachekoef[axis]
-    cachekoef[axis] = random.choice([0, 1])
+    cachekoef[axis] = 0  # random.choice([0, 1])
     return cachekoef[axis]
 
 
@@ -60,7 +60,7 @@ def getmetapolation(left, right):
     axis = ''.join([left['alias'], right['alias']])
     if axis in metapolationcache:
         return metapolationcache[axis]
-    metapolationcache[axis] = random.random()
+    metapolationcache[axis] = 0  # random.random()
     return metapolationcache[axis]
 
 
@@ -71,6 +71,9 @@ def points2mf(glyphname, *masters):
         glyph is an instance of models.Glyph
     """
     import time
+
+    print cachekoef
+    print metapolationcache
 
     starttime = time.time()
 

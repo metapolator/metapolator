@@ -6,14 +6,11 @@
 Example command line usage
 
 $ metapolator.py \
-  --axis   "name:foo|A.ufo:B.ufo|-0.2,1.2" \
-  --axis   "name:bar|A.ufo:C.ufo|-0.2,1.2" \
-  --master "A.ufo|foo:0.3|bar:0.2" \
-  --master "B.ufo|foo:0.0|bar:1.0" \
-  --master "C.ufo|foo:1.0|bar:0.0" \
-  --master "D.ufo|foo:1.0|bar:1.0" \
-  --instance "foo:0.75|bar:0.29030000000000001|family:EncodeNormal-Beta70|stylename:400 Regular"
-  I.ufo
+  --axis   "name:foo|A.ufo:B.ufo|koef=0.15,metap=0.25" \
+  --axis   "name:bar|A.ufo:C.ufo|koef=0.75,metap=1" \
+  --family "EncodeNormal-Beta70" \
+  --stylename "400 Regular"
+  output.ufo
 $
 """
 import argparse
@@ -26,8 +23,9 @@ import sys
 cwd = os.path.dirname(__file__)
 fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
 
-axes = []  # contains description of axes
+axismapping = {}  # contains links to masters pairs
 font = {}  # contains description of new ufo
+masters = []
 
 
 def get_temp_dir():
@@ -45,48 +43,52 @@ def get_temp_dir():
     return d
 
 
-def parse_argument_master(master_string):
-    """ Parse string master description and returns dictionary
-        of master's description """
-    ufofile, axis = master_string.split('|', 1)
+def get_master_alias(ufofile):
+    return re.sub('\W', '_', ufofile)
+
+
+def init_master(ufofile):
     return dict(name=ufofile, glyphs={},
-                alias=re.sub('\W', '', os.path.splitext(ufofile)[0]))
+                alias=get_master_alias(os.path.splitext(ufofile)[0]))
+
+
+def get_from_config(config, key):
+    _ = config.split(',')
+    kv = dict(map(lambda x: (x.split('=')[0], x.split('=')[1]), _))
+    return float(kv.get(key, 0))
+
+
+def parse_arguments(axis):
+    # collect masters pair for each axes
+    for ax in axis:
+        # TODO: check for invalid argument?
+        a, masterlist, config = ax.split('|')
+
+        alias = ''  # axis alias is concatinated masters aliases
+        for ufofile in masterlist.split(':'):
+            searchmaster = filter(lambda m: m['name'] == ufofile, masters)
+            if not len(searchmaster):
+                master = init_master(ufofile)
+                masters.append(master)
+            else:
+                master = searchmaster[0]
+
+            alias += master['alias']
+
+        # values for coefficient and metapolation applying to zero
+        points2mf.cachekoef[alias] = get_from_config(config, 'koef')
+        points2mf.metapolationcache[alias] = get_from_config(config, 'metap')
+
+        axismapping[re.sub('name:', '', a)] = alias
 
 
 def main():
     argv = parse_command_line_arguments()
+    parse_arguments(argv.axis)
 
-    masters = []
-    for master in argv.master:
-        data = parse_argument_master(master)
-        for glyph in iterate_glyphs(data):
-            data['glyphs'][glyph['name']] = glyph
-        masters.append(data)
-
-    # collect masters pair for each axes
-    for ax in argv.axis:
-        axis, masterlist, values = ax.split('|')
-        try:
-            f, s = masterlist.split(':')
-        except ValueError:
-            f = s = masterlist
-        l_master = filter(lambda m: m['name'] == f, masters)[0]
-        r_master = filter(lambda m: m['name'] == s, masters)[0]
-
-        axes.append({'masters': [l_master, r_master],
-                     'alias': re.sub(r'name:', '', axis, re.I)})
-
-    for arg in argv.instance.split('|'):
-        try:
-            key, value = arg.split(':')
-        except ValueError:
-            key = arg
-            value = 0
-        # if key in axes.keys():
-        #     axes[key].append(float(value))
-        #     continue
-        if key.lower() in ['family', 'stylename']:
-            font[key.lower()] = value if value else ''
+    for master in masters:
+        for glyph in iterate_glyphs(master):
+            master['glyphs'][glyph['name']] = glyph
 
     # loop the glyph in primary master glyphs
     # import pprint
@@ -147,8 +149,8 @@ def parse_command_line_arguments():
         sys.exit(1)
 
     parser.add_argument('--axis', type=str, action='append')
-    parser.add_argument('--master', type=str, action='append')
-    parser.add_argument('--instance', type=str, default='')
+    parser.add_argument('--family', type=str, default='')
+    parser.add_argument('--style', type=str, default='Regular')
     parser.add_argument('output_ufo', metavar='output_ufo', type=str)
     return parser.parse_args()
 
