@@ -1,4 +1,3 @@
-import random
 import re
 
 
@@ -28,24 +27,9 @@ class DifferentZPointError(Exception):
     pass
 
 
-cachekoef = {
-    'AB': 1.0,
-    'AC': 0.0,
-    'AD': 0.0,
-    'BC': 0.0,
-    'BD': 0.0,
-    'CD': 0.0
-}
+cachekoef = {}
 
-
-metapolationcache = {
-    'AB': 0.0,
-    'AC': 0.0,
-    'AD': 0.0,
-    'BC': 0.0,
-    'BD': 0.0,
-    'CD': 0.0
-}
+metapolationcache = {}
 
 
 def getcoefficient(left, right):
@@ -65,15 +49,7 @@ def getmetapolation(left, right):
 
 
 def points2mf(glyphname, *masters):
-    """ Save current points to mf file
-
-        master is an instance of models.Master
-        glyph is an instance of models.Glyph
-    """
     import time
-
-    print cachekoef
-    print metapolationcache
 
     starttime = time.time()
 

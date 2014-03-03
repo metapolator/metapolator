@@ -108,7 +108,7 @@ def main():
 
     process = subprocess.Popen(
         ["sh", "makefont.sh", 'fontbox', '1'],
-        stdout=subprocess.PIPE, stderr=open('test.err', 'w'), cwd=cwd
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
     )
 
     errorcontent = ''
