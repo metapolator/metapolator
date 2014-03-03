@@ -65,12 +65,12 @@ def metrics(*masters):
             metapolation = getmetapolation(left, right)
 
             p = func(koef, metapolation,
-                     left['info'][param], right['info'][param])
+                     float(left['info'][param]), float(right['info'][param]))
             ar.append(p)
 
         if not divider:
             divider = 1
-        return sum(ar) / divider
+        return round(sum(ar) / divider)
 
     result['xHeight'] = info('xHeight')
     result['ascender'] = info('ascender')
