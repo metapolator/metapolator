@@ -10,12 +10,12 @@ body {
     border-right: 2px solid #eeeeee;
     position:fixed;
 }
+
 .sliders {
-    padding: 30px;
+    margin-top: -30px;
+    padding-bottom: 30px;
     width: 100%;
-}
-#glyphSlider {
-  width: 100%;
+    text-align: center;
 }
 .sliders span {
     padding-right: 10px;

@@ -5,6 +5,7 @@
     <title>Metapolator: Design typeface families</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="app/css/demo.css"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css"/>
     <link href='http://fonts.googleapis.com/css?family=Roboto:100italic,500,300,700,400' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
@@ -25,28 +26,19 @@
             <span style="font-family: 'Roboto', sans-serif; font-weight: 700;">META</span><span style="font-family: 'Roboto', sans-serif; font-weight: 500;">PO</span><span style="font-family: 'Roboto', sans-serif; font-weight: 300;">LATOR</span>
           </h1>
           <ul class="col-md-2 masthead-nav">
-            <li><a href="http://github.com/metapolator/metapolator" title="Github"><span class="glyphicon glyphicon-github"></span></a>   </li>
-            <li><a href="https://plus.google.com/u/0/communities/110027004108709154749" title="Google+"><span class="glyphicon glyphicon-google-plus"></span></a></li>
+            <li><a href="http://github.com/metapolator/metapolator" title="Github"><span class="fa fa-github fa-lg"></span></a>   </li>
+            <li><a href="https://plus.google.com/u/0/communities/110027004108709154749" title="Google+"><span class="fa fa-google-plus fa-lg"></span></a></li>
           </ul>
         </div>
       </div>
         <div class="container-fluid">
             <div class="row">
-            <div class="slider-menu" ng-controller="SliderCtrl">
-                <div class="sliders">
-                   <div id="glyphSlider"></div>
-                    <div id="wordSlider"></div>
-                    <div id="paragraphSlider"></div>
-                    <div id="xheightSlider"></div>
-                </div>
-            </div>
-
-            <div class="col-md-8 col-lg-offset-4" ng-controller="canvasCtrl">
-                <div class="row">
+            <div class="col-md-8 col-lg-offset-3" ng-controller="canvasCtrl">
+                <div class="row" ng-controller="SliderCtrl">
                     <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="glyphCtrl">
                         <div class="row" style="margin-top:20px">
                                 <div id="glyph"></div>
-                            <p ng-bind="canvasInstances.interpolationValueAB"></p>
+                                <div class="sliders" id="glyphSlider"></div>
                                 <div class="lead col-md-11" style="text-align:left">
                                 <p>
                                 Metapolator is a font editor for designing typeface families. Many families vary only by weight, and even then only in a simple linear way, as above.
@@ -72,6 +64,7 @@
                     <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="wordCtrl">
                         <div class="row">
                             <div id="glyphsWord"></div>
+                            <div class="sliders" id="wordSlider"></div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-2">
@@ -82,10 +75,12 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="paragraphCtrl">
                         <div class="row">
                             <div id="paragraphWord"></div>
+                            <div class="paragrahSlider"></div>
                             <div class="lead col-md-11" style="text-align:left">
 
                                 <p>
@@ -113,6 +108,7 @@
                     <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="xheightCtrl">
                         <div class="row">
                             <div id="xheight"></div>
+                            <div class="sliders" id="xheightSlider"></div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-2">
@@ -122,6 +118,11 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="lead col-md-11" style="text-align:left">
+                    <p>
+                        <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
+                    </p>
                 </div>
             </div>
             </div>

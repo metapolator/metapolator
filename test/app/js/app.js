@@ -2,10 +2,10 @@ var metapolatortestApp = angular.module('metapolatortestApp', []);
 
 metapolatortestApp.controller('SliderCtrl', ['$scope',
                                              'instanceListService',
-    function($scope, instanceListService){
+                                             'guiListService',
+    function($scope, instanceListService, guiListService){
         $scope.sliders = [
             {
-                name:'width',
                 id:'glyphSlider',
                 min: 0,
                 max: 1,
@@ -15,7 +15,6 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 interpolationValueAB: 0.2,
             },
             {
-                name:'width',
                 id:'wordSlider',
                 min: 0,
                 max: 1,
@@ -23,9 +22,10 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 canvasConfig: 'wordConfig',
                 interpolationValueAB: 0.2,
                 interpolationValueAC: 0.2,
+                forSlider: 2
             },
             {
-                id:'paragraphSlider',
+                id:'wordSlider',
                 min: 0,
                 max: 1,
                 selection:'after',
@@ -55,27 +55,40 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
             return funct;
         }
         angular.forEach($scope.sliders, function(slider, index){
-            var gui = new dat.GUI();
+            var gui = guiListService.getGui(slider.id);
+            var newGui = false;
+            if (!gui){
+              gui = new dat.GUI();
+              guiListService.addGui(slider.id, gui);
+              newGui = true;
+            }
             var sliderFunct = objectToFunc(slider, new Function());
             var controllers = [];
             var sliderEl = document.getElementById(slider.id);
-            var canvasEl = document.getElementById(slider.canvas);
-            angular.forEach(slider, function(key, index){
-                if (index.indexOf('interpolationValue') > -1) {
-                    controllers.push(gui.add(sliderFunct, index, slider.min, slider.max));
-                }
-            });
-            angular.forEach(controllers, function(control, index){
-              control.name(interLn[control.property]);
-                control.onChange(function(value){
-                    var canvasModel = instanceListService.getInstance(slider.canvasConfig);
-                    canvasModel[control.property] = value;
-                    canvasModel.interpolate();
+
+            if (newGui) {
+                angular.forEach(slider, function(key, index){
+                    if (index.indexOf('interpolationValue') > -1) {
+                        controllers.push(gui.add(sliderFunct, index, slider.min, slider.max));
+                    }
                 });
-            });
 
-            sliderEl.appendChild(gui.domElement);
+                angular.forEach(controllers, function(control, index){
+                  control.name(interLn[control.property]);
+                    control.onChange(function(value){
+                        var canvasModel = instanceListService.getInstance(slider.canvasConfig);
+                        canvasModel[control.property] = value;
+                        canvasModel.interpolate();
+                        if (slider.forSlider){
+                            canvasModel = instanceListService.getInstance($scope.sliders[slider.forSlider].canvasConfig);
+                            canvasModel[control.property] = value;
+                            canvasModel.interpolate();
+                        }
+                    });
+                });
 
+                sliderEl.appendChild(gui.domElement);
+            };
         });
 
 }]);
@@ -106,7 +119,6 @@ metapolatortestApp.controller('glyphCtrl', ['$scope',
         $scope.glyphConfig = {
                 name: 'glyphConfig',
                 canvas: '#glyph',
-                slider: '#sliderAB',
                 fontslist: [
                 'app/fonts/RobotoSlab_Thin.otf',
                 'app/fonts/RobotoSlab_Bold.otf',
@@ -128,7 +140,6 @@ metapolatortestApp.controller('wordCtrl', ['$scope',
         $scope.wordConfig = {
             name: 'wordConfig',
             canvas: '#glyphsWord',
-            slider: '#sliderAB',
             fontslist: [
                 'app/fonts/Roboto-Regular.otf',
                 'app/fonts/Roboto-Bold.otf',
@@ -152,7 +163,6 @@ metapolatortestApp.controller('paragraphCtrl', ['$scope',
         $scope.paragraphGlyphConfig = {
             name: 'paragraphGlyphConfig',
             canvas: '#paragraphWord',
-            slider: '#sliderAB',
             fontslist: [
                 'app/fonts/RobotoSlab_Thin.otf',
                 'app/fonts/RobotoSlab_Bold.otf',
@@ -179,7 +189,6 @@ metapolatortestApp.controller('xheightCtrl', ['$scope',
         $scope.xheightConfig = {
                 name: 'xheightConfig',
                 canvas: '#xheight',
-                slider: '#xheightSlider',
                 fontslist: [
                 'app/fonts/Roboto-Regular-x-low.otf',
                 'app/fonts/Roboto-Regular-x-high.otf',
@@ -208,4 +217,16 @@ metapolatortestApp.service('instanceListService', function(){
         return list[name]
     }
    }
+});
+
+metapolatortestApp.service('guiListService', function () {
+    var list = {};
+    return {
+        addGui : function (name, instance) {
+            list[name] = instance;
+        },
+        getGui: function (name){
+         return list[name]
+     }
+    }
 });
