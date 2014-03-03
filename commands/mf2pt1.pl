@@ -908,7 +908,7 @@ Simplify(0, 2);
 CorrectDirection();
 Simplify(0, 2);
 # Inline(0,2);
-RoundToInt();
+# RoundToInt();
 AutoHint();
 foreach
   SetCharName(NameFromUnicode(GlyphInfo("Unicode")))
