@@ -15,6 +15,7 @@ $
 """
 import argparse
 import os
+import fontinfo
 import points2mf
 import re
 import subprocess
@@ -48,7 +49,8 @@ def get_master_alias(ufofile):
 
 
 def init_master(ufofile):
-    return dict(name=ufofile, glyphs={},
+    info = fontinfo.fontinfo(os.path.join(fwd, ufofile))
+    return dict(name=ufofile, glyphs={}, info=info,
                 alias=get_master_alias(os.path.splitext(ufofile)[0]))
 
 
@@ -103,6 +105,7 @@ def main():
         with open(os.path.join(directory, '%s.mf' % glyphname), 'w') as fp:
             fp.write(points2mf.points2mf(glyphname, *masters))
 
+
     os.environ['MFINPUTS'] = os.path.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'
 
@@ -119,6 +122,8 @@ def main():
             process.kill()
             break
 
+    fontinfo.update(os.path.join(cwd, 'fontbox.ufo'),
+                    points2mf.metrics(*masters))
 
 def glyph_exist(glyphname, *masters):
     """ Returns True if ALL masters contain glyph with name """

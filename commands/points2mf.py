@@ -48,6 +48,37 @@ def getmetapolation(left, right):
     return metapolationcache[axis]
 
 
+def metrics(*masters):
+    result = {}
+
+    def func(k, m, A, B):
+        return k * (A + m * (B - A))
+
+    def info(param):
+        ar = []  # array for definition of formulas
+
+        divider = 0
+
+        for left, right in iterate(masters):
+            koef = getcoefficient(left, right)
+            divider += koef
+            metapolation = getmetapolation(left, right)
+
+            p = func(koef, metapolation,
+                     left['info'][param], right['info'][param])
+            ar.append(p)
+
+        if not divider:
+            divider = 1
+        return sum(ar) / divider
+
+    result['xHeight'] = info('xHeight')
+    result['ascender'] = info('ascender')
+    result['descender'] = info('descender')
+    result['capHeight'] = info('capHeight')
+    return result
+
+
 def points2mf(glyphname, *masters):
     import time
 
