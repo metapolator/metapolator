@@ -43,7 +43,7 @@ Distance between two masters, for example between `A` and `B`: `A ----- B`
 
 A new font created at a certain position on an axis, or between multiple axes.
 
-### Point 
+### Point
 
 ![
 ](https://raw.github.com/metapolator/metapolator/gh-pages/images/curve.png)
@@ -62,17 +62,17 @@ In the UFO its writen like this:
 A parameter is a characteristic, feature, or measurable factor that can help in defining a particular system. We use parameters on various levels to define fonts: `Global parameters` are on a font level, for example `font size`. `Glyph parameters` are on a glyph level, for example `glyph width`. `Point parameters` are on a point and curve level of a glyph shape, for example the position or `coordinate` of a point.
 
 ### Z-Point
-Point in a two dimensional cartesian coordinate system, defined by x and y coordinates: 
+Point in a two dimensional cartesian coordinate system, defined by x and y coordinates:
 `z=(x,y)`
 
 
 ## How It Works
 
 ```
-ufo fonts -input-to-> xml2mf.py =outputs=> 
-mf files -> metapost.c => 
-mf files -> mf2pt1.pl => 
-pfb fonts -> fontforge.c => 
+ufo fonts -input-to-> xml2mf.py =outputs=>
+mf files -> metapost.c =>
+mf files -> mf2pt1.pl =>
+pfb fonts -> fontforge.c =>
 ufo + otf fonts
 ```
 
@@ -101,7 +101,9 @@ https://github.com/metapolator/metapolator/issues/46
 
 ## Installation
 
-### The Simple Way
+### Ubuntu/Debian
+
+#### The Simple Way
 
 The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
 
@@ -110,16 +112,15 @@ The simple way to install and run metapolator is with [docker.io](http://www.doc
 3. `sudo docker run -p 80:8080 -t metapolator/metapolator`
 4. open in browser `http://localhost`
 
-### The Traditional Way
-
-#### Ubuntu/Debian
+#### The Traditional Way
 
 ```sh
 sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
 # Note your mysql root password
 sudo apt-get install -y woff-tools
-# TODO: how to install fontforge and fontforge-python from source
+# install fontforge and fontforge-python from source
 # git clone https://github.com/fontforge/fontforge.git;
+#
 sudo apt-get install -y fontforge python-fontforge;
 sudo apt-get install -y build-essential autoconf libtool python-dev;
 sudo apt-get install -y python-virtualenv python-setuptools python-pip;
@@ -127,11 +128,23 @@ mkdir ~/src;
 cd ~/src;
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
-virtualenv .venv;
-source .venv/bin/activate ; pip install -r requirements.txt
+make install;
+make setup;
+make run;
 ```
 
-#### Mac OS X
+### Mac OS X
+
+#### The Simple Way
+
+The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
+
+1. [Install Docker](http://www.docker.io/gettingstarted/)
+2. `sudo docker pull metapolator/metapolator`
+3. `sudo docker run -p 9000:8080 -t metapolator/metapolator`
+4. open in browser `http://localhost:9000`
+
+#### The Traditional Way
 
 ```sh
 # Install Homebrew
@@ -151,57 +164,32 @@ brew install autoconf automake libtool python;
 brew install fontforge --with-x --HEAD;
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
-sudo easy_install -U distribute pip;
-pip install virtualenv;
+make install;
 make setup;
+make run;
 ````
 
-#### Setup
+###
 
-On either Mac OS X or GNU+Linux...
+This should give you a local web server you can visit with a modern web browser: [http://0.0.0.0:8080](http://0.0.0.0:8080)
 
-Create new database:
-
-```sh
-mysql --user=root -e "DROP DATABASE metapolatordev; CREATE DATABASE metapolatordev;";
-```
-
-Load the preset database:
-
-```sh
-.venv/bin/python metapolator/models.py;
-```
-
-Start web.py application and celery server:
-
-```sh
-make run;
-make celery;
-```
-
-This should give you a local web server you can visit with a modern web browser:
-
-```sh
-open [http://0.0.0.0:8080](http://0.0.0.0:8080);
-```
 
 ## Deployment
 
 #### The Simple Way
 
-Deploy metapolator to your own server easily with [drone.io](https://drone.io/) 
+Deploy metapolator to your own server easily with [drone.io](https://drone.io/)
 
 Check out <https://drone.io/github.com/metapolator/metapolator> to see how we continuously deploy the central metapolator master to <http://beta.metapolator.com>
 
-### The Traditional Way 
+### The Traditional Way
 
 To deploy metapolator on a Ubuntu or Debian server...
 
 Install supervisor and nginx
 
 ```
-sudo apt-get install nginx
-sudo apt-get install supervisor
+sudo apt-get install supervisor nginx
 ```
 
 Create symlinks for configuration file. Notice that your project directory is not different from configs
