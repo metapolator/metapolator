@@ -1,6 +1,6 @@
 import os
 import os.path as op
-import simplejson
+import ujson
 import shutil
 import web
 
@@ -37,4 +37,4 @@ class CreateInstance:
             except:
                 pass
 
-        return simplejson.dumps({})
+        return ujson.dumps({})

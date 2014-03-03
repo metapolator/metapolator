@@ -1,5 +1,5 @@
 import re
-import simplejson
+import ujson
 
 from metapolator.metapost import Metapost
 from metapolator.models import GlyphParam, GlyphOutline, Glyph, LocalParam
@@ -157,7 +157,7 @@ def get_json(content, glyphid=None, master=None):
                 'height': height}
 
         if master and glyph_obj and not glyph_obj.original_glyph_contours:
-            glyph_obj.original_glyph_contours = simplejson.dumps(contours)
+            glyph_obj.original_glyph_contours = ujson.dumps(contours)
 
         glyphs.append(json)
 

@@ -1,4 +1,4 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
@@ -56,4 +56,4 @@ class CopyMaster:
                 'master_version': '{0:03d}'.format(newmaster_obj.version),
                 'master_id': newmaster_obj.id}
 
-        return simplejson.dumps(data)
+        return ujson.dumps(data)

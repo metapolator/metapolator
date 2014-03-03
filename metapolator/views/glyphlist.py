@@ -1,5 +1,5 @@
 import operator
-import simplejson
+import ujson
 import web
 
 from metapolator import models
@@ -21,4 +21,4 @@ class GlyphList:
         glyphs = glyphs.order_by(models.Glyph.name.asc())
 
         glyphs_list = map(operator.attrgetter('name'), glyphs)
-        return simplejson.dumps({'glyphs': glyphs_list})
+        return ujson.dumps({'glyphs': glyphs_list})

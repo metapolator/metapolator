@@ -1,4 +1,4 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
@@ -61,4 +61,4 @@ class GetMaster:
         data = get_master_data(master, postdata.glyphname, postdata.axislabel)
         if not data:
             return web.badrequest()
-        return simplejson.dumps(data)
+        return ujson.dumps(data)

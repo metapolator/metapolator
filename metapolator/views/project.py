@@ -1,4 +1,4 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
@@ -68,7 +68,7 @@ class Project:
         masters = map(operator.attrgetter('id', 'version'),
                       models.Master.filter(project_id=project.id))
 
-        return simplejson.dumps({'masters': masters_list,
+        return ujson.dumps({'masters': masters_list,
                                  'versions': project.get_versions(),
                                  'metaglyphs': metaglyphs,
                                  'mode': project.mfparser,

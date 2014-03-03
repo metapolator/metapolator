@@ -1,4 +1,4 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
@@ -14,8 +14,8 @@ class FontLocalPreset:
         x = web.input(local_id=0)
         localparams = models.LocalParam.get(id=x.local_id)
         if not localparams:
-            return simplejson.dumps({})
-        return simplejson.dumps(localparams.as_dict())
+            return ujson.dumps({})
+        return ujson.dumps(localparams.as_dict())
 
     @raise404_notauthorized
     def POST(self):
@@ -31,7 +31,7 @@ class FontLocalPreset:
                 if master and k.id == master.idlocala:
                     dict_.update({'selected': True})
             result.append(dict_)
-        return simplejson.dumps(result)
+        return ujson.dumps(result)
 
     @raise404_notauthorized
     def PUT(self):
@@ -61,4 +61,4 @@ class FontLocalPreset:
 
         project = master.project
         result = get_glyphs_jsondata(project.currentglyph, master)
-        return simplejson.dumps(result)
+        return ujson.dumps(result)

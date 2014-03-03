@@ -1,4 +1,4 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
@@ -45,4 +45,4 @@ class SavePoint:
             models.GlyphParam.update(glyphoutline_id=postdata.glyphoutline_id,
                                      values=values)
         result = get_glyphs_jsondata(glyphoutline.glyph.name, master)
-        return simplejson.dumps(result)
+        return ujson.dumps(result)

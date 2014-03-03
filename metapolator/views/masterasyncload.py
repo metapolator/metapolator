@@ -1,5 +1,5 @@
 import datetime
-import simplejson
+import ujson
 import web
 
 from metapolator import models
@@ -27,12 +27,12 @@ class MasterAsyncLoading:
             if res.ready():
                 master.task_completed = True
                 web.ctx.orm.commit()
-                return simplejson.dumps({'done': True})
+                return ujson.dumps({'done': True})
             else:
                 master.task_updated = datetime.datetime.now()
                 web.ctx.orm.commit()
-                return simplejson.dumps({'done': False, 'task_id': x.task_id})
+                return ujson.dumps({'done': False, 'task_id': x.task_id})
 
         master.task_completed = True
         web.ctx.orm.commit()
-        return simplejson.dumps({'done': True})
+        return ujson.dumps({'done': True})

@@ -1,7 +1,7 @@
 import datetime
 import os.path as op
 import re
-import simplejson
+import ujson
 import shutil
 import StringIO
 import web
@@ -111,7 +111,7 @@ class UploadZIP:
             raise
 
         master.update_masters_ordering(x.label)
-        return simplejson.dumps({'project_id': project.id,
+        return ujson.dumps({'project_id': project.id,
                                  'glyphname': project.currentglyph,
                                  'master_id': master.id,
                                  'label': x.label,
