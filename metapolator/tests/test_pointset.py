@@ -2,7 +2,7 @@ import unittest
 import lxml.etree
 import os.path as op
 
-from metapolator.tools import get_pointsets
+from metapolator.glif2points import get_pointsets
 
 
 datapath = op.abspath(op.join(op.dirname(__file__), 'data'))

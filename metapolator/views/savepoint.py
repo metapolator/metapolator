@@ -3,7 +3,7 @@ import web
 
 from metapolator import models
 from metapolator.forms import PointParamExtendedForm
-from metapolator.tools import get_glyphs_jsondata
+from metapolator.log2json import get_glyphs_jsondata
 from metapolator.views import raise404_notauthorized
 
 

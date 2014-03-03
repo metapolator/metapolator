@@ -43,7 +43,7 @@ Distance between two masters, for example between `A` and `B`: `A ----- B`
 
 A new font created at a certain position on an axis, or between multiple axes.
 
-### Point 
+### Point
 
 ![
 ](https://raw.github.com/metapolator/metapolator/gh-pages/images/curve.png)
@@ -62,17 +62,17 @@ In the UFO its writen like this:
 A parameter is a characteristic, feature, or measurable factor that can help in defining a particular system. We use parameters on various levels to define fonts: `Global parameters` are on a font level, for example `font size`. `Glyph parameters` are on a glyph level, for example `glyph width`. `Point parameters` are on a point and curve level of a glyph shape, for example the position or `coordinate` of a point.
 
 ### Z-Point
-Point in a two dimensional cartesian coordinate system, defined by x and y coordinates: 
+Point in a two dimensional cartesian coordinate system, defined by x and y coordinates:
 `z=(x,y)`
 
 
 ## How It Works
 
 ```
-ufo fonts -input-to-> xml2mf.py =outputs=> 
-mf files -> metapost.c => 
-mf files -> mf2pt1.pl => 
-pfb fonts -> fontforge.c => 
+ufo fonts -input-to-> xml2mf.py =outputs=>
+mf files -> metapost.c =>
+mf files -> mf2pt1.pl =>
+pfb fonts -> fontforge.c =>
 ufo + otf fonts
 ```
 
@@ -107,10 +107,10 @@ https://github.com/metapolator/metapolator/issues/46
 
 The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
 
-1. [Install Docker](http://www.docker.io/gettingstarted/)
+1. [Install Docker](http://www.docker.io/gettingstarted/), perhaps with [HomeBrew](http://brew.sh): `brew install docker`
 2. `sudo docker pull metapolator/metapolator`
-3. `sudo docker run -p 9000:8080 -t metapolator/metapolator`
-4. open in browser `http://localhost:9000`
+3. `sudo docker run -p 80:8080 -t metapolator/metapolator`
+4. open in browser `http://localhost`
 
 #### The Traditional Way
 
@@ -120,7 +120,7 @@ sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server lib
 sudo apt-get install -y woff-tools
 # install fontforge and fontforge-python from source
 # git clone https://github.com/fontforge/fontforge.git;
-# 
+#
 sudo apt-get install -y fontforge python-fontforge;
 sudo apt-get install -y build-essential autoconf libtool python-dev;
 sudo apt-get install -y python-virtualenv python-setuptools python-pip;
@@ -153,8 +153,6 @@ ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
 mkdir src;
 cd src;
-wget http://mirrors.ctan.org/support/mf2pt1.zip;
-unzip mf2pt1.zip;
 mkdir sfnt2woff;
 cd sfnt2woff;
 wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
@@ -171,19 +169,20 @@ make setup;
 make run;
 ````
 
-### 
+###
 
 This should give you a local web server you can visit with a modern web browser: [http://0.0.0.0:8080](http://0.0.0.0:8080)
+
 
 ## Deployment
 
 #### The Simple Way
 
-Deploy metapolator to your own server easily with [drone.io](https://drone.io/) 
+Deploy metapolator to your own server easily with [drone.io](https://drone.io/)
 
 Check out <https://drone.io/github.com/metapolator/metapolator> to see how we continuously deploy the central metapolator master to <http://beta.metapolator.com>
 
-### The Traditional Way 
+### The Traditional Way
 
 To deploy metapolator on a Ubuntu or Debian server...
 
