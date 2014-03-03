@@ -72,10 +72,10 @@ def metrics(*masters):
             divider = 1
         return round(sum(ar) / divider)
 
-    result['xHeight'] = info('xHeight')
-    result['ascender'] = info('ascender')
-    result['descender'] = info('descender')
-    result['capHeight'] = info('capHeight')
+    result['xHeight'] = int(info('xHeight'))
+    result['ascender'] = int(info('ascender'))
+    result['descender'] = int(info('descender'))
+    result['capHeight'] = int(info('capHeight'))
     return result
 
 
