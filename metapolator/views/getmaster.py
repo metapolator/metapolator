@@ -1,10 +1,11 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
+from metapolator.log2json import get_edges_json
 from metapolator.metapost import Metapost
-from metapolator.tools import get_edges_json, get_metapolation_label, \
-    get_versions, prepare_master_environment
+from metapolator.tools import get_metapolation_label, \
+    prepare_master_environment
 from metapolator.views import raise404_notauthorized
 
 
@@ -42,7 +43,7 @@ def get_master_data(master, glyph, axislabel):
             'master_id': master.id,
             'metapolation': metalabel,
             'label': axislabel,
-            'versions': get_versions(project.id)}
+            'versions': project.get_versions()}
 
 
 class GetMaster:
@@ -60,4 +61,4 @@ class GetMaster:
         data = get_master_data(master, postdata.glyphname, postdata.axislabel)
         if not data:
             return web.badrequest()
-        return simplejson.dumps(data)
+        return ujson.dumps(data)

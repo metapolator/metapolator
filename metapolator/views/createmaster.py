@@ -1,10 +1,10 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
+from metapolator.log2json import get_edges_json
 from metapolator.metapost import Metapost
-from metapolator.tools import prepare_master_environment, get_edges_json, \
-    get_versions
+from metapolator.tools import prepare_master_environment
 from metapolator.views import raise404_notauthorized
 
 
@@ -77,7 +77,7 @@ class CreateMaster:
             if not json:
                 error = ('could not find any contours for '
                          'instance in %s for %s') % (logpath, glyph.name)
-                raise web.badrequest(simplejson.dumps({'error': error}))
+                raise web.badrequest(ujson.dumps({'error': error}))
 
             zpoints = glyph.get_zpoints()
 
@@ -86,7 +86,7 @@ class CreateMaster:
                 if not contourpoints:
                     error = ('could not find any points in contour '
                              'for instance in %s') % logpath
-                    raise web.badrequest(simplejson.dumps({'error': error}))
+                    raise web.badrequest(ujson.dumps({'error': error}))
                 metapost_points = []
                 for point in contourpoints:
                     if project.mfparser == 'controlpoints':
@@ -113,7 +113,7 @@ class CreateMaster:
 
             if len(zpoints) != len(points):
                 error = '%s zp != mp %s' % (len(zpoints), len(points))
-                raise web.badrequest(simplejson.dumps({'error': error}))
+                raise web.badrequest(ujson.dumps({'error': error}))
 
             newglypha = models.Glyph.create(master_id=master.id,
                                             name=glyph.name,
@@ -127,4 +127,4 @@ class CreateMaster:
 
         project.masters = ','.join([str(master.id)] * len(masters))
         web.ctx.orm.commit()
-        return simplejson.dumps({'versions': get_versions(project.id)})
+        return ujson.dumps({'versions': project.get_versions()})

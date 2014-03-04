@@ -1,7 +1,7 @@
 import datetime
 import os.path as op
 import re
-import simplejson
+import ujson
 import shutil
 import StringIO
 import web
@@ -10,8 +10,9 @@ import zipfile
 from metapolator import models
 from metapolator import tasks
 from metapolator.base.config import session
+from metapolator.glif2db import put_font_all_glyphs
 from metapolator.tools import prepare_environment_directory, \
-    prepare_master_environment, get_metapolation_label, put_font_all_glyphs
+    prepare_master_environment, get_metapolation_label
 from metapolator.views import raise404_notauthorized
 
 
@@ -110,7 +111,7 @@ class UploadZIP:
             raise
 
         master.update_masters_ordering(x.label)
-        return simplejson.dumps({'project_id': project.id,
+        return ujson.dumps({'project_id': project.id,
                                  'glyphname': project.currentglyph,
                                  'master_id': master.id,
                                  'label': x.label,

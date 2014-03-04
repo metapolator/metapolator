@@ -1,8 +1,8 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
-from metapolator.tools import get_glyphs_jsondata
+from metapolator.log2json import get_glyphs_jsondata
 from metapolator.views import raise404_notauthorized
 
 
@@ -23,4 +23,4 @@ class SaveAxis:
 
         masters = project.get_ordered_masters()
         result = get_glyphs_jsondata(postdata.glyphname, masters[0])
-        return simplejson.dumps(result)
+        return ujson.dumps(result)

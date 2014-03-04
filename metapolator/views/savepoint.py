@@ -1,9 +1,9 @@
-import simplejson
+import ujson
 import web
 
 from metapolator import models
 from metapolator.forms import PointParamExtendedForm
-from metapolator.tools import get_glyphs_jsondata
+from metapolator.log2json import get_glyphs_jsondata
 from metapolator.views import raise404_notauthorized
 
 
@@ -45,4 +45,4 @@ class SavePoint:
             models.GlyphParam.update(glyphoutline_id=postdata.glyphoutline_id,
                                      values=values)
         result = get_glyphs_jsondata(glyphoutline.glyph.name, master)
-        return simplejson.dumps(result)
+        return ujson.dumps(result)
