@@ -203,15 +203,19 @@ HTML templates are in [`/templates`](https://github.com/metapolator/metapolator/
 
 JS and CSS are in [`/static`](https://github.com/metapolator/metapolator/tree/master/static/js)
 
+We don't use CoffeeScript because it [makes code harder to read](ceronman.com/2012/09/17/coffeescript-less-typing-bad-readability/) and the [scoping is global](https://donatstudios.com/CoffeeScript-Madness).
+
 ## Back End
 
 TODO: Add Code review youtube video link
+
+We use JSON a lot, so you might like to install [JSONview](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) for Firefox or [JSONviewer](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh/related) for Chromium.
 
 ## Thanks
 
 Core Development Team: Simon Egli, Dave Crossland, Vitaly Volkov, Alex Troush
 
-Contributors: Walter Egli, Nicolas Pauly, Wei Huang,
+Contributors: Walter Egli, Nicolas Pauly, Wei Huang, you?
 
 Thanks to the [metaflop](http://www.metaflop.com) project and Dave Crossland for inspiring this one!
 
