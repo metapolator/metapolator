@@ -135,15 +135,6 @@ make run;
 
 ### Mac OS X
 
-#### The Simple Way
-
-The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
-
-1. [Install Docker](http://www.docker.io/gettingstarted/)
-2. `sudo docker pull metapolator/metapolator`
-3. `sudo docker run -p 9000:8080 -t metapolator/metapolator`
-4. open in browser `http://localhost:9000`
-
 #### The Traditional Way
 
 ```sh
@@ -169,10 +160,11 @@ make setup;
 make run;
 ````
 
-###
-
 This should give you a local web server you can visit with a modern web browser: [http://0.0.0.0:8080](http://0.0.0.0:8080)
 
+#### The Simple Way
+
+Please send a pull request on this file with the steps to run metapolator with [docker.io](http://www.docker.io) on Mac OS X :) 
 
 ## Deployment
 
