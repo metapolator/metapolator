@@ -64,7 +64,7 @@ var Instance = function (config) {
                 var widthB = (glyphB.advanceWidth * (1/ $fonts[1].unitsPerEm * fontSize));
                 var widthC = (glyphC.advanceWidth * (1 / $fonts[2].unitsPerEm * fontSize));
 
-                var value = $this.interpolateExtValue(width, widthB, widthC);
+                var value = Math.max(width, widthB, widthC);
                 if ((x + value) >= $canvasWidth * lines.length) {
                     i = i + 1, lines[i] = '';
                 }
