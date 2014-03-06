@@ -30,10 +30,6 @@ DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
     python /var/www/metapolator/metapolator/models.py
     chown -R user:user /var/www/metapolator
     
-    cd /var/www/metapolator;
-    ./node_modules/.bin/npm install
-    ./node_modules/.bin/bower install
-
     echo ssh user password: $SSH_USERPASS
     echo mysql root password: $METAPOLATOR_PASSWORD
 fi
