@@ -1,5 +1,6 @@
-import plistlib
+import os
 import os.path as op
+import plistlib
 
 
 def fontinfo(ufofile):
@@ -22,3 +23,10 @@ def update(ufofile, values):
 
 def update_kerning(ufofile, values):
     return
+
+
+def correct_contours_direction(ufofile):
+    return
+    # import fontforge
+    # fp = fontforge.open(ufofile)
+    # import pdb; pdb.set_trace()

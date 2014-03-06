@@ -905,7 +905,7 @@ SelectAll();
 AddExtrema();
 RemoveOverlap();
 Simplify(0, 2);
-# CorrectDirection();
+CorrectDirection();
 Simplify(0, 2);
 # Inline(0,2);
 # RoundToInt();

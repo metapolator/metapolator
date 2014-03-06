@@ -152,6 +152,8 @@ def main():
     fontinfo.update_kerning(os.path.join(cwd, 'fontbox.ufo'),
                             points2mf.kernings(*masters))
 
+    fontinfo.correct_contours_direction(os.path.join(cwd, 'fontbox.ufo'))
+
 
 def glyph_exist(glyphname, *masters):
     """ Returns True if ALL masters contain glyph with name """
