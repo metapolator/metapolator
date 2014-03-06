@@ -17,7 +17,10 @@ def buildfname ( filename ):
 
 #dirnamea = 'MP_a.ufo/glyphs/'
 #dirnamea = 'MPExo-ExtraBold.ufo/glyphs/'
-dirnamea = '/home/hash/Downloads/fontbox_singlepoint.ufo/glyphs/'
+
+dirnamea = sys.argv[1]
+
+# dirnamea = '/home/hash/Downloads/fontbox_singlepoint.ufo/glyphs/'
 
 
 charlista = [f for f in os.listdir(dirnamea) ]
