@@ -21,7 +21,7 @@ var Workspace = function() {
 
     $('#btn-add-axes').on('click', this.createEmptyAxes.bind(this));
 
-    $(window).hashchange(this.hashchanged.bind(this));
+    $(window).on('hashchange', this.hashchanged.bind(this));
 }
 
 

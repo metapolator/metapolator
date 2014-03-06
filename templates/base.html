@@ -7,11 +7,11 @@ $def with (page)
 <META HTTP-EQUIV="Expires" CONTENT="-1">
 <link rel="icon" href="/static/favicon.ico" type="image/x-icon"/>
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="/static/dist/css/app.css" />
+
 <link rel="stylesheet" type="text/css" href="/static/mfg.css"/>
+
+<script type="text/javascript" src="/static/dist/lib/libs.js"></script>
 </head>
 <body>
 
@@ -61,8 +61,11 @@ $def with (page)
     <div class="container">
     $:page
     </div>
+
+
 </body>
 
+<script type="text/javascript" src="/static/dist/app.js"></script>
 <script>
   function setmfparser(mode) {
     $$.post('/mfparser-switch/' + mode + '/')
