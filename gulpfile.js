@@ -15,16 +15,13 @@ var filePath = {
                         'static/js/3rdparty/*.js',
                         'static/js/3rdparty/**.min.js'],
                         dest: './static/dist/lib/' },
-    minifycss: { src: ['static/css/*.css', 'static/lib/**/*.css',
-                        'static/lib/**/*.min.css'],
+    minifycss: { src: ['./static/css/*.css', './static/lib/**/*.css',
+                        './static/lib/**/*.min.css'],
                 dest: './static/dist/css/' }
 };
 
-gulp.task("bower-files", function(){
-    gulpBowerFiles().pipe(gulp.dest("./static/lib"));
-});
-
 gulp.task('build', function () {
+    gulpBowerFiles().pipe(gulp.dest("./static/lib"));
     gulp.src(filePath.appjsminify.src)
         .pipe(debug())
         .pipe(uglify())
