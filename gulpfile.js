@@ -15,7 +15,8 @@ var filePath = {
                         'static/js/3rdparty/*.js',
                         'static/js/3rdparty/**.min.js'],
                         dest: './static/dist/lib/' },
-    minifycss: { src: ['static/css/*.css', 'static/lib/**/*.css','static/lib/**/*.min.css'],
+    minifycss: { src: ['static/css/*.css', 'static/lib/**/*.css',
+                        'static/lib/**/*.min.css'],
                 dest: './static/dist/css/' }
 };
 
@@ -44,3 +45,5 @@ gulp.task('build', function () {
         .pipe(size())
         .pipe(gulp.dest(filePath.minifycss.dest));
 });
+
+gulp.task('default', ['bower-files', 'build']);
