@@ -18,5 +18,5 @@
       "gulp-minify-css": "~0.3.0",
       "gulp-rename": "~1.1.0",
       "gulp-debug": "~0.2.0"
-  },
+  }
 }
