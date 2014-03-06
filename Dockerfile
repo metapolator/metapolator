@@ -9,7 +9,8 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libxml2-dev libxslt-dev fontforge python-fontforge \
         build-essential autoconf libtool python-dev python-pip \
         redis-server wget mysql-server mysql-client libmysqlclient-dev \
-        pwgen perl nginx sudo supervisor openssh-server woff-tools
+        pwgen perl nginx sudo supervisor openssh-server woff-tools \
+        nodejs npm
 
 RUN     mkdir /var/run/sshd
 
