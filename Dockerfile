@@ -11,6 +11,8 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         redis-server wget mysql-server mysql-client libmysqlclient-dev \
         pwgen perl nginx sudo supervisor openssh-server woff-tools \
         nodejs npm
+        
+RUN     ln -s /usr/bin/nodejs /usr/bin/node
 
 RUN     mkdir /var/run/sshd
 
