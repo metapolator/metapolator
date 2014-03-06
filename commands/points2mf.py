@@ -48,11 +48,49 @@ def getmetapolation(left, right):
     return metapolationcache[axis]
 
 
+def func(k, m, A, B):
+    return k * (A + m * (B - A))
+
+
+def kernings(*masters):
+    if not len(list(masters)):
+        return {}
+
+    divider = 0
+
+    kerning_table = {}
+    for left, right in iterate(masters):
+        koef = getcoefficient(left, right)
+        metapolation = getmetapolation(left, right)
+
+        divider += koef
+
+        for kerningkey in left['kerning']:
+            if kerningkey not in kerning_table:
+                kerning_table[kerningkey] = dict()
+
+            for kernedkey in left['kerning'][kerningkey]:
+                if kernedkey not in kerning_table[kerningkey]:
+                    kerning_table[kerningkey][kernedkey] = 0
+
+                try:
+                    p = func(koef, metapolation,
+                             float(left['kerning'][kerningkey][kernedkey]),
+                             float(right['kerning'][kerningkey][kernedkey]))
+                except KeyError:
+                    p = func(koef, metapolation,
+                             float(left['kerning'][kerningkey][kernedkey]),
+                             float(left['kerning'][kerningkey][kernedkey]))
+                kerning_table[kerningkey][kernedkey] += p
+
+    import pprint
+    pprint.pprint(kerning_table)
+
+    return {}
+
+
 def metrics(*masters):
     result = {}
-
-    def func(k, m, A, B):
-        return k * (A + m * (B - A))
 
     def info(param):
         ar = []  # array for definition of formulas

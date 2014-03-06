@@ -21,6 +21,8 @@ import re
 import subprocess
 import sys
 
+from logger import logger
+
 cwd = os.path.dirname(__file__)
 fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
 
@@ -49,8 +51,12 @@ def get_master_alias(ufofile):
 
 
 def init_master(ufofile):
+    print
+    print 'Read data from UFOs for font information'
     info = fontinfo.fontinfo(os.path.join(fwd, ufofile))
-    return dict(name=ufofile, glyphs={}, info=info,
+    kerns = fontinfo.kerninginfo(os.path.join(fwd, ufofile))
+    logger.lapse()
+    return dict(name=ufofile, glyphs={}, info=info, kerning=kerns,
                 alias=get_master_alias(os.path.splitext(ufofile)[0]))
 
 
@@ -60,9 +66,9 @@ def get_from_config(config, key):
     return float(kv.get(key, 0))
 
 
-def parse_arguments(axis):
+def parse_arguments(argv):
     # collect masters pair for each axes
-    for ax in axis:
+    for ax in argv.axis:
         # TODO: check for invalid argument?
         a, masterlist, config = ax.split('|')
 
@@ -78,20 +84,24 @@ def parse_arguments(axis):
             alias += master['alias']
 
         # values for coefficient and metapolation applying to zero
-        points2mf.cachekoef[alias] = get_from_config(config, 'koef')
-        points2mf.metapolationcache[alias] = get_from_config(config, 'metap')
+        points2mf.cachekoef[alias] = get_from_config(config, 'coefficient')
+        points2mf.metapolationcache[alias] = get_from_config(config, 'metapolation')
 
         axismapping[re.sub('name:', '', a)] = alias
 
+    print
+    print 'Definition of axis'
+    logger.lapse()
 
-def main():
-    argv = parse_command_line_arguments()
-    parse_arguments(argv.axis)
-
+    print
+    print 'Definition of glyphs for masters'
     for master in masters:
         for glyph in iterate_glyphs(master):
             master['glyphs'][glyph['name']] = glyph
+    logger.lapse()
 
+
+def generate_mf(masters):
     # loop the glyph in primary master glyphs
     # import pprint
     directory = get_temp_dir()
@@ -106,12 +116,26 @@ def main():
             fp.write(points2mf.points2mf(glyphname, *masters))
 
 
+def main():
+    print
+    print 'Parsing arguments'
+    argv = parse_command_line_arguments()
+    logger.lapse()
+    print
+    print 'Prepare axis and json masters'
+    parse_arguments(argv)
+
+    print
+    print 'Generating METAFONT for glyphs'
+    generate_mf(masters)
+    logger.lapse()
+
     os.environ['MFINPUTS'] = os.path.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'
 
     process = subprocess.Popen(
         ["sh", "makefont.sh", 'fontbox', '1'],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
+        stdout=subprocess.PIPE, stderr=open('test.err', 'w'), cwd=cwd
     )
 
     errorcontent = ''
@@ -124,6 +148,10 @@ def main():
 
     fontinfo.update(os.path.join(cwd, 'fontbox.ufo'),
                     points2mf.metrics(*masters))
+
+    fontinfo.update_kerning(os.path.join(cwd, 'fontbox.ufo'),
+                            points2mf.kernings(*masters))
+
 
 def glyph_exist(glyphname, *masters):
     """ Returns True if ALL masters contain glyph with name """
