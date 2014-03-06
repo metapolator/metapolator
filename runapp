@@ -33,7 +33,6 @@ DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
     cd /var/www/metapolator;
     npm install
     bower install
-    gulp
 
     echo ssh user password: $SSH_USERPASS
     echo mysql root password: $METAPOLATOR_PASSWORD
