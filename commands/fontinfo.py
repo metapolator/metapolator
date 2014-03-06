@@ -1,6 +1,8 @@
-import os
+import glob
 import os.path as op
 import plistlib
+
+from lxml import etree
 
 
 def fontinfo(ufofile):
@@ -26,6 +28,11 @@ def update_kerning(ufofile, values):
 
 
 def correct_contours_direction(ufofile):
+    for glifname in glob.glob(op.join(ufofile, 'glyphs', '*.glif')):
+        doctree = etree.parse(open(glifname))
+        for outline in doctree.find('outline'):
+            points = outline.xpath('.//contour/point')
+            print len(points)
     return
     # import fontforge
     # fp = fontforge.open(ufofile)
