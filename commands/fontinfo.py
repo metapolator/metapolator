@@ -30,9 +30,9 @@ def update_kerning(ufofile, values):
 def correct_contours_direction(ufofile):
     for glifname in glob.glob(op.join(ufofile, 'glyphs', '*.glif')):
         doctree = etree.parse(open(glifname))
-        for outline in doctree.find('outline'):
-            points = outline.xpath('.//contour/point')
-            print len(points)
+        for outline in doctree.xpath('.//outline/contour'):
+            points = list(outline.xpath('point'))
+            print points
     return
     # import fontforge
     # fp = fontforge.open(ufofile)
