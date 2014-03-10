@@ -37,7 +37,6 @@ class Metapost:
         self.write_global_params(master)
 
         os.environ['MFINPUTS'] = master.get_fonts_directory()
-        os.environ['WORKDIR'] = working_dir()
         os.environ['MFMODE'] = self.mfparser
 
         if not interpolated:
@@ -47,7 +46,8 @@ class Metapost:
 
         process = subprocess.Popen(
             ["sh", "makefont.sh", metafont, self.version],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=working_dir()
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            cwd=op.join(master.project.get_master_directory())
         )
 
         while True:

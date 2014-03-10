@@ -45,6 +45,7 @@ def get_metapolation_label(c):
 
 
 def prepare_master_environment(master):
+    prepare_environment_directory(master.project)
     for f in os.listdir(working_dir('commons', user='skel')):
         filename = working_dir(op.join('commons', f), user='skel')
         try:
@@ -53,24 +54,26 @@ def prepare_master_environment(master):
             raise
 
 
-def prepare_environment_directory(force=False):
+def prepare_environment_directory(project, force=False):
     filelist = ['makefont.sh', 'mf2pt1.mp', 'mf2pt1.pl', 'mf2pt1.texi',
                 'mtp.enc']
 
-    static_directory = op.join(working_dir(), 'static')
+    projectdir = project.get_master_directory()
+
+    static_directory = op.join(projectdir, 'static')
     if not op.exists(static_directory):
         os.makedirs(static_directory)
 
-    if op.exists(op.join(working_dir(), 'makefont.sh')) and not force:
+    if op.exists(op.join(projectdir, 'makefont.sh')) and not force:
         return
 
     for filename in filelist:
         try:
             shutil.copy2(op.join(working_dir(user='skel'), filename),
-                         op.join(working_dir()))
+                         op.join(projectdir))
         except (OSError, IOError):
             raise
 
     import subprocess
     subprocess.Popen(["mpost", "-progname=mpost", "-ini", "mf2pt1", "\\dump"],
-                     cwd=working_dir())
+                     cwd=projectdir)

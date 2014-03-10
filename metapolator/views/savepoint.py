@@ -43,6 +43,6 @@ class SavePoint:
                 if values[key] == '':
                     values[key] = None
             models.GlyphPointParam.update(glyphpoint_id=postdata.glyphpoint_id,
-                                     values=values)
+                                          values=values)
         result = get_glyphs_jsondata(glyphpoint.glyph.name, master)
         return ujson.dumps(result)

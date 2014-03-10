@@ -5,7 +5,6 @@ from passlib.hash import bcrypt
 from metapolator import models
 from metapolator.base.config import session, is_loggedin
 from metapolator.forms import RegisterForm
-from metapolator.tools import prepare_environment_directory
 from metapolator.views import render
 
 
@@ -56,5 +55,4 @@ class register:
         user = models.User.create(form.d.username, form.d.password, form.d.email)
         seeother = authorize(user)
 
-        prepare_environment_directory()
         raise seeother

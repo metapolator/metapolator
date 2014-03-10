@@ -7,7 +7,7 @@ $def with (project, instances)
 		  font-family: '$webctx.project.projectname.$instance.id';
 		  font-style: normal;
 		  font-weight: normal;
-		  src: local('$webctx.project.projectname.$instance.id'), url("$working_url()$:'/instances/'$instance.id$:'.otf'") format('opentype');
+		  src: local('$webctx.project.projectname.$instance.id'), url("$webctx.project.get_directory()$:'/instances/'$instance.id$:'.otf'") format('opentype');
 		}
 </style>
 

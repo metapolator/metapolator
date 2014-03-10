@@ -136,18 +136,23 @@ class Project(Base, UserQueryMixin):
                     break
         return masters
 
+    def get_upload_directory(self):
+        return op.join(self.get_directory(), 'uploads')
+
+    def get_master_directory(self):
+        return op.join(self.get_directory(), 'masters')
+
     def get_instancelog(self, version=1, ab_source=None):
+        logspath = self.get_master_directory()
         if ab_source:
-            return op.join(working_dir(),
-                           '%s-%03d.log' % (self.projectname, version))
-        return op.join(working_dir(), '%s.log' % (self.projectname))
+            return op.join(logspath, '%03d.log' % version)
+        return op.join(logspath, 'interpolated.log')
 
     def get_basename(self):
         return self.projectname
 
-    def get_directory(self, version=1):
-        directory = op.join(working_dir(), '%s-%03d' % (self.projectname,
-                                                        version))
+    def get_directory(self):
+        directory = op.join(working_dir(), self.projectname)
         if not op.exists(directory):
             os.makedirs(directory)
         return directory
@@ -217,14 +222,13 @@ class Master(Base, UserQueryMixin):
         return Glyph.filter(master_id=self.id).order_by(Glyph.name.asc())
 
     def get_ufo_path(self):
-        fontpath = self.get_fonts_directory()
-        return op.join(fontpath, '%s-%03d.ufo' % (self.project.projectname,
-                                                  self.version))
+        fontpath = self.project.get_upload_directory()
+        return op.join(fontpath, '%03d.ufo' % self.version)
 
     def get_metafont(self, ab_source=None):
         if ab_source:
-            return '%s-%03d' % (self.project.projectname, self.version)
-        return self.project.projectname
+            return '%03d' % self.version
+        return 'interpolated'
 
     def metafont_filepath(self, ab_source=None):
         return op.join(self.get_fonts_directory(),
@@ -237,7 +241,11 @@ class Master(Base, UserQueryMixin):
             pass
 
     def get_fonts_directory(self):
-        return self.project.get_directory(self.version)
+        directory = op.join(self.project.get_directory(), 'masters',
+                            '%03d' % self.version)
+        if not op.exists(directory):
+            os.makedirs(directory)
+        return directory
 
 
 class Glyph(Base, UserQueryMixin):

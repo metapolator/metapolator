@@ -5,7 +5,7 @@ from metapolator import models
 from metapolator.log2json import get_glyph_info_from_log
 from metapolator.metapost import Metapost
 from metapolator.tools import get_metapolation_label, \
-    prepare_master_environment, prepare_environment_directory
+    prepare_master_environment
 from metapolator.views import raise404_notauthorized
 
 
@@ -13,8 +13,6 @@ class Project:
 
     @raise404_notauthorized
     def GET(self):
-        prepare_environment_directory()
-
         x = web.input(project=0)
 
         project = models.Project.get(id=x.project)
@@ -45,7 +43,8 @@ class Project:
                 return web.badrequest()
 
             master_instancelog = project.get_instancelog(master.version, 'a')
-            glyphsdata = get_glyph_info_from_log(master_instancelog, master=master)
+            glyphsdata = get_glyph_info_from_log(master_instancelog,
+                                                 master=master)
 
             metalabel = get_metapolation_label(chr(models.LABELS[i]))
 
@@ -69,7 +68,7 @@ class Project:
                       models.Master.filter(project_id=project.id))
 
         return ujson.dumps({'masters': masters_list,
-                                 'versions': project.get_versions(),
-                                 'metaglyphs': metaglyphs,
-                                 'mode': project.mfparser,
-                                 'project_id': project.id})
+                            'versions': project.get_versions(),
+                            'metaglyphs': metaglyphs,
+                            'mode': project.mfparser,
+                            'project_id': project.id})

@@ -28,7 +28,7 @@ class CreateInstance:
 
         for extension in ['-webfont.eot', '-webfont.ttf', '.otf']:
             source = project.get_basename() + extension
-            dest_dir = op.join(working_dir(), 'instances')
+            dest_dir = op.join(project.get_directory(), 'instances')
             if not op.exists(dest_dir):
                 os.makedirs(dest_dir)
             dest = op.join(dest_dir, '%s%s' % (instance.id, extension))
