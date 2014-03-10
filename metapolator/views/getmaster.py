@@ -2,7 +2,7 @@ import ujson
 import web
 
 from metapolator import models
-from metapolator.log2json import get_edges_json
+from metapolator.log2json import get_glyph_info_from_log
 from metapolator.metapost import Metapost
 from metapolator.tools import get_metapolation_label, \
     prepare_master_environment
@@ -24,7 +24,7 @@ def get_master_data(master, glyph, axislabel):
         return
 
     instancelog = project.get_instancelog(masters[0].version)
-    metaglyphs = get_edges_json(instancelog)
+    metaglyphs = get_glyph_info_from_log(instancelog)
 
     glyphs = master.get_glyphs()
     glyphs = glyphs.filter(models.Glyph.name == glyph)
@@ -32,7 +32,7 @@ def get_master_data(master, glyph, axislabel):
         return
     master_instancelog = project.get_instancelog(master.version, 'a')
 
-    glyphsdata = get_edges_json(master_instancelog, master=master)
+    glyphsdata = get_glyph_info_from_log(master_instancelog, master=master)
 
     metalabel = get_metapolation_label(axislabel)
 
