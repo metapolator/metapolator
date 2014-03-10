@@ -15,11 +15,21 @@ class PointSet(object):
     def zpoints(self, value):
         self._zpoints = value
 
-    def add_point(self, x, y, name, number, preset):
+    def add_point(self, x, y, name, number, parameters):
         """ Put to current set new point with name and its (x, y)-coords """
-        point = {'name': name, 'coords': {'x': x, 'y': y}, 'preset': preset,
-                 'number': number}
-        self.points.append(point)
+        parameters.update({'x': x, 'y': y})
+
+        """
+        {
+            'x': 12,
+            'y': 12,
+            'control_out': True,
+            'type': 'curve',
+            ...
+        }
+        """
+
+        self.points.append(parameters)
 
 
 def glif2json(fp):
@@ -33,6 +43,7 @@ def glif2json(fp):
         pointset = PointSet()
 
         for point in contour.findall('point'):
+
             pointname = point.attrib.get('name')
             type = point.attrib.get('type')
 

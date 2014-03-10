@@ -181,19 +181,19 @@ def points2mf(glyphname, *masters):
 # search for parameters
 
     for item in masters[0]['glyphs'][glyphname]['points']:
-        znamel = re.match('z(\d+)l', item['preset'].get('pointname'))
+        znamel = re.match('z(\d+)l', item.get('pointname'))
 
-        im = item['preset'].get('pointname')
-        istartp = item['preset'].get('startp')
-        itype = item['preset'].get('type')
-        icontrol_out = item['preset'].get('control_out')
-        icontrol_in = item['preset'].get('control_in')
+        im = item.get('pointname')
+        istartp = item.get('startp')
+        itype = item.get('type')
+        icontrol_out = item.get('control_out')
+        icontrol_in = item.get('control_in')
 
         if znamel and im == znamel.group(0):
             zzn.append(i)
 
             if istartp is not None:
-                istartpval = item['preset'].get('startp')
+                istartpval = item.get('startp')
                 startp.append("\nfill\n")
                 startpval.append(istartpval)
             else:
@@ -201,7 +201,7 @@ def points2mf(glyphname, *masters):
                 startpval.append(0)
 
             if itype is not None:
-                itypeval = item['preset'].get('type')
+                itypeval = item.get('type')
                 type.append("type")
                 typeval.append(itypeval)
             else:
@@ -209,7 +209,7 @@ def points2mf(glyphname, *masters):
                 typeval.append(0)
 
             if icontrol_out is not None:
-                icontrol_outval = item['preset'].get('control_out')
+                icontrol_outval = item.get('control_out')
                 control_out.append("control_out")
                 control_outval.append(icontrol_outval)
             else:
@@ -217,7 +217,7 @@ def points2mf(glyphname, *masters):
                 control_outval.append(0)
 
             if icontrol_in is not None:
-                icontrol_inval = item['preset'].get('control_in')
+                icontrol_inval = item.get('control_in')
                 control_in.append("control_in")
                 control_inval.append(icontrol_inval)
             else:
@@ -237,8 +237,8 @@ def points2mf(glyphname, *masters):
         divider = 0
 
         for left, right in iterate(masters):
-            leftpoint = left['glyphs'][glyphname]['points'][i]['coords']
-            rightpoint = right['glyphs'][glyphname]['points'][i]['coords']
+            leftpoint = left['glyphs'][glyphname]['points'][i]
+            rightpoint = right['glyphs'][glyphname]['points'][i]
             koef = getcoefficient(left, right)
             metapolation = getmetapolation(left, right)
             divider += koef
