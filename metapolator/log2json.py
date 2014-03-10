@@ -2,7 +2,7 @@ import re
 import ujson
 
 from metapolator.metapost import Metapost
-from metapolator.models import GlyphParam, GlyphOutline, Glyph, LocalParam
+from metapolator.models import GlyphPointParam, GlyphPoint, Glyph, LocalParam
 
 
 def get_edges_json(log_filename, glyphid=None, master=None):
@@ -19,12 +19,12 @@ def get_edges_json(log_filename, glyphid=None, master=None):
 def get_edges_json_from_db(master, glyphid):
     glyph = Glyph.get(master_id=master.id, name=glyphid)
 
-    points = GlyphOutline.filter(glyph_id=glyph.id)
+    points = GlyphPoint.filter(glyph_id=glyph.id)
     localparam = LocalParam.get(id=master.idlocala)
 
     _points = []
-    for point in points.order_by(GlyphOutline.pointnr.asc()):
-        param = GlyphParam.get(glyphoutline_id=point.id)
+    for point in points.order_by(GlyphPoint.pointnr.asc()):
+        param = GlyphPointParam.get(glyphpoint_id=point.id)
         iszpoint = False
         if re.match('z(\d+)[lr]', param.pointname):
             iszpoint = True
@@ -132,8 +132,8 @@ def get_json(content, glyphid=None, master=None):
             zpoints = get_edges_json_from_db(master, glyph)
 
             g = Glyph.get(master_id=master.id, name=glyph)
-            maxx, minx = GlyphOutline.minmax(GlyphOutline.x, glyph_id=g.id)[0]
-            maxy, miny = GlyphOutline.minmax(GlyphOutline.y, glyph_id=g.id)[0]
+            maxx, minx = GlyphPoint.minmax(GlyphPoint.x, glyph_id=g.id)[0]
+            maxy, miny = GlyphPoint.minmax(GlyphPoint.y, glyph_id=g.id)[0]
 
             if maxx is not None and minx is not None \
                     and maxy is not None and miny is not None:

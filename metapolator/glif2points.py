@@ -1,7 +1,7 @@
 import re
 import web
 
-from metapolator.models import GlyphOutline, GlyphParam
+from metapolator.models import GlyphPoint, GlyphPointParam
 
 
 zpoint_re = re.compile('(?P<name>z(?P<number>[\d]+))(?P<side>[lr])')
@@ -35,28 +35,28 @@ class PointSet(object):
         """ Save list of point dictionary to database """
 
         for point in self.points:
-            glyphoutline = GlyphOutline.get(glyphname=glyph.name, glyph_id=glyph.id,
-                                            master_id=glyph.master_id,
-                                            pointnr=point['number'])
-            if not glyphoutline:
-                glyphoutline = GlyphOutline.create(glyphname=glyph.name,
-                                                   glyph_id=glyph.id,
-                                                   master_id=glyph.master_id,
-                                                   pointnr=point['number'])
-            glyphoutline.x = self.x(point)
-            glyphoutline.y = self.y(point)
-
-            glyphparam = GlyphParam.get(glyphoutline_id=glyphoutline.id,
-                                        glyph_id=glyph.id)
-            if not glyphparam:
-                glyphparam = GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                               master_id=glyph.master_id,
+            glyphpoint = GlyphPoint.get(glyphname=glyph.name, glyph_id=glyph.id,
+                                        master_id=glyph.master_id,
+                                        pointnr=point['number'])
+            if not glyphpoint:
+                glyphpoint = GlyphPoint.create(glyphname=glyph.name,
                                                glyph_id=glyph.id,
-                                               pointname=self.name(point))
+                                               master_id=glyph.master_id,
+                                               pointnr=point['number'])
+            glyphpoint.x = self.x(point)
+            glyphpoint.y = self.y(point)
+
+            glyphpointparam = GlyphPointParam.get(glyphpoint_id=glyphpoint.id,
+                                                  glyph_id=glyph.id)
+            if not glyphpointparam:
+                glyphpointparam = GlyphPointParam.create(glyphpoint_id=glyphpoint.id,
+                                                         master_id=glyph.master_id,
+                                                         glyph_id=glyph.id,
+                                                         pointname=self.name(point))
             for attr in point['preset']:
                 if attr == 'name':
                     continue
-                setattr(glyphparam, attr, point['preset'][attr])
+                setattr(glyphpointparam, attr, point['preset'][attr])
 
         web.ctx.orm.commit()
 

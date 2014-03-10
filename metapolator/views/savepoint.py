@@ -11,28 +11,28 @@ class SavePoint:
 
     @raise404_notauthorized
     def POST(self):
-        postdata = web.input(glyphoutline_id='')
+        postdata = web.input(glyphpoint_id='')
 
-        if not models.GlyphOutline.exists(id=postdata.glyphoutline_id):
+        if not models.GlyphPoint.exists(id=postdata.glyphpoint_id):
             return web.notfound()
-        glyphoutline = models.GlyphOutline.get(id=postdata.glyphoutline_id)
+        glyphpoint = models.GlyphPoint.get(id=postdata.glyphpoint_id)
 
-        project = models.Project.get(id=glyphoutline.glyph.project_id)
+        project = models.Project.get(id=glyphpoint.glyph.project_id)
         if not project:
             raise web.notfound()
 
-        master = models.Master.get(id=glyphoutline.glyph.master_id)
+        master = models.Master.get(id=glyphpoint.glyph.master_id)
         if not master:
             return web.notfound()
 
         form = PointParamExtendedForm()
         if form.validates():
             values = form.d
-            glyphoutline.x = float(values['x'])
-            glyphoutline.y = float(values['y'])
+            glyphpoint.x = float(values['x'])
+            glyphpoint.y = float(values['y'])
 
-            glyphoutline.glyph.width = int(values['width'])
-            glyphoutline.glyph.width_new = int(values['width_new'])
+            glyphpoint.glyph.width = int(values['width'])
+            glyphpoint.glyph.width_new = int(values['width_new'])
 
             del values['zpoint']
             del values['x']
@@ -42,7 +42,7 @@ class SavePoint:
             for key in values:
                 if values[key] == '':
                     values[key] = None
-            models.GlyphParam.update(glyphoutline_id=postdata.glyphoutline_id,
+            models.GlyphPointParam.update(glyphpoint_id=postdata.glyphpoint_id,
                                      values=values)
-        result = get_glyphs_jsondata(glyphoutline.glyph.name, master)
+        result = get_glyphs_jsondata(glyphpoint.glyph.name, master)
         return ujson.dumps(result)

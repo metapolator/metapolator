@@ -15,8 +15,8 @@ class CreateMaster:
                       glyphname=glyph.name,
                       pointnr=pointnr, x=int(float(point['x'])),
                       y=int(float(point['y'])))
-        glyphoutline = models.GlyphOutline.create(**kwargs)
-        models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
+        glyphpoint = models.GlyphPoint.create(**kwargs)
+        models.GlyphPointParam.create(glyphpoint_id=glyphpoint.id,
                                  glyph_id=glyph.id,
                                  master_id=glyph.master_id,
                                  pointname=pointparam.pointname,

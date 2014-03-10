@@ -31,15 +31,15 @@ class CopyMaster:
 
             web.ctx.orm.commit()
 
-            query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-            query = query.filter(models.GlyphOutline.glyph_id == glyph.id)
-            query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+            query = web.ctx.orm.query(models.GlyphPoint, models.GlyphPointParam)
+            query = query.filter(models.GlyphPoint.glyph_id == glyph.id)
+            query = query.filter(models.GlyphPointParam.glyphpoint_id == models.GlyphPoint.id)
 
             outlines = list(query)
 
             for outline, param in outlines:
 
-                newglyphoutline_obj = models.GlyphOutline.create(
+                newglyphpoint_obj = models.GlyphPoint.create(
                     glyph_id=newglyph_obj.id,
                     master_id=newmaster_obj.id,
                     glyphname=newglyph_obj.name,
@@ -48,7 +48,7 @@ class CopyMaster:
                     y=outline.y)
                 web.ctx.orm.commit()
 
-                param.copy(newglyphoutline_obj)
+                param.copy(newglyphpoint_obj)
                 web.ctx.orm.commit()
 
         newmaster_obj.update_masters_ordering(postdata.axislabel)

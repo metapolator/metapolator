@@ -259,19 +259,19 @@ class Glyph(Base, UserQueryMixin):
     master = relationship('Master', backref='master')
 
     def get_zpoints(self):
-        points = query(GlyphOutline, GlyphParam)
-        points = points.filter(GlyphOutline.glyph_id == self.id)
-        points = points.filter(GlyphParam.glyphoutline_id == GlyphOutline.id)
+        points = query(GlyphPoint, GlyphPointParam)
+        points = points.filter(GlyphPoint.glyph_id == self.id)
+        points = points.filter(GlyphPointParam.glyphpoint_id == GlyphPoint.id)
         zpoints = []
-        for outline, param in points.order_by(GlyphOutline.pointnr.asc()):
+        for outline, param in points.order_by(GlyphPoint.pointnr.asc()):
             if re.match('z\d+[rl]', param.pointname):
                 zpoints.append(param)
         return zpoints
 
 
-class GlyphOutline(Base, UserQueryMixin):
+class GlyphPoint(Base, UserQueryMixin):
 
-    __tablename__ = 'glyphoutline'
+    __tablename__ = 'glyphpoint'
 
     id = Column(Integer, primary_key=True)
     glyph_id = Column(Integer, ForeignKey('glyph.id'))
@@ -287,15 +287,15 @@ class GlyphOutline(Base, UserQueryMixin):
     y = Column(Integer)
 
 
-class GlyphParam(Base, UserQueryMixin):
+class GlyphPointParam(Base, UserQueryMixin):
 
-    __tablename__ = 'glyphparam'
+    __tablename__ = 'glyphpointparam'
 
-    glyphoutline = relationship('GlyphOutline', backref='glyphoutline')
+    glyphpoint = relationship('GlyphPoint', backref='glyphpoint')
 
     id = Column(Integer, primary_key=True)
     glyph_id = Column(Integer, ForeignKey('glyph.id'))
-    glyphoutline_id = Column(Integer, ForeignKey('glyphoutline.id'))
+    glyphpoint_id = Column(Integer, ForeignKey('glyphpoint.id'))
 
     fontsource = Column(Enum('A', 'B'), index=True)
     user_id = Column(Integer, ForeignKey('users.id'))
@@ -335,12 +335,12 @@ class GlyphParam(Base, UserQueryMixin):
     serif_v_left = Column(String(32))
     serif_v_right = Column(String(32))
 
-    def copy(self, newglyphoutline_obj):
+    def copy(self, newglyphpoint_obj):
 
-        return GlyphParam.create(
-            glyph_id=newglyphoutline_obj.glyph_id,
-            glyphoutline_id=newglyphoutline_obj.id,
-            master_id=newglyphoutline_obj.master_id,
+        return GlyphPointParam.create(
+            glyph_id=newglyphpoint_obj.glyph_id,
+            glyphpoint_id=newglyphpoint_obj.id,
+            master_id=newglyphpoint_obj.master_id,
 
             pointname=self.pointname,
             type=self.type,

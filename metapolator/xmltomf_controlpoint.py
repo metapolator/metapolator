@@ -60,24 +60,24 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     fip.write("""% point coordinates font A""")
     fip.write("\n")
 
-    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-    query = query.filter(models.GlyphOutline.glyph_id == glyphA.id)
-    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    query = web.ctx.orm.query(models.GlyphPoint, models.GlyphPointParam)
+    query = query.filter(models.GlyphPoint.glyph_id == glyphA.id)
+    query = query.filter(models.GlyphPointParam.glyphpoint_id == models.GlyphPoint.id)
     fonta_outlines = list(query)
 
-    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-    query = query.filter(models.GlyphOutline.glyph_id == glyphB.id)
-    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    query = web.ctx.orm.query(models.GlyphPoint, models.GlyphPointParam)
+    query = query.filter(models.GlyphPoint.glyph_id == glyphB.id)
+    query = query.filter(models.GlyphPointParam.glyphpoint_id == models.GlyphPoint.id)
     fontb_outlines = list(query)
 
-    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-    query = query.filter(models.GlyphOutline.glyph_id == glyphC.id)
-    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    query = web.ctx.orm.query(models.GlyphPoint, models.GlyphPointParam)
+    query = query.filter(models.GlyphPoint.glyph_id == glyphC.id)
+    query = query.filter(models.GlyphPointParam.glyphpoint_id == models.GlyphPoint.id)
     fontc_outlines = list(query)
 
-    query = web.ctx.orm.query(models.GlyphOutline, models.GlyphParam)
-    query = query.filter(models.GlyphOutline.glyph_id == glyphD.id)
-    query = query.filter(models.GlyphParam.glyphoutline_id == models.GlyphOutline.id)
+    query = web.ctx.orm.query(models.GlyphPoint, models.GlyphPointParam)
+    query = query.filter(models.GlyphPoint.glyph_id == glyphD.id)
+    query = query.filter(models.GlyphPointParam.glyphpoint_id == models.GlyphPoint.id)
     fontd_outlines = list(query)
 
     for item, param in fonta_outlines:
