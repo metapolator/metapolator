@@ -83,8 +83,8 @@ def kernings(*masters):
                              float(left['kerning'][kerningkey][kernedkey]))
                 kerning_table[kerningkey][kernedkey] += p
 
-    import pprint
-    pprint.pprint(kerning_table)
+    # import pprint
+    # pprint.pprint(kerning_table)
 
     return {}
 

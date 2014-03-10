@@ -1,7 +1,6 @@
 import glob
 import os.path as op
 import plistlib
-
 from lxml import etree
 
 
@@ -29,11 +28,20 @@ def update_kerning(ufofile, values):
 
 def correct_contours_direction(ufofile):
     for glifname in glob.glob(op.join(ufofile, 'glyphs', '*.glif')):
-        doctree = etree.parse(open(glifname))
+        with open(glifname) as fp:
+            content = fp.read()
+
+        # apply trick to replace commas
+        doctree = etree.fromstring(content.replace(',', '.'))
         for outline in doctree.xpath('.//outline/contour'):
             points = list(outline.xpath('point'))
-            print points
+            etree.strip_tags(outline)
+            # change direction by hand from known start point
+            result = [points[0]] + points[:0:-1]
+            for point in result:
+                outline.append(point)
+
+        et = etree.ElementTree(doctree)
+        et.write(glifname, xml_declaration=True, encoding='utf-8')
+
     return
-    # import fontforge
-    # fp = fontforge.open(ufofile)
-    # import pdb; pdb.set_trace()
