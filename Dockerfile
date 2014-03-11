@@ -9,7 +9,7 @@ RUN     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libxml2-dev libxslt-dev fontforge python-fontforge \
         build-essential autoconf libtool python-dev python-pip \
         redis-server wget mysql-server mysql-client libmysqlclient-dev \
-        pwgen perl nginx sudo supervisor openssh-server woff-tools
+        pwgen perl sudo supervisor openssh-server woff-tools couchdb
 
 RUN     mkdir /var/run/sshd
 
@@ -17,7 +17,6 @@ RUN     echo %sudo        ALL=NOPASSWD: ALL >> /etc/sudoers
 
 ADD    supervisord.conf     /etc/supervisor/conf.d/
 ADD    runapp               /usr/local/bin/
-ADD    nginx.conf           /etc/nginx/sites-enabled/
 RUN    chmod 755 /usr/local/bin/runapp
 
 RUN    rm -rf /var/www/
@@ -32,5 +31,6 @@ RUN    sed 's/required     pam_loginuid.so/optional     pam_loginuid.so/g' /sshd
 
 EXPOSE  8080
 EXPOSE  22
+EXPOSE  5984
 
 CMD    ["/bin/bash", "/usr/local/bin/runapp"]
