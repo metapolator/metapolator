@@ -68,6 +68,8 @@ def get_from_config(config, key):
 
 def parse_arguments(argv):
     # collect masters pair for each axes
+    if not argv.axis:
+        return
     for ax in argv.axis:
         # TODO: check for invalid argument?
         a, masterlist, config = ax.split('|')
@@ -121,6 +123,21 @@ def main():
     print 'Parsing arguments'
     argv = parse_command_line_arguments()
     logger.lapse()
+
+    if argv.json:
+        import glif2json
+        import pprint
+        print
+        print 'Generate json for glif %s' % argv.output_ufo
+        pprint.pprint(glif2json.glif2json(open(argv.output_ufo)))
+        logger.lapse()
+
+        sys.exit(0)
+
+    if argv.mf:
+        print open('./commands/fontbox/glyphs/%s.mf' % argv.output_ufo).read()
+        sys.exit(0)
+
     print
     print 'Prepare axis and json masters'
     parse_arguments(argv)
@@ -186,6 +203,8 @@ def parse_command_line_arguments():
     parser.add_argument('--axis', type=str, action='append')
     parser.add_argument('--family', type=str, default='')
     parser.add_argument('--style', type=str, default='Regular')
+    parser.add_argument('--mf', action='store_true')
+    parser.add_argument('--json', action='store_true')
     parser.add_argument('output_ufo', metavar='output_ufo', type=str)
     return parser.parse_args()
 
