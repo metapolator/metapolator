@@ -11,8 +11,8 @@ Running metapolator with Docker is easy:
 
 ```
 $ sudo docker pull metapolator/metapolator
-$ sudo docker run -p 9000:8080 -t metapolator/metapolator
-# open in browser http://localhost:9000
+$ sudo docker run -p 80:8080 -t metapolator/metapolator
+# open in browser http://localhost
 ```
 
 To learn more about Docker, spend 15 minutes with the [interactive tutorial introduction.](https://www.docker.io/gettingstarted/)
