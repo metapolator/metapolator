@@ -165,7 +165,7 @@ var Instance = function (config) {
                         pathA.commands[i].y, B_command.y, C_command.y, D_command.y);
                 }
             }
-            ctx = createCanvas(this.canvas, maxX, maxY);
+            ctx = createCanvas(this.canvas, maxX+40, maxY+20);
             pathA.draw(ctx);
         },
 

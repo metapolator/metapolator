@@ -125,7 +125,7 @@ metapolatortestApp.controller('glyphCtrl', ['$scope',
                 'app/fonts/RobotoSlab_Thin.otf'
                 ],
                 text: 'a',
-                fontSize: 400,
+                fontSize: 380,
                 lineHeight: 215,
                 interpolationValueAB: 0.2,
             };
