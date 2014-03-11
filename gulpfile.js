@@ -42,5 +42,3 @@ gulp.task('build', function () {
         .pipe(size())
         .pipe(gulp.dest(filePath.minifycss.dest));
 });
-
-gulp.task('default', ['bower-files', 'build']);
