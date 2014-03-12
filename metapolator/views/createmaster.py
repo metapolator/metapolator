@@ -2,7 +2,7 @@ import ujson
 import web
 
 from metapolator import models
-from metapolator.log2json import get_edges_json
+from metapolator.log2json import get_glyph_info_from_log
 from metapolator.metapost import Metapost
 from metapolator.tools import prepare_master_environment
 from metapolator.views import raise404_notauthorized
@@ -15,37 +15,37 @@ class CreateMaster:
                       glyphname=glyph.name,
                       pointnr=pointnr, x=int(float(point['x'])),
                       y=int(float(point['y'])))
-        glyphoutline = models.GlyphOutline.create(**kwargs)
-        models.GlyphParam.create(glyphoutline_id=glyphoutline.id,
-                                 glyph_id=glyph.id,
-                                 master_id=glyph.master_id,
-                                 pointname=pointparam.pointname,
-                                 startp=pointparam.startp,
-                                 type=pointparam.type,
-                                 control_in=pointparam.control_in,
-                                 control_out=pointparam.control_out,
-                                 doubledash=pointparam.doubledash,
-                                 tripledash=pointparam.tripledash,
-                                 leftp=pointparam.leftp,
-                                 rightp=pointparam.rightp,
-                                 downp=pointparam.downp,
-                                 upp=pointparam.upp,
-                                 dir=pointparam.dir,
-                                 leftp2=pointparam.leftp2,
-                                 rightp2=pointparam.rightp2,
-                                 downp2=pointparam.downp2,
-                                 upp2=pointparam.upp2,
-                                 dir2=pointparam.dir2,
-                                 tensionand=pointparam.tensionand,
-                                 penshifted=pointparam.penshifted,
-                                 pointshifted=pointparam.pointshifted,
-                                 angle=pointparam.angle,
-                                 penwidth=pointparam.penwidth,
-                                 overx=pointparam.overx,
-                                 overbase=pointparam.overbase,
-                                 overcap=pointparam.overcap,
-                                 overasc=pointparam.overasc,
-                                 overdesc=pointparam.overdesc)
+        glyphpoint = models.GlyphPoint.create(**kwargs)
+        models.GlyphPointParam.create(glyphpoint_id=glyphpoint.id,
+                                      glyph_id=glyph.id,
+                                      master_id=glyph.master_id,
+                                      pointname=pointparam.pointname,
+                                      startp=pointparam.startp,
+                                      type=pointparam.type,
+                                      control_in=pointparam.control_in,
+                                      control_out=pointparam.control_out,
+                                      doubledash=pointparam.doubledash,
+                                      tripledash=pointparam.tripledash,
+                                      leftp=pointparam.leftp,
+                                      rightp=pointparam.rightp,
+                                      downp=pointparam.downp,
+                                      upp=pointparam.upp,
+                                      dir=pointparam.dir,
+                                      leftp2=pointparam.leftp2,
+                                      rightp2=pointparam.rightp2,
+                                      downp2=pointparam.downp2,
+                                      upp2=pointparam.upp2,
+                                      dir2=pointparam.dir2,
+                                      tensionand=pointparam.tensionand,
+                                      penshifted=pointparam.penshifted,
+                                      pointshifted=pointparam.pointshifted,
+                                      angle=pointparam.angle,
+                                      penwidth=pointparam.penwidth,
+                                      overx=pointparam.overx,
+                                      overbase=pointparam.overbase,
+                                      overcap=pointparam.overcap,
+                                      overasc=pointparam.overasc,
+                                      overdesc=pointparam.overdesc)
 
     def round(self, coord):
         return int(round(float(coord)))
@@ -73,7 +73,7 @@ class CreateMaster:
         master.name = primary_master.name
         logpath = project.get_instancelog(version=primary_master.version)
         for glyph in primary_master.get_glyphs():
-            json = get_edges_json(logpath, glyph.name)
+            json = get_glyph_info_from_log(logpath, glyph.name)
             if not json:
                 error = ('could not find any contours for '
                          'instance in %s for %s') % (logpath, glyph.name)

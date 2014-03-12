@@ -4,7 +4,7 @@ import os.path as op
 
 from metapolator.base.config import buildfname
 from metapolator.glif2points import get_pointsets, get_controlpmode_pointsets
-from metapolator.models import Glyph, GlyphParam, GlyphOutline
+from metapolator.models import Glyph, GlyphPointParam, GlyphPoint
 
 
 def create_glyph(glif, master):
@@ -62,8 +62,8 @@ def put_font_all_glyphs(master, glyph=None, preload=False, force_update=False):
         if force_update:
             glyph_obj = Glyph.get(name=glyphName, master_id=master.id)
             if glyph_obj:
-                GlyphParam.filter(glyph_id=glyph_obj.id).delete()
-                GlyphOutline.filter(glyph_id=glyph_obj.id).delete()
+                GlyphPointParam.filter(glyph_id=glyph_obj.id).delete()
+                GlyphPoint.filter(glyph_id=glyph_obj.id).delete()
                 Glyph.delete(glyph_obj)
 
         glif = etree.parse(op.join(fontpath, ch1))

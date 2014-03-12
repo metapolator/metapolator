@@ -11,8 +11,8 @@ from metapolator import models
 from metapolator import tasks
 from metapolator.base.config import session
 from metapolator.glif2db import put_font_all_glyphs
-from metapolator.tools import prepare_environment_directory, \
-    prepare_master_environment, get_metapolation_label
+from metapolator.tools import prepare_master_environment, \
+    get_metapolation_label
 from metapolator.views import raise404_notauthorized
 
 
@@ -52,8 +52,6 @@ class UploadZIP:
         except AttributeError:
             master = None
 
-        prepare_environment_directory()
-
         try:
             fzip = zipfile.ZipFile(zipcontent)
 
@@ -83,9 +81,7 @@ class UploadZIP:
             if not metapolation:
                 metapolation = models.Metapolation.create(label=label, project_id=project.id)
 
-            fontpath = master.get_fonts_directory()
-            shutil.rmtree(fontpath, ignore_errors=True)
-
+            fontpath = project.get_upload_directory()
             fzip.extractall(fontpath)
 
             ufopath = master.get_ufo_path()
@@ -112,7 +108,7 @@ class UploadZIP:
 
         master.update_masters_ordering(x.label)
         return ujson.dumps({'project_id': project.id,
-                                 'glyphname': project.currentglyph,
-                                 'master_id': master.id,
-                                 'label': x.label,
-                                 'metapolation': label})
+                            'glyphname': project.currentglyph,
+                            'master_id': master.id,
+                            'label': x.label,
+                            'metapolation': label})
