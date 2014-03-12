@@ -57,7 +57,7 @@ def init_master(ufofile):
     kerns = fontinfo.kerninginfo(os.path.join(fwd, ufofile))
     logger.lapse()
 
-    glypharray = fontinfo.get_plist_lib(os.path.join(fwd, ufofile)).get('public.glyphOrder', points2mf.GLYPHNAME)
+    glypharray = points2mf.GLYPHNAME
     return dict(name=ufofile, glyphs={}, info=info, kerning=kerns,
                 glyphorder=glypharray, alias=get_master_alias(os.path.splitext(ufofile)[0]))
 
@@ -116,6 +116,27 @@ def generate_mf(masters):
             fp.write(points2mf.points2mf(glyphname, *masters))
 
 
+def fill_components(output_ufo, masters):
+    from glif2json import glif2json
+    master = masters[0]
+    glyphsdir = os.path.join(fwd, master['name'], 'glyphs')
+    output_glyphs_dir = os.path.join(output_ufo, 'glyphs')
+    for filename in os.listdir(glyphsdir):
+        if os.path.splitext(filename)[1].lower() != '.glif':
+            continue
+        glifpath = os.path.join(glyphsdir, filename)
+        output_glyphs_path = os.path.join(output_glyphs_dir, filename)
+        try:
+            outputglif = glif2json(output_glyphs_path)
+        except IOError:
+            continue
+        print glifpath
+        for node in glif2json(glifpath).find_components():
+            print node
+            outputglif.append_component(node)
+        outputglif.write()
+
+
 def main():
     print
     print 'Parsing arguments'
@@ -125,7 +146,8 @@ def main():
     if argv.json:
         from glif2json import glif2json
         import ujson
-        print ujson.dumps(glif2json(argv.output_ufo).convert(open(argv.output_ufo)))
+        import pprint
+        pprint.pprint(glif2json(argv.output_ufo).convert())
         logger.lapse()
 
         sys.exit(0)
@@ -163,12 +185,18 @@ def main():
             process.kill()
             break
 
+    fill_components(os.path.join(cwd, 'fontbox.ufo'), masters)
+
+    # postprocess for generated ufo file
+    # 1. update metrics
     fontinfo.update(os.path.join(cwd, 'fontbox.ufo'),
                     points2mf.metrics(*masters))
 
+    # 2. update kernings
     fontinfo.update_kerning(os.path.join(cwd, 'fontbox.ufo'),
                             points2mf.kernings(*masters))
 
+    # 3. change contour directions
     fontinfo.correct_contours_direction(os.path.join(cwd, 'fontbox.ufo'))
     print
     print 'Call METAPOST'
@@ -192,7 +220,7 @@ def iterate_glyphs(master):
         if os.path.splitext(filename)[1].lower() != '.glif':
             continue
         glifpath = os.path.join(glyphsdir, filename)
-        yield glif2json(glifpath).convert(open(glifpath))
+        yield glif2json(glifpath).convert()
 
 
 def parse_command_line_arguments():

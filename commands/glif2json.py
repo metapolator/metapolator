@@ -37,6 +37,18 @@ class glif2json:
     def __init__(self, glifpath):
         self.glifpath = glifpath
         self.glifdir = op.dirname(glifpath)
+        self.xmldoc = lxml.etree.fromstring(open(glifpath).read())
+
+    def find_components(self):
+        return self.xmldoc.xpath('//outline/component')
+
+    def append_component(self, node):
+        self.xmldoc.find('outline').append(node)
+
+    def write(self):
+        et = lxml.etree.ElementTree(self.xmldoc)
+        print self.glifpath
+        et.write(self.glifpath, xml_declaration=True, encoding='utf-8')
 
     def glif_contour2points(self, glif, pointnr=0):
         points = []
@@ -73,18 +85,17 @@ class glif2json:
         return points, pointnr
 
     def glif_components2contours(self, sourceglif):
-        for comp in sourceglif.xpath('//outline/component'):
+        for comp in self.find_components():
             baseglifpath = op.join(self.glifdir, comp.attrib['base'] + '.glif')
             with open(baseglifpath) as fp:
                 yield comp.attrib, lxml.etree.parse(fp)
 
-    def convert(self, fp):
-        glif = lxml.etree.parse(fp)
-        points, last_pointnr = self.glif_contour2points(glif)
+    def convert(self):
+        points, last_pointnr = self.glif_contour2points(self.xmldoc)
 
         components = []
 
-        for attribs, baseglif in self.glif_components2contours(glif):
+        for attribs, baseglif in self.glif_components2contours(self.xmldoc):
             basepoints, last_pointnr = self.glif_contour2points(baseglif, pointnr=last_pointnr)
             if not basepoints:
                 continue
@@ -100,8 +111,8 @@ class glif2json:
             components.append(component)
 
         result = {'points': points,
-                  'name': glif.getroot().attrib['name'],
-                  'advanceWidth': float(glif.find('advance').attrib['width'])}
+                  'name': self.xmldoc.attrib['name'],
+                  'advanceWidth': float(self.xmldoc.find('advance').attrib['width'])}
 
         if components:
             result['components'] = components

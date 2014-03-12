@@ -154,7 +154,10 @@ def points2mf(glyphname, *masters):
     if not divider:
         divider = 1
 
-    glyph = list(masters)[0]['glyphorder'].index(glyphname) + 1
+    try:
+        glyph = list(masters)[0]['glyphorder'].index(glyphname) + 1
+    except ValueError:
+        return ''
 
     str_ = 'beginfontchar({glyph}, (({p}) / {divider}), 0, 0)'
     fip.write(str_.format(glyph=glyph, p='+'.join(ar), divider=divider))
