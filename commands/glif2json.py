@@ -18,11 +18,14 @@ class PointSet(object):
     def add_point(self, x, y, name, number, parameters):
         """ Put to current set new point with name and its (x, y)-coords """
         parameters.update({'x': x, 'y': y})
-        keys = ['extra', 'control-in', 'control-out', 'startp', 'smooth']
+        keys = ['control-in', 'control-out', 'startp', 'smooth']
         for k, value in parameters.items():
             if value is None:
                 parameters.pop(k, None)
                 continue
+            if k == 'extra':
+                del parameters[k]
+                parameters['added'] = True
             if k in keys:
                 parameters[k] = True
         self.points.append(parameters)
@@ -53,7 +56,7 @@ def glif2json(fp):
 
             attribs = {}
             for attr in point.attrib:
-                if attr == 'name':
+                if attr in ['name', 'control_in', 'control_out']:
                     continue
                 attribs[attr] = point.attrib[attr]
 

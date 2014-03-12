@@ -71,10 +71,10 @@ for ch1 in charlista :
                         print "line",inum, "startp"
                         isp=isp+1
                 else :
-                    if s.get('extra') == "1" :
+                    if s.get('added') == "1" :
                        s.attrib['x'] = xxx[ns-2]
                        s.attrib['y'] = yyy[ns-2]
-                    if s.get('extra') == "2" :
+                    if s.get('added') == "2" :
                        s.attrib['x'] = xxx[ns]
                        s.attrib['y'] = yyy[ns]
                     inout = inout+1

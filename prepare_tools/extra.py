@@ -19,11 +19,11 @@ dirnamea = 'MPI_Exo-Light.ufo/glyphs/'
 
 charlista = [f for f in os.listdir(dirnamea) ]
 
-for ch1 in charlista : 
+for ch1 in charlista :
     fnb,ext=buildfname (ch1)
     if ext in ["glif"]  :
 
-        fname = dirnamea+ch1  
+        fname = dirnamea+ch1
         aa = []
         bb = []
         with open(fname) as f:
@@ -34,8 +34,8 @@ for ch1 in charlista :
         f.close()
         print fname
         i=-1
-        lt = -1 
-        it = -1 
+        lt = -1
+        it = -1
 
         for  l in aa :
             i=i+1
@@ -43,7 +43,7 @@ for ch1 in charlista :
                 ics = 1
                 lt = 0
             if (l.count ("<point") >0 and l.count ("type") > 0) :
-                lt=lt+1   
+                lt=lt+1
                 if lt == 1 :
                     it =i
          #       print "check",lt,i,it
@@ -64,17 +64,17 @@ for ch1 in charlista :
                        lt = 0
 
                 it = 0
-                lt = 0 
+                lt = 0
 
         f=open(fname, "w")
 
-        i = -1 
+        i = -1
         for a in aa:
             i= i+1
             f.write(a)
             if bb[i] >0:
-                f.write('      <point extra="1" /> \n')
-                f.write('      <point extra="2" /> \n')
+                f.write('      <point added="1" /> \n')
+                f.write('      <point added="2" /> \n')
 
-        f.close() 
- 
+        f.close()
+
