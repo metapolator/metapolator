@@ -18,17 +18,13 @@ class PointSet(object):
     def add_point(self, x, y, name, number, parameters):
         """ Put to current set new point with name and its (x, y)-coords """
         parameters.update({'x': x, 'y': y})
-
-        """
-        {
-            'x': 12,
-            'y': 12,
-            'control_out': True,
-            'type': 'curve',
-            ...
-        }
-        """
-
+        keys = ['extra', 'control-in', 'control-out', 'startp', 'smooth']
+        for k, value in parameters.items():
+            if value is None:
+                parameters.pop(k, None)
+                continue
+            if k in keys:
+                parameters[k] = True
         self.points.append(parameters)
 
 
@@ -48,12 +44,12 @@ def glif2json(fp):
             type = point.attrib.get('type')
 
             preset = {'type': type,
-                      'control_out': point.attrib.get('control_out'),
-                      'control_in': point.attrib.get('control_in'),
-                      'pointname': pointname}
+                      'control-out': point.attrib.get('control_out'),
+                      'control-in': point.attrib.get('control_in'),
+                      'point-name': pointname}
 
             if not pointname:
-                preset['pointname'] = 'p%s' % (pointnr + 1)
+                preset['point-name'] = 'p%s' % (pointnr + 1)
 
             attribs = {}
             for attr in point.attrib:
@@ -65,7 +61,7 @@ def glif2json(fp):
 
             pointset.add_point(float(point.attrib['x']),
                                float(point.attrib['y']),
-                               preset['pointname'], pointnr + 1, attribs)
+                               preset['point-name'], pointnr + 1, attribs)
             pointnr += 1
 
         points += pointset.points

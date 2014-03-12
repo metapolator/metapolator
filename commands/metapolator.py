@@ -170,6 +170,9 @@ def main():
                             points2mf.kernings(*masters))
 
     fontinfo.correct_contours_direction(os.path.join(cwd, 'fontbox.ufo'))
+    print
+    print 'Call METAPOST'
+    logger.lapse()
 
 
 def glyph_exist(glyphname, *masters):
