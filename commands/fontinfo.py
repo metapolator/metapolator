@@ -22,6 +22,10 @@ def update(ufofile, values):
     plistlib.writePlist(d, op.join(ufofile, 'fontinfo.plist'))
 
 
+def get_plist_lib(ufofile):
+    return plistlib.readPlist(op.join(ufofile, 'lib.plist'))
+
+
 def update_kerning(ufofile, values):
     return
 

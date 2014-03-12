@@ -1,0 +1,27 @@
+<glyph name="fraction" format="1">
+  <advance width="877"/>
+  <unicode hex="2044"/>
+  <outline>
+    <contour>
+      <point x="878" y="1247" type="line" startp="1" name="z1l"/>
+      <point added="1" x="878" y="1247" control_out="1" name="z2l"/> 
+      <point added="2" x="726" y="1326" control_in="1" name="z3l"/> 
+      <point x="726" y="1326" type="line" name="z4l"/>
+      <point added="1" x="726" y="1326" control_out="1" name="z5l"/> 
+      <point added="2" x="15" y="188" control_in="1" name="z6l"/> 
+      <point x="15" y="188" type="line" name="z7l"/>
+      <point added="1" x="15" y="188" control_out="1" name="z8l"/> 
+      <point added="2" x="167" y="109" control_in="1" name="z9l"/> 
+      <point x="167" y="109" type="line" name="z10l"/>
+      <point added="1" x="167" y="109" control_out="1" name="z11l"/> 
+      <point added="2" x="878" y="1247" control_in="1" name="z12l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

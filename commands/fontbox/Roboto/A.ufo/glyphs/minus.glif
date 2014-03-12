@@ -1,0 +1,27 @@
+<glyph name="minus" format="1">
+  <advance width="1111"/>
+  <unicode hex="2212"/>
+  <outline>
+    <contour>
+      <point x="976" y="842" type="line" startp="1" name="z1l"/>
+      <point added="1" x="976" y="842" control_out="1" name="z2l"/> 
+      <point added="2" x="142" y="842" control_in="1" name="z3l"/> 
+      <point x="142" y="842" type="line" name="z4l"/>
+      <point added="1" x="142" y="842" control_out="1" name="z5l"/> 
+      <point added="2" x="142" y="578" control_in="1" name="z6l"/> 
+      <point x="142" y="578" type="line" name="z7l"/>
+      <point added="1" x="142" y="578" control_out="1" name="z8l"/> 
+      <point added="2" x="976" y="578" control_in="1" name="z9l"/> 
+      <point x="976" y="578" type="line" name="z10l"/>
+      <point added="1" x="976" y="578" control_out="1" name="z11l"/> 
+      <point added="2" x="976" y="842" control_in="1" name="z12l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

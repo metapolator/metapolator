@@ -47,7 +47,7 @@ def get_temp_dir():
 
 
 def get_master_alias(ufofile):
-    return re.sub('\W', '_', ufofile)
+    return os.path.basename(re.sub('\W', '_', ufofile))
 
 
 def init_master(ufofile):
@@ -56,8 +56,10 @@ def init_master(ufofile):
     info = fontinfo.fontinfo(os.path.join(fwd, ufofile))
     kerns = fontinfo.kerninginfo(os.path.join(fwd, ufofile))
     logger.lapse()
+
+    glypharray = fontinfo.get_plist_lib(os.path.join(fwd, ufofile)).get('public.glyphOrder', points2mf.GLYPHNAME)
     return dict(name=ufofile, glyphs={}, info=info, kerning=kerns,
-                alias=get_master_alias(os.path.splitext(ufofile)[0]))
+                glyphorder=glypharray, alias=get_master_alias(os.path.splitext(ufofile)[0]))
 
 
 def get_from_config(config, key):
@@ -76,12 +78,8 @@ def parse_arguments(argv):
 
         alias = ''  # axis alias is concatinated masters aliases
         for ufofile in masterlist.split(':'):
-            searchmaster = filter(lambda m: m['name'] == ufofile, masters)
-            if not len(searchmaster):
-                master = init_master(ufofile)
-                masters.append(master)
-            else:
-                master = searchmaster[0]
+            master = init_master(ufofile)
+            masters.append(master)
 
             alias += master['alias']
 
@@ -113,7 +111,7 @@ def generate_mf(masters):
             # if it does not, so just ignore it
             # from generating new ufo
             continue
-        print 'processing {0}.mf'.format(glyphname)
+        # print 'processing {0}.mf'.format(glyphname)
         with open(os.path.join(directory, '%s.mf' % glyphname), 'w') as fp:
             fp.write(points2mf.points2mf(glyphname, *masters))
 
@@ -125,11 +123,11 @@ def main():
     logger.lapse()
 
     if argv.json:
-        import glif2json
+        from glif2json import glif2json
         import pprint
         print
         print 'Generate json for glif %s' % argv.output_ufo
-        pprint.pprint(glif2json.glif2json(open(argv.output_ufo)))
+        pprint.pprint(glif2json(argv.output_ufo).convert(open(argv.output_ufo)))
         logger.lapse()
 
         sys.exit(0)
@@ -190,12 +188,13 @@ def glyph_exist(glyphname, *masters):
 def iterate_glyphs(master):
     """ Returns JSON with glyphs description for master """
     assert isinstance(master, dict)
-    import glif2json
+    from glif2json import glif2json
     glyphsdir = os.path.join(fwd, master['name'], 'glyphs')
     for filename in os.listdir(glyphsdir):
         if os.path.splitext(filename)[1].lower() != '.glif':
             continue
-        yield glif2json.glif2json(open(os.path.join(glyphsdir, filename)))
+        glifpath = os.path.join(glyphsdir, filename)
+        yield glif2json(glifpath).convert(open(glifpath))
 
 
 def parse_command_line_arguments():

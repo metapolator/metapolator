@@ -1,0 +1,27 @@
+<glyph name="slash" format="1">
+  <advance width="723"/>
+  <unicode hex="002F"/>
+  <outline>
+    <contour>
+      <point x="711" y="1456" type="line" startp="1" name="z1l"/>
+      <point added="1" x="711" y="1456" control_out="1" name="z2l"/> 
+      <point added="2" x="479" y="1456" control_in="1" name="z3l"/> 
+      <point x="479" y="1456" type="line" name="z4l"/>
+      <point added="1" x="479" y="1456" control_out="1" name="z5l"/> 
+      <point added="2" x="-31" y="-125" control_in="1" name="z6l"/> 
+      <point x="-31" y="-125" type="line" name="z7l"/>
+      <point added="1" x="-31" y="-125" control_out="1" name="z8l"/> 
+      <point added="2" x="201" y="-125" control_in="1" name="z9l"/> 
+      <point x="201" y="-125" type="line" name="z10l"/>
+      <point added="1" x="201" y="-125" control_out="1" name="z11l"/> 
+      <point added="2" x="711" y="1456" control_in="1" name="z12l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

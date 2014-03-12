@@ -1,0 +1,39 @@
+<glyph name="cedilla" format="1">
+  <advance width="511"/>
+  <unicode hex="00B8"/>
+  <outline>
+    <contour>
+      <point x="108" y="10" type="line" startp="1" name="z1l"/>
+      <point added="1" x="108" y="10" control_out="1" name="z2l"/> 
+      <point added="2" x="77" y="-136" control_in="1" name="z3l"/> 
+      <point x="77" y="-136" type="line" name="z4l"/>
+      <point x="174" y="-142" control_out="1" name="z5l"/>
+      <point x="214" y="-158" control_in="1" name="z6l"/>
+      <point x="214" y="-209" type="curve" smooth="yes" name="z7l"/>
+      <point x="214" y="-264" control_out="1" name="z8l"/>
+      <point x="174" y="-286" control_in="1" name="z9l"/>
+      <point x="118" y="-286" type="curve" name="z10l"/>
+      <point added="1" x="118" y="-286" control_out="1" name="z11l"/> 
+      <point added="2" x="125" y="-472" control_in="1" name="z12l"/> 
+      <point x="125" y="-472" type="line" name="z13l"/>
+      <point x="365" y="-472" control_out="1" name="z14l"/>
+      <point x="491" y="-373" control_in="1" name="z15l"/>
+      <point x="491" y="-224" type="curve" smooth="yes" name="z16l"/>
+      <point x="491" y="-109" control_out="1" name="z17l"/>
+      <point x="415" y="-64" control_in="1" name="z18l"/>
+      <point x="341" y="-51" type="curve" name="z19l"/>
+      <point added="1" x="341" y="-51" control_out="1" name="z20l"/> 
+      <point added="2" x="352" y="10" control_in="1" name="z21l"/> 
+      <point x="352" y="10" type="line" name="z22l"/>
+      <point added="1" x="352" y="10" control_out="1" name="z23l"/> 
+      <point added="2" x="108" y="10" control_in="1" name="z24l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

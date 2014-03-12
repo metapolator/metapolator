@@ -1,6 +1,7 @@
 from lxml import etree
 import codecs
 import os.path
+import sys
 
 def buildfname ( filename ):
     try :
@@ -14,15 +15,15 @@ def buildfname ( filename ):
 
 #dirnamea = 'MP_a.ufo/glyphs/'
 #dirnamea = 'MPExo-ExtraBold.ufo/glyphs/'
-dirnamea = '../commands/fontbox/D.ufo/glyphs/'
-
+# dirnamea = '../commands/fontbox/D.ufo/glyphs/'
+dirnamea = sys.argv[1]
 
 charlista = [f for f in os.listdir(dirnamea) ]
 for ch1 in charlista :
     fnb,ext=buildfname (ch1)
     if ext in ["glif"]  :
 
-        glyphsource = dirnamea+ch1
+        glyphsource = os.path.join(dirnamea, ch1)
         xmldoc = etree.parse(glyphsource)
         outline = xmldoc.find("outline")
 

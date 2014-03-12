@@ -1,4 +1,5 @@
 import lxml.etree
+import os.path as op
 
 
 class PointSet(object):
@@ -31,44 +32,60 @@ class PointSet(object):
         self.points.append(parameters)
 
 
-def glif2json(fp):
-    pointnr = 0
-    points = []
+class glif2json:
 
-    glif = lxml.etree.parse(fp)
+    def __init__(self, glifpath):
+        self.glifpath = glifpath
+        self.glifdir = op.dirname(glifpath)
 
-    for contour in glif.xpath('//outline/contour'):
+    def glif_contour2points(self, glif, pointnr=0):
+        points = []
+        for contour in glif.xpath('//outline/contour'):
 
-        pointset = PointSet()
+            pointset = PointSet()
 
-        for point in contour.findall('point'):
+            for point in contour.findall('point'):
+                pointname = point.attrib.get('name')
+                type = point.attrib.get('type')
 
-            pointname = point.attrib.get('name')
-            type = point.attrib.get('type')
+                preset = {'type': type,
+                          'control-out': point.attrib.get('control_out'),
+                          'control-in': point.attrib.get('control_in'),
+                          'point-name': pointname}
 
-            preset = {'type': type,
-                      'control-out': point.attrib.get('control_out'),
-                      'control-in': point.attrib.get('control_in'),
-                      'point-name': pointname}
+                if not pointname:
+                    preset['point-name'] = 'p%s' % (pointnr + 1)
 
-            if not pointname:
-                preset['point-name'] = 'p%s' % (pointnr + 1)
+                attribs = {}
+                for attr in point.attrib:
+                    if attr in ['name', 'control_in', 'control_out']:
+                        continue
+                    attribs[attr] = point.attrib[attr]
 
-            attribs = {}
-            for attr in point.attrib:
-                if attr in ['name', 'control_in', 'control_out']:
-                    continue
-                attribs[attr] = point.attrib[attr]
+                attribs.update(preset)
 
-            attribs.update(preset)
+                pointset.add_point(float(point.attrib['x']),
+                                   float(point.attrib['y']),
+                                   preset['point-name'], pointnr + 1, attribs)
+                pointnr += 1
 
-            pointset.add_point(float(point.attrib['x']),
-                               float(point.attrib['y']),
-                               preset['point-name'], pointnr + 1, attribs)
-            pointnr += 1
+            points += pointset.points
+        return points, pointnr
 
-        points += pointset.points
+    def glif_components2contours(self, sourceglif):
+        for comp in sourceglif.xpath('//outline/component'):
+            baseglifpath = op.join(self.glifdir, comp.attrib['base'] + '.glif')
+            with open(baseglifpath) as fp:
+                yield lxml.etree.parse(fp)
 
-    return {'points': points,
-            'name': glif.getroot().attrib['name'],
-            'advanceWidth': float(glif.find('advance').attrib['width'])}
+    def convert(self, fp):
+        glif = lxml.etree.parse(fp)
+        points, last_pointnr = self.glif_contour2points(glif)
+
+        for baseglif in self.glif_components2contours(glif):
+            basepoints, last_pointnr = self.glif_contour2points(baseglif, last_pointnr)
+            points += basepoints
+
+        return {'points': points,
+                'name': glif.getroot().attrib['name'],
+                'advanceWidth': float(glif.find('advance').attrib['width'])}

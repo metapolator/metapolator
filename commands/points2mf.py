@@ -125,8 +125,6 @@ def points2mf(glyphname, *masters):
     if len(masters) < 1:
         return ''
 
-    primarymaster = masters[0]
-
     fip = FIP()
 
     fip.write("% File parsed with Metapolator %\n")
@@ -156,7 +154,7 @@ def points2mf(glyphname, *masters):
     if not divider:
         divider = 1
 
-    glyph = GLYPHNAME.index(glyphname) + 1
+    glyph = list(masters)[0]['glyphorder'].index(glyphname) + 1
 
     str_ = 'beginfontchar({glyph}, (({p}) / {divider}), 0, 0)'
     fip.write(str_.format(glyph=glyph, p='+'.join(ar), divider=divider))

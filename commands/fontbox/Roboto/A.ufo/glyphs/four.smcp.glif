@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="four.smcp" format="1">
+  <advance width="1109"/>
+  <outline>
+    <contour>
+      <point x="1079" y="527" type="line"/>
+      <point x="354" y="527" type="line"/>
+      <point x="570" y="800" type="line"/>
+      <point x="852" y="1165" type="line"/>
+      <point x="605" y="1165" type="line"/>
+      <point x="30" y="485" type="line"/>
+      <point x="52" y="316" type="line"/>
+      <point x="1079" y="316" type="line"/>
+    </contour>
+    <contour>
+      <point x="922" y="1165" type="line"/>
+      <point x="600" y="1165" type="line"/>
+      <point x="600" y="0" type="line"/>
+      <point x="922" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="922" y="0" type="line"/>
+      <point x="1075" y="0" type="line"/>
+      <point x="1075" y="200" type="line"/>
+      <point x="922" y="230" type="line"/>
+    </contour>
+    <contour>
+      <point x="600" y="0" type="line"/>
+      <point x="600" y="230" type="line"/>
+      <point x="447" y="200" type="line"/>
+      <point x="447" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

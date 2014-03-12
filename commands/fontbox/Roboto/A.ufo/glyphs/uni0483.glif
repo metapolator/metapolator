@@ -1,0 +1,39 @@
+<glyph name="uni0483" format="1">
+  <advance width="971"/>
+  <unicode hex="0483"/>
+  <outline>
+    <contour>
+      <point x="855" y="1312" type="line" startp="1" name="z1l"/>
+      <point added="1" x="855" y="1312" control_out="1" name="z2l"/> 
+      <point added="2" x="855" y="1532" control_in="1" name="z3l"/> 
+      <point x="855" y="1532" type="line" name="z4l"/>
+      <point added="1" x="855" y="1532" control_out="1" name="z5l"/> 
+      <point added="2" x="678" y="1533" control_in="1" name="z6l"/> 
+      <point x="678" y="1533" type="line" name="z7l"/>
+      <point added="1" x="678" y="1533" control_out="1" name="z8l"/> 
+      <point added="2" x="679" y="1425" control_in="1" name="z9l"/> 
+      <point x="679" y="1425" type="line" name="z10l"/>
+      <point added="1" x="679" y="1425" control_out="1" name="z11l"/> 
+      <point added="2" x="133" y="1425" control_in="1" name="z12l"/> 
+      <point x="133" y="1425" type="line" name="z13l"/>
+      <point added="1" x="133" y="1425" control_out="1" name="z14l"/> 
+      <point added="2" x="132" y="1187" control_in="1" name="z15l"/> 
+      <point x="132" y="1187" type="line" name="z16l"/>
+      <point added="1" x="132" y="1187" control_out="1" name="z17l"/> 
+      <point added="2" x="309" y="1186" control_in="1" name="z18l"/> 
+      <point x="309" y="1186" type="line" name="z19l"/>
+      <point added="1" x="309" y="1186" control_out="1" name="z20l"/> 
+      <point added="2" x="309" y="1312" control_in="1" name="z21l"/> 
+      <point x="309" y="1312" type="line" name="z22l"/>
+      <point added="1" x="309" y="1312" control_out="1" name="z23l"/> 
+      <point added="2" x="855" y="1312" control_in="1" name="z24l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

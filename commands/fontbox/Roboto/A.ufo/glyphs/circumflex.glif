@@ -1,0 +1,42 @@
+<glyph name="circumflex" format="1">
+  <advance width="911"/>
+  <unicode hex="02C6"/>
+  <outline>
+    <contour>
+      <point x="565" y="1518" type="line" startp="1" name="z1l"/>
+      <point added="1" x="565" y="1518" control_out="1" name="z2l"/> 
+      <point added="2" x="380" y="1518" control_in="1" name="z3l"/> 
+      <point x="380" y="1518" type="line" name="z4l"/>
+      <point added="1" x="380" y="1518" control_out="1" name="z5l"/> 
+      <point added="2" x="86" y="1278" control_in="1" name="z6l"/> 
+      <point x="86" y="1278" type="line" name="z7l"/>
+      <point added="1" x="86" y="1278" control_out="1" name="z8l"/> 
+      <point added="2" x="86" y="1252" control_in="1" name="z9l"/> 
+      <point x="86" y="1252" type="line" name="z10l"/>
+      <point added="1" x="86" y="1252" control_out="1" name="z11l"/> 
+      <point added="2" x="315" y="1252" control_in="1" name="z12l"/> 
+      <point x="315" y="1252" type="line" name="z13l"/>
+      <point added="1" x="315" y="1252" control_out="1" name="z14l"/> 
+      <point added="2" x="472" y="1398" control_in="1" name="z15l"/> 
+      <point x="472" y="1398" type="line" name="z16l"/>
+      <point added="1" x="472" y="1398" control_out="1" name="z17l"/> 
+      <point added="2" x="630" y="1252" control_in="1" name="z18l"/> 
+      <point x="630" y="1252" type="line" name="z19l"/>
+      <point added="1" x="630" y="1252" control_out="1" name="z20l"/> 
+      <point added="2" x="864" y="1252" control_in="1" name="z21l"/> 
+      <point x="864" y="1252" type="line" name="z22l"/>
+      <point added="1" x="864" y="1252" control_out="1" name="z23l"/> 
+      <point added="2" x="864" y="1274" control_in="1" name="z24l"/> 
+      <point x="864" y="1274" type="line" name="z25l"/>
+      <point added="1" x="864" y="1274" control_out="1" name="z26l"/> 
+      <point added="2" x="565" y="1518" control_in="1" name="z27l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,38 @@
+<glyph name="cyrillichookleft" format="1">
+  <advance width="467"/>
+  <outline>
+    <contour>
+      <point x="103" y="0" type="line" startp="1" name="z1l"/>
+      <point x="148" y="-51" control_out="1" name="z2l"/>
+      <point x="191" y="-94" control_in="1" name="z3l"/>
+      <point x="191" y="-164" type="curve" smooth="yes" name="z4l"/>
+      <point x="191" y="-172" control_out="1" name="z5l"/>
+      <point x="190" y="-223" control_in="1" name="z6l"/>
+      <point x="109" y="-223" type="curve" smooth="yes" name="z7l"/>
+      <point x="66" y="-223" control_out="1" name="z8l"/>
+      <point x="37" y="-213" control_in="1" name="z9l"/>
+      <point x="17" y="-205" type="curve" name="z10l"/>
+      <point added="1" x="17" y="-205" control_out="1" name="z11l"/> 
+      <point added="2" x="-19" y="-373" control_in="1" name="z12l"/> 
+      <point x="-19" y="-373" type="line" name="z13l"/>
+      <point x="18" y="-393" control_out="1" name="z14l"/>
+      <point x="76" y="-417" control_in="1" name="z15l"/>
+      <point x="167" y="-417" type="curve" smooth="yes" name="z16l"/>
+      <point x="310" y="-417" control_out="1" name="z17l"/>
+      <point x="425" y="-343" control_in="1" name="z18l"/>
+      <point x="425" y="-203" type="curve" smooth="yes" name="z19l"/>
+      <point x="425" y="-109" control_out="1" name="z20l"/>
+      <point x="376" y="-13" control_in="1" name="z21l"/>
+      <point x="255" y="60" type="curve" name="z22l"/>
+      <point added="1" x="255" y="60" control_out="1" name="z23l"/> 
+      <point added="2" x="103" y="0" control_in="1" name="z24l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,33 @@
+<glyph name="quotereversed" format="1">
+  <advance width="530"/>
+  <unicode hex="201B"/>
+  <outline>
+    <contour>
+      <point x="94" y="1366" type="line" smooth="yes" startp="1" name="z1l"/>
+      <point x="94" y="1225" control_out="1" name="z2l"/>
+      <point x="182" y="1062" control_in="1" name="z3l"/>
+      <point x="277" y="974" type="curve" name="z4l"/>
+      <point added="1" x="277" y="974" control_out="1" name="z5l"/> 
+      <point added="2" x="431" y="1054" control_in="1" name="z6l"/> 
+      <point x="431" y="1054" type="line" name="z7l"/>
+      <point x="387" y="1135" control_out="1" name="z8l"/>
+      <point x="355" y="1228" control_in="1" name="z9l"/>
+      <point x="355" y="1367" type="curve" smooth="yes" name="z10l"/>
+      <point added="1" x="355" y="1367" control_out="1" name="z11l"/> 
+      <point added="2" x="355" y="1560" control_in="1" name="z12l"/> 
+      <point x="355" y="1560" type="line" name="z13l"/>
+      <point added="1" x="355" y="1560" control_out="1" name="z14l"/> 
+      <point added="2" x="94" y="1560" control_in="1" name="z15l"/> 
+      <point x="94" y="1560" type="line" name="z16l"/>
+      <point added="1" x="94" y="1560" control_out="1" name="z17l"/> 
+      <point added="2" x="94" y="1366" control_in="1" name="z18l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

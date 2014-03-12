@@ -1,0 +1,47 @@
+<glyph name="less" format="1">
+  <advance width="1011"/>
+  <unicode hex="003C"/>
+  <outline>
+    <contour>
+      <point x="311" y="563" type="line" startp="1" name="z1l"/>
+      <point added="1" x="311" y="563" control_out="1" name="z2l"/> 
+      <point added="2" x="52" y="578" control_in="1" name="z3l"/> 
+      <point x="52" y="578" type="line" name="z4l"/>
+      <point added="1" x="52" y="578" control_out="1" name="z5l"/> 
+      <point added="2" x="52" y="410" control_in="1" name="z6l"/> 
+      <point x="52" y="410" type="line" name="z7l"/>
+      <point added="1" x="52" y="410" control_out="1" name="z8l"/> 
+      <point added="2" x="929" y="50" control_in="1" name="z9l"/> 
+      <point x="929" y="50" type="line" name="z10l"/>
+      <point added="1" x="929" y="50" control_out="1" name="z11l"/> 
+      <point added="2" x="929" y="357" control_in="1" name="z12l"/> 
+      <point x="929" y="357" type="line" name="z13l"/>
+      <point added="1" x="929" y="357" control_out="1" name="z14l"/> 
+      <point added="2" x="311" y="563" control_in="1" name="z15l"/> 
+    </contour>
+    <contour>
+      <point x="929" y="730" type="line" startp="1" name="z16l"/>
+      <point added="1" x="929" y="730" control_out="1" name="z17l"/> 
+      <point added="2" x="929" y="1036" control_in="1" name="z18l"/> 
+      <point x="929" y="1036" type="line" name="z19l"/>
+      <point added="1" x="929" y="1036" control_out="1" name="z20l"/> 
+      <point added="2" x="52" y="676" control_in="1" name="z21l"/> 
+      <point x="52" y="676" type="line" name="z22l"/>
+      <point added="1" x="52" y="676" control_out="1" name="z23l"/> 
+      <point added="2" x="52" y="508" control_in="1" name="z24l"/> 
+      <point x="52" y="508" type="line" name="z25l"/>
+      <point added="1" x="52" y="508" control_out="1" name="z26l"/> 
+      <point added="2" x="311" y="520" control_in="1" name="z27l"/> 
+      <point x="311" y="520" type="line" name="z28l"/>
+      <point added="1" x="311" y="520" control_out="1" name="z29l"/> 
+      <point added="2" x="929" y="730" control_in="1" name="z30l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

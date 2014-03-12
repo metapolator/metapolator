@@ -1,0 +1,87 @@
+<glyph name="uni0475" format="1">
+  <advance width="1197"/>
+  <unicode hex="0475"/>
+  <outline>
+    <contour>
+      <point x="619" y="446" type="line" startp="1" name="z1l"/>
+      <point added="1" x="619" y="446" control_out="1" name="z2l"/> 
+      <point added="2" x="546" y="0" control_in="1" name="z3l"/> 
+      <point x="546" y="0" type="line" name="z4l"/>
+      <point added="1" x="546" y="0" control_out="1" name="z5l"/> 
+      <point added="2" x="764" y="0" control_in="1" name="z6l"/> 
+      <point x="764" y="0" type="line" name="z7l"/>
+      <point added="1" x="764" y="0" control_out="1" name="z8l"/> 
+      <point added="2" x="975" y="724" control_in="1" name="z9l"/> 
+      <point x="975" y="724" type="line" smooth="yes" name="z10l"/>
+      <point x="990" y="783" control_out="1" name="z11l"/>
+      <point x="1034" y="834" control_in="1" name="z12l"/>
+      <point x="1089" y="834" type="curve" smooth="yes" name="z13l"/>
+      <point x="1105" y="834" control_out="1" name="z14l"/>
+      <point x="1139" y="832" control_in="1" name="z15l"/>
+      <point x="1143" y="831" type="curve" name="z16l"/>
+      <point added="1" x="1143" y="831" control_out="1" name="z17l"/> 
+      <point added="2" x="1168" y="1087" control_in="1" name="z18l"/> 
+      <point x="1168" y="1087" type="line" name="z19l"/>
+      <point x="1140" y="1099" control_out="1" name="z20l"/>
+      <point x="1105" y="1103" control_in="1" name="z21l"/>
+      <point x="1067" y="1103" type="curve" smooth="yes" name="z22l"/>
+      <point x="869" y="1103" control_out="1" name="z23l"/>
+      <point x="758" y="966" control_in="1" name="z24l"/>
+      <point x="692" y="737" type="curve" smooth="yes" name="z25l"/>
+      <point added="1" x="692" y="737" control_out="1" name="z26l"/> 
+      <point added="2" x="619" y="446" control_in="1" name="z27l"/> 
+    </contour>
+    <contour>
+      <point x="444" y="1082" type="line" startp="1" name="z28l"/>
+      <point added="1" x="444" y="1082" control_out="1" name="z29l"/> 
+      <point added="2" x="105" y="1082" control_in="1" name="z30l"/> 
+      <point x="105" y="1082" type="line" name="z31l"/>
+      <point added="1" x="105" y="1082" control_out="1" name="z32l"/> 
+      <point added="2" x="442" y="0" control_in="1" name="z33l"/> 
+      <point x="442" y="0" type="line" name="z34l"/>
+      <point added="1" x="442" y="0" control_out="1" name="z35l"/> 
+      <point added="2" x="660" y="0" control_in="1" name="z36l"/> 
+      <point x="660" y="0" type="line" name="z37l"/>
+      <point added="1" x="660" y="0" control_out="1" name="z38l"/> 
+      <point added="2" x="580" y="446" control_in="1" name="z39l"/> 
+      <point x="580" y="446" type="line" name="z40l"/>
+      <point added="1" x="580" y="446" control_out="1" name="z41l"/> 
+      <point added="2" x="444" y="1082" control_in="1" name="z42l"/> 
+    </contour>
+    <contour>
+      <point x="105" y="1082" type="line" startp="1" name="z43l"/>
+      <point added="1" x="105" y="1082" control_out="1" name="z44l"/> 
+      <point added="2" x="42" y="1082" control_in="1" name="z45l"/> 
+      <point x="42" y="1082" type="line" name="z46l"/>
+      <point added="1" x="42" y="1082" control_out="1" name="z47l"/> 
+      <point added="2" x="42" y="882" control_in="1" name="z48l"/> 
+      <point x="42" y="882" type="line" name="z49l"/>
+      <point added="1" x="42" y="882" control_out="1" name="z50l"/> 
+      <point added="2" x="285" y="852" control_in="1" name="z51l"/> 
+      <point x="285" y="852" type="line" name="z52l"/>
+      <point added="1" x="285" y="852" control_out="1" name="z53l"/> 
+      <point added="2" x="105" y="1082" control_in="1" name="z54l"/> 
+    </contour>
+    <contour>
+      <point x="444" y="1082" type="line" startp="1" name="z55l"/>
+      <point added="1" x="444" y="1082" control_out="1" name="z56l"/> 
+      <point added="2" x="444" y="852" control_in="1" name="z57l"/> 
+      <point x="444" y="852" type="line" name="z58l"/>
+      <point added="1" x="444" y="852" control_out="1" name="z59l"/> 
+      <point added="2" x="597" y="882" control_in="1" name="z60l"/> 
+      <point x="597" y="882" type="line" name="z61l"/>
+      <point added="1" x="597" y="882" control_out="1" name="z62l"/> 
+      <point added="2" x="597" y="1082" control_in="1" name="z63l"/> 
+      <point x="597" y="1082" type="line" name="z64l"/>
+      <point added="1" x="597" y="1082" control_out="1" name="z65l"/> 
+      <point added="2" x="444" y="1082" control_in="1" name="z66l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

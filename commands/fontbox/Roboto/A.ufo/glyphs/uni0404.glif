@@ -1,0 +1,77 @@
+<glyph name="uni0404" format="1">
+  <advance width="1305"/>
+  <unicode hex="0404"/>
+  <outline>
+    <contour>
+      <point x="852" y="859" type="line" startp="1" name="z1l"/>
+      <point added="1" x="852" y="859" control_out="1" name="z2l"/> 
+      <point added="2" x="263" y="859" control_in="1" name="z3l"/> 
+      <point x="263" y="859" type="line" name="z4l"/>
+      <point added="1" x="263" y="859" control_out="1" name="z5l"/> 
+      <point added="2" x="263" y="598" control_in="1" name="z6l"/> 
+      <point x="263" y="598" type="line" name="z7l"/>
+      <point added="1" x="263" y="598" control_out="1" name="z8l"/> 
+      <point added="2" x="852" y="598" control_in="1" name="z9l"/> 
+      <point x="852" y="598" type="line" name="z10l"/>
+      <point added="1" x="852" y="598" control_out="1" name="z11l"/> 
+      <point added="2" x="852" y="859" control_in="1" name="z12l"/> 
+    </contour>
+    <contour>
+      <point x="1226" y="1246" type="line" startp="1" name="z13l"/>
+      <point x="1100" y="1397" control_out="1" name="z14l"/>
+      <point x="912" y="1478" control_in="1" name="z15l"/>
+      <point x="679" y="1478" type="curve" smooth="yes" name="z16l"/>
+      <point x="286" y="1478" control_out="1" name="z17l"/>
+      <point x="7" y="1186" control_in="1" name="z18l"/>
+      <point x="7" y="761" type="curve" smooth="yes" name="z19l"/>
+      <point added="1" x="7" y="761" control_out="1" name="z20l"/> 
+      <point added="2" x="7" y="697" control_in="1" name="z21l"/> 
+      <point x="7" y="697" type="line" smooth="yes" name="z22l"/>
+      <point x="7" y="272" control_out="1" name="z23l"/>
+      <point x="286" y="-20" control_in="1" name="z24l"/>
+      <point x="679" y="-20" type="curve" smooth="yes" name="z25l"/>
+      <point x="912" y="-20" control_out="1" name="z26l"/>
+      <point x="1100" y="61" control_in="1" name="z27l"/>
+      <point x="1226" y="212" type="curve" name="z28l"/>
+      <point added="1" x="1226" y="212" control_out="1" name="z29l"/> 
+      <point added="2" x="1226" y="515" control_in="1" name="z30l"/> 
+      <point x="1226" y="515" type="line" name="z31l"/>
+      <point added="1" x="1226" y="515" control_out="1" name="z32l"/> 
+      <point added="2" x="984" y="515" control_in="1" name="z33l"/> 
+      <point x="984" y="515" type="line" name="z34l"/>
+      <point added="1" x="984" y="515" control_out="1" name="z35l"/> 
+      <point added="2" x="956" y="328" control_in="1" name="z36l"/> 
+      <point x="956" y="328" type="line" name="z37l"/>
+      <point x="907" y="271" control_out="1" name="z38l"/>
+      <point x="810" y="240" control_in="1" name="z39l"/>
+      <point x="699" y="240" type="curve" smooth="yes" name="z40l"/>
+      <point x="458" y="240" control_out="1" name="z41l"/>
+      <point x="329" y="428" control_in="1" name="z42l"/>
+      <point x="329" y="697" type="curve" smooth="yes" name="z43l"/>
+      <point added="1" x="329" y="697" control_out="1" name="z44l"/> 
+      <point added="2" x="329" y="763" control_in="1" name="z45l"/> 
+      <point x="329" y="763" type="line" smooth="yes" name="z46l"/>
+      <point x="329" y="1033" control_out="1" name="z47l"/>
+      <point x="458" y="1218" control_in="1" name="z48l"/>
+      <point x="699" y="1218" type="curve" smooth="yes" name="z49l"/>
+      <point x="819" y="1218" control_out="1" name="z50l"/>
+      <point x="903" y="1187" control_in="1" name="z51l"/>
+      <point x="956" y="1130" type="curve" name="z52l"/>
+      <point added="1" x="956" y="1130" control_out="1" name="z53l"/> 
+      <point added="2" x="984" y="943" control_in="1" name="z54l"/> 
+      <point x="984" y="943" type="line" name="z55l"/>
+      <point added="1" x="984" y="943" control_out="1" name="z56l"/> 
+      <point added="2" x="1226" y="943" control_in="1" name="z57l"/> 
+      <point x="1226" y="943" type="line" name="z58l"/>
+      <point added="1" x="1226" y="943" control_out="1" name="z59l"/> 
+      <point added="2" x="1226" y="1246" control_in="1" name="z60l"/> 
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
