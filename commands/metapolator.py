@@ -135,7 +135,11 @@ def main():
         sys.exit(0)
 
     if argv.mf:
-        print open('./commands/fontbox/glyphs/%s.mf' % argv.output_ufo).read()
+        try:
+            print open(argv.output_ufo).read()
+        except (OSError, IOError) as er:
+            print "I/O error({0}): {1}".format(er.errno, er.strerror)
+            sys.exit(er.errno)
         sys.exit(0)
 
     print
@@ -152,7 +156,7 @@ def main():
 
     process = subprocess.Popen(
         ["sh", "makefont.sh", 'fontbox', '1'],
-        stdout=subprocess.PIPE, stderr=open('test.err', 'w'), cwd=cwd
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
     )
 
     errorcontent = ''

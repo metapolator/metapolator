@@ -1,20 +1,20 @@
-<glyph name="493" format="1">
+<glyph name="two" format="1">
   <advance width="696"/>
   <unicode hex="0032"/>
   <outline>
     <contour>
       <point x="34" y="0" type="line" startp="1" name="z1l"/>
-      <point extra="1" x="34" y="0" control_out="1" name="z2l"/> 
-      <point extra="2" x="650" y="0" control_in="1" name="z3l"/> 
+      <point extra="1" x="34" y="0" control_out="1" name="z2l"/>
+      <point extra="2" x="650" y="0" control_in="1" name="z3l"/>
       <point x="650" y="0" type="line" name="z4l"/>
-      <point extra="1" x="650" y="0" control_out="1" name="z5l"/> 
-      <point extra="2" x="650" y="176" control_in="1" name="z6l"/> 
+      <point extra="1" x="650" y="0" control_out="1" name="z5l"/>
+      <point extra="2" x="650" y="176" control_in="1" name="z6l"/>
       <point x="650" y="176" type="line" name="z7l"/>
-      <point extra="1" x="650" y="176" control_out="1" name="z8l"/> 
-      <point extra="2" x="327" y="176" control_in="1" name="z9l"/> 
+      <point extra="1" x="650" y="176" control_out="1" name="z8l"/>
+      <point extra="2" x="327" y="176" control_in="1" name="z9l"/>
       <point x="327" y="176" type="line" name="z10l"/>
-      <point extra="1" x="327" y="176" control_out="1" name="z11l"/> 
-      <point extra="2" x="327" y="185" control_in="1" name="z12l"/> 
+      <point extra="1" x="327" y="176" control_out="1" name="z11l"/>
+      <point extra="2" x="327" y="185" control_in="1" name="z12l"/>
       <point x="327" y="185" type="line" smooth="yes" name="z13l"/>
       <point x="327" y="208" control_out="1" name="z14l"/>
       <point x="388" y="224" control_in="1" name="z15l"/>
