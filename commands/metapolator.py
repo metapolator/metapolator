@@ -124,10 +124,8 @@ def main():
 
     if argv.json:
         from glif2json import glif2json
-        import pprint
-        print
-        print 'Generate json for glif %s' % argv.output_ufo
-        pprint.pprint(glif2json(argv.output_ufo).convert(open(argv.output_ufo)))
+        import ujson
+        print ujson.dumps(glif2json(argv.output_ufo).convert(open(argv.output_ufo)))
         logger.lapse()
 
         sys.exit(0)

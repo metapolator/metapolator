@@ -76,16 +76,34 @@ class glif2json:
         for comp in sourceglif.xpath('//outline/component'):
             baseglifpath = op.join(self.glifdir, comp.attrib['base'] + '.glif')
             with open(baseglifpath) as fp:
-                yield lxml.etree.parse(fp)
+                yield comp.attrib, lxml.etree.parse(fp)
 
     def convert(self, fp):
         glif = lxml.etree.parse(fp)
         points, last_pointnr = self.glif_contour2points(glif)
 
-        for baseglif in self.glif_components2contours(glif):
-            basepoints, last_pointnr = self.glif_contour2points(baseglif, last_pointnr)
-            points += basepoints
+        components = []
 
-        return {'points': points,
-                'name': glif.getroot().attrib['name'],
-                'advanceWidth': float(glif.find('advance').attrib['width'])}
+        for attribs, baseglif in self.glif_components2contours(glif):
+            basepoints, last_pointnr = self.glif_contour2points(baseglif, pointnr=last_pointnr)
+            if not basepoints:
+                continue
+            component = {'scale-x': attribs.get('xScale', 1),
+                         'scale-y': attribs.get('yScale', 1),
+                         'points': basepoints}
+            if attribs.get('xyScale'):
+                component['scale-xy'] = attribs['xyScale']
+            if attribs.get('yxScale'):
+                component['scale-yx'] = attribs['yxScale']
+            if attribs.get('base'):
+                component['name'] = attribs['base']
+            components.append(component)
+
+        result = {'points': points,
+                  'name': glif.getroot().attrib['name'],
+                  'advanceWidth': float(glif.find('advance').attrib['width'])}
+
+        if components:
+            result['components'] = components
+
+        return result
