@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="one.smcp" format="1">
+  <advance width="642"/>
+  <outline>
+    <contour>
+      <point x="379" y="1181" type="line"/>
+      <point x="85" y="1148" type="line"/>
+      <point x="85" y="1096" type="line"/>
+      <point x="325" y="1123" type="line"/>
+      <point x="325" y="0" type="line"/>
+      <point x="379" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="325" y="0" type="line"/>
+      <point x="325" y="54" type="line"/>
+      <point x="162" y="54" type="line"/>
+      <point x="162" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="379" y="0" type="line"/>
+      <point x="542" y="0" type="line"/>
+      <point x="542" y="54" type="line"/>
+      <point x="379" y="54" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

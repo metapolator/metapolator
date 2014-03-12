@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="crossbar" format="1">
+  <advance width="966"/>
+  <outline>
+    <contour>
+      <point x="852" y="822" type="line"/>
+      <point x="131" y="822" type="line"/>
+      <point x="131" y="671" type="line"/>
+      <point x="852" y="671" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="tonos" format="1">
+  <advance width="962"/>
+  <unicode hex="0384"/>
+  <outline>
+    <contour>
+      <point x="136" y="1305" type="line"/>
+      <point x="189" y="1305" type="line"/>
+      <point x="335" y="1578" type="line"/>
+      <point x="229" y="1578" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

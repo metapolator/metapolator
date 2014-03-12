@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="E.smcp" format="1">
+  <advance width="1169"/>
+  <outline>
+    <contour>
+      <point x="1021" y="54" type="line"/>
+      <point x="275" y="54" type="line"/>
+      <point x="275" y="0" type="line"/>
+      <point x="1021" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="305" y="1165" type="line"/>
+      <point x="251" y="1165" type="line"/>
+      <point x="251" y="0" type="line"/>
+      <point x="305" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="934" y="633" type="line"/>
+      <point x="275" y="633" type="line"/>
+      <point x="275" y="579" type="line"/>
+      <point x="934" y="579" type="line"/>
+    </contour>
+    <contour>
+      <point x="1021" y="1165" type="line"/>
+      <point x="275" y="1165" type="line"/>
+      <point x="275" y="1111" type="line"/>
+      <point x="1021" y="1111" type="line"/>
+    </contour>
+    <contour>
+      <point x="1021" y="1165" type="line"/>
+      <point x="967" y="1165" type="line"/>
+      <point x="967" y="872" type="line"/>
+      <point x="1021" y="872" type="line"/>
+    </contour>
+    <contour>
+      <point x="1021" y="0" type="line"/>
+      <point x="1021" y="293" type="line"/>
+      <point x="967" y="293" type="line"/>
+      <point x="967" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="251" y="1165" type="line"/>
+      <point x="88" y="1165" type="line"/>
+      <point x="88" y="1111" type="line"/>
+      <point x="251" y="1111" type="line"/>
+    </contour>
+    <contour>
+      <point x="251" y="0" type="line"/>
+      <point x="251" y="54" type="line"/>
+      <point x="88" y="54" type="line"/>
+      <point x="88" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

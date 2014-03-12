@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dieresistonos" format="1">
+  <advance width="1053"/>
+  <unicode hex="0385"/>
+  <outline>
+    <contour>
+      <point x="958" y="1456" type="line"/>
+      <point x="707" y="1456" type="line"/>
+      <point x="707" y="1252" type="line"/>
+      <point x="958" y="1252" type="line"/>
+    </contour>
+    <contour>
+      <point x="377" y="1456" type="line"/>
+      <point x="126" y="1456" type="line"/>
+      <point x="126" y="1252" type="line"/>
+      <point x="377" y="1252" type="line"/>
+    </contour>
+    <contour>
+      <point x="454" y="1394" type="line"/>
+      <point x="603" y="1394" type="line"/>
+      <point x="795" y="1750" type="line"/>
+      <point x="493" y="1750" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

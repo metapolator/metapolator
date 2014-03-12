@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="kgreenlandic" format="1">
+  <advance width="1655"/>
+  <unicode hex="0138"/>
+  <outline>
+    <contour>
+      <point x="279" y="1081" type="line"/>
+      <point x="225" y="1081" type="line"/>
+      <point x="225" y="0" type="line"/>
+      <point x="279" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="898" y="1082" type="line"/>
+      <point x="715" y="1082" type="line"/>
+      <point x="715" y="1028" type="line"/>
+      <point x="898" y="1028" type="line"/>
+    </contour>
+    <contour>
+      <point x="225" y="0" type="line"/>
+      <point x="225" y="54" type="line"/>
+      <point x="62" y="54" type="line"/>
+      <point x="62" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="279" y="0" type="line"/>
+      <point x="442" y="0" type="line"/>
+      <point x="442" y="54" type="line"/>
+      <point x="279" y="54" type="line"/>
+    </contour>
+    <contour>
+      <point x="225" y="1081" type="line"/>
+      <point x="62" y="1081" type="line"/>
+      <point x="62" y="1027" type="line"/>
+      <point x="225" y="1027" type="line"/>
+    </contour>
+    <contour>
+      <point x="936" y="0" type="line"/>
+      <point x="1073" y="0" type="line"/>
+      <point x="1073" y="54" type="line"/>
+      <point x="956" y="54" type="line"/>
+      <point x="439" y="620" type="line"/>
+      <point x="404" y="578" type="line"/>
+    </contour>
+    <contour>
+      <point x="1036" y="1082" type="line"/>
+      <point x="898" y="1082" type="line"/>
+      <point x="406" y="607" type="line"/>
+      <point x="247" y="607" type="line"/>
+      <point x="269" y="553" type="line"/>
+      <point x="430" y="553" type="line"/>
+      <point x="914" y="1028" type="line"/>
+      <point x="1036" y="1028" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
