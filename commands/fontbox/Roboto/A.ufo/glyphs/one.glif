@@ -1,8 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <glyph name="one" format="1">
   <advance width="925"/>
   <unicode hex="0031"/>
   <outline>
-    <component base="A_" />
+    <component base="A_"/>
     <contour>
       <point x="622" y="1457" type="line" startp="1" name="z1l"/>
       <point added="1" x="622" y="1457" control_out="1" name="z2l"/>

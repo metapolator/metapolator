@@ -7,4 +7,4 @@ python ./commands/metapolator.py \
   --style "400 Regular" \
   I.ufo
 
-# meld ./commands/Pablo/norounding.ufo/glyphs ./commands/fontbox.ufo/glyphs
+meld ./commands/fontbox/Roboto/A.ufo/glyphs ./commands/fontbox.ufo/glyphs
