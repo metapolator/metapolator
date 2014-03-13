@@ -30,3 +30,8 @@ metaptitelsmall {letter-spacing:3px; font-size: 20px}
 .right.carousel-control, .left.carousel-control {
     display: none;
 }
+
+.dg.a {
+   margin: 0 auto !important;
+   float: none !important;
+}
