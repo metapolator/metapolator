@@ -22,3 +22,11 @@ p, div, metaptitelsmall {
 metaptitel {letter-spacing:5px; font-size: 40px; font-weight: 300 }
 
 metaptitelsmall {letter-spacing:3px; font-size: 20px}
+
+.carousel-control.left, .carousel-control.right {
+    background-image: none
+}
+
+.right.carousel-control, .left.carousel-control {
+    display: none;
+}

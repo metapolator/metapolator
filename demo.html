@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Metapolator: Font Family Creation</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
     <link href="http://getbootstrap.com/examples/starter-template/starter-template.css">
     <link href="app/css/demo_new.css" rel="stylesheet">
@@ -15,6 +16,16 @@
     <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="app/js/app.js"></script>
 
+    <script type="text/javascript" src="//bootstrapdocs.com/v2.0.3/docs/assets/js/bootstrap-carousel.js"></script>
+
+<script>
+  $(document).ready(function(){
+    $('.carousel').carousel();
+      interval: 2000
+  });
+</script>
+
+
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -24,23 +35,48 @@
 
   <body screen_capture_injected="true">
 
-
-    <div class="thumbnail">
-      <img src="images/header.jpg" alt="...">
+<!--  Carousel - consult the Twitter Bootstrap docs at 
+      http://twitter.github.com/bootstrap/javascript.html#carousel -->
+<div id="this-carousel-id" class="carousel slide"><!-- class of slide for animation -->
+  <div class="carousel-inner">
+    <div class="item active"><!-- class of active since it's the first item -->
+      <img src="images/header_1.jpg" alt="" />
+      <div class="carousel-caption">
+      </div>
     </div>
+    <div class="item">
+      <img src="images/header_2.jpg" alt="" />
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/header_3.jpg" alt="" />
+      <div class="carousel-caption">
+      </div>
+    </div>
+  </div><!-- /.carousel-inner -->
+  <!--  Next and Previous controls below
+        href values must reference the id for this carousel -->
+    <a class="carousel-control left" href="#this-carousel-id" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#this-carousel-id" data-slide="next">&rsaquo;</a>
+</div><!-- /.carousel -->
+
 
     <div class="container">
-        <div class="starter-template">
+        <div class="starter-template" style="margin-top: 50px">
           <metaptitel>FONT FAMILY CREATION</metaptitel><br>
           <metaptitelsmall class="lead">DESIGN FONT STYLES AND FONT FAMILIES WITH METAPOLATOR</metaptitelsmall>
         </div>
 
     <div class="container">
-      <a href="#" class="thumbnail">
-      <img src="images/FAQV.png" alt="...">
-      </a>
         <div class="starter-template">
-          <p class="lead">* Frequently asked questions visualised</p>
+          <h1>FAQ</h1>
+        </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Can I run Metapolator on my computer?</h1>
+          <p class="lead">Metapolator is built as a web application. Its possible to install everything on a local machine using a local server setup.</p>
         </div>
 
     </div>
@@ -67,7 +103,7 @@
      <div class="container">
         <div class="starter-template">
           <h1>Can I design a glyph from scratch?</h1>
-            <p class="lead"> No, its a system to create new styles and font families. The system is designed to work seamless within the working process of type design. The design process can be: Sketching on paper -- creating outlines in font editor -- making new styles in Metapolator -- refine ufo’s in font editor.
+            <p class="lead"> Yes, but do it on paper! :) Metapolator is a system to create new styles and font families from existing fonts. The system is designed to work seamless within the working process of type design. The design process can be: Sketching on paper -- creating outlines in font editor -- making new styles in Metapolator -- refine ufo’s in font editor.
             </p>
                <a href="#" class="thumbnail">
                <img src="images/sketch.jpg" alt="...">
@@ -101,7 +137,7 @@
             <p class="lead"> Yes, for interpolation using at least 2 masters no extra work is needed. Metapolation from a single master requires tagging consistently using pairs of points.
             </p>
                <a href="#" class="thumbnail">
-               <img src="images/garamond.png" alt="...">
+               <img src="images/garamond.gif" alt="...">
                </a>
         </div>
     </div>    
@@ -122,11 +158,54 @@
           <h1>Do I need to program Metafont code?</h1>
             <p class="lead"> No, metafont functions are controlled by data sliders (dat-gui), You could extend the functionality and write your own metafont functions and contribute to our git repository. This example here shows how to change the font by using a Metafont parameter 'x-height'. Please use the controller to change values.
             </p>
-               <a href="#" class="thumbnail">
-               <img src="images/xheight.png" alt="...">
-               </a>
         </div>
-    </div>    
+    </div> 
+
+    <div class="container">
+            <div class="starter-template">
+            <div class="starter-template" ng-controller="canvasCtrl">
+                <div class="starter-template" ng-controller="SliderCtrl" >
+                    <div class="starter-template" ng-controller="glyphCtrl">
+                        <div class="starter-template" >
+                                <div id="glyph"></div>
+                                <div class="sliders" id="glyphSlider" style="text-align:left"></div>
+                                <div class="starter-template" style="margin-bottom: 100px">
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="starter-template" >
+                    <div class="starter-template" ng-controller="wordCtrl">
+                        <div class="starter-template">
+                            <div id="glyphsWord"></div>
+                            <div class="sliders" id="wordSlider" style="margin-bottom: 200px; margin-top: 50px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="starter-template" >
+                    <div class="starter-template" ng-controller="paragraphCtrl">
+                        <div class="starter-template">
+                            <div id="paragraphWord"></div>
+                            <div class="paragrahSlider" style="margin-bottom: 100px; margin-top: 50px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="starter-template" >
+                    <div class="starter-template" ng-controller="xheightCtrl">
+                        <div class="starter-template">
+                            <div id="xheight"></div>
+                            <div class="sliders" id="xheightSlider" style="margin-bottom: 200px; margin-top: 50px"></div>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="starter-template" >
+                        <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
+                </h1>
+            </div>
+            </div>
+        </div>   
     <!-- /.container -->
 
 
