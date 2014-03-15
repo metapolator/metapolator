@@ -64,19 +64,19 @@
 
     <div class="container">
         <div class="starter-template" style="margin-top: 50px">
-          <metaptitel>FONT FAMILY CREATION</metaptitel><br>
+          <metaptitel> FONT FAMILY CREATION</metaptitel><br>
           <metaptitelsmall class="lead">DESIGN FONT STYLES AND FONT FAMILIES WITH METAPOLATOR</metaptitelsmall>
         </div>
 
     <div class="container">
         <div class="starter-template">
-          <h1>FAQ</h1>
+          <h1> </h1>
         </div>
 
     <div class="container">
         <div class="starter-template">
           <h1>Can I run Metapolator on my computer?</h1>
-          <p class="lead">Metapolator is built as a web application. Its possible to install everything on a local machine using a local server setup.</p>
+          <p class="lead">Metapolator is built as a web application. Its possible to install everything on a local machine using a local server setup. The installation process is described on git: https://github.com/metapolator/metapolator</p>
         </div>
 
     </div>
@@ -200,13 +200,164 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="starter-template" >
-                        <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
-                </h1>
+
             </div>
             </div>
         </div>   
     <!-- /.container -->
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Do I need to program Metafont code?</h1>
+            <p class="lead"> No, metafont functions are controlled by data sliders (dat-gui), You could extend the functionality and write your own metafont functions and contribute to our git repository. This example here shows how to change the font by using a Metafont parameter 'x-height'. Please use the controller to change values.
+            </p>
+        </div>
+    </div>  
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Why is Metapolator dealing with control points and pen points?</h1>
+            <p class="lead"> 
+The level of abstraction is up to the user. You can have total control of all anchor points and control points or leave the point calculation to Metapolator. You decide how much of 'automatic' design you want.
+            </p>
+        </div>
+    </div>  
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>How does the serif function work?</h1>
+            <p class="lead"> 
+Serifs can be ‘attached’ to every corner point of a stroke. The user gets control of the serif by setting parameters like serif height, slab, width and darkness.
+            </p>
+        </div>
+    </div>  
+
+      <div class="container">
+        <div class="starter-template">
+          <h1>Can I make an italic font from a regular cut?</h1>
+            <p class="lead"> 
+Yes, you can use the parameter ‘slant’ which is using optical correction when slanting outlines and substitute common (real) italics glyphs like g, a, or y
+(italic font)
+        </div>
+    </div>  
+ 
+      <div class="container">
+        <div class="starter-template">
+          <h1>What is metapolation?</h1>
+            <p class="lead"> 
+Interpolation enhanced with metafont parameters, for example to change the x-height of a font we need to use some metafont functions. 
+            </p>
+        </div>
+    </div>  
+ 
+      <div class="container">
+        <div class="starter-template">
+          <h1>What is a card?
+a card is a specimen which shows the instance from a metapolation
+            </p>
+        </div>
+    </div>  
+ 
+      <div class="container">
+        <div class="starter-template">
+          <h1>Can I compare different styles within one card?</h1>
+            <p class="lead"> 
+Yes, you can copy paste text from another card and paste it into your preferred card. The style and metapolation settings also gets copied.
+            </p>
+        </div>
+    </div>  
+ 
+      <div class="container">
+        <div class="starter-template">
+          <h1>How can I edit a master?</h1>
+            <p class="lead"> 
+You can use the master editor to tag points or move their position. To make big changes on the outline, you can save your project, open the UFO in your favorite font editor and load it back to metapolator.
+            </p>
+        </div>
+    </div>  
+       
+      <div class="container">
+        <div class="starter-template">
+          <h1>Can I change the layout of the cards?</h1>
+            <p class="lead"> 
+Yes, use the column settings to change from 1, 2, or 4 column layout
+            </p>
+      </div>
+      
+      <div class="container">
+        <div class="starter-template">
+          <h1>I want to use waterfall instead of glyph preview.</h1>
+            <p class="lead"> 
+The user can choose between glyph view, waterfall or paragraph.
+            </p>
+        </div>
+    </div>  
+        
+      <div class="container">
+        <div class="starter-template">
+          <h1>I’m using my font styles created with metapolator on my website, if I change one of the styles in metapolator, will it change on my website too?</h1>
+            <p class="lead"> 
+You can use the direct webfont link to embed an instance into your website. This allows to make changes on the fonts which affects the design of your page.
+            </p>
+        </div>
+    </div>  
+       
+      <div class="container">
+        <div class="starter-template">
+          <h1>How many axes and masters can I create?</h1>
+            <p class="lead"> 
+Its modular design allows the user to create unlimited amount of axes and link unlimited masters to create very complex interpolation environments. The environment is not limited to ‘multidimensions’ as we believe a dimensional space limits the users imagination and makes it complicated. Its still possible though to recreate such a model.
+            </p>
+        </div>
+    </div>  
+       
+      <div class="container">
+        <div class="starter-template">
+          <h1>Can I create new masters within Metapolator?</h1>
+            <p class="lead"> 
+Yes, a user can create a new master from every instance or duplicate the master itself.
+            </p>
+        </div>
+    </div>  
+       
+      <div class="container">
+        <div class="starter-template">
+          <h1>How can I display the master and not the instance?</h1>
+            <p class="lead"> 
+The cards only shows instances. If we want to show a master, we can create a new instance and name and set all slider values to its master.
+            </p>
+        </div>
+    </div>  
+       
+      <div class="container">
+        <div class="starter-template">
+          <h1>I’m lost with all these masters and instances I’ve created. </h1>
+            <p class="lead"> 
+You can use the tree diagram to get an overview for all created masters and instances within your project. 
+            </p>
+        </div>
+    </div>  
+       
+      <div class="container">
+        <div class="starter-template">
+          <h1>I don’t like the logo, can I change it?</h1>
+            <p class="lead"> 
+Yes, click on the logo and you can set your own font and the recursion value.
+            </p>
+        </div>
+    </div>  
+       
+      <div class="container">
+        <div class="starter-template">
+          <h1>This sounds all amazing, can I use it for free?</h1>
+            <p class="lead"> 
+Metapolator is an open source project, please support us with your knowledge and join our community on Google+
+            </p>
+        </div>
+    </div>  
+                       <h1 class="starter-template" >
+                        <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
+                </h1>
 
 
     <!-- Bootstrap core JavaScript
