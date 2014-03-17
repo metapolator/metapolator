@@ -40,17 +40,17 @@
 <div id="this-carousel-id" class="carousel slide"><!-- class of slide for animation -->
   <div class="carousel-inner">
     <div class="item active"><!-- class of active since it's the first item -->
-      <img src="images/header_1.jpg" alt="" />
-      <div class="carousel-caption">
-      </div>
-    </div>
-    <div class="item">
       <img src="images/header_2.jpg" alt="" />
       <div class="carousel-caption">
       </div>
     </div>
     <div class="item">
       <img src="images/header_3.jpg" alt="" />
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/header_1.jpg" alt="" />
       <div class="carousel-caption">
       </div>
     </div>
@@ -75,8 +75,8 @@
 
     <div class="container">
         <div class="starter-template">
-          <h1>Can I run Metapolator on my computer?</h1>
-          <p class="lead">Metapolator is built as a web application. Its possible to install everything on a local machine using a local server setup. The installation process is described on git: https://github.com/metapolator/metapolator</p>
+          <h1>Where is the demo?</h1>
+          <p class="lead">Read this page to get an idea what this is all about or get the lates build from https://github.com/metapolator/metapolator</p>
         </div>
 
     </div>
@@ -96,14 +96,27 @@
             <p class="lead"> Metapolator wants to know how and where you want change an outline. For this we have to 'name' a few parts of a glyph. Only if a part is known for the system it can be controlled.
             </p>
                <a href="#" class="thumbnail">
-               <img src="images/tag.jpg" alt="...">
+               <img src="images/pino.jpg" alt="...">
                </a>
         </div>
     </div>    
+
+     <div class="container">
+        <div class="starter-template">
+          <h1>When do I need to tag points?</h1>
+            <p class="lead">Glyphs gets grouped into its type when loading a UFO. A capital letter is therefore in the group 'capitals' and by changing values on vertical metrics we can adjust the height of the capital letter.
+If we want to specify single points we click on a point in the editor and assign it to a group. In the case of lowercase 'b' we want to tag the ascender stroke as 'b' gets into the group x-height by default (tagging the ascender is less work than tag all x-height related points).
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/tagging.gif" alt="...">
+               </a>
+        </div>
+    </div> 
+
      <div class="container">
         <div class="starter-template">
           <h1>Can I design a glyph from scratch?</h1>
-            <p class="lead"> Yes, but do it on paper! :) Metapolator is a system to create new styles and font families from existing fonts. The system is designed to work seamless within the working process of type design. The design process can be: Sketching on paper -- creating outlines in font editor -- making new styles in Metapolator -- refine ufo’s in font editor.
+            <p class="lead"> Yes, but do it on paper! :) Metapolator is a system to create new styles and font families from existing fonts outlines. The system is designed to work seamlessly within the working process of type design. The design process could be for example; sketching on paper -- creating outlines in a font editor -- making new styles and families in Metapolator -- refine ufo’s in a font editor.
             </p>
                <a href="#" class="thumbnail">
                <img src="images/sketch.jpg" alt="...">
@@ -156,7 +169,7 @@
       <div class="container">
         <div class="starter-template">
           <h1>Do I need to program Metafont code?</h1>
-            <p class="lead"> No, metafont functions are controlled by data sliders (dat-gui), You could extend the functionality and write your own metafont functions and contribute to our git repository. This example here shows how to change the font by using a Metafont parameter 'x-height'. Please use the controller to change values.
+            <p class="lead"> No, metafont functions are controlled by data sliders (dat-gui), You could extend the functionality and write your own metafont functions and contribute to our git repository. To change the parameter values use the slider controls below each example.
             </p>
         </div>
     </div> 
@@ -208,14 +221,6 @@
 
     <div class="container">
         <div class="starter-template">
-          <h1>Do I need to program Metafont code?</h1>
-            <p class="lead"> No, metafont functions are controlled by data sliders (dat-gui), You could extend the functionality and write your own metafont functions and contribute to our git repository. This example here shows how to change the font by using a Metafont parameter 'x-height'. Please use the controller to change values.
-            </p>
-        </div>
-    </div>  
-
-    <div class="container">
-        <div class="starter-template">
           <h1>Why is Metapolator dealing with control points and pen points?</h1>
             <p class="lead"> 
 The level of abstraction is up to the user. You can have total control of all anchor points and control points or leave the point calculation to Metapolator. You decide how much of 'automatic' design you want.
@@ -225,10 +230,13 @@ The level of abstraction is up to the user. You can have total control of all an
 
     <div class="container">
         <div class="starter-template">
-          <h1>How does the serif function work?</h1>
+          <h1>When I want to apply some metafont function to the tagged points, how do I do it? How does the serif function work? Eg, make all cap-serif points 2x taller?</h1>
             <p class="lead"> 
 Serifs can be ‘attached’ to every corner point of a stroke. The user gets control of the serif by setting parameters like serif height, slab, width and darkness.
             </p>
+                <a href="#" class="thumbnail">
+               <img src="images/serifs.png" alt="...">
+               </a>
         </div>
     </div>  
 
@@ -245,16 +253,34 @@ Yes, you can use the parameter ‘slant’ which is using optical correction whe
         <div class="starter-template">
           <h1>What is metapolation?</h1>
             <p class="lead"> 
-Interpolation enhanced with metafont parameters, for example to change the x-height of a font we need to use some metafont functions. 
+Interpolation enhanced with metafont parameters, for example to change the x-height of a font we use some metafont functions to calculate the new curve. 
             </p>
         </div>
     </div>  
  
       <div class="container">
         <div class="starter-template">
-          <h1>What is a card?
-a card is a specimen which shows the instance from a metapolation
+          <h1>What is a card?</h1>
+                        <p class="lead"> 
+A card is a specimen which shows the instance from one or muliple used axes.
             </p>
+              <a href="#" class="thumbnail">
+              <img src="images/card.jpg" alt="...">
+              </a>            
+ 
+        </div>
+    </div>  
+
+       <div class="container">
+        <div class="starter-template">
+          <h1>Can I change the specimen?</h1>
+                        <p class="lead"> 
+We can choose from glyph, paragraph or waterfall. 
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/card.jpg" alt="...">
+              </a>            
+ 
         </div>
     </div>  
  
@@ -264,17 +290,38 @@ a card is a specimen which shows the instance from a metapolation
             <p class="lead"> 
 Yes, you can copy paste text from another card and paste it into your preferred card. The style and metapolation settings also gets copied.
             </p>
+              <a href="#" class="thumbnail">
+              <img src="images/multicard.png" alt="...">
+              </a>            
+ 
         </div>
     </div>  
  
+      <div class="container">
+        <div class="starter-template">
+          <h1>Where's the preview for each master?</h1>
+            <p class="lead"> 
+You can select every master that has been loaded into Metapolator. Click on checkbox "display master". This brings the master into the first card and moves all previous cards one card to the right.
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/master.jpg" alt="...">
+              </a>            
+            
+        </div>
+    </div>  
+
       <div class="container">
         <div class="starter-template">
           <h1>How can I edit a master?</h1>
             <p class="lead"> 
 You can use the master editor to tag points or move their position. To make big changes on the outline, you can save your project, open the UFO in your favorite font editor and load it back to metapolator.
             </p>
+              <a href="#" class="thumbnail">
+              <img src="images/edit_outline.jpg" alt="...">
+              </a>            
+            
         </div>
-    </div>  
+    </div>      
        
       <div class="container">
         <div class="starter-template">
@@ -346,7 +393,14 @@ Yes, click on the logo and you can set your own font and the recursion value.
             </p>
         </div>
     </div>  
-       
+    
+      <div class="container">
+        <div class="starter-template">
+          <h1>Can I run Metapolator on my computer?</h1>
+          <p class="lead">Metapolator is built as a web application. Its possible to install everything on a local machine using a local server setup. The installation process is described on git: https://github.com/metapolator/metapolator</p>
+        </div>
+    </div>
+
       <div class="container">
         <div class="starter-template">
           <h1>This sounds all amazing, can I use it for free?</h1>
