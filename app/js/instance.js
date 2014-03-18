@@ -10,7 +10,6 @@ var Instance = function (config) {
 
         return canvas[0].getContext('2d');
     }
-
     if (config.lib === 'opentype') {
         var instance = $.extend({
             counter: 0,
@@ -206,70 +205,47 @@ var Instance = function (config) {
         for (var i = 0; i < config.fontslist.length; i++) {
             opentype.load(config.fontslist[i], onload.bind(instance, i));
         }
-        return instance;
     } else if (config.lib === 'paperjs') {
         var instance = $.extend({
             interpolationValueAB: 0.2,
             interpolationValueAC: 0.2,
             interpolationValueAD: 0.2,
             interpolate : function() {
-                paperscope.activate();
-                var element = this.getElement();
 
-                var centerlines = {};
+                var context = createCanvas(instance.canvas, 410, 410);
+                paper.setup(context.canvas);
+                console.log(this.glyphJSON);
+                var path = new paper.Path();
+                path.strokeColor = 'black';
+                var start, through, to;
 
-                var path = new paperscope.Path();
-                for (var k = 0; k < points.length; k++) {
-                    var point = points[k];
 
-                    var ppoint = this.getPoint(parseInt(point.x), parseInt(point.y), true);
-                    ppoint.y += +MARGIN;
-                    ppoint.x += +MARGIN;
+                for (var i = 0; i < this.glyphJSON.points.length; i++){
+                    console.log(this.glyphJSON.points[i]);
+                    var point = this.glyphJSON.points[i];
+                    if (point.type == 'line'){
+                        start = undefined;
+                        through = undefined;
+                        start = new paper.Point(point.x/3.2, 400-point.y/3.2);
+                    }else if (start && !through) {
+                        through = new paper.Point(point.x/3.2, 400-point.y/3.2);
+                    }else if (start && through) {
+                        console.log(start, through, point);
+                        var arc = new paper.Path.Arc(start, through, new paper.Point(point.x/3.2, 400-point.y/3.2));
+                        arc.strokeColor = 'black';
+                    }else if ( point.type == 'line' ){
 
-                    var handleIn = this.getPoint(parseInt(point.controls[0].x) - parseInt(point.x),
-                                                 parseInt(point.y) - parseInt(point.controls[0].y));
-                    var handleOut = this.getPoint(parseInt(point.controls[1].x) - parseInt(point.x),
-                                                  parseInt(point.y) - parseInt(point.controls[1].y));
-                    var segment = new paperscope.Segment(ppoint, handleIn, handleOut);
-
-                    path.add(segment);
-
-                    if (point.pointname) {
-                        this.getLines(centerlines, point);
-                    }
+                    };
+                    path.add(new paper.Point(point.x/3.2, 400-point.y/3.2));
                 }
-                path = this.pathColorfy(path, alpha);
-                paperscope.view.draw();
-
-                this.glyphpathes.push(path);
-                return centerlines;
+                paper.view.draw();
+                return this;
             },
-            getPoint: function(x, y, reverted) {
-                var element = this.getElement();
-                if (reverted) {
-                    y = this.size.height - y;
-                }
-                var r = paperscope.Graph.resize(x, y, this.size.width, this.size.height, $(element).attr('width') - MARGIN * 2, $(element).attr('height') - MARGIN * 2);
-
-                return new paperscope.Point(r.x, r.y);
-            },
-            getLines: function(centerline, point) {
-                var regex = /(z\d+)([lr])/;
-                var match = point.pointname.match(regex);
-                if (match) {
-                    var pointname = match[1];
-
-                    if (!centerline[pointname]) {
-                      centerline[pointname] = [undefined, undefined];
-                    }
-
-                    if (match[2] == 'r') {
-                      centerline[pointname][1] = point;
-                    } else if (match[2] == 'l') {
-                      centerline[pointname][0] = point;
-                    }
-                }
-            },
-        });
+            loaded : function () {
+                return this;
+            }
+        }, config);
+        // var instance = 4;
     }
+    return instance;
 };

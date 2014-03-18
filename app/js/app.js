@@ -95,18 +95,35 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
 
 metapolatortestApp.controller('canvasCtrl', ['$scope',
                                             'instanceListService',
-    function($scope, instanceListService) {
+                                            '$http',
+    function($scope, instanceListService, $http) {
         $scope.canvasConfig = {};
         $scope.init = function (model) {
-                var instanceObj = Instance(model);
-                if (instanceObj.loaded()){
-                    instanceObj.interpolate();
+                if (model.lib == 'paperjs'){
+                    $.ajax({
+                    url : model.glyphJSONUrl,
+                    success : function(data, status, headers, config) {
+                      model.glyphJSON = data;
+                      var instanceObj = Instance(model);
+                      instanceObj.interpolate();
+                      instanceListService.addInstance(instanceObj);
+                      },
+                    error : function(data, status, headers, config) {
+                      console.log('ERROR');
+                      },
+                    aync: false
+                      });
+                } else {
+                    var instanceObj = Instance(model);
+                    if (instanceObj.loaded()){
+                        instanceObj.interpolate();
+                    }
+                    instanceListService.addInstance(instanceObj);
                 }
-                instanceListService.addInstance(instanceObj);
             return instanceObj;
         }
         $scope.watchConf = function(instanceObj, newVal){
-            if (instanceObj.loaded()) {
+            if (instanceObj && instanceObj.loaded()) {
                     instanceObj = newVal;
                     instanceObj.interpolate();
                 }
@@ -135,6 +152,25 @@ metapolatortestApp.controller('glyphCtrl', ['$scope',
             $scope.watchConf(glyphInstance, newVal);
         });
     }]);
+metapolatortestApp.controller('paperjsCtrl', ['$scope',
+                                            'instanceListService',
+    function($scope, instanceListService) {
+        $scope.paperjsConfig = {
+            name: 'paperjsConfig',
+            canvas: '#paperjsCanvas',
+            fontSize: 80,
+            lineHeight: 110,
+            interpolationValueAB: 0.2,
+            interpolationValueAC: 0.2,
+            lib:'paperjs',
+            glyphJSONUrl: '/app/RobotoSlab_Thin_a.json',
+        };
+        var glyphInstance = $scope.init($scope.paperjsConfig);
+        $scope.$watchCollection('paperjsConfig', function(newVal, oldVal){
+            $scope.watchConf(glyphInstance, newVal);
+        });
+    }]);
+
 metapolatortestApp.controller('wordCtrl', ['$scope',
                                             'instanceListService',
     function($scope, instanceListService) {
@@ -149,6 +185,7 @@ metapolatortestApp.controller('wordCtrl', ['$scope',
             text: 'Hanna',
             fontSize: 80,
             lineHeight: 110,
+            lib: 'opentype',
             interpolationValueAB: 0.2,
             interpolationValueAC: 0.2,
         };
