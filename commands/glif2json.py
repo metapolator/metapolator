@@ -120,4 +120,19 @@ class glif2json:
         if components:
             result['components'] = components
 
+        # loop through anchors points presented in UFOv3 version
+        # to print them in json-formatted string
+        def anchor2dict(anchor):
+            anchordict = {}
+            for key, value in anchor.attrib.items():
+                if anchor.attrib[key]:
+                    anchordict[key] = value
+            return anchordict
+
+        anchors = []
+        for anchor in self.xmldoc.find('anchor'):
+            anchors.append(anchor2dict(anchor))
+        if anchors:
+            result['anchors'] = anchors
+
         return result
