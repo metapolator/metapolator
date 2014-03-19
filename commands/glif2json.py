@@ -1,4 +1,5 @@
 import lxml.etree
+import os
 import os.path as op
 
 
@@ -106,9 +107,17 @@ class glif2json:
                 points += pointset.points
         return points, pointnr
 
+    def find_glif(self, glifname):
+        for filename in os.listdir(self.glifdir):
+            glifcontent = open(op.join(self.glifdir, filename)).read()
+            doc = lxml.etree.fromstring(glifcontent)
+            if doc.attrib.get('name') == glifname:
+                return filename
+        return
+
     def glif_components2contours(self, sourceglif):
         for comp in self.find_components():
-            baseglifpath = op.join(self.glifdir, comp.attrib['base'] + '.glif')
+            baseglifpath = op.join(self.glifdir, self.find_glif(comp.attrib['base']))
             with open(baseglifpath) as fp:
                 yield comp.attrib, lxml.etree.parse(fp)
 

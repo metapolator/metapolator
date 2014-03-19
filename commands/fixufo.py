@@ -51,8 +51,11 @@ class fixglif:
                     xxx.append(xk)
                     yyy.append(yk)
 
-            xxx.append(xxx[0])
-            yyy.append(yyy[0])
+            try:
+                xxx.append(xxx[0])
+                yyy.append(yyy[0])
+            except IndexError:
+                continue
 
     # first loop
             for s in ioutline:

@@ -149,6 +149,8 @@ def make_anchors(output_ufo, masters):
 
     output_glyphs_dir = os.path.join(output_ufo, 'glyphs')
 
+    # Have to list all glyphs in primary master to add missed anchors
+    # after generating UFO with fontforge process
     for key in masters[0]['glyphs']:
         glyph = masters[0]['glyphs'][key]
         if 'anchors' not in glyph:
@@ -169,7 +171,6 @@ def make_anchors(output_ufo, masters):
                 values_y.append(points2mf.func(koef, metapolation, float(lft['y']), float(rgt['y'])))
             x = sum(values_x) / (divider or 1)
             y = sum(values_y) / (divider or 1)
-            print x, y
             anchors.append({'x': x, 'y': y, 'name': anchor['name']})
 
         output_glyphs_path = os.path.join(output_glyphs_dir, glyph['sysname'])
