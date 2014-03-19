@@ -1,124 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="uni0466" format="1">
   <advance width="1516"/>
   <unicode hex="0466"/>
   <outline>
     <contour>
-      <point x="868" y="1337" type="line" startp="1" name="z1l"/>
-      <point added="1" x="868" y="1337" control_out="1" name="z2l"/> 
-      <point added="2" x="781" y="1456" control_in="1" name="z3l"/> 
-      <point x="781" y="1456" type="line" name="z4l"/>
-      <point added="1" x="781" y="1456" control_out="1" name="z5l"/> 
-      <point added="2" x="605" y="1456" control_in="1" name="z6l"/> 
-      <point x="605" y="1456" type="line" name="z7l"/>
-      <point added="1" x="605" y="1456" control_out="1" name="z8l"/> 
-      <point added="2" x="95" y="0" control_in="1" name="z9l"/> 
-      <point x="95" y="0" type="line" name="z10l"/>
-      <point added="1" x="95" y="0" control_out="1" name="z11l"/> 
-      <point added="2" x="434" y="0" control_in="1" name="z12l"/> 
-      <point x="434" y="0" type="line" name="z13l"/>
-      <point added="1" x="434" y="0" control_out="1" name="z14l"/> 
-      <point added="2" x="868" y="1337" control_in="1" name="z15l"/> 
+      <point x="868" y="1337" type="line"/>
+      <point x="781" y="1456" type="line"/>
+      <point x="605" y="1456" type="line"/>
+      <point x="95" y="0" type="line"/>
+      <point x="434" y="0" type="line"/>
     </contour>
     <contour>
-      <point x="1119" y="0" type="line" startp="1" name="z16l"/>
-      <point added="1" x="1119" y="0" control_out="1" name="z17l"/> 
-      <point added="2" x="1458" y="0" control_in="1" name="z18l"/> 
-      <point x="1458" y="0" type="line" name="z19l"/>
-      <point added="1" x="1458" y="0" control_out="1" name="z20l"/> 
-      <point added="2" x="948" y="1456" control_in="1" name="z21l"/> 
-      <point x="948" y="1456" type="line" name="z22l"/>
-      <point added="1" x="948" y="1456" control_out="1" name="z23l"/> 
-      <point added="2" x="772" y="1456" control_in="1" name="z24l"/> 
-      <point x="772" y="1456" type="line" name="z25l"/>
-      <point added="1" x="772" y="1456" control_out="1" name="z26l"/> 
-      <point added="2" x="681" y="1346" control_in="1" name="z27l"/> 
-      <point x="681" y="1346" type="line" name="z28l"/>
-      <point added="1" x="681" y="1346" control_out="1" name="z29l"/> 
-      <point added="2" x="1119" y="0" control_in="1" name="z30l"/> 
+      <point x="1119" y="0" type="line"/>
+      <point x="1458" y="0" type="line"/>
+      <point x="948" y="1456" type="line"/>
+      <point x="772" y="1456" type="line"/>
+      <point x="681" y="1346" type="line"/>
     </contour>
     <contour>
-      <point x="1150" y="674" type="line" startp="1" name="z31l"/>
-      <point added="1" x="1150" y="674" control_out="1" name="z32l"/> 
-      <point added="2" x="356" y="674" control_in="1" name="z33l"/> 
-      <point x="356" y="674" type="line" name="z34l"/>
-      <point added="1" x="356" y="674" control_out="1" name="z35l"/> 
-      <point added="2" x="356" y="456" control_in="1" name="z36l"/> 
-      <point x="356" y="456" type="line" name="z37l"/>
-      <point added="1" x="356" y="456" control_out="1" name="z38l"/> 
-      <point added="2" x="1150" y="456" control_in="1" name="z39l"/> 
-      <point x="1150" y="456" type="line" name="z40l"/>
-      <point added="1" x="1150" y="456" control_out="1" name="z41l"/> 
-      <point added="2" x="1150" y="674" control_in="1" name="z42l"/> 
+      <point x="1150" y="674" type="line"/>
+      <point x="356" y="674" type="line"/>
+      <point x="356" y="456" type="line"/>
+      <point x="1150" y="456" type="line"/>
     </contour>
     <contour>
-      <point x="901" y="565" type="line" startp="1" name="z43l"/>
-      <point added="1" x="901" y="565" control_out="1" name="z44l"/> 
-      <point added="2" x="640" y="565" control_in="1" name="z45l"/> 
-      <point x="640" y="565" type="line" name="z46l"/>
-      <point added="1" x="640" y="565" control_out="1" name="z47l"/> 
-      <point added="2" x="640" y="0" control_in="1" name="z48l"/> 
-      <point x="640" y="0" type="line" name="z49l"/>
-      <point added="1" x="640" y="0" control_out="1" name="z50l"/> 
-      <point added="2" x="901" y="0" control_in="1" name="z51l"/> 
-      <point x="901" y="0" type="line" name="z52l"/>
-      <point added="1" x="901" y="0" control_out="1" name="z53l"/> 
-      <point added="2" x="901" y="565" control_in="1" name="z54l"/> 
+      <point x="901" y="565" type="line"/>
+      <point x="640" y="565" type="line"/>
+      <point x="640" y="0" type="line"/>
+      <point x="901" y="0" type="line"/>
     </contour>
     <contour>
-      <point x="434" y="0" type="line" startp="1" name="z55l"/>
-      <point added="1" x="434" y="0" control_out="1" name="z56l"/> 
-      <point added="2" x="587" y="0" control_in="1" name="z57l"/> 
-      <point x="587" y="0" type="line" name="z58l"/>
-      <point added="1" x="587" y="0" control_out="1" name="z59l"/> 
-      <point added="2" x="587" y="200" control_in="1" name="z60l"/> 
-      <point x="587" y="200" type="line" name="z61l"/>
-      <point added="1" x="587" y="200" control_out="1" name="z62l"/> 
-      <point added="2" x="434" y="230" control_in="1" name="z63l"/> 
-      <point x="434" y="230" type="line" name="z64l"/>
-      <point added="1" x="434" y="230" control_out="1" name="z65l"/> 
-      <point added="2" x="434" y="0" control_in="1" name="z66l"/> 
+      <point x="434" y="0" type="line"/>
+      <point x="587" y="0" type="line"/>
+      <point x="587" y="200" type="line"/>
+      <point x="434" y="230" type="line"/>
     </contour>
     <contour>
-      <point x="95" y="0" type="line" startp="1" name="z67l"/>
-      <point added="1" x="95" y="0" control_out="1" name="z68l"/> 
-      <point added="2" x="275" y="230" control_in="1" name="z69l"/> 
-      <point x="275" y="230" type="line" name="z70l"/>
-      <point added="1" x="275" y="230" control_out="1" name="z71l"/> 
-      <point added="2" x="52" y="200" control_in="1" name="z72l"/> 
-      <point x="52" y="200" type="line" name="z73l"/>
-      <point added="1" x="52" y="200" control_out="1" name="z74l"/> 
-      <point added="2" x="52" y="0" control_in="1" name="z75l"/> 
-      <point x="52" y="0" type="line" name="z76l"/>
-      <point added="1" x="52" y="0" control_out="1" name="z77l"/> 
-      <point added="2" x="95" y="0" control_in="1" name="z78l"/> 
+      <point x="95" y="0" type="line"/>
+      <point x="275" y="230" type="line"/>
+      <point x="52" y="200" type="line"/>
+      <point x="52" y="0" type="line"/>
     </contour>
     <contour>
-      <point x="1458" y="0" type="line" startp="1" name="z79l"/>
-      <point added="1" x="1458" y="0" control_out="1" name="z80l"/> 
-      <point added="2" x="1501" y="0" control_in="1" name="z81l"/> 
-      <point x="1501" y="0" type="line" name="z82l"/>
-      <point added="1" x="1501" y="0" control_out="1" name="z83l"/> 
-      <point added="2" x="1501" y="200" control_in="1" name="z84l"/> 
-      <point x="1501" y="200" type="line" name="z85l"/>
-      <point added="1" x="1501" y="200" control_out="1" name="z86l"/> 
-      <point added="2" x="1278" y="230" control_in="1" name="z87l"/> 
-      <point x="1278" y="230" type="line" name="z88l"/>
-      <point added="1" x="1278" y="230" control_out="1" name="z89l"/> 
-      <point added="2" x="1458" y="0" control_in="1" name="z90l"/> 
+      <point x="1458" y="0" type="line"/>
+      <point x="1501" y="0" type="line"/>
+      <point x="1501" y="200" type="line"/>
+      <point x="1278" y="230" type="line"/>
     </contour>
     <contour>
-      <point x="1119" y="0" type="line" startp="1" name="z91l"/>
-      <point added="1" x="1119" y="0" control_out="1" name="z92l"/> 
-      <point added="2" x="1119" y="230" control_in="1" name="z93l"/> 
-      <point x="1119" y="230" type="line" name="z94l"/>
-      <point added="1" x="1119" y="230" control_out="1" name="z95l"/> 
-      <point added="2" x="966" y="200" control_in="1" name="z96l"/> 
-      <point x="966" y="200" type="line" name="z97l"/>
-      <point added="1" x="966" y="200" control_out="1" name="z98l"/> 
-      <point added="2" x="966" y="0" control_in="1" name="z99l"/> 
-      <point x="966" y="0" type="line" name="z100l"/>
-      <point added="1" x="966" y="0" control_out="1" name="z101l"/> 
-      <point added="2" x="1119" y="0" control_in="1" name="z102l"/> 
+      <point x="1119" y="0" type="line"/>
+      <point x="1119" y="230" type="line"/>
+      <point x="966" y="200" type="line"/>
+      <point x="966" y="0" type="line"/>
     </contour>
   </outline>
   <lib>

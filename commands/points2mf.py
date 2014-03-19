@@ -303,7 +303,7 @@ def points2mf(glyphname, *masters):
     fip.write("penlabels(range 1 thru 99);\n")
     fip.write("endchar;")
 
-    print time.time() - starttime
+    # print time.time() - starttime
 
     return fip.getcontents()
 

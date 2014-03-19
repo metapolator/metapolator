@@ -1,20 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="gravecomb" format="1">
   <advance width="534"/>
   <unicode hex="0300"/>
   <outline>
     <contour>
-      <point x="321" y="1483" type="line" startp="1" name="z1l"/>
-      <point added="1" x="321" y="1483" control_out="1" name="z2l"/> 
-      <point added="2" x="75" y="1483" control_in="1" name="z3l"/> 
-      <point x="75" y="1483" type="line" name="z4l"/>
-      <point added="1" x="75" y="1483" control_out="1" name="z5l"/> 
-      <point added="2" x="268" y="1190" control_in="1" name="z6l"/> 
-      <point x="268" y="1190" type="line" name="z7l"/>
-      <point added="1" x="268" y="1190" control_out="1" name="z8l"/> 
-      <point added="2" x="460" y="1190" control_in="1" name="z9l"/> 
-      <point x="460" y="1190" type="line" name="z10l"/>
-      <point added="1" x="460" y="1190" control_out="1" name="z11l"/> 
-      <point added="2" x="321" y="1483" control_in="1" name="z12l"/> 
+      <point x="321" y="1483" type="line"/>
+      <point x="75" y="1483" type="line"/>
+      <point x="268" y="1190" type="line"/>
+      <point x="460" y="1190" type="line"/>
     </contour>
   </outline>
   <lib>

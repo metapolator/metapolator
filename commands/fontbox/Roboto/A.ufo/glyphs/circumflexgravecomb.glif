@@ -1,42 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="circumflexgravecomb" format="1">
   <advance width="1113"/>
   <outline>
     <contour>
-      <point x="782" y="1481" type="line" startp="1" name="z1l"/>
-      <point added="1" x="782" y="1481" control_out="1" name="z2l"/> 
-      <point added="2" x="618" y="1481" control_in="1" name="z3l"/> 
-      <point x="618" y="1481" type="line" name="z4l"/>
-      <point added="1" x="618" y="1481" control_out="1" name="z5l"/> 
-      <point added="2" x="336" y="1263" control_in="1" name="z6l"/> 
-      <point x="336" y="1263" type="line" name="z7l"/>
-      <point added="1" x="336" y="1263" control_out="1" name="z8l"/> 
-      <point added="2" x="554" y="1263" control_in="1" name="z9l"/> 
-      <point x="554" y="1263" type="line" name="z10l"/>
-      <point added="1" x="554" y="1263" control_out="1" name="z11l"/> 
-      <point added="2" x="700" y="1379" control_in="1" name="z12l"/> 
-      <point x="700" y="1379" type="line" name="z13l"/>
-      <point added="1" x="700" y="1379" control_out="1" name="z14l"/> 
-      <point added="2" x="846" y="1263" control_in="1" name="z15l"/> 
-      <point x="846" y="1263" type="line" name="z16l"/>
-      <point added="1" x="846" y="1263" control_out="1" name="z17l"/> 
-      <point added="2" x="1063" y="1263" control_in="1" name="z18l"/> 
-      <point x="1063" y="1263" type="line" name="z19l"/>
-      <point added="1" x="1063" y="1263" control_out="1" name="z20l"/> 
-      <point added="2" x="782" y="1481" control_in="1" name="z21l"/> 
+      <point x="782" y="1481" type="line"/>
+      <point x="618" y="1481" type="line"/>
+      <point x="336" y="1263" type="line"/>
+      <point x="554" y="1263" type="line"/>
+      <point x="700" y="1379" type="line"/>
+      <point x="846" y="1263" type="line"/>
+      <point x="1063" y="1263" type="line"/>
     </contour>
     <contour>
-      <point x="238" y="1656" type="line" startp="1" name="z22l"/>
-      <point added="1" x="238" y="1656" control_out="1" name="z23l"/> 
-      <point added="2" x="0" y="1656" control_in="1" name="z24l"/> 
-      <point x="0" y="1656" type="line" name="z25l"/>
-      <point added="1" x="0" y="1656" control_out="1" name="z26l"/> 
-      <point added="2" x="236" y="1381" control_in="1" name="z27l"/> 
-      <point x="236" y="1381" type="line" name="z28l"/>
-      <point added="1" x="236" y="1381" control_out="1" name="z29l"/> 
-      <point added="2" x="409" y="1381" control_in="1" name="z30l"/> 
-      <point x="409" y="1381" type="line" name="z31l"/>
-      <point added="1" x="409" y="1381" control_out="1" name="z32l"/> 
-      <point added="2" x="238" y="1656" control_in="1" name="z33l"/> 
+      <point x="238" y="1656" type="line"/>
+      <point x="0" y="1656" type="line"/>
+      <point x="236" y="1381" type="line"/>
+      <point x="409" y="1381" type="line"/>
     </contour>
   </outline>
   <lib>

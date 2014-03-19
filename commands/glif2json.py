@@ -34,10 +34,13 @@ class PointSet(object):
 
 class glif2json:
 
-    def __init__(self, glifpath):
+    def __init__(self, glifpath, glifcontent=None):
         self.glifpath = glifpath
         self.glifdir = op.dirname(glifpath)
-        self.xmldoc = lxml.etree.fromstring(open(glifpath).read())
+        if not glifcontent:
+            self.xmldoc = lxml.etree.fromstring(open(glifpath).read())
+        else:
+            self.xmldoc = lxml.etree.fromstring(glifcontent)
 
     def find_components(self):
         return self.xmldoc.xpath('//outline/component')

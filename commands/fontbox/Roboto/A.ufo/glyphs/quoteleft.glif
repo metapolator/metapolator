@@ -1,26 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="quoteleft" format="1">
   <advance width="501"/>
   <unicode hex="2018"/>
   <outline>
     <contour>
-      <point x="97" y="1006" type="line" startp="1" name="z1l"/>
-      <point added="1" x="97" y="1006" control_out="1" name="z2l"/> 
-      <point added="2" x="358" y="1006" control_in="1" name="z3l"/> 
-      <point x="358" y="1006" type="line" name="z4l"/>
-      <point added="1" x="358" y="1006" control_out="1" name="z5l"/> 
-      <point added="2" x="358" y="1207" control_in="1" name="z6l"/> 
-      <point x="358" y="1207" type="line" smooth="yes" name="z7l"/>
-      <point x="358" y="1346" control_out="1" name="z8l"/>
-      <point x="390" y="1439" control_in="1" name="z9l"/>
-      <point x="434" y="1520" type="curve" name="z10l"/>
-      <point added="1" x="434" y="1520" control_out="1" name="z11l"/> 
-      <point added="2" x="280" y="1600" control_in="1" name="z12l"/> 
-      <point x="280" y="1600" type="line" name="z13l"/>
-      <point x="185" y="1512" control_out="1" name="z14l"/>
-      <point x="97" y="1349" control_in="1" name="z15l"/>
-      <point x="97" y="1208" type="curve" smooth="yes" name="z16l"/>
-      <point added="1" x="97" y="1208" control_out="1" name="z17l"/> 
-      <point added="2" x="97" y="1006" control_in="1" name="z18l"/> 
+      <point x="97" y="1006" type="line"/>
+      <point x="358" y="1006" type="line"/>
+      <point x="358" y="1207" type="line" smooth="yes"/>
+      <point x="358" y="1346"/>
+      <point x="390" y="1439"/>
+      <point x="434" y="1520" type="curve"/>
+      <point x="280" y="1600" type="line"/>
+      <point x="185" y="1512"/>
+      <point x="97" y="1349"/>
+      <point x="97" y="1208" type="curve" smooth="yes"/>
     </contour>
   </outline>
   <lib>

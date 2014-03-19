@@ -1,40 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="semicolon" format="1">
   <advance width="462"/>
   <unicode hex="003B"/>
   <outline>
     <contour>
-      <point x="392" y="1082" type="line" startp="1" name="z1l"/>
-      <point added="1" x="392" y="1082" control_out="1" name="z2l"/> 
-      <point added="2" x="70" y="1082" control_in="1" name="z3l"/> 
-      <point x="70" y="1082" type="line" name="z4l"/>
-      <point added="1" x="70" y="1082" control_out="1" name="z5l"/> 
-      <point added="2" x="70" y="798" control_in="1" name="z6l"/> 
-      <point x="70" y="798" type="line" name="z7l"/>
-      <point added="1" x="70" y="798" control_out="1" name="z8l"/> 
-      <point added="2" x="392" y="798" control_in="1" name="z9l"/> 
-      <point x="392" y="798" type="line" name="z10l"/>
-      <point added="1" x="392" y="798" control_out="1" name="z11l"/> 
-      <point added="2" x="392" y="1082" control_in="1" name="z12l"/> 
+      <point x="392" y="1082" type="line"/>
+      <point x="70" y="1082" type="line"/>
+      <point x="70" y="798" type="line"/>
+      <point x="392" y="798" type="line"/>
     </contour>
     <contour>
-      <point x="377" y="254" type="line" startp="1" name="z13l"/>
-      <point added="1" x="377" y="254" control_out="1" name="z14l"/> 
-      <point added="2" x="95" y="254" control_in="1" name="z15l"/> 
-      <point x="95" y="254" type="line" name="z16l"/>
-      <point added="1" x="95" y="254" control_out="1" name="z17l"/> 
-      <point added="2" x="95" y="1" control_in="1" name="z18l"/> 
-      <point x="95" y="1" type="line" smooth="yes" name="z19l"/>
-      <point x="95" y="-138" control_out="1" name="z20l"/>
-      <point x="63" y="-231" control_in="1" name="z21l"/>
-      <point x="19" y="-312" type="curve" name="z22l"/>
-      <point added="1" x="19" y="-312" control_out="1" name="z23l"/> 
-      <point added="2" x="173" y="-392" control_in="1" name="z24l"/> 
-      <point x="173" y="-392" type="line" name="z25l"/>
-      <point x="278" y="-300" control_out="1" name="z26l"/>
-      <point x="376" y="-128" control_in="1" name="z27l"/>
-      <point x="376" y="20" type="curve" smooth="yes" name="z28l"/>
-      <point added="1" x="376" y="20" control_out="1" name="z29l"/> 
-      <point added="2" x="377" y="254" control_in="1" name="z30l"/> 
+      <point x="377" y="254" type="line"/>
+      <point x="95" y="254" type="line"/>
+      <point x="95" y="1" type="line" smooth="yes"/>
+      <point x="95" y="-138"/>
+      <point x="63" y="-231"/>
+      <point x="19" y="-312" type="curve"/>
+      <point x="173" y="-392" type="line"/>
+      <point x="278" y="-300"/>
+      <point x="376" y="-128"/>
+      <point x="376" y="20" type="curve" smooth="yes"/>
     </contour>
   </outline>
   <lib>

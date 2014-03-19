@@ -1,50 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="uni2113" format="1">
   <advance width="1011"/>
   <unicode hex="2113"/>
   <outline>
     <contour>
-      <point x="795" y="291" type="line" startp="1" name="z1l"/>
-      <point x="634" y="291" control_out="1" name="z2l"/>
-      <point x="583" y="373" control_in="1" name="z3l"/>
-      <point x="583" y="514" type="curve" smooth="yes" name="z4l"/>
-      <point added="1" x="583" y="514" control_out="1" name="z5l"/> 
-      <point added="2" x="583" y="1057" control_in="1" name="z6l"/> 
-      <point x="583" y="1057" type="line" smooth="yes" name="z7l"/>
-      <point x="583" y="1159" control_out="1" name="z8l"/>
-      <point x="612" y="1206" control_in="1" name="z9l"/>
-      <point x="652" y="1206" type="curve" smooth="yes" name="z10l"/>
-      <point x="689" y="1206" control_out="1" name="z11l"/>
-      <point x="721" y="1166" control_in="1" name="z12l"/>
-      <point x="721" y="1119" type="curve" smooth="yes" name="z13l"/>
-      <point added="1" x="721" y="1119" control_out="1" name="z14l"/> 
-      <point added="2" x="721" y="1075" control_in="1" name="z15l"/> 
-      <point x="721" y="1075" type="line" smooth="yes" name="z16l"/>
-      <point x="721" y="857" control_out="1" name="z17l"/>
-      <point x="518" y="605" control_in="1" name="z18l"/>
-      <point x="40" y="605" type="curve" name="z19l"/>
-      <point added="1" x="40" y="605" control_out="1" name="z20l"/> 
-      <point added="2" x="40" y="418" control_in="1" name="z21l"/> 
-      <point x="40" y="418" type="line" name="z22l"/>
-      <point x="656" y="418" control_out="1" name="z23l"/>
-      <point x="1003" y="809" control_in="1" name="z24l"/>
-      <point x="1003" y="1077" type="curve" smooth="yes" name="z25l"/>
-      <point added="1" x="1003" y="1077" control_out="1" name="z26l"/> 
-      <point added="2" x="1003" y="1119" control_in="1" name="z27l"/> 
-      <point x="1003" y="1119" type="line" smooth="yes" name="z28l"/>
-      <point x="1003" y="1341" control_out="1" name="z29l"/>
-      <point x="852" y="1477" control_in="1" name="z30l"/>
-      <point x="642" y="1477" type="curve" smooth="yes" name="z31l"/>
-      <point x="395" y="1477" control_out="1" name="z32l"/>
-      <point x="240" y="1299" control_in="1" name="z33l"/>
-      <point x="240" y="994" type="curve" smooth="yes" name="z34l"/>
-      <point added="1" x="240" y="994" control_out="1" name="z35l"/> 
-      <point added="2" x="240" y="431" control_in="1" name="z36l"/> 
-      <point x="240" y="431" type="line" smooth="yes" name="z37l"/>
-      <point x="240" y="158" control_out="1" name="z38l"/>
-      <point x="416" y="-21" control_in="1" name="z39l"/>
-      <point x="795" y="-21" type="curve" name="z40l"/>
-      <point added="1" x="795" y="-21" control_out="1" name="z41l"/> 
-      <point added="2" x="795" y="291" control_in="1" name="z42l"/> 
+      <point x="795" y="291" type="line"/>
+      <point x="634" y="291"/>
+      <point x="583" y="373"/>
+      <point x="583" y="514" type="curve" smooth="yes"/>
+      <point x="583" y="1057" type="line" smooth="yes"/>
+      <point x="583" y="1159"/>
+      <point x="612" y="1206"/>
+      <point x="652" y="1206" type="curve" smooth="yes"/>
+      <point x="689" y="1206"/>
+      <point x="721" y="1166"/>
+      <point x="721" y="1119" type="curve" smooth="yes"/>
+      <point x="721" y="1075" type="line" smooth="yes"/>
+      <point x="721" y="857"/>
+      <point x="518" y="605"/>
+      <point x="40" y="605" type="curve"/>
+      <point x="40" y="418" type="line"/>
+      <point x="656" y="418"/>
+      <point x="1003" y="809"/>
+      <point x="1003" y="1077" type="curve" smooth="yes"/>
+      <point x="1003" y="1119" type="line" smooth="yes"/>
+      <point x="1003" y="1341"/>
+      <point x="852" y="1477"/>
+      <point x="642" y="1477" type="curve" smooth="yes"/>
+      <point x="395" y="1477"/>
+      <point x="240" y="1299"/>
+      <point x="240" y="994" type="curve" smooth="yes"/>
+      <point x="240" y="431" type="line" smooth="yes"/>
+      <point x="240" y="158"/>
+      <point x="416" y="-21"/>
+      <point x="795" y="-21" type="curve"/>
     </contour>
   </outline>
   <lib>

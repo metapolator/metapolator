@@ -1,20 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="acutecomb" format="1">
   <advance width="526"/>
   <unicode hex="0301"/>
   <outline>
     <contour>
-      <point x="85" y="1199" type="line" startp="1" name="z1l"/>
-      <point added="1" x="85" y="1199" control_out="1" name="z2l"/> 
-      <point added="2" x="276" y="1199" control_in="1" name="z3l"/> 
-      <point x="276" y="1199" type="line" name="z4l"/>
-      <point added="1" x="276" y="1199" control_out="1" name="z5l"/> 
-      <point added="2" x="469" y="1492" control_in="1" name="z6l"/> 
-      <point x="469" y="1492" type="line" name="z7l"/>
-      <point added="1" x="469" y="1492" control_out="1" name="z8l"/> 
-      <point added="2" x="223" y="1492" control_in="1" name="z9l"/> 
-      <point x="223" y="1492" type="line" name="z10l"/>
-      <point added="1" x="223" y="1492" control_out="1" name="z11l"/> 
-      <point added="2" x="85" y="1199" control_in="1" name="z12l"/> 
+      <point x="85" y="1199" type="line"/>
+      <point x="276" y="1199" type="line"/>
+      <point x="469" y="1492" type="line"/>
+      <point x="223" y="1492" type="line"/>
     </contour>
   </outline>
   <lib>

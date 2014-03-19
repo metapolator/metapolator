@@ -1,20 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="bar" format="1">
   <advance width="421"/>
   <unicode hex="007C"/>
   <outline>
     <contour>
-      <point x="307" y="1456" type="line" startp="1" name="z1l"/>
-      <point added="1" x="307" y="1456" control_out="1" name="z2l"/> 
-      <point added="2" x="126" y="1456" control_in="1" name="z3l"/> 
-      <point x="126" y="1456" type="line" name="z4l"/>
-      <point added="1" x="126" y="1456" control_out="1" name="z5l"/> 
-      <point added="2" x="126" y="-270" control_in="1" name="z6l"/> 
-      <point x="126" y="-270" type="line" name="z7l"/>
-      <point added="1" x="126" y="-270" control_out="1" name="z8l"/> 
-      <point added="2" x="307" y="-270" control_in="1" name="z9l"/> 
-      <point x="307" y="-270" type="line" name="z10l"/>
-      <point added="1" x="307" y="-270" control_out="1" name="z11l"/> 
-      <point added="2" x="307" y="1456" control_in="1" name="z12l"/> 
+      <point x="307" y="1456" type="line"/>
+      <point x="126" y="1456" type="line"/>
+      <point x="126" y="-270" type="line"/>
+      <point x="307" y="-270" type="line"/>
     </contour>
   </outline>
   <lib>

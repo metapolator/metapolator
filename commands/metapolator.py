@@ -21,6 +21,7 @@ import re
 import subprocess
 import sys
 
+from fixufo import fix
 from logger import logger
 
 cwd = os.path.dirname(__file__)
@@ -220,7 +221,7 @@ def iterate_glyphs(master):
         if os.path.splitext(filename)[1].lower() != '.glif':
             continue
         glifpath = os.path.join(glyphsdir, filename)
-        yield glif2json(glifpath).convert()
+        yield glif2json(glifpath, glifcontent=fix(glifpath)).convert()
 
 
 def parse_command_line_arguments():

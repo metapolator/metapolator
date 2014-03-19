@@ -1,26 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="quotesingle" format="1">
   <advance width="445"/>
   <unicode hex="0027"/>
   <outline>
     <contour>
-      <point x="342" y="1560" type="line" startp="1" name="z1l"/>
-      <point added="1" x="342" y="1560" control_out="1" name="z2l"/> 
-      <point added="2" x="131" y="1560" control_in="1" name="z3l"/> 
-      <point x="131" y="1560" type="line" name="z4l"/>
-      <point added="1" x="131" y="1560" control_out="1" name="z5l"/> 
-      <point added="2" x="131" y="1255" control_in="1" name="z6l"/> 
-      <point x="131" y="1255" type="line" name="z7l"/>
-      <point added="1" x="131" y="1255" control_out="1" name="z8l"/> 
-      <point added="2" x="131" y="985" control_in="1" name="z9l"/> 
-      <point x="131" y="985" type="line" name="z10l"/>
-      <point added="1" x="131" y="985" control_out="1" name="z11l"/> 
-      <point added="2" x="270" y="985" control_in="1" name="z12l"/> 
-      <point x="270" y="985" type="line" name="z13l"/>
-      <point added="1" x="270" y="985" control_out="1" name="z14l"/> 
-      <point added="2" x="342" y="1268" control_in="1" name="z15l"/> 
-      <point x="342" y="1268" type="line" name="z16l"/>
-      <point added="1" x="342" y="1268" control_out="1" name="z17l"/> 
-      <point added="2" x="342" y="1560" control_in="1" name="z18l"/> 
+      <point x="342" y="1560" type="line"/>
+      <point x="131" y="1560" type="line"/>
+      <point x="131" y="1255" type="line"/>
+      <point x="131" y="985" type="line"/>
+      <point x="270" y="985" type="line"/>
+      <point x="342" y="1268" type="line"/>
     </contour>
   </outline>
   <lib>

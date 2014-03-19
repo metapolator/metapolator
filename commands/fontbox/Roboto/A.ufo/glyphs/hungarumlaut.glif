@@ -1,34 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="hungarumlaut" format="1">
   <advance width="987"/>
   <unicode hex="02DD"/>
   <outline>
     <contour>
-      <point x="453" y="1252" type="line" startp="1" name="z1l"/>
-      <point added="1" x="453" y="1252" control_out="1" name="z2l"/> 
-      <point added="2" x="694" y="1252" control_in="1" name="z3l"/> 
-      <point x="694" y="1252" type="line" name="z4l"/>
-      <point added="1" x="694" y="1252" control_out="1" name="z5l"/> 
-      <point added="2" x="980" y="1518" control_in="1" name="z6l"/> 
-      <point x="980" y="1518" type="line" name="z7l"/>
-      <point added="1" x="980" y="1518" control_out="1" name="z8l"/> 
-      <point added="2" x="698" y="1518" control_in="1" name="z9l"/> 
-      <point x="698" y="1518" type="line" name="z10l"/>
-      <point added="1" x="698" y="1518" control_out="1" name="z11l"/> 
-      <point added="2" x="453" y="1252" control_in="1" name="z12l"/> 
+      <point x="453" y="1252" type="line"/>
+      <point x="694" y="1252" type="line"/>
+      <point x="980" y="1518" type="line"/>
+      <point x="698" y="1518" type="line"/>
     </contour>
     <contour>
-      <point x="86" y="1252" type="line" startp="1" name="z13l"/>
-      <point added="1" x="86" y="1252" control_out="1" name="z14l"/> 
-      <point added="2" x="327" y="1252" control_in="1" name="z15l"/> 
-      <point x="327" y="1252" type="line" name="z16l"/>
-      <point added="1" x="327" y="1252" control_out="1" name="z17l"/> 
-      <point added="2" x="572" y="1518" control_in="1" name="z18l"/> 
-      <point x="572" y="1518" type="line" name="z19l"/>
-      <point added="1" x="572" y="1518" control_out="1" name="z20l"/> 
-      <point added="2" x="290" y="1518" control_in="1" name="z21l"/> 
-      <point x="290" y="1518" type="line" name="z22l"/>
-      <point added="1" x="290" y="1518" control_out="1" name="z23l"/> 
-      <point added="2" x="86" y="1252" control_in="1" name="z24l"/> 
+      <point x="86" y="1252" type="line"/>
+      <point x="327" y="1252" type="line"/>
+      <point x="572" y="1518" type="line"/>
+      <point x="290" y="1518" type="line"/>
     </contour>
   </outline>
   <lib>
