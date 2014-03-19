@@ -129,10 +129,11 @@ class glif2json:
                     anchordict[key] = value
             return anchordict
 
-        anchors = []
-        for anchor in self.xmldoc.find('anchor'):
-            anchors.append(anchor2dict(anchor))
-        if anchors:
-            result['anchors'] = anchors
+        if self.xmldoc.find('anchor'):
+            anchors = []
+            for anchor in self.xmldoc.find('anchor'):
+                anchors.append(anchor2dict(anchor))
+            if anchors:
+                result['anchors'] = anchors
 
         return result
