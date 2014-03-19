@@ -145,13 +145,13 @@ def find_anchor(glyph, anchorname):
 
 def make_anchors(output_ufo, masters):
     from glif2json import glif2json
-    anchors = []
 
     output_glyphs_dir = os.path.join(output_ufo, 'glyphs')
 
     # Have to list all glyphs in primary master to add missed anchors
     # after generating UFO with fontforge process
     for key in masters[0]['glyphs']:
+        anchors = []
         glyph = masters[0]['glyphs'][key]
         if 'anchors' not in glyph:
             continue
