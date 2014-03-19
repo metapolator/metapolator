@@ -1,1 +1,1 @@
-input glyphs/AE.mf
+input glyphs/D.mf
