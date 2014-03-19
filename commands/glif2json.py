@@ -37,10 +37,6 @@ class glif2json:
     def __init__(self, glifpath, glifcontent=None):
         self.glifpath = glifpath
         self.glifdir = op.dirname(glifpath)
-
-        # In GLIF 1 there was no official anchor element. Anchors were
-        # unofficially but widely supported through the use of a contour
-        # containing only one "move" point.
         self.anchors = []
         if not glifcontent:
             self.xmldoc = lxml.etree.fromstring(open(glifpath).read())
@@ -53,9 +49,23 @@ class glif2json:
     def append_component(self, node):
         self.xmldoc.find('outline').append(node)
 
+    def append_anchors(self, anchors):
+        # In GLIF 1 there was no official anchor element. Anchors were
+        # unofficially but widely supported through the use of a contour
+        # containing only one "move" point.
+        glyph = self.xmldoc.xpath('//outline')
+        for anchor in anchors:
+            contour = lxml.etree.fromstring('<contour />')
+            point = lxml.etree.fromstring('<point type="move" />')
+            contour.append(point)
+            point.attrib['x'] = str(round(anchor['x']))
+            point.attrib['y'] = str(round(anchor['y']))
+            point.attrib['name'] = anchor['name']
+            glyph[0].append(contour)
+
     def write(self):
         et = lxml.etree.ElementTree(self.xmldoc)
-        et.write(self.glifpath, xml_declaration=True, encoding='utf-8')
+        et.write(self.glifpath, xml_declaration=True, pretty_print=True, encoding='utf-8')
 
     def glif_contour2points(self, glif, pointnr=0):
         points = []
@@ -124,6 +134,7 @@ class glif2json:
 
         result = {'points': points,
                   'name': self.xmldoc.attrib['name'],
+                  'sysname': op.basename(self.glifpath),
                   'advanceWidth': float(self.xmldoc.find('advance').attrib['width'])}
 
         if components:

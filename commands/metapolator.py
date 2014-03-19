@@ -131,18 +131,54 @@ def fill_components(output_ufo, masters):
             outputglif = glif2json(output_glyphs_path)
         except IOError:
             continue
-        print glifpath
         for node in glif2json(glifpath).find_components():
-            print node
             outputglif.append_component(node)
         outputglif.write()
 
 
+def find_anchor(glyph, anchorname):
+    for anchor in glyph.get('anchors', []):
+        if anchor['name'] == 'anchorname':
+            return anchor
+    return
+
+
 def make_anchors(output_ufo, masters):
-    for glyph in masters[0]['glyphs']:
+    from glif2json import glif2json
+    anchors = []
+
+    output_glyphs_dir = os.path.join(output_ufo, 'glyphs')
+
+    for key in masters[0]['glyphs']:
+        glyph = masters[0]['glyphs'][key]
         if 'anchors' not in glyph:
             continue
-        print glyph['anchors']
+        for anchor in glyph['anchors']:
+            divider = 0
+            values_x = []
+            values_y = []
+            for left, right in points2mf.iterate(masters):
+                koef = points2mf.getcoefficient(left, right)
+                metapolation = points2mf.getmetapolation(left, right)
+
+                divider += koef
+
+                lft = find_anchor(left['glyphs'][key], anchor['name']) or anchor
+                rgt = find_anchor(right['glyphs'][key], anchor['name']) or anchor
+                values_x.append(points2mf.func(koef, metapolation, float(lft['x']), float(rgt['x'])))
+                values_y.append(points2mf.func(koef, metapolation, float(lft['y']), float(rgt['y'])))
+            x = sum(values_x) / (divider or 1)
+            y = sum(values_y) / (divider or 1)
+            print x, y
+            anchors.append({'x': x, 'y': y, 'name': anchor['name']})
+
+        output_glyphs_path = os.path.join(output_glyphs_dir, glyph['sysname'])
+        try:
+            outputglif = glif2json(output_glyphs_path)
+        except IOError:
+            continue
+        outputglif.append_anchors(anchors)
+        outputglif.write()
 
 
 def main():
