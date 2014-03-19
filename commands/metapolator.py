@@ -154,7 +154,7 @@ def main():
     if argv.json:
         from glif2json import glif2json
         import pprint
-        pprint.pprint(glif2json(argv.output_ufo).convert())
+        pprint.pprint(glif2json(argv.output_ufo, glifcontent=fix(argv.output_ufo)).convert())
         logger.lapse()
 
         sys.exit(0)

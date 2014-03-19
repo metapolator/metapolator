@@ -81,7 +81,6 @@ class fixglif:
             for s in ioutline:
                 if 'type' in s.attrib and s.attrib['type'] == 'move':
                     continue
-
                 itype = itype + 1
                 if isp == 0:
                     s.attrib['startp'] = '1'
