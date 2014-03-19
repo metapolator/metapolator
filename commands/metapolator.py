@@ -15,28 +15,30 @@ $
 """
 import argparse
 import os
+import os.path as op
 import fontinfo
 import points2mf
 import re
 import subprocess
 import sys
 
-from fixufo import fix
+from fixglif import fix
 from logger import logger
 
-cwd = os.path.dirname(__file__)
-fwd = os.path.join(os.path.dirname(__file__), 'fontbox')
+# MetaPost working directory
+metap_workdir = op.join(op.dirname(__file__), 'data')
 
-axismapping = {}  # contains links to masters pairs
-font = {}  # contains description of new ufo
+# Font Working Directory
+fwd = op.join(metap_workdir, 'fontbox')
+
 masters = []
 
 
 def get_temp_dir():
     # dir = tempfile.gettempdir()
     dir = fwd
-    d = os.path.join(dir, 'glyphs')
-    if os.path.exists(d):
+    d = op.join(dir, 'glyphs')
+    if op.exists(d):
         return d
     # try:
     #     os.removedirs(d)
@@ -48,19 +50,19 @@ def get_temp_dir():
 
 
 def get_master_alias(ufofile):
-    return os.path.basename(re.sub('\W', '_', ufofile))
+    return op.basename(re.sub('\W', '_', ufofile))
 
 
 def init_master(ufofile):
     print
     print 'Read data from UFOs for font information'
-    info = fontinfo.fontinfo(os.path.join(fwd, ufofile))
-    kerns = fontinfo.kerninginfo(os.path.join(fwd, ufofile))
+    info = fontinfo.fontinfo(op.join(fwd, ufofile))
+    kerns = fontinfo.kerninginfo(op.join(fwd, ufofile))
     logger.lapse()
 
     glypharray = points2mf.GLYPHNAME
     return dict(name=ufofile, glyphs={}, info=info, kerning=kerns,
-                glyphorder=glypharray, alias=get_master_alias(os.path.splitext(ufofile)[0]))
+                glyphorder=glypharray, alias=get_master_alias(op.splitext(ufofile)[0]))
 
 
 def get_from_config(config, key):
@@ -88,8 +90,6 @@ def parse_arguments(argv):
         points2mf.cachekoef[alias] = get_from_config(config, 'coefficient')
         points2mf.metapolationcache[alias] = get_from_config(config, 'metapolation')
 
-        axismapping[re.sub('name:', '', a)] = alias
-
     print
     print 'Definition of axis'
     logger.lapse()
@@ -113,20 +113,20 @@ def generate_mf(masters):
             # from generating new ufo
             continue
         # print 'processing {0}.mf'.format(glyphname)
-        with open(os.path.join(directory, '%s.mf' % glyphname), 'w') as fp:
+        with open(op.join(directory, '%s.mf' % glyphname), 'w') as fp:
             fp.write(points2mf.points2mf(glyphname, *masters))
 
 
 def fill_components(output_ufo, masters):
     from glif2json import glif2json
     master = masters[0]
-    glyphsdir = os.path.join(fwd, master['name'], 'glyphs')
-    output_glyphs_dir = os.path.join(output_ufo, 'glyphs')
+    glyphsdir = op.join(fwd, master['name'], 'glyphs')
+    output_glyphs_dir = op.join(output_ufo, 'glyphs')
     for filename in os.listdir(glyphsdir):
-        if os.path.splitext(filename)[1].lower() != '.glif':
+        if op.splitext(filename)[1].lower() != '.glif':
             continue
-        glifpath = os.path.join(glyphsdir, filename)
-        output_glyphs_path = os.path.join(output_glyphs_dir, filename)
+        glifpath = op.join(glyphsdir, filename)
+        output_glyphs_path = op.join(output_glyphs_dir, filename)
         try:
             outputglif = glif2json(output_glyphs_path)
         except IOError:
@@ -146,7 +146,7 @@ def find_anchor(glyph, anchorname):
 def make_anchors(output_ufo, masters):
     from glif2json import glif2json
 
-    output_glyphs_dir = os.path.join(output_ufo, 'glyphs')
+    output_glyphs_dir = op.join(output_ufo, 'glyphs')
 
     # Have to list all glyphs in primary master to add missed anchors
     # after generating UFO with fontforge process
@@ -173,7 +173,7 @@ def make_anchors(output_ufo, masters):
             y = sum(values_y) / (divider or 1)
             anchors.append({'x': x, 'y': y, 'name': anchor['name']})
 
-        output_glyphs_path = os.path.join(output_glyphs_dir, glyph['sysname'])
+        output_glyphs_path = op.join(output_glyphs_dir, glyph['sysname'])
         try:
             outputglif = glif2json(output_glyphs_path)
         except IOError:
@@ -213,12 +213,12 @@ def main():
     generate_mf(masters)
     logger.lapse()
 
-    os.environ['MFINPUTS'] = os.path.realpath(fwd)
+    os.environ['MFINPUTS'] = op.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'
 
     process = subprocess.Popen(
         ["sh", "makefont.sh", 'fontbox', '1'],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=metap_workdir
     )
 
     errorcontent = ''
@@ -229,21 +229,21 @@ def main():
             process.kill()
             break
 
-    fill_components(os.path.join(cwd, 'fontbox.ufo'), masters)
+    fill_components(op.join(metap_workdir, 'fontbox.ufo'), masters)
 
-    make_anchors(os.path.join(cwd, 'fontbox.ufo'), masters)
+    make_anchors(op.join(metap_workdir, 'fontbox.ufo'), masters)
 
     # postprocess for generated ufo file
     # 1. update metrics
-    fontinfo.update(os.path.join(cwd, 'fontbox.ufo'),
+    fontinfo.update(op.join(metap_workdir, 'fontbox.ufo'),
                     points2mf.metrics(*masters))
 
     # 2. update kernings
-    fontinfo.update_kerning(os.path.join(cwd, 'fontbox.ufo'),
+    fontinfo.update_kerning(op.join(metap_workdir, 'fontbox.ufo'),
                             points2mf.kernings(*masters))
 
     # 3. change contour directions
-    fontinfo.correct_contours_direction(os.path.join(cwd, 'fontbox.ufo'))
+    fontinfo.correct_contours_direction(op.join(metap_workdir, 'fontbox.ufo'))
     print
     print 'Call METAPOST'
     logger.lapse()
@@ -261,11 +261,11 @@ def iterate_glyphs(master):
     """ Returns JSON with glyphs description for master """
     assert isinstance(master, dict)
     from glif2json import glif2json
-    glyphsdir = os.path.join(fwd, master['name'], 'glyphs')
+    glyphsdir = op.join(fwd, master['name'], 'glyphs')
     for filename in os.listdir(glyphsdir):
-        if os.path.splitext(filename)[1].lower() != '.glif':
+        if op.splitext(filename)[1].lower() != '.glif':
             continue
-        glifpath = os.path.join(glyphsdir, filename)
+        glifpath = op.join(glyphsdir, filename)
         yield glif2json(glifpath, glifcontent=fix(glifpath)).convert()
 
 

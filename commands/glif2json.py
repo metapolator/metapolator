@@ -59,8 +59,8 @@ class glif2json:
             contour = lxml.etree.fromstring('<contour />')
             point = lxml.etree.fromstring('<point type="move" />')
             contour.append(point)
-            point.attrib['x'] = str(round(anchor['x']))
-            point.attrib['y'] = str(round(anchor['y']))
+            point.attrib['x'] = '%.1f' % anchor['x']
+            point.attrib['y'] = '%.1f' % anchor['y']
             point.attrib['name'] = anchor['name']
             glyph[0].append(contour)
 
