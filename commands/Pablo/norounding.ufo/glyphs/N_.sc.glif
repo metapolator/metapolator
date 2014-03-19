@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="N.sc" format="1">
+  <advance width="603.5"/>
+  <outline>
+    <contour>
+      <point x="337.5" y="760.0" type="move" name="topUC"/>
+    </contour>
+    <contour>
+      <point x="352.5" y="0.0" type="move" name="bottom"/>
+    </contour>
+    <contour>
+      <point x="62.5" y="0.0" type="line"/>
+      <point x="160.0" y="0.0" type="line"/>
+      <point x="160.0" y="402.5" type="line"/>
+      <point x="167.0" y="402.0" type="line"/>
+      <point x="209.0" y="337.5" type="line"/>
+      <point x="449.0" y="0.0" type="line"/>
+      <point x="541.0" y="0.0" type="line"/>
+      <point x="541.0" y="577.0" type="line"/>
+      <point x="443.5" y="577.0" type="line"/>
+      <point x="443.5" y="176.5" type="line"/>
+      <point x="436.5" y="176.0" type="line"/>
+      <point x="395.0" y="240.5" type="line"/>
+      <point x="155.0" y="577.0" type="line"/>
+      <point x="62.5" y="577.0" type="line"/>
+    </contour>
+  </outline>
+</glyph>

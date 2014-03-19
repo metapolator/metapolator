@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dagger" format="1">
+  <advance width="448.5"/>
+  <unicode hex="2020"/>
+  <outline>
+    <contour>
+      <point x="198.0" y="65.0" type="line"/>
+      <point x="251.0" y="65.0" type="line"/>
+      <point x="278.0" y="265.0" type="line"/>
+      <point x="278.0" y="345.0" type="line"/>
+      <point x="251.0" y="510.5" type="line"/>
+      <point x="419.5" y="488.5" type="line"/>
+      <point x="423.5" y="488.5" type="line"/>
+      <point x="423.5" y="585.5" type="line"/>
+      <point x="419.5" y="585.5" type="line"/>
+      <point x="251.0" y="563.5" type="line"/>
+      <point x="278.0" y="729.0" type="line"/>
+      <point x="278.0" y="808.0" type="line"/>
+      <point x="170.0" y="808.0" type="line"/>
+      <point x="170.0" y="729.0" type="line"/>
+      <point x="198.0" y="563.5" type="line"/>
+      <point x="29.5" y="585.5" type="line"/>
+      <point x="25.5" y="585.5" type="line"/>
+      <point x="25.5" y="488.5" type="line"/>
+      <point x="29.5" y="488.5" type="line"/>
+      <point x="198.0" y="510.5" type="line"/>
+      <point x="170.0" y="345.0" type="line"/>
+      <point x="170.0" y="265.0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

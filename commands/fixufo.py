@@ -79,6 +79,9 @@ class fixglif:
             isp = 0
             itype = itypes
             for s in ioutline:
+                if 'type' in s.attrib and s.attrib['type'] == 'move':
+                    continue
+
                 itype = itype + 1
                 if isp == 0:
                     s.attrib['startp'] = '1'
@@ -105,7 +108,7 @@ class fixglif:
             i = i + 1
             if l.count("<contour>") > 0:
                 lt = 0
-            if l.count("<point") > 0 and l.count("type") > 0:
+            if l.count("<point") > 0 and l.count("type") > 0 and not (l.count('type="move"') or l.count("type='move'")):
                 lt = lt + 1
                 if lt == 1:
                     it = i

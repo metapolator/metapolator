@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Adblgrave.sc" format="1">
+  <advance width="532"/>
+  <outline>
+    <contour>
+      <point x="7" y="0" type="line"/>
+      <point x="109" y="0" type="line"/>
+      <point x="158" y="147" type="line"/>
+      <point x="374" y="147" type="line"/>
+      <point x="423" y="0" type="line"/>
+      <point x="526" y="0" type="line"/>
+      <point x="526" y="6" type="line"/>
+      <point x="347" y="577" type="line"/>
+      <point x="186" y="577" type="line"/>
+      <point x="7" y="6" type="line"/>
+    </contour>
+    <contour>
+      <point x="176" y="224" type="line"/>
+      <point x="238" y="412" type="line"/>
+      <point x="261" y="494" type="line"/>
+      <point x="271" y="494" type="line"/>
+      <point x="294" y="412" type="line"/>
+      <point x="355" y="224" type="line"/>
+    </contour>
+    <contour>
+      <point x="168" y="615" type="line"/>
+      <point x="230" y="624" type="line"/>
+      <point x="168" y="750" type="line"/>
+      <point x="75" y="750" type="line"/>
+    </contour>
+    <contour>
+      <point x="315" y="615" type="line"/>
+      <point x="376" y="624" type="line"/>
+      <point x="314" y="750" type="line"/>
+      <point x="222" y="750" type="line"/>
+    </contour>
+  </outline>
+</glyph>

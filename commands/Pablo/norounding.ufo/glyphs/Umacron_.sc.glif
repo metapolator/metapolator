@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Umacron.sc" format="1">
+  <advance width="587.0"/>
+  <outline>
+    <contour>
+      <point x="294.0" y="-8.0" type="curve" smooth="yes"/>
+      <point x="466.0" y="-8.0"/>
+      <point x="529.5" y="66.0"/>
+      <point x="529.5" y="223.5" type="curve" smooth="yes"/>
+      <point x="529.5" y="576.5" type="line"/>
+      <point x="421.0" y="576.5" type="line"/>
+      <point x="421.0" y="229.0" type="line" smooth="yes"/>
+      <point x="421.0" y="124.5"/>
+      <point x="385.5" y="84.5"/>
+      <point x="294.0" y="84.5" type="curve" smooth="yes"/>
+      <point x="203.5" y="84.5"/>
+      <point x="166.0" y="126.0"/>
+      <point x="166.0" y="229.0" type="curve" smooth="yes"/>
+      <point x="166.0" y="576.5" type="line"/>
+      <point x="57.5" y="576.5" type="line"/>
+      <point x="57.5" y="223.5" type="line" smooth="yes"/>
+      <point x="57.5" y="67.0"/>
+      <point x="122.0" y="-8.0"/>
+    </contour>
+    <contour>
+      <point x="159.5" y="653.5" type="line"/>
+      <point x="413.0" y="653.5" type="line"/>
+      <point x="413.0" y="726.5" type="line"/>
+      <point x="159.5" y="726.5" type="line"/>
+    </contour>
+  </outline>
+</glyph>

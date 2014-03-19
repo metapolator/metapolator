@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="nine.osf" format="1">
+  <advance width="517.5"/>
+  <outline>
+    <component base="six.osf" xScale="-1.0" yScale="-1.0" xOffset="523.5" yOffset="576.5"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

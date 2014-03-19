@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="T.sc" format="1">
+  <advance width="459.5"/>
+  <outline>
+    <contour>
+      <point x="233.5" y="760.0" type="move" name="topUC"/>
+    </contour>
+    <contour>
+      <point x="234.5" y="0.0" type="move" name="bottom"/>
+    </contour>
+    <contour>
+      <point x="175.5" y="0.0" type="line"/>
+      <point x="284.0" y="0.0" type="line"/>
+      <point x="284.0" y="484.0" type="line"/>
+      <point x="442.0" y="484.0" type="line"/>
+      <point x="442.0" y="577.0" type="line"/>
+      <point x="17.5" y="577.0" type="line"/>
+      <point x="17.5" y="484.0" type="line"/>
+      <point x="175.5" y="484.0" type="line"/>
+    </contour>
+  </outline>
+</glyph>

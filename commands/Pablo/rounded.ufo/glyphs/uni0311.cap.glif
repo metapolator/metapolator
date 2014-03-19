@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="uni0311.cap" format="1">
+  <advance width="390"/>
+  <outline>
+    <contour>
+      <point x="194" y="783" type="move" name="_topUC"/>
+    </contour>
+    <contour>
+      <point x="357" y="813" type="line"/>
+      <point x="357" y="912"/>
+      <point x="298" y="972"/>
+      <point x="195" y="972" type="curve" smooth="yes"/>
+      <point x="91" y="972"/>
+      <point x="33" y="912"/>
+      <point x="33" y="813" type="curve"/>
+      <point x="113" y="813" type="line"/>
+      <point x="113" y="882"/>
+      <point x="138" y="912"/>
+      <point x="195" y="912" type="curve" smooth="yes"/>
+      <point x="250" y="912"/>
+      <point x="276" y="882"/>
+      <point x="276" y="813" type="curve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

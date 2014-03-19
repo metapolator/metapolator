@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="slash.tab" format="1">
+  <advance width="540"/>
+  <outline>
+    <contour>
+      <point x="94" y="-121" type="line"/>
+      <point x="207" y="-121" type="line"/>
+      <point x="447" y="740" type="line"/>
+      <point x="334" y="740" type="line"/>
+    </contour>
+  </outline>
+</glyph>

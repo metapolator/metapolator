@@ -138,6 +138,13 @@ def fill_components(output_ufo, masters):
         outputglif.write()
 
 
+def make_anchors(output_ufo, masters):
+    for glyph in masters[0]['glyphs']:
+        if 'anchors' not in glyph:
+            continue
+        print glyph['anchors']
+
+
 def main():
     print
     print 'Parsing arguments'
@@ -146,7 +153,6 @@ def main():
 
     if argv.json:
         from glif2json import glif2json
-        import ujson
         import pprint
         pprint.pprint(glif2json(argv.output_ufo).convert())
         logger.lapse()
@@ -187,6 +193,8 @@ def main():
             break
 
     fill_components(os.path.join(cwd, 'fontbox.ufo'), masters)
+
+    make_anchors(os.path.join(cwd, 'fontbox.ufo'), masters)
 
     # postprocess for generated ufo file
     # 1. update metrics

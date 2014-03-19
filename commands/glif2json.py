@@ -37,6 +37,11 @@ class glif2json:
     def __init__(self, glifpath, glifcontent=None):
         self.glifpath = glifpath
         self.glifdir = op.dirname(glifpath)
+
+        # In GLIF 1 there was no official anchor element. Anchors were
+        # unofficially but widely supported through the use of a contour
+        # containing only one "move" point.
+        self.anchors = []
         if not glifcontent:
             self.xmldoc = lxml.etree.fromstring(open(glifpath).read())
         else:
@@ -50,7 +55,6 @@ class glif2json:
 
     def write(self):
         et = lxml.etree.ElementTree(self.xmldoc)
-        print self.glifpath
         et.write(self.glifpath, xml_declaration=True, encoding='utf-8')
 
     def glif_contour2points(self, glif, pointnr=0):
@@ -62,6 +66,9 @@ class glif2json:
             for point in contour.findall('point'):
                 pointname = point.attrib.get('name')
                 type = point.attrib.get('type')
+                if type == 'move' and len(contour.findall('point')) == 1:
+                    self.anchors.append(anchor2dict(point))
+                    continue
 
                 preset = {'type': type,
                           'control-out': point.attrib.get('control_out'),
@@ -84,7 +91,9 @@ class glif2json:
                                    preset['point-name'], pointnr + 1, attribs)
                 pointnr += 1
 
-            points += pointset.points
+            # do not append to total pointset empty list
+            if pointset.points:
+                points += pointset.points
         return points, pointnr
 
     def glif_components2contours(self, sourceglif):
@@ -122,18 +131,20 @@ class glif2json:
 
         # loop through anchors points presented in UFOv3 version
         # to print them in json-formatted string
-        def anchor2dict(anchor):
-            anchordict = {}
-            for key, value in anchor.attrib.items():
-                if anchor.attrib[key]:
-                    anchordict[key] = value
-            return anchordict
 
         if self.xmldoc.find('anchor'):
-            anchors = []
             for anchor in self.xmldoc.find('anchor'):
-                anchors.append(anchor2dict(anchor))
-            if anchors:
-                result['anchors'] = anchors
+                self.anchors.append(anchor2dict(anchor))
+
+        if self.anchors:
+            result['anchors'] = self.anchors
 
         return result
+
+
+def anchor2dict(anchor):
+    anchordict = {}
+    for key, value in anchor.attrib.items():
+        if anchor.attrib[key]:
+            anchordict[key] = value
+    return anchordict
