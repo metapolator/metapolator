@@ -214,59 +214,47 @@ var Instance = function (config) {
                 var context = createCanvas(instance.canvas, 410, 410);
                 paper.setup(context.canvas);
                 console.log(this.glyphJSON);
-                var path = new paper.Path();
-                path.strokeColor = 'black';
+
                 var tmp_points = [];
 
-                for (var i = 0; i < this.glyphJSON.points.length; i++){
+                for (var j = 0; j < this.glyphJSON.points.length; j++) {
+                    var path = new paper.Path();
+                    path.strokeColor = 'black';
+                    path.fillColor = 'black';
+                    path.closed = true;
+                    var contour = this.glyphJSON.points[j];
+                    for (var i = 0; i < contour.length; i++){
+                        var point = contour[i];
+                        if (point.type) {
+                            var handleIn, handleOut,
+                                handleInX, handleOutX,
+                                handleInY, handleOutY;
+                            if (i == 0) {
+                                handleInX = contour[contour.length - 1].x - point.x;
+                                handleInY = point.y - contour[contour.length - 1].y;
+                            } else {
+                                handleInX = contour[i - 1].x - point.x;
+                                handleInY = point.y - contour[i - 1].y;
+                            }
 
-                    var point = this.glyphJSON.points[i];
+                            handleIn = new paper.Point(parseInt(handleInX/3.2), parseInt(handleInY/3.2));
 
-                    if (point.type) {
-                        var handleIn, handleOut,
-                            handleInX, handleOutX,
-                            handleInY, handleOutY;
-                        if (i == 0) {
-                            handleInX = this.glyphJSON.points[this.glyphJSON.points.length - 1].x - point.x;
-                            handleInY = point.y - this.glyphJSON.points[this.glyphJSON.points.length - 1].y;
-                        } else {
-                            handleInX = this.glyphJSON.points[i - 1].x - point.x;
-                            handleInY = point.y - this.glyphJSON.points[i - 1].y;
+                            handleOutX = contour[i + 1].x - point.x;
+                            handleOutY = point.y - contour[i + 1].y;
+
+                            handleOut = new paper.Point(parseInt(handleOutX/3.2), parseInt(handleOutY/3.2));
+
+                            var currentPoint = new paper.Point(point.x/3.2, 400-point.y/3.2);
+                            console.log(handleIn, handleOut);
+
+                            path.add(new paper.Segment(currentPoint, handleIn, handleOut));
                         }
-
-                        handleIn = new paper.Point(parseInt(handleInX/3.2), parseInt(handleInY/3.2));
-
-                        handleOutX = this.glyphJSON.points[i + 1].x - point.x;
-                        handleOutY = point.y - this.glyphJSON.points[i + 1].y;
-
-                        handleOut = new paper.Point(parseInt(handleOutX/3.2), parseInt(handleOutY/3.2));
-
-                        var currentPoint = new paper.Point(point.x/3.2, 400-point.y/3.2);
-                        console.log(handleIn, handleOut);
-
-                        path.add(new paper.Segment(currentPoint, handleIn, handleOut));
-                    }
-
-                    // if (point.type == undefined){
-                    //     tmp_points.push(new paper.Point(point.x/3.2, 400-point.y/3.2));
-                    // }else if (point.type == 'curve'){
-                    //     var segments = [];
-                    //     tmp_points.push(new paper.Point(point.x/3.2, 400-point.y/3.2));
-                    //     for (var c = 0; c <= tmp_points.length; c++) {
-                    //         console.log(tmp_points);
-                    //         segments.push(new paper.Segment(tmp_points[c],tmp_points[c+1]));
-                    //         c = c+1;
-                    //     }
-                    //     debugger;;
-                    //     path.add(new paper.Curve(segments[0], segments[1]));
-                    //     tmp_points = [];
-                    // }else if (point.type == 'line') {
-                    //     path.add(new paper.Point(point.x/3.2, 400-point.y/3.2));
-                    // }
                 }
-                console.log(path);
-                paper.view.draw();
-                return this;
+            }
+
+            console.log(path);
+            paper.view.draw();
+            return this;
             },
             loaded : function () {
                 return this;
