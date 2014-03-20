@@ -211,33 +211,37 @@ var Instance = function (config) {
             interpolationValueAC: 0.2,
             interpolationValueAD: 0.2,
             interpolate : function() {
-
                 var context = createCanvas(instance.canvas, 410, 410);
                 paper.setup(context.canvas);
                 console.log(this.glyphJSON);
                 var path = new paper.Path();
                 path.strokeColor = 'black';
-                var start, through, to;
+                var tmp_points = [];
 
+                path.add(new paper.Curve(new paper.Segment(new paper.Point(400, 400)), new paper.Segment(new paper.Point(450, 450))));
 
                 for (var i = 0; i < this.glyphJSON.points.length; i++){
-                    console.log(this.glyphJSON.points[i]);
+                    console.log(this.glyphJSON);
                     var point = this.glyphJSON.points[i];
-                    if (point.type == 'line'){
-                        start = undefined;
-                        through = undefined;
-                        start = new paper.Point(point.x/3.2, 400-point.y/3.2);
-                    }else if (start && !through) {
-                        through = new paper.Point(point.x/3.2, 400-point.y/3.2);
-                    }else if (start && through) {
-                        console.log(start, through, point);
-                        var arc = new paper.Path.Arc(start, through, new paper.Point(point.x/3.2, 400-point.y/3.2));
-                        arc.strokeColor = 'black';
-                    }else if ( point.type == 'line' ){
 
-                    };
-                    path.add(new paper.Point(point.x/3.2, 400-point.y/3.2));
+                    if (point.type == undefined){
+                        tmp_points.push(new paper.Point(point.x/3.2, 400-point.y/3.2));
+                    }else if (point.type == 'curve'){
+                        var segments = [];
+                        tmp_points.push(new paper.Point(point.x/3.2, 400-point.y/3.2));
+                        for (var c = 0; c <= tmp_points.length; c++) {
+                            console.log(tmp_points);
+                            segments.push(new paper.Segment(tmp_points[c],tmp_points[c+1]));
+                            c = c+1;
+                        }
+                        debugger;;
+                        path.add(new paper.Curve(segments[0], segments[1]));
+                        tmp_points = [];
+                    }else if (point.type == 'line') {
+                        path.add(new paper.Point(point.x/3.2, 400-point.y/3.2));
+                    }
                 }
+                console.log(path);
                 paper.view.draw();
                 return this;
             },
