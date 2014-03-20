@@ -104,7 +104,7 @@ class glif2json:
 
             # do not append to total pointset empty list
             if pointset.points:
-                points += pointset.points
+                points.append(pointset.points)
         return points, pointnr
 
     def find_glif(self, glifname):
