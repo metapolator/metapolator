@@ -83,10 +83,10 @@ def kernings(*masters):
                              float(left['kerning'][kerningkey][kernedkey]))
                 kerning_table[kerningkey][kernedkey] += p
 
-    # import pprint
-    # pprint.pprint(kerning_table)
-
-    return {}
+    for key in kerning_table:
+        for k in kerning_table[key]:
+            kerning_table[key][k] = int(round(kerning_table[key][k] / (divider or 1)))
+    return kerning_table
 
 
 def metrics(*masters):

@@ -27,7 +27,7 @@ def get_plist_lib(ufofile):
 
 
 def update_kerning(ufofile, values):
-    return
+    plistlib.writePlist(values, op.join(ufofile, 'kerning.plist'))
 
 
 def correct_contours_direction(ufofile):
