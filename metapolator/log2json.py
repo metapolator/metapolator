@@ -229,8 +229,9 @@ def get_glyphs_jsondata(glyphid, master):
     """
     project = master.project
     masters = project.get_ordered_masters()
-
-    glyph = Glyph.get(master_id=master.id, name=glyphid)
+    # todo: move mflist to another common module
+    from metapolator.xmltomf_pen import mflist
+    glyph = Glyph.get(master_id=master.id, name=mflist[int(glyphid) - 1])
 
     metapost = Metapost(project)
     metapost.execute_interpolated_single(glyph)
