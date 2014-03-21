@@ -88,6 +88,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 #    w = str(glyphA.width / 100)
 #    w2 = str(glyphB.width / 100)
     g = str(mflist.index(glyphA.name) + 1)  # get from glyphA as we sure that glypha and glyphb exist in font project
+    glyph = str(mflist.index(glyphA.name) + 1)
 
     fip.write("\n")
     print 'width A -', wA
@@ -96,7 +97,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     print 'width D -', wD
 
     str_ = ('beginfontchar({glyph}, ((((({Awidth}/{Awidth}*{Awidth_new})*A_width + metapolation * (({Bwidth}/{Bwidth}*{Bwidth_new})*B_width - ({Awidth}/{Awidth}*{Awidth_new})*A_width)) + (({Cwidth}/{Cwidth}*{Cwidth_new})*C_width + metapolationCD * (({Dwidth}/{Dwidth}*{Dwidth_new})*D_width - ({Cwidth}/{Cwidth}*{Cwidth_new})*C_width))  ) /divider ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
-    fip.write(str_.format(Awidth=wA, Awidth_new=wA_new, glyph=glyphA.name, Bwidth=wB, Bwidth_new=wB_new, Cwidth=wC, Cwidth_new=wC_new, Dwidth=wD, Dwidth_new=wD_new))
+    fip.write(str_.format(Awidth=wA, Awidth_new=wA_new, glyph=glyph, Bwidth=wB, Bwidth_new=wB_new, Cwidth=wC, Cwidth_new=wC_new, Dwidth=wD, Dwidth_new=wD_new))
 
     fip.write("\n")
     fip.write("""currenttransform := identity slanted slant;

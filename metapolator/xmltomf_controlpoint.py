@@ -50,11 +50,11 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     wD = '%.2f' % (glyphD.width / 100.)
 
     g = str(mflist.index(glyphA.name) + 1)  # get from glyphA as we sure that glypha and glyphb exist in font project
-
+    glyph = str(mflist.index(glyphA.name) + 1)
     fip.write("\n")
 
     str_ = ('beginfontchar({glyph}, (((({Awidth}*A_width + metapolation * ({Bwidth}*B_width - {Awidth}*A_width)) + ({Cwidth}*C_width + metapolationCD * ({Dwidth}*D_width - {Cwidth}*C_width))  ) / 2 ) + spacing_{glyph}R) * width_{glyph}, 0, 0 );')
-    fip.write(str_.format(Awidth=wA, glyph=glyphA.name, Bwidth=wB, Cwidth=wC, Dwidth=wD))
+    fip.write(str_.format(Awidth=wA, glyph=glyph, Bwidth=wB, Cwidth=wC, Dwidth=wD))
 
     # point coordinates font A ################
 
