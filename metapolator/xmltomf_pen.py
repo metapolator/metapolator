@@ -87,7 +87,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
 
 #    w = str(glyphA.width / 100)
 #    w2 = str(glyphB.width / 100)
-    g = mflist.index(glyphA.name) + 1  # get from glyphA as we sure that glypha and glyphb exist in font project
+    g = str(mflist.index(glyphA.name) + 1)  # get from glyphA as we sure that glypha and glyphb exist in font project
 
     fip.write("\n")
     print 'width A -', wA

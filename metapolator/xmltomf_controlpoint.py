@@ -49,7 +49,7 @@ def xmltomf1(master, glyphA, glyphB=None, glyphC=None, glyphD=None, stdout_fip=N
     wC = '%.2f' % (glyphC.width / 100.)
     wD = '%.2f' % (glyphD.width / 100.)
 
-    g = mflist.index(glyphA.name) + 1  # get from glyphA as we sure that glypha and glyphb exist in font project
+    g = str(mflist.index(glyphA.name) + 1)  # get from glyphA as we sure that glypha and glyphb exist in font project
 
     fip.write("\n")
 
