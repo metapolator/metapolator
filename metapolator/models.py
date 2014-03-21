@@ -258,7 +258,7 @@ class Glyph(Base, UserQueryMixin):
     project_id = Column(Integer, ForeignKey('projects.id'))
 
     fontsource = Column(Enum('A', 'B'), index=True)
-    name = Column(String(3), index=True)
+    name = Column(String(32), index=True)
     width = Column(Integer, default=0)
     width_new = Column(Integer)
 
