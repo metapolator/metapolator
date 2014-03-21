@@ -183,7 +183,7 @@ def get_json(content, glyphid=None, master=None):
         if master:
             zpoints = get_glyph_points_from_db(master, glyph)
 
-            g = Glyph.get(master_id=master.id, name=glyph)
+            g = Glyph.get(master_id=master.id, name=mflist[int(glyph) - 1])
             maxx, minx = GlyphPoint.minmax(GlyphPoint.x, glyph_id=g.id)[0]
             maxy, miny = GlyphPoint.minmax(GlyphPoint.y, glyph_id=g.id)[0]
 
