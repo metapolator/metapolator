@@ -288,7 +288,7 @@ class GlyphPoint(Base, UserQueryMixin):
 
     glyph = relationship('Glyph', backref='glyph')
 
-    glyphname = Column(String(3), index=True)
+    glyphname = Column(String(32), index=True)
     fontsource = Column(Enum('A', 'B'), index=True)
     pointnr = Column(Integer, index=True)
     x = Column(Integer)
