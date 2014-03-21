@@ -37,7 +37,9 @@ def get_glyph_points_from_db(master, glyphid):
                # then list of another point parameters
         ```
     """
-    glyph = Glyph.get(master_id=master.id, name=glyphid)
+    # todo: move mflist to another common module
+    from metapolator.xmltomf_pen import mflist
+    glyph = Glyph.get(master_id=master.id, name=mflist[int(glyphid) - 1])
 
     points = GlyphPoint.filter(glyph_id=glyph.id)
     localparam = LocalParam.get(id=master.idlocala)
