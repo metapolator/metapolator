@@ -112,7 +112,10 @@ def get_json(content, glyphid=None, master=None):
 
         zpoints_names = []
         if master:
-            glyph_obj = Glyph.get(master_id=master.id, name=glyph)
+            # todo: move mflist to another common module
+            from metapolator.xmltomf_pen import mflist
+            glyph_obj = Glyph.get(master_id=master.id,
+                                  name=mflist[int(glyph) - 1])
             zpoints_names = map(lambda x: x.pointname,
                                 glyph_obj.get_zpoints())
 
