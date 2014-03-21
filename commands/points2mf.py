@@ -32,6 +32,13 @@ cachekoef = {}
 metapolationcache = {}
 
 
+def collect(contours):
+    points = []
+    for contour in contours:
+        points += contour
+    return points
+
+
 def getcoefficient(left, right):
     axis = ''.join([left['alias'], right['alias']])
     if axis in cachekoef:
@@ -178,7 +185,7 @@ def points2mf(glyphname, *masters):
 
 # search for parameters
 
-    for item in masters[0]['glyphs'][glyphname]['points']:
+    for item in collect(masters[0]['glyphs'][glyphname]['points']):
         znamel = re.match('z(\d+)l', item.get('point-name'))
 
         im = item.get('point-name')
@@ -235,8 +242,8 @@ def points2mf(glyphname, *masters):
         divider = 0
 
         for left, right in iterate(masters):
-            leftpoint = left['glyphs'][glyphname]['points'][i]
-            rightpoint = right['glyphs'][glyphname]['points'][i]
+            leftpoint = collect(left['glyphs'][glyphname]['points'])[i]
+            rightpoint = collect(right['glyphs'][glyphname]['points'])[i]
             koef = getcoefficient(left, right)
             metapolation = getmetapolation(left, right)
             divider += koef
