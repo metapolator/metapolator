@@ -24,7 +24,7 @@ except ImportError:
 DATABASE_ENGINE = 'mysql+mysqldb://{0}:{1}@localhost/{2}'.format(DATABASE_USER, DATABASE_PWD, DATABASE_NAME)
 
 from sqlalchemy import create_engine
-engine = create_engine(DATABASE_ENGINE, echo=True)
+engine = create_engine(DATABASE_ENGINE, echo=False)
 
 ### Url mappings
 web.config.debug = False
