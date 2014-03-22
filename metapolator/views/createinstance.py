@@ -5,7 +5,6 @@ import shutil
 import web
 
 from metapolator import models
-from metapolator.base.config import working_dir
 from metapolator.metapost import Metapost
 from metapolator.views import raise404_notauthorized
 
@@ -26,14 +25,13 @@ class CreateInstance:
         metapost = Metapost(project, version=indexname)
         metapost.execute_interpolated_bulk()
 
-        for extension in ['-webfont.eot', '-webfont.ttf', '.otf']:
-            source = project.get_basename() + extension
+        for extension in ['.otf']:
             dest_dir = op.join(project.get_directory(), 'instances')
             if not op.exists(dest_dir):
                 os.makedirs(dest_dir)
             dest = op.join(dest_dir, '%s%s' % (instance.id, extension))
             try:
-                shutil.copy(op.join(working_dir(), 'static', source), dest)
+                shutil.copy(op.join(project.get_master_directory(), 'static', 'interpolated.otf'), dest)
             except:
                 pass
 

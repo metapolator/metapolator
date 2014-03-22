@@ -16,7 +16,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
 
-from metapolator.base.config import engine, working_dir
+from metapolator.base.config import engine, working_dir, working_url
 from metapolator.base.dbapi import UserQueryMixin, query
 from metapolator.tools import LABELS
 
@@ -150,6 +150,9 @@ class Project(Base, UserQueryMixin):
 
     def get_basename(self):
         return self.projectname
+
+    def get_instances_url(self):
+        return op.join(working_url(), self.projectname, 'instances')
 
     def get_directory(self):
         directory = op.join(working_dir(), self.projectname)
