@@ -24,7 +24,7 @@ gulp.task('build', function () {
     gulpBowerFiles().pipe(gulp.dest("./static/lib"));
     gulp.src(filePath.appjsminify.src)
         .pipe(debug())
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(concat('app.js'))
         .pipe(size())
         .pipe(gulp.dest(filePath.appjsminify.dest));

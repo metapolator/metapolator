@@ -449,7 +449,7 @@ Workspace.prototype = {
 
                 var span = $('<span>');
                 span.append(
-                    $('<a>', {href: '#project/' + this.project_id + '/glyph/' + glyphs[k]}).html(MFLIST[glyphs[k] - 1])
+                    $('<a>', {href: '#project/' + this.project_id + '/glyph/' + glyphs[k]}).html(glyphs[k])
                 );
                 $('#glyph-switcher').append(span);
                 $('#glyph-switcher').append(" ");

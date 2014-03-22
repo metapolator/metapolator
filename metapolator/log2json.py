@@ -38,8 +38,7 @@ def get_glyph_points_from_db(master, glyphid):
         ```
     """
     # todo: move mflist to another common module
-    from metapolator.xmltomf_pen import mflist
-    glyph = Glyph.get(master_id=master.id, name=mflist[int(glyphid) - 1])
+    glyph = Glyph.get(master_id=master.id, name=glyphid)
 
     points = GlyphPoint.filter(glyph_id=glyph.id)
     localparam = LocalParam.get(id=master.idlocala)
@@ -102,7 +101,8 @@ def get_json(content, glyphid=None, master=None):
                          re.I | re.DOTALL | re.M)
     glyphs = []
     for glyph, edge in pattern:
-        if glyphid and int(glyphid) != int(glyph):
+        from metapolator.xmltomf_pen import mflist
+        if glyphid and glyphid != mflist[int(glyph) - 1]:
             continue
 
         x_min = 0
@@ -181,7 +181,7 @@ def get_json(content, glyphid=None, master=None):
 
         zpoints = []
         if master:
-            zpoints = get_glyph_points_from_db(master, glyph)
+            zpoints = get_glyph_points_from_db(master, mflist[int(glyph) - 1])
 
             g = Glyph.get(master_id=master.id, name=mflist[int(glyph) - 1])
             maxx, minx = GlyphPoint.minmax(GlyphPoint.x, glyph_id=g.id)[0]
@@ -204,9 +204,10 @@ def get_json(content, glyphid=None, master=None):
         else:
             height = abs(y_max)
 
-        json = {'name': glyph, 'contours': contours, 'minx': x_min,
-                'miny': y_min, 'zpoints': zpoints, 'width': width,
-                'height': height}
+        from metapolator.xmltomf_pen import mflist
+        json = {'name': mflist[int(glyph) - 1], 'contours': contours,
+                'minx': x_min, 'miny': y_min, 'zpoints': zpoints,
+                'width': width, 'height': height}
 
         if master and glyph_obj and not glyph_obj.original_glyph_contours:
             glyph_obj.original_glyph_contours = ujson.dumps(contours)
@@ -231,9 +232,7 @@ def get_glyphs_jsondata(glyphid, master):
     """
     project = master.project
     masters = project.get_ordered_masters()
-    # todo: move mflist to another common module
-    from metapolator.xmltomf_pen import mflist
-    glyph = Glyph.get(master_id=master.id, name=mflist[int(glyphid) - 1])
+    glyph = Glyph.get(master_id=master.id, name=glyphid)
 
     metapost = Metapost(project)
     metapost.execute_interpolated_single(glyph)
