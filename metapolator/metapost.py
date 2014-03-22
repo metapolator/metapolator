@@ -95,7 +95,7 @@ class Metapost:
 
     def execute_interpolated_single(self, glyph):
         if not glyph:
-            raise Exception('no glyph defined')
+            raise Exception('no glyph defined `execute_interpolated_single`')
 
         masters = self.project.get_ordered_masters()
 
@@ -113,7 +113,7 @@ class Metapost:
 
     def execute_single(self, master, glyph):
         if not glyph:
-            raise Exception('no glyph defined')
+            raise Exception('no glyph defined `execute_single`')
 
         if self.mfparser == 'pen':
             import xmltomf_pen as xmltomf
