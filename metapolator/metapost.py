@@ -2,7 +2,7 @@ import os
 import os.path as op
 import subprocess
 
-from metapolator.base.config import buildfname, working_dir
+from metapolator.base.config import buildfname
 from metapolator.models import Glyph, LocalParam, Metapolation
 
 
