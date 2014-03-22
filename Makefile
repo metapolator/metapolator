@@ -15,7 +15,7 @@ install:
 	. .venv/bin/activate; pip install -Ur requirements.txt
 
 setup:
-	mysql --user=root -e "CREATE DATABASE metapolatordev;";
+	mysql --user=root -e "CREATE DATABASE metapolatordev character set utf8 collate utf8_bin;";
 	.venv/bin/python metapolator/models.py;
 
 clean:
