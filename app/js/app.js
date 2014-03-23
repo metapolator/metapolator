@@ -101,13 +101,23 @@ metapolatortestApp.controller('canvasCtrl', ['$scope',
         $scope.init = function (model) {
                 if (model.lib == 'paperjs'){
                     $.ajax({
-                    url : model.glyphJSONUrl,
+                    url : model.glyphJSONUrls[0],
                     success : function(data, status, headers, config) {
-                      model.glyphJSON = data;
-                      var instanceObj = Instance(model);
-                      instanceObj.interpolate();
-                      instanceListService.addInstance(instanceObj);
+                      model.glyphJSON.push(data);
+                      $.ajax({
+                        url: model.glyphJSONUrls[1],
+                        success : function(data, status, headers, config) {
+                            model.glyphJSON.push(data);
+                          var instanceObj = Instance(model);
+                          instanceObj.interpolate();
+                          instanceListService.addInstance(instanceObj);
                       },
+                      error : function(data, status, headers, config) {
+                        console.log('ERROR');
+                        },
+                      aync: false
+                        });
+                    },
                     error : function(data, status, headers, config) {
                       console.log('ERROR');
                       },
@@ -160,10 +170,15 @@ metapolatortestApp.controller('paperjsCtrl', ['$scope',
             canvas: '#paperjsCanvas',
             fontSize: 80,
             lineHeight: 110,
-            interpolationValueAB: 0.2,
+            interpolationValueAB: 0.1,
             interpolationValueAC: 0.2,
             lib:'paperjs',
-            glyphJSONUrl: '/app/RobotoSlab_Thin_a.json',
+            glyphJSONUrls: [
+            '/app/RobotoSlab_Thin_a.json',
+            '/app/RobotoSlab_Bold_a.json'
+            ],
+            glyphJSON : [],
+
         };
         var glyphInstance = $scope.init($scope.paperjsConfig);
         $scope.$watchCollection('paperjsConfig', function(newVal, oldVal){
