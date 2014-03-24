@@ -4,3 +4,6 @@
 localconfig.py
 /node_modules
 test.err
+/bower*
+/static/dist
+/static/lib
