@@ -6,6 +6,15 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
     function($scope, instanceListService, guiListService){
         $scope.sliders = [
             {
+                id:'paperGlyphSlider',
+                min: 0,
+                max: 1,
+                selection:'after',
+                canvasConfig: 'paperjsConfig',
+                canvas: 'paperjsCanvas',
+                interpolationValueAB: 0.2,
+            },
+            {
                 id:'glyphSlider',
                 min: 0,
                 max: 1,
@@ -86,6 +95,7 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                         }
                     });
                 });
+                console.log(sliderEl);
 
                 sliderEl.appendChild(gui.domElement);
             };
@@ -170,7 +180,7 @@ metapolatortestApp.controller('paperjsCtrl', ['$scope',
             canvas: '#paperjsCanvas',
             fontSize: 80,
             lineHeight: 110,
-            interpolationValueAB: 0.1,
+            interpolationValueAB: 0.2,
             interpolationValueAC: 0.2,
             lib:'paperjs',
             glyphJSONUrls: [

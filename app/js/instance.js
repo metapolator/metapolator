@@ -210,21 +210,29 @@ var Instance = function (config) {
             interpolationValueAB: 1,
             interpolationValueAC: 0.2,
             interpolationValueAD: 0.2,
+            interpolateValue : function(A, B) {
+                return A + this.interpolationValueAB * ( B - A );
+            },
             interpolate : function() {
-                var context = createCanvas(instance.canvas, 410, 410);
+                $(this.canvas).html('');
+                var context = createCanvas(instance.canvas, 260, 260);
                 paper.setup(context.canvas);
-                console.log(this.glyphJSON);
                 var tmp_points = [];
+                var glyph_size = 5.3;
 
                 for (var j = 0; j < this.glyphJSON[0].points.length; j++) {
                     var path = new paper.Path();
                     path.strokeColor = 'black';
-                    // path.fillColor = 'black';
+                    path.fillColor = 'black';
                     path.closed = true;
                     var contour = this.glyphJSON[0].points[j];
                     var interpolationContour = this.glyphJSON[1].points[j];
                     for (var i = 0; i < contour.length; i++){
                         var point = contour[i];
+
+                        /* From this point starts mathematical code for interpolation.
+                        Done maximally straight. Sorry for wall of code */
+
                         if (point.type) {
                             var handleIn, handleOut,
                                 handleInX, handleOutX,
@@ -232,57 +240,33 @@ var Instance = function (config) {
                             if (i == 0) {
                                 handleInX = contour[contour.length - 1].x - point.x;
                                 handleInY = point.y - contour[contour.length - 1].y;
-                                if (this.interpolationValueAB != 0.2) {
-                                    var interpolationBx = interpolationContour[interpolationContour.length - 1].x - point.x;
-                                    var interpolationBy = point.y - interpolationContour[interpolationContour.length - 1].y;
-                                    var interCx = + this.interpolationValueAB * (interpolationBx - handleInX);
-                                    var interCy = + this.interpolationValueAB * (interpolationBy - handleInY);
-                                    handleInX = (handleInX + this.interpolationValueAB * (interpolationBx - handleInX)) + interCx;
-                                    handleInY = handleInY + this.interpolationValueAB * (interpolationBy - handleInY) + interCy;
-                                    console.log(interpolationBx, interpolationBy);
-                                }
+                                var interpolationBx = interpolationContour[interpolationContour.length - 1].x - interpolationContour[i].x;
+                                var interpolationBy = interpolationContour[i].y - interpolationContour[interpolationContour.length - 1].y;
+                                handleInX = this.interpolateValue(handleInX, interpolationBx);
+                                handleInY = this.interpolateValue(handleInY, interpolationBy);
                             } else {
-                                console.log(this.interpolationValueAB);
                                 handleInX = contour[i - 1].x - point.x;
                                 handleInY = point.y - contour[i - 1].y;
-                                if (this.interpolationValueAB != 0.2) {
-                                    var interpolationBx = interpolationContour[i - 1].x - point.x;
-                                    var interpolationBy = point.y - interpolationContour[i - 1].y;
-                                    handleInX = handleInX + this.interpolationValueAB * (interpolationBx - handleInX);
-                                    handleInY = handleInY + this.interpolationValueAB * (interpolationBy - handleInY);
-                                    var interCx = + this.interpolationValueAB * (interpolationBx - handleInX);
-                                    var interCy = + this.interpolationValueAB * (interpolationBx - handleInY);
-                                    handleInX = (handleInX + this.interpolationValueAB * (interpolationBx - handleInX)) + interCx;
-                                    handleInY = handleInY + this.interpolationValueAB * (interpolationBy - handleInY) + interCy;
-                                    console.log(interpolationBx, interpolationBy);
-                                }
+                                var interpolationBx = interpolationContour[i - 1].x - interpolationContour[i].x;
+                                var interpolationBy = interpolationContour[i].y - interpolationContour[i - 1].y;
+                                handleInX = this.interpolateValue(handleInX, interpolationBx);
+                                handleInY = this.interpolateValue(handleInY, interpolationBy);
                             }
-
-                            handleIn = new paper.Point(parseInt(handleInX/3.2), parseInt(handleInY/3.2));
 
                             handleOutX = contour[i + 1].x - point.x;
                             handleOutY = point.y - contour[i + 1].y;
-                            if (this.interpolationValueAB != 0.2) {
-                                console.log(i - 1);
-                                var interpolationBx = interpolationContour[i + 1].x - point.x;
-                                var interpolationBy = point.y - interpolationContour[i + 1].y;
-                                var interCx = + this.interpolationValueAB * (interpolationBx - handleOutX);
-                                var interCy = + this.interpolationValueAB * (interpolationBy - handleOutY);
-                                handleOutX = (handleOutX + this.interpolationValueAB * (interpolationBx - handleOutX)) + interCx;
-                                handleOutY = (handleOutY + this.interpolationValueAB * (interpolationBy - handleOutY)) + interCy;
-                            }
+                            var interpolationBx = interpolationContour[i + 1].x - interpolationContour[i].x;
+                            var interpolationBy = interpolationContour[i].y - interpolationContour[i + 1].y;
+                            handleOutX = this.interpolateValue(handleOutX, interpolationBx);
+                            handleOutY = this.interpolateValue(handleOutY, interpolationBy);
 
-                            handleOut = new paper.Point(parseInt(handleOutX/3.2), parseInt(handleOutY/3.2));
+                            handleIn = new paper.Point(parseInt(handleInX/glyph_size), parseInt(handleInY/glyph_size));
+                            handleOut = new paper.Point(parseInt(handleOutX/glyph_size), parseInt(handleOutY/glyph_size));
 
-                            var currentPoint = new paper.Point(point.x/3.2, 400-point.y/3.2);
-                            if (this.interpolationValueAB != 0.2) {
-                                var interpolationPoint = interpolationContour[i];
-                                var interCx = + this.interpolationValueAB * (interpolationPoint.x - point.x);
-                                var interCy = + this.interpolationValueAB * (interpolationPoint.y - point.y);
-                                var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x)) + interCx;
-                                var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y)) + interCy;
-                                currentPoint = new paper.Point(interX/3.2, 400-interY/3.2);
-                            }
+                            var interpolationPoint = interpolationContour[i];
+                            var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x));
+                            var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y));
+                            currentPoint = new paper.Point(interX/glyph_size, 240-interY/glyph_size);
 
                             path.add(new paper.Segment(currentPoint, handleIn, handleOut));
                         }
