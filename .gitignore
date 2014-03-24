@@ -7,3 +7,6 @@ _site
 /users
 /docs
 /sessions
+/bower_components
+/node_modules
+/lib
