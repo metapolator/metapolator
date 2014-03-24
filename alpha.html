@@ -35,11 +35,102 @@
             <div class="row">
             <div class="col-md-8 col-lg-offset-3" ng-controller="canvasCtrl">
                 <div class="row">
+                    <div class="row" ng-controller="SliderCtrl">
+                        <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="glyphCtrl">
+                            <div class="row" style="margin-top:20px">
+                                    <div id="glyph"></div>
+                                    <div class="sliders" id="glyphSlider"></div>
+                                    <div class="lead col-md-11" style="text-align:left">
+                                    <p>
+                                    Metapolator is a font editor for designing typeface families.
+                                    </p>
+                                    <p>
+                                    Many families vary only by weight, and even then only in a simple linear way, as above.
+                                    We wanted a way to draw fonts yet have the power of Metafont – a programming language for specifying typefaces with algorithms.
+                                    </p>
+                                    <p>
+                                    For classical interpolation using multiple masters and axes, Metapolator can load normal UFO fonts (without any modifications.) It can create new instances and save them in the UFO format or OTF/TTF binaries to use straight away.
+                                    </p>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <div class="row">
+                                <div class="lead caption" style="padding-top: 10px;">
+                                    <p>Explore font-weight in a conventionally designed typeface, Roboto Slab.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="wordCtrl">
+                            <div class="row">
+                                <div id="glyphsWord"></div>
+                                <div class="sliders" id="wordSlider"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <div class="row">
+                                <div class="lead caption">
+                                    <p>Explore 2 axes of variation, font-weight and letter-spacing, in Roboto.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="paragraphCtrl">
+                            <div class="row">
+                                <div id="paragraphWord"></div>
+                                <div class="paragrahSlider"></div>
+                                <div class="lead col-md-11" style="text-align:left">
+
+                                    <p>
+                                    To use the full potential of parametrising fonts, Metapolator can parse already existing fonts (such as PostScript Type 1 or OpenType). They need to be broken up into separate shapes resembling strokes and provide consistent counterpoints. In this process, a Metafont is produced by specifying the central skeleton of shapes – for which there are "pens" of different angles and widths along the skeleton. As the glyph shapes are defined through equations, they can be parametrised along axes such as aspect ratio, weight, slant, stroke width, contrast and so on.
+                                    </p>
+                                    <p>
+                                    Furthermore instead of using prepared fonts it will be possible to enhance normal UFO fonts by adding parameters on request and only parametrise certain parts of a glyph.
+                                    </p>
+
+                                    <p>
+                                    Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <div class="row">
+                                <div class="lead caption">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="xheightCtrl">
+                            <div class="row">
+                                <div id="xheight"></div>
+                                <div class="sliders" id="xheightSlider"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <div class="row">
+                                <div class="lead caption">
+                                    <p>Changing x-height on an already existing font Roboto.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="alphaCtrl">
-                        <div class="row" style="margin-top:20px" ng-controller='SliderCtrl'>
+                        <div class="row" style="margin-top:20px">
                                 <div id="alphaCanvas"></div>
                                 <div class="sliders" id="alphaSlider"></div>
                         </div>
+                    </div>
+                    <div class="lead col-md-11" style="text-align:left">
+                        <p>
+                            <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
+                        </p>
                     </div>
         </div>
     </div>
