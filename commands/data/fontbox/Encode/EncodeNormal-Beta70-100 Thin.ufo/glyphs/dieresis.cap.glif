@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dieresis.cap" format="1">
+  <advance width="381"/>
+  <outline>
+    <contour>
+      <point x="191" y="763" type="move" name="_topUC"/>
+    </contour>
+    <contour>
+      <point x="69" y="828" type="curve" smooth="yes"/>
+      <point x="88" y="828"/>
+      <point x="105" y="838"/>
+      <point x="105" y="863" type="curve" smooth="yes"/>
+      <point x="105" y="887"/>
+      <point x="88" y="897"/>
+      <point x="69" y="897" type="curve" smooth="yes"/>
+      <point x="49" y="897"/>
+      <point x="34" y="887"/>
+      <point x="34" y="863" type="curve" smooth="yes"/>
+      <point x="34" y="838"/>
+      <point x="49" y="828"/>
+    </contour>
+    <contour>
+      <point x="312" y="828" type="curve" smooth="yes"/>
+      <point x="331" y="828"/>
+      <point x="348" y="838"/>
+      <point x="348" y="863" type="curve" smooth="yes"/>
+      <point x="348" y="887"/>
+      <point x="331" y="897"/>
+      <point x="312" y="897" type="curve" smooth="yes"/>
+      <point x="292" y="897"/>
+      <point x="277" y="887"/>
+      <point x="277" y="863" type="curve" smooth="yes"/>
+      <point x="277" y="838"/>
+      <point x="292" y="828"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

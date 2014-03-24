@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="sevensuperior" format="1">
+  <advance width="453"/>
+  <unicode hex="2077"/>
+  <outline>
+    <contour>
+      <point x="206" y="283" type="line"/>
+      <point x="86" y="298" type="line"/>
+      <point x="69" y="335" type="line"/>
+      <point x="289" y="762" type="line"/>
+      <point x="315" y="698" type="line"/>
+      <point x="16" y="698" type="line"/>
+      <point x="16" y="819" type="line"/>
+      <point x="39" y="840" type="line"/>
+      <point x="424" y="840" type="line"/>
+      <point x="449" y="763" type="line"/>
+      <point x="449" y="740" type="line"/>
+      <point x="244" y="300" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

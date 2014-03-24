@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="commaaccent" format="1">
+  <advance width="311"/>
+  <unicode hex="F6C3"/>
+  <outline>
+    <contour>
+      <point x="179" y="-83" type="move" name="_bottom"/>
+    </contour>
+    <contour>
+      <point x="32" y="-220" type="line"/>
+      <point x="196" y="-220" type="line"/>
+      <point x="297" y="-70" type="line"/>
+      <point x="72" y="-70" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

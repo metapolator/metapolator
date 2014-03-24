@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="uni20A6" format="1">
+  <advance width="832"/>
+  <unicode hex="20A6"/>
+  <outline>
+    <contour>
+      <point x="53" y="264" type="line"/>
+      <point x="780" y="264" type="line"/>
+      <point x="780" y="300" type="line"/>
+      <point x="53" y="300" type="line"/>
+    </contour>
+    <contour>
+      <point x="53" y="437" type="line"/>
+      <point x="780" y="437" type="line"/>
+      <point x="780" y="474" type="line"/>
+      <point x="53" y="474" type="line"/>
+    </contour>
+    <component base="N" xOffset="34"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

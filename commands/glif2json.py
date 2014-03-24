@@ -48,7 +48,12 @@ class glif2json:
         return self.xmldoc.xpath('//outline/component')
 
     def append_component(self, node):
-        self.xmldoc.find('outline').append(node)
+        try:
+            outline = self.xmldoc.xpath('//outline')[0]
+        except IndexError:
+            outline = lxml.etree.fromstring('<outline />')
+            self.xmldoc.append(outline)
+        outline.append(node)
 
     def append_anchors(self, anchors):
         # In GLIF 1 there was no official anchor element. Anchors were

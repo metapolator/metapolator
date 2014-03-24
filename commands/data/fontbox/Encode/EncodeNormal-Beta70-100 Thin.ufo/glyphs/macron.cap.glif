@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="macron.cap" format="1">
+  <advance width="411"/>
+  <outline>
+    <contour>
+      <point x="208" y="763" type="move" name="_topUC"/>
+    </contour>
+    <contour>
+      <point x="65" y="842" type="line"/>
+      <point x="346" y="842" type="line"/>
+      <point x="346" y="879" type="line"/>
+      <point x="65" y="879" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

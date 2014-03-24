@@ -136,10 +136,12 @@ def fill_components(output_ufo, masters):
         outputglif.write()
 
 
-def find_anchor(glyph, anchorname):
-    for anchor in glyph.get('anchors', []):
-        if anchor['name'] == 'anchorname':
-            return anchor
+def find_anchor(glyphname, glyphs, anchorname):
+    for k, value in glyphs.items():
+        if k == glyphname:
+            for anchor in glyphs[k].get('anchors', []):
+                if anchor['name'] == anchorname:
+                    return anchor
     return
 
 
@@ -165,8 +167,8 @@ def make_anchors(output_ufo, masters):
 
                 divider += koef
 
-                lft = find_anchor(left['glyphs'][key], anchor['name']) or anchor
-                rgt = find_anchor(right['glyphs'][key], anchor['name']) or anchor
+                lft = find_anchor(key, left['glyphs'], anchor['name']) or anchor
+                rgt = find_anchor(key, right['glyphs'], anchor['name']) or anchor
                 values_x.append(points2mf.func(koef, metapolation, float(lft['x']), float(rgt['x'])))
                 values_y.append(points2mf.func(koef, metapolation, float(lft['y']), float(rgt['y'])))
             x = sum(values_x) / (divider or 1)

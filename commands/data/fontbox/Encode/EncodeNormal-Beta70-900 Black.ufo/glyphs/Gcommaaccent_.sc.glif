@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Gcommaaccent.sc" format="1">
+  <advance width="677"/>
+  <outline>
+    <contour>
+      <point x="395" y="-12" type="curve" smooth="yes"/>
+      <point x="460" y="-12"/>
+      <point x="556" y="3"/>
+      <point x="634" y="22" type="curve"/>
+      <point x="634" y="293" type="line"/>
+      <point x="439" y="293" type="line"/>
+      <point x="439" y="160" type="line"/>
+      <point x="402" y="160" type="line" smooth="yes"/>
+      <point x="274" y="160"/>
+      <point x="250" y="172"/>
+      <point x="250" y="288" type="curve" smooth="yes"/>
+      <point x="250" y="407"/>
+      <point x="277" y="419"/>
+      <point x="429" y="419" type="curve" smooth="yes"/>
+      <point x="472" y="419"/>
+      <point x="540" y="413"/>
+      <point x="624" y="404" type="curve"/>
+      <point x="624" y="570" type="line"/>
+      <point x="571" y="581"/>
+      <point x="482" y="589"/>
+      <point x="412" y="589" type="curve" smooth="yes"/>
+      <point x="155" y="589"/>
+      <point x="30" y="491"/>
+      <point x="30" y="288" type="curve" smooth="yes"/>
+      <point x="30" y="83"/>
+      <point x="147" y="-12"/>
+    </contour>
+    <contour>
+      <point x="220" y="-172" type="line"/>
+      <point x="375" y="-172" type="line"/>
+      <point x="468" y="-55" type="line"/>
+      <point x="255" y="-55" type="line"/>
+    </contour>
+  </outline>
+</glyph>
