@@ -68,6 +68,13 @@ a {
     padding-top:5px;
 }
 
+#paperjsCanvas {
+    background-color: #fffeef;
+    margin-bottom:20px;
+    padding-bottom:50px;
+    padding-left:50px;
+}
+
 .container-fluid {
     padding-top: 30px;
     width: 100%;
