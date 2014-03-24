@@ -85,10 +85,16 @@ var Instance = function (config) {
                         pathB = this.getPath(this.fonts[1], lines[k], this.lineHeight + (k * this.lineHeight)),
                         pathC = this.getPath(this.fonts[2], lines[k], this.lineHeight + (k * this.lineHeight));
 
+                    if (this.fonts.length > 3){
+                        var pathD = this.getPath(this.fonts[3], lines[k], this.lineHeight + (k * this.lineHeight));
+                    } else {
+                        pathD = pathA;
+                    }
+
                     for (var i = 0; i < pathA.commands.length; i++) {
                         var B_command = pathB.commands[i] || pathA.commands[i];
                         var C_command = pathC.commands[i] || pathA.commands[i];
-                        var D_command = pathA.commands[i];// pathD.commands[i] || pathA.commands[i];
+                        var D_command = pathD.commands[i] || pathA.commands[i];
                         if (pathA.commands[i].x) {
 
                             pathA.commands[i].x = this.interpolateExtValue(
@@ -174,7 +180,7 @@ var Instance = function (config) {
             },
 
             interpolateExtValue: function(A, B, C, D) {
-                return (A + this.interpolationValueAB * ( B - A ) ) + this.interpolationValueAC * ( C - A );// + this.interpolationValueAD * ( D - A );
+                return (A + this.interpolationValueAB * ( B - A ) ) + this.interpolationValueAC * ( C - A ) + this.interpolationValueAD * ( D - A );
             },
 
             getPath: function(font, word, y_offset) {

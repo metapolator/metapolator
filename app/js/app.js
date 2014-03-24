@@ -31,7 +31,7 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 canvasConfig: 'wordConfig',
                 interpolationValueAB: 0.2,
                 interpolationValueAC: 0.2,
-                forSlider: 2
+                forSlider: 3
             },
             {
                 id:'wordSlider',
@@ -49,7 +49,18 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 selection:'after',
                 canvasConfig: 'xheightConfig',
                 interpolationValueAB: 0.2,
-            }
+            },
+            {
+                id:'alphaSlider',
+                min: 0,
+                max: 1,
+                selection:'after',
+                canvasConfig: 'alphaConfig',
+                interpolationValueAB: 0.2,
+                interpolationValueAC: 0.2,
+                interpolationValueAD: 0.2,
+                canvas: 'alphaCanvas',
+            },
 
         ];
         var interLn = {
@@ -66,16 +77,16 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
         angular.forEach($scope.sliders, function(slider, index){
             var gui = guiListService.getGui(slider.id);
             var newGui = false;
-            if (!gui){
+            var sliderEl = document.getElementById(slider.id);
+            if (!gui && sliderEl){
               gui = new dat.GUI();
               guiListService.addGui(slider.id, gui);
               newGui = true;
             }
             var sliderFunct = objectToFunc(slider, new Function());
             var controllers = [];
-            var sliderEl = document.getElementById(slider.id);
 
-            if (newGui) {
+            if (newGui && sliderEl) {
                 angular.forEach(slider, function(key, index){
                     if (index.indexOf('interpolationValue') > -1) {
                         controllers.push(gui.add(sliderFunct, index, slider.min, slider.max));
@@ -240,6 +251,35 @@ metapolatortestApp.controller('paragraphCtrl', ['$scope',
             linebreaks: true,
             interpolationValueAB: 0.2,
             interpolationValueAC: 0.2,
+        };
+        var glyphInstance = $scope.init($scope.paragraphGlyphConfig);
+        $scope.$watchCollection('paragraphGlyphConfig', function(newVal, oldVal){
+            $scope.watchConf(glyphInstance, newVal);
+        });
+    }]);
+
+metapolatortestApp.controller('alphaCtrl', ['$scope',
+                                                'instanceListService',
+    function($scope, instanceListService) {
+        $scope.paragraphGlyphConfig = {
+            name: 'alphaConfig',
+            canvas: '#alphaCanvas',
+            fontslist: [
+                'app/fonts/RobotoSlab_Thin.otf',
+                'app/fonts/RobotoSlab_Bold.otf',
+                'app/fonts/RobotoSlab_Thin_Space.otf',
+                'app/fonts/Roboto-Regular-x-high.otf',
+            ],
+            text: 'Donald Ervin Knuth (born January 10, 1938) is an American computer scientist, mathematician, and Professor Emeritus at Stanford University. He is the author of the multi-volume work The Art of Computer Programming. Knuth has been called the "father" of the analysis of algorithms. He contributed to the development of the rigorous analysis of the computational complexity of algorithms and systematized formal mathematical techniques for it. In the process he also popularized the asymptotic notation. In addition to fundamental contributions in several branches of theoretical computer science, Knuth is the creator of the TeX computer typesetting system, the related METAFONT font definition language and rendering system, and the Computer Modern family of typefaces.',
+            fontSize: 20,
+            lineHeight: 32,
+            width: 690,
+            height: 400,
+            lib: 'opentype',
+            linebreaks: true,
+            interpolationValueAB: 0.2,
+            interpolationValueAC: 0.2,
+            interpolationValueAD: 0.2,
         };
         var glyphInstance = $scope.init($scope.paragraphGlyphConfig);
         $scope.$watchCollection('paragraphGlyphConfig', function(newVal, oldVal){

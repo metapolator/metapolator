@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" ng-app="metapolatortestApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Metapolator: Design typeface families</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="app/css/demo.css"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css"/>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:100italic,500,300,700,400' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="app/js/app.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div id="wrap">
+    <div class="masthead clearfix">
+        <div class="inner">
+          <h1 class="masthead-brand col-md-2">
+            <span style="font-family: 'Roboto', sans-serif; font-weight: 600;">Metapolator Examples</span>
+          </h1>
+          <ul class="col-md-2 masthead-nav">
+            <li><a href="http://github.com/metapolator/metapolator" title="Github"><span class="fa fa-github fa-lg"></span></a>   </li>
+            <li><a href="https://plus.google.com/u/0/communities/110027004108709154749" title="Google+"><span class="fa fa-google-plus fa-lg"></span></a></li>
+          </ul>
+        </div>
+      </div>
+        <div class="container-fluid">
+            <div class="row">
+            <div class="col-md-8 col-lg-offset-3" ng-controller="canvasCtrl">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="alphaCtrl">
+                        <div class="row" style="margin-top:20px" ng-controller='SliderCtrl'>
+                                <div id="alphaCanvas"></div>
+                                <div class="sliders" id="alphaSlider"></div>
+                        </div>
+                    </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="app/js/paper-full.js"></script>
+<script type="text/javascript" src="app/js/instance.js"></script>
+<script type="text/javascript" src="app/js/opentype.js"></script>
+<script type="text/javascript" src="app/js/dat.gui.js"></script>
+</html>
