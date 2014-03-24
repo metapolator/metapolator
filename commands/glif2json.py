@@ -88,11 +88,13 @@ class glif2json:
 
                 preset = {'type': type,
                           'control-out': point.attrib.get('control_out'),
-                          'control-in': point.attrib.get('control_in'),
-                          'point-name': pointname}
+                          'control-in': point.attrib.get('control_in')}
 
-                if not pointname:
-                    preset['point-name'] = 'p%s' % (pointnr + 1)
+                if pointname:
+                    preset['point-name'] = pointname
+
+                # if not pointname:
+                #     preset['point-name'] = 'p%s' % (pointnr + 1)
 
                 attribs = {}
                 for attr in point.attrib:
@@ -104,7 +106,7 @@ class glif2json:
 
                 pointset.add_point(float(point.attrib['x']),
                                    float(point.attrib['y']),
-                                   preset['point-name'], pointnr + 1, attribs)
+                                   preset.get('point-name'), pointnr + 1, attribs)
                 pointnr += 1
 
             # do not append to total pointset empty list
@@ -121,10 +123,10 @@ class glif2json:
         return
 
     def glif_components2contours(self, sourceglif):
+        from fixglif import fix
         for comp in self.find_components():
             baseglifpath = op.join(self.glifdir, self.find_glif(comp.attrib['base']))
-            with open(baseglifpath) as fp:
-                yield comp.attrib, lxml.etree.parse(fp)
+            yield comp.attrib, lxml.etree.fromstring(fix(baseglifpath))
 
     def convert(self):
         points, last_pointnr = self.glif_contour2points(self.xmldoc)
@@ -135,13 +137,17 @@ class glif2json:
             basepoints, last_pointnr = self.glif_contour2points(baseglif, pointnr=last_pointnr)
             if not basepoints:
                 continue
-            component = {'scale-x': attribs.get('xScale', 1),
-                         'scale-y': attribs.get('yScale', 1),
+            component = {'x-scale': float(attribs.get('xScale', 1)),
+                         'y-scale': float(attribs.get('yScale', 1)),
                          'points': basepoints}
             if attribs.get('xyScale'):
-                component['scale-xy'] = attribs['xyScale']
+                component['xy-scale'] = float(attribs['xyScale'])
             if attribs.get('yxScale'):
-                component['scale-yx'] = attribs['yxScale']
+                component['yx-scale'] = float(attribs['yxScale'])
+            if attribs.get('xOffset'):
+                component['x-offset'] = float(attribs['xOffset'])
+            if attribs.get('yOffset'):
+                component['y-offset'] = float(attribs['yOffset'])
             if attribs.get('base'):
                 component['name'] = attribs['base']
             components.append(component)

@@ -32,10 +32,22 @@ cachekoef = {}
 metapolationcache = {}
 
 
-def collect(contours):
+def collect(glyph):
+    import copy
     points = []
-    for contour in contours:
+    for contour in glyph['points']:
         points += contour
+
+    # append components points if available
+    # this can be turned off for getting ufo without
+    # component points
+    for component in glyph.get('components', []):
+        for contour in component['points']:
+            for point in contour:
+                p = copy.copy(point)
+                p['x'] = point['x'] * component.get('x-scale', 1) + component.get('x-offset', 0)
+                p['y'] = point['y'] * component.get('y-scale', 1) + component.get('y-offset', 0)
+                points.append(p)
     return points
 
 
@@ -185,10 +197,11 @@ def points2mf(glyphname, *masters):
 
 # search for parameters
 
-    for item in collect(masters[0]['glyphs'][glyphname]['points']):
-        znamel = re.match('z(\d+)l', item.get('point-name'))
+    for item in collect(masters[0]['glyphs'][glyphname]):
+        im = item.get('point-name', 'z%sl' % i)
 
-        im = item.get('point-name')
+        znamel = re.match('z(\d+)l', im)
+
         istartp = item.get('startp')
         itype = item.get('type')
         icontrol_out = item.get('control-out')
@@ -242,8 +255,12 @@ def points2mf(glyphname, *masters):
         divider = 0
 
         for left, right in iterate(masters):
-            leftpoint = collect(left['glyphs'][glyphname]['points'])[i]
-            rightpoint = collect(right['glyphs'][glyphname]['points'])[i]
+            leftpoint = collect(left['glyphs'][glyphname])[i]
+            try:
+                rightpoint = collect(right['glyphs'][glyphname])[i]
+            except IndexError:
+                print 'missing %s as it has less points than left' % glyphname
+                return ''
             koef = getcoefficient(left, right)
             metapolation = getmetapolation(left, right)
             divider += koef
