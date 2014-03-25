@@ -23,7 +23,7 @@
     <div class="masthead clearfix">
         <div class="inner">
           <h1 class="masthead-brand col-md-2">
-            <span style="font-family: 'Roboto', sans-serif; font-weight: 600;">Metapolator Examples</span> 
+            <span style="font-family: 'Roboto', sans-serif; font-weight: 600;">Metapolator Examples</span>
           </h1>
           <ul class="col-md-2 masthead-nav">
             <li><a href="http://github.com/metapolator/metapolator" title="Github"><span class="fa fa-github fa-lg"></span></a>   </li>
@@ -34,6 +34,13 @@
         <div class="container-fluid">
             <div class="row">
             <div class="col-md-8 col-lg-offset-3" ng-controller="canvasCtrl">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="paperjsCtrl">
+                        <div class="row" style="margin-top:20px">
+                                <div id="paperjsCanvas"></div>
+                                <div class="sliders" id="paperGlyphSlider"></div>
+                        </div>
+                    </div>
                 <div class="row" ng-controller="SliderCtrl">
                     <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="glyphCtrl">
                         <div class="row" style="margin-top:20px">
@@ -132,6 +139,7 @@
 </body>
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="app/js/paper-full.js"></script>
 <script type="text/javascript" src="app/js/instance.js"></script>
 <script type="text/javascript" src="app/js/opentype.js"></script>
 <script type="text/javascript" src="app/js/dat.gui.js"></script>
