@@ -20,7 +20,7 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 max: 1,
                 selection:'after',
                 canvasConfig: 'wordConfig',
-                interpolationValueAB: 0.2,
+                interpolationValueAB: 0.2,  
                 interpolationValueAC: 0.2,
                 forSlider: 2
             },
@@ -39,7 +39,7 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 max: 1,
                 selection:'after',
                 canvasConfig: 'xheightConfig',
-                interpolationValueAB: 0.2,
+                interpolationValueAB: 0.9,
             }
 
         ];
@@ -148,7 +148,7 @@ metapolatortestApp.controller('wordCtrl', ['$scope',
             text: 'Hanna',
             fontSize: 80,
             lineHeight: 110,
-            interpolationValueAB: 0.2,
+            interpolationValueAB: 0.9,
             interpolationValueAC: 0.2,
         };
         var glyphInstance = $scope.init($scope.wordConfig);
@@ -174,7 +174,7 @@ metapolatortestApp.controller('paragraphCtrl', ['$scope',
             width: 690,
             height: 400,
             linebreaks: true,
-            interpolationValueAB: 0.2,
+            interpolationValueAB: 0.9,
             interpolationValueAC: 0.2,
         };
         var glyphInstance = $scope.init($scope.paragraphGlyphConfig);
@@ -197,7 +197,7 @@ metapolatortestApp.controller('xheightCtrl', ['$scope',
                 text: 'Hanna',
                 fontSize: 80,
                 lineHeight: 120,
-                interpolationValueAB: 0.2,
+                interpolationValueAB: 0.9,
             };
         var glyphInstance = $scope.init($scope.xheightConfig);
         $scope.$watchCollection('xheightConfig', function(newVal, oldVal){
