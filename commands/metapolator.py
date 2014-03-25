@@ -218,9 +218,11 @@ def main():
     os.environ['MFINPUTS'] = op.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'
 
-    arguments = ['--fontversion', '1']
+    arguments = []
     if argv.family:
         arguments += ['--family', argv.family]
+    if argv.fontversion:
+        arguments += ['--fontversion', argv.fontversion]
 
     process = subprocess.Popen(
         ["sh", "makefont.sh", "fontbox"] + arguments,
@@ -287,6 +289,7 @@ def parse_command_line_arguments():
     parser.add_argument('--axis', type=str, action='append')
     parser.add_argument('--family', type=str, default='')
     parser.add_argument('--style', type=str, default='Regular')
+    parser.add_argument('--fontversion', type=str, default='1')
     parser.add_argument('--mf', action='store_true')
     parser.add_argument('--json', action='store_true')
     parser.add_argument('output_ufo', metavar='output_ufo', type=str)

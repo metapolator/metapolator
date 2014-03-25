@@ -16,6 +16,7 @@ do
       --axis   "name:foo|${FONTA}:${FONTB}|coefficient=1,metapolation=${val}" \
       --family "EncodeNormal-Beta70-${val}" \
       --style "400 Regular" \
+      --fontversion "1"
       I.ufo
     i=`expr "$i + 5" | bc`;
     mkdir -p commands/output
