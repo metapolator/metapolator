@@ -218,8 +218,12 @@ def main():
     os.environ['MFINPUTS'] = op.realpath(fwd)
     os.environ['MFMODE'] = 'controlpoints'
 
+    arguments = ['--fontversion', '1']
+    if argv.family:
+        arguments += ['--family', argv.family]
+
     process = subprocess.Popen(
-        ["sh", "makefont.sh", 'fontbox', '1'],
+        ["sh", "makefont.sh", "fontbox"] + arguments,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=metap_workdir
     )
 

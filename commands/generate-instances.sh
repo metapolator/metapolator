@@ -14,7 +14,7 @@ do
     echo "generating with metapolation ${i}"
     python ./commands/metapolator.py \
       --axis   "name:foo|${FONTA}:${FONTB}|coefficient=1,metapolation=${val}" \
-      --family "EncodeNormal-Beta70" \
+      --family "EncodeNormal-Beta70-${val}" \
       --style "400 Regular" \
       I.ufo
     i=`expr "$i + 5" | bc`;
