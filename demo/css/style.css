@@ -16,7 +16,7 @@ body, .main, html {
   padding: 0;
   width: 100%;
   height: 100%;
-  float: left;
+  float: center;
 }
 
 body .header{
@@ -34,6 +34,7 @@ super {
   font-size: 200px;
   font-weight: 600;
   line-height:90%;
+  padding: auto ;
 }
 
 anode1 {
@@ -208,6 +209,14 @@ anode10w {
   text-align: left;
 }
 
+.caption {
+	bottom: 20px;
+	width: 100%;
+	margin: 20px;
+	text-align: center;
+	position: absolute;
+}
+
 
 headbar {
   color: #ecf0f1;
@@ -237,7 +246,7 @@ h1 {
 }
 
 .main section.page1 {
-  background: url(../img/page1.jpg) center top no-repeat #555;
+  background: url(../img/page1.jpg) center top repeat #555;
 }
 
 .main section.page2 {
@@ -245,16 +254,16 @@ h1 {
 }
 
 .main section.page7 {
-  background: url(../img/me.svg) center center no-repeat #555;
+  background: url(../img/me.svg) center center no-repeat #66CCFF;
 }
 .main section.page7_vocab {
-  background: url(../img/me_vocabulary.svg) center center no-repeat #555;
+  background: url(../img/me_vocabulary.svg) center center no-repeat #66CCFF;
 }
 .main section.page8 {
-  background: url(../img/metap_effect-01.svg) center center no-repeat #555;
+  background: url(../img/metap_effect-01.svg) center center no-repeat #66CCFF;
 }
 .main section.page10 {
-  background: url(../img/logo.svg) center center no-repeat #555;
+  background: url(../img/logo.svg) center center no-repeat #66CCFF;
 }
 .main section.page1 .page_container {
   position: absolute;
@@ -281,6 +290,8 @@ h1 {
 .main section.page3 {
   background: #008867;
 }
+
+
 .main section.page4 {
   background: rgb(255, 171, 126);
   top: 100px;
@@ -332,7 +343,7 @@ body .nav-top span.right a {
 }
 
 body.viewing-page-2 .header h1, body.viewing-page-2 .nav-top span.right a {
-  color: black;
+  color: pink;
 }
 
 .main section.page3 .page_container {
@@ -348,8 +359,36 @@ body.viewing-page-2 .header h1, body.viewing-page-2 .nav-top span.right a {
   column-break-inside: avoid;
   text-align: left;
   height: 100%;
+}
 
+.main section.page3C .page_container {
+  position: absolute;
+  margin-left: -325px;
+  left: 50%;
+  top: 20%;
+  margin-bottom: 50px;
+  max-width: 650px;
+-webkit-column-count:3;
+-webkit-column-break-inside: avoid;
+-moz-column-break-inside: avoid;
+  column-break-inside: avoid;
+  text-align: left;
+  height: 100%;
+}
 
+.main section.page3R .page_container {
+  position: absolute;
+  margin-left: -325px;
+  left: 60%;
+  top: 20%;
+  margin-bottom: 50px;
+  max-width: 650px;
+-webkit-column-count:3;
+-webkit-column-break-inside: avoid;
+-moz-column-break-inside: avoid;
+  column-break-inside: avoid;
+  text-align: left;
+  height: 100%;
 }
 
 .main section.page4 .page_container h1 {
@@ -368,15 +407,7 @@ body.viewing-page-2 .header h1, body.viewing-page-2 .nav-top span.right a {
   font-weight: 100;
   font-size: 300px;
 }
-.main section.page7 .page_container h1 {
-  letter-spacing: -1px;
-  font-weight: 100;
-  font-size: 300px;
-  margin-bottom: 50px;
-}
-.main section.page7 .page_container p {
-  bottom: 50px;
-}
+
 .main section.page9 .page_container {
   position: absolute;
   margin-left: -325px;

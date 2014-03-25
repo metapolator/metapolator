@@ -407,6 +407,11 @@ h3 {
 	float: right;
 }
 
+.nav-top span.left a {
+	float: left;
+	display: block;
+}
+
 .nav-top span.right a {
 	float: left;
 	display: block;
