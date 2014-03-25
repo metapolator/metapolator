@@ -212,7 +212,7 @@ anode10w {
 .caption {
 	bottom: 20px;
 	width: 100%;
-	margin: 20px;
+	margin: 0px;
 	text-align: center;
 	position: absolute;
 }
@@ -353,42 +353,7 @@ body.viewing-page-2 .header h1, body.viewing-page-2 .nav-top span.right a {
   top: 20%;
   margin-bottom: 50px;
   max-width: 650px;
--webkit-column-count:3;
--webkit-column-break-inside: avoid;
--moz-column-break-inside: avoid;
-  column-break-inside: avoid;
   text-align: left;
-  height: 100%;
-}
-
-.main section.page3C .page_container {
-  position: absolute;
-  margin-left: -325px;
-  left: 50%;
-  top: 20%;
-  margin-bottom: 50px;
-  max-width: 650px;
--webkit-column-count:3;
--webkit-column-break-inside: avoid;
--moz-column-break-inside: avoid;
-  column-break-inside: avoid;
-  text-align: left;
-  height: 100%;
-}
-
-.main section.page3R .page_container {
-  position: absolute;
-  margin-left: -325px;
-  left: 60%;
-  top: 20%;
-  margin-bottom: 50px;
-  max-width: 650px;
--webkit-column-count:3;
--webkit-column-break-inside: avoid;
--moz-column-break-inside: avoid;
-  column-break-inside: avoid;
-  text-align: left;
-  height: 100%;
 }
 
 .main section.page4 .page_container h1 {
