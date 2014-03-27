@@ -2,22 +2,22 @@
 <html lang="en" class="demo1 no-js">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Metapolator</title>
 		<meta name="description" content="The plugin will detect your mouse wheel and swipe gestures to determine which way the page should scroll." />
 		<meta name="keywords" content="scroller, jquery one page scroll, onepagescroll, animated scrolling" />
 		<meta name="author" content="Author for Onextrapixel" />
-		<link rel="shortcut icon" id="favicon" href="favicon.png"> 
+		<link rel="shortcut icon" id="favicon" href="favicon.png">
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
-		
+
 		<!-- Edit Below -->
 		<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	    <script type="text/javascript" src="js/jquery.onepage-scroll.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+	    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.5/TweenMax.min.js"></script>
+		<script type="text/javascript" src="js/jquery.scrollmagic.min.js"></script>
+
 	    <link rel="stylesheet" type="text/css" href="css/style.css" />
-	    <link rel="stylesheet" type="text/css" href="css/onepage-scroll.css" />
 	    <link rel="stylesheet" type="text/css" href="css/elusive-webfont.css" />
-	    <script src="../file/js/modernizr.js"></script>
 	</head>
 	<body class="demo1">
 	<div class="nav-top clearfix">
@@ -26,13 +26,35 @@
 		<span class="right"><a class="nav-icon" href="http://google.com"><span>about</span></a></span>
 	</div>
 
-	</div> 
+	</div>
+	<script>
+			var controller;
+			$(document).ready(function($) {
+				// init controller
+				controller = new ScrollMagic();
+			});
+	</script>
 	<div class="main">
 	  <section class="page1">
       <div class="page_container">
         <super>We need fonts</super>
         </div>
     </section>
+	<div id="trigger1" class="spacer s0"></div>
+	<script>
+		$(document).ready(function($) {
+			// build tween
+			var tween = TweenMax.to("#page1", 0.5, {backgroundColor: "green", scale: 2.5});
+
+			// build scene
+			var scene = new ScrollScene({triggerElement: "#trigger1"})
+							.setTween(tween)
+							.addTo(controller);
+
+			// show indicators (requires debug extension)
+			// scene.addIndicators();
+		});
+		</script>
     <section class="page2">
       <div class="page_container">
         <h1>We are unique. We show who we are through typography. We want our identities to be seen and heard through fonts.Today, billions of people need fonts that are custom designed for themselves and their businesses.</h1>
@@ -41,9 +63,9 @@
 
     <section class="page2">
       <div class="page_container">
-        <h1>Metapolator enables all font lovers, 
+        <h1>Metapolator enables all font lovers,
 from children to professional type designer,
-to create unique typefaces within large 
+to create unique typefaces within large
 font families.</h1>
 	      </div>
     </section>
@@ -51,36 +73,36 @@ font families.</h1>
     <section class="page3">
       <div class="page_container">
    <table>
-  <tr>
-    <th valign="top" width="30%"><h1>Tools</h1></th>
-    <th valign="top" width="30%"><h1>Workflow</h1></th>
-    <th valign="top" width="30%"><h1>Standards</h1></th>
-  </tr>
-  <tr>
-    <td valign="top"><p>Type designers need a toolbox to build a single typeface out into a family of styles. Metapolator provides an initial set of tools for common processes, but it is fully extendable. 
-<ul><li>spacing (tighter or looser)</li>
-<li>weight (regular to bold, or to light)</li>
-<li>width (normal to narrow, or extended)</li>
-<li>x-height (increased or decreased, without distortions)</li></ul></p></td>
-    <td valign="top"><p>Type designers need tools that snap into their existing workflow.</p></td>
-    <td valign="top"><p>The text-based and interchangeable UFO source format has become an industry standard. 
-Metapolator imports and exports UFO fonts, to add a new link in the chain of font style and family creation. 
-As a web app it is built with an industry standard too: AngularJS.</p></td>
-  </tr>
-</table>
-         </div>
+	  <tr>
+	    <th valign="top" width="30%"><h1>Tools</h1></th>
+	    <th valign="top" width="30%"><h1>Workflow</h1></th>
+	    <th valign="top" width="30%"><h1>Standards</h1></th>
+	  </tr>
+	  <tr>
+	    <td valign="top"><p>Type designers need a toolbox to build a single typeface out into a family of styles. Metapolator provides an initial set of tools for common processes, but it is fully extendable.
+	<ul><li>spacing (tighter or looser)</li>
+	<li>weight (regular to bold, or to light)</li>
+	<li>width (normal to narrow, or extended)</li>
+	<li>x-height (increased or decreased, without distortions)</li></ul></p></td>
+	    <td valign="top"><p>Type designers need tools that snap into their existing workflow.</p></td>
+	    <td valign="top"><p>The text-based and interchangeable UFO source format has become an industry standard.
+	Metapolator imports and exports UFO fonts, to add a new link in the chain of font style and family creation.
+	As a web app it is built with an industry standard too: AngularJS.</p></td>
+	  </tr>
+	</table>
+	         </div>
          </section>
          <section class="page4">
       <div class="page_container">
         <p><br><br></p>
-        <anode1>anode</anode1><br><anode2w>anode</anode2w><br><anode3>anode</anode3> 
+        <anode1>anode</anode1><br><anode2w>anode</anode2w><br><anode3>anode</anode3>
         <div class="caption"><p>interpolation 0.35</p></div>
       </div>
     </section>
     <section class="page4">
       <div class="page_container">
         <p><br><br></p>
-        <anode2>anode</anode2><br><anode3w>anode</anode3w><br><anode4>anode</anode4> 
+        <anode2>anode</anode2><br><anode3w>anode</anode3w><br><anode4>anode</anode4>
         <div class="caption"><p>interpolation 0.40</p></div>
       </div>
     </section>
@@ -88,43 +110,43 @@ As a web app it is built with an industry standard too: AngularJS.</p></td>
       <div class="page_container">
         <p><br><br></p>
         <anode3>anode</anode3><br><anode4w>anode</anode4w><br><anode5>anode</anode5>
-        <div class="caption"><p>interpolation 0.45</p></div> 
+        <div class="caption"><p>interpolation 0.45</p></div>
       </div>
     </section>
     <section class="page4">
       <div class="page_container">
         <p><br><br></p>
         <anode4>anode</anode4><br><anode5w>anode</anode5w><br><anode6>anode</anode6>
-        <div class="caption"><p>interpolation 0.50</p></div> 
+        <div class="caption"><p>interpolation 0.50</p></div>
       </div>
     </section>
     <section class="page4">
       <div class="page_container">
         <p><br><br></p>
         <anode5>anode</anode5><br><anode6w>anode</anode6w><br><anode7>anode</anode7>
-        <div class="caption"><p>interpolation 0.55</p></div> 
+        <div class="caption"><p>interpolation 0.55</p></div>
       </div>
     </section>
     <section class="page4">
       <div class="page_container">
         <p><br><br></p>
         <anode6>anode</anode6><br><anode7w>anode</anode7w><br><anode8>anode</anode8>
-        <div class="caption"><p>interpolation 0.60</p></div> 
+        <div class="caption"><p>interpolation 0.60</p></div>
       </div>
     </section>
     <section class="page4">
       <div class="page_container">
         <p><br><br></p>
         <anode7>anode</anode7><br><anode8w>anode</anode8w><br><anode9>anode</anode9>
-        <div class="caption"><p>interpolation 0.65</p></div> 
+        <div class="caption"><p>interpolation 0.65</p></div>
       </div>
     </section>
     <section class="page4">
       <div class="page_container">
         <p><br><br></p>
         <anode8>anode</anode8><br><anode9w>anode</anode9w><br><anode10>anode</anode10>
-        <div class="caption"><p>interpolation 0.70</p></div> 
-       
+        <div class="caption"><p>interpolation 0.70</p></div>
+
       </div>
     </section>
     <section class="page7">
@@ -169,15 +191,26 @@ As a web app it is built with an industry standard too: AngularJS.</p></td>
     </section>
     <section class="page10">
       <div class="page_container">
-  
+
       </div>
     </section>
-    
+
 	</div>
 		<script type="text/javascript">
-	    $(".main").onepage_scroll({
-	      sectionContainer: "section"
-	    });
+		var controller;
+		$(document).ready(function(){
+			console.log('DOM READY');
+			controller = new ScrollMagic();
+			var sections = $('section');
+			$.each(sections, function(el, index){
+				console.log(el);
+				console.log(index);
+				controller.addScene([
+				    scene2 = new ScrollScene({duration: 200}), // add scene and assign handler "scene2"
+				]);
+
+			});
+		});
   	</script>
 
 	</body>

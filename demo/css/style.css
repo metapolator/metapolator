@@ -4,7 +4,7 @@ body, html {
       -webkit-font-smoothing: antialiased;
       background:#555;
       text-align: center;
-      overflow: hidden;
+/*      overflow: hidden;*/
       -webkit-transition: opacity 500ms;
       -moz-transition: opacity 500ms;
       transition: opacity 500ms;
@@ -246,6 +246,7 @@ h1 {
 }
 
 .main section.page1 {
+  display: block;
   background: url(../img/page1.jpg) center top repeat #555;
 }
 
@@ -381,5 +382,30 @@ body.viewing-page-2 .header h1, body.viewing-page-2 .nav-top span.right a {
   margin-bottom: 50px;
   max-width: 650px;
   text-align: left;
-  
+
+}
+section {
+    display: none;
+}
+.spacer {
+	text-align: center;
+	min-height: 100px;
+}
+.spacer.s0 {
+	min-height: 1px;
+}
+.spacer.s1 {
+	min-height: 100px;
+}
+.spacer.s2 {
+	min-height: 200px;
+}
+.spacer.s3 {
+	min-height: 300px;
+}
+.spacer.s4 {
+	min-height: 400px;
+}
+.spacer.s5 {
+	min-height: 500px;
 }
