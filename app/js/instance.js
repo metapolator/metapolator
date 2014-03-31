@@ -272,10 +272,6 @@ var Instance = function (config) {
                             var interpolationPoint = interpolationContour[i];
                             var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x));
                             var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y));
-                            console.log(interX/glyph_size);
-                            console.log(interX/5.13);
-                            console.log(interX/5.23);
-                            console.log(parseInt(interX/glyph_size));
                             currentPoint = new paper.Point(interX/glyph_size, 240-interY/glyph_size);
 
                             path.add(new paper.Segment(currentPoint, handleIn, handleOut));
@@ -290,6 +286,58 @@ var Instance = function (config) {
             }
         }, config);
         // var instance = 4;
+    } else if (config.lib == 'twojs') {
+        var instance = $.extend({
+            interpolationValueAB: 1,
+            interpolationValueAC: 0.2,
+            interpolationValueAD: 0.2,
+            interpolateValue : function(A, B) {
+                return A + this.interpolationValueAB * ( B - A );
+            },
+            interpolate : function () {
+                $(this.canvas).html('');
+                var canvasWrapper = $(instance.canvas);
+                var two = new Two(params).appendTo(canvasWrapper);
+                for (var j = 0; j < this.glyphJSON[0].points.length; j++) {
+                    for (var i = 0; i < contour.length; i++){
+                        var point = contour[i];
+                        var handleIn, handleOut,
+                            handleInX, handleOutX,
+                            handleInY, handleOutY;
+                        if (i == 0) {
+                            handleInX = contour[contour.length - 1].x - point.x;
+                            handleInY = point.y - contour[contour.length - 1].y;
+                            var interpolationBx = interpolationContour[interpolationContour.length - 1].x - interpolationContour[i].x;
+                            var interpolationBy = interpolationContour[i].y - interpolationContour[interpolationContour.length - 1].y;
+                            handleInX = this.interpolateValue(handleInX, interpolationBx);
+                            handleInY = this.interpolateValue(handleInY, interpolationBy);
+                        } else {
+                            handleInX = contour[i - 1].x - point.x;
+                            handleInY = point.y - contour[i - 1].y;
+                            var interpolationBx = interpolationContour[i - 1].x - interpolationContour[i].x;
+                            var interpolationBy = interpolationContour[i].y - interpolationContour[i - 1].y;
+                            handleInX = this.interpolateValue(handleInX, interpolationBx);
+                            handleInY = this.interpolateValue(handleInY, interpolationBy);
+                        }
+
+                        handleOutX = contour[i + 1].x - point.x;
+                        handleOutY = point.y - contour[i + 1].y;
+                        var interpolationBx = interpolationContour[i + 1].x - interpolationContour[i].x;
+                        var interpolationBy = interpolationContour[i].y - interpolationContour[i + 1].y;
+                        handleOutX = this.interpolateValue(handleOutX, interpolationBx);
+                        handleOutY = this.interpolateValue(handleOutY, interpolationBy);
+
+                        var anchor = new Two.Anchor(point.x, point.y, handleInX, handleInY, handleOutX, handleOutY, Two.Commands.curve);
+                    }
+
+                }
+
+            },
+            loaded : function() {
+
+            }
+        });
+
     }
     return instance;
 };

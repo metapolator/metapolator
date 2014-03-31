@@ -120,7 +120,7 @@ metapolatortestApp.controller('canvasCtrl', ['$scope',
     function($scope, instanceListService, $http) {
         $scope.canvasConfig = {};
         $scope.init = function (model) {
-                if (model.lib == 'paperjs'){
+                if (model.lib == 'paperjs' || model.lib == 'twojs'){
                     $.ajax({
                     url : model.glyphJSONUrls[0],
                     success : function(data, status, headers, config) {
@@ -194,6 +194,30 @@ metapolatortestApp.controller('paperjsCtrl', ['$scope',
             interpolationValueAB: 0.2,
             interpolationValueAC: 0.2,
             lib:'paperjs',
+            glyphJSONUrls: [
+            '/app/RobotoSlab_Thin_a.json',
+            '/app/RobotoSlab_Bold_a.json'
+            ],
+            glyphJSON : [],
+
+        };
+        var glyphInstance = $scope.init($scope.paperjsConfig);
+        $scope.$watchCollection('paperjsConfig', function(newVal, oldVal){
+            $scope.watchConf(glyphInstance, newVal);
+        });
+    }]);
+
+metapolatortestApp.controller('paperjsCtrl', ['$scope',
+                                            'instanceListService',
+    function($scope, instanceListService) {
+        $scope.paperjsConfig = {
+            name: 'paperjsConfig',
+            canvas: '#paperjsCanvas',
+            fontSize: 80,
+            lineHeight: 110,
+            interpolationValueAB: 0.2,
+            interpolationValueAC: 0.2,
+            lib:'twojs',
             glyphJSONUrls: [
             '/app/RobotoSlab_Thin_a.json',
             '/app/RobotoSlab_Bold_a.json'
