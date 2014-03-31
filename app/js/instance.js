@@ -224,7 +224,7 @@ var Instance = function (config) {
                 var context = createCanvas(instance.canvas, 260, 260);
                 paper.setup(context.canvas);
                 var tmp_points = [];
-                var glyph_size = 5.3;
+                var glyph_size = 5.19;
 
                 for (var j = 0; j < this.glyphJSON[0].points.length; j++) {
                     var path = new paper.Path();
@@ -266,12 +266,16 @@ var Instance = function (config) {
                             handleOutX = this.interpolateValue(handleOutX, interpolationBx);
                             handleOutY = this.interpolateValue(handleOutY, interpolationBy);
 
-                            handleIn = new paper.Point(parseInt(handleInX/glyph_size), parseInt(handleInY/glyph_size));
-                            handleOut = new paper.Point(parseInt(handleOutX/glyph_size), parseInt(handleOutY/glyph_size));
+                            handleIn = new paper.Point(handleInX/glyph_size, handleInY/glyph_size);
+                            handleOut = new paper.Point(handleOutX/glyph_size, handleOutY/glyph_size);
 
                             var interpolationPoint = interpolationContour[i];
                             var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x));
                             var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y));
+                            console.log(interX/glyph_size);
+                            console.log(interX/5.13);
+                            console.log(interX/5.23);
+                            console.log(parseInt(interX/glyph_size));
                             currentPoint = new paper.Point(interX/glyph_size, 240-interY/glyph_size);
 
                             path.add(new paper.Segment(currentPoint, handleIn, handleOut));
