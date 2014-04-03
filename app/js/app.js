@@ -207,12 +207,12 @@ metapolatortestApp.controller('paperjsCtrl', ['$scope',
         });
     }]);
 
-metapolatortestApp.controller('paperjsCtrl', ['$scope',
+metapolatortestApp.controller('twojsCtrl', ['$scope',
                                             'instanceListService',
     function($scope, instanceListService) {
         $scope.paperjsConfig = {
-            name: 'paperjsConfig',
-            canvas: '#paperjsCanvas',
+            name: 'twojsConfig',
+            canvas: '#twojsCanvas',
             fontSize: 80,
             lineHeight: 110,
             interpolationValueAB: 0.2,
@@ -226,7 +226,7 @@ metapolatortestApp.controller('paperjsCtrl', ['$scope',
 
         };
         var glyphInstance = $scope.init($scope.paperjsConfig);
-        $scope.$watchCollection('paperjsConfig', function(newVal, oldVal){
+        $scope.$watchCollection('twojsConfig', function(newVal, oldVal){
             $scope.watchConf(glyphInstance, newVal);
         });
     }]);
