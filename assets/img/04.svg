@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+]>
+<svg version="1.1" id="Calque_2" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1021.448px"
+	 height="500.976px" viewBox="-82.384 -66.396 1021.448 500.976" enable-background="new -82.384 -66.396 1021.448 500.976"
+	 xml:space="preserve">
+<metadata>
+	<sfw  xmlns="&ns_sfw;">
+		<slices></slices>
+		<sliceSourceBounds  y="97.029" x="-70.869" bottomLeftOrigin="true" height="459.015" width="978.083"></sliceSourceBounds>
+	</sfw>
+</metadata>
+<g>
+	<path d="M36.405,310.32l43.116-14.889V87.026L36.405,72.14l3.073-9.238h73.403l4.111,46.714
+		c16.941-29.259,50.821-51.848,85.725-51.848c30.798,0,68.783,11.298,79.052,55.438c16.427-30.798,51.333-55.438,87.777-55.438
+		c36.445,0,82.131,15.398,82.131,82.131v155.023l43.118,15.397l-3.077,9.238h-118.57l-3.078-9.238l43.118-14.886V152.729
+		c0-51.331-26.179-71.864-59.035-71.864c-40.553,0-69.298,46.195-69.298,71.864v142.195l43.118,15.396l-3.081,9.234H206.32
+		l-3.078-9.234l43.117-14.889V152.724c0-51.33-26.178-71.868-59.034-71.868c-40.555,0-69.3,46.197-69.3,71.868v142.193l43.12,15.396
+		l-3.079,9.238H39.478L36.405,310.32z"/>
+	<path d="M696.881-26.931v154.509h75.457l18.994-49.277l9.237,3.076v109.852l-9.237,3.076l-18.479-48.766h-75.972v153.996h136.033
+		l25.15-71.356l9.238,4.621v86.759h-259.22l-3.084-9.24l53.388-20.02V-15.637l-53.392-20.02l3.08-9.238h238.69v83.158l-9.241,3.08
+		l-27.2-68.273H696.881L696.881-26.931z"/>
+</g>
+<text transform="matrix(1 0 0 1 371.7239 47.7322)" font-family="'HelveticaNeue-Bold'" font-size="12">overshoot</text>
+<text transform="matrix(1 0 0 1 -61.8689 192.1453)" font-family="'HelveticaNeue-Bold'" font-size="12">x-height</text>
+<text transform="matrix(1 0 0 1 868.4309 -30.405)" font-family="'HelveticaNeue-Bold'" font-size="12">contrast</text>
+<text transform="matrix(1 0 0 1 79.8899 357.1042)" font-family="'HelveticaNeue-Bold'" font-size="12">weight</text>
+<text transform="matrix(1 0 0 1 829.1292 139.5271)" font-family="'HelveticaNeue-Bold'" font-size="12">serif lenght</text>
+<text transform="matrix(1 0 0 1 503.4475 165.8738)" font-family="'HelveticaNeue-Bold'" font-size="12">cap-height</text>
+<line opacity="0.5" fill="none" stroke="#000000" stroke-width="1.298" stroke-miterlimit="10" stroke-dasharray="5.215,7.8225" enable-background="new    " x1="-7.662" y1="319.56" x2="903.987" y2="319.56"/>
+<g>
+	<g>
+		
+			<line fill="none" stroke="#000000" stroke-width="1.298" stroke-miterlimit="10" x1="-7.662" y1="62.901" x2="-5.067" y2="62.901"/>
+		
+			<line opacity="0.5" fill="none" stroke="#000000" stroke-width="1.298" stroke-miterlimit="10" stroke-dasharray="5.215,7.8225" enable-background="new    " x1="2.756" y1="62.901" x2="899.029" y2="62.901"/>
+		
+			<line fill="none" stroke="#000000" stroke-width="1.298" stroke-miterlimit="10" x1="902.944" y1="62.901" x2="905.536" y2="62.901"/>
+	</g>
+</g>
+<g>
+	<g>
+		
+			<line fill="none" stroke="#000000" stroke-width="1.298" stroke-miterlimit="10" x1="-7.662" y1="-44.896" x2="-5.067" y2="-44.896"/>
+		
+			<line opacity="0.5" fill="none" stroke="#000000" stroke-width="1.298" stroke-miterlimit="10" stroke-dasharray="5.215,7.8225" enable-background="new    " x1="2.756" y1="-44.896" x2="899.029" y2="-44.896"/>
+		
+			<line fill="none" stroke="#000000" stroke-width="1.298" stroke-miterlimit="10" x1="902.944" y1="-44.896" x2="905.536" y2="-44.896"/>
+	</g>
+</g>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="1.8051" stroke-miterlimit="10" x1="11.332" y1="63.415" x2="11.332" y2="317.944"/>
+		<g>
+			<rect x="5.015" y="63.415" fill="#E84E1B" width="12.636" height="1.805"/>
+		</g>
+		<g>
+			<rect x="5.015" y="317.944" fill="#E84E1B" width="12.636" height="1.805"/>
+		</g>
+	</g>
+</g>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="1.8051" stroke-miterlimit="10" x1="585.375" y1="-43.091" x2="585.375" y2="319.749"/>
+		<g>
+			<rect x="579.057" y="-44.896" fill="#E84E1B" width="12.636" height="1.805"/>
+		</g>
+		<g>
+			<rect x="579.057" y="317.944" fill="#E84E1B" width="12.636" height="1.805"/>
+		</g>
+	</g>
+</g>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="1.8051" stroke-miterlimit="10" x1="858.386" y1="-44.35" x2="858.386" y2="-28.102"/>
+		<g>
+			<rect x="852.069" y="-44.35" fill="#E84E1B" width="10.832" height="1.807"/>
+		</g>
+		<g>
+			<rect x="852.069" y="-29.907" fill="#E84E1B" width="10.832" height="1.805"/>
+		</g>
+	</g>
+</g>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="1.8051" stroke-miterlimit="10" x1="818.242" y1="81.466" x2="818.242" y2="191.581"/>
+		<g>
+			<rect x="811.923" y="81.466" fill="#E84E1B" width="10.83" height="1.805"/>
+		</g>
+		<g>
+			<rect x="811.923" y="189.777" fill="#E84E1B" width="10.83" height="1.808"/>
+		</g>
+	</g>
+</g>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="1.8051" stroke-miterlimit="10" x1="80.831" y1="335.093" x2="116.935" y2="335.093"/>
+		<g>
+			<rect x="79.027" y="330.58" fill="#E84E1B" width="1.805" height="10.83"/>
+		</g>
+		<g>
+			<rect x="116.935" y="330.58" fill="#E84E1B" width="1.805" height="10.83"/>
+		</g>
+	</g>
+</g>
+<text transform="matrix(1 0 0 1 240.9905 407.698)" font-family="'HelveticaNeue-Bold'" font-size="12">width</text>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="1.8051" stroke-miterlimit="10" x1="35.702" y1="387.443" x2="496.02" y2="387.443"/>
+		<g>
+			<rect x="35.702" y="381.124" fill="#E84E1B" width="1.805" height="10.832"/>
+		</g>
+		<g>
+			<rect x="496.02" y="381.124" fill="#E84E1B" width="1.805" height="10.832"/>
+		</g>
+	</g>
+</g>
+</svg>

@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+]>
+<svg version="1.1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1231px" height="753px"
+	 viewBox="0 0 1231 753" enable-background="new 0 0 1231 753" xml:space="preserve">
+<metadata>
+	<sfw  xmlns="&ns_sfw;">
+		<slices></slices>
+		<sliceSourceBounds  width="1122.434" height="698.972" y="-699.637" x="102.874" bottomLeftOrigin="true"></sliceSourceBounds>
+	</sfw>
+</metadata>
+<g id="Layer_2">
+	<line fill="none" stroke="#BCBEC0" stroke-miterlimit="10" x1="400" y1="89" x2="531.254" y2="168.165"/>
+	<line fill="none" stroke="#BCBEC0" stroke-miterlimit="10" x1="531.254" y1="168.165" x2="412.308" y2="241.5"/>
+	<line fill="none" stroke="#BCBEC0" stroke-miterlimit="10" x1="531.254" y1="168.165" x2="335" y2="463"/>
+	<line fill="none" stroke="#BCBEC0" stroke-miterlimit="10" x1="412.308" y1="241.5" x2="623" y2="481"/>
+	<line fill="none" stroke="#BCBEC0" stroke-miterlimit="10" x1="751" y1="485" x2="631.999" y2="624.324"/>
+	<line fill="none" stroke="#BCBEC0" stroke-miterlimit="10" x1="883.703" y1="483.783" x2="1085" y2="340.302"/>
+	<line fill="none" stroke="#BCBEC0" stroke-miterlimit="10" x1="933.255" y1="274" x2="412.308" y2="241.5"/>
+</g>
+<g id="Layer_1">
+	<g>
+		<rect x="77.874" y="391.695" fill="#FFFFFF" width="267.434" height="91"/>
+		<rect x="78.254" y="391.665" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="78.254" y="457.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="78.254" y="424.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="78.255" y="391.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="173.94" y="459.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="306.451" y="459.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="173.94" y="459.448" fill="#555055" width="116.191" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 94.0928 476.7012)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Widht</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 312.5928 476.7012)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.95</text>
+		</g>
+		<rect x="78.254" y="488.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="78.255" y="422.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="173.94" y="490.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="306.451" y="490.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="173.94" y="490.448" fill="#555055" width="121.06" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 94.0928 507.7012)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Weight</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 312.5928 507.7012)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.98</text>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M132.965,404.276c0-2.267,1.854-4.121,4.12-4.121h100.928c2.266,0,4.12,1.854,4.12,4.121v7.592
+					c0,2.267-1.854,4.121-4.12,4.121H137.085c-2.266,0-4.12-1.854-4.12-4.121V404.276z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 143.7588 412.2871)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto cond</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="225.965,405.495 230.52,411.071 
+				235.215,405.321 			"/>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M132.965,436.161c0-2.203,1.803-4.006,4.006-4.006h95.156c2.203,0,4.006,1.803,4.006,4.006v7.822
+					c0,2.203-1.803,4.006-4.006,4.006h-95.156c-2.203,0-4.006-1.803-4.006-4.006V436.161z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 143.2588 444.2871)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto ext</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="219.965,437.495 224.52,443.071 
+				229.215,437.321 			"/>
+		</g>
+		<text transform="matrix(1 0 0 1 94.0928 412.1211)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Left</text>
+		<text transform="matrix(1 0 0 1 94.0928 445.1211)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Right</text>
+	</g>
+	<g>
+		<rect x="530.874" y="102.695" fill="#FFFFFF" width="267.434" height="91"/>
+		<rect x="531.254" y="102.665" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="531.254" y="168.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="531.254" y="135.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="531.255" y="102.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="626.94" y="170.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="759.451" y="170.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="626.94" y="170.448" fill="#555055" width="27.191" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 547.0928 187.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Widht</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 765.5928 187.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.2</text>
+		</g>
+		<rect x="531.254" y="199.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="531.255" y="133.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="626.94" y="201.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="759.451" y="201.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="626.94" y="201.448" fill="#555055" width="102.06" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 547.0928 218.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Weight</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 765.5928 218.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.81</text>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M585.965,115.276c0-2.267,1.854-4.121,4.12-4.121h100.928c2.266,0,4.12,1.854,4.12,4.121v7.592
+					c0,2.267-1.854,4.121-4.12,4.121H590.085c-2.266,0-4.12-1.854-4.12-4.121V115.276z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 596.7588 123.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto hair</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="678.965,116.495 683.52,122.071 
+				688.215,116.321 			"/>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M585.965,147.161c0-2.203,1.803-4.006,4.006-4.006h95.156c2.203,0,4.006,1.803,4.006,4.006v7.822
+					c0,2.203-1.803,4.006-4.006,4.006h-95.156c-2.203,0-4.006-1.803-4.006-4.006V147.161z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 596.2588 155.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto comp</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="672.965,148.495 677.52,154.071 
+				682.215,148.321 			"/>
+		</g>
+		<text transform="matrix(1 0 0 1 547.0928 123.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Left</text>
+		<text transform="matrix(1 0 0 1 547.0928 156.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Right</text>
+	</g>
+	<g>
+		<rect x="932.874" y="212.695" fill="#FFFFFF" width="267.434" height="91"/>
+		<rect x="933.254" y="212.665" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="933.254" y="278.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="933.254" y="245.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="933.255" y="212.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="1028.94" y="280.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="1161.451" y="280.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="1028.94" y="280.448" fill="#555055" width="19.191" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 949.0928 297.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Widht</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 1167.5928 297.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.12</text>
+		</g>
+		<rect x="933.254" y="309.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="933.255" y="243.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="1028.94" y="311.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="1161.451" y="311.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="1028.94" y="311.448" fill="#555055" width="43.527" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 949.0928 328.7012)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Weight</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 1167.5928 328.7012)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.35</text>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M987.965,225.276c0-2.267,1.854-4.121,4.12-4.121h100.928c2.266,0,4.12,1.854,4.12,4.121v7.592
+					c0,2.267-1.854,4.121-4.12,4.121H992.085c-2.266,0-4.12-1.854-4.12-4.121V225.276z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 998.7588 233.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto serif</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="1080.965,226.495 1085.52,232.071 
+				1090.215,226.321 			"/>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M987.965,257.161c0-2.203,1.803-4.006,4.006-4.006h95.156c2.203,0,4.006,1.803,4.006,4.006v7.822
+					c0,2.203-1.803,4.006-4.006,4.006h-95.156c-2.203,0-4.006-1.803-4.006-4.006V257.161z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 998.2588 265.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto slab</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="1074.965,258.495 1079.52,264.071 
+				1084.215,258.321 			"/>
+		</g>
+		<text transform="matrix(1 0 0 1 949.0928 233.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Left</text>
+		<text transform="matrix(1 0 0 1 949.0928 266.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Right</text>
+	</g>
+	<g>
+		<rect x="144.874" y="182.695" fill="#FFFFFF" width="267.434" height="91"/>
+		<rect x="145.254" y="182.665" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.254" y="248.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.254" y="215.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.255" y="182.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="240.94" y="250.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="373.451" y="250.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="240.94" y="250.448" fill="#555055" width="83.06" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 161.0928 267.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Widht</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 379.5928 267.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.55</text>
+		</g>
+		<rect x="145.254" y="279.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.255" y="213.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="240.94" y="281.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="373.451" y="281.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="240.94" y="281.448" fill="#555055" width="96.06" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 161.0928 298.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Weight</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 379.5928 298.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.72</text>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M199.965,195.276c0-2.267,1.854-4.121,4.12-4.121h100.928c2.266,0,4.12,1.854,4.12,4.121v7.592
+					c0,2.267-1.854,4.121-4.12,4.121H204.085c-2.266,0-4.12-1.854-4.12-4.121V195.276z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 210.7588 203.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto reg</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="292.965,196.495 297.52,202.071 
+				302.215,196.321 			"/>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M199.965,227.161c0-2.203,1.803-4.006,4.006-4.006h95.156c2.203,0,4.006,1.803,4.006,4.006v7.822
+					c0,2.203-1.803,4.006-4.006,4.006h-95.156c-2.203,0-4.006-1.803-4.006-4.006V227.161z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 210.2588 235.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto bold</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="286.965,228.495 291.52,234.071 
+				296.215,228.321 			"/>
+		</g>
+		<text transform="matrix(1 0 0 1 161.0928 203.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Left</text>
+		<text transform="matrix(1 0 0 1 161.0928 236.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Right</text>
+	</g>
+	<g>
+		<rect x="144.874" y="28.695" fill="#FFFFFF" width="267.434" height="91"/>
+		<rect x="145.254" y="28.665" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.254" y="94.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.254" y="61.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.255" y="28.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="240.94" y="96.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="373.451" y="96.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="240.94" y="96.448" fill="#555055" width="108.191" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 161.0928 113.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Widht</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 379.5928 113.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.85</text>
+		</g>
+		<rect x="145.254" y="125.165" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="145.255" y="59.665" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="240.94" y="127.448" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="373.451" y="127.448" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="240.94" y="127.448" fill="#555055" width="43.527" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 161.0928 144.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Weight</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 379.5928 144.7017)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.29</text>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M199.965,41.276c0-2.267,1.854-4.121,4.12-4.121h100.928c2.266,0,4.12,1.854,4.12,4.121v7.592
+					c0,2.267-1.854,4.121-4.12,4.121H204.085c-2.266,0-4.12-1.854-4.12-4.121V41.276z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 210.7588 49.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto italic</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="292.965,42.495 297.52,48.071 
+				302.215,42.321 			"/>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M199.965,73.161c0-2.203,1.803-4.006,4.006-4.006h95.156c2.203,0,4.006,1.803,4.006,4.006v7.822
+					c0,2.203-1.803,4.006-4.006,4.006h-95.156c-2.203,0-4.006-1.803-4.006-4.006V73.161z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 210.2588 81.2876)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto thin</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="286.965,74.495 291.52,80.071 
+				296.215,74.321 			"/>
+		</g>
+		<text transform="matrix(1 0 0 1 161.0928 49.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Left</text>
+		<text transform="matrix(1 0 0 1 161.0928 82.1206)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Right</text>
+	</g>
+	<g>
+		<rect x="494.875" y="600.03" fill="#FFFFFF" width="267.434" height="91"/>
+		<rect x="495.255" y="600" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="495.255" y="665.5" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="495.255" y="632.5" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="495.256" y="600" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="590.941" y="667.783" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="723.452" y="667.783" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="590.941" y="667.783" fill="#555055" width="122.059" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 511.0938 685.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Widht</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 729.5938 685.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.98</text>
+		</g>
+		<rect x="495.255" y="696.5" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="495.256" y="631" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="590.941" y="698.783" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="723.452" y="698.783" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="590.941" y="698.783" fill="#555055" width="120.059" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 511.0938 716.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Weight</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 729.5938 716.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.96</text>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M549.966,612.611c0-2.267,1.854-4.121,4.12-4.121h100.928c2.266,0,4.12,1.854,4.12,4.121v7.592
+					c0,2.267-1.854,4.121-4.12,4.121H554.086c-2.266,0-4.12-1.854-4.12-4.121V612.611z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 560.7598 620.623)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto black</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="642.966,613.83 647.521,619.406 
+				652.216,613.656 			"/>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M549.966,644.496c0-2.203,1.803-4.006,4.006-4.006h95.156c2.203,0,4.006,1.803,4.006,4.006v7.822
+					c0,2.203-1.803,4.006-4.006,4.006h-95.156c-2.203,0-4.006-1.803-4.006-4.006V644.496z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 560.2598 652.623)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto ultra</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="636.966,645.83 641.521,651.406 
+				646.216,645.656 			"/>
+		</g>
+		<text transform="matrix(1 0 0 1 511.0938 620.4551)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Left</text>
+		<text transform="matrix(1 0 0 1 511.0938 653.4551)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Right</text>
+	</g>
+	<g>
+		<rect x="619.875" y="416.03" fill="#FFFFFF" width="267.434" height="91"/>
+		<rect x="620.255" y="416" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="620.255" y="481.5" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="620.255" y="448.5" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="620.256" y="416" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="715.941" y="483.783" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="848.452" y="483.783" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="715.941" y="483.783" fill="#555055" width="115.059" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 636.0938 501.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Widht</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 854.5938 501.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.88</text>
+		</g>
+		<rect x="620.255" y="512.5" fill="#D9DDDA" width="267.054" height="31.137"/>
+		<rect x="620.256" y="447" fill="#EA118D" width="6" height="96.637"/>
+		<rect x="715.941" y="514.783" fill="#FEFBE1" width="129.45" height="25.916"/>
+		<rect x="848.452" y="514.783" fill="#FEFBE1" width="35.251" height="25.916"/>
+		<rect x="715.941" y="514.783" fill="#555055" width="10.527" height="25.916"/>
+		<g>
+			<text transform="matrix(1 0 0 1 636.0938 532.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Weight</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 854.5938 532.0371)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">0.08</text>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M674.966,428.611c0-2.267,1.854-4.121,4.12-4.121h100.928c2.266,0,4.12,1.854,4.12,4.121v7.592
+					c0,2.267-1.854,4.121-4.12,4.121H679.086c-2.266,0-4.12-1.854-4.12-4.121V428.611z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 685.7598 436.623)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto slant</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="767.966,429.83 772.521,435.406 
+				777.216,429.656 			"/>
+		</g>
+		<g>
+			<g>
+				<path fill="#F3F3F3" d="M674.966,460.496c0-2.203,1.803-4.006,4.006-4.006h95.156c2.203,0,4.006,1.803,4.006,4.006v7.822
+					c0,2.203-1.803,4.006-4.006,4.006h-95.156c-2.203,0-4.006-1.803-4.006-4.006V460.496z"/>
+			</g>
+			<text transform="matrix(1 0 0 1 685.2598 468.623)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Roboto out</text>
+			<polyline fill="none" stroke="#010101" stroke-width="0.6299" stroke-miterlimit="10" points="761.966,461.83 766.521,467.406 
+				771.216,461.656 			"/>
+		</g>
+		<text transform="matrix(1 0 0 1 636.0938 436.4551)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Left</text>
+		<text transform="matrix(1 0 0 1 636.0938 469.4551)" fill="#494949" font-family="'Roboto-Medium'" font-size="12">Right</text>
+	</g>
+</g>
+</svg>

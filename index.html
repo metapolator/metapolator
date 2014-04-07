@@ -1,151 +1,709 @@
-<!doctype html>
-<html lang="en" ng-app="metapolatortestApp">
-<head>
-    <meta charset="UTF-8">
-    <title>Metapolator: Design typeface families</title>
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="app/css/demo.css"/>
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css"/>
-    <link href='http://fonts.googleapis.com/css?family=Roboto:100italic,500,300,700,400' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
-    <script type="text/javascript" src="app/js/app.js"></script>
+<!DOCTYPE html>
 
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Metapolator - Draft</title>
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/timeline.css" rel="stylesheet">
+    <link href="assets/css/jquery-ui-1.9.1.custom.min.css" rel="stylesheet">
+    <link href="assets/css/jquery-1.9.1.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/fonts/oswald/stylesheet.css" type="text/css" charset="utf-8" />
+    <link rel="stylesheet" href="assets/fonts/sean/stylesheet.css" type="text/css" charset="utf-8" />
+    <link rel="stylesheet" href="assets/fonts/sean1/stylesheet.css" type="text/css" charset="utf-8" />
+
+    <link rel="stylesheet" href="assets/css/font-awesome.css">
+    
+     <!-- Custom script for this template -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
-</head>
+  </head>
 
-<body>
-<div id="wrap">
-    <div class="masthead clearfix">
-        <div class="inner">
-          <h1 class="masthead-brand col-md-2">
-            <span style="font-family: 'Roboto', sans-serif; font-weight: 600;">Metapolator</span>
-          </h1>
-          <ul class="col-md-2 masthead-nav">
-            <li><a href="http://github.com/metapolator/metapolator" title="Github"><span class="fa fa-github fa-lg"></span></a>   </li>
-            <li><a href="https://plus.google.com/u/0/communities/110027004108709154749" title="Google+"><span class="fa fa-google-plus fa-lg"></span></a></li>
-          </ul>
-        </div>
-      </div>
-        <div class="container-fluid">
-            <div class="row">
-            <div class="col-md-8 col-lg-offset-3" ng-controller="canvasCtrl">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="paperjsCtrl">
-                        <div class="row" style="margin-top:20px">
-                                <div id="paperjsCanvas"></div>
-                                <div class="sliders" id="paperGlyphSlider"></div>
-                        </div>
-                    </div>
-                <div class="row" ng-controller="SliderCtrl">
-                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="glyphCtrl">
-                        <div class="row" style="margin-top:20px">
-                                <div id="glyph"></div>
-                                <div class="sliders" id="glyphSlider"></div>
-                                <div class="lead col-md-11" style="text-align:left">
-                                <p>
-                                Metapolator is a font editor for designing typeface families.
-                                </p>
-                                <p>
-                                Many families vary only by weight, and even then only in a simple linear way, as above.
-                                We wanted a way to draw fonts yet have the power of Metafont – a programming language for specifying typefaces with algorithms.
-                                </p>
-                                <p>
-It does not have features for drawing glyphs; you must draw your initial masters using a glyph-focused font editor, such as FontForge. When given a master drawn in another program and saved in the UFO format (without any modifications) Metapolator first offers classical interpolation. 
-<p>
-This means you can arrange many masters along various axes, and Metapolator can create new instances between these masters and save them in both the UFO source format and the OTF/TTF binary format, to use straight away.
-                                </p>
-                                </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-2">
-                        <div class="row">
-                            <div class="lead caption" style="padding-top: 10px;">
-                                <p>Explore font-weight in a conventionally designed typeface, Roboto Slab.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="wordCtrl">
-                        <div class="row">
-                            <div id="glyphsWord"></div>
-                            <div class="sliders" id="wordSlider"></div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-2">
-                        <div class="row">
-                            <div class="lead caption">
-                                <p>Explore 2 axes of variation, font-weight and letter-spacing, in Roboto.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <body data-spy="scroll" data-target="#affix-nav">
+  
+  <nav id="affix-nav" class="sidebar col-md-4">
+    <ul class="nav console" data-spy="affix">
+        <li class="active"><a href="#one">Metapolator.com</a>
+        <li><a href="#two">Concept</a></li>
+        <li><a href="#three">The Workflow</a></li>
+        <li><a href="#four">How does it works ?</a></li>
+        <li><a href="#five">The Metapolator Universe</a>  
+        <li><a href="#six">Naming parts</a></li>
+        <li><a href="#seven">The Metapolation Method</a></li>
+        <li><a href="#eight">Strokes and points</a></li>
+        <li><a href="#nine">Modularity</a></li>
+        <li><a href="#ten">Effecting skeleton</a></li>
+        <li><a href="#eleven">Summary</a></li>
+        <li><a href="#twelve">Roadmap</a></li>
+        <li><a href="#thirteen">Join Us!</a></li>
+    </ul>
+</nav>
+<article id="one">
+	 <div class="slide color3">
+	    <div class="container-fluid" >
+	    	<div class="row">
+	    		<div class="col-xs-12 centered" >
+	    			<h6>We need<br>fonts !</h6>
+	    		</div><!-- /col-lg-8 -->
+	    	</div><!-- /row -->
+	    </div> <!-- /container-fluid -->
+	 </div>
+</article>	 
+<article id="two">	
+	<div class="slide color1">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-2"></div>
+				<div class="col-xs-8 leftalign">
+					<h2 class="white">We are unique. We show who we are through typography. We want our
+identities to be seen and heard through fonts. Today, billions of
+people need fonts that are custom designed for themselves and their
+businesses.<br><br>Metapolator enables all font lovers, from children
+to professional type designer, to create unique typefaces within large
+font families.<br><br>Metapolator turns any existing typeface into a
+skeleton font and lets users control it.</h2>
+				</div>
+				<div class="col-xs-2"></div>
+			</div>
+		</div>
+	</div>
+</article>
+<article id="three">
+	<div class="slide color2">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12 ">
+					<div id="carousel" class="carousel"><!-- class of slide for animation -->
+					  <div class="carousel-inner">
+						    <div class="item active"><!-- class of active since it's the first item -->
+						      <img src="assets/img/carousel1/01.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/02.svg" />
+						    </div>
+						     <div class="item">
+						      <img src="assets/img/carousel1/03.svg" />
+						    </div>
+						     <div class="item">
+						      <img src="assets/img/carousel1/04.svg" />
+						    </div>
+						     <div class="item">
+						      <img src="assets/img/carousel1/05.svg" />
+						    </div>
+						     <div class="item">
+						      <img src="assets/img/carousel1/06.svg" />
+						    </div>
+						     <div class="item">
+						      <img src="assets/img/carousel1/07.svg" />
+						    </div>
+						     <div class="item">
+						      <img src="assets/img/carousel1/08.svg" />
+						    </div>
+						     <div class="item">
+						      <img src="assets/img/carousel1/09.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/10.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/11.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/12.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/14.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/15.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/16.svg" />
+						    </div>
+						    <div class="item">
+						      <img src="assets/img/carousel1/17.svg" />
+						    </div>
+						  	</div><!-- /.carousel-inner -->
+						  <!--  Next and Previous controls below
+						        href values must reference the id for this carousel -->
+					    <a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
+					    <a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
+					</div><!-- /.carousel -->
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
 
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="paragraphCtrl">
-                        <div class="row">
-                            <div id="paragraphWord"></div>
-                            <div class="paragrahSlider"></div>
-                            <div class="lead col-md-11" style="text-align:left">
-                                <p>
-What makes Metapolator special is that it also allows you to derive new masters from existing masters. We call this process 'metapolation' because it goes beyond interpolation and extrapolation, to an entirely new way of thinking about typeface design.
-                                <p>
-<a href="http://www.metaflop.com">MetaFlop</a> is a Version 1.0 prototype of Metapolator. The <a href="http://www.metaflop.com/metafonts/bespoke">Bespoke</a> font demonstrates today how 1 single style font family can be turned into 12 visually-distinct stylistic variations.
-                                <p>
-                                To use the full potential of parametrising fonts, Metapolator can parse already existing fonts (such as PostScript Type 1 or OpenType.) They need to be broken up into separate shapes resembling strokes and provide consistent counterpoints. In this process, a Metafont is produced by specifying the central skeleton of shapes – for which there are "pens" of different angles and widths along the skeleton. As the glyph shapes are defined through equations, they can be parametrised along axes such as aspect ratio, weight, slant, stroke width, contrast and so on.
-                                </p>
-                                <p>
-                                Furthermore instead of using prepared fonts it will be possible to enhance normal UFO fonts by adding parameters on request and only parametrise certain parts of a glyph.
-                                </p>
+<article id="four">
+	<div class="slide color3">	
+		<div class="container-fluid" >
+			<div class="row">
+				<div class="col-lg-2 col-xs-1"></div>
+				<div class="col-lg-8 col-xs-10"><div class="row">
+				<div class="col-md-4 white leftalign">
+					<h3>Tools</h3>
+					<p>Type designers need a toolbox to build a single typeface out into a
+family of styles. Metapolator provides an initial set of tools for
+common processes, but it is fully extendable.</p>
+						<ul><li>spacing (tighter or looser)</li>
+						<li>weight (regular to bold, or to light)</li>
+						<li>width (normal to narrow, or extended)</li>
+						<li>x-height (increased or decreased, without distortions)</li></ul>
+				</div>
+				<div class=" col-md-4 white">
+					<h3>Workflow</h2>
+					<p>Type designers need tools that snap into their existing workflow.
+You can load any existing typeface and change it to your needs.</p>
+				</div>
+				<div class=" col-md-4 white leftalign">
+					<h3>Standard</h3>
+					<p>The text-based and interchangeable UFO source format has become an
+industry standard.
+Metapolator imports and exports UFO fonts, to add a new link in the
+chain of font style and family creation. Curve and parameter
+calculation is using Metafont, a standard in LaTeX and mathematical
+typesetting since 1977.
+As a web app it is built with an industry standard too: AngularJS.</p>
+				</div></div>
+				</div>
+				<div class="col-lg-2 col-xs-1"></div>
+				
+			</div>
+		</div>
+	</div>
+</article>
 
-                                <p>
-                                Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-2">
-                        <div class="row">
-                            <div class="lead caption">
-                                <p></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-12" style="width: 760px" ng-controller="xheightCtrl">
-                        <div class="row">
-                            <div id="xheight"></div>
-                            <div class="sliders" id="xheightSlider"></div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-2">
-                        <div class="row">
-                            <div class="lead caption">
-                                <p>Changing x-height on an already existing font Roboto.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="lead col-md-11" style="text-align:left">
-                    <p>
-                        <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
-                    </p>
-                </div>
+<article id="five">	
+	<div class="slide color3" >
+		<div class="container-fluid">
+				<div class="centered caption">
+					<img src="assets/img/muniverse_globe_w.svg" class="img-responsive" alt="Responsive image">
+				</div>
+		</div>
+	</div>
+</article>
+
+<article id="six">
+	 <div class="slide color1">
+	    <div class="container-fluid" >
+	    	<div class="row">
+	    		<div class="col-xs-12 centered" >
+	    			<h1>If you can name it you can control it.</h1>
+	    		</div><!-- /col-lg-8 -->
+	    	</div><!-- /row -->
+	    </div> <!-- /container-fluid -->
+	 </div>
+</article>	
+
+</article>
+<article id="six">	
+	<div class="slide color4" >
+		<div class="container">
+			<div class="row" >
+				<div class="centered caption">
+					<img src="assets/img/pino.gif" class="img-responsive" alt="Responsive image">
+				</div>
+				</div>
+				<div >
+			</div>
+		</div>
+	</div>
+</article>
+<article id="six">	
+	<div class="slide color4" >
+		<div class="container-fluid">
+			<div class="row" >
+				<div class="centered caption">
+					<img src="assets/img/04.svg" class="img-responsive" alt="Responsive image">
+					</div>
+				</div>
+				<div class="col-md-2 col-xs-1">
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="six">
+	<div class="slide color3">	
+		<div class="container-fluid" >
+			<div class="row">
+				<div class="col-lg-2 col-xs-1"></div>
+				<div class="col-lg-8 col-xs-10"><div class="row">
+				<div class="col-md-4 white leftalign">
+					<p>The core principle of Metapolator: A typeface is a system of shapes
+and by naming the parts they can be parametrised.</p>
+				</div>
+				<div class=" col-md-4 white">
+					<p>Fonts can be seen as a system made out of parts and therefore
+we can parameterise these parts.
+How is it possible to keep a clear view of a parameterised letter shape?</p>
+				</div>
+				<div class=" col-md-4 white leftalign">
+					<p>The Metapolator solution is to make a clone of the original and
+only add a specific parameter value to each copy.
+Instead of constantly turning on and off parameter values for one
+single font, we define a set for two fonts and invented the
+metapolation parameter, which would simply travel inbetween the sets
+of font A and font B.
+We can also think of a cross fader to mix 2 turntables.</p>
+				</div></div>
+				</div>
+				<div class="col-lg-2 col-xs-1"></div>
+				
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="seven">
+	 <div class="slide color1">
+	    <div class="container-fluid" >
+	    	<div class="row">
+	    		<div class="col-xs-12 centered" >
+	    			<h1>Interpolation vs Metapolation.</h1>
+	    		</div><!-- /col-lg-8 -->
+	    	</div><!-- /row -->
+	    </div> <!-- /container-fluid -->
+	 </div>
+</article>	
+
+
+<article id="seven">		
+	<div class="slide color2">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/07.svg" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="seven">		
+	<div class="slide color2">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/05.svg" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="seven">
+	<div class="slide color3">	
+		<div class="container-fluid" >
+			<div class="row">
+				<div class="col-lg-2 col-xs-1"></div>
+				<div class="col-lg-8 col-xs-10"><div class="row">
+				<div class="col-md-4 white leftalign">
+					<p>Cell replication with Metapolator:
+When we start using one single font, we can extrapolate to a 2nd
+replica by calculating a skeleton from the glyph outline. From the
+skeleton to the original outline, we can create new inter- and
+extrapolations.</p>
+					
+				</div>
+				<div class=" col-md-4 white">
+					<p>We create new instances from masters. An instance is the position
+inbetween 2 or many master fonts. Also, masters can be created from instances.</p>
+				</div>
+				<div class=" col-md-4 white leftalign">
+					<p>As soon we have more than one master we can create children and
+siblings. The replication is not limited to Latin alphabets. In upcoming versions, a Hindi font can be created out of a Latin style, by translating parameters from one source to another.
+</p>
+				</div></div>
+				</div>
+				<div class="col-lg-2 col-xs-1"></div>
+				
+			</div>
+		</div>
+	</div>
+</article>
+
+
+
+<article id="eight">
+	 <div class="slide color1">
+	    <div class="container-fluid" >
+	    	<div class="row">
+	    		<div class="col-xs-12 centered" >
+	    			<h1>From control points to pen strokes.</h1>
+	    		</div><!-- /col-lg-8 -->
+	    	</div><!-- /row -->
+	    </div> <!-- /container-fluid -->
+	 </div>
+</article>	
+
+<article id="eight">		
+	<div class="slide color2">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/stroke.png" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+<article id="eight">		
+	<div class="slide color2">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/12.svg" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+<article id="eight">		
+	<div class="slide color2">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/skeleton_a.svg" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="eight">
+	<div class="slide color3">	
+		<div class="container-fluid" >
+			<div class="row">
+				<div class="col-lg-2 col-xs-1"></div>
+				<div class="col-lg-8 col-xs-10"><div class="row">
+				<div class="col-md-4 white leftalign">
+					<p>We believe type design should always be in the hand of the
+designer. Metapolator is NOT drawing you a shape out of nothing.</p>
+					
+				</div>
+				<div class=" col-md-4 white">
+					<p>Control points AND skeletons can be accessed and interpolated in
+Metapolator, same as composits, anchor points and kerning values. </p>
+				</div>
+				<div class=" col-md-4 white leftalign">
+					<p>If we read the points of an outline in pairs, means always
+a left and an opposite right point, then you have control over the
+stroke and skeleton, means you don't need to define control points.</p>
+				</div></div>
+				</div>
+				<div class="col-lg-2 col-xs-1"></div>
+				
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="nine">
+	 <div class="slide color1">
+	    <div class="container-fluid" >
+	    	<div class="row">
+	    		<div class="col-xs-12 centered" >
+	    			<h1>Modularity.</h1>
+	    		</div><!-- /col-lg-8 -->
+	    	</div><!-- /row -->
+	    </div> <!-- /container-fluid -->
+	 </div>
+</article>	
+
+<article id="nine">		
+	<div class="slide color3">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/modular.svg" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+<article id="nine">		
+	<div class="slide color3">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/ui.gif" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+<article id="nine">		
+	<div class="slide color4">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/cube.png" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+
+
+<article id="nine">
+	<div class="slide color3">	
+		<div class="container-fluid" >
+			<div class="row">
+				<div class="col-lg-2 col-xs-1"></div>
+				<div class="col-lg-8 col-xs-10"><div class="row">
+				<div class="col-md-4 white leftalign">
+					<p>Metapolators modular design allows the user to create unlimited
+amount of axes and link unlimited masters to create complex
+interpolation environments. </p>
+
+				</div>
+				<div class=" col-md-4 white">
+					<p>We believe in modular synthesizers, (again here we draw a
+connection to the world of music production) which means we can use a
+stack of modules (or masters in our case) and link them in all
+possible ways.</p>
+				</div>
+				<div class=" col-md-4 white leftalign">
+					<p> Metapolator lets you construct your very own Noordzij cube.</p>
+				</div></div>
+				</div>
+				<div class="col-lg-2 col-xs-1"></div>
+				
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="ten">
+	 <div class="slide color1">
+	    <div class="container-fluid" >
+	    	<div class="row">
+	    		<div class="col-xs-12 centered" >
+	    			<h1>Effecting the outline is bad, effecting the skeleton is awesome.</h1>
+	    		</div><!-- /col-lg-8 -->
+	    	</div><!-- /row -->
+	    </div> <!-- /container-fluid -->
+	 </div>
+</article>	
+
+
+
+<article id="ten">		
+	<div class="slide color4">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/aaa.gif" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+
+<article id="ten">	
+		<div class="slide color2" >
+		<div class="container-fluid">
+			<div class="row" >
+				<div class="centered caption">
+				<img src="assets/img/xheight_sretch_new.svg" class="img-responsive" alt="Responsive image">
+				</div>		
+			</div>
+		</div>
+	</div>	
+</article>
+
+
+<!-- /here we need to put the dat-gui examples from index.html (metapolator.com) -->
+
+
+<!-- /examples -->
+
+
+
+<article id="eleven">
+	<div class="slide color4" >	
+		<div class="container-fluid" >
+			<div class="row" >
+				<div class="col-md-2 col-xs-1"></div>
+				<div class="col-md-8 col-xs-10"><div class="row">
+					<div class="col-md-4 leftalign">
+						<ul><li>creating masters from instances</li>
+						<li>duplicating masters</li>
+						<li>positioning vector points</li>
+						<li>loading 2 axes and unlimited masters </li>
+						<li>control point mode</li>
+						<li>pen mode</li>
+						<li>storage of projects</li>
+						<li>loading ufos, generating otf, ttf and new ufos</li>
+						<li>parameterisation of outline in pen mode</li></ul>
+					</div>
+					<div class=" col-md-4 ">
+						<ul><li>various metafont parameters available:</li>
+						<li>tension, shifting, slanting, serifs, vertical metrics like changing x-heigth</li>
+						<li>stroke (pen) width, glyph width, glyph spacing, font size,</li>
+						<li>stroke direction, stroke angle</li></ul>
+					</div>
+					<div class=" col-md-4  leftalign">
+						<ul><li>Command line tool:</li>
+						<li>interpolation, extrapolation</li>
+						<li>interpolation of kerning</li>
+						<li>defining unlimited axes, using unlimited masters </li>
+						<li>create 1:1 replica from original source</li></ul>
+					</div>
+				</div>
+				</div>
+				<div class="col-md-2 col-xs-1"></div>
+			</div>
+		</div>
+	</div>
+</article>	
+<article id="twelve">	
+	<div class="slide color1" >
+		<div class="container-fluid" >
+			<div class="row" >
+				<div class="col-sm-2 col-xs-1"></div>
+				<div class="col-sm-8 col-xs-10 leftalign">
+	    <ul class="timeline roadmap white">
+    	<li>
+    	<div class="timeline-badge">1</div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h3 class="timeline-title">3rd of April</h3>
             </div>
+            <div class="timeline-body">
+              <p>Presentation Talk at LGM leipzig, Germany.</p>
             </div>
-        </div>
-    </div>
-</body>
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="app/js/paper-full.js"></script>
-<script type="text/javascript" src="app/js/instance.js"></script>
-<script type="text/javascript" src="app/js/opentype.js"></script>
-<script type="text/javascript" src="app/js/dat.gui.js"></script>
+          </div>
+        </li>
+        <li>
+        <div class="timeline-badge">2</div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h3 class="timeline-title">7th of May</h3>
+            </div>
+            <div class="timeline-body">
+              <p>Seminar at Atelier National Research Typographic Nancy, France.</p>
+            </div>
+          </div>
+        </li>
+        <li>
+        <div class="timeline-badge">3</div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h3 class="timeline-title">14th of June</h3>
+            </div>
+            <div class="timeline-body">
+              <p>
+              Tag der Schrift, Zurich, Switzerland</p>
+            </div>
+          </div>
+        </li>
+        <li>
+            <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h3 class="timeline-title">Day one</h3>
+            </div>
+            <div class="timeline-body">
+              <p>Launching a beta version for users to test and explore.</p>
+            </div>
+          </div>
+        </li>
+        <li>
+            <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h3 class="timeline-title">Day two</h3>
+            </div>
+            <div class="timeline-body">
+              <p>Inviting type designers around the world to contribute.</p>
+            </div>
+          </div>
+        </li>
+            </ul>
+				</div>
+				<div class="col-sm-2 col-xs-1">
+				</div>
+			</div>
+		</div>
+		</article>
+		</div>
+		
+		<div class="slide color3">
+		<article id="thirteen">
+		<div class="container-fluid">
+			<div class="row" id="unpin13">
+				<div class="col-sm-2 centered"></div>
+				<div class="col-sm-4 centered white"><h2>Join us !</h2></div>
+				<div class="col-sm-4 centered white"><h2><i class="fa fa-github"></i></h2></div>
+				<div class="col-sm-2 centered"></div>
+			</div>
+		</div>
+	</div>
+</article>	
+	
+
+<article id="thirteen">		
+	<div class="slide color3">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="centered caption">
+					<img src="assets/img/logo.svg" class=" img-responsive" alt="Responsive image">
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript">
+
+		 $('#my-affix').affix({
+		    offset: {
+		      top: 100
+		    , bottom: function () {
+		        return (this.bottom = $('.footer').outerHeight(true))
+		      }
+		    }
+		  })
+		</script>
+		
+		<script type="text/javascript">
+			$('.carousel').carousel({  
+			  interval: 200 // in milliseconds  
+			})  
+			     
+     </script>
+
+        <script src="assets/js/bootstrap.js"></script>
+  </body>
 </html>

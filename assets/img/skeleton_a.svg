@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+]>
+<svg version="1.1" id="Calque_2" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="699px" height="841px"
+	 viewBox="-166.5 -226.5 699 841" enable-background="new -166.5 -226.5 699 841" xml:space="preserve">
+<metadata>
+	<sfw  xmlns="&ns_sfw;">
+		<slices></slices>
+		<sliceSourceBounds  width="635.245" height="829.242" y="-111.549" x="110.583" bottomLeftOrigin="true"></sliceSourceBounds>
+	</sfw>
+</metadata>
+<g>
+	<path fill="#1D1D1A" d="M316.025,338.56c-45.312,78.968-114.412,128.324-186.2,128.324c-102.304,0-154.348-52.942-154.348-144.476
+		c0-94.673,78.52-148.065,209.983-148.065h134.154v57.43H182.766c-77.171,0-124.282,41.73-124.282,92.43
+		c0,44.864,27.817,71.341,83.451,71.341c75.379,0,115.315-36.347,160.183-106.337L316.025,338.56z M289.101,457.907
+		c-5.826-26.019-9.867-64.608-9.867-97.808V124.987c0-59.223-37.686-94.222-105.44-94.222c-62.813,0-104.989,33.653-104.989,76.279
+		h-83.007c0-74.929,78.071-143.581,192.486-143.581c111.715,0,183.954,56.084,183.954,162.423v234.215
+		c0,34.548,3.14,65.505,12.563,97.808h-85.7V457.907z"/>
+</g>
+<g>
+	<path opacity="0.5" fill="none" stroke="#F3ECE9" stroke-width="3.3829" stroke-miterlimit="10" enable-background="new    " d="
+		M26.346,107.108c0-63.545,62.472-111.856,150.188-111.856c87.715,0,143.673,64.05,143.673,130.818s0,192.536,0,233.773
+		s1.025,72.637,11.695,98.398"/>
+	<path opacity="0.5" fill="none" stroke="#F3ECE9" stroke-width="3.3829" stroke-miterlimit="10" enable-background="new    " d="
+		M320.17,202.09c0,0-72.466,0.657-136.065,0.657c-63.598,0-167.097,33.195-167.097,119.448c0,86.251,47.692,110.151,117.056,110.151
+		c69.372,0,134.919-53.319,174.012-116.006"/>
+</g>
+<g>
+	<circle fill="#F8172E" cx="176.534" cy="-4.749" r="9.319"/>
+	<circle fill="#F8172E" cx="26.346" cy="107.108" r="9.324"/>
+	<circle fill="#F8172E" cx="320.21" cy="126.068" r="9.323"/>
+	<circle fill="#F8172E" cx="322.58" cy="359.843" r="9.321"/>
+	<circle fill="#F8172E" cx="308.078" cy="316.341" r="9.322"/>
+	<circle fill="#F8172E" cx="320.17" cy="202.09" r="9.319"/>
+	<circle fill="#F8172E" cx="184.104" cy="202.745" r="9.324"/>
+	<circle fill="#F8172E" cx="17.008" cy="322.194" r="9.32"/>
+	<path fill="#F8172E" d="M331.902,448.923c5.145,0,9.316,4.174,9.316,9.318c0,5.147-4.172,9.319-9.316,9.319
+		c-5.15,0-9.322-4.172-9.322-9.319C322.58,453.096,326.752,448.923,331.902,448.923z"/>
+	<circle fill="#F8172E" cx="134.068" cy="432.346" r="9.322"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M124.615,248.052c0,3.721-3.045,6.766-6.765,6.766H38.637c-3.721,0-6.766-3.045-6.766-6.766v-21.47
+		c0-3.721,3.044-6.766,6.766-6.766h79.213c3.72,0,6.765,3.047,6.765,6.766V248.052z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M93.868,412.526c0,3.718-3.045,6.763-6.766,6.763H7.887c-3.72,0-6.765-3.045-6.765-6.763v-21.47
+		c0-3.722,3.044-6.766,6.765-6.766h79.215c3.721,0,6.766,3.044,6.766,6.766V412.526z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M283.704,412.526c0,3.718-3.047,6.763-6.769,6.763h-79.209c-3.722,0-6.764-3.045-6.764-6.763v-21.47
+		c0-3.722,3.042-6.766,6.764-6.766h79.209c3.722,0,6.769,3.044,6.769,6.766V412.526L283.704,412.526z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M325.21,45.471c0,3.719-3.045,6.763-6.764,6.763h-79.212c-3.719,0-6.766-3.044-6.766-6.763V23.999
+		c0-3.719,3.047-6.763,6.766-6.763h79.212c3.719,0,6.764,3.044,6.764,6.763V45.471L325.21,45.471z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M130.296,45.471c0,3.719-3.044,6.763-6.765,6.763H44.316c-3.72,0-6.766-3.044-6.766-6.763V23.999
+		c0-3.719,3.046-6.763,6.766-6.763h79.215c3.72,0,6.765,3.044,6.765,6.763V45.471z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M271.027,326.313c0,3.206-2.625,5.83-5.829,5.83h-61.409c-3.206,0-5.83-2.624-5.83-5.83v-23.338
+		c0-3.208,2.624-5.83,5.83-5.83h61.409c3.204,0,5.829,2.622,5.829,5.83V326.313z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M232.125-67.817c0,3.719-3.045,6.764-6.767,6.764h-97.647c-3.72,0-6.765-3.045-6.765-6.764v-21.467
+		c0-3.721,3.045-6.766,6.765-6.766h97.647c3.722,0,6.767,3.044,6.767,6.766V-67.817z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M194.19,513.588c0,3.721-3.045,6.766-6.764,6.766H70.02c-3.721,0-6.766-3.045-6.766-6.766V492.12
+		c0-3.721,3.045-6.766,6.766-6.766h117.407c3.719,0,6.764,3.045,6.764,6.766V513.588z"/>
+</g>
+<g>
+	<path fill="#F3ECE9" d="M407.521,513.588c0,3.721-3.045,6.766-6.766,6.766H269.816c-3.721,0-6.764-3.045-6.764-6.766V492.12
+		c0-3.721,3.043-6.766,6.764-6.766h130.939c3.721,0,6.766,3.045,6.766,6.766V513.588z"/>
+</g>
+<text transform="matrix(1 0 0 1 40.6533 245.1609)" font-family="'HelveticaNeue'" font-size="21.8626">tension</text>
+<text transform="matrix(1 0 0 1 9.9072 409.6316)" font-family="'HelveticaNeue'" font-size="21.8626">tension</text>
+<text transform="matrix(1 0 0 1 199.7432 409.6316)" font-family="'HelveticaNeue'" font-size="21.8626">tension</text>
+<text transform="matrix(1 0 0 1 241.251 42.573)" font-family="'HelveticaNeue'" font-size="21.8626">tension</text>
+<text transform="matrix(1 0 0 1 46.3369 42.573)" font-family="'HelveticaNeue'" font-size="21.8626">tension</text>
+<text transform="matrix(1 0 0 1 206.3223 320.7966)" font-family="'HelveticaNeue'" font-size="21.8626">angle</text>
+<g>
+	<path fill="#F3ECE9" d="M62.88,155.517c0,3.208-2.625,5.831-5.83,5.831H-4.357c-3.206,0-5.831-2.623-5.831-5.831v-23.339
+		c0-3.208,2.625-5.831,5.831-5.831H57.05c3.205,0,5.83,2.623,5.83,5.831V155.517z"/>
+</g>
+<text transform="matrix(1 0 0 1 -1.8262 149.9919)" font-family="'HelveticaNeue'" font-size="21.8626">angle</text>
+<text transform="matrix(1 0 0 1 125.5381 -70.7151)" font-family="'HelveticaNeue'" font-size="21.8626">overshoot</text>
+<text transform="matrix(1 0 0 1 -118.0605 -200.4573)" fill="#F3ECE9" font-family="'HelveticaNeue'" font-size="21.8626">spacing</text>
+<text transform="matrix(1 0 0 1 134.6689 599.533)" fill="#F3ECE9" font-family="'HelveticaNeue'" font-size="21.8626">width</text>
+<text transform="matrix(1 0 0 1 67.8467 510.6931)" font-family="'HelveticaNeue'" font-size="21.8626">undershoot</text>
+<text transform="matrix(1 0 0 1 271.0273 510.6931)" font-family="'HelveticaNeue'" font-size="21.8626">stroke width</text>
+<rect x="-127.431" y="-148.237" opacity="0.25" fill="#F3ECE9" enable-background="new    " width="102.908" height="706.312"/>
+<text transform="matrix(1 0 0 1 427.1582 196.9226)" fill="#F3ECE9" font-family="'HelveticaNeue'" font-size="21.8626">x-height</text>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="2.4301" stroke-miterlimit="10" x1="410.343" y1="-29.18" x2="410.343" y2="461.694"/>
+		<g>
+			<rect x="404.268" y="-29.18" fill="#E84E1B" width="14.581" height="2.43"/>
+		</g>
+		<g>
+			<rect x="404.268" y="459.264" fill="#E84E1B" width="14.581" height="2.43"/>
+		</g>
+	</g>
+</g>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="2.4301" stroke-miterlimit="10" x1="-23.424" y1="567.402" x2="362.957" y2="567.402"/>
+		<g>
+			<rect x="-23.424" y="558.897" fill="#E84E1B" width="2.43" height="14.58"/>
+		</g>
+		<g>
+			<rect x="362.957" y="558.897" fill="#E84E1B" width="2.43" height="14.58"/>
+		</g>
+	</g>
+</g>
+<g opacity="0.5">
+	<g>
+		
+			<line fill="none" stroke="#E84E1B" stroke-width="2.4301" stroke-miterlimit="10" x1="-25.854" y1="-171.339" x2="-127.917" y2="-171.339"/>
+		<g>
+			<rect x="-25.854" y="-179.844" fill="#E84E1B" width="2.43" height="17.01"/>
+		</g>
+		<g>
+			<rect x="-127.917" y="-179.844" fill="#E84E1B" width="2.43" height="17.01"/>
+		</g>
+	</g>
+</g>
+</svg>
