@@ -272,10 +272,6 @@ var Instance = function (config) {
                             var interpolationPoint = interpolationContour[i];
                             var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x));
                             var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y));
-                            console.log(interX/glyph_size);
-                            console.log(interX/5.13);
-                            console.log(interX/5.23);
-                            console.log(parseInt(interX/glyph_size));
                             currentPoint = new paper.Point(interX/glyph_size, 240-interY/glyph_size);
 
                             path.add(new paper.Segment(currentPoint, handleIn, handleOut));
