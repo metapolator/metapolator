@@ -303,7 +303,7 @@ var Instance = function (config) {
                 }
                 var glyph_size = 5.19;
                 var two = new Two(params).appendTo(canvasWrapper);
-
+                var group = two.makeGroup();
 
                 for (var j = 0; j < this.glyphJSON[0].points.length; j++) {
                         var contour = this.glyphJSON[0].points[j];
@@ -318,8 +318,10 @@ var Instance = function (config) {
                             if (point.type) {
                                 var handleIn, handleOut,
                                     handleInX, handleOutX,
-                                    handleInY, handleOutY;
+                                    handleInY, handleOutY,
+                                    interpolationBx, interpolationBy;
 
+                                // var pointType = Two.Commands.curve;
                                 var pointType = Two.Commands.curve;
                                 var closePoint = contour.filter(function(p){
                                         return (p.type)?true:false;
@@ -328,31 +330,68 @@ var Instance = function (config) {
                                 if (i == 0) {
                                     handleInX = contour[contour.length - 1].x;
                                     handleInY = contour[contour.length - 1].y;
+                                    interpolationBx = interpolationContour[interpolationContour.length - 1].x;
+                                    interpolationBy = interpolationContour[interpolationContour.length - 1].y;
                                 } else {
                                     handleInX = contour[i - 1].x;
                                     handleInY = contour[i - 1].y;
+                                    interpolationBx = interpolationContour[i - 1].x;
+                                    interpolationBy = interpolationContour[i - 1].y;
                                 }
+
+                                handleInX = this.interpolateValue(handleInX, interpolationBx);
+                                handleInY = this.interpolateValue(handleInY, interpolationBy);
 
                                 handleOutX = contour[i + 1].x;
                                 handleOutY = contour[i + 1].y;
 
+                                interpolationBx = interpolationContour[i + 1].x;
+                                interpolationBy = interpolationContour[i + 1].y;
+                                handleOutX = this.interpolateValue(handleOutX, interpolationBx);
+                                handleOutY = this.interpolateValue(handleOutY, interpolationBy);
+
+                                var interpolationPoint = interpolationContour[i];
+                                var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x));
+                                var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y));
+
                                 if (point.startp) {
                                     pointType = Two.Commands.move;
-                                } else if (point['point-name'] == closePoint[closePoint.length - 1]['point-name']) {
-                                    pointType = Two.Commands.close;
                                 }
-                                var anchor = new Two.Anchor(point.x/glyph_size, 400-point.y/glyph_size,
-                                     handleInX/glyph_size, handleInY/glyph_size,
-                                     handleOutX/glyph_size, handleOutY/glyph_size, pointType);
+
+                                var x = interX / glyph_size;
+                                var y = interY / glyph_size;
+                                var anchor = new Two.Anchor(
+                                    x, 400 - y,
+                                    handleInX/glyph_size, 400 - handleInY/glyph_size,
+                                    handleOutX/glyph_size, 400 - handleOutY/glyph_size,
+                                    pointType
+                                );
+
+                                anchor.relative = false;
 
                                 anchors.push(anchor);
+
+                                if (point['point-name'] == closePoint[closePoint.length - 1]['point-name']) {
+                                    anchors.push(new Two.Anchor(anchor.x, anchor.y, anchor.x, anchor.y, anchor.x, anchor.y, Two.Commands.close))
+                                }
                             }
 
                     }
                     var ppoly = new Two.Polygon(anchors, true, true, true);
-                    ppoly.stroke = '#2b2b2b';
-                    two.add(ppoly);
+                    ppoly.fill = 'black';
+                    group.add(ppoly);
                 }
+
+                var rect = group.getBoundingClientRect();
+                rect.centroid = {
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2
+                };
+                _.each(group.children, function(child) {
+                    child.translation.subSelf(rect.centroid);
+                });
+
+                group.translation.set(two.width / 2, two.height / 2);
 
                 two.render();
             },

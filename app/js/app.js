@@ -61,6 +61,15 @@ metapolatortestApp.controller('SliderCtrl', ['$scope',
                 interpolationValueAD: 0.2,
                 canvas: 'alphaCanvas',
             },
+            {
+                id:'twojsSlider',
+                min: 0,
+                max: 1,
+                selection:'after',
+                canvasConfig: 'twojsConfig',
+                canvas: 'twojsCanvas',
+                interpolationValueAB: 0.2,
+            }
 
         ];
         var interLn = {
