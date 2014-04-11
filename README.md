@@ -223,6 +223,10 @@ Thanks to the [metaflop](http://www.metaflop.com) project and Dave Crossland for
 
 ### For Users
 
+* http://metaflop.com libre parametric web font editor
+* http://prototypo.io libre parametric web font editor
+* http://glyphrstudio.com libre web font editor
+* http://fontark.net proporietary web font editor
 * http://fontforge.github.io impressive font editor
 * http://mondrian.io impressive illustration tool
 * https://code.google.com/p/svg-edit/ impressive drawing tool
