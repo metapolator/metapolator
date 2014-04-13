@@ -97,10 +97,6 @@ Metapolator is built with many libre software components:
 
 https://github.com/metapolator/metapolator/issues/46
 
-###
-
-
-
 ## Installation
 
 ### Ubuntu/Debian
@@ -144,7 +140,8 @@ gulp build;
 
 ```sh
 # Install Homebrew
-brew install mysql t1utils libffi libevent libxml2 libxslt;
+brew install mysql t1utils libffi libevent libxml2 libxslt autoconf automake libtool python;
+brew install fontforge --with-x --HEAD;
 ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
 mkdir src;
@@ -156,8 +153,6 @@ unzip woff-code-latest.zip;
 make;
 sudo cp sfnt2woff /usr/local/bin/;
 cd ..;
-brew install autoconf automake libtool python;
-brew install fontforge --with-x --HEAD;
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
