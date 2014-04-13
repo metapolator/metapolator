@@ -1,5 +1,3 @@
-all: setup
-
 ifdef VENVRUN
 else
 VENVRUN=virtualenv
@@ -42,3 +40,5 @@ run: venv/bin/activate requirements.txt
 	open -a "Google Chrome" "http://localhost:8080" &
 	chrome "http://localhost:8080" &
 	. .venv/bin/activate; celery -A metapolator.tasks worker --loglevel=info
+
+all: install setup
