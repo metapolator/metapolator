@@ -46,6 +46,6 @@ run: venv/bin/activate requirements.txt
 	python run.py &
 	open -a "Google Chrome" "http://localhost:8080" &
 	chrome "http://localhost:8080" &
-	. .venv/bin/activate; celery -A metapolator.tasks worker --loglevel=info
+	celery -A metapolator.tasks worker --loglevel=info
 
 all: install setup
