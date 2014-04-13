@@ -17,11 +17,13 @@ install:
 	npm install
 	./node_modules/.bin/bower install
 	./node_mobles/.bin/gulp build
+	echo "Now do: make setup"
 
 # create database. TODO: decide if we need this - why not put it in install?
 setup:
 	mysql --user=root -e "CREATE DATABASE metapolatordev character set utf8 collate utf8_bin;"
 	.venv/bin/python metapolator/models.py
+	echo "Now do: make run"
 
 # delete all user data
 clean:
