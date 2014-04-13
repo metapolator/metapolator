@@ -16,7 +16,7 @@ install:
 	pip install -Ur requirements.txt
 	npm install
 	./node_modules/.bin/bower install
-	./node_mobles/.bin/gulp build
+	./node_modules/.bin/gulp build
 
 setup:
 	mysql --user=root -e "CREATE DATABASE metapolatordev character set utf8 collate utf8_bin;"
