@@ -133,6 +133,9 @@ cd metapolator;
 make install;
 make setup;
 make run;
+npm install;
+bower install;
+gulp build;
 ```
 
 ### Mac OS X
@@ -160,6 +163,9 @@ cd metapolator;
 make install;
 make setup;
 make run;
+npm install;
+bower install;
+gulp build;
 ````
 
 This should give you a local web server you can visit with a modern web browser: [http://0.0.0.0:8080](http://0.0.0.0:8080)
