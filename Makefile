@@ -16,7 +16,7 @@ install:
 	pip install -Ur requirements.txt
 	npm install
 	./node_modules/.bin/bower install
-	./node_mobles/.bin/gulp build
+	./node_modules/.bin/gulp build
 	echo "Now do: make setup"
 
 # create database. TODO: decide if we need this - why not put it in install?
