@@ -1,6 +1,8 @@
 Metapolator
 ==============
 
+[![Build Status](https://drone.io/github.com/metapolator/metapolator/status.png)](https://drone.io/github.com/metapolator/metapolator/latest)
+
 ## Introduction
 
 Metapolator is a web-based parametric font editor.
