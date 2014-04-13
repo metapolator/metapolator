@@ -113,39 +113,46 @@ The simple way to install and run metapolator is with [docker](http://www.docker
 #### The Traditional Way
 
 ```sh
-sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
-# Note your mysql root password
-sudo apt-get install -y woff-tools
-# install fontforge and fontforge-python from source
-# git clone https://github.com/fontforge/fontforge.git;
-#
-sudo apt-get install -y fontforge python-fontforge;
-sudo apt-get install -y build-essential autoconf libtool python-dev;
-sudo apt-get install -y python-virtualenv python-setuptools python-pip;
 mkdir ~/src;
 cd ~/src;
+# Install system dependencies
+sudo apt-get install -y build-essential autoconf libtool python-dev python-virtualenv python-setuptools python-pip unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev woff-tools;
+# During the install process of mysql, note your root password
+
+# Install fontforge from git master (When someone makes a new release of fontforge and someone packages it for Debian, then you can do "sudo apt-get install -y fontforge python-fontforge;") 
+
+# install metapolator
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
 make run;
-npm install;
-bower install;
-gulp build;
 ```
+Chrome should open <http://localhost:8080>
 
 ### Mac OS X
+
+#### The Simple Way
+
+TODO: Describe how to run metapolator with [docker](http://www.docker.io) on Mac OS X. If you do this, please update this copy of your `~/src/metapolator/README.md` and send us a pull request :)
 
 #### The Traditional Way
 
 ```sh
-# Install Homebrew
-brew install mysql t1utils libffi libevent libxml2 libxslt autoconf automake libtool python;
-brew install fontforge --with-x --HEAD;
-ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
+# Before: Install Homebrew
 mkdir src;
 cd src;
+
+# Install system dependencies
+brew install mysql t1utils libffi libevent libxml2 libxslt autoconf automake libtool python;
+# Run mysql on startup after reboot
+ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
+
+# Install fontforge from git master
+brew install fontforge --with-x --HEAD;
+
+# install sfnt2woff HEAD. TODO: make a homebrew package for this
 mkdir sfnt2woff;
 cd sfnt2woff;
 wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
@@ -153,21 +160,15 @@ unzip woff-code-latest.zip;
 make;
 sudo cp sfnt2woff /usr/local/bin/;
 cd ..;
+
+# install metapolator
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
 make run;
-npm install;
-bower install;
-gulp build;
 ````
-
-This should give you a local web server you can visit with a modern web browser: [http://0.0.0.0:8080](http://0.0.0.0:8080)
-
-#### The Simple Way
-
-Please send a pull request on this file with the steps to run metapolator with [docker.io](http://www.docker.io) on Mac OS X :) 
+Chrome should open <http://localhost:8080>
 
 ## Deployment
 
@@ -175,21 +176,16 @@ Please send a pull request on this file with the steps to run metapolator with [
 
 Deploy metapolator to your own server easily with [drone.io](https://drone.io/)
 
-Check out <https://drone.io/github.com/metapolator/metapolator> to see how we continuously deploy the central metapolator master to <http://beta.metapolator.com>
+Check out <https://drone.io/github.com/metapolator/metapolator> to see how we continuously deploy the official metapolator master branch to <http://beta.metapolator.com>
 
 ### The Traditional Way
 
-To deploy metapolator on a Ubuntu or Debian server...
+To deploy metapolator on a Ubuntu or Debian server with nginx:
 
-Install supervisor and nginx
-
-```
+```sh
+# Install supervisor and nginx
 sudo apt-get install supervisor nginx
-```
-
-Create symlinks for configuration file. Notice that your project directory is not different from configs
-
-```
+# Create symlinks for configuration file. Notice if your project directory is different from configs
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/supervisor/conf.d/metapolator.conf;
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf;
 ```
