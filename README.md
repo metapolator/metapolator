@@ -236,11 +236,15 @@ Thanks to the [metaflop](http://www.metaflop.com) team and Dave Crossland for le
 ### For Developers
 
 * http://en.wikipedia.org/wiki/MetaFont parametric font system
-* http://en.wikipedia.org/wiki/MetaPost parametric graphics system
-* http://fontforge.org/python.html impressive font editor Python module
-* http://github.com/behdad/fonttools impressive font binary Python module
-* http://nodebox.github.io/opentype.js useful canvas library for displaying fonts
-* http://paperjs.org useful canvas library
-* http://jonobr1.github.io/two.js useful canvas library
-* http://www.createjs.com/#!/EaselJS useful canvas library from Adobe
+* http://en.wikipedia.org/wiki/MetaPost parametric drawing system
+* http://fontforge.org/python.html font editor Python module
+* http://github.com/behdad/fonttools Python library and command line tool for font binaries: reading, writing, subsetting with OpenType feature support 
+* http://nodebox.github.io/opentype.js JS library for reading font binaries
+* https://github.com/ynakajima/ttf.js JS library for reading font binaries
+* https://github.com/bramstein/opentype JS library for reading font binaries
+* https://github.com/Pomax/A-binary-parser-generator/ JS library for reading arbitrary binaries given a spec file
+* https://github.com/graphicore/ufoJS JS library for reading font sources and rendering them on canvas
+* http://paperjs.org JS library for canvas drawing from Switzerland
+* http://jonobr1.github.io/two.js JS library for canvas drawing from Google
+* http://www.createjs.com/#!/EaselJS JS library for canvas drawing from Adobe
 * http://snapsvg.io/ useful SVG library from Adobe
