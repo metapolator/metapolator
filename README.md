@@ -103,12 +103,12 @@ https://github.com/metapolator/metapolator/issues/46
 
 #### The Simple Way
 
-The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
+The simple way to install and run metapolator is with [docker](http://www.docker.io):
 
-1. [Install Docker](http://www.docker.io/gettingstarted/), perhaps with [HomeBrew](http://brew.sh): `brew install docker`
-2. `sudo docker pull metapolator/metapolator`
-3. `sudo docker run -p 80:8080 -t metapolator/metapolator`
-4. open in browser `http://localhost`
+1. [Install Docker](http://www.docker.io/gettingstarted/)
+2. `sudo docker pull metapolator/metapolator` # download metapolator
+3. `sudo docker run -p 8080:8080 -t metapolator/metapolator`# run metapolator
+4. `chrome http://localhost:8080` # use metapolator
 
 #### The Traditional Way
 
