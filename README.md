@@ -147,6 +147,7 @@ cd src;
 brew install mysql t1utils libffi libevent libxml2 libxslt autoconf automake libtool python;
 # Run mysql on startup after reboot
 ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
+# Run mysql now
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
 
 # Install fontforge from git master
@@ -212,30 +213,30 @@ We use JSON a lot, so you might like to install [JSONview](https://addons.mozill
 
 ## Thanks
 
-Core Development Team: Simon Egli, Dave Crossland, Vitaly Volkov, Alex Troush
+Core Development Team: Simon Egli, Lasse Fister, Alex Troush
 
-Contributors: Walter Egli, Nicolas Pauly, Wei Huang, you?
+Contributors: Vitaly Volkov, Walter Egli, Nicolas Pauly, Wei Huang, you?
 
-Thanks to the [metaflop](http://www.metaflop.com) project and Dave Crossland for inspiring this one!
+Thanks to the [metaflop](http://www.metaflop.com) team and Dave Crossland for leading to this project!
 
 ## Related Projects
 
 ### For Users
 
-* http://metaflop.com libre parametric web font editor
-* http://prototypo.io libre parametric web font editor
-* http://glyphrstudio.com libre web font editor
-* http://fontark.net proporietary web font editor
-* http://fontforge.github.io impressive font editor
-* http://mondrian.io impressive illustration tool
-* https://code.google.com/p/svg-edit/ impressive drawing tool
-* http://popcornjs.org impressive video editor
-* http://plucked.de impressive audio editor
+* http://metaflop.com libre parametric font editor web app
+* http://prototypo.io libre parametric font editor web app
+* http://glyphrstudio.com outline font editor web app
+* http://fontark.net outline font editor web app, proprietary
+* http://fontforge.github.io outline font editor desktop app
+* http://mondrian.io outline illustration web app
+* https://code.google.com/p/svg-edit/ outline illustration web app
+* http://popcornjs.org video editor web app
+* http://plucked.de audio editor web app
 
 ### For Developers
 
-* http://en.wikipedia.org/wiki/MetaFont impressive parametric font system
-* http://en.wikipedia.org/wiki/MetaPost impressive parametric graphics system
+* http://en.wikipedia.org/wiki/MetaFont parametric font system
+* http://en.wikipedia.org/wiki/MetaPost parametric graphics system
 * http://fontforge.org/python.html impressive font editor Python module
 * http://github.com/behdad/fonttools impressive font binary Python module
 * http://nodebox.github.io/opentype.js useful canvas library for displaying fonts
