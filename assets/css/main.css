@@ -37,10 +37,9 @@ font-family: "seannormal";
 
  h6 {
 font-family: "seanultralight";
-    font-weight: 300;	
-        	font-size: 236px;
-    	line-height:110%;
-    	color: #f2f2f2;
+    font-weight: 300;
+    line-height:110%;
+    color: #f2f2f2;
 }
 
 h1,h2, h3, {
@@ -244,6 +243,45 @@ font-family: "seanultralight";
 	
 }
 
+
+
+/* Turning title more responsive
+
+.col-md-12 > h6 {
+	font-size: 200px;
+}
+
+.col-xs-12 > h6 {
+	font-size: 20px;
+}  */
+
+@media all and (max-width: 2000px) { /* screen size until 1200px */
+    h6 {
+        font-size: 15em; /* 1.5x default size */
+    }
+    h1 {
+        font-size: 8em; /* 1.5x default size */
+    }
+}
+@media all and (max-width: 800px) { /* screen size until 1000px */
+    h6 {
+        font-size: 12em; /* 1.2x default size */
+        }
+     h1 {
+        font-size: 6em; /* 1.5x default size */
+    }
+    }
+@media all and (max-width: 600px) { /* screen size until 500px */
+    h6 {
+        font-size: 4em; /* 0.8x default size */
+        }
+    h1 {
+        font-size: 2em; /* 1.5x default size */
+    }
+    h2 {
+        font-size: 1em; /* 1.5x default size */
+    }
+    }
 
 
 
