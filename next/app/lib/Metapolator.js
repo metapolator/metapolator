@@ -1,9 +1,9 @@
 define([
     'require/domReady'
-  , 'ng/main'
+  , 'ng/app'
 ], function(
     domReady
-  , angularMain
+  , angularApp
 ){
     function Metapolator() {
         console.log('init Metapolator')
@@ -12,7 +12,7 @@ define([
     var _p = Metapolator.prototype;
 
     _p._domReadyHandler = function() {
-        angularMain.bootstrap(document)
+        angularApp.bootstrap(document)
     }
 
    return Metapolator;

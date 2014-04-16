@@ -1,17 +1,16 @@
 define([], function() {
-    
-    function MainCtrl($scope) {
+    function AppController($scope) {
         this.$scope = $scope;
         this.greetMe('metapolating World')
     }
-    var _p = MainCtrl.prototype;
+    var _p = AppController.prototype;
     
     _p.greetMe = function(me){
         this.$scope.greetMe = me;
     }
     
     return {
-        Constructor: MainCtrl
-      , di: ['$scope', MainCtrl]
+        Constructor: AppController
+      , di: ['$scope', AppController]
     }
 })

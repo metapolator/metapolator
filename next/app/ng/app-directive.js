@@ -1,21 +1,21 @@
 define([
-    'require/text!./main.tpl'
+    'require/text!./app.tpl'
     ], function(
     template
 ) {
-    function MainDir(mainCtrl) {
+    function AppDirective(mainCtrl) {
         return {
             restrict: 'E' // only matches element names
-          , controller: 'mainCtrl'
+          , controller: 'AppController'
           , replace: true
           , template: template
         };
     }
     
-    var _p = MainDir.prototype;
+    var _p = AppDirective.prototype;
     
     return {
-        Constructor: MainDir
-      , di: ['$compile', MainDir]
+        Constructor: AppDirective
+      , di: ['$compile', AppDirective]
     }
 })

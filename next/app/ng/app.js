@@ -1,22 +1,22 @@
 define([
     'angular'
   , 'DOM/document'
-  , './mainCtrl'
-  , './mainDir'
+  , './app-controller'
+  , './app-directive'
 ], function(
     angular
   , document
-  , mainCtrl
-  , mainDir
+  , appController
+  , appDirective
 ) {
-    angular.module('main', [])
-      .controller('mainCtrl', mainCtrl.di)
-      .directive('metapolator', mainDir.di)
+    angular.module('app', [])
+      .controller('AppController', appController.di)
+      .directive('metapolator', appDirective.di)
       ;
     
     return {
         bootstrap: function(document) {
-            angular.bootstrap(document, ['main']);
+            angular.bootstrap(document, ['app']);
         }
     }
 })
