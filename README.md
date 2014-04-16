@@ -108,7 +108,7 @@ The simple way to install and run metapolator is with [docker](http://www.docker
 1. [Install Docker](http://www.docker.io/gettingstarted/)
 2. `sudo docker pull metapolator/metapolator` # download metapolator
 3. `sudo docker run -p 8080:8080 -t metapolator/metapolator`# run metapolator
-4. `chrome http://localhost:8080` # use metapolator
+4. `chromium-browser http://localhost:8080` # use metapolator
 
 #### The Traditional Way
 
@@ -128,7 +128,7 @@ make install;
 make setup;
 make run;
 ```
-Chrome should open <http://localhost:8080>
+Chromium should open <http://localhost:8080>
 
 ### Mac OS X
 
@@ -169,7 +169,7 @@ make install;
 make setup;
 make run;
 ````
-Chrome should open <http://localhost:8080>
+Chromium should open <http://localhost:8080>
 
 ## Deployment
 
