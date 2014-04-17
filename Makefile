@@ -14,7 +14,6 @@ install:
 	. .venv/bin/activate && \
 	pip install -Ur requirements.txt
 	npm install
-	./node_modules/.bin/bower install
 	./node_modules/.bin/gulp build
 	echo "Now do: make setup"
 
