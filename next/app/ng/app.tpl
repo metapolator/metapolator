@@ -1,4 +1,2 @@
-<div>
-    Hello {{ greetMe }}!
-    <mtk-container>container...</mtk-container>
-</div>
+Hello {{ greetMe }}!
+<mtk-container ng-repeat="item in model" mtk-model="item">container...</mtk-container>

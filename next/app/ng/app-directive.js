@@ -8,12 +8,10 @@ define([
         return {
             restrict: 'E' // only matches element names
           , controller: 'AppController'
-          , replace: true
-          , transclude: true
+          , replace: false
           , template: template
         };
     }
     appDirective.$inject = [];
-    
     return appDirective;
 })

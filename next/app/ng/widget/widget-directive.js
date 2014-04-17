@@ -1,20 +1,20 @@
 "use strict";
 define([
-    'require/text!./container.tpl'
+    'require/text!./widget.tpl'
     ], function(
     template
 ) {
-    function containerDirective(mainCtrl) {
+    function widgetDirective(mainCtrl) {
         return {
             restrict: 'E' // only matches element names
-          , controller: 'ContainerController'
+          , controller: 'WidgetController'
           , replace: false
           , template: template
           , scope: {
                 model: '=mtkModel'
-            }
+          }
         };
     }
-    containerDirective.$inject = [];
-    return containerDirective;
+    widgetDirective.$inject = [];
+    return widgetDirective;
 })

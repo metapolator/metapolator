@@ -8,10 +8,9 @@ define([
     angular
   , Controller
   , directive
-  , container
+  , containerModule
 ) {
-    
-    return angular.module('mtk.metapolator', [container.name])
+    return angular.module('mtk.metapolator', [containerModule.name])
       .controller('AppController', Controller)
       .directive('metapolator', directive)
       ;

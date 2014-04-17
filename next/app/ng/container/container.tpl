@@ -1,6 +1,7 @@
-<div>
-    <h2>Generic Widget Container</h2>
-    <ol >
-        <!-- <li widget for each widget in widgets> -->
-    </ol>
-</div>
+<h2>»{{model.name}}«</h2><button ng-click="model.more()">Add a widget</button>
+<ol >
+    <mtk-widget
+        ng-repeat="item in model.widgets"
+        in-index="$index"
+        mtk-model="model.widgets[$index]" /><!-- mtk-model="model.widget[{{$index}}]" -->
+</ol>
