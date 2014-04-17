@@ -7,7 +7,6 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     debug = require('gulp-debug');
 
-var gulpBowerFiles = require('gulp-bower-files');
 
 var filePath = {
     appjsminify: { src: 'static/js/*.js', dest: './static/dist' },
@@ -21,7 +20,6 @@ var filePath = {
 };
 
 gulp.task('build', function () {
-    gulpBowerFiles().pipe(gulp.dest("./static/lib"));
     gulp.src(filePath.appjsminify.src)
         .pipe(debug())
         // .pipe(uglify())
