@@ -128,7 +128,7 @@ The simple way to install and run metapolator is with [docker](http://www.docker
 mkdir ~/src;
 cd ~/src;
 # Install system dependencies
-sudo apt-get install -y build-essential autoconf libtool python-dev python-virtualenv python-setuptools python-pip unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev woff-tools chromium-browser;
+sudo apt-get install -y build-essential autoconf libtool python-dev python-virtualenv python-setuptools python-pip  unzip git texlive-metapost mysql-client mysql-server redis-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev woff-tools chromium-browser;
 # During the install process of mysql, note your root password
 
 # Install fontforge from git master (When someone makes a new release of fontforge and someone packages it for Debian, then you can do "sudo apt-get install -y fontforge python-fontforge;") 
@@ -138,9 +138,10 @@ git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
-make run;
+make support; # run this in first shell
+make run; # run this in second shell
 ```
-Chromium should open <http://localhost:8080>
+Open <http://localhost:8080>
 
 ### Mac OS X
 
@@ -180,9 +181,10 @@ git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
-make run;
-````
-Chromium should open <http://localhost:8080>
+make support; # run this in first shell
+make run; # run this in second shell
+```
+Open <http://localhost:8080>
 
 ## Deployment
 
