@@ -1,19 +1,17 @@
 "use strict";
 define([
-    'require/text!./app.tpl'
+    'require/text!./container.tpl'
     ], function(
     template
 ) {
-    function appDirective() {
+    function containerDirective(mainCtrl) {
         return {
             restrict: 'E' // only matches element names
-          , controller: 'AppController'
+          , controller: 'ContainerController'
           , replace: true
-          , transclude: true
           , template: template
         };
     }
-    appDirective.$inject = [];
-    
-    return appDirective;
+    containerDirective.$inject = [];
+    return containerDirective;
 })

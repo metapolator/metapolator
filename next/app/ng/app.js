@@ -1,22 +1,18 @@
+"use strict";
 define([
     'angular'
-  , 'DOM/document'
   , './app-controller'
   , './app-directive'
+  , './container/container'
 ], function(
     angular
-  , document
-  , appController
-  , appDirective
+  , Controller
+  , directive
+  , container
 ) {
-    angular.module('app', [])
-      .controller('AppController', appController.di)
-      .directive('metapolator', appDirective.di)
-      ;
     
-    return {
-        bootstrap: function(document) {
-            angular.bootstrap(document, ['app']);
-        }
-    }
+    return angular.module('mtk.metapolator', [container.name])
+      .controller('AppController', Controller)
+      .directive('metapolator', directive)
+      ;
 })
