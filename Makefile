@@ -4,15 +4,14 @@ else
 VENVRUN=virtualenv
 endif
 
-venv/bin/activate:
-	$(VENVRUN) .venv
+venv:
+	$(VENVRUN) .venv --no-site-packages
 
 # install dependencies
 install:
-	easy_install -U distribute pip
 	pip install virtualenv
-	. .venv/bin/activate requirements.txt
-	. .venv/bin/activate
+	$(VENVRUN) .venv --no-site-packages
+	. .venv/bin/activate && \
 	pip install -Ur requirements.txt
 	npm install
 	./node_modules/.bin/bower install
@@ -33,21 +32,18 @@ clean:
 	mysql --user=root -e "DROP DATABASE metapolatordev;"
 
 # run the web.py app
-web: venv/bin/activate requirements.txt
+web:
 	. .venv/bin/activate
 	python run.py
 
-# run the worker
-celery: venv/bin/activate requirements.txt
-	. .venv/bin/activate
-	celery -A metapolator.tasks worker --loglevel=info
 
-# run the system, open Chrome 
-run: venv/bin/activate requirements.txt
-	. .venv/bin/activate
-	python run.py &
-	open -a "Google Chrome" "http://localhost:8080" &
-	chromium-browser "http://localhost:8080" &
-	celery -A metapolator.tasks worker --loglevel=info
+# run the worker
+support: 
+	redis-server&
+	. .venv/bin/activate && \
+	celery -A metapolator.tasks worker 
+run: 
+	. .venv/bin/activate && \
+	python run.py
 
 all: install setup
