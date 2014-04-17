@@ -30,12 +30,6 @@ clean:
 	mv skel users/
 	mysql --user=root -e "DROP DATABASE metapolatordev;"
 
-# run the web.py app
-web:
-	. .venv/bin/activate
-	python run.py
-
-
 # run the worker
 support: 
 	redis-server&
