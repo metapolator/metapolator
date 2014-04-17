@@ -15,10 +15,18 @@ require.config({
 });
 
 require([
-    'Metapolator'
+    'DOM/document'
+  , 'require/domReady'
+  , 'angular'
+  , 'ng/app'
+  , 'Metapolator'
   , './models/AppModel'
 ], function (
-    Metapolator
+    document
+  , domReady
+  , angular
+  , angularApp
+  , Metapolator
   , AppModel
 ) {
     // This model is a stub. We will have to create something
@@ -30,5 +38,11 @@ require([
     
     // The metapolator interface is made global here for development
     // this should change again!
-    window.metapolator = new Metapolator(model);
+    window.metapolator = new Metapolator(model, angularApp);
+    
+    // this should be the last thing here, because domReady will execute
+    // immediately if dom is already ready.
+    domReady(function() {
+        angular.bootstrap(document, [angularApp.name]);
+    })
 })

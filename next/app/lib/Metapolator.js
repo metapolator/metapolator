@@ -1,33 +1,22 @@
 "use strict";
 define([
-    'require/domReady'
-  , 'DOM/document'
-  , 'angular'
-  , 'ng/app'
+
 ], function(
-    domReady
-  , document
-  , angular
-  , angularApp
+
 ){
-    
-    function Metapolator(model) {
+    function Metapolator(model, angularApp) {
+        this.angularApp = angularApp
         this.frontend = undefined;
         this.model = model;
         
-        angularApp.constant('registerFrontend', this._registerFrontend.bind(this))
-        angularApp.constant('metapolatorModel', this.model)
-        
-        // this should be the last thing here, because domReady will execute
-        // immediately if dom is already ready.
-        domReady(this._domReadyHandler.bind(this))
+        // will be called on angular.bootstrap
+        // see ng/app-controller.js 
+        this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this))
+        this.angularApp.constant('metapolatorModel', this.model)
     }
     
     var _p = Metapolator.prototype;
 
-    _p._domReadyHandler = function() {
-        angular.bootstrap(document, [angularApp.name]);
-    }
     _p._registerFrontend = function(appController) {
         if(this.frontend !== undefined)
             throw new Error('Registering more than one AppController is not allowed.'
