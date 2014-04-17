@@ -8,7 +8,28 @@
     <meta name="author" content="">
 
     <title>Metapolator</title>
-
+    
+    <!-- less 
+    
+    
+    for development only and will disappear in production -->
+    <link rel="stylesheet/less" type="text/css" href="/ng/app.less" />
+    
+    <script>
+    less = {
+        env: "development",
+        async: true,
+        fileAsync: true,
+        poll: 1000,
+        functions: {},
+        dumpLineNumbers: 'mediaquery',
+        relativeUrls: false,
+    };
+    </script>
+    <script src="/lib/bower_components/less.js/dist/less-1.7.0.min.js"></script>
+    <!-- end of less -->
+    
+    
     <script src="/lib/bower_components/requirejs/require.js" data-main="/lib/main.js"></script>
   </head>
   <body>

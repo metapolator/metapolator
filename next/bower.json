@@ -23,6 +23,7 @@
     "requirejs": "~2.1.11",
     "angular": "~1.2.16",
     "requirejs-domready": "~2.0.1",
-    "requirejs-text": "~2.0.12"
+    "requirejs-text": "~2.0.12",
+    "less.js": "~1.7.0"
   }
 }
