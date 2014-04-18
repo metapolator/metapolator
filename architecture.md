@@ -184,13 +184,13 @@ When the model changes, AngularJS will react on that.
 Other comunications with our business logic and AngularJS will be provided
 via the AngularJS services api (`module.constant|value|service` etc.).
 
-When our business logic changes the module it is in some cases mandatory
-to inform AngularJS of that, to update the views. It all boils down to
+When our business logic changes the model it is in some cases mandatory
+to inform AngularJS of that, so it updates the views. It all boils down to
 run `$scope.$apply()` or `$scope.$digest()` in one or the other way.
 We will have to document here or in the yet to come Model-Documentation
 how this has to happen.
 Until there is a better plan, we use the `metapolater.frontend.redraw`
-method of. We use this extensively and no another way. When the time comes
+method. We use this extensively and no another way. When the time comes
 that we need a more robust/less resource hungry interface we'll have it
 easy to spot the use cases and to create a propper replacement.
 
