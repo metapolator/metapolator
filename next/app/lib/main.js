@@ -15,7 +15,7 @@ require.config({
 });
 
 require([
-    'DOM/document'
+    'webAPI/document'
   , 'require/domReady'
   , 'angular'
   , 'ng/app'
