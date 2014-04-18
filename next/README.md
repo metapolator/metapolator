@@ -1,5 +1,5 @@
 This is the next
-metapolator.
-============
+Metapolator
+===========
 
 See the docs directory for developer documentation.
