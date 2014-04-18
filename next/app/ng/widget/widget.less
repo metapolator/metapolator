@@ -1,0 +1,15 @@
+@import (reference) "../app";
+@import (reference) "../container/container";
+@import (reference) "/lib/bower_components/bootstrap/less/mixins";
+
+mtk-widget{
+    display: inline-block;
+    width: calc(33% - .5em);
+    padding: .5em;
+    margin: 0 .5em .5em 0 ;
+    background: @container;
+    color: @app-color;
+    .box-shadow(0 3px 3px rgba(0,0,0,.5));
+    .box-sizing(border-box);
+}
+

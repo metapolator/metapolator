@@ -1,4 +1,4 @@
-<h2>»{{model.name}}«</h2><button ng-click="model.more()">Add a widget</button>
+<h3>»{{model.name}}«</h3><button ng-click="model.more()">Add a widget</button>
 <ol >
     <mtk-widget
         ng-repeat="item in model.widgets"
