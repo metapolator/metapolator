@@ -3,14 +3,14 @@ define([
 
 ], function(
 
-){
+) {
     function Metapolator(model, angularApp) {
         this.angularApp = angularApp
         this.frontend = undefined;
         this.model = model;
         
         // will be called on angular.bootstrap
-        // see ng/app-controller.js 
+        // see ui/app-controller.js 
         this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this))
         this.angularApp.constant('metapolatorModel', this.model)
     }

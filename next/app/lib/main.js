@@ -5,7 +5,6 @@ require.config({
       'require/domReady': 'bower_components/requirejs-domready/domReady'
     , 'require/text': 'bower_components/requirejs-text/text'
     , angular: 'bower_components/angular/angular'
-    , ng: '../ng'
     }
   , shim: {
       angular: {
@@ -18,7 +17,7 @@ require([
     'webAPI/document'
   , 'require/domReady'
   , 'angular'
-  , 'ng/app'
+  , 'ui/app'
   , 'Metapolator'
   , './models/AppModel'
 ], function (
