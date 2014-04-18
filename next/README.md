@@ -4,10 +4,10 @@ Metapolator
 
 See the docs directory for developer documentation.
 
-It is currently only used to explore the concepts we are going to build
+This is currently only used to explore the concepts we are going to build
 the next Metapolator on.
 
-You can't see a lot yet, But here is what you can do:
+You can't see a lot yet, but here is what you can do:
 
 ```
 # clone the repository
@@ -22,7 +22,7 @@ cd next
 $ ./serve.sh
 
 # go to: http://localhost:8000
-# you'll see a simple scene where you can add 'widgets' to a container
+# you'll see a simple scene where you can add 'widgets' to a 'container'
 
 ```
 
