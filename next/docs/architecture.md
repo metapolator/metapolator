@@ -98,7 +98,7 @@ provide a callback or event mechanism where other code can bind to.
  * [Web-APIs](https://developer.mozilla.org/en-US/docs/Web/API) and their
    instances on `window` (the global namespace object in web browsers),
    like `document` may be considered as available in the frontend branch
-   (the `app/ng` directory), but not in other code. However, best practice
+   (the `app/lib/ui` directory), but not in other code. However, best practice
    is to require mockup modules to these APIs wherever they are used. *So
    we can provide replacements in non-browser environments like NodeJS*.
    We use the `app/lib/webAPI` directory for these mockups.
