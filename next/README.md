@@ -1,6 +1,5 @@
-This is the next
-Metapolator
-===========
+Metapolator Neue
+=================
 
 See the docs directory for developer documentation.
 
