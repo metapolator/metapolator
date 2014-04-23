@@ -1,6 +1,8 @@
 Metapolator
 ==============
 
+[![Build Status](https://drone.io/github.com/metapolator/metapolator/status.png)](https://drone.io/github.com/metapolator/metapolator/latest)
+
 ## Introduction
 
 Metapolator is a web-based parametric font editor.
@@ -14,6 +16,18 @@ To use the full potential of parametrising fonts, Metapolator can parse already 
 Furthermore instead of using prepared fonts it will be possible to enhance normal UFO fonts by adding parameters on request and only parametrise certain parts of a glyph.
 
 Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
+
+## Product Vision
+
+_Our ['Product Vision'](http://www.mmiworks.net/wedo/product.html) defines and guides Metapolator's development, and was written by Peter Sikking in April 2014 Following a discussion with the developers ([video](http://www.youtube.com/watch?v=mJH6fNCv1Fs))_
+
+Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.
+
+With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency. They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.
+
+With Metapolator, typographers gain the possibility to change existing fonts—or even create new ones—to their needs.
+
+Metapolator is extendible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.﻿
 
 ## Tutorial
 
@@ -95,55 +109,65 @@ Metapolator is built with many libre software components:
 
 https://github.com/metapolator/metapolator/issues/46
 
-###
-
-
-
 ## Installation
 
 ### Ubuntu/Debian
 
 #### The Simple Way
 
-The simple way to install and run metapolator is with [docker.io](http://www.docker.io)
+The simple way to install and run metapolator is with [docker](http://www.docker.io):
 
-1. [Install Docker](http://www.docker.io/gettingstarted/), perhaps with [HomeBrew](http://brew.sh): `brew install docker`
-2. `sudo docker pull metapolator/metapolator`
-3. `sudo docker run -p 80:8080 -t metapolator/metapolator`
-4. open in browser `http://localhost`
+1. [Install Docker](http://www.docker.io/gettingstarted/)
+2. `sudo docker pull metapolator/metapolator` # download metapolator
+3. `sudo docker run -p 8080:8080 -t metapolator/metapolator`# run metapolator
+4. `chromium-browser http://localhost:8080` # use metapolator
 
 #### The Traditional Way
 
 ```sh
-sudo apt-get install -y unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev;
-# Note your mysql root password
-sudo apt-get install -y woff-tools
-# install fontforge and fontforge-python from source
-# git clone https://github.com/fontforge/fontforge.git;
-#
-sudo apt-get install -y fontforge python-fontforge;
-sudo apt-get install -y build-essential autoconf libtool python-dev;
-sudo apt-get install -y python-virtualenv python-setuptools python-pip;
 mkdir ~/src;
 cd ~/src;
+# Install system dependencies
+sudo apt-get install -y build-essential autoconf libtool python-dev python-virtualenv python-setuptools python-pip  unzip git texlive-metapost mysql-client mysql-server redis-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev woff-tools chromium-browser;
+# During the install process of mysql, note your root password
+
+# Install fontforge from git master (When someone makes a new release of fontforge and someone packages it for Debian, then you can do "sudo apt-get install -y fontforge python-fontforge;") 
+
+# install metapolator
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
-make run;
+make support; # run this in first shell
+make run; # run this in second shell
 ```
+Open <http://localhost:8080>
 
 ### Mac OS X
 
+#### The Simple Way
+
+TODO: Describe how to run metapolator with [docker](http://www.docker.io) on Mac OS X. If you do this, please update this copy of your `~/src/metapolator/README.md` and send us a pull request :)
+
 #### The Traditional Way
 
+First, install [Homebrew](http://brew.sh) and [Chromium Canary](http://www.chromium.org/getting-involved/dev-channel)
+
 ```sh
-# Install Homebrew
-brew install mysql t1utils libffi libevent libxml2 libxslt;
-ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
 mkdir src;
 cd src;
+
+# Install system dependencies
+brew install mysql t1utils libffi libevent libxml2 libxslt autoconf automake libtool python;
+# Run mysql on startup after reboot
+ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents;
+# Run mysql now
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist;
+
+# Install fontforge from git master
+brew install fontforge --with-x --HEAD;
+
+# install sfnt2woff HEAD. TODO: make a homebrew package for this
 mkdir sfnt2woff;
 cd sfnt2woff;
 wget http://people.mozilla.org/~jkew/woff/woff-code-latest.zip;
@@ -151,20 +175,16 @@ unzip woff-code-latest.zip;
 make;
 sudo cp sfnt2woff /usr/local/bin/;
 cd ..;
-brew install autoconf automake libtool python;
-brew install fontforge --with-x --HEAD;
+
+# install metapolator
 git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
-make run;
-````
-
-This should give you a local web server you can visit with a modern web browser: [http://0.0.0.0:8080](http://0.0.0.0:8080)
-
-#### The Simple Way
-
-Please send a pull request on this file with the steps to run metapolator with [docker.io](http://www.docker.io) on Mac OS X :) 
+make support; # run this in first shell
+make run; # run this in second shell
+```
+Open <http://localhost:8080>
 
 ## Deployment
 
@@ -172,21 +192,16 @@ Please send a pull request on this file with the steps to run metapolator with [
 
 Deploy metapolator to your own server easily with [drone.io](https://drone.io/)
 
-Check out <https://drone.io/github.com/metapolator/metapolator> to see how we continuously deploy the central metapolator master to <http://beta.metapolator.com>
+Check out <https://drone.io/github.com/metapolator/metapolator> to see how we continuously deploy the official metapolator master branch to <http://beta.metapolator.com>
 
 ### The Traditional Way
 
-To deploy metapolator on a Ubuntu or Debian server...
+To deploy metapolator on a Ubuntu or Debian server with nginx:
 
-Install supervisor and nginx
-
-```
+```sh
+# Install supervisor and nginx
 sudo apt-get install supervisor nginx
-```
-
-Create symlinks for configuration file. Notice that your project directory is not different from configs
-
-```
+# Create symlinks for configuration file. Notice if your project directory is different from configs
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/supervisor.conf /etc/supervisor/conf.d/metapolator.conf;
 sudo ln -s /var/www/webpy-app/metapolator/webapp_configs/nginx.conf /etc/nginx/sites-enabled/metapolator.conf;
 ```
@@ -213,30 +228,38 @@ We use JSON a lot, so you might like to install [JSONview](https://addons.mozill
 
 ## Thanks
 
-Core Development Team: Simon Egli, Dave Crossland, Vitaly Volkov, Alex Troush
+Core Development Team: Simon Egli, Lasse Fister, Alex Troush
 
-Contributors: Walter Egli, Nicolas Pauly, Wei Huang, you?
+Contributors: Vitaly Volkov, Walter Egli, Nicolas Pauly, Wei Huang, you?
 
-Thanks to the [metaflop](http://www.metaflop.com) project and Dave Crossland for inspiring this one!
+Thanks to the [metaflop](http://www.metaflop.com) team and Dave Crossland for leading to this project!
 
 ## Related Projects
 
 ### For Users
 
-* http://fontforge.github.io impressive font editor
-* http://mondrian.io impressive illustration tool
-* https://code.google.com/p/svg-edit/ impressive drawing tool
-* http://popcornjs.org impressive video editor
-* http://plucked.de impressive audio editor
+* http://metaflop.com libre parametric font editor web app
+* http://prototypo.io libre parametric font editor web app
+* http://glyphrstudio.com outline font editor web app
+* http://fontark.net outline font editor web app, proprietary
+* http://fontforge.github.io outline font editor desktop app
+* http://mondrian.io outline illustration web app
+* https://code.google.com/p/svg-edit/ outline illustration web app
+* http://popcornjs.org video editor web app
+* http://plucked.de audio editor web app
 
 ### For Developers
 
-* http://en.wikipedia.org/wiki/MetaFont impressive parametric font system
-* http://en.wikipedia.org/wiki/MetaPost impressive parametric graphics system
-* http://fontforge.org/python.html impressive font editor Python module
-* http://github.com/behdad/fonttools impressive font binary Python module
-* http://nodebox.github.io/opentype.js useful canvas library for displaying fonts
-* http://paperjs.org useful canvas library
-* http://jonobr1.github.io/two.js useful canvas library
-* http://www.createjs.com/#!/EaselJS useful canvas library from Adobe
+* http://en.wikipedia.org/wiki/MetaFont parametric font system
+* http://en.wikipedia.org/wiki/MetaPost parametric drawing system
+* http://fontforge.org/python.html font editor Python module
+* http://github.com/behdad/fonttools Python library and command line tool for font binaries: reading, writing, subsetting with OpenType feature support 
+* http://nodebox.github.io/opentype.js JS library for reading font binaries
+* https://github.com/ynakajima/ttf.js JS library for reading font binaries
+* https://github.com/bramstein/opentype JS library for reading font binaries
+* https://github.com/Pomax/A-binary-parser-generator/ JS library for reading arbitrary binaries given a spec file
+* https://github.com/graphicore/ufoJS JS library for reading font sources and rendering them on canvas
+* http://paperjs.org JS library for canvas drawing from Switzerland
+* http://jonobr1.github.io/two.js JS library for canvas drawing from Google
+* http://www.createjs.com/#!/EaselJS JS library for canvas drawing from Adobe
 * http://snapsvg.io/ useful SVG library from Adobe
