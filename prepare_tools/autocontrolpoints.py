@@ -1,5 +1,6 @@
 from lxml import etree
 import codecs
+import sys
 import os.path
 
 def buildfname ( filename ):
