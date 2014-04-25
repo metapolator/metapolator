@@ -12,17 +12,17 @@ var filePath = {
     appjsminify: { src: ['static/js/*.js','static/js/3rdparty/*.js',
     'static/js/3rdparty/**.min.js'], dest: './static/dist' },
     libsjsminify: { src: ['static/js/lib/jquery.min.js',
-                        'static/js/lib/jquery.min.js'],
+                        'static/js/lib/bootstrap.min.js'],
                         dest: './static/dist/' },
-    minifycss: { src: ['./static/css/*.css', './static/lib/**/*.css',
-                        './static/lib/**/*.min.css'],
+    minifycss: { src: ['./static/css/*.css', 
+                        ],
                 dest: './static/dist/css/' }
 };
 
 gulp.task('build', function () {
     gulp.src(filePath.appjsminify.src)
         .pipe(debug())
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(concat('app.js'))
         .pipe(size())
         .pipe(gulp.dest(filePath.appjsminify.dest));
