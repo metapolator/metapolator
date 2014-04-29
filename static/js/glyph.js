@@ -105,6 +105,7 @@ PaperJSGraph.prototype = {
     },
 
     firedMouseDrag: function(event) {
+        debugger;;
         if (!this.selectedzpoint) {
             var vectorX = event.delta.x > 0 ? -2 : (event.delta.x == 0 ? 0 : 2);
             var vectorY = event.delta.y > 0 ? -2 : (event.delta.y == 0 ? 0 : 2);
