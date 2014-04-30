@@ -88,6 +88,7 @@ PaperJSGraph.prototype = {
     },
 
     firedMouseDown: function(event) {
+        console.log(event);
         if (this.selectedzpoint) {
             this.selectedzpoint.resetselected();
             this.selectedzpoint = null;
@@ -105,7 +106,6 @@ PaperJSGraph.prototype = {
     },
 
     firedMouseDrag: function(event) {
-        debugger;;
         if (!this.selectedzpoint) {
             var vectorX = event.delta.x > 0 ? -2 : (event.delta.x == 0 ? 0 : 2);
             var vectorY = event.delta.y > 0 ? -2 : (event.delta.y == 0 ? 0 : 2);
@@ -113,6 +113,24 @@ PaperJSGraph.prototype = {
             return;
         }
         this.selectedzpoint.moveTo(event.point);
+        var selectedPoint = this.selectedzpoint;
+        var changedContour = this.contours;
+        var changedContourNum;
+        var cordsPoint = event.point;
+        var getPoint = this.getPoint.bind(this);
+        $.each(changedContour, function(index, item) {
+            $.each(item, function(pindex, point) {
+                if ( selectedPoint.pointText._content === point.pointname ) {
+                    var newPoint = getPoint(parseInt(cordsPoint.x), parseInt(cordsPoint.y), true);
+                    changedContour[index][pindex].x = parseInt(newPoint.x - 45) ;
+                    changedContour[index][pindex].y = parseInt(newPoint.y + 10) ;
+                    changedContourNum = index;
+                }
+
+            })
+        });
+        this.deletepathes();
+        this.drawcontour(changedContour[changedContourNum]);
         this.isdragged = true;
     },
 
@@ -553,6 +571,7 @@ var Glyph = function(view, glyphsize) {
     this.graph = Graph.createCanvas(this.canvas, glyphsize);
     this.graph.onMouseUp = this.onMouseUp.bind(this);
 
+
     this.view.afterPointChanged = this.pointSelect.bind(this);
     this.view.onPointParamSubmit = this.pointFormSubmit.bind(this);
 }
@@ -597,6 +616,8 @@ Glyph.prototype = {
         this.prevGlyphContours = contours;
 
         this.graph.centerlines = [];
+        console.log(contours);
+        this.graph.contours = contours;
         for (var k = 0; k < contours.length; k++) {
             this.graph.centerlines.push(
                 this.graph.drawcontour(contours[k]));
