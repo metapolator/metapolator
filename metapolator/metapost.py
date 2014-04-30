@@ -32,8 +32,8 @@ class Metapost:
             if ext in ["mf"]:
                 ifile.write("input %s/%s\n" % (glyphsdir, ch1))
         ifile.close()
-
-    def _execute(self, master, interpolated=False):
+    
+    def _setup_create(self, master, interpolated=False):
         self.write_global_params(master)
 
         os.environ['MFINPUTS'] = master.get_fonts_directory()
@@ -43,13 +43,11 @@ class Metapost:
             metafont = master.get_metafont('a')
         else:
             metafont = master.get_metafont()
-
-        process = subprocess.Popen(
-            ["sh", "makefont.sh", metafont, self.version],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            cwd=op.join(master.project.get_master_directory())
-        )
-
+            
+        return metafont
+    
+    def _watch_process(self, process):
+        # FIXME: this needs propper error propagation
         while True:
             line = process.stdout.readline()
             if not line or '<to be read again>' in line:
@@ -57,6 +55,42 @@ class Metapost:
                 break
 
         return True
+    
+    def _create_outlines(self, master, interpolated=False):
+        """
+        The faster twin of _create_fonts it uses mpost directly and
+        realy only creates outlines as postscript file and in the .log
+        files.
+        """
+        metafont = self._setup_create(master, interpolated)
+        
+        process = subprocess.Popen(
+            ['mpost',  '-mem=mf2pt1', '-progname=mpost',
+                '\mode:=localfont; mag:=100; bpppix 0.02; nonstopmode; input {metafont}.mf'.format(metafont=metafont)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=op.join(master.project.get_master_directory())
+        )
+        
+        return self._watch_process(process)
+        
+    def _create_fonts(self, master, interpolated=False):
+        """
+        Used to be called _execute. Creates full featured production ready
+        font files otf, ufo etc. via the mf2pt1.pl pearl script.
+        
+        FIXME: optimize this path.
+        
+        """
+        metafont = self._setup_create(master, interpolated)
+
+        process = subprocess.Popen(
+            ["sh", "makefont.sh", metafont, self.version],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            cwd=op.join(master.project.get_master_directory())
+        )
+        
+        return self._watch_process(process);
 
     def execute_interpolated_bulk(self):
         """ Run metapost for all glyphs with mf files containing points
@@ -75,7 +109,7 @@ class Metapost:
                                                 interpolated=True)
 
         self.write_glyph_list(primary_master, interpolated=True)
-        return self._execute(primary_master, interpolated=True)
+        return self._create_fonts(primary_master, interpolated=True)
 
     def execute_bulk(self, master):
         """ Run metapost for all glyphs with mf files containing points
@@ -91,7 +125,7 @@ class Metapost:
                 xmltomf.xmltomf1(master, glyph)
 
         self.write_glyph_list(master)
-        return self._execute(master)
+        return self._create_fonts(master)
 
     def execute_interpolated_single(self, glyph):
         if not glyph:
@@ -109,7 +143,7 @@ class Metapost:
                                             *_glyphs, interpolated=True)
 
         self.write_glyph_list(primary_master, glyph.name, interpolated=True)
-        return self._execute(primary_master, interpolated=True)
+        return self._create_outlines(primary_master, interpolated=True)
 
     def execute_single(self, master, glyph):
         if not glyph:
@@ -124,7 +158,7 @@ class Metapost:
             xmltomf.xmltomf1(master, glyph)
 
         self.write_glyph_list(master, glyph.name)
-        return self._execute(master)
+        return self._create_outlines(master)
 
     def interpolated_metafont_generate(self, masters, *args, **kwargs):
         """ Fill mf files related on project mfparser with coords and
