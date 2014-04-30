@@ -9,7 +9,8 @@ var gulp = require('gulp'),
     watch = require('gulp-watch');
 
 var mapOptions = {
-    sourcesContent: true,
+    sourcesContent: false,
+    sourceRoot: '/',
 }
 
 var filePath = {
@@ -24,19 +25,29 @@ var filePath = {
 };
 
 gulp.task('build', function () {
+    gulp.start('build-js');
+    gulp.start('build-js-lib');
+    gulp.start('build-css');
+});
+
+gulp.task('build-js', function(){
     gulp.src(filePath.appjsminify.src)
         .pipe(debug())
-        .pipe(uglify())
         .pipe(concat('app.js', mapOptions))
         .pipe(size())
         .pipe(gulp.dest(filePath.appjsminify.dest));
+});
+
+gulp.task('build-js-lib', function(){
     gulp.src(filePath.libsjsminify.src)
         .pipe(debug())
-        .pipe(uglify())
         .pipe(concat('libs.js', mapOptions))
         .pipe(size())
         .pipe(gulp.dest(filePath.libsjsminify.dest));
-    gulp.src(filePath.minifycss.src)
+});
+
+gulp.task('build-css', function(){
+     gulp.src(filePath.minifycss.src)
         .pipe(debug())
         .pipe(minifycss())
         .pipe(rename({ suffix: '.min' }))
@@ -45,12 +56,10 @@ gulp.task('build', function () {
         .pipe(gulp.dest(filePath.minifycss.dest));
 });
 
+
 gulp.task('watch', function () {
     gulp.src(filePath.appjsminify.src)
         .pipe(watch(function(files) {
-            return files.pipe(uglify())
-                        .pipe(concat('libs.js', mapOptions))
-                        .pipe(size())
-                        .pipe(gulp.dest(filePath.appjsminify.dest));
+            return gulp.start('build-js')
         }));
 });

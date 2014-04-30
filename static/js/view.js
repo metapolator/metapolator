@@ -214,7 +214,6 @@ View.prototype = {
 
     onzpointselected: function(e) {
         var point = this.glyph.getZPointByName($(e.target).val());
-
         this.setPointFormValues(point);
 
         this.afterPointChanged && this.afterPointChanged(point);
