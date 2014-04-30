@@ -232,7 +232,7 @@ Core Development Team: Simon Egli, Lasse Fister, Alex Troush
 
 Contributors: Vitaly Volkov, Walter Egli, Nicolas Pauly, Wei Huang, you?
 
-Thanks to the [metaflop](http://www.metaflop.com) team and Dave Crossland for leading to this project!
+Thanks to [metaflop](http://www.metaflop.com) for inspiration and Dave Crossland for leading to this project!
 
 ## Related Projects
 
