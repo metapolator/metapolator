@@ -158,6 +158,7 @@ cd /tmp;
 # if this command fails, you'll need to check your TeX installation
 mpost -progname=mpost -ini mf2pt1 \\dump 
 
+cd ~;
 mkdir src;
 cd src;
 
