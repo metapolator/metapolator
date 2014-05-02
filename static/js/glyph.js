@@ -130,7 +130,7 @@ PaperJSGraph.prototype = {
             })
         });
         this.deletepathes();
-        this.drawcontour(changedContour[changedContourNum]);
+        this.drawcontour(changedContour[changedContourNum], 0.5, '#505055');
         this.isdragged = true;
     },
 
@@ -377,7 +377,7 @@ PaperJSGraph.prototype = {
      * points - array of contour points in json format
      *   {x: N, y: M, controls: [{x: K, y: L}, {x: G, y: H}]}
      */
-    drawcontour: function(points, alpha) {
+    drawcontour: function(points, alpha, color) {
         this.ppscope.activate();
         var element = this.getElement();
 
@@ -404,7 +404,7 @@ PaperJSGraph.prototype = {
                 this.getLines(centerlines, point);
             }
         }
-        path = this.pathColorfy(path, alpha);
+        path = this.pathColorfy(path, alpha, color);
         this.ppscope.view.draw();
 
         this.glyphpathes.push(path);
