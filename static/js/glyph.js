@@ -53,6 +53,10 @@ var PaperJSGraph = function(size, paperscope) {
     this.tool.onMouseUp = this.firedMouseUp.bind(this);
     this.tool.onMouseDrag = this.firedMouseDrag.bind(this);
 
+    this.dashedItems = [];
+    this.label = [];
+    this.items = [];
+
     this.tool.onMouseMove = function(event) {
         for (var k = 0; k < this.zpoints.length; k++) {
             var p = this.zpoints[k].getSegmentPoint();
@@ -88,7 +92,6 @@ PaperJSGraph.prototype = {
     },
 
     firedMouseDown: function(event) {
-        console.log(event);
         if (this.selectedzpoint) {
             this.selectedzpoint.resetselected();
             this.selectedzpoint = null;
@@ -105,6 +108,47 @@ PaperJSGraph.prototype = {
         }
     },
 
+    drawAngle: function (event) {
+        var vector = substractPoint(event.point, this.selectedzpoint.zpoint);
+            if (this.dirVector){
+                this.dirVector.remove();
+            }
+            if (this.items) {
+                for (var i = 0, l = this.items.length; i < l; i++) {
+                    this.items[i].remove();
+                }
+            }
+            this.dirVector = new paper.Path();
+            this.dirVector.strokeColor = 'black';
+            this.dirVector.moveTo(this.selectedzpoint.zpoint);
+            // debugger;;
+            var radius = 25, threshold = 10;
+            var from = new paper.Point(radius, 0);
+            var through = from.rotate(vector.angle / 2);
+            var to = from.rotate(vector.angle);
+            var end = addPoint(this.selectedzpoint.zpoint, to);
+            this.dashedItems.push(
+                new paper.Path.Line(substractPoint(this.selectedzpoint.zpoint, new paper.Point(25, 0)),
+                this.selectedzpoint.zpoint));
+            if (this.label) {
+                var temp = addPoint(this.selectedzpoint.zpoint, through.normalize(threshold + 10));
+                var text = new paper.PointText(addPoint(temp, new paper.Point(0, 3)));
+                var angle = Math.floor((180 - vector.angle) * 100) / 100
+                text.content = angle + '°';
+                this.selectedzpoint.config.dir = (180 - vector.angle);
+                text.fillColor = 'black';
+                this.items.push(text);
+            }
+            this.dirVector.lineTo(event.point);
+            for (var i = 0, l = this.dashedItems.length; i < l; i++) {
+                    var item = this.dashedItems[i];
+                    item.strokeColor = 'black';
+                    item.dashArray = [1, 2];
+                    this.items.push(item);
+                }
+            this.ppscope.view.draw();
+    },
+
     firedMouseDrag: function(event) {
         if (!this.selectedzpoint) {
             var vectorX = event.delta.x > 0 ? -2 : (event.delta.x == 0 ? 0 : 2);
@@ -112,32 +156,45 @@ PaperJSGraph.prototype = {
             this.ppscope.view.scrollBy(new this.ppscope.Point(vectorX, vectorY));
             return;
         }
-        this.selectedzpoint.moveTo(event.point);
-        var selectedPoint = this.selectedzpoint;
-        var changedContour = this.contours;
-        var changedContourNum;
-        var cordsPoint = event.point;
-        var getPoint = this.getPoint.bind(this);
-        $.each(changedContour, function(index, item) {
-            $.each(item, function(pindex, point) {
-                if ( selectedPoint.pointText._content === point.pointname ) {
-                    var newPoint = getPoint(parseInt(cordsPoint.x), parseInt(cordsPoint.y), true);
-                    changedContour[index][pindex].x = parseInt(newPoint.x - 45) ;
-                    changedContour[index][pindex].y = parseInt(newPoint.y + 10) ;
-                    changedContourNum = index;
-                }
+        if (event.event.altKey && this.selectedzpoint) {
+            this.drawAngle(event);
+        } else {
+            this.selectedzpoint.moveTo(event.point);
 
-            })
-        });
-        this.deletepathes();
-        this.drawcontour(changedContour[changedContourNum], 0.5, '#505055');
+            this.selectedzpoint.moveTo(event.point);
+            var selectedPoint = this.selectedzpoint;
+            var changedContour = this.contours;
+            var changedContourNum;
+            var cordsPoint = event.point;
+            var getPoint = this.getPoint.bind(this);
+            $.each(changedContour, function(index, item) {
+                $.each(item, function(pindex, point) {
+                    if ( selectedPoint.pointText._content === point.pointname ) {
+                        var newPoint = getPoint(parseInt(cordsPoint.x), parseInt(cordsPoint.y), true);
+                        changedContour[index][pindex].x = parseInt(newPoint.x - 45) ;
+                        changedContour[index][pindex].y = parseInt(newPoint.y + 10) ;
+                        changedContourNum = index;
+                    }
+
+                })
+            });
+            this.deletepathes();
+            this.drawcontour(changedContour[changedContourNum], 0.5, '#505055');
+        }
         this.isdragged = true;
     },
 
     firedMouseUp: function(event) {
         if (!this.selectedzpoint)
             return;
-
+        if (this.dirVector){
+            this.dirVector.remove();
+        }
+        if (this.items) {
+            for (var i = 0, l = this.items.length; i < l; i++) {
+                this.items[i].remove();
+            }
+        }
         this.onMouseUp ? this.onMouseUp(this.selectedzpoint, this.isdragged) : false;
     },
 
@@ -571,7 +628,6 @@ var Glyph = function(view, glyphsize) {
     this.graph = Graph.createCanvas(this.canvas, glyphsize);
     this.graph.onMouseUp = this.onMouseUp.bind(this);
 
-
     this.view.afterPointChanged = this.pointSelect.bind(this);
     this.view.onPointParamSubmit = this.pointFormSubmit.bind(this);
 }
@@ -614,10 +670,8 @@ Glyph.prototype = {
 
         this.pastGlyphControus = this.prevGlyphContours;
         this.prevGlyphContours = contours;
-
-        this.graph.centerlines = [];
-        console.log(contours);
         this.graph.contours = contours;
+        this.graph.centerlines = [];
         for (var k = 0; k < contours.length; k++) {
             this.graph.centerlines.push(
                 this.graph.drawcontour(contours[k]));
@@ -663,4 +717,12 @@ Glyph.prototype = {
         this.view.setPointFormValues(point);
     }
 
+}
+
+function addPoint (ps, pe) {
+    return new paper.Point(ps.x + pe.x, ps.y + pe.y);
+}
+
+function substractPoint (ps, pe) {
+    return new paper.Point(ps.x - pe.x, ps.y - pe.y);
 }
