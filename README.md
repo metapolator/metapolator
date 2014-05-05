@@ -151,9 +151,14 @@ TODO: Describe how to run metapolator with [docker](http://www.docker.io) on Mac
 
 #### The Traditional Way
 
-First, install [Homebrew](http://brew.sh) and [Chromium Canary](http://www.chromium.org/getting-involved/dev-channel)
+First, install [Homebrew](http://brew.sh) and [Chromium Canary](http://www.chromium.org/getting-involved/dev-channel) and [MacTex](http://www.tug.org/mactex)
 
 ```sh
+cd /tmp;
+# if this command fails, you'll need to check your TeX installation
+mpost -progname=mpost -ini mf2pt1 \\dump 
+
+cd ~;
 mkdir src;
 cd src;
 
