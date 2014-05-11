@@ -19,7 +19,7 @@ This has tremendous implications on how the software is structured.
 ### The Font Technology
 
 can be provided via different interfaces(GUI, API, CLI, etc.) but should
-itself be independed from these interfaces. You won't need a webbrowser
+itself be independent from these interfaces. You won't need a web-browser
 to use a command line interface.
 
 We are moving towards providing as much as possible of the font-technology
@@ -46,7 +46,7 @@ The main user interface Libraries include:
    for a powerful and flexible styling workflow.
 
 I chose less over sass because less can run in the browser without server
-side file-watching-and-compiling-deamon.
+side file-watching-and-compiling-demon.
 
 Modules, Separation of Concerns and Hierarchy
 ---------------------------------------------
@@ -60,7 +60,7 @@ Main challenges include:
  1. stay maintainable
  * enable custom and complex interfaces
  * be always ready to add new features
- * allow 3rd party code when it doesn't affect overall stabillity
+ * allow 3rd party code when it doesn't affect overall stability
  
 
 One main approach is to structure
@@ -73,12 +73,12 @@ range of influence failure can have to the system.
 Modules are organized in a hierarchical way from *more general/managing* 
 to *more specialized/actually doing something*. **This Hierarchy is reflected
 in the directory structure of our code.** As a guideline: interaction between
-modules follows the edges of the hierachy graph. This implies the
+modules follows the edges of the hierarchy graph. This implies the
 [Law of Demeter](http://en.wikipedia.org/wiki/Law_of_Demeter) (LoD) or
 principle of least knowledge. However for good reason we'll break this
 rule occasionally, because it can lead to bloated interfaces. For better
-decoupling Modules higher up in the hierachy can call Modules below directly.
-But if a Module lower in the hierachy want's to call upwards it should
+decoupling Modules higher up in the hierarchy can call Modules below directly.
+But if a Module lower in the hierarchy want's to call upwards it should
 provide a callback or event mechanism where other code can bind to.
 
 ### Some rules for Modules
@@ -91,7 +91,7 @@ provide a callback or event mechanism where other code can bind to.
    the top of each file.
  * Non AMD **3rd party code** is included in a way that allows us to describe
    dependencies to that code in the same fashion: via RequireJS shim
-   configuration or mockup modules. However, 3rd party code must be in a
+   configuration or mock-up modules. However, 3rd party code must be in a
    reasonable state and pass our review.
  * **We never use anything without
    declaring the dependency**. This excludes JavaScript language features.
@@ -99,9 +99,9 @@ provide a callback or event mechanism where other code can bind to.
    instances on `window` (the global namespace object in web browsers),
    like `document` may be considered as available in the frontend branch
    (the `app/lib/ui` directory), but not in other code. However, best practice
-   is to require mockup modules to these APIs wherever they are used. *So
+   is to require mock-up modules to these APIs wherever they are used. *So
    we can provide replacements in non-browser environments like NodeJS*.
-   We use the `app/lib/webAPI` directory for these mockups.
+   We use the `app/lib/webAPI` directory for these mock-ups.
 
 Macro Directory Structure
 -------------------------
@@ -114,7 +114,7 @@ Macro Directory Structure
 │   │   ├── main.js             bootstrapping Metapolator
 │   │   ├── Metapolator.js      main controller of the hole app
 │   │   ├── models/             data model/complex stuff ;-)
-│   │   ├── webAPI/             mockup modules to declare dependencies to
+│   │   ├── webAPI/             mock-up modules to declare dependencies to
 │   │   └── ui/                 user interface/AngularJS code see: AngularJS
 │   │                           integration
 │   └── tests/                  automated tests of all kinds
@@ -123,21 +123,21 @@ Macro Directory Structure
 ├── (node_modules)              create by npm 'install' using package.json
 ├── package.json                dependencies for the server/development
 ├── README.md                   Project overview
-├── runtest.sh                  unittests using nodeJS
+├── runtest.sh                  unit-tests using nodeJS
 └── serve.sh                    simple server for development
 ```
 
 
 AngularJS integration
 ---------------------
-For modelling the AngularJS part I followed some recomendation on the web
-particular influencial was:
+For modeling the AngularJS part I followed some recommendation on the web
+particular influential was:
 [An AngularJS Style Guide for Closure Users at Google](https://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html)
 except that we use RequireJS for module loading and hence have some differences 
 stemming from that.
 
 A first draft of the directory structure follows. However, this is just
-a mockup yet, to test the concept and to explain the design:
+a mock-up yet, to test the concept and to explain the design:
 
 ```
 .
@@ -165,7 +165,7 @@ a mockup yet, to test the concept and to explain the design:
 * each part of an angular module has its own file
 * **We have naming conventions for these files *AND* by looking inside of
   these files we'll detect *even more* naming conventions**
-* the angular module is definded in `<modulename>.js`
+* the angular module is defined in `<modulename>.js`
 * templates are in `<modulename>.tpl` files and we use RequireJS to
   pull these into the app.
 * we use **mtk-** as prefix for our self-defined tags/directives
@@ -178,21 +178,21 @@ a mockup yet, to test the concept and to explain the design:
 There will be some touching points between our business logic and
 AngularJS. The tightest coupling will be with our data-model. AngularJS
 will provide the *View* on our model and the Controls to change the model.
-Therefore we'll need to define and constanly refine the API of our model.
+Therefore we'll need to define and constantly refine the API of our model.
 When the model changes, AngularJS will react on that.
 
-Other comunications with our business logic and AngularJS will be provided
-via the AngularJS services api (`module.constant|value|service` etc.).
+Other communications with our business logic and AngularJS will be provided
+via the AngularJS services API (`module.constant|value|service` etc.).
 
 When our business logic changes the model it is in some cases mandatory
 to inform AngularJS of that, so it updates the views. It all boils down to
 run `$scope.$apply()` or `$scope.$digest()` in one or the other way.
 We will have to document here or in the yet to come Model-Documentation
 how this has to happen.
-Until there is a better plan, we use the `metapolater.frontend.redraw`
+Until there is a better plan, we use the `metapolator.frontend.redraw`
 method. We use this extensively and no another way. When the time comes
 that we need a more robust/less resource hungry interface we'll have it
-easy to spot the use cases and to create a propper replacement.
+easy to spot the use cases and to create a proper replacement.
 
 Testing
 -------
