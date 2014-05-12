@@ -87,6 +87,9 @@ other way around is not always possible. So editing skeleton curves
 it. If the problem is a show-stopper we could move the hobby curve data
 to the glyphs lib at `com.metapolaor.skeleton` or so.)*
 
+SE: perhaps "median" is better than "middle line". See https://github.com/metapolator/metapolator/issues/110
+With this we can load any font, but need to tag pairs inside metapolator. We should decide where the 'prepolation' happens: inside or outside Metapolator.
+
 ### CSS
 
 #### Sources of values, global and local values
