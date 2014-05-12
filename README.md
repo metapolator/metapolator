@@ -31,7 +31,9 @@ Metapolator is extendible through plugins and custom specimens. It contains all 
 
 ## Tutorial
 
-A now-obsolete tutorial is at http://metapolator.com/tutorial.html
+Simon Egli wrote a [tutorial for the current prototype](https://docs.google.com/document/d/1fiYpDxoBaiymMjzxptRZr6HkDaF3QqdEZuq_Vdz2JjU/edit).
+
+For historical reference you may like to read [the first tutorial](http://metapolator.com/tutorial.html)
 
 ## Terminology
 
