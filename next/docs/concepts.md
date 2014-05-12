@@ -50,8 +50,8 @@ Incarnations are created:
 
 **compatible:** When two skeletons are compatible they
 
-* define the same glyphs, that are compatible to their pairs
-* the glyphs pairs have the same number of contours, where the contours 
+* define the same glyphs, that are compatible to their "partners"
+* the glyph pairs have the same number of contours, where the contours 
   at the same position are compatible to each other
 * compatible contours share the same points/commands in the same order
 * the glyphs have the same anchors (and guides, what to do with ids and names?
