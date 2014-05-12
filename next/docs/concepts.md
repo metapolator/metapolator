@@ -4,7 +4,7 @@ Metapolator Concept
 The first drafts on how *Metapolator neue* works.
 
 
-We will use a CSS like format to store all parameters of needed to generate
+We will use a CSS like format to store all parameters needed to generate
 a font.
 
 Fundamentals/Data-model
