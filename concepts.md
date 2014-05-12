@@ -91,7 +91,7 @@ to the glyphs lib at `com.metapolaor.skeleton` or so.)*
 
 #### Sources of values, global and local values
 
-Theoretically we could have all parameters of a project in one global file.
+In theory we could have all parameters of a project in one global file.
 This however would lead on the one hand to longer selectors, because we
 would have to select the specific incarnations most of the time. On the other
 hand the one parameter file would grow very large on big projects and thus
