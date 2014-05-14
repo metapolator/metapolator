@@ -1,4 +1,3 @@
-"use strict";
 define([
     'angular'
   , './widget-controller'
@@ -8,6 +7,7 @@ define([
   , Controller
   , directive
 ) {
+    "use strict";
     return angular.module('mtk.widget', [])
            .controller('WidgetController', Controller)
            .directive('mtkWidget', directive)

@@ -5,6 +5,7 @@ define([
     _BaseModel
   , ContainerModel
 ){
+    "use strict";
     // this is a stub, its likely that nothing of this file will persist
     function WidgetModel(name, value) {
         this.name = name;

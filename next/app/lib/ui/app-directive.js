@@ -1,9 +1,9 @@
-"use strict";
 define([
     'require/text!./app.tpl'
     ], function(
     template
 ) {
+    "use strict";
     function appDirective() {
         return {
             restrict: 'E' // only matches element names

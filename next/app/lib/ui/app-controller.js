@@ -1,6 +1,5 @@
-"use strict";
 define([], function() {
-    
+    "use strict";
     function AppController($scope, model, registerFrontend) {
         registerFrontend(this);
         this.$scope = $scope;

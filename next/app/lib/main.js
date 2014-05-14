@@ -1,4 +1,3 @@
-"use strict";
 require.config({
     baseUrl: 'lib'
   , paths: {
@@ -28,6 +27,7 @@ require([
   , Metapolator
   , AppModel
 ) {
+    "use strict";
     // This model is a stub. We will have to create something
     // that suits our needs :-)
     // general model

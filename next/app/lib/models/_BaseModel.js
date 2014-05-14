@@ -1,5 +1,9 @@
-define([], function(){
-    
+define([
+
+],
+function()
+{
+    "use strict";
     // All models will share some basics
     function _BaseModel() {
         

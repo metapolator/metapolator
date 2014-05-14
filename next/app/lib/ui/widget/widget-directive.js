@@ -1,9 +1,9 @@
-"use strict";
 define([
     'require/text!./widget.tpl'
     ], function(
     template
 ) {
+    "use strict";
     function widgetDirective(mainCtrl) {
         return {
             restrict: 'E' // only matches element names

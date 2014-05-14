@@ -5,6 +5,7 @@ define([
     _BaseModel
   , ContainerModel
 ){
+    "use strict";
     //this is a stub to wire things up.
     
     

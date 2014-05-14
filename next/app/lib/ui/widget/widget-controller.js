@@ -1,6 +1,5 @@
-"use strict";
 define([], function() {
-    
+    "use strict";
     function WidgetController($scope) {
         this.$scope = $scope;
         this.$scope.name = 'widget'

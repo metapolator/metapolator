@@ -1,9 +1,9 @@
-"use strict";
 define([
     'require/text!./container.tpl'
     ], function(
     template
 ) {
+    "use strict";
     function containerDirective(mainCtrl) {
         return {
             restrict: 'E' // only matches element names

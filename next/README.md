@@ -26,6 +26,7 @@ $ ./serve.sh
 ```
 
 If you wan't run the testsuite:
+
 ```
 # after checking out the 'next' branch and `cd next`:
 # should install `The Intern`, because the Intern does the testing

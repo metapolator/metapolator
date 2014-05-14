@@ -1,4 +1,3 @@
-"use strict";
 define([
     'angular'
   , './app-controller'
@@ -10,6 +9,7 @@ define([
   , directive
   , containerModule
 ) {
+    "use strict";
     return angular.module('mtk.metapolator', [containerModule.name])
       .controller('AppController', Controller)
       .directive('metapolator', directive)

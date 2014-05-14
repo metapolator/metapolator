@@ -1,9 +1,9 @@
-"use strict";
 define([
 
 ], function(
 
 ) {
+    "use strict";
     function Metapolator(model, angularApp) {
         this.angularApp = angularApp
         this.frontend = undefined;
