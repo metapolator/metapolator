@@ -1,15 +1,9 @@
 define([
     'gonzales/gonzales'
   , './PropertyCollection'
-  , './Source'
-  , './ValueRule'
-  , './CommentRule'
 ], function(
     gonzales
   , PropertyCollection
-  , Source
-  , ValueRule
-  , CommentRule
 ) {
     "use strict";
     
@@ -36,15 +30,11 @@ define([
     function rulesFromAST(ast, sourceName) {
         if(sourceName === undefined)
             sourceName = '(unkown source)';
-        var source = new Source(sourceName)
-          , propertyCollection = new PropertyCollection(source)
+        var stack = []
           , lineNo = 1
-          , breadth = []
           , depth
-          , stack = []
           , frame
-          , seen = {}
-          , type, content
+          , type
           , node, unvisited, data, childFrame, childType, childNode
           , root
           , createNode = {
@@ -153,7 +143,7 @@ define([
             node.children.push(childNode);
         }
         
-        return propertyCollection;
+        return root;
     }
     
     
