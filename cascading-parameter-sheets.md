@@ -102,7 +102,6 @@ display of the value after we submitted the change-request, this would only
 cause confusion. This, however, implies that we should lock the value until
 we receive the answer, otherwise the user might be confused by the control
 element moving autonomously.
-```
 
 CSP Data-Model:
 ---------------
