@@ -3,6 +3,7 @@ require.config({
   , paths: {
       'require/domReady': 'bower_components/requirejs-domready/domReady'
     , 'require/text': 'bower_components/requirejs-text/text'
+    , 'gonzales': 'npm_converted/gonzales/lib'
     , angular: 'bower_components/angular/angular'
     }
   , shim: {
