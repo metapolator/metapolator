@@ -26,8 +26,9 @@ require([
 ) {
     "use strict";
     domReady(function() {
-        var css = "body{ \n  background-color: #fff;\n\
-  margin: 0 auto\n}\
+        var css = "body{ \n  background-color /*property comment*/: #fff;\n\
+  margin: 0 auto;\n\
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='a.png',sizingMethod='scale')}\
 /* And a comment */ \
 strange>.selector\
 /* selector comment \n with linebreak */\
