@@ -69,11 +69,11 @@ a very complete CSS implementation and it allows us to keep the parts we
 don't interpret around, so we can obey the "We don't delete!" rule. First
 tests showed, that we might even be able to restore the line numbers from
 the AST (which it sadly does not provide by itself). That would be a great
-help with debugging the CSP, the method used, however, still has to be
+help with debugging the CPS, the method used, however, still has to be
 tested against the real-life.
 
 
-Building the CSP Viewer and Editor
+Building the CPS Viewer and Editor
 ----------------------------------
 
 ### Concepts
@@ -103,7 +103,7 @@ cause confusion. This, however, implies that we should lock the value until
 we receive the answer, otherwise the user might be confused by the control
 element moving autonomously.
 
-CSP Data-Model:
+CPS Data-Model:
 ---------------
 
 I started to parse CSS using Gonzales and to read the AST into a usable
@@ -137,7 +137,7 @@ Tree from the AST, sorted into "Generic AST-Items" and "Specific" items.
 This is, however, at a very basic state, but works implies already, that
 our tactic will work.
 
-The CSP interface:
+The CPS interface:
 ------------------
 
 I suggest 2 stages: The first as a pure display of the model. The second
@@ -165,7 +165,7 @@ Both modes load using a CascadedParameters object, the CascadedParameters
 may expose useful API-methods, so that we can keep knowledge away from
 the UI wherever possible.
 
-**File Mode** Display one "file" or more exact "source" of CSP. This will
+**File Mode** Display one "file" or more exact "source" of CPS. This will
 make it possible to change the order of RuleSets.
 
 **Entity Mode** This will display all Rulesets that apply to one entity,
