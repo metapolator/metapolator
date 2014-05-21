@@ -1,5 +1,5 @@
 define([
-    '../_BaseModel'
+    './_Node'
 ], function(
     Parent
 ) {
@@ -12,12 +12,17 @@ define([
         this._items = [];
     }
     var _p = PropertyCollection.prototype = Object.create(Parent.prototype)
+    _p.constructor = PropertyCollection;
+    
+    _p.toString = function() {
+        return this._items.join('\n');
+    }
     
     Object.defineProperty(_p, 'items', {
         get: function(){ return this._items.slice(); }
     })
     
-    Object.defineProperty(_p, 'lenth', {
+    Object.defineProperty(_p, 'length', {
         get: function(){ return this._items.length }
     })
     
