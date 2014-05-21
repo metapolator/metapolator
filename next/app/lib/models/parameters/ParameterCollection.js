@@ -7,12 +7,12 @@ define([
     /**
      * A list of Rules and Comments
      */
-    function PropertyCollection() {
+    function ParameterCollection() {
         Parent.call(this)
         this._items = [];
     }
-    var _p = PropertyCollection.prototype = Object.create(Parent.prototype)
-    _p.constructor = PropertyCollection;
+    var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
+    _p.constructor = ParameterCollection;
     
     _p.toString = function() {
         return this._items.join('\n');
@@ -35,5 +35,5 @@ define([
         return this._items.push.apply(this._items, newItems);
     }
     
-    return PropertyCollection;
+    return ParameterCollection;
 })
