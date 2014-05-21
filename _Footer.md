@@ -1,1 +1,1 @@
-_This wiki is for the development of documents used by the Metapolator team, and can only be edited by Metapolator team members._
+_This wiki is for the development of documents used by the Metapolator team, and can only be edited by Metapolator team members. Ask to join on the [Metapolator G+ Community](https://plus.google.com/communities/110027004108709154749)_
