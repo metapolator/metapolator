@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 sysctl vm.overcommit_memory=1
 
 /usr/bin/mysqld_safe &
@@ -29,9 +29,15 @@ DATABASE_NAME='metapolator'""" > /var/www/metapolator/metapolator/localconfig.py
 
     python /var/www/metapolator/metapolator/models.py
     chown -R user:user /var/www/metapolator
-    
+
     echo ssh user password: $SSH_USERPASS
     echo mysql root password: $METAPOLATOR_PASSWORD
+
+    read -p "Enter public additional SSH keys: " sshkey
+    if [ -n "$sshkey" ]; then
+        mkdir /home/user/.ssh/
+        echo $sshkey > /home/user/.ssh/authorized_keys
+    fi
 fi
 
 supervisord -n
