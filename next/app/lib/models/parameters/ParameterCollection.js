@@ -7,15 +7,17 @@ define([
     /**
      * A list of Rules and Comments
      */
-    function ParameterCollection() {
-        Parent.call(this)
+    function ParameterCollection(items, source, lineNo) {
+        Parent.call(this, source, lineNo);
         this._items = [];
+        if(items.length)
+            this.push.apply(this, items);
     }
     var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterCollection;
     
     _p.toString = function() {
-        return this._items.join('\n');
+        return this._items.join('\n\n');
     }
     
     Object.defineProperty(_p, 'items', {
@@ -27,8 +29,7 @@ define([
     })
     
     /**
-     * Add items to this PropertyCollection. The item should resemble the
-     * Interface of ./_BaseRule to be compatible.
+     * Add items to this PropertyCollection.
      */
     _p.push = function(item /*, ... items */) {
         var newItems = Array.prototype.slice.call(arguments)

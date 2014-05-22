@@ -14,6 +14,10 @@ define([
     var _p = Comment.prototype = Object.create(Parent.prototype)
     _p.constructor = Comment;
     
+    _p.toString = function() {
+        return ['/*', this._comment, '*/'].join('');
+    }
+    
     Object.defineProperty(_p, 'comment', {
         get: function(){ return this._comment; }
     })

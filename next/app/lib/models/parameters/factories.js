@@ -2,6 +2,13 @@ define([
     'gonzales/gonzales'
   , './Source'
   , './ParameterCollection'
+  , './Rule'
+  , './SelectorList'
+  , './Selector'
+  , './ParameterDict'
+  , './Parameter'
+  , './ParameterName'
+  , './ParameterValue'
   , './Comment'
   , './GenericCPSNode'
   
@@ -9,6 +16,13 @@ define([
     gonzales
   , Source
   , ParameterCollection
+  , Rule
+  , SelectorList
+  , Selector
+  , ParameterDict
+  , Parameter
+  , ParameterName
+  , ParameterValue
   , Comment
   , GenericCPSNode
 ) {
@@ -26,29 +40,6 @@ define([
         else if(stack)
             this.stack = stack
     }
-    
-    
-    function Rule(){}
-    function SelectorList(source, lineNo){}
-    SelectorList.prototype.push = function(){};
-        // add a push/list interface
-    
-    function Selector(elements, source, lineNo){}
-    function ParameterDict(source, lineNo){}
-    ParameterDict.prototype.push = function(){};
-        // add a push/list interface
-        // make this an ordered dict. Ordered to keep the comments where
-        // they belong. Dict for access to the Parameters themselves!
-        // There is the possibility to declare two parameters of the same
-        // name. We merge multiply defined Parameter like so:
-        // the last one wins, the other previous ones are getting dumped.
-        // If this is not fancy enough we can still think of another approach.
-    
-    
-    function Parameter(name, value, source, lineNo){}
-    function ParameterName(name, comments ,source, lineNo){}
-    function ParameterValue(value, comments ,source, lineNo){}
-    
     
     // FIXME: we should only keep "meaningful" data.
     // A ["s", " "]  ("s" is whitespace) could be left out, because we
@@ -94,7 +85,19 @@ define([
          * 
          * Also there are s (whitespace) and comment (comments).
          */
-        'stylesheet': ParameterCollection
+        'stylesheet': function(node, source) {
+            var items = []
+              , i=0
+              ;
+            for(;i<node.children.length;i++) {
+                if(node.children[i].type === '__GenericAST__'
+                                && node.children[i].instance.type === 's')
+                    continue;
+                items.push(node.children[i].instance)
+            }
+            
+            return new ParameterCollection(items, source, node.lineNo);
+        }
         
         /**
          * ruleset:
@@ -104,7 +107,26 @@ define([
          * From the docs:
          * Consists of selector (selector) and block (a set of rules).
          */
-      , 'ruleset': function(){}
+      , 'ruleset': function(node, source) {
+            var selectorList, parameterDict;
+            if(node.children[0].type !== 'selector')
+                throw new CPSError('The first child of "ruleset" is '
+                + 'expected to be a "selector", but got "' + node.children[0].type +'" '
+                +'" in a ruleset from: ' + source + 'line: '
+                + node.lineNo
+                +'.', new Error)
+            
+            if(node.children[1].type !== 'block')
+                throw new CPSError('The second child of "ruleset" is '
+                + 'expected to be a "block", but got "' + node.children[1].type +'" '
+                +'" in a ruleset from: ' + source + 'line: '
+                + node.lineNo
+                +'.', new Error)
+            selectorList = node.children[0].instance;
+            parameterDict = node.children[1].instance;
+            
+            return new Rule(selectorList, parameterDict, source, node.lineNo)
+        }
       
         /**
          * selector:
@@ -120,7 +142,7 @@ define([
          */
       , 'selector': function(node, source) {
             var items
-              , selectorList = new SelectorList(source, node.lineNo)
+              , selectorList = new SelectorList([], source, node.lineNo)
               ;
             items = node.children
                 .filter(function(item){return item.type === 'simpleselector'})
@@ -161,7 +183,7 @@ define([
          * 
          * We rename "declaration" as "Parameter"
          * 
-         * We throw a way "decldelim" and "s", we keep "declaration", 
+         * We throw away "decldelim" and "s", we keep "declaration", 
          * "comment" and __GenericAST__ (which will be produced by from
          * unkown "declaration"s/properties)
          * 
@@ -169,16 +191,27 @@ define([
          */
       , 'block': function(node, source) {
             var i=0
-              , block = new ParameterDict(source, node.lineNo)
+              , parameterDict = new ParameterDict([], source, node.lineNo)
+              , whitelist = {
+                    'comment': null,
+                    'declaration': null
+                }
+              , astBlacklist = {
+                    'decldelim': null,
+                    's': null
+                }
               ;
             
-            for(;i<node.children.length; i++)
-                if(node.children[i].type in {'comment': null,
-                                             'declaration': null,
-                                             '__GenericAST__':true
-                                        })
-                    block.push(node.children[i].instance);
-            return block;
+            for(;i<node.children.length; i++) {
+                if(node.children[i].type in whitelist
+                        || (node.children[i].type === '__GenericAST__'
+                            && !(node.children[i].instance.type in astBlacklist)
+                        )
+                ) {
+                    parameterDict.push(node.children[i].instance);
+                }
+            }
+            return parameterDict;
         }
       
         /**
@@ -192,6 +225,8 @@ define([
          * _makeNode.
          */
       , 'declaration': function (node, source) {
+            var name, value;
+            
             if(node.children[0].type !== 'property')
                 throw new CPSError('The first child of "declaration" is '
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
@@ -206,8 +241,8 @@ define([
                 + node.lineNo
                 +'.', new Error)
             
-            var name = node.children[0].instance
-              , value = node.children[1].instance;
+            name = node.children[0].instance;
+            value = node.children[1].instance;
             return new Parameter(name, value, source, node.lineNo);
         }
         
@@ -454,7 +489,7 @@ define([
                 node.children = [];
             node.children.push(childNode);
         }
-        return root
+        //return root
         return root.instance;
     }
     

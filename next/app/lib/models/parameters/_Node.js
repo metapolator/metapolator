@@ -16,9 +16,9 @@ define([
     var _p = _Node.prototype = Object.create(Parent.prototype)
     _p.constructor = _Node;
     
-    _p.toString = function(){
+    _p.toString = function() {
         throw new AbstractInterfaceError('This interface is abstract and'
-            + 'needs an implemenattion (parameters/_Node.toString)');
+            + 'needs an implementation (parameters/_Node.toString)');
     }
     
     function _getterCreator(item) {

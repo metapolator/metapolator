@@ -32,7 +32,7 @@ filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='a.png',sizingMeth
 /* And a comment */ \
 strange>.selector\
 /* selector comment \n with linebreak */\
-, and another one\
+,and another one\
 missing.delim >\
 { any-param\n: unheard-of(style + css);\
 /* a comment within a block */\
@@ -46,11 +46,16 @@ another-one: def-unheard-of(style + css)/*this param has a comment*/;\
         
         var ast = gonzales.srcToCSSP(css)
           , tree = gonzales.csspToTree(ast);
+        
+        var result = parameterFactories.rulesFromAST(ast)
+        console.log('parameterFactories.rulesFromAST(ast)', result)
+        var pre = document.createElement('pre');
+        pre.appendChild(document.createTextNode(result));
+        document.body.appendChild(pre);
+        
         var pre = document.createElement('pre');
         pre.appendChild(document.createTextNode(tree));
         document.body.appendChild(pre);
         
-        console.log('parameterFactories.rulesFromAST(ast)',
-                                    parameterFactories.rulesFromAST(ast))
     })
 })
