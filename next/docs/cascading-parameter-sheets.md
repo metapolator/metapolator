@@ -119,7 +119,7 @@ The base for the CPS Object-Model is established in
   * we have ways to just keep unkown data around
   
 #### What we can *NOT* do
-  * understand properties, parse `PropertyValue`-objects or `Selector`-Objects
+  * understand properties, parse `ParameterValue`-objects or `Selector`-Objects
   * query the `ParameterCollection` for rules that apply for a certain object,
     this will need the MFOM (Metapolator Font Object Model) for interaction
     anyways.
@@ -163,9 +163,13 @@ AST from gonzales. The resulting object is an instance of `ParameterCollection`.
 
 All objects used in the CPS Object-Model so far are:
 
-* **`Source`** every node has one, so we can track the origin of it
-* **`_Node`** every item in the CPS Object-Model should at least 
-  implement the interfaces of this base model.
+* **`Source`** every `_Node` has one, so we can track the origin of it.
+
+* **`_Node`** at the moment all items in the CPS-Object-Model inherit
+  from `_Node`. `_Node` itself inherits from
+  [`_BaseModel`](https://github.com/metapolator/metapolator/blob/next/next/app/lib/models/_BaseModel.js).
+  `_Node` has the `Source` and line-number information of each CPS Object-Model
+  item.
 * **`ParameterCollection`** consists at the highest level of a list of
   `Comment`, `GenericCPSNode` and `Rule`-objects.
   
