@@ -76,7 +76,7 @@ _The grind: flesh out with 3+ masters to a family/multiverse._
 1. Load 3+ masters or prepare them (see scenarios 1, 1b, 2 and 3 for various ways of doing this)
 * set up the design space with the masters
 * eventually create a new master out of the loaded ones
- 2. either
+ 2. either:
     3. explore the multitude of possible instances in-between the masters
     * promote the instance to a new master
  * or copy one master, _straight_
@@ -109,11 +109,11 @@ _The grind: flesh out with 3+ masters to a family/multiverse._
 _Extend: add script (i.e. a writing system) support._
 * Packing list for developers:
  * metafont algorithm containing typographic knowledge of this script; implicit definition of typographical parameters
- * exception definition of so-called ‘universal’ parameters that really should not be applied to this script
+ * exception definitions of so-called ‘universal’ typographical parameters that really should not be applied to this script
  * unicode range affected by this script
  * default opentype features definition
- * generic skeleton set for all glyphs in this script
- * side bearings defaults for these glyphs.
+ * generic skeleton set for all glyphs in this script (used for auto-trace and glyph set generation in scenario 3)
+ * side bearings defaults for these glyphs (where this is required to make the script ‘work’).
 
 ### scenario 5b
 _Extend: add a custom algorithm._
