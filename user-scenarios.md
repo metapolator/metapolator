@@ -16,7 +16,14 @@ _Easy beginnings: make subtle changes to an existing font to adapt it to domain 
 * at the point where font adjustment seems solid: adjust kerning where needed
 * finally: hinting (when needed).
 
-## scenario 1b
+### scenario 1b
+_Typographer applies radical graphical treatments to an existing font for a design._
+* Same as scenario 1, but with the following differences:
+ * apart from typographical adjustments, there are also graphical/geometrical adjustments
+ * adjustments may not be subtle, nor within the realm of ‘conventional’ fonts
+ * the intention is still to make adjustments for the ‘whole’ font in one go, not on a glyph-by-glyph basis.
+
+## scenario 2
 _Font designer creates a new font through exploration of two compatible masters (i.e. in script, glyph shapes—on a typographical, non-tech level)._
 
 1. Open font for master 1
@@ -44,14 +51,7 @@ _Font designer creates a new font through exploration of two compatible masters 
 * when the font is ready: release it to the outside world
 * months or years later: repeat this scenario (starting from any point in the workflow) to create an updated version of this font.
 
-## scenario 1c
-_Typographer applies radical graphical treatments to an existing font for a design._
-* Same as scenario 1, but with the following differences:
- * apart from typographical adjustments, there are also graphical/geometrical adjustments
- * adjustments may not be subtle, nor within the realm of ‘conventional’ fonts
- * the intention is still to make adjustments for the ‘whole’ font in one go, not on a glyph-by-glyph basis.
-
-## scenario 2
+## scenario 3
 _Create a font from sketch (a scan, or graphics made outside of font tools)._
 
 1. Import the image of a number of characters
@@ -68,12 +68,12 @@ _Create a font from sketch (a scan, or graphics made outside of font tools)._
  * this ranges from as-fast-as-possible loops, to long contemplative periods (days or even longer)
  * make corrections to the skeleton and side-bearings of the glyph set and individual glyphs
 * iterate until the glyph set looks and feels ‘together’, like a font should
-* continue with scenario 1, 1b, or even 1c to finish the font.
+* continue with scenario 1, 2, or even 1b to finish the font.
 
-## scenario 3
-_The grind: flesh out with 3+ masters to a family/multiverse_
+## scenario 4
+_The grind: flesh out with 3+ masters to a family/multiverse._
 
-1. Load 3+ masters or prepare them (see scenarios 1, 1b, 1c and 2 for various ways of doing this)
+1. Load 3+ masters or prepare them (see scenarios 1, 1b, 2 and 3 for various ways of doing this)
 * set up the design space with the masters
 * eventually create a new master out of the loaded ones
  2. either
@@ -104,3 +104,16 @@ _The grind: flesh out with 3+ masters to a family/multiverse_
 * finally: hinting (when needed)
 * when the families are ready: release them to the outside world
 * months or years later: repeat this scenario (starting from any point in the workflow) to create an updated version of this collection.
+
+## scenario 5
+_Extend: add script (i.e. a writing system) support._
+* Packing list for developers:
+ * metafont algorithm containing typographic knowledge of this script; implicit definition of typographical parameters
+ * exception definition of so-called ‘universal’ parameters that really should not be applied to this script
+ * unicode range affected by this script
+ * default opentype features definition
+ * generic skeleton set for all glyphs in this script
+ * side bearings defaults for these glyphs.
+
+### scenario 5b
+_Extend: add a custom algorithm._
