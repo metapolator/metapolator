@@ -1,4 +1,4 @@
-User scenarios show the essential use, in logical, worthwhile and valuable steps from users’ point of view. There is no need for completeness, just that the compact set of scenarios lead through most of the area of the ‘field’ of use.
+User scenarios show the essential use, in logical, worthwhile and valuable steps from users’ point of view. There is no need for completeness, just that the compact set of scenarios lead through most of the area of the ‘field’ of use. Some of these scenarios have been tuned the ‘Metapolator’ way. Certain steps that are needed today—because font tools are broken—have been omitted (fix the tools, not users’ activity).
 
 ## scenario 1
 _Easy beginnings: make subtle changes to an existing font to adapt it to domain of use._
