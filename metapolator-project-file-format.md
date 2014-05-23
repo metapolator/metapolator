@@ -15,32 +15,57 @@ Metapolator pursues the course of UFO and defines the Metapolator Project
 as a file format based on a directory structure:
 
 ```
-my-super-family.mf                   the Metapolator Project directory
+my-super-family.mf                   directory containing a Metapolator Project. 
 │
-├── project.yml                      stitches together all the pieces
-│                                    (We use .yaml because its easy to author,
-│                                    UFO uses plist in a similar way, but plist is a legacy format)
+├── project.yml                      yaml file to stitch together all the pieces
+│                                    (We use yaml because its easy to author,
+│                                    UFO uses plist in a similar way, but plist 
+|                                    is a legacy format.)
 │
-├── global.cps                       a Cascading Parameters Sheet that
-│                                    each Master uses
+├── global.cps                       Cascading Parameters Sheet file that
+│                                    each Master uses.
 │
-├── instance0001.cps                 a Cascading Parameters Sheet that
-│                                    defines an instance
+├── instance0001.cps                 Cascading Parameters Sheet file that
+│                                    defines an instance.
 │
-└── masters                          directory with all Meta Masters
+└── metamasters                      directory containing all Meta Masters.
     │ 
-    ├── my-first-master.ufo          These UFOv3 files are documented at
-    │   │                            http://unifiedfontobject.org/versions/ufo3/index.html
-    │   │                            I concentrate on the metapolator
-    │   │                            special aditions
+    ├── my-first-master.ufo          UFOv3 directory. This format is documented at
+    │   │                            http://unifiedfontobject.org/versions/ufo3/
+    │   │                            And the following describes the additions
+    │   │                            specific to metapolator.
     │   ├── ... (UFOv3 stuff)
     │   ├── data
-    │   │   └── com.metapolator.cps  a Cascading Parameters Sheet local
-    │   │                            to the master
+    |   |   ├── com.metapolator.skeleton001.cps  Cascading Parameters Sheet file, 
+    |   |   |                                    with data local to the master's layer.
+    |   |   |
+    |   |   ├── com.metapolator.skeleton002.cps  Cascading Parameters Sheet file, 
+    |   |   |                                    with data local to the master's layer.
+    |   |   |
+    │   │   └── com.metapolator.skeleton003.cps  Cascading Parameters Sheet file, 
+    │   │                                        with data local to the master's layer.
     │   │
-    │   └── glyphs.skeleton          a UFOv3 layer directory where we store
-    │       │                        the skeleton as open contours.
+    │   ├── glyphs                   UFOv3 layer directory, where we store
+    │   |   │                        the original imported closed contours
+    │   |   └── ...                  
+    |   |
+    │   ├── glyphs.skeleton001       a UFOv3 layer directory where we store
+    │   |   │                        a skeleton as open contours, created 
+    |   |   |                        by inference of the glyphs layer during import 
+    │   |   └── ...
+    |   |
+    │   ├── glyphs.skeleton002       a UFOv3 layer directory where we store
+    │   |   │                        a skeleton as open contours, created
+    |   |   |                        by the user cloning the first skeleton
+    |   |   |                        and adjusting its positions 
+    │   |   └── ...
+    |   |
+    │   ├── glyphs.skeleton003       a UFOv3 layer directory where we store
+    │   |   │                        a skeleton as open contours, created
+    |   |   |                        by the user cloning the first skeleton
+    |   |   |                        and adjusting its positions 
     │       └── ...
+    | 
     ├── my-second-master.ufo
     │   └── ...
     └── ...
