@@ -16,9 +16,9 @@ as a file format based on a directory structure:
 
 ```
 my-super-family.mf                   the Metapolator Project directory
-├── project.plist                    stitching together all the pieces
-│                                    we use .plist because its used already in
-│                                    UFO a lot
+├── project.yml                      stitches together all the pieces
+│                                    (We use .yaml because its easy to author,
+│                                    UFO uses plist in a similar way, but plist is a legacy format)
 ├── global.cps                       a Cascading Parameters Sheet that
 │                                    each Master uses
 ├── instance0001.cps                 a Cascading Parameters Sheet that
