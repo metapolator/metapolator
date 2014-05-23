@@ -16,14 +16,19 @@ as a file format based on a directory structure:
 
 ```
 my-super-family.mf                   the Metapolator Project directory
+│
 ├── project.yml                      stitches together all the pieces
 │                                    (We use .yaml because its easy to author,
 │                                    UFO uses plist in a similar way, but plist is a legacy format)
+│
 ├── global.cps                       a Cascading Parameters Sheet that
 │                                    each Master uses
+│
 ├── instance0001.cps                 a Cascading Parameters Sheet that
 │                                    defines an instance
+│
 └── masters                          directory with all Meta Masters
+    │ 
     ├── my-first-master.ufo          These UFOv3 files are documented at
     │   │                            http://unifiedfontobject.org/versions/ufo3/index.html
     │   │                            I concentrate on the metapolator
@@ -32,6 +37,7 @@ my-super-family.mf                   the Metapolator Project directory
     │   ├── data
     │   │   └── com.metapolator.cps  a Cascading Parameters Sheet local
     │   │                            to the master
+    │   │
     │   └── glyphs.skeleton          a UFOv3 layer directory where we store
     │       │                        the skeleton as open contours.
     │       └── ...
