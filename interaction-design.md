@@ -14,6 +14,6 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 * Typographer applies radical graphical treatments to an existing font for a design.
 * Font designer creates a new font through exploration of two compatible masters.
 * Create a font from sketch.
-* The grind: flesh out with 3+ masters to a family/multiverse.
+* The grind: flesh out 3+ masters to a family/multiverse.
 * Extend: add script (i.e. a writing system) support.
 * Extend: add a custom algorithm.
