@@ -175,3 +175,38 @@ my-super-family.mf                   directory containing a Metapolator Project.
     └── ...
 
 ```
+
+Aiming for normalization
+
+
+```
+my-super-family.mf                   directory containing a Metapolator Project. 
+│
+├── project.yml                      yaml file to stitch together all the pieces
+│                                    (We use yaml because its easy to author,
+│                                    UFO uses plist in a similar way, but plist 
+|                                    is a legacy format.)
+├── base.ufo                         UFO that serves as base for instances etc.
+├── parameters
+|   ├── global.cps
+│   ├── parameters001.cps
+│   ├── parameters002.cps
+│   └── parameters003.cps
+├── skeletons
+│   ├── skeleton001                  a UFOv3 or UFOv2 layer-like directory where we store
+│   |   │                            a skeleton as open contours, created 
+|   |   |                            by inference of the glyphs layer during import 
+│   |   └── ...
+│   └── skeleton002                 
+│       └── ...
+└── masters
+    ├── master0001.yaml
+    └── master0001.yaml
+```
+
+Where master0001.yaml is something like:
+
+```yaml
+skeleton: skeleton001
+parameters: [global.cps, parameters002.cps]
+```
