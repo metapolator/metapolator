@@ -21,6 +21,8 @@ my-super-family.mf                   the Metapolator Project directory
 │                                    UFO a lot
 ├── global.cps                       a Cascading Parameters Sheet that
 │                                    each Master uses
+├── instance0001.cps                 a Cascading Parameters Sheet that
+│                                    defines an instance
 └── masters                          directory with all Meta Masters
     ├── my-first-master.ufo          These UFOv3 files are documented at
     │   │                            http://unifiedfontobject.org/versions/ufo3/index.html
