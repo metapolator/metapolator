@@ -185,22 +185,22 @@ my-super-family.mf                   directory containing a Metapolator Project.
 ├── project.yml                      yaml file to stitch together all the pieces
 │                                    (We use yaml because its easy to author,
 │                                    UFO uses plist in a similar way, but plist 
-|                                    is a legacy format.)
+|                                    is a legacy format) and for global data needed
+|                                    during instance generation
 |
 ├── instance001.cps                  Instance definition 
 |
-├── base.ufo                         UFO that serves as base for instances etc.
 ├── parameters
 |   ├── global.cps
 │   ├── skeleton001.cps
 │   ├── skeleton002-some.cps
 │   └── skeleton002-other.cps
 └── skeletons
-    ├── skeleton001                  a UFOv2 layer-like directory where we store
-    |   │                            a skeleton as open contours, created 
+    ├── skeleton001                  directory containing UFOv3 GLYF files of
+    |   │                            'skeleton' open contours, created 
     |   |                            by inference of the glyphs layer during import 
     |   └── ...
-    └── skeleton002                  a UFOv2 layer-like directory where we store
-        └── ...                      a skeleton as open contours, created 
+    └── skeleton002                  directory containing UFOv3 GLYF files of
+        └── ...                      'skeleton' open contours, created 
                                      by cloning the first and adjusting its point positions
 ```
