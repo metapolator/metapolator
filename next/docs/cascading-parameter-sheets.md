@@ -141,6 +141,47 @@ tested against the real-life.
 The parsing of CPS/CSS with gonzales, reading the AST into the CPS-Object-Model
 and serializing the result again can currently be seen in
 [http://localhost:8000/playground.html](http://localhost:8000/playground.html).
+
+##### Example roundtrip
+
+Besides some reformatting into a much prettier form, the important
+information here is that the *output* block is the result of a complete
+roundtrip: `string -> gonzales AST -> CPS-Object-Model -> string`
+
+input:
+
+```css
+body{ 
+  background-color /*property comment*/: #fff;
+  margin: 0 auto;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='a.png',sizingMethod='scale')}/* And a comment */ strange>.selector/* selector comment 
+ with linebreak */,and another onemissing.delim >{ any-param
+: unheard-of(style + css);/* a comment within a block */another-one: def-unheard-of(style + css)/*this param has a comment*/;}@media whatever{ hi{name:val} }
+```
+
+output:
+
+```css
+body {
+    background-color /*property comment*/:  #fff;
+    margin:  0 auto;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='a.png',sizingMethod='scale');
+}
+
+/* And a comment */
+
+strange>.selector/* selector comment 
+ with linebreak */,
+and another onemissing.delim > {
+    any-param:  unheard-of(style + css);
+    /* a comment within a block */
+    another-one: /*this param has a comment*/  def-unheard-of(style + css);
+}
+
+@media whatever{ hi{name:val} }
+```
+
+
 The most intersting part happens in
 [`app/lib/models/parameters/factories.js`](https://github.com/metapolator/metapolator/blob/next/next/app/lib/models/parameters/factories.js).
 Where all the logic for the conversion from AST to CPS-Object-Model is contained.
