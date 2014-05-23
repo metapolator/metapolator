@@ -149,7 +149,7 @@ my-super-family.mf                   directory containing a Metapolator Project.
     │   │                            The following describes the additions
     │   │                            specific to metapolator.
     │   │
-    │   ├── ... (UFO stuff that was imported)
+    │   ├── ... (Imported UFO files) Ignored.
     │   │
     │   └── glyphs                   UFO layer directory, where we store
     │       │                        the original imported closed contours.
@@ -158,11 +158,14 @@ my-super-family.mf                   directory containing a Metapolator Project.
     | 
     ├── my-original-master-meta.ufo  UFO directory.
     │   │
-    │   ├── ... (UFO stuff that is there only for correctness, ignored)
+    │   ├── metainfo.plist           The only required file in a UFO. 
+    |   |                            We use a standard, static, file for this.
+    │   │
+    │   ├── ... (Other UFO files)    Ignored.
     │   │
     │   ├── data
     |   |   └── com.metapolator.cps  Cascading Parameters Sheet file, 
-    |   |                            with data local to the metamaster's layer.
+    |   |                            with data local to the metamaster's glyphs.
     │   │
     │   └── glyphs                   UFO layer directory, where we store
     │       │                        a skeleton as open contours, created
@@ -171,11 +174,14 @@ my-super-family.mf                   directory containing a Metapolator Project.
     |
     ├── my-new-meta-master.ufo       UFO directory.
     │   │
-    │   ├── ... (UFO stuff that is there only for correctness, ignored)
+    │   ├── metainfo.plist           The only required file in a UFO.
+    |   |                            We use a standard, static, file for this.
+    │   │
+    |   ├── ... (Other UFO files)    Ignored.
     │   │
     │   ├── data
     |   |   └── com.metapolator.cps  Cascading Parameters Sheet file, 
-    |   |                            with data local to the metamaster's layer.
+    |   |                            with data local to the metamaster's glyphs.
     │   │
     │   └── glyphs                   UFO layer directory, where we store
     │       └── ...                  a skeleton as open contours, created
