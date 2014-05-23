@@ -34,3 +34,11 @@ The second conclusion is that for an N-master metapolation at most ½·N·(N-1) 
 The conclusion from these conclusions is that the minimum number of inputs grows nice and linear with N _(7-master metapolation: 6 inputs)_, while the maximum number grows quadratic, which quickly adds up _(7-master metapolation: 21 inputs)_.
 
 Although one could say that for simplicity sake striving for a minimum number of inputs is desirable, it can also be said that the maximum number of inputs is a true representation of the complexity of the design space.
+
+## design requirements for metapolation interaction
+1. scale to any number of masters; cpu power and user ambition set the limits;
+* support exploration: free ‘wandering’ through the design space;
+* support ‘reduce the amount of master 2, while all else stays equal’;
+* support ‘change the ratio of master 2 and 3, while all else stays equal’;
+* support precise input of factors:
+* support fine-tuning of factors.
