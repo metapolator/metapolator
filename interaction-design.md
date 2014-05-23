@@ -17,3 +17,6 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 * The grind: flesh out 3+ masters to a family/multiverse.
 * Extend: add script (i.e. a writing system) support.
 * Extend: add a custom algorithm.
+
+##design work
+A major part of Metapolator is… [metapolation](https://github.com/metapolator/metapolator/wiki/metapolation).
