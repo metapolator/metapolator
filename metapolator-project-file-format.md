@@ -185,8 +185,9 @@ my-super-family.mf                   directory containing a Metapolator Project.
 ├── project.yml                      yaml file to stitch together all the pieces
 │                                    (We use yaml because its easy to author,
 │                                    UFO uses plist in a similar way, but plist 
-|                                    is a legacy format) and for global data needed
-|                                    during instance generation
+|                                    is a legacy format)
+|
+├── base.ufo                         generic UFO data for instance generation
 |
 ├── instance001.cps                  Instance definition 
 |
