@@ -29,7 +29,7 @@ _Example: for a 4-master metapolation, there are 1 + 2 + 3 = 6 (= ½·4·3) rati
 
 The fist conclusion is that for an N-master metapolation only N-1 factors (think: input sliders) are needed; the final factor can be calculated from the 100% rule above. N-1 is the **minimum number** of inputs a metapolation needs. When a master is added to a metapolation, this number increases by 1.
 
-The second conclusion is that an N-master metapolation at most ½·N·(N-1) factors are needed; the relationship between each master to every other master is defined. ½·N·(N-1) is the **maximum number** of inputs a metapolation needs. When a master is added to an N-master metapolation, this number increases by N.
+The second conclusion is that for an N-master metapolation at most ½·N·(N-1) factors are needed; the relationship between each master to every other master is defined. ½·N·(N-1) is the **maximum number** of inputs a metapolation needs. When a master is added to an N-master metapolation, this number increases by N.
 
 The conclusion from these conclusions is that the minimum number of inputs grows nice and linear with N _(7-master metapolation: 6 inputs)_, while the maximum number grows quadratic, which quickly adds up _(7-master metapolation: 21 inputs)_.
 
