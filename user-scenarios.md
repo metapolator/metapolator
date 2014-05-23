@@ -113,7 +113,7 @@ _Extend: add script (i.e. a writing system) support._
  * unicode range affected by this script
  * default opentype features definition
  * generic skeleton set for all glyphs in this script (used for auto-trace and glyph set generation in scenario 3)
- * side bearings defaults for these glyphs (where this is required to make the script ‘work’).
+ * side bearings defaults for these glyphs (only where this is required to make the script ‘work’ for its readers).
 
 ### scenario 5b
 _Extend: add a custom algorithm._
