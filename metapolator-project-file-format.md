@@ -188,6 +188,7 @@ my-super-family.mf                   directory containing a Metapolator Project.
 |                                    is a legacy format)
 |
 ├── base.ufo                         generic UFO data for instance generation
+|                                    that does NOT have a glyphs subdirectory
 |
 ├── instance001.cps                  Instance definition 
 |
