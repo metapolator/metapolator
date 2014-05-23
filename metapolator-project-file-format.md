@@ -10,9 +10,10 @@ super-family container for Meta Master UFOv3 files.
 This file is a work in progress. It will become the documentation of the
 ".mp" Metapolator Project file format.
 
+Metapolator builds on UFO, and defines the Metapolator Project
+as a similar 'file format' that is actually a directory structure.
 
-Metapolator pursues the course of UFO and defines the Metapolator Project
-as a file format based on a directory structure:
+Lasse's original proposal with tweaks from Dave:
 
 ```
 my-super-family.mf                   directory containing a Metapolator Project. 
@@ -75,7 +76,7 @@ my-super-family.mf                   directory containing a Metapolator Project.
 
 ```
 
-Alternative UFOv3 'pure' approach:
+Dave's alternative 'single UFOv3 with layers' approach. This is nice because it is normalised, with no redundant UFO stuff. 
 
 ```
 my-first-master.ufo          UFOv3 directory. This format is documented at
@@ -119,7 +120,7 @@ my-first-master.ufo          UFOv3 directory. This format is documented at
 └── ... (UFOv3 stuff)
 ```
 
-Alternative UFOv2 'pure' approach:
+Dave's alternative UFOv2 or UFOv3 many-UFOs approach. The benefit of this is that is is 'Load/Save' not 'Import/Export', as all the font data is always in a format that many existing UFO-native tools can edit. With this, Metapolator easily fits into existing worlflows. On the down side, it has some redundant UFO stuff.
 
 ```
 my-super-family.mf                   directory containing a Metapolator Project. 
@@ -137,35 +138,35 @@ my-super-family.mf                   directory containing a Metapolator Project.
 │
 └── masters                          directory containing all Masters and Meta Masters.
     │ 
-    ├── my-original-master.ufo       UFOv2 directory. This format is documented at
-    │   │                            http://unifiedfontobject.org/versions/ufo2/
-    │   │                            And the following describes the additions
+    ├── my-original-master.ufo       UFOv2/3 directory. This format is documented at
+    │   │                            http://unifiedfontobject.org
+    │   │                            The following describes the additions
     │   │                            specific to metapolator.
-    │   ├── ... (UFOv2 stuff)
+    │   ├── ... (UFO stuff)
     │   │
-    │   └── glyphs                   UFOv2 layer directory, where we store
+    │   └── glyphs                   UFO layer directory, where we store
     │       │                        the original imported closed contours.
     │       └── ...                  
     |   
     | 
-    ├── my-original-master-meta.ufo  UFOv2 directory.
-    │   ├── ... (UFOv2 stuff)
+    ├── my-original-master-meta.ufo  UFO directory.
+    │   ├── ... (UFO stuff)
     │   ├── data
     |   |   └── com.metapolator.cps  Cascading Parameters Sheet file, 
     |   |                            with data local to the metamaster's layer.
     │   │
-    │   └── glyphs                   UFOv2 layer directory, where we store
+    │   └── glyphs                   UFO layer directory, where we store
     │       │                        a skeleton as open contours, created
     │       └── ...                  by inferring a skeleton from the imported
     |                                UFO with closed contours
     |
-    ├── my-new-meta-master.ufo       UFOv2 directory.
-    │   ├── ... (UFOv2 stuff)
+    ├── my-new-meta-master.ufo       UFO directory.
+    │   ├── ... (UFO stuff)
     │   ├── data
     |   |   └── com.metapolator.cps  Cascading Parameters Sheet file, 
     |   |                            with data local to the metamaster's layer.
     │   │
-    │   └── glyphs                   UFOv2 layer directory, where we store
+    │   └── glyphs                   UFO layer directory, where we store
     │       └── ...                  a skeleton as open contours, created
     |                                by the user cloning the first skeleton
     |                                and adjusting its positions 
@@ -176,7 +177,7 @@ my-super-family.mf                   directory containing a Metapolator Project.
 
 ```
 
-Aiming for normalization
+Lasse's counter proposal to the above, aiming for normalization:
 
 
 ```
