@@ -194,8 +194,8 @@ my-super-family.mf                   directory containing a Metapolator Project.
 ├── parameters
 |   ├── global.cps
 │   ├── skeleton001.cps
-│   ├── skeleton002-some.cps
-│   └── skeleton002-other.cps
+│   ├── some-ideas.cps
+│   └── skeleton002.cps
 └── skeletons
     ├── skeleton001                  directory containing UFOv3 GLYF files of
     |   │                            'skeleton' open contours, created 
