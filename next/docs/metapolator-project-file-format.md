@@ -148,7 +148,8 @@ my-super-family.mf                   directory containing a Metapolator Project.
     │   │                            http://unifiedfontobject.org
     │   │                            The following describes the additions
     │   │                            specific to metapolator.
-    │   ├── ... (UFO stuff)
+    │   │
+    │   ├── ... (UFO stuff that was imported)
     │   │
     │   └── glyphs                   UFO layer directory, where we store
     │       │                        the original imported closed contours.
@@ -156,7 +157,9 @@ my-super-family.mf                   directory containing a Metapolator Project.
     |   
     | 
     ├── my-original-master-meta.ufo  UFO directory.
-    │   ├── ... (UFO stuff)
+    │   │
+    │   ├── ... (UFO stuff that is there only for correctness, ignored)
+    │   │
     │   ├── data
     |   |   └── com.metapolator.cps  Cascading Parameters Sheet file, 
     |   |                            with data local to the metamaster's layer.
@@ -167,7 +170,9 @@ my-super-family.mf                   directory containing a Metapolator Project.
     |                                UFO with closed contours
     |
     ├── my-new-meta-master.ufo       UFO directory.
-    │   ├── ... (UFO stuff)
+    │   │
+    │   ├── ... (UFO stuff that is there only for correctness, ignored)
+    │   │
     │   ├── data
     |   |   └── com.metapolator.cps  Cascading Parameters Sheet file, 
     |   |                            with data local to the metamaster's layer.
@@ -175,7 +180,7 @@ my-super-family.mf                   directory containing a Metapolator Project.
     │   └── glyphs                   UFO layer directory, where we store
     │       └── ...                  a skeleton as open contours, created
     |                                by the user cloning the first skeleton
-    |                                and adjusting its positions 
+    |                                and adjusting its positions, or drawing it
     |
     ├── another-meta-master.ufo          
     │   └── ...
