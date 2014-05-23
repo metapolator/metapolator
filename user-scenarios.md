@@ -71,7 +71,7 @@ _Create a font from sketch (a scan, or graphics made outside of font tools)._
 * continue with scenario 1, 2, or even 1b to finish the font.
 
 ## scenario 4
-_The grind: flesh out with 3+ masters to a family/multiverse._
+_The grind: flesh out 3+ masters to a family/multiverse._
 
 1. Load 3+ masters or prepare them (see scenarios 1, 1b, 2 and 3 for various ways of doing this)
 * set up the design space with the masters
