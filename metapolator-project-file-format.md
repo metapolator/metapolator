@@ -13,6 +13,8 @@ This file is a work in progress. It will become the documentation of the
 Metapolator builds on UFO, and defines the Metapolator Project
 as a similar 'file format' that is actually a directory structure.
 
+## Initial Proposal
+
 Lasse's original proposal with tweaks from Dave:
 
 ```
@@ -76,6 +78,8 @@ my-super-family.mf                   directory containing a Metapolator Project.
 
 ```
 
+## Single UFOv3
+
 Dave's alternative 'single UFOv3 with layers' approach. This is nice because it is normalised, with no redundant UFO stuff. 
 
 ```
@@ -119,6 +123,8 @@ my-first-master.ufo          UFOv3 directory. This format is documented at
 |
 └── ... (UFOv3 stuff)
 ```
+
+## Many UFOs
 
 Dave's alternative UFOv2 or UFOv3 many-UFOs approach. The benefit of this is that is is 'Load/Save' not 'Import/Export', as all the font data is always in a format that many existing UFO-native tools can edit. With this, Metapolator easily fits into existing worlflows. On the down side, it has some redundant UFO stuff.
 
@@ -177,8 +183,9 @@ my-super-family.mf                   directory containing a Metapolator Project.
 
 ```
 
-Lasse's counter proposal to the above, aiming for normalization:
+## Non-UFO
 
+Lasse's counter proposal to the above, aiming for normalization, where there is no _working_ UFO data (implying that Metapolator loads/saves this format and imports/exports working UFOs):
 
 ```
 my-super-family.mf                   directory containing a Metapolator Project. 
