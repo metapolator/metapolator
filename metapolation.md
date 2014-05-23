@@ -18,4 +18,8 @@ _y = 30%·2 + 40%·3 + 30%·2 = 0.6 + 1.2 + 0.6 = 2.4_
 
 _Instance coordinate is (2,2.4)_
 
-All parameters that 
+All parameters are also calculated by the formula above.
+
+_Example: 5-master metapolation, parameter weight for the five masters is 21, 32, 43, 98 and 62. Instance has metapolation 30% M1, 20% M2, 30% M3, 10% M4, 10% M5._
+
+_Instance weight = 30%·21 + 20%·32 + 30%·43 + 10%·98 + 10%·62 = 6.3 + 6.4 + 12.9 + 9.8 + 6.2 = 41.6_
