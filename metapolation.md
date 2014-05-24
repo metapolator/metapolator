@@ -40,5 +40,7 @@ Although one could say that for simplicity sake striving for a minimum number of
 * support exploration: free ‘wandering’ through the design space;
 * support ‘reduce the amount of master 2, while all else stays equal’;
 * support ‘change the ratio of master 2 and 3, while all else stays equal’;
-* support precise input of factors:
-* support fine-tuning of factors.
+* support precise input of factors;
+* support fine-tuning of factors;
+* compatible with 2-D output (screen) and 2-D input (mouse or trackpad);
+* straightforward; no mental energy shall be waisted on decoding the interaction.
