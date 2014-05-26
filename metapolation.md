@@ -50,6 +50,7 @@ Although one could say that for simplicity sake striving for a minimum number of
 
 ### string of pearls
 ![](http://www.mmiworks.net/metapolator/string.png)
+
 Show here in a cheerful way, this interaction allows to set the ratio between adjacent masters. With N-1 inputs for N masters, it _has_ the minimum number of inputs; the math predicts that the factors of all masters can be calculated.
 
 #### the score
