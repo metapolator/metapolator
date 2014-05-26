@@ -51,15 +51,22 @@ Although one could say that for simplicity sake striving for a minimum number of
 ### string of pearls
 ![](http://www.mmiworks.net/metapolator/string.png)
 
-Show here in a cheerful way, this interaction allows to set the ratio between adjacent masters. With N-1 inputs for N masters, it _has_ the minimum number of inputs; the math predicts that the factors of all masters can be calculated.
+Show here in a cheerful way, this interaction allows to set the ratio between adjacent masters. With N-1 inputs for N masters, it _has_ the minimum number of inputs; the math predicts that the factors of all masters can be calculated. 
+
+It is obvious how the string is extended when a master is added.
 
 #### the score
 1. ✓ scale to any number of masters;
 * ✗ support exploration;
 * ✗ support ‘reduce the amount of master 2…’;
-* ✓ support ‘change the ratio of master 2 and 3…’;
+* ~ support ‘change the ratio of master 2 and 3…’;
 * ✗ support precise input of factors;
 * ~ support fine-tuning of factors;
 * ✓ compatible with 2-D output and input;
 * ~ be straightforward;
 * ✗ depict the 100% rule.
+
+### gearbox
+![](http://www.mmiworks.net/metapolator/gear.png)
+
+Instead of a string of pearls, this is a string of A ↔ B balancers.
