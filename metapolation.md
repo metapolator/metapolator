@@ -43,4 +43,5 @@ Although one could say that for simplicity sake striving for a minimum number of
 * support precise input of factors;
 * support fine-tuning of factors;
 * compatible with 2-D output (screen) and 2-D input (mouse or trackpad);
-* straightforward; no mental energy shall be waisted on decoding the interaction.
+* be straightforward; no mental energy shall be waisted on decoding the interaction;
+* depict the 100% rule (see math); when master 2 is increased by X percentage point, there is X percent less to divide between all other masters.
