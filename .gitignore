@@ -4,3 +4,4 @@
 localconfig.py
 /node_modules
 test.err
+*/node_modules
