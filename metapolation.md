@@ -98,5 +98,25 @@ It is obvious how the mixer is extended when a master is added.
 * ✗ support precise input of factors;
 * ~ support fine-tuning of factors;
 * ✓ compatible with 2-D output and input;
-* ✓ be straightforward;
+* ~ be straightforward;
+* ✗ depict the 100% rule.
+
+### double-breasted
+![](http://www.mmiworks.net/metapolator/double.png)
+
+Thus named by David Crossland, this is a straight implementation of the maximum number of inputs a metapolation needs; the ratio between each master to every other master. From the math it can be expected that when the slider between Mx and My is changed by users, _all_ other sliders involving Mx and My will also have to move by themselves.
+
+Also can be specced and built in ‘half an hour.’ This is of course the champion in setting the ratio between pairs of masters. But comparing the 6-master setup above to the mixer, it is clear that double-breasted approach gets overwhelming when the number of masters rises (from N > 4, I’d say).
+
+When a master is added to N-master double-breasted, it needs to be extended by N more inputs.
+
+#### the score
+1. ✗ scale to any number of masters;
+* ✗ support exploration;
+* ✗ support ‘reduce the amount of master 2…’;
+* ✓ support ‘change the ratio of master 2 and 3…’;
+* ✗ support precise input of factors;
+* ~ support fine-tuning of factors;
+* ✓ compatible with 2-D output and input;
+* ~ be straightforward;
 * ✗ depict the 100% rule.
