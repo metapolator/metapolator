@@ -86,7 +86,7 @@ It is obvious how the string is extended when M8 is added.
 
 Inspired by mixing consoles used in music production, this interaction simply sets the factor of each master. It has N inputs for N masters, so it is just one up from the minimum number of inputs.
 
-With this interaction it is very simple to set and see how much of each master is ‘in the mix.’ But other tasks are not so simple, like changing ratios between 2 or 3 masters, and again there is no sense of design space. Beyond that, the behaviour of the mixer gets really funky—because of the 100% rule—when either all of the ‘faders’ are set to zero, or only one fader is non-zero.
+Also can be specced and built in ‘half an hour.’ With this interaction it is very simple to set and see how much of each master is ‘in the mix.’ But other tasks are not so simple, like changing ratios between 2 or 3 masters, and again there is no sense of design space. Beyond that, the behaviour of the mixer gets really funky—because of the 100% rule—when either all of the ‘faders’ are set to zero, or only one fader is non-zero.
 
 It is obvious how the mixer is extended when a master is added.
 
