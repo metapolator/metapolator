@@ -74,9 +74,29 @@ It is obvious how the string is extended when a master is added.
 
 Instead of a string of pearls, this is a string of A ↔ B ratio-setters. It shares the pros and cons of the string of pearls, although it now supports setting the ratios between pairs of masters.
 
-### extending
+#### extending
 When one master is added, the gearbox looks as follows:
 
 ![](http://www.mmiworks.net/metapolator/gearplus.png)
 
 It is obvious how the string is extended when M8 is added.
+
+### mixer
+![](http://www.mmiworks.net/metapolator/mixer.png)
+
+Inspired by mixing consoles used in music production, this interaction simply sets the factor of each master. It has N inputs for N masters, so it is just one up from the minimum number of inputs.
+
+With this interaction it is very simple to set and see how much of each master is ‘in the mix.’ But other tasks are not so simple, like changing ratios between 2 or 3 masters, and again there is no sense of design space. Beyond that, the behaviour of the mixer gets really funky—because of the 100% rule—when either all of the ‘faders’ are set to zero, or only one fader is non-zero.
+
+It is obvious how the mixer is extended when a master is added.
+
+#### the score
+1. ✓ scale to any number of masters;
+* ✗ support exploration;
+* ✓ support ‘reduce the amount of master 2…’;
+* ✗ support ‘change the ratio of master 2 and 3…’;
+* ✗ support precise input of factors;
+* ~ support fine-tuning of factors;
+* ✓ compatible with 2-D output and input;
+* ✓ be straightforward;
+* ✗ depict the 100% rule.
