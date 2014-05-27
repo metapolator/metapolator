@@ -132,7 +132,7 @@ The lone triangle can easily be enhanced to do A ↔ B ratios:
 
 ![](http://www.mmiworks.net/metapolator/triangleAB.png)
 
-#### the score
+#### the score _(enhanced version)_
 1. ✗ scale to any number of masters;
 * ✓ support exploration;
 * ✗ support ‘reduce the amount of master 2…’;
@@ -143,3 +143,7 @@ The lone triangle can easily be enhanced to do A ↔ B ratios:
 * ✓ be straightforward;
 * ✓ depict the 100% rule.
 
+### the Noordzij cube
+![](http://www.mmiworks.net/metapolator/Noordzij.png)
+
+The Noordzij cube is a… 4-master setup. Studying it shows us that an N-master setup is a N-1 dimensional space. ALso it shows how difficult it is for users to interpret and control M-dimensional spaces (M > 2) in a 2-D medium (the screen).
