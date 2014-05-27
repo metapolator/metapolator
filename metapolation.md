@@ -120,3 +120,26 @@ When a master is added to N-master double-breasted, it needs to be extended by N
 * ✓ compatible with 2-D output and input;
 * ~ be straightforward;
 * ✗ depict the 100% rule.
+
+### the lone triangle
+![](http://www.mmiworks.net/metapolator/triangle.png)
+
+Although it only works for a 3-master setup, the lone triangle has got a lot going for it. First of all: here is a representation of a design space (!); then, users can wander around (!) using the single control; last: the 100% rule is shown (!) (the more one moves to one of the masters, the less wiggle room there is for the other two).
+
+But yeah, any number of masters as long as it is three.
+
+The lone triangle can easily be enhanced to do A ↔ B ratios:
+
+![](http://www.mmiworks.net/metapolator/triangleAB.png)
+
+#### the score
+1. ✗ scale to any number of masters;
+* ✓ support exploration;
+* ✗ support ‘reduce the amount of master 2…’;
+* ✓ support ‘change the ratio of master 2 and 3…’;
+* ✗ support precise input of factors;
+* ~ support fine-tuning of factors;
+* ✓ compatible with 2-D output and input;
+* ✓ be straightforward;
+* ✓ depict the 100% rule.
+
