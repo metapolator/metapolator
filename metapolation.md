@@ -146,4 +146,29 @@ The lone triangle can easily be enhanced to do A ↔ B ratios:
 ### the Noordzij cube
 ![](http://www.mmiworks.net/metapolator/Noordzij.png)
 
-The Noordzij cube is a… 4-master setup. Studying it shows us that an N-master setup is a N-1 dimensional space. ALso it shows how difficult it is for users to interpret and control M-dimensional spaces (M > 2) in a 2-D medium (the screen).
+The Noordzij cube is a 4-master setup. Studying it shows us that an N-master setup is a N-1-dimensional space (one master in the origin, the other N-1 set up an axis each). It also becomes clear how difficult it is for users to interpret and control M-dimensional spaces (M > 2) in a 2-D medium (the screen).
+
+We can enhance the Noordzij cube for better interpretation and control:
+
+![](http://www.mmiworks.net/metapolator/Noordzij2D.png)
+
+What we have done is swap out one 3-D interaction for three 2-D interactions, which are coupled through the inherent redundancy (i.e. because each of the 3 dimensions is mapped to 2 input knobs, when one knob is moved one or both others do too).
+
+And also this can easily be enhanced to do A ↔ B ratios:
+
+![](http://www.mmiworks.net/metapolator/NoordzijAB.png)
+
+#### the score _(AB-enhanced version)_
+1. ✗ scale to any number of masters;
+* ✓ support exploration;
+* ✗ support ‘reduce the amount of master 2…’;
+* ✓ support ‘change the ratio of master 2 and 3…’;
+* ✗ support precise input of factors;
+* ~ support fine-tuning of factors;
+* ✓ compatible with 2-D output and input;
+* ~ be straightforward;
+* ✗ depict the 100% rule.
+
+_ps:_ a Noordzij that implements the 100% rule is a [tetrahedron](http://en.wikipedia.org/wiki/Tetrahedron):
+
+![](http://www.mmiworks.net/metapolator/tetrahedron.png)
