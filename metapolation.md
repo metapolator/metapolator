@@ -182,7 +182,7 @@ The left-and right-hand side of the sliders are configurable; they can be set to
 
 ![](http://www.mmiworks.net/metapolator/minimumAlt.png)
 
-When a left-or right-hand side of a slider is changed, the slider value is adapted to show the current state of metapolation.
+When a left-or right-hand side of a slider is changed, the slider value is adapted to show the current state of metapolation. Because there is no redundancy in the inputs (there are _just_ enough of them) no slider influences (i.e. moves) another slider when it is moved by users.
 
 Also the left-hand side of the sliders can be ‘From zero’, which turns the slider into a fader as seen on [the mixer](https://github.com/metapolator/metapolator/wiki/metapolation#mixer):
 
