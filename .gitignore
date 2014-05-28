@@ -5,5 +5,11 @@ localconfig.py
 /node_modules
 test.err
 /bower*
-/static/dist
-/static/lib
+.DS_Store
+_site
+.index.html.swp
+.venv
+/static
+/users
+/docs
+/sessions

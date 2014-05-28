@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dotaccent" format="1">
+  <advance width="1065"/>
+  <unicode hex="02D9"/>
+  <outline>
+    <contour>
+      <point x="466" y="1475" type="line"/>
+      <point x="133" y="1475" type="line"/>
+      <point x="133" y="1215" type="line"/>
+      <point x="466" y="1215" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

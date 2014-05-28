@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Z.smcp" format="1">
+  <advance width="1615"/>
+  <outline>
+    <contour>
+      <point x="1008" y="54" type="line"/>
+      <point x="114" y="54" type="line"/>
+      <point x="114" y="0" type="line"/>
+      <point x="1008" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="981" y="1124" type="line"/>
+      <point x="981" y="1165" type="line"/>
+      <point x="943" y="1165" type="line"/>
+      <point x="95" y="46" type="line"/>
+      <point x="95" y="0" type="line"/>
+      <point x="132" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="956" y="1165" type="line"/>
+      <point x="129" y="1165" type="line"/>
+      <point x="129" y="1112" type="line"/>
+      <point x="956" y="1112" type="line"/>
+    </contour>
+    <contour>
+      <point x="129" y="1165" type="line"/>
+      <point x="129" y="872" type="line"/>
+      <point x="183" y="872" type="line"/>
+      <point x="183" y="1165" type="line"/>
+    </contour>
+    <contour>
+      <point x="1008" y="0" type="line"/>
+      <point x="1008" y="293" type="line"/>
+      <point x="954" y="293" type="line"/>
+      <point x="954" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

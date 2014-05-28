@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="F.smcp" format="1">
+  <advance width="1181"/>
+  <outline>
+    <contour>
+      <point x="555" y="1165" type="line"/>
+      <point x="233" y="1165" type="line"/>
+      <point x="233" y="0" type="line"/>
+      <point x="555" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="1038" y="672" type="line"/>
+      <point x="461" y="672" type="line"/>
+      <point x="461" y="433" type="line"/>
+      <point x="1038" y="433" type="line"/>
+    </contour>
+    <contour>
+      <point x="1125" y="1165" type="line"/>
+      <point x="461" y="1165" type="line"/>
+      <point x="461" y="907" type="line"/>
+      <point x="1125" y="907" type="line"/>
+    </contour>
+    <contour>
+      <point x="1125" y="1165" type="line"/>
+      <point x="855" y="1165" type="line"/>
+      <point x="884" y="772" type="line"/>
+      <point x="1125" y="772" type="line"/>
+    </contour>
+    <contour>
+      <point x="233" y="0" type="line"/>
+      <point x="233" y="230" type="line"/>
+      <point x="80" y="200" type="line"/>
+      <point x="80" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="555" y="0" type="line"/>
+      <point x="708" y="0" type="line"/>
+      <point x="708" y="200" type="line"/>
+      <point x="555" y="230" type="line"/>
+    </contour>
+    <contour>
+      <point x="233" y="1165" type="line"/>
+      <point x="80" y="1165" type="line"/>
+      <point x="80" y="965" type="line"/>
+      <point x="233" y="935" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

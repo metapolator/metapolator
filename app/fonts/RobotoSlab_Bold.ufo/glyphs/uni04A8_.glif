@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="uni04A8" format="1">
+  <advance width="1627"/>
+  <unicode hex="04A8"/>
+  <outline>
+    <contour>
+      <point x="1568" y="237" type="line"/>
+      <point x="1174" y="237"/>
+      <point x="955" y="458"/>
+      <point x="955" y="739" type="curve" smooth="yes"/>
+      <point x="955" y="930" type="line" smooth="yes"/>
+      <point x="955" y="1143"/>
+      <point x="1002" y="1207"/>
+      <point x="1085" y="1207" type="curve" smooth="yes"/>
+      <point x="1181" y="1207"/>
+      <point x="1235" y="1151"/>
+      <point x="1235" y="910" type="curve" smooth="yes"/>
+      <point x="1235" y="718" type="line" smooth="yes"/>
+      <point x="1235" y="453"/>
+      <point x="1069" y="250"/>
+      <point x="801" y="250" type="curve" smooth="yes"/>
+      <point x="565" y="250"/>
+      <point x="427" y="421"/>
+      <point x="427" y="657" type="curve" smooth="yes"/>
+      <point x="427" y="881" type="line" smooth="yes"/>
+      <point x="427" y="1066"/>
+      <point x="499" y="1206"/>
+      <point x="620" y="1206" type="curve"/>
+      <point x="620" y="1477" type="line"/>
+      <point x="299" y="1477"/>
+      <point x="84" y="1217"/>
+      <point x="84" y="879" type="curve" smooth="yes"/>
+      <point x="84" y="657" type="line" smooth="yes"/>
+      <point x="84" y="275"/>
+      <point x="371" y="-21"/>
+      <point x="801" y="-21" type="curve" smooth="yes"/>
+      <point x="1254" y="-21"/>
+      <point x="1558" y="302"/>
+      <point x="1558" y="718" type="curve" smooth="yes"/>
+      <point x="1558" y="867" type="line" smooth="yes"/>
+      <point x="1558" y="1225"/>
+      <point x="1368" y="1477"/>
+      <point x="1085" y="1477" type="curve" smooth="yes"/>
+      <point x="826" y="1477"/>
+      <point x="653" y="1239"/>
+      <point x="653" y="929" type="curve" smooth="yes"/>
+      <point x="653" y="741" type="line" smooth="yes"/>
+      <point x="653" y="298"/>
+      <point x="1020" y="-11"/>
+      <point x="1568" y="-11" type="curve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

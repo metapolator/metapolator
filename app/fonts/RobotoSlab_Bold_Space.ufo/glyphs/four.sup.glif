@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="four.sup" format="1">
+  <advance width="1360"/>
+  <outline>
+    <contour>
+      <point x="788" y="302" type="line"/>
+      <point x="274" y="302" type="line"/>
+      <point x="452" y="518" type="line"/>
+      <point x="642" y="801" type="line"/>
+      <point x="473" y="801" type="line"/>
+      <point x="48" y="271" type="line"/>
+      <point x="63" y="134" type="line"/>
+      <point x="788" y="134" type="line"/>
+    </contour>
+    <contour>
+      <point x="695" y="801" type="line"/>
+      <point x="471" y="801" type="line"/>
+      <point x="471" y="0" type="line"/>
+      <point x="695" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

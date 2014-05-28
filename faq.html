@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en" ng-app="metapolatortestApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Metapolator: Font Family Creation</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="http://getbootstrap.com/examples/starter-template/starter-template.css">
+    <link href="app/css/demo_new.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/style.css">
+    <script type="text/javascript" charset="utf-8" src="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/js/page_context.js"></script>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css"/>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:100italic,500,300,700,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="app/js/app.js"></script>
+
+    <script type="text/javascript" src="//bootstrapdocs.com/v2.0.3/docs/assets/js/bootstrap-carousel.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+  <body screen_capture_injected="true">
+
+<!--  Carousel - consult the Twitter Bootstrap docs at
+      http://twitter.github.com/bootstrap/javascript.html#carousel -->
+<div id="this-carousel-id" class="carousel slide"><!-- class of slide for animation -->
+  <div class="carousel-inner">
+    <div class="item active"><!-- class of active since it's the first item -->
+      <img src="images/header_2.jpg" alt="" />
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/header_3.jpg" alt="" />
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/header_1.jpg" alt="" />
+      <div class="carousel-caption">
+      </div>
+    </div>
+  </div><!-- /.carousel-inner -->
+  <!--  Next and Previous controls below
+        href values must reference the id for this carousel -->
+    <a class="carousel-control left" href="#this-carousel-id" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#this-carousel-id" data-slide="next">&rsaquo;</a>
+</div><!-- /.carousel -->
+
+
+    <div class="container">
+        <div class="starter-template" style="margin-top: 50px">
+          <metaptitel> FONT FAMILY CREATION</metaptitel><br>
+          <metaptitelsmall class="lead">DESIGN FONT STYLES AND FONT FAMILIES WITH METAPOLATOR</metaptitelsmall>
+        </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1> </h1>
+        </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Where is the demo?</h1>
+          <p class="lead">Read this page to get an idea what this is all about or get the lates build from https://github.com/metapolator/metapolator</p>
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="starter-template">
+          <h1>Can we extrapolate from a single master?</h1>
+            <p class="lead"> Yes, Metapolator is calculating a skeleton from the glyph outline. From the skeleton to the original outline or to a parametrised version, we can create new inter- and extrapolations.
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/skeleton.png" alt="...">
+               </a>
+        </div>
+    </div>
+     <div class="container">
+        <div class="starter-template">
+          <h1>Why do I need to tag points?</h1>
+            <p class="lead"> Metapolator wants to know how and where you want change an outline. For this we have to 'name' a few parts of a glyph. Only if a part is known for the system it can be controlled.
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/pino.jpg" alt="...">
+               </a>
+        </div>
+    </div>
+
+     <div class="container">
+        <div class="starter-template">
+          <h1>When do I need to tag points?</h1>
+            <p class="lead">Glyphs gets grouped into its type when loading a UFO. A capital letter is therefore in the group 'capitals' and by changing values on vertical metrics we can adjust the height of the capital letter.
+If we want to specify single points we click on a point in the editor and assign it to a group. In the case of lowercase 'b' we want to tag the ascender stroke as 'b' gets into the group x-height by default (tagging the ascender is less work than tag all x-height related points).
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/tagging.gif" alt="...">
+               </a>
+        </div>
+    </div>
+     <div class="container">
+        <div class="starter-template">
+          <h1>Can I design a glyph from scratch?</h1>
+            <p class="lead"> No. Metapolator is a system to create new styles and font families from existing fonts outlines. The system is designed to work seamlessly within the working process of type design. For example; sketching on paper -- creating outlines in a font editor -- making new styles and families in Metapolator -- refine ufo’s in a font editor.
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/sketch.jpg" alt="...">
+               </a>
+        </div>
+    </div>
+     <div class="container">
+        <div class="starter-template">
+          <h1>Is Metapolator using metaphysics?</h1>
+            <p class="lead"> No, the term ‘meta’ refers to Donald Knuth’s Metafont, a programming language for digital fonts. Mr. Knuth is one of the founders of contemporary mathematics and computer programming. There is no "magic" going on in Metafont, only pure, clean and perfect calculations.
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/art.jpg" alt="...">
+               </a>
+        </div>
+    </div>
+      <div class="container">
+        <div class="starter-template">
+          <h1>Why is the slider stack always visible?</h1>
+            <p class="lead"> The core elements are metapolation settings and specimen cards. To compare values with other instances controllers are always on the same view as the instance itself. Controllers can be hidden individually.
+            </p>
+        </div>
+    </div>
+      </div>
+      <div class="container">
+        <div class="starter-template">
+          <h1>Can I use my renaissance antiqua in Metapolator?</h1>
+            <p class="lead"> Yes, for interpolation using at least 2 masters no extra work in Metapolator is needed. Metapolation from a single master requires tagging consistently using pairs of points.
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/garamond.gif" alt="...">
+               </a>
+        </div>
+    </div>
+      </div>
+      <div class="container">
+        <div class="starter-template">
+          <h1>I dont want to wait until the new demo is ready, how can I test Metapolator anyway?</h1>
+            <p class="lead"> Use our new command line tool, which does the same interpolation calculation as the interface.
+            </p>
+               <a href="#" class="thumbnail">
+               <img src="images/cli.png" alt="...">
+               </a>
+        </div>
+    </div>
+      <div class="container">
+        <div class="starter-template">
+          <h1>Do I need to program Metafont code?</h1>
+            <p class="lead"> No, metafont functions are controlled by data sliders (dat-gui), You could extend the functionality and write your own metafont functions and contribute to our git repository. To change the parameter values use the slider controls below each example.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+            <div class="starter-template">
+            <div class="starter-template" ng-controller="canvasCtrl">
+                <div class="starter-template" ng-controller="SliderCtrl" >
+                    <div class="starter-template" ng-controller="glyphCtrl">
+                        <div class="starter-template" >
+                                <div id="glyph"></div>
+                                <div class="sliders" id="glyphSlider" style="text-align:center"></div>
+                                <div class="starter-template" style="margin-bottom: 100px">
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="starter-template" >
+                    <div class="starter-template" ng-controller="wordCtrl">
+                        <div class="starter-template">
+                            <div id="glyphsWord"></div>
+                            <div class="sliders" id="wordSlider" style="margin-bottom: 200px; margin-top: 50px; text-align:center"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="starter-template" >
+                    <div class="starter-template" ng-controller="paragraphCtrl">
+                        <div class="starter-template">
+                            <div id="paragraphWord"></div>
+                            <div class="paragrahSlider" style="margin-bottom: 100px; margin-top: 50px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="starter-template" >
+                    <div class="starter-template" ng-controller="xheightCtrl">
+                        <div class="starter-template">
+                            <div id="xheight"></div>
+                            <div class="sliders" id="xheightSlider" style="margin-bottom: 200px; margin-top: 50px"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+    <!-- /.container -->
+
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Why is Metapolator dealing with control points and pen points?</h1>
+            <p class="lead">
+The level of abstraction is up to the user. You can have total control of all anchor points and control points or leave the point calculation to Metapolator. You decide how much of 'automatic' design you want.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>When I want to apply some metafont function to the tagged points, how do I do it? How does the serif function work? Eg, make all cap-serif points 2x taller?</h1>
+            <p class="lead">
+Serifs can be ‘attached’ to every corner point of a stroke. The user gets control of the serif by setting parameters like serif height, slab, width and darkness.
+            </p>
+                <a href="#" class="thumbnail">
+               <img src="images/serifs.png" alt="...">
+               </a>
+        </div>
+    </div>
+
+      <div class="container">
+        <div class="starter-template">
+          <h1>Can I make italics from a regular cut?</h1>
+            <p class="lead">
+Yes, you can use the parameter ‘slant’ which is using optical corrections when slanting outlines and if needed substitute real italics like g, a, or y.
+        </div>
+    </div>
+
+      <div class="container">
+        <div class="starter-template">
+          <h1>What is metapolation?</h1>
+            <p class="lead">
+Interpolation enhanced with metafont parameters, for example to change the x-height of a font we use some metafont functions to calculate the new curve.
+            </p>
+        </div>
+    </div>
+
+      <div class="container">
+        <div class="starter-template">
+          <h1>What is a card?</h1>
+                        <p class="lead">
+A card is a specimen which shows the instance from one or muliple used axes. This is how it looks when a user is starting a new project in Metapolator.
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/card.jpg" alt="...">
+              </a>
+
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Where's the preview for each master?</h1>
+            <p class="lead">
+You can select every master that has been loaded into Metapolator. Click on checkbox "display master". This brings the master into the first card and moves all previous cards one card to the right.
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/master.jpg" alt="...">
+              </a>
+
+        </div>
+    </div>
+
+      <div class="container">
+        <div class="starter-template">
+          <h1>How can I edit a master?</h1>
+            <p class="lead">
+You can use the master editor to tag points or move their position. To make big changes on the outline, you can save your project, open the UFO in your favorite font editor and load it back to metapolator.
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/edit_outline.jpg" alt="...">
+              </a>
+
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Can I change the layout of the cards?</h1>
+            <p class="lead">
+Yes, use the column settings to change from 1, 2, or 4 column layout
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/four.jpg" alt="...">
+              </a>
+  
+      </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>I want to use waterfall instead of glyph preview.</h1>
+            <p class="lead">
+The user can choose between glyph view, waterfall or paragraph.
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/setting_specimen.jpg" alt="...">
+              </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Designers pick a bold or light weight by seeing this style in the context of other styles, so you can actually look for a right value for your bold right there. Example, a mostly regular paragraph with some bold words or sentences...</h1>
+            <p class="lead">
+We can copy paste text fragments from one card to another which then also copies its axis and instance settings. When selecting the instance name above the text fragment, it loads the actual values in the dat-gui for that specific instance:            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/multicard.png" alt="...">
+              </a>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>I’m using my font styles created with metapolator on my website, if I change one of the styles in metapolator, will it change on my website too?</h1>
+            <p class="lead">
+You can use a webfont link to embed a specific instance into your website. This allows to make changes on the fonts which affects the design of your page in realtime.
+            </p>
+        </div>
+    </div>
+
+      <div class="container">
+        <div class="starter-template">
+          <h1>How many axes and masters can I create?</h1>
+            <p class="lead">
+Its modular design allows the user to create unlimited amount of axes and link unlimited masters to create very complex interpolation environments. The environment is not limited to ‘multidimensions’ as we believe a dimensional space limits the users imagination and makes it complicated. Its still possible though to recreate such a models as the Noordzij cube.
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/cube.png" alt="...">
+              </a>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Can I create new masters within Metapolator?</h1>
+            <p class="lead">
+Yes, a user can create a new master from every instance or duplicate the master itself. Go to menu: master: create master from instance.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>I’m lost with all these masters and instances I’ve created. </h1>
+            <p class="lead">
+There will be a dendogram to get an overview for all created masters and instances within your project.
+            </p>
+              <a href="#" class="thumbnail">
+              <img src="images/dendogram.png" alt="...">
+              </a>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="starter-template">
+          <h1>Can I run Metapolator on my computer?</h1>
+          <p class="lead">Metapolator is built as a web application. Its possible to install everything on a local machine using a local server setup. The installation process is described on git: https://github.com/metapolator/metapolator</p>
+        </div>
+
+    </div>
+
+      <div class="container">
+        <div class="starter-template">
+          <h1>This sounds all amazing, can I use it for free?</h1>
+            <p class="lead">
+Metapolator is an open source project, please support us with your knowledge and join our community on Google+
+            </p>
+        </div>
+    </div>
+                       <h1 class="starter-template" >
+                        <a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a>
+                </h1>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./Starter Template for Bootstrap_files/jquery.min.js"></script>
+    <script src="./Starter Template for Bootstrap_files/bootstrap.min.js"></script>
+
+<div id="content">
+            <!-- dropdown menu for selecting a MIDI input -->
+            <select id="inputs"></select>
+
+            <!-- dropdown menu for selecting a MIDI output -->
+            <select id="outputs"></select>
+
+            <!-- incoming MIDI messages get displayed here -->
+            <div id="messages" class="clearfix">MIDI messages:<br/></div>
+        </div>
+</body>
+
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="app/js/instance.js"></script>
+<script type="text/javascript" src="app/js/opentype.js"></script>
+<script type="text/javascript" src="app/js/dat.gui.js"></script>
+<script type="text/javascript" src="app/js/JazzMIDI/JazzMIDIBridge.js"></script>
+<script type="text/javascript" src="app/js/JazzMIDI/MIDIDeviceSelector.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.carousel').carousel({interval: 2000});
+
+
+    "use strict";
+
+    var input = null,
+        output = null,
+        selectInput = document.getElementById("inputs"),
+        selectOutput = document.getElementById("outputs"),
+        midiMessages = document.getElementById("messages");
+
+
+    function connectDevices(MIDIAccess){
+        if(input){
+            var temp;
+            input.addEventListener("midimessage",function(msg){
+                if(output){
+                    output.sendMIDIMessage(msg);
+                }
+                if (msg != temp){
+                    console.log(msg);
+                    temp = msg;
+                }
+            });
+        }
+    }
+
+    JMB.init(function(MIDIAccess){
+
+        var inputs = MIDIAccess.enumerateInputs(),
+            outputs = MIDIAccess.enumerateOutputs();
+
+        //create dropdown menu for MIDI inputs
+        JMB.createMIDIDeviceSelector(selectInput,inputs,"input",function(deviceId){
+            if(input){
+                input.close();
+            }
+            input = MIDIAccess.getInput(deviceId);
+            connectDevices(MIDIAccess);
+        });
+
+        //create dropdown menu for MIDI outputs
+        JMB.createMIDIDeviceSelector(selectOutput,outputs,"ouput",function(deviceId){
+            if(output){
+                output.close();
+            }
+            output = MIDIAccess.getOutput(deviceId);
+            connectDevices(MIDIAccess);
+        });
+
+    });
+})
+</script>
+</html>

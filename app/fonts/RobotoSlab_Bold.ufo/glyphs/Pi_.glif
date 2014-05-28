@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Pi" format="1">
+  <advance width="1611"/>
+  <unicode hex="03A0"/>
+  <outline>
+    <contour>
+      <point x="1416" y="1456" type="line"/>
+      <point x="214" y="1456" type="line"/>
+      <point x="214" y="0" type="line"/>
+      <point x="537" y="0" type="line"/>
+      <point x="537" y="1196" type="line"/>
+      <point x="1094" y="1196" type="line"/>
+      <point x="1094" y="0" type="line"/>
+      <point x="1416" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="1094" y="0" type="line"/>
+      <point x="1094" y="230" type="line"/>
+      <point x="941" y="200" type="line"/>
+      <point x="941" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="1416" y="0" type="line"/>
+      <point x="1569" y="0" type="line"/>
+      <point x="1569" y="200" type="line"/>
+      <point x="1416" y="230" type="line"/>
+    </contour>
+    <contour>
+      <point x="214" y="0" type="line"/>
+      <point x="214" y="230" type="line"/>
+      <point x="61" y="200" type="line"/>
+      <point x="61" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="537" y="0" type="line"/>
+      <point x="690" y="0" type="line"/>
+      <point x="690" y="200" type="line"/>
+      <point x="537" y="230" type="line"/>
+    </contour>
+    <contour>
+      <point x="1416" y="1456" type="line"/>
+      <point x="1416" y="1226" type="line"/>
+      <point x="1569" y="1256" type="line"/>
+      <point x="1569" y="1456" type="line"/>
+    </contour>
+    <contour>
+      <point x="214" y="1456" type="line"/>
+      <point x="61" y="1456" type="line"/>
+      <point x="61" y="1256" type="line"/>
+      <point x="214" y="1226" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

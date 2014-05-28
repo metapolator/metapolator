@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="brevehookcomb" format="1">
+  <advance width="1383"/>
+  <outline>
+    <contour>
+      <point x="625" y="1456" type="line"/>
+      <point x="625" y="1400"/>
+      <point x="579" y="1351"/>
+      <point x="463" y="1351" type="curve" smooth="yes"/>
+      <point x="343" y="1351"/>
+      <point x="300" y="1400"/>
+      <point x="300" y="1456" type="curve"/>
+      <point x="94" y="1456" type="line"/>
+      <point x="94" y="1312"/>
+      <point x="236" y="1217"/>
+      <point x="463" y="1217" type="curve" smooth="yes"/>
+      <point x="689" y="1217"/>
+      <point x="831" y="1312"/>
+      <point x="831" y="1456" type="curve"/>
+    </contour>
+    <contour>
+      <point x="553" y="1491" type="line"/>
+      <point x="553" y="1539" type="line"/>
+      <point x="627" y="1547"/>
+      <point x="700" y="1580"/>
+      <point x="700" y="1650" type="curve" smooth="yes"/>
+      <point x="700" y="1747"/>
+      <point x="578" y="1804"/>
+      <point x="342" y="1804" type="curve"/>
+      <point x="335" y="1690" type="line"/>
+      <point x="414" y="1690"/>
+      <point x="470" y="1680"/>
+      <point x="470" y="1638" type="curve" smooth="yes"/>
+      <point x="470" y="1608"/>
+      <point x="430" y="1593"/>
+      <point x="335" y="1590" type="curve"/>
+      <point x="356" y="1491" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

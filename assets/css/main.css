@@ -1,0 +1,358 @@
+/*
+ * Author: Carlos Alvarez
+ * URL: http://alvarez.is
+ *
+ * Project Name: Bolt - Free Bootstrap 3 Theme
+ * Version: 1.0
+ * URL: http://blacktie.co
+ *
+ * color scheme1 74CFAE 477F6B 8FFFD6 244036 81E5C1
+ * colocr scheme2 color="#f8172e" color="#f3ece9" color="#1d1d1a" color="#4c5654" color="#5d5d5d"
+ */
+ 
+  
+ 
+/* FONTS */
+@import url(http://fonts.googleapis.com/css?family=Oswald:300,400,700,900);
+
+ 
+
+/* FONTS */
+/* OVERALL ASPECT */
+
+body {
+ 	background-color: #f2f2f2;
+font-family: "seannormal";
+    font-weight: 300;    color: #black;
+    font-size: 18px;
+
+
+    -webkit-font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+       
+    
+}
+
+/* Titles */
+
+ h6 {
+font-family: "seanultralight";
+    font-weight: 300;
+    line-height:110%;
+    color: #f2f2f2;
+}
+
+h1,h2, h3, {
+ 
+ }
+ h2 {
+    font-family: "seannormal";
+    font-weight: 300;
+    	font-size: 36px;
+    	line-height:120%;
+	
+}
+ h3 {
+font-family: "seannormal";
+    font-weight: 300;	
+
+}
+
+p {
+font-family: "seannormal";
+    font-weight: 300;    /* line-height: 28px; */ 
+}
+
+.col-lg-4 {
+/* class text in three column */
+}
+
+li {
+font-family: "seannormal";
+    font-weight: 300;    
+    list-style: none;
+
+	
+}
+
+.centered {
+    text-align: center;
+}
+
+.leftalign {
+    text-align: left;
+}
+
+.rightalign {
+    text-align: right;
+}
+
+/* Links */
+a {
+    color: #f85c37;
+    word-wrap: break-word;
+
+    -webkit-transition: color 0.1s ease-in, background 0.1s ease-in;
+    -moz-transition: color 0.1s ease-in, background 0.1s ease-in;
+    -ms-transition: color 0.1s ease-in, background 0.1s ease-in;
+    -o-transition: color 0.1s ease-in, background 0.1s ease-in;
+    transition: color 0.1s ease-in, background 0.1s ease-in;
+}
+
+a:hover,
+a:focus {
+    color: #7b7b7b;
+    text-decoration: none;
+    outline: 0;
+}
+
+a:before,
+a:after {
+    -webkit-transition: color 0.1s ease-in, background 0.1s ease-in;
+    -moz-transition: color 0.1s ease-in, background 0.1s ease-in;
+    -ms-transition: color 0.1s ease-in, background 0.1s ease-in;
+    -o-transition: color 0.1s ease-in, background 0.1s ease-in;
+    transition: color 0.1s ease-in, background 0.1s ease-in;
+}
+
+/* WRAP SECTIONS */
+
+/* hello */
+
+.home {
+	display: block;
+	position: relative;
+	display: block;
+	z-index: 85;
+	height: 100%;
+	background-color: #f3ece9;
+
+	
+}
+
+h1 {
+	text-transform: none;
+	font-size: 130px;
+	letter-spacing: 3px;
+	color: black;
+	line-height: 110%;
+font-family: "seanultralight";
+    font-weight: 300;}
+
+/* Section */
+
+.caption img {
+	margin-bottom: 100px;
+}
+
+.slide {
+	width: 100%;
+	padding: 125px 0 125px 0;
+	height: auto;
+	min-height: 600px;
+	display: block;
+	position: relative;
+}
+
+.row {
+	margin: 0;
+}
+
+.white {
+	color: white;
+}
+
+.black {
+	color: black;
+}
+
+.color1 {
+	background-color: #f8172e;
+}
+
+.color3 h1 {
+	color: #f3ece9;
+	font-weight: 300;
+}
+
+.color1 h3 {
+	color: white;
+	font-weight: 300;
+}
+
+.color1 p {
+	color: white;
+	font-weight: 300;
+	
+}
+
+.color2 {
+	background-color: #5d5d5d;
+}
+
+.color2 h3 {
+	color: white;
+	font-weight: 300;
+}
+
+.color2 p {
+	color: white;
+	font-weight: 300;
+	
+}
+.color3 {
+	background-color: #1d1d1a;
+}
+
+.color3 h3 {
+	color: white;
+	font-weight: 300;
+}
+
+.color3 p {
+	color: white;
+	font-weight: 300;
+	
+}
+.color4 {
+	background-color: #f3ece9;
+}
+
+.color4 h3 {
+	color: black;
+	font-weight: 300;
+}
+
+.color4 p {
+	color: black;
+	font-weight: 300;
+	
+}
+.color5 {
+	background-color: #4c5654;
+}
+
+.color5 h3 {
+	color: white;
+	font-weight: 300;
+}
+
+.color5 p {
+	color: white;
+	font-weight: 300;
+	
+}
+
+
+
+/* Turning title more responsive
+
+.col-md-12 > h6 {
+	font-size: 200px;
+}
+
+.col-xs-12 > h6 {
+	font-size: 20px;
+}  */
+
+@media all and (max-width: 2000px) { /* screen size until 1200px */
+    h6 {
+        font-size: 15em; /* 1.5x default size */
+    }
+    h1 {
+        font-size: 8em; /* 1.5x default size */
+    }
+}
+@media all and (max-width: 800px) { /* screen size until 1000px */
+    h6 {
+        font-size: 12em; /* 1.2x default size */
+        }
+     h1 {
+        font-size: 6em; /* 1.5x default size */
+    }
+    }
+@media all and (max-width: 600px) { /* screen size until 500px */
+    h6 {
+        font-size: 4em; /* 0.8x default size */
+        }
+    h1 {
+        font-size: 2em; /* 1.5x default size */
+    }
+    h2 {
+        font-size: 1em; /* 1.5x default size */
+    }
+    }
+
+
+
+/* SCROLL NAV IMPLEMENTATION 
+   I LOVE ALL CATS IN THE WORLD */
+
+
+ul.affix {
+	position: fixed; 
+	top: 25px;
+	left: 25px;
+}
+ul.affix-top {
+	position: static;
+}
+ul.affix-bottom {
+	position: absolute;
+}
+
+/* All levels of nav */
+.sidebar .nav > li > a {
+  display: block;
+  padding: 8px 0 4px 10px;
+}
+.sidebar .nav > li > a:hover,
+.sidebar .nav > li > a:focus {
+  text-decoration: none;
+}
+.sidebar .nav > .active > a,
+.sidebar .nav > .active:hover > a,
+.sidebar .nav > .active:focus > a {
+  color: white;
+  background-color: transparent;
+}
+
+/* Nav: second level */
+.sidebar .nav .nav {
+	display: none;
+}
+.sidebar .nav > li.active .nav {
+	display:block;
+}
+.sidebar .nav .nav {
+  margin-bottom: 2px;
+}
+.sidebar .nav .nav > li > a {
+  padding-top:    3px;
+  padding-bottom: 3px;
+  padding-left: 30px;
+  font-size: 100%;
+}
+
+.nav >li.active {
+	display: block;
+}
+
+.nav >li {
+	display: none;
+font-family: "seannormal";
+    font-weight: 300;
+}
+
+.console {
+	position: fixed;
+	text-transform: none;
+	width: 300px;
+	background-color: #f8172e;
+	z-index: 79;
+}
+
+.nav img {
+	height: 20px;
+	vertical-align: middle;
+}

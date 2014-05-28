@@ -1,0 +1,39 @@
+body {
+  padding-top: 0px;
+}
+.starter-template {
+  padding: 0px 0px;
+  text-align: center;
+}
+
+.thumbnail {
+    border: 0 none;
+    box-shadow: none;
+}
+
+h1, h2, h3, h4, h5, h6, metaptitel {
+	  padding-top: 50px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+p, div, metaptitelsmall {
+    font-family: 'Open Sans', sans-serif;
+}
+
+metaptitel {letter-spacing:5px; font-size: 40px; font-weight: 300; padding-left: 50px }
+
+metaptitelsmall {letter-spacing:3px; font-size: 20pxl; text-align: center; padding-left: 50px }
+
+.carousel-control.left, .carousel-control.right {
+    background-image: none
+}
+
+.right.carousel-control, .left.carousel-control {
+    display: none;
+}
+
+.dg.a {
+   margin: 0 auto !important;
+   float: none !important;
+}

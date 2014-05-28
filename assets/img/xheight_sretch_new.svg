@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+]>
+<svg version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="686.967px"
+	 height="549.229px" viewBox="0 0 686.967 549.229" enable-background="new 0 0 686.967 549.229" xml:space="preserve">
+<metadata>
+	<sfw  xmlns="&ns_sfw;">
+		<slices></slices>
+		<sliceSourceBounds  width="301.704" height="485.563" y="56.85" x="259.857" bottomLeftOrigin="true"></sliceSourceBounds>
+	</sfw>
+</metadata>
+<g id="Layer_2">
+</g>
+<g id="Layer_4" opacity="0.5">
+	<path fill="#FFFFFF" d="M250.372,515.263V301.28c6.213-115.277,55.28-215.387,114.913-190.106
+		c43.48,19.216,62.115,97.076,62.115,174.937v229.155h57.145V294.203c0-110.225-25.469-222.468-87.58-254.823
+		C337.991,8.07,282.246,55.265,250.377,144.41V39.377h-57.769v475.888L250.372,515.263L250.372,515.263z"/>
+</g>
+<g id="Layer_4_copy" display="none">
+	<path display="inline" fill="none" stroke="#FFFFFF" stroke-miterlimit="10" d="M222.216,401.811V257.795
+		c4.183-77.585,37.205-144.96,77.34-127.945c29.264,12.933,41.805,65.334,41.805,117.735v154.227h38.459V253.032
+		c0-74.183-17.14-149.725-58.941-171.502c-39.689-21.07-77.208,10.692-98.657,70.688v-70.69h-38.88V401.81L222.216,401.811
+		L222.216,401.811z"/>
+</g>
+<g id="Layer_3">
+</g>
+<g id="Calque_2">
+	<path opacity="0.7" fill="#F04D36" enable-background="new    " d="M250.372,515.263V297.767
+		c13.667-72.053,45.966-225.476,114.913-214.293c62.115,10.556,62.115,117.396,62.115,204.354l0.62,227.436h56.523v-222.47
+		c0-107.455,0-234.791-87.58-253.426c-82.357-17.582-121.977,57.547-146.587,151.706V39.369h-57.769v475.896L250.372,515.263
+		L250.372,515.263z"/>
+</g>
+</svg>
