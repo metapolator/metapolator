@@ -74,7 +74,7 @@ function minErr(module) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
         encodeURIComponent(stringify(arguments[i]));
     }
-
+    console.log(message);
     return new Error(message);
   };
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="glyphInspector">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,7 +32,9 @@
     
     <script src="/lib/bower_components/requirejs/require.js" data-main="/lib/glyph-inspector.js"></script>
   </head>
-  <body>
+  <body >
     <h1>Glyph Inspector</h1>
+    <div ng-controller="glyphInspectorCtrl">
+    </div>
   </body>
 </html>

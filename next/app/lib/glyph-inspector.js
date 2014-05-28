@@ -22,14 +22,16 @@ require.config({
 require([
     'webAPI/document'
   , 'require/domReady'
-  , 'ufojs/tools/pens/SVGPen'
+  , 'angular'
+  , 'glyphInspector/app'
 ], function (
     document
   , domReady
-  , SVGPen
+  , angular
+  , angularApp
 ) {
     "use strict";
     domReady(function() {
-      console.log(SVGPen);
+      angular.bootstrap(document, [angularApp.name]);
     })
-})
+});
