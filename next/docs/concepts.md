@@ -4,51 +4,78 @@ Metapolator Concept
 The first drafts on how *Metapolator neue* works.
 
 
-We will use a CSS like format to store all parameters needed to generate
-a font.
+Terms/Fundamentals/Data-model
+-----------------------------
 
-Fundamentals/Data-model
------------------------
+### Center Line (Middle Line)
 
-### On Masters, Instances, Incarnations and Souls
-On the Metapolator GitHub page it says:
-"A Master can be compared and interpolated with another Master along an axis."
-And "Instance" is "A new font created at a certain position on an axis,
-or between multiple axes."
+Taking an outline with an equal number of points as input, we create a
+new line by averaging the coordinates of each left-and-right point pair.
+The resulting list of new points is the Center Line. Center Line is a
+function of the outline.
 
-What we need is maybe a higher level approach for this, because Master
-is too tightly defined as one of two nodes connected via an edge.
+### Skeleton
 
-"Snapshot" is maybe better as it does not reduce itself into being a
-node, but I think of snapshots being immutable. I would prefer the term
-"instance" or maybe something like "case", "exemplar" or "Incarnation" as
-the latter three are not yet used so often neither in type nor in programming.
-I would proceed with "Instance" for now, but it is already taken. So I choose
-"Incarnation" because its a strong metaphor, being open for other terms.
+When importing a font from outlines, we create an initial skeleton using
+the "Center Line". However, the skeleton and the parameters can be changed
+in several ways and a new outline will be created from that. The new
+outline will have a new middle line. The new middle line can differ from
+the skeleton, because the left-and-right point pairs can have different
+distances to their skeleton origin point. If we'd create a new skeleton
+from that new outline using its middle line, the new skeleton would differ
+from the original skeleton.
 
-Conceptually in Metapolator we have the Skeleton, that must be *compatible*
-between all Incarnations. Then we have parameters that differ between all
-Incarnations.
+**The Skeleton is the base on that we work with glyphs. The Center Line
+always follows the outline.**
 
-Technically what we need to create a font is a Skeleton and Parameters.
-**The union of skeleton and parameters is what I understand as a
-"Incarnation"**. Using Incarnation as the metaphor we should proceed calling
-the compatible part of the Skeletons a "Soul". **A "Soul" is what all
-Incarnations have in common.**
+The Skeleton consists of the number of contours and points and the initial
+x and y values of the points. Initial means we apply the CPS/parameter
+transformations onto these values, the skeleton provides absolute coordinates,
+so that the CPS can stay in the relative realm. An author should be able
+to open the skeleton-layer of a glyph with an UFO-Editor and see what's
+going on.
 
-Incarnation is different from Master in that an Incarnation may not be one of
-the Masters of an Interpolation, but can be the result, too. All Masters are
-Incarnations, but the set of all Incarnations is bigger than the set of
-all Masters.  
+One problem is that we are talking about using hobby curves. While we have
+solved going from hobby to bézier [and from beziér to hobby](https://github.com/metapolator/metapolator/issues/114)
+(using metaposts `posttension` and `pretension`) the latter is not always
+possible. So editing skeleton curves -- which are béziers in the UFO --
+may yield in results we can't use as it. However, we believe that Hobby's
+Splines are mighty enough and that they may be helpful by preventing a lot
+of technically bad curves, that can be made with beziérs.
 
-Incarnations are created:
+### Master/Metamaster
 
-* as result of an import
-* as clone/copy of another Incarnation
-* as the result of an interpolation
+Masters is what we deal with inside of Metapolator. We could view Masters
+as fixed points in the design space. A Master consists of a Skeleton and
+a set of parameters that describe how to create an outline for each glyph.
+Any two masters of a Metapolator project share the same "Essence", that
+means it can be interpolated between them.
 
+### Metamaster
 
-**compatible:** When two skeletons are compatible they
+A Metamaster is a Master in the Metapolator world. If its obvious that we
+are talking about Masters in Metapolator the simpler term "Master" is
+suddicient. When talking about Masters from other font interpolation
+solutions, too, (like Multiple Masters) we can be more specific and use
+Metamaster, 
+
+### Instance
+
+The exported result of working with Metapolator. An instance can be the
+result of an interpolation or just an export of a Master. The glyphs of
+an instance have an outline as most important feature.
+
+### Essence
+
+All the things between any two masters that must be compatible for
+Metapalation. Conceptionally, all Masters in one Metapolator project share
+the same Essence. Two masters of different Metapolator projects, can
+share the same Essence.
+
+We can use the term Essence, to document what must be compatible for
+metapolation.
+
+**compatible:** When two Masters are compatible they
 
 * define the same glyphs, that are compatible to their "partners"
 * the glyph pairs have the same number of contours, where the contours 
@@ -56,56 +83,44 @@ Incarnations are created:
 * compatible contours share the same points/commands in the same order
 * the glyphs have the same anchors (and guides, what to do with ids and names?
   it would be good to have a Prepolator for Metapolator) I would prefer
-  to be very strict on this and add the Identifiers and names to the Soul.
+  to be very strict on this and add the Identifiers and names to the Essence.
 * **the coordinates of points, anchors, guides may differ**
 * *we should make this list complete*
 
-### UFO + Skeleton + CSS
-This is the data representation of an Incarnation:
+### Design Space
 
-* It has in its `glyphs` directory (ufo 3 layer `public.default`) the outline
-  representation of the font (only when exporting it, probably incomplete
-  and/or outdated when not exported, because we will create outlines only
-  on the fly, when needed).
-* In the `skeleton` directory (ufo 3 layer maybe `metapolator.skeleton`,
-  or to be used as background layer in another app `public.background`)
-  The glyphs in this layer have only open contours representing the skeleton.
-* If this Incarnation was imported from an existing font we should maybe
-  keep the original outline data as a reference in a layer.
-* a local.css file: Containing all parameters for this font (we will add
-  global.css on export)
+Metaphysical: all Masters that share the same Essence belong to the same
+design space. Mathematical: Design Space is the set of all Masters that
+share the same essence.
 
-### The Skeleton
-Is the description of our "middle line". The number of contours and points
-and the initial x and y values of the points. Initial means we apply the
-css/parameter transformations onto these values. An author should be able
-to open the skeleton layer of a glyph with an UFO-Editor and see what's
-going on. *(One problem that I have with this is that we are talking about
-using hobby curves. While we have solved going from hobby to bézier, the
-other way around is not always possible. So editing skeleton curves
--- which are béziers in the UFO -- may yield in results we can't use as
-it. If the problem is a show-stopper we could move the hobby curve data
-to the glyphs lib at `com.metapolaor.skeleton` or so.)*
+Real World: One Metapolator project will define a Design Space where we
+can pinpoint some locations. These Locations are called masters. With
+interpolation and extrapolation we can explore the space between and beyond
+the masters.
 
-SE: perhaps "median" is better than "middle line". See https://github.com/metapolator/metapolator/issues/110
-With this we can load any font, but need to tag pairs inside metapolator. We should decide where the 'prepolation' happens: inside or outside Metapolator.
 
-### CSS
+
+### UFO + Skeleton + CPS
+[Here's a discussion about how the data is going to be serialized/represented on disc.](./metapolator-project-file-format.md)
+
+### CPS -- Cascading Parameter Sheets
+
+[Here's a more in detail documentation of CPS](./cascading-parameter-sheets.md)
 
 #### Sources of values, global and local values
 
 In theory we could have all parameters of a project in one global file.
 This however would lead on the one hand to longer selectors, because we
-would have to select the specific incarnations most of the time. On the other
+would have to select the specific masters most of the time. On the other
 hand the one parameter file would grow very large on big projects and thus
 become harder to maintain.
 
-I propose a standard structure, where each incarnation includes the global
-CSS-file and thereafter an incarnation-specific local CSS-file. The local CSS-file
+I propose a standard structure, where each master includes the global
+CPS-file and thereafter a master-specific local CPS-file. The local CPS-file
 will override global rules if they have the same
 [specificity](http://www.w3.org/TR/2011/REC-CSS2-20110607/cascade.html#specificity)
 
-Following this the sources of parameter-values are stacked for each incarnation as
+Following this the sources of parameter-values are stacked for each master as
 in the following list. Where the latter entries override the earlier:
 
 1. **default value** (this comes from the plugin that defines the parameter)
@@ -113,15 +128,15 @@ in the following list. Where the latter entries override the earlier:
 * **skeleton data** (especially the coordinates of the skeleton points
   and if possible tension and direction values. *¿however these may be specific 
   for the left and right point of each skeleton and thus go rather into 
-  the local.css? Maybe we could get the `auto` tension from here.)* This
+  the local.cps? Maybe we could get the `auto` tension from here.)* This
   data will be available using `parameter-name:auto;` and thus overshadow the
   parameter default value.
-* **global.css** empty when starting a new project.
-* **local.css** Each incarnation has one of these, this is filled the first time
+* **global.cps** empty when starting a new project.
+* **local.cps** Each master has one of these, this is filled the first time
   by the Importer. The selectors from the importer are as short/unspecific as 
-  possible, so it should be possible to override values from global.css.*(Does 
-  this make sense? Or should we have a 3. local-1.css 4. global.css 5. local-2.css
-  structure, where local-1.css would hold the values of the importer?)*
+  possible, so it should be possible to override values from global.cps.*(Does 
+  this make sense? Or should we have a 3. local-1.cps 4. global.cps 5. local-2.cps
+  structure, where local-1.cps would hold the values of the importer?)*
 
 #### Possible Selectors
 
@@ -129,7 +144,7 @@ in the following list. Where the latter entries override the earlier:
 
 ***TODO: make up an example here*
 
-**tags/elements:** incarnation, glyph, guideline, anchor, contour, point *Should
+**tags/elements:** master, glyph, guideline, anchor, contour, point *Should
   we use other tags for guidelines defined in `fontinfo.plist` than for
   guidelines defined in the glyphs? We could also use `fontinfo guideline`
   and `glyph guideline` to differentiate, which is much more in the spirit
@@ -139,11 +154,11 @@ in the following list. Where the latter entries override the earlier:
 HTML+CSS because they usually tend to break things sooner or later, due
 to their nature of uniqueness. However, in our case we should reuse the
 ids that UFOv3 brings with it. These ids are not globally unique for one
-project, neither within one Incarnation/UFO but only unique within a
+project, neither within one master/UFO but only unique within a
 glyph or the fontinfo.plist. We could use the glyph-names from
 `contents.plist`, too. However, a user *might* expect to select one single
 entity using an id like `#a{ param=val;}`, but in fact from global.css would
-select all the glyphs named `a` in every Incarnation **AND** all entities
+select all the glyphs named `a` in every master **AND** all entities
 within all glyphs having the identifier `a` like: `<guideline idntifier="a"
 y="-12" name="overshoot"/>`. Thus, to make the most reasonable thing,
 **one should select all glyphs named a like this:** `glyph#a{ param=val; }`
@@ -158,7 +173,7 @@ similar to UFOs [user-name to filename convention](http://unifiedfontobject.org/
 **classes** always start with a dot `.` For different elements 
 the sources of their "class-names" differ.
 
-* Incarnations will have a class field in the `lib.plist` file.
+* Masters will have a class field in the `lib.plist` file.
 * Glyph classes can be defined directly in the `groups.plist` file. So
   we have a powerful way to select just the Latin glyphs:
   `glyph.latin{ x-height:value }`
@@ -240,7 +255,7 @@ A: Plugins bring them in and a whole bunch of of other stuff, some things are op
     * validation rules/ how the value should look like (e.g. number in a range
       of 0 to 1, valid units, etc.) We probably must enable the plugin
       to run JavaScript code (hooks/callbacks something along that line).
- * Functions to use in the CSS (if this is useful at all)
+ * Functions to use in the CPS (if this is useful at all)
        
        /* where 'calc' would be a function */
        glyph {
@@ -256,11 +271,12 @@ A: Plugins bring them in and a whole bunch of of other stuff, some things are op
 
 
 ### Importer
-Takes a "prepared" UFO and creates a skeleton-UFO and a parameters CSS file.
+Takes a "prepared" UFO and creates a skeleton-UFO and a CPS parameters file.
 This process will do validation of the input data.
 It must be possible to import UFOs that we exported from Metapolator
-(UFO with skeleton and CSS) So we can tweak by hand when the interface
-development is behind or whatever.
+(UFO with skeleton and CPS) So we can tweak by hand when the interface
+development is behind or whatever. We'll make this fully functional only
+for UFOv3 exports, because UFOv3 can hold all our data.
 
 #### TODO: How values are generated on import
 
@@ -269,12 +285,12 @@ I think we need different main interfaces *(incomplete list)*:
 
 * import: things can go wrong here, so this must be an iterative 
   process that cooperates with the user.
-* Incarnation management: create Incarnations (by import, by copy, by pinpointing 
-  a position in interpolation space), name Incarnations etc.
-* parameter mode: change parameters of one Incarnation
-* interpolation space: setup Incarnations in the interpolation space as
+* Master management: create Masters (by import, by copy, by pinpointing 
+  a position in interpolation space), name Masters etc.
+* parameter mode: change parameters of one Master
+* interpolation space: setup Masters in the interpolation space as
   Masters and define which axes to travel when exporting. Define 
-  at which positions Incarnations are exported.
+  at which positions Masterss are exported.
 * diff viewer and merge tool (*or whatever we need to make history/revision
   management*)
 
@@ -307,34 +323,39 @@ With a broker like this
 * we can set up different interfaces (UI, CLI, API without having to
   rewrite everything)
 
+### MOM -- Metapolator Object Model
+The Model is from one point of view an API of the Broker. On the other
+Hand we will create an Object-Model To represent the different aspects of
+Metapolator and to attach programing interfaces to that data representation.
+One part of the Model is the CPS or parameters Model. Another very big
+part will be the UFO-Model (unified font object). The structure of the 
+UFO-model will be conceptually similar to [UFOv3](http://unifiedfontobject.org/)
+
 
 
 ### Interpolator
-The result of the interpolation between 2 masters at a position is always
-an Incarnation. **An Incarnation is our trinity of UFO with Skeleton and CSS**
+The result of the interpolation between 2 or more masters at a position
+is always a Master.
 
-We will take all parameters of 2 Masters and interpolate between
-the values we receive from the CSS and the other values of the UFO that
+We will take all parameters of 2 or more Masters and interpolate between
+the values we receive from the CPS and the other values of the UFO that
 need interpolation, this is not the outlines because these are coming via
 Metapost.
 
-To create a new Incarnation to be used as Master or for export:
+To create a new Master to be used as Master or for export:
 
 1. interpolate the skeletons
-* interpolate the local CSS-files. An Incarnation created from interpolation
+* interpolate the local CPS-files. a Master created from interpolation
 will thus have a new skeleton, if the skeletons of the parents are different,
-and a new local CSS file. The global CSS needs no interpolation.
-3. Some other values of the UFO will need interpolation (like fontinfo.plist
+and a new local CPS file. The global CPS needs no interpolation.
+* Some other values of the UFO will need interpolation (like fontinfo.plist
 guidelines)
 
-**Can we boil this down to always doing an interpolation between 2 masters
-at a time? Or is there more magic involved when using multiple axis?**
-
 There should be an optimized path when only a subset of glyphs is needed
-for previews. 
+i.E. for previews.
 
 ### Metapost
-To create the outlines of an Incarnation, we create a canonical parameter
+To create the outlines of a Master, we create a canonical parameter
 representation for each needed glyph. and then create together with our
 plugins a Metapost file containing the **already interpolated canonical**
 values and all Metapost code needed to generate the outline. This is
@@ -342,12 +363,12 @@ different to how the current prototype works. The current prototype
 interpolates the values of 4(hard coded) masters within Metapost.
 
 ### Exporter
-We can always export UFOv3 from our Incarnations. The global CSS file will
-be present in the UFO. The outlines will be the result of Metapost fed
-with the data of Skeleton+CSS+our metapost code. So the file is pretty
-much self-contained.
+The Exporter creates instances from a Masters (which can be the result of
+a metapolation). The instance has the outlines for each glyph. We can always
+export UFOv2 and UFOv3 from our Masters. The Skeleton layer and global
+and local CPS file will be present in the UFOv3, so it is possible to
+recreate the outlines without having the complete Metapolator Project
+available. The outlines will be the result of Metapost fed with the data
+of Skeleton+CPS+our metapost code. So the file is pretty much self-contained.
 
-To make real fonts we need a tool that takes a valid UFOv3 and creates fonts.
-
-**IMPORTANT: is there such a thing or do we need a UFOv3 to UFOv2
-downgrade tool?**.
+To make real fonts we use the UFOv2 Instance with existing tools.
