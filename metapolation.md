@@ -228,7 +228,7 @@ Here is a possible user setup:
 
 It expresses that M1–M2 is the main axis of metapolation, M3 is a far-out master related to M1, M5 is related to M2 and M4 is a subtle variant that is half-way house between M1 and M2. This also shows that masters can be reordered on the perimeter of the design space: just drag a master over the line connecting two other masters.
 
-*note*: rearranging the masters only changes the design space arrangement, it does not change the masters themselves.
+**note**: rearranging the masters only changes the design space arrangement, it does not change the masters themselves.
 
 It is obvious how rubber space is extended when a master is added.
 
