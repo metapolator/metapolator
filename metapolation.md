@@ -182,7 +182,7 @@ The left-and right-hand side of the sliders are configurable; they can be set to
 
 ![](http://www.mmiworks.net/metapolator/minimumAlt.png)
 
-When a left-or right-hand side of a slider is changed, the slider value is adapted to show the current state of metapolation. Because there is no redundancy in the inputs (there are _just_ enough of them) no slider influences (i.e. moves) another slider when it is moved by users.
+When a left-or right-hand side of a slider is changed, the slider value is adapted to show the current state of metapolation.
 
 Also the left-hand side of the sliders can be ‘From zero’, which turns the slider into a fader as seen on [the mixer](https://github.com/metapolator/metapolator/wiki/metapolation#mixer):
 
@@ -208,3 +208,37 @@ When a master is added to the setup, minimum ratio is extended by one slider.
 * ✓ compatible with 2-D output and input;
 * ✓ be straightforward;
 * ✗ depict the 100% rule.
+
+### rubber space
+![](http://www.mmiworks.net/metapolator/rubber.png)
+
+This is flexible design space (light grey), set up by any number of masters (here: 5). Each master can be seen as a force field, influencing the space. The white star in the centre is fixed in that position and defines the equilibrium point: all masters are at equal strength at this point. This, with the location of the masters completely defines the design space. The cursor (dark grey) is used to wander around and explore the space.
+
+Users can configure the space however they feel is correct for their masters. Any master can be positioned anywhere within the square perimeter. Basic guidance is
+* the further away a master is from the equilibrium point, the more far-out it is;
+* position closely related masters closer together.
+
+_(maybe, just maybe Metapolator will be able to calculate a useful default setup from these rules, instead of the clockwise-on-a-circle default shown above)_
+
+Users are free to completely ignore this guidance.
+
+Here is a possible user setup:
+
+![](http://www.mmiworks.net/metapolator/rubberUser.png)
+
+It expresses that M1–M2 is the main axis of metapolation, M3 is a far-out master related to M1, M5 is related to M2 and M4 is a subtle variant that is half-way house between M1 and M2. This also shows that masters can be reordered on the perimeter of the design space: just drag a master over the line connecting two other masters.
+
+*note*: rearranging the masters only changes the design space arrangement, it does not change the masters themselves.
+
+It is obvious how rubber space is extended when a master is added.
+
+#### the score
+1. ✓ scale to any number of masters;
+* ✓ support exploration;
+* ✗ support ‘reduce the amount of master 2…’;
+* ~ support ‘change the ratio of master 2 and 3…’;
+* ✗ support precise input of factors;
+* ~ support fine-tuning of factors;
+* ✓ compatible with 2-D output and input;
+* ✓ be straightforward;
+* ✓ depict the 100% rule.
