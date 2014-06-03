@@ -1,4 +1,4 @@
-User scenarios show the essential use, in logical, worthwhile and valuable steps from users’ point of view. There is no need for completeness, just that the compact set of scenarios lead through most of the area of the ‘field’ of use. Some of these scenarios have been tuned the ‘Metapolator’ way. Certain steps that are needed today—because font tools are broken—have been omitted (fix the tools, not users’ activity).
+User scenarios show essential use, in logical, worthwhile and valuable steps from users’ point of view. There is no need for completeness, just a compact set of scenarios that lead through most of the ‘field’ of use. Some of these scenarios have been tuned the ‘Metapolator’ way. Certain steps that are needed today—because font tools are broken—have been omitted (fix the tools, not users’ activity).
 
 ## scenario 1
 _Easy beginnings: make subtle changes to an existing font to adapt it to domain of use._
@@ -18,10 +18,11 @@ _Easy beginnings: make subtle changes to an existing font to adapt it to domain 
 
 ### scenario 1b
 _Typographer applies radical graphical treatments to an existing font for a design._
-* Same as scenario 1, but with the following differences:
- * apart from typographical adjustments, there are also graphical/geometrical adjustments
- * adjustments may not be subtle, nor within the realm of ‘conventional’ fonts
- * the intention is still to make adjustments for the ‘whole’ font in one go, not on a glyph-by-glyph basis.
+
+Same as scenario 1, but with the following differences:
+* apart from typographical adjustments, there are also graphical/geometrical adjustments
+* adjustments may not be subtle, nor within the realm of ‘conventional’ fonts
+* the intention is still to make adjustments for the ‘whole’ font in one go, not on a glyph-by-glyph basis.
 
 ## scenario 2
 _Font designer creates a new font through exploration of two compatible masters (i.e. in script, glyph shapes—on a typographical, non-tech level)._
