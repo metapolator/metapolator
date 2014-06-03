@@ -17,9 +17,23 @@ Furthermore instead of using prepared fonts it will be possible to enhance norma
 
 Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
 
+## Product Vision
+
+_Our ['Product Vision'](http://www.mmiworks.net/wedo/product.html) defines and guides Metapolator's development, and was written by Peter Sikking in April 2014 Following a discussion with the developers ([video](http://www.youtube.com/watch?v=mJH6fNCv1Fs))_
+
+Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.
+
+With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency. They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.
+
+With Metapolator, typographers gain the possibility to change existing fonts—or even create new ones—to their needs.
+
+Metapolator is extendible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.﻿
+
 ## Tutorial
 
-A now-obsolete tutorial is at http://metapolator.com/tutorial.html
+Simon Egli wrote a [tutorial for the current prototype](https://docs.google.com/document/d/1fiYpDxoBaiymMjzxptRZr6HkDaF3QqdEZuq_Vdz2JjU/edit).
+
+For historical reference you may like to read [the first tutorial](http://metapolator.com/tutorial.html)
 
 ## Terminology
 
@@ -108,7 +122,7 @@ The simple way to install and run metapolator is with [docker](http://www.docker
 1. [Install Docker](http://www.docker.io/gettingstarted/)
 2. `sudo docker pull metapolator/metapolator` # download metapolator
 3. `sudo docker run -p 8080:8080 -t metapolator/metapolator`# run metapolator
-4. `chrome http://localhost:8080` # use metapolator
+4. `chromium-browser http://localhost:8080` # use metapolator
 
 #### The Traditional Way
 
@@ -116,7 +130,7 @@ The simple way to install and run metapolator is with [docker](http://www.docker
 mkdir ~/src;
 cd ~/src;
 # Install system dependencies
-sudo apt-get install -y build-essential autoconf libtool python-dev python-virtualenv python-setuptools python-pip unzip git texlive-metapost mysql-client mysql-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev woff-tools;
+sudo apt-get install -y build-essential autoconf libtool python-dev python-virtualenv python-setuptools python-pip  unzip git texlive-metapost mysql-client mysql-server redis-server libmysqlclient-dev t1utils libffi-dev libevent-dev libxml2-dev libxslt-dev woff-tools chromium-browser;
 # During the install process of mysql, note your root password
 
 # Install fontforge from git master (When someone makes a new release of fontforge and someone packages it for Debian, then you can do "sudo apt-get install -y fontforge python-fontforge;") 
@@ -126,9 +140,10 @@ git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
-make run;
+make support; # run this in first shell
+make run; # run this in second shell
 ```
-Chrome should open <http://localhost:8080>
+Open <http://localhost:8080>
 
 ### Mac OS X
 
@@ -138,8 +153,14 @@ TODO: Describe how to run metapolator with [docker](http://www.docker.io) on Mac
 
 #### The Traditional Way
 
+First, install [Homebrew](http://brew.sh) and [Chromium Canary](http://www.chromium.org/getting-involved/dev-channel) and [MacTex](http://www.tug.org/mactex)
+
 ```sh
-# Before: Install Homebrew
+cd /tmp;
+# if this command fails, you'll need to check your TeX installation
+mpost -progname=mpost -ini mf2pt1 \\dump 
+
+cd ~;
 mkdir src;
 cd src;
 
@@ -167,9 +188,10 @@ git clone https://github.com/metapolator/metapolator.git;
 cd metapolator;
 make install;
 make setup;
-make run;
-````
-Chrome should open <http://localhost:8080>
+make support; # run this in first shell
+make run; # run this in second shell
+```
+Open <http://localhost:8080>
 
 ## Deployment
 
@@ -217,7 +239,7 @@ Core Development Team: Simon Egli, Lasse Fister, Alex Troush
 
 Contributors: Vitaly Volkov, Walter Egli, Nicolas Pauly, Wei Huang, you?
 
-Thanks to the [metaflop](http://www.metaflop.com) team and Dave Crossland for leading to this project!
+Thanks to [metaflop](http://www.metaflop.com) for inspiration and Dave Crossland for leading to this project!
 
 ## Related Projects
 

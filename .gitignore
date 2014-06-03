@@ -5,3 +5,7 @@ localconfig.py
 /node_modules
 test.err
 */node_modules
+/bower*
+/static/dist
+/static/lib
+>>>>>>> master
