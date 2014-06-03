@@ -15,7 +15,6 @@ define([
                 drop: '&'
             }
           , link: function(scope, element, attrs) {
-              console.log(attrs.maxFileSize);
               var checkSize, isTypeValid, processDragOverOrEnter, validMimeTypes;
               processDragOverOrEnter = function(event) {
                 if (event != null) {
@@ -54,6 +53,7 @@ define([
                 reader.onload = function(evt) {
                   if (checkSize(size) && isTypeValid(type)) {
                     return scope.$apply(function() {
+                      console.log(evt.target.result);
                       scope.file = evt.target.result;
                       if (angular.isString(scope.fileName)) {
                         return scope.fileName = name;
@@ -66,7 +66,6 @@ define([
                 type = file.type;
                 size = file.size;
                 reader.readAsDataURL(file);
-                console.log(file);
                 return false;
             });
           }
