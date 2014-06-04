@@ -212,7 +212,7 @@ When a master is added to the setup, minimum ratio is extended by one slider.
 ### rubber space
 ![](http://www.mmiworks.net/metapolator/rubber.png)
 
-This is a flexible design space (light grey), set up by any number of masters (here: 5). Each master can be seen as a force field, influencing the space. The white star in the centre is fixed in that position and defines the equilibrium point: all masters are there at equal strength. This, together with the location of the masters, completely defines the design space. The cursor (dark grey) is used to wander around, explore the space and define an instance.
+This is a flexible design space (light grey), set up by any number of masters (here: 5). Each master can be seen as a force field, influencing the space. The white star in the centre defines the equilibrium point: all masters are there at equal strength. This, together with the location of the masters, completely defines the design space. The cursor (dark grey) is used to wander around, explore the space and define an instance.
 
 Users can configure the space however they feel is correct for their masters. Any master can be positioned anywhere within the square perimeter. Basic guidance is
 * the further away a master is from the equilibrium point, the more far-out it is;
@@ -220,11 +220,13 @@ Users can configure the space however they feel is correct for their masters. An
 
 _(maybe, just maybe, Metapolator will be able to calculate a useful default setup from these rules, instead of the clockwise-on-a-circle default shown above)_
 
+The equilibrium point is always positioned at the [centroid](http://en.wikipedia.org/wiki/Centroid) of the polygon; “informally, the point at which a cardboard cut-out of the region could be perfectly balanced on the tip of a pencil.” The formula to calculate the centroid can be found [here](http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon).
+
 Users are free to completely ignore this guidance and go wild.
 
 Here is a possible user setup:
 
-![](http://www.mmiworks.net/metapolator/rubberUser.png)
+![](http://www.mmiworks.net/metapolator/rubberUsera.png)
 
 It expresses that M1–M2 is the main axis of metapolation, M3 is a far-out master related to M1, M5 is related to M2 and M4 is a subtle variant that is half-way house between M1 and M2. This also shows that masters can be reordered on the perimeter of the design space: just drag a master over the line connecting two other masters.
 
