@@ -17,10 +17,12 @@ Furthermore instead of using prepared fonts it will be possible to enhance norma
 
 Metapolator allows the designer to utilise Metafont without have to write any Metafont code.
 
-Read more in our wiki:
+## Wiki
 
-* [Product Vision](https://github.com/metapolator/metapolator/wiki/Product-Vision)
-* [Roadmap](https://github.com/metapolator/metapolator/wiki/roadmap)
+We are actively documenting our project on our wiki:
+* **<https://github.com/metapolator/metapolator/wiki/>**
+  * [Product Vision](https://github.com/metapolator/metapolator/wiki/Product-Vision)
+  * [Roadmap](https://github.com/metapolator/metapolator/wiki/roadmap)
 
 ### License
 
