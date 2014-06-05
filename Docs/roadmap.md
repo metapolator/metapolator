@@ -8,14 +8,14 @@ This is structured into Milestones and Tasks that have to be finished to reach t
 
 This is an ongoing Milestone. I bring it up here so that we don't forget, that there was a lot of work done before starting to work on the first Milestone. And that there will be a lot of work to think over and over what we are doing and if we are still headed in the right direction.
 
-1. Ignition!
+1. Ignition! [July 1]
 ----------
 
 **Goal:** Get fundamental technology into a working state.
 
 **Scope:** This milestone does not include user friendly front end technology.
 
-**Acceptance Criteria:** Designer-Developers can create fonts using Metapolator v2 technology. 
+**Complete When:** Designer-Developers can create font instances from masters using Metapolator v2 technology. 
 
 * more ufoJS: This is one of the core Metapolator libraries, and some fundamentals 
   still need to be developed there before we can start with the other parts.
@@ -39,12 +39,18 @@ This is an ongoing Milestone. I bring it up here so that we don't forget, that t
 
 * Fundamental GUI concepts. Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
-2. Approaching the GUI
+2. Approaching the GUI [August 1]
 ----------------------
-Starting to implement the GUI and the Application. We won't build the whole
-thing in this milestone, but make a good layout to build upon and provide
-a first really usable instance. Some of the technologies from the first
-Milestone will mature in this phase. The plugin mechanism will need a
-robust interface.
+
+**Goal:** Get fundamental UI and Application Technology into a working state.
+
+**Scope:** This milestone does not include a complete UI, but a good layout to build upon and provide
+a first really useful instance. 
+
+**Complete When:** Designers can create font instances from masters using Metapolator v2 technology with a web UI. 
+
+* Some of the technologies from the first Milestone will mature in this phase. 
+
+* The plugin mechanism will need a robust interface.
 
 
