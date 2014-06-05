@@ -3,10 +3,14 @@ We need a way to communicate what happens next in the Project and to show what a
 This is structured into Milestones and Tasks that have to be finished to reach these Milestones. Expect this document to change often, because it's impossible to plan everything from the start.
 
 
-0. Develop a better understanding (ongoing)
+0. Ongoing Work
 -------------------------------------------
 
-This is an ongoing Milestone. I bring it up here so that we don't forget, that there was a lot of work done before starting to work on the first Milestone. And that there will be a lot of work to think over and over what we are doing and if we are still headed in the right direction.
+* **Develop a better understanding** 
+
+  So that we don't forget, a lot of work is done before even starting to work on the first Milestone, and this work continues: thinking over and over about what we are doing and if we are still going in the right direction.
+
+
 
 1. Ignition! [July 1]
 ----------
@@ -17,7 +21,7 @@ This is an ongoing Milestone. I bring it up here so that we don't forget, that t
 
 **Complete When:** Designer-Developers can create font instances from masters using Metapolator v2 technology. 
 
-* more ufoJS: This is one of the core Metapolator libraries, and some fundamentals 
+* **more ufoJS:** This is one of the core Metapolator libraries, and some fundamentals 
   still need to be developed there before we can start with the other parts.
 
   * Importer: Organize the creation of a Master (Skeleton layer and CPS)
@@ -26,18 +30,18 @@ This is an ongoing Milestone. I bring it up here so that we don't forget, that t
   * Exporter: Organize the creation of Instances by taking a Master
     and creating outlines from it using ufoJS export plugins.
 
-* CPS: Initial Object-Model to process parameters. Details: [Cascading Parameter Sheets](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
+* **CPS:** Initial Object-Model to process parameters. Details: [Cascading Parameter Sheets](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
 
-* Plugins: the beginnings of the Plugin mechanisms. This will give us the
+* **Plugins:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
   of Metapolator. Included in the first Milestone:
   * import: reading parameters from outline fonts into cps
   * export: make metapost code to create outlines
   * parameter definition
 
-* Sample project, that shows how data is organized in Metapolator, and is fully functional (but small.)  Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
+* **Sample project:** To show how data is organized in Metapolator, and is fully functional (but small.)  Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
 
-* Fundamental GUI concepts. Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
+* **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
 2. Approaching the GUI [August 1]
 ----------------------
