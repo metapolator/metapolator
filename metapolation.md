@@ -174,27 +174,31 @@ _ps:_ a Noordzij that implements the 100% rule is a [tetrahedron](http://en.wiki
 ![](http://www.mmiworks.net/metapolator/tetrahedron.png)
 
 ### minimum ratio
-![](http://www.mmiworks.net/metapolator/minimum.png)
+![](http://www.mmiworks.net/metapolator/minimuma.png)
 
 This takes the [double-breasted](https://github.com/metapolator/metapolator/wiki/metapolation#double-breasted) interaction a step forward, or rather, reduces it to manageable proportions. Observing from [the math](https://github.com/metapolator/metapolator/wiki/metapolation#the-math) that N-1 inputs will always be _just_ enough for an N-master setup, we do exactly that: show N-1 sliders (5 here, for a 6-master setup) and ensure that there are no duplicates. Compared the the example show at [double-breasted](https://github.com/metapolator/metapolator/wiki/metapolation#double-breasted) we see that for the same number of masters there is a lot less, well, stuff.
 
 The left-and right-hand side of the sliders are configurable; they can be set to anything users like—as long as there are no duplicate sliders, or ones that go from Mx to Mx; the selection available in the pop-up lists will prevent that from happening. Any combination works _(says the math)_:
 
-![](http://www.mmiworks.net/metapolator/minimumAlt.png)
+![](http://www.mmiworks.net/metapolator/minimumAlta.png)
 
 When a left-or right-hand side of a slider is changed, the slider value is adapted to show the current state of metapolation.
 
 Also the left-hand side of the sliders can be ‘From zero’, which turns the slider into a fader as seen on [the mixer](https://github.com/metapolator/metapolator/wiki/metapolation#mixer):
 
-![](http://www.mmiworks.net/metapolator/minimumZero.png)
+![](http://www.mmiworks.net/metapolator/minimumZeroa.png)
 
 Remarkably, the funky behaviour of the mixer when setting faders to zero disappears here, because there is one input less and the 100% rule is kept occupied providing N equations for N unknowns, instead of being redundant and making mischief.
 
 We can add a little convenience:
 
-![](http://www.mmiworks.net/metapolator/minimumAll.png)
+![](http://www.mmiworks.net/metapolator/minimumAlla.png)
 
-The ‘all’ popup sets the complete left-hand side to the same master, while setting the right-hand side to all remaining masters, in ascending order. It can also set the left-hand side to ‘From zero’ and the right-hand side to M1–M<sub>N-1</sub>, in ascending order (gotta make a choice to leave one out and this one makes it easy enough to change one slider to M<sub>N</sub> if so desired by users).
+The ‘all’ popup sets the complete left-hand side to the same master, while setting the right-hand side to all remaining masters, in ascending order. Here M3 is set:
+
+![](http://www.mmiworks.net/metapolator/minimumAllM3.png)
+
+It can also set the left-hand side to ‘From zero’ and the right-hand side to M1–M<sub>N-1</sub>, in ascending order (gotta make a choice to leave one out and this one makes it easy enough to change one slider to M<sub>N</sub> if so desired by users).
 
 When a master is added to the setup, minimum ratio is extended by one slider.
 
