@@ -194,7 +194,7 @@ We can add a little convenience:
 
 ![](http://www.mmiworks.net/metapolator/minimumAlla.png)
 
-The ‘all’ popup sets the complete left-hand side to the same master, while setting the right-hand side to all remaining masters, in ascending order. Here M3 is set:
+The ‘all’ popup sets the complete left-hand side to the same master, while setting the right-hand side to all remaining masters, in ascending order. Here M3 hes been set:
 
 ![](http://www.mmiworks.net/metapolator/minimumAllM3.png)
 
