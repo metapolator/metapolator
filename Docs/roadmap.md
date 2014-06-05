@@ -66,6 +66,8 @@ a first really useful instance.
 
 **Complete When:** Designers connected to our developers can create new font masters using Metapolator v2 technology with a web UI. 
 
+* Plan an outreach campaign to grow the userbase
+
 4. Growing Users [October 1]
 ----------------------
 
@@ -75,6 +77,8 @@ a first really useful instance.
 
 **Complete When:** Designers not connected to our developers can become effective users
 
+* Run the userbase outreach campaign
+
 5. Refinement [November 1]
 ----------------------
 
@@ -83,3 +87,31 @@ a first really useful instance.
 **Scope:** This milestone does not include adding major new features
 
 **Complete When:** New users say they enjoy the application and the whole project experience
+
+* Plan 2015, and a Kickstarter
+   * Kickstarter required details (description, video, rewards, stretch goals)
+   * Outreach campaign
+
+* Decide a major feature to work on next, for November
+
+6. Major Feature [December 1]
+----------------------
+
+**Goal:** Add a major feature
+
+**Scope:** This milestone does not include incremental improvements
+
+**Complete When:** Users are amazed at the new feature
+
+* Get the Kickstarter approved, outreach campaign underway
+
+7. Kickstarter [January 1]
+----------------------
+
+**Goal:** Fund initial development in 2015
+
+**Scope:** This milestone does not include adding major new features
+
+**Complete When:** Kickstarter launched
+
+* Get the Kickstarter started at the end of December to begin the year!
