@@ -212,7 +212,13 @@ When a master is added to the setup, minimum ratio is extended by one slider.
 ### rubber space
 ![](http://www.mmiworks.net/metapolator/rubber.png)
 
-This is a flexible design space (light grey), set up by any number of masters (here: 5). Each master can be seen as a force field, influencing the space. The white star in the centre defines the equilibrium point: all masters are there at equal strength. This, together with the location of the masters, completely defines the design space. The cursor (dark grey) is used to wander around, explore the space and define an instance.
+This is a flexible design space (light grey), set up by any number of masters (here: 5). Each master can be seen as a force field, influencing the space. The white star in the centre defines the equilibrium point: all masters are there at equal strength (here: 20%). The cursor (dark grey) is used to wander around, explore the space and define an instance.
+
+This is an impression of the force field of master M4 (black = 100%, white is 0%):
+
+![](http://www.mmiworks.net/metapolator/rubberForce.png)
+
+Note that is was built completely out of 5 triangles, each with corners at the equilibrium point and 2 masters.The whole field is defined by the expected results that M4 = 100%, M1–M3 & M5 = 0%; equilibrium point = 20%; half-way M4–M3 & half-way M4–M5 = 50% (i.e. exactly on the perimeter).
 
 Users can configure the space however they feel is correct for their masters. Any master can be positioned anywhere within the square perimeter. Basic guidance is
 * the further away a master is from the equilibrium point, the more far-out it is;
