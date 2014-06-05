@@ -1,5 +1,3 @@
-## Terminology
-
 Superness? Overshoot? Instance? We're describing the terminology below to shed some light onto some frequently used terms.
 
 ### Metapolator
