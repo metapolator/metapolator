@@ -11,8 +11,10 @@ This is an ongoing Milestone. I bring it up here so that we don't forget, that t
 1. Ignition!
 ----------
 
-**Goal:** Get fundamental technology into a working state. 
+**Goal:** Get fundamental technology into a working state.
+
 **Scope:** This milestone does not include user friendly front end technology.
+
 **Acceptance Criteria:** Designer-Developers can create fonts using Metapolator v2 technology. 
 
 * more ufoJS: This is one of the core Metapolator libraries, and some fundamentals 
