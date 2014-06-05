@@ -10,8 +10,6 @@ This is structured into Milestones and Tasks that have to be finished to reach t
 
   So that we don't forget, a lot of work is done before even starting to work on the first Milestone, and this work continues: thinking over and over about what we are doing and if we are still going in the right direction.
 
-
-
 1. Ignition! [July 1]
 ----------
 
@@ -43,6 +41,8 @@ This is structured into Milestones and Tasks that have to be finished to reach t
 
 * **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
+* **Events:** Simon will present at Tag der Schrift on June 14.
+
 2. Approaching the GUI [August 1]
 ----------------------
 
@@ -51,10 +51,35 @@ This is structured into Milestones and Tasks that have to be finished to reach t
 **Scope:** This milestone does not include a complete UI, but a good layout to build upon and provide
 a first really useful instance. 
 
-**Complete When:** Designers can create font instances from masters using Metapolator v2 technology with a web UI. 
+**Complete When:** Designers connected to our developers can create font instances from masters using Metapolator v2 technology with a web UI. 
 
 * Some of the technologies from the first Milestone will mature in this phase. 
 
 * The plugin mechanism will need a robust interface.
 
+3. Catching the GUI [September 1]
+----------------------
 
+**Goal:** Get full UI and Application Technology working well.
+
+**Scope:** 
+
+**Complete When:** Designers connected to our developers can create new font masters using Metapolator v2 technology with a web UI. 
+
+4. Growing Users [October 1]
+----------------------
+
+**Goal:** Document the project and application
+
+**Scope:** This milestone does not include adding major new features
+
+**Complete When:** Designers not connected to our developers can become effective users
+
+5. Refinement [November 1]
+----------------------
+
+**Goal:** Respond to user feedback
+
+**Scope:** This milestone does not include adding major new features
+
+**Complete When:** New users say they enjoy the application and the whole project experience
