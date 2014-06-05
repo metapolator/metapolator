@@ -222,7 +222,7 @@ This is an impression of the force field of master M4 (black = 100%, white is 0%
 
 ![](http://www.mmiworks.net/metapolator/rubberForce.png)
 
-Note that is was built completely out of 5 triangles, each with corners at the equilibrium point and 2 masters.The whole field is defined by the expected results that M4 = 100%, M1–M3 & M5 = 0%; equilibrium point = 20%; half-way M4–M3 & half-way M4–M5 = 50% (i.e. exactly on the perimeter).
+Note that is was built completely out of 5 triangles, each with corners at the equilibrium point and 2 masters.The whole field is defined by the expected results that M4 = 100%, M1–M3 & M5 = 0%; equilibrium point = 20%; half-way M4–M3 & half-way M4–M5 = 50% (i.e. exactly on the perimeter, to the two nearest neighbours).
 
 Users can configure the space however they feel is correct for their masters. Any master can be positioned anywhere within the square perimeter. Basic guidance is
 * the further away a master is from the equilibrium point, the more far-out it is;
