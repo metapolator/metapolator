@@ -66,6 +66,10 @@ a first really useful instance.
 
 **Complete When:** Designers connected to our developers can create new font masters using Metapolator v2 technology with a web UI. 
 
+* 100% Client Side
+
+* Support for working offline
+
 * Plan an outreach campaign to grow the userbase
 
 4. Growing Users [October 1]
@@ -92,7 +96,8 @@ a first really useful instance.
    * Kickstarter required details (description, video, rewards, stretch goals)
    * Outreach campaign
 
-* Decide a major feature to work on next, for November
+* Decide a major feature to work on next, for November. Ideas:
+  * Real Time Multi User Mode
 
 6. Major Feature [December 1]
 ----------------------
