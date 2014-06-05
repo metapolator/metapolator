@@ -1,8 +1,4 @@
-Metapolator: Cascading Parameter Sheets
-=======================================
-
-Metapolator Neue, is a parametric font tool. To work with these parameters
-we borrow heavily from the Cascading Style Sheet language.
+Metapolator is a parametric font tool. To work with parameters we borrow heavily from the Cascading Style Sheet language.
 
 This file is a work in progress. It will lead us through the development
 of our CPS-Tools and eventually become the documentation thereof.
