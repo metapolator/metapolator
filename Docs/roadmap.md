@@ -1,6 +1,9 @@
-We need a way to communicate what happens next in the Project and to show what already happened.
+We need a way to communicate what happens next in the Project and to show 
+what already happened.
 
-This is structured into Milestones and Tasks that have to be finished to reach these Milestones. Expect this document to change often, because it's impossible to plan everything from the start.
+This is structured into Milestones and Tasks that have to be finished to 
+reach these Milestones. Expect this document to change often, because it's 
+impossible to plan everything from the start.
 
 
 0. Ongoing Work
@@ -8,7 +11,9 @@ This is structured into Milestones and Tasks that have to be finished to reach t
 
 * **Develop a better understanding** 
 
-  So that we don't forget, a lot of work is done before even starting to work on the first Milestone, and this work continues: thinking over and over about what we are doing and if we are still going in the right direction.
+  So that we don't forget, a lot of work is done before even starting to 
+  work on the first Milestone, and this work continues: thinking over and 
+  over about what we are doing and if we are still going in the right direction.
 
 1. Ignition! [July 1]
 ----------
@@ -17,45 +22,81 @@ This is structured into Milestones and Tasks that have to be finished to reach t
 
 **Scope:** This milestone does not include user friendly front end technology.
 
-**Complete When:** Designer-Developers can create font instances from masters using Metapolator v2 technology. 
+**Complete When:** Designer-Developers can create font instances from
+  masters using Metapolator v2 technology. 
 
-* **more ufoJS:** This is one of the core Metapolator libraries, and some fundamentals 
-  still need to be developed there before we can start with the other parts.
-
-  * Importer: Organize the creation of a Master (Skeleton layer and CPS)
+* **more ufoJS:** This is one of the core Metapolator libraries, and some
+  fundamentals  still need to be developed there before we can start with
+  the other parts.
+  * ufoJS library: *(100% complete)* reading and writing glyph layers 
+  * Importer: *(0% complete)* Organize the creation of a Master (Skeleton layer and CPS)
     by extracting data from UFOv2 using ufoJS import plugins.
-
-  * Exporter: Organize the creation of Instances by taking a Master
+  * Exporter: *(0% complete)* Organize the creation of Instances by taking a Master
     and creating outlines from it using ufoJS export plugins.
 
 * **CPS:** Initial Object-Model to process parameters. Details: [Cascading Parameter Sheets](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
+  * parsing/writing: *(100% complete)* into/from our object model
+  * processing CPS values: *(0% complete)* tied together with **Plugins**
+  * Selectors and value inheritance chain: *(0% complete)*
 
 * **Plugins:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
   of Metapolator. Included in the first Milestone:
-  * import: reading parameters from outline fonts into cps
-  * export: make metapost code to create outlines
-  * parameter definition
+  * import: *(0% complete)* reading parameters from outline fonts into cps
+  * export: *(0% complete)* make metapost code to create outlines, create 
+    outlines from that. Write the result into a UFO.
+  * parameter definition *(0% complete)*
 
-* **Sample project:** To show how data is organized in Metapolator, and is fully functional (but small.)  Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
+* **Sample project:** *(15% complete)* To show how data is organized in 
+  Metapolator, and is fully functional (but small.)  Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
 
 * **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
 * **Events:** Simon will present at Tag der Schrift on June 14.
 
-2. Approaching the GUI [August 1]
+fully 2. Approaching the GUI [August 1]
 ----------------------
 
 **Goal:** Get fundamental UI and Application Technology into a working state.
 
-**Scope:** This milestone does not include a complete UI, but a good layout to build upon and provide
-a first really useful instance. 
+**Scope:** This milestone does not include a complete UI, but a good layout
+to build upon and provide a first really useful instance. 
 
-**Complete When:** Designers connected to our developers can create font instances from masters using Metapolator v2 technology with a web UI. 
+**Complete When:** Designers connected to our developers can create font 
+instances from masters using Metapolator v2 technology with a web UI. 
 
 * Some of the technologies from the first Milestone will mature in this phase. 
 
-* The plugin mechanism will need a robust interface.
+* The plugin mechanism will need a robust interface definition. Tasks done 
+  via plugins include:
+  * parameter import (from outline sources)
+  * creating metafont code tied to specific parameters or even more general
+    metafont preprocessing/metafont templates tasks.
+  * UI-widgets. Almost everything of the UI should be a plugin. (We need
+    probably some API here to persist the UI setup.)
+  * ... to be continued
+  
+  Tasks:
+  
+  * **Plugin API**: How to create plugins for these tasks should be solved in this phase.
+  * **First Plugins**: for UI etc.
+
+* **Application Model**: We need an object model that reflects the different 
+  things we can do with metapolator. Important for example is the interpolation 
+  topic. We need to know how interpolation is going to be controlled to 
+  know what kind of data needs to be stored. With more experience we'll
+  eventually come up with a more general model.
+  * Data Model
+  * Basic Interfaces
+
+* **Broker API**: The UI will talk to the "core" via a Broker. I.e. the 
+  Application Model will provide an API via the Broker to the Application.
+  This architecture will enable us later to build a multiuser system by 
+  using a different Broker implementation.
+  Details: [concepts](https://github.com/metapolator/metapolator/wiki/concepts)
+  * Broker API
+
+  
 
 3. Catching the GUI [September 1]
 ----------------------
