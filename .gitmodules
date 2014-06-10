@@ -1,0 +1,3 @@
+[submodule "next/app/lib/ufoJS"]
+	path = next/app/lib/ufoJS
+	url = git@github.com:graphicore/ufoJS.git
