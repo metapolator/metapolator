@@ -19,6 +19,8 @@
     "gulp": "~3.6.2",
     "gonzales": "~1.0.7",
     "gulp-replace": "~0.3.0",
-    "gulp-insert": "~0.3.0"
+    "gulp-insert": "~0.3.0",
+    "requirejs": "~2.1.14",
+    "lie": "~2.7.6"
   }
 }
