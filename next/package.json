@@ -21,6 +21,7 @@
     "gulp-replace": "~0.3.0",
     "gulp-insert": "~0.3.0",
     "requirejs": "~2.1.14",
-    "lie": "~2.7.6"
+    "lie": "~2.7.6",
+    "immutable-complex": "~3.0.1"
   }
 }
