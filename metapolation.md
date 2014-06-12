@@ -25,6 +25,24 @@ _Instance weight = 30%·21 + 20%·32 + 30%·43 + 10%·98 + 10%·62 = 6.3 + 6.4 +
 If we look at how many ratios can be defined between N masters, the number is the sum of 1 + 2 + 3 + .. + N-1, which is ½·N·(N-1).<br>
 _Example: for a 4-master metapolation, there are 1 + 2 + 3 = 6 (= ½·4·3) ratios: M1 ↔ M2, M1 ↔ M3, M1 ↔ M4, M2 ↔ M3, M2 ↔ M4, M3 ↔ M4._
 
+### relations are complicated
+
+Looking beyond the simple one–to–one relationship, we can also list the number of possible triangular and ‘quadrophonic’ relationships:
+
+masters | 1–to–1 | triangles | quads
+--- | --: | --: | --:
+2 | 1 | - | -
+3 | 3 | 1 | -
+4 | 6 | 4 | 1
+5 | 10 | 10 | 5
+6 | 15 | 20 | 15
+7 | 21 | 35 | 35
+8 | 28 | 56 | 70
+9 | 36 | 84 | 126
+10 | 45 | 120 | 210
+
+Note that these are the maximum number of relations that can be defined.
+
 ### conclusions from the math
 
 The fist conclusion is that for an N-master metapolation only N-1 factors (think: input sliders) are needed; the final factor can be calculated from the 100% rule above. N-1 is the **minimum number** of inputs a metapolation needs. When a master is added to a metapolation, this number increases by 1.
