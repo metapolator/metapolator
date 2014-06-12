@@ -1,18 +1,19 @@
 define([
-	'bower_components/zip/zip',
-	'models/FS'
-], function(Zip,FS) {
+	'bower_components/zip/zip'
+    , 'models/FS'
+    , '../glyphInspector/file-service'
+], function(Zip
+    , FS) {
 	"use strict";
 	function FileUploaderController($scope) {
 		this.$scope = $scope;
 		this.$scope.name = 'fileUploader';
 		this.requiredFeaturesAvailable();
+        this.$scope.uploaderText = "Drop down .ufo zip here";
 
 		this.$scope.file;
 		this.$scope.$watch('file', this.onFileReady.bind(this));
-		// this.$scope.fs = new FS('FS');
-		// console.log(this.$scope.fs.key(0));
-		// console.log(this.$scope.FS.getKeys());
+
 	}
 	
 	FileUploaderController.$inject = ['$scope'];
@@ -45,23 +46,24 @@ define([
 			}
 		};
 
-		console.log(this);
 		if (newFile){
+            this.$scope.uploaderText = "loading...";
 			zip.workerScriptsPath = '/lib/bower_components/zip/';
-			// use a BlobReader to read the zip from a Blob object
+			// use a DataURI to read the zip from a Blob object
 			zip.createReader(new zip.Data64URIReader(newFile), function(reader) {
-
 				  // get all entries from the zip
 				  reader.getEntries(function(entries) {
 				  	console.log(reader);
 					if (entries.length) {
 					 	recursiveUnzip(reader, entries);
 					}
-					debugger;
 				  });
 				}, function(error) {
-					console.log(error);
+                    
 			});
+            this.$scope.uploaderText = "Uploaded " + localStorage.length + " files"; 
+            console.log(this.$scope);
+
 		}
 	}
 	
