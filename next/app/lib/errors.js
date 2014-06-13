@@ -37,6 +37,7 @@ define(function() {
     makeError('Error');
     makeError('Assertion', undefined , new errors.Error);
     makeError('CommandLine', undefined , new errors.Error);
+    makeError('Value', undefined , new RangeError);
     
     /**
      * if expression is false errors.Assertion is thrown
