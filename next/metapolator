@@ -11,6 +11,7 @@ requirejs.config({
       , 'require/text': 'bower_components/requirejs-text/text'
       , 'metapolator': './'
       , 'gonzales': 'npm_converted/gonzales/lib'
+      , 'complex':  'npm_converted/immutable-complex/lib'
       , 'angular': 'bower_components/angular/angular'
       , 'obtain': 'obtainJS/lib'
       , 'ufojs': 'ufoJS/lib'
