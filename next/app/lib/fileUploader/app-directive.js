@@ -5,6 +5,34 @@ define([
 ) {
     "use strict";
     function FileUploaderDirective(mainCtrl) {
+                
+       var processDragOverOrEnter = function(event) {
+            if (event != null) {
+              event.preventDefault();
+            }
+            event.dataTransfer.effectAllowed = 'copy';
+            return false;
+          };
+          
+        var checkSize = function(size, attrs) {
+            var _ref;
+            if (((_ref = attrs.maxFileSize) === (void 0) || _ref === '') || (size / 1024) / 1024 < attrs.maxFileSize) {
+              return true;
+            } else {
+              alert("File must be smaller than " + attrs.maxFileSize + " MB");
+              return false;
+            }
+          };
+        
+        var isTypeValid = function(validMimeTypes, type) {
+            if ((validMimeTypes === (void 0) || validMimeTypes === '') || validMimeTypes.indexOf(type) > -1) {
+              return true;
+            } else {
+              alert("Invalid file type.  File must be one of following types " + validMimeTypes);
+              return false;
+            }
+          };
+        
         return {
             restrict: 'E' // only matches element names
           , controller: 'FileUploaderController'
@@ -15,45 +43,18 @@ define([
                 drop: '&'
             }
           , link: function(scope, element, attrs) {
-              var checkSize, isTypeValid, processDragOverOrEnter, validMimeTypes;
-              processDragOverOrEnter = function(event) {
-                if (event != null) {
-                  event.preventDefault();
-                }
-                event.dataTransfer.effectAllowed = 'copy';
-                return false;
-              };
-              validMimeTypes = attrs.type;
-              checkSize = function(size) {
-                var _ref;
-                if (((_ref = attrs.maxFileSize) === (void 0) || _ref === '') || (size / 1024) / 1024 < attrs.maxFileSize) {
-                  return true;
-                } else {
-                  alert("File must be smaller than " + attrs.maxFileSize + " MB");
-                  return false;
-                }
-              };
-              isTypeValid = function(type) {
-                if ((validMimeTypes === (void 0) || validMimeTypes === '') || validMimeTypes.indexOf(type) > -1) {
-                  return true;
-                } else {
-                  alert("Invalid file type.  File must be one of following types " + validMimeTypes);
-                  return false;
-                }
-              };
+              var validMimeTypes = attrs.type;
               element.bind('dragover', processDragOverOrEnter);
               element.bind('dragenter', processDragOverOrEnter);
               return element.bind('drop', function(event) {
-                console.log(event);
                 var file, name, reader, size, type;
                 if (event != null) {
                   event.preventDefault();
                 }
                 reader = new FileReader();
                 reader.onload = function(evt) {
-                  if (checkSize(size) && isTypeValid(type)) {
+                  if (checkSize(size, attrs) && isTypeValid(validMimeTypes, type)) {
                     return scope.$apply(function() {
-                      console.log(evt.target.result);
                       scope.file = evt.target.result;
                       if (angular.isString(scope.fileName)) {
                         return scope.fileName = name;
@@ -71,6 +72,8 @@ define([
           }
         };
     }
+
     FileUploaderDirective.$inject = [];
+
     return FileUploaderDirective;
 })

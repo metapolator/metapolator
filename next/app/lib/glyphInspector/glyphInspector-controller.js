@@ -1,10 +1,9 @@
 define([], function() {
     "use strict";
-    function GlyphInspectorController($scope) {
-        var x = new fileService(this.$scope, localStorage, [1,2,3]);
+    function GlyphInspectorController($scope, fileService) {
     }
 
-    GlyphInspectorController.$inject = ['$scope', 'FileService'];
+    GlyphInspectorController.$inject = ['$scope', 'fileService'];
     var _p = GlyphInspectorController.prototype;
     
     return GlyphInspectorController;

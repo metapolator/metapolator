@@ -19,7 +19,7 @@ define([
     console.log('glyphInspector loading');
     //return Module
     return angular.module('glyphInspector', [fileUploader.name, fileViewer.name])
-    .service('fileService', fileService)
+    .service('fileService',fileService)
     .controller('GlyphInspectorController', Controller)
     .directive('glyphInspector', Directive);
 });

@@ -14,5 +14,5 @@ define([
     //return Module
     return angular.module('FileViewer', [])
       .controller('FileViewerController', Controller)
-      .directive('FileViewer', Directive)
+      .directive('fileViewer', Directive)
 });
