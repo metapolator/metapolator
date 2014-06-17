@@ -29,23 +29,23 @@ impossible to plan everything from the start.
   fundamentals  still need to be developed there before we can start with
   the other parts.
   * ufoJS library: *(100% complete)* reading and writing glyph layers 
-  * Importer: *(0% complete)* Organize the creation of a Master (Skeleton layer and CPS)
+  * Importer: *(45% complete)* Organize the creation of a Master (Skeleton layer and CPS)
     by extracting data from UFOv2 using ufoJS import plugins.
-  * Exporter: *(0% complete)* Organize the creation of Instances by taking a Master
+  * Exporter: *(15% complete)* Organize the creation of Instances by taking a Master
     and creating outlines from it using ufoJS export plugins.
 
 * **CPS:** Initial Object-Model to process parameters. Details: [Cascading Parameter Sheets](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
   * parsing/writing: *(100% complete)* into/from our object model
   * processing CPS values: *(0% complete)* tied together with **Plugins**
-  * Selectors and value inheritance chain: *(0% complete)*
+  * Selectors and value inheritance chain: *(10% complete)*
 
 * **Plugins:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
   of Metapolator. Included in the first Milestone:
-  * import: *(0% complete)* reading parameters from outline fonts into cps
-  * export: *(0% complete)* make metapost code to create outlines, create 
+  * import: *(55% complete)* reading parameters from outline fonts into cps
+  * export: *(15% complete)* make metapost code to create outlines, create 
     outlines from that. Write the result into a UFO.
-  * parameter definition *(0% complete)*
+  * parameter definition *(25% complete)*
 
 * **Sample project:** *(15% complete)* To show how data is organized in 
   Metapolator, and is fully functional (but small.)  Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
