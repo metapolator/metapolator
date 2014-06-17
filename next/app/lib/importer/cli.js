@@ -231,7 +231,7 @@ define([
         
         function line2curve(p0, p3) {
             var p1, p2
-              , distance = (p3.vector['-'](p0.vector))['*'](.25)
+              , distance = (p3.vector['-'](p0.vector))['*'](.33333)
               ;
             // at a quarter between p0 and p3
             p1 = new Point(p0.vector['+'](distance));
