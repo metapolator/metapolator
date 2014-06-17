@@ -6,7 +6,9 @@ define([
   , './ImportOutlinePen'
   , './SkeletonSegmentPen'
   , './SegmentPoint'
+  , './CompoundVector'
   , './CompoundPoint'
+  , './CompoundReal'
   , './Vector'
 ], function (
     errors
@@ -16,7 +18,9 @@ define([
   , ImportOutlinePen
   , SkeletonSegmentPen
   , Point
+  , CompoundVector
   , CompoundPoint
+  , CompoundReal
   , Vector
 ) {
     "use strict";
@@ -111,7 +115,71 @@ define([
           , contour
           , skeleton = []
           , penStroke = []
+          , penStrokeWithTensions = []
           ;
+        
+        
+        function StrokeContour() {
+            var args = Array.prototype.slice.apply(arguments);
+            // array is Parent, this will be on module namespace level
+            var Parent = Array;
+            Array.call(this, args);
+        }
+        StrokeContour.prototype = Object.create(Array.prototype);
+        StrokeContour.prototype.constructor = StrokeContour;
+        
+        StrokeContour.prototype.push = function(/* ... */) {
+            var args = Array.prototype.slice.apply(arguments)
+              , i=0
+              , segments
+              , left = 0
+              , right = 1
+              ;
+            
+            // array is Parent, this will be on module namespace level
+            var Parent = Array;
+            
+            for(;i<args.length;i++) {
+                args[i]; // === [leftSegment, rightSegment]
+                segments = [];
+                
+                // we convert ALL lineTo to curveTo
+                // but the Segment is marked with .wasLine = true;
+                if(args[i][left][0] === 'lineTo') {
+                    segments[left] = line2curve(
+                        this[this.length-1][left].slice(-1).pop()
+                      , args[i][left][1]
+                    );
+                    segments[left].wasLine = true;
+                }
+                else
+                    segments[left] = args[i][left];// .slice() ??? need as copy?
+                    
+                
+                if(args[i][right][0] === 'lineTo') {
+                    segments[right] = line2curve(
+                        this[this.length-1][right].slice(-1).pop()
+                      , args[i][right][1]
+                    );
+                    segments[right].wasLine = true;
+                }
+                else
+                    segments[right] = args[i][right];// .slice() ??? need as copy?
+                
+                Parent.prototype.push.call(this, segments);
+            }
+        };
+        
+        StrokeContour.prototype.separate = function(left, right) {
+            var separated = [left || [], right || []]
+              , i=0
+              ;
+            for(;i<this.length;i++) {
+                separated[0].push(this[i][0]);
+                separated[1].push(this[i][1]);
+            }
+            return separated;
+        }
         
         /**
          * This methods expects a input-contour like a Segement pen produces it.
@@ -180,8 +248,8 @@ define([
          *        [5, 3]
          *     ]
          */
-        function getStrokeContour(contour) {
-            var result = []
+        StrokeContour.factory = function(contour, container) {
+            var container = container || new StrokeContour()
               // skip the first moveto
               , right = 1
               // -1 for length to index translation,
@@ -192,8 +260,8 @@ define([
               , leftSegment, points
               ;
             
-            // add the initial moveTo to the results
-            result.push([
+            // add the initial moveTo to the container
+            container.push([
                 ['moveTo', contour[left].slice(-1).pop()]
               , contour[0]
             ])
@@ -210,9 +278,9 @@ define([
                 // oncurve point of the previous segment
                 leftSegment.push(contour[left-1].slice(-1).pop())
                 
-                result.push([leftSegment, contour[right]]);
+                container.push([leftSegment, contour[right]]);
             }
-            return result;
+            return container;
         }
         
         /**
@@ -232,12 +300,15 @@ define([
         function line2curve(p0, p3) {
             var p1, p2
               , distance = (p3.vector['-'](p0.vector))['*'](.33333)
+              , newCurve = ['curveTo']
               ;
             // at a quarter between p0 and p3
             p1 = new Point(p0.vector['+'](distance));
             // at a quarter between p3 and p0
             p2 = new Point(p3.vector['-'](distance));
-            return ['curveTo', p1, p2, p3];
+            
+            newCurve.push(p1, p2, p3);
+            return newCurve;
         }
         
         function hobby(theta, phi) {
@@ -334,7 +405,7 @@ define([
          * and the other one must be 'curveTo'. Then the 'lineTo' segment
          * will be converted into a 'curveTo' segment. for this operation
          * the previous segment is needed, because the previous on curve
-         * point is needed to corectly place the new control points.
+         * point is needed to correctly place the new control points.
          * 
          * A segment is an array where the first element is the command
          * name string and the other elements are the instances of Points
@@ -380,6 +451,7 @@ define([
                     previous[left].slice(-1).pop()
                   , current[left].slice(-1).pop()
                 );
+                promoted.wasLine = true;
                 return [promoted, current[right]];
             }
             
@@ -389,6 +461,7 @@ define([
                     previous[right].slice(-1).pop()
                   , current[right].slice(-1).pop()
                 );
+                promoted.wasLine = true;
                 return [current[left], promoted];
             }
             
@@ -396,8 +469,13 @@ define([
                         current[left][0], current[right][0]].join(' '));
         }
         
+        
+        function getCenter(l, r) {
+            return l['+'](r)['*'](0.5);
+        }
+        
         function getCenterPoint(l, r) {
-            return new Point( l.vector['+'](r.vector)['*'](0.5) );
+            return new Point(getCenter(l.vector, r.vector));
         }
         
         function getCenterSegment(left, right) {
@@ -435,19 +513,17 @@ define([
                                         && contour.commands.length >= 5
                                         && contour.commands.length % 2) {
                 
-                var strokeContour = getStrokeContour(contour.commands)
+                var strokeContour = StrokeContour.factory(contour.commands, [])
                   , centerLine = getCenterLine(strokeContour)
                   , terminals = getStrokeTerminals(contour.commands)
-                  , penStrokeContour = getPenStroke(centerLine, strokeContour, terminals);
+                  , penStrokeContour = getPenStroke(centerLine, strokeContour, terminals)
+                  , penStrokeContourWithTensions = getPenStrokeWithTensions(contour.commands)
                   ;
                 
-                
-                
                 skeleton.push(centerLine);
-                // var leftRight = separateStrokeContour(strokeContour);
-                // skeleton.push(leftRight[0], leftRight[1]);
+                penStroke.push(penStrokeContour);
+                penStrokeWithTensions.push(penStrokeContourWithTensions);
                 
-                penStroke.push(penStrokeContour)
             }
             else if(!contour.closed)
                 console.log('skipping contour because it is open.');
@@ -456,18 +532,6 @@ define([
             else
                 console.log('skipping contour because count of on-curve points is uneven');
         }
-        
-        function separateStrokeContour(strokeContour, left, right) {
-            var separated = [left || [], right || []]
-              , i=0
-              ;
-            for(;i<strokeContour.length;i++){
-                separated[0].push(strokeContour[i][0]);
-                separated[1].push(strokeContour[i][1]);
-            }
-            return separated;
-        }
-        
         
         /**
          * From a semantic point of view we have only on-curve points, which:
@@ -479,17 +543,24 @@ define([
          * this is the way most people think about vector graphics.
          */
         function getSemanticPoint(i, segments) {
-            return {
+            var point = {
                 on: segments[i][segments[i].length-1]
-                // last control point of the current segment
-                , in: i === 0 || segments[i][0] !== 'curveTo'
-                    ? undefined
-                    : segments[i][2]
-                // first control point of the next segment
-                , ou: i === segments.length-1 || segments[i+1][0] !== 'curveTo'
-                    ? undefined
-                    : segments[i+1][1]
+                // whether this was the on curve point of a lineTo Segment
+              , wasLine: !!segments[i].wasLine
+              , in: undefined
+              , ou: undefined
             };
+            
+            if(i !== 0 && segments[i][0] === 'curveTo') {
+                point.in = segments[i][2];
+                point.inDir = point.on.vector['-'](point.in.vector);
+            }
+            
+            if(i !== segments.length-1 && segments[i+1][0] === 'curveTo') {
+                point.ou = segments[i+1][1];
+                point.ouDir = point.ou.vector['-'](point.on.vector);
+            }
+            return point;
         }
         
         /**
@@ -573,7 +644,7 @@ define([
                 , right = []
                 ;
             // writes to left and right
-            separateStrokeContour(strokeContour, left, right);
+            StrokeContour.prototype.separate.call(strokeContour, left, right);
             var source, result, results = [];
             for(var i=0; i<center.length; i++) {
                 source = {
@@ -608,15 +679,15 @@ define([
                      ? undefined
                      : new CompoundPoint(
                          source.l.in.vector['-'](source.l.on.vector)
-                                           ['-'](result.zin.intrinsic.vector)
+                                           ['-'](result.zin.intrinsic.value)
                        , result.zin.intrinsic, result.lon.intrinsic, result.zon)
                        
-                       
+                
                 result.lou = source.l.ou === undefined
                     ? undefined
                     : new CompoundPoint(
                         source.l.ou.vector['-'](source.l.on.vector)
-                                          ['-'](result.zou.intrinsic.vector)
+                                          ['-'](result.zou.intrinsic.value)
                       , result.zou.intrinsic, result.lon)
                 
                 // right stroke
@@ -628,14 +699,14 @@ define([
                     ? undefined
                     : new CompoundPoint(
                          source.r.in.vector['-'](source.r.on.vector)
-                                           ['-'](result.zin.intrinsic.vector)
+                                           ['-'](result.zin.intrinsic.value)
                        , result.zin.intrinsic, result.ron)
                 
                 result.rou = source.r.ou === undefined
                     ? undefined
                     : new CompoundPoint(
                         source.r.ou.vector['-'](source.r.on.vector)
-                                          ['-'](result.zou.intrinsic.vector)
+                                          ['-'](result.zou.intrinsic.value)
                       , result.zou.intrinsic, result.ron)
             }
             
@@ -646,11 +717,11 @@ define([
                 result = results[0];
                 // note that the control points are from left to right
                 result.lin = new CompoundPoint(
-                    terminals[0][1].vector['-'](result.lon.vector)
+                    terminals[0][1].vector['-'](result.lon.value)
                   , result.lon)
                 
                 result.rin = new CompoundPoint(
-                    terminals[0][2].vector['-'](result.ron.vector)
+                    terminals[0][2].vector['-'](result.ron.value)
                   , result.ron)
             }
             //terminal of the ending of the stroke
@@ -658,19 +729,314 @@ define([
                 result = results[results.length-1];
                 // note that the control points are from right to left
                 result.rou = new CompoundPoint(
-                    terminals[1][1].vector['-'](result.ron.vector)
+                    terminals[1][1].vector['-'](result.ron.value)
                   , result.ron)
                 
                 result.lou = new CompoundPoint(
-                    terminals[1][2].vector['-'](result.lon.vector)
+                    terminals[1][2].vector['-'](result.lon.value)
                   , result.lon)
             }
             
-            for (var i=0; i<results.length;i++) {
-                console.log(new Array(15).join(i + '_'));
-                    for(var k in results[i])
-                        console.log(k, results[i][k]+'');
+            ////for (var i=0; i<results.length;i++) {
+            ////    console.log(new Array(15).join(i + '_'));
+            ////        for(var k in results[i])
+            ////            console.log(k, results[i][k]+'');
+            ////}
+            
+            return results;
+        }
+        
+        function getPenStrokeWithTensions(commands) {
+              var left = []
+                , right = []
+                , strokeContour = new StrokeContour.factory(commands)
+                , terminals = getStrokeTerminals(commands)
+                ;
+            // writes to left and right
+            strokeContour.separate(left, right);
+            var source, sources = [], tnsns, result, results = [];
+            for(var i=0; i<strokeContour.length; i++) {
+                
+                source = {
+                    l: getSemanticPoint(i, left)
+                  , r: getSemanticPoint(i, right)
+                  , z: {in:undefined, ou: undefined}
+                }
+                sources.push(source);
+                
+                source.z.on = getCenterPoint(source.l.on, source.r.on);
+                if(source.l.in && source.r.in) {
+                    source.z.in = getCenterPoint(source.l.in, source.r.in);
+                    source.z.inDir = getCenter(source.l.inDir, source.r.inDir);
+                }
+                
+                if(source.l.ou && source.r.ou) {
+                    source.z.ou = getCenterPoint(source.l.ou, source.r.ou);
+                    source.z.ouDir = getCenter(source.l.ouDir, source.r.ouDir);
+                }
+                
+                if(i===0)
+                    // because we'll look behind
+                    continue;
+                
+                // left hobby
+                if( sources[i-1].l.ou
+                    && source.l.in
+                    && sources[i-1].l.ouDir.magnitude() !== 0
+                    && source.l.inDir.magnitude() !== 0) {
+                    // FIXME: there should be a fix for when the directions
+                    // are 0 if the distance from sources[i-1].l.on
+                    // to source.l.on.vector is != 0
+                    // or so...
+                    // but to make some progress I skip the corner cases
+                    // for now!
+                
+                    tnsns = tensions(
+                        sources[i-1].l.on.vector
+                      , sources[i-1].l.ou.vector
+                      , source.l.in.vector
+                      , source.l.on.vector
+                    )
+                    sources[i-1].l.ouTension = tnsns[0];
+                    source.l.inTension = tnsns[1];
+                    if(source.l.inTension > 5) {
+                        // this happens with my test glif
+                        console.log('>>BIG>> source.l.inTension', source.l.inTension, tnsns)
+                        console.log('check if this is the same when done with mpost')
+                    }
+                }
+                
+                
+                // right hobby
+                if( sources[i-1].r.ou
+                    && source.r.in
+                    && sources[i-1].r.ouDir.magnitude() !== 0
+                    && source.r.inDir.magnitude() !== 0) {
+                    // FIXME: there should be a fix for when the directions
+                    // are 0 if the distance from sources[i-1].l.on
+                    // to source.l.on.vector is != 0
+                    // or so...
+                    // but to make some progress I skip the corner cases
+                    // for now!
+                    tnsns = tensions(
+                        sources[i-1].r.on.vector
+                      , sources[i-1].r.ou.vector
+                      , source.r.in.vector
+                      , source.r.on.vector
+                    )
+                
+                    sources[i-1].r.ouTension = tnsns[0];
+                    source.r.inTension = tnsns[1];
+                }
+               if(sources[i-1].z.ou
+                    && source.z.in
+                    && sources[i-1].z.ouDir.magnitude() !== 0
+                    && source.z.inDir.magnitude() !== 0) {
+                    // if we can't get the values from the delta of left
+                    // and right, we might still be able to get tensions
+                    // from the centerline itself
+                    
+                    // FIXME: there should be a fix for when the directions
+                    // are 0 if the distance from sources[i-1].l.on
+                    // to source.l.on.vector is != 0
+                    // or so...
+                    // but to make some progress I skip the corner cases
+                    // for now!
+                    tnsns = tensions(
+                        sources[i-1].z.on.vector
+                      , sources[i-1].z.ou.vector
+                      , source.z.in.vector
+                      , source.z.on.vector
+                    )
+                    sources[i-1].z.ouTension = tnsns[0];
+                    source.z.inTension = tnsns[1];
+                }
             }
+            
+            for(var i=0; i<strokeContour.length; i++) {
+                source = sources[i];
+                result = {};
+                results.push(result);
+                
+                // center line
+                result.zon = new CompoundPoint(source.z.on.vector)
+                if(source.z.in !== undefined) {
+                    result.zin = new CompoundPoint(
+                        source.z.in.vector['-'](source.z.on.vector)
+                      , result.zon)
+                    
+                    result.zinDir = new CompoundVector(source.z.inDir);
+                    result.zinTension = new CompoundReal(source.z.inTension);
+                }
+                else
+                    result.zin = undefined;
+                
+                if(source.z.ou !== undefined) {
+                    result.zou = new CompoundPoint(
+                        source.z.ou.vector['-'](source.z.on.vector)
+                      , result.zon);
+                    
+                    result.zouDir = new CompoundVector(source.z.ouDir);
+                    result.zouTension = new CompoundReal(source.z.ouTension);
+                }
+                else
+                    result.zou = undefined;
+                
+                // left stroke
+                result.lon = new CompoundPoint(
+                    source.l.on.vector['-'](result.zon.intrinsic.value)
+                    , result.zon)
+                
+                if(source.l.in !== undefined) {
+                    result.lin = new CompoundPoint(
+                         source.l.in.vector['-'](source.l.on.vector)
+                                           ['-'](result.zin.intrinsic.value)
+                       , result.zin.intrinsic, result.lon.intrinsic, result.zon);
+                    
+                    result.linDir = new CompoundVector(
+                        source.l.inDir['-'](source.z.inDir)
+                      , result.zinDir);
+                   
+                    result.linTension = new CompoundReal(
+                        source.l.inTension !== undefined
+                            ? source.l.inTension-source.z.inTension
+                            : 0
+                      , result.zinTension);
+                }
+                else
+                    result.lin == undefined;
+                
+                if(source.l.ou !== undefined) {
+                    result.lou = new CompoundPoint(
+                        source.l.ou.vector['-'](source.l.on.vector)
+                                          ['-'](result.zou.intrinsic.value)
+                      , result.zou.intrinsic, result.lon)
+                    
+                    result.louDir = new CompoundVector(
+                        source.l.ouDir['-'](source.z.ouDir)
+                      , result.zouDir);
+                    
+                    
+                    result.louTension = new CompoundReal(
+                        source.l.ouTension !== undefined
+                            ? source.l.ouTension-source.z.ouTension
+                            : 0
+                      , result.zouTension);
+                }
+                else
+                    result.lou = undefined
+                
+                // right stroke
+                result.ron = new CompoundPoint(
+                    source.r.on.vector['-'](result.zon.intrinsic.value)
+                    , result.zon)
+                
+                if(source.r.in !== undefined) {
+                    result.rin = new CompoundPoint(
+                            source.r.in.vector['-'](source.r.on.vector)
+                                            ['-'](result.zin.intrinsic.value)
+                        , result.zin.intrinsic, result.ron);
+                    
+                    result.rinDir = new CompoundVector(
+                        source.r.inDir['-'](source.z.inDir)
+                      , result.zinDir);
+                    
+                    result.rinTension = new CompoundReal(
+                        source.r.inTension !== undefined
+                            ? source.r.inTension-source.z.inTension
+                            : 0
+                      , result.zinTension);
+                }
+                else
+                    result.rin = undefined
+               
+                if(source.r.ou !== undefined) {
+                    result.rou = new CompoundPoint(
+                            source.r.ou.vector['-'](source.r.on.vector)
+                                            ['-'](result.zou.intrinsic.value)
+                        , result.zou.intrinsic, result.ron);
+                    
+                    result.rouDir = new CompoundVector(
+                        source.r.ouDir['-'](source.z.ouDir)
+                      , result.zouDir);
+                    
+                    result.rouTension = new CompoundReal(
+                        source.r.ouTension !== undefined
+                            ? source.r.ouTension-source.z.ouTension
+                            : 0
+                      , result.zouTension);
+                }
+                else
+                    result.rou = undefined;
+            }
+            
+            
+            // add the terminal segments
+            // terminal of the beginning of the stroke
+            if(terminals[0][0] === 'curveTo') {
+                result = results[0];
+                // note that the control points are from left to right
+                result.lin = new CompoundPoint(
+                    terminals[0][1].vector['-'](result.lon.value)
+                  , result.lon)
+                
+                result.rin = new CompoundPoint(
+                    terminals[0][2].vector['-'](result.ron.value)
+                  , result.ron)
+                
+                
+                result.linDir = new CompoundVector(result.lin.value['-'](result.lon.value))
+                result.rinDir = new CompoundVector(result.ron.value['-'](result.rin.value))
+                
+                if(result.linDir.value.magnitude() > 0
+                            && result.rinDir.value.magnitude() > 0) {
+                    tnsns = tensions(
+                      result.lon.value
+                    , result.lin.value
+                    , result.rin.value
+                    , result.ron.value
+                    )
+                    result.linTension = new CompoundReal(tnsns[0])
+                    result.rinTension = new CompoundReal(tnsns[1])
+                }
+            }
+            //terminal of the ending of the stroke
+            if(terminals[1][0] === 'curveTo') {
+                result = results[results.length-1];
+                // note that the control points are from right to left
+                result.rou = new CompoundPoint(
+                    terminals[1][1].vector['-'](result.ron.value)
+                  , result.ron)
+                
+                result.lou = new CompoundPoint(
+                    terminals[1][2].vector['-'](result.lon.value)
+                  , result.lon)
+                
+                
+                result.rouDir = new CompoundVector(result.rou.value['-'](result.ron.value))
+                result.louDir = new CompoundVector(result.lon.value['-'](result.lou.value))
+                
+                
+                if(result.rouDir.value.magnitude() > 0
+                            && result.louDir.value.magnitude() > 0) {
+                    tnsns = tensions(
+                        result.ron.value
+                      , result.rou.value
+                      , result.lou.value
+                      , result.lon.value
+                    )
+                    result.rouTension = new CompoundReal(tnsns[0]);
+                    result.louTension = new CompoundReal(tnsns[1]);
+                }
+                
+                
+            }
+            
+        //    for (var i=0; i<results.length;i++) {
+        //        console.log(new Array(15).join(i + '_'));
+        //            for(var k in results[i])
+        //                console.log(k, results[i][k]+'');
+        //    }
             
             return results;
         }
@@ -684,34 +1050,25 @@ define([
                 for(j=0;j<contours[i].length;j++) {
                     if(contours[i][j].rin !== undefined) {
                         segmentType = 'curve';
-                        pen.addPoint(contours[i][j].rin.vector.valueOf())
+                        pen.addPoint(contours[i][j].rin.value.valueOf())
                     }
                     else
                         segmentType =  'line';
-                    console.log(segmentType)
-                    
-                    
-                    pen.addPoint(contours[i][j].ron.vector.valueOf(), segmentType)
+                    pen.addPoint(contours[i][j].ron.value.valueOf(), segmentType)
                     if(contours[i][j].rou !== undefined)
-                        pen.addPoint(contours[i][j].rou.vector.valueOf())
+                        pen.addPoint(contours[i][j].rou.value.valueOf())
                 }
                 // then draw the left side
                 for(j=contours[i].length-1;j>=0 ;j--) {
-                    console.log('!>>', j, contours[i].length, contours[i]);
                     if(contours[i][j].lou !== undefined) {
                         segmentType = 'curve';
-                        pen.addPoint(contours[i][j].lou.vector.valueOf())
+                        pen.addPoint(contours[i][j].lou.value.valueOf())
                     }
                     else
                         segmentType = 'line';
-                    console.log(segmentType)
-                    console.log(new Array(15).join(i + '_'));
-                    for(var k in contours[i][j])
-                        console.log(k,contours[i][j][k]+'');
-                    
-                    pen.addPoint(contours[i][j].lon.vector.valueOf(), segmentType)
+                    pen.addPoint(contours[i][j].lon.value.valueOf(), segmentType)
                     if(contours[i][j].lin !== undefined)
-                        pen.addPoint(contours[i][j].lin.vector.valueOf())
+                        pen.addPoint(contours[i][j].lin.value.valueOf())
                 }
                 pen.endPath();
                 
@@ -722,18 +1079,158 @@ define([
                         segmentType = 'move';
                     else if(contours[i][j].zin !== undefined) {
                         segmentType = 'curve';
-                        pen.addPoint(contours[i][j].zin.vector.valueOf())
+                        pen.addPoint(contours[i][j].zin.value.valueOf())
                     }
                     else
                         segmentType =  'line';
-                    console.log(segmentType)
-                    
-                    pen.addPoint(contours[i][j].zon.vector.valueOf(), segmentType)
+                    pen.addPoint(contours[i][j].zon.value.valueOf(), segmentType)
                     if(contours[i][j].zou !== undefined)
-                        pen.addPoint(contours[i][j].zou.vector.valueOf())
+                        pen.addPoint(contours[i][j].zou.value.valueOf())
                 }
                 pen.endPath();
-                
+            }
+        }
+        
+        function drawPenStrokeWithTensions(contours, pen) {
+            var i=0, j, segmentType, hobyCtrl, pre, post;
+            for(;i<contours.length;i++) {
+                pen.beginPath()
+                // first draw the right side
+                for(j=0;j<contours[i].length;j++) {
+                    
+                    if(j=== 0 && contours[i][j].rin !== undefined) {
+                        // this is to reproduce the terminals
+                        // FIME: cleanup!
+                        
+                        // Fixme: when a dir has no magnitude a tension is missing, too!
+                        hobyCtrl = hobby2cubic(
+                            contours[i][j].lon.value
+                          , contours[i][j].linDir.value
+                          , contours[i][j].linTension.value
+                          , contours[i][j].rinTension.value
+                          , contours[i][j].rinDir.value
+                          , contours[i][j].ron.value
+                        )
+                        post = hobyCtrl[0];
+                        pre = hobyCtrl[1];
+                        pen.addPoint(post.valueOf())
+                        pen.addPoint(pre.valueOf())
+                        segmentType = 'curve';
+                    }
+                    else if(contours[i][j-1] && contours[i][j].rin !== undefined) {
+                        segmentType = 'curve';
+                        
+                        if(contours[i][j-1].rouDir
+                                && contours[i][j].rinDir
+                                && contours[i][j-1].rouDir.value.magnitude()
+                                && contours[i][j].rinDir.value.magnitude()) {
+                            
+                            hobyCtrl = hobby2cubic(
+                                contours[i][j-1].ron.value
+                              , contours[i][j-1].rouDir.value
+                              , contours[i][j-1].rouTension.value
+                              , contours[i][j].rinTension.value
+                              , contours[i][j].rinDir.value
+                              , contours[i][j].ron.value
+                            )
+                            post = hobyCtrl[0];
+                            pre = hobyCtrl[1];
+                        }
+                        else {
+                            post = contours[i][j-1].rou.value;
+                            pre = contours[i][j].rin.value;
+                        }
+                        pen.addPoint(post.valueOf())
+                        pen.addPoint(pre.valueOf())
+                    }
+                    else
+                        segmentType =  'line';
+                    pen.addPoint(contours[i][j].ron.value.valueOf(), segmentType);
+                }
+                for(j=contours[i].length-1;j>=0 ;j--) {
+                    if(j === contours[i].length-1 && contours[i][j].lou !== undefined) {
+                        // this is to reproduce the terminals
+                        // FIME: cleanup!
+                        
+                        // Fixme: when a dir has no magnitude a tension is missing, too!
+                        hobyCtrl = hobby2cubic(
+                            contours[i][j].ron.value
+                          , contours[i][j].rouDir.value
+                          , contours[i][j].rouTension.value
+                          , contours[i][j].louTension.value
+                          , contours[i][j].louDir.value
+                          , contours[i][j].lon.value
+                        )
+                        post = hobyCtrl[0];
+                        pre = hobyCtrl[1];
+                        pen.addPoint(post.valueOf())
+                        pen.addPoint(pre.valueOf())
+                        segmentType = 'curve';
+                    }
+                    else if(contours[i][j+1] && contours[i][j].lou !== undefined) {
+                        segmentType = 'curve';
+                        if(contours[i][j+1].linDir
+                                    && contours[i][j].louDir
+                                    && contours[i][j+1].linDir.value.magnitude()
+                                    && contours[i][j].louDir.value.magnitude()) {
+                            hobyCtrl = hobby2cubic(
+                                contours[i][j].lon.value
+                              , contours[i][j].louDir.value
+                              , contours[i][j].louTension.value
+                              , contours[i][j+1].linTension.value
+                              , contours[i][j+1].linDir.value
+                              , contours[i][j+1].lon.value
+                            )
+                            pre = hobyCtrl[0];
+                            post = hobyCtrl[1];
+                        }
+                        else {
+                            post = contours[i][j+1].lin.value;
+                            pre = contours[i][j].lou.value;
+                        }
+                        pen.addPoint(post.valueOf())
+                        pen.addPoint(pre.valueOf())
+                    }
+                    else
+                        segmentType = 'line';
+                    pen.addPoint(contours[i][j].lon.value.valueOf(), segmentType)
+                }
+                pen.endPath();
+                pen.beginPath();
+                // AND draw the skeleton
+                for(j=0;j<contours[i].length;j++) {
+                    if(j===0)
+                        segmentType = 'move';
+                    else if(contours[i][j].zin !== undefined) {
+                        segmentType = 'curve';
+                        
+                        if(contours[i][j-1].zouDir
+                                && contours[i][j].zinDir
+                                && contours[i][j-1].zouDir.value.magnitude()
+                                && contours[i][j].zinDir.value.magnitude()) {
+                            hobyCtrl = hobby2cubic(
+                                contours[i][j-1].zon.value
+                              , contours[i][j-1].zouDir.value
+                              , contours[i][j-1].zouTension.value
+                              , contours[i][j].zinTension.value
+                              , contours[i][j].zinDir.value
+                              , contours[i][j].zon.value
+                            )
+                            post = hobyCtrl[0];
+                            pre = hobyCtrl[1];
+                        }
+                        else {
+                            post = contours[i][j-1].zou.value;
+                            pre = contours[i][j].zin.value;
+                        }
+                        pen.addPoint(post.valueOf())
+                        pen.addPoint(pre.valueOf())
+                    }
+                    else
+                        segmentType =  'line';
+                    pen.addPoint(contours[i][j].zon.value.valueOf(), segmentType)
+                }
+                pen.endPath();
             }
         }
         
@@ -770,7 +1267,10 @@ define([
         targetGlyphSet.writeGlyph(false, a.glyphName, a,
             // draw the outline command by command to the new glif
             //draw.bind(null, skeleton)
-            drawPenStroke.bind(null, penStroke)
+            //drawPenStroke.bind(null, penStroke)
+            //drawPenStroke.bind(null, penStrokeWithTensions)
+            drawPenStrokeWithTensions.bind(null, penStrokeWithTensions)
+            
             
         )
         targetGlyphSet.writeContents(false);
@@ -784,29 +1284,6 @@ define([
     //        }, pen)
     //    })
     //    targetGlyphSet.writeContents(false)
-    
-    
-    
-        // trying to get posttenstion:
-        
-        function pretension(p0, p1, p2, p3) {
-            console.log('direction t of p' + p0['-'](p1));
-            
-            
-        }
-        
-        
-        var p0 = new Vector(100,220)
-          , p1 = new Vector(230,280)
-          , p2 = new Vector(400,250)
-          , p3 = new Vector(500,150)
-          ;
-        
-    
-        pretension(p0, p1, p2, p3)
-    
-    
-    
     }
     
     module = {main: main};
