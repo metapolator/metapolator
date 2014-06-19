@@ -114,53 +114,16 @@ instances from masters using Metapolator v2 technology.
 
 * Collaborate with Prototypo?
 
-* Plan an outreach campaign to grow the userbase
 
-4. Growing Users [October 1]
+Future plans
 ----------------------
 
-**Goal:** Document the project and application
+Document the project and application: This milestone does not include adding major new features, and is complete when Designers not connected to our developers can become effective users. It includes planning an outreach campaign to grow the userbase and running the plan.
 
-**Scope:** This milestone does not include adding major new features
+Responding to user feedback, without adding major new features, and is complete when new users say they enjoy the application and the whole project experience.
 
-**Complete When:** Designers not connected to our developers can become effective users
+Plan 2015, and a Kickstarter (description, video, rewards, stretch goals) and pre-KS campaign, and pick 1 major feature to work on next (Real Time Multi User Mode?)
 
-* Run the userbase outreach campaign
+Add the 1 major feature, so users are amazed; get the Kickstarter approved, outreach campaign underway.
 
-5. Refinement [November 1]
-----------------------
-
-**Goal:** Respond to user feedback
-
-**Scope:** This milestone does not include adding major new features
-
-**Complete When:** New users say they enjoy the application and the whole project experience
-
-* Plan 2015, and a Kickstarter
-   * Kickstarter required details (description, video, rewards, stretch goals)
-   * Outreach campaign
-
-* Decide a major feature to work on next, for November. Ideas:
-  * Real Time Multi User Mode
-
-6. Major Feature [December 1]
-----------------------
-
-**Goal:** Add a major feature
-
-**Scope:** This milestone does not include incremental improvements
-
-**Complete When:** Users are amazed at the new feature
-
-* Get the Kickstarter approved, outreach campaign underway
-
-7. Kickstarter [January 1]
-----------------------
-
-**Goal:** Fund initial development in 2015
-
-**Scope:** This milestone does not include adding major new features
-
-**Complete When:** Kickstarter launched
-
-* Get the Kickstarter started at the end of December to begin the year!
+Launch a KS.
