@@ -52,7 +52,7 @@ impossible to plan everything from the start.
 
 * **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
-* **Events:** Simon will present at Tag der Schrift on June 14.
+* **Events:** *(95% complete)* Simon will present at Tag der Schrift on June 14 and post about it on the G+
 
 fully 2. Approaching the GUI [August 1]
 ----------------------
