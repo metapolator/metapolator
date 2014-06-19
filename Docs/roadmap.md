@@ -54,7 +54,7 @@ impossible to plan everything from the start.
 
 * **Events:** *(95% complete)* Simon will present at Tag der Schrift on June 14 and post about it on the G+
 
-fully 2. Useful Code [August 1]
+2. Useful Code [August 1]
 ----------------------
 
 **Goal:** Get fundamental Application Technology into a working state.
