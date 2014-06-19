@@ -57,13 +57,14 @@ impossible to plan everything from the start.
 fully 2. Approaching the GUI [August 1]
 ----------------------
 
-**Goal:** Get fundamental UI and Application Technology into a working state.
+**Goal:** Get fundamental Application Technology into a working state.
 
-**Scope:** This milestone does not include a complete UI, but a good layout
-to build upon and provide a first really useful instance. 
+**Scope:** This milestone does not include a real UI, but enough working
+code that someone adept with a text editor and Metapolator concepts can
+generate a 'super family' of weight and width variants.
 
-**Complete When:** Designers connected to our developers can create font 
-instances from masters using Metapolator v2 technology with a web UI. 
+**Complete When:** Our developers can create font 
+instances from masters using Metapolator v2 technology. 
 
 * Some of the technologies from the first Milestone will mature in this phase. 
 
@@ -72,14 +73,14 @@ instances from masters using Metapolator v2 technology with a web UI.
   * parameter import (from outline sources)
   * creating metafont code tied to specific parameters or even more general
     metafont preprocessing/metafont templates tasks.
-  * UI-widgets. Almost everything of the UI should be a plugin. (We need
-    probably some API here to persist the UI setup.)
   * ... to be continued
   
   Tasks:
   
   * **Plugin API**: How to create plugins for these tasks should be solved in this phase.
-  * **First Plugins**: for UI etc.
+  * **First Plugins**:
+    * width
+    * weight
 
 * **Application Model**: We need an object model that reflects the different 
   things we can do with metapolator. Important for example is the interpolation 
@@ -96,12 +97,10 @@ instances from masters using Metapolator v2 technology with a web UI.
   Details: [concepts](https://github.com/metapolator/metapolator/wiki/concepts)
   * Broker API
 
-  
-
 3. Catching the GUI [September 1]
 ----------------------
 
-**Goal:** Get full UI and Application Technology working well.
+**Goal:** Create a UI to the Application Technology
 
 **Scope:** 
 
@@ -110,6 +109,10 @@ instances from masters using Metapolator v2 technology with a web UI.
 * 100% Client Side
 
 * Support for working offline
+
+* UI-widgets. Almost everything of the UI should be a plugin. (We need probably some API here to persist the UI setup.)
+
+* Collaborate with Prototypo?
 
 * Plan an outreach campaign to grow the userbase
 
