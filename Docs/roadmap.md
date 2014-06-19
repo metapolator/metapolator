@@ -54,7 +54,7 @@ impossible to plan everything from the start.
 
 * **Events:** *(95% complete)* Simon will present at Tag der Schrift on June 14 and post about it on the G+
 
-fully 2. Approaching the GUI [August 1]
+fully 2. Useful Code [August 1]
 ----------------------
 
 **Goal:** Get fundamental Application Technology into a working state.
@@ -97,7 +97,7 @@ instances from masters using Metapolator v2 technology.
   Details: [concepts](https://github.com/metapolator/metapolator/wiki/concepts)
   * Broker API
 
-3. Catching the GUI [September 1]
+3. Initial UI [September 1]
 ----------------------
 
 **Goal:** Create a UI to the Application Technology
