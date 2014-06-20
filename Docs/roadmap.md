@@ -16,7 +16,7 @@ Completion Percentages are semantic, not time-based.
   work on the first Milestone, and this work continues: thinking over and 
   over about what we are doing and if we are still going in the right direction.
 
-1. Ignition! [July 1]
+1. Ignition! [July 4]
 ----------
 
 **Goal:** Get fundamental technology into a working state.
@@ -41,7 +41,7 @@ Completion Percentages are semantic, not time-based.
   * Selectors and value inheritance chain: *(10% complete)*
   * processing CPS values: *(0% complete)* tied together with Plugins...
 
-* **Plugins:** the beginnings of the Plugin mechanisms. This will give us the
+* **Modules:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
   of Metapolator. Included in the first Milestone:
   * import: *(55% complete)* reading parameters from outline fonts into cps
@@ -50,7 +50,8 @@ Completion Percentages are semantic, not time-based.
   * parameter definition *(25% complete)*
 
 * **Sample project:** *(15% complete)* To show how data is organized in 
-  Metapolator, and is fully functional (but small.)  Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
+  Metapolator, and is fully functional (but small) so we can open and close
+  projects. Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
 
 * **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
