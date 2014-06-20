@@ -5,6 +5,7 @@ This is structured into Milestones and Tasks that have to be finished to
 reach these Milestones. Expect this document to change often, because it's 
 impossible to plan everything from the start.
 
+Completion Percentages are semantic, not time-based.
 
 0. Ongoing Work
 -------------------------------------------
@@ -36,9 +37,9 @@ impossible to plan everything from the start.
 
 * **CPS:** Initial Object-Model to process parameters. Details: [Cascading Parameter Sheets](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
   * parsing/writing: *(100% complete)* into/from our object model
-  * processing CPS values: *(0% complete)* tied together with **Plugins**
-  * Selectors and value inheritance chain: *(10% complete)*
   * MOM (Metapolator Object Model)*(10% complete)*: CPS relates to objects in this tree-model
+  * Selectors and value inheritance chain: *(10% complete)*
+  * processing CPS values: *(0% complete)* tied together with Plugins...
 
 * **Plugins:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
