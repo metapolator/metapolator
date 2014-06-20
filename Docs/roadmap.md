@@ -38,6 +38,7 @@ impossible to plan everything from the start.
   * parsing/writing: *(100% complete)* into/from our object model
   * processing CPS values: *(0% complete)* tied together with **Plugins**
   * Selectors and value inheritance chain: *(10% complete)*
+  * MOM (Metapolator Object Model)*(10% complete)*: CPS relates to objects in this tree-model
 
 * **Plugins:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
