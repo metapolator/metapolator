@@ -41,6 +41,7 @@ define([
      */
     Object.defineProperty(_p, 'type', {
         get: function() {
+            // this should be implemented by items inheriting from _Node
             throw errors.NotImplemented('Implement CPS-Type name!');
         }
     })
@@ -154,6 +155,53 @@ define([
         this._children.push(item);
         item.parent = this;
     }
+    
+    // start selector engine
+    
+    /**
+     * takes one simpleSelector
+     */
+    _p._simpleSelectorMatches(simpleSelector) {
+        if(!(simpleSelector instanceof SimpleSelector))
+        // this error will be used to mark the  compound selector 
+        // or selector list as invalid. 
+            throw new errors.MOMSelector('simpleSelector is not of type '
+                                         + 'SimpleSelector');
+        throw new errors.NotImplemented('Implement _simpleSelectorMatches');
+    }
+    
+    /**
+     * A simple selector is either a type selector, universal selector,
+     * class selector, ID selector, or pseudo-class. 
+     * 
+     * This method returns true if all of its arguments are simple selectors
+     * and match this node. If one argument is no simple selector
+     * this method raises an errors.MOMSelector Error.
+     */
+    _p.simpleSelectorMatches = function(/* list of simple selectors */) {
+        var selectors = Array.prototype.slice.call(arguments)
+          , i = 0;
+        for(;i<selectors.length;i++)
+            if(!this._simpleSelectorMatches(selectors[i]))
+                return false;
+        return true;
+    }
+    
+    /**
+     * A compound selector is a chain (list) of simple selectors that
+     * are not separated by a combinator.
+     * 
+     * It always begins with a type selector or a (possibly implied)
+     * universal selector. No other type selector or universal
+     * selector is allowed in the sequence.
+     * 
+     * If one item of the  simple selectors list is no simple selector
+     * this method raises an errors.MOMSelector Error.
+     */
+    _p.compoundSelectorMatches = function(simpleSelectors) {
+        return this.simpleSelectorMatches.apply(this, simpleSelectors);
+    }
+    
     
     return _Node;
 })
