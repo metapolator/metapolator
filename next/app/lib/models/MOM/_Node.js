@@ -28,8 +28,21 @@ define([
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
     
-    Object.defineProperty(_p, 'type', {
+    Object.defineProperty(_p, 'MOMType', {
         get: function(){return 'MOM '+ this.constructor.name ;}
+    })
+    
+    /**
+     * Implement a getter for CPS Type in children of _Node, we need it
+     * for the cps selector engine.
+     * 
+     * cpsType should be a simple string, minuses are are ok, don't do
+     * anything fancy. Don't use already taken names.
+     */
+    Object.defineProperty(_p, 'type', {
+        get: function() {
+            throw errors.NotImplemented('Implement CPS-Type name!');
+        }
     })
     
     Object.defineProperty(_p, 'children', {
@@ -40,7 +53,7 @@ define([
         get: function(){ return this._children.slice(); }
     })
     
-    _p.toString = function() { return ['<', this.type, '>'].join('') };
+    _p.toString = function() { return ['<', this.MOMType, '>'].join('') };
     
     _p.isMOMNode = function(item) {
         return item instanceof _Node;

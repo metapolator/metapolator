@@ -41,7 +41,7 @@ define([
             assert.instanceOf(parent, _Node, 'parent must be a _Node now.')
             
             // we did not override this
-            assert.equal('MOM TestParentNode', parent.type);
+            assert.equal('MOM TestParentNode', parent.MOMType);
         }
       , Node_add:function() {
             var parent = new TestParentNode(),

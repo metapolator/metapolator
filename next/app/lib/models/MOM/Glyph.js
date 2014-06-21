@@ -24,8 +24,13 @@ define([
     var _p = Glyph.prototype = Object.create(Parent.prototype);
     _p.constructor = Glyph;
     
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM Glyph'
+    })
+    
     Object.defineProperty(_p, 'type', {
-        get: function(){return 'MOM Glyph';}
+        /* this is used for CPS selectors */
+        value: 'glyph'
     })
     
     _p._acceptedChildren = [_Contour];

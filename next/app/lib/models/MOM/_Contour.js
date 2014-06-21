@@ -16,9 +16,5 @@ define([
     var _p = _Contour.prototype = Object.create(Parent.prototype);
     _p.constructor = _Contour;
     
-    Object.defineProperty(_p, 'type', {
-        get: function(){return 'MOM _Contour';}
-    })
-    
     return _Contour;
 })

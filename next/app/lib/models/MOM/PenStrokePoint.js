@@ -17,8 +17,13 @@ define([
     var _p = PenStrokePoint.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePoint;
     
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM PenStrokePoint'
+    })
+    
     Object.defineProperty(_p, 'type', {
-        get: function(){return 'MOM PenStrokePoint';}
+        /* this is used for CPS selectors */
+        value: 'point'
     })
     
     return PenStrokePoint;

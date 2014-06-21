@@ -18,8 +18,13 @@ define([
     var _p = Univers.prototype = Object.create(Parent.prototype);
     _p.constructor = Univers;
     
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM Univers'
+    })
+    
     Object.defineProperty(_p, 'type', {
-        get: function(){return 'MOM Univers';}
+        /* this is used for CPS selectors*/
+        value: 'univers'
     })
     
     _p._acceptedChildren = [Master];

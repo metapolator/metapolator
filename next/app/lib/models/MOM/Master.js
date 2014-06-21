@@ -16,8 +16,13 @@ define([
     var _p = Master.prototype = Object.create(Parent.prototype);
     _p.constructor = Master;
     
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM Master'
+    })
+    
     Object.defineProperty(_p, 'type', {
-        get: function(){return 'MOM Master';}
+        /* this is used for CPS selectors*/
+        value: 'master'
     })
     
     _p._acceptedChildren = [Glyph];
