@@ -39,6 +39,7 @@ define(function() {
     makeError('CommandLine', undefined , new errors.Error);
     makeError('Value', undefined , new RangeError);
     makeError('MOM', undefined , new errors.Error);
+    makeError('NotImplemented', undefined , new errors.Error);
     
     
     /**
