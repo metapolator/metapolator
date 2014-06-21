@@ -38,7 +38,7 @@ define(function() {
     makeError('Assertion', undefined , new errors.Error);
     makeError('CommandLine', undefined , new errors.Error);
     makeError('Value', undefined , new RangeError);
-    makeError('MOM', undefined , new RangeError);
+    makeError('MOM', undefined , new errors.Error);
     
     
     /**
