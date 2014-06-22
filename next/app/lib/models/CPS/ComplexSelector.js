@@ -84,7 +84,10 @@ define([
         get: function(){ return this._message;}
     });
     Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value;}
+        get: function() {
+            // if _value is truthy return a copy of the _value array
+            // if value is falsy, return its falsy value (probably undefiend)
+            return this._value && this._value.slice();}
     });
     
     
@@ -165,7 +168,7 @@ define([
                     // it's somehow pointless to use this._source, this._lineNo
                     // in this case. we could have remembered the source and line
                     // of the last whitespace
-                    value.push(new Combinator(' ', this._lineNo, this._source));
+                    value.push(new Combinator(' ', this._source, this._lineNo));
                 
                 // make a new one
                 CompoundSelectorElements = [];
@@ -189,8 +192,8 @@ define([
                 if(value[i] instanceof Combinator)
                     continue;
                 
-                value[i] = new CompoundSelector(value[i], value[i][0]._lineNo,
-                                                        value[i][0]._source);
+                value[i] = new CompoundSelector(value[i], value[i][0]._source
+                                                    , value[i][0]._lineNo);
                 if(value[i].alien || value[i].invalid) {
                     status.invalid = value[i].invalid || status.invalid;
                     status.alien = value[i].alien || status.alien;
