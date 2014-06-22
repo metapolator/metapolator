@@ -4,12 +4,13 @@ define([
   , './ParameterCollection'
   , './Rule'
   , './SelectorList'
-  , './Selector'
+  , './ComplexSelector'
   , './ParameterDict'
   , './Parameter'
   , './ParameterName'
   , './ParameterValue'
   , './Comment'
+  , './Combinator'
   , './GenericCPSNode'
   
 ], function (
@@ -18,12 +19,13 @@ define([
   , ParameterCollection
   , Rule
   , SelectorList
-  , Selector
+  , ComplexSelector
   , ParameterDict
   , Parameter
   , ParameterName
   , ParameterValue
   , Comment
+  , Combinator
   , GenericCPSNode
 ) {
     "use strict";
@@ -162,7 +164,7 @@ define([
             var elements = node.children
                 .map(function(item){return item.instance;})
             
-            return new Selector(elements, source, node.lineNo);
+            return new ComplexSelector(elements, source, node.lineNo);
         }
         
         /**
@@ -200,15 +202,17 @@ define([
                     'decldelim': null,
                     's': null
                 }
+              , children = ('children' in node)
+                            ? node.children
+                            : []
               ;
-            
-            for(;i<node.children.length; i++) {
-                if(node.children[i].type in whitelist
-                        || (node.children[i].type === '__GenericAST__'
-                            && !(node.children[i].instance.type in astBlacklist)
+            for(;i<children.length; i++) {
+                if(children[i].type in whitelist
+                        || (children[i].type === '__GenericAST__'
+                            && !(children[i].instance.type in astBlacklist)
                         )
                 ) {
-                    parameterDict.push(node.children[i].instance);
+                    parameterDict.push(children[i].instance);
                 }
             }
             return parameterDict;
@@ -312,12 +316,15 @@ define([
             var comments = []
               , value = []
               , i=0
+              , children = ('children' in node)
+                                ? node.children
+                                : []
               ;
-            for(;i<node.children.length;i++)
-                if(node.children[i].type === 'comment')
-                    comments.push(node.children[i].instance);
+            for(;i<children.length;i++)
+                if(children[i].type === 'comment')
+                    comments.push(children[i].instance);
                 else
-                    value.push(node.children[i].instance);
+                    value.push(children[i].instance);
             return new ParameterValue(value, comments ,source, node.lineNo)
         }
       
@@ -337,7 +344,15 @@ define([
       , 'comment': function (node, source) {
             return new Comment(node.data, source, node.lineNo);
         }
-      
+        /**
+         * 
+         * Combinator: +, >, ~
+         * is a child of ComplexSelector
+         * 
+         */
+      , 'combinator': function (node, source) {
+            return new Combinator(node.data, source, node.lineNo);
+        }
       /**
        * Everything we refuse to understand at this point or later.
        * 
