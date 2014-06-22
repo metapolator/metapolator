@@ -21,7 +21,7 @@ define([
     }
     
     Object.defineProperty(_p, 'items', {
-        get: function(){console.log('hi!'); return this._items.slice(); }
+        get: function(){return this._items.slice(); }
     })
     
     Object.defineProperty(_p, 'length', {
