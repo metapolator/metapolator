@@ -19,7 +19,8 @@ define([
      *      - it has more than one of universal or type selector
      *      - a universal or type selector occurs at a later than
      *        the first position
-
+     *      - if it is empty
+     * 
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
      * 
@@ -67,7 +68,10 @@ define([
         get: function(){ return this._message;}
     });
     Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value;}
+        get: function() {
+            // if _value is truthy return a copy of the _value array
+            // if value is falsy, return its falsy value (probably undefiend)
+            return this._value && this._value.slice();}
     });
     
     
@@ -130,6 +134,10 @@ define([
                 this._hasTypeSelector = true;
             }
             selectors.push(selector);
+        }
+        if(selectors.length === 0) {
+            status.invalid = true;
+            status.message = 'CompoundSelector has no SimpleSelector items';
         }
         if(!status.alien || !status.invalid)
             status.value = selectors;
