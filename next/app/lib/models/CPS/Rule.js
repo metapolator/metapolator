@@ -9,7 +9,7 @@ define([
      */
     function Rule(selectorList, parameterDict, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._selectors = selectorList;
+        this._selectorList = selectorList;
         this._parameters = parameterDict;
     }
     var _p = Rule.prototype = Object.create(Parent.prototype)
@@ -19,8 +19,8 @@ define([
         return [this._selectors, ' ', this._parameters].join('');
     }
     
-    Object.defineProperty(_p, 'selectors', {
-        get: function(){ return this._selectors; }
+    Object.defineProperty(_p, 'selectorList', {
+        get: function(){ return this._selectorList; }
     })
     
     Object.defineProperty(_p, 'parameters', {
