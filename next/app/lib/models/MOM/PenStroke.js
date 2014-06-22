@@ -23,7 +23,7 @@ define([
     
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
-        value: 'pen-stroke'
+        value: 'penstroke'
     })
     
     _p._acceptedChildren = [PenStrokePoint];
