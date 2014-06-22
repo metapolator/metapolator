@@ -24,6 +24,8 @@ define([
         
         this._children = [];
         this._parent = null;
+        this._id = null;
+        this._classes = {};
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
@@ -53,6 +55,46 @@ define([
          */
         get: function(){ return this._children.slice(); }
     })
+    
+    
+    Object.defineProperty(_p, 'id', {
+        /**
+         * The Mechanism how id's are verified etc. need to be defined,
+         * probably on a per MOM-Element base. And probably always the
+         * parent is responsible for id checking and setting. At the
+         * moment, I need id's to write the selector engine, and for that,
+         * I don't need propper checked IDs
+         */
+        set: function(id){ this._id = id; }
+      , get: function(){ return this._id; }
+    })
+    
+    
+    /**
+     * Needed for development, I don't know if this will persist
+     */
+    Object.defineProperty(_p, 'particulars', {
+        get: function() {
+            return [this.type,
+                  , (this.id ? '#' + this.id : '')
+                  , (this.parent
+                        ? ':i(' + this.parent.find(this) + ') of ' + this.parent.particulars
+                        : '(no parent)')
+                ].join('');
+        }
+    })
+    
+    _p.setClass = function(name) {
+        this._classes[name] = null;
+    }
+    
+    _p.removeClass = function(name) {
+        delete this._classes[name];
+    }
+    
+    _p.hasClass = function(name) {
+        return name in this._classes;
+    }
     
     _p.toString = function() { return ['<', this.MOMType, '>'].join('') };
     
@@ -155,53 +197,6 @@ define([
         this._children.push(item);
         item.parent = this;
     }
-    
-    // start selector engine
-    
-    /**
-     * takes one simpleSelector
-     */
-    _p._simpleSelectorMatches(simpleSelector) {
-        if(!(simpleSelector instanceof SimpleSelector))
-        // this error will be used to mark the  compound selector 
-        // or selector list as invalid. 
-            throw new errors.MOMSelector('simpleSelector is not of type '
-                                         + 'SimpleSelector');
-        throw new errors.NotImplemented('Implement _simpleSelectorMatches');
-    }
-    
-    /**
-     * A simple selector is either a type selector, universal selector,
-     * class selector, ID selector, or pseudo-class. 
-     * 
-     * This method returns true if all of its arguments are simple selectors
-     * and match this node. If one argument is no simple selector
-     * this method raises an errors.MOMSelector Error.
-     */
-    _p.simpleSelectorMatches = function(/* list of simple selectors */) {
-        var selectors = Array.prototype.slice.call(arguments)
-          , i = 0;
-        for(;i<selectors.length;i++)
-            if(!this._simpleSelectorMatches(selectors[i]))
-                return false;
-        return true;
-    }
-    
-    /**
-     * A compound selector is a chain (list) of simple selectors that
-     * are not separated by a combinator.
-     * 
-     * It always begins with a type selector or a (possibly implied)
-     * universal selector. No other type selector or universal
-     * selector is allowed in the sequence.
-     * 
-     * If one item of the  simple selectors list is no simple selector
-     * this method raises an errors.MOMSelector Error.
-     */
-    _p.compoundSelectorMatches = function(simpleSelectors) {
-        return this.simpleSelectorMatches.apply(this, simpleSelectors);
-    }
-    
     
     return _Node;
 })
