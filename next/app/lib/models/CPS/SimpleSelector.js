@@ -139,7 +139,6 @@ define([
     }
     
     _p._getPseudoClassValueForIndex = function(){
-        console.log('_getPseudoClassValueForIndex', this._element._ast[1]);
         if(this._element._ast[1][0] !== 'funktion'
                 || this._element._ast[1][2][0] !== 'functionBody')
             return;
