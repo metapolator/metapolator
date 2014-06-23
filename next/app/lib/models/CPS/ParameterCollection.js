@@ -172,11 +172,12 @@ define([
      * the specificity with a larger c value is more specific;
      * if all the values are tied, the two specifities are equal.
      * 
+     * Array.prototype.sort: "The sort is not necessarily stable."
+     * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+     * https://en.wikipedia.org/wiki/Sorting_algorithm#Stability
      * 
-     * Maybe for equal specificity cases we could introduce more hints
-     * via the source and lineNo that a selector has ... this way we could
-     * control better what influence the source and the order of definition
-     * has.
+     * To ensure stability it is possible to introduce more than the above
+     * mentioned three elements of specificity. 
      */
     function compareSpecificity(sA, sB) {
         var i=0;
@@ -196,39 +197,41 @@ define([
     
     /**
      * Returns a list of all of the rules currently applying to the element,
-     * sorted from most specific to least
-     *
-     * To find out all of the rules(in all of the various stylesheets
-     * parameterCollection is equivalent to just one styleshhet at the moment)
-     * that are applying to the Element.
+     * sorted from most specific to least.
      * 
-     * The last Item should always be the item with the default values
-     * for each parameter of the element. That Item would probably define
-     * which properties are available for the Element, too.
+     * TODO: when there are more sources than one ParameterCollection,
+     * we should be able to perform this action for all the collections.
+     * therefore, it would be wise to move the selector engine methods to
+     * another module. 
+     * The signature of this method could be:
+     *      function(target, parameterCollection[, ... parameterCollection])
+     * with this approach we could keep the information of the specificity.
+     * In other words, the order of the parameterCollection matters!
+     * 
+     * TODO: We should maybe add a last item with the default parameters
+     * of the element. That Item would probably define which properties
+     * are available for the Element, too ???
      */
     _p.rulesForElement = function(target) {
-        // the result should be sorted in the right way already
-        
-        console.log('rulesForElement:', target.particulars)
-        
         var i=0, j
+          , matchingRules = []
+          , rule
           , complexSelectors
           , compoundSelectors
           , compoundSelector
           , combinator
           , selects
           , matchingSelectors
-          , matchingRules = []
+          , specificity
           ;
         for(;i<this._items.length;i++) {
-            console.log('---------------------------');
-            console.log(i, this._items[i].constructor.name);
             if(!(this._items[i] instanceof Rule))
                 continue;
+            rule = this._items[i];
             matchingSelectors = []
             // the complexSelectors are all selecting when obtained via
             // the value property of SelectorList
-            complexSelectors = this._items[i].selectorList.value;
+            complexSelectors = rule.selectorList.value;
             for(j=0;j<complexSelectors.length; j++) {
                 if(this.complexSelectorMatches(complexSelectors[j], target))
                     // got a match
@@ -239,17 +242,20 @@ define([
                 // we only use the matching selector with the higest
                 // specificity. This sorts it at position 0
                 matchingSelectors.sort(_compareSpecificity);
-            if(matchingSelectors.length)
-                matchingRules.push([matchingSelectors[0][0]
-                                    , matchingSelectors[0][1], this._items[i]]);
+            if(matchingSelectors.length) {
+                // augment the specifity with the index number, so we can
+                // make sure, that the order of rules with otherwise
+                // equal specifity is not mixed up. The later rules
+                // are more specific/overide the previous one, so i
+                // is a good match for the sorting function that we use
+                // anyways
+                specificity = matchingSelectors[0][0];
+                specificity.push(i);
+                matchingRules.push([specificity, rule]);
+            }
         }
-        console.log('==');
         matchingRules.sort(_compareSpecificity);
-        // remove the specificity, which is the first item of each element
-        matchingRules = matchingRules.filter(
-                        function(item){ return matchingRules.slice(1)});
-        console.log(matchingRules.join('\n======\n'))
-        return matchingRules;
+        return matchingRules.map(function(item){return item[1]});
     }
     
     /**
@@ -257,9 +263,11 @@ define([
      * style for that element.
      * 
      * Note: this interface element could be based on the result of
-     * rulesForElement and just search that rule up to the end
+     * rulesForElement and just search that rules up to the end
      */
     _p.getComputedStyle = function(element) {
+        var rules = this.rulesForElement(element);
+        
         throw new errors.NotImplemented('getComputedStyle is not implemented');
     }
     
