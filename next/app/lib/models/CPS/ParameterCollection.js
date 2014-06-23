@@ -159,6 +159,42 @@ define([
     }
     
     /**
+     * A (complex) selector's specificity is calculated as follows:
+     *     count the number of ID selectors in the selector (= a)
+     *     count the number of class selectors, attributes selectors, and pseudo-classes in the selector (= b)
+     *     count the number of type selectors and pseudo-elements in the selector (= c)
+     *     ignore the universal selector 
+     * 
+     * Specificities are compared by comparing the three components in
+     * order: the specificity with a larger A value is more specific;
+     * if the two A values are tied, then the specificity with a larger
+     * B value is more specific; if the two B values are also tied, then
+     * the specificity with a larger c value is more specific;
+     * if all the values are tied, the two specifities are equal.
+     * 
+     * 
+     * Maybe for equal specificity cases we could introduce more hints
+     * via the source and lineNo that a selector has ... this way we could
+     * control better what influence the source and the order of definition
+     * has.
+     */
+    function compareSpecificity(sA, sB) {
+        var i=0;
+
+        for(;i<sA.length && i<sB.length;i++) {
+            if(sA[i] !== sB[i])
+                // id return value is < 0 selectorA will get a lower index
+                // id return value is > 0 selectorB will get a lower index
+                return sB[i]-sA[i];
+        }
+        return 0;
+        
+    }
+    function _compareSpecificity (itemA, itemB) {
+        return compareSpecificity(itemA[0], itemB[0]);
+    }
+    
+    /**
      * Returns a list of all of the rules currently applying to the element,
      * sorted from most specific to least
      *
@@ -181,24 +217,39 @@ define([
           , compoundSelector
           , combinator
           , selects
+          , matchingSelectors
+          , matchingRules = []
           ;
         for(;i<this._items.length;i++) {
+            console.log('---------------------------');
             console.log(i, this._items[i].constructor.name);
             if(!(this._items[i] instanceof Rule))
                 continue;
-            
+            matchingSelectors = []
             // the complexSelectors are all selecting when obtained via
             // the value property of SelectorList
             complexSelectors = this._items[i].selectorList.value;
             for(j=0;j<complexSelectors.length; j++) {
-                if(this.complexSelectorMatches(complexSelectors[j], target)) {
-                    console.log('MATCH!: ' + complexSelectors[j]);
-                }
-                else{
-                    console.log('got no match: ' + complexSelectors[j]);
-                }
+                if(this.complexSelectorMatches(complexSelectors[j], target))
+                    // got a match
+                    matchingSelectors.push([complexSelectors[j].specificity
+                                           , complexSelectors[j]]);
             }
+            if(matchingSelectors.length > 1)
+                // we only use the matching selector with the higest
+                // specificity. This sorts it at position 0
+                matchingSelectors.sort(_compareSpecificity);
+            if(matchingSelectors.length)
+                matchingRules.push([matchingSelectors[0][0]
+                                    , matchingSelectors[0][1], this._items[i]]);
         }
+        console.log('==');
+        matchingRules.sort(_compareSpecificity);
+        // remove the specificity, which is the first item of each element
+        matchingRules = matchingRules.filter(
+                        function(item){ return matchingRules.slice(1)});
+        console.log(matchingRules.join('\n======\n'))
+        return matchingRules;
     }
     
     /**

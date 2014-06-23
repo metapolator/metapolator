@@ -90,6 +90,24 @@ define([
             return this._value && this._value.slice();}
     });
     
+    Object.defineProperty(_p, 'specificity', {
+        get: function() {
+            var a, b, c, i=0, specificity;
+            a = b = c = 0;
+            if(this._specificity === undefined) {
+                for(;i<this._value.length;i++) {
+                    if(this._value[i] instanceof Combinator)
+                        continue;
+                    specificity = this._value[i].specificity;
+                    a += specificity[0];
+                    b += specificity[1];
+                    c += specificity[2];
+                }
+                this._specificity = [a, b, c];
+            }
+            return this._specificity;
+        }
+    })
     
     /* combinators that are not alien */
     _p._combinators = {

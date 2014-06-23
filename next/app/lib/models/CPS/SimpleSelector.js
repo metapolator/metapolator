@@ -77,6 +77,27 @@ define([
     Object.defineProperty(_p, 'value', {
         get: function(){ return this._value;}
     });
+    Object.defineProperty(_p, 'specificity', {
+        get: function() {
+            var a, b, c;
+            a = b = c = 0;
+            switch(this._type) {
+                case 'id':
+                    a = 1;
+                    break;
+                case 'class':
+                case 'attribute': // unsupported at the moment
+                case 'pseudo-class':
+                    b = 1;
+                    break;
+                case 'type':
+                case 'pseudo-element':
+                    c = 1;
+                    break;
+            }
+            return [a, b, c];
+        }
+    });
     
     _p._getType = function() {
         switch(this._element.type){

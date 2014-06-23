@@ -40,6 +40,7 @@ define([
         this._alien = status.alien || false;
         this._message = status.message || undefined;
         this._value = status.value || undefined;
+        this._specificity = undefined;
     }
     
     var _p = CompoundSelector.prototype = Object.create(Parent.prototype)
@@ -73,7 +74,19 @@ define([
             // if value is falsy, return its falsy value (probably undefiend)
             return this._value && this._value.slice();}
     });
-    
+    Object.defineProperty(_p, 'specificity', {
+        get: function() {
+            var a, b, c, i=0, specificity;
+            a = b = c = 0;
+            for(;i<this._value.length;i++) {
+                specificity = this._value[i].specificity;
+                a += specificity[0];
+                b += specificity[1];
+                c += specificity[2];
+            }
+            return [a, b, c];
+        }
+    })
     
     _p._getImplicitUniversalSelector = function() {
         var ast = new GenericCPSNode(['ident', '*'])
