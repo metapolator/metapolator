@@ -16,7 +16,7 @@ define([
     _p.constructor = Rule;
     
     _p.toString = function() {
-        return [this._selectors, ' ', this._parameters].join('');
+        return [this._selectorList, ' ', this._parameters].join('');
     }
     
     Object.defineProperty(_p, 'selectorList', {
