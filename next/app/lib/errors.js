@@ -41,6 +41,7 @@ define(function() {
     makeError('MOM', undefined , new errors.Error);
     makeError('NotImplemented', undefined , new errors.Error);
     makeError('CPS', undefined , new errors.Error);
+    makeError('Key', undefined , new errors.Error);
     
     
     /**
