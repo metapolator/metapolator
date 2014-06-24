@@ -1,5 +1,6 @@
 define([
-    'gonzales/gonzales'
+    'metapolator/errors'
+  , 'gonzales/gonzales'
   , './Source'
   , './ParameterCollection'
   , './Rule'
@@ -14,7 +15,8 @@ define([
   , './GenericCPSNode'
   
 ], function (
-    gonzales
+    errors
+  , gonzales
   , Source
   , ParameterCollection
   , Rule
@@ -30,18 +32,11 @@ define([
 ) {
     "use strict";
     
+    var CPSError = errors.CPS;
+    
     // FIXME: handle errors!
     // especially erros thrown by gonzales, due to bad CSS input need
     // some attention
-    
-    function CPSError(message, stack) {
-        this.name = 'CPSError'
-        this.message = message
-        if(stack instanceof Error)
-            this.stack = error.stack
-        else if(stack)
-            this.stack = stack
-    }
     
     // FIXME: we should only keep "meaningful" data.
     // A ["s", " "]  ("s" is whitespace) could be left out, because we
@@ -87,7 +82,7 @@ define([
          * 
          * Also there are s (whitespace) and comment (comments).
          */
-        'stylesheet': function(node, source) {
+        'stylesheet': function(node, source, parameterRegistry) {
             var items = []
               , i=0
               ;
@@ -98,7 +93,7 @@ define([
                 items.push(node.children[i].instance)
             }
             
-            return new ParameterCollection(items, source, node.lineNo);
+            return new ParameterCollection(parameterRegistry, items, source, node.lineNo);
         }
         
         /**
@@ -116,14 +111,14 @@ define([
                 + 'expected to be a "selector", but got "' + node.children[0].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', new Error)
+                +'.', (new Error).stack)
             
             if(node.children[1].type !== 'block')
                 throw new CPSError('The second child of "ruleset" is '
                 + 'expected to be a "block", but got "' + node.children[1].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', new Error)
+                +'.', (new Error).stack)
             selectorList = node.children[0].instance;
             parameterDict = node.children[1].instance;
             
@@ -228,25 +223,36 @@ define([
          * objects. But for performance reasons, this decision is made in
          * _makeNode.
          */
-      , 'declaration': function (node, source) {
-            var name, value;
+      , 'declaration': function (node, source, parameterRegistry) {
+            var name, value, typeDefinition;
             
             if(node.children[0].type !== 'property')
                 throw new CPSError('The first child of "declaration" is '
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', new Error)
+                +'.', (new Error).stack)
             
             if(node.children[1].type !== 'value')
                 throw new CPSError('The second child of "declaration" is '
                 + 'expected to be a "value", but got "' + node.children[1].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', new Error)
+                +'.', (new Error).stack)
             
             name = node.children[0].instance;
             value = node.children[1].instance;
+            
+            try {
+                typeDefinition = parameterRegistry.getTypeDefinition(name.name);
+            }
+            catch(error) {
+                if(!(error instanceof errors.CPSRegistryKey))
+                    throw error;
+                // key error means the value is unknown to us
+                return new _nodeConstructors['__GenericAST__'](node, source);
+            }
+            value.initializeTypeFactory(name.name, typeDefinition);
             return new Parameter(name, value, source, node.lineNo);
         }
         
@@ -295,7 +301,7 @@ define([
                           : '<no instance>'), '" '
                     ,'in a property from: ', source, 'line: '
                     , node.lineNo
-                    ,'.'].join(''), new Error)
+                    ,'.'].join(''), (new Error).stack)
                 
             var name = node.children[0].data;
             return new ParameterName(name, comments ,source, node.lineNo)
@@ -395,14 +401,6 @@ define([
               , makeInstance: true
               , type: '__init__' // can be anything but '__GenericAST__'
             };
-        
-        // TODO: Test if a property is known to us! if not make it
-        // an __GenericAST__
-        // That way we won't instantiate this, the ParameterName and the
-        // ParameterValue Nodes, before throwing em away again.
-        // if(type === 'declaration' && declaration->property is unkown)
-        //     node.type = '__GenericAST__'
-            
         var node = {
             type: (ASTType in _nodeConstructors)
                 // create a known entity
@@ -439,7 +437,7 @@ define([
      * ParameterList items, too. Create a deep copy of the AST, if you
      * don't wan't this side effect.
      */
-    function rulesFromAST(ast, sourceName) {
+    function rulesFromAST(ast, sourceName, parameterRegistry) {
         if(sourceName === undefined)
             sourceName = '(unkown source)';
         var source = new Source(sourceName)
@@ -473,7 +471,8 @@ define([
                 // ASCENDING
                 // All children are already initialized.
                 if(node.makeInstance)
-                    node.instance = new _nodeConstructors[node.type](node, source);
+                    node.instance = new _nodeConstructors[node.type](
+                                        node, source, parameterRegistry);
                 continue;
             }
             // there may still be data left, we have to revisit this frame
@@ -511,9 +510,9 @@ define([
     /**
      * Create a ParameterList from a CSS-string
      */
-    function rulesFromString(css, sourceName) {
+    function rulesFromString(css, sourceName, parameterRegistry) {
         var ast = gonzales.srcToCSSP(css);
-        return rulesFromAST(ast, sourceName)
+        return rulesFromAST(ast, sourceName, parameterRegistry)
     }
     
     
