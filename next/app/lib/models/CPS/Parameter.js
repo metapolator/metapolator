@@ -23,7 +23,7 @@ define([
         get: function(){ return this._name.name; }
     })
     Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value.value; }
+        get: function(){ return this._value; }
     })
     Object.defineProperty(_p, 'invalid', {
         get: function(){ return this._value.invalid; }
