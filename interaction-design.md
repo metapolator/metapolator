@@ -10,6 +10,9 @@ With Metapolator, typographers gain the possibility to change existing fonts—o
 
 Metapolator is extendible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.
 
+## functionality overview
+
+
 ## [user scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios)
 User scenarios show the essential use, in logical, worthwhile and valuable steps from users’ point of view. We have [7 scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios):
 * Easy beginnings: make subtle changes to an existing font to adapt it to domain of use.
