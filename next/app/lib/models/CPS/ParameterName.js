@@ -15,6 +15,10 @@ define([
     var _p = ParameterName.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterName;
     
+    Object.defineProperty(_p, 'name', {
+        get: function(){ return this._name; }
+    })
+    
     /**
      * Prints all comments after the name.
      */
