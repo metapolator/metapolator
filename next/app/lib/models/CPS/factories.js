@@ -31,7 +31,7 @@ define([
   , GenericCPSNode
 ) {
     "use strict";
-    
+    console.log('hello')
     var CPSError = errors.CPS;
     
     // FIXME: handle errors!
@@ -82,7 +82,7 @@ define([
          * 
          * Also there are s (whitespace) and comment (comments).
          */
-        'stylesheet': function(node, source, parameterRegistry) {
+        'stylesheet': function(node, source) {
             var items = []
               , i=0
               ;
@@ -93,7 +93,7 @@ define([
                 items.push(node.children[i].instance)
             }
             
-            return new ParameterCollection(parameterRegistry, items, source, node.lineNo);
+            return new ParameterCollection(items, source, node.lineNo);
         }
         
         /**
@@ -139,13 +139,12 @@ define([
          */
       , 'selector': function(node, source) {
             var items
-              , selectorList = new SelectorList([], source, node.lineNo)
+              , selectorList
               ;
             items = node.children
                 .filter(function(item){return item.type === 'simpleselector'})
                 .map(function(item){return item.instance;})
-            selectorList.push.apply(selectorList, items)
-            return selectorList;
+            return new SelectorList(items, source, node.lineNo)
         }
         /**
          * simpleselector:
@@ -242,17 +241,21 @@ define([
             
             name = node.children[0].instance;
             value = node.children[1].instance;
-            
-            try {
-                typeDefinition = parameterRegistry.getTypeDefinition(name.name);
+            // selectorListFromString uses the parser but doesn't need 
+            // initialized parameters
+            if(parameterRegistry) {
+                try {
+                    
+                    typeDefinition = parameterRegistry.getTypeDefinition(name.name);
+                }
+                catch(error) {
+                    if(!(error instanceof errors.CPSRegistryKey))
+                        throw error;
+                    // key error means the value is unknown to us
+                    return new _nodeConstructors['__GenericAST__'](node, source);
+                }
+                value.initializeTypeFactory(name.name, typeDefinition);
             }
-            catch(error) {
-                if(!(error instanceof errors.CPSRegistryKey))
-                    throw error;
-                // key error means the value is unknown to us
-                return new _nodeConstructors['__GenericAST__'](node, source);
-            }
-            value.initializeTypeFactory(name.name, typeDefinition);
             return new Parameter(name, value, source, node.lineNo);
         }
         
@@ -504,6 +507,11 @@ define([
             node.children.push(childNode);
         }
         //return root
+        if(!(root.instance instanceof ParameterCollection))
+            throw new CPSError('Parser was expected to create an instance '
+                                + 'of ParameterCollection but it delivered '
+                                + 'a ' + root.instance.constructor.name)
+        
         return root.instance;
     }
     
@@ -515,10 +523,50 @@ define([
         return rulesFromAST(ast, sourceName, parameterRegistry)
     }
     
+    function selectorListFromString(string) {
+        var rules
+          , selectorList=undefined
+          , i=0
+          ;
+        try {
+            rules = rulesFromString(string + '{}');
+        }
+        catch(error) {
+            throw new CPSError('Error parsing "' + string + '" as a selector. '
+                + 'Message: ' + error.message);
+        }
+        rules = rules.items;
+        
+        // search the first instance of SelectorList
+        // and verify that nothing else was submited.
+        for(;i<rules.length;i++) {
+            if(rules[i] instanceof Comment)
+                // accept comments
+                continue;
+            else if(!(rules[i] instanceof Rule))
+                throw new CPSError('The argument string describred a '
+                        + rules[i].constructor.name + ' but it should be a'
+                        + 'SelectorList.');
+            else if(selectorList !== undefined)
+                throw new CPSError('The argument string described more than '
+                    + 'a selectorlist is contained: ' + rules[i]);
+            else if(rules[i].paramters)
+                throw new CPSError('Found parameters where there should '
+                            + 'be only a SelectorList: ' + rules[i].paramters);
+            selectorList = rules[i].selectorList;
+            // don't break! we wan't to validate the rules, if there is
+            // awkward stuff in it it's better to complain, because it
+            // might be a programming error.
+        }
+        if(!selectorList.selects)
+            throw new CPSError('SelectorList will not select anything: '
+                    + selectorList.message)
+        return selectorList;
+    }
     
     return {
         rulesFromString: rulesFromString
       , rulesFromAST: rulesFromAST
-      , CPSError: CPSError
+      , selectorListFromString: selectorListFromString
     }
 })
