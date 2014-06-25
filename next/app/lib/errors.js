@@ -18,9 +18,14 @@ define(function() {
                 if(message !== undefined) {
                     this.name = name;
                     this.message = message || "(no error message)";
+                }
+                
+                if(!stack && typeof Error.captureStackTrace === 'function')
+                    Error.captureStackTrace(this, Constructor);
+                else {
                     stack = stack || (new Error).stack || '(no stack available)'
                     this.stack = [name, ' Error: ', this.message, '\n'
-                                                       , stack].join('');
+                                                    , stack].join('');
                 }
             };
         };
@@ -42,6 +47,7 @@ define(function() {
     makeError('NotImplemented', undefined , new errors.Error);
     makeError('CPS', undefined , new errors.Error);
     makeError('Key', undefined , new errors.Error);
+    makeError('CPSRegistryKey', undefined , new errors.Key);
     
     
     /**
