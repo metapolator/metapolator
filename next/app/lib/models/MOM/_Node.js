@@ -1,13 +1,20 @@
 define([
     'metapolator/errors'
   , '../_BaseModel'
+  , 'metapolator/models/CPS/selectorEngine'
 ], function(
     errors
   , Parent
+  , selectorEngine
 ) {
     "use strict";
     
     var MOMError = errors.MOM;
+    
+    var _id_counter = 0;
+    function getUniqueID() {
+        return _id_counter++;
+    }
     
     /**
      * The MOM is the structure against which we can run the selector queries
@@ -22,10 +29,35 @@ define([
         if(this.constructor.prototype === _p)
             throw new MOMError('MOM _Node must not be instanciated directly');
         
+        Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
+        
         this._children = [];
         this._parent = null;
         this._id = null;
         this._classes = {};
+        
+        
+        // We need a place to store the instanciated values of the CPS
+        // this should be in the _Node where the values belong to.
+        // However, I need some exploration time to come up with a lean
+        // way to connect this stuff.
+        
+        // the instances of the parameters of this node itself
+        // these can be referred to in @scope
+        // we have to build these at some point in time!
+        // given that they are always valid, as long as the CPS doesn't
+        // change, a good idea is to build these parameters lazy.
+        // because we wan't to load the cps AFTER the MOM (or?)
+        this._parameterInstances = {}
+        
+        // the names that can be used from the CPS
+        // these will be defineable via @scope
+        // I'm not shure if it is wise to keep these references here around
+        // another option would be to query them when needed to build a
+        // _parameterInstance. That way we wouldn't have to invalidate this
+        // cache
+        this._parameterScope = {}
+        
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
@@ -55,7 +87,6 @@ define([
          */
         get: function(){ return this._children.slice(); }
     })
-    
     
     Object.defineProperty(_p, 'id', {
         /**
@@ -175,7 +206,6 @@ define([
             this._parent = parent;
         }
       , get: function(){ return this._parent; }
-        
     })
     
     _p.remove = function(item) {
@@ -196,6 +226,10 @@ define([
             item.parent.remove(item);
         this._children.push(item);
         item.parent = this;
+    }
+    
+    _p.query = function(selector) {
+        return selectorEngine.query(this, selector);
     }
     
     return _Node;
