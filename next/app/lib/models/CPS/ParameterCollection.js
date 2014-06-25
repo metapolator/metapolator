@@ -2,23 +2,18 @@ define([
     'metapolator/errors'
   , './_Node'
   , './Rule'
-  , './StyleDict'
-  , './selectorEngine'
 ], function(
     errors
   , Parent
   , Rule
-  , StyleDict
-  , selectorEngine
 ) {
     "use strict";
     var CPSError = errors.CPS;
     /**
      * A list of Rules and Comments
      */
-    function ParameterCollection(parameterRegistry, items, source, lineNo) {
+    function ParameterCollection(items, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._parameterRegistry = parameterRegistry;
         this._items = [];
         if(items.length)
             this.push.apply(this, items);
@@ -51,18 +46,6 @@ define([
     _p.push = function(item /*, ... items */) {
         var newItems = Array.prototype.slice.call(arguments)
         return this._items.push.apply(this._items, newItems);
-    }
-    
-    /**
-     * returns a single interface to read the final cascaded, computed
-     * style for that element.
-     * 
-     * Note: this interface element could be based on the result of
-     * rulesForElement and just search that rules up to the end
-     */
-    _p.getComputedStyle = function(element) {
-        var rules = selectorEngine.getMatchingRules(this.rules, element);
-        return new StyleDict(this._parameterRegistry, rules, element);
     }
     
     return ParameterCollection;
