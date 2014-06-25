@@ -1,18 +1,24 @@
 define([
     'metapolator/errors'
+  , 'metapolator/models/CPS/factories'
   , './Rule'
+  , './SelectorList'
   , './ComplexSelector'
   , './CompoundSelector'
   , './SimpleSelector'
 ], function(
     errors
+  , factories
   , Rule
+  , SelectorList
   , ComplexSelector
   , CompoundSelector
   , SimpleSelector
 ) {
     "use strict";
-    var CPSError = errors.CPS;
+    var CPSError = errors.CPS
+      , selectorListFromString = factories.selectorListFromString
+      ;
     
     // start selector engine
     
@@ -21,13 +27,6 @@ define([
      */
     function _pseudoClassSelectorMatches(simpleSelector, element, scopeElement) {
         switch(simpleSelector.name) {
-            case 'scope':
-                if(element === scopeElement)
-                    return true;
-                if(scopeElement !== undefined)
-                    return false;
-                // Don't break here, because if scopeElement is undefined
-                // :scope equals :root.
             case 'root':
                 return element.type === 'univers';
             case 'i':
@@ -44,7 +43,7 @@ define([
      * and match this node. If one argument is no simple selector
      * this method raises a CPSError.
      */
-    function simpleSelectorMatches(simpleSelector, element) {
+    function simpleSelectorMatches(simpleSelector, element, scopeElement) {
         if(!(simpleSelector instanceof SimpleSelector))
             throw new CPSError('simpleSelector is not of type '
                                          + 'SimpleSelector');
@@ -54,7 +53,7 @@ define([
               || simpleSelector.type === 'id' && element.id === simpleSelector.name
               || simpleSelector.type === 'class' && element.hasClass(simpleSelector.name)
               || simpleSelector.type === 'pseudo-class'
-                    && _pseudoClassSelectorMatches(simpleSelector, element)
+                    && _pseudoClassSelectorMatches(simpleSelector, element, scopeElement)
               || false
               );
     }
@@ -70,7 +69,7 @@ define([
      * If one item of the  simple selectors list is no simple selector
      * this method raises a CPSError.
      */
-    function compoundSelectorMatches(compoundSelector, element) {
+    function compoundSelectorMatches(compoundSelector, element, scopeElement) {
         if(!(compoundSelector instanceof CompoundSelector))
             throw new CPSError('compoundSelector is not of type '
                                          + 'CompoundSelector');
@@ -78,12 +77,12 @@ define([
           , i = 0
           ;
         for(;i<simpleSelectors.length;i++)
-            if(!simpleSelectorMatches(simpleSelectors[i], element))
+            if(!simpleSelectorMatches(simpleSelectors[i], element, scopeElement))
                 return false;
         return true;
     }
     
-    function complexSelectorMatches(complexSelector, element) {
+    function complexSelectorMatches(complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
                                          + 'ComplexSelector');
@@ -99,7 +98,7 @@ define([
         compoundSelector = compoundSelectors.pop();
         
         while(element) {
-            if(compoundSelectorMatches(compoundSelector, element)) {
+            if(compoundSelectorMatches(compoundSelector, element, scopeElement)) {
                 //  we got a hit
                 combinator = compoundSelectors.pop();
                 if(combinator === undefined) {
@@ -110,8 +109,12 @@ define([
                 // combinatorType is 'child' or 'descendant'
                 combinatorType = combinator.type;
                 compoundSelector = compoundSelectors.pop();
-                // may be undefined. if so it will halt the while loop
-                element = element.parent;
+                
+                element = (scopeElement && scopeElement === element)
+                        // do not search above scopeElement
+                        ? undefined
+                        // may be undefined. if so it will halt the while loop
+                        : element.parent;
             }
             // no match
             else if(combinatorType === 'child')
@@ -228,8 +231,127 @@ define([
         return matchingRules.map(function(item){return item[1]});
     }
     
-    return {
+    function _filterElementChildren(element, filter) {
+        var i = 0
+          , children = element.children
+          , result = []
+          ;
+        for(;i<children.length;i++) {
+            if(filter(children[i]))
+                result.push(children[i]);
+        }
+        return result;
+    }
+    function _filterElementDescendants(element, filter) {
+        var i = 0
+          , children = element.children.slice().reverse()
+          , child
+          , result = []
+          ;
+        while(child = children.pop()) {
+            if(filter(child))
+                result.push(child);
+            // add all children of this child
+            // and reverse to keep the a clean depth first traversal order
+            Array.prototype.push.apply(children, child.children.reverse());
+        }
+        return result;
+    }
+    
+    function queryComplexSelector(scope, complexSelector) {
+        if(!(complexSelector instanceof ComplexSelector))
+            throw new CPSError('complexSelector is not of type '
+                                         + 'ComplexSelector');
+        var compoundSelectors = complexSelector.value
+          , compoundSelector
+          , combinator
+          , matches = []
+          , scopes
+          , currentScope
+          // this filter depends on the fact that compoundSelector and
+          // currentScope will change in this closure during the loops below
+          , filter = function(element) {
+                return compoundSelectorMatches(compoundSelector
+                                             , element
+                                             , currentScope);
+            }
+          , filterMethod
+          ;
         
+        // first round is descendants
+        filterMethod = _filterElementDescendants;
+        scopes = [scope];
+        while(true) {
+            compoundSelector = compoundSelectors.shift();
+            // Here is a lot of room for optimization! I only made a very
+            // general bruteforce approach, so we visit a big amount of
+            // nodes!
+            // One way to optimize would be to take the MOM structure
+            // into account. I.e.: it's impossible to select this:
+            //      point outline master
+            // But on the other hand, we should rather optimize
+            // meaningful queries, because these are the ones we are
+            // most likely to encounter. Asking every node if its type
+            // is 'univers' is however no good idea, with the knowledge
+            // that there is only one 'univers', the root of the tree.
+            matches = []
+            while(currentScope = scopes.pop())
+                // get ALL elements inside of currentScope
+                // and ask if the compound selector matches ...
+                Array.prototype.push.apply(matches, filterMethod(currentScope, filter));
+            scopes = matches;
+            
+            combinator = compoundSelectors.shift();
+            if(combinator === undefined)
+                //that's it
+                break;
+            
+            switch(combinator.type) {
+                case 'descendant':
+                    filterMethod = _filterElementDescendants;
+                    break;
+                case 'child':
+                    filterMethod = _filterElementChildren;
+                    break;
+                default:
+                    throw new CPSError('Combinator type "'+combinator.type
+                                                    +'" is unsuported');
+            }
+        }
+        return matches;
+    }
+    
+    /*selector may be a string or a SelectorList*/
+    function query(scope, selector) {
+        var complexSelectors
+          , i=0
+          , k
+          , seen = {}
+          , result = []
+          , matches
+          ;
+        if(typeof selector === 'string')
+            selector = selectorListFromString(selector);
+        if(!(selector instanceof SelectorList))
+             throw new CPSError('SelectorList expected, but got a '
+                    + selector + ' typeof: '+ typeof selector);
+        
+        complexSelectors = selector.value;
+        for(;i<complexSelectors.length;i++) {
+            matches = queryComplexSelector(scope, complexSelectors[i]);
+            k = 0;
+            for(;k<matches.length;k++) {
+                if(matches[k].nodeID in seen)
+                    continue;
+                seen[matches[k].nodeId] = null;
+                result.push(matches[k]);
+            }
+        }
+        return result;
+    }
+    
+    return {
         getMatchingRules: getMatchingRules
+      , query: query
     };
 })
