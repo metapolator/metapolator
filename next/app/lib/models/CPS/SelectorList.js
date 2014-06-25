@@ -11,11 +11,11 @@ define([
         Parent.call(this, source, lineNo);
         this._selectors = [];
         if(selectors.length)
-            this.push.apply(this, selectors);
+            Array.prototype.push.apply(this._selectors, selectors);
         
         // Maybe we'll need to determine the following on demand, not on init??
         var i=0, count=0;
-        for(;i<this.selectors.length;i++) {
+        for(;i<this._selectors.length;i++) {
             if(this._selectors[i].invalid) {
                 this._invalid = true;
                 this._message = this._selectors[i].message;
@@ -51,9 +51,6 @@ define([
     Object.defineProperty(_p, 'invalid', {
         get: function(){ return this._invalid;}
     });
-    Object.defineProperty(_p, 'alien', {
-        get: function(){ return this._alien;}
-    });
     Object.defineProperty(_p, 'message', {
         get: function(){ return this._message;}
     });
@@ -69,10 +66,10 @@ define([
     /**
      * Add selectors to this SelectorList.
      */
-    _p.push = function(selector /*, ... selectors */) {
-        var selectors = Array.prototype.slice.call(arguments)
-        return this._selectors.push.apply(this._selectors, selectors);
-    }
+    //_p.push = function(selector /*, ... selectors */) {
+    //    var selectors = Array.prototype.slice.call(arguments)
+    //    return this._selectors.push.apply(this._selectors, selectors);
+    //}
     
     return SelectorList;
 })
