@@ -19,7 +19,7 @@ define([
         return ['<Source:', this._name, '>'].join(' ');
     }
     
-    Object.defineProperty(_p, name, {
+    Object.defineProperty(_p, 'name', {
         get: function(){ return this._name; }
     });
     

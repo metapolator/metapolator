@@ -10,6 +10,7 @@
   "dependencies": {
     "gulp": "~3.5.5",
     "bower": "~1.2.8",
+    "gulp-bower-files": "~0.1.11",
     "gulp-concat": "~2.1.7",
     "gulp-size": "~0.1.3",
     "gulp-uglify": "~0.2.1",
@@ -19,5 +20,10 @@
     "gulp-debug": "~0.2.0",
     "gulp-concat-sourcemap": "~1.2.1",
     "gulp-watch": "~0.6.3"
+  },
+  "devDependencies": {
+    "jsdom": "~0.10.6",
+    "libxmljs": "~0.10.0"
+>>>>>>> next
   }
 }

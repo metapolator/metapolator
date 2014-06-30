@@ -1,0 +1,88 @@
+#!/usr/bin/env nodejs
+
+// metapolator command line interface
+var requirejs = require('requirejs');
+
+requirejs.config({
+    nodeRequire: require
+  , baseUrl: __dirname + '/app/lib'
+  , paths: {
+        'require/domReady': 'bower_components/requirejs-domready/domReady'
+      , 'require/text': 'bower_components/requirejs-text/text'
+      , 'metapolator': './'
+      , 'gonzales': 'npm_converted/gonzales/lib'
+      , 'complex':  'npm_converted/immutable-complex/lib'
+      , 'angular': 'bower_components/angular/angular'
+      , 'obtain': 'obtainJS/lib'
+      , 'ufojs': 'ufoJS/lib'
+    }
+  , shim: {
+      angular: {
+        exports: 'angular'
+      }
+    }
+});
+
+requirejs([
+    'metapolator/errors'
+], function(
+    errors
+) {
+    "use strict";
+    var CommandLineError = errors.CommandLine
+      , commands = {
+            'import': 'metapolator/importer/cli'
+        }
+      , commandList = Object.keys(commands)
+      , help = [
+               ['Available command names are:'].concat(commandList).join('\n - ')
+            , 'Type "metapolator help <command name>" for further information.'
+            , 'Type "metapolator help" for this message.'
+          ].join('\n')
+      , onHelpLoaded = function(commandName, command) {
+            console.log(
+                'Metapolator help for "' + commandName + '":\n\n'
+                + command.help, '\n\n' + help);
+        }
+      , onCommandLoaded = function(commandName, command) {
+            try {
+                command.main(commandName, process.argv.slice(3));
+            }
+            catch(error) {
+                if(error instanceof CommandLineError) {
+                    console.log('An error occured when executing the command'
+                            , '"'+commandName +'":'
+                            , '\n-----\n'+ error.message
+                            , '\n-----\nPlease see the help:'
+                            , '\n' + help
+                    );
+                }
+                else
+                    throw error;
+            }
+        }
+      , command
+      , module
+      , onLoad
+      ;
+    
+    command = process.argv[2];
+    if(command === undefined || command === 'help') {
+        command = process.argv[3];
+        if(command === undefined || !(command in commands)) {
+            console.log(help);
+            return;
+        }
+        module = commands[command];
+        onLoad =  onHelpLoaded;
+    }
+    else if(command in commands) {
+        module = commands[command];
+        onLoad = onCommandLoaded;
+    }
+    else {
+        console.log(help);
+        throw new errors.Error('Unkown command: ' + command);
+    }
+    requirejs([module], onLoad.bind(null, command));
+});

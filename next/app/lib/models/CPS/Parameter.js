@@ -5,7 +5,7 @@ define([
 ) {
     "use strict";
     /**
-     * A Parameter: name and nalue
+     * A Parameter: name and value
      */
     function Parameter(parameterName, parameterValue, source, lineNo) {
         Parent.call(this, source, lineNo);
@@ -20,11 +20,16 @@ define([
     }
     
     Object.defineProperty(_p, 'name', {
-        get: function(){ return this._name; }
+        get: function(){ return this._name.name; }
     })
-    
     Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value; }
+        get: function(){ return this._value.value; }
+    })
+    Object.defineProperty(_p, 'invalid', {
+        get: function(){ return this._value.invalid; }
+    })
+    Object.defineProperty(_p, 'message', {
+        get: function(){ return this._value.message; }
     })
     
     return Parameter;

@@ -2,7 +2,7 @@
 define([
     'intern!object'
   , 'intern/chai!assert'
-  , 'lib/Metapolator'
+  , 'metapolator/Metapolator'
 ], function (registerSuite, assert, Metapolator) {
     registerSuite({
         name: 'Metapolator',

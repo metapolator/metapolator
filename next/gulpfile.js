@@ -10,7 +10,10 @@ var gulp = require('gulp')
  * Let's hope this is enough for all our conversion needs, because
  * I strongly prefer to have it happen completely automaticaly.
  */
-npmConvert = ['gonzales/lib'];
+npmConvert = [
+    'gonzales/lib'
+    ,'immutable-complex/lib'
+];
 for(; i<npmConvert.length;i++) {
     module = npmConvert[i];
     gulp.src('./node_modules/' + module +'/*.js')
