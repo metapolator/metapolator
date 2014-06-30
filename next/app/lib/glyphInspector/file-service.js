@@ -1,20 +1,20 @@
 define([], function() {
     "use strict";
     function FileService($rootScope) {
-        this.setLocalStorage = function(localStorage) {
-            this.$scope.localStorage = localStorage;
-        }
+        this.fileName;
     
-        this.setFilenames = function(filenames) {
-            this.$scope.filenames = filenames;
+        this.setFilename = function(filename) {
+            if (filename.indexOf('.zip') > 0){
+                filename = filename.replace('.zip','');   
+            }
+            this.filename = filename;
         }
 
-        this.getFilenames = function() {
-            return this.$scope.filenames;   
+        this.getFilename = function() {
+            return this.filename;   
         }
 
         this.ready = function() {
-            console.log('wtf');
             $rootScope.$broadcast('filesReady');
         }
 

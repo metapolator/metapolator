@@ -30,6 +30,7 @@ define([
 	}
     
     _p.filesReady = function() {
+        this.fileService.setFilename(this.$scope.fileName);
         this.fileService.ready();
         this.$scope.uploaderText = "Uploaded " + localStorage.length + " files";
         this.$scope.$apply();

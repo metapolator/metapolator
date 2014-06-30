@@ -2,37 +2,38 @@ define([
     'bower_components/zip/zip'
 	, 'models/FS'
     , './localStorageIO'
-    , '../ufoJS/ufoLib/glifLib/GlyphSet'
-    , '../ufoJS/tools/pens/SVGPen'
+    , 'ufojs/ufoLib/glifLib/GlyphSet'
+    , 'ufojs/tools/pens/SVGPen'
 ], function(
             Zip
             , FS
-            , io
+            , localStorageIO
             , GlyphSet
             , SVGPen
     ) {
 	"use strict";
-	function FileViewerController($scope, $rootScope, $compile) {
+	function FileViewerController($scope, $rootScope, $compile, fileService) {
 		this.$scope = $scope;
 		this.$scope.name = 'FileViewer';
-        var renderParams = {
-            width: 400,
-            height: 400,
-            autostart: true,
-        }
-        var canvasWrapper = document.getElementById('canvasWrapper');
+
         this.$scope.selectedFile;
         this.$scope.$watch('selectedFile', function (newFile, oldFile) {
-            if (newFile){
-                
-                GlyphSet.factory(true, io, '')
-                    .then(onLoadGlyphSet);
-                
+            if (newFile) {
+                var onLoadGlyphSet = function (glyphSet) {
+                    console.log('wt');
+                    console.log(glyphSet);
+                }
+            var content = localStorage.getItem(newFile);
+            this.$scope.fileName = fileService.getFilename();
+            console.log(fileService);
+            this.$scope.selectedFileContent = content;
+                GlyphSet.factory(false, localStorageIO, this.$scope.fileName+'/glyphs')
+                .then(onLoadGlyphSet);
             }
         }.bind(this));
 	}
 	
-	FileViewerController.$inject = ['$scope', '$rootScope', '$compile'];
+	FileViewerController.$inject = ['$scope', '$rootScope', '$compile', 'fileService'];
 	var _p = FileViewerController.prototype;
     
     _p.initDraw = function() {

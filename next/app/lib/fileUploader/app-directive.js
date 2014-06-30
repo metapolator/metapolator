@@ -56,9 +56,7 @@ define([
                   if (checkSize(size, attrs) && isTypeValid(validMimeTypes, type)) {
                     return scope.$apply(function() {
                       scope.file = evt.target.result;
-                      if (angular.isString(scope.fileName)) {
-                        return scope.fileName = name;
-                      }
+                      scope.fileName = name;
                     });
                   }
                 };

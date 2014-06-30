@@ -13,9 +13,12 @@ require.config({
     packages:[
             {
                 name: 'ufojs',
-                location: './ufoJS/',
-                lib: ''
+                location: './ufoJS/lib',
             },
+            {
+                name: 'obtain',
+                location: './obtainJS/lib'
+            }
         ],
 });
 
