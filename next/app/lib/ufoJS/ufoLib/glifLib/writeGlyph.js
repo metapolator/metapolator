@@ -67,8 +67,8 @@ define(
         glyphName,
         glyphObject /* default = undefined */,
         drawPointsFunc /* default = undefined */,
-        // the writer argument is not supported yet, here is no such concept
-        /* writer default = undefined */,
+        /*the writer argument is not supported yet, here is no such concept
+         writer default = undefined ,*/
         formatVersion /* default = 2 */
     ) {
         var args = Array.prototype.slice.call(arguments)
@@ -82,7 +82,7 @@ define(
         glyphObject /* default = undefined */,
         drawPointsFunc /* default = undefined */,
         // the writer argument is not supported yet, here is no such concept
-        /* writer default = undefined */,
+        /* writer default = undefined ,*/
         formatVersion /* default = 2 */
     ) {
         var identifiers = {},
