@@ -55,7 +55,7 @@ Completion Percentages are semantic, not time-based.
 
 * **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
-* **Events:** *(95% complete)* Simon will present at Tag der Schrift on June 14 and post about it on the G+
+* **Events:** *(DONE)* Simon will present at Tag der Schrift on June 14 and post about it on the G+
 
 2. Useful Code [August 1]
 ----------------------
