@@ -38,6 +38,7 @@ define([
         this._invalid = true;
         this._message = message || '(no message left)';
     }
+    
     function _setFactoryAPI(factory) {
         if(this._invalid)
             throw new errors.CPS('Can\'t set factory: value is already '
@@ -67,7 +68,6 @@ define([
     
     Object.defineProperty(_p, 'factory', {
         get: function() {
-            console.log('ParameterValue: returning factory');
             if(this._invalid)
                 throw new errors.CPS('Can\'t return factory: value was '
                     + 'marked as invalid: ' + this._message);
@@ -81,6 +81,17 @@ define([
         get: function(){ return this._invalid;}
     });
     
+    // this property ommits the comments on purpose
+    Object.defineProperty(_p, 'valueString', {
+        get: function(){ return this._value.join(''); }
+    })
+    Object.defineProperty(_p, 'astTokens', {
+        get: function() {
+            return this._value.map(
+                                function(item){ return item['_ast']; });
+            }
+    })
+    
     
     /**
      * Prints all comments before the value.
@@ -88,7 +99,7 @@ define([
     _p.toString = function() {
         return [this._comments.join('\n'),
                 this._comments.length ? ' ': '',
-                this._value.join('')].join('');
+                this.valueString].join('');
     }
     
     return ParameterValue;
