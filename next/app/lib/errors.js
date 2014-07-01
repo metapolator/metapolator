@@ -16,7 +16,7 @@ define(function() {
         if(Constructor === undefined) {
             var Constructor = function(message, stack) {
                 if(message !== undefined) {
-                    this.name = name;
+                    this.name = name + 'Error';
                     this.message = message || "(no error message)";
                 }
                 
@@ -24,7 +24,7 @@ define(function() {
                     Error.captureStackTrace(this, Constructor);
                 else {
                     stack = stack || (new Error).stack || '(no stack available)'
-                    this.stack = [name, ' Error: ', this.message, '\n'
+                    this.stack = [name+':', this.message, '\n'
                                                     , stack].join('');
                 }
             };
@@ -48,7 +48,7 @@ define(function() {
     makeError('CPS', undefined , new errors.Error);
     makeError('Key', undefined , new errors.Error);
     makeError('CPSRegistryKey', undefined , new errors.Key);
-    
+    makeError('CPSAlgebra', undefined , new errors.CPS);
     
     /**
      * if expression is false errors.Assertion is thrown
