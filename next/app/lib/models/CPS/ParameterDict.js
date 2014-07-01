@@ -86,7 +86,7 @@ define([
         // searching backwards, because the last item with key === name has
         // the highest precedence
         for(;i>=0;i--) {
-            if(key === items[i].name);
+            if(key === items[i].name)
                 return items[i].value;
         }
         throw new errors.Key('Key "'+key+'" not in ParameterDict')
