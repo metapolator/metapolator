@@ -321,7 +321,12 @@ define([
         return matches;
     }
     
-    /*selector may be a string or a SelectorList*/
+    /**
+     * selector may be a string or a SelectorList
+     * Returns a set of elements in scope matching at least one of
+     * the selectors in selector.
+     * 
+     */
     function query(scope, selector) {
         var complexSelectors
           , i=0
