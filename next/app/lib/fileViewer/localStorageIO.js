@@ -42,7 +42,6 @@ define([
     _p.writeFile = obtain.factory(
         {
             writeFile:['path', 'data', function(path, data) {
-                debugger;;
                 this.files[path] = [data, new Date()]
             }]
         }
@@ -57,7 +56,6 @@ define([
     _p.unlink = obtain.factory(
         {
             unlink:['filename', function(filename) {
-                debugger;;
                if(!this.pathExists(false, filename))
                     throw new errors.IONoEntry('Filename not found: '+ filename);
                 delete this.files[filename]
@@ -71,9 +69,6 @@ define([
     _p.pathExists = obtain.factory(
         {
             pathExists:['path', function(path) {
-                var isEsist = localStorage.getItem(path)?true:false;
-                if (!isEsist)
-                    debugger;;
                 return (localStorage.getItem(path)?true:false);
             }]
         }
@@ -87,10 +82,9 @@ define([
     _p.getMtime = obtain.factory(
         {
             getMtime:['path', function(path) {
-                debugger;;
                 if(!this.pathExists(false, path))
                     throw new errors.IONoEntry('Path not found: '+ path);
-                return this.files[path][1];
+                return 'application/json';
             }]
         }
       , {/* no need for async here */}
