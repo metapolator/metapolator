@@ -31,7 +31,6 @@ define([
   , GenericCPSNode
 ) {
     "use strict";
-    console.log('hello')
     var CPSError = errors.CPS;
     
     // FIXME: handle errors!
