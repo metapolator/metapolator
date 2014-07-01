@@ -40,7 +40,7 @@ Completion Percentages are semantic, not time-based.
   * parsing/writing: *(100% complete)* into/from our object model
   * MOM (Metapolator Object Model)*(80% complete)*: CPS relates to objects in this tree-model
   * Selectors and value inheritance chain: *(100% complete)*
-  * processing CPS values: *(100% complete)* tied together with Plugins...
+  * processing CPS values: *(80% complete)* @dictionary and @namespace (which makes the produced CPS a lot leaner)
 
 * **Modules:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
