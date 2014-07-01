@@ -12,9 +12,10 @@ Completion Percentages are semantic, not time-based.
 
 * **Develop a better understanding** 
 
-  So that we don't forget, a lot of work is done before even starting to 
+  So that we don't forget, a lot of work was done before even starting to 
   work on the first Milestone, and this work continues: thinking over and 
-  over about what we are doing and if we are still going in the right direction.
+  over about what we are doing and if we are still going in the right direction
+  and learning about METAFONT from Knuth's books.
 
 1. Ignition! [July 4]
 ----------
@@ -37,9 +38,9 @@ Completion Percentages are semantic, not time-based.
 
 * **CPS:** Initial Object-Model to process parameters. Details: [Cascading Parameter Sheets](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
   * parsing/writing: *(100% complete)* into/from our object model
-  * MOM (Metapolator Object Model)*(10% complete)*: CPS relates to objects in this tree-model
-  * Selectors and value inheritance chain: *(10% complete)*
-  * processing CPS values: *(0% complete)* tied together with Plugins...
+  * MOM (Metapolator Object Model)*(80% complete)*: CPS relates to objects in this tree-model
+  * Selectors and value inheritance chain: *(100% complete)*
+  * processing CPS values: *(100% complete)* tied together with Plugins...
 
 * **Modules:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
@@ -47,7 +48,7 @@ Completion Percentages are semantic, not time-based.
   * import: *(55% complete)* reading parameters from outline fonts into cps
   * export: *(15% complete)* make metapost code to create outlines, create 
     outlines from that. Write the result into a UFO.
-  * parameter definition *(25% complete)*
+  * parameter definition *(100% complete)*
 
 * **Sample project:** *(15% complete)* To show how data is organized in 
   Metapolator, and is fully functional (but small) so we can open and close
