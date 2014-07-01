@@ -29,7 +29,7 @@ define([
         get: function(){return this._items.slice(); }
     })
     
-    function _filterRules(item){
+    function _filterRules(item) {
         return item instanceof Rule;
     }
     Object.defineProperty(_p, 'rules', {
