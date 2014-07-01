@@ -1,7 +1,13 @@
 define([
     'metapolator/errors'
+  , './dataTypes/simpleTypes'
+  , './dataTypes/CompoundRealCPSFactory'
+  , './dataTypes/CompoundVectorCPSFactory'
 ], function(
     errors
+  , simpleTypes
+  , CompoundReal
+  , CompoundVector
 ) {
     "use strict";
     /**
@@ -15,33 +21,15 @@ define([
         // I'm not doing this yet, because I wan't to design the plugin
         // interface later
         this._dataTypes = {
-            
-            
             // types will have to parse cps and return instances
-            
             // types may recognize that the cps is invalid, this could
             // hapen way earlier than when creating the instance.
             // thus the idea of factories.
-            string: {
-                init: function(parameterValue, setFactoryAPI, setInvalidAPI) {
-                    console.log('string: checking parameterValue, returning a factory')
-                    // parse here ... parameterValue
-                    var invalidParamter = false;
-                    // do this if the parameter is bad:
-                    if(invalidParamter) {
-                        setInvalidAPI('The Parameter does not look like a string');
-                        return;
-                    }
-                    //else
-                    setFactoryAPI(function(element) {
-                        console.log('factory for the CPS String-Type');
-                        return parameterValue.toString();
-                    });
-                }
-              , defaultFactory: function() {
-                    return function() { return '-- default string --'; }
-                }
-            }
+            string: simpleTypes.string
+          , real: simpleTypes.real
+          , vector: simpleTypes.vector
+          , CompoundReal: CompoundReal
+          , CompoundVector: CompoundVector
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
@@ -49,7 +37,6 @@ define([
     
     
     _p.exists = function(name) {
-        console.log('Registry exists:', name);
         return name in this._parameters;
     }
     
@@ -78,7 +65,6 @@ define([
                 +parameterDescription.type+'" for parameter "'+name
                 +'" is unkown.');
         
-        console.log('Registry register:', name, ' with type ', parameterDescription.type);
         this._parameters[name] = parameterDescription;
     }
     
