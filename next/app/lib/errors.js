@@ -24,7 +24,7 @@ define(function() {
                     Error.captureStackTrace(this, Constructor);
                 else {
                     stack = stack || (new Error).stack || '(no stack available)'
-                    this.stack = [name+':', this.message, '\n'
+                    this.stack = [this.name+': ', this.message, '\n'
                                                     , stack].join('');
                 }
             };
