@@ -1,51 +1,33 @@
 define([
     'metapolator/errors'
-  , './_Node'
-  , './Rule'
+  , './_Collection'
+  , './AtRule'
 ], function(
     errors
   , Parent
-  , Rule
+  , AtRule
 ) {
     "use strict";
     var CPSError = errors.CPS;
     /**
-     * A list of Rules and Comments
+     * A list of Rule-, AtRule- and Comment-Elements
      */
     function ParameterCollection(items, source, lineNo) {
-        Parent.call(this, source, lineNo);
-        this._items = [];
-        if(items.length)
-            this.push.apply(this, items);
+        Parent.call(this, items, source, lineNo);
     }
     var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterCollection;
     
-    _p.toString = function() {
-        return this._items.join('\n\n');
+    function _filterAtRules(name, item) {
+        return (
+            item instanceof AtRule
+            && name !== undefined
+                            ? item.name === name
+                            : true
+        );
     }
-    
-    Object.defineProperty(_p, 'items', {
-        get: function(){return this._items.slice(); }
-    })
-    
-    function _filterRules(item) {
-        return item instanceof Rule;
-    }
-    Object.defineProperty(_p, 'rules', {
-        get: function(){return this._items.filter(_filterRules);}
-    })
-    
-    Object.defineProperty(_p, 'length', {
-        get: function(){ return this._items.length }
-    })
-    
-    /**
-     * Add items to this PropertyCollection.
-     */
-    _p.push = function(item /*, ... items */) {
-        var newItems = Array.prototype.slice.call(arguments)
-        return this._items.push.apply(this._items, newItems);
+    _p.getAtRules = function(name) {
+        return this._items.filter(_filterAtRules.bind(null, name));
     }
     
     return ParameterCollection;
