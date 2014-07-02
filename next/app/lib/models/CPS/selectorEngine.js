@@ -219,7 +219,7 @@ define([
                 // augment the specifity with the index number, so we can
                 // make sure, that the order of rules with otherwise
                 // equal specifity is not mixed up. The later rules
-                // are more specific/overide the previous one, so i
+                // are more specific/overide the previous one, so it
                 // is a good match for the sorting function that we use
                 // anyways
                 specificity = matchingSelectors[0][0];
@@ -258,7 +258,13 @@ define([
         return result;
     }
     
+    /**
+     * scope is an array of zero or more elements, we will search only
+     * within the scope elements
+     */
     function queryComplexSelector(scope, complexSelector) {
+        if(!(scope instanceof Array))
+            throw new CPSError('scope must be an Array');
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
                                          + 'ComplexSelector');
@@ -266,7 +272,6 @@ define([
           , compoundSelector
           , combinator
           , matches = []
-          , scopes
           , currentScope
           // this filter depends on the fact that compoundSelector and
           // currentScope will change in this closure during the loops below
@@ -280,7 +285,6 @@ define([
         
         // first round is descendants
         filterMethod = _filterElementDescendants;
-        scopes = [scope];
         while(true) {
             compoundSelector = compoundSelectors.shift();
             // Here is a lot of room for optimization! I only made a very
@@ -295,11 +299,11 @@ define([
             // is 'univers' is however no good idea, with the knowledge
             // that there is only one 'univers', the root of the tree.
             matches = []
-            while(currentScope = scopes.pop())
+            while(currentScope = scope.pop())
                 // get ALL elements inside of currentScope
                 // and ask if the compound selector matches ...
                 Array.prototype.push.apply(matches, filterMethod(currentScope, filter));
-            scopes = matches;
+            scope = matches;
             
             combinator = compoundSelectors.shift();
             if(combinator === undefined)
@@ -326,8 +330,10 @@ define([
      * Returns a set of elements in scope matching at least one of
      * the selectors in selector.
      * 
+     * scope is an array of zero or more elements, we will search only
+     * within the scope elements
      */
-    function query(scope, selector) {
+    function queryAll(scope, selector) {
         var complexSelectors
           , i=0
           , k
@@ -355,8 +361,35 @@ define([
         return result;
     }
     
+    /**
+     * Returns the first element within the scope that matches.
+     * 
+     * Matching only one element could be better optimized, especially
+     * further down: queryComplexSelector, doesn't know anything about
+     * selecting only one element.
+     */
+    function query(scope, selector) {
+        var complexSelectors
+          , i=0
+          , matches
+          ;
+        if(typeof selector === 'string')
+            selector = selectorListFromString(selector);
+        if(!(selector instanceof SelectorList))
+             throw new CPSError('SelectorList expected, but got a '
+                    + selector + ' typeof: '+ typeof selector);
+        complexSelectors = selector.value;
+        for(;i<complexSelectors.length;i++) {
+            matches = queryComplexSelector(scope, complexSelectors[i]);
+            if(matches.length)
+                return matches[0];
+        }
+        return null;
+    }
+    
     return {
         getMatchingRules: getMatchingRules
       , query: query
+      , queryAll: queryAll
     };
 })
