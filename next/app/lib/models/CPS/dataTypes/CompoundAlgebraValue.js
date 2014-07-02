@@ -65,7 +65,7 @@ define([
                     // in the future
                     throw new ValueError('Searched for "' + name + '" of "'
                                         + this.literal + '" but got: '
-                                        + error + ': ' + error.message
+                                        + error
                                     , error.stack);
                 }
             }
