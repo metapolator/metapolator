@@ -7,8 +7,6 @@ define([
 ) {
     "use strict";
     /**
-     * This is the root element of a MOM Tree.
-     * 
      * This Element is the container of all masters of a metapolator superfamily.
      * It only contains children of type MOM Master
      */
