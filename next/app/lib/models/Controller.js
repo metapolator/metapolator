@@ -15,6 +15,8 @@ define([
     function Controller(univers, paramterCollections, parameterRegistry) {
         this._collections = paramterCollections.slice();
         this._mergedRules = this._getMergedRules();
+        this._mergedDictionaries = this._getMergedDictionaries();
+        
         
         this._MOM = new Multivers(this);
         this._MOM.add(univers)
@@ -22,6 +24,7 @@ define([
         
         this._caches = {
             styleDicts: {}
+          , referenceDicts: {}
         }
     }
     
@@ -41,6 +44,16 @@ define([
      */
     _p._getMergedRules = function() {
         return Array.prototype.concat.apply([], this._collections
+                            .map(function(item){return item.rules; }))
+    }
+    
+    _p._getMergedDictionaries = function() {
+        // get all @dictionary rules
+        var dictionaries = Array.prototype.concat.apply([], this._collections
+                .map(function(item){ return item.getAtRules('dictionary'); }))
+        
+        // get all Rule elements of all @dictionary rules
+        return Array.prototype.concat.apply([], dictionaries
                             .map(function(item){return item.rules; }))
     }
     
@@ -69,8 +82,28 @@ define([
         
         if(!this._caches.styleDicts[element.id])
             this._caches.styleDicts[element.id] = this._getComputedStyle(element);
-        return this._caches.styleDicts[element.id]
+        return this._caches.styleDicts[element.id];
     }
+    
+    _p._getReferenceDictionary = function(element) {
+        var rules = selectorEngine.getMatchingRules(this._mergedDictionaries, element);
+        return new this.ReferenceDict(this, rules, element);
+    }
+    
+    /**
+     * A reference dictionary is the interface to the values referenced
+     * by the @dictionary CPS rules
+     */
+    _p.getReferenceDictionary = function(element) {
+        if(element.multivers !== this._MOM)
+            throw new CPSError('getReferenceDictionary with an element that is not '
+                + 'part of the multivers is not supported' + element);
+        
+        if(!this._caches.referenceDicts[element.id])
+            this._caches.referenceDicts[element.id] = this._getReferenceDictionary(element);
+        return this._caches.referenceDicts[element.id];
+    }
+    
     
     _p.queryAll = function(selector, scope) {
         var i=0
