@@ -1,11 +1,9 @@
 define([
     'metapolator/errors'
   , '../_BaseModel'
-  , 'metapolator/models/CPS/selectorEngine'
 ], function(
     errors
   , Parent
-  , selectorEngine
 ) {
     "use strict";
     
@@ -35,29 +33,6 @@ define([
         this._parent = null;
         this._id = null;
         this._classes = {};
-        
-        
-        // We need a place to store the instanciated values of the CPS
-        // this should be in the _Node where the values belong to.
-        // However, I need some exploration time to come up with a lean
-        // way to connect this stuff.
-        
-        // the instances of the parameters of this node itself
-        // these can be referred to in @scope
-        // we have to build these at some point in time!
-        // given that they are always valid, as long as the CPS doesn't
-        // change, a good idea is to build these parameters lazy.
-        // because we wan't to load the cps AFTER the MOM (or?)
-        this._parameterInstances = {}
-        
-        // the names that can be used from the CPS
-        // these will be defineable via @scope
-        // I'm not shure if it is wise to keep these references here around
-        // another option would be to query them when needed to build a
-        // _parameterInstance. That way we wouldn't have to invalidate this
-        // cache
-        this._parameterScope = {}
-        
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
@@ -100,6 +75,35 @@ define([
       , get: function(){ return this._id; }
     })
     
+    /***
+     * get the univers element of this node.
+     * 
+     * a univers element itself has no univers!
+     */
+    Object.defineProperty(_p, 'univers', {
+        get: function() {
+            if(!this.parent)
+                return null;
+            if(this.parent.MOMType === 'MOM Univers')
+                return this.parent;
+            return this.parent.univers;
+        }
+    })
+    
+    /***
+     * get the multivers element of this node.
+     * 
+     * a multivers element itself has no multivers!
+     */
+    Object.defineProperty(_p, 'multivers', {
+        get: function() {
+            if(!this.parent)
+                return null;
+            if(this.parent.MOMType === 'MOM Multivers')
+                return this.parent;
+            return this.parent.multivers;
+        }
+    })
     
     /**
      * Needed for development, I don't know if this will persist
@@ -229,7 +233,11 @@ define([
     }
     
     _p.query = function(selector) {
-        return selectorEngine.query(this, selector);
+        return this.multiverse.query(this, selector);
+    }
+    
+    _p.queryAll = function(selector) {
+        return this.multiverse.queryAll(this, selector);
     }
     
     return _Node;
