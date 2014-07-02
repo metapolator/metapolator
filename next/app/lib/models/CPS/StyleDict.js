@@ -65,6 +65,10 @@ define([
         
         // get the dictionary StyleDict for element
         console.log('search in @dictionary');
+        
+        // this._controller.getReferenceDictionary(this._element).get(name)
+        
+        
         throw new KeyError('Not found CPS Value "'+ name+'" for: '
             + this._element.particulars);
     }
