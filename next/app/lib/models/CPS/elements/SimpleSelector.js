@@ -99,7 +99,7 @@ define([
         }
     });
     
-    //FIXME! move this to factories!
+    //FIXME! move this to parsing module!
     _p._getType = function() {
         switch(this._element.type){
           case 'ident':
@@ -120,7 +120,7 @@ define([
         return undefined;
     }
     
-    //FIXME! move this to factories!
+    //FIXME! move this to parsing module!
     _p._getName = function() {
         var name = name;
         if(typeof this._element._ast[1] === 'string') {
@@ -140,7 +140,7 @@ define([
         return name;
     }
     
-    //FIXME! move this to factories!
+    //FIXME! move this to parsing module!
     _p._getPseudoClassValueForIndex = function() {
         if(this._element._ast[1][0] !== 'funktion'
                 || this._element._ast[1][2][0] !== 'functionBody')

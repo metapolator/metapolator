@@ -98,7 +98,7 @@ define([
         return selector;
     }
     
-    //FIXME! move this to factories!
+    //FIXME! move this to parsing module!
     _p._parseSelector = function(elements) {
         var status = {
                 ivalid: false
