@@ -1,11 +1,11 @@
 define([
     'metapolator/errors'
   , 'metapolator/models/CPS/factories'
-  , './Rule'
-  , './SelectorList'
-  , './ComplexSelector'
-  , './CompoundSelector'
-  , './SimpleSelector'
+  , './elements/Rule'
+  , './elements/SelectorList'
+  , './elements/ComplexSelector'
+  , './elements/CompoundSelector'
+  , './elements/SimpleSelector'
 ], function(
     errors
   , factories

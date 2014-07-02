@@ -1,5 +1,5 @@
 define([
-    '../_BaseModel'
+    '../../_BaseModel'
 ], function(
     Parent
 ) {
