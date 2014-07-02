@@ -65,7 +65,7 @@ define({
             'require/domReady': 'bower_components/requirejs-domready/domReady'
           , 'require/text': 'bower_components/requirejs-text/text'
           , 'metapolator': './'
-          , 'gonzales': 'npm_converted/gonzales/lib'
+          , 'gonzales': 'lib/npm_converted/gonzales/lib'
           , 'complex':  'npm_converted/immutable-complex/lib'
           , 'angular': 'bower_components/angular/angular'
           , 'obtain': 'obtainJS/lib'
@@ -75,8 +75,9 @@ define({
 
     // Non-functional test suite(s) to run in each browser
     suites: [
-        'tests/lib/Metapolator',
-        'tests/lib/models/MOM/_all_'
+        'tests/lib/Metapolator'
+      , 'tests/lib/models/CPS/_all_'
+      , 'tests/lib/models/MOM/_all_'
     ],
 
     // Functional test suite(s) to run in each browser once non-functional tests are completed
