@@ -32,6 +32,10 @@ requirejs([
     var CommandLineError = errors.CommandLine
       , commands = {
             'import': 'metapolator/importer/cli'
+          , 'import-playground': 'metapolator/importer/playground'
+          , 'cps-playground': 'metapolator/cps/cli'
+          , 'cps-selectors': 'metapolator/cps/cli-selectors'
+          , 'cps-algebra': 'metapolator/cps/cli-algebra'
         }
       , commandList = Object.keys(commands)
       , help = [
