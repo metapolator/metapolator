@@ -244,14 +244,13 @@ define([
             // initialized parameters
             if(parameterRegistry) {
                 try {
-                    
                     typeDefinition = parameterRegistry.getTypeDefinition(name.name);
                 }
                 catch(error) {
                     if(!(error instanceof errors.CPSRegistryKey))
                         throw error;
                     // key error means the value is unknown to us
-                    return new _nodeConstructors['__GenericAST__'](node, source);
+                    return new this['__GenericAST__'](node, source);
                 }
                 value.initializeTypeFactory(name.name, typeDefinition);
             }
@@ -372,6 +371,43 @@ define([
         }
     }
     
+    /**
+     * override constructors for the purpose of @dictionary. 
+     * This means for all children of @dictionary we can define other rules.
+     * If we don't do so, the regular rules apply. JavaScript Prototype
+     * Inheritance.
+     * 
+     * like a module pattern, to not pollute the namespace with
+     * temporary variables
+     */
+    var _nodeConstructorsAtDictionary = (function(parent, additions) {
+            var child = Object.create(parent);
+            for(var k in additions) child[k] = additions[k];
+            return child;
+    })(_nodeConstructors, {
+        declaration: function(node, source) {
+            // this is an @dictionary declaration
+            console.log('custom deckaration constructor for @dictionary');
+            return new GenericCPSNode(node.rawData, source, node.lineNo);
+        }
+      , atruler: function(node, source) {
+            // this is an @dictionary root node
+            
+            console.log('special atruler');
+            return new GenericCPSNode(node.rawData, source, node.lineNo);
+        }
+      , atrulers: function(node, source) {
+            console.log('special atrulers');
+            // for(var i=0;i<node.children.length; i++) {
+            //     if(node.children[i].type === '__GenericAST__' && node.children[i].instance.type === 's')
+            //         continue;
+            //     console.log('atrulers child',i, node.children[i].type, '::'+node.children[i].instance);
+            //     
+            // }
+            return new GenericCPSNode(node.rawData, source, node.lineNo);
+        }
+    });
+
     var _pattern_linebreak = /\n/g;
     function _countLinebreaks(data) {
         switch (data) {
@@ -394,7 +430,7 @@ define([
      * 
      * This is no no beauty, but it makes rulesFromAST easier to red.
      */
-    function _makeNode(parent, lineNo, data) {
+    function _makeNode(nodeConstructors, parent, lineNo, data) {
         var ASTType = data[0];
         if(!parent)
             // this creates a root node
@@ -404,7 +440,7 @@ define([
               , type: '__init__' // can be anything but '__GenericAST__'
             };
         var node = {
-            type: (ASTType in _nodeConstructors)
+            type: (ASTType in nodeConstructors)
                 // create a known entity
                 ? ASTType
                 // just save the raw AST data
@@ -449,12 +485,16 @@ define([
           , ASTType
           , node, data, childNode
           , root
+          // I added a way to change the node constructors object
+          // depending on the context, currently only used for @dictionary
+          , nodeConstructors = _nodeConstructors
+          , oldNodeConstructors
           ;
         
         // initial frame
-        root = _makeNode(false, lineNo, ast)
+        root = _makeNode(nodeConstructors, false, lineNo, ast);
         // use slice to make a copy of the ast array
-        stack.push([ast.slice(), root])
+        stack.push([ast.slice(), root]);
         
         // we wan't to walk the complete tree, because we want to detect all
         // ["s", " \n "] etc. so we can count line breaks. I hope the gonzales
@@ -462,6 +502,10 @@ define([
         // Line numbers are VERY helpful when working with a CSS file
         // thats why I want to keep them
         while(frame = stack.pop()) {
+            // if frame 2 is set this means that the element switched
+            // nodeConstructors for its own object, and that the
+            // old nodeConstructors object is in frame[2]
+            
             ASTType = frame[0][0]
             //remove the 2nd item from frame[0] and return it encapsulated
             // into an array
@@ -473,8 +517,12 @@ define([
                 // ASCENDING
                 // All children are already initialized.
                 if(node.makeInstance)
-                    node.instance = new _nodeConstructors[node.type](
-                                        node, source, parameterRegistry);
+                    node.instance = nodeConstructors[node.type]
+                        .call(nodeConstructors, node, source, parameterRegistry);
+                                        
+                //switch back nodeConstructors if this element switched em
+                if(frame[2])
+                    nodeConstructors = frame[2];
                 continue;
             }
             // there may still be data left, we have to revisit this frame
@@ -493,10 +541,26 @@ define([
             }
             // data is an array
             // DESCENDING
-            childNode = _makeNode(node, lineNo, data)
-            // each frame needs to be visited, because we wan't to count lines.
-            // use slice to make a copy of the data array
-            stack.push([data.slice(), childNode])
+            
+            // switch nodeConstructors if its the right element
+            // currently only for @dictionary, but it could be enhanced
+            // to work with other situations, too.
+            oldNodeConstructors = undefined;
+            if(data[0] === 'atruler'
+              && data[1] && data[1][0] === 'atkeyword'
+              && data[1][1] && data[1][1][0] === 'ident'
+              && data[1][1][1] === 'dictionary'
+            ) {
+                oldNodeConstructors = nodeConstructors;
+                // keep this until childNode is finalized
+                nodeConstructors = _nodeConstructorsAtDictionary;
+            }
+            
+            childNode = _makeNode(nodeConstructors, node, lineNo, data)
+            // Each frame needs to be visited, because we wan't to count
+            // lines.
+            // Use slice to make a copy of the data array
+            stack.push([data.slice(), childNode, oldNodeConstructors])
             if(!childNode.makeInstance)
                 continue;
             // keep the childNode
