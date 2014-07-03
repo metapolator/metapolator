@@ -5,7 +5,7 @@
 define([
     'ufojs/errors'
   , 'ufojs/tools/io/_base'
-  , '../obtainJS/lib/obtain'
+  , '../../../lib/obtainJS/lib/obtain'
 ], function(
     errors
   , _base

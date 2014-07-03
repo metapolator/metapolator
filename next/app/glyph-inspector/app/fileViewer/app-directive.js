@@ -20,15 +20,7 @@ define([
                   for (var key in localStorage){
                        scope.filenames.push(key);
                     }
-                  var search = angular.element('<input type="text" ng-model="search" placeholder="search" />');
-                  var select = angular.element('<select ng-model="selectedFile" ng-options="file for file in filenames | filter: search"></select>');
-                  var selectedFile = angular.element('<pre ng-bind="selectedFileContent"></pre>');
-                  search = $compile(search)(scope);
-                  select = $compile(select)(scope);
-                  selectedFile = $compile(selectedFile)(scope);
-                  element.append(search);
-                  element.append(select);
-                  element.append(selectedFile);
+                  document.getElementById('fileViwer').style.display = 'block';
               });
             return false
           }

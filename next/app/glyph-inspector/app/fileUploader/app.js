@@ -10,6 +10,7 @@ define([
   , Directive
 ) {
     "use strict";
+        console.log(angular);
     console.log('fileUploader loading');
     //return Module
     return angular.module('fileUploader', [])

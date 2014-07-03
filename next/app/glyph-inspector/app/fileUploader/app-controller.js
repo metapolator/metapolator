@@ -1,9 +1,7 @@
 define([
-	'bower_components/zip/zip'
-    , 'models/FS'
+	'../../../lib/bower_components/zip/zip'
     , '../glyphInspector/file-service'
-], function(Zip
-    , FS) {
+], function(Zip) {
 	"use strict";
 	function FileUploaderController($scope, fileService) {
         console.log('=================');

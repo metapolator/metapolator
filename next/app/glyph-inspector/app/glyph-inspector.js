@@ -1,9 +1,9 @@
 require.config({
-    baseUrl: 'lib'
+    baseUrl: 'app'
   , paths: {
-      'require/domReady': 'bower_components/requirejs-domready/domReady'
-    , 'require/text': 'bower_components/requirejs-text/text'
-    , angular: 'bower_components/angular/angular'
+      'require/domReady': '../../lib/bower_components/requirejs-domready/domReady'
+    , 'require/text': '../../lib/bower_components/requirejs-text/text'
+    , angular: '../../lib/bower_components/angular/angular'
     }
   , shim: {
       angular: {
@@ -13,11 +13,11 @@ require.config({
     packages:[
             {
                 name: 'ufojs',
-                location: './ufoJS/lib',
+                location: '../../lib/ufoJS/lib',
             },
             {
                 name: 'obtain',
-                location: './obtainJS/lib'
+                location: '../../lib/obtainJS/lib'
             }
         ],
 });
