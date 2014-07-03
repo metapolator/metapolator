@@ -1,16 +1,16 @@
 define([
     'metapolator/errors'
   , './_Collection'
-  , './AtRule'
+  , './AtRuleCollection'
 ], function(
     errors
   , Parent
-  , AtRule
+  , AtRuleCollection
 ) {
     "use strict";
     var CPSError = errors.CPS;
     /**
-     * A list of Rule-, AtRule- and Comment-Elements
+     * A list of Rule-, AtRuleCollection- and Comment-Elements
      */
     function ParameterCollection(items, source, lineNo) {
         Parent.call(this, items, source, lineNo);
@@ -20,7 +20,7 @@ define([
     
     function _filterAtRules(name, item) {
         return (
-            item instanceof AtRule
+            item instanceof AtRuleCollection
             && name !== undefined
                             ? item.name === name
                             : true
