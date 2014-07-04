@@ -3,7 +3,6 @@ define([
   , 'gonzales/gonzales'
   , 'metapolator/cli/ArgumentParser'
   , 'ufojs/tools/io/staticNodeJS'
-  , 'metapolator/models/CPS/parsing'
   , 'metapolator/models/CPS/selectorEngine'
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/MOM/Master'
@@ -17,7 +16,6 @@ define([
   , gonzales
   , ArgumentParser
   , io
-  , parsing
   , selectorEngine
   , Univers
   , Master
