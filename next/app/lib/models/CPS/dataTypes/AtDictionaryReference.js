@@ -4,13 +4,19 @@ define([
 
 ) {
     "use strict";
-    function AtDictionaryEntry(selector, parameters) {
+    function AtDictionaryEntry(selector, parameter, properties) {
         Object.defineProperty(this, 'selector', {
             value: selector
           , enumerable: true
         })
-        Object.defineProperty(this, 'parameters', {
-            get: function(){ return parameters.slice();}
+        
+        Object.defineProperty(this, 'parameter', {
+            value: parameter
+          , enumerable: true
+        })
+        
+        Object.defineProperty(this, 'properties', {
+            get: function(){ return properties.slice();}
           , enumerable: true
         })
     }

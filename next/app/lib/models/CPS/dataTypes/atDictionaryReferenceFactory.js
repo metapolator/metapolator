@@ -60,6 +60,7 @@ define([
             var invalidMessage
               , selector
               , tokens
+              , referencedParameterName
               , properties
               ;
             try {
@@ -72,8 +73,12 @@ define([
                             + parameterValue.valueString + '" with error: '
                             + error;
             }
+            if(!invalidMessage && tokens.length < 1)
+                invalidMessage('Selector found but the parameter name is '
+                            + 'missing in ' + parameterValue.valueString)
+            referencedParameterName = tokens[1];
             if(!invalidMessage) {
-                properties = tokens.slice(1);
+                properties = tokens.slice(2);
                 try {
                     selector = parseSelectorList.fromString(tokens[0]);
                 }
@@ -81,7 +86,7 @@ define([
                     if(!(error instanceof CPSError))
                         throw error;
                     invalidMessage = 'Can\'t get a selector from "' + tokens[0]
-                        +'" with error: ' + error;
+                                   + '" with error: ' + error;
                 }
             }
             
@@ -93,11 +98,12 @@ define([
             //else
             var value = parameterValue.valueString.trim();
             setFactoryAPI(function(name, element) {
-                return new AtDictionaryReference(selector, properties);
+                return new AtDictionaryReference(selector,
+                                    referencedParameterName, properties);
             });
         }
         , defaultFactory: function(name, element) {
-            throw new errros.MotImplemented('There is no default value '
+            throw new errros.NotImplemented('There is no default value '
                                     +'for a @dictionary reference!');
         }
         , is: function(value) {
