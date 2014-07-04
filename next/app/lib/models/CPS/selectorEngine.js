@@ -1,6 +1,6 @@
 define([
     'metapolator/errors'
-  , 'metapolator/models/CPS/parsing'
+  , 'metapolator/models/CPS/parsing/parseSelectorList'
   , './elements/Rule'
   , './elements/SelectorList'
   , './elements/ComplexSelector'
@@ -8,7 +8,7 @@ define([
   , './elements/SimpleSelector'
 ], function(
     errors
-  , parsing
+  , parseSelectorList
   , Rule
   , SelectorList
   , ComplexSelector
@@ -17,7 +17,7 @@ define([
 ) {
     "use strict";
     var CPSError = errors.CPS
-      , selectorListFromString = parsing.selectorListFromString
+      , selectorListFromString = parseSelectorList.fromString
       ;
     
     // start selector engine
