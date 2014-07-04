@@ -3,7 +3,7 @@ define([
   , 'gonzales/gonzales'
   , 'metapolator/cli/ArgumentParser'
   , 'ufojs/tools/io/staticNodeJS'
-  , 'metapolator/models/CPS/parsing'
+  , 'metapolator/models/CPS/parsing/parseRules'
   , 'metapolator/models/Controller'
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/MOM/Master'
@@ -16,7 +16,7 @@ define([
   , gonzales
   , ArgumentParser
   , io
-  , parsing
+  , parseRules
   , Controller
   , Univers
   , Master
@@ -93,7 +93,7 @@ define([
                   , description: 'the intrinsic value of the zon'
         })
         
-        var result = parsing.rulesFromString(cpsString, args.CPSFile, parameterRegistry);
+        var result = parseRules.fromString(cpsString, args.CPSFile, parameterRegistry);
         
         var univers = new Univers()
           , ralph = new Master()
