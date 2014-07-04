@@ -3,11 +3,13 @@ define([
   , 'metapolator/models/CPS/selectorEngine'
   , 'metapolator/models/MOM/Multivers'
   , 'metapolator/models/CPS/StyleDict'
+  , 'metapolator/models/CPS/ReferenceDict'
 ], function(
     errors
   , selectorEngine
   , Multivers
   , StyleDict
+  , ReferenceDict
 ) {
     "use strict";
     var CPSError = errors.CPS;
@@ -35,6 +37,7 @@ define([
      * monkey patched on instances
      */
     _p.StyleDict = StyleDict;
+    _p.ReferenceDict = ReferenceDict;
     
     /**
      * getComputedStyle returns the matching rules in the correct
@@ -51,10 +54,9 @@ define([
         // get all @dictionary rules
         var dictionaries = Array.prototype.concat.apply([], this._collections
                 .map(function(item){ return item.getAtRules('dictionary'); }))
-        
         // get all Rule elements of all @dictionary rules
-        return Array.prototype.concat.apply([], dictionaries
-                            .map(function(item){return item.rules; }))
+        return Array.prototype.concat.apply([], 
+                            dictionaries.map(function(item){return item.rules; }))
     }
     
     Object.defineProperty(_p, 'parameterRegistry', {
