@@ -1,0 +1,116 @@
+define([
+    'metapolator/errors'
+  , 'metapolator/models/CPS/parsing/parseSelectorList'
+
+], function(
+    errors
+  , parseSelectorList
+) {
+    "use strict";
+    var CPSError = errors.CPS;
+    
+    function AtDictionaryEntry(selector, parameters) {
+        Object.defineProperty(this, 'selector', {
+            value: selector
+          , enumerable: true
+        })
+        Object.defineProperty(this, 'parameters', {
+            get: function(){ return parameters.slice();}
+          , enumerable: true
+        })
+    }
+    
+    // matches a string in single quotes or double qoutes
+    // at the beginning of the search string that ends with optional
+    // whitespace and then a colon
+    var r_quoted_colon = /^(\'[^\']*\'|\"[^\"]*\")\s*:/
+      , r_quoted = /^(\'[^\']*\'|\"[^\"]*\")$/
+    
+    function tokenize(input) {
+        var r = /^(\'[^\']*\'|\"[^\"]*\")\s*:/
+          , match
+          , tokens = []
+          , token
+          , invalidMessage
+          , searchBase = input
+          ;
+        while(searchBase.length) {
+            // quoted string, may have whitespace after the quotes
+            // ends with a colon
+            if((match = r.exec(searchBase)) !== null) {
+                token = match[1]// match[1] excludes the colon
+                    .trim()//remove the whitespace betweeen quotes and colon
+                    .slice(1,-1)// remove the quotes
+                    .trim();
+                searchBase = searchBase.slice(match[0].length);
+            }
+            else if((match = searchBase.indexOf(':')) !== -1) {
+                token = searchBase.slice(0, match).trim();
+                searchBase = searchBase.slice(match+1);
+            } else {
+                token = searchBase.trim();
+                if(token.search(r_quoted) !== -1)
+                    token = token.slice(1,-1);
+                searchBase = '';
+            }
+            searchBase.trim();
+            if(token  === '' && searchbase.length)
+                throw new CPSError('Found an empty token in: '+parameterValue.valueString);
+            tokens.push(token);
+        }
+        if(!tokens.length)
+            throw new CPSError('Found no tokens in: '+parameterValue.valueString);
+        return tokens;
+    }
+    
+    return {
+        init: function(parameterValue, setFactoryAPI, setInvalidAPI) {
+            // parse here ... parameterValue
+            var invalidMessage
+              , selector
+              , tokens
+              , properties
+              ;
+            try {
+                tokens = tokenize(parameterValue.valueString.trim());
+            }
+            catch(error) {
+                if(!(error instanceof CPSError))
+                    throw error;
+                invalidMessage = 'Can\'t get a selector from "'
+                            + parameterValue.valueString + '" with error: '
+                            + error;
+            }
+            if(!invalidMessage) {
+                properties = tokens.slice(1);
+                try {
+                    selector = parseSelectorList.fromString(tokens[0]);
+                }
+                catch(error) {
+                    if(!(error instanceof CPSError))
+                        throw error;
+                    invalidMessage = 'Can\'t get a selector from "' + tokens[0]
+                        +'" with error: ' + error;
+                }
+            }
+            
+            // do this if the parameter is bad:
+            if(invalidMessage) {
+                setInvalidAPI(invalidMessage);
+                return;
+            }
+            //else
+            var value = parameterValue.valueString.trim();
+            setFactoryAPI(function(name, element) {
+                return new AtDictionaryEntry(selector, properties);
+            });
+        }
+        , defaultFactory: function(name, element) {
+            throw new errros.MotImplemented('There is no default value '
+                                    +'for a @dictionary reference!');
+        }
+        , is: function(value) {
+            return value instanceof AtDictionaryEntry;
+        }
+    }
+});
