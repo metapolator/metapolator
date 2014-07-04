@@ -6,7 +6,7 @@ define([
   , 'metapolator/models/CPS/elements/AtRuleCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/GenericCPSNode'
-  , 'metapolator/models/CPS/dataTypes/atDictionaryEntryFactory'
+  , 'metapolator/models/CPS/dataTypes/atDictionaryReferenceFactory'
   
 ], function (
     errors
@@ -16,7 +16,7 @@ define([
   , AtRuleCollection
   , AtRuleName
   , GenericCPSNode
-  , atDictionaryEntryFactory
+  , atDictionaryReferenceFactory
 ) {
     "use strict";
     var CPSError = errors.CPS
@@ -113,7 +113,7 @@ define([
                 +'.', (new Error).stack)
             name = node.children[0].instance;
             value = node.children[1].instance;
-            value.initializeTypeFactory(name.name, atDictionaryEntryFactory);
+            value.initializeTypeFactory(name.name, atDictionaryReferenceFactory);
             return new Parameter(name, value, source, node.lineNo);
         }
     });
