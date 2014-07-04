@@ -10,7 +10,8 @@ define([
     /**
      * StyleDict is an interface to a List of CPS.Rule elements.
      * 
-     * This is returned by the getComputedStyle function of StyleControler.
+     * This is returned by the getComputedStyle function of 
+     * metapolator/models/Controller
      */
     function StyleDict(controller, rules, element) {
         this._rules = rules;
@@ -58,19 +59,26 @@ define([
     }
     
     _p.getCPSValueAPI = function(name) {
+        var value;
         if(this._controller.parameterRegistry.exists(name))
             // the name is a registered parameter, so it always has at
             // least a default value
             return this.get(name);
         
-        // get the dictionary StyleDict for element
-        console.log('search in @dictionary');
-        
-        // this._controller.getReferenceDictionary(this._element).get(name)
-        
-        
-        throw new KeyError('Not found CPS Value "'+ name+'" for: '
-            + this._element.particulars);
+        // get the ReferenceDictionary for element
+        try {
+            value = this._controller
+                            .getReferenceDictionary(this._element)
+                            .get(name);
+            return value;
+        }
+        catch(error) {
+            if(error instanceof KeyError)
+                throw new KeyError('Not found CPS Value "'+ name+'" for: '
+                    + this._element.particulars + ' with message: '
+                    + error);
+            throw error;
+        }
     }
     
     /**
