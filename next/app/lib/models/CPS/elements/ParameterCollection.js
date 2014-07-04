@@ -21,9 +21,9 @@ define([
     function _filterAtRules(name, item) {
         return (
             item instanceof AtRuleCollection
-            && name !== undefined
+            && (name !== undefined
                             ? item.name === name
-                            : true
+                            : true)
         );
     }
     _p.getAtRules = function(name) {
