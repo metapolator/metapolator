@@ -1,24 +1,15 @@
 define([
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , './AtDictionaryReference'
 
 ], function(
     errors
   , parseSelectorList
+  , AtDictionaryReference
 ) {
     "use strict";
     var CPSError = errors.CPS;
-    
-    function AtDictionaryEntry(selector, parameters) {
-        Object.defineProperty(this, 'selector', {
-            value: selector
-          , enumerable: true
-        })
-        Object.defineProperty(this, 'parameters', {
-            get: function(){ return parameters.slice();}
-          , enumerable: true
-        })
-    }
     
     // matches a string in single quotes or double qoutes
     // at the beginning of the search string that ends with optional
@@ -102,7 +93,7 @@ define([
             //else
             var value = parameterValue.valueString.trim();
             setFactoryAPI(function(name, element) {
-                return new AtDictionaryEntry(selector, properties);
+                return new AtDictionaryReference(selector, properties);
             });
         }
         , defaultFactory: function(name, element) {
@@ -110,7 +101,7 @@ define([
                                     +'for a @dictionary reference!');
         }
         , is: function(value) {
-            return value instanceof AtDictionaryEntry;
+            return value instanceof AtDictionaryReference;
         }
     }
 });
