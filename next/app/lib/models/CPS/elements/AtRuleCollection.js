@@ -20,6 +20,11 @@ define([
     var _p = AtRuleCollection.prototype = Object.create(Parent.prototype)
     _p.constructor = AtRuleCollection;
     
+    _p.toString = function() {
+        return ['@', this._name ? this.name : 'name_not_set',
+                '{\n', this._items.join('\n\n'),'\n}'].join('') 
+    }
+    
     /**
      * Due to the way the parsing is made, name can be set after
      * initialisation but only once.
@@ -40,7 +45,7 @@ define([
       , get: function(){
             if(!this._name)
                 throw new CPSError('Name not set yet.');
-            return this._name;
+            return this._name.name;
         }
     })
     
