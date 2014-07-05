@@ -65,7 +65,7 @@ define([
         });
         
         parameterRegistry.register('height', {
-                    type: 'CompoundReal'
+                    type: 'compoundReal'
                   , description: 'the relative value of height'
         });
         
@@ -75,7 +75,7 @@ define([
         });
         
         parameterRegistry.register('width', {
-                    type: 'CompoundReal'
+                    type: 'compoundReal'
                   , description: 'the relative value of width'
         });
         
@@ -85,7 +85,7 @@ define([
         });
         
         parameterRegistry.register('zon', {
-                    type: 'CompoundVector'
+                    type: 'compoundVector'
                   , description: 'The center on curve point of a skeleton point'
         })
         parameterRegistry.register('zonIntrinsic', {

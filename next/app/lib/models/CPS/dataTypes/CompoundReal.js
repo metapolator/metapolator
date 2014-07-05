@@ -37,7 +37,7 @@ define([
     /**
      * the value of a CompoundReal is its 'intrinsic' value
      * plus the value of its components, which can be a simple algebraic
-     * expression, see CompoundRealCPSFactory and the algebra module
+     * expression, see compoundRealCPSFactory and the algebra module
      */
     Object.defineProperty(_p, 'value', {
         get: function() {

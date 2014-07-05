@@ -1,13 +1,13 @@
 define([
     'metapolator/errors'
   , './dataTypes/simpleTypes'
-  , './dataTypes/CompoundRealCPSFactory'
-  , './dataTypes/CompoundVectorCPSFactory'
+  , './dataTypes/compoundRealCPSFactory'
+  , './dataTypes/compoundVectorCPSFactory'
 ], function(
     errors
   , simpleTypes
-  , CompoundReal
-  , CompoundVector
+  , compoundReal
+  , compoundVector
 ) {
     "use strict";
     /**
@@ -28,8 +28,8 @@ define([
             string: simpleTypes.string
           , real: simpleTypes.real
           , vector: simpleTypes.vector
-          , CompoundReal: CompoundReal
-          , CompoundVector: CompoundVector
+          , compoundReal: compoundReal
+          , compoundVector: compoundVector
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
