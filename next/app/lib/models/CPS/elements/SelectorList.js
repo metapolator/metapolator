@@ -5,7 +5,7 @@ define([
 ) {
     "use strict";
     /**
-     * A list of ComplxSelectors
+     * A list of ComplexSelectors
      */
     function SelectorList(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
@@ -30,11 +30,45 @@ define([
             this._message = 'SelectorList has no selecting selector';
         }
     }
+    
+    /**
+     * A factory that creates one selectorlist from two input
+     * selectorLists
+     * 
+     * This uses the value property of the input selectorLists,
+     * so the result uses only selecting ComplexSelectors
+     * 
+     * The ComplexSelectors are combined using the descendant combinator.
+     */
+    SelectorList.multiply = function(a, b) {
+        var x=0
+          , y
+          , selectorsA = a.selectors
+          , selectorsB = b.selectors
+          , result = []
+          ;
+        for(;x<selectorsA.length;x++) {
+            y=0;
+            for(;y<selectorsB.length;y++)
+                result.push(selectorsA[x].add(selectorsB[y]));
+        }
+        return new SelectorList(result);
+    }
+    
     var _p = SelectorList.prototype = Object.create(Parent.prototype)
     _p.constructor = SelectorList;
     
+    
+    var _filterNotInvalid = function(selector) {
+        return !selector.invalid;
+    }
+    
+    var _filterSelecting = function(selector) {
+        return selector.selects;
+    }
+    
     _p.toString = function() {
-        return this._selectors.join(',\n');
+        return this._selectors.filter(_filterNotInvalid).join(',\n') || 'invalidSelectorList';
     }
     
     Object.defineProperty(_p, 'selectors', {
@@ -54,14 +88,13 @@ define([
     Object.defineProperty(_p, 'message', {
         get: function(){ return this._message;}
     });
-    
-    var _filterSelecting = function(selector) {
-        return selector.selects;
-    }
     Object.defineProperty(_p, 'value', {
         get: function(){ return this._selectors.filter(_filterSelecting); }
     });
     
+    _p.multiply = function(selectorList) {
+        return this.constructor.multiply(this, selectorList);
+    }
     
     /**
      * Add selectors to this SelectorList.
