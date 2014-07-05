@@ -5,9 +5,6 @@ define([
   , './engine'
   , './parameterFactories'
   , './atDictionaryFactories'
-  , 'metapolator/models/CPS/elements/Rule'
-  , 'metapolator/models/CPS/elements/Comment'
-  
 ], function (
     errors
   , gonzales
@@ -21,19 +18,10 @@ define([
       , parameterFactories = parameterFactoriesModule.factories
       ;
     
-    function test_switchToAtDictionary(data) {
-        return (data[0] === 'atruler'
-              && data[1] && data[1][0] === 'atkeyword'
-              && data[1][1] && data[1][1][0] === 'ident'
-              && data[1][1][1] === 'dictionary'
-        );
-    }
-    
     var factorySwitches = [
-            [test_switchToAtDictionary, atDictionaryFactories]
+            atDictionaryFactories.atDictionaryParsingSwitch
         ]
       , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
-    
       ;
     /**
      * Create a ParameterCollection from a CSS-string
