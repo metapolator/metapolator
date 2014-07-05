@@ -18,8 +18,7 @@ define([
       , r_quoted = /^(\'[^\']*\'|\"[^\"]*\")$/
     
     function tokenize(input) {
-        var r = /^(\'[^\']*\'|\"[^\"]*\")\s*:/
-          , match
+        var match
           , tokens = []
           , token
           , invalidMessage
@@ -28,7 +27,7 @@ define([
         while(searchBase.length) {
             // quoted string, may have whitespace after the quotes
             // ends with a colon
-            if((match = r.exec(searchBase)) !== null) {
+            if((match = r_quoted_colon.exec(searchBase)) !== null) {
                 token = match[1]// match[1] excludes the colon
                     .trim()//remove the whitespace betweeen quotes and colon
                     .slice(1,-1)// remove the quotes
