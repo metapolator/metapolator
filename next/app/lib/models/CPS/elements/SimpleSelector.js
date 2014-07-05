@@ -20,35 +20,33 @@ define([
      * understand it. An alien selector is not invalid, thus its SelectorList
      * is still valid.
      */
-    function SimpleSelector(element, source, lineNo) {
+    function SimpleSelector(type, name, value, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._element = element;
         this._invalid = false;
         this._alien = false;
         this._message = undefined;
+        this._value = undefined;
         
-        if(!(element instanceof GenericCPSNode))
-            throw new CPSError('Element has the wrong type: "' + element
-                                + '" should be a GenericCPSNode.')
-        this._type = this._getType();
-        if(this._type === undefined) {
+        if(!(type in this._supportedTypes)) {
             this._alien = true;
-            this._message = 'Type of SimpleSelector is unsupported: ' + element;
+            this._message = 'Type of SimpleSelector is unsupported:' + type;
         }
-        this._name = this._getName();
-        if(this._name === undefined) {
+        this._type = type;
+        
+        if(name === undefined) {
             this._invalid = true;
-            this._message = 'Name of SimpleSelector is unkown: ' + element;
+            this._message = 'Name of SimpleSelector is unkown!';
             return;
         }
+        this._name = name;
         
         if(this._type === 'pseudo-class' && this._name === 'i') {
-            this._value = this._getPseudoClassValueForIndex();
-            if(this._value === undefined) {
+            if(value === undefined || value !== value) {
                 this._invalid = true;
-                this._message = 'Can\'t get value for pseudoclass "i": ' + element;
+                this._message = 'No valid value for pseudoclass "i": ' + value;
                 return;
             }
+            this._value = value;
         }
     }
     
@@ -56,7 +54,32 @@ define([
     _p.constructor = SimpleSelector;
     
     _p.toString = function() {
-        return this._element + '';
+        switch(this.type) {
+            case 'universal':
+            case 'type':
+                return this.name;
+            case 'class':
+                return '.'+this.name;
+            case 'id':
+                return '#'+this.name;
+            case 'pseudo-element':
+                return '::'+this.name;
+            case 'pseudo-class':
+                return ':' + this.name
+                            + (this._value !== undefined
+                                    ? '('+this._value+')'
+                                    : '');
+        }
+        
+    }
+    
+    _p._supportedTypes = {
+        'universal': null
+      , 'type': null
+      , 'class': null
+      , 'id': null
+      , 'pseudo-class': null
+      , 'pseudo-element': null
     }
     
     Object.defineProperty(_p, 'invalid', {
@@ -98,65 +121,6 @@ define([
             return [a, b, c];
         }
     });
-    
-    //FIXME! move this to parsing module!
-    _p._getType = function() {
-        switch(this._element.type){
-          case 'ident':
-            if(this._element._ast[1] === '*')
-                return 'universal';
-            return 'type';
-          case 'clazz':
-            return 'class';
-          case 'shash':
-            return 'id';
-        // pseudo class is a very special case!
-          case 'pseudoc':
-            return 'pseudo-class';
-        // pseudo element is very special, too!
-          case 'pseudoe':
-            return 'pseudo-element';
-        }
-        return undefined;
-    }
-    
-    //FIXME! move this to parsing module!
-    _p._getName = function() {
-        var name = name;
-        if(typeof this._element._ast[1] === 'string') {
-            name = this._element._ast[1];
-        }
-        else if(this._element._ast[1] instanceof Array) {
-            if(this._element._ast[1][0] === 'ident')
-                name = this._element._ast[1][1];
-            else if(this._element._ast[1][0] === 'funktion'
-                    && this._element._ast[1][1] instanceof Array
-                    && this._element._ast[1][1][0] === 'ident')
-                name = this._element._ast[1][1][1];
-        }
-        if(typeof name !== 'string' && name !== undefined)
-            throw new CPSError('Can\'t find a name for SimpleSelector (' 
-                            + this._element + ')')
-        return name;
-    }
-    
-    //FIXME! move this to parsing module!
-    _p._getPseudoClassValueForIndex = function() {
-        if(this._element._ast[1][0] !== 'funktion'
-                || this._element._ast[1][2][0] !== 'functionBody')
-            return;
-        var body
-          , number
-          ;
-        body = this._element._ast[1][2].slice(1)
-            .filter(function(item) {
-                return !(item[0] in {'s':null,'comment':null});
-            })
-        if(body.length === 1 && body[0][0] === 'number')
-            number = parseInt(body[0][1], 10);
-            // if the result is NaN return undefined
-            return (number === number) ? number : undefined;
-    }
     
     return SimpleSelector;
 })
