@@ -32,7 +32,8 @@ define([
           , selectorList
           , i=0
           ;
-        rules = parserEngine(selectorFactories, [], ast, sourceName || 'selector parser');
+        rules = parserEngine(selectorFactories, [], ast
+                                    , sourceName || 'selector parser');
         rules = rules.items;
         // search the first instance of SelectorList
         // and verify that nothing else was submited.
