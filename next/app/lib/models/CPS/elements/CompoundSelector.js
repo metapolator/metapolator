@@ -30,25 +30,53 @@ define([
      * understand it. an alien selector is not invalid, thus its selectorlist
      * is still valid.
      */
-    function CompoundSelector(elements, source, lineNo) {
+    function CompoundSelector(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._elements = elements;
-        
-        var status = this._parseSelector(elements);
-        
-        this._invalid = status.invalid || false;
-        this._alien = status.alien || false;
-        this._message = status.message || undefined;
-        this._value = status.value || undefined;
+        this._alien = false;
+        this._invalid = false;
+        this._message = undefined;
         this._specificity = undefined;
+        
+        if(selectors.length === 0)
+            throw new CPSError('CompoundSelector has no SimpleSelector items');
+        
+        this._value = selectors.slice();
+        if(!(this._value[0].type in {'universal': null, 'type': null})) {
+            this._value.unshift(new SimpleSelector('universal', '*',
+                                            undefined, source, lineNo));
+            this._value[0].___implicit = true;
+        }
+        
+        var i=0
+          , selector
+          ;
+        for(;i<this._value.length;i++) {
+            selector = this._value[i];
+            if(selector.alien) {
+                this._alien = true;
+                this._message = 'Unknown selector: ' + selector.type + ' ' + selector.name;
+            }
+            if(selector.invalid) {
+                this._invalid = true;
+                this._message = 'Invalid selector: ' + selector;
+                break;
+            }
+            if(i !== 0
+                    && selector.type in {'universal': null, 'type': null}) {
+                this._invalid = true;
+                this._message = ['Type Selector and Universal selector'
+                                , 'can only be the first in a CompoundSelector'
+                                , 'but found "'+ selector +'" at position:'
+                                , (i+1)].join(' ');
+                break;
+            }
+        }
     }
     
     var _p = CompoundSelector.prototype = Object.create(Parent.prototype)
     _p.constructor = CompoundSelector;
     
     _p.toString = function() {
-        if(!this.selects)
-            return this._elements.join('');
         // don't serialize the first item if it's marked as implicit
         return (this._value[0] && this._value[0].___implicit
                     ? this._value.slice(1)
@@ -87,76 +115,6 @@ define([
             return [a, b, c];
         }
     })
-    
-    _p._getImplicitUniversalSelector = function() {
-        var ast = new GenericCPSNode(['ident', '*'])
-          , selector = new SimpleSelector(ast, this._source, this._lineNo)
-          ;
-          // mark as implicit, so we can let it out when serializing again
-          // this is not very 'clean' but very 'practical'
-          Object.defineProperty(selector, '___implicit', {value: true});
-        return selector;
-    }
-    
-    //FIXME! move this to parsing module!
-    _p._parseSelector = function(elements) {
-        var status = {
-                ivalid: false
-              , alien: false
-              , message: undefined
-              // will be set when it is valid
-              , value: undefined
-            }
-          , i = 0
-          , item
-          , selector
-          , selectors = []
-        ;
-        for(;i<elements.length;i++) {
-            item = elements[i];
-            if(!(item instanceof GenericCPSNode)) {
-                status.alien = true;
-                status.message = ['Unknown type for a simple selector:'
-                                  ,item, 'typeof:', typeof item].join(' ');
-                // no break, this can still become invalid
-                continue;
-            }
-            
-            selector = new SimpleSelector(item);
-            if(selector.alien) {
-                status.alien = true;
-                status.message = 'Unknown selector: ' + item.type + ' ' + selector;
-            }
-            if(selector.invalid) {
-                status.invalid = true;
-                status.message = 'Invalid selector: ' + selector;
-                break;
-            }
-            else if(selectors.length !== 0
-                    && selector.type in {'universal': null, 'type': null}) {
-                status.invalid = true;
-                status.message = ['Type Selector and Universal selector'
-                                , 'can only be the first in a CompoundSelector'
-                                , 'but found "'+ selector +'" at position:'
-                                , (i+1)].join(' ');
-                break;
-            }
-            else if(selectors.length === 0
-                    && !(selector.type in {'universal': null, 'type': null})) {
-                    // add the 'implicit' universal selector
-                selectors.push(this._getImplicitUniversalSelector());
-                this._hasTypeSelector = true;
-            }
-            selectors.push(selector);
-        }
-        if(selectors.length === 0) {
-            status.invalid = true;
-            status.message = 'CompoundSelector has no SimpleSelector items';
-        }
-        if(!status.alien || !status.invalid)
-            status.value = selectors;
-        return status;
-    }
     
     return CompoundSelector;
 })
