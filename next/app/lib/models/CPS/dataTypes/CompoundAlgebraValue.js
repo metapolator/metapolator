@@ -22,8 +22,8 @@ define([
      * and resolves to all sub-properties divided by a colon :
      * 
      * It is currently shared between:
-     *      CompoundRealCPSFactory
-     *  and CompoundVectorCPSFactory
+     *      compoundRealCPSFactory
+     *  and compoundVectorCPSFactory
      */
     function CompoundAlgebraValue(literal) {
         algebra.Value.apply(this, Array.prototype.slice.call(arguments));
