@@ -5,7 +5,6 @@ define([
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/AtRuleCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
-  , 'metapolator/models/CPS/elements/GenericCPSNode'
   , 'metapolator/models/CPS/dataTypes/atDictionaryReferenceFactory'
   
 ], function (
@@ -15,7 +14,6 @@ define([
   , Parameter
   , AtRuleCollection
   , AtRuleName
-  , GenericCPSNode
   , atDictionaryReferenceFactory
 ) {
     "use strict";
@@ -52,7 +50,9 @@ define([
      * like a module pattern, to not pollute the namespace with
      * temporary variables
      */
-    var atDictionaryFactories = Object.create(parameterFactories.factories);
+    var atDictionaryFactories = Object.create(parameterFactories.factories)
+      , atDictionaryParsingSwitch
+      ;
     (function(factories) {
             var k;
             for(k in factories) atDictionaryFactories[k] = factories[k];
@@ -67,16 +67,15 @@ define([
               , name
               ;
             for(;i<node.children.length; i++)
-                if(!collection
+                if(name && collection)
+                    break;
+                else if(!collection
                         && node.children[i].instance instanceof AtRuleCollection)
                     collection = node.children[i].instance;
                 else if(!name && node.children[i].instance instanceof AtRuleName)
                     name = node.children[i].instance;
-                else if(name && collection)
-                    break;
-                
             if(!collection || !name)
-                return new GenericCPSNode(node.rawData, source, node.lineNo);
+                return this['__GenericAST__'](node, source);
             collection.name = name;
             return collection;
         }
@@ -118,5 +117,18 @@ define([
         }
     });
     
-    return atDictionaryFactories;
+    function test_switchToAtDictionary(data) {
+        return (data[0] === 'atruler'
+              && data[1] && data[1][0] === 'atkeyword'
+              && data[1][1] && data[1][1][0] === 'ident'
+              && data[1][1][1] === 'dictionary'
+        );
+    }
+    
+    atDictionaryParsingSwitch = [test_switchToAtDictionary, atDictionaryFactories];
+    
+    return {
+        factories: atDictionaryFactories
+      , atDictionaryParsingSwitch: atDictionaryParsingSwitch
+    };
 })
