@@ -52,11 +52,9 @@ define([
     
     _p._getMergedDictionaries = function() {
         // get all @dictionary rules
-        var dictionaries = Array.prototype.concat.apply([], this._collections
-                .map(function(item){ return item.getAtRules('dictionary'); }))
-        // get all Rule elements of all @dictionary rules
-        return Array.prototype.concat.apply([], 
-                            dictionaries.map(function(item){return item.rules; }))
+        return Array.prototype.concat.apply([], this._collections
+                            .map(function(item){return item.dictionaryRules; }))
+        
     }
     
     Object.defineProperty(_p, 'parameterRegistry', {
@@ -81,10 +79,9 @@ define([
         if(element.multivers !== this._MOM)
             throw new CPSError('getComputedStyle with an element that is not '
                 + 'part of the multivers is not supported' + element);
-        
-        if(!this._caches.styleDicts[element.id])
-            this._caches.styleDicts[element.id] = this._getComputedStyle(element);
-        return this._caches.styleDicts[element.id];
+        if(!this._caches.styleDicts[element.nodeID])
+            this._caches.styleDicts[element.nodeID] = this._getComputedStyle(element);
+        return this._caches.styleDicts[element.nodeID];
     }
     
     _p._getReferenceDictionary = function(element) {
@@ -101,11 +98,10 @@ define([
             throw new CPSError('getReferenceDictionary with an element that is not '
                 + 'part of the multivers is not supported' + element);
         
-        if(!this._caches.referenceDicts[element.id])
-            this._caches.referenceDicts[element.id] = this._getReferenceDictionary(element);
-        return this._caches.referenceDicts[element.id];
+        if(!this._caches.referenceDicts[element.nodeID])
+            this._caches.referenceDicts[element.nodeID] = this._getReferenceDictionary(element);
+        return this._caches.referenceDicts[element.nodeID];
     }
-    
     
     _p.queryAll = function(selector, scope) {
         var i=0
