@@ -5,7 +5,12 @@ define([
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterName'
-  , 'metapolator/models/CPS/elements/ParameterValue'  
+  , 'metapolator/models/CPS/elements/ParameterValue'
+  , 'metapolator/models/CPS/elements/AtRuleName'
+  , 'metapolator/models/CPS/elements/AtNamespaceCollection'
+  , 'metapolator/models/CPS/elements/SelectorList'
+  , 'gonzales/gonzales'
+  , './parseSelectorList'
 ], function (
     errors
   , curry
@@ -14,6 +19,11 @@ define([
   , Parameter
   , ParameterName
   , ParameterValue
+  , AtRuleName
+  , AtNamespaceCollection
+  , SelectorList
+  , gonzales
+  , parseSelectorList
 ) {
     "use strict";
     var CPSError = errors.CPS;
@@ -66,6 +76,7 @@ define([
     
     // inherit from selectorFactories
     var parameterFactories = Object.create(selectorFactories);
+    
     (function(factories){
         var k;
         for(k in factories) parameterFactories[k] = factories[k];
@@ -219,7 +230,106 @@ define([
                     value.push(children[i].instance);
             return new ParameterValue(value, comments ,source, node.lineNo)
         }
+      // tinker on @namespace
+      , 'atruler': function(node, source) {
+            var name
+              , collection
+              , selectorList
+              , i=0
+              ;
+            for(;i<node.children.length; i++)
+                if(name && collection && selectorList)
+                    break;
+                else if(!collection
+                        && node.children[i].instance instanceof AtNamespaceCollection)
+                    collection = node.children[i].instance;
+                else if(!name && node.children[i].instance instanceof AtRuleName)
+                    name = node.children[i].instance;
+                else if(!selectorList && node.children[i].instance instanceof SelectorList)
+                    selectorList = node.children[i].instance
+            if ( !name
+                    // we only know @namespace here!
+                    || name.name !== 'namespace'
+                    || !collection)
+                return this['__GenericAST__'](node, source);
+            // may be undefined 
+            collection.selectorList = selectorList;
+            collection.name = name;
+            return collection;
+        }
+      , 'atkeyword': curry(genericNameFactory, AtRuleName)
+      , 'atrulerq': function(node, source) {
+            var i=0
+              , braces
+              , selectorString
+              , selectorList
+              ;
+            
+            // find 'braces'
+            for(var i=1;i<node.rawData.length;i++)
+                if(node.rawData[i][0] && node.rawData[i][0] === 'braces') {
+                    braces = node.rawData[i];
+                    break;
+                }
+            if(!braces)
+                return this['__GenericAST__'](node, source);
+            
+            // we need the quotes only to not break the gonzales parsing
+            // in selectorsString, no qotes are necessary. So we simply
+            // throw them away at this point, without checking semantics
+            // gonzales will fail with non matching quotes anyways
+            selectorString = gonzales.csspToSrc(braces)
+                // remove the braces
+                .slice(1,-1)
+                // remove quotes
+                .replace(/(\'|\")/gm, '')
+                .split(',')
+                // remove surrounding whitespace
+                .map(function(item){return item.trim();})
+                // remove empty entries
+                .filter(function(item){return !!item.length;})
+                // create a 'normalized' selectorString
+                .join(', ')
+            
+            try {
+                return parseSelectorList.fromString(selectorString);
+            }
+            catch(error) {
+                if(!(error instanceof CPSError))
+                    throw error;
+            }
+            
+            // don't return anything particular
+            return this['__GenericAST__'](node, source);
+        }
+        /***
+         * return an AtNamespaceCollection
+         * NOTE: at this moment we don't know whether or not this
+         * is the collection of AtNamespace or something made up!
+         * the aim is to eventually replace AtNamespaceCollection
+         * with an enhanced version of ParameterCollection.
+         */
+      , 'atrulers': function(node, source) {
+            var items = []
+              , i=0
+              ;
+            if(!node.children)
+                return this['__GenericAST__'](node, source);
+            for(;i<node.children.length;i++) {
+                if(node.children[i].type === '__GenericAST__'
+                                && node.children[i].instance.type === 's')
+                    continue;
+                items.push(node.children[i].instance)
+            }
+            // name, selectorList
+            return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);
+        }
+        
+        
+        
+        
     })
+    
     return {
         factories: parameterFactories
       , genericNameFactory: genericNameFactory 
