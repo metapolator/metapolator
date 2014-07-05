@@ -164,6 +164,14 @@ define([
         
         
         console.log('result ' + valueInstance.value, valueInstance._components.join('|'));
+        
+        
+        element = controller.query('master#heidi glyph#y penstroke:i(0) point:i(0)')
+        console.log('element:', element.particulars);
+        computed = controller.getComputedStyle(element)
+        valueInstance = computed.get('zon')
+        console.log('result ' + valueInstance.value, valueInstance._components.join('|'));
+        console.log(valueInstance = computed.get('value'));
     }
     
     
