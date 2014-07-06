@@ -27,7 +27,6 @@ define(
     ) {
         Parent.call(this);
         this.pen = segmentPen;
-        console.log('segmentPen', segmentPen)
         this.outputImpliedClosingLine = (outputImpliedClosingLine || false);
     }
         
