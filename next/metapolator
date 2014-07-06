@@ -36,6 +36,7 @@ requirejs([
           , 'cps-playground': 'metapolator/cps/cli'
           , 'cps-selectors': 'metapolator/cps/cli-selectors'
           , 'cps-algebra': 'metapolator/cps/cli-algebra'
+          , 'init': 'metapolator/importer/cli-init'
         }
       , commandList = Object.keys(commands)
       , help = [
