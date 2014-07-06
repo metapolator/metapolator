@@ -30,7 +30,16 @@ define([
     var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterCollection;
     
-    Object.defineProperty(_p, 'name',{
+    _p.toString = function() {
+        var result;
+        if(!this._name)
+            return this._items.join('\n\n');
+        
+        return ['@',this._name, '(', this.selectorList,')', ' {\n',
+            this._items.join('\n\n') ,'\n}'].join('')
+    }
+    
+    Object.defineProperty(_p, 'name', {
         enumerable: true
       , get: function() {
             return (this._name ? this._name.name : null);

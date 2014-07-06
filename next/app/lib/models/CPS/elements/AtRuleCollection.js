@@ -22,7 +22,7 @@ define([
     
     _p.toString = function() {
         return ['@', this._name ? this.name : 'name_not_set',
-                '{\n', this._items.join('\n\n'),'\n}'].join('') 
+                ' {\n', this._items.join('\n\n'),'\n}'].join('') 
     }
     
     /**

@@ -99,7 +99,7 @@ define([
     _p.toString = function() {
         return [this._comments.join('\n'),
                 this._comments.length ? ' ': '',
-                this.valueString].join('');
+                this.valueString.trim()].join('');
     }
     
     return ParameterValue;
