@@ -1,5 +1,5 @@
 define([
-    './Vector'
+    'metapolator/models/CPS/dataTypes/Vector'
 ], function(
     Vector
 ) {
