@@ -6,7 +6,7 @@ Below we will go top-down through the Metapolator structure and sum up the funct
 
 ## working on a project
 
-project: New, Delete, Save Version (an auto-persistence model, that records a project history and allows marking milestones/revisions)
+project: New, Delete, History (an auto-persistence model, that records a project history of each re/un-do action and allows marking milestones/revisions)
 
 github integration: actions TBD (keep it simple for designers, please)
 
