@@ -22,7 +22,7 @@ define([
     "use strict";
     
     /*constructor*/
-    function SkeletonSegmentPen() {
+    function SegmentPen() {
         this._currentContour = null;
         this.contours = [];
         
@@ -30,10 +30,11 @@ define([
     };
     
     /*inheritance*/
-    var _p = SkeletonSegmentPen.prototype = Object.create(Parent.prototype);
-    _p.constructor = SkeletonSegmentPen;
+    var _p = SegmentPen.prototype = Object.create(Parent.prototype);
+    _p.constructor = SegmentPen;
     
     _p._PointConstructor = Point;
+    
     _p._pointFactory = function(val) {
         return (val instanceof Array)
             ? new this._PointConstructor(val)
@@ -97,5 +98,5 @@ define([
         this._currentContour.commands.push(['curveTo', pt1, pt2, pt3]);
     }
     
-    return SkeletonSegmentPen
+    return SegmentPen;
 });
