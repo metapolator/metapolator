@@ -49,6 +49,7 @@ define(function() {
     makeError('Key', undefined , new errors.Error);
     makeError('CPSRegistryKey', undefined , new errors.Key);
     makeError('CPSAlgebra', undefined , new errors.CPS);
+    makeError('Project', undefined , new errors.CPS);
     
     /**
      * if expression is false errors.Assertion is thrown
