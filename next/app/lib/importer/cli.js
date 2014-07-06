@@ -18,14 +18,29 @@ define([
       ;
     argumentParser.addArgument(
         'SourceUFO'
-      , 'The path to the source UFO directory'
+      , 'The path to the source UFO directory.'
       , function(args) {
             var ufoDir = args.pop();
             if(ufoDir === undefined)
                 throw new CommandLineError('No SourceUFO argument found');
             return ufoDir;
         }
-      );
+    );
+    
+    argumentParser.addArgument(
+        'TargetMaster'
+      , 'The name of the master to import into.'
+      , function(args) {
+            var masterName = args.pop();
+            if(masterName === undefined)
+                throw new CommandLineError('No TargetMaster argument found');
+            // FIXME: very simple input validation, we'll need more I think
+            if(masterName.indexOf('/') !== -1 || masterName.indexOf('\\') !== -1)
+                throw new CommandLineError('/ and \\ are not allowed in a '
+                                        + 'Master name: ' + masterName);
+            return masterName;
+        }
+    );
     
     argumentParser.addOption(
         'glyphs'
@@ -71,12 +86,11 @@ define([
         console.log('processed arguments', args)
         console.log('processed options', options)
         
-        
         var project = new MetapolatorProject(io)
           , importer
-        
         project.load();
-        importer = new ImportController(io, project, args.SourceUFO);
+        importer = new ImportController(io, project, args.TargetMaster
+                                                        , args.SourceUFO);
         importer.import(options.glyphs);
     }
     
