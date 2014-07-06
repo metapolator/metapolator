@@ -14,11 +14,9 @@ define(
     "use strict";
     var enhance = main.enhance,
         assert = errors.assert;
+    
     /*constructor*/
     /**
-     * Take the Points from drawing to a Point Pen and create a Skeleton
-     * plus CPS Parameters from it,
-     * 
      * Based of a copy of PointToSegmentPen:
      * Adapter class that converts the PointPen protocol to the
      * (Segment)Pen protocol.
