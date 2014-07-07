@@ -6,6 +6,8 @@ define([
   , './ProjectMaster'
   , './parameters/registry'
   , './parameters/defaults'
+  , 'metapolator/models/MOM/Univers'
+  , 'metapolator/models/Controller'
 ], function(
     errors
   , obtain
@@ -14,6 +16,8 @@ define([
   , ProjectMaster
   , parameterRegistry
   , defaultParameters
+  , Univers
+  , ModelController
 ) {
     "use strict";
 
@@ -264,10 +268,14 @@ define([
     
     _p.open = function(masterName) {
         var master = this.getMaster(masterName)
-          , collections = master.loadAllCPS();
-        console.log('master', master);
-        
-        
+          , parameterCollections = master.loadCPS()
+          , momMaster = master.loadMOM()
+          , univers = new Univers()
+          ;
+        master.id = masterName;
+        univers.add(momMaster)
+        console.log('master', momMaster.particulars);
+        return new ModelController(univers, parameterCollections, parameterRegistry);
     }
     
     return MetapolatorProject;
