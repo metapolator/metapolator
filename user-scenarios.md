@@ -35,6 +35,7 @@ _Font designer creates a new font through exploration of two compatible masters 
  * for the whole font or one or more glyphs:
     * adjust any typographical aspects (parameters, or skeleton) of master 2 (see scenario 1)
  * iterate until master 2 looks and feels ‘right’ as the other ‘extreme’ of this exploration
+* optional: label the masters to note their intent (and to make it easier to revisit this work, beyond tomorrow)
 * explore the multitude of possible instances in-between the two masters
  2. evaluate from different perspectives (e.g. one glyph, some glyphs, whole font, c.f. master 1 + 2, several fonts)
     * this on-screen and/or in hardcopy (printed)
