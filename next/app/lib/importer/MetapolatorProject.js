@@ -246,7 +246,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir
+        return new ProjectMaster(this._io, this, glyphSetDir, this.cpsDir
                                 , master.cpsLocalFile, master.cpsChain);
     }
     
