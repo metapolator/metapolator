@@ -78,6 +78,8 @@ define([
         for(;i<glyphs.length;i++)
             Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
         
+        this._master.glyphSet.writeContents(false);
+        
         // a namespace for the master ...
         cps = new AtNamespaceCollection(
                 new AtRuleName('namespace', [])
@@ -153,10 +155,12 @@ define([
             
             penStrokeIndex += 1;
         }
-        for(;i<penStrokeData.length;i++)
-            Array.prototype.push.apply(
-                rules, makeCPSPointRules(penStrokeData[i], i));
         
+        
+        this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph,
+            // draw the outline to the new glif
+            drawPenStroke.bind(null, contours)
+        )
         
         return [new AtNamespaceCollection(
                     new AtRuleName('namespace', [])
@@ -165,6 +169,29 @@ define([
                 ];
     }
     
+    function drawPenStroke(contours, pen) {
+        var i=0, j, segmentType;
+        
+        for(;i<contours.length;i++) {
+            pen.beginPath()
+            // draw just the skeletom
+            for(j=0;j<contours[i].length;j++) {
+                if(j===0)
+                    // this is a non closed path
+                    segmentType = 'move';
+                else if(contours[i][j].z.in !== undefined) {
+                    segmentType = 'curve';
+                    pen.addPoint(contours[i][j].z.in.vector.valueOf())
+                }
+                else
+                    segmentType =  'line';
+                pen.addPoint(contours[i][j].z.on.vector.valueOf(), segmentType)
+                if(contours[i][j].z.ou !== undefined)
+                    pen.addPoint(contours[i][j].z.ou.vector.valueOf())
+            }
+            pen.endPath();
+        }
+    }
     
     function parameterDictFromObject(obj) {
         var items = []
