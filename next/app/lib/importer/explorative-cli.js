@@ -4,7 +4,7 @@ define([
   , 'ufojs/tools/io/staticNodeJS'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportOutlinePen'
-  , './SegmentPen'
+  , './SkeletonSegmentPen'
   , './SegmentPoint'
   , './CompoundVector'
   , './CompoundPoint'
@@ -16,7 +16,7 @@ define([
   , io
   , GlyphSet
   , ImportOutlinePen
-  , SegmentPen
+  , SkeletonSegmentPen
   , Point
   , CompoundVector
   , CompoundPoint
@@ -103,7 +103,7 @@ define([
         //      import glyph like this:
         // open glyph a from source, save to target …
         var a = sourceGlyphSet.get('a_play')
-          , segmentPen = new SegmentPen()
+          , segmentPen = new SkeletonSegmentPen()
           , pen = new ImportOutlinePen(segmentPen, true)
           ;
         
