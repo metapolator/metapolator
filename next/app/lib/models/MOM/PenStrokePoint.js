@@ -21,10 +21,19 @@ define([
      * 
      * It has three children, in order: left, center, right
      * It doesn't accept add or removal of children.
+     * 
+     * skeleton is expected to be a structure with three readable keys:
+     * {
+     *      in: Vector || undefined
+     *    , on: Vector // must be set
+     *    , out: Vector || undefined
+     * }
+     * These are the absolute coordinates of the skeleton.
+     * 
      */
-    function PenStrokePoint(vector) {
+    function PenStrokePoint(skeleton) {
         Parent.call(this);
-        this._vector = vector;
+        this._skeleton = skeleton;
         
         this.add(new PenStrokePointLeft());  // 0
         this.add(new PenStrokePointCenter());// 1
@@ -43,9 +52,13 @@ define([
         value: 'point'
     })
     
+    /**
+     * This is the on curve point of the skeleton.
+     * I thought about calling it origin, maybe.
+     */
     Object.defineProperty(_p, 'skeleton', {
         get: function() {
-            return this._vector;
+            return this._skeleton;
         }
     })
     
