@@ -1,20 +1,22 @@
 define([
     'metapolator/errors'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
-  
+  , 'metapolator/models/CPS/parsing/parseRules'
+  , './parameterRegistry'
 ], function(
     errors
   , GlyphSet
+  , parseRules
+  , parameterRegistry
 ) {
     "use strict";
 
-    function ProjectMaster(io, project, glyphSetDir, cpsDir
+    function ProjectMaster(io, project, glyphSetDir
                                             , cpsLocalFile, cpsChain) {
         
         this._io = io;
         this._project = project;
         this._glyphSetDir = glyphSetDir;
-        this._cpsDir = cpsDir;
         this._cpsLocalFile = cpsLocalFile;
         this._cpsChain = cpsChain.slice();
         
@@ -34,7 +36,23 @@ define([
     })
     
     _p.saveLocalCPS = function(cps) {
-        this._io.writeFile(false, this._cpsDir+'/'+this._cpsLocalFile, cps);
+        this._io.writeFile(false, this._project.cpsDir+'/'
+                                                +this._cpsLocalFile, cps);
+    }
+    
+    _p.loadAllCPS = function() {
+        var i = 0
+          , fileName
+          , cpsString
+          , rules = []
+          ;
+        for(;i<this._cpsChain.length;i++) {
+            fileName = this._project.cpsDir+'/'+this._cpsChain[i];
+            cpsString = this._io.readFile(false, fileName);
+            rules.push(parseRules.fromString(cpsString, this._cpsChain[i],
+                                                parameterRegistry.registry));
+        }
+        return rules;
     }
     
     return ProjectMaster;
