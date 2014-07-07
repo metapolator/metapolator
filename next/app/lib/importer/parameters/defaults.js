@@ -10,17 +10,25 @@ define([
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 ], function(
     errors
-  , Registry
+  , Source
+  , ParameterCollection
+  , Rule
+  , ParameterDict
+  , Parameter
+  , ParameterName
+  , ParameterValue
+  , parseSelectorList
 ) {
     "use strict";
     
     var items = []
       , source = new Source('(generated/default parameters)')
+      , rules = []
       ;
     
     
     function parameterDictFromObject(obj, source) {
-        var rules = []
+        var items = []
           , k
           , name
           , value
@@ -38,7 +46,7 @@ define([
         new Rule(
             parseSelectorList.fromString('point>center', source.name)
         , parameterDictFromObject({
-                on: 'parent:vector:on'
+                on: 'parent:skeleton:on'
               , in: 'on'
               , out: 'on'
             })
@@ -52,7 +60,7 @@ define([
               , out: 'parent:center:on + parent:center:out:intrinsic + on:intrinsic'
             })
         , source
-        );
+        )
     );
     return new ParameterCollection(rules, source);
 })
