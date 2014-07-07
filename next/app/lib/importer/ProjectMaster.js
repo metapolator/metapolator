@@ -2,7 +2,7 @@ define([
     'metapolator/errors'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'metapolator/models/CPS/parsing/parseRules'
-  , './parameters.registry'
+  , './parameters/registry'
 ], function(
     errors
   , GlyphSet
