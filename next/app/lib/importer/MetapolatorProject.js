@@ -4,12 +4,14 @@ define([
   , 'ufojs/plistLib/main'
   , 'ufojs/plistLib/IntObject'
   , './ProjectMaster'
+  , './parameterRegistry'
 ], function(
     errors
   , obtain
   , plistLib
   , IntObject
   , ProjectMaster
+  , parameterRegistry
 ) {
     "use strict";
 
@@ -64,7 +66,7 @@ define([
     });
     
     Object.defineProperty(_p, 'cpsDefaultFile', {
-        get: function(){ return this.cpsDir + '/default.cps'; }
+        get: function(){ return 'default.cps'; }
     });
     
     Object.defineProperty(_p, 'cpsGlobalFile', {
@@ -97,7 +99,8 @@ define([
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data))
         
         // create dir this.dataDir/cps
-        this._mkdir(false, this.cpsDir);;
+        this._mkdir(false, this.cpsDir);
+        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data))
         
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
@@ -110,11 +113,9 @@ define([
         
         // create a default.cps
         // this is the standard wiring of cps compounds etc.
-        // we need a  place where it is defined/generated
-        // probably we don't have to save it on disk, because we can
-        // generate it internally and because we don't want it to be changed
-        // to override these parameters, the global.cps file is in place.
-        // this._io.writeFile(false, this.cpsDefaultFile, this.getDefaultCPS());
+        // we include it, so it can be studied and if needed changed 
+        this._io.writeFile(false, [this.cpsDir, '/', this.cpsDefaultFile].join(''),
+                                        this.getDefaultCPS().toString());
         
         // this can be empty, all masters will use this by default
         this._io.writeFile(false, [this.cpsDir, '/', this.cpsGlobalFile].join(''),
@@ -145,7 +146,7 @@ define([
      * importer expects it.
      */
     _p._getDefaultCPS = function() {
-        throw new errors.notImplemented('getDefaultCPS is not implemented')
+        return parameterRegistry.defaultCPS;
     }
     
     _p.hasMaster = function(masterName) {
@@ -231,7 +232,7 @@ define([
         var master = {};
         this._data.masters[masterName] = master;
         master.cpsLocalFile = masterName + '.cps';
-        master.cpsChain = [/*default.cps,*/ this.cpsGlobalFile, master.cpsLocalFile];
+        master.cpsChain = [this.cpsDefaultFile, this.cpsGlobalFile, master.cpsLocalFile];
         
         // create a skeleton layer for this master
         master.skeleton = 'skeleton.' + masterName;
@@ -246,7 +247,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir, this.cpsDir
+        return new ProjectMaster(this._io, this, glyphSetDir
                                 , master.cpsLocalFile, master.cpsChain);
     }
     
@@ -257,6 +258,14 @@ define([
             this._masterCache[masterName] = this._getMaster(masterName);
         }
         return this._masterCache[masterName];
+    }
+    
+    _p.open = function(masterName) {
+        var master = this.getMaster(masterName)
+          , collections = master.loadAllCPS();
+        console.log('master', master);
+        
+        
     }
     
     return MetapolatorProject;
