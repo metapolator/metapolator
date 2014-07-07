@@ -213,6 +213,8 @@ define([
     })
     
     _p.remove = function(item) {
+        if(Object.isFrozen(this._children))
+            throw new MOMError('Removing children is not allowed in this element.');
         var i = this.find(item);
         if(i === false)
             throw new MOMError([this, 'can\'t remove', item ,'because',
@@ -223,6 +225,8 @@ define([
     }
     
     _p.add = function(item) {
+        if(Object.isFrozen(this._children))
+            throw new MOMError('Adding children is not allowed in this element.');
         if(!this.qualifiesAsChild(item))
             throw new MOMError([this, 'doesn\'t accept', item
                                         , 'as a child object.'].join(' '));
