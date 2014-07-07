@@ -2,7 +2,7 @@ define([
     'metapolator/errors'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'metapolator/models/CPS/parsing/parseRules'
-  , './parameterRegistry'
+  , './parameters.registry'
 ], function(
     errors
   , GlyphSet
@@ -50,7 +50,7 @@ define([
             fileName = this._project.cpsDir+'/'+this._cpsChain[i];
             cpsString = this._io.readFile(false, fileName);
             rules.push(parseRules.fromString(cpsString, this._cpsChain[i],
-                                                parameterRegistry.registry));
+                                                parameterRegistry));
         }
         return rules;
     }

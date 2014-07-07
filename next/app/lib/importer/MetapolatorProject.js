@@ -4,7 +4,8 @@ define([
   , 'ufojs/plistLib/main'
   , 'ufojs/plistLib/IntObject'
   , './ProjectMaster'
-  , './parameterRegistry'
+  , './parameters/registry'
+  , './parameters/defaults'
 ], function(
     errors
   , obtain
@@ -12,6 +13,7 @@ define([
   , IntObject
   , ProjectMaster
   , parameterRegistry
+  , defaultParameters
 ) {
     "use strict";
 
@@ -146,7 +148,7 @@ define([
      * importer expects it.
      */
     _p._getDefaultCPS = function() {
-        return parameterRegistry.defaultCPS;
+        return defaultParameters;
     }
     
     _p.hasMaster = function(masterName) {
