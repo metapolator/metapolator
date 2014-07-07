@@ -3,11 +3,17 @@ define([
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'metapolator/models/CPS/parsing/parseRules'
   , './parameters/registry'
+  , 'metapolator/models/MOM/Master'
+  , 'metapolator/models/MOM/Glyph'
+  , './MOMPointPen'
 ], function(
     errors
   , GlyphSet
   , parseRules
   , parameterRegistry
+  , Master
+  , Glyph
+  , MOMPointPen
 ) {
     "use strict";
 
@@ -40,7 +46,7 @@ define([
                                                 +this._cpsLocalFile, cps);
     }
     
-    _p.loadAllCPS = function() {
+    _p.loadCPS = function() {
         var i = 0
           , fileName
           , cpsString
@@ -53,6 +59,27 @@ define([
                                                 parameterRegistry));
         }
         return rules;
+    }
+    
+    _p.loadMOM = function() {
+        // create a MOM Master use this.glyphSet to create glyphs, penstrokes and points
+        var master = new Master()
+          , glyphNames = this.glyphSet.keys()
+          , glyphName
+          , ufoGlyph
+          , glyph
+          , i=0
+          ;
+        for(;i<glyphNames.length;i++) {
+            glyphName = glyphNames[i];
+            ufoGlyph = this.glyphSet.get(glyphName);
+            glyph = new Glyph();
+            glyph.id = glyphName;
+            // draw the glyph to the mom
+            ufoGlyph.drawPoints(false, new MOMPointPen(glyph))
+            master.add(glyph);
+        }
+        return master;
     }
     
     return ProjectMaster;
