@@ -16,7 +16,6 @@ define([
   , fileViewer
 ) {
     "use strict";
-    console.log('glyphInspector loading');
     //return Module
     return angular.module('glyphInspector', [fileUploader.name, fileViewer.name])
     .service('fileService',fileService)

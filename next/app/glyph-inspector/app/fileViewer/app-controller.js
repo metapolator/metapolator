@@ -21,7 +21,7 @@ define([
                 var content = localStorage.getItem(newFile);
                 this.$scope.fileName = fileService.getFilename();
                 this.$scope.selectedFileContent = content;
-                if (this.glyphSet) {
+                if ( this.glyphSet && !fileService.isNewFile() ) {
                     this.onLoadGlyphSet(newFile, this.glyphSet)
                 } else {
                     var io = new localStorageIO();
@@ -54,18 +54,18 @@ define([
           , gElement = document.createElementNS(this.svgns, 'g')
           , svgPen = new SVGPen(pathElement, glyphset)
           ;
-        svg.setAttribute('width', '100%');
-        svg.setAttribute('height', '1000px');
-        svg.setAttribute('style', 'background:#abcdef');
+        svg.setAttribute('width', '360px');
+        svg.setAttribute('height', '360px');
+        svg.setAttribute('style', 'background:transparent; margin-left:135px;');
 
-        gElement.setAttribute('transform', 'matrix(1, 0, 0, -1, 0, 800)');
+        gElement.setAttribute('transform', 'matrix(0.45, 0, 0, 0.45, 0, 20)');
+//        gElement.setAttribute('transform', 'scale(0.45, 0.45)');
         gElement.appendChild(pathElement);
         svg.appendChild(gElement);
         return svgPen;
     }
     
     _p.onLoadGlyphSet = function (newFile, glyphSet) {
-        debugger;;
         var fileName = this.$scope.fileName;
         try {
             if (newFile.indexOf(fileName+'/glyphs/') > -1) {

@@ -4,7 +4,6 @@ define([
 ], function(Zip) {
 	"use strict";
 	function FileUploaderController($scope, fileService) {
-        console.log('=================');
 		this.$scope = $scope;
 		this.$scope.name = 'fileUploader';
 		this.requiredFeaturesAvailable();
@@ -61,10 +60,7 @@ define([
 
 		if (newFile){
            this.$scope.uploaderText = "loading...";
-			zip.workerScriptsPath = '/lib/bower_components/zip/';
-			// use a DataURI to read the zip from a Blob object
 			zip.createReader(new zip.Data64URIReader(newFile), function(reader) {
-				  // get all entries from the zip
 				  reader.getEntries(function(entries) {
 					if (entries.length) {
 					 	recursiveUnzip(reader, entries);

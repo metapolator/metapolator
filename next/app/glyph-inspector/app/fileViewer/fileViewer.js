@@ -10,7 +10,6 @@ define([
   , Directive
 ) {
     "use strict";
-    console.log('fileViewer loading');
     //return Module
     return angular.module('fileViewer', [])
       .controller('fileViewerController', Controller)

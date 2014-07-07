@@ -55,6 +55,7 @@ define([
                 reader.onload = function(evt) {
                   if (checkSize(size, attrs) && isTypeValid(validMimeTypes, type)) {
                     return scope.$apply(function() {
+                      localStorage.clear();
                       scope.file = evt.target.result;
                       scope.fileName = name;
                     });

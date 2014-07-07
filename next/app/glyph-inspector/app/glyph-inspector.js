@@ -35,7 +35,6 @@ require([
 ) {
     "use strict";
     domReady(function() {
-      console.log("DOM READY")
       angular.bootstrap(document, [angularApp.name]);
     })
 });
