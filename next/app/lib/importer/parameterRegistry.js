@@ -43,5 +43,8 @@ define([
               , description: 'the intrinsic value of the zon'
     })
     
-    return parameterRegistry;
+    return {
+        registry: parameterRegistry
+      , defaultCPS: defaultCPS
+    };
 });
