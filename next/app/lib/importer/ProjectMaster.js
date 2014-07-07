@@ -8,10 +8,13 @@ define([
 ) {
     "use strict";
 
-    function ProjectMaster(io, project, glyphSetDir, cpsLocalFile, cpsChain) {
+    function ProjectMaster(io, project, glyphSetDir, cpsDir
+                                            , cpsLocalFile, cpsChain) {
+        
         this._io = io;
         this._project = project;
         this._glyphSetDir = glyphSetDir;
+        this._cpsDir = cpsDir;
         this._cpsLocalFile = cpsLocalFile;
         this._cpsChain = cpsChain.slice();
         
@@ -29,6 +32,10 @@ define([
             return this._glyphSet;
         }
     })
+    
+    _p.saveLocalCPS = function(cps) {
+        this._io.writeFile(false, this._cpsDir+'/'+this._cpsLocalFile, cps);
+    }
     
     return ProjectMaster;
 });
