@@ -23,5 +23,8 @@
     "requirejs": "~2.1.14",
     "lie": "~2.7.6",
     "immutable-complex": "~3.0.4"
+  },
+  "dependencies": {
+    "js-yaml": "~3.0.2"
   }
 }
