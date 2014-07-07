@@ -56,7 +56,7 @@ define([
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
     Object.defineProperty(_p, 'dataDir', {
-        get: function(){ return this.dirName + '/data/com.metaploator'}
+        get: function(){ return this.dirName + '/data/com.metapolator'}
     });
     
     Object.defineProperty(_p, 'projectFile', {
@@ -147,7 +147,7 @@ define([
      * return a ParameterCollection with the default CPS wireing, as the
      * importer expects it.
      */
-    _p._getDefaultCPS = function() {
+    _p.getDefaultCPS = function() {
         return defaultParameters;
     }
     
