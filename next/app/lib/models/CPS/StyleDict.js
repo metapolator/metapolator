@@ -18,6 +18,7 @@ define([
         this._element = element;
         this._controller = controller;
         this._cache = {};
+        this.CPSValueAPI = this.getCPSValue.bind(this)
     }
     
     var _p = StyleDict.prototype;
@@ -35,7 +36,7 @@ define([
             ? this._controller.parameterRegistry.getDefaultFactory(name)
             : cpsValue.factory
             ;
-        return factory(name, this._element, this.getCPSValueAPI.bind(this));
+        return factory(name, this._element, this.CPSValueAPI);
     }
     
     /**
@@ -58,12 +59,33 @@ define([
         return this._cache[name];
     }
     
-    _p.getCPSValueAPI = function(name) {
+    _p.getCPSValue = function(name) {
         var value;
         if(this._controller.parameterRegistry.exists(name))
             // the name is a registered parameter, so it always has at
             // least a default value
             return this.get(name);
+        
+        
+        // highly experimental!
+        if(name[0]!=='_') {
+            // now we can get for example parent via this api
+            // but how can we get a value from it???
+            // actually we can get anything from element ... 
+            // when it shows that this is too much power, we might have
+            // to define what's allowed here.
+            value = this._element[name];
+            if(!(typeof value in {'undefined': null, 'function': null})) {
+                if(this._element.isMOMNode(value))
+                    // when a value receives a function, it should call
+                    // it with the next token
+                    // if there is no next token, that value is invalid ...
+                    return this._controller._getComputedStyle(value).CPSValueAPI
+                // might be a lgitimate value or crap like a cosntructor, etc
+                return value;
+            }
+        }
+        value = undefined;
         
         // get the ReferenceDictionary for element
         try {

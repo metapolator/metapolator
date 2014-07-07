@@ -57,6 +57,16 @@ define([
             value = getCPSValueAPI(name);
             // dig into the returned item
             while(name = names.pop()) {
+                if(typeof value === 'function') {
+                    // expect it to be another getCPSValueAPI
+                    // Although, it could be anything! there is no real
+                    // guarding at the moment. When having an vector and
+                    // asking it for 'add', the add method of that vector
+                    // is returned ... when the concept is good, we need to
+                    // improve the input validation!
+                    value = value(name);
+                    continue;
+                }
                 try {
                     value = value[name];
                 }
