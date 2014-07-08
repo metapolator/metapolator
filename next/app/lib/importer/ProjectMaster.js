@@ -1,6 +1,5 @@
 define([
     'metapolator/errors'
-  , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'metapolator/models/CPS/parsing/parseRules'
   , './parameters/registry'
   , 'metapolator/models/MOM/Master'
@@ -8,7 +7,6 @@ define([
   , './MOMPointPen'
 ], function(
     errors
-  , GlyphSet
   , parseRules
   , parameterRegistry
   , Master
@@ -26,7 +24,7 @@ define([
         this._cpsLocalFile = cpsLocalFile;
         this._cpsChain = cpsChain.slice();
         
-        this._glyphSet;
+        this._glyphSet = undefined;
     }
     
     var _p = ProjectMaster.prototype;
@@ -35,16 +33,16 @@ define([
     Object.defineProperty(_p, 'glyphSet', {
         get: function() {
             if(!this._glyphSet)
-                this._glyphSet = GlyphSet.factory(
-                                    false, this._io, this._glyphSetDir)
+                this._glyphSet = this._project.getNewGlyphSet(
+                                            false, this._glyphSetDir);
             return this._glyphSet;
         }
-    })
+    });
     
     _p.saveLocalCPS = function(cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'
                                                 +this._cpsLocalFile, cps);
-    }
+    };
     
     _p.loadCPS = function() {
         var i = 0
@@ -59,7 +57,7 @@ define([
                                                 parameterRegistry));
         }
         return rules;
-    }
+    };
     
     _p.loadMOM = function() {
         // create a MOM Master use this.glyphSet to create glyphs, penstrokes and points
@@ -75,12 +73,13 @@ define([
             ufoGlyph = this.glyphSet.get(glyphName);
             glyph = new Glyph();
             glyph.id = glyphName;
-            // draw the glyph to the mom
-            ufoGlyph.drawPoints(false, new MOMPointPen(glyph))
+            // fetch glyph data and draw the glyph to the mom
+            ufoGlyph.drawPoints(false, new MOMPointPen(glyph));
+            glyph.setUFOData(ufoGlyph);
             master.add(glyph);
         }
         return master;
-    }
+    };
     
     return ProjectMaster;
 });
