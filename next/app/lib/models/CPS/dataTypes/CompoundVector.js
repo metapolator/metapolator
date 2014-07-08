@@ -88,17 +88,18 @@ define([
             else
                 val = stack.pop();
             // returns a Vector
-            if(!(val instanceof Vector))
-                if(typeof val.getValue === 'function')
-                    val = val.getValue(this._getCPSValueAPI);
-                else if(val instanceof this.constructor)
+            
+            if(!(val instanceof Vector) && typeof val.getValue === 'function')
+                val = val.getValue(this._getCPSValueAPI);
+            
+            if(!(val instanceof Vector) && (val instanceof this.constructor))
                     val = val.value;
+            
             // now it must be a Vector
             if(!(val instanceof Vector))
                 throw new ValueError('The components of this CompoundVector '
                                 + 'dont\'t resolve to a Vector: "'+ val
                                 +'"typeof '+  typeof val);
-            
             // add the intrinsic value
             // TODO: do we wan't to do something else than just adding it?
             result = this._value['+'](val);
@@ -115,7 +116,8 @@ define([
         return '<' + this.constructor.name
             + ' i: ' + this._value.valueOf()
             + ' v: ' + this.value.valueOf()
-            + ' with ' + this._components.length + ' components'
+            + ' with ' + this._components.length + ' components:'
+            + ' ' +  this._components.join('|')
             +'>';
     }
     
