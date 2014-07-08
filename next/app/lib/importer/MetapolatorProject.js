@@ -8,6 +8,9 @@ define([
   , './parameters/defaults'
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/Controller'
+  , 'ufojs/ufoLib/glifLib/GlyphSet'
+  , './ImportController'
+  , './ExportController'
 ], function(
     errors
   , obtain
@@ -18,6 +21,9 @@ define([
   , defaultParameters
   , Univers
   , ModelController
+  , GlyphSet
+  , ImportController
+  , ExportController
 ) {
     "use strict";
 
@@ -25,12 +31,19 @@ define([
     var fs = require.nodeRequire('fs')
         // FIXME: make this availabe for browsers, too
       , yaml = require.nodeRequire('js-yaml')
-      , metainfo = {
+      , metainfoV3 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
             // how strict robofab is on this, but unifiedfontobkect.org
             // says this is an int
           , formatVersion: new IntObject(3)
+        }
+      , metainfoV2 = {
+            creator: 'org.ufojs.lib'
+            // otherwise this ends as 'real' in the plist, I don't know
+            // how strict robofab is on this, but unifiedfontobkect.org
+            // says this is an int
+          , formatVersion: new IntObject(2)
         }
       , ProjectError = errors.Project
       , KeyError = errors.Key
@@ -41,7 +54,7 @@ define([
         this._data = {
             masters: {}
         };
-        this._masterCache = {}
+        this._masterCache = {};
         // here is a way to define a directory offset
         // this is used with _p.init after the dir was created for example
         this.dirName = dirName || '.';
@@ -55,20 +68,20 @@ define([
         if(io.pathExists(false, dirName))
             throw new ProjectError('Dir exists already: '+ dirName);
         project.init(dirName);
-    }
+    };
     
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
     Object.defineProperty(_p, 'dataDir', {
-        get: function(){ return this.dirName + '/data/com.metapolator'}
+        get: function(){ return this.dirName + '/data/com.metapolator';}
     });
     
     Object.defineProperty(_p, 'projectFile', {
-        get: function(){ return this.dataDir + '/project.yaml' }
+        get: function(){ return this.dataDir + '/project.yaml';}
     });
     
     Object.defineProperty(_p, 'cpsDir', {
-        get: function(){ return this.dataDir + '/cps' }
+        get: function(){ return this.dataDir + '/cps';}
     });
     
     Object.defineProperty(_p, 'cpsDefaultFile', {
@@ -83,7 +96,10 @@ define([
         get: function(){ return this.dirName+'/layercontents.plist'; }
     });
     
-    
+    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
+        return GlyphSet.factory(
+                    async, this._io, dirName, glyphNameFunc, UFOVersion);
+    }
     
     _p.init = function(dirName) {
         // everything synchronously right now
@@ -93,7 +109,7 @@ define([
         
         // create dirName/metainfo.plist
         this._io.writeFile(false, this.dirName+'/metainfo.plist'
-                                , plistLib.createPlistString(metainfo));
+                                , plistLib.createPlistString(metainfoV3));
         
         // create dir dirName/data
         this._mkdir(false, this.dirName+'/data');
@@ -102,11 +118,11 @@ define([
         
         // project file:
         // create     this.dataDir/project.yaml => yaml({})
-        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data))
+        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create dir this.dataDir/cps
         this._mkdir(false, this.cpsDir);
-        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data))
+        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
@@ -173,13 +189,13 @@ define([
         for(var i=0;i<layercontents.length;i++)
             if(layercontents[i][0] === name)
                 throw new ProjectError('A glyph layer with name "'+name
-                                                +'" altready exists.')
+                                                +'" already exists.');
         
         // see if there is a directory with the name layerDir already
         if(this._io.pathExists(false, layerDir))
             throw new ProjectError('Can\'t create glyph layer. A directory '
                                     +'with name "' + layerDir
-                                    +'" altready exists.');
+                                    +'" already exists.');
         // create new layer dir
         this._mkdir(false, layerDir);
         
@@ -191,9 +207,6 @@ define([
         // create empty layerDir/contents.plist
         this._io.writeFile(false, layerDir + '/contents.plist',
                                         plistLib.createPlistString({}));
-        
-        
-        
     }
     
     /**
@@ -212,11 +225,11 @@ define([
                 break;
             }
         if(!layerDir)
-            throw new KeyError('Layer named "' + name + '" not found.')
+            throw new KeyError('Layer named "' + name + '" not found.');
         if(!this._io.pathExists(false, layerDir))
             throw new KeyError('Layer directory "' + layerDir
                                 + '" does not exist, but is linked in '
-                                +'layercontents.plist.')
+                                +'layercontents.plist.');
         return layerDir;
     }
     
@@ -245,7 +258,7 @@ define([
         this._createGlyphLayer(master.skeleton);
         
         
-        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data))
+        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         return this.getMaster(masterName);
     }
@@ -272,10 +285,44 @@ define([
           , momMaster = master.loadMOM()
           , univers = new Univers()
           ;
-        master.id = masterName;
-        univers.add(momMaster)
-        console.log('master', momMaster.particulars);
+        momMaster.id = masterName;
+        univers.add(momMaster);
         return new ModelController(univers, parameterCollections, parameterRegistry);
+    }
+    
+    _p.import = function(masterName, sourceUFODir, glyphs) {
+        var importer = new ImportController(
+                                        this, masterName, sourceUFODir);
+        importer.import(glyphs);
+    }
+    
+    _p.exportInstance = function(masterName, instanceName) {
+        // returns a models/Controller
+        var model = this.open(masterName)
+          , master = model.query('master#' + masterName)
+          , dirName = instanceName + '.ufo'
+          , glyphSet
+          , exportController
+          ;
+        
+        // create a bare ufoV2 directory
+        if(this._io.pathExists(false, dirName))
+             throw new ProjectError('Can\'t create instance. A directory '
+                                    +'with name "' + dirName
+                                    +'" already exists.');
+        this._mkdir(false, dirName);
+        
+        // create dirName/metainfo.plist
+        this._io.writeFile(false, dirName+'/metainfo.plist'
+                                , plistLib.createPlistString(metainfoV3));
+        
+        this._mkdir(false,  dirName +'/glyphs');
+        
+        glyphSet = this.getNewGlyphSet(
+                                false, dirName +'/glyphs', undefined, 2);
+        
+        exportController = new ExportController(master, model, glyphSet);
+        exportController.export();
     }
     
     return MetapolatorProject;
