@@ -37,8 +37,7 @@ define([
 ) {
     "use strict";
     
-    function ImportController(io, project, masterName, sourceUFODir) {
-        this._io = io;
+    function ImportController(project, masterName, sourceUFODir) {
         this._project = project;
         this._masterName = masterName;
         
@@ -47,12 +46,9 @@ define([
         else
             this._master = this._project.createMaster(masterName);
         
-        // open the source ufo glyphs layer as UFOv2
-        this._sourceGlyphSet = GlyphSet.factory(
-            false, io,
-            [sourceUFODir, 'glyphs'].join('/'),
-            undefined, 2
-        )
+        // open the source ufo glyphs layer of an UFOv2
+        this._sourceGlyphSet  = this._project.getNewGlyphSet(
+                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2);
     }
     var _p = ImportController.prototype;
     
@@ -72,7 +68,7 @@ define([
                                     +'are missing in the source GlyphSet: '
                                     +missing.join(', '));
         }
-        console.log('importing: ...');
+        console.log('importing ...');
         for(;i<glyphs.length;i++)
             Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
         
@@ -91,8 +87,6 @@ define([
         // existing cps files, changing only the new glyphs and keeping
         // the old ones. But that ain't gonna be easy.
         this._master.saveLocalCPS(cps);
-        
-        
     }
     
     _p._readGlyphFromSource = function(glyphName) {
@@ -106,7 +100,7 @@ define([
     }
 
     _p.importGlyph = function(glyphName) {
-        console.log('> import glyph:', glyphName);
+        console.log('> importing glyph:', glyphName);
         var sourceGlyph = this._readGlyphFromSource(glyphName)
           , targetGlyph
           , contours = []
@@ -117,20 +111,20 @@ define([
           ;
         for(;i<sourceGlyph.contours.length;i++) {
             if(!sourceGlyph.contours[i].closed) {
-                console.log('skipping contour '+ i +' because it is open.');
+                console.log('    skipping contour '+ i +' because it is open.');
                 continue;
             }
             if(sourceGlyph.contours[i].commands.length < 5) {
-                console.log('skipping contour '+ i +' because it has less '
+                console.log('    skipping contour '+ i +' because it has less '
                                             +'than 4 on-curve points.');
                 continue;
             }
             if(!(sourceGlyph.contours[i].commands.length % 2)) {
-                 console.log('skipping contour '+ i +' because count of '
+                 console.log('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
             }
-            console.log('importing contour '+ i);
+            console.log('    importing contour '+ i);
              // the z points of this stroke can go directly to the skeleton glyph
             var penStrokeData = new StrokeContour(
                         sourceGlyph.contours[i].commands).getPenStroke(true);
@@ -154,15 +148,14 @@ define([
             penStrokeIndex += 1;
         }
         
-        
-        this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph,
+        this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph.data,
             // draw the outline to the new glif
             drawPenStroke.bind(null, contours)
         )
         
         return [new AtNamespaceCollection(
                     new AtRuleName('namespace', [])
-                  , parseSelectorList.fromString('glyph#'+glyphName)
+                  , parseSelectorList.fromString('glyph#'+(glyphName.replace('.', '\\.')))
                   , rules)
                 ];
     }
@@ -172,7 +165,7 @@ define([
         
         for(;i<contours.length;i++) {
             pen.beginPath()
-            // draw just the skeletom
+            // draw just the skeleton
             for(j=0;j<contours[i].length;j++) {
                 if(j===0)
                     // this is a non closed path
@@ -251,14 +244,16 @@ define([
             onIntrinsic: point.l.on.vector['-'](zon)
         }
         if(point.l.in !== undefined) {
-            left.inIntrinsic = point.l.in.vector['-'](point.l.on.vector)
-                                                ['-'](center.inIntrinsic);
+            left.inIntrinsic = point.l.in.vector['-'](zon)
+                                                ['-'](center.inIntrinsic)
+                                                ['-'](left.onIntrinsic);
             left.inDirIntrinsic = point.l.inDir['-'](point.z.inDir);
             left.inTension = point.l.inTension
         }
         if(point.l.ou !== undefined) {
-            left.outIntrinsic = point.l.ou.vector['-'](point.l.on.vector)
-                                                 ['-'](center.ouIntrinsic);
+            left.outIntrinsic = point.l.ou.vector['-'](zon)
+                                                 ['-'](center.outIntrinsic)
+                                                 ['-'](left.onIntrinsic);
             left.outDirIntrinsic = point.l.ouDir['-'](point.z.ouDir);
             left.outTension = point.l.ouTension;
         }
@@ -271,14 +266,18 @@ define([
             onIntrinsic: point.r.on.vector['-'](zon)
         }
         if(point.r.in !== undefined) {
-            right.inIntrinsic = point.r.in.vector['-'](point.r.on.vector)
-                                                ['-'](center.inIntrinsic);
+            right.inIntrinsic = point.r.in.vector['-'](zon)
+                                                 ['-'](center.inIntrinsic)
+                                                 ['-'](right.onIntrinsic);
             right.inDirIntrinsic = point.r.inDir['-'](point.z.inDir);
             right.inTension = point.r.inTension
         }
         if(point.r.ou !== undefined) {
-            right.outIntrinsic = point.r.ou.vector['-'](point.r.on.vector)
-                                                 ['-'](center.ouIntrinsic);
+            right.outIntrinsic = point.r.ou.vector['-'](zon)
+                                                  ['-'](center.outIntrinsic)
+                                                  ['-'](right.onIntrinsic);
+                                                 
+                                                 
             right.outDirIntrinsic = point.r.ouDir['-'](point.z.ouDir);
             right.outTension = point.r.ouTension;
         }
