@@ -27,7 +27,6 @@ define([
      */
     function MOMPointPen(glyph) {
         Parent.call(this)
-        console.log(glyph.particulars)
         this._glyph = glyph;
         this._contour = null
         this._lastPointData;
