@@ -20,6 +20,7 @@ define([
      */
     function Glyph() {
         Parent.call(this);
+        this._ufoData = {};
     }
     var _p = Glyph.prototype = Object.create(Parent.prototype);
     _p.constructor = Glyph;
@@ -32,6 +33,20 @@ define([
         /* this is used for CPS selectors */
         value: 'glyph'
     })
+    
+    _p.setUFOData = function(ufoGlyph) {
+        var i=0, keys = Object.keys(ufoGlyph);
+        for(;i<keys.length;i++)
+            this._ufoData[keys[i]] = ufoGlyph[keys[i]];
+    }
+    _p.getUFOData = function() {
+        // Should be immutable or a copy, but we would have to make
+        // a deep copy for this, because we don't wan't the contents to
+        // be changed without us knowing, either.
+        // Instead, we are going to invent more interfaces for UFO data
+        // for a glyph in the future.
+        return this._ufoData;
+    }
     
     _p._acceptedChildren = [_Contour];
     
