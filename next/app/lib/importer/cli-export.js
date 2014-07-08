@@ -55,10 +55,7 @@ define([
         
         var project = new MetapolatorProject(io)
         project.load();
-        // returns a models/Controller
-        project.open(args.MasterName);
-        //, args.InstanceName);
-
+        project.exportInstance(args.MasterName, args.InstanceName);
     }
     
     module = {main: main};
