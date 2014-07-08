@@ -1,6 +1,5 @@
 define([
     'metapolator/errors'
-  , 'gonzales/gonzales'
   , 'metapolator/cli/ArgumentParser'
   , 'ufojs/tools/io/staticNodeJS'
   , 'metapolator/models/CPS/parsing/parseRules'
@@ -13,7 +12,6 @@ define([
   , 'metapolator/models/CPS/Registry'
 ], function (
     errors
-  , gonzales
   , ArgumentParser
   , io
   , parseRules
@@ -172,6 +170,9 @@ define([
         valueInstance = computed.get('zon')
         console.log('result ' + valueInstance.value, valueInstance._components.join('|'));
         console.log(valueInstance = computed.get('value'));
+        
+        
+        // console.log(''+result);
     }
     
     
