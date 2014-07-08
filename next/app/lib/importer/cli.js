@@ -2,13 +2,11 @@ define([
     'metapolator/errors'
   , 'metapolator/cli/ArgumentParser'
   , 'ufojs/tools/io/staticNodeJS'
-  , './ImportController'
   , './MetapolatorProject'
   ], function (
     errors
   , ArgumentParser
   , io
-  , ImportController
   , MetapolatorProject
 ) {
     "use strict";
@@ -86,12 +84,9 @@ define([
         console.log('processed arguments', args)
         console.log('processed options', options)
         
-        var project = new MetapolatorProject(io)
-          , importer
+        var project = new MetapolatorProject(io);
         project.load();
-        importer = new ImportController(io, project, args.TargetMaster
-                                                        , args.SourceUFO);
-        importer.import(options.glyphs);
+        project.import(args.TargetMaster, args.SourceUFO, options.glyphs);
     }
     
     module = {main: main};
