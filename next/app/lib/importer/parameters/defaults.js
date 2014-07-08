@@ -58,6 +58,8 @@ define([
                   on: 'parent:center:on'
                 , in: 'parent:center:on + parent:center:in:intrinsic + on:intrinsic'
                 , out: 'parent:center:on + parent:center:out:intrinsic + on:intrinsic'
+                , inDir: 'parent:center:inDir'
+                , outDir: 'parent:center:outDir'
               })
           , source
         )
