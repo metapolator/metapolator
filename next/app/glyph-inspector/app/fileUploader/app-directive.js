@@ -10,7 +10,7 @@ define([
             if (event != null) {
               event.preventDefault();
             }
-            event.dataTransfer.effectAllowed = 'copy';
+//            event.dataTransfer.effectAllowed = 'copy';
             return false;
           };
           

@@ -22,7 +22,6 @@ define([
                 if ( this.glyphSet && !fileService.isNewFile() ) {
                     this.onLoadGlyphSet(newFile, this.glyphSet)
                 } else {
-                    debugger;;
                     var io = new localStorageIO();
                     this.glyphSet = GlyphSet.factory(false, io, this.$scope.fileName+'/glyphs');
                     this.onLoadGlyphSet(newFile, this.glyphSet);
@@ -53,11 +52,11 @@ define([
           , gElement = document.createElementNS(this.svgns, 'g')
           , svgPen = new SVGPen(pathElement, glyphset)
           ;
-        svg.setAttribute('width', '360px');
-        svg.setAttribute('height', '360px');
+        svg.setAttribute('width', '600px');
+        svg.setAttribute('height', '440px');
         svg.setAttribute('style', 'background:transparent; margin-left:135px;');
 
-        gElement.setAttribute('transform', 'matrix(0.45, 0, 0, 0.45, 0, 20)');
+        gElement.setAttribute('transform', 'matrix(0.45, 0, 0, -0.45, 0, 400)');
 //        gElement.setAttribute('transform', 'scale(0.45, 0.45)');
         gElement.appendChild(pathElement);
         svg.appendChild(gElement);
