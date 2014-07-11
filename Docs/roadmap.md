@@ -31,26 +31,26 @@ Completion Percentages are semantic, not time-based.
   fundamentals  still need to be developed there before we can start with
   the other parts.
   * ufoJS library: *(100% complete)* reading and writing glyph layers 
-  * Importer: *(45% complete)* Organize the creation of a Master (Skeleton layer and CPS)
+  * Importer: *(100% complete)* Organize the creation of a Master (Skeleton layer and CPS)
     by extracting data from UFOv2 using ufoJS import plugins.
-  * Exporter: *(15% complete)* Organize the creation of Instances by taking a Master
+  * Exporter: *(100% complete)* Organize the creation of Instances by taking a Master
     and creating outlines from it using ufoJS export plugins.
 
 * **CPS:** Initial Object-Model to process parameters. Details: [Cascading Parameter Sheets](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
   * parsing/writing: *(100% complete)* into/from our object model
-  * MOM (Metapolator Object Model)*(80% complete)*: CPS relates to objects in this tree-model
+  * MOM (Metapolator Object Model)*(100% complete)*: CPS relates to objects in this tree-model
   * Selectors and value inheritance chain: *(100% complete)*
-  * processing CPS values: *(80% complete)* @dictionary and @namespace (which makes the produced CPS a lot leaner)
+  * processing CPS values: *(100% complete)* @dictionary and @namespace (which makes the produced CPS a lot leaner)
 
 * **Modules:** the beginnings of the Plugin mechanisms. This will give us the
   inspiration needed to create a unified plugin mechanism for all parts
   of Metapolator. Included in the first Milestone:
-  * import: *(55% complete)* reading parameters from outline fonts into cps
-  * export: *(15% complete)* make metapost code to create outlines, create 
+  * import: *(100% complete)* reading parameters from outline fonts into cps
+  * export: *(90% complete -- metapost is still missing)* make metapost code to create outlines, create 
     outlines from that. Write the result into a UFO.
   * parameter definition *(100% complete)*
 
-* **Sample project:** *(15% complete)* To show how data is organized in 
+* **Sample project:** *(95% complete)* To show how data is organized in 
   Metapolator, and is fully functional (but small) so we can open and close
   projects. Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
 
