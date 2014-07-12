@@ -55,6 +55,26 @@ d. bit of a different view, here the parameter rises over a master sequences, an
 
 We have seen now how discontinuities can be built into metapolation.
 
+## vector shapes
+We spent some time on vector shapes. In general one can say that we have to achieve near-100% coverage of existing and future fonts with skeletons and parameters. Only then the future of font making will be unlocked. But there needs to be a backup for those parts that will not fit the skeleton model.
+
+Vector shapes can be seen as ornaments, glued to the main skeletons-and-parameters mass of a glyph.
+
+![](http://mmiworks.net/metapolator/shapes.jpg)
+
+**notes** (see numbers in image above):
+
+1. problem nr.1: the dot on the ‘i’ (in general: pure elliptical shapes);
+* an Ionic end-cap, with glue points (to a stroke);
+* any vector shape can be enclosed by a rectangle, which makes it parameterisable; now the glue points can steer the transformation of the vector shape, when the connected stroke changes;
+* putting it all together; a tiny (1 milliEm) overlap must be included to avoid seams at any font size.
+
+**postscript**: on the way to the airport Simon and I discussed that it must be possible to get rid of vector shapes altogether; if it can be enclosed by a bezier, why could it not have been drawn by a ‘special, thick, felt-tip pen’?
+
+I personally say: let’s get it over with with the ellipses: allow for a point skeleton that then can be stroked 360° (with aspect ratio, which can be rotated).
+
+For any arbitrary shape I say: concentrate on starving it, shrinking it down to a hairline version. That is what the skeleton should look like. Take it from there.
+
 ## raw images of the wall-of-concept
 ![](http://mmiworks.net/metapolator/photo01.jpg)
 ![](http://mmiworks.net/metapolator/photo02.jpg)
