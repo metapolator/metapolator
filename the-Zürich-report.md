@@ -79,6 +79,49 @@ I personally say: let’s get it over with with the ellipses: allow for a point 
 
 For any arbitrary shape I say: concentrate on starving it, shrinking it down to a hairline version. That is what the skeleton should look like. Take it from there.
 
+## hierarchy, hierarchy, hierarchy
+Over these two days we spent quite some time putting it all together.
+
+img
+
+There are two hierarchies in Metapolator. The first one is **the hierarchy of masters**—
+* project
+  * master
+    * glyph
+      * skeleton
+        * line
+        * point
+      * vector shape
+
+i.e. “a project consists of masters, which contain glyphs, made out of skeletons—drawn with lines between points—and vector shapes.”
+
+**Making changes means setting parameters. The natural way to make changes is at _master_ level**.<br/>This is where the speed increase that Metapolator promises is created.
+
+To make even more sweeping changes parameters can be applied at project level. Setting parameters at sub-master level is applying overrides, i.e. corrections to get the details _just right_.
+
+User will be able to multiple select _at the same hierarchy level_ and apply/change parameters. This also beyond the direct parent context of said level. Examples—
+
+* multi-select points in several glyphs of a master;
+* multi-select points in several masters;
+* multi-select skeleton parts (aka strokes) in several glyphs of a master.
+
+Based on my observation of the activity of font-making and the evaluation of font construction applications, I added the following **convenience sets**—
+
+* master sets
+* glyph sets
+* skeleton sets
+
+**notes** (see numbers in image above):
+
+1. whenever several masters get multi-selected **and** parameters get applied/changed, the masters involved get added to the list of **master sets**;
+* there is no burden for users to administrate the list of master sets, but if they want to rename a master set to denote its role, they can;
+* whenever several glyphs get multi-selected **and** parameters get applied/changed, the glyphs involved get added to the list of **glyphs sets**; again can be renamed or shown as-is;
+* whenever several skeleton parts get multi-selected **and** parameters get applied/changed, the skeleton parts involved get added to the list of **skeleton sets**.
+
+Each of the sets can be used to quickly reinstate any of the multiple selections, to apply/change parameters again.
+
+Combining, even driving, the skeleton sets with the fact that skeleton parts can be easily copy+pasted across glyphs—and maybe even dropped on a skeleton _scratchpad_ and then dropped again from the scratchpad on any glyph for quick construction—and we have a system that substitutes the component system of other applications, without the cramped condition that related parts **must** all change in unison.
+
 ## raw images of the wall-of-concept
 ![](http://mmiworks.net/metapolator/photo01.jpg)
 ![](http://mmiworks.net/metapolator/photo02.jpg)
