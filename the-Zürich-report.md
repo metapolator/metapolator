@@ -82,7 +82,7 @@ For any arbitrary shape I say: concentrate on starving it, shrinking it down to 
 ## hierarchy, hierarchy, hierarchy
 Over these two days we spent quite some time putting it all together.
 
-img
+![](http://mmiworks.net/metapolator/hierarchy.jpg)
 
 There are two hierarchies in Metapolator. The first one is **the hierarchy of masters**—
 * project
@@ -95,7 +95,7 @@ There are two hierarchies in Metapolator. The first one is **the hierarchy of ma
 
 i.e. “a project consists of masters, which contain glyphs, made out of skeletons—drawn with lines between points—and vector shapes.”
 
-**Making changes means setting parameters. The natural way to make changes is at _master_ level**.<br/>This is where the speed increase that Metapolator promises is created.
+**Making changes means setting parameters.<br/>The natural way to make changes is at _master_ level**.<br/>This is where the speed increase that Metapolator promises is created.
 
 To make even more sweeping changes parameters can be applied at project level. Setting parameters at sub-master level is applying overrides, i.e. corrections to get the details _just right_.
 
