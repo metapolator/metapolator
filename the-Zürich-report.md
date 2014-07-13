@@ -20,6 +20,10 @@ Out of 3-or-more masters a sequence can be auto-detected (all significant change
 * some crossing (and not) of 4 sequences;
 * force fields around some sequences (aka sausages) and single masters make up a design space.
 
+![](http://mmiworks.net/metapolator/tricky.jpg)
+
+In a way, too many master sequences can be automatically detected in a 9-master setup like this. 
+
 ## overrides and adjustments
 Next, we discussed ways of fine-tuning in Metapolator, Simon explained a system of overrides to manipulate parameters of a master on a more detailed level (glyph, sub-glyph). We fleshed out the operators to something simple but powerful:
 
