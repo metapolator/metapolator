@@ -122,6 +122,19 @@ Each of the sets can be used to quickly reinstate any of the multiple selections
 
 Combining, even driving, the skeleton sets with the fact that skeleton parts can be easily copy+pasted across glyphs—and maybe even dropped on a skeleton _scratchpad_ and then dropped again from the scratchpad on any glyph for quick construction—and we have a system that substitutes the component system of other applications, without the cramped condition that related parts **must** all change in unison.
 
+The second hierarchy is **the hierarchy of metapolation**—
+
+* project
+  * design space
+    * master
+    * master sequence
+    * adjustment master
+    * adjustment master sequence
+    * instance
+    * string of instances
+
+i.e. “a project consists of design spaces, which contain, and share, any number of masters, master sequences, adjustment masters and adjustment master sequences. Placed in the design spaces are instances and strings of instances.”
+
 ## raw images of the wall-of-concept
 ![](http://mmiworks.net/metapolator/photo01.jpg)
 ![](http://mmiworks.net/metapolator/photo02.jpg)
