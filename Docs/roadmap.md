@@ -17,7 +17,7 @@ Completion Percentages are semantic, not time-based.
   over about what we are doing and if we are still going in the right direction
   and learning about METAFONT from Knuth's books.
 
-1. Ignition! [July 4]
+1. Ignition! [July 11, DONE]
 ----------
 
 **Goal:** Get fundamental technology into a working state.
@@ -50,9 +50,9 @@ Completion Percentages are semantic, not time-based.
     outlines from that. Write the result into a UFO.
   * parameter definition *(100% complete)*
 
-* **Sample project:** *(95% complete)* To show how data is organized in 
+* **Sample project:** *(95% complete, upload CPS project as repo)* To show how data is organized in 
   Metapolator, and is fully functional (but small) so we can open and close
-  projects. Details: [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
+  projects. Initially described in [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format) and a [MF sample file](https://github.com/metapolator/sample_metafont_file) is uploaded as a repository.
 
 * **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
