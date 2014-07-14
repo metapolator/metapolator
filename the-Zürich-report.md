@@ -135,6 +135,82 @@ The second hierarchy is **the hierarchy of metapolation**—
 
 i.e. “a project consists of design spaces, which contain, and share, any number of masters, master sequences, adjustment masters and adjustment master sequences. Placed in the design spaces are instances and strings of instances.”
 
+## parameter gardening
+An important part of the second day was a serious look at the parameters. Every parameter was thoroughly discussed and vetted. Quite a bit of gardening was performed:
+
+![](http://mmiworks.net/metapolator/para1.jpg)
+
+New parameters and categories were created:
+
+![](http://mmiworks.net/metapolator/para2.jpg)
+
+Here are the results, organised:
+
+**glyph** parameters (generalised)—
+
+* height _(scales all vertical metrics)_
+* width
+* weight _(fka px)_
+* space _(from x=0 to start of glyph)_
+* slant
+* x-height
+* capital
+* ascender
+* descender
+* overshoot, for
+  * x-height
+  * capital
+  * ascender
+  * descender
+* serif
+  * jut _(overall horizontal size)_
+  * inner/outer _(ratio of hor. sizes)_
+  * slab _(height of rectangular part)_
+  * angle _(of the slab)_
+  * bracket _(size of curved part)_
+  * darkness _(depth of curvature)_
+
+**note**:
+
+1. x-height, capital, ascender, descender and their overshoots are part of the Latin plugin of Metapolator, they are not valid for every script.
+* serifs may needs a way to completely independently specify the inner and outer serif.
+
+**glyph** parameters (specific for each glyph)—
+
+* width _(absolute, in milliEm)_
+* point alignments _(aka point-nailing, fka penshifted)_
+
+The latter is a list of point pairs, point-x pairs and point-y pairs that stay aligned in pairs, no matter what. Examples of what can be expressed:
+
+* point1 and point3 of the glyph have equal coordinates;
+* the x of point2 and point4 of the glyph are equal;
+* the y of point4 and point5 of the glyph are equal.
+
+**point** parameters—
+
+* skeleton
+  * x
+  * y
+  * direction in
+  * direction out
+  * tension in
+  * tension out
+  * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
+* pen
+  * angle
+  * width
+  * port/starboard _(i.e. left/right width ratio, looking in the direction in which the pen moves)_
+
+**line** parameters—
+* type: straight, straight & smooth, or curved _(metafont line types)_
+
+### discussion
+We see that these parameters live at the bottom of the hierarchy of masters, whereas the aim is to work as much as possible at the top of the hierarchy. For all the glyphs, lines and points of one master these parameters will have very different values, but still need to be steered all at once, in a relative matter. **Else users are again working glyph-by-glyph**, a no-no in Metapolator. This should also sort out that above glyph width turns up both in a relative and an absolute way.
+
+![](http://mmiworks.net/metapolator/contrast.jpg)
+
+At the end we spent some time on investigating contrast, aiming to offer it through two parameters, e.g. ratio and angle.
+
 ## raw images of the wall-of-concept
 ![](http://mmiworks.net/metapolator/photo01.jpg)
 ![](http://mmiworks.net/metapolator/photo02.jpg)
