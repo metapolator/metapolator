@@ -116,6 +116,8 @@ instances from masters using Metapolator v2 technology.
 
 * UI-widgets. Almost everything of the UI should be a plugin. (We need probably some API here to persist the UI setup.)
 
+* Rounding corners plugin
+
 * Collaborate with Prototypo?
 
 
