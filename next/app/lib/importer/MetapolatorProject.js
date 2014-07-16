@@ -45,6 +45,8 @@ define([
             // says this is an int
           , formatVersion: new IntObject(2)
         }
+      , // fontforge requires a fontinfo.plist that defines unitsPerEm
+        minimalFontinfo = {unitsPerEm: new IntObject(1000)}
       , ProjectError = errors.Project
       , KeyError = errors.Key
       ;
@@ -314,7 +316,11 @@ define([
         
         // create dirName/metainfo.plist
         this._io.writeFile(false, dirName+'/metainfo.plist'
-                                , plistLib.createPlistString(metainfoV3));
+                                , plistLib.createPlistString(metainfoV2));
+        
+        // fontforge requires a fontinfo.plist that defines unitsPerEm
+        this._io.writeFile(false, dirName+'/fontinfo.plist'
+                                , plistLib.createPlistString(minimalFontinfo));
         
         this._mkdir(false,  dirName +'/glyphs');
         
