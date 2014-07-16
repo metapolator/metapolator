@@ -86,7 +86,6 @@ define([
             }
         }
         value = undefined;
-        
         // get the ReferenceDictionary for element
         try {
             value = this._controller
@@ -98,7 +97,7 @@ define([
             if(error instanceof KeyError)
                 throw new KeyError('Not found CPS Value "'+ name+'" for: '
                     + this._element.particulars + ' with message: '
-                    + error);
+                    + error, error.stack);
             throw error;
         }
     }
