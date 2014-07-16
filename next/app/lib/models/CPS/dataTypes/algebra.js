@@ -240,7 +240,7 @@ define([
             }.bind(this)
             ;
         for(;i<string.length;i++) {
-            if(string[i] === " ")
+            if(' \n'.indexOf(string[i]) !== -1)
                 flushValue();
             else if('()'.indexOf(string[i]) !== -1) {
                 flushValue();
