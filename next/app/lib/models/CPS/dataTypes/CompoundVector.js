@@ -99,7 +99,7 @@ define([
             if(!(val instanceof Vector))
                 throw new ValueError('The components of this CompoundVector '
                                 + 'dont\'t resolve to a Vector: "'+ val
-                                +'"typeof '+  typeof val);
+                                +'" typeof '+  typeof val);
             // add the intrinsic value
             // TODO: do we wan't to do something else than just adding it?
             result = this._value['+'](val);
