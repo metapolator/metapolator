@@ -19,13 +19,28 @@ define([
           , glyph
           , i=0
           , drawFunc
+          , ufoData
+          , ufoData_tmp
+          , k
           ;
         console.log('exporting ...');
         for(;i<glyphs.length;i++) {
             glyph = glyphs[i];
             console.log('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
-            this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc)
+            
+            // filter the 'lib' key because fontforge didn't like it
+            // this is a bug in fontforge.
+            ufoData_tmp = glyph.getUFOData();
+            ufoData = {}
+            for(k in ufoData_tmp)
+                if(k === 'lib')
+                    continue;
+                else
+                    ufoData[k] = ufoData_tmp[k];
+            
+                    
+            this._glyphSet.writeGlyph(false, glyph.id, ufoData, drawFunc)
         }
         this._glyphSet.writeContents(false);
     }
@@ -241,7 +256,7 @@ define([
         // keep the overhead lower. The needed parameters would of course
         // be in every job for metafont.
         glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen));
-        glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen));
+        //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen));
     }
     
     return ExportController;
