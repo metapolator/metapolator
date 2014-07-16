@@ -42,6 +42,7 @@ define([
     _p.valueOf = function() {
         return Array.prototype.slice.call(this);
     }
+    
     _p.toString = function() {
         return '<Vector ' + this.valueOf() +'>';
     }
