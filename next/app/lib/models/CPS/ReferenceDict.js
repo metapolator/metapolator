@@ -57,10 +57,9 @@ define([
           , dict
           , val
           , i = 0
-          ;
         element = this._controller.query(reference.selector);
         if(element === null)
-            throw new KeyError('No element for reference "' + reference
+            throw new KeyError('No element for reference "' + reference.selector
                 +'" found.');
         var dict = this._controller.getComputedStyle(element);
         // will raise KeyError if properties[0] is no registered parameter
