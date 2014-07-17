@@ -6,9 +6,14 @@ Below we will go top-down through the Metapolator structure and sum up the funct
 
 ## working on a project
 
-project: New, Delete, History (an auto-persistence model, that records a project history of each re/un-do action and allows marking milestones/revisions)
+project: New, Open, Close
+
+* if auto-persistence model: Duplicate, Delete, Save local, Open local
+* if file model: Save, Save As
 
 github integration: actions TBD (keep it simple for designers, please)
+
+Set/Change/Clear global point/line/glyph parameter.
 
 ### drilling down
 There are two hierarchies within a project. The first one is **the hierarchy of masters**—
@@ -38,14 +43,27 @@ i.e. “a project consists of design spaces, which contain, and share, any numbe
 Below, we will exercise these hierarchies.
 
 ## working on a master
+master: New, Import font, Duplicate, Delete, Copy from other project, Export as font, Rename, Set script(s) _(e.g. Latin, Cyrillic, Devanagari)_
+
+Set/Change/Clear parameter (for whole master or several masters).
 
 ### glyph
+glyph: New, Duplicate, Delete, Set char code, Sort, 
+
+Set/Change/Clear point/line/glyph parameter (for whole glyph or several glyphs).
 
 ### skeleton
+skeleton: New, Duplicate, Delete, Translate, Scale, Rotate
+
+Set/Change/Clear point/line/glyph parameter (for whole skeleton or several skeletons).
 
 #### line
+Set/Change/Clear line parameter (for one or more lines).
 
 #### point
+point: Add, Delete
+
+Set/Change/Clear point parameter (for one or more points).
 
 ### shape
 
