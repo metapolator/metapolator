@@ -115,6 +115,9 @@ Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, skele
 * kerning _(later)_
 * hinting _(later)_
 
+## opentype features
+ƒ— Load from font, Load definition file
+
 ## metadata
 ƒ— New, Duplicate, Duplicate from other project & Adapt (substitute font names), Delete
 
