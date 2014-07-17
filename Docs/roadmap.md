@@ -46,8 +46,7 @@ Completion Percentages are semantic, not time-based.
   inspiration needed to create a unified plugin mechanism for all parts
   of Metapolator. Included in the first Milestone:
   * import: *(100% complete)* reading parameters from outline fonts into cps
-  * export: *(90% complete -- metapost is still missing)* make metapost code to create outlines, create 
-    outlines from that. Write the result into a UFO.
+  * export: *(100% complete -- although note that metapost is still missing, but it may not be needed at all.) Write the result into a UFO.
   * parameter definition *(100% complete)*
 
 * **Sample project:** *(95% complete, upload CPS project as repo)* To show how data is organized in 
