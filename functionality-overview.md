@@ -65,9 +65,17 @@ Below, we will exercise these hierarchies.
 
 ## font families
 
+## type evaluation
+
 ## finishing
-
-
 
 ## utility
 aka the garbage can department, everything that does not fit above is gathered here.
+
+Undo (of edit steps on any data)
+Cut, Copy and Paste of—
+
+* glyph
+* skeleton
+* vector shape
+* parameter–value pair
