@@ -98,7 +98,7 @@ Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, skele
 ƒ— New, Duplicate, Delete, Span (on master sequences and stings of instances)
 
 ### instance
-ƒ— New, Delete, Set Metapolation (i.e. mix of masters), Set Name, Export as font
+ƒ— New, Delete, Set Metapolation (i.e. mix of masters), Set Name, Export as font, Promote to master
 
 ### string of instances
 ƒ— New, Duplicate, Set # instances, Set Name Scheme, Span (in design space), Adjust instance position
