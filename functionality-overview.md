@@ -13,7 +13,7 @@ project: New, Open, Close
 
 github integration: actions TBD (keep it simple for designers, please)
 
-Set/Change/Clear global point/line/glyph parameter.
+Set/Change/Clear global point/line/glyph parameter(s).
 
 ### drilling down
 There are two hierarchies within a project. The first one is **the hierarchy of masters**—
@@ -45,27 +45,36 @@ Below, we will exercise these hierarchies.
 ## working on a master
 master: New, Import font, Duplicate, Delete, Copy from other project, Export as font, Rename, Set script(s) _(e.g. Latin, Cyrillic, Devanagari)_
 
-Set/Change/Clear parameter (for whole master or several masters).
+Set/Change/Clear parameter(s) (for whole master or several masters).
 
 ### glyph
 glyph: New, Duplicate, Delete, Set char code, Sort
 
-Set/Change/Clear point/line/glyph parameter (for whole glyph or several glyphs).
+Set/Change/Clear point/line/glyph parameter(s) (for whole glyph or several glyphs).
 
 ### skeleton
 skeleton: New, Duplicate, Delete, Translate, Scale, Rotate
 
-Set/Change/Clear point/line/glyph parameter (for whole skeleton or several skeletons).
+Set/Change/Clear point/line/glyph parameter(s) (for whole skeleton or several skeletons).
 
 #### line
-Set/Change/Clear line parameter (for one or more lines).
+Set/Change/Clear line parameter(s) (for one or more lines).
 
 #### point
 point: Add, Delete
 
-Set/Change/Clear point parameter (for one or more points).
+Set/Change/Clear point parameter(s) (for one or more points).
+
+**note**: position of a point and bezier-type controllers are part of its parameters.
 
 ### vector shape
+vector shape: Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete, Translate, Scale, Rotate
+
+### parameters
+
+* glyph: 20+
+* line: one for now: type;
+* point: 10+, coordinate pair, 4 are bezier-type controllers, 3 control the pen.
 
 ## working in a design space
 
@@ -96,4 +105,4 @@ Cut, Copy and Paste of—
 * glyph
 * skeleton
 * vector shape
-* parameter–value pair
+* parameter+value pair
