@@ -61,45 +61,7 @@ Completion Percentages are semantic, not time-based.
 2. Useful Code [August 1]
 ----------------------
 
-**Goal:** Get fundamental Application Technology into a working state.
-
-**Scope:** This milestone does not include a real UI, but enough working
-code that someone adept with a text editor and Metapolator concepts can
-generate a 'super family' of weight and width variants.
-
-**Complete When:** Our developers can create font 
-instances from masters using Metapolator v2 technology. 
-
-* Some of the technologies from the first Milestone will mature in this phase. 
-
-* The plugin mechanism will need a robust interface definition. Tasks done 
-  via plugins include:
-  * parameter import (from outline sources)
-  * creating metafont code tied to specific parameters or even more general
-    metafont preprocessing/metafont templates tasks.
-  * ... to be continued
-  
-  Tasks:
-  
-  * **Plugin API**: How to create plugins for these tasks should be solved in this phase.
-  * **First Plugins**:
-    * width
-    * weight
-
-* **Application Model**: We need an object model that reflects the different 
-  things we can do with metapolator. Important for example is the interpolation 
-  topic. We need to know how interpolation is going to be controlled to 
-  know what kind of data needs to be stored. With more experience we'll
-  eventually come up with a more general model.
-  * Data Model
-  * Basic Interfaces
-
-* **Broker API**: The UI will talk to the "core" via a Broker. I.e. the 
-  Application Model will provide an API via the Broker to the Application.
-  This architecture will enable us later to build a multiuser system by 
-  using a different Broker implementation.
-  Details: [concepts](https://github.com/metapolator/metapolator/wiki/concepts)
-  * Broker API
+[moved to a google doc](https://docs.google.com/document/d/15zZFMTjcUlW0_fN37_cE5dinnnazjbGMrJHNArhFCUo/edit#heading=h.41fvagdjd8j8)
 
 3. Initial UI [September 1]
 ----------------------
