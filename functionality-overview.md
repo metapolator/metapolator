@@ -43,7 +43,7 @@ i.e. “a project consists of design spaces, which contain, and share, any numbe
 Below, we will exercise these hierarchies.
 
 ## working on a master
-master: New, Import font, Duplicate, Delete, Copy from other project, Export as font, Rename, Set script(s) _(e.g. Latin, Cyrillic, Devanagari)_
+master: New, Import font, Duplicate, Delete, Copy from other project, Export as font, Set Name, Set Script(s) _(e.g. Latin, Cyrillic, Devanagari)_
 
 Set/Change/Clear parameter(s) (for whole master or several masters).
 
@@ -72,23 +72,35 @@ vector shape: Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete, T
 
 ### parameters
 
-See also [here](https://github.com/metapolator/metapolator/wiki/the-Zürich-report#parameter-gardening).
+See also: the Zürich [report section](https://github.com/metapolator/metapolator/wiki/the-Zürich-report#parameter-gardening).
 
 * glyph: 20+
 * line: one for now: type;
 * point: 10+, coordinate pair, 4 are bezier-type controllers, 3 control the pen.
 
+Parameters can be set using operators: scale, offset, absolute, minimum, maximum.
+
 ## working in a design space
+design space: New, Duplicate, Delete, Set Name
 
 ### master
+master: Add, Remove, Set Position (in design space)
 
 ### master sequence
+master sequence: Create from Masters, Delete, Add master, Remove Master, Sort
 
 ### adjustment master
+adjustment master: New, Duplicate, Delete, Set Name, Set Position
+
+Set/Change/Clear adjustment parameter(s), at master, glyph, skeleton, line, point and/or vector shape level.
+
+**note**: an adjustment master can appear anywhere in a design space and anywhere on adjustment master sequences.
 
 ### adjustment master sequence
+New, Delete, Place (on master sequences and stings of instances)
 
 ### instance
+
 
 ### string of instances
 
