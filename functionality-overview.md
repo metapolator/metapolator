@@ -97,12 +97,13 @@ Set/Change/Clear adjustment parameter(s), at master, glyph, skeleton, line, poin
 **note**: an adjustment master can appear anywhere in a design space and anywhere on adjustment master sequences.
 
 ### adjustment master sequence
-New, Delete, Place (on master sequences and stings of instances)
+New, Duplicate, Delete, Span (on master sequences and stings of instances)
 
 ### instance
-
+New, Delete, Set Metapolation (i.e. mix of masters), Set Name, Export as font
 
 ### string of instances
+New, Duplicate, Set # instances, Set Name Scheme, Span (in design space), Adjust instance position
 
 ## font families
 
@@ -112,6 +113,8 @@ New, Delete, Place (on master sequences and stings of instances)
 
 * kerning _(later)_
 * hinting _(later)_
+
+## meta data
 
 ## utility
 aka the garbage can department, everything that does not fit above is gathered here.
