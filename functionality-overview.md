@@ -104,7 +104,7 @@ Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, skele
 ƒ— New, Duplicate, Set # instances, Set Name Scheme, Span (in design space), Adjust instance position
 
 ## font families
-ƒ— New, Delete, Map instances and strings of instances, Map meta data, Export
+ƒ— New, Delete, Map instances and strings of instances, Map metadata, Export
 
 ## type design evaluation
 ƒ— Set length (few glyphs–paragraphs, Set Size, Set characters of interest, Set Mix (generic text vs. chars of interest), Print Evaluation Kit
@@ -115,8 +115,10 @@ Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, skele
 * kerning _(later)_
 * hinting _(later)_
 
-## meta data
+## metadata
 ƒ— New, Duplicate, Duplicate from other project & Adapt (substitute font names), Delete
+
+**note**: metadata is also mapped when single fonts are exported (from masters or instances).
 
 ## utility
 aka the garbage can department, everything that does not fit above is gathered here.
