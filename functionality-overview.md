@@ -5,15 +5,14 @@ The functionality overview serves as a checklist for the design process—and th
 Below we will go top-down through the Metapolator structure and sum up the functionality that shall be included. Quite a few things will be marked with ‘_(later)_’, meaning it is not scheduled for the october 2014 release.
 
 ## working on a project
-
-project: New, Open, Close
+ƒ— New, Open, Close, Set Name
 
 * if auto-persistence model: Duplicate, Delete, Save local, Open local
 * if file model: Save, Save As
 
 github integration: actions TBD (keep it simple for designers, please)
 
-Set/Change/Clear global point/line/glyph parameter(s).
+Set/Change/Clear global point/line/glyph [parameter(s)](#parameters).
 
 ### drilling down
 There are two hierarchies within a project. The first one is **the hierarchy of masters**—
@@ -43,86 +42,90 @@ i.e. “a project consists of design spaces, which contain, and share, any numbe
 Below, we will exercise these hierarchies.
 
 ## working on a master
-master: New, Import font, Duplicate, Delete, Copy from other project, Export as font, Set Name, Set Script(s) _(e.g. Latin, Cyrillic, Devanagari)_
+ƒ— New, Import font, Duplicate, Delete, Copy from other project, Export as font, Set Name, Set Script(s) _(e.g. Latin, Cyrillic, Devanagari)_
 
-Set/Change/Clear parameter(s) (for whole master or several masters).
+Set/Change/Clear [parameter(s)](#parameters) (for whole master or several masters).
 
 ### glyph
-glyph: New, Duplicate, Delete, Set char code, Sort
+ƒ— New, Duplicate, Delete, Set char code, Sort
 
-Set/Change/Clear point/line/glyph parameter(s) (for whole glyph or several glyphs).
+Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole glyph or several glyphs).
 
 ### skeleton
-skeleton: New, Duplicate, Delete, Translate, Scale, Rotate
+ƒ— New, Duplicate, Delete, Translate, Scale, Rotate
 
-Set/Change/Clear point/line/glyph parameter(s) (for whole skeleton or several skeletons).
+Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole skeleton or several skeletons).
 
 #### line
-Set/Change/Clear line parameter(s) (for one or more lines).
+Set/Change/Clear line [parameter(s)](#parameters) (for one or more lines).
 
 #### point
-point: Add, Delete
+ƒ— Add, Delete
 
-Set/Change/Clear point parameter(s) (for one or more points).
+Set/Change/Clear point [parameter(s)](#parameters) (for one or more points).
 
 **note**: position of a point and bezier-type controllers are part of its parameters.
 
 ### vector shape
-vector shape: Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete, Translate, Scale, Rotate
+ƒ— Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete, Translate, Scale, Rotate
 
 ### parameters
-
-See also: the Zürich [report section](https://github.com/metapolator/metapolator/wiki/the-Zürich-report#parameter-gardening).
+See also this Zürich [report section](https://github.com/metapolator/metapolator/wiki/the-Zürich-report#parameter-gardening).
 
 * glyph: 20+
 * line: one for now: type;
 * point: 10+, coordinate pair, 4 are bezier-type controllers, 3 control the pen.
 
-Parameters can be set using operators: scale, offset, absolute, minimum, maximum.
+Parameters can be set using operators: scale, offset, hardwire, minimum, maximum.
 
 ## working in a design space
-design space: New, Duplicate, Delete, Set Name
+ƒ— New, Duplicate, Delete, Set Name
 
 ### master
-master: Add, Remove, Set Position (in design space)
+ƒ— Add, Remove, Set Position (in design space)
 
 ### master sequence
-master sequence: Create from Masters, Delete, Add master, Remove Master, Sort
+ƒ— Create from Masters, Delete, Add master, Remove Master, Sort
 
 ### adjustment master
-adjustment master: New, Duplicate, Delete, Set Name, Set Position
+ƒ— New, Duplicate, Delete, Set Name, Set Position
 
-Set/Change/Clear adjustment parameter(s), at master, glyph, skeleton, line, point and/or vector shape level.
+Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, skeleton, line, point and/or vector shape level.
 
 **note**: an adjustment master can appear anywhere in a design space and anywhere on adjustment master sequences.
 
 ### adjustment master sequence
-adjustment master sequence: New, Duplicate, Delete, Span (on master sequences and stings of instances)
+ƒ— New, Duplicate, Delete, Span (on master sequences and stings of instances)
 
 ### instance
-instance: New, Delete, Set Metapolation (i.e. mix of masters), Set Name, Export as font
+ƒ— New, Delete, Set Metapolation (i.e. mix of masters), Set Name, Export as font
 
 ### string of instances
-string of instances: New, Duplicate, Set # instances, Set Name Scheme, Span (in design space), Adjust instance position
+ƒ— New, Duplicate, Set # instances, Set Name Scheme, Span (in design space), Adjust instance position
 
 ## font families
+ƒ— New, Delete, Map instances and strings of instances, Map meta data, Export
 
 ## type design evaluation
+ƒ— Set length (few glyphs–paragraphs, Set Size, Set characters of interest, Set Mix (generic text vs. chars of interest), Print Evaluation Kit
+
+**for**: masters, master sequences, adjustment masters, adjustment master sequences, instances, strings of instances—and combinations of these.
 
 ## finishing
-
 * kerning _(later)_
 * hinting _(later)_
 
 ## meta data
+ƒ— New, Duplicate, Duplicate from other project & Adapt (substitute font names), Delete
 
 ## utility
 aka the garbage can department, everything that does not fit above is gathered here.
 
 Undo (of edit steps on any data)
+
 Cut, Copy and Paste of—
 
-* glyph
-* skeleton
-* vector shape
-* parameter+value pair
+* glyphs
+* skeletons
+* vector shapes
+* parameter+value pairs
