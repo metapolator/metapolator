@@ -132,5 +132,6 @@ Cut, Copy and Paste of—
 
 * glyphs
 * skeletons
+* points (with lines)
 * vector shapes
 * parameter+value pairs
