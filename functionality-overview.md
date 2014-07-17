@@ -48,7 +48,7 @@ master: New, Import font, Duplicate, Delete, Copy from other project, Export as 
 Set/Change/Clear parameter (for whole master or several masters).
 
 ### glyph
-glyph: New, Duplicate, Delete, Set char code, Sort, 
+glyph: New, Duplicate, Delete, Set char code, Sort
 
 Set/Change/Clear point/line/glyph parameter (for whole glyph or several glyphs).
 
@@ -65,9 +65,9 @@ point: Add, Delete
 
 Set/Change/Clear point parameter (for one or more points).
 
-### shape
+### vector shape
 
-## working on a design space
+## working in a design space
 
 ### master
 
