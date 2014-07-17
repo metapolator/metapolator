@@ -72,6 +72,8 @@ vector shape: Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete, T
 
 ### parameters
 
+See also [here](https://github.com/metapolator/metapolator/wiki/the-Zürich-report#parameter-gardening).
+
 * glyph: 20+
 * line: one for now: type;
 * point: 10+, coordinate pair, 4 are bezier-type controllers, 3 control the pen.
@@ -92,9 +94,12 @@ vector shape: Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete, T
 
 ## font families
 
-## type evaluation
+## type design evaluation
 
 ## finishing
+
+* kerning _(later)_
+* hinting _(later)_
 
 ## utility
 aka the garbage can department, everything that does not fit above is gathered here.
