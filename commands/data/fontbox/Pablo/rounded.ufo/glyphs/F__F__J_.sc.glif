@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="F_F_J.sc" format="1">
-  <advance width="1130"/>
-  <outline>
-    <component base="F.sc" xOffset="1"/>
-    <component base="F.sc" xOffset="444"/>
-    <component base="J.sc" xOffset="896"/>
-  </outline>
-</glyph>

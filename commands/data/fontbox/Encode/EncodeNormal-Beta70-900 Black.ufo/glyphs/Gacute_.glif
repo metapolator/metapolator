@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="Gacute" format="1">
-  <advance width="727"/>
-  <unicode hex="01F4"/>
-  <outline>
-    <component base="acute.cap" xOffset="269"/>
-    <component base="G"/>
-  </outline>
-</glyph>

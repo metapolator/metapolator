@@ -1,6 +1,6 @@
-[submodule "next/app/lib/ufoJS"]
-	path = next/app/lib/ufoJS
+[submodule "app/lib/ufoJS"]
+	path = app/lib/ufoJS
 	url = git@github.com:graphicore/ufoJS.git
-[submodule "next/app/lib/obtainJS"]
-	path = next/app/lib/obtainJS
+[submodule "app/lib/obtainJS"]
+	path = app/lib/obtainJS
 	url = git@github.com:graphicore/obtainJS.git
