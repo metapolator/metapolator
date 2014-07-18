@@ -17,3 +17,9 @@ Misc
 * [Terminology](https://github.com/metapolator/metapolator/wiki/Terminology)
 * [Version 1](https://github.com/metapolator/metapolator/wiki/v1)
   * [Step by Step Guide](https://docs.google.com/document/d/1fiYpDxoBaiymMjzxptRZr6HkDaF3QqdEZuq_Vdz2JjU/edit)
+
+Conferences
+* [Libre Graphics Meeting, Liepzig, Germany](http://libregraphicsmeeting.org/2014)
+* [Automatic Type Design, ANRT, Nancy, France](http://automatic-type-design.anrt-nancy.fr/index_en.php)
+* [Tag Der Schrift, Zurich, Switzerland](http://www.tagderschrift.org/) - [photos](https://plus.google.com/100858309774292261525/posts/aj477TvM2kr)
+* [TUG 2014, Portland, USA](http://tug.org/tug2014/)
