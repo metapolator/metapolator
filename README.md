@@ -24,11 +24,13 @@ We are actively documenting our project on our wiki, <https://github.com/metapol
   * [Concepts](https://github.com/metapolator/metapolator/wiki/roadmap)
   * [Roadmap](https://github.com/metapolator/metapolator/wiki/roadmap)
 
+Our community is built around [Google+](https://plus.google.com/communities/110027004108709154749)
+
 ### License
 
 This project is licensed under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html) and your contributions are welcome via Github at <https://github.com/metapolator/metapolator>
 
-## Thanks
+### Thanks
 
 Core Development Team: Simon Egli (CH), Lasse Fister (DE), Alex Troush (UA), Reuben Thomas (UK), Dr Ben Martin (AU)
 
@@ -36,9 +38,9 @@ Contributors: Walter Egli (CH), Vitaly Volkov (UA), Nicolas Pauly (FR), Wei Huan
 
 Thanks to [metaflop](http://www.metaflop.com) for inspiration and Dave Crossland for initiating this project!
 
-## Related Projects
+### Related Projects
 
-### For Users
+#### For Users
 
 * http://metaflop.com libre parametric font editor web app
 * http://prototypo.io libre parametric font editor web app
@@ -50,7 +52,7 @@ Thanks to [metaflop](http://www.metaflop.com) for inspiration and Dave Crossland
 * http://popcornjs.org video editor web app
 * http://plucked.de audio editor web app
 
-### For Developers
+#### For Developers
 
 * http://en.wikipedia.org/wiki/MetaFont parametric font system
 * http://en.wikipedia.org/wiki/MetaPost parametric drawing system
