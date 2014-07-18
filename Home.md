@@ -1,4 +1,4 @@
-* [Interaction Design](https://github.com/metapolator/metapolator/wiki/interaction-design)
+[Interaction Design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
 Software Development
 * [Concepts](https://github.com/metapolator/metapolator/wiki/concepts)
