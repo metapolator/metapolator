@@ -1,0 +1,18 @@
+markdown: rdiscount
+pygments: true
+permalink: /posts/:title
+auto: true
+rdiscount:
+  extensions: [smart]
+title : Metapolator
+production_url : http://metapolator.com
+description: "Web based parametric font editor"
+# disqus_shortname: metapolator_blog
+# analytics: UA-12312312-3
+# gauges: 50f2b533613f5d7c8000000d
+author :
+  name : Metapolator
+  github : metapolator
+  twitter : metapolator
+  email: simon.egli+metapolator@gmail.com
+  googlepluscommunity: https://plus.google.com/communities/110027004108709154749

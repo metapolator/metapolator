@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="ellipsis" format="1">
+  <advance width="1755"/>
+  <unicode hex="2026"/>
+  <outline>
+    <contour>
+      <point x="269" y="130" type="line"/>
+      <point x="183" y="130" type="line"/>
+      <point x="183" y="0" type="line"/>
+      <point x="269" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="653" y="130" type="line"/>
+      <point x="567" y="130" type="line"/>
+      <point x="567" y="0" type="line"/>
+      <point x="653" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="1022" y="130" type="line"/>
+      <point x="936" y="130" type="line"/>
+      <point x="936" y="0" type="line"/>
+      <point x="1022" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

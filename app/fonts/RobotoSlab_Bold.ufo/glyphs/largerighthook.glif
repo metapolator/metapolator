@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="largerighthook" format="1">
+  <advance width="1061"/>
+  <outline>
+    <contour>
+      <point x="67" y="577" type="line"/>
+      <point x="378" y="577" type="line" smooth="yes"/>
+      <point x="555" y="577"/>
+      <point x="661" y="468"/>
+      <point x="660" y="226" type="curve" smooth="yes"/>
+      <point x="659" y="122"/>
+      <point x="644" y="-115"/>
+      <point x="414" y="-115" type="curve"/>
+      <point x="414" y="-360" type="line"/>
+      <point x="851" y="-360"/>
+      <point x="982" y="-17"/>
+      <point x="982" y="246" type="curve" smooth="yes"/>
+      <point x="982" y="654"/>
+      <point x="733" y="837"/>
+      <point x="378" y="837" type="curve" smooth="yes"/>
+      <point x="67" y="837" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

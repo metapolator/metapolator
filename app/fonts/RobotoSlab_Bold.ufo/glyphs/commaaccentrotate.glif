@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="commaaccentrotate" format="1">
+  <advance width="516"/>
+  <outline>
+    <contour>
+      <point x="129" y="1074" type="line"/>
+      <point x="380" y="1074" type="line"/>
+      <point x="380" y="1254" type="line"/>
+      <point x="421" y="1529" type="line"/>
+      <point x="241" y="1529" type="line"/>
+      <point x="129" y="1264" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
