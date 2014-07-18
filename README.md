@@ -33,7 +33,7 @@ Core Development Team: Simon Egli (CH), Lasse Fister (DE), Alex Troush (UA), Reu
 
 Contributors: Walter Egli (CH), Vitaly Volkov (UA), Nicolas Pauly (FR), Wei Huang (AU), you (anywhere)?
 
-Thanks to [metaflop](http://www.metaflop.com) for inspiration and Dave Crossland for initiating this project!
+Thanks to [metaflop](http://www.metaflop.com) for inspiration and Simon Egli for initiating this project!
 
 ## Related Projects
 
