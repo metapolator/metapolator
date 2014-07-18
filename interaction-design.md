@@ -30,7 +30,7 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 
 ## Expert Evaluation
 
-Notes of interest of the evaluation of earlier Metapolator prototypes 
+Notes of interest of the evaluation of earlier Metapolator prototypes. using the user scenarios as a guide and the functionality overview as a checklist, a review of how earlier Metapolator UIs realised the product vision. From this, a report with the good, the bad and and the ugly of the previous UIs, followed by further analysis and the start of actual design processes.
 
 _(This has been undertaken, but not yet written up)_
 
