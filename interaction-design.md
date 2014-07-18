@@ -28,6 +28,7 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 ## Expert Evaluation
 
 * [The Zürich Report](https://github.com/metapolator/metapolator/wiki/the-Z%C3%BCrich-report)
+  * [Eben Sorkin Comments](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)
 
 (More has been undertaken, but not yet written up)
 
