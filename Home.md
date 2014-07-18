@@ -1,4 +1,4 @@
-_This wiki is for the development of documents used by the Metapolator team. End-user documentation will eventually be published on the [metapolator.com](metapolator.com) homepage (which has [source](https://github.com/metapolator/metapolator/tree/gh-pages) hosted on Github, so has some wikiness)_
+_This a developer documentation wiki. End User documentation will eventually be published on the [metapolator.com](metapolator.com) homepage (which has [source](https://github.com/metapolator/metapolator/tree/gh-pages) hosted on Github, so has some wikiness)_
 
 Interaction Design
 * [Product Phase](https://github.com/metapolator/metapolator/wiki/interaction-design)
