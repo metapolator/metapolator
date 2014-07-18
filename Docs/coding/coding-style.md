@@ -1,5 +1,5 @@
-Classical Inheritance
-=====================
+## Classical Inheritance
+
 This is the definitve guide how class like structures should be written
 in Metapolator. A lot of people don't learn to do this in JavaScript. I even heard that 
 here is no such thing like inheritance at all in Javascript.
