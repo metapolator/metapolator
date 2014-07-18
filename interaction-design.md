@@ -27,7 +27,9 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 
 ## Expert Evaluation
 
-(This has been undertaken, but not yet written up)
+* [The Zürich Report](https://github.com/metapolator/metapolator/wiki/the-Z%C3%BCrich-report)
+
+(More has been undertaken, but not yet written up)
 
 # [The Design Phase](http://mmiworks.net/wedo/design.html)
 
