@@ -17,14 +17,16 @@
     "intern": "~1.6.2",
     "gulp-require-convert": "0.0.1",
     "gulp": "~3.6.2",
-    "gonzales": "~1.0.7",
     "gulp-replace": "~0.3.0",
-    "gulp-insert": "~0.3.0",
-    "requirejs": "~2.1.14",
-    "lie": "~2.7.6",
-    "immutable-complex": "~3.0.4"
+    "gulp-insert": "~0.3.0"
   },
   "dependencies": {
-    "js-yaml": "~3.0.2"
+    "js-yaml": "~3.0.2",
+    "jsdom": "~0.10.5",
+    "libxmljs": "~0.9.0",
+    "requirejs": "~2.1.14",
+    "lie": "~2.7.6",
+    "immutable-complex": "~3.0.4",
+    "gonzales": "~1.0.7"
   }
 }
