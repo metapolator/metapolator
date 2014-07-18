@@ -1,5 +1,5 @@
-Metapolator Concept
-===================
+Metapolator Concepts
+====================
 
 The first drafts on how *Metapolator neue* works.
 
@@ -16,7 +16,8 @@ function of the outline.
 
 ### Skeleton
 
-When importing a font from outlines, we create an initial skeleton using
+When [importing a font from outlines](https://github.com/metapolator/metapolator/wiki/outline-import), 
+we create an initial skeleton using
 the "Center Line". However, the skeleton and the parameters can be changed
 in several ways and a new outline will be created from that. The new
 outline will have a new middle line. The new middle line can differ from
@@ -133,7 +134,7 @@ in the following list. Where the latter entries override the earlier:
   parameter default value.
 * **global.cps** empty when starting a new project.
 * **local.cps** Each master has one of these, this is filled the first time
-  by the Importer. The selectors from the importer are as short/unspecific as 
+  by the [Importer](https://github.com/metapolator/metapolator/wiki/outline-import). The selectors from the importer are as short/unspecific as 
   possible, so it should be possible to override values from global.cps.*(Does 
   this make sense? Or should we have a 3. local-1.cps 4. global.cps 5. local-2.cps
   structure, where local-1.cps would hold the values of the importer?)*
@@ -261,7 +262,7 @@ A: Plugins bring them in and a whole bunch of of other stuff, some things are op
        glyph {
           x-height: calc(12% + 2u)
        }
- * Importer rules, I did not think much of this yet, but, to be able to
+ * [Importer](https://github.com/metapolator/metapolator/wiki/outline-import) rules, I did not think much of this yet, but, to be able to
    get any arbitrary parameter of a font we need to make the importer
    extensible. This is likely JavaScript that registers to some API of
    the importer.
@@ -270,7 +271,7 @@ A: Plugins bring them in and a whole bunch of of other stuff, some things are op
 
 
 
-### Importer
+### [Importer](https://github.com/metapolator/metapolator/wiki/outline-import)
 Takes a "prepared" UFO and creates a skeleton-UFO and a CPS parameters file.
 This process will do validation of the input data.
 It must be possible to import UFOs that we exported from Metapolator
