@@ -38,7 +38,15 @@ _(This has been undertaken, but not yet written up)_
 
 * [Metapolation Interaction exploration](https://github.com/metapolator/metapolator/wiki/metapolation)
 * [The Zürich Report](https://github.com/metapolator/metapolator/wiki/the-Z%C3%BCrich-report)
-  * [Eben Sorkin Comments](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)
+
+Notable G+ Comments:
+
+* [Eben Sorkin Comments](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)
+* [Octavio Pardo Comments 1](https://plus.google.com/101901813675356116026/posts/aDeXZg1nCvB)
+* [Octavio Pardo Comments 2](https://plus.google.com/101901813675356116026/posts/Lc9rwZVKsmd)
+* [Octavio Pardo Comments 3](https://plus.google.com/101901813675356116026/posts/3MbEWqebR2n)
+* [Octavio Pardo Comments 4](https://plus.google.com/101901813675356116026/posts/2ejhXKHLfqQ)
+* [Rob Keller, Dan Reynolds Comments](https://plus.google.com/101901813675356116026/posts/Ym2349KFb5W)
 
 ## Design Problems and Goals
 
