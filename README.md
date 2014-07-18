@@ -28,9 +28,9 @@ This project is licensed under the [GNU General Public License v3.0](http://www.
 
 ## Thanks
 
-Core Development Team: Simon Egli, Lasse Fister, Alex Troush
+Core Development Team: Simon Egli (CH), Lasse Fister (DE), Alex Troush (UA), Reuben Thomas (UK), Dr Ben Martin (AU)
 
-Contributors: Vitaly Volkov, Walter Egli, Nicolas Pauly, Wei Huang, you?
+Contributors: Walter Egli (CH), Vitaly Volkov (UA), Nicolas Pauly (FR), Wei Huang (AU), you (anywhere)?
 
 Thanks to [metaflop](http://www.metaflop.com) for inspiration and Dave Crossland for initiating this project!
 
