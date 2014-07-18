@@ -5,8 +5,11 @@ localconfig.py
 /node_modules
 
 test.err
-/bower*
 /static/dist
 /static/lib
 
 /commands/data
+*/node_modules
+/bower*
+/static/dist
+/static/lib
