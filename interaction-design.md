@@ -42,11 +42,15 @@ _(This has been undertaken, but not yet written up)_
 Notable G+ Comments:
 
 * [Eben Sorkin Comments](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)
-* [Octavio Pardo Comments 1](https://plus.google.com/101901813675356116026/posts/aDeXZg1nCvB)
-* [Octavio Pardo Comments 2](https://plus.google.com/101901813675356116026/posts/Lc9rwZVKsmd)
-* [Octavio Pardo Comments 3](https://plus.google.com/101901813675356116026/posts/3MbEWqebR2n)
-* [Octavio Pardo Comments 4](https://plus.google.com/101901813675356116026/posts/2ejhXKHLfqQ)
+* [Valencia Meet Summary](https://plus.google.com/101901813675356116026/posts/YqUDbTAgcJ6)
+  * [Octavio Pardo Comments 1](https://plus.google.com/101901813675356116026/posts/aDeXZg1nCvB)
+  * [Octavio Pardo Comments 2](https://plus.google.com/101901813675356116026/posts/Lc9rwZVKsmd)
+  * [Octavio Pardo Comments 3](https://plus.google.com/101901813675356116026/posts/3MbEWqebR2n)
+  * [Octavio Pardo Comments 4](https://plus.google.com/101901813675356116026/posts/2ejhXKHLfqQ)
 * [Rob Keller, Dan Reynolds Comments](https://plus.google.com/101901813675356116026/posts/Ym2349KFb5W)
+* [Peter Sikking on Knuth's 'The Concept of a METAFONT'](https://plus.google.com/101901813675356116026/posts/JAdye3zpwtC)
+* [Peter Sikking on Hofstadter’s 'metafont, metamathemathics and metaphysics'](https://plus.google.com/101901813675356116026/posts/6x29ygzDsVc)
+* [Berlin Meet Summary](https://plus.google.com/101901813675356116026/posts/4trQVL48YT3)
 
 ## Design Problems and Goals
 
