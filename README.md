@@ -17,9 +17,11 @@ Metapolator allows the designer to utilise Metafont without have to write any Me
 
 ## Wiki
 
-We are actively documenting our project on our wiki:
-* **<https://github.com/metapolator/metapolator/wiki/>**
-  * [Product Vision](https://github.com/metapolator/metapolator/wiki/Product-Vision)
+We are actively documenting our project on our wiki, <https://github.com/metapolator/metapolator/wiki/>:
+
+* [Interaction Design](https://github.com/metapolator/metapolator/wiki/Interaction-Design)
+* Software Development
+  * [Concepts](https://github.com/metapolator/metapolator/wiki/roadmap)
   * [Roadmap](https://github.com/metapolator/metapolator/wiki/roadmap)
 
 ### License
