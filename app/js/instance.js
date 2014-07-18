@@ -85,10 +85,16 @@ var Instance = function (config) {
                         pathB = this.getPath(this.fonts[1], lines[k], this.lineHeight + (k * this.lineHeight)),
                         pathC = this.getPath(this.fonts[2], lines[k], this.lineHeight + (k * this.lineHeight));
 
+                    if (this.fonts.length > 3){
+                        var pathD = this.getPath(this.fonts[3], lines[k], this.lineHeight + (k * this.lineHeight));
+                    } else {
+                        pathD = pathA;
+                    }
+
                     for (var i = 0; i < pathA.commands.length; i++) {
                         var B_command = pathB.commands[i] || pathA.commands[i];
                         var C_command = pathC.commands[i] || pathA.commands[i];
-                        var D_command = pathA.commands[i];// pathD.commands[i] || pathA.commands[i];
+                        var D_command = pathD.commands[i] || pathA.commands[i];
                         if (pathA.commands[i].x) {
 
                             pathA.commands[i].x = this.interpolateExtValue(
@@ -174,7 +180,7 @@ var Instance = function (config) {
             },
 
             interpolateExtValue: function(A, B, C, D) {
-                return (A + this.interpolationValueAB * ( B - A ) ) + this.interpolationValueAC * ( C - A );// + this.interpolationValueAD * ( D - A );
+                return (A + this.interpolationValueAB * ( B - A ) ) + this.interpolationValueAC * ( C - A ) + this.interpolationValueAD * ( D - A );
             },
 
             getPath: function(font, word, y_offset) {
@@ -218,7 +224,7 @@ var Instance = function (config) {
                 var context = createCanvas(instance.canvas, 260, 260);
                 paper.setup(context.canvas);
                 var tmp_points = [];
-                var glyph_size = 5.3;
+                var glyph_size = 5.19;
 
                 for (var j = 0; j < this.glyphJSON[0].points.length; j++) {
                     var path = new paper.Path();
@@ -260,14 +266,13 @@ var Instance = function (config) {
                             handleOutX = this.interpolateValue(handleOutX, interpolationBx);
                             handleOutY = this.interpolateValue(handleOutY, interpolationBy);
 
-                            handleIn = new paper.Point(parseInt(handleInX/glyph_size), parseInt(handleInY/glyph_size));
-                            handleOut = new paper.Point(parseInt(handleOutX/glyph_size), parseInt(handleOutY/glyph_size));
+                            handleIn = new paper.Point(handleInX/glyph_size, handleInY/glyph_size);
+                            handleOut = new paper.Point(handleOutX/glyph_size, handleOutY/glyph_size);
 
                             var interpolationPoint = interpolationContour[i];
                             var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x));
                             var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y));
                             currentPoint = new paper.Point(interX/glyph_size, 240-interY/glyph_size);
-
                             path.add(new paper.Segment(currentPoint, handleIn, handleOut));
                         }
                 }
@@ -280,6 +285,121 @@ var Instance = function (config) {
             }
         }, config);
         // var instance = 4;
+    } else if (config.lib == 'twojs') {
+        var instance = $.extend({
+            interpolationValueAB: 0.2,
+            interpolationValueAC: 0.2,
+            interpolationValueAD: 0.2,
+            interpolateValue : function(A, B) {
+                return A + this.interpolationValueAB * ( B - A );
+            },
+            interpolate : function () {
+                $(this.canvas).html('');
+                var canvasWrapper = document.getElementById((config.canvas).replace('#',''));
+                var params = {
+                    width: 400,
+                    height: 400,
+                    autostart: true,
+                }
+                var glyph_size = 5.19;
+                var two = new Two(params).appendTo(canvasWrapper);
+                var group = two.makeGroup();
+
+                for (var j = 0; j < this.glyphJSON[0].points.length; j++) {
+                        var contour = this.glyphJSON[0].points[j];
+                        var interpolationContour = this.glyphJSON[1].points[j];
+                        var anchors = [];
+                        for (var i = 0; i < contour.length; i++){
+                            var point = contour[i];
+
+                            /* From this point starts mathematical code for interpolation.
+                            Done maximally straight. Sorry for wall of code */
+
+                            if (point.type) {
+                                var handleIn, handleOut,
+                                    handleInX, handleOutX,
+                                    handleInY, handleOutY,
+                                    interpolationBx, interpolationBy;
+
+                                // var pointType = Two.Commands.curve;
+                                var pointType = Two.Commands.curve;
+                                var closePoint = contour.filter(function(p){
+                                        return (p.type)?true:false;
+                                });
+
+                                if (i == 0) {
+                                    handleInX = contour[contour.length - 1].x;
+                                    handleInY = contour[contour.length - 1].y;
+                                    interpolationBx = interpolationContour[interpolationContour.length - 1].x;
+                                    interpolationBy = interpolationContour[interpolationContour.length - 1].y;
+                                } else {
+                                    handleInX = contour[i - 1].x;
+                                    handleInY = contour[i - 1].y;
+                                    interpolationBx = interpolationContour[i - 1].x;
+                                    interpolationBy = interpolationContour[i - 1].y;
+                                }
+
+                                handleInX = this.interpolateValue(handleInX, interpolationBx);
+                                handleInY = this.interpolateValue(handleInY, interpolationBy);
+
+                                handleOutX = contour[i + 1].x;
+                                handleOutY = contour[i + 1].y;
+
+                                interpolationBx = interpolationContour[i + 1].x;
+                                interpolationBy = interpolationContour[i + 1].y;
+                                handleOutX = this.interpolateValue(handleOutX, interpolationBx);
+                                handleOutY = this.interpolateValue(handleOutY, interpolationBy);
+
+                                var interpolationPoint = interpolationContour[i];
+                                var interX = (point.x + this.interpolationValueAB * (interpolationPoint.x - point.x));
+                                var interY = (point.y + this.interpolationValueAB * (interpolationPoint.y - point.y));
+
+                                if (point.startp) {
+                                    pointType = Two.Commands.move;
+                                }
+
+                                var x = interX / glyph_size;
+                                var y = interY / glyph_size;
+                                var anchor = new Two.Anchor(
+                                    x, 400 - y,
+                                    handleInX/glyph_size, 400 - handleInY/glyph_size,
+                                    handleOutX/glyph_size, 400 - handleOutY/glyph_size,
+                                    pointType
+                                );
+
+                                anchor.relative = false;
+
+                                anchors.push(anchor);
+
+                                if (point['point-name'] == closePoint[closePoint.length - 1]['point-name']) {
+                                    anchors.push(new Two.Anchor(anchor.x, anchor.y, anchor.x, anchor.y, anchor.x, anchor.y, Two.Commands.close))
+                                }
+                            }
+
+                    }
+                    var ppoly = new Two.Polygon(anchors, true, true, true);
+                    ppoly.fill = 'black';
+                    group.add(ppoly);
+                }
+
+                var rect = group.getBoundingClientRect();
+                rect.centroid = {
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2
+                };
+                _.each(group.children, function(child) {
+                    child.translation.subSelf(rect.centroid);
+                });
+
+                group.translation.set(two.width / 2, two.height / 2);
+
+                two.render();
+            },
+            loaded : function() {
+
+            }
+        }, config);
+
     }
     return instance;
 };

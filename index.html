@@ -23,7 +23,7 @@
     <div class="masthead clearfix">
         <div class="inner">
           <h1 class="masthead-brand col-md-2">
-            <span style="font-family: 'Roboto', sans-serif; font-weight: 600;">Metapolator Examples</span>
+            <span style="font-family: 'Roboto', sans-serif; font-weight: 600;">Metapolator</span>
           </h1>
           <ul class="col-md-2 masthead-nav">
             <li><a href="http://github.com/metapolator/metapolator" title="Github"><span class="fa fa-github fa-lg"></span></a>   </li>
@@ -35,6 +35,12 @@
             <div class="row">
             <div class="col-md-8 col-lg-offset-3" ng-controller="canvasCtrl">
                 <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="twojsCtrl">
+                        <div class="row" style="margin-top:20px">
+                                <div id="twojsCanvas"></div>
+                                <div class="sliders" id="twojsSlider"></div>
+                        </div>
+                    </div>
                     <div class="col-xs-12 col-sm-6 col-md-10" style="width: 760px" ng-controller="paperjsCtrl">
                         <div class="row" style="margin-top:20px">
                                 <div id="paperjsCanvas"></div>
@@ -55,7 +61,9 @@
                                 We wanted a way to draw fonts yet have the power of Metafont – a programming language for specifying typefaces with algorithms.
                                 </p>
                                 <p>
-                                For classical interpolation using multiple masters and axes, Metapolator can load normal UFO fonts (without any modifications.) It can create new instances and save them in the UFO format or OTF/TTF binaries to use straight away.
+It does not have features for drawing glyphs; you must draw your initial masters using a glyph-focused font editor, such as FontForge. When given a master drawn in another program and saved in the UFO format (without any modifications) Metapolator first offers classical interpolation.
+<p>
+This means you can arrange many masters along various axes, and Metapolator can create new instances between these masters and save them in both the UFO source format and the OTF/TTF binary format, to use straight away.
                                 </p>
                                 </div>
                         </div>
@@ -90,9 +98,12 @@
                             <div id="paragraphWord"></div>
                             <div class="paragrahSlider"></div>
                             <div class="lead col-md-11" style="text-align:left">
-
                                 <p>
-                                To use the full potential of parametrising fonts, Metapolator can parse already existing fonts (such as PostScript Type 1 or OpenType). They need to be broken up into separate shapes resembling strokes and provide consistent counterpoints. In this process, a Metafont is produced by specifying the central skeleton of shapes – for which there are "pens" of different angles and widths along the skeleton. As the glyph shapes are defined through equations, they can be parametrised along axes such as aspect ratio, weight, slant, stroke width, contrast and so on.
+What makes Metapolator special is that it also allows you to derive new masters from existing masters. We call this process 'metapolation' because it goes beyond interpolation and extrapolation, to an entirely new way of thinking about typeface design.
+                                <p>
+<a href="http://www.metaflop.com">MetaFlop</a> is a Version 1.0 prototype of Metapolator. The <a href="http://www.metaflop.com/metafonts/bespoke">Bespoke</a> font demonstrates today how 1 single style font family can be turned into 12 visually-distinct stylistic variations.
+                                <p>
+                                To use the full potential of parametrising fonts, Metapolator can parse already existing fonts (such as PostScript Type 1 or OpenType.) They need to be broken up into separate shapes resembling strokes and provide consistent counterpoints. In this process, a Metafont is produced by specifying the central skeleton of shapes – for which there are "pens" of different angles and widths along the skeleton. As the glyph shapes are defined through equations, they can be parametrised along axes such as aspect ratio, weight, slant, stroke width, contrast and so on.
                                 </p>
                                 <p>
                                 Furthermore instead of using prepared fonts it will be possible to enhance normal UFO fonts by adding parameters on request and only parametrise certain parts of a glyph.
@@ -143,4 +154,5 @@
 <script type="text/javascript" src="app/js/instance.js"></script>
 <script type="text/javascript" src="app/js/opentype.js"></script>
 <script type="text/javascript" src="app/js/dat.gui.js"></script>
+<script type="text/javascript" src="app/js/two.js"></script>
 </html>
