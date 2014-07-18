@@ -30,38 +30,33 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 
 ## Expert Evaluation
 
-Notes of interest of the evaluation of earlier Metapolator prototypes. using the user scenarios as a guide and the functionality overview as a checklist, a review of how earlier Metapolator UIs realised the product vision. From this, a report with the good, the bad and and the ugly of the previous UIs, followed by further analysis and the start of actual design processes.
+Notes of interest of the evaluation of earlier Metapolator prototypes and other font editors. 
 
-_(This has been undertaken, but not yet written up)_
+Using the user scenarios as a guide and the functionality overview as a checklist, a review of how earlier Metapolator UIs realized the product vision. From this, a report with the good, the bad and and the ugly of previous UIs, followed by further analysis and the start of actual design processes.
+
+* [Notes on v1](https://plus.google.com/+petersikking/posts/arem8tPjK7z)
+* [Eben Sorkin Comments](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)
+* [Notes on Valencia Meetings](https://plus.google.com/101901813675356116026/posts/YqUDbTAgcJ6)
+  * [Octavio Pardo Comments 1](https://plus.google.com/101901813675356116026/posts/aDeXZg1nCvB)
+  * [Octavio Pardo Comments 2](https://plus.google.com/101901813675356116026/posts/Lc9rwZVKsmd)
+  * [Octavio Pardo Comments 3](https://plus.google.com/101901813675356116026/posts/3MbEWqebR2n)
+  * [Octavio Pardo Comments 4](https://plus.google.com/101901813675356116026/posts/2ejhXKHLfqQ)
+* [Notes on Rob Keller (FontLab) and Dan Reynolds (GlyphsApp)](https://plus.google.com/101901813675356116026/posts/Ym2349KFb5W)
+* [Notes on Knuth's 'The Concept of a METAFONT'](https://plus.google.com/101901813675356116026/posts/JAdye3zpwtC)
+* [Notes on Hofstadter’s 'metafont, metamathemathics and metaphysics'](https://plus.google.com/101901813675356116026/posts/6x29ygzDsVc)
+* [Notes on Berlin Meeting](https://plus.google.com/101901813675356116026/posts/4trQVL48YT3)
 
 # [The Design Phase](http://mmiworks.net/wedo/design.html)
 
 ## Design Problems and Goals
 
 * [13 Design Goals](https://github.com/metapolator/metapolator/wiki/interaction-design-goals)
-
-_(This is in progress)_
-
-* [Metapolation Interaction exploration](https://github.com/metapolator/metapolator/wiki/metapolation)
+* [Metapolation Interaction Research](https://github.com/metapolator/metapolator/wiki/metapolation)
 * [The Zürich Report](https://github.com/metapolator/metapolator/wiki/the-Z%C3%BCrich-report)
-
-Notable G+ Comments:
-
-* [Eben Sorkin Comments](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)
-* [Valencia Meet Summary](https://plus.google.com/101901813675356116026/posts/YqUDbTAgcJ6)
-  * [Octavio Pardo Comments 1](https://plus.google.com/101901813675356116026/posts/aDeXZg1nCvB)
-  * [Octavio Pardo Comments 2](https://plus.google.com/101901813675356116026/posts/Lc9rwZVKsmd)
-  * [Octavio Pardo Comments 3](https://plus.google.com/101901813675356116026/posts/3MbEWqebR2n)
-  * [Octavio Pardo Comments 4](https://plus.google.com/101901813675356116026/posts/2ejhXKHLfqQ)
-* [Rob Keller, Dan Reynolds Comments](https://plus.google.com/101901813675356116026/posts/Ym2349KFb5W)
-* [Peter Sikking on Knuth's 'The Concept of a METAFONT'](https://plus.google.com/101901813675356116026/posts/JAdye3zpwtC)
-* [Peter Sikking on Hofstadter’s 'metafont, metamathemathics and metaphysics'](https://plus.google.com/101901813675356116026/posts/6x29ygzDsVc)
-* [Berlin Meet Summary](https://plus.google.com/101901813675356116026/posts/4trQVL48YT3)
-
 
 ## Solutions Model
 
-_(This is in progress)_
+_(This is in progress throughout July and August)_
 
 ## Detailed Design (wireframes)
 
