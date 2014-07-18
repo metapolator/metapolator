@@ -36,6 +36,12 @@ _(This has been undertaken, but not yet written up)_
 
 # [The Design Phase](http://mmiworks.net/wedo/design.html)
 
+## Design Problems and Goals
+
+* [13 Design Goals](https://github.com/metapolator/metapolator/wiki/interaction-design-goals)
+
+_(This is in progress)_
+
 * [Metapolation Interaction exploration](https://github.com/metapolator/metapolator/wiki/metapolation)
 * [The Zürich Report](https://github.com/metapolator/metapolator/wiki/the-Z%C3%BCrich-report)
 
@@ -52,9 +58,6 @@ Notable G+ Comments:
 * [Peter Sikking on Hofstadter’s 'metafont, metamathemathics and metaphysics'](https://plus.google.com/101901813675356116026/posts/6x29ygzDsVc)
 * [Berlin Meet Summary](https://plus.google.com/101901813675356116026/posts/4trQVL48YT3)
 
-## Design Problems and Goals
-
-_(This is in progress)_
 
 ## Solutions Model
 
