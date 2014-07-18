@@ -1,6 +1,8 @@
+# [The Product Phase](http://mmiworks.net/wedo/product.html)
+
 ## Product Vision
 
-_Our ['Product Vision'](http://www.mmiworks.net/wedo/product.html) defines and guides Metapolator's development, and was written by Peter Sikking in April 2014 Following a discussion with the developers ([video](http://www.youtube.com/watch?v=mJH6fNCv1Fs))_
+_Our Product Vision defines and guides the project's development. It was written by Peter Sikking in April 2014 after a detailed discussion with the developers ([video](http://www.youtube.com/watch?v=mJH6fNCv1Fs))_
 
 Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.
 
@@ -10,10 +12,10 @@ With Metapolator, typographers gain the possibility to change existing fonts—o
 
 Metapolator is extendible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.
 
-## [functionality overview](https://github.com/metapolator/metapolator/wiki/functionality-overview)
+## [Functionality Overview](https://github.com/metapolator/metapolator/wiki/functionality-overview)
 Functionality is the most dry, to-the-point—call it boring—description of what a piece of software does; i.e. its features. The [functionality overview](https://github.com/metapolator/metapolator/wiki/functionality-overview) serves as a checklist for the design process—and the project—to know ’what is in the box’ and answers ‘did we forget anything?’
 
-## [user scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios)
+## [User Scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios)
 User scenarios show the essential use, in logical, worthwhile and valuable steps from users’ point of view. We have [7 scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios):
 * Easy beginnings: make subtle changes to an existing font to adapt it to domain of use.
 * Typographer applies radical graphical treatments to an existing font for a design.
@@ -23,5 +25,26 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 * Extend: add script (i.e. a writing system) support.
 * Extend: add a custom algorithm.
 
-##design work
-A major part of Metapolator is… [metapolation](https://github.com/metapolator/metapolator/wiki/metapolation).
+## Expert Evaluation
+
+(This has been undertaken, but not yet written up)
+
+# [The Design Phase](http://mmiworks.net/wedo/design.html)
+
+## Design Problems and Goals
+
+A major part of Metapolator is… [metapolation](https://github.com/metapolator/metapolator/wiki/metapolation)
+
+(This is in progress)
+
+## Solutions Model
+
+(This is in progress)
+
+## Detailed Design (wireframes)
+
+(This will happen in August and September)
+
+# [The Implementation Phase](http://mmiworks.net/wedo/implementation.html)
+
+(This will happen in September and October)
