@@ -1,6 +1,6 @@
 # [The Product Phase](http://mmiworks.net/wedo/product.html)
 
-## Product Vision
+## [Product Vision](https://github.com/metapolator/metapolator/wiki/interaction-design#product-vision)
 
 _Our Product Vision defines and guides the project's development. It was written by Peter Sikking in April 2014 after a detailed discussion with the developers ([video](http://www.youtube.com/watch?v=mJH6fNCv1Fs)) and is accompanied by [Peter's blog post](http://blog.mmiworks.net/2014/04/writing-product-vision-for-metapolator.html)_
 
