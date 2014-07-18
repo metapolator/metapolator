@@ -119,3 +119,5 @@ _Extend: add script (i.e. a writing system) support._
 
 ### scenario 5b
 _Extend: add a custom algorithm._
+
+You read all the way to the end, so you might like this [G+ post on how this was made](https://plus.google.com/101901813675356116026/posts/AHqYfD65hWo)
