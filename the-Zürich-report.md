@@ -219,3 +219,7 @@ At the end we spent some time on investigating contrast, aiming to offer it thro
 ![](http://mmiworks.net/metapolator/photo05.jpg)
 ![](http://mmiworks.net/metapolator/photo06.jpg)
 ![](http://mmiworks.net/metapolator/photo07.jpg)
+
+## G+ Comments
+
+* [Simon on Centroids](https://plus.google.com/100858309774292261525/posts/MPVRABcLQ7c)
