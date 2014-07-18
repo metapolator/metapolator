@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="colonmonetary" format="1">
+  <advance width="590"/>
+  <unicode hex="20A1"/>
+  <outline>
+    <contour>
+      <point x="187" y="-51" type="line"/>
+      <point x="224" y="-51" type="line"/>
+      <point x="469" y="809" type="line"/>
+      <point x="432" y="809" type="line"/>
+    </contour>
+    <component base="C"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="five.tf" format="1">
+  <advance width="540"/>
+  <outline>
+    <contour>
+      <point x="210" y="-12" type="curve" smooth="yes"/>
+      <point x="377" y="-12"/>
+      <point x="474" y="73"/>
+      <point x="474" y="219" type="curve" smooth="yes"/>
+      <point x="474" y="373"/>
+      <point x="393" y="436"/>
+      <point x="190" y="439" type="curve"/>
+      <point x="205" y="643" type="line"/>
+      <point x="434" y="643" type="line"/>
+      <point x="434" y="740" type="line"/>
+      <point x="114" y="740" type="line"/>
+      <point x="85" y="359" type="line"/>
+      <point x="90" y="355" type="line"/>
+      <point x="155" y="355" type="line" smooth="yes"/>
+      <point x="303" y="355"/>
+      <point x="355" y="319"/>
+      <point x="355" y="219" type="curve" smooth="yes"/>
+      <point x="355" y="132"/>
+      <point x="302" y="85"/>
+      <point x="202" y="85" type="curve" smooth="yes"/>
+      <point x="173" y="85"/>
+      <point x="141" y="89"/>
+      <point x="103" y="97" type="curve"/>
+      <point x="77" y="97" type="line"/>
+      <point x="77" y="3" type="line"/>
+      <point x="130" y="-7"/>
+      <point x="172" y="-12"/>
+    </contour>
+  </outline>
+</glyph>

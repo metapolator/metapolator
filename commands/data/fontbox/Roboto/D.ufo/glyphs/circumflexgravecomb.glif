@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="circumflexgravecomb" format="1">
+  <advance width="1510"/>
+  <outline>
+    <contour>
+      <point x="535" y="1475" type="line"/>
+      <point x="455" y="1475" type="line"/>
+      <point x="207" y="1252" type="line"/>
+      <point x="291" y="1252" type="line"/>
+      <point x="495" y="1438" type="line"/>
+      <point x="699" y="1252" type="line"/>
+      <point x="783" y="1252" type="line"/>
+    </contour>
+    <contour>
+      <point x="105" y="1584" type="line"/>
+      <point x="32" y="1584" type="line"/>
+      <point x="195" y="1380" type="line"/>
+      <point x="258" y="1380" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

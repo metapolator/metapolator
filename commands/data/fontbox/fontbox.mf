@@ -1,0 +1,6 @@
+% parameter file
+font_size:=10pt#;
+u#:=1.000pt#;
+
+input glyphs
+bye

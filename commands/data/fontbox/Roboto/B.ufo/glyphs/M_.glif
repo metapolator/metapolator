@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="M" format="1">
+  <advance width="2437"/>
+  <unicode hex="004D"/>
+  <outline>
+    <contour>
+      <point x="357" y="1456" type="line"/>
+      <point x="863" y="0" type="line"/>
+      <point x="1080" y="0" type="line"/>
+      <point x="1588" y="1456" type="line"/>
+      <point x="1318" y="1456" type="line"/>
+      <point x="971" y="428" type="line"/>
+      <point x="627" y="1456" type="line"/>
+    </contour>
+    <contour>
+      <point x="204" y="1456" type="line"/>
+      <point x="204" y="0" type="line"/>
+      <point x="527" y="0" type="line"/>
+      <point x="527" y="361" type="line"/>
+      <point x="477" y="1456" type="line"/>
+    </contour>
+    <contour>
+      <point x="1470" y="1456" type="line"/>
+      <point x="1420" y="361" type="line"/>
+      <point x="1420" y="0" type="line"/>
+      <point x="1743" y="0" type="line"/>
+      <point x="1743" y="1456" type="line"/>
+    </contour>
+    <contour>
+      <point x="1420" y="0" type="line"/>
+      <point x="1420" y="230" type="line"/>
+      <point x="1267" y="200" type="line"/>
+      <point x="1267" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="1743" y="0" type="line"/>
+      <point x="1896" y="0" type="line"/>
+      <point x="1896" y="200" type="line"/>
+      <point x="1743" y="230" type="line"/>
+    </contour>
+    <contour>
+      <point x="1743" y="1456" type="line"/>
+      <point x="1743" y="1226" type="line"/>
+      <point x="1896" y="1256" type="line"/>
+      <point x="1896" y="1456" type="line"/>
+    </contour>
+    <contour>
+      <point x="527" y="0" type="line"/>
+      <point x="680" y="0" type="line"/>
+      <point x="680" y="200" type="line"/>
+      <point x="527" y="230" type="line"/>
+    </contour>
+    <contour>
+      <point x="204" y="0" type="line"/>
+      <point x="204" y="230" type="line"/>
+      <point x="51" y="200" type="line"/>
+      <point x="51" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="204" y="1456" type="line"/>
+      <point x="51" y="1456" type="line"/>
+      <point x="51" y="1256" type="line"/>
+      <point x="204" y="1226" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

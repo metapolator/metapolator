@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="seven.numerator" format="1">
+  <advance width="317.0"/>
+  <outline>
+    <contour>
+      <point x="126.0" y="190.0" type="line"/>
+      <point x="56.5" y="201.5" type="line"/>
+      <point x="46.5" y="224.0" type="line"/>
+      <point x="220.5" y="705.5" type="line"/>
+      <point x="254.0" y="660.0" type="line"/>
+      <point x="21.0" y="660.0" type="line"/>
+      <point x="21.0" y="731.5" type="line"/>
+      <point x="32.0" y="740.0" type="line"/>
+      <point x="282.5" y="740.0" type="line"/>
+      <point x="304.5" y="699.5" type="line"/>
+      <point x="304.5" y="671.5" type="line"/>
+      <point x="141.0" y="201.0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

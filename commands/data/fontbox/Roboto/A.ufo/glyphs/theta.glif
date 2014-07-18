@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="theta" format="1">
+  <advance width="1191"/>
+  <unicode hex="03B8"/>
+  <outline>
+    <contour>
+      <point x="922" y="858" type="line"/>
+      <point x="200" y="858" type="line"/>
+      <point x="200" y="611" type="line"/>
+      <point x="922" y="611" type="line"/>
+    </contour>
+    <contour>
+      <point x="1115" y="881" type="line" smooth="yes"/>
+      <point x="1115" y="1287"/>
+      <point x="909" y="1477"/>
+      <point x="612" y="1477" type="curve" smooth="yes"/>
+      <point x="314" y="1477"/>
+      <point x="110" y="1287"/>
+      <point x="110" y="881" type="curve" smooth="yes"/>
+      <point x="110" y="575" type="line" smooth="yes"/>
+      <point x="110" y="169"/>
+      <point x="316" y="-21"/>
+      <point x="614" y="-21" type="curve" smooth="yes"/>
+      <point x="911" y="-21"/>
+      <point x="1115" y="169"/>
+      <point x="1115" y="575" type="curve" smooth="yes"/>
+    </contour>
+    <contour>
+      <point x="793" y="554" type="line" smooth="yes"/>
+      <point x="793" y="318"/>
+      <point x="726" y="239"/>
+      <point x="614" y="239" type="curve" smooth="yes"/>
+      <point x="500" y="239"/>
+      <point x="432" y="318"/>
+      <point x="432" y="554" type="curve" smooth="yes"/>
+      <point x="432" y="904" type="line" smooth="yes"/>
+      <point x="432" y="1136"/>
+      <point x="499" y="1217"/>
+      <point x="612" y="1217" type="curve" smooth="yes"/>
+      <point x="725" y="1217"/>
+      <point x="793" y="1136"/>
+      <point x="793" y="904" type="curve" smooth="yes"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

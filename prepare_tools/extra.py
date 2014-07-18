@@ -2,9 +2,7 @@ import sys
 import os.path
 import re
 
-
 ignore_pattern = re.compile("type=['\"]move", re.I)
-
 
 def buildfname ( filename ):
     try :
@@ -18,18 +16,15 @@ def buildfname ( filename ):
 
 #dirnamea = 'MP_a.ufo/glyphs/'
 #dirnamea = 'MPExo-ExtraBold.ufo/glyphs/'
-
 dirnamea = sys.argv[1]
 
-# dirnamea = '/home/hash/Downloads/fontbox_singlepoint.ufo/glyphs/'
-
-
 charlista = [f for f in os.listdir(dirnamea) ]
+
 for ch1 in charlista :
     fnb,ext=buildfname (ch1)
     if ext in ["glif"]  :
 
-        fname = dirnamea+ch1
+        fname = os.path.join(dirnamea, ch1)
         aa = []
         bb = []
         with open(fname) as f:
@@ -40,32 +35,39 @@ for ch1 in charlista :
                 bb.append(0)
 
         f.close()
-
+        print fname
         i=-1
+        lt = -1
+        it = -1
+
         for  l in aa :
             i=i+1
             if l.count("<contour>")>0 :
                 ics = 1
                 lt = 0
-
             if (l.count ("<point") >0 and l.count ("type") > 0) :
                 lt=lt+1
                 if lt == 1 :
                     it =i
-
+         #       print "check",lt,i,it
                 if ((lt >1) and ((i-1) == it)) :
          # insert extra controlpoints
+                    print "insert extra", it,lt
                     bb[it]=1
                     lt = 1
                     it =i
-
-            if l.count("</contour>")>0 :
-      # check end
-                if ((lt == 1) and ((i-1) == it)) :
+            else:
+                if l.count("</contour>") > 0 :
+                   print " check end",it,lt,i
+                   if ((lt == 1) and ((i-1) == it)) :
+                       print "insert extra end", it,lt
            # insert extra controlpoints
-                    bb[it]=1
-                    it =0
-                    lt = 0
+                       bb[it]=1
+                       it =0
+                       lt = 0
+
+                it = 0
+                lt = 0
 
         f=open(fname, "w")
 
@@ -74,9 +76,7 @@ for ch1 in charlista :
             i= i+1
             f.write(a)
             if bb[i] >0:
-                f.write('      <point extra="1" /> \n')
-                f.write('      <point extra="2" /> \n')
+                f.write('      <point added="1" /> \n')
+                f.write('      <point added="2" /> \n')
 
         f.close()
-
-

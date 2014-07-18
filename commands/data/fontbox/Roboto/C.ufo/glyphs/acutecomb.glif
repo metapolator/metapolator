@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="acutecomb" format="1">
+  <advance width="466"/>
+  <unicode hex="0301"/>
+  <outline>
+    <contour>
+      <point x="118" y="1220" type="line"/>
+      <point x="179" y="1220" type="line"/>
+      <point x="338" y="1511" type="line"/>
+      <point x="271" y="1511" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

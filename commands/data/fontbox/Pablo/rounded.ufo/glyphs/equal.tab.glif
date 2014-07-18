@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="equal.tab" format="1">
+  <advance width="540"/>
+  <outline>
+    <contour>
+      <point x="58" y="202" type="line"/>
+      <point x="482" y="202" type="line"/>
+      <point x="482" y="288" type="line"/>
+      <point x="58" y="288" type="line"/>
+    </contour>
+    <contour>
+      <point x="58" y="419" type="line"/>
+      <point x="482" y="419" type="line"/>
+      <point x="482" y="505" type="line"/>
+      <point x="58" y="505" type="line"/>
+    </contour>
+  </outline>
+</glyph>

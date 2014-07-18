@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Ubreve.sc" format="1">
+  <advance width="587.0"/>
+  <outline>
+    <contour>
+      <point x="294.0" y="-8.0" type="curve" smooth="yes"/>
+      <point x="466.0" y="-8.0"/>
+      <point x="529.5" y="66.0"/>
+      <point x="529.5" y="223.5" type="curve" smooth="yes"/>
+      <point x="529.5" y="576.5" type="line"/>
+      <point x="421.0" y="576.5" type="line"/>
+      <point x="421.0" y="229.0" type="line" smooth="yes"/>
+      <point x="421.0" y="124.5"/>
+      <point x="385.5" y="84.5"/>
+      <point x="294.0" y="84.5" type="curve" smooth="yes"/>
+      <point x="203.5" y="84.5"/>
+      <point x="166.0" y="126.0"/>
+      <point x="166.0" y="229.0" type="curve" smooth="yes"/>
+      <point x="166.0" y="576.5" type="line"/>
+      <point x="57.5" y="576.5" type="line"/>
+      <point x="57.5" y="223.5" type="line" smooth="yes"/>
+      <point x="57.5" y="67.0"/>
+      <point x="122.0" y="-8.0"/>
+    </contour>
+    <contour>
+      <point x="291.0" y="624.0" type="curve" smooth="yes"/>
+      <point x="385.5" y="624.0"/>
+      <point x="438.0" y="674.0"/>
+      <point x="438.0" y="754.5" type="curve"/>
+      <point x="362.0" y="754.5" type="line"/>
+      <point x="362.0" y="699.5"/>
+      <point x="340.5" y="677.0"/>
+      <point x="291.0" y="677.0" type="curve" smooth="yes"/>
+      <point x="240.5" y="677.0"/>
+      <point x="219.5" y="699.5"/>
+      <point x="219.5" y="754.5" type="curve"/>
+      <point x="144.0" y="754.5" type="line"/>
+      <point x="144.0" y="673.5"/>
+      <point x="195.5" y="624.0"/>
+    </contour>
+  </outline>
+</glyph>

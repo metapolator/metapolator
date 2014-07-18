@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="uni0448" format="1">
+  <advance width="2446"/>
+  <unicode hex="0448"/>
+  <outline>
+    <contour>
+      <point x="235" y="1082" type="line"/>
+      <point x="235" y="0" type="line"/>
+      <point x="1736" y="0" type="line"/>
+      <point x="1736" y="1082" type="line"/>
+      <point x="1414" y="1082" type="line"/>
+      <point x="1414" y="260" type="line"/>
+      <point x="1147" y="260" type="line"/>
+      <point x="1147" y="1082" type="line"/>
+      <point x="824" y="1082" type="line"/>
+      <point x="824" y="260" type="line"/>
+      <point x="557" y="260" type="line"/>
+      <point x="557" y="1082" type="line"/>
+    </contour>
+    <contour>
+      <point x="557" y="1082" type="line"/>
+      <point x="557" y="852" type="line"/>
+      <point x="710" y="882" type="line"/>
+      <point x="710" y="1082" type="line"/>
+    </contour>
+    <contour>
+      <point x="1414" y="1082" type="line"/>
+      <point x="1261" y="1082" type="line"/>
+      <point x="1261" y="882" type="line"/>
+      <point x="1414" y="852" type="line"/>
+    </contour>
+    <contour>
+      <point x="1736" y="0" type="line"/>
+      <point x="1889" y="0" type="line"/>
+      <point x="1889" y="200" type="line"/>
+      <point x="1736" y="230" type="line"/>
+    </contour>
+    <contour>
+      <point x="1736" y="1082" type="line"/>
+      <point x="1736" y="852" type="line"/>
+      <point x="1889" y="882" type="line"/>
+      <point x="1889" y="1082" type="line"/>
+    </contour>
+    <contour>
+      <point x="235" y="1082" type="line"/>
+      <point x="82" y="1082" type="line"/>
+      <point x="82" y="882" type="line"/>
+      <point x="235" y="852" type="line"/>
+    </contour>
+    <contour>
+      <point x="235" y="0" type="line"/>
+      <point x="235" y="230" type="line"/>
+      <point x="82" y="200" type="line"/>
+      <point x="82" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

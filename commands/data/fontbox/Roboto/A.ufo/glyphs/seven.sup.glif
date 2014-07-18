@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="seven.sup" format="1">
+  <advance width="712"/>
+  <outline>
+    <contour>
+      <point x="455" y="634" type="line"/>
+      <point x="381" y="569"/>
+      <point x="212" y="387"/>
+      <point x="212" y="127" type="curve" smooth="yes"/>
+      <point x="212" y="0" type="line"/>
+      <point x="434" y="0" type="line"/>
+      <point x="434" y="127" type="line" smooth="yes"/>
+      <point x="434" y="386"/>
+      <point x="544" y="494"/>
+      <point x="661" y="634" type="curve"/>
+    </contour>
+    <contour>
+      <point x="661" y="801" type="line"/>
+      <point x="60" y="801" type="line"/>
+      <point x="60" y="634" type="line"/>
+      <point x="661" y="634" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

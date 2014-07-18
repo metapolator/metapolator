@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="cyrillictic" format="1">
+  <advance width="1088"/>
+  <outline>
+    <contour>
+      <point x="466" y="190" type="line"/>
+      <point x="144" y="190" type="line"/>
+      <point x="144" y="-362" type="line"/>
+      <point x="466" y="-362" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

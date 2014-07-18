@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="quotereversed" format="1">
+  <advance width="320"/>
+  <unicode hex="201B"/>
+  <outline>
+    <contour>
+      <point x="100" y="1393" type="line" smooth="yes"/>
+      <point x="100" y="1270"/>
+      <point x="143" y="1178"/>
+      <point x="206" y="1111" type="curve"/>
+      <point x="243" y="1143" type="line"/>
+      <point x="183" y="1221"/>
+      <point x="154" y="1288"/>
+      <point x="154" y="1391" type="curve" smooth="yes"/>
+      <point x="154" y="1560" type="line"/>
+      <point x="100" y="1560" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

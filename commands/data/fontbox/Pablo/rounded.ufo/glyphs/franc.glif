@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="franc" format="1">
+  <advance width="558"/>
+  <unicode hex="20A3"/>
+  <outline>
+    <contour>
+      <point x="124" y="0" type="line"/>
+      <point x="238" y="0" type="line"/>
+      <point x="238" y="642" type="line"/>
+      <point x="523" y="642" type="line"/>
+      <point x="523" y="740" type="line"/>
+      <point x="124" y="740" type="line"/>
+    </contour>
+    <contour>
+      <point x="26" y="100" type="line"/>
+      <point x="342" y="100" type="line"/>
+      <point x="342" y="174" type="line"/>
+      <point x="26" y="174" type="line"/>
+    </contour>
+    <contour>
+      <point x="208" y="324" type="line"/>
+      <point x="500" y="324" type="line"/>
+      <point x="500" y="422" type="line"/>
+      <point x="208" y="422" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
