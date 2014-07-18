@@ -1,0 +1,30 @@
+{
+  "name": "metapolator",
+  "version": "0.0.0",
+  "homepage": "https://github.com/metapolator/metapolator",
+  "authors": [
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "description": "parametric font creation application",
+  "main": "(none)",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "GPL+3.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.11",
+    "angular": "~1.2.16",
+    "requirejs-domready": "~2.0.1",
+    "requirejs-text": "~2.0.12",
+    "less.js": "~1.7.0",
+    "bootstrap": "~3.1.1"
+  }
+}

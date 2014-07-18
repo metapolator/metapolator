@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .*
 *.py[cod]
 /users
@@ -11,17 +10,3 @@ test.err
 /static/lib
 
 /commands/data
-=======
-
-.DS_Store
-_site
-.index.html.swp
-.venv
-/static
-/users
-/docs
-/sessions
-/bower_components
-/node_modules
-/lib
->>>>>>> origin/paperjs-interpolation

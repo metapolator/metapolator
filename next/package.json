@@ -1,0 +1,30 @@
+{
+  "name": "metapolator-next",
+  "version": "0.0.0",
+  "description": "parametric font creation application",
+  "main": "(none)",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "bower": "~1.3.2",
+    "intern": "~1.6.2",
+    "gulp-require-convert": "0.0.1",
+    "gulp": "~3.6.2",
+    "gonzales": "~1.0.7",
+    "gulp-replace": "~0.3.0",
+    "gulp-insert": "~0.3.0",
+    "requirejs": "~2.1.14",
+    "lie": "~2.7.6",
+    "immutable-complex": "~3.0.4"
+  },
+  "dependencies": {
+    "js-yaml": "~3.0.2"
+  }
+}
