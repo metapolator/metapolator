@@ -95,7 +95,7 @@ Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, skele
 **note**: an adjustment master can appear anywhere in a design space and anywhere on adjustment master sequences.
 
 ### adjustment master sequence
-ƒ— New, Duplicate, Delete, Span (on master sequences and stings of instances)
+ƒ— New, Duplicate, Delete, Span (on master sequences and strings of instances)
 
 ### instance
 ƒ— New, Delete, Set Metapolation (i.e. mix of masters), Set Name, Export as font, Promote to master
