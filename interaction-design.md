@@ -14,7 +14,7 @@ Metapolator is extendible through plugins and custom specimens. It contains all 
 
 ## [Functionality Overview](https://github.com/metapolator/metapolator/wiki/functionality-overview)
 
-Functionality is the most dry, to-the-point—call it boring—description of what a piece of software does; i.e. its features. The [functionality overview](https://github.com/metapolator/metapolator/wiki/functionality-overview) serves as a checklist for the design process—and the project—to know ’what is in the box’ and answers ‘did we forget anything?’
+Functionality is the most dry, to-the-point—call it boring—description of what a piece of software does; i.e. its features. It serves as a checklist for the design process—and the project—to know ’what is in the box’ and answers ‘did we forget anything?’
 
 ## [User Scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios)
 
