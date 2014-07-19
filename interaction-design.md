@@ -30,9 +30,7 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 
 ## Expert Evaluation
 
-Notes of interest of the evaluation of earlier Metapolator prototypes and other font editors. 
-
-Using the user scenarios as a guide and the functionality overview as a checklist, a review of how earlier Metapolator UIs realized the product vision. From this, a report with the good, the bad and and the ugly of previous UIs, followed by further analysis and the start of actual design processes.
+Using the user scenarios as a guide and the functionality overview as a checklist, a review of how other font editor UIs realized the product vision. From this, a report with the good, the bad and the ugly, followed by further analysis and the start of actual design processes.
 
 * [Notes on v1](https://plus.google.com/+petersikking/posts/arem8tPjK7z)
 * [Eben Sorkin Comments](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)
