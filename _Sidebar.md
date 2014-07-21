@@ -1,1 +1,0 @@
-[Global Wiki History](https://github.com/metapolator/metapolator/wiki/_history)
