@@ -23,3 +23,7 @@ Conferences
 * [Automatic Type Design, ANRT, Nancy, France](http://automatic-type-design.anrt-nancy.fr/index_en.php)
 * [Tag Der Schrift, Zurich, Switzerland](http://www.tagderschrift.org/) - [photos](https://plus.google.com/100858309774292261525/posts/aj477TvM2kr)
 * [TUG 2014, Portland, USA](http://tug.org/tug2014/)
+
+Meta
+
+* [Global Wiki History](https://github.com/metapolator/metapolator/wiki/_history)
