@@ -1,4 +1,4 @@
-![](http://mmiworks.net/metapolator/allwall.jpg)
+![](http://metapolator.com/images/wiki/allwall.jpg)
 <br/>_nicolas pauly (r) and peter sikking working on the wall-of-concept._
 
 This is a visual report, with notes, of the 2-day Metapolator product workshop that took place on 9+10 July, 2014 at the Type Designers Studio, Zürich, Switzerland. Involved where Simon Egli and peter sikking, with contributions by nicolas pauly, Wei Huang (remote) and Eben Sorkin (via [this](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)).
@@ -8,7 +8,7 @@ Now where to start, there is so much we covered in these two days…
 ## of master sequences and sausages
 First thing we worked on was that masters in a design space are more often than not related to each other. They can form sequences (think thin–medium–bold, but also a thin-italic-narrow-sans to heavy-wide-slab sequence).
 
-![](http://mmiworks.net/metapolator/sequences2.jpg)
+![](http://metapolator.com/images/wiki/sequences2.jpg)
 
 Out of 3-or-more masters a sequence can be auto-detected (all significant changes of parameters line up for them) and any 2-or-more can be made a sequence by users. Master sequences are shown as lines in design space.
 
@@ -20,7 +20,7 @@ Out of 3-or-more masters a sequence can be auto-detected (all significant change
 * some crossing (and not) of 4 sequences;
 * force fields around some sequences (aka sausages) and single masters make up a design space.
 
-![](http://mmiworks.net/metapolator/tricky.jpg)
+![](http://metapolator.com/images/wiki/tricky.jpg)
 
 In a way, too many master sequences can be automatically detected in a 9-master setup like this. 
 
@@ -34,7 +34,7 @@ Next, we discussed ways of fine-tuning in Metapolator, Simon explained a system 
 
 Overrides can be combined (say a scale and a limit).
 
-![](http://mmiworks.net/metapolator/overrides.jpg)
+![](http://metapolator.com/images/wiki/overrides.jpg)
 
 **notes** (see numbers in image above):
 
@@ -43,7 +43,7 @@ Overrides can be combined (say a scale and a limit).
 
 So we went to work with Vernon’s idea. This part of a sequence can be (only) in the design space (here two master sequences cross):
 
-![](http://mmiworks.net/metapolator/adjustment.jpg)
+![](http://metapolator.com/images/wiki/adjustment.jpg)
 
 **notes** (see numbers in image above):
 
@@ -64,7 +64,7 @@ We spent some time on vector shapes. In general one can say that we have to achi
 
 Vector shapes can be seen as ornaments, glued to the main skeletons-and-parameters mass of a glyph.
 
-![](http://mmiworks.net/metapolator/shapes.jpg)
+![](http://metapolator.com/images/wiki/shapes.jpg)
 
 **notes** (see numbers in image above):
 
@@ -82,7 +82,7 @@ For any arbitrary shape I say: concentrate on starving it, shrinking it down to 
 ## hierarchy, hierarchy, hierarchy
 Over these two days we spent quite some time putting it all together.
 
-![](http://mmiworks.net/metapolator/hierarchy.jpg)
+![](http://metapolator.com/images/wiki/hierarchy.jpg)
 
 There are two hierarchies in Metapolator. The first one is **the hierarchy of masters**—
 * project
@@ -138,11 +138,11 @@ i.e. “a project consists of design spaces, which contain, and share, any numbe
 ## parameter gardening
 An important part of the second day was a serious look at the parameters. Every parameter was thoroughly discussed and vetted. Quite a bit of gardening was performed:
 
-![](http://mmiworks.net/metapolator/para1.jpg)
+![](http://metapolator.com/images/wiki/para1.jpg)
 
 New parameters and categories were created:
 
-![](http://mmiworks.net/metapolator/para2.jpg)
+![](http://metapolator.com/images/wiki/para2.jpg)
 
 Here are the results, organised:
 
@@ -207,18 +207,18 @@ The latter is a list of point pairs, point-x pairs and point-y pairs that stay a
 ### discussion
 We see that these parameters live at the bottom of the hierarchy of masters, whereas the aim is to work as much as possible at the top of the hierarchy. For all the glyphs, lines and points of one master these parameters will have very different values, but still need to be steered all at once, in a relative matter. **Else users are again working glyph-by-glyph**, a no-no in Metapolator. This should also sort out that above glyph width turns up both in a relative and an absolute way.
 
-![](http://mmiworks.net/metapolator/contrast.jpg)
+![](http://metapolator.com/images/wiki/contrast.jpg)
 
 At the end we spent some time on investigating contrast, aiming to offer it through two parameters, e.g. ratio and angle.
 
 ## raw images of the wall-of-concept
-![](http://mmiworks.net/metapolator/photo01.jpg)
-![](http://mmiworks.net/metapolator/photo02.jpg)
-![](http://mmiworks.net/metapolator/photo03.jpg)
-![](http://mmiworks.net/metapolator/photo04.jpg)
-![](http://mmiworks.net/metapolator/photo05.jpg)
-![](http://mmiworks.net/metapolator/photo06.jpg)
-![](http://mmiworks.net/metapolator/photo07.jpg)
+![](http://metapolator.com/images/wiki/photo01.jpg)
+![](http://metapolator.com/images/wiki/photo02.jpg)
+![](http://metapolator.com/images/wiki/photo03.jpg)
+![](http://metapolator.com/images/wiki/photo04.jpg)
+![](http://metapolator.com/images/wiki/photo05.jpg)
+![](http://metapolator.com/images/wiki/photo06.jpg)
+![](http://metapolator.com/images/wiki/photo07.jpg)
 
 ## G+ Comments
 
