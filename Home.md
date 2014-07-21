@@ -1,9 +1,9 @@
 _This a developer documentation wiki. End User documentation will eventually be published on the [metapolator.com](http://metapolator.com) homepage (which has [source](https://github.com/metapolator/metapolator/tree/gh-pages) hosted on Github, so has some wikiness)_
 
 Interaction Design
-* [Product Phase](https://github.com/metapolator/metapolator/wiki/interaction-design)
-* [Design Phase](https://github.com/metapolator/metapolator/wiki/interaction-design)
-* [Implementation Phase](https://github.com/metapolator/metapolator/wiki/interaction-design)
+* [Product Phase](https://github.com/metapolator/metapolator/wiki/interaction-design#the-product-phase)
+* [Design Phase](https://github.com/metapolator/metapolator/wiki/interaction-design#the-design-phase)
+* [Implementation Phase](https://github.com/metapolator/metapolator/wiki/interaction-design#the-implementation-phase)
 
 Software Development
 * [Concepts](https://github.com/metapolator/metapolator/wiki/concepts)
