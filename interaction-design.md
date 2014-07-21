@@ -28,6 +28,8 @@ User scenarios show the essential use, in logical, worthwhile and valuable steps
 * Extend: add script (i.e. a writing system) support.
 * Extend: add a custom algorithm.
 
+[G+ Discussion](https://plus.google.com/u/0/101901813675356116026/posts/MA6iVHuFDwv)
+
 ## Expert Evaluation
 
 Using the user scenarios as a guide and the functionality overview as a checklist, a review of how other font editor UIs realized the product vision. From this, a report with the good, the bad and the ugly, followed by further analysis and the start of actual design processes.
