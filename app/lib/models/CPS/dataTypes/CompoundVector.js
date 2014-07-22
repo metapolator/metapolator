@@ -1,6 +1,6 @@
 define([
     'metapolator/errors'
-  , './Vector'
+  , 'metapolator/math/Vector'
   , './IntrinsicVectorValue'
 ], function(
     errors

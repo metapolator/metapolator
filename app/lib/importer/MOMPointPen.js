@@ -4,7 +4,7 @@ define([
   , 'ufojs/tools/pens/AbstractPointPen'
   , 'metapolator/models/MOM/PenStroke'
   , 'metapolator/models/MOM/PenStrokePoint'
-  , 'metapolator/models/CPS/dataTypes/Vector'
+  , 'metapolator/math/Vector'
 ], function(
     errors
   , ufoJSUtils

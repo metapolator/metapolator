@@ -1,7 +1,7 @@
 define([
     'metapolator/errors'
   , './CompoundVector'
-  , './Vector'
+  , 'metapolator/math/Vector'
   , './CompoundReal'
   , './IntrinsicValue'
   , './CompoundAlgebraValue'

@@ -7,8 +7,7 @@ define([
     
     /**
      * All points in this module are expected to be complex numbers like
-     * complex/Complex or models/CPS/dataTypes/Vector (which inherits
-     * from Complex)
+     * complex/Complex or metapolator/math/Vector (which inherits from Complex)
      */
     
     function hobby(theta, phi) {

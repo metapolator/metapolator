@@ -1,7 +1,7 @@
 define([
     'metapolator/errors'
   , 'ufojs/main'
-  , './Vector'
+  , 'metapolator/math/Vector'
 ], function(
     errors
   , ufoJS
