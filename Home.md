@@ -27,3 +27,5 @@ Conferences
 Meta
 
 * [Global Wiki History](https://github.com/metapolator/metapolator/wiki/_history)
+
+[Related Projects](https://github.com/metapolator/metapolator/wiki/related-projects)
