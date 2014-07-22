@@ -10,6 +10,7 @@ requirejs.config({
         'require/domReady': 'bower_components/requirejs-domready/domReady'
       , 'require/text': 'bower_components/requirejs-text/text'
       , 'metapolator': './'
+      , 'commands': '../commands'
       , 'gonzales': 'npm_converted/gonzales/lib'
       , 'complex':  'npm_converted/immutable-complex/lib'
       , 'angular': 'bower_components/angular/angular'
@@ -31,13 +32,14 @@ requirejs([
     "use strict";
     var CommandLineError = errors.CommandLine
       , commands = {
-            'import': 'metapolator/importer/cli'
-          , 'import-playground': 'metapolator/importer/playground'
-          , 'cps-playground': 'metapolator/cps/cli'
-          , 'cps-selectors': 'metapolator/cps/cli-selectors'
-          , 'cps-algebra': 'metapolator/cps/cli-algebra'
-          , 'init': 'metapolator/importer/cli-init'
-          , 'export': 'metapolator/importer/cli-export'
+          // production tools
+            'init': 'commands/init'
+          , 'import': 'commands/import'
+          , 'export': 'commands/export'
+          // developer playground, to make quick tests etc
+          , 'dev-playground-cps': 'commands/playground/cps'
+          , 'dev-playground-cps-selectors': 'commands/playground/cps-selectors'
+          , 'dev-playground-cps-algebra': 'commands/playground/cps-algebra'
         }
       , commandList = Object.keys(commands)
       , help = [

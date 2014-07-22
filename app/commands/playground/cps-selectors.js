@@ -11,6 +11,7 @@ define([
   , 'metapolator/models/MOM/PenStrokePoint'
   , 'metapolator/models/CPS/Registry'
   , 'metapolator/models/CPS/StyleDict'
+  , 'metapolator/models/Controller'
 ], function (
     errors
   , gonzales
@@ -24,6 +25,7 @@ define([
   , PenStrokePoint
   , Registry
   , StyleDict
+  , Controller
 ) {
     "use strict";
     var CommandLineError = errors.CommandLine
@@ -112,17 +114,17 @@ define([
         }
         
         
-        var multivers = {children:[univers]}
+        /* we don't read values here, just selecting elements*/
+        var controller = new Controller(univers, [], undefined)
+          , scope = univers.query('penstroke:i(1)')
           , result
-          , scope = selectorEngine.query(multivers, 'penstroke:i(1)')[0]
           ;
-        
         
         
         console.log('selector:', args.selectors, 'scope: ' + scope + ' ' + scope.particulars );
         
         //result = selectorEngine.query(multivers, args.selectors)
-        result = scope.query(args.selectors);
+        result = scope.queryAll(args.selectors);
         
         console.log('result:')
         console.log(result.map(function(item){ return item +' '+item.particulars }).join(',\n'));

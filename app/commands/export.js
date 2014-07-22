@@ -2,7 +2,7 @@ define([
     'metapolator/errors'
   , 'metapolator/cli/ArgumentParser'
   , 'ufojs/tools/io/staticNodeJS'
-  , './MetapolatorProject'
+  , 'metapolator/importer/MetapolatorProject'
   ], function (
     errors
   , ArgumentParser
@@ -15,15 +15,27 @@ define([
       , module
       ;
     argumentParser.addArgument(
-        'name'
-      , 'The name of the Metapolator project'
+        'MasterName'
+      , 'The master to be exported'
       , function(args) {
             var name = args.pop();
             if(name === undefined)
-                throw new CommandLineError('No Metapolator project name argument found');
+                throw new CommandLineError('No MasterName argument found');
             return name;
         }
-      );
+    );
+    
+    argumentParser.addArgument(
+        'InstanceName'
+      , 'The name of the instance to export to, a dirname, but the .ufo '
+        + 'extension is added by metapolator'
+      , function(args) {
+            var name = args.pop();
+            if(name === undefined)
+                throw new CommandLineError('No InstanceName argument found');
+            return name;
+        }
+    );
     
     function main(commandName, argv) {
             // arguments are mandatory and at the end of the argv array
@@ -41,9 +53,9 @@ define([
         console.log('processed arguments', args)
         console.log('processed options', options)
         
-
-
-        var project= new MetapolatorProject.init(io, args.name);
+        var project = new MetapolatorProject(io)
+        project.load();
+        project.exportInstance(args.MasterName, args.InstanceName);
     }
     
     module = {main: main};
