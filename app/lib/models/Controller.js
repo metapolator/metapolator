@@ -113,7 +113,7 @@ define([
             for(;i<scope.length;i++)
                 if(scope[i].multivers !== this._MOM)
                     throw new CPSError('Query with a scope that is not '
-                    +'part of the multivers is not supported' + scope);
+                    +'part of the multivers is not supported ' + scope[i].particulars);
         }
         else
             scope = this._MOM;
@@ -134,7 +134,7 @@ define([
             for(;i<scope.length;i++)
                 if(scope[i].multivers !== this._MOM)
                     throw new CPSError('Query with a scope that is not '
-                    +'part of the multivers is not supported' + scope);
+                    +'part of the multivers is not supported: ' + scope[i].pariculars);
         }
         else
             scope = [this._MOM];
