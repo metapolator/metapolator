@@ -2,9 +2,9 @@ define([
     'metapolator/errors'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'metapolator/models/Controller'
-  , './readOutlines/SegmentPen'
-  , './readOutlines/ImportOutlinePen'
-  , './readOutlines/StrokeContour'
+  , './import/SegmentPen'
+  , './import/ImportOutlinePen'
+  , './import/StrokeContour'
   
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
