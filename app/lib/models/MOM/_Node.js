@@ -237,11 +237,11 @@ define([
     }
     
     _p.query = function(selector) {
-        return this.multiverse.query(this, selector);
+        return this.multivers.query(selector, this);
     }
     
     _p.queryAll = function(selector) {
-        return this.multiverse.queryAll(this, selector);
+        return this.multivers.queryAll(selector, this);
     }
     
     return _Node;
