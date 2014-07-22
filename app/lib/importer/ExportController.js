@@ -1,6 +1,6 @@
 define([
     'metapolator/errors'
-  , './readOutlines/hobby'
+  , 'metapolator/math/hobby'
 ], function(
     errors
   , hobby

@@ -1,7 +1,7 @@
 define([
     'metapolator/errors'
   , './tools'
-  , './hobby'
+  , 'metapolator/math/hobby'
 ], function(
     errors
   , tools
