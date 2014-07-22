@@ -21,6 +21,9 @@ define([
     
     
     /**
+     * Point Pen to draw a Skeleton outline into a MOM glyph, thus creating
+     * the MOM Tree beyond glyph level
+     * 
      * This copies a lot of the validation logic of
      * ufojs/ufoLib/glifLib/GLIFPointPen
      * 

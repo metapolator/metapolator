@@ -2,7 +2,7 @@ define([
     'metapolator/errors'
   , 'metapolator/cli/ArgumentParser'
   , 'ufojs/tools/io/staticNodeJS'
-  , 'metapolator/importer/MetapolatorProject'
+  , 'metapolator/project/MetapolatorProject'
   ], function (
     errors
   , ArgumentParser
