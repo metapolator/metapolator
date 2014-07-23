@@ -1,15 +1,1 @@
-.*
-*.py[cod]
-/users
-localconfig.py
 /node_modules
-
-test.err
-/static/dist
-/static/lib
-
-/commands/data
-*/node_modules
-/bower*
-/static/dist
-/static/lib
