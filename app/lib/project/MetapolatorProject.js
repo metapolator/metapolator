@@ -11,6 +11,7 @@ define([
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
   , './ExportController'
+  , 'yaml'
 ], function(
     errors
   , obtain
@@ -24,14 +25,12 @@ define([
   , GlyphSet
   , ImportController
   , ExportController
+  , yaml
 ) {
     "use strict";
 
-        // FIXME: ufoJS io must be able to do directory operations
-    var fs = require.nodeRequire('fs')
         // FIXME: make this availabe for browsers, too
-      , yaml = require.nodeRequire('js-yaml')
-      , metainfoV3 = {
+    var metainfoV3 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
             // how strict robofab is on this, but unifiedfontobkect.org
@@ -107,23 +106,23 @@ define([
         // everything synchronously right now
         this.dirName = dirName;
         
-        this._mkdir(false, this.dirName);
+        this._io.mkDir(false, this.dirName);
         
         // create dirName/metainfo.plist
         this._io.writeFile(false, this.dirName+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV3));
         
         // create dir dirName/data
-        this._mkdir(false, this.dirName+'/data');
+        this._io.mkDir(false, this.dirName+'/data');
         // create dir dirName/data/com.metaploator
-        this._mkdir(false, this.dataDir);
+        this._io.mkDir(false, this.dataDir);
         
         // project file:
         // create     this.dataDir/project.yaml => yaml({})
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create dir this.dataDir/cps
-        this._mkdir(false, this.cpsDir);
+        this._io.mkDir(false, this.cpsDir);
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create layercontents.plist
@@ -145,13 +144,6 @@ define([
         this._io.writeFile(false, [this.cpsDir, '/', this.cpsGlobalFile].join(''),
                             '/* all masters use this CPS file by default*/');
     }
-    
-    _p._mkdir = obtain.factory(
-        { mkdir: ['dirname', fs.mkdirSync.bind(fs)]}
-      , { mkdir: ['dirname', '_callback', fs.mkdir.bind(fs)]}
-      , ['dirname']
-      , function(obtain){ return obtain('mkdir'); }
-    )
     
     _p.load = function() {
         // the files created in _p.init need to exist
@@ -199,7 +191,7 @@ define([
                                     +'with name "' + layerDir
                                     +'" already exists.');
         // create new layer dir
-        this._mkdir(false, layerDir);
+        this._io.mkDir(false, layerDir);
         
         // store layer in layercontents
         layercontents.push([name, layerDirName]);
@@ -312,7 +304,7 @@ define([
              throw new ProjectError('Can\'t create instance. A directory '
                                     +'with name "' + dirName
                                     +'" already exists.');
-        this._mkdir(false, dirName);
+        this._io.mkDir(false, dirName);
         
         // create dirName/metainfo.plist
         this._io.writeFile(false, dirName+'/metainfo.plist'
@@ -322,7 +314,7 @@ define([
         this._io.writeFile(false, dirName+'/fontinfo.plist'
                                 , plistLib.createPlistString(minimalFontinfo));
         
-        this._mkdir(false,  dirName +'/glyphs');
+        this._io.mkDir(false,  dirName +'/glyphs');
         
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
