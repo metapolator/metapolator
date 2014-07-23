@@ -22,9 +22,9 @@ requirejs.config({
         angular: {
             exports: 'angular'
         }
-      , yaml: {
-            exports: 'jsyaml'
-      }
+      //, yaml: {
+      //      exports: 'jsyaml'
+      //}
     }
 });
 
