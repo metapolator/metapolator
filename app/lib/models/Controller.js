@@ -21,15 +21,15 @@ define([
         this._mergedRules = this._getMergedRules();
         this._mergedDictionaries = this._getMergedDictionaries();
         
+        this._sourceIndex = undefined;
+        this._rebuildSourceIndex();
         
         this._MOM = new Multivers(this);
         this._MOM.add(univers)
         this._parameterRegistry = parameterRegistry;
         
-        this._caches = {
-            styleDicts: {}
-          , referenceDicts: {}
-        }
+        this._caches = undefined;
+        this._resetCaches();
     }
     
     var _p = Controller.prototype;
@@ -59,11 +59,45 @@ define([
         
     }
     
+    _p._rebuildSourceIndex = function() {
+        this._sourceIndex = {};
+        var i=0
+          , name
+          ;
+        for(;i<this._collections.length;i++) {
+            name = this._collections[i].source.name;
+            this._sourceIndex[name] = i;
+        }
+    }
+    
+    _p._resetCaches = function() {
+        this._caches = {
+            styleDicts: {}
+          , referenceDicts: {}
+        }
+    };
+    
     Object.defineProperty(_p, 'sources', {
         get: function() {
-            return this._collections.map(function(item){ return item.source.name; });
+            return Object.keys(this._sourceIndex)
         }
     })
+    
+    _p.usesSource = function(source) {
+        return source in this._sourceIndex;
+    }
+    
+    _p.replaceSource = function(source, collection) {
+        var index = this._sourceIndex[source];
+        if(index === undefined)
+            throw new KeyError('Can\'t replace source "'+ source
+                                +'" because it\'s not in this controller');
+        if(collection.source.name !== source)
+            throw new KeyError ('collection.source.name must equal source, '
+                + 'but "' + collection.source.name +'" !== "'+ source +'"');
+        
+        this._collections[index] = collection;
+    }
     
     _p.getSourceStringByName = function(source) {
         var i=0;
