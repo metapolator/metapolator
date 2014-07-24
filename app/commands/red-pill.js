@@ -27,15 +27,16 @@ define([
           ;
         
         
-        console.log(['This is your last chance.'
-          , 'After this, there is no turning back. You take the blue '
-          , 'pill—the story ends, you wake up in your bed and believe '
-          , 'whatever you want to believe. You take the red pill—you '
-          , 'stay in Wonderland, and I show you how deep the rabbit hole '
-          , 'goes. Remember, all I\'m offering is the truth—nothing more.'
-          , '\n\n'
-          , 'Metapolator: Serving the red pill ... '
-          ].join('')
+        console.log([
+          , 'This is your last chance. After this, there is no turning back.'
+          , 'You take the blue pill—the story ends, you wake up in your '
+          , 'bed and believe whatever you want to believe.'
+          , 'You take the red pill—you stay in Wonderland, and I show you '
+          , 'how deep the rabbit hole goes.'
+          , 'Remember, all I\'m offering is the truth—nothing more.'
+          , '        -- Morpheus --'
+          , ''
+          ].join('\n')
         );
         
         var express = require('express')
@@ -136,16 +137,19 @@ define([
         
         function _unlinkFileHandler(res, next, err) {
             if(err && err.code !== 'ENOENT')
-                console.log(err), next(err);
+                next(err);
             else
                 res.send(204);
         }
         
         // simple logger
-        app.use(function(req, res, next) {
-            console.log('logger ! %s %s', req.method, req.url);
-            next();
-        });
+        // Let this be the first middleware, to make shure every request
+        // is logged to console.
+        // Uncomment when of interest.
+        // app.use(function(req, res, next) {
+        //     console.log('logger ! %s %s', req.method, req.url);
+        //     next();
+        // });
         
         app.use('', function(req, res, next) {
             if(req.path === '/')
@@ -163,7 +167,6 @@ define([
               , method = req.method
               , data
               ;
-            console.log('method', req.method, path.slice(-1) === '/', path);
             if(path.slice(-1) === '/') {
             // directory
                 switch(method) {
@@ -229,7 +232,10 @@ define([
                 // default error handler of express
                 next();
         });
+        
         app.listen(3000);
+        console.log('Metapolator: Serving the red pill.')
+        console.log('Open http://localhost:3000 in your browser.')
         
     }
     
