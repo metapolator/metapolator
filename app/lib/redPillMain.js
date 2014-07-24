@@ -10,6 +10,9 @@ requirejs.config({
       , 'obtain': 'obtainJS/lib'
       , 'ufojs': 'ufoJS/lib'
       , 'yaml': 'bower_components/js-yaml/dist/js-yaml.min'
+         // code mirror uses AMD define style if available :-)
+      , 'codemirror': 'bower_components/codemirror'
+      , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
     }
   , shim: {
         angular: {
@@ -17,10 +20,27 @@ requirejs.config({
         }
       , yaml: {
             exports: 'jsyaml'
-      }
+        }
+        //These script dependencies should be loaded before loading
+        //ui-codemirror
+      , 'ui-codemirror': {
+            deps: ['angular', 'GlobalCodeMirror']
+        }
     }
 });
 
+
+// ui code mirror searches a global CodeMirror object, which is not defined
+// by code mirror when loaded via AMD ... m(
+// this is the test in the file:
+// if (angular.isUndefined(window.CodeMirror))
+define('GlobalCodeMirror', [
+    'codemirror/lib/codemirror'
+  , 'codemirror/mode/css/css'
+    ], function(codemirror) {
+    window.CodeMirror = codemirror;
+    return undefined;
+})
 
 require([
     'webAPI/document'
