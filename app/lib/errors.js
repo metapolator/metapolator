@@ -51,6 +51,7 @@ define(function() {
     makeError('CPSAlgebra', undefined , new errors.CPS);
     makeError('Project', undefined , new errors.CPS);
     makeError('PointPen', undefined , new errors.CPS);
+    makeError('CPSParser', undefined , new errors.CPS);
     
     /**
      * if expression is false errors.Assertion is thrown
