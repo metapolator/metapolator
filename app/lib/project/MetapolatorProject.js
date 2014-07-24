@@ -66,7 +66,7 @@ define([
           , dirName = name+'.ufo'
           ;
         // create dirName
-        if(io.pathExists(false, dirName))
+        if(io.pathExists(false, dirName+'/'))
             throw new ProjectError('Dir exists already: '+ dirName);
         project.init(dirName);
     };
@@ -169,6 +169,10 @@ define([
         return masterName in this._data.masters;
     }
     
+    Object.defineProperty(_p, 'masters', {
+        get: function(){ return Object.keys(this._data.masters); } 
+    });
+    
     _p._createGlyphLayer = function(name, layerDirName) {
         if(layerDirName === undefined)
             layerDirName = 'glyphs.' + name;
@@ -186,7 +190,7 @@ define([
                                                 +'" already exists.');
         
         // see if there is a directory with the name layerDir already
-        if(this._io.pathExists(false, layerDir))
+        if(this._io.pathExists(false, layerDir+'/'))
             throw new ProjectError('Can\'t create glyph layer. A directory '
                                     +'with name "' + layerDir
                                     +'" already exists.');
@@ -220,7 +224,7 @@ define([
             }
         if(!layerDir)
             throw new KeyError('Layer named "' + name + '" not found.');
-        if(!this._io.pathExists(false, layerDir))
+        if(!this._io.pathExists(false, layerDir + '/'))
             throw new KeyError('Layer directory "' + layerDir
                                 + '" does not exist, but is linked in '
                                 +'layercontents.plist.');
@@ -300,7 +304,7 @@ define([
           ;
         
         // create a bare ufoV2 directory
-        if(this._io.pathExists(false, dirName))
+        if(this._io.pathExists(false, dirName +'/'))
              throw new ProjectError('Can\'t create instance. A directory '
                                     +'with name "' + dirName
                                     +'" already exists.');
