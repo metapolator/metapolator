@@ -112,6 +112,9 @@ var getTokens = (function() {
         if (!s) return [];
 
         tokens = [];
+        // hotfix line numbers
+        tn = 0;
+        ln = 1;
 
         var c, cn;
 
