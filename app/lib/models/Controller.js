@@ -12,7 +12,9 @@ define([
   , ReferenceDict
 ) {
     "use strict";
-    var CPSError = errors.CPS;
+    var CPSError = errors.CPS
+      , KeyError = errors.Key
+      ;
     
     function Controller(univers, paramterCollections, parameterRegistry) {
         this._collections = paramterCollections.slice();
@@ -56,6 +58,22 @@ define([
                             .map(function(item){return item.dictionaryRules; }))
         
     }
+    
+    Object.defineProperty(_p, 'sources', {
+        get: function() {
+            return this._collections.map(function(item){ return item.source.name; });
+        }
+    })
+    
+    _p.getSourceStringByName = function(source) {
+        var i=0;
+        for(;i<this._collections.length;i++)
+            if(this._collections[i].source.name === source)
+                return this._collections[i].toString();
+        throw new KeyError(['The Source with name "', source ,'" was not '
+                        , 'found in: ',this.sources.join(', ')].join(''));
+    }
+    
     
     Object.defineProperty(_p, 'parameterRegistry', {
         get: function() {
