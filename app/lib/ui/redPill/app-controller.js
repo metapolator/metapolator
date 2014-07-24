@@ -1,11 +1,18 @@
 define([], function() {
     "use strict";
     function AppController($scope, model, registerFrontend) {
-        registerFrontend(this);
         this.$scope = $scope;
         this.$scope.name = 'app'
+        // registering the root of the app, for callback purposes
+        registerFrontend(this);
         
         this.$scope.model = this.model = model;
+        
+        // These are used to store the application state.
+        // When we switch between masters, for example, a RedPillMasterController
+        // will remember its last state via this.$scope.masterData
+        this.$scope.currentMasters = []
+        this.$scope.masterData = {}
         
         console.log('new', this, ':-)', this.$scope.name, this.$scope.$parent)
         this.greetMe('Neo')

@@ -2,15 +2,15 @@ define([
     'angular'
   , './app-controller'
   , './app-directive'
-//  , './container/container'
+  , './redPillMaster/redPillMaster'
 ], function(
     angular
   , Controller
   , directive
-//  , containerModule
+  , redPillMaster
 ) {
     "use strict";
-    return angular.module('mtk.redPill', [])//, [containerModule.name])
+    return angular.module('mtk.redPill', [redPillMaster.name])
       .controller('AppController', Controller)
       .directive('redPill', directive)
       ;
