@@ -1,14 +1,10 @@
 define([
     'metapolator/errors'
-  , 'metapolator/models/CPS/parsing/parseRules'
-  , './parameters/registry'
   , 'metapolator/models/MOM/Master'
   , 'metapolator/models/MOM/Glyph'
   , './MOMPointPen'
 ], function(
     errors
-  , parseRules
-  , parameterRegistry
   , Master
   , Glyph
   , MOMPointPen
@@ -46,16 +42,10 @@ define([
     
     _p.loadCPS = function() {
         var i = 0
-          , fileName
-          , cpsString
           , rules = []
           ;
-        for(;i<this._cpsChain.length;i++) {
-            fileName = this._project.cpsDir+'/'+this._cpsChain[i];
-            cpsString = this._io.readFile(false, fileName);
-            rules.push(parseRules.fromString(cpsString, this._cpsChain[i],
-                                                parameterRegistry));
-        }
+        for(;i<this._cpsChain.length;i++)
+            rules.push(this._project.getCPSRules(this._cpsChain[i]));
         return rules;
     };
     
