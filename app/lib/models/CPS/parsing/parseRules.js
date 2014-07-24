@@ -15,6 +15,7 @@ define([
 ) {
     "use strict";
     var CPSError = errors.CPS
+      , CPSParserError = errors.CPSParser
       , parameterFactories = parameterFactoriesModule.factories
       ;
     
@@ -27,7 +28,16 @@ define([
      * Create a ParameterCollection from a CSS-string
      */
     function rulesFromString(css, sourceName, parameterRegistry) {
-        var ast = gonzales.srcToCSSP(css);
+        var ast;
+        try {
+            ast = gonzales.srcToCSSP(css);
+        }
+        catch (error) {
+            // gonzales throws a pure JavaScript Error, but we wan't more
+            // certainty in the rest of our application
+            throw new CPSParserError(error.message, error.stack);
+        }
+        
         return rulesFromAST(ast, sourceName, parameterRegistry)
     }
      
