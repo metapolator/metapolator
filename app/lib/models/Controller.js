@@ -2,12 +2,14 @@ define([
     'metapolator/errors'
   , 'metapolator/models/CPS/selectorEngine'
   , 'metapolator/models/MOM/Multivers'
+  , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/CPS/StyleDict'
   , 'metapolator/models/CPS/ReferenceDict'
 ], function(
     errors
   , selectorEngine
   , Multivers
+  , Univers
   , StyleDict
   , ReferenceDict
 ) {
@@ -16,17 +18,16 @@ define([
       , KeyError = errors.Key
       ;
     
-    function Controller(univers, paramterCollections, parameterRegistry) {
-        this._collections = paramterCollections.slice();
-        this._mergedRules = this._getMergedRules();
-        this._mergedDictionaries = this._getMergedDictionaries();
-        
-        this._sourceIndex = undefined;
-        this._rebuildSourceIndex();
+    function Controller(parameterRegistry) {
+        this._parameterRegistry = parameterRegistry;
+        this._sources = [];
+        this._sourceIndex = {};
+        // source names of the masters
+        this._masters = {};
         
         this._MOM = new Multivers(this);
-        this._MOM.add(univers)
-        this._parameterRegistry = parameterRegistry;
+        this._univers = new Univers();
+        this._MOM.add(this._univers);
         
         this._caches = undefined;
         this._resetCaches();
@@ -41,41 +42,57 @@ define([
     _p.StyleDict = StyleDict;
     _p.ReferenceDict = ReferenceDict;
     
-    /**
-     * getComputedStyle returns the matching rules in the correct
-     * order by specificity, so all rules should be included. The 
-     * order of the rules is important, too, and used as last weighting
-     * information, if all other specificity numbers equal.
-     */
-    _p._getMergedRules = function() {
-        return Array.prototype.concat.apply([], this._collections
-                            .map(function(item){return item.rules; }))
-    }
-    
-    _p._getMergedDictionaries = function() {
-        // get all @dictionary rules
-        return Array.prototype.concat.apply([], this._collections
-                            .map(function(item){return item.dictionaryRules; }))
-        
-    }
     
     _p._rebuildSourceIndex = function() {
         this._sourceIndex = {};
         var i=0
           , name
           ;
-        for(;i<this._collections.length;i++) {
-            name = this._collections[i].source.name;
+        for(;i<this._sources.length;i++) {
+            name = this._sources[i].source.name;
             this._sourceIndex[name] = i;
         }
     }
     
+    /**
+     * todo: check if deleting only parts of the cache is possible
+     * when only one master is affected by a change, it is overkill
+     * to delete all the other items as well.
+     */
     _p._resetCaches = function() {
         this._caches = {
             styleDicts: {}
           , referenceDicts: {}
+          , rules: {}
+          , dictionaries: {}
         }
     };
+    
+    _p.addSource = function(parameterSource) {
+        var ownSource
+          , name = parameterSource.source.name
+          ;
+        try {
+            ownSource = this.getSource(name);
+        }
+        catch(error){
+            if(!(error instanceof KeyError))
+                throw error;
+        }
+        if(!ownSource)
+            // we don't have a source named like that yet
+            this._sourceIndex[name] = this._sources.push(parameterSource) - 1;
+        else if(ownSource !== parameterSource)
+            throw new KeyError('A parameterSource object with the same '
+                + 'name  "'+name+'" exists already. Use replaceSource to '
+                +'change a source objcet?');
+        // else: pass, we aleady have that source
+        return;
+    }
+    
+    _p.addSources = function(sources) {
+        sources.map(this.addSource, this);
+    }
     
     Object.defineProperty(_p, 'sources', {
         get: function() {
@@ -87,27 +104,83 @@ define([
         return source in this._sourceIndex;
     }
     
-    _p.replaceSource = function(source, collection) {
-        var index = this._sourceIndex[source];
+    _p.replaceSource = function(collection) {
+        var source = collection.source.name
+          , index = this._sourceIndex[source]
+          ;
         if(index === undefined)
             throw new KeyError('Can\'t replace source "'+ source
                                 +'" because it\'s not in this controller');
-        if(collection.source.name !== source)
-            throw new KeyError ('collection.source.name must equal source, '
-                + 'but "' + collection.source.name +'" !== "'+ source +'"');
-        
-        this._collections[index] = collection;
+        this._sources[index] = collection;
+        this._resetCaches();
+    }
+    
+    _p.getSource = function(source) {
+        var index = this._sourceIndex[source];
+        if(index === undefined)
+            throw new KeyError(['The Source with name "', source ,'" was '
+                    , 'not found in: ',this.sources.join(', ')].join(''));
+        return this._sources[index];
     }
     
     _p.getSourceStringByName = function(source) {
-        var i=0;
-        for(;i<this._collections.length;i++)
-            if(this._collections[i].source.name === source)
-                return this._collections[i].toString();
-        throw new KeyError(['The Source with name "', source ,'" was not '
-                        , 'found in: ',this.sources.join(', ')].join(''));
+        return this.getSource(source).toString();
     }
     
+    _p.addMaster = function(master, sources) {
+        var i=0, sourceSet = {};
+        
+        this.addSources(sources);
+        for(;i<sources.length;i++)
+            sourceSet[sources[i].source.name] = null;
+        this._masters[master.id] = sourceSet;
+        this._univers.add(master);
+    }
+    
+    _p.hasMaster = function (master) {
+        return master in this._masters;
+    }
+    
+    _p.getMasterSources = function (master) {
+        if(!(master in this._masters))
+            throw new KeyError('Master "'+ master +'" not found in '
+                                + Object.keys(this._masters).join(', '));
+        return Object.keys(this._masters[master]);
+    }
+    
+    
+    /**
+     * getComputedStyle returns the matching rules in the correct
+     * order by specificity, so all rules should be included. The 
+     * order of the rules is important, too, and used as last weighting
+     * information, if all other specificity numbers equal.
+     */
+    _p._getMergedRules = function(master) {
+        return Array.prototype.concat.apply([]
+                    , this.getMasterSources(master)
+                            .map(this.getSource, this)
+                            .map(function(item){return item.rules;}));
+    }
+    _p.getMergedRules = function(master) {
+        if(!this._caches.rules[master])
+            this._caches.rules[master] = this._getMergedRules(master);
+        return this._caches.rules[master];
+    }
+    
+    /**
+     * get all @dictionary rules for master
+     */
+    _p._getMergedDictionaries = function(master) {
+        return Array.prototype.concat.apply([]
+                    , this.getMasterSources(master)
+                            .map(this.getSource, this)
+                            .map(function(item){return item.dictionaryRules; }));
+    }
+    _p.getMergedDictionaries = function(master) {
+        if(!this._caches.dictionaries[master])
+            this._caches.dictionaries[master] = this._getMergedDictionaries(master);
+        return this._caches.dictionaries[master];
+    }
     
     Object.defineProperty(_p, 'parameterRegistry', {
         get: function() {
@@ -123,7 +196,10 @@ define([
     * rulesForElement and just search that rules up to the end
     */
     _p._getComputedStyle = function(element) {
-        var rules = selectorEngine.getMatchingRules(this._mergedRules, element);
+        var masterRules = element.master
+                ? this.getMergedRules(element.master.id)
+                : []
+          , rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.StyleDict(this, rules, element);
     }
     
@@ -137,7 +213,10 @@ define([
     }
     
     _p._getReferenceDictionary = function(element) {
-        var rules = selectorEngine.getMatchingRules(this._mergedDictionaries, element);
+        var masterRules = element.master
+                ? this.getMergedDictionaries(element.master.id)
+                : []
+        var rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
     }
     
@@ -165,10 +244,11 @@ define([
             for(;i<scope.length;i++)
                 if(scope[i].multivers !== this._MOM)
                     throw new CPSError('Query with a scope that is not '
-                    +'part of the multivers is not supported ' + scope[i].particulars);
+                        +'part of the multivers is not supported '
+                        + scope[i].particulars);
         }
         else
-            scope = this._MOM;
+            scope = [this._MOM];
         result = selectorEngine.queryAll(scope, selector);
         // monkey patching the returned array.
         // it may become useful to invent an analogue to Web API NodeList
@@ -186,7 +266,8 @@ define([
             for(;i<scope.length;i++)
                 if(scope[i].multivers !== this._MOM)
                     throw new CPSError('Query with a scope that is not '
-                    +'part of the multivers is not supported: ' + scope[i].pariculars);
+                        +'part of the multivers is not supported: '
+                        + scope[i].pariculars);
         }
         else
             scope = [this._MOM];
