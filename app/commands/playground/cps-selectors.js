@@ -55,17 +55,20 @@ define([
         console.log('processed arguments', args)
         console.log('processed options', options)
         
-        var univers = new Univers()
-          , ralph = new Master()
+        var ralph = new Master()
           , heidi = new Master()
-          , mastersOfTheUnivers 
+            /* we don't read values here, just selecting elements*/
+          , controller = new Controller(undefined)
+          , univers = controller.query('univers')
+          , mastersOfTheUnivers
           , data = {}
           ;
         ralph.id = 'ralph';
         heidi.id = 'heidi';
         univers.add(ralph);
         univers.add(heidi);
-        mastersOfTheUnivers = univers.children;
+        
+        mastersOfTheUnivers = univers.children
         
         data[ralph.id] = {
             glyphs: [
@@ -114,12 +117,10 @@ define([
         }
         
         
-        /* we don't read values here, just selecting elements*/
-        var controller = new Controller(univers, [], undefined)
-          , scope = univers.query('penstroke:i(1)')
+        
+        var scope = controller.query('penstroke:i(1)')
           , result
           ;
-        
         
         console.log('selector:', args.selectors, 'scope: ' + scope + ' ' + scope.particulars );
         

@@ -91,9 +91,9 @@ define([
                   , description: 'the intrinsic value of the zon'
         })
         
-        var result = parseRules.fromString(cpsString, args.CPSFile, parameterRegistry);
-        
-        var univers = new Univers()
+        var result = parseRules.fromString(cpsString, args.CPSFile, parameterRegistry)
+          , controller = new Controller(parameterRegistry)
+          , univers = controller.query('univers')
           , ralph = new Master()
           , heidi = new Master()
           , mastersOfTheUnivers 
@@ -101,8 +101,10 @@ define([
           ;
         ralph.id = 'ralph';
         heidi.id = 'heidi';
-        univers.add(ralph);
-        univers.add(heidi);
+        
+        controller.addMaster(ralph, [result])
+        controller.addMaster(heidi, [result])
+
         mastersOfTheUnivers = univers.children;
         
         data[ralph.id] = {
@@ -151,9 +153,7 @@ define([
             }
         }
     
-        var controller = new Controller(univers, [result], parameterRegistry)
-          , element = controller.query('master#ralph glyph point:i(23)')
-          ;
+        var element = controller.query('master#ralph glyph point:i(23)');
         
         console.log('element:', element.particulars);
         var computed = controller.getComputedStyle(element)
