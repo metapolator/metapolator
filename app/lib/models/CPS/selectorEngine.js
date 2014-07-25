@@ -346,10 +346,9 @@ define([
         if(!(selector instanceof SelectorList))
              throw new CPSError('SelectorList expected, but got a '
                     + selector + ' typeof: '+ typeof selector);
-        
         complexSelectors = selector.value;
         for(;i<complexSelectors.length;i++) {
-            matches = queryComplexSelector(scope, complexSelectors[i]);
+            matches = queryComplexSelector(scope.slice(), complexSelectors[i]);
             k = 0;
             for(;k<matches.length;k++) {
                 if(matches[k].nodeID in seen)
