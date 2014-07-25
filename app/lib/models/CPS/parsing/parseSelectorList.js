@@ -15,13 +15,14 @@ define([
   , Comment
 ) {
     "use strict";
-    var CPSError = errors.CPS;
+    var CPSError = errors.CPS
+      , CPSParserError = errors.CPSParser;;
     
     function selectorListFromString(string, sourceName) {
         try {
             var ast = gonzales.srcToCSSP(string + '{}');
         } catch(error) {
-            throw new CPSError('Error parsing "' + string + '" as a selector. '
+            throw new CPSParserError('Error parsing "' + string + '" as a selector. '
                 + 'Message: ' + error.message);
         }
         return selectorListFromAST(ast, sourceName)
@@ -42,14 +43,14 @@ define([
                 // accept comments
                 continue;
             else if(!(rules[i] instanceof Rule))
-                throw new CPSError('The argument string describred a '
+                throw new CPSParserError('The argument string describred a '
                         + rules[i].constructor.name + ' but it should be a'
                         + 'SelectorList.');
             else if(selectorList !== undefined)
-                throw new CPSError('The argument string described more than '
+                throw new CPSParserError('The argument string described more than '
                     + 'a selectorlist is contained: ' + rules[i]);
             else if(rules[i].paramters)
-                throw new CPSError('Found parameters where there should '
+                throw new CPSParserError('Found parameters where there should '
                             + 'be only a SelectorList: ' + rules[i].paramters);
             selectorList = rules[i].selectorList;
             // don't break! we wan't to validate the rules, if there is
@@ -57,9 +58,9 @@ define([
             // might be a programming error.
         }
         if(!selectorList)
-            throw new CPSError('No selector found.')
+            throw new CPSParserError('No selector found.')
         if(!selectorList.selects)
-            throw new CPSError('SelectorList will not select anything: '
+            throw new CPSParserError('SelectorList will not select anything: '
                     + selectorList.message)
         return selectorList;
     }
