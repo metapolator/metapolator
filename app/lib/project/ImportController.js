@@ -1,7 +1,6 @@
 define([
     'metapolator/errors'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
-  , 'metapolator/models/Controller'
   , './import/SegmentPen'
   , './import/ImportOutlinePen'
   , './import/StrokeContour'
@@ -20,7 +19,6 @@ define([
 ], function(
     errors
   , GlyphSet
-  , ModelController
   , SegmentPen
   , ImportOutlinePen
   , StrokeContour
