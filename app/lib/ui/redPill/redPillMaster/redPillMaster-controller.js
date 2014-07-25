@@ -3,7 +3,6 @@ define([], function() {
     function RedPillMasterController($scope) {
         this.$scope = $scope;
         this.$scope.name = 'redPillMaster';
-        console.log('RedPillMasterController scope:',  this.$scope.master, this.$scope.$parent.masterData)
         
         this.$scope.modes = [
             'files',

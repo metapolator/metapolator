@@ -11,18 +11,12 @@ define([], function() {
         // These are used to store the application state.
         // When we switch between masters, for example, a RedPillMasterController
         // will remember its last state via this.$scope.masterData
-        this.$scope.currentMasters = []
+        this.$scope.currentMaster = model.masters[0]
         this.$scope.masterData = {}
-        
-        console.log('new', this, ':-)', this.$scope.name, this.$scope.$parent)
-        this.greetMe('Neo')
     }
+    
     AppController.$inject = ['$scope', 'redPillModel', 'registerFrontend'];
     var _p = AppController.prototype;
-    
-    _p.greetMe = function(me) {
-        this.$scope.greetMe = me;
-    }
     
     _p.redraw = function() {
         this.$scope.$apply()
