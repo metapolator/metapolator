@@ -12,6 +12,7 @@ define([
   , './ImportController'
   , './ExportController'
   , 'yaml'
+  , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
     errors
   , obtain
@@ -26,6 +27,7 @@ define([
   , ImportController
   , ExportController
   , yaml
+  , parseRules
 ) {
     "use strict";
 
@@ -55,7 +57,13 @@ define([
         this._data = {
             masters: {}
         };
-        this._masterCache = {};
+        this._cache = {
+            masters: {}
+          , rules: {}
+        }
+        
+        this._controller = new ModelController(parameterRegistry);
+        
         // here is a way to define a directory offset
         // this is used with _p.init after the dir was created for example
         this.dirName = dirName || '.';
@@ -149,16 +157,16 @@ define([
         // the files created in _p.init need to exist
         // however, we try to load only
         // this.dirName+'/data/com.metapolator/project.yaml' as an indicator
-        console.log('loading', this.projectFile);
+        // console.log('loading', this.projectFile);
         var dataString = this._io.readFile(false, this.projectFile);
-        console.log('loaded', dataString);
+        // console.log('loaded', dataString);
         this._data = yaml.safeLoad(dataString);
         
         
     }
     
     /**
-     * return a ParameterCollection with the default CPS wireing, as the
+     * return a ParameterCollection with the default CPS wiring, as the
      * importer expects it.
      */
     _p.getDefaultCPS = function() {
@@ -171,6 +179,10 @@ define([
     
     Object.defineProperty(_p, 'masters', {
         get: function(){ return Object.keys(this._data.masters); } 
+    });
+    
+    Object.defineProperty(_p, 'controller', {
+        get: function(){ return this._controller; }
     });
     
     _p._createGlyphLayer = function(name, layerDirName) {
@@ -271,21 +283,59 @@ define([
     _p.getMaster = function(masterName) {
         if(!this.hasMaster(masterName))
             throw new KeyError('Master "'+masterName+'" not in Projekt');
-        if(!this._masterCache[masterName]) {
-            this._masterCache[masterName] = this._getMaster(masterName);
+        if(!this._cache.masters[masterName]) {
+            this._cache.masters[masterName] = this._getMaster(masterName);
         }
-        return this._masterCache[masterName];
+        return this._cache.masters[masterName];
+    }
+    
+    
+    _p._getCPSRules = function getCPSRule(sourceName) {
+        var fileName = [this.cpsDir, sourceName].join('/')
+          , cpsString = this._io.readFile(false, fileName)
+          ;
+        return parseRules.fromString(cpsString, sourceName, parameterRegistry);
+    }
+    
+    _p.getCPSRules = function(sourceName) {
+        if(!this._cache.rules[sourceName])
+            this._cache.rules[sourceName] = this._getCPSRules(sourceName);
+        return this._cache.rules[sourceName];
+    }
+    
+    /**
+     * parse the doc content
+     * if it parses, replace the old cps rule with the new cps rule
+     * inform all *consumers* of these rules that there was an update
+     * this might involve pruning some caches of ModelControllers.
+     * 
+     * If this doesn't parse, a CPSParserError is thrown
+     */
+    _p.updateCPSRule = function(sourceName, cpsString) {
+        var source = parseRules.fromString(cpsString, sourceName, parameterRegistry);
+        // if we are still here parsing was a success
+        this._cache.rules[sourceName] = source;
+        this._controller.replaceSource(source);
     }
     
     _p.open = function(masterName) {
-        var master = this.getMaster(masterName)
-          , parameterCollections = master.loadCPS()
-          , momMaster = master.loadMOM()
-          , univers = new Univers()
-          ;
-        momMaster.id = masterName;
-        univers.add(momMaster);
-        return new ModelController(univers, parameterCollections, parameterRegistry);
+        if(!this._controller.hasMaster(master)) {
+            // console.log('open', masterName)
+            var master = this.getMaster(masterName)
+            , parameterCollections = master.loadCPS()
+            , momMaster = master.loadMOM()
+            , controller
+            ;
+            momMaster.id = masterName;
+            this._controller.addMaster(momMaster, parameterCollections);
+        }
+        return this._controller;
+    }
+    
+    _p.getMasterSources = function(master) {
+        if(!this._controller.hasMaster(master))
+            this.open(master);
+        return this._controller.getMasterSources(master);
     }
     
     _p.import = function(masterName, sourceUFODir, glyphs) {
