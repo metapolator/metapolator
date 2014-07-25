@@ -105,16 +105,36 @@ define([
         }
     })
     
+    /***
+     * get the master element of this node or null if this node has no master
+     * 
+     * neither multivers nor univers have a master
+     */
+    Object.defineProperty(_p, 'master', {
+        get: function() {
+            if(!this.parent)
+                return null;
+            if(this.parent.MOMType === 'MOM Master')
+                return this.parent;
+            return this.parent.master;
+        }
+    })
+    
     /**
-     * Needed for development, I don't know if this will persist
+     * returns a selector for this element, currently it is used for 
+     * display puposes, so the additionial information "(no parent) "
+     * is prepended if the item has no parent
      */
     Object.defineProperty(_p, 'particulars', {
         get: function() {
-            return [this.type,
+            return [
+                    this.parent ? this.parent.particulars : '(no parent)'
+                  , ' '
+                  , this.type,
                   , (this.id ? '#' + this.id : '')
                   , (this.parent
-                        ? ':i(' + this.parent.find(this) + ') of ' + this.parent.particulars
-                        : '(no parent)')
+                        ? ':i(' + this.parent.find(this) + ')'
+                        : '')
                 ].join('');
         }
     })

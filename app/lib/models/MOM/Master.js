@@ -25,6 +25,24 @@ define([
         value: 'master'
     })
     
+     /**
+     * As long as there is just one, we don't need to display the multivers
+     * and univers selectors
+     */
+    Object.defineProperty(_p, 'particulars', {
+        get: function() {
+            return [
+                    this.parent ? '' : '(no parent)'
+                  , ' '
+                  , this.type,
+                  , (this.id ? '#' + this.id : '')
+                  , (this.parent
+                        ? ':i(' + this.parent.find(this) + ')'
+                        : '')
+                ].join('');
+        }
+    })
+    
     _p._acceptedChildren = [Glyph];
     
     return Master;
