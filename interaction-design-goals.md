@@ -1,7 +1,7 @@
 1. design in context; type design is quite a bit about how it all fits together, allow to design while it can be seen together.
 * liberate the creation of masters; it should be easy-peasy to create another one, not the weeks+ of work that it is now. the interaction should express—and deliver—how casual one can deal with masters.
 * make the master the natural level to work with parameters.
-* 50% of metapolator is about making type design and adaptation an order of magnitude faster than before. the other 50 are about unlocking creativity, allowing users to break through existing barriers.
+* 50% of metapolator is about making type design and adaptation an order of magnitude faster than before. the other 50% is about unlocking creativity, allowing users to break through existing barriers. (RT: Without being more precise about what "unlocking creativity" means, those two sound like the same thing.)
 * the design space is for working precisely; for going on an exploration trip with unknown outcome.
 * design for working easily with (much) more than four masters.
 * preserve and build out from the stroke of genius—aka the smashing value—of metapolator: no matter how tricksy things get with parameters within a master, once in design space this all disappears; a master is a black box; a good font™ (the linking mechanism).
