@@ -1,11 +1,11 @@
 Metapolator Software Architecture
 =================================
 
-Metapolator shall become a stable/robust and extensible application. This
+Metapolator will be a stable/robust and extensible application. This
 documents our actions to reach that goal. It is the starting point for fresh
 contributers and the reference on how things are done within Metapolator.
 
-This file is never complete, it will grow and change over the time.
+This file will never be complete; it will grow and change over the time.
 
 Concerns
 ---------
@@ -14,18 +14,18 @@ Metapolator can be divided into two main concerns:
  * Provide Font Technology
  * Provide (a Web-)Interface(s) to that Font Technology
 
-This has tremendous implications on how the software is structured.
+This has tremendous implications for the software's structure.
 
 ### The Font Technology
 
-can be provided via different interfaces(GUI, API, CLI, etc.) but should
+Can be provided via different interfaces (GUI, API, CLI, etc.) but should
 itself be independent from these interfaces. You won't need a web-browser
 to use a command line interface.
 
 We are moving towards providing as much as possible of the font-technology
 in JavaScript, so it can be used by other web projects, too. To make that
 technology useful in a wider range of tasks, such as automated built processes,
-we aim to eventually support none-web JavaScript, too. Currently rather
+we aim to eventually support non-web JavaScript too. Currently rather
 focused on NodeJS, but SpiderMonkey could be a target for the future, too.
 
 ### The Web Interface
