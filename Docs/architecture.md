@@ -78,7 +78,7 @@ modules follows the edges of the hierarchy graph. This implies the
 principle of least knowledge. However for good reason we'll break this
 rule occasionally, because it can lead to bloated interfaces. For better
 decoupling Modules higher up in the hierarchy can call Modules below directly.
-But if a Module lower in the hierarchy want's to call upwards it should
+But if a Module lower in the hierarchy wants to call upwards it should
 provide a callback or event mechanism where other code can bind to.
 
 ### Some rules for Modules
