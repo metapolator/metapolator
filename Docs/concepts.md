@@ -56,7 +56,7 @@ means it can be interpolated between them.
 
 A Metamaster is a Master in the Metapolator world. If its obvious that we
 are talking about Masters in Metapolator the simpler term "Master" is
-suddicient. When talking about Masters from other font interpolation
+sufficient. When talking about Masters from other font interpolation
 solutions, too, (like Multiple Masters) we can be more specific and use
 Metamaster, 
 
