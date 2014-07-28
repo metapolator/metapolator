@@ -76,7 +76,7 @@ See also this Zürich [report section](https://github.com/metapolator/metapolato
 * line: one for now: type;
 * point: 10+, coordinate pair, 4 are bezier-type controllers, 3 control the pen.
 
-Parameters can be set using operators: scale, offset, hardwire, minimum, maximum.
+Parameters can be adjusted using operators: scale (*), offset (+), set value (=), minimum (>=), maximum(<=).
 
 ## working in a design space
 ƒ— New, Duplicate, Delete, Set Name
