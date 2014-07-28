@@ -94,3 +94,5 @@ Plan 2015, and a Kickstarter (description, video, rewards, stretch goals) and pr
 Add the 1 major feature, so users are amazed; get the Kickstarter approved, outreach campaign underway.
 
 Launch a KS.
+
+Detect and automatically tag features of letters. [Paper on how to do this.](http://www.cs.huji.ac.il/~arir/extraction-typographic-elements.pdf)
