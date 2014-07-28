@@ -189,7 +189,7 @@ the sources of their "class-names" differ.
   attribute into UFOv4*
 * What is missing?
 * Do we need a way to get glyph classes from the `features.fea` file? If yes,
-  would just copy them into `groups.plist`? Is there a parser available
+  would just copy them into `groups.plist`? FontForge has a parser
   for the [Adobe OpenType Feature File Specification](http://www.adobe.com/devnet/opentype/afdko/topic_feature_file_syntax.html)
 
 **attribute selectors** we should do, if we find a use for it
