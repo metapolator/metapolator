@@ -168,8 +168,8 @@ spec says:**
 >"*Authoring tools should not make assumptions about the validity
 of a glyph's name for a particular font specification.*"
 
-So maybe we wan't to create our own glyph-name to id algorithm,
-similar to UFOs [user-name to filename convention](http://unifiedfontobject.org/versions/ufo3/conventions.html#usernametofilename)
+So maybe we want to create our own glyph-name to id algorithm,
+similar to UFO's [user-name to filename convention](http://unifiedfontobject.org/versions/ufo3/conventions.html#usernametofilename)
 
 **classes** always start with a dot `.` For different elements 
 the sources of their "class-names" differ.
