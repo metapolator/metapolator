@@ -119,7 +119,7 @@ It is obvious how the mixer is extended when a master is added.
 * ~ be straightforward;
 * ✗ depict the 100% rule.
 
-### double-breasted
+### double-breasted mixer
 ![](http://metapolator.com/images/wiki/double.png)
 
 Thus named by David Crossland, this is a straight implementation of the maximum number of inputs a metapolation needs; the ratio between each master to every other master. From the math it can be expected that when the slider between Mx and My is changed by users, _all_ other sliders involving Mx and My will also have to move by themselves.
@@ -138,6 +138,12 @@ When a master is added to N-master double-breasted, it needs to be extended by N
 * ✓ compatible with 2-D output and input;
 * ~ be straightforward;
 * ✗ depict the 100% rule.
+
+### loaded mixer
+
+![](http://metapolator.com/images/wiki/mixer-loaded.png)
+
+DRAFT: _Thinking back to the origins of the project - a type designer draws a single style typeface and now wants to turn it into a family of weights, widths, optical sizes, serifs/sanses, etc.... Perhaps that single initially imported master (M1) can be placed as the origin/center of the design space, and all other masters are interpolated with it. This makes a mixer like this, which solves the 100% rule because if all the sliders are at 0, then the current instance is equal to the M1 master... Manuel von Gebhardi  proposed this [during the brainstorm](https://plus.google.com/103003807659334841389/posts/Bgdb8DWFY5C﻿)_
 
 ### the lone triangle
 ![](http://metapolator.com/images/wiki/triangle.png)
