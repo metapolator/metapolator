@@ -54,6 +54,9 @@ The conclusion from these conclusions is that the minimum number of inputs grows
 Although one could say that for simplicity sake striving for a minimum number of inputs is desirable, it can also be said that the maximum number of inputs is a true representation of the complexity of the design space.
 
 ## design requirements for metapolation interaction
+
+> RT: Merge with/refer to [[interaction design goals|interaction-design-goals]]?
+
 1. scale to any number of masters; cpu power and user ambition set the limits;
 * support exploration: free ‘wandering’ through the design space;
 * support ‘reduce the amount of master 2, while all else stays equal’;
