@@ -117,14 +117,14 @@ Macro Directory Structure
 
 AngularJS integration
 ---------------------
-For modeling the AngularJS part I followed some recommendation on the web
-particular influential was:
+For modeling the AngularJS part I followed some recommendations on the web.
+Particularly influential was:
 [An AngularJS Style Guide for Closure Users at Google](https://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html)
 except that we use RequireJS for module loading and hence have some differences 
 stemming from that.
 
 A first draft of the directory structure follows. However, this is just
-a mock-up yet, to test the concept and to explain the design:
+a mock-up, to test the concept and to explain the design:
 
 ```
 .
