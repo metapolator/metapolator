@@ -83,9 +83,9 @@ define(['Foo'], function(Parent) {
     }
     // This is the actual inheritance!
     // Object.create allows us to not invoke the Constructor Parent here,
-    // which would probably instantiate state propoerties that are not meant
+    // which would probably instantiate state properties that are not meant
     // to be inherited. Instead, we are going to use Parent.call(this) in the
-    // constructor. This will set the state properties to the newly instance.
+    // constructor. This will set the state properties in the new instance.
     var _p = Bar.prototype = Object.create(Parent.prototype);
     
     _p._KIND = 'barish Bar'
