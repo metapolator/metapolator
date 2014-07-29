@@ -1,4 +1,4 @@
-## Classical Inheritance
+## Inheritance
 
 This is the definitve guide how class like structures should be written
 in Metapolator. A lot of people don't learn to do this in JavaScript (some even believe inheritance doesn't exist in JavaScript).
@@ -46,7 +46,15 @@ define([], function() {
 })
 
 ```
-Let's do inheritance:
+### Let's do inheritance
+JavaScript uses prototype based-inheritance. This is a pattern that allows a lot of things, but also it makes some things harder to do right. One of the latter is a system of inheritance that behaves like a class-based inheritance system.
+The main difficulty is that in Javascript the "new" keyword does two things. A) it creates a new object using the .prototype property of the constructor function as prototype for the new object B) it invokes the constructor function--bound to the newly created object--which sets initial state properties.
+
+This is fine when you want to create a new instance of a "class" to use right away, but it fails short when setting up a system of inheritance. In the following, the two tasks of the new keyword are replaced by:
+
+* *Object.create(Parent.prototype)*: does only A)
+* *Parent.call(this)*: inside of the child constructor does only B)
+
 
 ```js
 // file Bar.js
@@ -74,7 +82,10 @@ define(['Foo'], function(Parent) {
         Parent.call(this, value)
     }
     // This is the actual inheritance!
-    // Object.create allows us to not invoke the Constructor Parent here.
+    // Object.create allows us to not invoke the Constructor Parent here,
+    // which would probably instantiate state propoerties that are not meant
+    // to be inherited. Instead, we are going to use Parent.call(this) in the
+    // constructor. This will set the state properties to the newly instance.
     var _p = Bar.prototype = Object.create(Parent.prototype);
     
     _p._KIND = 'barish Bar'
