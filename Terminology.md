@@ -22,8 +22,7 @@ A characteristic, feature, or other measurable factor that can be used in the de
 
 ### Point
 
-![
-](https://raw.github.com/metapolator/metapolator/gh-pages/images/curve.png)
+![](https://raw.github.com/metapolator/metapolator/gh-pages/images/wiki/curve.png)
 
 Depending on the nature of a [point](http://unifiedfontobject.org/versions/ufo1/glif.html), we can have a control-in and/or a control-out Point. The direction of a path defines wheter it's an 'in' or 'out' Point. In this example we have a curve Point (orange) with a control-in (red) and control-out (green) Point. The arrow indicates the curve direction.
 
