@@ -1,15 +1,14 @@
 ## Classical Inheritance
 
 This is the definitve guide how class like structures should be written
-in Metapolator. A lot of people don't learn to do this in JavaScript. I even heard that 
-here is no such thing like inheritance at all in Javascript.
+in Metapolator. A lot of people don't learn to do this in JavaScript (some even believe inheritance doesn't exist in JavaScript).
 
 I embed the examples into AMD/RequireJS modules, because this is how we
 will encounter classes in Metapolator.
 
 This guide is by no means complete! I know that these examples don't show
-everything. I will extend this occasionally So please, if you have
-questions or find flaws contact me.
+everything. I will extend this occasionally. So please, if you have
+questions or find flaws, file an issue.
 
 ```js
 // file Foo.js
@@ -20,11 +19,11 @@ define([], function() {
      * usage: var foo = new Foo(12)
      */
     function Foo(value) {
-        // underscore is our convention to mark a not public interface
+        // underscore is our convention to mark a non-public interface
         this._value = value
         
         // **NEVER** define methods in here when you wan't to inherit
-        // from them. use the prototpe!
+        // from them. use the prototype!
     }
     
     // we make a shortcut for prototype, because it's going to be
@@ -54,7 +53,7 @@ Let's do inheritance:
 "use strict";
 define(['Foo'], function(Parent) {
     // We import Foo with the name "Parent" because we inherit from it.
-    // This is must be done within the Metapolator code base.
+    // This is mandatory in Metapolator.
     
     /**
      * This is the Constructor
