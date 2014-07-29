@@ -79,6 +79,16 @@ test.ufo
 
 # export first_master to ../export.ufo
 ~/metapolator_tests/test.ufo$ ~/path/to/metapolator/metapolator export first_master ../export
+
+# also, at this point you can start the metapolator red-pill GUI server from within
+# the project that you want to serve. NOTE: that at this point the GUI won't let you
+# save changes, but it is a good way to experiment with CPS
+# Here is a short screencast: https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL
+
+~/metapolator_tests/test.ufo$  ~/path/to/metapolator/metapolator red-pill
+
+# Open http://localhost:3000 in your browser.
+
 ```
 
 ## run the testsuite:
