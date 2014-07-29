@@ -16,6 +16,12 @@ to your `.bashrc` or equivalent in order to avoid frustration.
 
 To avoid needing to `sudo` everything, `sudo adduser MYUSER docker` (and don’t forget to log out and back in).
 
+There is an issue with VirtualBox and docker (https://github.com/metapolator/metapolator/issues/100#issuecomment-41560966). To work around it, run:
+
+```
+VBoxManage controlvm boot2docker-vm natpf1 "metapolator,tcp,127.0.0.1,8080,,8080"
+```
+
 Running Metapolator
 -------------------
 
@@ -23,10 +29,4 @@ Running Metapolator
 $ docker pull metapolator/metapolator
 $ docker run -p 8080:8080 -t metapolator/metapolator
 # open in browser http://localhost
-```
-
-There is an issue with VirtualBox and docker (https://github.com/metapolator/metapolator/issues/100#issuecomment-41560966). To solve it be sure you have executed this command
-
-```
-VBoxManage controlvm boot2docker-vm natpf1 "metapolator,tcp,127.0.0.1,8080,,8080"
 ```
