@@ -1,32 +1,33 @@
-Superness? Overshoot? Instance? We're describing the terminology below to shed some light onto some frequently used terms.
-
-### Metapolator
-
-A wordplay referring to Erik van Blokland's [Superpolator](http://superpolator.com/) and Pablo Impallari's [Simplepolator](http://www.impallari.com/projects/overview/simplepolator) interpolation font tools, and the font programming language [Metafont](http://en.wikipedia.org/wiki/Metafont)
-
-### UFO
-
-[Unified Font Object](http://unifiedfontobject.org/) font format for font-application interchange, used for loading and saving fonts in Metapolator.
-
-### Master
-
-A Master can be compared and interpolated with another Master along an axis.
+_This glossary is in alphabetic order; terms defined in the glossary are capitalized._
 
 ### Axis
 
-Distance between two masters, for example between `A` and `B`: `A ----- B`
+A line between two Masters, each point on which specifies an Instance created by interpolation.
 
 ### Instance
 
-A new font created at a certain position on an axis, or between multiple axes.
+A new font specified by a certain position on an Axis, or on multiple axes.
+
+### Master
+
+A font specified in a standard form suitable for interpolation. A Master can be compared and interpolated with another Master along an Axis.
+
+### Metapolator
+
+A [portmanteau](http://en.wikipedia.org/wiki/Portmanteau) wordplay referring on the one hand to Donald Knuth's font programming language [Metafont](http://en.wikipedia.org/wiki/Metafont), and on the other to Erik van Blokland's [Superpolator](http://superpolator.com/) and Pablo Impallari's [Simplepolator](http://www.impallari.com/projects/overview/simplepolator) font interpolation tools.
+
+### Parameters
+
+A characteristic, feature, or other measurable factor that can be used in the definition of a particular system. We use Parameters at various levels of abstraction to define fonts. _Global parameters_ are at the font level, for example _font size_. _Glyph parameters_ are at the glyph level, for example _glyph width_. _Point parameters_ are at the Point and curve level, for example the coordinate of a Point in a particular glyph.
 
 ### Point
 
 ![
 ](https://raw.github.com/metapolator/metapolator/gh-pages/images/curve.png)
 
-Depending on the nature of a [point](http://unifiedfontobject.org/versions/ufo1/glif.html), we can have a control-in and / or a control-out point. The direction of a path defines wheter its an 'in' or 'out' point. In this example we have a curve point (orange) with a control-in (red) and control-out (green) point. The arrow indicates the curve direction.
-In the UFO its writen like this:
+Depending on the nature of a [point](http://unifiedfontobject.org/versions/ufo1/glif.html), we can have a control-in and/or a control-out point. The direction of a path defines wheter it's an 'in' or 'out' point. In this example we have a curve point (orange) with a control-in (red) and control-out (green) point. The arrow indicates the curve direction.
+
+This point is represented thus in UFO:
 
 ```
 <point x="340" y="65"/>
@@ -34,10 +35,10 @@ In the UFO its writen like this:
 <point x="340" y="295"/>
 ```
 
-### Parameters
+### UFO
 
-A parameter is a characteristic, feature, or measurable factor that can help in defining a particular system. We use parameters on various levels to define fonts: `Global parameters` are on a font level, for example `font size`. `Glyph parameters` are on a glyph level, for example `glyph width`. `Point parameters` are on a point and curve level of a glyph shape, for example the position or `coordinate` of a point.
+[Unified Font Object](http://unifiedfontobject.org/) is a font format for font application interchange, used for loading and saving fonts in Metapolator.
 
 ### Z-Point
 Point in a two dimensional cartesian coordinate system, defined by x and y coordinates:
-`z=(x,y)`
+z=(x,y)
