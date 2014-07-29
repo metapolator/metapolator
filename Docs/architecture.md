@@ -1,20 +1,16 @@
-Metapolator Software Architecture
-=================================
+Metapolator's Architecture
+==========================
 
-Metapolator will be a stable/robust and extensible application. This
-documents our actions to reach that goal. It is the starting point for fresh
-contributers and the reference on how things are done within Metapolator.
-
-This file will never be complete; it will grow and change over the time.
+This page documents Metapolator's architecture. It is the starting point for new contributors. A solid architecture is the foundation of a robust and extensible application, which Metapolator aims to be.
 
 Concerns
 ---------
 Metapolator can be divided into two main concerns:
 
- * Provide Font Technology
- * Provide (a Web-)Interface(s) to that Font Technology
+ * Provide font technology
+ * Provide (a web-)interface(s) to that technology
 
-This has tremendous implications for the software's structure.
+These concerns fundamentally determine the software's structure.
 
 ### The Font Technology
 
@@ -40,19 +36,16 @@ on top of it (starting with this document).
 
 The main user interface Libraries include:
 
- * [AngularJS](https://angularjs.org/) which we treat as our GTK for the
+ * [AngularJS](https://angularjs.org/) which we treat as our GUI toolkit for the
    Web
  * [{less}](https://lesscss.org) and [Bootstrap](http://getbootstrap.com/)
-   for a powerful and flexible styling workflow.
-
-I chose less over sass because less can run in the browser without server
-side file-watching-and-compiling-demon.
+   for a powerful and flexible styling workflow that can run in the browser.
 
 Modules, Separation of Concerns and Hierarchy
 ---------------------------------------------
 
-Metapolator is going to be a big project with a lot of complexity.
-To be prepared for all kinds of challenge and to reduce complexity 
+Metapolator is going to be a large and complex project.
+To be prepared for all kinds of challenge and to reduce complexity,
 we define strict patterns and best practices.
 
 Main challenges include:
@@ -61,12 +54,9 @@ Main challenges include:
  * enable custom and complex interfaces
  * be always ready to add new features
  * allow 3rd party code when it doesn't affect overall stability
- 
 
-One main approach is to structure
-our code into modules, each module is very limited in what it does and what
-it knows. So its easy to add features or to locate Errors and we limit the
-range of influence failure can have to the system.
+One main approach is to structure our code into modules. Each module is very limited in what it does and what
+it knows. So its easy to add features or to locate Errors and we limit the range of influence failure can have to the system.
 
 ### Hierarchy
 
@@ -74,12 +64,9 @@ Modules are organized in a hierarchical way from *more general/managing*
 to *more specialized/actually doing something*. **This Hierarchy is reflected
 in the directory structure of our code.** As a guideline: interaction between
 modules follows the edges of the hierarchy graph. This implies the
-[Law of Demeter](http://en.wikipedia.org/wiki/Law_of_Demeter) (LoD) or
+[Law of Demeter](http://en.wikipedia.org/wiki/Law_of_Demeter) (LoD), or
 principle of least knowledge. However for good reason we'll break this
-rule occasionally, because it can lead to bloated interfaces. For better
-decoupling Modules higher up in the hierarchy can call Modules below directly.
-But if a Module lower in the hierarchy wants to call upwards it should
-provide a callback or event mechanism where other code can bind to.
+rule occasionally, because it can lead to bloated interfaces. Modules can call those below them in the hierarchy directly, but for better decoupling, a callback or event mechanism should be used when a lower module needs to call a higher.
 
 ### Some rules for Modules
 
@@ -89,7 +76,7 @@ provide a callback or event mechanism where other code can bind to.
    a loader.
  * AMD allows us to declare and see the dependencies of our modules at
    the top of each file.
- * Non AMD **3rd party code** is included in a way that allows us to describe
+ * Non-AMD **3rd party code** is included in a way that allows us to describe
    dependencies to that code in the same fashion: via RequireJS shim
    configuration or mock-up modules. However, 3rd party code must be in a
    reasonable state and pass our review.
@@ -108,16 +95,16 @@ Macro Directory Structure
 ```
 .                               root
 ├── app/                        All code is in here
-│   ├── index.html              entry point for your browser/ some setup
-│   ├── lib/                    our none-AngularJS code (font-technology)
-│   │   ├── bower_components/   3rd party libraries, managed by bower
-│   │   ├── main.js             bootstrapping Metapolator
-│   │   ├── Metapolator.js      main controller of the hole app
-│   │   ├── models/             data model/complex stuff ;-)
-│   │   ├── webAPI/             mock-up modules to declare dependencies to
-│   │   └── ui/                 user interface/AngularJS code see: AngularJS
+│   ├── index.html              entry point for your browser/ some setup
+│   ├── lib/                    our none-AngularJS code (font-technology)
+│   │   ├── bower_components/   3rd party libraries, managed by bower
+│   │   ├── main.js             bootstrapping Metapolator
+│   │   ├── Metapolator.js      main controller of the hole app
+│   │   ├── models/             data model/complex stuff ;-)
+│   │   ├── webAPI/             mock-up modules to declare dependencies to
+│   │   └── ui/                 user interface/AngularJS code see: AngularJS
 │   │                           integration
-│   └── tests/                  automated tests of all kinds
+│   └── tests/                  automated tests of all kinds
 ├── bower.json                  frontend dependencies
 ├── docs/                       documentation, the origin of this file
 ├── (node_modules)              create by npm 'install' using package.json
@@ -147,11 +134,11 @@ a mock-up yet, to test the concept and to explain the design:
 ├── app.less
 ├── app.tpl
 ├── container
-│   ├── container-controller.js
-│   ├── container-directive.js
-│   ├── container.js
-│   ├── container.less
-│   └── container.tpl
+│   ├── container-controller.js
+│   ├── container-directive.js
+│   ├── container.js
+│   ├── container.less
+│   └── container.tpl
 └── widget
     ├── widget-controller.js
     ├── widget-directive.js
@@ -204,4 +191,3 @@ Testing is done by [The Intern](http://theintern.io/), because:
  * integrates with TravisCI
  * Code Coverage is builtin
  * A Grunt Task is available
-
