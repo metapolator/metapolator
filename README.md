@@ -1,17 +1,27 @@
 Metapolator Docker Files
 ======================
 
-This repository contains the files needed to run metapolator in a Docker container.
+This repository contains the files needed to run metapolator in a [Docker](http://docker.com) container ([interactive tutorial](https://www.docker.io/gettingstarted/)).
 
-> Docker is an open-source project to easily create lightweight, portable, self-sufficient containers from any application. The same container that a developer builds and tests on a laptop can run at scale, in production, on VMs, bare metal, OpenStack clusters, public clouds and more. 
+Setup tips
+----------
 
-– https://www.docker.io
-
-Running metapolator with Docker is easy:
+On Debian/Ubuntu, the command is `docker.io` (because of a pre-existing `/usr/bin/docker`) so add an alias
 
 ```
-$ sudo docker pull metapolator/metapolator
-$ sudo docker run -p 8080:8080 -t metapolator/metapolator
+alias docker=docker.io
+```
+
+to your `.bashrc` or equivalent in order to avoid frustration.
+
+To avoid needing to `sudo` everything, `sudo adduser MYUSER docker` (and don’t forget to log out and back in).
+
+Running Metapolator
+-------------------
+
+```
+$ docker pull metapolator/metapolator
+$ docker run -p 8080:8080 -t metapolator/metapolator
 # open in browser http://localhost
 ```
 
@@ -20,5 +30,3 @@ There is an issue with VirtualBox and docker (https://github.com/metapolator/met
 ```
 VBoxManage controlvm boot2docker-vm natpf1 "metapolator,tcp,127.0.0.1,8080,,8080"
 ```
-
-To learn more about Docker, spend 15 minutes with the [interactive tutorial introduction.](https://www.docker.io/gettingstarted/)
