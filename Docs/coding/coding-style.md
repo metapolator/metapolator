@@ -77,13 +77,6 @@ define(['Foo'], function(Parent) {
     // Object.create allows us to not invoke the Constructor Parent here.
     var _p = Bar.prototype = Object.create(Parent.prototype);
     
-    // There is another pattern for older Browsers without Object.create:
-    //    var _Temporary = function(){}
-    //    _Temporary.prototype = Parent.prototype
-    //    value.prototype = new _Temporary()
-    // Or use the polyfill at:
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
-    
     _p._KIND = 'barish Bar'
     
     _p.setValue = function(newValue){
