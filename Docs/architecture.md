@@ -99,8 +99,8 @@ Macro Directory Structure
 │   ├── lib/                    our none-AngularJS code (font-technology)
 │   │   ├── bower_components/   3rd party libraries, managed by bower
 │   │   ├── main.js             bootstrapping Metapolator
-│   │   ├── Metapolator.js      main controller of the hole app
-│   │   ├── models/             data model/complex stuff ;-)
+│   │   ├── Metapolator.js      main controller of the whole app
+│   │   ├── models/             data model/complex stuff
 │   │   ├── webAPI/             mock-up modules to declare dependencies to
 │   │   └── ui/                 user interface/AngularJS code see: AngularJS
 │   │                           integration
