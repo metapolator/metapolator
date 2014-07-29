@@ -1,9 +1,9 @@
-Metapolator Neue
-=================
+Metapolator Installation
+========================
 
-See the docs directory for developer documentation.
+See the [wiki](https://github.com/metapolator/metapolator/wiki) for developer documentation.
 
-## install
+## Install
 
 ```
 # clone the repository
@@ -17,7 +17,7 @@ $ git submodule update --init
 $ npm install
 ```
 
-## command line interface
+## Command-line interface
 
 I recommend you to put the metapolator command on your PATH. However if
 you don't do so you can run the metapolator commandline tools using the
@@ -91,7 +91,7 @@ test.ufo
 
 ```
 
-## run the testsuite:
+## Run the testsuite:
 
 ```
 # run the testsuite, if you enjoy writing tests, we appreciate help much!
@@ -157,4 +157,3 @@ All files                     |     88.39 |     68.57 |      76.7 |     87.95 |
 # you'll see a simple scene where you can add 'widgets' to a 'container'
 
 ```
-
