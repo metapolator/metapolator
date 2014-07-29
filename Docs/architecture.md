@@ -177,8 +177,7 @@ run `$scope.$apply()` or `$scope.$digest()` in one or the other way.
 We will have to document here or in the yet to come Model-Documentation
 how this has to happen.
 Until there is a better plan, we use the `metapolator.frontend.redraw`
-method. We use this extensively and no another way. When the time comes
-that we need a more robust/less resource hungry interface we'll have it
+method exclusively. When we need a more robust/less resource-hungry interface it should be
 easy to spot the use cases and to create a proper replacement.
 
 Testing
