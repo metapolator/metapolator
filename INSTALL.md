@@ -27,14 +27,12 @@ $ npm install
 
 ## Command-line interface
 
-I recommend you to put the metapolator command on your PATH. However if
-you don't do so you can run the metapolator commandline tools using the
-path to the metapolator command:
+The following assumes that you have added the metapolator checkout directory to your PATH.
 
 ```
 $ mkdir ~/metapolator_tests
 $ cd ~/metapolator_tests
-~/metapolator_tests$ ~/path/to/metapolator/metapolator
+~/metapolator_tests$ metapolator
 
 Available command names are:
  - init
@@ -47,7 +45,7 @@ Type "metapolator help <command name>" for further information.
 Type "metapolator help" for this message.
 
 # create your first project test.ufo
-~/metapolator_tests$ ~/path/to/metapolator/metapolator init test
+~/metapolator_tests$ metapolator init test
 $ ls
 test.ufo
 
@@ -58,7 +56,7 @@ test.ufo
 #  - the first point should be the first right outline point of your
 #    stroke contour otherwise the skeleton gets imported scrumbled
 ~/metapolator_tests$ cd test.ufo
-~/metapolator_tests/test.ufo$ ~/path/to/metapolator/metapolator init import ~/path/to/font.ufo first_master
+~/metapolator_tests/test.ufo$ metapolator init import ~/path/to/font.ufo first_master
 
 # your current metapolator project directory tree (if you imported a font
 # with the glyphs a and e)
@@ -86,14 +84,14 @@ test.ufo
 # masters in that file by copying the data of first_master.
 
 # export first_master to ../export.ufo
-~/metapolator_tests/test.ufo$ ~/path/to/metapolator/metapolator export first_master ../export
+~/metapolator_tests/test.ufo$ metapolator export first_master ../export
 
 # also, at this point you can start the metapolator red-pill GUI server from within
 # the project that you want to serve. NOTE: that at this point the GUI won't let you
 # save changes, but it is a good way to experiment with CPS
 # Here is a short screencast: https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL
 
-~/metapolator_tests/test.ufo$  ~/path/to/metapolator/metapolator red-pill
+~/metapolator_tests/test.ufo$ metapolator red-pill
 
 # Open http://localhost:3000 in your browser.
 
