@@ -7,11 +7,8 @@ See the [wiki](https://github.com/metapolator/metapolator/wiki) for developer do
 
 ```
 # clone the repository
-$ git clone git@github.com:metapolator/metapolator.git
+$ git clone --recursive git@github.com:metapolator/metapolator.git
 $ cd metapolator
-
-# init and clone the git submodules (obtainJS and ufoJS)
-$ git submodule update --init
 
 # load the NodeJS dependencies
 $ npm install
