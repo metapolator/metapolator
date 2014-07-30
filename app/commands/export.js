@@ -11,7 +11,7 @@ define([
 ) {
     "use strict";
     var CommandLineError = errors.CommandLine
-      , argumentParser = new ArgumentParser('import')
+      , argumentParser = new ArgumentParser('export')
       , module
       ;
     argumentParser.addArgument(
@@ -64,3 +64,4 @@ define([
     });
     return module;
 })
+

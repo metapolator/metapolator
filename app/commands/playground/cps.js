@@ -25,7 +25,7 @@ define([
 ) {
     "use strict";
     var CommandLineError = errors.CommandLine
-      , argumentParser = new ArgumentParser('import')
+      , argumentParser = new ArgumentParser('cps')
       , module
       ;
     argumentParser.addArgument(
@@ -182,3 +182,4 @@ define([
     });
     return module;
 })
+
