@@ -1,6 +1,6 @@
 [submodule "app/lib/ufoJS"]
 	path = app/lib/ufoJS
-	url = git@github.com:graphicore/ufoJS.git
+	url = https://github.com/graphicore/ufoJS.git
 [submodule "app/lib/obtainJS"]
 	path = app/lib/obtainJS
-	url = git@github.com:graphicore/obtainJS.git
+	url = https://github.com/graphicore/obtainJS.git
