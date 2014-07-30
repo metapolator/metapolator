@@ -17,7 +17,7 @@ With these three connecting elements, we can chain four departments together, th
 
 ![](http://mmiworks.net/metapolator/trainof4.png)
 
-Giving everything its place is looks like this:
+Giving everything its place it looks like this:
 
 ![](http://mmiworks.net/metapolator/refined6.png)
 
