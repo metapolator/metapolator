@@ -90,9 +90,7 @@ $ metapolator export first_master ../export
 # the project that you want to serve. NOTE: the GUI won't yet let you
 # save changes, but it is a good way to experiment with CPS
 # Here is a short screencast: https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL
-
 $ metapolator red-pill
-
 # Open http://localhost:3000 in your browser.
 
 ```
