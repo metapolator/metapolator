@@ -78,9 +78,9 @@ $ tree
 ├── layercontents.plist
 └── metainfo.plist
 
-# this is a good point to start playing with the metapolator project data
-# we will create a first steps tutorial soon.
-# have a look at data/com.metapolator/project.yaml you can setup new
+# This is a good time to start playing with the metapolator project data.
+# We will create a first steps tutorial soon.
+# Have a look at data/com.metapolator/project.yaml: you can set up new
 # masters in that file by copying the data of first_master.
 
 # export first_master to ../export.ufo
