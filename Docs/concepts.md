@@ -1,7 +1,17 @@
 Metapolator Concepts
 ====================
 
-The first drafts on how *Metapolator neue* works.
+Prior Art and Community Memory
+------------------
+
+Other projects started before Metapolator use concepts that are assumed to be familiar. 
+
+* [UFO](http://unifiedfontobject.org)
+* RoboFab Pens
+  * [Introduction](http://www.robofab.org/objects/pen.html)
+  * [Usage](http://www.robofab.org/howto/usepens.html)
+* METAFONT
+  * [The METAFONT Book](https://www.google.com/search?q=METAFONT+book)
 
 
 Terms/Fundamentals/Data-model
