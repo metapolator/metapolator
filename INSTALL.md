@@ -83,11 +83,11 @@ $ tree
 # Have a look at data/com.metapolator/project.yaml: you can set up new
 # masters in that file by copying the data of first_master.
 
-# export first_master to ../export.ufo
+# Export first_master to ../export.ufo
 $ metapolator export first_master ../export
 
-# also, at this point you can start the metapolator red-pill GUI server from within
-# the project that you want to serve. NOTE: that at this point the GUI won't let you
+# At this point you can start the metapolator red-pill GUI server from within
+# the project that you want to serve. NOTE: the GUI won't yet let you
 # save changes, but it is a good way to experiment with CPS
 # Here is a short screencast: https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL
 
