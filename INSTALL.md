@@ -100,7 +100,11 @@ $ metapolator red-pill
 ```
 # run the testsuite, if you enjoy writing tests, we appreciate help much!
 # also, we need to test more:
-$ ./runtest.sh 
+$ npm test
+> metapolator-next@0.0.0 test /path/to/metapolator
+> ./runtest.sh
+
+/path/to/metapolator/app
 Defaulting to "console" reporter
 PASS: main - Metapolator - Metapolator_Constructor (2ms)
 1/1 tests passed
