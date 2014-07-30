@@ -32,7 +32,7 @@ The following assumes that you have added the metapolator checkout directory to 
 ```
 $ mkdir ~/metapolator_tests
 $ cd ~/metapolator_tests
-~/metapolator_tests$ metapolator
+$ metapolator
 
 Available command names are:
  - init
@@ -45,7 +45,7 @@ Type "metapolator help <command name>" for further information.
 Type "metapolator help" for this message.
 
 # create your first project test.ufo
-~/metapolator_tests$ metapolator init test
+$ metapolator init test
 $ ls
 test.ufo
 
@@ -55,12 +55,12 @@ test.ufo
 #  - more than 3 points per contour otherwise we skip it
 #  - the first point should be the first right outline point of your
 #    stroke contour otherwise the skeleton gets imported scrumbled
-~/metapolator_tests$ cd test.ufo
-~/metapolator_tests/test.ufo$ metapolator init import ~/path/to/font.ufo first_master
+$ cd test.ufo
+$ metapolator init import ~/path/to/font.ufo first_master
 
 # your current metapolator project directory tree (if you imported a font
 # with the glyphs a and e)
-~/metapolator_tests/test.ufo$ tree
+$ tree
 .
 ├── data
 │   └── com.metapolator
@@ -84,14 +84,14 @@ test.ufo
 # masters in that file by copying the data of first_master.
 
 # export first_master to ../export.ufo
-~/metapolator_tests/test.ufo$ metapolator export first_master ../export
+$ metapolator export first_master ../export
 
 # also, at this point you can start the metapolator red-pill GUI server from within
 # the project that you want to serve. NOTE: that at this point the GUI won't let you
 # save changes, but it is a good way to experiment with CPS
 # Here is a short screencast: https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL
 
-~/metapolator_tests/test.ufo$ metapolator red-pill
+$ metapolator red-pill
 
 # Open http://localhost:3000 in your browser.
 
@@ -102,7 +102,7 @@ test.ufo
 ```
 # run the testsuite, if you enjoy writing tests, we appreciate help much!
 # also, we need to test more:
-~/path/to/metapolator$ ./runtest.sh 
+$ ./runtest.sh 
 Defaulting to "console" reporter
 PASS: main - Metapolator - Metapolator_Constructor (2ms)
 1/1 tests passed
@@ -157,7 +157,7 @@ All files                     |     88.39 |     68.57 |      76.7 |     87.95 |
 # you wont see a lot here
 
 # start the server:
-~/path/to/metapolator$ ./serve.sh
+$ ./serve.sh
 
 # go to: http://localhost:8000
 # you'll see a simple scene where you can add 'widgets' to a 'container'
