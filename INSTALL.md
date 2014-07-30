@@ -152,7 +152,7 @@ All files                     |     88.39 |     68.57 |      76.7 |     87.95 |
 
 ```
 # this is only preparation for the browser interface using angularJS
-# you wont see a lot here
+# you won't see a lot here
 
 # start the server:
 $ ./serve.sh
