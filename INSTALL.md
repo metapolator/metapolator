@@ -56,7 +56,7 @@ test.ufo
 #  - the first point should be the first right outline point of your
 #    stroke contour otherwise the skeleton gets imported scrumbled
 $ cd test.ufo
-$ metapolator init import ~/path/to/font.ufo first_master
+$ metapolator import ~/path/to/font.ufo first_master
 
 # your current metapolator project directory tree (if you imported a font
 # with the glyphs a and e)
