@@ -3,6 +3,17 @@ Metapolator Installation
 
 See the [wiki](https://github.com/metapolator/metapolator/wiki) for developer documentation.
 
+## Install prerequisites
+
+### Debian/Ubuntu
+
+```
+# node.js, npm etc.
+$ sudo apt-get install npm
+# Fix different binary name
+$ sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+```
+
 ## Install
 
 ```
