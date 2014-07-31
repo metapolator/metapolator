@@ -1,17 +1,17 @@
 Metapolator is a parametric font tool. To work with parameters we borrow heavily from the Cascading Style Sheet language.
 
 This file is a work in progress. It will lead us through the development
-of our CPS-Tools and eventually become the documentation thereof.
+of our CPS Tools and eventually become the documentation thereof.
 
 
 CPS is not CSS
 --------------
 We use another name, to make clear that you can't use the parameters that
 you know from CSS, however, the syntax is very much the same. In fact, we
-use a CSS-Parser to read CPS.
+use a CSS Parser to read CPS.
 
 
-### What we borrow is:
+### What we borrow:
 
 * The **syntax** when serializing.
 * How the  **selectors** work; which allows us to specify rules for a set of
@@ -20,7 +20,7 @@ use a CSS-Parser to read CPS.
   but the most specific one wins.
 * To be continued.
 
-### What we don't borrow is:
+### What we don't borrow:
 
 * the parameters that are used for HTML. Because we define our own parameters
   in a very extensible way: via plugins
@@ -28,7 +28,7 @@ use a CSS-Parser to read CPS.
 * The full range of possible selectors. At least not from
   the very beginning. To select the glyph after the glyph 'a' (`glyph#a + glyph`)
   is a thing we can wait for a bit longer I think.
-* To be continued.
+* …
 
 ### Why this is a good thing
 
