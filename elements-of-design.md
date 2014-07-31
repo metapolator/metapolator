@@ -93,3 +93,9 @@ What is highlighted (aka selected) in this section steers the level work is done
 * if one or more sub-glyph vector shapes are highlighted, the work is done on these vector shapes. note that multiple vector shapes can be highlighted across multiple glyphs, across multiple (adjustment) masters (since these can be displayed at the same time).
 
 **example**: with the components we got up to now it is very easy to set up a view that is filtered to show only the glyphs ‘a’ and ‘g’, for 3 master fonts (i.e. 6 glyphs are on the screen). Now the 3 ‘a’s can be multi-selected and a parameter change at glyph level can be done. Next, for all 6 glyphs one point is selected (6 points in total multi-selected) and the point parameter tension-in is lowered a bit (to 90% of its previous value). Finally, nothing is highlighted and for the 3 masters a parameter change is made at master level.
+
+### 4. down to the bone
+From a certain display size (say, 144pt) and up, it becomes feasible to directly manipulate (i.e. edit using the mouse) the skeletons. These can then be shown for a glyph on mouse-over. Approaching pints or lines enlarges them to be able to grab them faster, shaving fractions of a second of the time for each action.
+
+### 6. managing
+Ah yeah, what is special about the character range view? It is the only one where it makes sense to offer glyph management (add, sort and delete).
