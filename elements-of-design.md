@@ -1,5 +1,4 @@
 ## overall structure
-
 Let’s develop an overall structure for the user interaction; a global plan for where everything in Metapolator ‘lives’. All the functionality we have to pack, even for v1.0, does not fit on one screen; different departments need to be created. But we also want to create a sense of continuity for users, not just a collection of screens and panels.
 
 We can observe the following:
@@ -57,3 +56,20 @@ Fonts:
 ![](http://mmiworks.net/metapolator/fontsview.png)
 
 **quick note**: it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co).
+
+## working with masters and glyphs in context
+Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a couple of important jobs to do:
+
+1. show the character range or specimen for any number of masters and adjustment masters—the ones that are highlighted in the masters and adjustment masters panel;
+* let users control how much, how big and how mixed what they _see_ is;
+* let users control if they are working with parameters & skeletons on a master, glyph, or sub-glyph level, on one or more items;
+* offer where appropriate direct-manipulation of skeletons and parameters;
+* show the _immediate_ effect (live update) of parameters & skeleton changes;
+* let users add, sort and delete glyphs from masters.
+
+
+
+
+
+
+
