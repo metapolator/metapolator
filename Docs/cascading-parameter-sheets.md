@@ -235,7 +235,7 @@ All objects used in the CPS Object-Model so far are:
         for example @-Rules as in `@media screen {}`
         are not yet interpreted, they are just stored
         as GenericCPSNodes and recreated upon serialization
-    * *`ParameterDict`* unkown parameters are/will be kept as GenericCPSNodes
+    * *`ParameterDict`* unknown parameters are/will be kept as GenericCPSNodes
     
     Also at the moment:
     * `Selector`
