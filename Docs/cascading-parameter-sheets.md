@@ -109,10 +109,10 @@ The base for the CPS Object-Model is established in
 #### What we can do
   * parse a CPS/CSS string into the object structure as outlined below
   * serialize the object structure *back* into an equivalent CPS string (formatting
-    differs some comments may have another positon, but at the element where
+    differs, some comments may have another position, but at the element where
     they originally where found)
   * the object structure is ready to be filled with useful methods ;-)
-  * we have ways to just keep unkown data around
+  * we have ways to just keep unknown data around
   
 #### What we can *NOT* do
   * understand properties, parse `ParameterValue`-objects or `Selector`-Objects
