@@ -67,9 +67,29 @@ Let us develop the section called ‘character range or specimens’, the one vi
 * show the _immediate_ effect (live update) of parameters & skeleton changes;
 * let users add, sort and delete glyphs from masters.
 
+### 1. character range is a specimen
+The first thing we will do is put the character range view and specimens on equal footing (well almost, see later). That means: the character range view is just another specimen, one where glyphs only appear once and are by default sorted according to character code.
 
+Thus character range appears on a popup list of possible view, as does a general sentences view (sourced from a news feed, one for each script) and some specific ones for checking numbers, punctuation, etc. This list is extendible through html files.
 
+### 2. character filtering and the big mix
+These interactions are mainly thought for the general sentences view but could be applied to the other ones.
 
+* a text field allows to enter characters which users want to focus on; a slider sets how strict this focus is: from at least one char must appear in words to be shown, to only combinations of the enters letters are shown.
+* when multiple (adjustment) masters are to be shown, mix masters by: the paragraph / word / character
+* when multiple scripts are to be shown, mix scripts by: the paragraph / word / character
+* a long display size slider, offering a wide range of sizes.
 
+### 3. the highlight
+What is highlighted (aka selected) in this section steers the level work is done:
 
+* if nothing is highlighted, the work is done on the current master(s);
+* if one or more glyphs in the current view are highlighted, the work is done on these glyphs;
+  * although all specimens (including character range) are very typographical (for lack of a better word), i.e. well-set text, the highlighting behaviour is that of a grig of glyphs (completely analogue to making (complex) selections in an icon grid in a file browser).
+  * how to highlight? it is very important that the ‘black’-on-white view of these glyphs of interest is preserved, but also that it is clear that they are the ones being worked on; even the visual interaction with their nearest neighbours should not be interrupted. A coloured rule under the glyph seems to be the most promising.
+  * note that multiple glyphs can be highlighted across multiple (adjustment) masters (since these can be displayed at the same time).
+* if one or more sub-glyph points are highlighted, the work is done on these points. note that multiple points can be highlighted across multiple glyphs, across multiple (adjustment) masters (since these can be displayed at the same time).
+* if one or more sub-glyph lines are highlighted, the work is done on these lines. note that multiple lines can be highlighted across multiple glyphs, across multiple (adjustment) masters (since these can be displayed at the same time).
+* if one or more sub-glyph vector shapes are highlighted, the work is done on these vector shapes. note that multiple vector shapes can be highlighted across multiple glyphs, across multiple (adjustment) masters (since these can be displayed at the same time).
 
+**example**: with the components we got up to now it is very easy to set up a view that is filtered to show only the glyphs ‘a’ and ‘g’, for 3 master fonts (i.e. 6 glyphs are on the screen). Now the 3 ‘a’s can be multi-selected and a parameter change at glyph level can be done. Next, for all 6 glyphs one point is selected (6 points in total multi-selected) and the point parameter tension-in is lowered a bit (to 90% of its previous value). Finally, nothing is highlighted and for the 3 masters a parameter change is made at master level.
