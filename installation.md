@@ -1,8 +1,6 @@
 Metapolator Installation
 ========================
 
-See the [wiki](https://github.com/metapolator/metapolator/wiki) for developer documentation.
-
 ## Install prerequisites
 
 ### Debian/Ubuntu
