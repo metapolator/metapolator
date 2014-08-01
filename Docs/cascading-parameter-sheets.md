@@ -191,6 +191,13 @@ should be processable values instead.
   
 #### Docs
 
+**What is missing**
+
+* `AtRuleName`
+* `AtRuleCollection`
+* `AtNamespaceCollection`
+* Namespaces in general
+
 To parse CPS into the object model, the module `app/lib/models/parameters/factories`
 provides the methods `rulesFromString` and `rulesFromAST`. Internally `rulesFromString`
 uses gonzales to parse the string and then invoke `rulesFromAST` with the
