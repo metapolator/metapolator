@@ -1,4 +1,4 @@
-# Metapolator
+# Metapolator [![Build Status](https://travis-ci.org/metapolator/metapolator.png)](https://travis-ci.org/metapolator/metapolator)
 
 Metapolator will be a web-based parametric font editor, providing a GUI for designing with UFO fonts and Metafont technologies. Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, expanding a single style design into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.
 

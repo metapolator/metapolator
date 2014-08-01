@@ -49,8 +49,7 @@ define({
     // loader
     useLoader: {
         'host-node': 'requirejs',
-        // FIXME: this is still wrong!
-        'host-browser': 'app/lib/bower_components/requirejs/require.js'
+        'host-browser': '../lib/bower_components/requirejs/require.js'
     },
 
     // Configuration options for the module loader; any AMD configuration options supported by the specified AMD loader
@@ -76,6 +75,7 @@ define({
     // Non-functional test suite(s) to run in each browser
     suites: [
         'tests/lib/Metapolator'
+      , 'tests/lib/export/_all_'
       , 'tests/lib/models/CPS/_all_'
       , 'tests/lib/models/MOM/_all_'
     ],
@@ -86,3 +86,4 @@ define({
     // A regular expression matching URLs to files that should not be included in code coverage analysis
     excludeInstrumentation: /intern|tests/
 });
+
