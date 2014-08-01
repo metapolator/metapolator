@@ -314,7 +314,7 @@ and items that we understand.
 
 ### Two Modes
 **Both Modes**
-Change RuleSets (CRUD),  Reorder stuff, Edit Comments(CRUD)
+Change RuleSets (CRUD), Reorder stuff, Edit Comments (CRUD)
 
 Both modes load using a CascadedParameters object, the CascadedParameters
 may expose useful API-methods, so that we can keep knowledge away from
