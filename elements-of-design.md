@@ -58,25 +58,31 @@ Fonts:
 **quick note**: it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co).
 
 ## working with masters and glyphs in context
-Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a couple of important jobs to do:
+Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
 
 1. show the character range or specimen for any number of masters and adjustment masters—the ones that are highlighted in the masters and adjustment masters panel;
-* let users control how much, how big and how mixed what they _see_ is;
-* let users control if they are working with parameters & skeletons on a master, glyph, or sub-glyph level, on one or more items;
-* offer where appropriate direct-manipulation of skeletons and parameters;
+* let users control how much, how big and how mixed it is what they _see_;
+* let users control if they are working with parameters & skeletons on a master, glyph, or sub-glyph level—on one or more items;
+* offer, where appropriate, direct-manipulation of skeletons and parameters;
 * show the _immediate_ effect (live update) of parameters & skeleton changes;
 * let users add, sort and delete glyphs from masters.
 
 ### 1. character range is a specimen
-The first thing we will do is put the character range view and specimens on equal footing (well almost, see later). That means: the character range view is just another specimen, one where glyphs only appear once and are by default sorted according to character code.
+The first thing we will do is to put the character range view and specimens on equal footing—_well almost, see later_. That means: the character range view is just another specimen, where glyphs appear only once, by default sorted according to character code.
 
-Thus character range appears on a popup list of possible view, as does a general sentences view (sourced from a news feed, one for each script) and some specific ones for checking numbers, punctuation, etc. This list is extendible through html files.
+Thus character range appears on a popup list of possible views, as does a general sentences view (sourced from a news feed, one for each script) and some specific ones for checking numbers, punctuation, etc. This list is extendible through html files.
 
 ### 2. character filtering and the big mix
-These interactions are mainly thought for the general sentences view but could be applied to the other ones.
+These interactions are for the general sentences view:
 
-* a text field allows to enter characters which users want to focus on; a slider sets how strict this focus is: from at least one char must appear in words to be shown, to only combinations of the enters letters are shown.
-* when multiple (adjustment) masters are to be shown, mix masters by: the paragraph / word / character
+* a text field allows to enter characters which users want to focus on; a slider sets how strict this focus is: from ‘at least one char must appear in words’ to be shown, to ‘only combinations of the entered letters’ are shown.
+* when multiple (adjustment) masters are to be shown, mix masters by: the paragraph / word / character;
+* when multiple scripts are to be shown, mix scripts by: the paragraph / word / character;
+* a long display size slider, offering a wide range of sizes.
+
+These are for the other views:
+
+* when multiple (adjustment) masters are to be shown, mix masters by the glyph, or pivot per master;
 * when multiple scripts are to be shown, mix scripts by: the paragraph / word / character
 * a long display size slider, offering a wide range of sizes.
 
@@ -95,7 +101,10 @@ What is highlighted (aka selected) in this section steers the level work is done
 **example**: with the components we got up to now it is very easy to set up a view that is filtered to show only the glyphs ‘a’ and ‘g’, for 3 master fonts (i.e. 6 glyphs are on the screen). Now the 3 ‘a’s can be multi-selected and a parameter change at glyph level can be done. Next, for all 6 glyphs one point is selected (6 points in total multi-selected) and the point parameter tension-in is lowered a bit (to 90% of its previous value). Finally, nothing is highlighted and for the 3 masters a parameter change is made at master level.
 
 ### 4. down to the bone
-From a certain display size (say, 144pt) and up, it becomes feasible to directly manipulate (i.e. edit using the mouse) the skeletons. These can then be shown for a glyph on mouse-over. Approaching pints or lines enlarges them to be able to grab them faster, shaving fractions of a second of the time for each action.
+From a certain display size (say, 144pt) and up, it becomes feasible to directly manipulate (i.e. edit using the mouse) the skeletons. These can then be shown for a glyph on mouse-over. Approaching points or lines enlarges them to be able to grab them faster, shaving fractions of a second of the time for each action.
+
+### 5. it’s alive
+Immediate, live update of parameters & skeleton changes means in practice within 500ms. The bad news is that _every_ instance of what is being worked on must update simultaneously; the good news is that only what is visible needs to update.
 
 ### 6. managing
 Ah yeah, what is special about the character range view? It is the only one where it makes sense to offer glyph management (add, sort and delete).
