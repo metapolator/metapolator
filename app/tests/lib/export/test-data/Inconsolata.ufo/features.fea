@@ -1,0 +1,50 @@
+
+
+@GDEF_Simple = [\NameMe.1 \NameMe.2 \NameMe.3 \NameMe.4 \NameMe.5 \NameMe.6 
+	\NameMe.7 \NameMe.8 \NameMe.9 \NameMe.10 \NameMe.11 \NameMe.12 \NameMe.13 
+	\NameMe.14 \NameMe.15 \NameMe.16 \NameMe.17 \NameMe.18 \NameMe.19 \NameMe.20 
+	\NameMe.21 \NameMe.22 \NameMe.23 \NameMe.24 \NameMe.25 \NameMe.26 \NameMe.27 
+	\NameMe.28 \NameMe.29 \NameMe.30 \NameMe.31 \space \exclam \quotedbl 
+	\numbersign \dollar \percent \ampersand \quotesingle \parenleft \parenright 
+	\asterisk \plus \comma \hyphen \period \slash \zero \one \two \three \four \five 
+	\six \seven \eight \nine \colon \semicolon \less \equal \greater \question \at \A \B 
+	\C \D \E \F \G \H \I \J \K \L \M \N \O \P \Q \R \S \T \U \V \W \X \Y \Z \bracketleft \backslash 
+	\bracketright \asciicircum \underscore \grave \a \b \c \d \e \f \g \h \i \j \k \l \m \n \o 
+	\p \q \r \s \t \u \v \w \x \y \z \braceleft \bar \braceright \asciitilde \NameMe.127 
+	\NameMe.128 \NameMe.129 \NameMe.130 \NameMe.131 \NameMe.132 \NameMe.133 
+	\NameMe.134 \NameMe.135 \NameMe.136 \NameMe.137 \NameMe.138 \NameMe.139 
+	\NameMe.140 \NameMe.141 \NameMe.142 \NameMe.143 \NameMe.144 \NameMe.145 
+	\NameMe.146 \NameMe.147 \NameMe.148 \NameMe.149 \NameMe.150 \NameMe.151 
+	\NameMe.152 \NameMe.153 \NameMe.154 \NameMe.155 \NameMe.156 \NameMe.157 
+	\NameMe.158 \NameMe.159 \nonbreakingspace \exclamdown \cent \sterling \euro 
+	\yen \Scaron \section \scaron \copyright \ordfeminine \guillemotleft 
+	\logicalnot \softhyphen \registered \macron \degree \plusminus \uni00B2 
+	\uni00B3 \Zcaron \micro \paragraph \periodcentered \zcaron \uni00B9 
+	\ordmasculine \guillemotright \OE \oe \Ydieresis \questiondown \Agrave \Aacute 
+	\Acircumflex \Atilde \Adieresis \Aring \AE \Ccedilla \Egrave \Eacute 
+	\Ecircumflex \Edieresis \Igrave \Iacute \Icircumflex \Idieresis \Eth \Ntilde 
+	\Ograve \Oacute \Ocircumflex \Otilde \Odieresis \multiply \Oslash \Ugrave 
+	\Uacute \Ucircumflex \Udieresis \Yacute \Thorn \germandbls \agrave \aacute 
+	\acircumflex \atilde \adieresis \aring \ae \ccedilla \egrave \eacute 
+	\ecircumflex \edieresis \igrave \iacute \icircumflex \idieresis \eth \ntilde 
+	\ograve \oacute \ocircumflex \otilde \odieresis \divide \oslash \ugrave \uacute 
+	\ucircumflex \udieresis \yacute \thorn \ydieresis \minus \quoteright \quoteleft 
+	\uni02CB \acute \circumflex \tilde \uni02C9 \breve \dotaccent \dieresis 
+	\hungarumlaut \ring \cedilla \ogonek \caron \dotlessi \guilsinglleft 
+	\guilsinglright \circumflex.cap \caron.cap \grave.cap \acute.cap \omacron 
+	\currency \brokenbar \onequarter \onehalf \threequarters \Aogonek \Lslash 
+	\Lcaron \Sacute \Scedilla \Tcaron \Zacute \Zdotaccent \Racute \Abreve \Lacute 
+	\Cacute \Ccaron \Eogonek \Ecaron \Dcaron \Dcroat \Nacute \Ncaron \Ohungarumlaut 
+	\Rcaron \Uring \Uhungarumlaut \Tcedilla \aogonek \abreve \ccaron \dcaron 
+	\eogonek \lcaron \lacute \nacute \ncaron \ohungarumlaut \rcaron \sacute \cacute 
+	\scedilla \tcedilla \uring \uhungarumlaut \zdot \lslash \ecaron \NameMe.329 
+	\kgreenlandic \dotlessj \eng \quotesinglbase \quotedblleft \quotedblright 
+	\quotedblbase \ellipsis \uparrow \downarrow \visiblespace \r.serif \gbreve 
+	\hungarumlaut.cap \uni2074 \fraction \Eng \dcroat \Gbreve \Idotaccent \racute 
+	\tcaron \zacute \bullet \florin \dagger \daggerdbl \trademark \zero.noslash ];
+
+table GDEF {
+  GlyphClassDef @GDEF_Simple, , , ;
+
+} GDEF;
+
