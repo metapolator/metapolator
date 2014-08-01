@@ -24,7 +24,7 @@ use a CSS Parser to read CPS.
 
 * the parameters that are used for HTML. Because we define our own parameters
   in a very extensible way: via plugins
-* Concepts like media-queries. We might come up with our own @-Rules however.
+* Concepts like media-queries. We have our own @-Rules, however.
 * The full range of possible selectors. At least not from
   the very beginning. To select the glyph after the glyph 'a' (`glyph#a + glyph`)
   is a thing we can wait for a bit longer I think.
