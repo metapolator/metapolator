@@ -191,13 +191,6 @@ should be processable values instead.
   
 #### Docs
 
-**What is missing**
-
-* `AtRuleName`
-* `AtRuleCollection`
-* `AtNamespaceCollection`
-* Namespaces in general
-
 To parse CPS into the object model, the module `app/lib/models/parameters/factories`
 provides the methods `rulesFromString` and `rulesFromAST`. Internally `rulesFromString`
 uses gonzales to parse the string and then invoke `rulesFromAST` with the
@@ -293,6 +286,13 @@ All objects used in the CPS Object-Model so far are:
     the whitespace situation will resolve.
     
     <small>*equivalent gonzales AST item:* `value`</small>
+
+##### Undocumented CPS elements
+
+* `AtRuleName`
+* `AtRuleCollection`
+* `AtNamespaceCollection`
+* Namespaces in general
 
 The CPS interface
 -----------------
