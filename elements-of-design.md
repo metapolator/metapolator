@@ -73,26 +73,31 @@ The first thing we will do is to put the character range view and specimens on e
 Thus character range appears on a popup list of possible views, as does a general sentences view (sourced from a news feed, one for each script) and some specific ones for checking numbers, punctuation, etc. This list is extendible through html files.
 
 ### 2. character filtering and the big mix
+These interactions are for the character range view:
+
+* when multiple (adjustment) masters are to be shown, mix masters per glyph, or pivot per master;
+* a long display size slider, offering a wide range of sizes.
+
 These interactions are for the general sentences view:
 
-* a text field allows to enter characters which users want to focus on; a slider sets how strict this focus is: from ‘at least one char must appear in words’ to be shown, to ‘only combinations of the entered letters’ are shown.
+* a text field allows to enter characters which users want to focus on; a slider sets how strict this focus is: from ‘at least one entered char must appear in words’ to be shown, to ‘only combinations of the entered letters’ are shown.
 * when multiple (adjustment) masters are to be shown, mix masters by: the paragraph / word / character;
 * when multiple scripts are to be shown, mix scripts by: the paragraph / word / character;
 * a long display size slider, offering a wide range of sizes.
 
 These are for the other views:
 
-* when multiple (adjustment) masters are to be shown, mix masters by the glyph, or pivot per master;
-* when multiple scripts are to be shown, mix scripts by: the paragraph / word / character
+* ability to mix multiple (adjustment) masters;
+* ability to mix multiple scripts;
 * a long display size slider, offering a wide range of sizes.
 
 ### 3. the highlight
 What is highlighted (aka selected) in this section steers the level work is done:
 
-* if nothing is highlighted, the work is done on the current master(s);
+* if nothing is highlighted, the work is done on the (adjustment) master(s) that are highlighted in the masters and adjustment masters panel;
 * if one or more glyphs in the current view are highlighted, the work is done on these glyphs;
-  * although all specimens (including character range) are very typographical (for lack of a better word), i.e. well-set text, the highlighting behaviour is that of a grig of glyphs (completely analogue to making (complex) selections in an icon grid in a file browser).
-  * how to highlight? it is very important that the ‘black’-on-white view of these glyphs of interest is preserved, but also that it is clear that they are the ones being worked on; even the visual interaction with their nearest neighbours should not be interrupted. A coloured rule under the glyph seems to be the most promising.
+  * although all specimens (including character range) are very typographical (for lack of a better word), i.e. well-set text, the highlighting behaviour is that of a grid of glyphs (completely analogue to making (complex) selections in an icon grid in a file browser, including the use of rubber-banding to make selections, and shift and cmd/ctrl to grow and shrink these).
+  * how to highlight? it is very important that the ‘black’-on-white view of these glyphs being worked on is preserved, but also that it is clear that they are the ones being worked on; even the visual interaction with their nearest neighbours should not be interrupted. A coloured rule under the glyph seems to be the most promising.
   * note that multiple glyphs can be highlighted across multiple (adjustment) masters (since these can be displayed at the same time).
 * if one or more sub-glyph points are highlighted, the work is done on these points. note that multiple points can be highlighted across multiple glyphs, across multiple (adjustment) masters (since these can be displayed at the same time).
 * if one or more sub-glyph lines are highlighted, the work is done on these lines. note that multiple lines can be highlighted across multiple glyphs, across multiple (adjustment) masters (since these can be displayed at the same time).
@@ -102,6 +107,13 @@ What is highlighted (aka selected) in this section steers the level work is done
 
 ### 4. down to the bone
 From a certain display size (say, 144pt) and up, it becomes feasible to directly manipulate (i.e. edit using the mouse) the skeletons. These can then be shown for a glyph on mouse-over. Approaching points or lines enlarges them to be able to grab them faster, shaving fractions of a second of the time for each action.
+
+**however**, paradoxically some restraint has to be practiced when planning for what parameters (this is what it essentially is) direct manipulation is to be provided. This is for the following reasons:
+
+* implementation effort for v1.0;
+* we have to wean users off their old habits of working glyph-by-glyph, and of getting results directly pushing around the outline (i.e. the edge) of a glyph shape; we have to put the brakes on what facilitates this.
+
+Our guiding credo should be: we provide direct manipulation there, where it would be completely silly not to.
 
 ### 5. it’s alive
 Immediate, live update of parameters & skeleton changes means in practice within 500ms. The bad news is that _every_ instance of what is being worked on must update simultaneously; the good news is that only what is visible needs to update.
