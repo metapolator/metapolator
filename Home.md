@@ -6,7 +6,7 @@ Interaction Design
 * [Implementation Phase](https://github.com/metapolator/metapolator/wiki/interaction-design#the-implementation-phase)
 
 Software Development
-* [Installation for developers](https://github.com/metapolator/metapolator/blob/master/INSTALL.md)
+* [Installation for developers](https://github.com/metapolator/metapolator/wiki/installation)
 * [Concepts](https://github.com/metapolator/metapolator/wiki/concepts)
   * [Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
   * [CPS](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
