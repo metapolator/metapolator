@@ -11,7 +11,7 @@ you know from CSS, however, the syntax is very much the same. In fact, we
 use a CSS Parser to read CPS.
 
 
-### What we borrow:
+### What we borrow
 
 * The **syntax** when serializing.
 * How the  **selectors** work; which allows us to specify rules for a set of
@@ -20,7 +20,7 @@ use a CSS Parser to read CPS.
   but the most specific one wins.
 * To be continued.
 
-### What we don't borrow:
+### What we don't borrow
 
 * the parameters that are used for HTML. Because we define our own parameters
   in a very extensible way: via plugins
@@ -83,8 +83,8 @@ cause confusion. This, however, implies that we should lock the value until
 we receive the answer, otherwise the user might be confused by the control
 element moving autonomously.
 
-CPS Object-Model:
------------------
+CPS Object-Model
+----------------
 
 In general the items in the CPS Object-Model are divided into two big categories:
 
@@ -122,7 +122,7 @@ The base for the CPS Object-Model is established in
   * change data in the object structure (we'll add APIs for that of course)
   * receive values from the structure
 
-#### The Parser:
+#### The Parser
 
 After some tests the [Gonzales CSS Parser](https://github.com/css/gonzales)
 was chosen. Not only because the name implies that it is fast ;-). Also,
@@ -177,7 +177,6 @@ and another onemissing.delim > {
 @media whatever{ hi{name:val} }
 ```
 
-
 The most intersting part happens in
 [`app/lib/models/parameters/factories.js`](https://github.com/metapolator/metapolator/blob/next/next/app/lib/models/parameters/factories.js).
 Where all the logic for the conversion from AST to CPS-Object-Model is contained.
@@ -189,7 +188,6 @@ in that direction and reduce all touching points with the AST of gonzales
 to the factories module--this is not fully the case at the moment, because
 some Object Model classes still receive `GenericCPSNode`-objects where there
 should be processable values instead.
-
   
 #### Docs
 
@@ -289,11 +287,8 @@ All objects used in the CPS Object-Model so far are:
     
     <small>*equivalent gonzales AST item:* `value`</small>
 
-
-
-
-The CPS interface:
-------------------
+The CPS interface
+-----------------
 
 I suggest 2 stages: The first as a pure display of the model. The second
 stage would add the ability to change values. There a more features
