@@ -12,7 +12,7 @@ Metapolator will allow designers to use Metafont technology without have to writ
 
 * * * 
 
-Metapolator is not yet released. See [INSTALL.md](https://github.com/metapolator/metapolator/blob/master/INSTALL.md) for developer installation instructions if you'd like to try it out and are comfortable using development tools.
+Metapolator is not yet released. See the [wiki](https://github.com/metapolator/metapolator/wiki/installation) for developer installation instructions if you'd like to try it out and are comfortable using development tools.
 
 We are actively documenting our development on our wiki, <https://github.com/metapolator/metapolator/wiki/>
 
