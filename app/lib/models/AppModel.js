@@ -7,11 +7,11 @@ define([
 ){
     "use strict";
     //this is a stub to wire things up.
-    
-    
+
+
     /**
      * This is intended to become the become the single root Model
-     * of Metapolator. All Other models will life in here
+     * of Metapolator. All other models will live in here
      */
     function AppModel() {
         // only needed if _BaseModel does something with the model
@@ -20,6 +20,6 @@ define([
     }
     // class like inheritance pattern:
     var _p = AppModel.prototype = Object.create(_BaseModel.prototype);
-    
+
     return AppModel;
 })

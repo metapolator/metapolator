@@ -24,28 +24,22 @@ define([
             return name;
         }
       );
-    
+
     function main(commandName, argv) {
             // arguments are mandatory and at the end of the argv array
             // readArguments MUST run before readOptions
         var args = argumentParser.readArguments(argv)
-            // options are after the command name and berfore the arguments
+            // options come after the command name and before the arguments
             // readOptions MUST run after readArguments
           , options = argumentParser.readOptions(argv)
-          , sourceGlyphSet
-          // the current workin directory + glyphs_imported
-          , targetGlyphSetDir = './glyphs_imported'
-          , targetGlyphSet
           ;
-        
+
         console.log('processed arguments', args)
         console.log('processed options', options)
-        
-
 
         var project = new MetapolatorProject.init(io, args.name);
     }
-    
+
     module = {main: main};
     Object.defineProperty(module, 'help', {
         get: argumentParser.toString.bind(argumentParser)
