@@ -1,6 +1,6 @@
 **Me•ta•po•la•tion**: insert an intermediate font instance into a series by calculating it from surrounding known masters.
 
-This page contains the interaction design research into metapolation and design explorations for handling it.
+This page contains the interaction design research into metapolation and design explorations for handling it. For the concrete implementation, see [[CPS metapolation]].
 
 ## the math
 Luckily the math of metapolation is straightforward. When working with a design space set up by N masters (M1, M2, M3 .. M[N]), then the instance I is a linear combination of masters:
