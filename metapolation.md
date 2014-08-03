@@ -27,7 +27,7 @@ _Example: for a 4-master metapolation, there are 1 + 2 + 3 = 6 (= ½·4·3) rati
 
 ### relations are complicated
 
-Looking beyond the simple one–to–one relationship, we can also list the number of possible triangular and ‘quadrophonic’ relationships:
+Looking beyond the simple one–to–one relationship, we can also list the number of possible triangular and quadrilateral relationships:
 
 masters | 1–to–1 | triangles | quads
 --- | --: | --: | --:
