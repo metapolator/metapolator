@@ -7,7 +7,7 @@ The interpolator interpolates in two senses:
 1. Its `StyleDict`'s `Rule`s select some parts of each interpolated master.
 2. Its interpolating `Parameter`s interpolate between the relevant values of each master.
 
-For the purposes of interpolation, a master is itself considered to be a `StyleDict`. *RT: ??? Presumably there's more to it* The interpolation process then uses the interpolator's `Rule` list to select the `Node`s of each master that will be added to the interpolation, and adjusts the `Parameter`s of each selected `Node` according to the interpolation vector, assuming that each font contains a corresponding `Node`.
+For the purposes of interpolation, a master is itself considered to be a `StyleDict`. *(RT: Presumably there's more to it?)* The interpolation process then uses the interpolator's `Rule` list to select the `Node`s of each master that will be added to the interpolation, and adjusts the `Parameter`s of each selected `Node` according to the interpolation vector, assuming that each font contains a corresponding `Node`.
 
 # Open questions
 
