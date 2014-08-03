@@ -117,7 +117,7 @@ The base for the CPS Object-Model is established in
 #### What we can *NOT* do
   * understand properties, parse `ParameterValue`-objects or `Selector`-Objects
   * query the `ParameterCollection` for rules that apply for a certain object,
-    this will need the MFOM (Metapolator Font Object Model) for interaction
+    this will need the MOM (Metapolator Object Model) for interaction
     anyways.
   * change data in the object structure (we'll add APIs for that of course)
   * receive values from the structure
