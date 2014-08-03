@@ -204,7 +204,7 @@ define([
         return new ParameterDict(items);
     }
     /**
-     * returns a Rule poin:i({index}){ ... data ... }
+     * returns a Rule point:i({index}){ ... data ... }
      * 
      * This is VERY special knowledge about the structure of CPS CompoundValues
      * It knows for example how the CompoundValues are configured, etc.
