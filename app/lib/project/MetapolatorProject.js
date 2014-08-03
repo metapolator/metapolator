@@ -282,7 +282,7 @@ define([
     
     _p.getMaster = function(masterName) {
         if(!this.hasMaster(masterName))
-            throw new KeyError('Master "'+masterName+'" not in Projekt');
+            throw new KeyError('Master "'+masterName+'" not in project');
         if(!this._cache.masters[masterName]) {
             this._cache.masters[masterName] = this._getMaster(masterName);
         }

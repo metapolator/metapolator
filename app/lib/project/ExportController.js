@@ -110,8 +110,8 @@ define([
      * We draw first the right side from 0 to 6,
      * then the left side from 6 to 0.
      * 
-     * In each iteration only one on curve point is drawn, in the
-     * following example, that is always the last point of the four
+     * In each iteration only one on-curve point is drawn; in the
+     * following example, that is always the last point of the four-
      * point tuples. Also, the out and in controls are drawn.
      * The first point of the tuples is needed to calculate the control
      * point position when we use hobby splines.
@@ -248,12 +248,12 @@ define([
         // I'm starting with tensions/native-js
         // then I add a tensions/metafont implementation
         // eventually we should be able to control this via CPS!
-        // the parameter could be set for all levels from univers to
-        // penstroke, this would be a good example for inhertance, too
+        // The parameter could be set for all levels from univers to
+        // penstroke, this would be a good test of inhertance;
         // also, it should be possible to render just one penstroke
         // of a glyph using metafont, for example.
-        // maybe we can culminate all metafont strokes into one job, to
-        // keep the overhead lower. The needed parameters would of course
+        // Maybe we can combine all metafont strokes into one job, to
+        // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
         glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen));
         //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen));
