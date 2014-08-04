@@ -48,7 +48,7 @@ Below, we will exercise these hierarchies.
 Set/Change/Clear [parameter(s)](#parameters) (for whole master or several masters).
 
 ### script
-ƒ— Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole glyph or several glyphs).
+ƒ— Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole script or several scripts).
 
 ### glyph
 ƒ— New, Duplicate, Delete, Set char code, Sort
