@@ -27,8 +27,8 @@ define([
     );
 
     argumentParser.addArgument(
-        'selectors'
-      , 'a comma separated list of selectors, best use quotation marks for shell escaping'
+        'Selectors'
+      , 'a comma-separated list of selectors, best use quotation marks for shell escaping'
       , function(args) {
             var path = args.pop();
             if(path === undefined)
@@ -57,9 +57,9 @@ define([
         project.load();
         controller = project.open(args.MasterName);
 
-        console.log('selector:', args.selectors );
+        console.log('selectors:', args.Selectors );
         
-        var result = controller.queryAll(args.selectors);
+        var result = controller.queryAll(args.Selectors);
         console.log('result:')
         console.log(result.map(function(item){ return item +' '+item.particulars }).join(',\n'));
         console.log('_______________');
