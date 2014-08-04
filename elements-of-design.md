@@ -136,7 +136,6 @@ Let us develop the section called ‘parameters’, the one at the very start (i
 Some interesting dynamics are at play:
 
 1. parameters really _belong_ to the lower levels of the hierarchy: glyph, line, point, vector shape;
-* at any working context level in the hierarchy (except for project) parameters can be modified by a higher level (e.g. the width set for a glyph can be scaled (* 0.9) at master level);
-* at any working context level in the hierarchy parameters can be modified, or even overwritten, by a lower level—down to the level where these parameters belong (e.g. the weight set for a script can be capped by a maximum (<= X) value at glyph level; the slant set at a project level can be overwritten (= 0) at glyph level);
-* a number of parameters are mandatory—if one is missing, glyphs cannot be drawn. thus for a master, for each glyph, line, point, vector shape they belong to, they need to be be defined (= XYZ) at any given level; for an adjustment mast no such requirement exists;
-
+* parameters set at any level in the hierarchy (except for project) can be modified by a higher level (e.g. the width set for a glyph can be scaled (* 0.9) at master level);
+* parameters set at any level in the hierarchy can be modified, or even overwritten, at a lower level—down to the level where these parameters belong (e.g. the weight set for a script can be capped by a maximum (<= X) value at glyph level; the slant set at a project level can be overwritten (= 0) at glyph level);
+* a number of parameters are mandatory—if one is missing, glyphs cannot be drawn. thus for a master, for each glyph, line, point, vector shape they belong to, they need to be be defined (= XYZ) at any given level; for an adjustment master no such requirement exists;
