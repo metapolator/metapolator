@@ -12,7 +12,7 @@ Below we will go top-down through the Metapolator structure and sum up the funct
 
 github integration: actions TBD (keep it simple for designers, please)
 
-Set/Change/Clear global point/line/glyph [parameter(s)](#parameters).
+Set/Change/Clear global point/line/glyph/vector shape [parameter(s)](#parameters).
 
 ### drilling down
 There are two hierarchies within a project. The first one is **the hierarchy of masters**—
@@ -48,17 +48,17 @@ Below, we will exercise these hierarchies.
 Set/Change/Clear [parameter(s)](#parameters) (for whole master or several masters).
 
 ### script
-ƒ— Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole script or several scripts).
+ƒ— Set/Change/Clear point/line/glyph/vector shape [parameter(s)](#parameters) (for whole script or several scripts).
 
 ### glyph
 ƒ— New, Duplicate, Delete, Set char code, Sort
 
-Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole glyph or several glyphs).
+Set/Change/Clear point/line/glyph/vector shape [parameter(s)](#parameters) (for whole glyph or several glyphs).
 
 ### (skeleton) segment
 ƒ— New, Duplicate, Delete, Translate, Scale, Rotate
 
-Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole segment or several segments).
+Set/Change/Clear point/line/glyph/vector shape [parameter(s)](#parameters) (for whole segment or several segments).
 
 #### line
 Set/Change/Clear line [parameter(s)](#parameters) (for one or more lines).
@@ -71,7 +71,9 @@ Set/Change/Clear point [parameter(s)](#parameters) (for one or more points).
 **note**: position of a point and bezier-type controllers are part of its parameters.
 
 ### vector shape
-ƒ— Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete, Translate, Scale, Rotate
+ƒ— Import, New _(later)_, Edit bezier _(later)_, Duplicate, Delete
+
+Set/Change/Clear vector shape [parameter(s)](#parameters) (for one or more vector shapes).
 
 ### parameters
 See also this Zürich [report section](https://github.com/metapolator/metapolator/wiki/the-Zürich-report#parameter-gardening).
