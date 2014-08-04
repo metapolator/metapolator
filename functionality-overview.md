@@ -18,13 +18,14 @@ Set/Change/Clear global point/line/glyph [parameter(s)](#parameters).
 There are two hierarchies within a project. The first one is **the hierarchy of masters**—
 * project
   * master
-    * glyph
-      * skeleton
-        * line
-        * point
-      * vector shape
+    * script
+      * glyph
+        * (skeleton) segment
+          * line
+          * point
+        * vector shape
 
-i.e. “a project consists of masters, which contain glyphs, made out of skeletons—drawn with lines between points—and vector shapes.”
+i.e. “a project consists of masters, which contain one or more scripts, which map to glyphs, made out of segments—drawn with lines between points—and vector shapes.”
 
 The second hierarchy is **the hierarchy of metapolation**—
 
@@ -46,15 +47,18 @@ Below, we will exercise these hierarchies.
 
 Set/Change/Clear [parameter(s)](#parameters) (for whole master or several masters).
 
+### script
+ƒ— Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole glyph or several glyphs).
+
 ### glyph
 ƒ— New, Duplicate, Delete, Set char code, Sort
 
 Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole glyph or several glyphs).
 
-### skeleton
+### (skeleton) segment
 ƒ— New, Duplicate, Delete, Translate, Scale, Rotate
 
-Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole skeleton or several skeletons).
+Set/Change/Clear point/line/glyph [parameter(s)](#parameters) (for whole segment or several segments).
 
 #### line
 Set/Change/Clear line [parameter(s)](#parameters) (for one or more lines).
@@ -74,7 +78,8 @@ See also this Zürich [report section](https://github.com/metapolator/metapolato
 
 * glyph: 20+
 * line: one for now: type;
-* point: 10+, coordinate pair, 4 are bezier-type controllers, 3 control the pen.
+* point: 10+, coordinate pair, 4 are bezier-type controllers, 3 control the pen;
+* vector shape: 5, coordinate pair, size pair, rotation.
 
 Parameters can be adjusted using operators: scale (*), offset (+), set value (=), minimum (>=), maximum(<=).
 
@@ -90,7 +95,7 @@ Parameters can be adjusted using operators: scale (*), offset (+), set value (=)
 ### adjustment master
 ƒ— New, Duplicate, Delete, Set Name, Set Position
 
-Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, skeleton, line, point and/or vector shape level.
+Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, segment, line, point and/or vector shape level.
 
 **note**: an adjustment master can appear anywhere in a design space and anywhere on adjustment master sequences.
 
@@ -131,7 +136,7 @@ Undo (of edit steps on any data)
 Cut, Copy and Paste of—
 
 * glyphs
-* skeletons
+* (skeleton) segments
 * points (with lines)
 * vector shapes
 * parameter+value pairs
