@@ -120,3 +120,21 @@ Immediate, live update of parameters & skeleton changes means in practice within
 
 ### 6. managing
 Ah yeah, what is special about the character range view? It is the only one where it makes sense to offer glyph management (add, sort and delete).
+
+## parameter review and editing
+Let us develop the section called ‘parameters’, the one at the very start (in reading direction) of the overall UI layout. It is used to review and edit parameters of (adjustment) masters, up and down this hierarchy:
+
+* project
+  * master
+    * script
+      * glyph
+        * (skeleton) segment
+          * line
+          * point
+        * vector shape
+
+Some interesting dynamics are at play:
+
+1. parameters really _belong_ to the lower levels of the hierarchy: glyph, line, point, vector shape;
+* at any working context level in the hierarchy (except for project) parameters can be modified by a higher level (e.g. the width set for a glyph can be scaled (* 0.9) at master level);
+* at any working context level in the hierarchy (except for line, point, vector shape) parameters can be modified, or even overwritten, by a lower level (e.g. the weight set for a script can be capped by a maximum value at glyph level; the slant set at a project level can be overwritten (= 0) at glyph level);
