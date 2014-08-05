@@ -1,6 +1,6 @@
 For explanations of the datatypes, see [[cascading parameter sheets]].
 
-A CPS interpolator is a `StyleDict`, that is, a list of `Rule`s. When interpolating /N/ masters, each `Parameter` whose `ParameterValue` is a list of /N-1/ real numbers is considered (we can either require that all parameters are valid interpolations, or ignore those that aren't).
+A CPS interpolator is a list of `Rule`s. When interpolating /N/ masters, each `Parameter` whose `ParameterValue` is a list of /N-1/ real numbers is considered (we can either require that all parameters are valid interpolations, or ignore those that aren't).
 
 The interpolator interpolates in two senses:
 
