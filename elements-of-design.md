@@ -23,7 +23,7 @@ With these three connecting elements, we can chain four departments together, th
 
 Giving everything its place it looks like this:
 
-![](http://mmiworks.net/metapolator/refined6.png)
+![](http://mmiworks.net/metapolator/refined7.png)
 
 **notes**, from left to right:
 
@@ -40,7 +40,7 @@ Giving everything its place it looks like this:
 
 Driven by the choice of department (Parameters, Design Spaces, Metapolation, Fonts) the viewport slides left or right, showing the continuity between these departments:
 
-![](http://mmiworks.net/metapolator/slide5.png)
+![](http://mmiworks.net/metapolator/slide6.png)
 
 _(yes, for R-to-L language UI localisation, the whole order of these sections needs to be reversed, because its sequence is a forward/backward order in reading direction)_
 
@@ -48,17 +48,25 @@ The individual department views, Parameters:
 
 ![](http://mmiworks.net/metapolator/paraview.png)
 
+_On the right, manage (adjustment) masters and select which ones to work on; review in the middle, directly manipulate and possibly refine the selection to glyph(s) or sub-glyph(s); review and work on the parameters of this selection on the left._
+
 Design Spaces:
 
-![](http://mmiworks.net/metapolator/designview2.png)
+![](http://mmiworks.net/metapolator/designview3.png)
+
+_Place (adjustment) masters on one or more design spaces and arrange them; manage master sequences; review the (adjustment) masters on the bottom of this department._
 
 Metapolation:
 
-![](http://mmiworks.net/metapolator/metapolview2.png)
+![](http://mmiworks.net/metapolator/metapolview3.png)
+
+_Explore the design spaces; create and manage (strings of) instances and adjust them both in the design spaces and the metapolation sliders; review the instances on the bottom of this department._
 
 Fonts:
 
 ![](http://mmiworks.net/metapolator/fontsview.png)
+
+_Map the (strings of) instances to font (families); manage metadata and assign to font (families)._
 
 **quick note**: it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co).
 
