@@ -11,19 +11,19 @@ define([
 ) {
     "use strict";
     /**
-     * global global registry for all known parameter names
+     * global registry for all known parameter names
      */
     function Registry() {
         this._parameters = {};
-        
-        // fixme: eventually data types should be registered dynamically,
+
+        // FIXME: eventually data types should be registered dynamically,
         // too. So that we could load them as plugins if needed.
-        // I'm not doing this yet, because I wan't to design the plugin
+        // I'm not doing this yet, because I want to design the plugin
         // interface later
         this._dataTypes = {
-            // types will have to parse cps and return instances
-            // types may recognize that the cps is invalid, this could
-            // hapen way earlier than when creating the instance.
+            // types will have to parse CPS and return instances
+            // types may recognize that the CPS is invalid, this could
+            // happen way earlier than when creating the instance.
             // thus the idea of factories.
             string: simpleTypes.string
           , real: simpleTypes.real
@@ -34,12 +34,12 @@ define([
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
     _p.constructor = Registry;
-    
-    
+
+
     _p.exists = function(name) {
         return name in this._parameters;
     }
-    
+
     _p.getTypeDefinition = function(name) {
         var description;
         if(!this.exists(name))
@@ -47,7 +47,7 @@ define([
         description = this._parameters[name];
         return this._dataTypes[description.type];
     }
-    
+
     _p.getDefaultFactory = function(name) {
         var description;
         if(!this.exists(name))
@@ -55,18 +55,18 @@ define([
         description = this._parameters[name];
         return this._dataTypes[description.type].defaultFactory;
     }
-    
+
     _p.register = function(name, parameterDescription) {
         if(this.exists(name))
             throw new errors.CPSRegistryKey('Name "'+name+'" already registered.');
-        
+
         if(!(parameterDescription.type in this._dataTypes))
             throw new errors.CPSRegistryKey('Type "'
                 +parameterDescription.type+'" for parameter "'+name
                 +'" is unkown.');
-        
+
         this._parameters[name] = parameterDescription;
     }
-    
+
     return Registry;
 })

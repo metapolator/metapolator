@@ -16,7 +16,7 @@ define([
     "use strict";
     var CPSError = errors.CPS;
     /**
-     * A list of Rule, AtRuleCollection ParameterCollection, and
+     * A list of Rule, AtRuleCollection, ParameterCollection, and
      * Comment Elements
      */
     function ParameterCollection(items, source, lineNo) {

@@ -324,7 +324,6 @@ define([
             var master = this.getMaster(masterName)
             , parameterCollections = master.loadCPS()
             , momMaster = master.loadMOM()
-            , controller
             ;
             momMaster.id = masterName;
             this._controller.addMaster(momMaster, parameterCollections);

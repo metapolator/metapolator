@@ -25,7 +25,7 @@ define([
       , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
       ;
     /**
-     * Create a ParameterCollection from a CSS-string
+     * Create a ParameterCollection from a CSS string
      */
     function rulesFromString(css, sourceName, parameterRegistry) {
         var ast;

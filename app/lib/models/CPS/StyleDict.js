@@ -44,9 +44,9 @@ define([
      * 
      * this method could be a good fit for the element directly
      * or for a 'document' like structure that keeps some of the
-     * state data separatet from the MOM elements. The latter would
+     * state data separate from the MOM elements. The latter would
      * make it possible to change the CPS without having to create
-     * a new instance of the mom!
+     * a new instance of the MOM!
      */
     _p.get = function(name) {
         // this is a caching mechanism, this might be harmful, because we
@@ -81,7 +81,7 @@ define([
                     // it with the next token
                     // if there is no next token, that value is invalid ...
                     return this._controller._getComputedStyle(value).CPSValueAPI
-                // might be a lgitimate value or crap like a cosntructor, etc
+                // might be a legitimate value or crap like a cosntructor, etc
                 return value;
             }
         }
