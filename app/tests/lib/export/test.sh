@@ -5,7 +5,13 @@
 # Each font in the space-separated lists is imported, exported, and the
 # exported result compared with the original.
 FONTS_SUCCEED=""
-FONTS_FAIL="Inconsolata"
+FONTS_FAIL="Inconsolata sean_hairline"
+
+# Special setup for sean
+if test ! -L sean_hairline.ufo; then
+    rm -f test-data/sean_hairline.ufo
+    ln -s ../../../../../sean/master_template/sean_hairline.ufo test-data/
+fi
 
 TEST_DIR=test-data
 MASTER_NAME=new_master
