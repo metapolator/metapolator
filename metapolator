@@ -40,6 +40,7 @@ requirejs([
             'init': 'commands/init'
           , 'import': 'commands/import'
           , 'export': 'commands/export'
+          , 'interpolate': 'commands/interpolate'
           , 'red-pill': 'commands/red-pill'
           // developer playground, to make quick tests etc
           , 'dev-playground-cps': 'commands/playground/cps'
