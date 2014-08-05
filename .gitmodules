@@ -4,3 +4,6 @@
 [submodule "app/lib/obtainJS"]
 	path = app/lib/obtainJS
 	url = https://github.com/graphicore/obtainJS.git
+[submodule "sean"]
+	path = sean
+	url = git://github.com/metapolator/sean.git
