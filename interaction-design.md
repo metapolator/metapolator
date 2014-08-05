@@ -56,6 +56,8 @@ Using the user scenarios as a guide and the functionality overview as a checklis
 
 ## Solutions Model
 
+* [Elements of Design](https://github.com/metapolator/metapolator/wiki/elements-of-design)
+
 _(This is in progress throughout July and August)_
 
 ## Detailed Design (wireframes)
