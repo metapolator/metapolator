@@ -163,13 +163,13 @@ Some interesting dynamics are at play:
   * on which hierarchy level(s) is the parameter set?
 * for a given context (global, master, script, glyph, segment, line, point, vector shape), what parameters are set?
   * is there interaction with settings at higher hierarchy levels—if so, where?
-  * are there settings on lower levels that make this does one ineffective?
+  * are there settings on lower levels that make this one ineffective?
 * for a given _leaf_ context (glyph, line, point, vector shape) what are the effective values of the native parameters of that level?
 * when a multi-selection is the context (e.g. a couple of masters, or a handful of glyphs), how not to get thoroughly confused by a plethora of different set/effective values for the same parameter?
 
 ### the rules
 
-From a user interaction perspective, this is a simple but effective system to rule how the parameter operators cascade along the hierarchy:
+From a user interaction perspective, this is a simple but effective system for how the parameter operators cascade along the hierarchy:
 
 1. only parameters who have their value set (=) anywhere in the hierarchy are defined;<br/>
 _(e.g. any scaling (*), offset (+), etc operators may be defined for width along the hierarchy, but is width is not set to value anywhere, it is undefined)_
@@ -183,3 +183,32 @@ _(e.g. if at project, master and glyph level a parameter is offset, all 3 are ad
 _(e.g. master level sets a maximum and point level too, then the point one wins—for that point)_
 * the lowest hierarchy level that sets a minimum (>=) wins.<br/>
 _(analogue to maximum)_
+
+### a rough design
+![](http://mmiworks.net/metapolator/masterpar.png)
+
+Above we see the parameters panel when a master is the working context. From the top—
+
+* project-level parameters are also displayed, in this case slant is scaled (* 2) for all masters;
+* for the mast fit self the point parameter ‘Direction in’ is set; it is shown next to it that 38% of all points in glyphs in this masters have this value overwritten somewhere along the hierarchy (it is also shown for the minimum and maximum operators, where applicable);
+* the ‘+’ buttons allow to add a parameter entries to the different levels;
+* when master is the working context, the script level is also shown, if more than one is configured for this master; in this case both latin and cyrillic script have no parameters defined, hence they are closed by default.
+
+![](http://mmiworks.net/metapolator/moverpar.png)
+
+Above we see the different **mouse-over** interaction. From the top—
+
+* close box to remove the parameter entry;
+* highlight over the operator (=); click to show a popup to change it:<br/>![](http://mmiworks.net/metapolator/opspop.png)
+* override percentage to highlight in the character range or specimens panel the points that did receive an override;
+* value: click to activate an edit box.
+
+![](http://mmiworks.net/metapolator/pointpar.png)
+
+Above we see the parameters panel when a leaf node, a point, is the working context. From the top—
+
+* all the hierarchy levels, from project downwards, are shown—collapsed by default—above the leaf level, but scrolled out of view (except for the direct parent) to save space;
+* an offset (+) parameter is set for Tension in; its value is negative; the ‘×+’ sign shows that at higher levels scale (*) and/or offset operators have also been applied to this parameter for this point; clicking the symbol pops up a panel that shows the trail of what is applied where (it is also shown for the scale  operator, where applicable);
+* the whole light-grey section is _all_ point parameters, with the current values for this point; it is split in Skeleton and Pen sections for clarity (and shorter parameter names on each line);
+* parameters that have a ‘=’ before their value have been set (operator =) directly at point level, with no scaling or offsets applied;
+* parameters that have a ‘:’ before their value have **not** been set (operator =) directly at point level, either operators are at play at other levels and/or at this point level also other operators than set (=) are active; clicking the ‘:’ allows to change the operator to ‘=’; clicking the value pops up a panel that shows the trail of what is applied where to reach this value.
