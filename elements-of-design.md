@@ -148,20 +148,38 @@ Let us develop the section called ‘parameters’, the one at the very start (i
 
 Some interesting dynamics are at play:
 
-1. parameters really _belong_ to the lower levels of the hierarchy, i.e. all parameters are:
-  * glyph parameters;
-  * line parameters;
-  * point parameters;
-  * vector shape parameters.
+1. parameters really _belong_ to the lower levels of the hierarchy, i.e. parameters are **_native_** to either—
+  * glyph;
+  * line;
+  * point;
+  * vector.
 * parameters set at any level in the hierarchy (except for project) can be modified at a higher level (e.g. the width set for a glyph can be scaled (* 0.9) at master level);
-* parameters set at any level in the hierarchy can be modified, or even overwritten, at a lower level—down to the level where these parameters belong (e.g. the weight set for a script can be capped by a maximum (<= X) value at glyph level; the slant set at a project level can be overwritten (= 0) at glyph level);
-* a number of parameters are mandatory—if one is missing, glyphs cannot be drawn. thus for a master—for each glyph, line, point, vector shape they belong to—they need to be be defined (= XYZ) at that, or a higher level; for an adjustment master no such requirement exists (thus is the nature of an adjustment master: it is a delta);
+* parameters set at any level in the hierarchy can be modified, or even overwritten, at a lower level—down to the level where these parameters are native (e.g. the weight set for a script can be capped by a maximum (<= X) value at glyph level; the slant set at a project level can be overwritten (= 0) at glyph level);
+* a number of parameters are mandatory—if one is missing, glyphs cannot be drawn. thus for a master—for each and every glyph, line, point, vector shape they native to to—they need to be be defined (= XYZ) at that, or a higher level; for an adjustment master no such requirement exists (thus is the nature of an adjustment master: it is a delta);
+
+### challenges
+
+1. why does this master / glyph / segment / line look like this?
+  * on which hierarchy level(s) is the parameter set?
+* for a given context (global, master, script, glyph, segment, line, point, vector shape), what parameters are set?
+  * is there interaction with settings at higher hierarchy levels—if so, where?
+  * are there settings on lower levels that make this does one ineffective?
+* for a given _leaf_ context (glyph, line, point, vector shape) what are the effective values of the native parameters of that level?
+* when a multi-selection is the context (e.g. a couple of masters, or a handful of glyphs), how not to get thoroughly confused by a plethora of different set/effective values for the same parameter?
 
 ### the rules
 
-1. only parameters who have their value set (=) anywhere in the hierarchy are defined;<br/>_(e.g. any scaling (*), offset (+), etc operators may be defined for width along the hierarchy, but is width is not set to value anywhere, it is undefined)_
-* the lowest level that sets the value (=) wins;<br/>_(e.g. script level sets a parameter and glyph level too, then the glyph one wins—for this glyph)_
-* all scaling (*) that is performed at any level is applied;<br/>_(e.g. if at project, master and glyph level a parameter is scaled, all 3 are multiplied and then applied to the set value)_
-* all offsets (+) that are defined at any level are applied; **TBD:** does scaling scale offsets?<br/>_(e.g. if at project, master and glyph level a parameter is offset, all 3 are added up and then applied to the set value)_
-* the lowest level that sets a maximum (<=) wins;<br/>_(e.g. master level sets a maximum and point level too, then the point one wins—for that point)_
-* the lowest level that sets a minimum (>=) wins.<br/>_(analogue to maximum)_
+From a user interaction perspective, this is a simple but effective system to rule how the parameter operators cascade along the hierarchy:
+
+1. only parameters who have their value set (=) anywhere in the hierarchy are defined;<br/>
+_(e.g. any scaling (*), offset (+), etc operators may be defined for width along the hierarchy, but is width is not set to value anywhere, it is undefined)_
+* the lowest hierarchy level that sets the value (=) wins;<br/>
+_(e.g. script level sets a parameter and glyph level too, then the glyph one wins—for this glyph)_
+* all scaling (*) that is performed at any hierarchy level is applied;<br/>
+_(e.g. if at project, master and glyph level a parameter is scaled, all 3 are multiplied and then applied to the set value)_
+* all offsets (+) that are defined at any hierarchy level are applied; **TBD:** does scaling affect offsets?<br/>
+_(e.g. if at project, master and glyph level a parameter is offset, all 3 are added up and then applied to the set value)_
+* the lowest hierarchy level that sets a maximum (<=) wins;<br/>
+_(e.g. master level sets a maximum and point level too, then the point one wins—for that point)_
+* the lowest hierarchy level that sets a minimum (>=) wins.<br/>
+_(analogue to maximum)_
