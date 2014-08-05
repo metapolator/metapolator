@@ -1,4 +1,6 @@
-# [The Product Phase](http://mmiworks.net/wedo/product.html)
+# The Product Phase
+
+[Explanation of the Product Phase](http://mmiworks.net/wedo/product.html)
 
 ## [Product Vision](https://github.com/metapolator/metapolator/wiki/interaction-design#product-vision)
 
@@ -12,13 +14,13 @@ With Metapolator, typographers gain the possibility to change existing fonts—o
 
 Metapolator is extendible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.
 
-## [Functionality Overview](https://github.com/metapolator/metapolator/wiki/functionality-overview)
+## Functionality Overview
 
-Functionality is the most dry, to-the-point—call it boring—description of what a piece of software does; i.e. its features. It serves as a checklist for the design process—and the project—to know ’what is in the box’ and answers ‘did we forget anything?’
+[Functionality Overview](https://github.com/metapolator/metapolator/wiki/functionality-overview) is the most dry, to-the-point (call it boring) description of what a piece of software does; i.e. its features. It serves as a checklist for the design process—and the project—to know ’what is in the box’ and answers ‘did we forget anything?’
 
-## [User Scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios)
+## User Scenarios
 
-User scenarios show the essential use, in logical, worthwhile and valuable steps from users’ point of view. We have [7 scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios):
+[User Scenarios](https://github.com/metapolator/metapolator/wiki/user-scenarios) show the essential use, in logical, worthwhile and valuable steps from users’ point of view. We have 7 scenarios:
 
 * Easy beginnings: make subtle changes to an existing font to adapt it to domain of use.
 * Typographer applies radical graphical treatments to an existing font for a design.
@@ -46,7 +48,9 @@ Using the user scenarios as a guide and the functionality overview as a checklis
 * [Notes on Hofstadter’s 'metafont, metamathemathics and metaphysics'](https://plus.google.com/101901813675356116026/posts/6x29ygzDsVc)
 * [Notes on Berlin Meeting](https://plus.google.com/101901813675356116026/posts/4trQVL48YT3)
 
-# [The Design Phase](http://mmiworks.net/wedo/design.html)
+# The Design Phase
+
+[Explanation of the Design Phase](http://mmiworks.net/wedo/design.html)
 
 ## Design Problems and Goals
 
@@ -64,6 +68,7 @@ _(This is in progress throughout July and August)_
 
 _(This will happen in August and September)_
 
-# [The Implementation Phase](http://mmiworks.net/wedo/implementation.html)
+# The Implementation Phase
 
+[Explanation of the Implementation Phase](http://mmiworks.net/wedo/implementation.html)
 _(This will happen in September and October)_
