@@ -185,6 +185,8 @@ _(e.g. master level sets a maximum and point level too, then the point one wins�
 _(analogue to maximum)_
 
 ### a rough design
+For how to set the working context, see the [highlighting section](https://github.com/metapolator/metapolator/wiki/elements-of-design#3-the-highlight).
+
 ![](http://mmiworks.net/metapolator/masterpar.png)
 
 Above we see the parameters panel when a master is the working context. From the top—
@@ -200,7 +202,7 @@ Above we see the different **mouse-over** interaction. From the top—
 
 * close box to remove the parameter entry;
 * highlight over the operator (=); click to show a popup to change it:<br/>![](http://mmiworks.net/metapolator/opspop.png)
-* override percentage to highlight in the character range or specimens panel the points that did receive an override;
+* override percentage to highlight in the ‘character range or specimens’ panel the points that did receive an override;
 * value: click to activate an edit box.
 
 ![](http://mmiworks.net/metapolator/pointpar.png)
@@ -212,3 +214,17 @@ Above we see the parameters panel when a leaf node, a point, is the working cont
 * the whole light-grey section is _all_ point parameters, with the current values for this point; it is split in Skeleton and Pen sections for clarity (and shorter parameter names on each line);
 * parameters that have a ‘=’ before their value have been set (operator =) directly at point level, with no scaling or offsets applied;
 * parameters that have a ‘:’ before their value have **not** been set (operator =) directly at point level, either operators are at play at other levels and/or at this point level also other operators than set (=) are active; clicking the ‘:’ allows to change the operator to ‘=’; clicking the value pops up a panel that shows the trail of what is applied where to reach this value.
+
+#### copy & paste
+![](http://mmiworks.net/metapolator/hipara.png)
+
+By clicking the parameter name, any parameter-configuring item can be highlighted. It can then be cut—deleting the item—or copied to the clipboard. What is copied is the triplet of parameter name, operator and value. It can then be pasted—
+
+* it is always pasted in the current working context, as set by the highlights in the ‘masters and adjustment masters’ and ‘character range or specimens’ panels; these can be quite complex, e.g. points across several glyphs, across several masters;
+* for each individual destination of the working context (e.g. each point of a multi-select of points), if a parameter-configuring item with the same parameter name and operator already exists, then overwrite its value with the pasted one;
+  * for any other destination, add the pasted triplet as a new parameter configuration.
+
+#### drag & drop
+![](http://mmiworks.net/metapolator/moveonup.png)
+
+Any parameter-configuring item can be grabbed by the parameter name and dragged to a **higher** level in the hierarchy. This has the same effect as Cutting the item from its original location and pasting it at its destination—but then _without_ altering the contents of the clipboard.
