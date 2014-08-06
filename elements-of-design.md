@@ -220,7 +220,7 @@ Above we see the parameters panel when a leaf node, a point, is the working cont
 
 By clicking the parameter name, any parameter-configuring item can be highlighted. It can then be cut—deleting the item—or copied to the clipboard. What is copied is the triplet of parameter name, operator and value. It can then be pasted—
 
-* it is always pasted in the current working context, as set by the highlights in the ‘masters and adjustment masters’ and ‘character range or specimens’ panels; these can be quite complex, e.g. points across several glyphs, across several masters;
+* it is always pasted in the current working context, as set by the highlights in the ‘masters and adjustment masters’ and ‘character range or specimens’ panels (these can be quite complex, e.g. points across several glyphs, across several masters); there is no need to click in the parameter panel ageing to steer ‘where it needs to be pasted’;
 * for each individual destination of the working context (e.g. each point of a multi-select of points), if a parameter-configuring item with the same parameter name and operator already exists, then overwrite its value with the pasted one;
   * for any other destination, add the pasted triplet as a new parameter configuration.
 
