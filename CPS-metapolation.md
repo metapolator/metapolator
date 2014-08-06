@@ -1,6 +1,6 @@
 For explanations of the datatypes, see [[cascading parameter sheets]].
 
-A CPS interpolator is a list of `Rule`s. When interpolating /N/ masters, each `Parameter` whose `ParameterValue` is a list of /N-1/ real numbers is considered (we can either require that all parameters are valid interpolations, or ignore those that aren't).
+A CPS interpolator is a list of `Rule`s. When interpolating _N_ masters, each `Parameter` whose `ParameterValue` is a list of _N-1_ real numbers is considered (we can either require that all parameters are valid interpolations, or ignore those that aren't).
 
 The interpolator interpolates in two senses:
 
@@ -11,6 +11,6 @@ For the purposes of interpolation, a master is itself considered to be a list of
 
 # Open questions
 
-1. What to do when only some fonts contain a corresponding `Node`? In the case of interpolating two masters, it would seem sensible just to use the `ParameterValue` of the master which posseses the given `Node`, but when only some of a collection of /N/ masters possess a given `Node`, it's not obvious whether to raise an error, use only the given `Node`s, rescaling the interpolating vector (this corresponds to the suggested treatment for two masters), or something else.
+1. What to do when only some fonts contain a corresponding `Node`? In the case of interpolating two masters, it would seem sensible just to use the `ParameterValue` of the master which posseses the given `Node`, but when only some of a collection of _N_ masters possess a given `Node`, it's not obvious whether to raise an error, use only the given `Node`s, rescaling the interpolating vector (this corresponds to the suggested treatment for two masters), or something else.
 
 2. In [[metapolation]], the assumption is that interpolation vectors have non-negative components that sum to 1, but it's not a necessary mathematical restriction; but the assumption is that we'll enforce it in the interface.
