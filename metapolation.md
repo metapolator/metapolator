@@ -2,7 +2,7 @@
 
 *RT: Should we just call this "interpolation", which is what it is, and which we're already calling it elsewhere?*
 
-This page contains the interaction design research into metapolation and design explorations for handling it. For the concrete implementation, see [[CPS metapolation]].
+This page contains the interaction design research into metapolation and design explorations for handling it. For the concrete implementation, see [[CPS interpolation]].
 
 ## the math
 Luckily the math of metapolation is straightforward. When working with a design space set up by N masters (M1, M2, M3 .. M[N]), then the instance I is a linear combination of masters:
