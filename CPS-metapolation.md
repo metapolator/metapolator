@@ -1,6 +1,6 @@
 For explanations of the datatypes, see [[cascading parameter sheets]].
 
-A CPS interpolator is a list of `Rule`s. When interpolating _N_ masters, each `Parameter` whose `ParameterValue` is a list of _N-1_ real numbers is considered (we can either require that all parameters are valid interpolations, or ignore those that aren't).
+A CPS interpolator is a list of `Rule`s. When interpolating _N_ masters, each `Parameter` whose `ParameterValue` is a list of _N_ real numbers is considered (we can either require that all parameters are valid interpolations, or ignore those that aren't).
 
 The interpolator interpolates in two senses:
 
