@@ -31,8 +31,8 @@ define([
     function MOMPointPen(glyph) {
         Parent.call(this)
         this._glyph = glyph;
-        this._contour = null
-        this._lastPointData;
+        this._contour = null;
+        this._lastPointData = undefined;
         this._prevOffCurveCount = 0;
         this._prevPointTypes = [];
     }
