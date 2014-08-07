@@ -63,7 +63,7 @@ define([
             ufoGlyph = this.glyphSet.get(glyphName);
             glyph = new Glyph();
             glyph.id = glyphName;
-            // fetch glyph data and draw the glyph to the mom
+            // fetch glyph data and draw the glyph to the MOM
             ufoGlyph.drawPoints(false, new MOMPointPen(glyph));
             glyph.setUFOData(ufoGlyph);
             master.add(glyph);
