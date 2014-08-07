@@ -28,10 +28,10 @@ define([
                 throw new CommandLineError('No Masters argument found');
             // FIXME: very simple input validation, we'll need more I think
             // FIXME: factor out this validation (see import.js)
-            for(var n in names) {
-                if(n.indexOf('/') !== -1 || n.indexOf('\\') !== -1)
+            for(var i = 0; i < names.length; i++) {
+                if(i.indexOf('/') !== -1 || i.indexOf('\\') !== -1)
                     throw new CommandLineError('/ and \\ are not allowed in a '
-                                               + 'Master name: ' + n);
+                                               + 'Master name: ' + i);
             }
             return names;
         }
@@ -60,19 +60,14 @@ define([
         console.log('processed arguments', args)
         console.log('processed options', options)
 
-        var project
-          , controllers = []
-          , results = []
-          ;
-
-        project = new MetapolatorProject(io);
+        var project = new MetapolatorProject(io);
         project.load();
-        for(var i in args.Masters)
-            controllers.push(project.open(args.Masters[i]));
+        for(var i = 0; i < args.Masters.length; i++)
+            project.open(args.Masters[i]);
 
         console.log('interpolators:', args.Interpolators);
 
-        project.interpolate(controllers, args.Interpolators);
+        project.interpolate(args.Interpolators);
     }
 
     module = {main: main};
