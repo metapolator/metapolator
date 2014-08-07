@@ -57,12 +57,12 @@ Completion Percentages are semantic, not time-based.
 
 * **Events:** *(DONE)* Simon will present at Tag der Schrift on June 14 and post about it on the G+
 
-2. Useful Code [August 1]
+2. Useful Code [September 1]
 ----------------------
 
 [moved to a google doc](https://docs.google.com/document/d/15zZFMTjcUlW0_fN37_cE5dinnnazjbGMrJHNArhFCUo/edit#heading=h.41fvagdjd8j8)
 
-3. Initial UI [September 1]
+3. Initial UI [September 26]
 ----------------------
 
 **Goal:** Create a UI to the Application Technology
