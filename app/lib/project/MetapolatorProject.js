@@ -343,7 +343,7 @@ define([
         importer.import(glyphs);
     }
     
-    _p.exportInstance = function(masterName, instanceName) {
+    _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller
         var model = this.open(masterName)
           , master = model.query('master#' + masterName)
@@ -372,7 +372,7 @@ define([
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
         
-        exportController = new ExportController(master, model, glyphSet);
+        exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
     }
     

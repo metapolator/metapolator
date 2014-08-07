@@ -7,10 +7,11 @@ define([
 ) {
     "use strict";
 
-    function ExportController(master, model, glyphSet) {
+    function ExportController(master, model, glyphSet, precision) {
         this._master = master;
         this._model = model;
         this._glyphSet = glyphSet;
+        this._precision = precision;
     }
     var _p = ExportController.prototype;
 
@@ -26,7 +27,7 @@ define([
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
             console.log('exporting', glyph.id);
-            drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
+            drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph, this._precision)
             
             // filter the 'lib' key because fontforge didn't like it (FontForge issue #1635)
             ufoData_tmp = glyph.getUFOData();
@@ -135,7 +136,7 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    _p.drawPenstrokeOutline = function(model, pen, penstroke) {
+    _p.drawPenstrokeOutline = function(model, pen, precision, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
@@ -161,7 +162,7 @@ define([
                 }
                 ctrls = getControlsFromStyle(prePoint, point, terminal);
                 ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf());
+                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined, {precision: precision});
                 })
                 
             }
@@ -169,7 +170,7 @@ define([
                 segmentType =  'line';
                 console.log('implicit line segment, right side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType);
+            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined, {precision: precision});
         }
         // draw the left side
         for(i=points.length-1;i>=0 ;i--) {
@@ -197,19 +198,19 @@ define([
                     point = prePoint;
                 }
                 ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf());
+                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined, {precision: precision});
                 })
             }
             else {
                 segmentType = 'line';
                 console.log('implicit line segment, left side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType);
+            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined, {precision: precision});
         }
         pen.endPath();
     }
     
-    _p.drawPenstrokeCenterline = function(model, pen, penstroke) {
+    _p.drawPenstrokeCenterline = function(model, pen, precision, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
@@ -224,20 +225,20 @@ define([
                 prePoint = model.getComputedStyle(points[i-1].center);
                 ctrls = getControlsFromStyle(prePoint, point);
                 ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf());
+                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined, {precision: precision});
                 })
             }
             else
                 // this contour is not closed, the first point is a move
                 segmentType = 'move';
-            pen.addPoint(point.get('on').value.valueOf(), segmentType);
+            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined, {precision: precision});
         }
         pen.endPath();
     }
     
     
     
-    _p.drawGlyphToPointPen = function(model, glyph, /*method,*/ pen) {
+    _p.drawGlyphToPointPen = function(model, glyph, precision, /*method,*/ pen) {
         // method may be tensions/control-points/metafont/native-js
         // the possibilities are a lot.
         // I'm starting with tensions/native-js
@@ -250,8 +251,8 @@ define([
         // Maybe we can combine all metafont strokes into one job, to
         // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
-        glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen));
-        //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen));
+        glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen, precision));
+        //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen, precision));
     }
     
     return ExportController;
