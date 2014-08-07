@@ -29,21 +29,20 @@ define([
 ) {
     "use strict";
 
-    function InterpolationController(project, masters, interpolator) {
+    function InterpolationController(project, interpolator) {
         this._project = project;
-        this._masters = masters;
         this._interpolator = interpolator;
     }
     var _p = InterpolationController.prototype;
 
     _p.interpolate = function() {
-        var masters = this._masters
+        var masters = project.controller.queryAll('master')
           , interpolator = this._interpolator
           , selections = []
           ;
 
         console.log('interpolating ...');
-        for(var i in masters) {
+        for(var i = 0; i < masters.length; i++) {
             selections.push(masters[i].queryAll(interpolator));
             console.log('selection ' + i + ':');
             console.log(selections[i].map(function(item){ return item +' '+item.particulars }).join(',\n'));
