@@ -13,33 +13,30 @@ define([
         this._glyphSet = glyphSet;
     }
     var _p = ExportController.prototype;
-    
+
+    // FIXME: "export" is a future reserved keyword
     _p.export = function() {
         var glyphs = this._master.children
           , glyph
-          , i=0
           , drawFunc
           , ufoData
           , ufoData_tmp
-          , k
           ;
         console.log('exporting ...');
-        for(;i<glyphs.length;i++) {
+        for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
             console.log('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
             
-            // filter the 'lib' key because fontforge didn't like it
-            // this is a bug in fontforge.
+            // filter the 'lib' key because fontforge didn't like it (FontForge issue #1635)
             ufoData_tmp = glyph.getUFOData();
             ufoData = {}
-            for(k in ufoData_tmp)
+            for(var k in ufoData_tmp)
                 if(k === 'lib')
                     continue;
                 else
                     ufoData[k] = ufoData_tmp[k];
             
-                    
             this._glyphSet.writeGlyph(false, glyph.id, ufoData, drawFunc)
         }
         this._glyphSet.writeContents(false);
@@ -84,7 +81,7 @@ define([
             , p1.get(terminal === 'end' ? 'out' :'in').value
         ];
     }
-    
+
     /**
      * The translation from Metapolator Penstrokes to Outlines:
      * 
@@ -142,12 +139,11 @@ define([
         var points = penstroke.children
           , point
           , prePoint
-          , i
           , segmentType, terminal, ctrls
           ;
         pen.beginPath();
         // first draw the right side
-        for(i=0;i<points.length;i++) {
+        for(var i=0;i<points.length;i++) {
             point = model.getComputedStyle(points[i].right);
             // Actually, all points have controls. We don't have to draw
             // lines. We should make a CPS value if we wan't to draw a
@@ -208,7 +204,7 @@ define([
                 segmentType = 'line';
                 console.log('implicit line segment, left side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType)
+            pen.addPoint(point.get('on').value.valueOf(), segmentType);
         }
         pen.endPath();
     }
@@ -217,12 +213,11 @@ define([
         var points = penstroke.children
           , point
           , prePoint
-          , i
           , segmentType, ctrls
           ;
         // center line
         pen.beginPath()
-        for(i=0;i<points.length;i++) {
+        for(var i=0;i<points.length;i++) {
             point = model.getComputedStyle(points[i].center);
             if(i !== 0) {
                 segmentType = 'curve';
