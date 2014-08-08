@@ -32,7 +32,7 @@ Giving everything its place it looks like this:
 * **masters and adjustment masters** are managed here and drive either the character range or specimens section or are input to the next two sections.
 * **(adjustment) master sequences**, are managed here.
 * **design spaces** set up here from the master side; worked in from the instance side; in the lower half **character range or specimens** can be evaluated, deeding on the master(s) or instance(s) highlighted.
-* **metapolation sliders** supplement the more visual and explorative design spaces with precise input (see [minimum ratio](https://github.com/metapolator/metapolator/wiki/metapolation#minimum-ratio)).
+* **metapolation sliders** supplement the more visual and explorative design spaces with precise input.
 * **(strings of) instances** are managed here.
 * **font (family) mapping** is managed here, large-scale font export takes place from here.
 * **metadata** is maintained and assigned here to the font (families).
@@ -250,3 +250,21 @@ For multi-select contexts the functionality of the parameters panel is more limi
 * inspect the range of values, effective and/or set;
 * remove any parameter entry;
 * overwrite a range of values with a single one—an empty edit box is shown when clicking on the value range.
+
+## metapolation sliders
+This describes the section called Metapolation sliders, which supplement the more visual and explorative design spaces with precise input.
+
+![](http://mmiworks.net/metapolator/slidersdefault.png)
+
+Above a see the default slider setup for a 6-master design space. The masters are called: Regular, Black, Thin, Small caps, Serifs, ‘+ x-height’. For an N-master setup, the number of sliders is always N-1. This gives exactly enough input, together with the 100% rule, for a complete metapolation definition.
+
+* the popups on the right and left of the sliders contain all the master labels that—
+  * do not appear at the opposite side of this slider;
+  * do not appear on any other slider together with the one at the opposite side of this slider.
+* the popups on the left of the sliders also contain, the item ‘From zero’ it sets the slider to absolute mode:<br/>
+![](http://mmiworks.net/metapolator/sliderszero2.png)
+* when a popup on a slider is changed, the slider value gets recalculated and set;
+* text boxes with up/down arrows allow to set the slider value precisely;
+* the extra popup on the bottom-lefthand side has the label ‘All’ and contains as values all the master labels plus ‘From zero’; it sets all the popups on the left of the sliders to whatever is picked:<br/>
+![](http://mmiworks.net/metapolator/slidersall.png)<br/>
+…while the right side is set to all the other masters (in case of All from zero, the right side is set to the first N-1 masters as defined in the masters panel).
