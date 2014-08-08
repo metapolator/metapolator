@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="600px" height="301px" viewBox="0 0 600 301" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.0.4 (8054) - http://www.bohemiancoding.com/sketch -->
+    <title>Futura</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="The-CrossSkeletonPoint" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Futura" sketch:type="MSArtboardGroup" transform="translate(0.000000, 0.500000)">
+            <g id="Group" sketch:type="MSLayerGroup" transform="translate(64.000000, 61.500000)" stroke="#535353" stroke-width="2" stroke-linecap="square">
+                <path d="M218,-5.55111512e-17 L218,198.040405" id="Line" sketch:type="MSShapeGroup"></path>
+                <path d="M119.5,99 L317.540405,99" id="Line-2" sketch:type="MSShapeGroup"></path>
+                <path d="M-0.5,99 L461.5,99" id="Line-5" stroke-dasharray="4,10" sketch:type="MSShapeGroup"></path>
+                <path d="M148.496429,28.9964287 L288.532142,169.032142" id="Line-4" sketch:type="MSShapeGroup"></path>
+                <path d="M148.148792,169.164303 L288.184506,29.1285899" id="Line-3" sketch:type="MSShapeGroup"></path>
+            </g>
+            <circle id="Oval-1" stroke="#979797" opacity="0.4" sketch:type="MSShapeGroup" cx="281.5" cy="159" r="99.5"></circle>
+            <text sketch:type="MSTextLayer" font-family="Helvetica Neue" font-size="12" font-weight="260" sketch:alignment="middle" fill="#000000">
+                <tspan x="483.554" y="183.5">Futura</tspan>
+            </text>
+            <path d="M471,94.0820312 L484.242188,94.0820312 L484.242188,99.3554688 C488.851586,94.7851334 494.046846,92.5 499.828125,92.5 C506.468783,92.5 511.644513,94.5898229 515.355469,98.7695312 C518.55861,102.324237 520.160156,108.12496 520.160156,116.171875 L520.160156,151.152344 L506.917969,151.152344 L506.917969,119.277344 C506.917969,113.652316 506.136727,109.765636 504.574219,107.617188 C503.050774,105.429677 500.277364,104.335938 496.253906,104.335938 C491.878884,104.335938 488.773447,105.781236 486.9375,108.671875 C485.140616,111.523452 484.242188,116.503871 484.242188,123.613281 L484.242188,151.152344 L471,151.152344 L471,94.0820312 Z" id="n" fill="#000000" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
