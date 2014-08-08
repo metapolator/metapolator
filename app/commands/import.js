@@ -24,7 +24,7 @@ define([
             return ufoDir;
         }
     );
-    
+
     argumentParser.addArgument(
         'TargetMaster'
       , 'The name of the master to import into.'
@@ -39,7 +39,7 @@ define([
             return masterName;
         }
     );
-    
+
     argumentParser.addOption(
         'glyphs'
       , ['-g', '--glyphs']
@@ -54,11 +54,11 @@ define([
             if(value === undefined)
                 throw new CommandLineError('The option "glyphs" needs '
                     + 'a value of comma separated glyph names.')
-                
+
             glyphNames = value.split(',')
                 .map(function(item){ return item.trim(); })
                 .filter(function(item){ return !!item.length; })
-            
+
             if(!glyphNames.length)
                 throw new CommandLineError('The value of option "glyphs" '
                     + 'did not produce a list of names, value was: "'
@@ -67,7 +67,7 @@ define([
             return glyphNames;
         }
     );
-    
+
     function main(commandName, argv) {
             // arguments are mandatory and at the end of the argv array
             // readArguments MUST run before readOptions
@@ -76,19 +76,19 @@ define([
             // readOptions MUST run after readArguments
           , options = argumentParser.readOptions(argv)
           , sourceGlyphSet
-          // the current workin directory + glyphs_imported
+          // the current working directory + glyphs_imported
           , targetGlyphSetDir = './glyphs_imported'
           , targetGlyphSet
           ;
-        
+
         console.log('processed arguments', args)
         console.log('processed options', options)
-        
+
         var project = new MetapolatorProject(io);
         project.load();
         project.import(args.TargetMaster, args.SourceUFO, options.glyphs);
     }
-    
+
     module = {main: main};
     Object.defineProperty(module, 'help', {
         get: argumentParser.toString.bind(argumentParser)

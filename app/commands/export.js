@@ -45,7 +45,7 @@ define([
             // readOptions MUST run after readArguments
           , options = argumentParser.readOptions(argv)
           , sourceGlyphSet
-          // the current workin directory + glyphs_imported
+          // the current working directory + glyphs_imported
           , targetGlyphSetDir = './glyphs_imported'
           , targetGlyphSet
           ;
@@ -64,4 +64,3 @@ define([
     });
     return module;
 })
-

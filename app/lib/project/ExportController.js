@@ -13,33 +13,30 @@ define([
         this._glyphSet = glyphSet;
     }
     var _p = ExportController.prototype;
-    
+
+    // FIXME: "export" is a future reserved keyword
     _p.export = function() {
         var glyphs = this._master.children
           , glyph
-          , i=0
           , drawFunc
           , ufoData
           , ufoData_tmp
-          , k
           ;
         console.log('exporting ...');
-        for(;i<glyphs.length;i++) {
+        for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
             console.log('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
             
-            // filter the 'lib' key because fontforge didn't like it
-            // this is a bug in fontforge.
+            // filter the 'lib' key because fontforge didn't like it (FontForge issue #1635)
             ufoData_tmp = glyph.getUFOData();
             ufoData = {}
-            for(k in ufoData_tmp)
+            for(var k in ufoData_tmp)
                 if(k === 'lib')
                     continue;
                 else
                     ufoData[k] = ufoData_tmp[k];
             
-                    
             this._glyphSet.writeGlyph(false, glyph.id, ufoData, drawFunc)
         }
         this._glyphSet.writeContents(false);
@@ -84,7 +81,7 @@ define([
             , p1.get(terminal === 'end' ? 'out' :'in').value
         ];
     }
-    
+
     /**
      * The translation from Metapolator Penstrokes to Outlines:
      * 
@@ -110,8 +107,8 @@ define([
      * We draw first the right side from 0 to 6,
      * then the left side from 6 to 0.
      * 
-     * In each iteration only one on curve point is drawn, in the
-     * following example, that is always the last point of the four
+     * In each iteration only one on-curve point is drawn; in the
+     * following example, that is always the last point of the four-
      * point tuples. Also, the out and in controls are drawn.
      * The first point of the tuples is needed to calculate the control
      * point position when we use hobby splines.
@@ -142,12 +139,11 @@ define([
         var points = penstroke.children
           , point
           , prePoint
-          , i
           , segmentType, terminal, ctrls
           ;
         pen.beginPath();
         // first draw the right side
-        for(i=0;i<points.length;i++) {
+        for(var i=0;i<points.length;i++) {
             point = model.getComputedStyle(points[i].right);
             // Actually, all points have controls. We don't have to draw
             // lines. We should make a CPS value if we wan't to draw a
@@ -208,7 +204,7 @@ define([
                 segmentType = 'line';
                 console.log('implicit line segment, left side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType)
+            pen.addPoint(point.get('on').value.valueOf(), segmentType);
         }
         pen.endPath();
     }
@@ -217,12 +213,11 @@ define([
         var points = penstroke.children
           , point
           , prePoint
-          , i
           , segmentType, ctrls
           ;
         // center line
         pen.beginPath()
-        for(i=0;i<points.length;i++) {
+        for(var i=0;i<points.length;i++) {
             point = model.getComputedStyle(points[i].center);
             if(i !== 0) {
                 segmentType = 'curve';
@@ -248,12 +243,12 @@ define([
         // I'm starting with tensions/native-js
         // then I add a tensions/metafont implementation
         // eventually we should be able to control this via CPS!
-        // the parameter could be set for all levels from univers to
-        // penstroke, this would be a good example for inhertance, too
+        // The parameter could be set for all levels from univers to
+        // penstroke, this would be a good test of inhertance;
         // also, it should be possible to render just one penstroke
         // of a glyph using metafont, for example.
-        // maybe we can culminate all metafont strokes into one job, to
-        // keep the overhead lower. The needed parameters would of course
+        // Maybe we can combine all metafont strokes into one job, to
+        // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
         glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen));
         //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen));

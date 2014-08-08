@@ -62,7 +62,7 @@ define([
             missing = glyphs.filter(function(name) {
                         return !this._sourceGlyphSet.has_key(name);}, this)
             if(missing.length)
-                throw new errors.Key('Some for import requested glyphs '
+                throw new errors.Key('Some glyphs requested for import '
                                     +'are missing in the source GlyphSet: '
                                     +missing.join(', '));
         }
@@ -103,7 +103,7 @@ define([
           , targetGlyph
           , contours = []
           , i=0
-            // the index at which the contour will be adressable in CPS
+            // the index at which the contour will be addressable in CPS
           , penStrokeIndex = 0
           , rules = []
           ;
@@ -204,7 +204,7 @@ define([
         return new ParameterDict(items);
     }
     /**
-     * returns a Rule poin:i({index}){ ... data ... }
+     * returns a Rule point:i({index}){ ... data ... }
      * 
      * This is VERY special knowledge about the structure of CPS CompoundValues
      * It knows for example how the CompoundValues are configured, etc.
@@ -305,3 +305,4 @@ define([
     
     return ImportController;
 });
+

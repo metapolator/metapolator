@@ -54,9 +54,9 @@ define([
         var cpsString = io.readFile(false, args.CPSFile)
         var parameterRegistry = new Registry();
         
-        // fixme: a ParameterDescription class/interface definition could
+        // FIXME: a ParameterDescription class/interface definition could
         // be the point here. So we can ensure a consistent api and
-        // pin point programming errors
+        // pinpoint programming errors
         parameterRegistry.register('value', {
                     type: 'string'
                   , description: 'this is a stub for the parameter description!'
