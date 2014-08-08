@@ -4,6 +4,14 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
+/*Metapolator */
+
+.tile{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(130, 168, 217, 0.4)}
+
+
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -1395,6 +1403,7 @@ pre code {
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+  max-width: 900px;
 }
 @media (min-width: 768px) {
   .container {

@@ -1,34 +1,41 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1223px" height="684px" viewBox="0 0 1223 684" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-    <!-- Generator: Sketch 3.0.4 (8054) - http://www.bohemiancoding.com/sketch -->
-    <title>MetaSkeletonPoint</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="The-CrossSkeletonPoint" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-        <g id="MetaSkeletonPoint" sketch:type="MSArtboardGroup" transform="translate(0.000000, 0.500000)">
-            <text id="SkeletonPath" opacity="0.5" sketch:type="MSTextLayer" font-family="Helvetica Neue" font-size="20" font-weight="260" fill="#000000">
-                <tspan x="1026" y="356.159912">SkeletonPath</tspan>
-            </text>
-            <g id="Group" sketch:type="MSLayerGroup" transform="translate(178.000000, 72.000000)">
-                <path d="M417.234798,55.1173989 L417.234798,497.697652" id="Line" stroke="#535353" stroke-width="2" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                <path d="M-0.00581922056,276.617399 L834.999972,276.617399" id="Line-5" stroke="#535353" stroke-width="2" stroke-linecap="square" stroke-dasharray="4,10" sketch:type="MSShapeGroup"></path>
-                <text id="Local-PenWidth" sketch:type="MSTextLayer" font-family="Helvetica Neue" font-size="20" font-weight="260" fill="#000000">
-                    <tspan x="418" y="18.8650618">Local PenWidth</tspan>
-                </text>
-                <text id="Global-PenWidth-+-Pe" opacity="0.5" sketch:type="MSTextLayer" font-family="Helvetica Neue" font-size="20" font-weight="260" fill="#000000">
-                    <tspan x="596.83023" y="119.204967">Global PenWidth + PenAngle</tspan>
-                </text>
-                <text id="Global-PenWidth-+-Pe" opacity="0.5" sketch:type="MSTextLayer" font-family="Helvetica Neue" font-size="20" font-weight="260" fill="#000000">
-                    <tspan x="530.83023" y="409.520225">Global PenWidth + PenAngle</tspan>
-                </text>
-                <rect id="Rectangle-8" stroke="#535353" stroke-width="2" stroke-linecap="square" fill="#FFFFFF" sketch:type="MSShapeGroup" x="410" y="499" width="15" height="15"></rect>
-                <rect id="Rectangle-8" stroke="#535353" stroke-width="2" stroke-linecap="square" fill="#FFFFFF" sketch:type="MSShapeGroup" x="410" y="38.7247531" width="15" height="15"></rect>
-                <g id="Oval-2" transform="translate(420.500000, 276.500000) rotate(-313.000000) translate(-420.500000, -276.500000) translate(268.000000, 53.000000)" stroke="#535353" stroke-width="2" sketch:type="MSShapeGroup" stroke-linecap="square" opacity="0.5">
-                    <ellipse cx="152.5" cy="223.5" rx="152.5" ry="223.5"></ellipse>
-                </g>
-                <path d="M316.5,165 L523.5,390" id="Line" stroke="#535353" stroke-width="2" stroke-linecap="square" opacity="0.5" sketch:type="MSShapeGroup"></path>
-                <path d="M257.5,430 L579.5,121" id="Line" stroke="#535353" stroke-width="2" stroke-linecap="square" opacity="0.5" sketch:type="MSShapeGroup"></path>
-            </g>
-        </g>
-    </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Calque_1" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-39.9 0 1262.9 684"
+	 enable-background="new -39.9 0 1262.9 684" xml:space="preserve">
+<title>MetaSkeletonPoint</title>
+<desc>Created with Sketch.</desc>
+<g id="The-CrossSkeletonPoint" sketch:type="MSPage">
+	<g id="MetaSkeletonPoint" transform="translate(0.000000, 0.500000)" sketch:type="MSArtboardGroup">
+		<text transform="matrix(1 0 0 1 183.0422 332.1611)" font-family="'HelveticaNeue'" font-size="20">SkeletonPath</text>
+		<g id="Group" transform="translate(178.000000, 72.000000)" sketch:type="MSLayerGroup">
+			<path id="Line" sketch:type="MSShapeGroup" fill="none" stroke="#535353" stroke-width="2" stroke-linecap="square" d="
+				M417.2,55.1v442.6"/>
+			
+				<path id="Line-5" sketch:type="MSShapeGroup" fill="none" stroke="#535353" stroke-width="2" stroke-linecap="square" stroke-dasharray="4,10" d="
+				M0,276.6h835"/>
+			<text transform="matrix(1 0 0 1 418 18.8651)" font-family="'HelveticaNeue'" font-size="20">Local PenWidth</text>
+			<text transform="matrix(1 0 0 1 596.8302 119.205)" font-family="'HelveticaNeue'" font-size="20">Global PenWidth + PenAngle</text>
+			<text transform="matrix(1 0 0 1 530.8302 409.5202)" font-family="'HelveticaNeue'" font-size="20">Global PenWidth + PenAngle</text>
+			
+				<rect id="Rectangle-8" x="410" y="499" sketch:type="MSShapeGroup" fill="#FFFFFF" stroke="#535353" stroke-width="2" stroke-linecap="square" width="15" height="15">
+			</rect>
+			
+				<rect id="Rectangle-8_1_" x="410" y="38.7" sketch:type="MSShapeGroup" fill="#FFFFFF" stroke="#535353" stroke-width="2" stroke-linecap="square" width="15" height="15">
+			</rect>
+			
+				<g id="Oval-2" transform="translate(420.500000, 276.500000) rotate(-313.000000) translate(-420.500000, -276.500000) translate(268.000000, 53.000000)" sketch:type="MSShapeGroup" opacity="0.5">
+				
+					<ellipse transform="matrix(2.936521e-06 1 -1 2.936521e-06 375.9996 70.9992)" fill="none" stroke="#535353" stroke-width="2" stroke-linecap="square" cx="152.5" cy="223.5" rx="223.5" ry="152.5"/>
+			</g>
+			
+				<path id="Line_1_" sketch:type="MSShapeGroup" opacity="0.5" fill="none" stroke="#535353" stroke-width="2" stroke-linecap="square" enable-background="new    " d="
+				M316.5,165l207,225"/>
+			
+				<path id="Line_2_" sketch:type="MSShapeGroup" opacity="0.5" fill="none" stroke="#535353" stroke-width="2" stroke-linecap="square" enable-background="new    " d="
+				M257.5,430l322-309"/>
+		</g>
+	</g>
+</g>
 </svg>
