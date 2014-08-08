@@ -205,6 +205,8 @@ Above we see the different **mouse-over** interaction. From the top—
 * override percentage to highlight in the ‘character range or specimens’ panel the points that did receive an override;
 * value: click to activate an edit box.
 
+#### leaf nodes
+
 ![](http://mmiworks.net/metapolator/pointpar.png)
 
 Above we see the parameters panel when a leaf node, a point, is the working context. From the top—
@@ -228,3 +230,23 @@ By clicking the parameter name, any parameter-configuring item can be highlighte
 ![](http://mmiworks.net/metapolator/moveonup.png)
 
 Any parameter-configuring item can be grabbed by the parameter name and dragged to a **higher** level in the hierarchy. This has the same effect as Cutting the item from its original location and pasting it at its destination—but then _without_ altering the contents of the clipboard.
+
+#### multi-select contexts
+On every level of the hierarchy (below project) it is possible to make several objects _of the same type_ the working context, i.e. several masters, scripts, glyphs, lines, points, or vector shapes. The challenge is that different values may be set for the same parameter, or that for one or more selected items it is not set at all.
+
+![](http://mmiworks.net/metapolator/multipara.png)
+
+Above we see the display of a multi-select of four points. From the top—
+
+* the Tension in parameter is set for 50% of the items (i.e. 2 points) that form the context; clicking this percentage number highlights in the ‘character range or specimens’ panel the points that did;
+  * the range that the Tension in parameter is set to is shown to be -0.5 to 0.4;
+  * no ‘×+’ sign, nor the override percentage is shown in a multi-select context, because the baths up and down the hierarchy have become so much more complex for a set;
+* Angle is only set for one of the points, for multi-select contexts these part-set values are lifted out of the current-values section, where the resulting values for all items are shown;
+* in the current-values section we see a mix of single and multiple values, set at point level or above.
+
+For multi-select contexts the functionality of the parameters panel is more limited, but users can still do the following useful things:
+
+* see what parameters are set, how often and where, for the context
+* inspect the range of values, effective and/or set;
+* remove any parameter entry;
+* overwrite a range of values with a single one—an empty edit box is shown when clicking on the value range.
