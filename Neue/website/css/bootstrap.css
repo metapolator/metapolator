@@ -6,11 +6,29 @@
 
 /*Metapolator */
 
-.tile{
+/* .intro{
+    display: table-cell;
+    vertical-align: middle;
     height: 100%;
     width: 100%;
-    background-color: rgba(130, 168, 217, 0.4)}
+    text-align: center;
+    display: block;
+}
+*/
 
+
+.intro {
+    display: table;
+    width: 100%;
+    height: 100%;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.intro .intro-body {
+    display: table-cell;
+    vertical-align: middle;
+}
 
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
@@ -1403,7 +1421,7 @@ pre code {
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
-  max-width: 900px;
+  max-width: 750px;
 }
 @media (min-width: 768px) {
   .container {
