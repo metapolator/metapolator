@@ -1,5 +1,4 @@
 
-
 * Metapolator architectural proposal
 
   This document contains an architectural proposal for
@@ -662,4 +661,23 @@
    The table editor provides primitive commands set examine
    and set the properties of entries in the table.
 
+
+* Notes on TBD
+
+  In summary, this riffs on the _simple_ 1980s-style architecture
+  of Emacs and proposes that all the font magic should be 
+  conceived of as two things:   1. Extension package commands atop
+  a very simple-minded property-table editor.  2. A font-centric
+  UI coupled very lightly to that table editor.
+
+  In the above account leading to milestone 1 the account given of
+  commands is incomplete, the protocol between editor and UI is missing.
+  I will fill these in over the next several days but I needed to 
+  put up a good starting point for discussion.   (Hypothesis: a leading
+  but distinctly incomplete document is a good starting point for discussion.
+   :-)  )
+
+  The formatting is obviously a mess.  It's what happens when you
+  throw plain-text formatted for "outline-mode" into markdown.  Could
+  be worse.  I'll fix that too, as I go along.  
 
