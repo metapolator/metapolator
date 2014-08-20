@@ -1,5 +1,7 @@
 # Metapolator architectural proposal
 
+by Tom Lord (@dasht)
+
 This document contains an architectural proposal for
 Metapolator: A suggested form for the overall structure of the
 program and a suggested path for building it.
