@@ -12,7 +12,7 @@ here to share and see if this is going anywhere.
 Also, as this document mature it can migrate to markdown
 for the wiki but, for now, plain text. 
 
-
+On 2014-08-21 the document was discussed by Lasse, Tom and Dave ([youtube](http://youtu.be/8LjJnvNlMc4))
 
 # An important note about the user interface and font commands
 
