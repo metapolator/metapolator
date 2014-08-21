@@ -24,7 +24,9 @@ define([
     var _p = StyleDict.prototype;
     _p.constructor = StyleDict;
     
-    
+    /**
+     * Returns a value for name created by a ParameterValue factory 
+     */
     _p._get = function(name) {
         var cpsValue, factory, result;
         cpsValue = this.getCPS(name);
@@ -52,13 +54,29 @@ define([
         // this is a caching mechanism, this might be harmful, because we
         // create a cache that needs invalidation from time to time.
         // Not caching the value means that we get a different instance
-        // for each call to this function, not good either. Maybe the
-        // position of the cache could change.
+        // for each call to this function, not perfect either. Maybe the
+        // position of the cache could change?
         if(!(name in this._cache))
             this._cache[name] = this._get(name);
         return this._cache[name];
     }
     
+    /**
+     * This the implementation of this.CPSValueAPI
+     * 
+     * CPSValueAPI is used to make it possible to query CPS values
+     * from within other CPS values. So one value can be referenced by 
+     * another value and the reference can be resolved when needed.
+     * 
+     * this api tries three sources of data:
+     *    1. this.get(name)
+     *    2. this._element[name] // needs propper whitelisting
+     *    3. ReferenceDictionary: this._controller
+     *                                .getReferenceDictionary(this._element)
+     *                                .get(name);
+     *
+     * If name is not found KeyError is thrown
+     */
     _p.getCPSValue = function(name) {
         var value;
         if(this._controller.parameterRegistry.exists(name))

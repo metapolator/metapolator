@@ -26,8 +26,8 @@ define([
     })
     
      /**
-     * As long as there is just one, we don't need to display the multivers
-     * and univers selectors
+     * As long as there is just one univers, we don't need to display
+     * the multivers and univers selectors
      */
     Object.defineProperty(_p, 'particulars', {
         get: function() {
