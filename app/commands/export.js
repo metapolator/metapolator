@@ -24,7 +24,7 @@ define([
             return name;
         }
     );
-    
+
     argumentParser.addArgument(
         'InstanceName'
       , 'The name of the instance to export to, a dirname, but the .ufo '
@@ -37,7 +37,7 @@ define([
         }
     );
 
-    // FIXME: Make this argument optional, and default to 0
+    // FIXME: Make this argument optional, and default to undefined or -1
     argumentParser.addArgument(
         'Precision'
       , 'The precision to use for output coordinates, expressed as the reciprocal of a number to round to the nearest multiple of,' +
@@ -54,7 +54,7 @@ define([
             return precision;
         }
     );
-    
+
     function main(commandName, argv) {
             // arguments are mandatory and at the end of the argv array
             // readArguments MUST run before readOptions
@@ -67,15 +67,15 @@ define([
           , targetGlyphSetDir = './glyphs_imported'
           , targetGlyphSet
           ;
-        
+
         console.log('processed arguments', args)
         console.log('processed options', options)
-        
+
         var project = new MetapolatorProject(io)
         project.load();
         project.exportInstance(args.MasterName, args.InstanceName, args.Precision);
     }
-    
+
     module = {main: main};
     Object.defineProperty(module, 'help', {
         get: argumentParser.toString.bind(argumentParser)

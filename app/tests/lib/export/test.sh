@@ -26,14 +26,14 @@ test () {
     $METAPOLATOR init ${IMPORT_UFO}1
     cd ${IMPORT_UFO}1.ufo
     $METAPOLATOR import ../$font.ufo $MASTER_NAME
-    $METAPOLATOR export $MASTER_NAME ../${EXPORT_UFO}1 1000
+    $METAPOLATOR export $MASTER_NAME ../${EXPORT_UFO}1 3
     cd ..
 
     # Import and export the first test export
     $METAPOLATOR init ${IMPORT_UFO}2
     cd ${IMPORT_UFO}2.ufo
     $METAPOLATOR import ../${EXPORT_UFO}1.ufo $MASTER_NAME
-    $METAPOLATOR export $MASTER_NAME ../${EXPORT_UFO}2 1000
+    $METAPOLATOR export $MASTER_NAME ../${EXPORT_UFO}2 3
     cd ..
 }
 

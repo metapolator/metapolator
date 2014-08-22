@@ -27,8 +27,8 @@ define([
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
             console.log('exporting', glyph.id);
-            drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph, this._precision)
-            
+            drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
+
             // filter the 'lib' key because fontforge didn't like it (FontForge issue #1635)
             ufoData_tmp = glyph.getUFOData();
             ufoData = {}
@@ -37,8 +37,9 @@ define([
                     continue;
                 else
                     ufoData[k] = ufoData_tmp[k];
-            
-            this._glyphSet.writeGlyph(false, glyph.id, ufoData, drawFunc)
+
+            this._glyphSet.writeGlyph(false, glyph.id, ufoData, drawFunc,
+                                      {precision: this._precision})
         }
         this._glyphSet.writeContents(false);
     }
@@ -48,15 +49,15 @@ define([
      * try to use hobby splines but fall back to the control point values
      * of the points if hobbys would fail when there are no good tensions
      * or directions.
-     * 
+     *
      * The terminal parameter is a switch used to draw the penstroke terminals
      * for the start terminal of the stroke all controls are from the incoming
-     * control points. p0 in in p1 
+     * control points. p0 in in p1
      * for the end terminal of the stroke all controls are from the outgoing
-     * control points. p0 out out p1 
+     * control points. p0 out out p1
      * Without terminal beeing set or having a value of "start" or "end"
      * the default behavior is: p0 out in p1
-     * 
+     *
      * See the comment of drawPenstrokeToPointPen for more detail.
      */
 
@@ -68,8 +69,8 @@ define([
           , inDir = p1.get(terminal === 'end' ? 'outDir' :'inDir').value
           , on1 = p1.get('on').value
           ;
-            
-        if(outTension && inTension 
+
+        if(outTension && inTension
                             && outDir.magnitude()
                             && inDir.magnitude())
             return hobby.hobby2cubic(on0, outDir, outTension,
@@ -85,13 +86,13 @@ define([
 
     /**
      * The translation from Metapolator Penstrokes to Outlines:
-     * 
+     *
      * The example uses a penstroke with 7 points indexed from 0 to 6
-     * 
+     *
      *  Penstroke       Outline
-     *                    
-     *  ending            
-     *  terminal          
+     *
+     *  ending
+     *  terminal
      *    ___              7___
      *   | 6 |           8 |   | 6
      *   | 5 |           9 |   | 5
@@ -100,22 +101,22 @@ define([
      *   | 2 |          12 |   | 2
      *   |_1_|          13 |___| 1
      *     0                 14/0
-     *  starting      
-     *  terminal      
-     * 
-     * 
-     * 
+     *  starting
+     *  terminal
+     *
+     *
+     *
      * We draw first the right side from 0 to 6,
      * then the left side from 6 to 0.
-     * 
+     *
      * In each iteration only one on-curve point is drawn; in the
      * following example, that is always the last point of the four-
      * point tuples. Also, the out and in controls are drawn.
      * The first point of the tuples is needed to calculate the control
      * point position when we use hobby splines.
-     * 
+     *
      * for i=0;i<n;i++;
-     *      i===0: 
+     *      i===0:
      *          //starting terminal segment:
      *          on0.left in in on0.right
      *              => out in 0
@@ -136,7 +137,7 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    _p.drawPenstrokeOutline = function(model, pen, precision, penstroke) {
+    _p.drawPenstrokeOutline = function(model, pen, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
@@ -162,15 +163,15 @@ define([
                 }
                 ctrls = getControlsFromStyle(prePoint, point, terminal);
                 ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined, {precision: precision});
+                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
                 })
-                
+
             }
             else {
                 segmentType =  'line';
                 console.log('implicit line segment, right side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined, {precision: precision});
+            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
         }
         // draw the left side
         for(i=points.length-1;i>=0 ;i--) {
@@ -198,19 +199,19 @@ define([
                     point = prePoint;
                 }
                 ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined, {precision: precision});
+                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
                 })
             }
             else {
                 segmentType = 'line';
                 console.log('implicit line segment, left side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined, {precision: precision});
+            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }
-    
-    _p.drawPenstrokeCenterline = function(model, pen, precision, penstroke) {
+
+    _p.drawPenstrokeCenterline = function(model, pen, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
@@ -225,20 +226,20 @@ define([
                 prePoint = model.getComputedStyle(points[i-1].center);
                 ctrls = getControlsFromStyle(prePoint, point);
                 ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined, {precision: precision});
+                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
                 })
             }
             else
                 // this contour is not closed, the first point is a move
                 segmentType = 'move';
-            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined, {precision: precision});
+            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }
-    
-    
-    
-    _p.drawGlyphToPointPen = function(model, glyph, precision, /*method,*/ pen) {
+
+
+
+    _p.drawGlyphToPointPen = function(model, glyph, /*method,*/ pen) {
         // method may be tensions/control-points/metafont/native-js
         // the possibilities are a lot.
         // I'm starting with tensions/native-js
@@ -251,9 +252,9 @@ define([
         // Maybe we can combine all metafont strokes into one job, to
         // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
-        glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen, precision));
-        //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen, precision));
+        glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen));
+        //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen));
     }
-    
+
     return ExportController;
 });
