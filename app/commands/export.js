@@ -37,18 +37,18 @@ define([
         }
     );
 
-    // FIXME: Make this argument optional, and default to undefined or -1
-    argumentParser.addArgument(
+    argumentParser.addOption(
         'Precision'
-      , 'The precision to use for output coordinates, expressed as the reciprocal of a number to round to the nearest multiple of,' +
-            ' or 0 for no rounding (e.g. 1000 to round to 3 decimal places)'
+      , ['-p', '--precision']
+      , 'The precision to use for output coordinates, '
+        + ' e.g. 3 to round to 3 decimal places or -1 for no rounding'
       , function(args) {
-            var precision = args.pop();
+            var precision = args.shift();
             if(precision === undefined)
-                precision = 0;
+                return undefined;
             else {
-                precision = Number(precision);
-                if(Number.isNaN(precision))
+                precision = parseInt(precision, 10);
+                if(precision !== precision)
                     throw new CommandLineError('Precision must be a number');
             }
             return precision;
@@ -73,7 +73,8 @@ define([
 
         var project = new MetapolatorProject(io)
         project.load();
-        project.exportInstance(args.MasterName, args.InstanceName, args.Precision);
+        project.exportInstance(args.MasterName, args.InstanceName,
+                               options.Precision);
     }
 
     module = {main: main};
