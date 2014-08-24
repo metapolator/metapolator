@@ -39,7 +39,7 @@ define([
                     ufoData[k] = ufoData_tmp[k];
 
             this._glyphSet.writeGlyph(false, glyph.id, ufoData, drawFunc,
-                                      {precision: this._precision})
+                                      undefined, {precision: this._precision})
         }
         this._glyphSet.writeContents(false);
     }
