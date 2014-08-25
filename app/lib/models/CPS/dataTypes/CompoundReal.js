@@ -6,9 +6,9 @@ define([
   , IntrinsicValue
 ) {
     "use strict";
-    
+
     var ValueError = errors.Value;
-    
+
     function CompoundReal(intrinsic, getCPSValueAPI, postfixComponentStack) {
         if(intrinsic !== intrinsic)
             throw new ValueError('The intrinsic value is NaN.');
@@ -18,22 +18,22 @@ define([
         this._intrinsic = new IntrinsicValue(this);
         this._executionRoot = undefined
     }
-    
+
     var _p = CompoundReal.prototype;
     _p.constructor = CompoundReal;
-    
+
     Object.defineProperty(_p, 'intrinsic', {
         get: function() {
             return this._intrinsic;
         }
     })
-    
+
     Object.defineProperty(_p, 'getCPSValueAPI', {
         get: function() {
             return this._getCPSValueAPI;
         }
     })
-    
+
     /**
      * the value of a CompoundReal is its 'intrinsic' value
      * plus the value of its components, which can be a simple algebraic
@@ -81,9 +81,9 @@ define([
                 val = val.value;
             if(typeof val !== 'number')
                 throw new ValueError('The components of this CompoundReal '
-                                + 'doesn\'t resolve to a number: ' + val
+                                + 'don\'t resolve to a number: ' + val
                                 +' typeof ' +  typeof val);
-            
+
             // add the intrinsic value
             // TODO: do we wan't to do something else than just adding it
             result = this._value + val;
@@ -95,7 +95,7 @@ define([
             return result;
         }
     })
-    
+
     _p.toString = function() {
         return '<' + this.constructor.name
             + ' i: ' + this._value
@@ -103,6 +103,6 @@ define([
             + ' with ' + this._components.length + ' components'
             +'>';
     }
-    
+
     return CompoundReal;
 });
