@@ -269,17 +269,17 @@ For multi-select contexts the functionality of the parameters panel is more limi
 ## metapolation sliders
 This describes the section called Metapolation sliders, which supplement the more visual and explorative design spaces with precise input.
 
-![](http://mmiworks.net/metapolator/slidersdefault.png)
+![](http://mmiworks.net/metapolator/slidersdefault2.png)
 
-Above a see the default slider setup for a 6-master design space. The masters are called: Regular, Black, Thin, Small caps, Serifs, ‘+ x-height’. For an N-master setup, the number of sliders is always N-1. This gives exactly enough input, together with the 100% rule, for a complete metapolation definition.
+Above a see the default slider setup for a 6-master design space. The masters are called: Regular, Blocky, Elegant, Body , Titling, Old-skool. For an N-master setup, the number of sliders is always N-1. This gives exactly enough input, together with the 100% rule, for a complete metapolation definition.
 
 * the popups on the right and left of the sliders contain all the master labels that—
   * do not appear at the opposite side of this slider;
   * do not appear on any other slider together with the one at the opposite side of this slider.
 * the popups on the left of the sliders also contain, the item ‘From zero’ it sets the slider to absolute mode:<br/>
-![](http://mmiworks.net/metapolator/sliderszero2.png)
+![](http://mmiworks.net/metapolator/sliderszero3.png)
 * when a popup on a slider is changed, the slider value gets recalculated and set;
 * text boxes with up/down arrows allow to set the slider value precisely;
 * the extra popup on the bottom-lefthand side has the label ‘All’ and contains as values all the master labels plus ‘From zero’; it sets all the popups on the left of the sliders to whatever is picked:<br/>
-![](http://mmiworks.net/metapolator/slidersall.png)<br/>
+![](http://mmiworks.net/metapolator/slidersall2.png)<br/>
 …while the right side is set to all the other masters (in case of All from zero, the right side is set to the first N-1 masters as defined in the masters panel).
