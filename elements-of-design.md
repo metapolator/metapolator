@@ -4,6 +4,8 @@ This page lists the **first, rough** building blocks of the design. With that th
 So enjoy the fact that you can watch interaction being created ‘out of nothing’ and that you can plan with what you see here. Thanks for your patience where it comes to the last detail. _—ps_
 
 ## overall structure
+**updated**: read the first exploration below, or jump to the update.
+
 Let’s develop an overall structure for the user interaction; a global plan for where everything in Metapolator ‘lives’. All the functionality we have to pack, even for v1.0, does not fit on one screen; different departments need to be created. But we also want to create a sense of continuity for users, not just a collection of screens and panels.
 
 We can observe the following:
@@ -69,6 +71,13 @@ Fonts:
 _Map the (strings of) instances to font (families); manage metadata and assign to font (families)._
 
 **quick note**: it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co).
+
+### and then there were three
+Encouraged by a challenge from Simon and Wei, I have redesigned the panels, merging the middle two. Now we have three departments:
+
+* Parameters
+* Design Spaces
+* Fonts
 
 ## working with masters and glyphs in context
 Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
