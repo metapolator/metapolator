@@ -46,38 +46,44 @@ Driven by the choice of department (Parameters, Design Spaces, Metapolation, Fon
 
 _(yes, for R-to-L language UI localisation, the whole order of these sections needs to be reversed, because its sequence is a forward/backward order in reading direction)_
 
-The individual department views, Parameters:
-
-![](http://mmiworks.net/metapolator/paraview.png)
-
-_On the right, manage (adjustment) masters and select which ones to work on; review in the middle, directly manipulate and possibly refine the selection to glyph(s) or sub-glyph(s); review and work on the parameters of this selection on the left._
-
-Design Spaces:
-
-![](http://mmiworks.net/metapolator/designview3.png)
-
-_Place (adjustment) masters on one or more design spaces and arrange them; manage master sequences; review the (adjustment) masters on the bottom of this department._
-
-Metapolation:
-
-![](http://mmiworks.net/metapolator/metapolview3.png)
-
-_Explore the design spaces; create and manage (strings of) instances and adjust them both in the design spaces and the metapolation sliders; review the instances on the bottom of this department._
-
-Fonts:
-
-![](http://mmiworks.net/metapolator/fontsview.png)
-
-_Map the (strings of) instances to font (families); manage metadata and assign to font (families)._
-
-**quick note**: it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co).
-
 ### and then there were three
-Encouraged by a challenge from Simon and Wei, I have redesigned the panels, merging the middle two. Now we have three departments:
+Encouraged by a _constructive_ challenge from Simon and Wei, I have redesigned the panels, merging the middle two. Now we have three departments:
 
 * Parameters
 * Design Spaces
 * Fonts
+
+![](http://mmiworks.net/metapolator/refined3.png)
+
+here with the viewport:
+
+![](http://mmiworks.net/metapolator/slide3.png)
+
+The individual department views, Parameters:
+
+![](http://mmiworks.net/metapolator/paraview2.png)
+
+_On the right, manage (adjustment) masters and select which ones to work on—also master sequence management is **integrated** here; review in the middle, directly manipulate and possibly refine the selection to glyph(s) or sub-glyph(s); review and work on the parameters of this selection on the left._
+
+Design Spaces:
+
+![](http://mmiworks.net/metapolator/designview4.png)
+
+_Place (adjustment) masters on one or more design spaces and arrange them; explore the design spaces; create and manage (strings of) instances and adjust them both in the design spaces and the metapolation sliders; review (a mix of) masters and instances on the bottom of this department._
+
+**note** that the activity of loading some existing fonts; setting up a design space; exploration of this space using some instances; evaluating and/or quicky exporting them can all be done here in this view.
+
+Fonts:
+
+![](http://mmiworks.net/metapolator/fontsview2.png)
+
+_Map the (strings of) instances to font (families); manage metadata and assign to font (families). The metapolation sliders panel is hidden (by sliding down) in this view._
+
+**quick notes**:
+
+* it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co);
+* future support of kerning and hinting will find its home in the Fonts view;
+* the widths of columns will be resizable and the position of horizontal dividers (Design spaces view) will be able to slide up/down, _all within reason_ and without causing the views to scroll; resizing the masters or instances column will affect both views they appear on.
 
 ## working with masters and glyphs in context
 Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
