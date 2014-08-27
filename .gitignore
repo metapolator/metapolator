@@ -13,3 +13,6 @@ _site
 /users
 /docs
 /sessions
+app/lib/obtainJS/
+
+app/lib/ufoJS/
