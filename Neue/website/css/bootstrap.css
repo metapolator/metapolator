@@ -4,44 +4,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
-/*Metapolator */
-
-/* .intro {
-    display: table;
-    width: 100%;
-    height: 100%;
-    padding: 100px 0;
-    text-align: center;
-}
-
-.intro .intro-body {
-    display: table-cell;
-    vertical-align: middle;
-}
-*/
-
-/* make sidebar nav vertical */ 
-@media (min-width: 768px) {
-  .sidebar-nav .navbar .navbar-collapse {
-    padding: 0;
-    max-height: none;
-  }
-  .sidebar-nav .navbar ul {
-    float: none;
-  }
-  .sidebar-nav .navbar ul:not {
-    display: block;
-  }
-  .sidebar-nav .navbar li {
-    float: none;
-    display: block;
-  }
-  .sidebar-nav .navbar li a {
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-}
-
 u4 {
   font-size: 18px;
   text-decoration: underline;
@@ -1145,41 +1107,45 @@ h6 .small,
 }
 h1,
 .h1 {
-  font-size: 36px;
+/*  font-size: 36px;*/
+    font-size: 20px;
 }
 h2,
 .h2 {
-  font-size: 30px;
+/*  font-size: 30px;*/
+    font-size: 20px;
 }
 h3,
 .h3 {
 /*  font-size: 24px;*/
-    font-size: 18px;
+    font-size: 20px;
 }
 h4,
 .h4 {
-  font-size: 18px;
+/*  font-size: 18px;*/
+    font-size: 20px;
 }
 h5,
 .h5 {
-  font-size: 18px;
+/*  font-size: 14px;*/
+    font-size: 20px;
 }
 h6,
 .h6 {
-  font-size: 18px;
+/*  font-size: 12px;*/
+    font-size: 20px;
 }
 p {
   margin: 0 0 10px;
 }
 .lead {
   margin-bottom: 20px;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 1.4;
+  /*  font-size: 18px;*/
+  font-size: 20px;
+  font-weight: 500;
 }
 @media (min-width: 768px) {
   .lead {
-    font-size: 21px;
   }
 }
 small,
@@ -1464,7 +1430,7 @@ pre code {
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
-  max-width: 650px;
+  max-width: 1340px;
 }
 @media (min-width: 768px) {
   .container {
@@ -3656,7 +3622,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a {
   position: relative;
   display: block;
-  padding: 10px 15px;
+
 }
 .nav > li > a:hover,
 .nav > li > a:focus {
