@@ -1,144 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Bootstrap, a sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.">
-    <meta name="keywords" content="HTML, CSS, JS, JavaScript, framework, bootstrap, front-end, frontend, web development">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+<head>
+  <meta charset="utf-8">
+  <title>Metapolator Neue</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="beta version of Metapolator Branding Website">
+  <meta name="author" content="TypeDesignStudio">
 
-    <title>Metapolator Neue</title>
+	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+	<!--script src="js/less-1.3.3.min.js"></script-->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+	
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
 
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="img/favicon.png">
+  
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/scripts.js"></script>
+</head>
 
-    <!-- Documentation extras -->
-    <link href="css/docs.css" rel="stylesheet">
-    <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
-    <script src="http://getbootstrap.com/assets/js/ie-emulation-modes-warning.js"></script>
-
-  </head>
-  <body>
-    <div class="container bs-docs-container">
+<body>
+<div class="container"> <!-- Container -->
+	<div class="row clearfix"> <!-- Row containing Fixed-top Navbar -->
+		<div class="col-md-12 column"> <!-- Col containing Fixed-top Navbar -->
+			<nav class="navbar navbar-default navbar-fixed-top hidden-md hidden-lg" role="navigation"> <!-- Top-Fixed Nav bar -->
+				<div class="navbar-header">
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#"><img src="Links/logo.svg" width="30" alt="logo"></a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+				            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Section<strong class="caret"></strong></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#metapolation">Metapolation</a></li>
+                                    <li><a href="#concept">Concept</a></li>
+                                    <li><a href="#contact">Contact</a></li>
+                                </ul>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Social<strong class="caret"></strong></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="http://github.com/metapolator/metapolator">Github</a></li>
+                                    <li><a href="http://plus.google.com/communities/110027004108709154749">google+</a></li>
+                                    <li><a href="http://twitter.com/metapolator">twitter</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#contact">Contact</a></li>
+                                </ul>
+						</li>
+					</ul>
+				</div>
+			</nav>  <!-- /Top-Fixed Nav bar -->
+            
+			<div class="row clearfix"> <!-- Header -->
+				<div class="col-md-2 hidden-sm hidden-xs page-header"> <!-- Left Menu -->  
+				    <div class="fixed-top"><ul class="list-unstyled">
+                                <li><img src="Links/logo.svg" height="70px" alt="logo"><br><br></li>
+                                <li><a href="#metapolation">Metapolation</a></li>
+								<li><a href="#concept">Concept</a></li>
+								<li><a href="#contact">Contact</a></li></ul>
+                    </div>
+				</div> <!-- /Left Menu -->  
+                
+				<div class="col-md-8  logo-space"> <!-- Top Title --> 
+                    <p>Metapolator Neue 1.0</p>
+                </div> <!-- /Top Title --> 
+                
+                <div class="col-md-2 hidden-sm hidden-xs logo-space"> <!-- Social Link -->
+                    <a href="http://github.com/metapolator/metapolator">Git</a>
+                    <a href="http://plus.google.com/communities/110027004108709154749">g+</a>
+                    <a href="http://twitter.com/metapolator">t</a>
+				</div> <!-- Social Link -->
+                
+            </div> <!-- /Header -->
+            
+            <div class="row clearfix"> <!-- Main row -->
+                
+                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                    <h1 id="metapolation">Metapolation</h1> <!-- Title of Article -->
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. </p>
+				</div> <!-- /Article -->
+                
+                <div class="col-md-8 col-md-offset-2"><img src="Links/placeholder.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
+                <div class="col-md-2 caption"><p>Hacker Gui is the new interface with some nice graphic elements</p></div> <!-- Caption -->
+                
+                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor.</p>
+                    <p>Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit.</p>
+				</div> 
         
-      <div class="row">
-          <div class="col-md-2">
-          <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" role="complementary">
-            <br><img src="Links/logo.svg" class="img-responsive" alt="Logo" width="70px">
-              <ul class="nav bs-docs-sidenav">
-                <li>
-  <a href="#home">Home</a>
-  <ul class="nav">
-  </ul>
-                </li>
-                <li>
-  <a href="#metapolation">Metapolation</a>
-  <ul class="nav">
-    <li><a href="#metapolation-concept">Concept</a></li>
-    <li><a href="#metapolation-definition">Definition</a></li>
-    <li><a href="#metapolation-family">Family</a></li>
-  </ul>
-                </li>
-                <li>
-  <a href="#designspace">Design space</a>
-  <ul class="nav">
-    <li><a href="#designspace-master">Masters of Master</a></li>
-    <li><a href="#designspace-differences">Differences</a></li>
-  </ul>
-                </li>
-                <li>
-  <a href="#contact">Contact</a>
-  <ul class="nav">
-    <li><a href="#contact-social">Social</a></li>
-    <li><a href="#contact-map">Roadmap</a></li>
-  </ul>
-                </li>
-            </ul>
-            <a class="back-to-top" href="#top">
-              Back to top
-            </a>
-          </div>
-        </div>
-        <div class="col-md-7" role="main">
-          <div class="bs-docs-section">
-  <h1 id="home" class="page-header">Metapolator Neue</h1>
-  <h3 id="home-home">Home</h3>
-  <p>Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs.</p>
-
-  <h1 id="metapolation" class="page-header">Metapolation</h1>            
-  <h3 id="metapolation-concept">Concept</h3>
-  <p>Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts. 
-      
-      <img src="Links/placeholder.svg" class="img-responsive" alt="Responsive image">
-      
-      Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.</p>
-              
-            <img src="Links/Poster.svg" class="img-responsive" alt="Responsive image">
-
-  <h3 id="metapolation-definition">Definition of a skeleton</h3>
-  <p>Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.</p>
-              
-  <h3 id="metapolation-family">Family out of one Master</h3>
-  <p>Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.</p>
-  <ul>
-    <li>Set <code>background-color: #fff;</code> on the <code>body</code></li>
-    <li>Use the <code>@font-family-base</code>, <code>@font-size-base</code>, and <code>@line-height-base</code> attributes as our typographic base</li>
-    <li>Set the global link color via <code>@link-color</code> and apply link underlines only on <code>:hover</code></li>
-  </ul>
-  <p>Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.<code>scaffolding.less</code>.</p>
-              
-              <img src="Links/banboum.svg" class="img-responsive" alt="Responsive image">
-
-  <h1 id="designspace" class="page-header">Design space</h1>               
-  <h3 id="designspace-master">Master of Master</h3>
-  <p>It will go further, into 'metapolation': <u5>leveraging parameterization to create new masters</u5>. This will work best when glyphs are drawn as separate, overlapping shapes with pairs of points along each edge. This style of <u6>digital drawing</u6> is commonly practiced, as it helps when drawing shapes resembling strokes of pens.
-It will go further, into 'metapolation': <u5>leveraging parameterization to create new masters</u5>. This will work best when glyphs are drawn as separate, overlapping shapes with pairs of points along each edge. This style of <u6>digital drawing</u6> is commonly practiced, as it helps when drawing shapes resembling strokes of pens.
-It will go further, into 'metapolation': <u5>leveraging parameterization to create new masters</u5>. This will work best when glyphs are drawn as separate, overlapping shapes with pairs of points along each edge. This style of <u6>digital drawing</u6> is commonly practiced, as it helps when drawing shapes resembling strokes of pens.For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.</p>
-
-  <h3 id="designspace-differences">Differences</h3>
-  <p>Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, <u6>expanding a single style design</u6> into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.</p>
-              
-  <h1 id="contact" class="page-header">Contact</h1>               
-  <h3 id="contact-social">Social</h3>
-  <p>For improved cross-browser rendering, we use <a href="http://necolas.github.io/normalize.css/" target="_blank">Normalize.css</a>, a project by <a href="http://twitter.com/necolas" target="_blank">Nicolas Gallagher</a> and <a href="http://twitter.com/jon_neal" target="_blank">Jonathan Neal</a>.</p>
-
-  <h3 id="contact-map">Map</h3>
-  <p>Bootstrap requires a containing element to wrap site contents and house our grid system. You may choose one of two containers to use in your projects. Note that, due to <code>padding</code> and more, neither container is nestable.</p>             
-</div>
-        </div>
-        <div class="col-md-3"> <!-- Social -->
-            Github g+ twitter
-        </div>    
-      </div>
-    </div>
-
-    <!-- Footer
-================================================== -->
-<footer class="bs-docs-footer" role="contentinfo">
-
-</footer>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-<script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
-
-
-
-<script>
-  window.twttr = (function (d,s,id) {
-    var t, js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return; js=d.createElement(s); js.id=id; js.async=1;
-    js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
-    return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
-  }(document, "script", "twitter-wjs"));
-</script>
-
-
+                <div class="col-md-8 col-md-offset-2 article"><img src="Links/poster.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
+                <div class="col-md-2 caption"><p>Can work with any Ufo file</p></div> <!-- Caption -->
+                
+                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                    <h1 id="concept">Concept of family</h1> <!-- Title of Article -->
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor.</p>
+				</div>
+                
+                <div class="col-md-8 col-md-offset-2 article"><img src="Links/banboum.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
+                <div class="col-md-2 caption"><p>New User interface</p></div> <!-- Caption -->
+                
+                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                    <h1 id="contact">Contact</h1> <!-- Title of Article -->
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.</p>
+				</div>
+    
+			</div> <!--/ Main row -->
+		</div> <!--/ Col containing Fixed-top Navbar -->
+	</div> <!-- /Row containing Fixed-top Navbar -->
+</div> <!-- /Container -->
+    <footer> <!-- Footer -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <p class="small">Metapolator ©2014 - All Right Reserved</p>
+                </div>
+            </div>    
+        </div> 
+    </footer> <!-- /Footer -->
 </body>
 </html>

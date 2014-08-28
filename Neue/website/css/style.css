@@ -1,0 +1,79 @@
+/*! normalize.css v3.0.1 | MIT License | git.io/normalize */
+html {
+  font-family: seanregular;
+  -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+}
+
+@font-face {
+    font-family: 'seanregular';
+    src: url('../fonts/sean_hairline-webfont.eot');
+    src: url('../fonts/sean_hairline-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/sean_hairline-webfont.woff') format('woff'),
+         url('../fonts/sean_hairline-webfont.ttf') format('truetype'),
+         url('../fonts/sean_hairline-webfont.svg#seanregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'robotolight';
+    src: url('../fonts/roboto-light-webfont.eot');
+    src: url('../fonts/roboto-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto-light-webfont.woff') format('woff'),
+         url('../fonts/roboto-light-webfont.ttf') format('truetype'),
+         url('../fonts/roboto-light-webfont.svg#robotolight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body {
+  font-family: seanregular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+  line-height: 1.42857143;
+  color: #000;
+  background-color: #fff;
+}
+
+.caption {
+    font-family: robotolight;
+    font-size: 14px;
+}
+
+.article {
+    padding-top: 20px;
+}
+
+.logo-space {
+    margin-top: 64px;
+}
+
+.fixed-top {
+    position: fixed;
+}
+
+.page-header {
+  margin-top: 40px;
+  
+/*  border-bottom: 1px solid #eeeeee;*/
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+a:visited {
+  color: black ;
+}
+a:hover, a:focus, a:active {
+  text-decoration: none;
+  color: #FFC709;
+}
+
+footer {
+    text-align: center;
+    margin-top: 150px;
+    margin-bottom: 25px;
+}
