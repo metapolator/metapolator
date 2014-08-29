@@ -31,9 +31,18 @@
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/scripts.js"></script>
     
-    <script src="src/url.js"></script>
-    <script src="src/jquery.js"></script>
-    <script src="src/two.js"></script>
+    <script src="js/url.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/two.js"></script>
+    
+    
+    <style>
+        #canvas
+        {
+        border-style:solid;
+        border-width:1px;
+        }
+    </style>
     
 </head>
 
@@ -116,137 +125,11 @@
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor.</p>
 				</div>
                 
-                <div class="col-md-8 col-md-offset-2 article"><div class="scripts">
-      <script>
-
-        $(function() {
-
-          var type = /(canvas|webgl)/.test(url.type) ? url.type : 'svg';
-          var two = new Two({
-            type: Two.Types[type],
-            fullscreen: true
-          }).appendTo(document.body);
-
-          $.get('Links/devanagari.svg', function(doc) {
-
-            var fresh = two.interpret($(doc).find('svg')[0]);
-            fresh.subdivide();
-            fresh.noFill();
-            var t = 0;
-            var startOver, movingmouse = false;
-            var clearT = function() {
-              t = 0;
-              setEnding(fresh, 0);
-              startOver = _.after(60, clearT);
-            };
-            var stopMouse = _.debounce(function() {
-              movingmouse = false;
-            }, 1000);
-
-            fresh.center().translation.set(two.width / 2, two.height / 2);
-            fresh.distances = calculateDistances(fresh);
-            fresh.total = 0;  fresh.stroke = 'black';
-            fresh.linewidth = 20;
-            _.each(fresh.distances, function(d) {
-              fresh.total += d;
-            });
-
-            clearT();
-
-            $(window)
-              .bind('mousemove', mousemove)
-              .bind('touchmove', function(e) {
-                var touch = e.originalEvent.changedTouches[0];
-                mousemove({
-                  clientX: touch.pageX,
-                  clientY: touch.pageY
-                });
-                return false;
-              });
-
-            _.defer(function() {
-
-              two
-                .bind('resize', function() {
-
-                  fresh.translation.set(two.width / 2, two.height / 2);
-
-                })
-                .bind('update', function() {
-
-                  if (movingmouse) {
-                    return;
-                  }
-
-                  if (t < 0.9999) {
-                    t += 0.00625;
-                  } else {
-                    startOver();
-                  }
-
-                  setEnding(fresh, t);
-
-                }).play();
-
-            });
-
-            function mousemove(e) {
-              var rect = fresh.getBoundingClientRect();
-              movingmouse = true;
-              t = cmap(e.clientX, rect.left, rect.right, 0, 1);
-              setEnding(fresh, t);
-              stopMouse();
-            }
-
-            function setEnding(group, t) {
-
-              var i = 0;
-              var traversed = t * group.total;
-              var current = 0;
-
-              _.each(group.children, function(child) {
-                var distance = group.distances[i];
-                var min = current;
-                var max = current + distance;
-                var pct = cmap(traversed, min, max, 0, 1);
-                child.ending = pct;
-                current = max;
-                i++;
-              });
-
-            }
-
-          });
-
-        });
-
-        function calculateDistances(group) {
-          return _.map(group.children, function(child) {
-            var d = 0, a;
-            _.each(child.vertices, function(b, i) {
-              if (i > 0) {
-                d += a.distanceTo(b);
-              }
-              a = b;
-            });
-            return d;
-          });
-        }
-
-        function clamp(v, min, max) {
-          return Math.max(Math.min(v, max), min);
-        }
-
-        function map(v, i1, i2, o1, o2) {
-          return o1 + (o2 - o1) * ((v - i1) / (i2 - i1));
-        }
-
-        function cmap(v, i1, i2, o1, o2) {
-          return clamp(map(v, i1, i2, o1, o2), o1, o2);
-        }
-
-      </script>
-    </div></div> <!-- Picture -->
+                <div class="col-md-8 col-md-offset-2 article"> 
+                    <div id="canvas"> 
+                    <p>Hover over me</p>        
+                    </div>
+                 </div> <!-- Picture -->
                 <div class="col-md-2 caption"><p>New User interface</p></div> <!-- Caption -->
                 
                 <h1 id="concept">Concept of family</h1> <!-- Title of Article -->
@@ -274,5 +157,9 @@
             </div>    
         </div> 
     </footer> <!-- /Footer -->
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="js/animation.js"></script>
+    
 </body>
 </html>
