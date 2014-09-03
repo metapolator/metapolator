@@ -136,16 +136,19 @@ for an auto-persistence model (surely the way to go in the future):
 * -- \<separator\> --
 * Close
 * -- \<separator\> --
-* Open local…
-* Save local…
+* Open File…
+* Save As File…
 * -- \<separator\> --
 * Delete…
 
 **notes**:
 
-* **New** opens a new Metapolator instance in a new browser tab, with no project loaded.
+* **New** opens a new, empty project into a new Metapolator instance in a new browser tab.
 * **Clone** clones the current project into a new Metapolator instance in a new browser tab, with a derived project name ("\<project name\> copy").
-
+* **Open…** opens into this browser tab only when a new, empty project is loaded, else into a new Metapolator instance in a new browser tab.
+* **Close** leaves the tab open, with no project loaded.
+* **Open File…** and **Save As File…** interface to the file system instead of the database.
+* **Delete…** removes this project from the database, for ever…
 
 Whenever this instance/tab of metapolator is running without a project loaded, the project name and local menu are not shown; instead a simple link to open a project:
 
