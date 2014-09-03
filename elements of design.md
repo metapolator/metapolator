@@ -103,7 +103,53 @@ What is missing is the all-important Edit menu of desktop apps, one that works o
 Undo/Redo, Cut, Copy & Paste we can handle via the standard browser Edit menu. This will provide users also with standard keyboard shortcuts. Duplicate is not present in browser Edit menus and we will provide it locally, usually via a button in the layout. Delete is present in browser Edit menus but maybe a bit _fast_ to be used to delete Masters and Design spaces; I prefer to put Delete items in local menus for that.
 
 ### what about right-click menus?
-Right-click menus are tertiary interaction method, one defines them after primary methods (buttons and menus) and secondary ones (direct-manipulation shortcuts) have been defined.
+Right-click menus are a tertiary interaction method, one defines them after primary (buttons and menus) and secondary methods (direct-manipulation shortcuts) have been defined. Then one looks where one still needs a right-click menu.
+
+## working with projects
+Always at the top of the viewport we find the project panel, which also includes the controls to switch the [3-panel layout](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
+
+![](http://mmiworks.net/metapolator/projectontop.png)
+
+The strip itself looks like this _(left and middle part shown **only**)_:
+
+![](http://mmiworks.net/metapolator/projectstrip2.png)
+
+On the left we have the project label, with local menu attached, followed by the project name. Centred on the project panel there is a set of three toggle buttons, which switch between the [three main views](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
+
+When the project name is clicked on it becomes an editable text field, where the project name can be changed. The focus leaving the field ends and commits the name change. Undo applies to the action. The project name is used in the browser window title: "Metapolator: \<project name\>".
+
+The local menu is as follows for file-based model:
+
+* New
+* Clone
+* Open…
+* -- \<separator\> --
+* Close
+* Save
+* Save As…
+
+for an auto-persistence model (surely the way to go in the future):
+
+* New
+* Clone
+* Open…
+* -- \<separator\> --
+* Close
+* -- \<separator\> --
+* Open local…
+* Save local…
+* -- \<separator\> --
+* Delete…
+
+**notes**:
+
+* **New** opens a new Metapolator instance in a new browser tab, with no project loaded.
+* **Clone** clones the current project into a new Metapolator instance in a new browser tab, with a derived project name ("\<project name\> copy").
+
+
+Whenever this instance/tab of metapolator is running without a project loaded, the project name and local menu are not shown; instead a simple link to open a project:
+
+![](http://mmiworks.net/metapolator/projectnone.png)
 
 ## working with masters and glyphs in context
 Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
