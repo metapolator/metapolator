@@ -169,14 +169,14 @@ The master section is completely occupied by the master list with a label + loca
 
 _**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
 
-### list behaviour
+#### list behaviour
 The list consist of 3 columns. From left (for L–to–R UI locales) we see:
 
 1. sequence column
 * view column
 * control column
 
-#### view column
+##### view column
 The view column shows some characters, set in this master, to identify it. Which characters appear there by default is dependent on the scripts setup of this master.
 
 * The characters can also be edited by users: double click to get a text edit box; this allows users to set up their own identification system;
@@ -184,14 +184,14 @@ The view column shows some characters, set in this master, to identify it. Which
   * mouse-down, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off.
 * being (de)selected does not change the view mode of a master.
 
-#### control column
+##### control column
 The control column shows the name of the master and allow users to directly manipulate the master list item:
 
-* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; always one or more masters are selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the specimen (in either Parameters or Design Spaces view);
+* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; one or more masters can be selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the specimen (in either Parameters or Design Spaces view);
 * double click to rename master, to get a text edit box;
 * drag and drop to resort master list items (also of a multiple-selection); not only within this list, but also into a design space.
 
-#### sequence column
+##### sequence column
 Here master sequences are managed. The connected dots show the extend of the sequence. The top-down order of master list items is their order in the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
 
 * create master sequences via local menu (see below), or by mouse-down, drag across multiple masters, release: all masters involved form a new master sequence; default title: "sequence \<number\>", where the number steadily increases (for the project scope);
@@ -208,13 +208,13 @@ this is different than selecting all the masters in a sequence (e.g. in how it i
 * a sequence contains two or more masters; reducing a sequence to one master by any means results in removing the sequence;
 * ps: masters and sequences can appear in any order on this list (as long as sequences are continuous, i.e. only sequence members are shown in a sequence).
 
-### buttons
+#### buttons
 At the bottom of the list action buttons are displayed. From left (for L–to–R UI locales) we see:
 
 1. New master button; create an empty master;
 * Duplicate button; duplicate the current selection of master(s) or sequence(s) _(yes, the icon can use some more work…)_.
 
-### local menu
+#### local menu
 The local menu is as follows:
 
 * New
@@ -241,13 +241,46 @@ The local menu is as follows:
 * **Create Sequence** out of a multi-selection of masters that are all not part of a sequence; when it is a discontinuous selection, this pulls them together under the top master;
 * **Delete Sequence…** Deletes selected sequence(s), but not the masters they contain.
 
-### undo, copy + paste
+#### undo, copy + paste
 All editing of master (sequence) data, naming and configuration (e.g. sorting) is Undoable.
 
 Ah, and of course the current selection of master(s) or sequence(s) can be cut, copied and pasted—
 
 * within the same project;
 * between projects, in different browser tabs and even between different browser app instances (e.g. a firefox and a chrome) on the same desktop.
+
+### adjustment master section
+Whereas masters are _complete_ definitions of a font (to the extend of the supported glyph range), adjustment masters start empty and contain only targeted, well, adjustments.
+
+A typical example of an adjustment master is:
+
+1. empty, apart from—
+* for the whole master, scale parameter X by 0.98;
+* for a few glyphs, scale parameter X by 1.01 and offset parameter Y by +3;
+* for one glyph, scale a pen parameter for 2 points;
+* for another glyph, move one point a few mEm.
+
+The adjustment master section is completely identical to the [master section](https://github.com/metapolator/metapolator/wiki/elements-of-design#master-section), apart from the following changes:
+
+The label above the list shall be "Adjustment Masters".
+
+#### local menu
+The local menu is a bit thinned out:
+
+* New
+* -- \<separator\> --
+* Set Scripts…
+* -- \<separator\> --
+* Quick Export…
+* -- \<separator\> --
+* Delete…
+* -- \<separator\> --
+* Create Sequence
+* Delete Sequence…
+
+**note** that a adjustment master can only be displayed as a specimen when it is placed on one (and only one) design space, in that state is can also be quickly exported.
+
+and that is it…
 
 ## working with masters and glyphs in context
 Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
