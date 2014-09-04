@@ -83,7 +83,8 @@ _Map the (strings of) instances to font (families); manage metadata and assign t
 
 * it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co);
 * future support of kerning and hinting will find its home in the Fonts view;
-* the widths of columns will be resizable and the position of horizontal dividers (Design spaces view) will be able to slide up/down, _all within reason_ and without causing the views to scroll; resizing the masters or instances column will affect both views they appear on.
+* the widths of columns will be resizable and the position of horizontal dividers will be able to slide up/down, _all within reason_ and without causing the views to scroll; resizing the masters or instances column will affect both views they appear on;
+* minimum width of what is shown in the viewport is 960px (i.e. if the viewport is narrower than that, the view scrolls horizontally); if the viewport is horizontally resized beyond 960px, the columns get resized proportionally; if the viewport is vertically resized, the horizontal dividers get moved proportionally.
 
 ## where did the menus go?
 Defining one’s own menu bar in a web application is problematic: hide the normal browser one? It is a sure way to create user panic. Have two menu bars? How unsatisfying.
@@ -153,6 +154,97 @@ for an auto-persistence model (surely the way to go in the future):
 Whenever this instance/tab of metapolator is running without a project loaded, the project name and local menu are not shown; instead simple links to open a project or create a new one are shown:
 
 ![](http://mmiworks.net/metapolator/projectnone2.png)
+
+## (adjustment) master management
+As mentioned before, the (adjustment) master column is the panel that ties together the Parameters and Design Spaces views. Vertically this column is divided in two, with a master section at the top and a adjustment master section below it:
+
+![](http://mmiworks.net/metapolator/mastersplit.png)
+
+_(yep, the divider between the two can be moved up/down by users.)_
+
+### master section
+The master section is completely occupied by the master list with a label + local menu above it:
+
+![](http://mmiworks.net/metapolator/masterlist.png)
+
+_**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
+
+### list behaviour
+The list consist of 3 columns. From left (for L–to–R UI locales) we see:
+
+1. sequence column
+* view column
+* control column
+
+#### view column
+The view column shows some characters, set in this master, to identify it. Which characters appear there by default is dependent on the scripts setup of this master.
+
+* The characters can also be edited by users: double click to get a text edit box; this allows users to set up their own identification system;
+* when a master is not part of the current selection, clicking its view column toggles display of this master in the specimen (in either Parameters or Design Spaces view); a highlight in this column confirms the view mode;
+  * mouse-down, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off.
+* being (de)selected does not change the view mode of a master.
+
+#### control column
+The control column shows the name of the master and always users to directly manipulate the master list item:
+
+* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; always one or more masters are selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the specimen (in either Parameters or Design Spaces view);
+* double click to rename master, to get a text edit box;
+* drag and drop to resort master list items (also of a multiple-selection).
+
+#### sequence column
+Here master sequences are managed. The connected dots show the extend of the sequence. The top-down order of master list items is their order in the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
+
+* create master sequences via local menu (see below), or by mouse-down, drag across multiple masters, release: all masters involved form a new master sequence; default title: "sequence \<number\>", where the number steadily increases (for the project scope);
+* drag and drop masters (via in the control column) to:
+  * resort in the sequence;
+  * add to sequence by dropping inside;
+  * remove from sequence by dropping outside.
+* extend the sequence by grabbing the top/bottom dot and dragging it over masters above/below the sequence;
+* reduce the sequence by grabbing the top/bottom dot and dragging it over masters down/up towards centre of the sequence;
+* click in the sequence title item to select the complete sequence; this is different than selecting all the masters in a sequence (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
+* drag and drop complete sequences, via the title item
+* a sequence contains two or more masters; reducing a sequence to one master by any means results in removing the sequence.
+
+### buttons
+At the bottom of the list action buttons are displayed. From left (for L–to–R UI locales) we see:
+
+1. New master button; create an empty master;
+* Duplicate button; duplicate the current selection of master(s) or sequence(s) _(yes, the icon can use some more work…)_.
+
+### local menu
+The local menu is as follows:
+
+* New
+* Import ufo…
+* Copy From Project…
+* -- \<separator\> --
+* Set Scripts…
+* -- \<separator\> --
+* Quick Export…
+* -- \<separator\> --
+* Delete…
+* -- \<separator\> --
+* Create Sequence
+* Delete Sequence…
+
+**notes:**
+
+* these menu commands operate on single and multiple selections of masters and master sequences;
+* **Import ufo…** imports a ufo and creates a new master out of it;
+* **Copy From Project…** shows a project browser and then a master browser within a selected project; then copies selected master(s) to this project;
+* **Set Scripts…** shows a dialog to manage which scripts are supported by master(s);
+* **Quick Export…** of master(s) or sequence(s) to ufo, using best guesses where it comes to the trimmings (e.g. metadata, kerning, and opentype features);
+* **Delete…** of master(s);
+* **Create Sequence** out of a multi-selection of masters that are all not part of a sequence; when it is a discontinuous selection, this pulls them together under the top master;
+* **Delete Sequence…** Deletes selected sequence(s), but not the masters they contain.
+
+### undo, copy + paste
+All editing of master (sequence) data, naming and configuration (e.g. sorting) is Undoable.
+
+Ah, and of course the current selection of master(s) or sequence(s) can be cut, copied and pasted—
+
+* within the same project;
+* between projects, in different browser tabs and even between different browser app instances (e.g. a firefox and a chrome) on the same desktop.
 
 ## working with masters and glyphs in context
 Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
