@@ -185,7 +185,7 @@ The view column shows some characters, set in this master, to identify it. Which
 * being (de)selected does not change the view mode of a master.
 
 #### control column
-The control column shows the name of the master and always users to directly manipulate the master list item:
+The control column shows the name of the master and allow users to directly manipulate the master list item:
 
 * click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; always one or more masters are selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the specimen (in either Parameters or Design Spaces view);
 * double click to rename master, to get a text edit box;
@@ -205,7 +205,8 @@ Here master sequences are managed. The connected dots show the extend of the seq
 ![](http://mmiworks.net/metapolator/sequenceselected.png)<br/>
 this is different than selecting all the masters in a sequence (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
 * drag and drop complete sequences, via the title item
-* a sequence contains two or more masters; reducing a sequence to one master by any means results in removing the sequence.
+* a sequence contains two or more masters; reducing a sequence to one master by any means results in removing the sequence;
+* ps: masters and sequences can appear in any order on this list (as long as sequences are continuous, i.e. only sequence members are shown in a sequence).
 
 ### buttons
 At the bottom of the list action buttons are displayed. From left (for L–to–R UI locales) we see:
