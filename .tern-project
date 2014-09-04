@@ -1,0 +1,20 @@
+{
+    "plugins": {
+        "node": {},
+        "requirejs": {
+            "baseURL": "./app/lib",
+            "paths": {
+                "require/domReady": "bower_components/requirejs-domready/domReady",
+                "require/text": "bower_components/requirejs-text/text",
+                "metapolator": ".",
+                "commands": "../commands",
+                "gonzales": "npm_converted/gonzales/lib",
+                "complex":  "npm_converted/immutable-complex/lib",
+                "angular": "bower_components/angular/angular",
+                "obtain": "obtainJS/lib",
+                "ufojs": "ufoJS/lib",
+                "yaml": "bower_components/js-yaml/dist/js-yaml.min"
+            }
+        }
+    }
+}
