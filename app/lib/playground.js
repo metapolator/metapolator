@@ -16,12 +16,12 @@ require.config({
 require([
     'webAPI/document'
   , 'require/domReady'
-  , './models/parameters/factories'
+  // , './models/parameters/factories'
   , 'gonzales/gonzales'
 ], function (
     document
   , domReady
-  , parameterFactories
+  // , parameterFactories
   , gonzales
 ) {
     "use strict";
