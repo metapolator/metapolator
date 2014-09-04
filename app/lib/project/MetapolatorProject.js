@@ -11,6 +11,7 @@ define([
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
   , './ExportController'
+  , './InterpolationController'
   , 'yaml'
   , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
@@ -26,6 +27,7 @@ define([
   , GlyphSet
   , ImportController
   , ExportController
+  , InterpolationController
   , yaml
   , parseRules
 ) {
@@ -376,5 +378,10 @@ define([
         exportController.export();
     }
     
+    _p.interpolate = function(firstMasterName, secondMasterName) {
+        var interpolator = new InterpolationController(this, firstMasterName, secondMasterName);
+        interpolator.interpolate();
+    }
+
     return MetapolatorProject;
 });
