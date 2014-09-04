@@ -94,7 +94,7 @@ So here we are. There is no HIG obligation to define a menu bar, thus we are not
 
 ![](http://mmiworks.net/metapolator/menulablels.png)
 
-These labels can be reused to attach a menu (see **a** above) that contains the actions that can be performed on this context; **b** shows the mouseover state. Clicking anywhere in the space enclosing the label and triangle opens the menu. These menus better be native or equivalent, with **all** modes of popping up or down depending on space, keeping open and closing, invoking a menu item or bailing, and menu deciders. These menus will be referred to as **local menus**.
+These labels can be reused to attach a menu (see **a** above) that contains the actions that can be performed on this context; **b** shows the mouseover state. Clicking anywhere in the space enclosing the label and triangle opens the menu. These menus better be native or equivalent, with support for **all** modes of popping up/down depending on space, keeping open and closing, invoking a menu item or bailing, and menu dividers. These menus will be referred to as **local menus**.
 
 In this way we can provide a project menu (replacing the normal File one in desktop apps), parameters menu, masters menu, instances menu, design spaces menu, fonts & families menu, metadata menu, among other things.
 
