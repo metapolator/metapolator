@@ -150,9 +150,9 @@ for an auto-persistence model (surely the way to go in the future):
 * **Open File…** and **Save As File…** interface to the file system instead of the database.
 * **Delete…** removes this project from the database, for ever…
 
-Whenever this instance/tab of metapolator is running without a project loaded, the project name and local menu are not shown; instead a simple link to open a project:
+Whenever this instance/tab of metapolator is running without a project loaded, the project name and local menu are not shown; instead simple links to open a project or create a new one are shown:
 
-![](http://mmiworks.net/metapolator/projectnone.png)
+![](http://mmiworks.net/metapolator/projectnone2.png)
 
 ## working with masters and glyphs in context
 Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
