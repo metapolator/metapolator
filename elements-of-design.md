@@ -107,17 +107,17 @@ Undo/Redo, Cut, Copy & Paste we can handle via the standard browser Edit menu. T
 Right-click menus are a tertiary interaction method, one defines them after primary (buttons and menus) and secondary methods (direct-manipulation shortcuts) have been defined. Then one looks where one still needs a right-click menu.
 
 ## working with projects
-Always at the top of the viewport we find the project panel, which also includes the controls to switch the [3-panel layout](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
+Always at the top of the viewport we find the project panel, which also includes the controls to switch the [3-view layout](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
 
 ![](http://mmiworks.net/metapolator/projectontop.png)
 
 The strip itself looks like this _(left and middle part shown **only**)_:
 
-![](http://mmiworks.net/metapolator/projectstrip2.png)
+![](http://mmiworks.net/metapolator/projectstrip.png)
 
-On the left we have the project label, with local menu attached, followed by the project name. Centred on the project panel there is a set of three toggle buttons, which switch between the [three main views](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
+On the left we have the project label + name, with local menu attached. Centred on the project panel there is a set of three toggle buttons, which switch between the [three main views](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
 
-When the project name is clicked on it becomes an editable text field, where the project name can be changed. The focus leaving the field ends and commits the name change. Undo applies to the action. The project name is used in the browser window title: "Metapolator: \<project name\>".
+When the project name is double-clicked on it becomes an editable text field, where the project name can be changed. The focus leaving the field ends and commits the name change. Undo applies to this action. The project name is used in the browser window title: "Metapolator: \<project name\>".
 
 The local menu is as follows for file-based model:
 
@@ -201,7 +201,9 @@ Here master sequences are managed. The connected dots show the extend of the seq
   * remove from sequence by dropping outside.
 * extend the sequence by grabbing the top/bottom dot and dragging it over masters above/below the sequence;
 * reduce the sequence by grabbing the top/bottom dot and dragging it over masters down/up towards centre of the sequence;
-* click in the sequence title item to select the complete sequence; this is different than selecting all the masters in a sequence (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
+* click in the sequence title item to select the complete sequence;<br/>
+![](http://mmiworks.net/metapolator/sequenceselected.png)<br/>
+this is different than selecting all the masters in a sequence (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
 * drag and drop complete sequences, via the title item
 * a sequence contains two or more masters; reducing a sequence to one master by any means results in removing the sequence.
 
