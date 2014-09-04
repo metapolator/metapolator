@@ -468,15 +468,34 @@ This describes the section called Metapolation sliders, which supplement the mor
 
 ![](http://mmiworks.net/metapolator/slidersdefault2.png)
 
-Above a see the default slider setup for a 6-master design space. The masters are called: Regular, Blocky, Elegant, Body , Titling, Old-skool. For an N-master setup, the number of sliders is always N-1. This gives exactly enough input, together with the 100% rule, for a complete metapolation definition.
+Above a see the default slider setup for a 6-master design space. The masters are called: Regular, Blocky, Elegant, Body , Titling, Old-skool. When the total number of (adjustment) masters for a design space is N, the number of sliders is always N-1. This gives exactly enough input, together with the 100% rule, for a complete metapolation definition.
 
-* the popups on the right and left of the sliders contain all the master labels that—
+* the popups on the right and left of the sliders contain all the (adjustment) master labels that—
   * do not appear at the opposite side of this slider;
   * do not appear on any other slider together with the one at the opposite side of this slider.
-* the popups on the left of the sliders also contain, the item ‘From zero’ it sets the slider to absolute mode:<br/>
+* the popups on the left of the sliders also contain, the item ‘From zero’ it sets the slider to absolute mode (i.e. directly how much of this parameter is part of the final mix):<br/>
 ![](http://mmiworks.net/metapolator/sliderszero3.png)
 * when a popup on a slider is changed, the slider value gets recalculated and set;
 * text boxes with up/down arrows allow to set the slider value precisely;
 * the extra popup on the bottom-lefthand side has the label ‘All’ and contains as values all the master labels plus ‘From zero’; it sets all the popups on the left of the sliders to whatever is picked:<br/>
 ![](http://mmiworks.net/metapolator/slidersall2.png)<br/>
-…while the right side is set to all the other masters (in case of All from zero, the right side is set to the first N-1 masters as defined in the masters panel).
+…while the right side is set to all the other masters (in case of All from zero, the right side is set to the first N-1 (adjustment) masters as defined in the masters panel).
+
+### sequences
+Master sequences and adjustment master sequences are a great way to reduce the dimensionality of the design space. This is because all the (adjustment) masters packed in a sequence get reduced to a single dimension. For every defined sequence, a special slider is _always_ shown:
+
+![](http://mmiworks.net/metapolator/sequenceslider.png)
+
+the (adjustment) masters contained by the sequence (here 4) are placed equidistant across the slider, in the order they appear in the sequence, with the name of the sequence shown above it (here: Weight). The contained (adjustment) masters are excluded from the normal metapolation sliders and substituted by their single sequence name.
+
+Here is an example of a master setup that we [have seen](https://github.com/metapolator/metapolator/wiki/elements-of-design#master-section) before:
+
+* a master sequence called Weight, containing 4 masters: Thin, Light, Regular and Bold
+* a master sequence called Itals, containing 2 masters: Thin Italic, Italic
+* one master: Condensed Black
+
+When all these appear in one design space, then the metapolation sliders setup looks like this:
+
+![](http://mmiworks.net/metapolator/sequencessetup.png)
+
+Instead of 6 sliders for 7 masters, we see 2 sequence sliders (note that a sequence of two masters is of marginal usefulness) and 2 normal sliders (because one master and two sequence titles make N = 3). Note that here the Weight–Itals slider is set to zero, i.e. the Itals are completely out of the mix.
