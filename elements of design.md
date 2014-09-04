@@ -189,7 +189,7 @@ The control column shows the name of the master and always users to directly man
 
 * click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; always one or more masters are selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the specimen (in either Parameters or Design Spaces view);
 * double click to rename master, to get a text edit box;
-* drag and drop to resort master list items (also of a multiple-selection).
+* drag and drop to resort master list items (also of a multiple-selection); not only within this list, but also into a design space.
 
 #### sequence column
 Here master sequences are managed. The connected dots show the extend of the sequence. The top-down order of master list items is their order in the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
