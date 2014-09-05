@@ -190,7 +190,7 @@ first level of interpolation. Resulting in the ability to export instances,
 but also a good base to work with interpolations as masters.
 
 1. Implement a `interpolate` method for each CPS-Data-Type where it is
-   userful. This is registered via parameterRegistry and thus located next
+   useful. This is registered via parameterRegistry and thus located next
    to 'init', 'defaultFactory' etc. I suggest an interface like
    `interpolate(valuesArray, proportionsArray)`
    
@@ -324,7 +324,7 @@ property of master for example). The important point is that we should
 institutionalize a way to do this kind of interpolation.
 
 We could make an axis by animating different values like:<br />
-`widht`, `x-height`, `boldness`<br />
+`width`, `x-height`, `boldness`<br />
 and we could make it possible to use different functions for each value,
 not just the same linear function. The important thing is that we get an
 output t for every input t. To make it easy to use, t is usually between
