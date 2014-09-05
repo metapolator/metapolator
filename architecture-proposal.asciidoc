@@ -642,7 +642,7 @@ The "state" of a modal command may be:
 
 
 The context plist is preserved across calls while a mode
-ios active.
+is active.
 
 
 ### Recursive command invocation
