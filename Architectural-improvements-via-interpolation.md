@@ -16,7 +16,9 @@ Our paymasters/robot overlords/visionary leaders are interested in _product_, no
 
 Lasse's [[Editing CPS interpolation alternative]] presents a definition of interpolation which involves simplifying the data representation (while sticking with CPS/MOM). Assuming the plan, or something similar, is approved, I suggest we use it to drive incremental architectural improvements:
 
-* Separation of concerns can be improved by ensuring that registration of CPS and MOM node types (i.e. the semantics) is kept separate from the parsing (syntax). It would be even better if the interpolation code could be kept separate from the rest, giving a command-oriented layout (as Tom suggests). The current design calls for interpolation methods on each supported type; can these be monkey-patched in, or more formally programmed in an aspect-oriented manner?
+* Separation of concerns can be improved in the following ways:
+  * Keep registration of CPS and MOM node types (i.e. the semantics) separate from the parsing (syntax).
+  * Implement interpolation as a single module (following Tom's "commands" structure). Lasse's `InterpolatingMaster` should subclass `Master` and `StyleDict`, and, as per Lasse's suggestion, the `Master` type should provide access to the corresponding `StyleDict` type.
 
 * Where data structures don't balance the needs of data and code, they should be simplified. As mentioned in the video discussion, the current representation of font data as CPS rules is odd (and, incidentally, hurts performance): the whole rule set must be queried to find the rules that apply to each glyph, most of which apply only to one glyph.
 
