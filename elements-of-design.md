@@ -170,7 +170,7 @@ The master section is completely occupied by the master list with a label + loca
 _**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
 
 #### list behaviour
-The list consist of 3 columns. From left (for L–to–R UI locales) we see:
+The list scrolls vertically when necessary and consist of 3 columns. From left (for L–to–R UI locales) we see:
 
 1. sequence column
 * view column
@@ -181,7 +181,7 @@ The view column shows some characters, set in this master, to identify it. Which
 
 * The characters can also be edited by users: double click to get a text edit box; this allows users to set up their own identification system;
 * when a master is not part of the current selection, clicking its view column toggles display of this master in the specimen (in either Parameters or Design Spaces view); a highlight in this column confirms the view mode;
-  * mouse-down, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off.
+  * mouse-down in the view column, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off.
 * being (de)selected does not change the view mode of a master.
 
 ##### control column
@@ -189,7 +189,8 @@ The control column shows the name of the master and allow users to directly mani
 
 * click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; one or more masters can be selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the specimen (in either Parameters or Design Spaces view);
 * double click to rename master, to get a text edit box;
-* drag and drop to resort master list items (also of a multiple-selection); not only within this list, but also into a design space.
+* drag and drop to resort master list items (also of a multiple-selection); 
+* drag and drop into a design space (also of a multiple-selection).
 
 ##### sequence column
 Here master sequences are managed. The connected dots show the extend of the sequence. The top-down order of master list items is their order in the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
@@ -281,6 +282,96 @@ The local menu is a bit thinned out:
 **note** that a adjustment master can only be displayed as a specimen when it is placed on one (and only one) design space, in that state is can also be quickly exported.
 
 and that is it…
+
+## (string of) instances management
+As mentioned before, the (string of) instances column is the panel that ties together the Design Spaces and Fonts views. Instances are much more lightweight than masters; they are incidental harvesters in the design space, instead of its cornerstones. It is our goal that instances are _also_ used for experimentation, on a whim, quickly making a couple of them, to toss away when they are surplus to the design activity. This means that although the interaction of the instances list has a lot in common with the master list, its design **must be tuned differently** to be fit for use. The description below is in absolute terms and not a delta to the masters section.
+
+The instances panel is completely occupied by the instances list with a label + local menu above it:
+
+![](http://mmiworks.net/metapolator/instanceslist.png)
+
+_**quick overview**: this project contains one instance and one string of instances; the lone instance (Instance #1) is probably for exploration, because it has still its default name; the string of instances is called Exotic and consist of 9 instances; one (Thin) is currently selected, any edits or actions are applied to it; two other instances (Light, Regular) are marked to be also viewed in the specimen (in Design Spaces view)._
+
+#### list behaviour
+The list scrolls vertically when necessary and consist of 3 columns. From left (for L–to–R UI locales) we see:
+
+1. string column
+* view column
+* control column
+
+##### view column
+The view column shows some characters, set in this instance, to identify it. Which characters appear there by default is dependent on the scripts setup of this instance.
+
+* The characters can also be edited by users: double click to get a text edit box; this allows users to set up their own identification system;
+* when an instance is not part of the current selection, clicking its view column toggles display of this instance in the specimen (in Design Spaces view); a highlight in this column confirms the view mode;
+  * mouse-down in the view column, drag across multiple instances, release: switches the view mode of all instances involved on/off, depending on whether the mouse-down instance went on or off.
+* being (de)selected does not change the view mode of an instance.
+
+##### control column
+The control column shows the name of the instance and allow users to directly manipulate the instance list item:
+
+* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; one or more instances can be selected in this list, this is what gets manipulated in the Design Spaces and Fonts view; what is selected is always shown in the specimen (in Design Spaces view);
+* double click to rename instance, to get a text edit box;
+* drag and drop to resort instance list items (also of a multiple-selection);
+* drag and drop into a design space (also a multiple-selection).
+
+##### string column
+Here strings of instances are managed. The connected diamonds show the extend of the string. The top-down order of the instances is their order in the string. The title item above the top instance identifies the string elsewhere in the UI (e.g. for font name generating), double click to get a text edit box. The title item also shows the number of instances contained, double click to get a text edit box with up/down arrows:
+
+![](http://mmiworks.net/metapolator/stringlen.png)
+
+The changes to the number of instances is applied at the bottom of the list.
+
+* create strings of instances via local menu (see below), or by mouse-down, drag across multiple instances, release: all instances involved form a new string of instances; default title: "string \<number\>", where the number steadily increases (for the project scope);
+* drag and drop instances (via in the control column) to:
+  * resort in the string;
+  * add to string by dropping inside;
+  * remove from string by dropping outside.
+* extend the string by grabbing the top/bottom diamond and dragging it over instances above/below the string;
+* reduce the string by grabbing the top/bottom diamond and dragging it over instances down/up towards centre of the string;
+* click in the string title item to select the complete string;<br/>
+![](http://mmiworks.net/metapolator/stringselected.png)<br/>
+this is different than selecting all the instances in a string (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
+* drag and drop complete strings, via the title item
+* a string contains two or more instances; reducing a string to one instance by any means results in removing the string;
+* ps: instances and strings can appear in any order on this list (as long as strings are continuous, i.e. only string members are shown in a string).
+
+#### buttons
+At the bottom of the list action buttons are displayed. From left (for L–to–R UI locales) we see:
+
+1. New instance button; See local menu item of the same name;
+* Create string of instances button; See local menu item of the same name;
+* Duplicate button; duplicate the current selection of instance(s) or string(s);
+* Delete button; See local menu item of the same name.
+
+#### local menu
+The local menu is as follows:
+
+* New
+* -- \<separator\> --
+* Promote To Master
+* -- \<separator\> --
+* Quick Export…
+* -- \<separator\> --
+* Delete…
+* -- \<separator\> --
+* Create String
+* Delete String…
+
+**notes:**
+
+* these menu commands operate on single and multiple selections of instances and strings of instances;
+* **New** instance, set to default metapolation mix; when this instance is created _inside_ a string, the metapolation is a 50-50 mix of instances above and below; on the edge of a string, extrapolate;
+* **Promote To Master** of instance(s)—transformed to master(s)—or string(s)—transformed to master sequences; the instance(s) or string(s) involved remain untouched;
+* **Quick Export…** of instance(s) or string(s) to ufo, using best guesses where it comes to the trimmings (e.g. metadata, kerning, and opentype features);
+* **Delete…** of instance(s);
+* **Create String** out of a multi-selection of instances that are all not part of a string; when it is a discontinuous selection, this pulls them together under the top instance; when there is no aforementioned multi-select, create a new string of 9 instances;
+* **Delete String…** Deletes selected string(s), but not the instances they contain.
+
+#### undo, copy + paste
+All editing of instance (string) data, naming and configuration (e.g. sorting) is Undoable.
+
+Ah, and of course the current selection of instance(s) or string(s) can be cut, copied and pasted within the same project.
 
 ## working with masters and glyphs in context
 Let us develop the section called ‘character range or specimens’, the one visible in the Parameters department. It has got a range of important jobs to do:
