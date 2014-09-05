@@ -180,8 +180,8 @@ practices, which is what the user will be used to.
 
 ## The Crude Interpolation Implementation: 
 
-What I described above should be enough to fule the Metapolator model of
-working with Masters and design spaces for a good amount of time. Different
+What I described above should be enough to fuel the Metapolator model of
+working with Masters and design spaces. Different
 implementations of MOM `*Master` and `StyleDict` will let us create even
 more new ways of exploring design spaces.
 
