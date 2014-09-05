@@ -10,7 +10,7 @@ define([
      * array interface with length (== 2), 0, 1;
      */
     function Vector(x, y) {
-        Parent.call(this, x, y)
+        Parent.call(this, x, y);
     }
     var _p = Vector.prototype = Object.create(Parent.prototype);
     _p.constructor = Vector;
@@ -58,7 +58,13 @@ define([
     },
 
     Vector.fromPolar = function(r, phi) {
+        //OLD:
         return new Vector(1, 1).fromPolar(r, phi);
+
+        // uses this.constructor, but that is defined on
+        // Vector.prototype, so it should work as expexted
+        // return new Vector.prototype.fromPolar(r, phi);
+
     }
 
 

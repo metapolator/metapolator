@@ -49,6 +49,7 @@ define(function() {
     makeError('CPS', undefined , new errors.Error);
     makeError('Key', undefined , new errors.Error);
     makeError('CPSRegistryKey', undefined , new errors.Key);
+    makeError('CPSKeyNotFound', undefined , new errors.Key);
     makeError('CPSFormula', undefined , new errors.CPS);
     // deprecated, CPSFormula superseeds this
     makeError('CPSAlgebra', undefined , new errors.CPSFormula);
