@@ -7,9 +7,7 @@ Metapolator Installation
 
 ```
 # node.js, npm etc.
-$ sudo apt-get install npm
-# Fix different binary name
-$ sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+$ sudo apt-get install npm nodejs-legacy # nodejs-legacy gives us /usr/bin/node
 ```
 
 ## Install
