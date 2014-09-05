@@ -6,7 +6,9 @@ This document contains an architectural proposal for
 Metapolator: A suggested form for the overall structure of the
 program and a suggested path for building it.
 
-On 2014-08-21 the document was discussed by Lasse, Tom and Dave (http://youtu.be/8LjJnvNlMc4[youtube])
+On 2014-08-21 the document was discussed by Lasse, Tom and Dave ([youtube](http://youtu.be/8LjJnvNlMc4))
+
+Reuben Thomas (@sc3d) wrote a suggestion based on this document, the above discussion, and Lasse's [[CPS interpolation alternative]]: [[Architectural improvements via interpolation]]
 
 # An important note about the user interface and font commands
 
@@ -655,8 +657,11 @@ Complex commands can be built out of simpler commands.
 
 In summary, this riffs on the _simple_ 1980s-style architecture
 of Emacs and proposes that all the font magic should be 
-conceived of as two things:   1. Extension package commands atop
-a very simple-minded property-table editor.  2. A font-centric
+conceived of as two things:
+
+1. Extension package commands atop
+a very simple-minded property-table editor.
+2. A font-centric
 UI coupled very lightly to that table editor.
 
 In the above account leading to milestone 1 the account given of
