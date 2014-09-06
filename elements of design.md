@@ -93,9 +93,9 @@ For experienced interaction architects designing a web application is also an op
 
 So here we are. There is no HIG obligation to define a menu bar, thus we are not going to do it. Instead, we will place menus at the context they are operating on. In our layout we have panels that deal with—i.e. are _home_ to—the project, parameters, masters, instances, design spaces, fonts & families, metadata, among other things. Each of these panels is labelled at the top with the type that they deal with.
 
-![](http://mmiworks.net/metapolator/menulablels.png)
+![](http://mmiworks.net/metapolator/menulablels2.png)
 
-These labels can be reused to attach a menu (see **a** above) that contains the actions that can be performed on this context; **b** shows the mouseover state. Clicking anywhere in the space enclosing the label and triangle opens the menu. These menus better be native or equivalent, with support for **all** modes of popping up/down depending on space, keeping open and closing, invoking a menu item or bailing, and menu dividers. These menus will be referred to as **local menus**.
+These labels can be reused to attach a menu (see **a** above) that contains the actions that can be performed on this context; **b** shows the mouseover state: a menu button—the mouseover area is equal to the rectangle enclosing the button. Clicking anywhere in the button opens the menu. These menus better be native or equivalent, with support for **all** modes of popping up/down depending on space, keeping open and closing, invoking a menu item or bailing, and menu dividers. These menus will be referred to as **local menus**.
 
 In this way we can provide a project menu (replacing the normal File one in desktop apps), parameters menu, masters menu, instances menu, design spaces menu, fonts & families menu, metadata menu, among other things.
 
