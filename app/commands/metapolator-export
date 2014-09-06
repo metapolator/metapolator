@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+"use strict";
+
+exports.command = {
+    description: 'export the given master to directory <instance-name> (without .ufo suffix)'
+  , arguments: '<master> <instance-name>'
+};
+
+var path = require('path');
+var requirejs = require('requirejs');
+require('rootpath')();
+requirejs.config(require('config'));
+
+if (require.main === module) {
+    requirejs([
+        'commander'
+      , 'ufojs/tools/io/staticNodeJS'
+      , 'metapolator/project/MetapolatorProject'
+    ], function (
+        program
+      , io
+      , MetapolatorProject
+) {
+        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program.arguments(exports.command.arguments);
+        program.action(function(masterName, instanceName) {
+            if (program.args.length > program._args.length + 1)
+                program.help();
+
+            var project = new MetapolatorProject(io);
+            project.load();
+            project.exportInstance(masterName, instanceName, program.precision);
+        })
+        .option('-p, --precision <n>', 'The number of decimal places to use in output coordinates, '
+                                     + 'or -1 for no rounding',
+                parseInt);
+        program.parse(process.argv);
+        if (process.argv.length < program._args.length + 2)
+            program.help();
+    }
+)}

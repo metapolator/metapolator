@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+"use strict";
+
+exports.command = {
+    description: 'initialise a new project called <name>'
+  , arguments: '<name>'
+};
+
+var path = require('path');
+var requirejs = require('requirejs');
+require('rootpath')();
+requirejs.config(require('config'));
+
+if (require.main === module) {
+    requirejs([
+        'commander'
+      , 'ufojs/tools/io/staticNodeJS'
+      , 'metapolator/project/MetapolatorProject'
+    ], function (
+        program
+      , io
+      , MetapolatorProject
+    ) {
+        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program.arguments(exports.command.arguments);
+        program.action(function (name) {
+            if (program.args.length > program._args.length + 1)
+                program.help();
+
+            new MetapolatorProject.init(io, name);
+        });
+        program.parse(process.argv);
+        if (process.argv.length < program._args.length + 2)
+            program.help();
+    }
+)}
