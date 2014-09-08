@@ -1,3 +1,16 @@
+## toc
+1. [overall structure](https://github.com/metapolator/metapolator/wiki/elements-of-design#overall-structure)
+  * [and then there were three](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three)
+* [where did the menus go](https://github.com/metapolator/metapolator/wiki/elements-of-design#where-did-the-menus-go)
+* [working with projects](https://github.com/metapolator/metapolator/wiki/elements-of-design#working-with-projects)
+* [(adjustment) master management](https://github.com/metapolator/metapolator/wiki/elements-of-design#adjustment-master-management)
+  * [master section](https://github.com/metapolator/metapolator/wiki/elements-of-design#master-section)
+  * [adjustment master section](https://github.com/metapolator/metapolator/wiki/elements-of-design#adjustment-master-section)
+* [(string of) instances management](https://github.com/metapolator/metapolator/wiki/elements-of-design#string-of-instances-management)
+* [working with masters and glyphs in context](https://github.com/metapolator/metapolator/wiki/elements-of-design#working-with-masters-and-glyphs-in-context)
+* [parameter review and editing](https://github.com/metapolator/metapolator/wiki/elements-of-design#parameter-review-and-editing)
+* [metapolation sliders](https://github.com/metapolator/metapolator/wiki/elements-of-design#metapolation-sliders)
+
 ## _note:_ this is not a specification
 This page lists the **first, rough** building blocks of the design. With that the Metapolator project is **out of the dark** and the [interaction design goals](https://github.com/metapolator/metapolator/wiki/interaction-design-goals) **start to be realised**. But this is not a complete solution; details are lacking; drawings are illustrations, not building plans; and the interaction is not _exactly_ specified. That is for a later phase in the project.
 
@@ -290,7 +303,7 @@ The instances panel is completely occupied by the instances list with a label + 
 
 ![](http://mmiworks.net/metapolator/instanceslist.png)
 
-_**quick overview**: this project contains one instance and one string of instances; the lone instance (Instance #1) is probably for exploration, because it has still its default name; the string of instances is called Exotic and consist of 9 instances; one (Thin) is currently selected, any edits or actions are applied to it; two other instances (Light, Regular) are marked to be also viewed in the specimen (in Design Spaces view)._
+_**quick overview**: this design space contains one instance and one string of instances; the lone instance (Instance #1) is probably for exploration, because it has still its default name; the string of instances is called Exotic and consist of 9 instances; one (Thin) is currently selected, any edits or actions are applied to it; two other instances (Light, Regular) are marked to be also viewed in the specimen (in Design Spaces view)._
 
 #### list behaviour
 The list scrolls vertically when necessary and consist of 3 columns. From left (for L–to–R UI locales) we see:
