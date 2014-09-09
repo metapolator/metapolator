@@ -67,7 +67,7 @@
 			left: 0;
 			top: 0;
 			overflow-y: hidden;
-			transition: all 100ms ease;
+			transition: all 700ms ease;
 		}
 		
 			.panel {
@@ -179,7 +179,7 @@
 				#instances {
 					height: 67%;
 					overflow: hidden;
-					transition: all 100ms ease;
+					transition: all 700ms ease;
 				}
 				
 				#sliders {
