@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>Metapolator - CSS transition test</TITLE>
+		<!-- css -->
+		<link rel="stylesheet" type="text/css" media="all" href="css/style.css">
+		<style>
+			#landscape {
+				transition: all 700ms ease;
+			}
+			#instances {
+				transition: all 700ms ease;
+			}
+		</style>
+		
+		
+		<!-- jQuery -->
+		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+		<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script> 
+		<link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
+		
+		<!-- fonts -->
+		<link href='http://fonts.googleapis.com/css?family=Lato:400,900italic,900,700italic,400italic,300italic,300,100italic,100,700' rel='stylesheet' type='text/css'>
+		
+		
+		<script type="text/javascript">
+			function moveContainer (view) {
+				var distances = new Array (0, 13, 26);
+				
+				// move container
+				var thisLeft = - (distances[view] / 16 * 100) + "%";
+				$("#landscape").css("left", thisLeft);
+				
+				// move sliders
+				if (view == 2) {
+					$("#instances").css("height", "100%");
+				}
+				else {
+					$("#instances").css("height", "67%");
+				}
+				
+				// get styles to menu
+				for (var i = 0; i < 3; i++) {
+					$("#menu-item-" + i).removeClass("menu-item-current");
+				}
+				$("#menu-item-" + view).addClass("menu-item-current");
+			}
+		</script>
+	</HEAD>
+	
+	<BODY>
+		<div id="menu">
+			<div id="menu-item-0" class="menu-item menu-item-current" onClick="moveContainer(0);">Parameters</div>
+			<div id="menu-item-1" class="menu-item" onClick="moveContainer(1);">Design spaces</div>
+			<div id="menu-item-2" class="menu-item" onClick="moveContainer(2);">Fonts</div>
+		</div>
+		
+		<div id="pagewrap">
+			<div id="landscape">
+				<div id="parameters" class="panel sub-panel">
+					<img src="img/parameters.png">
+				</div>
+				<!-- end of parameters -->
+				
+				<div id="specimen" class="panel sub-panel">
+					<div id="specimen-1" class="specimen">The quick brown fox jumps over the lazy dog</div>
+					<div id="specimen-2" class="specimen">The quick brown fox jumps over the lazy dog</div>
+					<div id="specimen-3" class="specimen">The quick brown fox jumps over the lazy dog</div>
+					<div id="specimen-4" class="specimen">The quick brown fox jumps over the lazy dog</div>
+				</div>
+				<!-- end of specimen -->
+				
+				<div id="masters-container" class="panel">
+					<div id="masters" class="sub-panel">
+						<img src="img/masters.png">						
+					</div>
+					<div id="adjustment-masters>" class="sub-panel">
+						<img src="img/masters.png">		
+					</div>
+				</div>
+				<!-- end of masters-container -->
+				
+				<div id="design-space-container" class="panel">
+					<div id="design-space" class="sub-panel">
+						<div id="block-1" class="block"></div>
+						<div id="block-2" class="block"></div>
+						<div id="block-3" class="block"></div>
+					</div>
+					<div id="specimen-2" class="sub-panel">
+						<div id="specimen-2-1" class="specimen">The quick brown fox jumps over the lazy dog</div>
+						<div id="specimen-2-2" class="specimen">The quick brown fox jumps over the lazy dog</div>
+						<div id="specimen-2-3" class="specimen">The quick brown fox jumps over the lazy dog</div>
+						<div id="specimen-2-4" class="specimen">The quick brown fox jumps over the lazy dog</div>
+					</div>
+				</div>
+				<!-- end of masters-container -->
+				
+				<div id="instances-container" class="panel">
+					<div id="instances" class="sub-panel">
+						<img src="img/instances.png">					
+					</div>
+					<div id="sliders" class="sub-panel">
+						<img src="img/sliders.png">				
+					</div>
+				</div>
+				<!-- end of instances -->
+				
+				<div id="font-mapping" class="panel sub-panel">
+					<div class="mapping-a">Thin</div>
+					<div class="mapping-b">Extra Light</div>
+					<div class="mapping-a">Light</div>
+					<div class="mapping-b">Regular</div>
+					<div class="mapping-a">Medium</div>
+					<div class="mapping-b">Semi Bold</div>
+					<div class="mapping-a">Bold</div>
+				</div>
+				<!-- end of font-mapping -->
+				
+				<div id="meta-data" class="panel sub-panel">meta-data</div>
+				<!-- end of font-meta-data -->
+			</div>
+			<!-- end of landscape -->
+		</div>
+	</BODY>
+</html>
