@@ -178,7 +178,7 @@ _(yep, the divider between the two can be moved up/down by users.)_
 ### master section
 The master section is completely occupied by the master list with a label + local menu above it:
 
-![](http://mmiworks.net/metapolator/masterlist.png)
+![](http://mmiworks.net/metapolator/masterlist2.png)
 
 _**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
 
@@ -225,13 +225,12 @@ this is different than selecting all the masters in a sequence (e.g. in how it i
 #### buttons
 At the bottom of the list action buttons are displayed. From left (for L–to–R UI locales) we see:
 
-1. New master button; create an empty master;
+1. Import ufo button; imports a ufo and creates a new master out of it;
 * Duplicate button; duplicate the current selection of master(s) or sequence(s) _(yes, the icon can use some more work…)_.
 
 #### local menu
 The local menu is as follows:
 
-* New
 * Import ufo…
 * Copy From Project…
 * -- \<separator\> --
@@ -278,8 +277,16 @@ The adjustment master section is completely identical to the [master section](ht
 
 The label above the list shall be "Adjustment Masters".
 
+#### buttons
+Action buttons are different:
+
+![](http://mmiworks.net/metapolator/adjustmentbuttons.png)
+
+New button; create an empty adjustment master;
+Duplicate button;.
+
 #### local menu
-The local menu is a bit thinned out:
+The local menu is a bit different:
 
 * New
 * -- \<separator\> --
