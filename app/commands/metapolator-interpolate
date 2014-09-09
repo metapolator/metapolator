@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+
+"use strict";
+
+exports.command = {
+    description: 'interpolate a comma-separated list of masters according to a CPS expression'
+  , arguments: '<masters> <interpolators>'
+};
+
+var path = require('path');
+var requirejs = require('requirejs');
+require('rootpath')();
+requirejs.config(require('config'));
+
+if (require.main === module) {
+    requirejs([
+        'commander'
+      , 'metapolator/errors'
+      , 'ufojs/tools/io/staticNodeJS'
+      , 'metapolator/project/MetapolatorProject'
+      , 'metapolator/models/CPS/parsing/parseRules'
+      , 'metapolator/models/CPS/Registry'
+    ], function (
+        program
+      , errors
+      , io
+      , MetapolatorProject
+      , parseRules
+      , Registry
+    ) {
+        var CommandLineError = errors.CommandLine;
+
+        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program.arguments(exports.command.arguments);
+        program.action(function(masters, interpolators) {
+            if (program.args.length > program._args.length + 1)
+                program.help();
+
+            var names = masters.split(',');
+            console.log(names);
+            // FIXME: very simple input validation, we'll need more I think
+            // FIXME: factor out this validation (see import.js)
+            for(var i = 0; i < names.length; i++) {
+                if(names[i].indexOf('/') !== -1 || names[i].indexOf('\\') !== -1)
+                    throw new CommandLineError('/ and \\ are not allowed in a '
+                                              + 'Master name: ' + names[i]);
+            }
+
+            var rules = parseRules.fromString(rules, 'InterpolatorArgument', new Registry());
+
+            var project = new MetapolatorProject(io);
+            project.load();
+            for(i = 0; i < names.length; i++)
+                project.open(names[i]);
+
+            console.log('interpolators:', rules);
+
+            project.interpolate(rules);
+        });
+        program.parse(process.argv);
+        if (process.argv.length < program._args.length + 2)
+            program.help();
+    }
+)}

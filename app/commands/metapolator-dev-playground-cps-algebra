@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+"use strict";
+
+exports.command = {
+    description: 'insert a linear equation'
+  , arguments: '<equation>'
+};
+
+var path = require('path');
+var requirejs = require('requirejs');
+require('rootpath')();
+requirejs.config(require('config'));
+
+if (require.main === module) {
+    requirejs([
+        'commander'
+      , 'gonzales/gonzales'
+      , 'metapolator/models/CPS/dataTypes/algebra'
+    ], function (
+        program
+      , gonzales
+      , algebra
+    ) {
+        var CommandLineError = errors.CommandLine;
+
+        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program.arguments(exports.command.arguments);
+        program.action(function(equation) {
+            if (program.args.length > program._args.length + 1)
+                program.help();
+
+            function Operator() {
+                algebra.Operator.apply(this, Array.prototype.slice.call(arguments));
+            }
+            Operator.prototype = Object.create(algebra.Operator.prototype);
+            Operator.prototype.execute = function(a, b) {
+                var aNum = typeof a !== 'number' ? parseFloat(a.literal) : a
+                  , bNum = typeof b !== 'number' ? parseFloat(b.literal) : b
+                  ;
+                if(aNum !== aNum)
+                    throw new Error('Got NaN from: ' + a);
+                if(bNum !== bNum)
+                    throw new Error('Got NaN from: ' + b);
+                return this._routine(aNum, bNum);
+            }
+
+            var algebraParser = new algebra.Engine(
+                    new Operator('+',1, 1, 1, function(a, b){ return a+b; })
+                  , new Operator('-',1, 1, 1, function(a, b){ return a-b; })
+                  , new Operator('*',2, 1, 1, function(a, b){ return a*b; })
+                  , new Operator('/',2, 1, 1, function(a, b){
+                        if(b === 0)
+                            throw new Error('Division by Zero.');
+                        return a/b; })
+                  , new Operator('^',3, 1, 1, function(a, b){ return Math.pow(a, b);})
+                )
+              , stack = algebraParser.getExecuteableStack(equation)
+              ;
+            console.log('stack: ' + stack);
+            console.log('calculated: ', stack.execute());
+            console.log('evaled: ', eval(equation));
+          });
+        program.parse(process.argv);
+        if (process.argv.length < program._args.length + 2)
+            program.help();
+    }
+)}
