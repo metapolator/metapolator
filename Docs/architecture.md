@@ -79,7 +79,7 @@ rule occasionally, because it can lead to bloated interfaces. Modules can call t
  * Non-AMD **3rd party code** is included in a way that allows us to describe
    dependencies to that code in the same fashion: via RequireJS shim
    configuration or mock-up modules. However, 3rd party code must be in a
-   reasonable state and pass our review.
+   reasonable state and pass our review. To add a new dependency, if is [available](http://bower.io/search/) in [bower](http://bower.io/), install it with `bower install`; otherwise, install with `npm install --save` and process it with `gulp` (see `gulpfile.js`). Occasionally, neither step will be needed, for example for a package like `rootpath` that is only used on the command-line, unmixed with requireJS code.
  * **We never use anything without
    declaring the dependency**. This excludes JavaScript language features.
  * [Web-APIs](https://developer.mozilla.org/en-US/docs/Web/API) and their
