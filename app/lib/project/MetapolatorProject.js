@@ -5,7 +5,7 @@ define([
   , 'ufojs/plistLib/IntObject'
   , './ProjectMaster'
   , './parameters/registry'
-  , './parameters/defaults'
+  , './parameters/outputConverter'
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/Controller'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
@@ -93,8 +93,8 @@ define([
         get: function(){ return this.dataDir + '/cps';}
     });
     
-    Object.defineProperty(_p, 'cpsDefaultFile', {
-        get: function(){ return 'default.cps'; }
+    Object.defineProperty(_p, 'cpsOutputConverterFile', {
+        get: function(){ return 'centreline-skeleton-to-symmetric-outline.cps'; }
     });
     
     Object.defineProperty(_p, 'cpsGlobalFile', {
@@ -142,10 +142,10 @@ define([
         // create dir dirName/glyphs
         this._createGlyphLayer('public.default', 'glyphs');
         
-        // create a default.cps
+        // create default CPS output stage
         // this is the standard wiring of cps compounds etc.
         // we include it, so it can be studied and if needed changed 
-        this._io.writeFile(false, [this.cpsDir, '/', this.cpsDefaultFile].join(''),
+        this._io.writeFile(false, [this.cpsDir, '/', this.cpsOutputConverterFile].join(''),
                                         this.getDefaultCPS().toString());
         
         // this can be empty, all masters will use this by default
@@ -261,7 +261,7 @@ define([
         var master = {};
         this._data.masters[masterName] = master;
         master.cpsLocalFile = masterName + '.cps';
-        master.cpsChain = [this.cpsDefaultFile, this.cpsGlobalFile, master.cpsLocalFile];
+        master.cpsChain = [this.cpsOutputConverterFile, this.cpsGlobalFile, master.cpsLocalFile];
         
         // create a skeleton layer for this master
         master.skeleton = 'skeleton.' + masterName;
