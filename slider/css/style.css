@@ -23,19 +23,29 @@
 		height: auto;
 	}
 	
+	.standard-padding {
+		padding: 16px;
+	}
+	
 	
 /***********************************/
 	
+	#menu {
+		width: 100%;
+		height: 60px;
+	}
 	
+		#project {
+			float: left;
+		}
 	
-		#menu {
-			width: 600px;
-			margin: 0 auto;
-			height: 60px;
-			padding: 8pt;
+		#view-buttons {
+			float: left;
+			margin-left: calc(50% - 250px);
+			padding: 8px;
 		}
 		
-			 #menu .menu-item {
+			 #view-buttons .menu-item {
 				float: left;
 				padding: 8px;
 				background: #fff;
@@ -43,12 +53,12 @@
 				font-size: 0.8em;
 			}
 			
-			#menu .menu-item:hover {
+			#view-buttons .menu-item:hover {
 				cursor: pointer;
 				background: #f7ba21;
 			}
 			
-			#menu .menu-item-current {
+			#view-buttons .menu-item-current {
 				background: #f7ba21;
 				color: #000;
 			}
@@ -66,7 +76,6 @@
 			position: absolute;
 			left: 0;
 			top: 0;
-			overflow-y: hidden;
 			transition: all 700ms ease;
 		}
 		
@@ -78,7 +87,6 @@
 				border-bottom: 4px solid #d7d2c8;
 				background: #fff;
 				border: 4px solid #d7d2c8;
-				padding: 16px;
 			}
 			
 			#parameters {
@@ -87,6 +95,8 @@
 			
 			#specimen {
 				width: calc(10/44 * 100%);
+				height: 100%;
+				overflow-y: auto
 			}
 			
 				.specimen {
@@ -96,25 +106,33 @@
 					border-bottom: 1px dotted #000;
 				}
 				
-				#specimen-1 {
+				#spec-1 {
 					font-weight: 100;
 				}
 				
-				#specimen-2 {
+				#spec-2 {
 					font-weight: 300;
 				}
 				
-				#specimen-3 {
+				#spec-3 {
 					font-weight: 400;
 				}
 				
-				#specimen-4 {
+				#spec-4 {
 					font-weight: 700;
 				}
 			
 			#masters-container {
 				width: calc(3/44 * 100%);
+				height: 100%;
 			}
+				#masters {
+					height: 50%;
+				}
+				
+				#adjustment-masters {
+					height: 50%;
+				}
 			
 			#design-space-container {
 				width: calc(10/44 * 100%);
@@ -127,32 +145,33 @@
 				}
 				
 					.block {
-						width: 500px;
-						height: 200px;
+						width: 40%;
+						height: 50%;
 						position: absolute;
 						opacity: 0.5;
 					}
 					
 					#block-1 {
 						background: #f00;
-						left: 10px;
-						top: 10px;
+						left: 5%;
+						top: 5%;
 					}
 					
 					#block-2 {
 						background: #ff0;
-						left: 400px;
-						top: 10px;
+						left: 40%;
+						top: 5%;
 					}
 					
 					#block-3 {
 						background: #00f;
-						left: 200px;
-						top: 50px;
+						left: 25%;
+						top: 40%;
 					}
 			
 				#specimen-2 {
-					
+					overflow-y: auto;
+					height: 50%;
 				}
 				
 					#specimen-2-1 {
@@ -209,3 +228,121 @@
 				width: calc(9/44 * 100%);
 				height: 100%;
 			}
+
+
+
+			
+/***************** dropdown menu ******************/
+/* !!! later: override and combine with bootstrap css */
+
+	
+	.dropdown {
+		margin-bottom: 20px;
+	}
+	
+		.dropdown a {
+			text-decoration: none;
+		}
+	
+		.dropdown .dropdown-toggle {
+			position: relative; /* temporarily hack for a sticking out of parents div */
+			top: 8px; /* idem */
+			display: inine-block;
+			padding: 8px;
+			background: #ddd;
+			color: #000;
+			overflow: auto;
+		}
+		
+		#project-dropdown .dropdown-toggle {
+			background: none;
+		}
+		
+			.dropdown .dropdown-toggle:hover, .dropdown .dropdown-toggle:focus {
+				background: #f7ba21;
+				color: #000;
+			}
+			
+			.dropdown .dropdown-menu {
+				margin-top: 16px;
+				border-radius: 0;
+				border: 0;
+				box-shadow: 3px 3px 3px #ddd;
+			}
+			
+	
+			
+			
+/***************** selectable ******************/
+	
+	
+	.sub-panel .selectable {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	
+		.sub-panel .selectable li {
+			padding: 4px;
+			border: 0;
+			border-bottom: 1px solid #888;
+		}
+		
+			.sub-panel .selectable li:hover {
+				background: #f7ba21;
+			}
+		
+		.sub-panel .selectable .ui-selected {
+			background: #f7ba21;
+		}
+		
+			.sub-panel .selectable li .selectable-icon {
+				padding: 2px 4px;
+			}
+			
+			.sub-panel .selectable li .selectable-ag {
+				padding: 2px 4px;
+				font-weight: 700;
+			}
+			
+			.sub-panel .selectable li .selectable-name {
+				padding: 2px 4px;
+			}
+
+
+
+
+/***************** readmore ******************/
+
+
+	.readmore .readmore-header {
+		padding: 8px;
+		background: #ddd;
+		border-bottom: 1px solid #fff;
+	}
+	
+		.readmore .readmore-header:hover {
+			cursor: pointer;
+			background: #f7ba21;
+		}	
+	
+		.readmore .readmore-header::before {
+			margin-right: 6px;
+			font-size: 8px;
+			content: "\25b6";
+		}
+	
+	.readmore .readmore-content {
+		padding: 8px;
+		display: none;	
+	}
+	
+	.readmore-show .readmore-content {
+		display: block;
+	}
+	
+		.readmore-show .readmore-header::before {
+			margin-right: 6px;
+			font-size: 12px;
+			content: "\25be";
+		}
