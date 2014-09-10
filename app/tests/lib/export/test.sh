@@ -23,17 +23,17 @@ test () {
     rm -rf ${IMPORT_UFO}*.ufo ${EXPORT_UFO}*.ufo
 
     # Import and export the original font
-    $METAPOLATOR init ${IMPORT_UFO}1
+    $METAPOLATOR init ${IMPORT_UFO}1.ufo
     cd ${IMPORT_UFO}1.ufo
     $METAPOLATOR import ../$font.ufo $MASTER_NAME
-    $METAPOLATOR export --precision 3 $MASTER_NAME ../${EXPORT_UFO}1
+    $METAPOLATOR export --precision 3 $MASTER_NAME ../${EXPORT_UFO}1.ufo
     cd ..
 
     # Import and export the first test export
-    $METAPOLATOR init ${IMPORT_UFO}2
+    $METAPOLATOR init ${IMPORT_UFO}2.ufo
     cd ${IMPORT_UFO}2.ufo
     $METAPOLATOR import ../${EXPORT_UFO}1.ufo $MASTER_NAME
-    $METAPOLATOR export --precision 3 $MASTER_NAME ../${EXPORT_UFO}2
+    $METAPOLATOR export --precision 3 $MASTER_NAME ../${EXPORT_UFO}2.ufo
     cd ..
 }
 
