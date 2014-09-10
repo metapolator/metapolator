@@ -29,19 +29,21 @@ The following assumes that you have added the metapolator checkout directory to 
 $ mkdir ~/metapolator_tests
 $ cd ~/metapolator_tests
 $ metapolator
+Usage: metapolator [options] [command]
 
-Available command names are:
- - init
- - import
- - export
- - dev-playground-cps
- - dev-playground-cps-selectors
- - dev-playground-cps-algebra
-Type "metapolator help <command name>" for further information.
-Type "metapolator help" for this message.
+Commands:
 
+   dev-playground-cps <cps-file>                         process the given CPS file
+   dev-playground-cps-algebra <equation>                 insert a linear equation
+   dev-playground-cps-selectors <master> <selectors>     run a comma-separated list of selectors on the given master
+   export <master> <instance-name>                       export the given master to directory <instance-name> (without .ufo suffix)
+   import <source-ufo> <target-master>                   import the given UFO directory to master <target-master>
+   init <name>                                           initialise a new project called <name>
+   interpolate <masters> <interpolators>                 interpolate a comma-separated list of masters according to a CPS expression
+   red-pill                                              run the red-pill web interface
+   help <sub-command>                                    Show the --help for a specific command
 # create your first project test.ufo
-$ metapolator init test
+$ metapolator init test.ufo
 $ ls
 test.ufo
 
@@ -80,7 +82,7 @@ $ tree
 # masters in that file by copying the data of first_master.
 
 # Export first_master to ../export.ufo
-$ metapolator export first_master ../export
+$ metapolator export first_master ../export.ufo
 
 # At this point you can start the metapolator red-pill GUI server from within
 # the project that you want to serve. NOTE: the GUI won't yet let you
