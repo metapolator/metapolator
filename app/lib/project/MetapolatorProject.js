@@ -71,7 +71,7 @@ define([
     
     MetapolatorProject.init = function(io, name) {
         var project = new MetapolatorProject(io)
-          , dirName = name+'.ufo'
+          , dirName = name
           ;
         // create dirName
         if(io.pathExists(false, dirName+'/'))
@@ -347,7 +347,7 @@ define([
         // returns a models/Controller
         var model = this.open(masterName)
           , master = model.query('master#' + masterName)
-          , dirName = instanceName + '.ufo'
+          , dirName = instanceName
           , glyphSet
           , exportController
           ;
