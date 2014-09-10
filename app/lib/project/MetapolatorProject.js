@@ -367,7 +367,8 @@ define([
         this._io.writeFile(false, dirName+'/fontinfo.plist'
                                 , plistLib.createPlistString(minimalFontinfo));
         
-        this._io.mkDir(false,  dirName +'/glyphs');
+        this._io.mkDir(false, dirName+'/glyphs');
+        this._io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
         
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
