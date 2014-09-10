@@ -583,9 +583,11 @@ Above a see the default slider setup for a 6-master design space. The masters ar
 
 * the popups on the right and left of the sliders contain all the (adjustment) master labels that—
   * do not appear at the opposite side of this slider;
-  * do not appear on any other slider together with the one at the opposite side of this slider.
+  * do not appear on any _other_ slider together with the one at the opposite side of this slider;
+  * does not have its relationship, with the one at the opposite side of this slider, already defined by a _chain_ formed by any number of _other_ sliders (an example of a chain that defines the relation of masters A & B is sliders A–C + D–C + B–D); note that in chains the masters of interest appear exactly once and the other masters exactly twice.
 * the popups on the left of the sliders also contain, the item ‘From zero’ it sets the slider to absolute mode (i.e. directly how much of this parameter is part of the final mix):<br/>
 ![](http://mmiworks.net/metapolator/sliderszero3.png)
+  * _extra_ rule: of the sliders A—from zero, B—from zero and A–B, a maximum of two can be shown together at any time; this is regulated by availability in the slider popups.
 * when a popup on a slider is changed, the slider value gets recalculated and set;
 * text boxes with up/down arrows allow to set the slider value precisely;
 * the extra popup on the bottom-lefthand side has the label ‘All’ and contains as values all the master labels plus ‘From zero’; it sets all the popups on the left of the sliders to whatever is picked:<br/>
