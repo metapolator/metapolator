@@ -20,20 +20,20 @@ define([
   , parseSelectorList
 ) {
     "use strict";
-    
+
     var items = []
       , source = new Source('(generated/default parameters)')
       , rules = []
       ;
-    
-    
+
+
     function parameterDictFromObject(obj, source) {
         var items = []
           , k
           , name
           , value
           ;
-        
+
         for(k in obj) {
             name = new ParameterName(k, [], source);
             value = new ParameterValue([obj[k]], [], source);
@@ -41,7 +41,7 @@ define([
         }
         return new ParameterDict(items);
     }
-    
+
     rules.push(
         new Rule(
             parseSelectorList.fromString('point>center', source.name)
