@@ -139,6 +139,7 @@
 				}
 				
 					.masters-add-item {
+						display: none;
 						position: absolute;
 						bottom: 0;
 						margin: 8px;
@@ -307,30 +308,52 @@
 			height: 28px;
 		}
 			
-			 .ui-selectable li.ui-selectee {
+			 .ui-selectable li.ui-selectee .selectable-ag {
 			    background: #fff;
 			}
 			
-			.ui-selectable li.ui-unselecting {
+			.ui-selectable li.ui-unselecting .selectable-ag {
 			    background: #F00;
 			}
 			
-			.ui-selectable li.ui-selecting {
+			.ui-selectable li.ui-selecting .selectable-ag {
 			    background: #FECA40;
 			}
 			
-			.ui-selectable li.ui-selected {
+			.ui-selectable li.ui-selected .selectable-ag {
 			    background: #f85c37;
 			}
+			
+			/* while dragging */
+			.ui-sortable-helper {
+				background: #fff;
+				box-shadow: 3px 3px 3px #ddd;
+			}
+			
+				.ui-sortable-helper .selectable-diamond {
+					background-image: url('../img/diamonds/diamond.png')!important;
+				}
+			
 			
 	.ui-selectable li span {
 		display: inline-block;
 		
 	}
+	
+	.handle { 
+		float: left;
+		background: #f8f8f8; 
+		width: 10px;
+		height: 27px;
+	}
+	
+		.handle:hover {
+			cursor: move;
+			background: #f85c37; 
+		} 
 			
 	li .selectable-diamond {
 		float: left;
-		clear: both;
 		height: 27px;
 		width: 28px;
 		background-image: url('../img/diamonds/diamond-full.png');
@@ -343,16 +366,24 @@
 	li:last-child .selectable-diamond {
 		background-image: url('../img/diamonds/diamond-bottom.png');
 	}
-			
+	
+		
 	.selectable-ag {
 		float: left;
-		padding: 4px 8px;
+		text-align: center;
+		width: 40px;
+		height: 27px;
+		padding: 4px;
 	}
+		.selectable-ag:hover {
+			cursor: pointer;
+		}
 	
 	.selectable-name {
 		float: left;
-		padding: 4px;
-		height: 23px;
+		width: calc(100% - 78px);
+		padding: 4px 8px;
+		height: 27px;
 	}
 
 

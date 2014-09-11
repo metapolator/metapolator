@@ -1,9 +1,12 @@
 app.directive('uiSelectable', function () {
     return function (scope, el, attrs) {
-        el.selectable({
+    	
+        el.sortable({ handle: ".handle" })
+        .selectable({
+        	cancel: ".selectable-name, .selectable-diamond, .handle", //excludes the name area from selecting
             stop: function(evt,ui) {
                
-               //needs some freshing up...
+               //needs a lot of freshing up...
                 var masters = el.find('.ui-selected').map(function() {
                     var idx = $(this).index();
                     var kind = this.value;
@@ -39,6 +42,6 @@ app.directive('uiSelectable', function () {
                 if (adjustmentMasters.length > 0 ) { scope.adjustmentMastersInView = adjustmentMasters; }
                 scope.$apply()
             }
-        });
+        })
     };
 });

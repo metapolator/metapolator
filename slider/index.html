@@ -162,12 +162,14 @@
 				        
 				        <ul ui-selectable>
 				            <li value="1" ng-repeat="master in masters" class="ui-selectee">
+				            	<div class="handle"></div>
 				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
 				            	<span class="selectable-name">{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
 				            </li>
 				        </ul>
 				        
+				        <!-- this is temporarily for testing adding functionality -->
 				        <form class="masters-add-item" ng-submit="addMaster()">
 				            <input size="9" placeholder="Font Family..." ng-model="newMaster.fontFamily">
 				            <input size="9" placeholder="Name..." ng-model="newMaster.name">
@@ -196,12 +198,14 @@
 				        
 				        <ul ui-selectable>
 			            	<li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee">
+			            		<div class="handle"></div>
 				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{adjustmentMaster.fontFamily}}'; font-weight:{{adjustmentMaster.weight}};">Ag</span>
 				            	<span class="selectable-name">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</span>
 				            </li>
 				        </ul>
 				        
+				        <!-- this is temporarily for testing adding functionality -->
 				        <form class="masters-add-item" ng-submit="addAdjustmentMaster()">
 				            <input size="9" placeholder="Font Family..." ng-model="newAdjustmentMaster.fontFamily">
 				            <input size="9" placeholder="Name..." ng-model="newAdjustmentMaster.name">
@@ -258,6 +262,7 @@
 					
 			        <ul ui-selectable>
 		            	<li value="3" ng-repeat="instance in instances" class="ui-selectee">
+		            		<div class="handle"></div>
 			            	<span class="selectable-diamond"></span>
 			            	<span class="selectable-ag" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.weight}};">Ag</span>
 			            	<span class="selectable-name">{{instance.fontFamily}} {{instance.name}} {{instance.weight}}</span>
