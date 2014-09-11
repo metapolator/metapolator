@@ -34,6 +34,7 @@ app.directive('uiSelectable', function () {
                 console.log (masters.length);
                 console.log (adjustmentMasters.length);
               	
+              	// als je bewust alles uitklikt (dus 0), dan pikt hij dat nu niet op.
             	if (masters.length > 0 ) { scope.mastersInView = masters; }
                 if (adjustmentMasters.length > 0 ) { scope.adjustmentMastersInView = adjustmentMasters; }
                 scope.$apply()

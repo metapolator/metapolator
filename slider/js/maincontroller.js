@@ -40,31 +40,41 @@ app.controller("MetapolatorController", function($scope){
 	$scope.mastersInView = [];
 	$scope.adjustmentMastersInView = [];
 	
-	
-    $scope.adjustmentMaster = function () {
-        if (!$scope.newAdjustmentMaster.length) {
-            return;
-        }
-        $scope.adjustmentMasters.push({
-            name: $scope.newAdjustmentMaster
-        });
-
-        $scope.newAdjustmentMaster = '';
-    };
-    $scope.newAdjustmentMaster = '';
-    
     $scope.addMaster = function () {
-        if (!$scope.newMaster.length) {
+        if (!$scope.newMaster.fontFamily.length) {
             return;
         }
         $scope.masters.push({
-            name: $scope.newMaster
+            fontFamily: $scope.newMaster.fontFamily,
+            name: $scope.newMaster.name,
+            weight: $scope.newMaster.weight
         });
 
         $scope.newMaster = '';
     };
-    $scope.newMaster = '';
+    $scope.newMaster = {
+    	fontFamily: '',
+    	name: '',
+    	weight: ''	
+    };
 
+	
+    $scope.addAdjustmentMaster = function () {
+        if (!$scope.newAdjustmentMaster.fontFamily.length) {
+            return;
+        }
+        $scope.adjustmentMasters.push({
+            fontFamily: $scope.newAdjustmentMaster.fontFamily,
+            name: $scope.newAdjustmentMaster.name,
+            weight: $scope.newAdjustmentMaster.weight
+        });
 
+        $scope.newAdjustmentMaster = '';
+    };
+    $scope.newAdjustmentMaster = {
+    	fontFamily: '',
+    	name: '',
+    	weight: ''	
+    };
 
 });
