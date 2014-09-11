@@ -225,7 +225,7 @@
 				.mapping-a {
 					width: 100%;
 					padding: 8px;
-					background: #fff;
+					background: #f85c37;
 				}
 				
 				.mapping-b {
@@ -328,16 +328,25 @@
 		
 	}
 			
-	.selectable-diamond {
+	li .selectable-diamond {
 		float: left;
 		clear: both;
-		background: #fff;
 		height: 27px;
-	}		
+		width: 28px;
+		background-image: url('../img/diamonds/diamond-full.png');
+	}	
+	
+	li:first-child .selectable-diamond {
+		background-image: url('../img/diamonds/diamond-top.png');
+	}
+	
+	li:last-child .selectable-diamond {
+		background-image: url('../img/diamonds/diamond-bottom.png');
+	}
 			
 	.selectable-ag {
 		float: left;
-		padding: 4px;
+		padding: 4px 8px;
 	}
 	
 	.selectable-name {

@@ -162,7 +162,7 @@
 				        
 				        <ul ui-selectable>
 				            <li value="1" ng-repeat="master in masters" class="ui-selectee">
-				            	<span class="selectable-diamond"><img src="img/diamonds/diamond-full.png"></span>
+				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
 				            	<span class="selectable-name">{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
 				            </li>
@@ -196,7 +196,7 @@
 				        
 				        <ul ui-selectable>
 			            	<li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee">
-				            	<span class="selectable-diamond"><img src="img/diamonds/diamond-full.png"></span>
+				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{adjustmentMaster.fontFamily}}'; font-weight:{{adjustmentMaster.weight}};">Ag</span>
 				            	<span class="selectable-name">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</span>
 				            </li>
@@ -254,11 +254,20 @@
 			            	<li><a href="#">Delete String...</a></li>
 			          	</ul>
 			        </div>
-					<!-- end of menu -->				
+					<!-- end of menu -->		
+					
+			        <ul ui-selectable>
+		            	<li value="3" ng-repeat="instance in instances" class="ui-selectee">
+			            	<span class="selectable-diamond"></span>
+			            	<span class="selectable-ag" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.weight}};">Ag</span>
+			            	<span class="selectable-name">{{instance.fontFamily}} {{instance.name}} {{instance.weight}}</span>
+			            </li>
+			        </ul>
 				</div>
 				<!-- end of instances -->
 				
 				<div id="font-mapping" class="panel sub-panel">
+					<b>Font Mapping</b><br><br>
 					<div class="mapping-a">Thin</div>
 					<div class="mapping-b">Extra Light</div>
 					<div class="mapping-a">Light</div>

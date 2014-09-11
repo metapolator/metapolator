@@ -41,6 +41,20 @@ app.controller("MetapolatorController", function($scope){
 		}
 	];
 	
+	$scope.instances = [
+		{
+            fontFamily: 'Droid sans mono',
+            name: '',
+            weight: '400'
+		},
+		{
+            fontFamily: 'Lato',
+            name: '',
+            weight: '900'
+		}
+	];
+	
+	
 	$scope.mastersInView = [];
 	$scope.adjustmentMastersInView = [];
 	
