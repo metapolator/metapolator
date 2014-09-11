@@ -30,13 +30,12 @@
 		
 		<!-- Angular -->
 	    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
-	    <script src='app.js' type='text/javascript'></script>
-	    <script src='maincontroller.js' type='text/javascript'></script>   
+	    <script src='js/app.js' type='text/javascript'></script>
+	    <script src='js/maincontroller.js' type='text/javascript'></script>   
+    	<script src='js/directives.js' type='text/javascript'></script> 
 		
 		<script type="text/javascript">
-			$(function() {
-				$( ".selectable" ).selectable();
-				
+			$(function() {		
 				$(".readmore-header").on("click", function() {
 					$(this).parent(".readmore").toggleClass("readmore-show");
 				});
@@ -68,7 +67,7 @@
 		</script>
 	</HEAD>
 	
-	<BODY ng-app="Metapolator" ng-controller="MetapolatorController as ctrl">
+	<BODY ng-app="Metapolator" ng-controller="MetapolatorController">
 		<div id="menu">
 			
 			<div id="project">
@@ -135,17 +134,18 @@
 				
 				<div id="specimen" class="panel sub-panel standard-padding">	
 					<div id="specimen-toolbar">
-						<input type="text" ng-model="ctrl.specimen">
-					</div>
-					<div ng-repeat="master in ctrl.masters">
-						<div class="specimen-info">{{master.fontFamily}} {{master.weight}}</div>
-						<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{ctrl.specimen}}</div>
+						<input type="text" ng-model="specimen">
 					</div>
 					
-					<div ng-repeat="adjustmentMaster in ctrl.adjustmentMasters">
-						<div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div>
-						<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{ctrl.specimen}}</div>
+					<div ng-repeat="master in mastersInView">
+						<div class="specimen-info">{{master.fontFamily}} {{master.weight}}</div>
+						<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen}}</div>
 					</div>
+					
+		            <div ng-repeat="adjustmentMaster in adjustmentMastersInView">               
+						<div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div>
+						<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen}}</div>
+		            </div>
 				</div>
 				<!-- end of specimen -->
 				
@@ -171,11 +171,17 @@
 				          	</ul>
 				        </div>	
 				        
+				        <!--
 						<ul class="selectable">
-							<li ng-repeat="master in ctrl.masters" class="ui-widget-content">
+							<li ng-repeat="master in masters" class="ui-widget-content">
 								<span class="selectable-icon">x</span><span class="selectable-ag">Ag</span><span class="selectable-name">{{master.fontFamily}} - {{master.weight}}</span>
 							</li>
 						</ul>	
+						-->
+				        <ul ui-selectable>
+				            <li value="1" ng-repeat="master in masters" class="ui-selectee">{{master.fontFamily}} {{master.name}} {{master.weight}}</li>
+				        </ul>
+						
 					</div>
 					<!-- end of masters sub panel -->
 					
@@ -196,11 +202,14 @@
 				          	</ul>
 				        </div>
 				        
-						<ul class="selectable">
-							<li ng-repeat="adjustmentMaster in ctrl.adjustmentMasters" class="ui-widget-content">
-								<span class="selectable-icon">x</span><span class="selectable-ag">Ag</span><span class="selectable-name">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} - {{adjustmentMaster.weight}}</span>
-							</li>
-						</ul>	
+				        <ul ui-selectable>
+				            <li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee adj">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</li>
+				        </ul>
+				        
+				        <form id="adjustment-masters-add-item" ng-submit="adjustmentMaster()">
+				            <input id="new-todo" placeholder="Add Adjustment Master" ng-model="newAdjustmentMaster" autofocus>
+				            <input type="submit" value="Add">
+				        </form>			
 					</div>
 					<!-- end of adustment masters sub panel -->
 					
@@ -216,14 +225,14 @@
 					
 					<div id="specimen-2" class="sub-panel standard-padding">
 						<div id="specimen-toolbar">
-							<input type="text" ng-model="ctrl.specimen">
+							<input type="text" ng-model="specimen">
 						</div>
-						<div ng-repeat="master in ctrl.masters">
+						<div ng-repeat="master in masters">
 							<div class="specimen-info">{{master.fontFamily}} {{master.weight}}</div>
-							<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{ctrl.specimen}}</div>
+							<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen}}</div>
 						</div>
 						
-						<div ng-repeat="adjustmentMaster in ctrl.adjustmentMasters">
+						<div ng-repeat="adjustmentMaster in adjustmentMasters">
 							<div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div>
 							<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{ctrl.specimen}}</div>
 						</div>

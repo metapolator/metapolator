@@ -1,8 +1,7 @@
 app.controller("MetapolatorController", function($scope){
-	var self = this;
 	
-	self.specimen = "Trittst im Morgenrot daher, Seh' ich dich im Strahlenmeer.";
-	self.masters = [
+	$scope.specimen = "Trittst im Morgenrot daher, Seh' ich dich im Strahlenmeer.";
+	$scope.masters = [
         {
             fontFamily: 'Lato',
             weight: '100'
@@ -21,7 +20,7 @@ app.controller("MetapolatorController", function($scope){
         }
 	];
 	
-	self.adjustmentMasters = [
+	$scope.adjustmentMasters = [
 		{
             fontFamily: 'Lato',
             name: 'adj. 1',
@@ -32,6 +31,24 @@ app.controller("MetapolatorController", function($scope){
             name: 'adj. 2',
             weight: '100'
 		}
-	
 	];
+	
+	$scope.mastersInView = [];
+	$scope.adjustmentMastersInView = [];
+	
+	
+    $scope.adjustmentMaster = function () {
+        if (!$scope.newAdjustmentMaster.length) {
+            return;
+        }
+        $scope.adjustmentMasters.push({
+            name: $scope.newAdjustmentMaster
+        });
+
+        $scope.newAdjustmentMaster = '';
+    };
+    $scope.newAdjustmentMaster = '';
+
+
+
 });

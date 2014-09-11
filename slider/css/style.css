@@ -132,6 +132,12 @@
 				#adjustment-masters {
 					height: 50%;
 				}
+				
+					#adjustment-masters-add-item {
+						position: absolute;
+						bottom: 0;
+						margin: 8px;
+					}
 			
 			#design-space-container {
 				width: calc(10/44 * 100%);
@@ -220,7 +226,7 @@
 				.mapping-b {
 					width: 100%;
 					padding: 8px;
-					background: #B6E5FF;
+					background: #ffa392;
 				}
 			
 			#meta-data {
@@ -305,6 +311,40 @@
 			.sub-panel .selectable li .selectable-name {
 				padding: 2px 4px;
 			}
+			
+			
+/***************** TEMP ******************/
+
+
+
+	.ui-selectable {
+	    display: block;
+	    list-style-type: none;
+	    margin: 0px;
+	    padding: 0px;
+	    width: 100%;
+	}
+		.ui-selectable li {
+			padding: 4px;
+			border: 0;
+			border-bottom: 1px solid #888;
+		}
+			
+			 .ui-selectable .ui-selectee {
+			    background: #fff;
+			}
+			
+			.ui-selectable .ui-unselecting {
+			    background: #F00;
+			}
+			
+			.ui-selectable .ui-selecting {
+			    background: #FECA40;
+			}
+			
+			.ui-selectable .ui-selected {
+			    background: #f85c37;
+			}
 
 
 
@@ -343,3 +383,4 @@
 			font-size: 12px;
 			content: "\25be";
 		}
+		
