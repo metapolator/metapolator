@@ -13,19 +13,19 @@ define([
 
     function ProjectMaster(io, project, glyphSetDir
                                             , cpsLocalFile, cpsChain) {
-        
+
         this._io = io;
         this._project = project;
         this._glyphSetDir = glyphSetDir;
         this._cpsLocalFile = cpsLocalFile;
         this._cpsChain = cpsChain.slice();
-        
+
         this._glyphSet = undefined;
     }
-    
+
     var _p = ProjectMaster.prototype;
     _p.constructor = ProjectMaster;
-    
+
     Object.defineProperty(_p, 'glyphSet', {
         get: function() {
             if(!this._glyphSet)
@@ -34,12 +34,12 @@ define([
             return this._glyphSet;
         }
     });
-    
+
     _p.saveLocalCPS = function(cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'
                                                 +this._cpsLocalFile, cps);
     };
-    
+
     _p.loadCPS = function() {
         var i = 0
           , rules = []
@@ -48,7 +48,7 @@ define([
             rules.push(this._project.getCPSRules(this._cpsChain[i]));
         return rules;
     };
-    
+
     _p.loadMOM = function() {
         // create a MOM Master use this.glyphSet to create glyphs, penstrokes and points
         var master = new Master()
@@ -70,6 +70,6 @@ define([
         }
         return master;
     };
-    
+
     return ProjectMaster;
 });

@@ -1,13 +1,16 @@
 define([
     'errors'
   , 'ufojs/main'
+  , 'metapolator/models/MOM/_Node'
 ], function(
     errors
   , ufojs
+  , _MOMNode
 ) {
     "use strict";
 
     var CPSError = errors.CPS
+      , KeyError = errors.Key
       , isInt = ufojs.isInt
       , isIntString = ufojs.isIntString;
 
@@ -40,7 +43,7 @@ define([
     *
     */
     function whitelistGetter(item, name) {
-        var mapper, index;
+        var getter, index, key;
 
         if(!(typeof name in {'string':null, 'number':null}))
             throw new CPSError('name must be string or number but it is: '
@@ -54,21 +57,29 @@ define([
         // processing in here ...
         if(item instanceof Array && (isInt(name) || isIntString(name))) {
             index = typeof name === 'number' ? name : parseInt(name, 10);
-            if(index >= arr.length || index<0)
-                throw new KeyError('The index "'+ i +'" '
-                                + 'is not in the array: '+ arr.join(', '));
+            if(index >= item.length || index<0)
+                throw new KeyError('The index "'+ index +'" '
+                                + 'is not in the array: '+ item.join(', '));
             return item[index];
         }
 
         if(!('cps_whitelist' in item))
             throw new KeyError('Name "'+ name +'" is not whitelisted in item '
                                 + '"'+ item +'" '
-                                + 'because item doesn\'t specify a whitelist.');
-        if(!(name in item.cps_whitelist))
+                                + 'because item doesn\'t specify a whitelist '
+                                +' at cps_whitelist.');
+        if(!(name in item.cps_whitelist) || item.cps_whitelist[name] === undefined
+                || item.cps_whitelist[name] === false
+                || item.cps_whitelist[name] === null)
             throw new KeyError('Name "'+ name +'" is not whitelisted in item '
-                                + '"'+ item +'"');
+                                + '"'+ item +'" '
+                                + (function(){
+                                        var r = [];
+                                        for(var k in item.cps_whitelist) r.push(k);
+                                        return r;})()
+                                );
 
-        mapper = item.cps_whitelist[name];
+        getter = item.cps_whitelist[name];
         if(getter === true) {
             key = name;
         }
