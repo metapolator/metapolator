@@ -103,16 +103,20 @@
 					padding-bottom: 12px;
 					border-bottom: 1px solid #ddd;
 				}
-			
-				.specimen-info {
-					width: 100px;
-					margin: 0 auto;
-					padding: 8px 0;
-					font-size: 9px;
-					text-transform: uppercase;
+				
+				.specimen-info-holder {
 					text-align: center;
-					background: #ddd;
 				}
+			
+					.specimen-info {
+					    text-align: left;
+					    display: inline-block;
+						padding: 8px;
+						font-size: 9px;
+						text-transform: uppercase;
+						text-align: center;
+						background: #ddd;
+					}
 			
 				.specimen {
 					font-size: 64pt;
@@ -127,13 +131,15 @@
 			}
 				#masters {
 					height: 50%;
+					position: relative;
 				}
 				
 				#adjustment-masters {
 					height: 50%;
+					position: relative;
 				}
 				
-					#adjustment-masters-add-item {
+					.masters-add-item {
 						position: absolute;
 						bottom: 0;
 						margin: 8px;

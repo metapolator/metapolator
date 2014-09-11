@@ -3,7 +3,8 @@ app.directive('uiSelectable', function () {
         el.selectable({
             stop: function(evt,ui) {
                
-                var selected = el.find('.ui-selected').map(function() {
+               //needs some freshing up...
+                var masters = el.find('.ui-selected').map(function() {
                     var idx = $(this).index();
                     var kind = this.value;
                     if (kind == 1) {
@@ -13,7 +14,11 @@ app.directive('uiSelectable', function () {
 	                    	index: idx
 	                    }
 	            	}
-	            	 // if it is an adjustment master
+                }).get();
+                
+                var adjustmentMasters = el.find('.ui-selected').map(function() {
+                    var idx = $(this).index();
+                    var kind = this.value;
 	            	if (kind == 2) {
 	            		 return {
 	                    	name: scope.adjustmentMasters[idx].name, 
@@ -25,9 +30,12 @@ app.directive('uiSelectable', function () {
                     
 
                 }).get();
-                console.log (selected);
-              
-                scope.adjustmentMastersInView = selected;
+                
+                console.log (masters.length);
+                console.log (adjustmentMasters.length);
+              	
+            	if (masters.length > 0 ) { scope.mastersInView = masters; }
+                if (adjustmentMasters.length > 0 ) { scope.adjustmentMastersInView = adjustmentMasters; }
                 scope.$apply()
             }
         });

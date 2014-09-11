@@ -27,6 +27,7 @@
 		
 		<!-- fonts -->
 		<link href='http://fonts.googleapis.com/css?family=Lato:400,900italic,900,700italic,400italic,300italic,300,100italic,100,700' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Merriweather:400,900italic,900,700italic,400italic,700,300,300italic' rel='stylesheet' type='text/css'>
 		
 		<!-- Angular -->
 	    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
@@ -138,12 +139,12 @@
 					</div>
 					
 					<div ng-repeat="master in mastersInView">
-						<div class="specimen-info">{{master.fontFamily}} {{master.weight}}</div>
+						<div class="specimen-info-holder"><div class="specimen-info">{{master.fontFamily}} {{master.name}} {{master.weight}}</div></div>
 						<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen}}</div>
 					</div>
 					
 		            <div ng-repeat="adjustmentMaster in adjustmentMastersInView">               
-						<div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div>
+						<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div></div>
 						<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen}}</div>
 		            </div>
 				</div>
@@ -181,7 +182,11 @@
 				        <ul ui-selectable>
 				            <li value="1" ng-repeat="master in masters" class="ui-selectee">{{master.fontFamily}} {{master.name}} {{master.weight}}</li>
 				        </ul>
-						
+				        
+				        <form class="masters-add-item" ng-submit="addMaster()">
+				            <input placeholder="Add Master" ng-model="newMaster">
+				            <input type="submit" value="Add">
+				        </form>		
 					</div>
 					<!-- end of masters sub panel -->
 					
@@ -206,8 +211,8 @@
 				            <li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee adj">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</li>
 				        </ul>
 				        
-				        <form id="adjustment-masters-add-item" ng-submit="adjustmentMaster()">
-				            <input id="new-todo" placeholder="Add Adjustment Master" ng-model="newAdjustmentMaster" autofocus>
+				        <form class="masters-add-item" ng-submit="adjustmentMaster()">
+				            <input placeholder="Add Adjustment Master" ng-model="newAdjustmentMaster">
 				            <input type="submit" value="Add">
 				        </form>			
 					</div>

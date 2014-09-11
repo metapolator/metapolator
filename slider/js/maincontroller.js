@@ -4,32 +4,36 @@ app.controller("MetapolatorController", function($scope){
 	$scope.masters = [
         {
             fontFamily: 'Lato',
+            name: '',
             weight: '100'
         },
         {
             fontFamily: 'Lato',
+            name: '',
             weight: '300'
         },
         {
             fontFamily: 'Lato',
+            name: '',
             weight: '400'
         },
         {
             fontFamily: 'Lato',
+            name: '',
             weight: '700'
         }
 	];
 	
 	$scope.adjustmentMasters = [
 		{
-            fontFamily: 'Lato',
+            fontFamily: 'Merriweather',
             name: 'adj. 1',
-            weight: '100'
+            weight: '300'
 		},
 		{
-            fontFamily: 'Lato',
+            fontFamily: 'Merriweather',
             name: 'adj. 2',
-            weight: '100'
+            weight: '700'
 		}
 	];
 	
@@ -48,6 +52,18 @@ app.controller("MetapolatorController", function($scope){
         $scope.newAdjustmentMaster = '';
     };
     $scope.newAdjustmentMaster = '';
+    
+    $scope.addMaster = function () {
+        if (!$scope.newMaster.length) {
+            return;
+        }
+        $scope.masters.push({
+            name: $scope.newMaster
+        });
+
+        $scope.newMaster = '';
+    };
+    $scope.newMaster = '';
 
 
 
