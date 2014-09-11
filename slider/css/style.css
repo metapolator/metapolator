@@ -55,11 +55,11 @@
 			
 			#view-buttons .menu-item:hover {
 				cursor: pointer;
-				background: #f7ba21;
+				background: #f85c37;
 			}
 			
 			#view-buttons .menu-item-current {
-				background: #f7ba21;
+				background: #f85c37;
 				color: #000;
 			}
 	
@@ -99,28 +99,27 @@
 				overflow-y: auto
 			}
 			
+				#specimen-toolbar {
+					padding-bottom: 12px;
+					border-bottom: 1px solid #ddd;
+				}
+			
+				.specimen-info {
+					width: 100px;
+					margin: 0 auto;
+					padding: 8px 0;
+					font-size: 9px;
+					text-transform: uppercase;
+					text-align: center;
+					background: #ddd;
+				}
+			
 				.specimen {
 					font-size: 64pt;
-					padding-bottom: 20px;
-					margin-bottom: 20px;
-					border-bottom: 1px dotted #000;
+					padding: 20px 0 40px 0;
+					border-bottom: 1px solid #ddd;
 				}
 				
-				#spec-1 {
-					font-weight: 100;
-				}
-				
-				#spec-2 {
-					font-weight: 300;
-				}
-				
-				#spec-3 {
-					font-weight: 400;
-				}
-				
-				#spec-4 {
-					font-weight: 700;
-				}
 			
 			#masters-container {
 				width: calc(3/44 * 100%);
@@ -259,7 +258,7 @@
 		}
 		
 			.dropdown .dropdown-toggle:hover, .dropdown .dropdown-toggle:focus {
-				background: #f7ba21;
+				background: #f85c37;
 				color: #000;
 			}
 			
@@ -288,12 +287,10 @@
 			border-bottom: 1px solid #888;
 		}
 		
-			.sub-panel .selectable li:hover {
-				background: #f7ba21;
-			}
+
 		
 		.sub-panel .selectable .ui-selected {
-			background: #f7ba21;
+			background: #f85c37;
 		}
 		
 			.sub-panel .selectable li .selectable-icon {
@@ -323,7 +320,7 @@
 	
 		.readmore .readmore-header:hover {
 			cursor: pointer;
-			background: #f7ba21;
+			background: #f85c37;
 		}	
 	
 		.readmore .readmore-header::before {
