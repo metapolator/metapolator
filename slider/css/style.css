@@ -18,11 +18,6 @@
 		-moz-box-sizing: border-box;  
 	}
 	
-	img {
-		width: 100%;
-		height: auto;
-	}
-	
 	.standard-padding {
 		padding: 16px;
 	}
@@ -91,6 +86,8 @@
 			
 			#parameters {
 				width: calc(3/44 * 100%);
+				height: 100%;
+				overflow: auto;
 			}
 			
 			#specimen {
@@ -132,11 +129,13 @@
 				#masters {
 					height: 50%;
 					position: relative;
+					overflow: auto;
 				}
 				
 				#adjustment-masters {
 					height: 50%;
 					position: relative;
+					overflow: auto;
 				}
 				
 					.masters-add-item {
@@ -153,6 +152,7 @@
 				#design-space {
 					position: relative;
 					height: 50%;
+					overflow: auto;
 				}
 				
 					.block {
@@ -201,27 +201,26 @@
 						font-weight: 700;
 					}
 			
-			#instances-container {
+			#instances {
 				width: calc(3/44 * 100%);
 				height: 100%;
+				position: relative;
+				overflow: auto;
 			}
-			
-				#instances {
-					height: 67%;
-					overflow: hidden;
-					transition: all 700ms ease;
-				}
-				
-				#sliders {
-					height: 33%;
-				}
-			
-			
-			
+					
 			#font-mapping {
 				width: calc(4/44 * 100%);
 				height: 100%;
+				position: relative;
+				overflow: auto;
 			}
+			
+				#font-mapping-export {
+					position: absolute;
+					bottom: 0;
+					right: 0;
+					margin: 8px;
+				}
 			
 				.mapping-a {
 					width: 100%;
@@ -238,7 +237,15 @@
 			#meta-data {
 				width: calc(9/44 * 100%);
 				height: 100%;
+				position: relative;
+				overflow: auto;
 			}
+			
+				#meta-data input {
+					margin-bottom: 12px;
+				}
+			
+
 
 
 
@@ -287,42 +294,6 @@
 /***************** selectable ******************/
 	
 	
-	.sub-panel .selectable {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-	
-		.sub-panel .selectable li {
-			padding: 4px;
-			border: 0;
-			border-bottom: 1px solid #888;
-		}
-		
-
-		
-		.sub-panel .selectable .ui-selected {
-			background: #f85c37;
-		}
-		
-			.sub-panel .selectable li .selectable-icon {
-				padding: 2px 4px;
-			}
-			
-			.sub-panel .selectable li .selectable-ag {
-				padding: 2px 4px;
-				font-weight: 700;
-			}
-			
-			.sub-panel .selectable li .selectable-name {
-				padding: 2px 4px;
-			}
-			
-			
-/***************** TEMP ******************/
-
-
-
 	.ui-selectable {
 	    display: block;
 	    list-style-type: none;
@@ -331,26 +302,49 @@
 	    width: 100%;
 	}
 		.ui-selectable li {
-			padding: 4px;
 			border: 0;
-			border-bottom: 1px solid #888;
+			border-bottom: 1px solid #ffa392;
+			height: 28px;
 		}
 			
-			 .ui-selectable .ui-selectee {
+			 .ui-selectable li.ui-selectee {
 			    background: #fff;
 			}
 			
-			.ui-selectable .ui-unselecting {
+			.ui-selectable li.ui-unselecting {
 			    background: #F00;
 			}
 			
-			.ui-selectable .ui-selecting {
+			.ui-selectable li.ui-selecting {
 			    background: #FECA40;
 			}
 			
-			.ui-selectable .ui-selected {
+			.ui-selectable li.ui-selected {
 			    background: #f85c37;
 			}
+			
+	.ui-selectable li span {
+		display: inline-block;
+		
+	}
+			
+	.selectable-diamond {
+		float: left;
+		clear: both;
+		background: #fff;
+		height: 27px;
+	}		
+			
+	.selectable-ag {
+		float: left;
+		padding: 4px;
+	}
+	
+	.selectable-name {
+		float: left;
+		padding: 4px;
+		height: 23px;
+	}
 
 
 

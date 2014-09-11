@@ -51,15 +51,7 @@
 				// move container
 				var thisLeft = - (distances[view] / 16 * 100) + "%";
 				$("#landscape").css("left", thisLeft);
-				
-				// move sliders
-				if (view == 2) {
-					$("#instances").css("height", "100%");
-				}
-				else {
-					$("#instances").css("height", "67%");
-				}
-				
+						
 				// get styles to menu
 				for (var i = 0; i < 3; i++) {
 					$("#menu-item-" + i).removeClass("menu-item-current");
@@ -96,11 +88,6 @@
 		</div>
 		<!-- end of menu -->
 		
-		
-		
-		
-		
-		
 		<div id="pagewrap">
 			<div id="landscape">
 				
@@ -136,17 +123,17 @@
 				
 				<div id="specimen" class="panel sub-panel standard-padding">	
 					<div id="specimen-toolbar">
-						<input type="text" ng-model="specimen">
+						<input type="text" ng-model="specimen.text">
 					</div>
 					
 					<div ng-repeat="master in mastersInView">
 						<div class="specimen-info-holder"><div class="specimen-info">{{master.fontFamily}} {{master.name}} {{master.weight}}</div></div>
-						<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen}}</div>
+						<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen.text}}</div>
 					</div>
 					
 		            <div ng-repeat="adjustmentMaster in adjustmentMastersInView">               
 						<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div></div>
-						<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen}}</div>
+						<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen.text}}</div>
 		            </div>
 				</div>
 				<!-- end of specimen -->
@@ -173,15 +160,12 @@
 				          	</ul>
 				        </div>	
 				        
-				        <!--
-						<ul class="selectable">
-							<li ng-repeat="master in masters" class="ui-widget-content">
-								<span class="selectable-icon">x</span><span class="selectable-ag">Ag</span><span class="selectable-name">{{master.fontFamily}} - {{master.weight}}</span>
-							</li>
-						</ul>	
-						-->
 				        <ul ui-selectable>
-				            <li value="1" ng-repeat="master in masters" class="ui-selectee">{{master.fontFamily}} {{master.name}} {{master.weight}}</li>
+				            <li value="1" ng-repeat="master in masters" class="ui-selectee">
+				            	<span class="selectable-diamond"><img src="img/diamonds/diamond-full.png"></span>
+				            	<span class="selectable-ag" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
+				            	<span class="selectable-name">{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
+				            </li>
 				        </ul>
 				        
 				        <form class="masters-add-item" ng-submit="addMaster()">
@@ -211,7 +195,11 @@
 				        </div>
 				        
 				        <ul ui-selectable>
-				            <li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee adj">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</li>
+			            	<li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee">
+				            	<span class="selectable-diamond"><img src="img/diamonds/diamond-full.png"></span>
+				            	<span class="selectable-ag" style="font-family:'{{adjustmentMaster.fontFamily}}'; font-weight:{{adjustmentMaster.weight}};">Ag</span>
+				            	<span class="selectable-name">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</span>
+				            </li>
 				        </ul>
 				        
 				        <form class="masters-add-item" ng-submit="addAdjustmentMaster()">
@@ -234,18 +222,15 @@
 					</div>
 					
 					<div id="specimen-2" class="sub-panel standard-padding">
-						<div id="specimen-toolbar">
-							<input type="text" ng-model="specimen">
-						</div>
 
 						<div ng-repeat="master in mastersInView">
 							<div class="specimen-info-holder"><div class="specimen-info">{{master.fontFamily}} {{master.name}} {{master.weight}}</div></div>
-							<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen}}</div>
+							<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen.text}}</div>
 						</div>
 						
 			            <div ng-repeat="adjustmentMaster in adjustmentMastersInView">               
 							<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div></div>
-							<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen}}</div>
+							<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen.text}}</div>
 			            </div>
 					</div>
 				</div>
@@ -253,28 +238,23 @@
 				
 			<!-- start of view 3 -->
 				
-				<div id="instances-container" class="panel">
-					<div id="instances" class="sub-panel">
-				    	<div class="dropdown">
-				        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
-				        	<ul class="dropdown-menu" role="menu">
-				            	<li><a href="#">New</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Promote To Master</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Quick Export...</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Delete...</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Create String</a></li>
-				            	<li><a href="#">Delete String...</a></li>
-				          	</ul>
-				        </div>
-						<!-- end of menu -->				
-					</div>
-					<div id="sliders" class="sub-panel">
-						<img src="img/sliders.png">				
-					</div>
+				<div id="instances" class="panel sub-panel">
+			    	<div class="dropdown">
+			        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
+			        	<ul class="dropdown-menu" role="menu">
+			            	<li><a href="#">New</a></li>
+			            	<li class="divider"></li>
+			            	<li><a href="#">Promote To Master</a></li>
+			            	<li class="divider"></li>
+			            	<li><a href="#">Quick Export...</a></li>
+			            	<li class="divider"></li>
+			            	<li><a href="#">Delete...</a></li>
+			            	<li class="divider"></li>
+			            	<li><a href="#">Create String</a></li>
+			            	<li><a href="#">Delete String...</a></li>
+			          	</ul>
+			        </div>
+					<!-- end of menu -->				
 				</div>
 				<!-- end of instances -->
 				
@@ -286,10 +266,18 @@
 					<div class="mapping-a">Medium</div>
 					<div class="mapping-b">Semi Bold</div>
 					<div class="mapping-a">Bold</div>
+					
+					<input id="font-mapping-export" type="submit" value="Export">
 				</div>
 				<!-- end of font-mapping -->
 				
-				<div id="meta-data" class="panel sub-panel">meta-data</div>
+				<div id="meta-data" class="panel sub-panel standard-padding">
+					<b>Metadata</b><br><br>
+					<input type="text" placeholder="Family Name..."><br>
+					<input type="text" placeholder="Style Name..."><br>
+					<input type="text" placeholder="Style Map Family Name..."><br>
+					<input type="text" placeholder="Style Map Style...">
+				</div>
 				<!-- end of font-meta-data -->
 			</div>
 			<!-- end of landscape -->

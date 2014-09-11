@@ -1,6 +1,10 @@
 app.controller("MetapolatorController", function($scope){
 	
-	$scope.specimen = "Trittst im Morgenrot daher, Seh' ich dich im Strahlenmeer.";
+	$scope.specimen = {
+		text: "Trittst im Morgenrot daher, Seh' ich dich im Strahlenmeer.",
+		size: 100
+	};
+	
 	$scope.masters = [
         {
             fontFamily: 'Lato',
