@@ -161,12 +161,16 @@
 				        </div>	
 				        
 				        <ul ui-selectable id="master-ul-1">
-				            <li value="1" ng-repeat="master in masters" class="ui-selectee" id="master-{{master.id}}">
+				            <li ng-repeat="master in masters" class="ui-selectee" id="master-{{master.id}}">
 				            	<div class="handle"></div>
 				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
 				            	<span class="selectable-name">{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
 				            </li>
+				        </ul>
+				        
+				        <ul ui-selectable id="master-ul-2" class="empty-ul">
+				        	
 				        </ul>
 				        
 				        <!-- this is temporarily for testing adding functionality -->
@@ -197,7 +201,7 @@
 				        </div>
 				        
 				        <ul ui-selectable id="adjustmentMaster-ul-1">
-			            	<li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee" id="adjustmentMaster-{{adjustmentMaster.id}}">
+			            	<li ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee" id="adjustmentMaster-{{adjustmentMaster.id}}">
 			            		<div class="handle"></div>
 				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{adjustmentMaster.fontFamily}}'; font-weight:{{adjustmentMaster.weight}};">Ag</span>

@@ -296,12 +296,18 @@
 	
 	
 	.ui-selectable {
+		border-top: 1px solid #ffa392;
 	    display: block;
 	    list-style-type: none;
-	    margin: 0px;
+	    margin: 0 0 10px 0;
 	    padding: 0px;
 	    width: 100%;
+	    min-height: 10px;
 	}
+	
+		.empty-ul {
+			 background: #ddd;
+		}
 		.ui-selectable li {
 			border: 0;
 			border-bottom: 1px solid #ffa392;
@@ -327,7 +333,7 @@
 			/* while dragging */
 			.ui-sortable-helper {
 				background: #fff;
-				box-shadow: 3px 3px 3px #ddd;
+				box-shadow: 3px 3px 3px #aaa;
 			}
 			
 				.ui-sortable-helper .selectable-diamond {

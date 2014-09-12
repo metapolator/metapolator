@@ -1,7 +1,10 @@
 app.directive('uiSelectable', function () {
     return function (scope, el, attrs) {
     	
-        el.sortable({ handle: ".handle" })
+        el.sortable({
+        	 handle: ".handle", 
+        	 connectWith: "ul"
+        })
         .selectable({
         	cancel: ".selectable-name, .selectable-diamond, .handle", //excludes the name area from selecting
             stop: function(evt,ui) {

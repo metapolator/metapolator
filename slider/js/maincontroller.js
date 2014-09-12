@@ -1,7 +1,7 @@
 app.controller("MetapolatorController", function($scope){
 	
 	$scope.specimen = {
-		text: "Trittst im Morgenrot daher, Seh' ich dich im Strahlenmeer.",
+		text: "Freude, schöner Götterfunken, Tochter aus Elysium",
 		size: 100
 	};
 	
