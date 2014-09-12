@@ -126,14 +126,14 @@
 						<input type="text" ng-model="specimen.text">
 					</div>
 					
-					<div ng-repeat="master in mastersInView">
-						<div class="specimen-info-holder"><div class="specimen-info">{{master.fontFamily}} {{master.name}} {{master.weight}}</div></div>
-						<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen.text}}</div>
+					<div ng-repeat="index in mastersInView">
+						<div class="specimen-info-holder"><div class="specimen-info">{{masters[index].fontFamily}} {{masters[index].name}} {{masters[index].weight}}</div></div>
+						<div class="specimen" style="font-family: '{{masters[index].fontFamily}}'; font-weight: {{masters[index].weight}}">{{specimen.text}}</div>
 					</div>
 					
-		            <div ng-repeat="adjustmentMaster in adjustmentMastersInView">               
-						<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div></div>
-						<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen.text}}</div>
+		            <div ng-repeat="index in adjustmentMastersInView">            
+						<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMasters[index].fontFamily}} {{adjustmentMasters[index].name}} {{adjustmentMasters[index].weight}}</div></div>
+						<div class="specimen" style="font-family: '{{adjustmentMasters[index].fontFamily}}'; font-weight: {{adjustmentMasters[index].weight}}">{{specimen.text}}</div>
 		            </div>
 				</div>
 				<!-- end of specimen -->
@@ -160,8 +160,8 @@
 				          	</ul>
 				        </div>	
 				        
-				        <ul ui-selectable>
-				            <li value="1" ng-repeat="master in masters" class="ui-selectee">
+				        <ul ui-selectable id="master-ul-1">
+				            <li value="1" ng-repeat="master in masters" class="ui-selectee" id="master-{{master.id}}">
 				            	<div class="handle"></div>
 				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
@@ -196,8 +196,8 @@
 				          	</ul>
 				        </div>
 				        
-				        <ul ui-selectable>
-			            	<li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee">
+				        <ul ui-selectable id="adjustmentMaster-ul-1">
+			            	<li value="2" ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee" id="adjustmentMaster-{{adjustmentMaster.id}}">
 			            		<div class="handle"></div>
 				            	<span class="selectable-diamond"></span>
 				            	<span class="selectable-ag" style="font-family:'{{adjustmentMaster.fontFamily}}'; font-weight:{{adjustmentMaster.weight}};">Ag</span>

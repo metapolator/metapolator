@@ -7,21 +7,25 @@ app.controller("MetapolatorController", function($scope){
 	
 	$scope.masters = [
         {
+        	id: 0,
             fontFamily: 'Lato',
             name: '',
             weight: '100'
         },
         {
+        	id: 1,
             fontFamily: 'Lato',
             name: '',
             weight: '300'
         },
         {
+        	id: 2,
             fontFamily: 'Lato',
             name: '',
             weight: '400'
         },
         {
+        	id: 3,
             fontFamily: 'Lato',
             name: '',
             weight: '700'
@@ -30,11 +34,13 @@ app.controller("MetapolatorController", function($scope){
 	
 	$scope.adjustmentMasters = [
 		{
+        	id: 0,
             fontFamily: 'Merriweather',
             name: 'adj. 1',
             weight: '300'
 		},
 		{
+        	id: 1,
             fontFamily: 'Merriweather',
             name: 'adj. 2',
             weight: '700'
