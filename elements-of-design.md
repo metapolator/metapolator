@@ -178,7 +178,7 @@ _(yep, the divider between the two can be moved up/down by users.)_
 ### master section
 The master section is completely occupied by the master list with a label + local menu above it:
 
-![](http://mmiworks.net/metapolator/masterlist2.png)
+![](http://mmiworks.net/metapolator/masterlist3.png)
 
 _**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
 
@@ -206,7 +206,7 @@ The control column shows the name of the master and allow users to directly mani
 * drag and drop into a design space (also of a multiple-selection).
 
 ##### sequence column
-Here master sequences are managed. The connected dots show the extend of the sequence. The top-down order of master list items is their order in the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
+Here master sequences are managed. The connected dots show the extend of the sequence, and the arrow on the bottom item shows the top-down order of the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
 
 * create master sequences via local menu (see below), or by mouse-down, drag across multiple masters, release: all masters involved form a new master sequence; default title: "sequence \<number\>", where the number steadily increases (for the project scope);
 * drag and drop masters (via in the control column) to:
@@ -216,7 +216,7 @@ Here master sequences are managed. The connected dots show the extend of the seq
 * extend the sequence by grabbing the top/bottom dot and dragging it over masters above/below the sequence;
 * reduce the sequence by grabbing the top/bottom dot and dragging it over masters down/up towards centre of the sequence;
 * click in the sequence title item to select the complete sequence;<br/>
-![](http://mmiworks.net/metapolator/sequenceselected.png)<br/>
+![](http://mmiworks.net/metapolator/sequenceselecte2.png)<br/>
 this is different than selecting all the masters in a sequence (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
 * drag and drop complete sequences, via the title item
 * a sequence contains two or more masters; reducing a sequence to one master by any means results in removing the sequence;
@@ -308,7 +308,7 @@ As mentioned before, the (string of) instances column is the panel that ties tog
 
 The instances panel is completely occupied by the instances list with a label + local menu above it:
 
-![](http://mmiworks.net/metapolator/instanceslist.png)
+![](http://mmiworks.net/metapolator/instanceslist2.png)
 
 _**quick overview**: this design space contains one instance and one string of instances; the lone instance (Instance #1) is probably for exploration, because it has still its default name; the string of instances is called Exotic and consist of 9 instances; one (Thin) is currently selected, any edits or actions are applied to it; two other instances (Light, Regular) are marked to be also viewed in the specimen (in Design Spaces view)._
 
@@ -336,7 +336,7 @@ The control column shows the name of the instance and allow users to directly ma
 * drag and drop into a design space (also a multiple-selection).
 
 ##### string column
-Here strings of instances are managed. The connected diamonds show the extend of the string. The top-down order of the instances is their order in the string. The title item above the top instance identifies the string elsewhere in the UI (e.g. for font name generating), double click to get a text edit box. The title item also shows the number of instances contained, double click to get a text edit box with up/down arrows:
+Here strings of instances are managed. The connected diamonds show the extend of the string, and the arrow on the bottom item shows the top-down order of the instances. The title item above the top instance identifies the string elsewhere in the UI (e.g. for font name generating), double click to get a text edit box. The title item also shows the number of instances contained, double click to get a text edit box with up/down arrows:
 
 ![](http://mmiworks.net/metapolator/stringlen.png)
 
@@ -350,7 +350,7 @@ The changes to the number of instances is applied at the bottom of the list.
 * extend the string by grabbing the top/bottom diamond and dragging it over instances above/below the string;
 * reduce the string by grabbing the top/bottom diamond and dragging it over instances down/up towards centre of the string;
 * click in the string title item to select the complete string;<br/>
-![](http://mmiworks.net/metapolator/stringselected.png)<br/>
+![](http://mmiworks.net/metapolator/stringselected2.png)<br/>
 this is different than selecting all the instances in a string (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
 * drag and drop complete strings, via the title item
 * a string contains two or more instances; reducing a string to one instance by any means results in removing the string;
