@@ -1,0 +1,15 @@
+masters:
+  bod:
+    cpsLocalFile: bod.cps
+    cpsChain:
+      - default.cps
+      - global.cps
+      - bod.cps
+    skeleton: skeleton.bod
+  god:
+    cpsLocalFile: bod.cps
+    cpsChain:
+      - default.cps
+      - global.cps
+      - bod.cps
+    skeleton: skeleton.bod
