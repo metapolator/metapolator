@@ -297,22 +297,30 @@
 	
 	.ui-selectable {
 		border-top: 1px solid #ffa392;
+		border-bottom: 1px solid #ffa392;
 	    display: block;
 	    list-style-type: none;
-	    margin: 0 0 10px 0;
+	    margin: 0 0 20px 0;
 	    padding: 0px;
 	    width: 100%;
-	    min-height: 10px;
 	}
 	
-		.empty-ul {
-			 background: #ddd;
+		.ui-selectable:empty {
+			height: 24px;
+			margin: 6px;
+			width: calc(100% - 12px);
+			border: 1px dashed #ffa392;
 		}
+		
 		.ui-selectable li {
 			border: 0;
 			border-bottom: 1px solid #ffa392;
 			height: 28px;
 		}
+		
+			li:last-child {
+				border-bottom: 0px;
+			}
 			
 			 .ui-selectable li.ui-selectee .selectable-ag {
 			    background: #fff;
@@ -372,6 +380,7 @@
 	li:last-child .selectable-diamond {
 		background-image: url('../img/diamonds/diamond-bottom.png');
 	}
+	
 	
 		
 	.selectable-ag {
