@@ -37,11 +37,55 @@
     	<script src='js/directives.js' type='text/javascript'></script> 
 		
 		<script type="text/javascript">
-			$(function() {		
+			$(function() {	
+				console.log( $(window).width());
+				console.log( parseInt( $("#parameters").outerWidth(), 10 ) + parseInt( $("#specimen").outerWidth(), 10 ) + parseInt( $("#masters-container").outerWidth(), 10 ) )
+				
+					
 				$(".readmore-header").on("click", function() {
 					$(this).parent(".readmore").toggleClass("readmore-show");
 				});
+				
+				$(".divider-hor").draggable({
+						axis: "y",
+						start: function() {
+							windowDivision();
+						},
+						drag: function() {
+							windowDivision();
+						},
+						stop: function() {
+							windowDivision();
+						}
+					}
+				);
+				
+				$(".divider-ver").draggable({
+						axis: "x",
+						start: function() {
+							windowDivision();
+						},
+						drag: function() {
+							windowDivision();
+						},
+						stop: function() {
+							windowDivision();
+						}
+					}
+				);
 			});
+			
+			function windowDivision () {
+				var mastersA = parseInt( $("#masters-divider").css("top"), 10 ) + 9;
+				var mastersB = parseInt( $("#masters-container").outerHeight(), 10 ) - mastersA;
+				$("#masters").height (mastersA + "px");
+				$("#adjustment-masters").height (mastersB + "px");
+				
+				var dev1A = parseInt( $("#divider-1").css("left"), 10 );
+				var dev1B = parseInt( $(window).width(), 10 ) - parseInt( $("#masters-container").outerWidth(), 10 ) - dev1A;
+				$("#parameters").css("width", dev1A + "px");
+				$("#specimen").css("width", dev1B + "px");
+			}
 			
 
 		
@@ -171,16 +215,18 @@
 				        
 				        <ul ui-selectable id="master-ul-2"></ul>
 				        
-				        <!-- this is temporarily for testing adding functionality -->
+				        <!-- this is temporarily for testing adding functionality 
 				        <form class="masters-add-item" ng-submit="addMaster()">
 				            <input size="9" placeholder="Font Family..." ng-model="newMaster.fontFamily">
 				            <input size="9" placeholder="Name..." ng-model="newMaster.name">
 				            <input size="4" placeholder="Weight..." ng-model="newMaster.weight">
 				            <input type="submit" value="Add">
 				        </form>		
+				        -->
+				        
 					</div>
 					<!-- end of masters sub panel -->
-					
+										
 					<div id="adjustment-masters" class="sub-panel">
 						<div class="dropdown">
 				        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Adjustment Masters <span class="caret"></span></a>
@@ -219,6 +265,8 @@
 					</div>
 					<!-- end of adustment masters sub panel -->
 					
+					<divider-hor id="masters-divider"></divider>
+					
 				</div>
 				<!-- end of masters-container -->
 				
@@ -230,17 +278,17 @@
 					</div>
 					
 					<div id="specimen-2" class="sub-panel standard-padding">
-
-						<div ng-repeat="master in mastersInView">
-							<div class="specimen-info-holder"><div class="specimen-info">{{master.fontFamily}} {{master.name}} {{master.weight}}</div></div>
-							<div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}">{{specimen.text}}</div>
+						<div ng-repeat="index in mastersInView">
+							<div class="specimen-info-holder"><div class="specimen-info">{{masters[index].fontFamily}} {{masters[index].name}} {{masters[index].weight}}</div></div>
+							<div class="specimen" style="font-family: '{{masters[index].fontFamily}}'; font-weight: {{masters[index].weight}}">{{specimen.text}}</div>
 						</div>
 						
-			            <div ng-repeat="adjustmentMaster in adjustmentMastersInView">               
-							<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</div></div>
-							<div class="specimen" style="font-family: '{{adjustmentMaster.fontFamily}}'; font-weight: {{adjustmentMaster.weight}}">{{specimen.text}}</div>
+			            <div ng-repeat="index in adjustmentMastersInView">            
+							<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMasters[index].fontFamily}} {{adjustmentMasters[index].name}} {{adjustmentMasters[index].weight}}</div></div>
+							<div class="specimen" style="font-family: '{{adjustmentMasters[index].fontFamily}}'; font-weight: {{adjustmentMasters[index].weight}}">{{specimen.text}}</div>
 			            </div>
 					</div>
+					<!-- end of specimen 2 -->
 				</div>
 				<!-- end of design space container -->
 				
@@ -297,8 +345,15 @@
 					<input type="text" placeholder="Style Map Style...">
 				</div>
 				<!-- end of font-meta-data -->
+				
+				<divider-ver id="divider-1"></divider>
+
+				
+				
 			</div>
 			<!-- end of landscape -->
+			
+			
 		</div>
 		
 		

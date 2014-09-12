@@ -66,7 +66,7 @@
 	}
 	
 		#landscape {
-			width: 275%;
+			width: 262.5%;
 			height: 100%;
 			position: absolute;
 			left: 0;
@@ -79,19 +79,17 @@
 			}
 			
 			.sub-panel {
-				border-bottom: 4px solid #d7d2c8;
 				background: #fff;
-				border: 4px solid #d7d2c8;
 			}
 			
 			#parameters {
-				width: calc(3/44 * 100%);
+				width: calc(3/42 * 100%);
 				height: 100%;
 				overflow: auto;
 			}
 			
 			#specimen {
-				width: calc(10/44 * 100%);
+				width: calc(10/42 * 100%);
 				height: 100%;
 				overflow-y: auto
 			}
@@ -123,7 +121,8 @@
 				
 			
 			#masters-container {
-				width: calc(3/44 * 100%);
+				position: relative;
+				width: calc(3/42 * 100%);
 				height: 100%;
 			}
 				#masters {
@@ -146,7 +145,7 @@
 					}
 			
 			#design-space-container {
-				width: calc(10/44 * 100%);
+				width: calc(10/42 * 100%);
 				height: 100%;
 			}
 			
@@ -203,14 +202,14 @@
 					}
 			
 			#instances {
-				width: calc(3/44 * 100%);
+				width: calc(3/42 * 100%);
 				height: 100%;
 				position: relative;
 				overflow: auto;
 			}
 					
 			#font-mapping {
-				width: calc(4/44 * 100%);
+				width: calc(4/42 * 100%);
 				height: 100%;
 				position: relative;
 				overflow: auto;
@@ -236,7 +235,7 @@
 				}
 			
 			#meta-data {
-				width: calc(9/44 * 100%);
+				width: calc(9/42 * 100%);
 				height: 100%;
 				position: relative;
 				overflow: auto;
@@ -291,6 +290,74 @@
 			
 	
 			
+				
+/***************** divider ******************/
+
+	.divider-hor {
+		position: absolute;
+		width: 100%;
+		height: 9px;
+		background: #d7d2c8;
+	}
+	
+		#masters-divider {
+			top: calc(50% - 9px);
+		}
+	
+		.divider-hor:hover {
+			cursor: ns-resize;
+		}
+	
+		.divider-hor .divider-top {
+			height: 5px;
+			border-bottom: 1px solid #d7d2c8; 
+		}
+		
+			.divider-hor:hover .divider-top {
+				border-bottom: 1px dashed #fff;
+			}
+		
+		.divider-hor .divider-bottom {
+			height: 4px;
+		}
+
+	.divider-ver {
+		position: absolute;
+		height: 100%;
+		width: 9px;
+		background: #d7d2c8;
+	}
+	
+		#divider-1 {
+			left: calc(3/42 * 100% );
+		}
+		
+		#divider-2 {
+			left: calc(13/42 * 100% );
+		}
+	
+		.divider-ver:hover {
+			cursor: ew-resize;
+		}
+	
+		.divider-ver .divider-left {
+			float: left;
+			width: 5px;
+			height: 100%;
+			border-right: 1px solid #d7d2c8; 
+		}
+		
+			.divider-ver:hover .divider-left {
+				border-right: 1px dashed #fff;
+			}
+		
+		.divider-ver .divider-right {
+			float: left;
+			height: 100%;
+			width: 4px;
+		}
+
+		
 			
 /***************** selectable ******************/
 	
@@ -303,6 +370,8 @@
 	    margin: 0 0 20px 0;
 	    padding: 0px;
 	    width: 100%;
+	    background: #fff;
+	    min-height: 20px;
 	}
 	
 		.ui-selectable:empty {
@@ -311,6 +380,7 @@
 			width: calc(100% - 12px);
 			border: 1px dashed #ffa392;
 		}
+		
 		
 		.ui-selectable li {
 			border: 0;
@@ -379,6 +449,10 @@
 	
 	li:last-child .selectable-diamond {
 		background-image: url('../img/diamonds/diamond-bottom.png');
+	}
+	
+	li:only-child .selectable-diamond {
+		background-image: url('../img/diamonds/diamond-sole.png');
 	}
 	
 	

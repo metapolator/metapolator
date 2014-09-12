@@ -32,6 +32,11 @@ app.controller("MetapolatorController", function($scope){
         }
 	];
 	
+	$scope.masterSequences = [
+		[0, 1, 2, 3]
+	
+	];
+	
 	$scope.adjustmentMasters = [
 		{
         	id: 0,
