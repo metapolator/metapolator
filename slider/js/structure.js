@@ -152,6 +152,11 @@ app.controller("MetapolatorController", function($scope) {
 				instances: [
 					{
 						name: "instance 1",
+						metadata: {
+							metaData1: "",
+							metaData2: "",
+							metaData3: ""
+						},
 						metapolation: [
 							{
 								master: $scope.project.sequences[0].master[0],
@@ -165,6 +170,11 @@ app.controller("MetapolatorController", function($scope) {
 					},
 					{
 						name: "instance 2",
+						metadata: {
+							metaData1: "",
+							metaData2: "",
+							metaData3: ""
+						},
 						metapolation: [
 							{
 								master: $scope.project.sequences[0].master[0],
