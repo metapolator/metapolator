@@ -38,16 +38,18 @@
 		
 		<script type="text/javascript">
 			$(function() {	
-				console.log( $(window).width());
-				console.log( parseInt( $("#parameters").outerWidth(), 10 ) + parseInt( $("#specimen").outerWidth(), 10 ) + parseInt( $("#masters-container").outerWidth(), 10 ) )
-				
-					
 				$(".readmore-header").on("click", function() {
 					$(this).parent(".readmore").toggleClass("readmore-show");
 				});
 				
+				var x1 = 0;
+				var y1 = "200px";
+				var x2 = $("#masters").outerWidth();
+				var y2 = parseInt ($("#masters-container").outerHeight(), 10) - 40 + "px";
+				console.log(y2);
 				$(".divider-hor").draggable({
 						axis: "y",
+						containment: [x1, y1, x2, y2],
 						start: function() {
 							windowDivision();
 						},
@@ -89,7 +91,7 @@
 			
 
 		
-			function moveContainer (view) {
+			function moveLandscape (view) {
 				var distances = new Array (0, 13, 26);
 				
 				// move container
@@ -124,9 +126,9 @@
 			<!-- end of project -->
 			
 			<div id="view-buttons">
-				<div id="menu-item-0" class="menu-item menu-item-current" onClick="moveContainer(0);">Parameters</div>
-				<div id="menu-item-1" class="menu-item" onClick="moveContainer(1);">Design spaces</div>
-				<div id="menu-item-2" class="menu-item" onClick="moveContainer(2);">Fonts</div>
+				<div id="menu-item-0" class="menu-item menu-item-current" onClick="moveLandscape(0);">Parameters</div>
+				<div id="menu-item-1" class="menu-item" onClick="moveLandscape(1);">Design spaces</div>
+				<div id="menu-item-2" class="menu-item" onClick="moveLandscape(2);">Fonts</div>
 			</div>
 			<!-- end of view buttons -->
 		</div>
@@ -323,7 +325,7 @@
 				</div>
 				<!-- end of instances -->
 				
-				<div id="font-mapping" class="panel sub-panel">
+				<div id="font-mapping" class="panel sub-panel standard-padding">
 					<b>Font Mapping</b><br><br>
 					<div class="mapping-a">Thin</div>
 					<div class="mapping-b">Extra Light</div>
@@ -347,6 +349,8 @@
 				<!-- end of font-meta-data -->
 				
 				<divider-ver id="divider-1"></divider>
+				
+				<divider-ver id="divider-2"></divider>
 
 				
 				
