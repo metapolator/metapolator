@@ -115,7 +115,7 @@ app.controller("MetapolatorController", function($scope) {
 						}
 					},
 					{
-						name: "master 2",
+						name: "master 4",
 						type: "master",
 						display: false,
 						parameters: [],
