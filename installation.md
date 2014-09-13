@@ -163,3 +163,7 @@ $ ./serve.sh
 # you'll see a simple scene where you can add 'widgets' to a 'container'
 
 ```
+
+# Debugging
+
+For debugging the command-line interface or server code, [node-inspector](https://github.com/node-inspector/node-inspector) is good.
