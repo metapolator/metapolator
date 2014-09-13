@@ -15,32 +15,61 @@ app.controller("MetapolatorController", function($scope) {
 		sequences: [
 			{
 				name: "weight",
-				paramters: [],
+				parameters: [],
 				masters: [
 					{
 						name: "master 1",
 						type: "master",
 						display: true,
 						parameters: [],
-						body: {
-							glyphs: [
+						glyphs: [
 								{
 									name: "a",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "b",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "c",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								}
 							]
 						}
@@ -55,20 +84,50 @@ app.controller("MetapolatorController", function($scope) {
 								{
 									name: "a",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "b",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "c",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								}
 							]
 						}
@@ -96,20 +155,50 @@ app.controller("MetapolatorController", function($scope) {
 								{
 									name: "a",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "b",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "c",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								}
 							]
 						}
@@ -124,20 +213,50 @@ app.controller("MetapolatorController", function($scope) {
 								{
 									name: "a",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "b",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								},
 								{
 									name: "c",
 									parameters: [],
-									skeleton: [],
-									vector: []
+									penstrokes: [
+										{
+											points: [
+												{
+													parameters: []
+												},
+												{
+													parameters: []
+												}
+											]
+										}
+									]
 								}
 							]
 						}
