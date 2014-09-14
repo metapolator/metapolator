@@ -25,6 +25,7 @@ if (require.main === module) {
       , 'metapolator/models/MOM/PenStroke'
       , 'metapolator/models/MOM/PenStrokePoint'
       , 'metapolator/models/CPS/Registry'
+      , 'metapolator/math/Vector'
     ], function (
         program
       , errors
@@ -37,15 +38,24 @@ if (require.main === module) {
       , PenStroke
       , PenStrokePoint
       , Registry
+      , Vector
     ) {
         var CommandLineError = errors.CommandLine;
 
+	var collect = function(val, col) {
+	    col.push(val);
+	    return col;
+	}
+
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+	program.option('-p, --parameters [label]', 'CPS Parameters to show', collect, [])
+	program.option('-s, --selectors  [CPS]',   'CPS selector for the nodes to inspect', collect, [])
         program.arguments(exports.command.arguments);
         program.action(function(CPSfile) {
             if (program.args.length > program._args.length + 1)
                 program.help();
 
+	    console.log(program.parameters);
             var cpsString = io.readFile(false, CPSfile)
             var parameterRegistry = new Registry();
 
@@ -85,6 +95,14 @@ if (require.main === module) {
                         type: 'vector'
                       , description: 'the intrinsic value of the zon'
             })
+            parameterRegistry.register('label', {
+                type: 'string'
+                , description: 'something new'
+            })
+            parameterRegistry.register('xx', {
+                type: 'real'
+                , description: 'and a number for mathses my precious'
+            });
 
             var result = parseRules.fromString(cpsString, CPSfile, parameterRegistry)
               , controller = new Controller(parameterRegistry)
@@ -131,22 +149,34 @@ if (require.main === module) {
 
             }
 
+	    /*
+	     * Create the Glyphs, Strokes, and StrokePoints and 
+	     * assign some default values to the parameters foo, label, and xx
+	     * so that we can see how the CPS manipulates things
+	     */
+            var fooCounter = 0;
+	    var labelCounter = 0;
             for(var h=0; h<mastersOfTheUnivers.length; h++) {
-                var glyphs = data[mastersOfTheUnivers[h].id].glyphs;
-                for(var i=0;i<glyphs.length;i++) {
+		var glyphs = data[mastersOfTheUnivers[h].id].glyphs;
+		for(var i=0;i<glyphs.length;i++) {
                     var glyph = new Glyph();
                     glyph.id = glyphs[i][0];
+		    fooCounter++;
+		    glyph.foo = 'bar' + fooCounter;
                     mastersOfTheUnivers[h].add(glyph);
                     for(var j=0;j<glyphs[i][1].length;j++) {
-                        var stroke = new PenStroke();
-                        glyph.add(stroke);
-                        for(var k=0;k<glyphs[i][1][j].length;k++) {
-                            var point = new PenStrokePoint();
+			var stroke = new PenStroke();
+			glyph.add(stroke);
+			for(var k=0;k<glyphs[i][1][j].length;k++) {
+                            var point = new PenStrokePoint( { on: Vector(1,2) } );
+			    point.label = 'baz' + labelCounter++;
+			    point.xx = 3;
                             stroke.add(point);
-                        }
+			}
                     }
-                }
+		}
             }
+
 
             var element = controller.query('master#ralph glyph point:i(23)');
 
@@ -166,6 +196,28 @@ if (require.main === module) {
             console.log('result ' + valueInstance.value, valueInstance._components.join('|'));
             console.log(valueInstance = computed.get('value'));
 
+	    console.log('-----------');
+	    if( !program.selectors.length ) {
+		program.selectors.push('master#heidi glyph#y penstroke:i(0) point:i(0)');
+	    }
+	    
+	    program.selectors.forEach( function( selector ) {
+		element = controller.query( selector );
+		computed = controller.getComputedStyle(element)
+		console.log('element:', element.particulars);
+
+		program.parameters.forEach( function( param ) {
+		    
+		    console.log( param + '.base   : ' + computed.getCPSValue( param ));
+		    console.log( param + '.updated: ' + computed.getCPS( param ));
+		    var value = '';
+		    if( computed.getCPS( param ))
+			value = computed.getCPS( param );
+		    else
+			value = computed.getCPSValue( param );
+		    console.log( param + '.value  : ' + value ); 
+		});
+	    });
           });
         program.parse(process.argv);
         if (process.argv.length < program._args.length + 2)
