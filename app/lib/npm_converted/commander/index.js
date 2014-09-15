@@ -486,9 +486,11 @@ Command.prototype.parseArgs = function(args, unknown){
     , len = cmds.length
     , name;
 
-  if (args.length) {
-    name = args[0];
-    if (this.listeners(name).length) {
+  if (args.length || this._args.length == 0) {
+    if (args.length) {
+      name = args[0];
+    }
+    if (name && this.listeners(name).length) {
       this.emit(args.shift(), args, unknown);
     } else {
       this.emit('*', args);
