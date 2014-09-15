@@ -25,6 +25,10 @@ define([
       , KeyError = errors.Key
       ;
 
+    /**
+     * Constructor for a CPS formulae Parser. This takes instances of
+     * OperatorToken as Input.
+     */
     function Parser(/* operators */) {
         this._operators = this._createOperatorsDict(
                 Array.prototype.slice.call(arguments));
@@ -35,16 +39,17 @@ define([
                                                         this._operators);
 
         this._bracketOperators = {};
+        this._negateOperator = undefined;
+        this._finalizeMethod = undefined;
     }
 
     var _p = Parser.prototype
         /**
-         * Test if a string starts like a number:
-         * this omit the notation of a sign (especially -) because negation
-         * will be handled by an operator
+         * Test if a string starts like a number. This detects also
+         * negative numbers.
          * R_number.exec(string) !== null
          */
-      , R_number = /^(((\d*\.\d+)|(\d+(\.)?))([eE][+\-]?\d+)?)/
+      , R_number = /^(\-?((\d*\.\d+)|(\d+(\.)?))([eE][+\-]?\d+)?)/
         //  Test if a string starts like a name
       , R_name = /^[0-9A-Za-z_]+/
       ;
@@ -153,6 +158,14 @@ define([
         return result;
     };
 
+    /**
+     * The method is passed from Parser.parse to new Stack and then run in
+     * Stack.execute, with the result of the stack execution and getAPI as
+     * arguments.
+     */
+    _p.setFinalizeMethod = function(method) {
+        this._finalizeMethod = method;
+    }
 
     _p.setBracketOperator = function(bracketLiteral, operatorLiteral) {
         if(!(operatorLiteral in this._operators))
@@ -168,6 +181,13 @@ define([
 
         throw new KeyError('No bracket operator found for literal: '
                                                         + bracketLiteral);
+    };
+
+    _p.setNegateOperator = function(negateLiteral, operatorLiteral) {
+        if(!(operatorLiteral in this._operators))
+            throw new KeyError('No operator found for literal: '
+                                                        + operatorLiteral);
+        this._negateOperator = (negateLiteral, operatorLiteral);
     };
 
 
@@ -240,12 +260,10 @@ define([
 
 
     /**
-     * tokenize into the following tokens:
+     * Tokenize into the following tokens:
      *
      * number literals: anything that ufojs/main.isFloatString accepts
-     *      1 .3 1.2 1.2e3  3E3 0.123456E-3 etc..
-     *      BUT: we don't need to include the - or + signs, because negation
-     *      will be dealt with in the resulting program
+     *      1 .3 -1.2 1.2e3  3E3 0.123456E-3 etc..
      *
      * selector literals: anything between S" AND "  S"master#bold > glyph:i(3)"
      *      we keep the quotes, because some characters that can appear
@@ -256,16 +274,18 @@ define([
      * Square brackets [ and ]  <= will essentially behave like a stack ()
      *              but the resulting value will be used as key to get a
      *              value from the previous value in the stack
-     *              So, this resolves to a similar thing like the dot
-     *              operator. but the dot operator will use the literal
+     *              So, this resolves to a similar thing like the colon
+     *              operator. but the colon operator will use the literal
      *              of a NameValue AND thus require a NameValue
-     *              we may get rid of the dot operator but then find us
+     *              we may get rid of the colon operator but then find us
      *              typing a lot of [" AND "] combinations ...
      *
      * names/identifier: essentially every token that is not something else ...
      *            maybe it is wise to identify a set of legal characters,
      *            like 0-9A-Za-z_ this could save space for new additions
      *            also, this eases parsing
+     *            name can't begin with numbers, because of the splitting
+     *            behavior of numbers at the moment.
      *
      * operators/symbols: identifier that are keys in this._operators
      *
@@ -344,6 +364,31 @@ define([
                 continue;
             }
 
+            // number literals are splitting, thus we can parse negative
+            // numbers. (maybe they must not be splitting, but they
+            // must be parsed before the splitting operators?)
+            // FIXME: I'm not sure if I like this rather hackish workaround.
+            // Instead of making numbers splitting, we could maybe have
+            // a more robust way to detect the "negate" operator, unfortunately
+            // this: "Vector 12 -8" makes it really hard to do so. It can
+            // read as "Vector 12 subtract 8" or "Vector 12 negate 8" without
+            // having splitting numbers the former applies but the latter
+            // is meant.
+            // Also, names can't begin with numbers anymore, because of this
+            // behavior, however, this quite common in other programming
+            // languages as well.
+            // The biggest downside of this behavior is that:
+            // "1-2" parses as `1|negaive 2` and "1 - 2" parses as
+            // `1|subtract|2` which will become confusing at some point.
+            string = string.substring(i);
+            i = 0;
+            if((reResult = R_number.exec(string)) !== null) {
+                tokens.push(new NumberToken(reResult[0]));
+                i = reResult[0].length;
+                splitExpected = false; // a splitting token was found
+                continue;
+            }
+
             // test for all splitting operators, length first
             if(!!(foundOperator = this._testSplittingOperators(string, i))) {
                 tokens.push(foundOperator);
@@ -380,15 +425,6 @@ define([
             // because RegEx.exec has no offset parameter like indexOf
             string = string.substr(i);
             i=0;
-
-            // number literals are not splitting
-            // when we find a number literal that is not followed by a
-            // split, it is still possible that it is a valid name like 1abc
-            if((reResult = R_number.exec(string)) !== null) {
-                tokens.push(new NumberToken(reResult[0]));
-                i += reResult[0].length;
-                continue;
-            }
 
             // name literals are not splitting
             if((reResult = R_name.exec(string)) !== null) {
@@ -471,11 +507,11 @@ define([
      * return postfix or Reverse Polish notation:
      * This means we go from 2 + 3 to 2 3 +. The operator follows all
      * of its operand. This is easy to calculate at the end, and we get
-     * rid of the Parenthesis.
+     * rid of the Parenthesis. See ./Stack.execute for execution of the
+     * stack.
      *
-     * This works as far as my tests went, but it could be more efficient
-     * when implemented using the "Dijkstra shunting yard algorithm" to
-     * create this conversion.
+     * This works as far as my tests went, but it could be more efficiently
+     * implemented (using the "Dijkstra shunting yard algorithm"?)
      *
      * The algorithm uses one recursive call to eliminate parentheses
      * and multiple passes to solve all operators in order of precedence.
@@ -493,6 +529,21 @@ define([
           , endPost
           , operation
           ;
+
+        // replace - with negate when looks like this was the intention
+        if(this._negateOperator) {
+            for(i=0;i<tokensArg.length;i++) {
+                if(tokensArg[i] instanceof OperatorToken
+                        // usually we use - to negate something
+                        && tokensArg[i].literal === this._negateOperator[0]
+                        // if the first operator is a subtract operator
+                        // or if the operator before the subtract operator
+                        // is any operator, then this is a negate operator
+                        && (i===0 || tokensArg[i-1] instanceof OperatorToken)) {
+                    tokensArg[i] = this._operators[this._negateOperator[1]];
+                }
+            }
+        }
         // find brackets and call this method recursively
         tokens = this._resolveBrackets(tokensArg);
 
@@ -580,7 +631,7 @@ define([
     _p.parse = function(string) {
         var tokens = this.tokenize(string);
         tokens = this.infixToPostfix(tokens);
-        return new Stack(tokens);
+        return new Stack(tokens, this._finalizeMethod);
     };
 
     return Parser;

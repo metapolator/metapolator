@@ -3,17 +3,24 @@ define([
   , './parsing/Parser'
   , './parsing/OperatorToken'
   , './parsing/NameToken'
+  , './parsing/SelectorToken'
+  , './parsing/StringToken'
+  , './parsing/NumberToken'
+  , './parsing/_Token'
   , 'metapolator/models/CPS/elements/SelectorList'
   , 'metapolator/models/MOM/_Node'
   , 'metapolator/models/CPS/cpsGetters'
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
-  , Vector
 ], function(
     errors
   , Parser
   , Operator
   , NameToken
+  , SelectorToken
+  , StringToken
+  , NumberToken
+  , _Token
   , SelectorList
   , _MOMNode
   , cpsGetters
@@ -24,32 +31,22 @@ define([
 
     var ValueError = errors.Value
       , CPSFormulaError = errors.CPSFormula
-      , Transformation = transform.Transformation
+      , Transformation = transform.Transform
+      , _toRad = Math.PI/180
+      , engine
       ;
 
-    var _i_=0;
-    function stub(getAPI) {
-        /*jshint validthis:true */
-        // 'this' is the OperatorToken instance
-        var joiner = '\n  -';
-        console.log('stub of '
-            + this
-            + ' args:'
-            + joiner + Array.prototype.slice.call(arguments, 1).join(joiner)
-        );
-        return '__result ' + ( _i_++ ) + '__';
-    }
-
-   var _toRad = Math.PI/180;
-
-    var engine = new Parser(
-        // /**
-        //  * Returns the host MOM Element, should be executed before
-        //  * beeing consumed => highest precedence
-        //  * could also be just a name, StyldeDict would have to know what
-        //  * to do.
-        //  */
-        // new Operator('this', false, Infinity, 0, 0, stub)
+    /**
+     * This defines the operators that are usable in CPS-formulae, thus
+     * the better part of the language definition can be found in here.
+     * However, some rather specific behaviors are still buried in the
+     * Parser implementation
+     *
+     * see the reference of new Operator for a description of its arguments.
+     *
+     * usage: engine.parse(CPSParameterValueString)
+     */
+    engine = new Parser(
         /**
          * returns an Array of everything that is on the current stack
          *
@@ -112,7 +109,7 @@ define([
          * var key = name.getValue()
          * return item[key]
          */
-      , new Operator('.', true, Infinity, 1, 1, [
+      , new Operator(':', true, Infinity, 1, 1, [
             ['*getAPI*', NameToken, NameToken, function(getAPI, name, key) {
                 var item = getAPI(name.getValue());
                 return cpsGetters.generic(item, key.getValue());
@@ -125,7 +122,7 @@ define([
                                                         + SelectorList);
                 return cpsGetters.generic(item, key.getValue());
             }]
-          , ['*anything*', NameToken, function(item, key) {
+          , ['*getAPI*', '*anything*', NameToken, function(getAPI, item, key) {
                 return cpsGetters.generic(item, key.getValue());
             }]
         ])
@@ -144,6 +141,13 @@ define([
          *
          */
       , new Operator('negate', false, 6, 0, 1, [
+            // 'number' as an argument is not needed nor happening
+            // because something like -123 will be parsed as a negative
+            // number directly. This is because "Vector 12 -8" would
+            // otherwise be tokenized as "Vector 12 subtract 8", because
+            // we have no other indication of splitting.
+            // the operator is left in place, so this: --123 could be done
+            // and would result in `negate -123`
             ['number', function(a){ return -a; }]
           , [Vector, function(a){ return a.negate();}]
           , [Transformation, function(transformation){ return transformation.inverse();}]
@@ -174,7 +178,7 @@ define([
          , [Vector, Vector, function(a, b){ return a['*'](b);}]
          , [Vector, 'number', function(a, b){ return a['*'](b);}]
          , [Transformation, Vector, function(tarnsformation, vector) {
-                 return Vector.fromArray(tarnsformation.transformPoint(vector));
+                return Vector.fromArray(tarnsformation.transformPoint(vector));
            }]
          , [Transformation, Transformation, function(t1, t2) {return t1.transform(t2);}]
         ])
@@ -226,7 +230,11 @@ define([
          * and return the value again.
          * This doesn't change the result of the calculation.
          */
-      , new Operator('_print', false, Infinity, 0, 1, stub)
+      , new Operator('_print', false, Infinity, 0, 1, function(arg) {
+            console.log('cps _print: "' +arg +'" typeof', typeof arg
+                                                    , 'object: ', arg);
+            return arg;
+        })
         /**
          * Constructor for a scaling transformation matrix
          */
@@ -263,8 +271,28 @@ define([
                                             return transform.Identity;})
     );
 
+    /**
+     * FIXME: I'm not sure where to put this functionality. Also, note
+     * that OperatorToken._convertTokenToValue does something similar.
+     *
+     * This method is passed from Parser to new Stack and then run in
+     * Stack.execute, with the result of the stack execution.
+     */
+    engine.setFinalizeMethod(function(result, getAPI) {
+        if(result instanceof NameToken)
+            return getAPI(result.getValue());
+        else if(result instanceof SelectorToken)
+            return getAPI('this').multivers.query(result.getValue());
+        else if(result instanceof StringToken || result instanceof NumberToken)
+            return result.getValue();
+        else if(result instanceof _Token)
+            // maybe one day we allow stuff like operators as first class
+            // values, but not now.
+            throw new CPSFormulaError('It is not allowed for a stack to '
+                + 'resolve into a _Token, but this Stack did: ' + result);
+        return result;
+    });
     engine.setBracketOperator('[', '__get__');
-
-    // usage: engine.parse(CPSParameterValueString)
+    engine.setNegateOperator('-', 'negate');
     return engine;
 });
