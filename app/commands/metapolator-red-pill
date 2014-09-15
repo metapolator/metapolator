@@ -28,10 +28,9 @@ if (require.main === module) {
 
             var express = require('express')
               , app = express()
-            // expect process.mainModule to be path/to/metapolator-code/metapolator
+            // expect require.main.filename to be path/to/metapolator-code/app/commands/<command>
             // thus path/to/metapolator-code is the root directory
-              , rootDir = process.mainModule.filename
-                          .slice(0, process.mainModule.filename.lastIndexOf('/'))
+              , rootDir = path.dirname(path.dirname(path.dirname(require.main.filename)))
               , libDir = rootDir + '/app/lib'
               , index = rootDir + '/app/red-pill.html'
             // the process must be started inside of the current dir. so
