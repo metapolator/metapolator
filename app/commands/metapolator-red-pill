@@ -16,22 +16,29 @@ if (require.main === module) {
         'commander'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/project/MetapolatorProject'
+      , 'string.prototype.endswith'
     ], function (
         program
       , io
       , MetapolatorProject
+      , EndsWith
     ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.action(function() {
-            if (program.args.length > program._args.length + 1)
-                program.help();
+//            if (program.args.length > program._args.length + 1)
+//                program.help();
 
-            var express = require('express')
-              , app = express()
             // expect process.mainModule to be path/to/metapolator-code/metapolator
             // thus path/to/metapolator-code is the root directory
-              , rootDir = process.mainModule.filename
-                          .slice(0, process.mainModule.filename.lastIndexOf('/'))
+	    var rootDir = process.mainModule.filename
+                	          .slice(0, process.mainModule.filename.lastIndexOf('/'));
+
+            if( rootDir.endsWith("commands"))
+		rootDir = path.dirname( rootDir );
+            if( rootDir.endsWith("app"))
+		rootDir = path.dirname( rootDir );
+            var express = require('express')
+              , app = express()
               , libDir = rootDir + '/app/lib'
               , index = rootDir + '/app/red-pill.html'
             // the process must be started inside of the current dir. so
@@ -40,6 +47,8 @@ if (require.main === module) {
               , projectDir = process.cwd() + '/'
             ;
 
+            console.log("rootDir:" + rootDir );
+            console.log("index:" + index );
 
             // red-pill.html as index
             // all contents of /lib are served for get at /lib
