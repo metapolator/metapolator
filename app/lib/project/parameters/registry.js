@@ -10,7 +10,7 @@ define([
     var parameterRegistry = new Registry();
 
     parameterRegistry.register('on', {
-                type: 'compoundVector'
+                type: 'vector'
               , description: 'An On-Curve Point.'
     })
     parameterRegistry.register('onIntrinsic', {
@@ -19,7 +19,7 @@ define([
     })
 
     parameterRegistry.register('in', {
-                type: 'compoundVector'
+                type: 'vector'
               , description: 'An incoming Control Point.'
     })
     parameterRegistry.register('inIntrinsic', {
@@ -28,7 +28,7 @@ define([
     })
 
     parameterRegistry.register('out', {
-                type: 'compoundVector'
+                type: 'vector'
               , description: 'An outgoing Control Point.'
     })
     parameterRegistry.register('outIntrinsic', {
@@ -48,7 +48,7 @@ define([
     });
 
     parameterRegistry.register('inDir', {
-                type: 'compoundReal'
+                type: 'real'
               , description: 'Direction vector of an incoming Control Point.'
     });
 
@@ -59,7 +59,7 @@ define([
     })
 
     parameterRegistry.register('outDir', {
-                type: 'compoundReal'
+                type: 'real'
               , description: 'Direction vector of an outgoing Control Point.'
     });
 
@@ -70,12 +70,12 @@ define([
     });
 
     parameterRegistry.register('onLength', {
-                type: 'compoundReal'
+                type: 'real'
               , description: 'The distance from center point to left or '
                             + 'right on curve point'
     })
     parameterRegistry.register('onDir', {
-                type: 'compoundReal'
+                type: 'real'
               , description: 'The direction in radians from center point '
                             + 'to left or right on curve point'
     })

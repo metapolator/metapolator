@@ -61,14 +61,14 @@ define({
       //, baseUrl: 'lib'
       , paths: {
           //  'tests': '../tests'
-            'require/domReady': 'bower_components/requirejs-domready/domReady'
-          , 'require/text': 'bower_components/requirejs-text/text'
-          , 'metapolator': './'
+            'require/domReady': 'lib/bower_components/requirejs-domready/domReady'
+          , 'require/text': 'lib/bower_components/requirejs-text/text'
+          //, 'metapolator': 'lib'
           , 'gonzales': 'lib/npm_converted/gonzales/lib'
-          , 'complex':  'npm_converted/immutable-complex/lib'
-          , 'angular': 'bower_components/angular/angular'
-          , 'obtain': 'obtainJS/lib'
-          , 'ufojs': 'ufoJS/lib'
+          , 'complex':  'lib/npm_converted/immutable-complex/lib'
+          , 'angular': 'lib/bower_components/angular/angular'
+          , 'obtain': 'lib/obtainJS/lib'
+          , 'ufojs': 'lib/ufoJS/lib'
         }
     },
 

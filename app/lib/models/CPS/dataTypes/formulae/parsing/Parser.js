@@ -465,7 +465,7 @@ define([
                         + '"'+ tokens[i].literal +'" but a matching opening '
                         + ' bracket is missing before.');
                 // the closing bracket matches
-                else if(openStack.length === 1)
+                else if(openStack.length === 1) {
                     // this closes the current outermost bracket
                     try {
                         // If an operator is registered for this bracket,
@@ -488,6 +488,7 @@ define([
                     // call this.infixToPostfix recursively...
                     // this.infixToPostfix calls this method
                     result.push(this.infixToPostfix(tokens.slice(start, i)));
+                }
                 openStack.pop();
             }
         }

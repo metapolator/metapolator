@@ -196,7 +196,7 @@ define([
             value = new ParameterValue([
                 // Vector is instanceof Complex, too
                 ( obj[k] instanceof Complex
-                    ? [obj[k].real, obj[k].imag].join(',')
+                    ? 'Vector ' + [obj[k].real, obj[k].imag].join(' ')
                     : obj[k] )], []);
             items.push(new Parameter(name, value))
         }
@@ -221,7 +221,7 @@ define([
         // center
         selectorList = parseSelectorList.fromString('point:i('+index+') > center')
         center = {
-            onIntrinsic:  '0,0'
+            onIntrinsic:  'Vector 0 0'
         }
         if(point.z.in !== undefined) {
             center.inIntrinsic = point.z.in.vector['-'](zon)

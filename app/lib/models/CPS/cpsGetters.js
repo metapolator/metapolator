@@ -1,5 +1,5 @@
 define([
-    'errors'
+    'metapolator/errors'
   , 'ufojs/main'
   , 'metapolator/models/MOM/_Node'
 ], function(

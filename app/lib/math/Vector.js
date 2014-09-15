@@ -15,6 +15,14 @@ define([
     var _p = Vector.prototype = Object.create(Parent.prototype);
     _p.constructor = Vector;
 
+    _p.cps_whitelist = {
+        x: true
+      , y: true
+      , len: 'length'
+      , rad: 'angle'
+    }
+
+
     Vector.fromArray = function(arr) {
         return new _p.constructor(arr[0], arr[1]);
     }

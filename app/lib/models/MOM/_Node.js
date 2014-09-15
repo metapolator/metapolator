@@ -37,6 +37,15 @@ define([
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
 
+    _p.cps_whitelist = {
+        parent: true
+      , children: true
+      , master: true
+      , univers: true
+      , multivers: true
+      , index: true
+    }
+
     Object.defineProperty(_p, 'MOMType', {
         get: function(){return 'MOM '+ this.constructor.name ;}
     })
@@ -191,8 +200,11 @@ define([
             if(item === this._children[i])
                 return i;
         return false;
-
     }
+
+    Object.defineProperty(_p, 'index', {
+        get: function(){ return this.parent.find(this);}
+    });
 
     Object.defineProperty(_p, 'parent', {
         /**
