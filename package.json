@@ -30,6 +30,7 @@
     "immutable-complex": "~3.0.4",
     "gonzales": "~1.0.7",
     "helmsman": "~0.4.0",
-    "rootpath": "~0.1.2"
+    "rootpath": "~0.1.2",
+    "string.prototype.endswith": "0.2.0"
   }
 }
