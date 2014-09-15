@@ -342,6 +342,10 @@ define([
                                         this, masterName, sourceUFODir);
         importer.import(glyphs);
     }
+
+    _p.interpolate = function( paramCollection ) {
+	throw new ProjectError('Project.interpolate() is not yet written!');
+    }
     
     _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller

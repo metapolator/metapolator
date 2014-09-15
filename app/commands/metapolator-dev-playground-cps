@@ -85,6 +85,14 @@ if (require.main === module) {
                         type: 'vector'
                       , description: 'the intrinsic value of the zon'
             })
+            parameterRegistry.register('label', {
+                type: 'string'
+                , description: 'something new'
+            })
+            parameterRegistry.register('xx', {
+                type: 'real'
+                , description: 'and a number for mathses my precious'
+            });
 
             var result = parseRules.fromString(cpsString, CPSfile, parameterRegistry)
               , controller = new Controller(parameterRegistry)
@@ -165,6 +173,24 @@ if (require.main === module) {
             valueInstance = computed.get('zon')
             console.log('result ' + valueInstance.value, valueInstance._components.join('|'));
             console.log(valueInstance = computed.get('value'));
+
+            element = controller.query('master#heidi glyph#y')
+            console.log('element:', element);
+            console.log('element.MOMType:', element.MOMType);
+
+            var param = 'label';
+            computed = controller.getComputedStyle(element);
+	    var value = '';
+	    if( computed.getCPS( param ))
+		value = computed.getCPS( param );
+	    else
+		value = computed.getCPSValue( param );
+
+            console.log( param + '.value  : ' + value );
+            element.label = value.toString();
+
+            console.log('-----------------');
+            console.log('element:', element);
 
           });
         program.parse(process.argv);
