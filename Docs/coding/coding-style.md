@@ -1,3 +1,10 @@
+## Code formatting
+
+* 4 spaces for indenting
+* No tabs
+* Keep files whitespace clean, but don't clean up lines you don't edit
+* In general, copy the style you find.
+
 ## Inheritance
 
 This is the definitve guide how class like structures should be written
