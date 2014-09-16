@@ -24,10 +24,10 @@ This project is licensed under the [GNU General Public License v3.0](http://www.
 
 #### Thanks
 
-Core Development Team: Simon Egli (CH), Lasse Fister (DE), Reuben Thomas (UK), Dr Ben Martin (AU)
+Core Development Team: Lasse Fister (DE), Reuben Thomas (UK), Dr Ben Martin (AU)
 
-Interaction Design: Peter Sikking (NL), Dave Crossland (UK), Nicolas Pauly (FR), Wei Huang (AU) 
+Interaction Design: Peter Sikking (NL), Simon Egli (CH), Nicolas Pauly (FR), Wei Huang (AU), Dave Crossland (UK)
 
-Contributors: Walter Egli (CH), Vitaly Volkov (UA), Alex Troush (UA)
+Past Contributors: Walter Egli (CH), Vitaly Volkov (UA), Alex Troush (UA)
 
 Thanks to [metaflop](http://www.metaflop.com) for inspiration and Simon Egli for initiating this project!
