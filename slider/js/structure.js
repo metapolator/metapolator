@@ -4,12 +4,12 @@ app.controller("MetapolatorController", function($scope) {
 		display: {
 			mode: ["glyphview", "paragraph", "", ""],
 			fontsize: 40,
-			lineHeight: 36			
+			lineHeight: 36
 		},
 		parameters: [
 			{
 				type: "slant",
-				operation: "*1.1"	
+				operation: "*1.1"
 			}
 		],
 		sequences: [
@@ -23,7 +23,7 @@ app.controller("MetapolatorController", function($scope) {
 						display: true,
 						parameters: [],
 						glyphs: [
-								{
+							{
 									name: "a",
 									parameters: [],
 									penstrokes: [
@@ -38,8 +38,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "b",
 									parameters: [],
 									penstrokes: [
@@ -54,8 +54,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "c",
 									parameters: [],
 									penstrokes: [
@@ -70,18 +70,16 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								}
-							]
-						}
+							}
+						]
 					},
 					{
 						name: "master 2",
 						type: "master",
-						display: false,
+						display: true,
 						parameters: [],
-						body: {
-							glyphs: [
-								{
+						glyphs: [
+							{
 									name: "a",
 									parameters: [],
 									penstrokes: [
@@ -96,8 +94,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "b",
 									parameters: [],
 									penstrokes: [
@@ -112,8 +110,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "c",
 									parameters: [],
 									penstrokes: [
@@ -128,10 +126,11 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								}
-							]
-						}
-					},
+							}
+						]
+					}
+				]
+			},
 			{
 				name: "width",
 				parameters: [
@@ -147,12 +146,11 @@ app.controller("MetapolatorController", function($scope) {
 				masters: [
 					{
 						name: "master 3",
-						type: "adjustment master",
-						display: false,
+						type: "master",
+						display: true,
 						parameters: [],
-						body: {
-							glyphs: [
-								{
+						glyphs: [
+							{
 									name: "a",
 									parameters: [],
 									penstrokes: [
@@ -167,8 +165,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "b",
 									parameters: [],
 									penstrokes: [
@@ -183,8 +181,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "c",
 									parameters: [],
 									penstrokes: [
@@ -199,18 +197,16 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								}
-							]
-						}
+							}
+						]
 					},
 					{
 						name: "master 4",
 						type: "master",
-						display: false,
+						display: true,
 						parameters: [],
-						body: {
-							glyphs: [
-								{
+						glyphs: [
+							{
 									name: "a",
 									parameters: [],
 									penstrokes: [
@@ -225,8 +221,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "b",
 									parameters: [],
 									penstrokes: [
@@ -241,8 +237,8 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								},
-								{
+							},
+							{
 									name: "c",
 									parameters: [],
 									penstrokes: [
@@ -257,11 +253,9 @@ app.controller("MetapolatorController", function($scope) {
 											]
 										}
 									]
-								}
-							]
-						}
+							}
+						]
 					}
-				
 				]
 			}
 		],

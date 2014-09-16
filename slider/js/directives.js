@@ -16,11 +16,8 @@ app.directive('uiSelectable', function ($compile) {
         		var toAppendTo = $(this).parent();
         		toAppendTo.append("<ul ui-selectable class='ui-selectable' id='master-ul-" + last + "'></ul>");
         		
-        		// compile: link new ul with scope
-        		//compiled = $compile(toAppendTo);
-        		//compiled(scope);
-        		
-        		// update scope.sequence here
+		        //$compile(toAppendTo)(scope);
+		        //element.append(toAppendTo);
         	}
         } )
         .selectable({

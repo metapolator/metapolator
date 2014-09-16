@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	    
-		<TITLE>Metapolator - CSS transition test</TITLE>
+		<TITLE>Metapolator</TITLE>
 
 		<!-- css -->
 		<link rel="stylesheet" type="text/css" media="all" href="css/style.css">
@@ -46,7 +46,6 @@
 				var y1 = "200px";
 				var x2 = $("#masters").outerWidth();
 				var y2 = parseInt ($("#masters-container").outerHeight(), 10) - 40 + "px";
-				console.log(y2);
 				$(".divider-hor").draggable({
 						axis: "y",
 						containment: [x1, y1, x2, y2],
