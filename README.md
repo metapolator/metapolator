@@ -1,22 +1,26 @@
 # Metapolator [![Build Status](https://travis-ci.org/metapolator/metapolator.png)](https://travis-ci.org/metapolator/metapolator)
 
-Metapolator will be a web-based parametric font editor, providing a GUI for designing with UFO fonts and Metafont technologies. Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs. For example, expanding a single style design into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.
+Metapolator will be a web-based parametric font editor, providing a GUI for designing with UFO fonts and Metafont technologies.
+Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs.
+For example, expanding a single style design into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.
 
 Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts. 
 
-It will go further, into 'metapolation': leveraging parameterization to create new masters. This will work best when glyphs are drawn as separate, overlapping shapes with pairs of points along each edge. This style of digital drawing is commonly practiced, as it helps when drawing shapes resembling strokes of pens. 
+It will go further, into 'metapolation': leveraging parameterization to create new masters.
+This will work best when glyphs are drawn as separate, overlapping shapes with pairs of points along each edge.
+This style of digital drawing is commonly practiced, as it helps when drawing shapes resembling strokes of pens. 
 
-The original drawn outline can be reconstructed from an inferred central skeleton (ductus) and Hobby splines (from Metafont.) This reconstruction process is flexible, working similarly to the 'nudge' tools of other font editors.
+The original drawn outline can be reconstructed from an inferred central skeleton (ductus) and Hobby splines (from Metafont.)
+This reconstruction process is flexible, working similarly to the 'nudge' tools of other font editors.
 
-Metapolator will allow designers to use Metafont technology without have to write any Metafont code. But if you'd like that, check out [metaflop.com](http://www.metaflop.com)
+Metapolator will allow designers to use Metafont technology without have to write any Metafont code.
+But if you'd like that, check out [metaflop.com](http://www.metaflop.com)
 
-* * * 
+### Install
 
-Metapolator is not yet released. See the [wiki](https://github.com/metapolator/metapolator/wiki/installation) for developer installation instructions if you'd like to try it out and are comfortable using development tools.
+Metapolator is not yet released, but if you'd like to try it out and are comfortable using development tools, please see our [developer installation instructions](https://github.com/metapolator/metapolator/wiki/installation) on our wiki.
 
-We are actively documenting our development on our wiki, <https://github.com/metapolator/metapolator/wiki/>
-
-Our user community is vigorously involved in development, through [Google+](https://plus.google.com/communities/110027004108709154749)
+Our user community is actively involved in development through discussions [Google+](https://plus.google.com/communities/110027004108709154749)
 
 #### License
 
