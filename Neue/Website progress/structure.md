@@ -10,36 +10,36 @@ Why the project ? whend start ? when end
 
 
 #### Overview (features)
-1 Skeleton ~~`fig. pen compass`~~
+1 Skeleton `fig. pen compass`
 
-	Ufo font -> Skeleton -> Parametrized outline -> design space -> Metapolation
+	fig. Ufo font -> Skeleton -> Parametrized outline -> design space -> Metapolation
 
 2 Parameters from Metafont (tools, like tension, shifing, bla)
 
-3 Metapolation ~~`fig. design spaces from peter`~~
+3 Metapolation `fig. design spaces from peter`
 
 ####(Example of prepared)fonts 
 
 It can work with any prepared font just like:
 
-* ~~`Sean with Devanagari`~~
-* ~~`Breite with Cyrillic`~~
+* `Sean with Devanagari`
+* `Breite with Cyrillic`
 * `Alice with Chinese`
 
 The font we are working on and the output of those (upcomming..)
 
 #### How can you use it in your workflow?
 
-1 Redpill progress proof of concept ~~`fig. screenshot red pill`~~
+1 Redpill progress proof of concept `fig. screenshot red pill`
 
 	Maybe we can show a bit of code in use, it's always nice to see code.
 
 2 explore a lot of different design ideas (contrast width etc) from one master `fig.universe `
 
-3 totaly new User interface whit design spaces ~~`fig. new ui`~~
+3 totaly new User interface whit design spaces `fig. new ui`
 
 #### Credits
-~~`fig. photograph of band members`~~
+`fig. photograph of band members`
 
 Date ?
  
