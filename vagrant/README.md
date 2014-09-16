@@ -3,21 +3,6 @@
 The `Vagrantfile` contains everything needed to build the Vagrant box for
 Metapolator, aside from the base box, which comes from Vagrant Cloud.
 
-
-# Installing the box
-
-To install the Vagrant box:
-
-```
-vagrant init metapolator/bleeding-edge
-vagrant up
-```
-
-You can then `vagrant ssh` into the box, or `vagrant ssh -- COMMAND ARG...` to run a command on it.
-
-(FIXME: add instructions for running and accessing red pill and other services.)
-
-
 ## Updating the box
 
 When the `Vagrantfile` is modified, update the box:
