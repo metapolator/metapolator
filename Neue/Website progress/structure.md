@@ -22,9 +22,9 @@ Why the project ? whend start ? when end
 
 It can work with any prepared font just like:
 
-* `Sean with Devanagari`
-* `Breite with Cyrillic`
-* `Alice with Chinese`
+* `Sean : Latin and Devanagari`
+* `Breite : Latin, Text and Cyrillic`
+* `Alice : Latin and Chinese`
 
 The font we are working on and the output of those (upcomming..)
 
