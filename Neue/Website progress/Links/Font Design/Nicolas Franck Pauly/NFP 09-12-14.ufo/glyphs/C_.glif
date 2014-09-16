@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="C" format="1">
+  <advance width="676"/>
+  <unicode hex="0043"/>
+  <outline>
+    <contour>
+      <point x="538" y="455" type="line"/>
+      <point x="511" y="550"/>
+      <point x="440" y="593"/>
+      <point x="356" y="593" type="curve" smooth="yes"/>
+      <point x="214" y="593"/>
+      <point x="138" y="483"/>
+      <point x="138" y="341" type="curve" smooth="yes"/>
+      <point x="138" y="213"/>
+      <point x="216" y="92"/>
+      <point x="364" y="92" type="curve"/>
+      <point x="450" y="92"/>
+      <point x="520" y="132"/>
+      <point x="554" y="212" type="curve"/>
+      <point x="646" y="169" type="line"/>
+      <point x="606" y="70"/>
+      <point x="508" y="-10"/>
+      <point x="366" y="-10" type="curve"/>
+      <point x="153" y="-10"/>
+      <point x="30" y="148"/>
+      <point x="30" y="337" type="curve" smooth="yes"/>
+      <point x="30" y="575"/>
+      <point x="197" y="695"/>
+      <point x="356" y="695" type="curve" smooth="yes"/>
+      <point x="483" y="695"/>
+      <point x="598" y="620"/>
+      <point x="640" y="493" type="curve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>background</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>C</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>676</integer>
+        </dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>C</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>676</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
