@@ -29,12 +29,19 @@ define([
         //     // this thing ended up requesting it's own value
         //     return 0
         var result = this._stack.execute(this._getAPI);
-        // result MUST be a vector
-        if(typeof result !== 'number' || !isFinite(result))
-            throw new ValueError('The formula of this CPSReal '
-                            + 'did not result in a finite number: "'+ val
-                            + '" typeof ' +  typeof val + ' a: '
-                            + val.constructor.name + ' ' + val);
+        // result MUST be a number
+        if(typeof result !== 'number' || result !== result)
+            throw new ValueError('The formula of this CPSReal did '
+                + (result !== result
+                    ? 'result in NaN (happens with division by 0 for example)'
+                    : 'not result in a number: "'+ val
+                        + '" typeof: ' +  typeof val +
+                        + (typeof val.constructor === 'function'
+                                ? ' a: ' + val.constructor.name
+                                : ''
+                        )
+                )
+            );
         return result;
     };
 

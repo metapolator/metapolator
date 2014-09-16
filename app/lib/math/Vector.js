@@ -66,13 +66,7 @@ define([
     },
 
     Vector.fromPolar = function(r, phi) {
-        //OLD:
         return new Vector(1, 1).fromPolar(r, phi);
-
-        // uses this.constructor, but that is defined on
-        // Vector.prototype, so it should work as expexted
-        // return new Vector.prototype.fromPolar(r, phi);
-
     }
 
 
@@ -88,7 +82,7 @@ define([
      * its short and often used to abbreviate "length".
      *
      * FIXME: we should have proper whitelisting facilities in CPS
-     * to overcome 'accidential' access to properties that weren't meant
+     * to overcome 'accidental' access to properties that weren't meant
      * to be used in CPS. Also, this could add a re-mapping of names
      * to getter methods (or getters). This would make the namespace
      * less crowded and allow a better names for he CPS user!

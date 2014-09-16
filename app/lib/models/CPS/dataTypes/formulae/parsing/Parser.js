@@ -378,7 +378,7 @@ define([
             // behavior, however, this quite common in other programming
             // languages as well.
             // The biggest downside of this behavior is that:
-            // "1-2" parses as `1|negaive 2` and "1 - 2" parses as
+            // "1-2" parses as `1|-2` and "1 - 2" parses as
             // `1|subtract|2` which will become confusing at some point.
             string = string.substring(i);
             i = 0;

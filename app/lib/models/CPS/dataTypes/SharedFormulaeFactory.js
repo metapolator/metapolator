@@ -24,22 +24,15 @@ define([
         var invalidParamterMessage = false
           , stack
           ;
+        // Throws CPSFormulaeError on fail
+        // We let it fail on purpose by now. Catching CPSFormulaeError
+        // and using invalidParamterMessage = error.message;
+        // would make it possible to react more gracefully by skipping
+        // invalid values, but right now we have no good way to tell the
+        // user that this happened.
+        // setInvalidAPI(invalidParamterMessage) will be the way to do so.
+        stack = formulaEngine.parse(parameterValue.valueString);
 
-        try {
-            stack = formulaEngine.parse(parameterValue.valueString);
-        }
-        catch(error) {
-            // Let's see it fail, the usage of invalidParamterMessage
-            // would make it possible to react more gracefully and
-            // skip invalid values, but right now we have no good way
-            // to tell the user that this happened.
-
-            // if(error instanceof CPSFormulaeError)
-            //    invalidParamterMessage = error.message;
-            // else
-                // reraise in all other cases
-                throw error;
-        }
         if(invalidParamterMessage) {
             setInvalidAPI(invalidParamterMessage);
             return;

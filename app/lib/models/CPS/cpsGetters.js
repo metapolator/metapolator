@@ -4,15 +4,15 @@ define([
   , 'metapolator/models/MOM/_Node'
 ], function(
     errors
-  , ufojs
+  , ufoJSUtils
   , _MOMNode
 ) {
     "use strict";
 
     var CPSError = errors.CPS
       , KeyError = errors.Key
-      , isInt = ufojs.isInt
-      , isIntString = ufojs.isIntString;
+      , isInt = ufoJSUtils.isInt
+      , isIntString = ufoJSUtils.isIntString;
 
     /**
     * This is method is used by CPS Operators or the stack, to read

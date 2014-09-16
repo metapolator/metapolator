@@ -18,7 +18,6 @@ define([
         this._rules = rules;
         this._element = element;
         this._controller = controller;
-        this._cache = {};
     }
 
     var _p = ReferenceDict.prototype;
@@ -70,13 +69,7 @@ define([
      * Styledict has a similar situation in its getParameter method.
      */
     _p.get = function(name) {
-        if(!(name in this._cache))
-            this._cache[name] = this._getParameter(name);
-        return this._cache[name]
-                // using get value to at least remind me why I had
-                // the instance cached,not the result of the parameter
-                // calculation
-                .getValue();
+        return this._getParameter(name).getValue();
     };
 
     return ReferenceDict;

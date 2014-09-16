@@ -13,13 +13,13 @@ define([
   , StringToken
   , SelectorToken
   , NameToken
-  , ufojs
+  , ufoJSUtils
 ) {
     "use strict";
 
     var CPSFormulaError = errors.CPSFormula
       , ValueError = errors.Value
-      , isInstance = ufojs.isInstance
+      , isInstance = ufoJSUtils.isInstance
       ;
 
     /**
@@ -77,8 +77,6 @@ define([
      * single match all implementation for this operator, NameTokens as
      * arguments will be resolved upon invocation.
      *
-     * Also,
-     *
      * Also, it may be an array of arrays like this:
      *   [
      *        [typename/constructor, [ typename/constructor ...] , method]
@@ -87,7 +85,7 @@ define([
      *   ]
      *
      * The first method that matches the actual types of arguments will
-     * be used, so an early match all function will overshadow later ones.
+     * be used, so an early match all function will shadow later ones.
      *
      * typename/constructor can be everything that is useful with ufoJS/main.isInstance
      *
@@ -101,7 +99,7 @@ define([
      *              NameTokens by itself.
      *        In turn, this means NameToken can be used as a typename/constructor
      *        but it will only ever appear as argument when *getAPI* is requested,
-     *        otherwise it will be reslved before invokation.
+     *        otherwise it will be resolved before invocation.
      * - The string "*anything*" which matches anything
      *
      * ufoJS/main.isInstance takes:
@@ -162,7 +160,7 @@ define([
 
         for(;index<this._methods.length; index++) {
             // the routine can request as first argument getAPI
-            // this however changes how NameToken is procesed
+            // this however changes how NameToken is processed
             // without *getAPI* the lookup is made for the operator
             // with *getAPI* the operator itself is in charge to
             // look up the names. The latter can happen anywhere, not
@@ -242,13 +240,13 @@ define([
      * This object never leaves the OperatorToken internals, so it doesn't
      * need its own module.
      *
-     * The versions two versions of the arguments array are available at the
+     * The two versions of the arguments array are available at the
      * property getters:
      *   - convertedNameTokens:
      *   - keptNameTokens
      * In both cases, Tokens of the type NumberToken, StringToken, SelectorToken
      * are converted to their value (using their getValue method)
-     * within convertedNameTokens NameTokns are converted to the value
+     * within convertedNameTokens NameTokens are converted to the value
      * returned by getAPI(token.getValue())
      */
     function Internal_Arguments(args, getAPI) {

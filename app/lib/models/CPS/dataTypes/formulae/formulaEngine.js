@@ -32,7 +32,6 @@ define([
     var ValueError = errors.Value
       , CPSFormulaError = errors.CPSFormula
       , Transformation = transform.Transform
-      , _toRad = Math.PI/180
       , engine
       ;
 
@@ -140,7 +139,7 @@ define([
          * name * - 5 => name * negate name
          *
          */
-      , new Operator('negate', false, 6, 0, 1, [
+      , new Operator('negate', false, 60, 0, 1, [
             // 'number' as an argument is not needed nor happening
             // because something like -123 will be parsed as a negative
             // number directly. This is because "Vector 12 -8" would
@@ -155,7 +154,7 @@ define([
           /**
            * add
            */
-      , new Operator('+', true, 1, 1, 1, [
+      , new Operator('+', true, 10, 1, 1, [
             ['number' , 'number', function(a, b){ return a + b; }]
           , ['string' , 'string', function(a, b){ return a + b; }]
           , [Array , Array, function(a, b){ return a.concat(b); }]
@@ -165,7 +164,7 @@ define([
         /**
          * subtract
          */
-      , new Operator('-', true, 1, 1, 1, [
+      , new Operator('-', true, 10, 1, 1, [
             ['number' , 'number', function(a, b){ return a - b; }]
           , [Vector, Vector, function(a, b){ return a['-'](b);}]
           , [Vector, 'number', function(a, b){ return a['-'](b);}]
@@ -173,7 +172,7 @@ define([
         /**
          * multiply
          */
-      , new Operator('*', true, 2, 1, 1, [
+      , new Operator('*', true, 20, 1, 1, [
            ['number' , 'number', function(a, b){ return a * b; }]
          , [Vector, Vector, function(a, b){ return a['*'](b);}]
          , [Vector, 'number', function(a, b){ return a['*'](b);}]
@@ -185,7 +184,7 @@ define([
         /**
          * divide
          */
-      , new Operator('/', true, 2, 1, 1, [
+      , new Operator('/', true, 20, 1, 1, [
             ['number' , 'number', function(a, b){ return a / b; }]
           , [Vector, Vector, function(a, b){ return a['/'](b);}]
           , [Vector, 'number', function(a, b){ return a['/'](b);}]
@@ -193,7 +192,7 @@ define([
         /**
          * pow
          */
-      , new Operator('^', true, 3, 1, 1, [
+      , new Operator('^', true, 30, 1, 1, [
             ['number' , 'number', function(a, b){ return Math.pow(a, b); }]
           , [Vector, Vector, function(a, b){ return a['**'](b);}]
           , [Vector, 'number', function(a, b){ return a['**'](b);}]
@@ -203,7 +202,7 @@ define([
          * Creates a vector from Cartesian coordinates
          * Consumes two numbers returns a Vector
          */
-      , new Operator('Vector', false, 4, 0, 2, [
+      , new Operator('Vector', false, 40, 0, 2, [
             ['number' , 'number', function(a, b){ return new Vector(a, b); }]
         ])
         /**
@@ -211,7 +210,7 @@ define([
          * Creates a vector from polar coordinates => magnitude angle in radians
          * Consumes two numbers returns a Vector
          */
-      , new Operator('Polar', false, 4, 0, 2, [
+      , new Operator('Polar', false, 40, 0, 2, [
             ['number' , 'number', function(a, b){ return Vector.fromPolar(a, b); }]
         ])
         /**
@@ -219,10 +218,9 @@ define([
          * This has higher precedence than "polar" because it makes writing:
          * "polar 100 deg 45" possible.
          */
-      , new Operator('deg', false, 5, 0, 1, [
+      , new Operator('deg', false, 50, 0, 1, [
             ['number', function(a) {
-                // deg * Math.PI/180;
-                return a * _toRad;
+                return a * Math.PI/180;
             }]
         ])
         /**

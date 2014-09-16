@@ -21,7 +21,6 @@ define([
         this._rules = rules;
         this._element = element;
         this._controller = controller;
-        this._cache = {};
         this.getAPI = this.get.bind(this);
     }
 
@@ -56,7 +55,7 @@ define([
     };
 
     /**
-     * Returns a ParameterValue instance
+     * Returns a new ParameterValue instance
      * Raises KeyError if name is not registered in the parameterRegistry
      * of the controller.
      * Raises CPSKeyNotFoundError if there is no entry for name in CPS.
@@ -76,26 +75,12 @@ define([
      * Raises KeyError and CPSKeyNotFoundError, see this._getParameter
      * for a description.
      *
-     * This caches the result of this._getParameter which might become
-     * problematic, because we'll have to invalidate the cached values.
-     * If that proves to be hard, we should maybe skip the caching first
-     * and see later how to make cache invalidation possible.
-     * Not caching the value means that we get a different instance
-     * for each call to this function, not perfect either.
-     * ReferenceDict has a similar situation in its get method.
+     * This used to cache the result of this._getParameter but we decided
+     * to drop that behavior. Now the instance of the ParameterValue
+     * is rebuild every time (currently either a CPSVector or a CPSReal)
      */
     _p.getParameter = function(name) {
-        // this is a caching mechanism, this might be harmful, because we
-        // create a cache that needs invalidation from time to time.
-        //  Maybe the
-        // position of the cache could change?
-        if(!(name in this._cache))
-            this._cache[name] = this._getParameter(name);
-        return this._cache[name]
-                // using get value to at least remind me why I had
-                // the instance cached,not the result of the parameter
-                // calculation
-                .getValue();
+        return this._getParameter(name).getValue();
     };
 
     /**
@@ -106,13 +91,13 @@ define([
      * ALso, as an exception: "this" will always return the MOM Element
      * of this StyleDict (return this._element).
      *
-     * If name is no registered parameter type the @dictionary rules for
+     * If name is not a registered parameter type the @dictionary rules for
      * this element is are queried.
      *
      * If name is not an @dictionary parameter, it is queried on element
      * itself.
      *
-     * If name is no registered parameter type, the return value may be
+     * If name is not a registered parameter type, the return value may be
      * anything that is accessible or constructable from CPSformulae and
      * also a white-listed value on any reachable element.
      *
@@ -123,28 +108,28 @@ define([
      *          1. ReferenceDictionary: this._controller
      *                                .getReferenceDictionary(this._element)
      *                                .get(name);
-     *          2. this._element[name] // needs propper whitelisting
+     *          2. this._element[name] // needs proper whitelisting
      *
      * If name is a registered parameter name and it is not found
      * CPSKeyNotFoundError is thrown.
      * If name is not a registered parameter and it is not found,
      * KeyError is thrown.
      *
-     * We can use the CPSKeyNotFoundError to search the next parameter
-     * value source and the KeyError to inform the user that an unkown name
+     * We can use the CPSKeyNotFoundError to search for the next parameter
+     * value source and the KeyError to inform the user that an unknown name
      * was used.
      */
     _p.get = function(name) {
         // "this" is not defined for cpsGetters.whiteList,
         // because I want "this" to be not overridable by @dictionary.
-        // thus it's querried first. Also it would be possibe to define
+        // thus it's queried first. Also it would be possible to define
         // this as a CPSParameter, so we could get it via this.getParameter.
         if(name === 'this')
             return this._element;
 
         if(this._controller.parameterRegistry.exists(name))
             // The name is a registered parameter, so we always know
-            // it's type and purpose.
+            // its type and purpose.
             // This raises CPSKeyNotFoundError to indicate that the next
             // layer of a parameter source may take over.
             // Default values are not part of the parameter definition
@@ -152,7 +137,7 @@ define([
             // we need any.
             return this.getParameter(name);
 
-        // @dictionary values can be used to overshadow in-element-lookups
+        // @dictionary values can be used to override in-element-lookups
         // get the ReferenceDictionary for element
         try {
             return this._controller
