@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="750px" height="450px" viewBox="0 0 750 450" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.0.4 (8054) - http://www.bohemiancoding.com/sketch -->
+    <title>PenCompas</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="PenCompas" sketch:type="MSArtboardGroup">
+            <rect id="Rectangle-1" fill="#F9F9F9" sketch:type="MSShapeGroup" x="0" y="0" width="750" height="450"></rect>
+            <path d="M570.039881,359.326034 L570.039881,114.85962 C570.039881,80.3503715 548.915104,80.9721598 548.915104,80.9721598 C548.915104,80.9721598 633.103553,79.3140578 633.103553,153.410491 L633.103553,359.326034 L570.039881,359.326034 L570.039881,359.326034 Z" id="Shape" fill="#4D4D4D" sketch:type="MSShapeGroup"></path>
+            <path d="M204.601953,350.206473 C204.601953,350.206473 155.725019,288.027648 234.942932,205.537073 C285.476711,153.928648 291.27567,147.503503 309.086756,128.953487 C326.897842,110.299839 331.661272,97.5531799 328.244029,91.231666 C324.826786,84.8065207 315.196373,82.7338932 310.950707,82.7338932 C310.950707,82.7338932 330.418638,82.9411559 342.327214,97.035023 C357.238821,114.652357 363.866202,150.094287 338.081548,180.561912 C298.317262,227.506925 228.936868,307.199452 211.954204,326.474888 C196.524833,343.781328 202.220238,346.890269 204.601953,350.206473 L204.601953,350.206473 Z" id="Shape" fill="#4D4D4D" sketch:type="MSShapeGroup"></path>
+            <path d="M191.65785,153.410491 C220.859747,123.564655 273.361031,82.9411559 309.190309,82.9411559 C326.483631,82.9411559 341.705897,93.6151876 341.705897,106.154584 C341.705897,128.124436 337.770889,138.694836 279.988411,201.806344 C217.546057,270.09942 163.180822,359.222403 232.147005,359.222403 C278.642225,359.222403 387.683352,218.90552 431.279092,174.551292 C474.978385,130.197063 509.56503,80.8685284 549.432868,80.8685284 C589.300707,80.8685284 603.901656,118.69398 603.901656,156.623064 L603.901656,358.600615" id="Shape" stroke="#322F2C" stroke-width="0.5244" sketch:type="MSShapeGroup"></path>
+            <path d="M633.103553,151.337864 L570.039881,114.85962" id="Shape" stroke="#322F2C" stroke-width="0.5244" sketch:type="MSShapeGroup"></path>
+            <path d="M280.816834,246.367835 L254.721522,222.325356" id="Shape" stroke="#322F2C" stroke-width="0.5244" opacity="0.8" sketch:type="MSShapeGroup"></path>
+            <path d="M150.858036,343.366802 L368.21542,105.532796" id="Shape" stroke="#322F2C" stroke-width="0.5244" opacity="0.8" sketch:type="MSShapeGroup"></path>
+            <path d="M255.964156,223.672564 L235.874907,204.500759" id="Shape" stroke="#322F2C" stroke-width="0.5244" opacity="0.8" sketch:type="MSShapeGroup"></path>
+            <path d="M598.724014,147.399871 C591.99308,144.705456 588.67939,137.140365 591.268211,130.300694 C593.960584,123.564655 601.51994,120.14482 608.354427,122.839235 C615.085361,125.533651 618.399051,133.098742 615.810231,139.938412 C613.117857,146.778083 605.558501,150.094287 598.724014,147.399871 L598.724014,147.399871 Z" id="Shape" opacity="0.8" fill="#FEC800" sketch:type="MSShapeGroup"></path>
+            <path d="M599.138225,371.347274 C592.407292,368.652858 589.093601,361.087768 591.682422,354.248097 C594.374795,347.512057 601.934152,344.195853 608.768638,346.786638 C615.499572,349.481053 618.813263,357.046144 616.224442,363.885815 C613.532068,370.725485 605.972712,374.041689 599.138225,371.347274 L599.138225,371.347274 Z" id="Shape" opacity="0.8" fill="#FEC800" sketch:type="MSShapeGroup"></path>
+            <ellipse id="Oval" opacity="0.8" fill="#CED7D5" sketch:type="MSShapeGroup" cx="236.082013" cy="204.397128" rx="13.1512091" ry="13.1611847"></ellipse>
+            <path d="M275.742746,258.07818 C269.011812,255.383765 265.698121,247.818674 268.286942,240.979003 C270.979315,234.242964 278.538672,230.92676 285.373158,233.517544 C292.104092,236.21196 295.417783,243.777051 292.828962,250.616721 C290.136589,257.456392 282.473679,260.772596 275.742746,258.07818 L275.742746,258.07818 Z" id="Shape" opacity="0.8" fill="#606FB3" sketch:type="MSShapeGroup"></path>
+            <ellipse id="Oval" opacity="0.8" fill="#FEC800" sketch:type="MSShapeGroup" cx="368.629632" cy="105.947321" rx="13.1512091" ry="13.1611847"></ellipse>
+            <path d="M254.100205,237.870062 C247.369271,235.175646 244.05558,227.610556 246.644401,220.770885 C249.336775,214.034846 256.896131,210.61501 263.730618,213.309426 C270.461551,216.003842 273.878795,223.568932 271.186421,230.408603 C268.494048,237.144643 260.831138,240.460847 254.100205,237.870062 L254.100205,237.870062 Z" id="Shape" opacity="0.8" fill="#FEC800" sketch:type="MSShapeGroup"></path>
+            <text id="Skeleton" fill="#000000" sketch:type="MSTextLayer" font-family="Roboto" font-size="14" font-weight="normal" sketch:alignment="middle">
+                <tspan x="430.545829" y="199.142996">Skeleton</tspan>
+            </text>
+            <text id="Curve-off" fill="#000000" sketch:type="MSTextLayer" font-family="Roboto" font-size="14" font-weight="normal" sketch:alignment="middle">
+                <tspan x="381.381278" y="89.3798866">Curve off</tspan>
+            </text>
+            <text id="Curve-on" fill="#000000" sketch:type="MSTextLayer" font-family="Roboto" font-size="14" font-weight="normal" sketch:alignment="middle">
+                <tspan x="76.8170108" y="370.77343">Curve on</tspan>
+            </text>
+            <text id="Pen-width" fill="#000000" sketch:type="MSTextLayer" font-family="Roboto" font-size="14" font-weight="normal" sketch:alignment="middle">
+                <tspan x="161.206682" y="187.829693">Pen width</tspan>
+            </text>
+            <text id="Pen-angle" fill="#000000" sketch:type="MSTextLayer" font-family="Roboto" font-size="14" font-weight="normal" sketch:alignment="middle">
+                <tspan x="293.798735" y="268.126952">Pen angle</tspan>
+            </text>
+            <ellipse id="Oval" opacity="0.8" fill="#E4191C" sketch:type="MSShapeGroup" cx="144.955525" cy="348.44474" rx="13.1512091" ry="13.1611847"></ellipse>
+        </g>
+    </g>
+</svg>

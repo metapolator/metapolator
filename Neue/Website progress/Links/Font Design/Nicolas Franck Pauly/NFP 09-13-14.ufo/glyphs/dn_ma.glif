@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dn_ma" format="1">
+  <advance width="557"/>
+  <unicode hex="092E"/>
+  <outline>
+    <contour>
+      <point x="98" y="326" type="line"/>
+      <point x="98" y="670" type="line"/>
+      <point x="192" y="670" type="line"/>
+      <point x="192" y="326" type="line"/>
+    </contour>
+    <component base="dn_na"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>dn_ma</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>557</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

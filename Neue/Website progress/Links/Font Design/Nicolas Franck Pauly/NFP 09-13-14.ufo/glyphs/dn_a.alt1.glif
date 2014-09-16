@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dn_a.alt1" format="1">
+  <advance width="745"/>
+  <outline>
+    <contour>
+      <point x="356" y="270" type="line"/>
+      <point x="135" y="125" type="line"/>
+      <point x="84" y="198" type="line"/>
+      <point x="164" y="251" type="line"/>
+      <point x="261" y="314" type="line"/>
+      <point x="305" y="343" type="line"/>
+      <point x="311" y="335" type="line"/>
+    </contour>
+    <contour>
+      <point x="182" y="353" type="curve"/>
+      <point x="149" y="353"/>
+      <point x="127" y="342"/>
+      <point x="112" y="326" type="curve"/>
+      <point x="45" y="386" type="line"/>
+      <point x="74" y="415"/>
+      <point x="118" y="441"/>
+      <point x="182" y="441" type="curve"/>
+      <point x="279" y="441"/>
+      <point x="329" y="388"/>
+      <point x="354" y="336" type="curve"/>
+      <point x="270" y="300" type="line"/>
+      <point x="256" y="329"/>
+      <point x="230" y="353"/>
+    </contour>
+    <component base="dn_pa.ra" xOffset="145"/>
+    <component base="component_6" xOffset="-108"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>dn_a.alt1</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>745</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

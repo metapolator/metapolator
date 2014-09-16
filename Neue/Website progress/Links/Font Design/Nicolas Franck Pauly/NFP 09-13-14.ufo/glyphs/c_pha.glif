@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_pha" format="1">
+  <advance width="873"/>
+  <unicode hex="092B"/>
+  <outline>
+    <component base="c_pa"/>
+    <component base="component_6" xOffset="481"/>
+    <component base="component_7"/>
+    <contour>
+      <point x="538.0" y="0.0" type="move" name="DVAnchor0"/>
+    </contour>
+    <contour>
+      <point x="487.0" y="660.0" type="move" name="DVAnchor3"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_pha</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>873</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
