@@ -4,7 +4,7 @@
 
 exports.command = {
     description: 'interpolate a comma-separated list of masters according to a CPS expression'
-  , arguments: '<masters> <interpolators>'
+  , arguments: '<masters>'
 };
 
 var path = require('path');
@@ -20,6 +20,8 @@ if (require.main === module) {
       , 'metapolator/project/MetapolatorProject'
       , 'metapolator/models/CPS/parsing/parseRules'
       , 'metapolator/models/CPS/Registry'
+      , 'metapolator/models/Controller'
+      , 'fs'
     ], function (
         program
       , errors
@@ -27,13 +29,24 @@ if (require.main === module) {
       , MetapolatorProject
       , parseRules
       , Registry
+      , Controller
+      , fs
     ) {
         var CommandLineError = errors.CommandLine;
 
+	var collect = function(val, col) {
+	    col.push(val);
+	    return col;
+	}
+
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
-        program.action(function(masters, interpolators) {
+	program.option('-c, --cps [CPS]', 'CPS to apply', collect, [])
+	program.option('-s, --selectors  [Sel]',   'CPS selector for the nodes to inspect', collect, [])
+        program.action(function(masters) {
             if (program.args.length > program._args.length + 1)
+                program.help();
+	    if( !program.cps.length )
                 program.help();
 
             var names = masters.split(',');
@@ -46,16 +59,70 @@ if (require.main === module) {
                                               + 'Master name: ' + names[i]);
             }
 
-            var rules = parseRules.fromString(rules, 'InterpolatorArgument', new Registry());
+            var parameterRegistry = new Registry();
 
-            var project = new MetapolatorProject(io);
-            project.load();
-            for(i = 0; i < names.length; i++)
-                project.open(names[i]);
+            // FIXME: a ParameterDescription class/interface definition could
+            // be the point here. So we can ensure a consistent api and
+            // pinpoint programming errors
+            parameterRegistry.register('value', {
+                        type: 'string'
+                      , description: 'this is a stub for the parameter description!'
+            });
 
-            console.log('interpolators:', rules);
+            parameterRegistry.register('height', {
+                        type: 'compoundReal'
+                      , description: 'the relative value of height'
+            });
 
-            project.interpolate(rules);
+            parameterRegistry.register('heightIntrinsic', {
+                        type: 'real'
+                      , description: 'the intrinsic value of the height'
+            });
+
+            parameterRegistry.register('width', {
+                        type: 'compoundReal'
+                      , description: 'the relative value of width'
+            });
+
+            parameterRegistry.register('widthIntrinsic', {
+                        type: 'real'
+                      , description: 'the intrinsic value of the width'
+            });
+
+            parameterRegistry.register('zon', {
+                        type: 'compoundVector'
+                      , description: 'The center on curve point of a skeleton point'
+            })
+            parameterRegistry.register('zonIntrinsic', {
+                        type: 'vector'
+                      , description: 'the intrinsic value of the zon'
+            })
+            parameterRegistry.register('label', {
+                type: 'string'
+                , description: 'something new'
+            })
+            parameterRegistry.register('xx', {
+                type: 'real'
+                , description: 'and a number for mathses my precious'
+            });
+
+	    fs.readFile( program.cps[0], 'utf8', function (err,theCPSString) {
+		var rules = parseRules.fromString( theCPSString, 'InterpolatorArgument', parameterRegistry );
+
+		var project = new MetapolatorProject(io);
+		project.load();
+		for(i = 0; i < names.length; i++)
+                    project.open(names[i]);
+
+		console.log('interpolators:', rules);
+
+		// OK, I'm not quite sure what this method needs to do //
+		project.interpolate( rules );
+		console.log('project:', project );
+
+		var controller = new Controller(parameterRegistry);
+
+	    });
         });
         program.parse(process.argv);
         if (process.argv.length < program._args.length + 2)

@@ -21,6 +21,7 @@ define([
     function Glyph() {
         Parent.call(this);
         this._ufoData = {};
+	this.label = "untouched label";
     }
     var _p = Glyph.prototype = Object.create(Parent.prototype);
     _p.constructor = Glyph;
