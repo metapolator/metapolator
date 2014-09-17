@@ -3,7 +3,8 @@
 "use strict";
 
 exports.command = {
-    description: 'run the red-pill web interface'
+    description: 'open a UFO (default: current directory) in the red-pill web interface'
+  , arguments: '[ufo]'
 };
 
 var path = require('path');
@@ -24,8 +25,9 @@ if (require.main === module) {
       , fs
     ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
-        program.action(function() {
-            if (program.args.length > program._args.length + 1)
+        program.arguments(exports.command.arguments);
+        program.action(function(projectDir) {
+            if (program.args.length > program.max_args + 1)
                 program.help();
 
             var express = require('express')
@@ -35,12 +37,13 @@ if (require.main === module) {
               , rootDir = path.dirname(path.dirname(path.dirname(require.main.filename)))
               , libDir = rootDir + '/app/lib'
               , index = rootDir + '/app/red-pill.html'
-            // the process must be started inside of the current dir. so
-            // we expect.
-            // TODO: check if projectDir is indeed a metapolator project
-              , projectDir = process.cwd() + '/'
             ;
 
+            if (projectDir === undefined || typeof(projectDir) == "object")
+                projectDir = process.cwd();
+            if (projectDir.slice(-1) != '/')
+                projectDir += '/';
+            // TODO: check if projectDir is indeed a metapolator project
 
             // red-pill.html as index
             // all contents of /lib are served for get at /lib
@@ -226,7 +229,5 @@ if (require.main === module) {
             console.log('Open http://localhost:3000 in your browser.');
         });
         program.parse(process.argv);
-        if (process.argv.length < program._args.length + 2)
-            program.help();
     }
 )}

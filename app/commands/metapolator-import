@@ -4,7 +4,7 @@
 
 exports.command = {
     description: 'import the given UFO directory to master <target-master>'
-  , arguments: '<source-ufo> <target-master>'
+  , arguments: '<ufo> <target-master>'
 };
 
 var path = require('path');
@@ -29,7 +29,7 @@ if (require.main === module) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(sourceUFO, targetMaster) {
-            if (program.args.length > program._args.length + 1)
+            if (program.args.length > program.max_args + 1)
                 program.help();
 
             // FIXME: very simple input validation, we'll need more I think
@@ -54,7 +54,5 @@ if (require.main === module) {
                 return glyphNames;
             });
         program.parse(process.argv);
-        if (process.argv.length < program._args.length + 2)
-            program.help();
     }
 )}
