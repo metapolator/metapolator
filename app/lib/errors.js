@@ -4,7 +4,7 @@ define(function() {
     var errors = {}
     
     /**
-     * safe three lines of coding for each error with this factory
+     * save three lines of coding for each error with this factory
      * 
      * and observe that extending Error is uncool
      */
@@ -32,12 +32,12 @@ define(function() {
         Constructor.prototype = prototype;
         Constructor.prototype.constructor = Constructor;
         if(namespace === undefined)
-            var namespace = errors
+            namespace = errors;
         namespace[name] = Constructor;
     }
     errors.makeError = makeError;
     /**
-     * here the definitions go
+     * the definitions go here
      */
     makeError('Error');
     makeError('Assertion', undefined , new errors.Error);
@@ -54,8 +54,8 @@ define(function() {
     makeError('CPSParser', undefined , new errors.CPS);
     
     /**
-     * if expression is false errors.Assertion is thrown
-     * pass a message to explain yourself 
+     * if expression is false, throw an Assertion
+     * pass a message to explain yourself
      **/
     errors.assert = function(exp, message) {
         if (!exp) {
