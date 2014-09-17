@@ -1,367 +1,446 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    
-		<TITLE>Metapolator</TITLE>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<!-- css -->
-		<link rel="stylesheet" type="text/css" media="all" href="css/style.css">
-	
-		<!-- jquery -->
-		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
-		<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script> 
-		<link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
-	
-		<!-- bootstrap -->
-		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-	    <script src="bootstrap/js/bootstrap.min.js"></script>
-	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	    <!--[if lt IE 9]>
-	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	    <![endif]-->
-		
-		<!-- fonts -->
-		<link href='http://fonts.googleapis.com/css?family=Lato:400,900italic,900,700italic,400italic,300italic,300,100italic,100,700' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Merriweather:400,900italic,900,700italic,400italic,700,300,300italic' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
-		
-		<!-- Angular -->
-	    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
-	    <script src='js/app.js' type='text/javascript'></script>
-	    <script src='js/maincontroller.js' type='text/javascript'></script>   
-    	<script src='js/directives.js' type='text/javascript'></script> 
-		
-		<script type="text/javascript">
-			$(function() {	
-				$(".readmore-header").on("click", function() {
-					$(this).parent(".readmore").toggleClass("readmore-show");
-				});
-				
-				var x1 = 0;
-				var y1 = "200px";
-				var x2 = $("#masters").outerWidth();
-				var y2 = parseInt ($("#masters-container").outerHeight(), 10) - 40 + "px";
-				$(".divider-hor").draggable({
-						axis: "y",
-						containment: [x1, y1, x2, y2],
-						start: function() {
-							windowDivision();
-						},
-						drag: function() {
-							windowDivision();
-						},
-						stop: function() {
-							windowDivision();
-						}
-					}
-				);
-				
-				$(".divider-ver").draggable({
-						axis: "x",
-						start: function() {
-							windowDivision();
-						},
-						drag: function() {
-							windowDivision();
-						},
-						stop: function() {
-							windowDivision();
-						}
-					}
-				);
-			});
-			
-			function windowDivision () {
-				var mastersA = parseInt( $("#masters-divider").css("top"), 10 ) + 9;
-				var mastersB = parseInt( $("#masters-container").outerHeight(), 10 ) - mastersA;
-				$("#masters").height (mastersA + "px");
-				$("#adjustment-masters").height (mastersB + "px");
-				
-				var dev1A = parseInt( $("#divider-1").css("left"), 10 );
-				var dev1B = parseInt( $(window).width(), 10 ) - parseInt( $("#masters-container").outerWidth(), 10 ) - dev1A;
-				$("#parameters").css("width", dev1A + "px");
-				$("#specimen").css("width", dev1B + "px");
-			}
-			
+        <TITLE>Metapolator</TITLE>
 
-		
-			function moveLandscape (view) {
-				var distances = new Array (0, 13, 26);
-				
-				// move container
-				var thisLeft = - (distances[view] / 16 * 100) + "%";
-				$("#landscape").css("left", thisLeft);
-						
-				// get styles to menu
-				for (var i = 0; i < 3; i++) {
-					$("#menu-item-" + i).removeClass("menu-item-current");
-				}
-				$("#menu-item-" + view).addClass("menu-item-current");
-			}
-		</script>
-	</HEAD>
-	
-	<BODY ng-app="Metapolator" ng-controller="MetapolatorController">
-		<div id="menu">
-			
-			<div id="project">
-		        <div id="project-dropdown" class="dropdown">
-		          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Project</b> New project <span class="caret"></span></a>
-		          <ul class="dropdown-menu" role="menu">
-		            <li><a href="#">New</a></li>
-		            <li><a href="#">Clone</a></li>
-		            <li><a href="#">Open</a></li>
-		            <li class="divider"></li>
-		            <li><a href="#">Save</a></li>
-		            <li><a href="#">Save As...</a></li>
-		          </ul>
-		        </div>
-			</div>
-			<!-- end of project -->
-			
-			<div id="view-buttons">
-				<div id="menu-item-0" class="menu-item menu-item-current" onClick="moveLandscape(0);">Parameters</div>
-				<div id="menu-item-1" class="menu-item" onClick="moveLandscape(1);">Design spaces</div>
-				<div id="menu-item-2" class="menu-item" onClick="moveLandscape(2);">Fonts</div>
-			</div>
-			<!-- end of view buttons -->
-		</div>
-		<!-- end of menu -->
-		
-		<div id="pagewrap">
-			<div id="landscape">
-				
-				<div id="parameters" class="panel sub-panel">
-					<div class="readmore">
-						<div class="readmore-header">Project</div>
-						<div class="readmore-content">
-							Slant x 2.0
-						</div>
-					</div>
-					<div class="readmore">
-						<div class="readmore-header">Master: Dave 'n Gary</div>
-						<div class="readmore-content">
-							Direction in = 1.0<br>
-							Direction in max = 2.0
-						</div>
-					</div>
-					<div class="readmore">
-						<div class="readmore-header">Latin (0)</div>
-						<div class="readmore-content">
-							-
-						</div>
-					</div>
-					<div class="readmore">
-						<div class="readmore-header">Cyrillic</div>
-						<div class="readmore-content">
-							-
-						</div>
-					</div>
-				</div>
-				<!-- end of parameters -->
-				
-				
-				<div id="specimen" class="panel sub-panel standard-padding">	
-					<div id="specimen-toolbar">
-						<input type="text" ng-model="specimen.text">
-					</div>
-					
-					<div ng-repeat="index in mastersInView">
-						<div class="specimen-info-holder"><div class="specimen-info">{{masters[index].fontFamily}} {{masters[index].name}} {{masters[index].weight}}</div></div>
-						<div class="specimen" style="font-family: '{{masters[index].fontFamily}}'; font-weight: {{masters[index].weight}}">{{specimen.text}}</div>
-					</div>
-					
-		            <div ng-repeat="index in adjustmentMastersInView">            
-						<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMasters[index].fontFamily}} {{adjustmentMasters[index].name}} {{adjustmentMasters[index].weight}}</div></div>
-						<div class="specimen" style="font-family: '{{adjustmentMasters[index].fontFamily}}'; font-weight: {{adjustmentMasters[index].weight}}">{{specimen.text}}</div>
-		            </div>
-				</div>
-				<!-- end of specimen -->
-				
-			<!-- start of view 2 -->
-				
-				<div id="masters-container" class="panel">
-					
-					<div id="masters" class="sub-panel">
-				    	<div class="dropdown">
-				        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Masters <span class="caret"></span></a>
-				        	<ul class="dropdown-menu" role="menu">
-				            	<li><a href="#">Import ufo...</a></li>
-				            	<li><a href="#">Copy From Project...</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Set Scripts…</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Quick Export...</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Delete...</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Create Sequence</a></li>
-				            	<li><a href="#">Delete Sequence...</a></li>
-				          	</ul>
-				        </div>	
-				        
-				        <ul ui-selectable id="master-ul-1">
-				            <li ng-repeat="master in masters" class="ui-selectee" id="master-{{master.id}}">
-				            	<div class="handle"></div>
-				            	<span class="selectable-diamond"></span>
-				            	<span class="selectable-ag" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
-				            	<span class="selectable-name">{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
-				            </li>
-				        </ul>
-				        
-				        <ul ui-selectable id="master-ul-2"></ul>
-				        
-				        <!-- this is temporarily for testing adding functionality 
-				        <form class="masters-add-item" ng-submit="addMaster()">
-				            <input size="9" placeholder="Font Family..." ng-model="newMaster.fontFamily">
-				            <input size="9" placeholder="Name..." ng-model="newMaster.name">
-				            <input size="4" placeholder="Weight..." ng-model="newMaster.weight">
-				            <input type="submit" value="Add">
-				        </form>		
-				        -->
-				        
-					</div>
-					<!-- end of masters sub panel -->
-										
-					<div id="adjustment-masters" class="sub-panel">
-						<div class="dropdown">
-				        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Adjustment Masters <span class="caret"></span></a>
-				        	<ul class="dropdown-menu" role="menu">
-				        		<li><a href="#">New</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Set Scripts…</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Quick Export...</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Delete...</a></li>
-				            	<li class="divider"></li>
-				            	<li><a href="#">Create Sequence</a></li>
-				            	<li><a href="#">Delete Sequence...</a></li>
-				          	</ul>
-				        </div>
-				        
-				        <ul ui-selectable id="adjustmentMaster-ul-1">
-			            	<li ng-repeat="adjustmentMaster in adjustmentMasters" class="ui-selectee" id="adjustmentMaster-{{adjustmentMaster.id}}">
-			            		<div class="handle"></div>
-				            	<span class="selectable-diamond"></span>
-				            	<span class="selectable-ag" style="font-family:'{{adjustmentMaster.fontFamily}}'; font-weight:{{adjustmentMaster.weight}};">Ag</span>
-				            	<span class="selectable-name">{{adjustmentMaster.fontFamily}} {{adjustmentMaster.name}} {{adjustmentMaster.weight}}</span>
-				            </li>
-				        </ul>
-				        
-				        <ul ui-selectable id="adjustmentaster-ul-2"></ul>
-				        
-				        <!-- this is temporarily for testing adding functionality -->
-				        <form class="masters-add-item" ng-submit="addAdjustmentMaster()">
-				            <input size="9" placeholder="Font Family..." ng-model="newAdjustmentMaster.fontFamily">
-				            <input size="9" placeholder="Name..." ng-model="newAdjustmentMaster.name">
-				            <input size="4" placeholder="Weight..." ng-model="newAdjustmentMaster.weight">
-				            <input type="submit" value="Add">
-				        </form>			
-					</div>
-					<!-- end of adustment masters sub panel -->
-					
-					<divider-hor id="masters-divider"></divider>
-					
-				</div>
-				<!-- end of masters-container -->
-				
-				<div id="design-space-container" class="panel">
-					<div id="design-space" class="sub-panel">
-						<div id="block-1" class="block"></div>
-						<div id="block-2" class="block"></div>
-						<div id="block-3" class="block"></div>
-					</div>
-					
-					<div id="specimen-2" class="sub-panel standard-padding">
-						<div ng-repeat="index in mastersInView">
-							<div class="specimen-info-holder"><div class="specimen-info">{{masters[index].fontFamily}} {{masters[index].name}} {{masters[index].weight}}</div></div>
-							<div class="specimen" style="font-family: '{{masters[index].fontFamily}}'; font-weight: {{masters[index].weight}}">{{specimen.text}}</div>
-						</div>
-						
-			            <div ng-repeat="index in adjustmentMastersInView">            
-							<div class="specimen-info-holder"><div class="specimen-info">{{adjustmentMasters[index].fontFamily}} {{adjustmentMasters[index].name}} {{adjustmentMasters[index].weight}}</div></div>
-							<div class="specimen" style="font-family: '{{adjustmentMasters[index].fontFamily}}'; font-weight: {{adjustmentMasters[index].weight}}">{{specimen.text}}</div>
-			            </div>
-					</div>
-					<!-- end of specimen 2 -->
-				</div>
-				<!-- end of design space container -->
-				
-			<!-- start of view 3 -->
-				
-				<div id="instances" class="panel sub-panel">
-			    	<div class="dropdown">
-			        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
-			        	<ul class="dropdown-menu" role="menu">
-			            	<li><a href="#">New</a></li>
-			            	<li class="divider"></li>
-			            	<li><a href="#">Promote To Master</a></li>
-			            	<li class="divider"></li>
-			            	<li><a href="#">Quick Export...</a></li>
-			            	<li class="divider"></li>
-			            	<li><a href="#">Delete...</a></li>
-			            	<li class="divider"></li>
-			            	<li><a href="#">Create String</a></li>
-			            	<li><a href="#">Delete String...</a></li>
-			          	</ul>
-			        </div>
-					<!-- end of menu -->		
-					
-			        <ul ui-selectable>
-		            	<li value="3" ng-repeat="instance in instances" class="ui-selectee">
-		            		<div class="handle"></div>
-			            	<span class="selectable-diamond"></span>
-			            	<span class="selectable-ag" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.weight}};">Ag</span>
-			            	<span class="selectable-name">{{instance.fontFamily}} {{instance.name}} {{instance.weight}}</span>
-			            </li>
-			        </ul>
-				</div>
-				<!-- end of instances -->
-				
-				<div id="font-mapping" class="panel sub-panel standard-padding">
-					<b>Font Mapping</b><br><br>
-					<div class="mapping-a">Thin</div>
-					<div class="mapping-b">Extra Light</div>
-					<div class="mapping-a">Light</div>
-					<div class="mapping-b">Regular</div>
-					<div class="mapping-a">Medium</div>
-					<div class="mapping-b">Semi Bold</div>
-					<div class="mapping-a">Bold</div>
-					
-					<input id="font-mapping-export" type="submit" value="Export">
-				</div>
-				<!-- end of font-mapping -->
-				
-				<div id="meta-data" class="panel sub-panel standard-padding">
-					<b>Metadata</b><br><br>
-					<input type="text" placeholder="Family Name..."><br>
-					<input type="text" placeholder="Style Name..."><br>
-					<input type="text" placeholder="Style Map Family Name..."><br>
-					<input type="text" placeholder="Style Map Style...">
-				</div>
-				<!-- end of font-meta-data -->
-				
-				<divider-ver id="divider-1"></divider>
-				
-				<divider-ver id="divider-2"></divider>
+        <!-- css -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/style.css">
 
-				
-				
-			</div>
-			<!-- end of landscape -->
-			
-			
-		</div>
-		
-		
+        <!-- jquery -->
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
+        <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
 
-	    
+        <!-- bootstrap -->
+        <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-	</BODY>
+        <!-- fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900italic,900,700italic,400italic,300italic,300,100italic,100,700' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Merriweather:400,900italic,900,700italic,400italic,700,300,300italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+
+        <!-- Angular -->
+        <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
+        <script src='js/app.js' type='text/javascript'></script>
+        <script src='js/maincontroller.js' type='text/javascript'></script>
+        <script src='js/directives.js' type='text/javascript'></script>
+        <script src='js/maincontroller.js' type='text/javascript'></script>
+        <script src='js/sortable.js' type='text/javascript'></script>
+
+        <script type="text/javascript">
+            $(function() {
+                $(".readmore-header").on("click", function() {
+                    $(this).parent(".readmore").toggleClass("readmore-show");
+                });
+
+                var x1 = 0;
+                var y1 = "200px";
+                var x2 = $("#masters").outerWidth();
+                var y2 = parseInt($("#masters-container").outerHeight(), 10) - 40 + "px";
+                $(".divider-hor").draggable({
+                    axis : "y",
+                    containment : [x1, y1, x2, y2],
+                    start : function() {
+                        windowDivision();
+                    },
+                    drag : function() {
+                        windowDivision();
+                    },
+                    stop : function() {
+                        windowDivision();
+                    }
+                });
+
+                $(".divider-ver").draggable({
+                    axis : "x",
+                    start : function() {
+                        windowDivision();
+                    },
+                    drag : function() {
+                        windowDivision();
+                    },
+                    stop : function() {
+                        windowDivision();
+                    }
+                });
+            });
+
+            function windowDivision() {
+                var mastersA = parseInt($("#masters-divider").css("top"), 10) + 9;
+                var mastersB = parseInt($("#masters-container").outerHeight(), 10) - mastersA;
+                $("#masters").height(mastersA + "px");
+                $("#adjustment-masters").height(mastersB + "px");
+
+                var dev1A = parseInt($("#divider-1").css("left"), 10);
+                var dev1B = parseInt($(window).width(), 10) - parseInt($("#masters-container").outerWidth(), 10) - dev1A;
+                $("#parameters").css("width", dev1A + "px");
+                $("#specimen").css("width", dev1B + "px");
+            }
+
+            function moveLandscape(view) {
+                var distances = new Array(0, 13, 26);
+                var thisLeft = -(distances[view] / 16 * 100) + "%";
+                $("#landscape").css("left", thisLeft);
+                for (var i = 0; i < 3; i++) {
+                    $("#menu-item-" + i).removeClass("menu-item-current");
+                }
+                $("#menu-item-" + view).addClass("menu-item-current");
+            }
+        </script>
+    </HEAD>
+
+    <BODY ng-app="Metapolator" ng-controller="MetapolatorController">
+        <div id="menu">
+
+            <div id="project">
+                <div id="project-dropdown" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Project</b> New project <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a href="#">New</a>
+                        </li>
+                        <li>
+                            <a href="#">Clone</a>
+                        </li>
+                        <li>
+                            <a href="#">Open</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">Save</a>
+                        </li>
+                        <li>
+                            <a href="#">Save As...</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- end of project -->
+
+            <div id="view-buttons">
+                <div id="menu-item-0" class="menu-item menu-item-current" onClick="moveLandscape(0);">
+                    Parameters
+                </div>
+                <div id="menu-item-1" class="menu-item" onClick="moveLandscape(1);">
+                    Design spaces
+                </div>
+                <div id="menu-item-2" class="menu-item" onClick="moveLandscape(2);">
+                    Fonts
+                </div>
+            </div>
+            <!-- end of view buttons -->
+        </div>
+        <!-- end of menu -->
+
+        <div id="pagewrap">
+            <div id="landscape">
+
+                <div id="parameters" class="panel sub-panel">
+                    <div class="readmore">
+                        <div class="readmore-header">
+                            Project
+                        </div>
+                        <div class="readmore-content">
+                            Slant x 2.0
+                        </div>
+                    </div>
+                    <div class="readmore">
+                        <div class="readmore-header">
+                            Master: Dave 'n Gary
+                        </div>
+                        <div class="readmore-content">
+                            Direction in = 1.0
+                            <br>
+                            Direction in max = 2.0
+                        </div>
+                    </div>
+                    <div class="readmore">
+                        <div class="readmore-header">
+                            Latin (0)
+                        </div>
+                        <div class="readmore-content">
+                            -
+                        </div>
+                    </div>
+                    <div class="readmore">
+                        <div class="readmore-header">
+                            Cyrillic
+                        </div>
+                        <div class="readmore-content">
+                            -
+                        </div>
+                    </div>
+                </div>
+                <!-- end of parameters -->
+
+                <div id="specimen" class="panel sub-panel standard-padding">
+                    <div id="specimen-toolbar">
+                        <input type="text" ng-model="specimen.text">
+                    </div>
+
+                    <div ng-repeat="sequence in sequences">
+                        <div ng-repeat="master in sequence.masters | filter:{display: true}">
+                            <div class="specimen-info-holder">
+                                <div class="specimen-info">
+                                    {{master.fontFamily}} {{master.name}} {{master.weight}}
+                                </div>
+                            </div>
+                            <div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}; font-size: {{specimen.fontSize}}px; line-height: {{specimen.lineHeight}}px;">
+                                {{specimen.text}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of specimen -->
+
+                <!-- start of view 2 -->
+
+                <div id="masters-container" class="panel">
+
+                    <div id="masters" class="sub-panel">
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Masters <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#">Import ufo...</a>
+                                </li>
+                                <li>
+                                    <a href="#">Copy From Project...</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Set Scripts…</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Quick Export...</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Delete...</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Create Sequence</a>
+                                </li>
+                                <li>
+                                    <a href="#">Delete Sequence...</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <ul ui-sortable="sortableOptions" ng-model="sequence.masters" class="master-ul" ng-repeat="sequence in sequences" id="master-{{$index}}">
+                            {{sequence.name}}
+                            <li ng-repeat="master in sequence.masters" class="master-li">
+                                <span class="selectable-diamond"></span>
+                                <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'ui-selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
+                                <span class="selectable-name">{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
+                            </li>
+                        </ul>
+
+                        <!--
+                        <ul ui-selectable id="master-ul-2"></ul>
+                        -->
+
+                        <!-- this is temporarily for testing adding functionality
+                        <form class="masters-add-item" ng-submit="addMaster()">
+                        <input size="9" placeholder="Font Family..." ng-model="newMaster.fontFamily">
+                        <input size="9" placeholder="Name..." ng-model="newMaster.name">
+                        <input size="4" placeholder="Weight..." ng-model="newMaster.weight">
+                        <input type="submit" value="Add">
+                        </form>
+                        -->
+
+                    </div>
+                    <!-- end of masters sub panel -->
+
+                    <div id="adjustment-masters" class="sub-panel">
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Adjustment Masters <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#">New</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Set Scripts…</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Quick Export...</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Delete...</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">Create Sequence</a>
+                                </li>
+                                <li>
+                                    <a href="#">Delete Sequence...</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- this is temporarily for testing adding functionality -->
+                        <form class="masters-add-item" ng-submit="addAdjustmentMaster()">
+                            <input size="9" placeholder="Font Family..." ng-model="newAdjustmentMaster.fontFamily">
+                            <input size="9" placeholder="Name..." ng-model="newAdjustmentMaster.name">
+                            <input size="4" placeholder="Weight..." ng-model="newAdjustmentMaster.weight">
+                            <input type="submit" value="Add">
+                        </form>
+                    </div>
+                    <!-- end of adustment masters sub panel -->
+
+                    <divider-hor id="masters-divider">
+                        </divider>
+
+                </div>
+                <!-- end of masters-container -->
+
+                <div id="design-space-container" class="panel">
+                    <div id="design-space" class="sub-panel">
+                        <div id="block-1" class="block"></div>
+                        <div id="block-2" class="block"></div>
+                        <div id="block-3" class="block"></div>
+                    </div>
+
+                    <div id="specimen-2" class="sub-panel standard-padding">
+                        <div ng-repeat="index in mastersInView">
+                            <div class="specimen-info-holder">
+                                <div class="specimen-info">
+                                    {{masters[index].fontFamily}} {{masters[index].name}} {{masters[index].weight}}
+                                </div>
+                            </div>
+                            <div class="specimen" style="font-family: '{{masters[index].fontFamily}}'; font-weight: {{masters[index].weight}}">
+                                {{specimen.text}}
+                            </div>
+                        </div>
+
+                        <div ng-repeat="index in adjustmentMastersInView">
+                            <div class="specimen-info-holder">
+                                <div class="specimen-info">
+                                    {{adjustmentMasters[index].fontFamily}} {{adjustmentMasters[index].name}} {{adjustmentMasters[index].weight}}
+                                </div>
+                            </div>
+                            <div class="specimen" style="font-family: '{{adjustmentMasters[index].fontFamily}}'; font-weight: {{adjustmentMasters[index].weight}}">
+                                {{specimen.text}}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of specimen 2 -->
+                </div>
+                <!-- end of design space container -->
+
+                <!-- start of view 3 -->
+
+                <div id="instances" class="panel sub-panel">
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="#">New</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">Promote To Master</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">Quick Export...</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">Delete...</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">Create String</a>
+                            </li>
+                            <li>
+                                <a href="#">Delete String...</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- end of menu -->
+
+                    <ul ui-selectable>
+                        <li value="3" ng-repeat="instance in instances" class="ui-selectee">
+                            <div class="handle"></div>
+                            <span class="selectable-diamond"></span>
+                            <span class="selectable-ag" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.weight}};">Ag</span>
+                            <span class="selectable-name">{{instance.fontFamily}} {{instance.name}} {{instance.weight}}</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- end of instances -->
+
+                <div id="font-mapping" class="panel sub-panel standard-padding">
+                    <b>Font Mapping</b>
+                    <br>
+                    <br>
+                    <div class="mapping-a">
+                        Thin
+                    </div>
+                    <div class="mapping-b">
+                        Extra Light
+                    </div>
+                    <div class="mapping-a">
+                        Light
+                    </div>
+                    <div class="mapping-b">
+                        Regular
+                    </div>
+                    <div class="mapping-a">
+                        Medium
+                    </div>
+                    <div class="mapping-b">
+                        Semi Bold
+                    </div>
+                    <div class="mapping-a">
+                        Bold
+                    </div>
+
+                    <input id="font-mapping-export" type="submit" value="Export">
+                </div>
+                <!-- end of font-mapping -->
+
+                <div id="meta-data" class="panel sub-panel standard-padding">
+                    <b>Metadata</b>
+                    <br>
+                    <br>
+                    <input type="text" placeholder="Family Name...">
+                    <br>
+                    <input type="text" placeholder="Style Name...">
+                    <br>
+                    <input type="text" placeholder="Style Map Family Name...">
+                    <br>
+                    <input type="text" placeholder="Style Map Style...">
+                </div>
+                <!-- end of font-meta-data -->
+
+                <divider-ver id="divider-1">
+                    </divider>
+
+                    <divider-ver id="divider-2">
+                        </divider>
+
+            </div>
+            <!-- end of landscape -->
+
+        </div>
+
+    </BODY>
 </html>
