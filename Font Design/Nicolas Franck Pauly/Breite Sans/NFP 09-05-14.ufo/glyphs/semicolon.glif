@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="semicolon" format="1">
+  <advance width="202"/>
+  <unicode hex="003B"/>
+  <outline>
+    <component base="dotaccent" yOffset="-185"/>
+    <component base="dotaccent" yOffset="-185"/>
+    <component base="comma"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>background</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+            <key>com.typemytype.robofont.image</key>
+            <dict>
+              <key>path</key>
+              <string>/Users/mapauln/Dropbox/Sharing/TypeDesignStudio/Projects/2014/#2_Metapolator/Font Design/Nicolas/Ref/Grotesk_04.jpg</string>
+              <key>transform</key>
+              <array>
+                <real>13.042281150021457</real>
+                <real>-0.16877719194890195</real>
+                <real>0.16877719194890195</real>
+                <real>13.042281150021457</real>
+                <real>-9942.53894601523</real>
+                <real>-4372.132803024918</real>
+              </array>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>quotesingle</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>202</integer>
+        </dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>quotesingle</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>202</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

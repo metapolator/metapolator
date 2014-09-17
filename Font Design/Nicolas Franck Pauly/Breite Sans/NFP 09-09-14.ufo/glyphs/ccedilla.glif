@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="ccedilla" format="1">
+  <advance width="523"/>
+  <unicode hex="00E7"/>
+  <outline>
+    <contour>
+      <point x="280" y="3" type="line"/>
+      <point x="224" y="-76" type="line"/>
+      <point x="197" y="-73" type="line"/>
+      <point x="229.703296703" y="-57.9142857143"/>
+      <point x="255" y="-40"/>
+      <point x="290" y="-40" type="curve" smooth="yes"/>
+      <point x="352" y="-40"/>
+      <point x="415.0" y="-71.4434782609"/>
+      <point x="415" y="-153" type="curve" smooth="yes"/>
+      <point x="415.0" y="-210.0"/>
+      <point x="368" y="-274"/>
+      <point x="274" y="-274" type="curve" smooth="yes"/>
+      <point x="229.286713287" y="-274.0"/>
+      <point x="148" y="-253"/>
+      <point x="135" y="-193" type="curve"/>
+      <point x="199" y="-158" type="line"/>
+      <point x="214" y="-193"/>
+      <point x="248.728395062" y="-200.0"/>
+      <point x="275" y="-200" type="curve" smooth="yes"/>
+      <point x="309" y="-200"/>
+      <point x="336.0" y="-182.0"/>
+      <point x="336" y="-153" type="curve" smooth="yes"/>
+      <point x="336" y="-121"/>
+      <point x="309" y="-103"/>
+      <point x="279" y="-103" type="curve" smooth="yes"/>
+      <point x="258" y="-103"/>
+      <point x="235" y="-111"/>
+      <point x="224" y="-121" type="curve" smooth="yes"/>
+      <point x="223" y="-121" type="line"/>
+      <point x="149" y="-63" type="line"/>
+      <point x="247" y="22" type="line"/>
+    </contour>
+    <component base="c" xOffset="4"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>ccedilla</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>523</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="germandbls" format="1">
+  <advance width="823"/>
+  <unicode hex="00DF"/>
+  <outline>
+    <contour>
+      <point x="212" y="616"/>
+      <point x="251" y="650"/>
+      <point x="303" y="650" type="curve" smooth="yes"/>
+      <point x="360" y="650"/>
+      <point x="398" y="606"/>
+      <point x="398" y="563" type="curve"/>
+      <point x="398" y="489"/>
+      <point x="280" y="467"/>
+      <point x="280" y="359" type="curve"/>
+      <point x="280" y="221"/>
+      <point x="505" y="225"/>
+      <point x="505" y="134" type="curve"/>
+      <point x="505" y="90"/>
+      <point x="457" y="66"/>
+      <point x="413" y="66" type="curve"/>
+      <point x="363" y="66"/>
+      <point x="336" y="91"/>
+      <point x="303" y="120" type="curve"/>
+      <point x="245" y="56" type="line"/>
+      <point x="288" y="16"/>
+      <point x="338" y="-16"/>
+      <point x="410" y="-16" type="curve" smooth="yes"/>
+      <point x="516" y="-16"/>
+      <point x="604" y="55"/>
+      <point x="604" y="140" type="curve"/>
+      <point x="604" y="280"/>
+      <point x="370" y="297"/>
+      <point x="370" y="368" type="curve"/>
+      <point x="370" y="442"/>
+      <point x="493" y="466"/>
+      <point x="493" y="560" type="curve"/>
+      <point x="493" y="650"/>
+      <point x="421" y="736"/>
+      <point x="293" y="736" type="curve"/>
+      <point x="188" y="736"/>
+      <point x="107" y="688"/>
+      <point x="107" y="561" type="curve" smooth="yes"/>
+      <point x="107" y="0" type="line"/>
+      <point x="212" y="0" type="line"/>
+      <point x="212" y="544" type="line" smooth="yes"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>background</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+            <dict>
+              <key>points</key>
+              <array>
+                <dict>
+                  <key>segmentType</key>
+                  <string>line</string>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>212</integer>
+                  <key>y</key>
+                  <integer>0</integer>
+                </dict>
+                <dict>
+                  <key>segmentType</key>
+                  <string>line</string>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>107</integer>
+                  <key>y</key>
+                  <integer>0</integer>
+                </dict>
+                <dict>
+                  <key>segmentType</key>
+                  <string>line</string>
+                  <key>smooth</key>
+                  <true/>
+                  <key>x</key>
+                  <integer>107</integer>
+                  <key>y</key>
+                  <integer>573</integer>
+                </dict>
+                <dict>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>107</integer>
+                  <key>y</key>
+                  <integer>660</integer>
+                </dict>
+                <dict>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>178</integer>
+                  <key>y</key>
+                  <integer>719</integer>
+                </dict>
+                <dict>
+                  <key>segmentType</key>
+                  <string>curve</string>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>310</integer>
+                  <key>y</key>
+                  <integer>676</integer>
+                </dict>
+                <dict>
+                  <key>segmentType</key>
+                  <string>line</string>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>305</integer>
+                  <key>y</key>
+                  <integer>584</integer>
+                </dict>
+                <dict>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>251</integer>
+                  <key>y</key>
+                  <integer>605</integer>
+                </dict>
+                <dict>
+                  <key>smooth</key>
+                  <false/>
+                  <key>x</key>
+                  <integer>212</integer>
+                  <key>y</key>
+                  <integer>583</integer>
+                </dict>
+                <dict>
+                  <key>segmentType</key>
+                  <string>curve</string>
+                  <key>smooth</key>
+                  <true/>
+                  <key>x</key>
+                  <integer>212</integer>
+                  <key>y</key>
+                  <integer>544</integer>
+                </dict>
+              </array>
+            </dict>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>germandbls</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>823</integer>
+        </dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>germandbls</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>823</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <integer>0</integer>
+        <integer>1</integer>
+        <integer>0</integer>
+        <real>0.5</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

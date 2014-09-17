@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="six" format="1">
+  <advance width="618"/>
+  <unicode hex="0036"/>
+  <outline>
+    <contour>
+      <point x="498" y="215" type="qcurve" smooth="yes"/>
+      <point x="498" y="165"/>
+      <point x="468" y="83"/>
+      <point x="440.5" y="53.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="413" y="24"/>
+      <point x="333" y="-8"/>
+      <point x="284" y="-8" type="qcurve" smooth="yes"/>
+      <point x="228" y="-9"/>
+      <point x="141" y="27"/>
+      <point x="111.0" y="61.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="81" y="95"/>
+      <point x="49" y="189"/>
+      <point x="49" y="246" type="qcurve" smooth="yes"/>
+      <point x="49" y="338"/>
+      <point x="111" y="484"/>
+      <point x="168.5" y="541.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="226" y="598"/>
+      <point x="388" y="680"/>
+      <point x="487" y="709" type="qcurve"/>
+      <point x="520" y="597" type="line"/>
+      <point x="413" y="567"/>
+      <point x="254" y="479"/>
+      <point x="214" y="422" type="qcurve"/>
+      <point x="231" y="427"/>
+      <point x="263" y="431"/>
+      <point x="283" y="431" type="qcurve" smooth="yes"/>
+      <point x="333" y="431"/>
+      <point x="413" y="401"/>
+      <point x="440.5" y="372.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="468" y="344"/>
+      <point x="498" y="264"/>
+    </contour>
+    <contour>
+      <point x="286" y="109" type="qcurve" smooth="yes"/>
+      <point x="331" y="109"/>
+      <point x="382" y="166"/>
+      <point x="382" y="214" type="qcurve" smooth="yes"/>
+      <point x="382" y="261"/>
+      <point x="328" y="316"/>
+      <point x="282" y="316" type="qcurve" smooth="yes"/>
+      <point x="239" y="316"/>
+      <point x="180" y="271"/>
+      <point x="163" y="233" type="qcurve"/>
+      <point x="167" y="176"/>
+      <point x="231" y="109"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>six</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>618</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

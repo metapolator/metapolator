@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="component_6" format="1">
+  <advance width="263"/>
+  <outline>
+    <contour>
+      <point x="-44" y="571" type="line"/>
+      <point x="-44" y="687" type="line"/>
+      <point x="301" y="687" type="line"/>
+      <point x="301" y="571" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>component_6</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>263</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

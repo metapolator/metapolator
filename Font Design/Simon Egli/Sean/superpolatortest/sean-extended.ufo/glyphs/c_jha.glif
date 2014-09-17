@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_jha" format="1">
+  <advance width="781"/>
+  <unicode hex="091D"/>
+  <outline>
+    <contour>
+      <point x="433" y="300" type="move"/>
+      <point x="526" y="291"/>
+      <point x="577" y="294"/>
+      <point x="653" y="329" type="curve"/>
+      <point x="650" y="351" type="line"/>
+      <point x="530" y="287"/>
+      <point x="443" y="327"/>
+      <point x="359" y="327" type="curve" smooth="yes"/>
+    </contour>
+    <component base="v_i"/>
+    <component base="kana" xOffset="508"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_jha</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>781</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>1.0</real>
+        <real>0.8</real>
+        <real>0.4</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

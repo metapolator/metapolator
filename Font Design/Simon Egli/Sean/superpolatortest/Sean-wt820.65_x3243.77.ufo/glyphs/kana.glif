@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="kana" format="1">
+  <advance width="283"/>
+  <outline>
+    <contour>
+      <point x="131" y="710" type="line"/>
+      <point x="131" y="0" type="line"/>
+      <point x="153" y="0" type="line"/>
+      <point x="153" y="710" type="line"/>
+    </contour>
+    <component base="component_6"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>1.0</real>
+        <real>0.8</real>
+        <real>0.4</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="OE" format="1">
+  <advance width="927"/>
+  <unicode hex="0152"/>
+  <outline>
+    <contour>
+      <point x="343" y="108" type="qcurve" smooth="yes"/>
+      <point x="355" y="108"/>
+      <point x="360" y="107"/>
+      <point x="360.5" y="106.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="361" y="106"/>
+      <point x="366" y="107"/>
+      <point x="377" y="109" type="qcurve"/>
+      <point x="377" y="578" type="line"/>
+      <point x="372" y="579"/>
+      <point x="363" y="579"/>
+      <point x="357" y="579" type="qcurve" smooth="yes"/>
+      <point x="309" y="579"/>
+      <point x="236" y="542"/>
+      <point x="212.0" y="509.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="188" y="476"/>
+      <point x="164" y="385"/>
+      <point x="164" y="331" type="qcurve" smooth="yes"/>
+      <point x="164" y="282"/>
+      <point x="187" y="200"/>
+      <point x="209.5" y="170.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="232" y="141"/>
+      <point x="299" y="108"/>
+    </contour>
+    <contour>
+      <point x="432" y="0" type="line"/>
+      <point x="409" y="-4"/>
+      <point x="366" y="-7"/>
+      <point x="342" y="-7" type="qcurve" smooth="yes"/>
+      <point x="270" y="-7"/>
+      <point x="160" y="42"/>
+      <point x="123.0" y="86.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="86" y="131"/>
+      <point x="48" y="255"/>
+      <point x="48" y="330" type="qcurve" smooth="yes"/>
+      <point x="48" y="410"/>
+      <point x="87" y="544"/>
+      <point x="126.0" y="592.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="165" y="640"/>
+      <point x="282" y="694"/>
+      <point x="359" y="694" type="qcurve" smooth="yes"/>
+      <point x="381" y="694"/>
+      <point x="414" y="691"/>
+      <point x="432" y="687" type="qcurve"/>
+      <point x="806" y="687" type="line"/>
+      <point x="806" y="572" type="line"/>
+      <point x="493" y="572" type="line"/>
+      <point x="493" y="411" type="line"/>
+      <point x="755" y="411" type="line"/>
+      <point x="755" y="295" type="line"/>
+      <point x="493" y="295" type="line"/>
+      <point x="493" y="116" type="line"/>
+      <point x="834" y="116" type="line"/>
+      <point x="834" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>OE</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>927</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

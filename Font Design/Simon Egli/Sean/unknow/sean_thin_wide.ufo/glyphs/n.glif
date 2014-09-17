@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="n" format="1">
+  <advance width="842"/>
+  <unicode hex="006E"/>
+  <outline>
+    <contour>
+      <point x="154" y="368" type="line"/>
+      <point x="205" y="440"/>
+      <point x="291" y="518"/>
+      <point x="414" y="518" type="curve" smooth="yes"/>
+      <point x="552" y="518"/>
+      <point x="630" y="445"/>
+      <point x="630" y="309" type="curve"/>
+      <point x="630" y="0" type="line"/>
+      <point x="652" y="0" type="line"/>
+      <point x="652" y="311" type="line"/>
+      <point x="652" y="460"/>
+      <point x="568" y="541"/>
+      <point x="418" y="541" type="curve" smooth="yes"/>
+      <point x="288" y="541"/>
+      <point x="191" y="467"/>
+      <point x="145" y="386" type="curve"/>
+    </contour>
+    <contour>
+      <point x="160" y="533" type="line"/>
+      <point x="138" y="533" type="line"/>
+      <point x="138" y="0" type="line"/>
+      <point x="160" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array>
+        <dict>
+          <key>angle</key>
+          <real>90.0</real>
+          <key>isGlobal</key>
+          <false/>
+          <key>magnetic</key>
+          <integer>5</integer>
+          <key>name</key>
+          <string></string>
+          <key>x</key>
+          <integer>503</integer>
+          <key>y</key>
+          <integer>270</integer>
+        </dict>
+        <dict>
+          <key>angle</key>
+          <real>90.0</real>
+          <key>isGlobal</key>
+          <false/>
+          <key>magnetic</key>
+          <integer>5</integer>
+          <key>name</key>
+          <string></string>
+          <key>x</key>
+          <integer>133</integer>
+          <key>y</key>
+          <integer>296</integer>
+        </dict>
+        <dict>
+          <key>angle</key>
+          <integer>0</integer>
+          <key>isGlobal</key>
+          <false/>
+          <key>magnetic</key>
+          <integer>5</integer>
+          <key>name</key>
+          <string></string>
+          <key>x</key>
+          <integer>821</integer>
+          <key>y</key>
+          <integer>533</integer>
+        </dict>
+      </array>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>www</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>n</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>842</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

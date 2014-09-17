@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="fi" format="1">
+  <advance width="613"/>
+  <unicode hex="FB01"/>
+  <outline>
+    <contour>
+      <point x="292" y="0" type="line"/>
+      <point x="176" y="0" type="line"/>
+      <point x="176" y="397" type="line"/>
+      <point x="34" y="397" type="line"/>
+      <point x="34" y="513" type="line"/>
+      <point x="176" y="513" type="line"/>
+      <point x="176" y="540" type="line" smooth="yes"/>
+      <point x="175" y="643"/>
+      <point x="276" y="757"/>
+      <point x="363" y="757" type="qcurve" smooth="yes"/>
+      <point x="385.0" y="757.0" name="inserted"/>
+      <point x="447.0" y="743.5"/>
+      <point x="487" y="730" type="qcurve"/>
+      <point x="487" y="563" type="line"/>
+      <point x="371" y="563" type="line"/>
+      <point x="371" y="641" type="line"/>
+      <point x="368" y="641" type="line" smooth="yes"/>
+      <point x="332" y="641"/>
+      <point x="292" y="588"/>
+      <point x="292" y="540" type="qcurve" smooth="yes"/>
+      <point x="292" y="513" type="line"/>
+      <point x="488" y="513" type="line"/>
+      <point x="488" y="0" type="line"/>
+      <point x="371" y="0" type="line"/>
+      <point x="371" y="397" type="line"/>
+      <point x="292" y="397" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>fi</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>613</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

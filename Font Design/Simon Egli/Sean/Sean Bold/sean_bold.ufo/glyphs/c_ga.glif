@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_ga" format="1">
+  <advance width="600"/>
+  <outline>
+    <contour>
+      <point x="469" y="571" type="line"/>
+      <point x="469" y="0" type="line"/>
+      <point x="353" y="0" type="line"/>
+      <point x="353" y="393" type="line"/>
+      <point x="335" y="330"/>
+      <point x="231" y="241"/>
+      <point x="146" y="215" type="qcurve"/>
+      <point x="8" y="285" type="line"/>
+      <point x="123" y="323"/>
+      <point x="246" y="406"/>
+      <point x="246" y="457" type="qcurve" smooth="yes"/>
+      <point x="246" y="475"/>
+      <point x="237" y="512"/>
+      <point x="228.5" y="528.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="220" y="544"/>
+      <point x="196" y="567"/>
+      <point x="181" y="571" type="qcurve"/>
+      <point x="-29" y="571" type="line"/>
+      <point x="-29" y="687" type="line"/>
+      <point x="583" y="687" type="line"/>
+      <point x="583" y="571" type="line"/>
+    </contour>
+    <contour>
+      <point x="335" y="571" type="line"/>
+      <point x="340" y="560"/>
+      <point x="349" y="536"/>
+      <point x="353" y="525" type="qcurve"/>
+      <point x="353" y="571" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_ga</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>600</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

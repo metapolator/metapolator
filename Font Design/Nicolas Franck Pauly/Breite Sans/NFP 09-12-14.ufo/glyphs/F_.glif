@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="F" format="1">
+  <advance width="522"/>
+  <unicode hex="0046"/>
+  <outline>
+    <contour>
+      <point x="422" y="294" type="line"/>
+      <point x="55" y="294" type="line"/>
+      <point x="55" y="393" type="line"/>
+      <point x="422" y="393" type="line"/>
+    </contour>
+    <contour>
+      <point x="55" y="0" type="curve"/>
+      <point x="55" y="104" type="line"/>
+      <point x="55" y="104"/>
+      <point x="55" y="0"/>
+    </contour>
+    <contour>
+      <point x="492" y="587" type="line"/>
+      <point x="55" y="587" type="line"/>
+      <point x="55" y="686" type="line"/>
+      <point x="492" y="686" type="line"/>
+    </contour>
+    <contour>
+      <point x="55" y="0" type="line"/>
+      <point x="55" y="685" type="line"/>
+      <point x="157" y="685" type="line"/>
+      <point x="157" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>background</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>F</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>522</integer>
+        </dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>E</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>522</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

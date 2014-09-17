@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name=".notdef" format="1">
+  <advance width="600"/>
+  <outline>
+    <contour>
+      <point x="21" y="789" type="line"/>
+      <point x="536" y="789" type="line"/>
+      <point x="536" y="-257" type="line"/>
+      <point x="21" y="-257" type="line"/>
+    </contour>
+    <contour>
+      <point x="382" y="-103" type="line"/>
+      <point x="382" y="635" type="line"/>
+      <point x="176" y="635" type="line"/>
+      <point x="176" y="-103" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>.notdef</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>600</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

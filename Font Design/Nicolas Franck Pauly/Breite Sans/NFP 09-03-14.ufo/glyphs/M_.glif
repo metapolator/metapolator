@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="M" format="1">
+  <advance width="859"/>
+  <unicode hex="004D"/>
+  <outline>
+    <contour>
+      <point x="478" y="0" type="line"/>
+      <point x="379" y="0" type="line"/>
+      <point x="594" y="685" type="line"/>
+      <point x="703" y="685" type="line"/>
+    </contour>
+    <contour>
+      <point x="379" y="0" type="line"/>
+      <point x="155" y="685" type="line"/>
+      <point x="264" y="685" type="line"/>
+      <point x="478" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="660" y="0" type="line"/>
+      <point x="660" y="685" type="line"/>
+      <point x="769" y="685" type="line"/>
+      <point x="769" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="90" y="0" type="line"/>
+      <point x="90" y="685" type="line"/>
+      <point x="199" y="685" type="line"/>
+      <point x="199" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>background</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+            <key>com.typemytype.robofont.image</key>
+            <dict>
+              <key>brightness</key>
+              <integer>0</integer>
+              <key>contrast</key>
+              <integer>1</integer>
+              <key>path</key>
+              <string>/Users/mapauln/Dropbox/Sharing/TypeDesignStudio/Projects/2014/#2_Metapolator/Font Design/Nicolas/Ref/Cap_alphabet.jpg</string>
+              <key>saturation</key>
+              <integer>1</integer>
+              <key>sharpness</key>
+              <real>0.4</real>
+              <key>transform</key>
+              <array>
+                <real>13.366370729815117</real>
+                <real>0.0</real>
+                <real>0.0</real>
+                <real>13.366370729815117</real>
+                <real>-7478.235434312417</real>
+                <real>-413.19335347432025</real>
+              </array>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>M</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>859</integer>
+        </dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>M</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>859</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

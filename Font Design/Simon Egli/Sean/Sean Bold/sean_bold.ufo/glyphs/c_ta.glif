@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_ta" format="1">
+  <advance width="561"/>
+  <unicode hex="0924"/>
+  <outline>
+    <contour>
+      <point x="319" y="0" type="line"/>
+      <point x="319" y="73" type="line"/>
+      <point x="269" y="8" type="line"/>
+      <point x="218" y="36"/>
+      <point x="132" y="94"/>
+      <point x="100.5" y="128.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="69" y="162"/>
+      <point x="34" y="244"/>
+      <point x="34" y="295" type="qcurve" smooth="yes"/>
+      <point x="34" y="336"/>
+      <point x="57" y="404"/>
+      <point x="79.5" y="428.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="102" y="453"/>
+      <point x="166" y="480"/>
+      <point x="207" y="480" type="qcurve" smooth="yes"/>
+      <point x="319" y="480" type="line"/>
+      <point x="319" y="571" type="line"/>
+      <point x="-31" y="571" type="line"/>
+      <point x="-31" y="687" type="line"/>
+      <point x="549" y="687" type="line"/>
+      <point x="549" y="571" type="line"/>
+      <point x="435" y="571" type="line"/>
+      <point x="435" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="149" y="296" type="qcurve" smooth="yes"/>
+      <point x="149" y="268"/>
+      <point x="175" y="219"/>
+      <point x="197.5" y="196.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="220" y="174"/>
+      <point x="283" y="132"/>
+      <point x="319" y="110" type="qcurve"/>
+      <point x="319" y="366" type="line"/>
+      <point x="208" y="366" type="line" smooth="yes"/>
+      <point x="180" y="366"/>
+      <point x="149" y="327"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_ta</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>561</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

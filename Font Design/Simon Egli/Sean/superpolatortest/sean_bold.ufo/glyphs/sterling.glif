@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="sterling" format="1">
+  <advance width="505"/>
+  <unicode hex="00A3"/>
+  <outline>
+    <contour>
+      <point x="433" y="1" type="line"/>
+      <point x="433" y="23" type="line"/>
+      <point x="29" y="23" type="line"/>
+      <point x="29" y="1" type="line"/>
+    </contour>
+    <contour>
+      <point x="386" y="367" type="line"/>
+      <point x="386" y="388" type="line"/>
+      <point x="65" y="388" type="line"/>
+      <point x="65" y="367" type="line"/>
+    </contour>
+    <contour>
+      <point x="432" y="640" type="curve"/>
+      <point x="443" y="657" type="line"/>
+      <point x="399" y="689"/>
+      <point x="363" y="705"/>
+      <point x="309" y="705" type="curve"/>
+      <point x="160" y="705"/>
+      <point x="125" y="555"/>
+      <point x="163" y="375" type="curve" smooth="yes"/>
+      <point x="203" y="184"/>
+      <point x="184" y="22"/>
+      <point x="29" y="22" type="curve"/>
+      <point x="29" y="0" type="line"/>
+      <point x="195" y="2"/>
+      <point x="224" y="171"/>
+      <point x="185" y="372" type="curve" smooth="yes"/>
+      <point x="152" y="541"/>
+      <point x="169" y="684"/>
+      <point x="306" y="684" type="curve"/>
+      <point x="357" y="684"/>
+      <point x="391" y="671"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>sterling</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>505</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
