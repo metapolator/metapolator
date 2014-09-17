@@ -9,6 +9,7 @@ define([
 
     var KeyError = errors.Key
       , CPSKeyNotFoundError = errors.CPSKeyNotFound
+      , CPSRecursionError = errors.CPSRecursion
       ;
 
     /**
@@ -22,6 +23,7 @@ define([
         this._element = element;
         this._controller = controller;
         this.getAPI = this.get.bind(this);
+        this._getting = {};
     }
 
     var _p = StyleDict.prototype;
@@ -119,7 +121,7 @@ define([
      * value source and the KeyError to inform the user that an unknown name
      * was used.
      */
-    _p.get = function(name) {
+    _p._get = function(name) {
         // "this" is not defined for cpsGetters.whiteList,
         // because I want "this" to be not overridable by @dictionary.
         // thus it's queried first. Also it would be possible to define
@@ -151,6 +153,25 @@ define([
         // Will throw KeyError if not found
         return cpsGetters.whitelist(this._element, name);
     };
+
+    _p.get = function(name) {
+        var error, result;
+        if(name in this._getting)
+            throw new CPSRecursionError('Looking up "' + name
+                            + '" is causing recursion in the element: '
+                            + this._element.particulars);
+        this._getting[name] = null;
+        try {
+            result = this._get(name);
+        }
+        catch(err) {
+            error = err
+        }
+        delete this._getting[name];
+        if(error)
+            throw error
+        return result;
+    }
 
     return StyleDict;
 });
