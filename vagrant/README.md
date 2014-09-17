@@ -3,6 +3,7 @@
 The `Vagrantfile` contains everything needed to build the Vagrant box for
 Metapolator, aside from the base box, which comes from Vagrant Cloud.
 
+
 ## Updating the box
 
 When the `Vagrantfile` is modified, update the box:
