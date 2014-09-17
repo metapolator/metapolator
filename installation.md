@@ -1,9 +1,7 @@
 Metapolator Installation
 ========================
 
-# Using Vagrant
-
-To use the Vagrant box:
+The simplest and recommended method is to use the Vagrant box:
 
 ```
 vagrant init metapolator/bleeding-edge
@@ -12,29 +10,9 @@ vagrant up
 
 You can then `vagrant ssh` into the box, or `vagrant ssh -- COMMAND ARG...` to run a command on it.
 
-(FIXME: add instructions for running and accessing red pill and other services.)
+If you prefer to install manually, see the provisioning script at the top of `vagrant/Vagrantfile`. It is written for Ubuntu 14.04, from which you can infer dependencies for other platforms (primarily: node 0.10).
 
 # Manual Installation
-
-## Install prerequisites
-
-### Debian/Ubuntu
-
-```
-# node.js, npm etc.
-$ sudo apt-get install npm nodejs-legacy # nodejs-legacy gives us /usr/bin/node
-```
-
-## Install
-
-```
-# clone the repository
-$ git clone --recursive git@github.com:metapolator/metapolator.git
-$ cd metapolator
-
-# load the NodeJS dependencies
-$ npm install
-```
 
 # Usage
 
