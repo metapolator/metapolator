@@ -1,13 +1,15 @@
-1. design in context; type design is quite a bit about how it all fits together, allow to design while it can be seen together.
-* liberate the creation of masters; it should be easy-peasy to create another one, not the weeks+ of work that it is now. the interaction should express—and deliver—how casual one can deal with masters.
-* make the master the natural level to work with parameters.
-* 50% of metapolator is about making type design and adaptation an order of magnitude faster than before. the other 50% is about unlocking creativity, to go in-between/outside the beaten paths. 
-* the design space is both for working precisely; and for going on an exploration trip with unknown outcome.
-* design for working easily with (much) more than four masters.
-* preserve and build out from the stroke of genius—aka the smashing value—of metapolator: no matter how tricksy things get with parameters within a master, once in design space this all disappears; a master is a black box, a good font™ and the linking mechanism.
-* the pain of working glyph-by-glyph is still in the work with the skeletons; address it.
-* parameters up and down the hierarchy combine and override. make it work for users; it must be clear in a second why something is not changing as expected.
-* if a parameter can be shown as a handle near a glyph, do it.
-* speaking of handles: no itty-bitty, teeny-weeny, hard-to-use, 80s handles.
-* manage the black/outlines duality in a natural way.
-* no administrative overhead for users (e.g. having to name stuff, all the time).
+_‘Sometimes it does not take big stunts to meet big design goals.’ —ps_
+
+1. ✓ design in context; type design is quite a bit about how it all fits together, allow to design while it can be seen together.<br/>_**realised** with parameter editing in specimen, insisting on specimens viewing inside metapolator, and with independent viewing controls for masters and instances._
+* ✓ liberate the creation of masters; it should be easy-peasy to create another one, not the weeks+ of work that it is now. the interaction should express—and deliver—how casual one can deal with masters.<br/>_**realised** with the master list handling, and the general vibe that permeates all the parameter-related design work—and all collaboration on this topic—‘make a change for the whole master; touch up some glyphs; sort out some tiny details: done.’_
+* ✓ make the master the natural level to work with parameters.<br/>_**realised** with the selection mechanism in the specimen/editor in the Parameters view. Master **is** the natural level to work there._
+* ✓ 50% of metapolator is about making type design and adaptation an order of magnitude faster than before. the other 50% is about unlocking creativity, to go in-between/outside the beaten paths.<br/>_the former is **realised** with the ‘change big’ vibe describe above, introduction of adjustment masters, and (forthcoming) no-fuzz metadata assignment. the latter is **realised** by not making the mistake of hard-wiring a contemporary use case into the design. all known and reasonable contemporary use cases are covered in a way delivers significant value to users, but the design leaves space for users to go and try out ‘unheard off’ things._
+* ✓ the design space is both for working precisely; and for going on an exploration trip with unknown outcome.<br/>_**realised** with the design spaces panel, where visual modes for exploring are offered and a wide array of space setups are supported.._
+* ✓ design for working easily with (much) more than four masters.<br/>_**realised** with the master list handling, the master sequences concept and by introducing multiple design spaces—the last two allow users to radically reduce the amount of masters that they have deal with **at the same time**, thus reducing complexity overload._
+* ✓ preserve and build out from the stroke of genius—aka the smashing value—of metapolator: no matter how tricksy things get with parameters within a master, once in design space this all disappears; a master is a black box, a good font™ and the linking mechanism.<br/>_**realised** with the 3 views, Parameters–Design spaces–Fonts. and by general enforcement of this principle in all collaboration._
+* the pain of working glyph-by-glyph is still in the work with the skeletons; address it. _TBD, in the Parameters specimen/editor_
+* ✓ parameters up and down the hierarchy combine and override. make it work for users; it must be clear in a second why something is not changing as expected.<br/>_**realised** with the parameter panel. specifically the parameter operators scale (×) and offset (+) are vital for working high up the hierarchy with parameters._
+* if a parameter can be shown as a handle near a glyph, do it. _TBD, in the Parameters specimen/editor_
+* speaking of handles: no itty-bitty, teeny-weeny, hard-to-use, 80s handles. _TBD, in the Parameters specimen/editor_
+* manage the black/outlines duality in a natural way. _TBD, in the Parameters specimen/editor_
+* ✓ no administrative overhead for users (e.g. having to name stuff, all the time).<br/>_**realised** with auto-naming. only when users really care about how something is named (e.g. exported fonts, or the project) they have to name this ‘thing’, right there and then._
