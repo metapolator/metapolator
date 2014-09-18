@@ -129,7 +129,6 @@ define([
 
             // this goes into the glyph/skeleton
             contours.push(penStrokeData);
-
             // draws only the center line using the absolute points, no
             // hobby or so for the moment. Because we don't use the control
             // points of the skeleton as reference, it might be also an
@@ -159,7 +158,7 @@ define([
     }
 
     function drawPenStroke(contours, pen) {
-        var i=0, j, segmentType;
+        var i=0, j, segmentType, point;
 
         for(;i<contours.length;i++) {
             pen.beginPath()
@@ -168,15 +167,19 @@ define([
                 if(j===0)
                     // this is a non closed path
                     segmentType = 'move';
-                else if(contours[i][j].z.in !== undefined) {
+                else if((point = contours[i][j].z.in) !== undefined) {
                     segmentType = 'curve';
-                    pen.addPoint(contours[i][j].z.in.vector.valueOf())
+                    pen.addPoint(point.vector.valueOf(), undefined
+                                                , undefined, point.name)
                 }
                 else
                     segmentType =  'line';
-                pen.addPoint(contours[i][j].z.on.vector.valueOf(), segmentType)
-                if(contours[i][j].z.ou !== undefined)
-                    pen.addPoint(contours[i][j].z.ou.vector.valueOf())
+                point = contours[i][j].z.on;
+                pen.addPoint(point.vector.valueOf(), segmentType
+                                                , undefined, point.name)
+                if((point = contours[i][j].z.ou) !== undefined)
+                    pen.addPoint(point.vector.valueOf(), undefined
+                                                , undefined, point.name)
             }
             pen.endPath();
         }
