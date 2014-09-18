@@ -37,67 +37,9 @@
         <script src='js/directives.js' type='text/javascript'></script>
         <script src='js/maincontroller.js' type='text/javascript'></script>
         <script src='js/sortable.js' type='text/javascript'></script>
+        
+        <script src='js/functions.js'></script>
 
-        <script type="text/javascript">
-            $(function() {
-                $(".readmore-header").on("click", function() {
-                    $(this).parent(".readmore").toggleClass("readmore-show");
-                });
-
-                var x1 = 0;
-                var y1 = "200px";
-                var x2 = $("#masters").outerWidth();
-                var y2 = parseInt($("#masters-container").outerHeight(), 10) - 40 + "px";
-                $(".divider-hor").draggable({
-                    axis : "y",
-                    containment : [x1, y1, x2, y2],
-                    start : function() {
-                        windowDivision();
-                    },
-                    drag : function() {
-                        windowDivision();
-                    },
-                    stop : function() {
-                        windowDivision();
-                    }
-                });
-
-                $(".divider-ver").draggable({
-                    axis : "x",
-                    start : function() {
-                        windowDivision();
-                    },
-                    drag : function() {
-                        windowDivision();
-                    },
-                    stop : function() {
-                        windowDivision();
-                    }
-                });
-            });
-
-            function windowDivision() {
-                var mastersA = parseInt($("#masters-divider").css("top"), 10) + 9;
-                var mastersB = parseInt($("#masters-container").outerHeight(), 10) - mastersA;
-                $("#masters").height(mastersA + "px");
-                $("#adjustment-masters").height(mastersB + "px");
-
-                var dev1A = parseInt($("#divider-1").css("left"), 10);
-                var dev1B = parseInt($(window).width(), 10) - parseInt($("#masters-container").outerWidth(), 10) - dev1A;
-                $("#parameters").css("width", dev1A + "px");
-                $("#specimen").css("width", dev1B + "px");
-            }
-
-            function moveLandscape(view) {
-                var distances = new Array(0, 13, 26);
-                var thisLeft = -(distances[view] / 16 * 100) + "%";
-                $("#landscape").css("left", thisLeft);
-                for (var i = 0; i < 3; i++) {
-                    $("#menu-item-" + i).removeClass("menu-item-current");
-                }
-                $("#menu-item-" + view).addClass("menu-item-current");
-            }
-        </script>
     </HEAD>
 
     <BODY ng-app="Metapolator" ng-controller="MetapolatorController">
@@ -146,7 +88,7 @@
         <div id="pagewrap">
             <div id="landscape">
 
-                <div id="parameters" class="panel sub-panel">
+                <div id="panel-1" class="panel sub-panel">
                     <div class="readmore">
                         <div class="readmore-header">
                             Project
@@ -184,7 +126,7 @@
                 </div>
                 <!-- end of parameters -->
 
-                <div id="specimen" class="panel sub-panel standard-padding">
+                <div id="panel-2" class="panel sub-panel standard-padding">
                     <div id="specimen-toolbar">
                         <input type="text" ng-model="specimen.text">
                     </div>
@@ -206,7 +148,7 @@
 
                 <!-- start of view 2 -->
 
-                <div id="masters-container" class="panel">
+                <div id="panel-3" class="panel">
 
                     <div id="masters" class="sub-panel">
                         <div class="dropdown">
@@ -304,13 +246,11 @@
                     </div>
                     <!-- end of adustment masters sub panel -->
 
-                    <divider-hor id="masters-divider">
-                        </divider>
 
                 </div>
                 <!-- end of masters-container -->
 
-                <div id="design-space-container" class="panel">
+                <div id="panel-4" class="panel">
                     <div id="design-space" class="sub-panel">
                         <div id="block-1" class="block"></div>
                         <div id="block-2" class="block"></div>
@@ -346,7 +286,7 @@
 
                 <!-- start of view 3 -->
 
-                <div id="instances" class="panel sub-panel">
+                <div id="panel-5" class="panel sub-panel">
                     <div class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -387,7 +327,7 @@
                 </div>
                 <!-- end of instances -->
 
-                <div id="font-mapping" class="panel sub-panel standard-padding">
+                <div id="panel-6" class="panel sub-panel standard-padding">
                     <b>Font Mapping</b>
                     <br>
                     <br>
@@ -417,7 +357,7 @@
                 </div>
                 <!-- end of font-mapping -->
 
-                <div id="meta-data" class="panel sub-panel standard-padding">
+                <div id="panel-7" class="panel sub-panel standard-padding">
                     <b>Metadata</b>
                     <br>
                     <br>
@@ -431,11 +371,30 @@
                 </div>
                 <!-- end of font-meta-data -->
 
-                <divider-ver id="divider-1">
-                    </divider>
+            <!-- dividers -->
+            <div class="border" id="border-1">
+                <div class="border-top"></div>
+            </div>
 
-                    <divider-ver id="divider-2">
-                        </divider>
+            <div class="border" id="border-2">
+                <div class="border-top"></div>
+            </div>
+            
+            <div class="border" id="border-3">
+                <div class="border-top"></div>
+            </div>
+
+            <div class="border" id="border-4">
+                <div class="border-top"></div>
+            </div>
+            
+            <div class="border" id="border-5">
+                <div class="border-top"></div>
+            </div>
+
+            <div class="border" id="border-6">
+                <div class="border-top"></div>
+            </div>
 
             </div>
             <!-- end of landscape -->

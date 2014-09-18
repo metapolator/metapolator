@@ -82,13 +82,13 @@
 				background: #fff;
 			}
 			
-			#parameters {
+			#panel-1 {
 				width: calc(3/42 * 100%);
 				height: 100%;
 				overflow: auto;
 			}
 			
-			#specimen {
+			#panel-2 {
 				width: calc(10/42 * 100%);
 				height: 100%;
 				overflow-y: auto
@@ -119,10 +119,11 @@
 				}
 				
 			
-			#masters-container {
+			#panel-3 {
 				position: relative;
 				width: calc(3/42 * 100%);
 				height: 100%;
+				padding-left: 5px;
 			}
 				#masters {
 					height: 50%;
@@ -143,7 +144,7 @@
 						margin: 8px;
 					}
 			
-			#design-space-container {
+			#panel-4 {
 				width: calc(10/42 * 100%);
 				height: 100%;
 			}
@@ -201,14 +202,14 @@
 						font-weight: 700;
 					}
 			
-			#instances {
+			#panel-5 {
 				width: calc(3/42 * 100%);
 				height: 100%;
 				position: relative;
 				overflow: auto;
 			}
 					
-			#font-mapping {
+			#panel-6 {
 				width: calc(4/42 * 100%);
 				height: 100%;
 				position: relative;
@@ -234,7 +235,7 @@
 					background: #ffa392;
 				}
 			
-			#meta-data {
+			#panel-7 {
 				width: calc(9/42 * 100%);
 				height: 100%;
 				position: relative;
@@ -244,10 +245,62 @@
 				#meta-data input {
 					margin-bottom: 12px;
 				}
-			
 
 
 
+
+/***************** divider ******************/
+
+
+    .border {
+        position: absolute;
+        height: 100%;
+        width: 9px;
+        top: 0;
+        z-index: 100;
+        background: #d7d2c8;
+    }
+    
+    #border-1 {
+        left: calc(3/42 * 100% - 4px);   
+    }
+    
+    #border-2 {
+        left: calc(13/42 * 100% - 4px);   
+    }
+    
+    #border-3 {
+        left: calc(16/42 * 100% - 4px);   
+    }
+    
+    #border-4 {
+        left: calc(26/42 * 100% - 4px);   
+    }
+    
+    #border-5 {
+        left: calc(29/42 * 100% - 4px);   
+    }
+    
+    #border-6 {
+        left: calc(33/42 * 100% - 4px);   
+    }
+    
+        .border-top {
+            height: 100%;
+            width: 5px;
+            border-right: 1px solid #d7d2c8;
+        }
+        
+        .border:hover .border-top {
+            border-right: 1px dashed #fff;
+        }
+        
+        .border:hover {
+            cursor: ew-resize;
+        }
+
+
+    
 
 			
 /***************** dropdown menu ******************/
@@ -294,73 +347,7 @@
 	
 			
 				
-/***************** divider ******************/
-
-	.divider-hor {
-		position: absolute;
-		width: 100%;
-		height: 9px;
-		background: #d7d2c8;
-	}
 	
-		#masters-divider {
-			top: calc(50% - 9px);
-		}
-	
-		.divider-hor:hover {
-			cursor: ns-resize;
-		}
-	
-		.divider-hor .divider-top {
-			height: 5px;
-			border-bottom: 1px solid #d7d2c8; 
-		}
-		
-			.divider-hor:hover .divider-top {
-				border-bottom: 1px dashed #fff;
-			}
-		
-		.divider-hor .divider-bottom {
-			height: 4px;
-		}
-
-	.divider-ver {
-		position: absolute;
-		height: 100%;
-		width: 9px;
-		background: #d7d2c8;
-	}
-	
-		#divider-1 {
-			left: calc(3/42 * 100% );
-		}
-		
-		#divider-2 {
-			left: calc(13/42 * 100% );
-		}
-	
-		.divider-ver:hover {
-			cursor: ew-resize;
-		}
-	
-		.divider-ver .divider-left {
-			float: left;
-			width: 5px;
-			height: 100%;
-			border-right: 1px solid #d7d2c8; 
-		}
-		
-			.divider-ver:hover .divider-left {
-				border-right: 1px dashed #fff;
-			}
-		
-		.divider-ver .divider-right {
-			float: left;
-			height: 100%;
-			width: 4px;
-		}
-
-		
 			
 /***************** selectable ******************/
 	
