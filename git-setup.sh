@@ -49,17 +49,29 @@
 # git push origin yyyymm/wonderful-new-feature
 # goto github website and create a PR
 #
-#
-# For reference, this is the initial command chain for
-# metapolator-update alias as at Sep 2014.
-#
-# git checkout master
-# git fetch upstream
-# git submodule foreach git pull origin master
-# git merge upstream/master
 
+# upstream is the public face of the main metapolator repository
 git remote add upstream https://github.com/metapolator/metapolator.git 
+
+# this config allows you to get any pull request from the main repository
 git config --add remote.upstream.fetch '+refs/pull/*/head:refs/remotes/upstream/pr/*'
+
+# an alias to update all the submodules
 git config alias.update-submodules "submodule foreach git pull origin master"
-git config alias.metapolator-update  '!sh -c "git checkout master && git fetch upstream && git update-submodules && git merge upstream/master"'
+
+# NB: It is best to have the ! outside quotes and escaped like this for bash
+#     to strip off the leading escape \ character.
+git config alias.metapolator-update "$(echo \!sh -c $(cat <<EOF
+"
+     git checkout master 
+  && git fetch upstream 
+  && git update-submodules 
+  && git merge upstream/master
+"
+EOF
+))";
+
+# do a fetch to get to know about the current pull requests
 git fetch upstream
+
+
