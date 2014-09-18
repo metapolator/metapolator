@@ -13,14 +13,14 @@
 		<string>.LucidaGrandeUI</string>
 		<string>HelveticaNeue-Light</string>
 		<string>Roboto-Regular</string>
+		<string>RobotoCondensed-Regular</string>
+		<string>Roboto-Italic</string>
+		<string>RobotoCondensed-Italic</string>
+		<string>RobotoCondensed-Light</string>
+		<string>RobotoCondensed-Bold</string>
 		<string>Roboto-Light</string>
 		<string>Roboto-Medium</string>
 		<string>Roboto-Black</string>
-		<string>RobotoCondensed-Regular</string>
-		<string>RobotoCondensed-Light</string>
-		<string>RobotoCondensed-Bold</string>
-		<string>Roboto-Italic</string>
-		<string>RobotoCondensed-Italic</string>
 		<string>Roboto-LightItalic</string>
 		<string>RobotoCondensed-LightItalic</string>
 		<string>Roboto-Thin</string>
@@ -31,7 +31,7 @@
 		<string>Roboto-BlackItalic</string>
 	</array>
 	<key>length</key>
-	<integer>5182620</integer>
+	<integer>5182638</integer>
 	<key>version</key>
 	<integer>37</integer>
 </dict>
