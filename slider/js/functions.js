@@ -1,5 +1,5 @@
 $(function() {
-    updateContainment();
+    //updateContainment();
 
     function updateContainment() {
         var containment_1 = parseInt($("#border-2").offset().left) - 150;
@@ -34,7 +34,7 @@ $(function() {
         });
     }
 
-    var id, leftPanel, rightPanel, leftStart, rightStart;
+    var id, leftPanel, rightPanel, leftStart, rightStart, mirror = 0;
     $(".border").draggable({
         axis : "x",
         start : function(event, ui) {
@@ -43,24 +43,47 @@ $(function() {
             rightPanel = $("#panel-" + (id + 1));
             leftStart = leftPanel.outerWidth();
             rightStart = rightPanel.outerWidth();
-        },
-        drag : function(event, ui) {
-            leftPanel.css("width", leftStart + (ui.position.left - ui.originalPosition.left));
-            rightPanel.css("width", rightStart - (ui.position.left - ui.originalPosition.left));
-            // mirroring
+
             if (id == 2) {
-                $("#panel-4").css("width", $("#panel-2").outerWidth());
+                mirror = 4;
             } else if (id == 3) {
-                $("#panel-2").css("width", $("#panel-4").outerWidth());
+                mirror = 2;
             } else if (id == 4) {
-                $("#panel-6").css("width", $("#panel-4").outerWidth());
+                mirror = 6;
             } else if (id == 5) {
-                $("#panel-4").css("width", $("#panel-6").outerWidth());
+                mirror = 4;
+            }
+            if (mirror != 0) {
+                mirrorStart = $("#panel-" + mirror).outerWidth();
             }
 
         },
+        drag : function(event, ui) {
+            //console.log(ui.originalPosition.left + " - " + ui.position.left + " - " + ui.offset.left);
+            leftPanel.css("width", leftStart + (ui.position.left - ui.originalPosition.left));
+            rightPanel.css("width", rightStart - (ui.position.left - ui.originalPosition.left));
+            if (mirror != 0) {
+                if (id % 2 == 0) {
+                    $("#panel-" + mirror).css("width", mirrorStart + (ui.position.left - ui.originalPosition.left));
+                } else {
+                    $("#panel-" + mirror).css("width", mirrorStart - (ui.position.left - ui.originalPosition.left));
+                }
+                $("#border-" + mirror).css("left", $("#panel-" + (mirror + 1)).css("left"));
+            }
+            var a = parseInt($("#panel-1").outerWidth());
+            var b = parseInt($("#panel-2").outerWidth());
+            var c = parseInt($("#panel-3").outerWidth());
+            var d = parseInt($("#panel-4").outerWidth());
+            var e = parseInt($("#panel-5").outerWidth());
+            var f = parseInt($("#panel-6").outerWidth());
+            var g = parseInt($("#panel-7").outerWidth());
+
+            console.log(a + " + " + b + " + " + c + " = " + (a + b + c) + " / " + c + " + " + d + " + " + e + " = " + (c + d + e) + " / " + e + " + " + f + " + " + g + " = " + (e + f + g));
+
+        },
         stop : function(event, ui) {
-            updateContainment();
+            mirror = 0;
+            //updateContainment();
         }
     });
 
@@ -68,6 +91,7 @@ $(function() {
         $(this).parent(".readmore").toggleClass("readmore-show");
     });
 });
+
 
 function moveLandscape(view) {
     var thisLeft = -$("#panel-" + (view * 2 + 1)).position().left;
