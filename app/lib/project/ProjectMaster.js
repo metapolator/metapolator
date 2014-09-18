@@ -57,12 +57,17 @@ define([
           , ufoGlyph
           , glyph
           , i=0
+          , classes
           ;
+        if(glyphNames.length)
+            classes = this._project.getGlyphClassesReverseLookup();
         for(;i<glyphNames.length;i++) {
             glyphName = glyphNames[i];
             ufoGlyph = this.glyphSet.get(glyphName);
             glyph = new Glyph();
             glyph.id = glyphName;
+            if(glyphName in classes)
+                classes[glyphName].forEach(glyph.setClass, glyph);
             // fetch glyph data and draw the glyph to the MOM
             ufoGlyph.drawPoints(false, new MOMPointPen(glyph));
             glyph.setUFOData(ufoGlyph);

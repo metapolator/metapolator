@@ -1,5 +1,6 @@
 define([
     'metapolator/errors'
+  , 'ufojs/errors'
   , 'obtain/obtain'
   , 'ufojs/plistLib/main'
   , 'ufojs/plistLib/IntObject'
@@ -15,6 +16,7 @@ define([
   , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
     errors
+  , ufoErrors
   , obtain
   , plistLib
   , IntObject
@@ -50,6 +52,7 @@ define([
         minimalFontinfo = {unitsPerEm: new IntObject(1000)}
       , ProjectError = errors.Project
       , KeyError = errors.Key
+      , IONoEntryError = ufoErrors.IONoEntry
       ;
     
     function MetapolatorProject(io, dirName) {
@@ -60,7 +63,8 @@ define([
         this._cache = {
             masters: {}
           , rules: {}
-        }
+          , glyphClasses:{}
+        };
         
         this._controller = new ModelController(parameterRegistry);
         
@@ -103,6 +107,14 @@ define([
     
     Object.defineProperty(_p, 'layerContentsFile', {
         get: function(){ return this.dirName+'/layercontents.plist'; }
+    });
+    
+    Object.defineProperty(_p, 'groupsFileName', {
+        value: 'groups.plist'
+    });
+
+    Object.defineProperty(_p, 'groupsFile', {
+        get: function(){ return this.dirName+'/' + this.groupsFileName; }
     });
     
     _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
@@ -341,7 +353,60 @@ define([
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
         importer.import(glyphs);
-    }
+    
+        this._importGroupsFile(sourceUFODir, true);
+    };
+
+    /**
+     * If there is no groups.plist in the project but the import
+     * has one, we do the import.
+     * If there is a groups.plist in the project and overide is true
+     * we overide by doing the import.
+     * Otherwise, we skip importing the file.
+     *
+     * This rule may get changed in the future, but having the first
+     * possible groupd file also imported into the project is better
+     * than not having it to happen.
+     * Also, ufoJS can't validate this file at the moment
+     * however, we can try to parse it with plistlib and see if it works.
+     */
+    _p._importGroupsFile = function(sourceUFODir, override) {
+        var filename = this.groupsFileName
+          , sourceFile = [sourceUFODir, filename].join('/')
+          , targetFile = this.groupsFile
+          , targetExists
+          , content
+          ;
+
+        targetExists = this._io.pathExists(false, targetFile);
+        if(targetExists && !override) {
+            console.log(filename + ' exists in the project, skipping import.');
+            return;
+        }
+
+        if(!this._io.pathExists(false, sourceFile)) {
+            console.log('No ' + filename + ' found for import.');
+            return;
+        }
+
+        console.log('Importing '+filename+' into the project.');
+        if(targetExists)
+            console.log('The existing '+filename+' will be overridden.');
+
+        content = this._io.readFile(false, sourceFile);
+        try {
+            // Just a rough look if we can parse it, we are not interested
+            // in the result of parsing at the moment.
+            // TODO: validation (this is a tasl for ufoJS)
+            plistLib.readPlistFromString(content);
+        }
+        catch(error) {
+            console.log('Import of '+filename+' failed when trying to '
+                                    +'parse it as a plist:\n'+ error);
+        }
+        this._io.writeFile(false, targetFile, content);
+        console.log('Import of '+filename+' OK.\n');
+    };
     
     _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller
@@ -376,6 +441,44 @@ define([
         exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
     }
+    
+    _p._getGlyphClassesReverseLookup = function() {
+        var result = {}
+          , data
+          , groups
+          , group, i, glyphName
+          ;
+        try {
+            data = this._io.readFile(false,  this.groupsFile);
+        }
+        catch(error) {
+            if(error instanceof IONoEntryError) {
+                // this is legal, we simply have no groups file
+                console.log('No groups.plist file found, thus no glyph '
+                                                +'classes are defined.');
+                return result;
+            }
+            throw error;
+        }
+        groups = plistLib.readPlistFromString(data);
+
+        for(group in groups) {
+            for(i=0;i<groups[group].length;i++) {
+                glyphName = groups[group][i];
+                if(!(glyphName in result))
+                    result[glyphName] = [];
+                result[glyphName].push(group);
+            }
+        }
+        return result;
+    };
+
+    _p.getGlyphClassesReverseLookup = function() {
+        if(!this._cache.glyphClasses.reverseLookup)
+            this._cache.glyphClasses.reverseLookup = this._getGlyphClassesReverseLookup();
+
+        return this._cache.glyphClasses.reverseLookup;
+    };
     
     return MetapolatorProject;
 });
