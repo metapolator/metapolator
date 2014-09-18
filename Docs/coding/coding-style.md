@@ -28,6 +28,8 @@ Updates to the below code are very welcome.
   (make-local-variable 'indent-tabs-mode)
   (setq indent-tabs-mode nil)
   (whitespace-mode)
+  (make-local-variable 'dired-omit-files)
+  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
   )
 
 (defun my-js-mode-common-hook ()
@@ -40,6 +42,12 @@ Updates to the below code are very welcome.
 )
 
 (add-hook 'js-mode-hook 'my-js-mode-common-hook)
+
+;; ensure that commands are shown with correct highlighting.
+(add-to-list 'interpreter-mode-alist '("nodejs" . js-mode))
+(add-to-list 'interpreter-mode-alist '("node" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.cps\\'" . css-mode))
+
 ```
 
 ## Inheritance
