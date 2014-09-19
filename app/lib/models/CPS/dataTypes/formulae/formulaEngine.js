@@ -100,7 +100,7 @@ define([
          * similar to __get__
          *
          * used like this:
-         * item.name
+         * item:name
          *
          * name must be a name token, its value is used to get a propety
          * of item.
