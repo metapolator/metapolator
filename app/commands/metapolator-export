@@ -3,8 +3,8 @@
 "use strict";
 
 exports.command = {
-    description: 'export the given master to directory <instance-name> (without .ufo suffix)'
-  , arguments: '<master> <instance-name>'
+    description: 'export the given master to directory <project>'
+  , arguments: '<master> <ufo>'
 };
 
 var path = require('path');
@@ -25,7 +25,7 @@ if (require.main === module) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(masterName, instanceName) {
-            if (program.args.length > program._args.length + 1)
+            if (program.args.length > program.max_args + 1)
                 program.help();
 
             var project = new MetapolatorProject(io);
@@ -36,7 +36,5 @@ if (require.main === module) {
                                      + 'or -1 for no rounding',
                 parseInt);
         program.parse(process.argv);
-        if (process.argv.length < program._args.length + 2)
-            program.help();
     }
 )}
