@@ -1,9 +1,11 @@
 define([
     'metapolator/errors'
   , '../_BaseModel'
+  , 'metapolator/models/CPS/whitelistProxies'
 ], function(
     errors
   , Parent
+  , whitelistProxies
 ) {
     "use strict";
 
@@ -33,17 +35,18 @@ define([
         this._parent = null;
         this._id = null;
         this._classes = {};
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
 
-    _p.cps_whitelist = {
-        parent: true
-      , children: true
-      , master: true
-      , univers: true
-      , multivers: true
-      , index: true
+    _p._cps_whitelist = {
+        parent: 'parent'
+      , children: 'children'
+      , master: 'master'
+      , univers: 'univers'
+      , multivers: 'multivers'
+      , index: 'index'
     }
 
     Object.defineProperty(_p, 'MOMType', {

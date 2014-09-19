@@ -4,12 +4,14 @@ define([
   , './PenStrokePointLeft'
   , './PenStrokePointCenter'
   , './PenStrokePointRight'
+  , 'metapolator/models/CPS/whitelistProxies'
 ], function(
     Parent
   , _PenStrokePointChild
   , PenStrokePointLeft
   , PenStrokePointCenter
   , PenStrokePointRight
+  , whitelistProxies
 ) {
     "use strict";
     /**
@@ -38,29 +40,32 @@ define([
         this.add(new PenStrokePointLeft());  // 0
         this.add(new PenStrokePointCenter());// 1
         this.add(new PenStrokePointRight()); // 2
-        Object.freeze(this._children)
+        Object.freeze(this._children);
     }
     var _p = PenStrokePoint.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePoint;
 
-    PenStrokePoint.SkeletonDataConstructor = function(obj){for(var k in obj) this[k] = obj[k];}
-    PenStrokePoint.SkeletonDataConstructor.prototype.cps_whitelist = {
-        on: true
-      , in: true
-      , out: true
-    }
+    PenStrokePoint.SkeletonDataConstructor = function(obj) {
+        for(var k in obj) this[k] = obj[k];
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+    };
+    PenStrokePoint.SkeletonDataConstructor.prototype._cps_whitelist = {
+        on: 'on'
+      , in: 'in'
+      , out: 'out'
+    };
 
     //inherit from parent
-    _p.cps_whitelist = Object.create(Parent.prototype.cps_whitelist);
-    // overide/set new keys
+    _p._cps_whitelist = {
+        skeleton: 'skeleton'
+      , left: 'left'
+      , center: 'center'
+      , right: 'right'
+    };
+    //inherit from parent
     (function(source) {
-            for(var k in source) this[k] = source[k];
-    }).call(_p.cps_whitelist, {
-        skeleton: true
-      , left: true
-      , center: true
-      , right: true
-    })
+        for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
+    }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePoint'

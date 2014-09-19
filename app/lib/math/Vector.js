@@ -1,7 +1,9 @@
 define([
     'complex/Complex'
+  , 'metapolator/models/CPS/whitelistProxies'
 ], function(
     Parent
+  , whitelistProxies
 ) {
     "use strict";
 
@@ -11,13 +13,14 @@ define([
      */
     function Vector(x, y) {
         Parent.call(this, x, y);
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
     }
     var _p = Vector.prototype = Object.create(Parent.prototype);
     _p.constructor = Vector;
 
-    _p.cps_whitelist = {
-        x: true
-      , y: true
+    _p._cps_whitelist = {
+        x: 'x'
+      , y: 'y'
       , len: 'length'
       , rad: 'angle'
     }
