@@ -1,12 +1,13 @@
 $(function() {
+    var buffer = 200;
     updateContainment();
     function updateContainment() {
-        var containment_1 = parseInt($("#divider-2").offset().left) - 150;
-        var containment_2 = parseInt($("#divider-1").offset().left) + 150;
-        var containment_3 = $(window).outerWidth() - 150;
+        var containment_1 = parseInt($("#divider-2").offset().left) - buffer;
+        var containment_2 = parseInt($("#divider-1").offset().left) + buffer;
+        var containment_3 = $(window).outerWidth() - buffer;
 
         $("#divider-1").draggable({
-            containment : [150, 0, containment_1, 0]
+            containment : [buffer, 0, containment_1, 0]
         });
         $("#divider-2").draggable({
             containment : [containment_2, 0, containment_3, 0]

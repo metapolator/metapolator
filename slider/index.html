@@ -47,7 +47,7 @@
 
             <div id="project">
                 <div id="project-dropdown" class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Project</b> New project <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Project</b> {{projectName}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li>
                             <a href="#">New</a>
@@ -94,33 +94,19 @@
                             Project
                         </div>
                         <div class="readmore-content">
-                            Slant x 2.0
+                            {{projectName}}
                         </div>
                     </div>
-                    <div class="readmore">
-                        <div class="readmore-header">
-                            Master: Dave 'n Gary
-                        </div>
-                        <div class="readmore-content">
-                            Direction in = 1.0
-                            <br>
-                            Direction in max = 2.0
-                        </div>
-                    </div>
-                    <div class="readmore">
-                        <div class="readmore-header">
-                            Latin (0)
-                        </div>
-                        <div class="readmore-content">
-                            -
-                        </div>
-                    </div>
-                    <div class="readmore">
-                        <div class="readmore-header">
-                            Cyrillic
-                        </div>
-                        <div class="readmore-content">
-                            -
+                    <div ng-repeat="sequence in sequences" >
+                        <div ng-repeat="master in sequence.masters | filter:{edit: true}" class="readmore">
+                            <div class="readmore-header">
+                                Master: {{master.name}}
+                            </div>
+                            <div class="readmore-content">
+                                Direction in = 1.0
+                                <br>
+                                Direction in max = 2.0
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -187,7 +173,7 @@
                             <li ng-repeat="master in sequence.masters" class="master-li">
                                 <span class="selectable-diamond"></span>
                                 <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'ui-selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
-                                <span class="selectable-name">{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
+                                <span class="selectable-name" ng-click="master.edit = !master.edit" ng-class="{'ui-selected': master.edit}" >{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
                             </li>
                         </ul>
 

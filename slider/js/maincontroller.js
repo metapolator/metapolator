@@ -1,7 +1,9 @@
 app.controller("MetapolatorController", function($scope) {'use strict';
 
+    $scope.projectName = "Untitled document";
+
     $scope.specimen = {
-        text : "Freude, schöner Götterfunken, Tochter aus Elysium",
+        text : "Cò às leth a Thìr, 's a Còir Thairrneas stàillinn chruaidh 'na dhòrn?",
         fontSize : 60,
         lineHeight: 60
     };
@@ -13,17 +15,20 @@ app.controller("MetapolatorController", function($scope) {'use strict';
             fontFamily : 'Roboto',
             name : 'we-Light',
             weight : '100',
-            display : true
+            display : true,
+            edit: true
         }, {
             fontFamily : 'Roboto',
             name : 'we-Regular',
             weight : '400',
-            display : true
+            display : false,
+            edit: true
         }, {
             fontFamily : 'Roboto',
             name : 'we-Bold',
             weight : '700',
-            display : true
+            display : true,
+            edit: false
         }]
     }, {
         name : "Width",
@@ -32,12 +37,14 @@ app.controller("MetapolatorController", function($scope) {'use strict';
             fontFamily : 'Roboto Condensed',
             name : 'w-Regular',
             weight : '400',
-            display : true
+            display : true,
+            edit: false
         }, {
             fontFamily : 'Roboto Condensed',
             name : 'w-Bold',
             weight : '700',
-            display : true
+            display : true,
+            edit: false
         }]
     }, {
         name : "Slab",
@@ -46,12 +53,14 @@ app.controller("MetapolatorController", function($scope) {'use strict';
             fontFamily : 'Roboto Slab',
             name : 's-Regular',
             weight : '400',
-            display : false
+            display : false,
+            edit: false
         }, {
             fontFamily : 'Roboto Slab',
             name : 's-Bold',
             weight : '700',
-            display : true
+            display : true,
+            edit: false
         }]
     }];
 
