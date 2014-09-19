@@ -29,11 +29,11 @@ Commands:
    dev-playground-cps <cps-file>                         process the given CPS file
    dev-playground-cps-algebra <equation>                 insert a linear equation
    dev-playground-cps-selectors <master> <selectors>     run a comma-separated list of selectors on the given master
-   export <master> <instance-name>                       export the given master to directory <instance-name> (without .ufo suffix)
-   import <source-ufo> <target-master>                   import the given UFO directory to master <target-master>
+   export <master> <ufo>                                 export the given master to directory <project>
+   import <ufo> <target-master>                          import the given UFO directory to master <target-master>
    init <name>                                           initialise a new project called <name>
    interpolate <masters> <interpolators>                 interpolate a comma-separated list of masters according to a CPS expression
-   red-pill                                              run the red-pill web interface
+   red-pill [ufo]                                        open a UFO (default: current directory) in the red-pill web interface
    help <sub-command>                                    Show the --help for a specific command
 # create your first project test.ufo
 $ metapolator init test.ufo
@@ -77,11 +77,10 @@ $ tree
 # Export first_master to ../export.ufo
 $ metapolator export first_master ../export.ufo
 
-# At this point you can start the metapolator red-pill GUI server from within
-# the project that you want to serve. NOTE: the GUI won't yet let you
-# save changes, but it is a good way to experiment with CPS
+# At this point you can start the metapolator red-pill GUI server.
+# NOTE: the GUI won't yet let you save changes, but it is a good way to experiment with CPS
 # Here is a short screencast: https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL
-$ metapolator red-pill
+$ metapolator red-pill .
 # Open http://localhost:3000 in your browser.
 
 ```
