@@ -3,11 +3,13 @@ define([
   , 'metapolator/models/MOM/Master'
   , 'metapolator/models/MOM/Glyph'
   , './MOMPointPen'
+  , 'yaml'
 ], function(
     errors
   , Master
   , Glyph
   , MOMPointPen
+  , yaml
 ) {
     "use strict";
 
@@ -21,6 +23,16 @@ define([
         this._cpsChain = cpsChain.slice();
         
         this._glyphSet = undefined;
+
+        if( io.pathExists( false, this.metaDataFilePath )) {
+            this.loadMetaData();
+        } else {
+            this._data = {
+                type: 'ProjectMaster',
+                masters: {},
+                importFailures: {}
+            };
+        }
     }
     
     var _p = ProjectMaster.prototype;
@@ -34,6 +46,27 @@ define([
             return this._glyphSet;
         }
     });
+
+    _p.rememberThatImportFailedForGlyph = function( glyphName, reason ) {
+        this._data.importFailures[glyphName] = 
+            { 
+                name: glyphName, 
+                reason: reason,
+                incidenttime: new Date(),
+            };
+    }
+
+    Object.defineProperty(_p, 'metaDataFilePath', {
+        get: function(){ return this._project.dataDir+'/'+this._glyphSetDir+'.yaml';}
+    });
+
+    _p.saveMetaData = function() {
+        this._io.writeFile( false, this.metaDataFilePath, yaml.safeDump(this._data));
+    }
+    _p.loadMetaData = function() {
+        var dataString = this._io.readFile(false, this.metaDataFilePath );
+        this._data = yaml.safeLoad(dataString);
+    }
     
     _p.saveLocalCPS = function(cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'
