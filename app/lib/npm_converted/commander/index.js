@@ -493,7 +493,6 @@ Command.prototype.parseArgs = function(args, parsed){
     if (name && this.listeners(name).length) {
       this.emit(args.shift(), args, parsed.unknown);
     } else {
-      console.log("fooemitting *");
       this.emit('*', args);
     }
   } else {
