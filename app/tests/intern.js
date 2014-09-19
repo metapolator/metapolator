@@ -69,6 +69,8 @@ define({
           , 'angular': 'lib/bower_components/angular/angular'
           , 'obtain': 'lib/obtainJS/lib'
           , 'ufojs': 'lib/ufoJS/lib'
+          , 'es6': 'lib/es6'
+          , 'es6/Reflect': 'lib/bower_components/harmony-reflect/reflect'
         }
     },
 
@@ -78,6 +80,7 @@ define({
       , 'tests/lib/export/_all_'
       , 'tests/lib/models/CPS/_all_'
       , 'tests/lib/models/MOM/_all_'
+      , 'tests/lib/es6/Proxy'
     ],
 
     // Functional test suite(s) to run in each browser once non-functional tests are completed
