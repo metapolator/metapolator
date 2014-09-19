@@ -154,7 +154,7 @@ Command.prototype.command = function(name, desc) {
   if (desc) this.executables = true;
   if (desc) this._execs[cmd._name] = true;
   this.commands.push(cmd);
-  cmd.parseExpectedArgs(args);
+  cmd.parseArgDescription(args);
   cmd.parent = this;
   if (desc) return this;
   return cmd;
@@ -167,7 +167,7 @@ Command.prototype.command = function(name, desc) {
  */
 
 Command.prototype.arguments = function (desc) {
-  this.parseExpectedArgs(desc.split(/ +/));
+  this.parseArgDescription(desc.split(/ +/));
 }
 
 /**
@@ -182,28 +182,38 @@ Command.prototype.addImplicitHelpCommand = function() {
 };
 
 /**
- * Parse expected `args`.
+ * Parse `args` description.
  *
- * For example `["[type]"]` becomes `[{ required: false, name: 'type' }]`.
+ * Each argument can be either `<arg>` for a required argument, or `[arg]`
+ * for an optional argument. `...` as a suffix or standalone argument shows
+ * that the preceding argument may be repeated; it only makes sense to use
+ * this on the last argument.
  *
  * @param {Array} args
  * @return {Command} for chaining
  * @api public
  */
 
-Command.prototype.parseExpectedArgs = function(args){
+Command.prototype.parseArgDescription = function(args){
   if (!args.length) return;
-  var self = this;
-  self.max_args = 0;
+  var self = this
+  var repeatToken = '...';
+  self._max_args = 0;
   args.forEach(function(arg){
-    switch (arg[0]) {
-      case '<':
-        self._args.push({ required: true, name: arg.slice(1, -1) });
-        self.max_args += 1;
-        break;
-      case '[':
-        self._args.push({ required: false, name: arg.slice(1, -1) });
-        break;
+    var repeat = false;
+    if (arg.substr(repeatToken.length) == repeatToken) {
+      arg = arg.substr(1, -repeatToken.length - 1);
+      repeat = true;
+    }
+    if (/<.*>/.test(arg)) {
+      self._args.push({ required: true, name: arg.slice(1, -1) });
+      self._max_args += 1;
+    } else if (/\[.*\]/.test(arg)) {
+      self._args.push({ required: false, name: arg.slice(1, -1) });
+    }
+    // Works for both suffix and stand-alone repeatToken
+    if (repeat) {
+      self._max_args = Infinity;
     }
   });
   return this;
@@ -235,9 +245,7 @@ Command.prototype.action = function(fn){
 
     var parsed = self.parseOptions(unknown);
 
-    // If there are still any unknown options, then we simply
-    // die, unless someone asked for help, in which case we give it
-    // to them, and then we die.
+    // If there are still any unknown options, then we simply die.
     if (parsed.unknown.length > 0) {
       self.unknownOption(parsed.unknown[0]);
     }
@@ -254,6 +262,11 @@ Command.prototype.action = function(fn){
     // to make sure we match the number of arguments the user
     // expects
     args.push(self);
+
+    // If there are more arguments than allowed, error exit
+    if (self.args.length > self._max_args + 1) {
+      this.help(1);
+    }
 
     fn.apply(this, args);
   };
@@ -486,7 +499,7 @@ Command.prototype.parseArgs = function(args, parsed){
     , len = cmds.length
     , name;
 
-  if (args.length || this.max_args == 0) {
+  if (args.length || this._max_args == 0) {
     if (args.length) {
       name = args[0];
     }
@@ -721,7 +734,8 @@ Command.prototype.usage = function(str){
   var usage = '[options'
     + (this.commands.length ? '] [command' : '')
     + ']'
-    + (this._args.length ? ' ' + args.join(' ') : '');
+    + (this._args.length ? ' ' + args.join(' ') : '')
+    + (this._max_args == Infinity ? '...' : '');
 
   if (0 == arguments.length) return this._usage || usage;
   this._usage = str;

@@ -26,9 +26,6 @@ if (require.main === module) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(masterName, instanceName) {
-            if (program.args.length > program.max_args + 1)
-                program.help();
-
             var project = new MetapolatorProject(io);
             project.load();
             project.exportInstance(masterName, instanceName, program.precision);
