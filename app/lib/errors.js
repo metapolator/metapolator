@@ -2,24 +2,24 @@ define(function() {
     "use strict";
     //metapolator errors
     var errors = {}
-    
+
     /**
      * save three lines of coding for each error with this factory
-     * 
+     *
      * and observe that extending Error is uncool
      */
     var makeError = function(name, Constructor, prototype, namespace)
     {
         if(prototype === undefined)
             var prototype = new Error;
-        
+
         if(Constructor === undefined) {
             var Constructor = function(message, stack) {
                 if(message !== undefined) {
                     this.name = name + 'Error';
                     this.message = message || "(no error message)";
                 }
-                
+
                 if(!stack && typeof Error.captureStackTrace === 'function')
                     Error.captureStackTrace(this, Constructor);
                 else {
@@ -45,14 +45,19 @@ define(function() {
     makeError('Value', undefined , new RangeError);
     makeError('MOM', undefined , new errors.Error);
     makeError('NotImplemented', undefined , new errors.Error);
+    makeError('Deprecated', undefined , new errors.Error);
     makeError('CPS', undefined , new errors.Error);
     makeError('Key', undefined , new errors.Error);
     makeError('CPSRegistryKey', undefined , new errors.Key);
-    makeError('CPSAlgebra', undefined , new errors.CPS);
+    makeError('CPSKeyNotFound', undefined , new errors.Key);
+    makeError('CPSRecursion', undefined , new errors.CPS);
+    makeError('CPSFormula', undefined , new errors.CPS);
+    // deprecated, CPSFormula superseeds this
+    makeError('CPSAlgebra', undefined , new errors.CPSFormula);
     makeError('Project', undefined , new errors.CPS);
     makeError('PointPen', undefined , new errors.CPS);
     makeError('CPSParser', undefined , new errors.CPS);
-    
+
     /**
      * if expression is false, throw an Assertion
      * pass a message to explain yourself
@@ -66,6 +71,6 @@ define(function() {
         if(typeof console !== 'undefined' && console.log)
             console.log('WARNING: ' + message);
     };
-    
+
     return errors;
 });

@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "cd app; ../node_modules/.bin/intern-client config=tests/intern"
+    "test": "cd app; ../.run_tests config=tests/intern"
   },
   "repository": "",
   "author": "",

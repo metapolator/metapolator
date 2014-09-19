@@ -1,9 +1,11 @@
 define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
+  , 'metapolator/math/Vector'
 ], function(
     errors
   , hobby
+  , Vector
 ) {
     "use strict";
 
@@ -62,25 +64,32 @@ define([
      */
 
     function getControlsFromStyle(p0, p1, terminal) {
-        var on0 = p0.get('on').value
-          , outDir = p0.get(terminal === 'start' ? 'inDir' : 'outDir').value
-          , outTension = p0.get(terminal === 'start' ? 'inTension' :'outTension')
+        var outTension = p0.get(terminal === 'start' ? 'inTension' :'outTension')
           , inTension = p1.get(terminal === 'end' ? 'outTension' : 'inTension')
-          , inDir = p1.get(terminal === 'end' ? 'outDir' :'inDir').value
-          , on1 = p1.get('on').value
+          , on0
+          , on1
+          , outDirAngle
+          , inDirAngle
+          , outDir
+          , inDir
           ;
 
-        if(outTension && inTension
-                            && outDir.magnitude()
-                            && inDir.magnitude())
+        if(outTension && inTension) {
+            on0 = p0.get('on')
+            on1 = p1.get('on')
+            outDirAngle = p0.get(terminal === 'start' ? 'inDir' : 'outDir')
+            inDirAngle = p1.get(terminal === 'end' ? 'outDir' :'inDir')
+            outDir = Vector.fromPolar(1, outDirAngle)
+            inDir = Vector.fromPolar(1, inDirAngle)
             return hobby.hobby2cubic(on0, outDir, outTension,
                                             inTension, inDir, on1);
+        }
         // fallback to control points is always possible. Although,
         // depending on the cps setup the value may not be useful
         // does this affect outline quality?
         return [
-              p0.get(terminal === 'start' ? 'in': 'out').value
-            , p1.get(terminal === 'end' ? 'out' :'in').value
+              p0.get(terminal === 'start' ? 'in': 'out')
+            , p1.get(terminal === 'end' ? 'out' :'in')
         ];
     }
 
@@ -171,7 +180,7 @@ define([
                 segmentType =  'line';
                 console.log('implicit line segment, right side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
+            pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         // draw the left side
         for(i=points.length-1;i>=0 ;i--) {
@@ -206,7 +215,7 @@ define([
                 segmentType = 'line';
                 console.log('implicit line segment, left side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
+            pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }

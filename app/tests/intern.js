@@ -61,14 +61,16 @@ define({
       //, baseUrl: 'lib'
       , paths: {
           //  'tests': '../tests'
-            'require/domReady': 'bower_components/requirejs-domready/domReady'
-          , 'require/text': 'bower_components/requirejs-text/text'
-          , 'metapolator': './'
+            'require/domReady': 'lib/bower_components/requirejs-domready/domReady'
+          , 'require/text': 'lib/bower_components/requirejs-text/text'
+          //, 'metapolator': 'lib'
           , 'gonzales': 'lib/npm_converted/gonzales/lib'
-          , 'complex':  'npm_converted/immutable-complex/lib'
-          , 'angular': 'bower_components/angular/angular'
-          , 'obtain': 'obtainJS/lib'
-          , 'ufojs': 'ufoJS/lib'
+          , 'complex':  'lib/npm_converted/immutable-complex/lib'
+          , 'angular': 'lib/bower_components/angular/angular'
+          , 'obtain': 'lib/obtainJS/lib'
+          , 'ufojs': 'lib/ufoJS/lib'
+          , 'es6': 'lib/es6'
+          , 'es6/Reflect': 'lib/bower_components/harmony-reflect/reflect'
         }
     },
 
@@ -78,6 +80,7 @@ define({
       , 'tests/lib/export/_all_'
       , 'tests/lib/models/CPS/_all_'
       , 'tests/lib/models/MOM/_all_'
+      , 'tests/lib/es6/Proxy'
     ],
 
     // Functional test suite(s) to run in each browser once non-functional tests are completed

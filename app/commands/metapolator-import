@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/bin/sh
+__hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: javascript; -*- */undefined
 
 "use strict";
 
