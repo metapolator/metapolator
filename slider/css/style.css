@@ -71,7 +71,6 @@
 			position: absolute;
 			left: 0;
 			top: 0;
-			transition: all 700ms ease;
 		}
 		
 			.panel {
@@ -80,6 +79,7 @@
 			
 			.sub-panel {
 				background: #fff;
+				border: 4px solid #d7d2c8;
 			}
 			
 			#panel-1 {
@@ -252,50 +252,36 @@
 /***************** divider ******************/
 
 
-    .border {
+    .divider {
         position: absolute;
-        height: 100%;
+        height: calc(100% - 50px);
         width: 9px;
-        top: 0;
+        top: 50px;
         z-index: 100;
-        background: #d7d2c8;
     }
     
-    #border-1 {
-        left: calc(3/42 * 100% - 4px);   
+        .divider:hover {
+
+        }
+    
+    #divider-1 {
+        left: calc(3/16 * 100% - 4px);   
     }
     
-    #border-2 {
-        left: calc(13/42 * 100% - 4px);   
+    #divider-2 {
+        left: calc(13/16 * 100% - 4px);   
     }
     
-    #border-3 {
-        left: calc(16/42 * 100% - 4px);   
-    }
-    
-    #border-4 {
-        left: calc(26/42 * 100% - 4px);   
-    }
-    
-    #border-5 {
-        left: calc(29/42 * 100% - 4px);   
-    }
-    
-    #border-6 {
-        left: calc(33/42 * 100% - 4px);   
-    }
-    
-        .border-top {
+        .divider-top {
             height: 100%;
             width: 5px;
-            border-right: 1px solid #d7d2c8;
         }
         
-        .border:hover .border-top {
-            border-right: 1px dashed #fff;
+        .divider:hover .divider-top {
+            border-right: 1px dashed #000;
         }
         
-        .border:hover {
+        .divider:hover {
             cursor: ew-resize;
         }
 
