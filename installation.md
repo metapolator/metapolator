@@ -12,8 +12,6 @@ You can then `vagrant ssh` into the box, or `vagrant ssh -- COMMAND ARG...` to r
 
 If you prefer to install manually, see the provisioning script at the top of `vagrant/Vagrantfile`. It is written for Ubuntu 14.04, from which you can infer dependencies for other platforms (primarily: node 0.10).
 
-# Manual Installation
-
 # Usage
 
 ## Command-line interface
