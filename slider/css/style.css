@@ -125,13 +125,13 @@
 				height: 100%;
 				padding-left: 5px;
 			}
-				#masters {
+				#subpanel-3-top {
 					height: 50%;
 					position: relative;
 					overflow: auto;
 				}
 				
-				#adjustment-masters {
+				#subpanel-3-bottom {
 					height: 50%;
 					position: relative;
 					overflow: auto;
@@ -147,9 +147,10 @@
 			#panel-4 {
 				width: calc(10/42 * 100%);
 				height: 100%;
+				position: relative;
 			}
 			
-				#design-space {
+				#subpanel-4-top {
 					position: relative;
 					height: 50%;
 					overflow: auto;
@@ -181,7 +182,7 @@
 						top: 40%;
 					}
 			
-				#specimen-2 {
+				#subpanel-4-bottom {
 					overflow-y: auto;
 					height: 50%;
 				}
@@ -260,9 +261,6 @@
         z-index: 100;
     }
     
-        .divider:hover {
-
-        }
     
     #divider-1 {
         left: calc(3/16 * 100% - 4px);   
@@ -283,6 +281,33 @@
         
         .divider:hover {
             cursor: ew-resize;
+        }
+        
+        
+    .divider-hor {
+        position: absolute;
+        width: 100%;
+        height: 9px;
+        z-index: 100;
+    }
+    
+    
+    #divider-3, #divider-4 {
+        top: 50%;   
+    }
+    
+    
+        .divider-left {
+            width: 100%;
+            height: 5px;
+        }
+        
+        .divider-hor:hover .divider-left {
+            border-bottom: 1px dashed #000;
+        }
+        
+        .divider-hor:hover {
+            cursor: ns-resize;
         }
 
 

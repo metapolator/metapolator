@@ -1,9 +1,9 @@
 $(function() {
     var currentView = 0;
     var bufferIn = 180;
-    var bufferOut = 270;
+    var bufferOut = 350;
     updateContainment();
-    resizeWindow();
+    setSizesAbsolute();
 
     function updateContainment() {
         if (currentView == 2) {
@@ -12,7 +12,7 @@ $(function() {
             var containment_1 = $(window).outerWidth() - bufferOut;
         }
         var containment_2 = $(window).outerWidth() - bufferIn;
-        
+
         $("#divider-1").draggable({
             containment : [bufferIn, 0, bufferOut, 0]
         });
@@ -44,15 +44,13 @@ $(function() {
             if (mirror != 0) {
                 mirrorStart = $("#panel-" + mirror).outerWidth();
             }
-            
+
             dividerStart = $(this).position().left;
         },
         drag : function(event, ui) {
             leftPanel.css("width", leftStart + (ui.position.left - dividerStart));
             rightPanel.css("width", rightStart - (ui.position.left - dividerStart));
-            
-            
-            
+
             if (mirror != 0) {
                 if (id % 2 == 0) {
                     $("#panel-" + mirror).css("width", mirrorStart + (ui.position.left - ui.originalPosition.left));
@@ -78,15 +76,19 @@ $(function() {
         moveLandscape(view, 1);
     });
 
-    
-
-    function resizeWindow() {
+    function setSizesAbsolute() {
         for (var i = 1; i < 8; i++) {
             $("#panel-" + i).css("width", $("#panel-" + i).outerWidth());
         }
         for (var j = 1; j < 3; j++) {
             $("#divider-" + j).css("left", $("#panel-" + (j + 1)).offset().left);
         }
+        /*
+         for (var k = 3; k < 5; k++) {
+         $("#subpanel-" + k + "-top").css("height", $("#panel-" + k).outerHeight() / 2);
+         $("#subpanel-" + k + "-bottm").css("height", $("#subpanel-" + k + "-bottm").outerHeight());
+         }
+         */
     }
 
     function setLandscape() {
@@ -120,4 +122,22 @@ $(function() {
         $("#menu-item-" + view).addClass("menu-item-current");
     }
 
-}); 
+    var containmentBottom = $(window).outerHeight() - bufferIn;
+
+    $(".divider-hor").draggable({
+        containment : [0, bufferIn, 0, containmentBottom],
+        axis : "y",
+        start : function(event, ui) {
+            id = parseInt($(this).context.id.split("-")[1]);
+            topPanel = $("#subpanel-" + id + "-top");
+            bottomPanel = $("#subpanel-" + id + "-bottom");
+            topStart = topPanel.outerHeight();
+            bottomStart = bottomPanel.outerHeight();
+            dividerStart = $(this).position().top;
+        },
+        drag : function(event, ui) {
+            topPanel.css("height", topStart + (ui.position.top - dividerStart));
+            bottomPanel.css("height", bottomStart - (ui.position.top - dividerStart));
+        }
+    });
+});
