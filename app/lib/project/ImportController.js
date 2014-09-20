@@ -89,8 +89,7 @@ define([
         }
         console.log('importing ...');
         for(;i<glyphs.length;i++) {
-            var glyphName = glyphs[i];
-            Array.prototype.push.apply(rules, this.importGlyph( glyphName ));
+            Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
         }
         this._master.glyphSet.writeContents(false);
         this._master.saveMetaData();

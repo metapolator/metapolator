@@ -105,13 +105,9 @@ define([
         get: function(){ return this.dirName+'/layercontents.plist'; }
     });
     
-    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, cb ) {
-        var ret = GlyphSet.factory(
-            async, this._io, dirName, glyphNameFunc, UFOVersion );
-        if( cb !== undefined ) {
-            ret.setReadErrorCallback( cb );
-        }
-        return ret;
+    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
+        return GlyphSet.factory(
+                    async, this._io, dirName, glyphNameFunc, UFOVersion);
     }
     
     _p.init = function(dirName) {
@@ -340,7 +336,7 @@ define([
             this.open(master);
         return this._controller.getMasterSources(master);
     }
-    
+
     _p.import = function(masterName, sourceUFODir, glyphs) {
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
