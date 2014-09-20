@@ -1,20 +1,27 @@
 $(function() {
-    var buffer = 200;
+    var currentView = 0;
+    var bufferIn = 180;
+    var bufferOut = 270;
     updateContainment();
-    function updateContainment() {
-        var containment_1 = parseInt($("#divider-2").offset().left) - buffer;
-        var containment_2 = parseInt($("#divider-1").offset().left) + buffer;
-        var containment_3 = $(window).outerWidth() - buffer;
+    resizeWindow();
 
+    function updateContainment() {
+        if (currentView == 2) {
+            var containment_1 = $("#divider-1").offset().left + bufferOut;
+        } else {
+            var containment_1 = $(window).outerWidth() - bufferOut;
+        }
+        var containment_2 = $(window).outerWidth() - bufferIn;
+        
         $("#divider-1").draggable({
-            containment : [buffer, 0, containment_1, 0]
+            containment : [bufferIn, 0, bufferOut, 0]
         });
         $("#divider-2").draggable({
-            containment : [containment_2, 0, containment_3, 0]
+            containment : [containment_1, 0, containment_2, 0]
         });
     }
 
-    var id, leftPanel, rightPanel, leftStart, rightStart, mirror = 0;
+    var id, leftPanel, rightPanel, leftStart, rightStart, mirror = 0, dividerStart;
 
     $(".divider").draggable({
         axis : "x",
@@ -37,12 +44,15 @@ $(function() {
             if (mirror != 0) {
                 mirrorStart = $("#panel-" + mirror).outerWidth();
             }
-
+            
+            dividerStart = $(this).position().left;
         },
         drag : function(event, ui) {
-            leftPanel.css("width", leftStart + (ui.position.left - ui.originalPosition.left));
-            rightPanel.css("width", rightStart - (ui.position.left - ui.originalPosition.left));
-
+            leftPanel.css("width", leftStart + (ui.position.left - dividerStart));
+            rightPanel.css("width", rightStart - (ui.position.left - dividerStart));
+            
+            
+            
             if (mirror != 0) {
                 if (id % 2 == 0) {
                     $("#panel-" + mirror).css("width", mirrorStart + (ui.position.left - ui.originalPosition.left));
@@ -50,40 +60,64 @@ $(function() {
                     $("#panel-" + mirror).css("width", mirrorStart - (ui.position.left - ui.originalPosition.left));
                 }
             }
+            setLandscape();
             moveLandscape(currentView, 0);
 
         },
         stop : function(event, ui) {
             mirror = 0;
-            updateContainment();
         }
     });
 
     $(".readmore-header").on("click", function() {
         $(this).parent(".readmore").toggleClass("readmore-show");
     });
-});
 
-var currentView = 0;
+    $(".menu-item").on("click", function() {
+        var view = parseInt($(this).context.id.split("-")[2]);
+        moveLandscape(view, 1);
+    });
 
-function moveLandscape(view, transition) {
-    // move virtual dividers
-    currentView = view;
-    $("#divider-1").css("left", $("#panel-" + (view * 2 + 1)).outerWidth());
-    $("#divider-2").css("left", $("#panel-" + (view * 2 + 1)).outerWidth() + $("#panel-" + (view * 2 + 2)).outerWidth());
+    
 
-    // move landscape
-    if (transition == 1) {
-        $("#landscape").css("transition",  "all 700ms ease");
-    } else {
-        $("#landscape").css("transition",  "none");
+    function resizeWindow() {
+        for (var i = 1; i < 8; i++) {
+            $("#panel-" + i).css("width", $("#panel-" + i).outerWidth());
+        }
+        for (var j = 1; j < 3; j++) {
+            $("#divider-" + j).css("left", $("#panel-" + (j + 1)).offset().left);
+        }
     }
-    var thisLeft = -$("#panel-" + (view * 2 + 1)).position().left;
-    $("#landscape").css("left", thisLeft);
 
-    // set menu buttons
-    for (var i = 0; i < 3; i++) {
-        $("#menu-item-" + i).removeClass("menu-item-current");
+    function setLandscape() {
+        var landscapeWidth = 0;
+        for (var i = 1; i < 8; i++) {
+            landscapeWidth += $("#panel-" + i).outerWidth();
+        }
+        $("#landscape").css("width", landscapeWidth);
     }
-    $("#menu-item-" + view).addClass("menu-item-current");
-}
+
+    function moveLandscape(view, transition) {
+        // move virtual dividers
+        currentView = view;
+        $("#divider-1").css("left", $("#panel-" + (view * 2 + 1)).outerWidth());
+        $("#divider-2").css("left", $("#panel-" + (view * 2 + 1)).outerWidth() + $("#panel-" + (view * 2 + 2)).outerWidth());
+        updateContainment();
+
+        // move landscape
+        if (transition == 1) {
+            $("#landscape").css("transition", "all 700ms ease");
+        } else {
+            $("#landscape").css("transition", "none");
+        }
+        var thisLeft = -$("#panel-" + (view * 2 + 1)).position().left;
+        $("#landscape").css("left", thisLeft);
+
+        // set menu buttons
+        for (var i = 0; i < 3; i++) {
+            $("#menu-item-" + i).removeClass("menu-item-current");
+        }
+        $("#menu-item-" + view).addClass("menu-item-current");
+    }
+
+}); 

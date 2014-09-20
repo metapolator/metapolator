@@ -309,6 +309,7 @@
 			background: #ddd;
 			color: #000;
 			overflow: auto;
+            white-space: nowrap;
 		}
 		
 		#project-dropdown .dropdown-toggle {
@@ -429,7 +430,7 @@
                             width: calc(100% - 68px);
                             padding: 4px 8px;
                             height: 27px;
-                            overflow-x: hidden;
+                            white-space: nowrap;
                         }
     
             /* while dragging */
@@ -452,6 +453,7 @@
 		padding: 8px;
 		background: #ddd;
 		border-bottom: 1px solid #fff;
+		white-space: nowrap;
 	}
 	
 		.readmore .readmore-header:hover {
