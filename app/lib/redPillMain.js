@@ -13,6 +13,7 @@ requirejs.config({
          // code mirror uses AMD define style if available :-)
       , 'codemirror': 'bower_components/codemirror'
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
+      , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
     }
   , shim: {
         angular: {
@@ -20,6 +21,9 @@ requirejs.config({
         }
       , yaml: {
             exports: 'jsyaml'
+        }
+      , 'es6/Reflect': {
+            exports: 'Reflect'
         }
         //These script dependencies should be loaded before loading
         //ui-codemirror
@@ -60,7 +64,7 @@ require([
   , MetapolatorProject
 ) {
     "use strict";
-    
+
 
     var project = new MetapolatorProject(io, 'project');
     project.load();

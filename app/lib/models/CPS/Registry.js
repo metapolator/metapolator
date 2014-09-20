@@ -1,13 +1,11 @@
 define([
     'metapolator/errors'
-  , './dataTypes/simpleTypes'
-  , './dataTypes/compoundRealCPSFactory'
-  , './dataTypes/compoundVectorCPSFactory'
+  , './dataTypes/CPSReal'
+  , './dataTypes/CPSVector'
 ], function(
     errors
-  , simpleTypes
-  , compoundReal
-  , compoundVector
+  , CPSReal
+  , CPSVector
 ) {
     "use strict";
     /**
@@ -25,11 +23,8 @@ define([
             // types may recognize that the CPS is invalid, this could
             // happen way earlier than when creating the instance.
             // thus the idea of factories.
-            string: simpleTypes.string
-          , real: simpleTypes.real
-          , vector: simpleTypes.vector
-          , compoundReal: compoundReal
-          , compoundVector: compoundVector
+            real: CPSReal.factory
+          , vector: CPSVector.factory
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
