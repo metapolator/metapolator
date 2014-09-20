@@ -13,9 +13,9 @@ define([
   , 'metapolator/models/CPS/elements/ParameterName'
   , 'metapolator/models/CPS/elements/ParameterValue'
   , 'complex/Complex'
-  
   , 'metapolator/models/CPS/parsing/parseSelectorList'
-  
+  , 'winston'
+  , 'ufojs/ufoLib/glifLib/misc'
 ], function(
     errors
   , GlyphSet
@@ -32,6 +32,8 @@ define([
   , ParameterValue
   , Complex
   , parseSelectorList
+  , winston
+  , ufojsmisc
 ) {
     "use strict";
     
@@ -48,13 +50,24 @@ define([
         this._sourceGlyphSet  = this._project.getNewGlyphSet(
                 false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2 );
 
-        // tell us about errors instead of throwing it away
-        this._sourceGlyphSet.setReadErrorCallback( 
-            function( pm, glyph, message ) {
-                console.log("ImportController: Got an error loading glyph '" 
-                            + glyph.name + "' reason:" + message );
-                pm.rememberThatImportFailedForGlyph( glyph.name, message );
-            }.bind( null, this._master ));
+        // tell us about errors instead of throwing the partially loaded glyph away
+        var x = new (winston.Logger)({
+            transports: [ new (winston.transports.Console)() ]
+        });
+        Object.defineProperty(x, 'glyphName', {
+            get: function(){ return this._glyphName; } ,
+            set: function(v){ this._glyphName = v; } 
+        });
+        ufojsmisc.logger = x;
+        x.on('logging', function (pm, transport, level, msg, meta) {
+            var glyphName = ufojsmisc.logger.glyphName;
+            if( glyphName && level == 'error' ) {
+                console.log("FAILED TO IMPORT GLYPH:" + glyphName );
+                console.log("original bt:" + meta.err.stack );
+                pm.rememberThatImportFailedForGlyph( glyphName, msg );
+            }
+        }.bind( null, this._master ));
+
     }
     var _p = ImportController.prototype;
     

@@ -30,7 +30,7 @@ define([
             this._data = {
                 type: 'ProjectMaster',
                 masters: {},
-                importFailures: {}
+                rememberedFailures: {}
             };
         }
     }
@@ -47,13 +47,19 @@ define([
         }
     });
 
-    _p.rememberThatImportFailedForGlyph = function( glyphName, reason ) {
-        this._data.importFailures[glyphName] = 
+    _p.addRememberedFailure = function( type, glyphName, reason ) {
+        if( this._data.rememberedFailures[glyphName] === undefined ) {
+            this._data.rememberedFailures[glyphName] = {};
+        }
+        this._data.rememberedFailures[glyphName][ type ] = 
             { 
-                name: glyphName, 
+                name:   glyphName, 
                 reason: reason,
                 incidenttime: new Date(),
             };
+    }
+    _p.rememberThatImportFailedForGlyph = function( glyphName, reason ) {
+        this.addRememberedFailure( 'import', glyphName, reason );
     }
 
     Object.defineProperty(_p, 'metaDataFilePath', {
