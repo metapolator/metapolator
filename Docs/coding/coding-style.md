@@ -9,8 +9,6 @@
 
 If you are using emacs then you might find the following code useful in your ~/.emacs or other startup file to have emacs help maintain the expected code formatting. Note that the code tries to keep settings local to the buffer so as not to intrude on your existing setup. You will have to edit the path /Develop/.../metapolator/ to the location(s) that you are storing local metapolator git checkouts.
 
-Some people are more or less fussy about spaces being around when they technically don't have to be. This is why whitespace mode is changed to not show end of line, you might find it handy to detect lines that have been indented but no longer have code on them.
-
 Updates to the below code are very welcome.
 
 ```lisp
