@@ -66,23 +66,30 @@ Encouraged by a _constructive_ challenge from Simon and Wei, I have redesigned t
 * Design Spaces
 * Fonts
 
-![](http://mmiworks.net/metapolator/refined3.png)
+![](http://mmiworks.net/metapolator/refined4.png)
 
 here with the viewport:
 
-![](http://mmiworks.net/metapolator/slide3.png)
+![](http://mmiworks.net/metapolator/slide4.png)
 
-The individual department views, Parameters:
+the transition time is 700ms.
+
+#### individual department views
+Parameters:
 
 ![](http://mmiworks.net/metapolator/paraview2.png)
+
+_default column ratios: 3 : 10 : 3_
 
 _On the right, manage (adjustment) masters and select which ones to work on—also master sequence management is **integrated** here; review in the middle, directly manipulate and possibly refine the selection to glyph(s) or sub-glyph(s); review and work on the parameters of this selection on the left._
 
 Design Spaces:
 
-![](http://mmiworks.net/metapolator/designview4.png)
+![](http://mmiworks.net/metapolator/designview5.png)
 
-_Place (adjustment) masters on one or more design spaces and arrange them; explore the design spaces; create and manage (strings of) instances and adjust them both in the design spaces and the metapolation sliders; review (a mix of) masters and instances on the bottom of this department._
+_default column ratios: 3 : 10 : 3, horizontal divider at 50% height_
+
+_Place (adjustment) masters on one or more design spaces—to explore, or set up instances in a controlled way; create and manage (strings of) instances and adjust them in the design spaces; review (a mix of) masters and instances on the bottom of this department._
 
 **note** that the activity of loading some existing fonts; setting up a design space; exploration of this space using some instances; evaluating and/or quicky exporting them can all be done here in this view.
 
@@ -90,14 +97,27 @@ Fonts:
 
 ![](http://mmiworks.net/metapolator/fontsview2.png)
 
+_default column ratios: 3 : 4 : 9_
+
 _Map the (strings of) instances to font (families); manage metadata and assign to font (families). The metapolation sliders panel is hidden (by sliding down) in this view._
 
 **quick notes**:
 
 * it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co);
-* future support of kerning and hinting will find its home in the Fonts view;
-* the widths of columns will be resizable and the position of horizontal dividers will be able to slide up/down, _all within reason_ and without causing the views to scroll; resizing the masters or instances column will affect both views they appear on;
-* minimum width of what is shown in the viewport is 960px (i.e. if the viewport is narrower than that, the view scrolls horizontally); if the viewport is horizontally resized beyond 960px, the columns get resized proportionally; if the viewport is vertically resized, the horizontal dividers get moved proportionally.
+* future support of kerning and hinting will find its home in the Fonts view.
+
+#### sizing rules
+
+* the default column and divider proportions are giving for each view above;
+* users can adjust the column widths and divider proportions; this will not cause the views to scroll, and is persisted for the project; resizing the masters or instances column will affect both views they appear on;
+* when the browser viewport is resized, column and divider proportions are maintained;
+* **all** of the above rules are subject to the following limits:
+  * minimum width of a view (what is shown in the viewport) is 960px (i.e. if the viewport is narrower than that, the view scrolls horizontally);
+  * the minimum width of the parameter, masters, instances, fonts and metadata columns is 180px;
+  * the minimum width of the parameter, masters and instances columns is 270px;
+  * no further limits; user common sense prevails.
+
+_yes, horizontal dividers can be moved completely up/down, to the point where the panel above/below it is completely invisible._
 
 ## where did the menus go?
 Defining one’s own menu bar in a web application is problematic: hide the normal browser one? It is a sure way to create user panic. Have two menu bars? How unsatisfying.
@@ -169,7 +189,7 @@ Whenever this instance/tab of metapolator is running without a project loaded, t
 ![](http://mmiworks.net/metapolator/projectnone2.png)
 
 ## (adjustment) master management
-As mentioned before, the (adjustment) master column is the panel that ties together the Parameters and Design Spaces views. Vertically this column is divided in two, with a master section at the top and a adjustment master section below it:
+As mentioned before, the (adjustment) master column is the panel that ties together the Parameters and Design Spaces views. Vertically this column is divided in two (default: at 50%), with a master section at the top and a adjustment master section below it:
 
 ![](http://mmiworks.net/metapolator/mastersplit.png)
 
