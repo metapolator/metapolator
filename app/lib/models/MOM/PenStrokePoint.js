@@ -16,7 +16,7 @@ define([
     "use strict";
     /**
      * This Element represents a point of a of a MoM PenStroke contour.
-     * It's properties are the absolute coordinates of an on-curve point
+     * Its properties are the absolute coordinates of an on-curve point
      * of the centerline of a contour.
      *
      * Eventually it may have a name and an identifier etc.

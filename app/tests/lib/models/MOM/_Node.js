@@ -35,7 +35,7 @@ define([
             
             assert.throws(
                 function(){ new _Node(); },
-                errors.MOM, 'MOM _Node must not be instanciated directly');
+                errors.MOM, 'MOM _Node must not be instantiated directly');
             
             var parent = new TestParentNode();
             assert.instanceOf(parent, _Node, 'parent must be a _Node now.')

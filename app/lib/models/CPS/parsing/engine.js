@@ -53,8 +53,8 @@ define([
           , lineNo: lineNo
           , rawData: data
           , makeInstance: (
-              // if the parent will not be instanciated there's no
-              // need to instanciate this node, it won't persist
+              // if the parent will not be instantiated there's no
+              // need to instantiate this node, it won't persist
               // anywhere
               parent.makeInstance
               // AND if the parent is a __GenericAST__ type, it won't
