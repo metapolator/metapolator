@@ -111,7 +111,7 @@ _Map the (strings of) instances to font (families); manage metadata and assign t
 * the default column and divider proportions are giving for each view above;
 * users can adjust the column widths and divider proportions; this will not cause the views to scroll, and is persisted for the project; resizing the masters or instances column will affect both views they appear on;
 * when the browser viewport is resized, column and divider proportions are maintained;
-* **all** of the above rules are subject to the following limits:
+* **all three** rules above are subject to the following limits:
   * minimum width of a view (what is shown in the viewport) is 960px (i.e. if the viewport is narrower than that, the view scrolls horizontally);
   * the minimum width of the parameter, masters, instances, fonts and metadata columns is 180px;
   * the minimum width of the parameter, masters and instances columns is 270px;
