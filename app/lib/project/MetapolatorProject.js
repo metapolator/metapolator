@@ -220,7 +220,7 @@ define([
     }
     
     /**
-     * Returns the path needed to instanciate a GlyphSet
+     * Returns the path needed to instantiate a GlyphSet
      */
     _p._getLayerDir = function(name) {
         // read layercontents.plist

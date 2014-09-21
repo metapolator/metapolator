@@ -27,8 +27,7 @@ define([
     function _Node() {
         Parent.call(this);
         if(this.constructor.prototype === _p)
-            throw new MOMError('MOM _Node must not be instanciated directly');
-
+            throw new MOMError('MOM _Node must not be instantiated directly');
         Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
 
         this._children = [];
