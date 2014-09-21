@@ -187,7 +187,7 @@ define([
 
     /**
      * Note: this is currently running very often when adding or deleting
-     * childrens, I wonder if we need to come up with some tricky shortcut
+     * children, I wonder if we need to come up with some tricky shortcut
      * to make the search faster.
      * On thing I already made is searching from back to front, because
      * a child node will call parent.find(this) exactly after beeing
