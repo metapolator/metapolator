@@ -50,15 +50,17 @@ The plot thickens when a second master is added:
 
 Since at the position where a master is located it is the undisputed ruler of the design space (100% defines the metapolation result) all other masters must have zero strength at that point. Ergo: masters limit the reach of other masters.
 
-**rule**: when the reach of a master is (effectively) limited by one other master, its reach (aka field) is circular.<br/>
+**rule**: when the reach of a master is (effectively) limited by _one_ other master, its reach (aka field) is circular.<br/>
 **rule**: the fields of the masters ramp down from 100% strength at the centre, to 0% at its edge.<br/>
 **rule**: in the mix zone (here: between C and F) the metapolation mix is simply the ratio of the field strengths.<br/>
 **rule**: when a master is grabbed with the mouse and dragged around, the fields of it and and other masters are continuously updated until the master is released in its new position.<br/>
 **rule**: when the master configuration of a space is changed, the metapolation mix of the instances does not change and they ‘tag along’ in space the best they can.
 
-and then we add a third master and their representation matures:
+And then we add a third master and their representation matures:
 
 ![](http://mmiworks.net/metapolator/explore3masters.png)
+
+**rule**: when multiple masters limit the field of a master, its field is an ellipse, which has its long axis pointing exactly at the _second-nearest_ neighbour, with the long axis length set to be the exact distance to that neighbour. the short axis is set so that the ellipse perimeter touches exactly the position of the _nearest_ neighbour.
 
 _more tomorrow…_
 
