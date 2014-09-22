@@ -129,4 +129,4 @@ now start at hue = 18° for the next object and increment 72 ° for each next on
 now start at hue = 54° for the next object and increment 72 ° for each next one, until back at 54°;<br/>
 now start again from the top.
 
-_yes, this has been tested for 8 types of color-blindness, with Sim Daltonism.app—the point is whether one can see the are delimeters._
+_yes, this has been tested for 8 types of color-blindness, with Sim Daltonism.app—the point is whether one can see the area delimeters._
