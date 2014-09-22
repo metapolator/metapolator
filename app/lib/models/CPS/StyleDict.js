@@ -73,22 +73,12 @@ define([
     };
 
     /**
-     * Return the value of a ParameterValue instance.
-     * Raises KeyError and CPSKeyNotFoundError, see this._getParameter
-     * for a description.
-     */
-    _p.getParameter = function(name) {
-        return this._getParameter(name).getValue();
-    };
-
-    /**
      * Look up a parameter in this._element according to the following
      * rules:
      *
      * 1. If `name' is "this", return the MOM Element of this StyleDict
      * (this._element). We check "this" first so it can't be overridden by
-     * a @dictionary rule. (It would also be possible to define this as a
-     * CPSParameter, so we could get it via this.getParameter.)
+     * a @dictionary rule.
      *
      * 2. If `name' is a registered parameter name, look it up. If this
      * fails, throw CPSKeyNotFoundError, so the caller knows to check the
@@ -101,7 +91,7 @@ define([
      *
      * If `name' is a registered parameter type, the return value's type is
      * the parameter type; otherwise, the return value may be anything that
-     * is accessible or constructable from CPSformulae, or a white-listed
+     * is accessible or constructable from CPS formulae, or a white-listed
      * value on any reachable element.
      */
     _p.get = function(name) {
@@ -117,7 +107,7 @@ define([
         try {
             if(this._controller.parameterRegistry.exists(name))
                 // Will throw CPSKeyNotFoundError if not found.
-                return this.getParameter(name);
+                return this._getParameter(name).getValue();
 
             try {
                 return this._controller
