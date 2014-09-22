@@ -40,7 +40,7 @@ Action start when masters get added to the exploration space. Adding one master 
 
 The single master dominates the whole space. **rule**: master can be placed anywhere in the space.
 
-It is identified by the first character of its name in the master list (if that was the default ‘Master 1’ then it is called ‘M1’ here). We do not want a visual space full of writing. Clicking (and/or holding) the master in the space identifies it in the master list by highlighting it exclusively (for the duration that the mouse is down).
+It is identified by the first character of its name in the master list (if that was the default ‘Master 1’ then it is called ‘M1’ here). _We do not want a visual space full of writing._ Clicking (and/or holding) the master in the space identifies it in the master list by highlighting it exclusively (for the duration that the mouse is down).
 
 What is interesting, **rule**: when the first master (sequence) is added to the space, also a first instance is created for the space in the instances list, selected there and shown by means of the cursor.
 
@@ -67,7 +67,9 @@ Adding one master sequence to an empty exploration space is not that exiting eit
 
 ![](http://mmiworks.net/metapolator/explore1sequence.png)
 
-Again the space is dominated by a single object, although now sliding the cursor _along_ the sequence will map to the all possible intermediate stages between the masters that make up the sequence. **rule**: a sequence is represented by a straight vector, which can have any angle and length. The dot and arrow match the direction in the masters list.
+Again the space is dominated by a single object, although now sliding the cursor _along_ the sequence will map to the all possible intermediate stages between the masters that make up the sequence. **rule**: a sequence is represented by a straight vector, which can have any angle and length. The dot and arrow match the direction in the masters list and are the two handles to manipulate it in the space.
+
+It is identified by the first character of its name in the master list (if that was the default ‘Sequence 1’ then it is called ‘S1’ here). Clicking (and/or holding) the sequence dot in the space identifies it in the master list by highlighting it exclusively (for the duration that the mouse is down).
 
 It takes only one master to limit the extend of a sequence:
 
