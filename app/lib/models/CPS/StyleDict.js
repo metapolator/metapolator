@@ -1,22 +1,21 @@
 define([
     'metapolator/errors'
+  , './_StyleDict'
   , './cpsGetters'
 ], function(
     errors
+  , Parent
   , cpsGetters
 ) {
     "use strict";
 
     var KeyError = errors.Key
-      , CPSKeyNotFoundError = errors.CPSKeyNotFound
+      , CPSKeyError = errors.CPSKey
       , CPSRecursionError = errors.CPSRecursion
       ;
 
     /**
      * StyleDict is an interface to a List of CPS.Rule elements.
-     *
-     * This is returned by the getComputedStyle function of
-     * metapolator/models/Controller
      */
     function StyleDict(controller, rules, element) {
         this._rules = rules;
@@ -26,7 +25,7 @@ define([
         this._getting = {};
     }
 
-    var _p = StyleDict.prototype;
+    var _p = StyleDict.prototype = Object.create(Parent.prototype);
     _p.constructor = StyleDict;
 
     /**
@@ -60,25 +59,16 @@ define([
      * Returns a new ParameterValue instance
      * Raises KeyError if name is not registered in the parameterRegistry
      * of the controller.
-     * Raises CPSKeyNotFoundError if there is no entry for name in CPS.
-     * The CPSKeyNotFoundError may be used to create a cascading system
+     * Raises CPSKeyError if there is no entry for name in CPS.
+     * The CPSKeyError may be used to create a cascading system
      * of StyleDict interfaces.
      *
      */
     _p._getParameter = function(name) {
         var cpsParameterValue = this._getCPSParameterValue(name);
         if(cpsParameterValue === null)
-            throw new CPSKeyNotFoundError(name);
+            throw new CPSKeyError(name);
         return cpsParameterValue.factory(name, this._element, this.getAPI);
-    };
-
-    /**
-     * Return the value of a ParameterValue instance.
-     * Raises KeyError and CPSKeyNotFoundError, see this._getParameter
-     * for a description.
-     */
-    _p.getParameter = function(name) {
-        return this._getParameter(name).getValue();
     };
 
     /**
@@ -87,12 +77,10 @@ define([
      *
      * 1. If `name' is "this", return the MOM Element of this StyleDict
      * (this._element). We check "this" first so it can't be overridden by
-     * a @dictionary rule. (It would also be possible to define this as a
-     * CPSParameter, so we could get it via this.getParameter.)
+     * a @dictionary rule.
      *
      * 2. If `name' is a registered parameter name, look it up. If this
-     * fails, throw CPSKeyNotFoundError, so the caller knows to check the
-     * next parameter value source.
+     * fails, throw CPSKeyError.
      *
      * 3. Look up `name' in the @dictionary rules for this element.
      *
@@ -101,7 +89,7 @@ define([
      *
      * If `name' is a registered parameter type, the return value's type is
      * the parameter type; otherwise, the return value may be anything that
-     * is accessible or constructable from CPSformulae, or a white-listed
+     * is accessible or constructable from CPS formulae, or a white-listed
      * value on any reachable element.
      */
     _p.get = function(name) {
@@ -116,8 +104,8 @@ define([
         this._getting[name] = true;
         try {
             if(this._controller.parameterRegistry.exists(name))
-                // Will throw CPSKeyNotFoundError if not found.
-                return this.getParameter(name);
+                // Will throw CPSKeyError if not found.
+                return this._getParameter(name).getValue();
 
             try {
                 return this._controller
