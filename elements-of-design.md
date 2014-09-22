@@ -297,6 +297,12 @@ The adjustment master section is completely identical to the [master section](ht
 
 The label above the list shall be "Adjustment Masters".
 
+#### sequence column
+
+![](http://mmiworks.net/metapolator/adjustmentcolumn.png)
+
+Different symbols are used in the sequence column: up-pointing triangles, derived from the delta (Δ) symbol, and the bottom item is identified by an end-of-the-line symbol.
+
 #### buttons
 Action buttons are different:
 
