@@ -14,9 +14,6 @@ define([
 
     /**
      * StyleDict is an interface to a List of CPS.Rule elements.
-     *
-     * This is returned by the getComputedStyle function of
-     * metapolator/models/Controller
      */
     function StyleDict(controller, rules, element) {
         this._rules = rules;
