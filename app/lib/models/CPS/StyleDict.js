@@ -1,8 +1,10 @@
 define([
     'metapolator/errors'
+  , './_StyleDict'
   , './cpsGetters'
 ], function(
     errors
+  , Parent
   , cpsGetters
 ) {
     "use strict";
@@ -23,7 +25,7 @@ define([
         this._getting = {};
     }
 
-    var _p = StyleDict.prototype;
+    var _p = StyleDict.prototype = Object.create(Parent.prototype);
     _p.constructor = StyleDict;
 
     /**

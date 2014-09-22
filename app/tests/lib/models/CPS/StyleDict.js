@@ -5,6 +5,8 @@
   , 'metapolator/models/Controller'
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/parsing/parseRules'
+  , 'metapolator/models/CPS/StyleDict'
+  , 'metapolator/models/CPS/FailoverStyleDict'
   , 'tests/lib/models/test_data/makeMasterFixture'
 ], function (
     registerSuite
@@ -13,6 +15,8 @@
   , ModelController
   , parameterRegistry
   , cpsParser
+  , StyleDict
+  , FailoverStyleDict
   , makeMasterFixture
 ) {
     "use strict";
@@ -34,13 +38,13 @@
                   , 'master#master_2 point'
               ]
               , modelController = new ModelController(parameterRegistry)
-              , i=0
+              , i
               , source
               , master
               , elementStyle
               ;
             // prepare
-            for(;i<recursive_cps.length; i++) {
+            for(i=0; i<recursive_cps.length; i++) {
                 source = cpsParser.fromString(
                          recursive_cps[i]
                        , 'recursive_cps at '+ i
@@ -49,8 +53,7 @@
                 master = makeMasterFixture('master_'+ i, ['a']);
                 modelController.addMaster(master, [source]);
             }
-            i=0;
-            for(;i<failingSelectors.length;i++) {
+            for(i=0; i<failingSelectors.length;i++) {
                 elementStyle = modelController.query(failingSelectors[i])
                                               .getComputedStyle()
                 // fails with CPSRecursionError
@@ -60,6 +63,22 @@
                   , CPSRecursionError
                 );
             }
+        },
+        CPS_StyleDict_test_failover: function() {
+            var modelController = new ModelController(parameterRegistry)
+              , master = makeMasterFixture('master', ['a'])
+              , emptyDict = new StyleDict(modelController, [], master)
+              , nonemptyDict
+              , failoverStyleDict
+              ;
+            // prepare
+            modelController.addMaster(master, [cpsParser.fromString('*{ onLength: 20 }',
+                                                                    'nonemptyDict',
+                                                                    parameterRegistry)]);
+            nonemptyDict = new StyleDict(modelController, modelController.getMergedRules('master'), master);
+            failoverStyleDict = new FailoverStyleDict([emptyDict, nonemptyDict]);
+            assert.strictEqual(failoverStyleDict.get('onLength'), 20);
+            assert.throws(failoverStyleDict.get.bind(failoverStyleDict, 'foo'), errors.Key);
         }
     });
 });
