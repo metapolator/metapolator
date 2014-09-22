@@ -8,7 +8,7 @@ define([
     "use strict";
 
     var KeyError = errors.Key
-      , CPSKeyNotFoundError = errors.CPSKeyNotFound
+      , CPSKeyError = errors.CPSKey
       , CPSRecursionError = errors.CPSRecursion
       ;
 
@@ -60,15 +60,15 @@ define([
      * Returns a new ParameterValue instance
      * Raises KeyError if name is not registered in the parameterRegistry
      * of the controller.
-     * Raises CPSKeyNotFoundError if there is no entry for name in CPS.
-     * The CPSKeyNotFoundError may be used to create a cascading system
+     * Raises CPSKeyError if there is no entry for name in CPS.
+     * The CPSKeyError may be used to create a cascading system
      * of StyleDict interfaces.
      *
      */
     _p._getParameter = function(name) {
         var cpsParameterValue = this._getCPSParameterValue(name);
         if(cpsParameterValue === null)
-            throw new CPSKeyNotFoundError(name);
+            throw new CPSKeyError(name);
         return cpsParameterValue.factory(name, this._element, this.getAPI);
     };
 
@@ -81,8 +81,7 @@ define([
      * a @dictionary rule.
      *
      * 2. If `name' is a registered parameter name, look it up. If this
-     * fails, throw CPSKeyNotFoundError, so the caller knows to check the
-     * next parameter value source.
+     * fails, throw CPSKeyError.
      *
      * 3. Look up `name' in the @dictionary rules for this element.
      *
@@ -106,7 +105,7 @@ define([
         this._getting[name] = true;
         try {
             if(this._controller.parameterRegistry.exists(name))
-                // Will throw CPSKeyNotFoundError if not found.
+                // Will throw CPSKeyError if not found.
                 return this._getParameter(name).getValue();
 
             try {

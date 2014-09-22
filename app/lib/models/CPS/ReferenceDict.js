@@ -52,7 +52,7 @@ define([
     _p._getParameter = function(name) {
         var cpsParameterValue = this._getCPSParameterValue(name);
         if(cpsParameterValue === null)
-            throw new CPSKeyNotFoundError(name);
+            throw new CPSKeyError(name);
         return cpsParameterValue.factory(
             name, this._element,
             this._controller.getComputedStyle(this._element).getAPI
