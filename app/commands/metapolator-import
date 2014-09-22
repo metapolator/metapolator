@@ -19,11 +19,15 @@ if (require.main === module) {
       , 'metapolator/errors'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/project/MetapolatorProject'
+      , 'winston'
+      , 'ufojs/ufoLib/glifLib/misc'
     ], function (
         program
       , errors
       , io
       , MetapolatorProject
+      , winston
+      , ufojsmisc
     ) {
         var CommandLineError = errors.CommandLine;
 

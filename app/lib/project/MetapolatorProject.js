@@ -336,13 +336,13 @@ define([
             this.open(master);
         return this._controller.getMasterSources(master);
     }
-    
+
     _p.import = function(masterName, sourceUFODir, glyphs) {
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
         importer.import(glyphs);
     }
-    
+
     _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller
         var model = this.open(masterName)
