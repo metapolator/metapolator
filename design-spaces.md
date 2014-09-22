@@ -62,6 +62,14 @@ And then we add a third master and their representation matures:
 
 **rule**: when multiple masters limit the field of a master, its field is an ellipse, which has its long axis pointing exactly at the _second-nearest_ neighbour, with the long axis length set to be the exact distance to that neighbour. the short axis is set so that the ellipse perimeter touches exactly the position of the _nearest_ neighbour.
 
+### (strings of) instances
+
+The (strings of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
+
+![](http://mmiworks.net/metapolator/exploreinstances.png)
+
+The currently selected instance is the one being moved about (i.e. edited) and represented by the cursor.
+
 ### master sequences
 Adding one master sequence to an empty exploration space is not that exiting either:
 
@@ -80,6 +88,8 @@ We see also how the sequence limits the master; its line acts like a wall (indee
 When we put some more masters, the sequence has more to interact with:
 
 ![](http://mmiworks.net/metapolator/explore1sequence+3.png)
+
+We see how master H is effectively blocked by the sequence from interacting with the other two masters. Both the sequence and master C have expanded in area because there are more masters to interact with.
 
 The field of a sequence is built out of 2 rectangles and 4 quarter-ellipse segments:
 
