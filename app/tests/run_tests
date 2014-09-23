@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "$0"
+cd .. &&
+node --harmony ../node_modules/intern/client config=tests/intern "$@"
+
