@@ -37,10 +37,11 @@ some **general rules** for all spaces:
 
 * every instance that is created—whether part of a string or not—in the instances list immediately appears on the current design space and is part (exclusively) of that space;
 * adjustment masters (sequences) cannot be dropped on a design space when it does not contain master or master sequence;
-* the size of the design spaces area is quite variable, in width (window resize) and in height (‘let’s have a good look at that specimen’). Therefore design spaces scroll where necessary.
+* the size of the design spaces area is quite variable, in width (window resize) and in height (‘let’s have a good look at that specimen’). Therefore design spaces scroll where necessary;
+* reconfiguring a design space, by adding or deleting master & co, means change to all instances, because now more/less elements go into their mix.
 
 ## exploration space
-Action start when masters get drag ’n’ dropped to the exploration space. Adding one master is not _that_ interesting:
+The action starts when masters get drag ’n’ dropped on the exploration space. Adding one master is not _that_ interesting:
 
 ![](http://mmiworks.net/metapolator/explore1master.png)
 
@@ -133,3 +134,57 @@ now start again from the top.
 _yes, this has been tested for 8 types of color-blindness, with Sim Daltonism.app—the point is whether one can see the area delimeters._
 
 ## control space
+Also here the action starts when masters get drag ’n’ dropped on the control space. Adding one master is not _that_ interesting:
+
+![](http://mmiworks.net/metapolator/control1master.png)
+
+The single master dominates the whole space. **rule**: layout of elements in this space is fully automatic, based on the order things are added and when in doubt, the order they appear in the master and adjustment masters lists.
+
+What is interesting, **rule**: when the first master (sequence) is added to the space, also a first instance is created for the space in the instances list, selected there and shown by means of the cursor.
+
+The plot thickens when a second master is dropped:
+
+![](http://mmiworks.net/metapolator/control2masters.png)
+
+Now instances can be set up as a mix between the two masters. The slider’s width is 200px and everything is designed to be compact, because this UI has to scale for many masters. The numerical value of the setting goes from 0 to 100; click to edit. Also at the bottom-right we see the Extrapolation setting has appeared, more about that later.
+
+And then we drop a third master and their representation matures:
+
+![](http://mmiworks.net/metapolator/control3masters.png)
+
+A second slider appears; for every master dropped here we get an extra slider. triangles next to the labels show that we can pop up a list to configure the sliders, together with the All item on the lower-left. _write up of configuration rules coming soon (an edit of [this](https://github.com/metapolator/metapolator/wiki/elements-of-design#metapolation-sliders), really)._
+
+When the number of (‘unsequenced’) masters is three, the Triangle with is shown (as is above). This switches to the following mode:
+
+![](http://mmiworks.net/metapolator/controltriangle.png)
+
+We see the three masters arranged at the tips of an equal-sided triangle. The percentage of each master in the mix goes from 0 to 100 (and the three always add up to 100); click to edit.
+
+It is a real shame that the triangle representation only works this beautifully and ‘zen’ for three masters, for more masters things just get, ehm, tangled. So it is only available for 3 masters; add or delete a master and it is back to straight sliders.
+
+### (strings of) instances
+The (strings of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
+
+![](http://mmiworks.net/metapolator/controlinstances.png)
+
+triangle form:
+
+![](http://mmiworks.net/metapolator/controltriangleinstances.png)
+
+The currently selected instance is the one being edited and represented by the cursor.
+
+### master sequences
+Dropping one master sequence on an empty control space is already quite useful:
+
+![](http://mmiworks.net/metapolator/control1sequence.png)
+
+Plenty of instances can be pulled from this alone. The slider length (200px) is divided down equally for the number of master in the sequence (here: 4). The master sequence name is shown top-left, with the numerical value, representing the slider position after it; it goes from 0 to 100; click to edit.
+
+When a second master sequence is added, two different cases can occur. Either the two sequences have one master in common (e.g. both contain a master called ‘Body’, which are exactly the same—most easily done my cloning a master and putting the results in both sequences). Then the two sequences are said **to cross**.
+
+Or the two sequences have no master in common and are said to **not cross**. This because it will be nigh impossible to find one point on each sequence where the ~50.000 datapoints that (easily) make up a font are _quite_ (say, within 1%) the same.
+
+#### crossing sequences
+The more compact representation of crossing sequences is in slider form:
+![](http://mmiworks.net/metapolator/control2sequences.png)
+
