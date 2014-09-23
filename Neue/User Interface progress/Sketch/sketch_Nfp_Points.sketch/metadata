@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>app</key>
+	<string>com.bohemiancoding.sketch3</string>
+	<key>build</key>
+	<integer>8054</integer>
+	<key>commit</key>
+	<string>b2079fe10151ad0eef6cc553b7369ec78d67b9b5</string>
+	<key>fonts</key>
+	<array>
+		<string>AvenirNext-Regular</string>
+		<string>LucidaGrande</string>
+	</array>
+	<key>length</key>
+<<<<<<< HEAD:Neue/Website elements/Sketch.sketch/metadata
+	<integer>3032036</integer>
+=======
+	<integer>1975006</integer>
+>>>>>>> FETCH_HEAD:Neue/User Interface progress/Sketch/sketch_Nfp_Points.sketch/metadata
+	<key>version</key>
+	<integer>37</integer>
+</dict>
+</plist>

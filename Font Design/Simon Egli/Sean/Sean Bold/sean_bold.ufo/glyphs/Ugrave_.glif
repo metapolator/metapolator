@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Ugrave" format="1">
+  <advance width="763"/>
+  <unicode hex="00D9"/>
+  <outline>
+    <contour>
+      <point x="226" y="898" type="line"/>
+      <point x="323" y="957" type="line"/>
+      <point x="503" y="731" type="line"/>
+      <point x="415" y="660" type="line"/>
+    </contour>
+    <contour>
+      <point x="80" y="687" type="line"/>
+      <point x="196" y="687" type="line"/>
+      <point x="196" y="282" type="line" smooth="yes"/>
+      <point x="196" y="205"/>
+      <point x="275" y="111"/>
+      <point x="347" y="111" type="qcurve" smooth="yes"/>
+      <point x="415" y="111"/>
+      <point x="488" y="197"/>
+      <point x="488" y="269" type="qcurve" smooth="yes"/>
+      <point x="488" y="687" type="line"/>
+      <point x="604" y="687" type="line"/>
+      <point x="604" y="272" type="line" smooth="yes"/>
+      <point x="604" y="209"/>
+      <point x="569" y="107"/>
+      <point x="536.0" y="71.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="503" y="35"/>
+      <point x="406" y="-5"/>
+      <point x="344" y="-5" type="qcurve" smooth="yes"/>
+      <point x="281" y="-5"/>
+      <point x="183" y="36"/>
+      <point x="149.5" y="73.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="116" y="110"/>
+      <point x="80" y="215"/>
+      <point x="80" y="278" type="qcurve" smooth="yes"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>Ugrave</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>763</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

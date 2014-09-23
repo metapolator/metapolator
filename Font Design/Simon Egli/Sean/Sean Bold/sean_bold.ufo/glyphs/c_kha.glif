@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_kha" format="1">
+  <advance width="868"/>
+  <unicode hex="0916"/>
+  <outline>
+    <contour>
+      <point x="541" y="346" type="qcurve" smooth="yes"/>
+      <point x="553.5" y="346.0" name="inserted"/>
+      <point x="575.0" y="354.5"/>
+      <point x="584" y="363" type="qcurve"/>
+      <point x="584" y="406" type="line"/>
+      <point x="572" y="417"/>
+      <point x="548" y="429"/>
+      <point x="534" y="429" type="qcurve" smooth="yes"/>
+      <point x="515.5" y="429.0" name="inserted"/>
+      <point x="497.0" y="409.0"/>
+      <point x="497" y="389" type="qcurve" smooth="yes"/>
+      <point x="497" y="369"/>
+      <point x="521" y="346"/>
+    </contour>
+    <contour>
+      <point x="814" y="571" type="line"/>
+      <point x="700" y="571" type="line"/>
+      <point x="700" y="0" type="line"/>
+      <point x="584" y="0" type="line"/>
+      <point x="584" y="78" type="line"/>
+      <point x="552" y="66"/>
+      <point x="483" y="59"/>
+      <point x="444" y="59" type="qcurve" smooth="yes"/>
+      <point x="359" y="59"/>
+      <point x="227" y="123"/>
+      <point x="181.5" y="180.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="136" y="237"/>
+      <point x="88" y="396"/>
+      <point x="88" y="492" type="qcurve"/>
+      <point x="192" y="508" type="line"/>
+      <point x="203" y="466"/>
+      <point x="231" y="417"/>
+      <point x="248" y="417" type="qcurve" smooth="yes"/>
+      <point x="265" y="417"/>
+      <point x="283" y="450"/>
+      <point x="283" y="475" type="qcurve" smooth="yes"/>
+      <point x="283" y="507"/>
+      <point x="259" y="551"/>
+      <point x="233" y="571" type="qcurve"/>
+      <point x="-17" y="571" type="line"/>
+      <point x="-17" y="687" type="line"/>
+      <point x="814" y="687" type="line"/>
+    </contour>
+    <contour>
+      <point x="541" y="230" type="qcurve" smooth="yes"/>
+      <point x="469" y="230"/>
+      <point x="383" y="314"/>
+      <point x="382" y="384" type="qcurve"/>
+      <point x="365" y="346"/>
+      <point x="299" y="301"/>
+      <point x="248" y="301" type="qcurve" smooth="yes"/>
+      <point x="234" y="301"/>
+      <point x="230" y="294"/>
+      <point x="232.0" y="291.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="234" y="288"/>
+      <point x="241" y="287"/>
+      <point x="239" y="292" type="qcurve"/>
+      <point x="269" y="238"/>
+      <point x="372" y="175"/>
+      <point x="444" y="175" type="qcurve" smooth="yes"/>
+      <point x="486" y="175"/>
+      <point x="555" y="187"/>
+      <point x="584" y="207" type="qcurve"/>
+      <point x="584" y="235" type="line"/>
+      <point x="573.0" y="232.5" name="inserted"/>
+      <point x="551.5" y="230.0"/>
+    </contour>
+    <contour>
+      <point x="534" y="545" type="qcurve" smooth="yes"/>
+      <point x="547.0" y="545.0" name="inserted"/>
+      <point x="572.0" y="542.0"/>
+      <point x="584" y="539" type="qcurve"/>
+      <point x="584" y="571" type="line"/>
+      <point x="380" y="571" type="line"/>
+      <point x="389.5" y="549.5" name="inserted"/>
+      <point x="399.0" y="501.5"/>
+      <point x="399" y="475" type="qcurve" smooth="yes"/>
+      <point x="399" y="469" type="line"/>
+      <point x="416" y="505"/>
+      <point x="486" y="545"/>
+    </contour>
+    <contour>
+      <point x="382" y="389" type="qcurve" smooth="yes"/>
+      <point x="382" y="384" type="line"/>
+      <point x="390.0" y="402.5" name="inserted"/>
+      <point x="398.5" y="445.0"/>
+      <point x="399" y="469" type="qcurve"/>
+      <point x="390.5" y="452.5" name="inserted"/>
+      <point x="382.0" y="412.5"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_kha</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>868</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

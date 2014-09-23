@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_sha" format="1">
+  <advance width="627"/>
+  <unicode hex="0937"/>
+  <outline>
+    <contour>
+      <point x="485" y="571" type="line"/>
+      <point x="485" y="0" type="line"/>
+      <point x="369" y="0" type="line"/>
+      <point x="369" y="149" type="line"/>
+      <point x="347.5" y="141.0" name="inserted"/>
+      <point x="302.5" y="133.0"/>
+      <point x="279" y="133" type="qcurve" smooth="yes"/>
+      <point x="231" y="133"/>
+      <point x="154" y="164"/>
+      <point x="127.0" y="192.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="100" y="221"/>
+      <point x="71" y="300"/>
+      <point x="71" y="348" type="qcurve" smooth="yes"/>
+      <point x="71" y="571" type="line"/>
+      <point x="-28" y="571" type="line"/>
+      <point x="-28" y="687" type="line"/>
+      <point x="599" y="687" type="line"/>
+      <point x="599" y="571" type="line"/>
+    </contour>
+    <contour>
+      <point x="369" y="571" type="line"/>
+      <point x="256" y="571" type="line"/>
+      <point x="369" y="439" type="line"/>
+    </contour>
+    <contour>
+      <point x="282" y="250" type="qcurve" smooth="yes"/>
+      <point x="306.5" y="250.0" name="inserted"/>
+      <point x="344.5" y="263.0"/>
+      <point x="358" y="276" type="qcurve"/>
+      <point x="187" y="475" type="line"/>
+      <point x="187" y="345" type="line" smooth="yes"/>
+      <point x="187" y="302"/>
+      <point x="239" y="250"/>
+    </contour>
+    <contour>
+      <point x="381" y="249" type="line"/>
+      <point x="370" y="278" type="line"/>
+      <point x="376" y="300" type="line"/>
+      <point x="372" y="293"/>
+      <point x="363" y="281"/>
+      <point x="358" y="276" type="qcurve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_sha</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>627</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

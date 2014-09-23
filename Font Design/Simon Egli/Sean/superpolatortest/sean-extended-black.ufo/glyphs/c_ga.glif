@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_ga" format="1">
+  <advance width="600"/>
+  <outline>
+    <contour>
+      <point x="151" y="268" type="line"/>
+      <point x="280" y="308"/>
+      <point x="349" y="386"/>
+      <point x="349" y="506" type="curve"/>
+      <point x="349.0" y="599.0"/>
+      <point x="281" y="719"/>
+      <point x="170" y="722" type="curve"/>
+      <point x="172" y="702" type="line"/>
+      <point x="265.0" y="702.0"/>
+      <point x="327" y="594"/>
+      <point x="327" y="500" type="curve"/>
+      <point x="327" y="387"/>
+      <point x="257" y="320"/>
+      <point x="132" y="278" type="curve"/>
+    </contour>
+    <contour>
+      <point x="362" y="700" type="line"/>
+      <point x="362" y="722" type="line"/>
+      <point x="-10" y="722" type="line"/>
+      <point x="-10" y="700" type="line"/>
+    </contour>
+    <component base="kana" xOffset="327"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>v_ee</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>600</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.0</real>
+        <real>0.0</real>
+        <real>0.0</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

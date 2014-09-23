@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_sa" format="1">
+  <advance width="702"/>
+  <unicode hex="0938"/>
+  <outline>
+    <contour>
+      <point x="311" y="323" type="line"/>
+      <point x="406" y="284"/>
+      <point x="492" y="288"/>
+      <point x="576" y="332" type="curve"/>
+      <point x="573" y="354" type="line"/>
+      <point x="487" y="306"/>
+      <point x="411" y="305"/>
+      <point x="320" y="340" type="curve"/>
+    </contour>
+    <component base="c_ra"/>
+    <component base="kana" xOffset="429"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>1.0</real>
+        <real>0.8</real>
+        <real>0.4</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,82 @@
+@import "./lib/bower_components/codemirror/lib/codemirror.css";
+mtk-files-mode {
+  display: block;
+}
+mtk-files-mode > ol {
+  list-style: none;
+  padding: 0 0 0.5em 0;
+}
+mtk-files-mode > ol > li {
+  margin-bottom: 0.5em;
+  border: 1px solid #000000;
+  background: #cccccc;
+}
+mtk-files-mode .CodeMirror {
+  height: 400px;
+}
+mtk-red-pill-master {
+  display: block;
+}
+mtk-red-pill-master .controls {
+  width: 450px;
+}
+html {
+  font-family: monospace;
+  background-color: #cccccc;
+  overflow-y: scroll;
+}
+body {
+  margin: 0;
+  padding: 0 3em;
+}
+red-pill label {
+  display: block;
+}
+red-pill label select {
+  vertical-align: top;
+}
+red-pill {
+  display: block;
+  color: black;
+  border: 1px solid #000000;
+  padding: 0.5em;
+  background: white;
+}
+mtk-red-pill-glyphs {
+  display: block;
+  width: calc(100% - 450px);
+}
+mtk-red-pill-glyphs label {
+  display: inline;
+  vertical-align: bottom;
+}
+mtk-red-pill-glyphs > label > * {
+  vertical-align: middle;
+}
+mtk-red-pill-glyph {
+  display: block;
+  border: 1px solid #000000;
+  margin-left: 0.5em;
+  margin-bottom: 0.5em;
+  overflow: auto;
+}
+mtk-red-pill-glyphs ol {
+  white-space: normal;
+  padding: 0;
+}
+mtk-red-pill-glyphs li {
+  display: inline-block;
+  vertical-align: top;
+  width: 33.333%;
+}
+red-pill .children {
+  white-space: nowrap;
+}
+red-pill .children .masters {
+  width: 450px;
+}
+red-pill .children mtk-red-pill-glyphs,
+red-pill .children .masters {
+  display: inline-block;
+  vertical-align: top;
+}

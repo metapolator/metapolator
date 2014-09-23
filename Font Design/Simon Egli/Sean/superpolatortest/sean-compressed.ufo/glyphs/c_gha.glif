@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_gha" format="1">
+  <advance width="557"/>
+  <unicode hex="0918"/>
+  <outline>
+    <contour>
+      <point x="250" y="432" type="curve"/>
+      <point x="250" y="449" type="line"/>
+      <point x="114" y="449"/>
+      <point x="9" y="393"/>
+      <point x="9" y="281" type="curve" smooth="yes"/>
+      <point x="9" y="165"/>
+      <point x="102" y="115"/>
+      <point x="213" y="115" type="curve" smooth="yes"/>
+      <point x="308" y="115"/>
+      <point x="380" y="154"/>
+      <point x="436" y="231" type="curve"/>
+      <point x="417" y="239" type="line"/>
+      <point x="366" y="170"/>
+      <point x="299" y="136"/>
+      <point x="211" y="136" type="curve" smooth="yes"/>
+      <point x="109" y="136"/>
+      <point x="30" y="180"/>
+      <point x="30" y="278" type="curve" smooth="yes"/>
+      <point x="30" y="380"/>
+      <point x="126" y="432"/>
+    </contour>
+    <contour>
+      <point x="250" y="453" type="line"/>
+      <point x="146.666666667" y="453.0"/>
+      <point x="65" y="484"/>
+      <point x="64" y="559" type="curve" smooth="yes"/>
+      <point x="63" y="650"/>
+      <point x="146.0" y="700.0"/>
+      <point x="262" y="700" type="curve"/>
+      <point x="255" y="714" type="line"/>
+      <point x="131.0" y="714.0"/>
+      <point x="42" y="660"/>
+      <point x="42" y="561" type="curve" smooth="yes"/>
+      <point x="42" y="473"/>
+      <point x="132.763636364" y="435.0"/>
+      <point x="250" y="435" type="curve"/>
+    </contour>
+    <component base="kana" xOffset="284"/>
+    <component base="component_6"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array>
+      </array>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_gha</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>557</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>1.0</real>
+        <real>0.8</real>
+        <real>0.4</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

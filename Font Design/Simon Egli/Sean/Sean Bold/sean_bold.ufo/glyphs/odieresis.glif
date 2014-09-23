@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="odieresis" format="1">
+  <advance width="644"/>
+  <unicode hex="00F6"/>
+  <outline>
+    <contour>
+      <point x="183" y="473" type="line"/>
+      <point x="183" y="654" type="line"/>
+      <point x="299" y="654" type="line"/>
+      <point x="299" y="473" type="line"/>
+    </contour>
+    <contour>
+      <point x="395" y="473" type="line"/>
+      <point x="279" y="473" type="line"/>
+      <point x="279" y="654" type="line"/>
+      <point x="395" y="654" type="line"/>
+    </contour>
+    <contour>
+      <point x="51" y="269" type="qcurve" smooth="yes"/>
+      <point x="51" y="326"/>
+      <point x="82" y="425"/>
+      <point x="111.5" y="461.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="141" y="497"/>
+      <point x="228" y="538"/>
+      <point x="284" y="538" type="qcurve" smooth="yes"/>
+      <point x="340" y="538"/>
+      <point x="428" y="497"/>
+      <point x="458.0" y="461.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="488" y="425"/>
+      <point x="520" y="326"/>
+      <point x="520" y="269" type="qcurve" smooth="yes"/>
+      <point x="520" y="211"/>
+      <point x="489" y="111"/>
+      <point x="459.0" y="74.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="429" y="37"/>
+      <point x="341" y="-5"/>
+      <point x="284" y="-5" type="qcurve" smooth="yes"/>
+      <point x="227" y="-5"/>
+      <point x="140" y="37"/>
+      <point x="110.5" y="74.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="81" y="111"/>
+      <point x="51" y="211"/>
+    </contour>
+    <contour>
+      <point x="166" y="270" type="qcurve" smooth="yes"/>
+      <point x="166" y="237"/>
+      <point x="182" y="179"/>
+      <point x="197.5" y="157.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="213" y="136"/>
+      <point x="258" y="112"/>
+      <point x="288" y="112" type="qcurve" smooth="yes"/>
+      <point x="316" y="112"/>
+      <point x="360" y="136"/>
+      <point x="375.0" y="157.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="390" y="178"/>
+      <point x="405" y="235"/>
+      <point x="405" y="268" type="qcurve" smooth="yes"/>
+      <point x="405" y="301"/>
+      <point x="388" y="358"/>
+      <point x="372.5" y="378.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="357" y="399"/>
+      <point x="311" y="423"/>
+      <point x="282" y="423" type="qcurve" smooth="yes"/>
+      <point x="254" y="423"/>
+      <point x="211" y="399"/>
+      <point x="196.0" y="378.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="181" y="358"/>
+      <point x="166" y="302"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>odieresis</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>644</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

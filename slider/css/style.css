@@ -27,7 +27,7 @@
 	
 	#menu {
 		width: 100%;
-		height: 60px;
+		height: 50px;
 	}
 	
 		#project {
@@ -60,18 +60,17 @@
 	
 	#pagewrap {
 		width: 100%;
-		height: calc(100% - 60px);
+		height: calc(100% - 50px);
 		overflow-x: hidden;
 		position: relative;
 	}
 	
 		#landscape {
-			width: 275%;
+			width: 262.5%;
 			height: 100%;
 			position: absolute;
 			left: 0;
 			top: 0;
-			transition: all 700ms ease;
 		}
 		
 			.panel {
@@ -79,19 +78,18 @@
 			}
 			
 			.sub-panel {
-				border-bottom: 4px solid #d7d2c8;
 				background: #fff;
 				border: 4px solid #d7d2c8;
 			}
 			
-			#parameters {
-				width: calc(3/44 * 100%);
+			#panel-1 {
+				width: calc(3/42 * 100%);
 				height: 100%;
 				overflow: auto;
 			}
 			
-			#specimen {
-				width: calc(10/44 * 100%);
+			#panel-2 {
+				width: calc(10/42 * 100%);
 				height: 100%;
 				overflow-y: auto
 			}
@@ -116,48 +114,52 @@
 					}
 			
 				.specimen {
-					font-size: 64pt;
 					padding: 20px 0 40px 0;
 					border-bottom: 1px solid #ddd;
 				}
 				
 			
-			#masters-container {
-				width: calc(3/44 * 100%);
+			#panel-3 {
+				position: relative;
+				width: calc(3/42 * 100%);
 				height: 100%;
+				padding-left: 5px;
 			}
-				#masters {
+				#subpanel-3-top {
 					height: 50%;
 					position: relative;
 					overflow: auto;
 				}
 				
-				#adjustment-masters {
+				#subpanel-3-bottom {
 					height: 50%;
 					position: relative;
 					overflow: auto;
 				}
 				
 					.masters-add-item {
+						display: none;
 						position: absolute;
 						bottom: 0;
 						margin: 8px;
 					}
 			
-			#design-space-container {
-				width: calc(10/44 * 100%);
+			#panel-4 {
+				width: calc(10/42 * 100%);
 				height: 100%;
+				position: relative;
 			}
 			
-				#design-space {
+				#subpanel-4-top {
 					position: relative;
 					height: 50%;
 					overflow: auto;
 				}
 				
 					.block {
-						width: 40%;
+						width: 50%;
 						height: 50%;
+						border-radius: 50%;
 						position: absolute;
 						opacity: 0.5;
 					}
@@ -180,7 +182,7 @@
 						top: 40%;
 					}
 			
-				#specimen-2 {
+				#subpanel-4-bottom {
 					overflow-y: auto;
 					height: 50%;
 				}
@@ -201,15 +203,15 @@
 						font-weight: 700;
 					}
 			
-			#instances {
-				width: calc(3/44 * 100%);
+			#panel-5 {
+				width: calc(3/42 * 100%);
 				height: 100%;
 				position: relative;
 				overflow: auto;
 			}
 					
-			#font-mapping {
-				width: calc(4/44 * 100%);
+			#panel-6 {
+				width: calc(4/42 * 100%);
 				height: 100%;
 				position: relative;
 				overflow: auto;
@@ -234,8 +236,8 @@
 					background: #ffa392;
 				}
 			
-			#meta-data {
-				width: calc(9/44 * 100%);
+			#panel-7 {
+				width: calc(9/42 * 100%);
 				height: 100%;
 				position: relative;
 				overflow: auto;
@@ -244,10 +246,72 @@
 				#meta-data input {
 					margin-bottom: 12px;
 				}
-			
 
 
 
+
+/***************** divider ******************/
+
+
+    .divider {
+        position: absolute;
+        height: calc(100% - 50px);
+        width: 9px;
+        top: 50px;
+        z-index: 100;
+    }
+    
+    
+    #divider-1 {
+        left: calc(3/16 * 100% - 4px);   
+    }
+    
+    #divider-2 {
+        left: calc(13/16 * 100% - 4px);   
+    }
+    
+        .divider-top {
+            height: 100%;
+            width: 5px;
+        }
+        
+        .divider:hover .divider-top {
+            border-right: 1px dashed #000;
+        }
+        
+        .divider:hover {
+            cursor: ew-resize;
+        }
+        
+        
+    .divider-hor {
+        position: absolute;
+        width: 100%;
+        height: 9px;
+        z-index: 100;
+    }
+    
+    
+    #divider-3, #divider-4 {
+        top: 50%;   
+    }
+    
+    
+        .divider-left {
+            width: 100%;
+            height: 5px;
+        }
+        
+        .divider-hor:hover .divider-left {
+            border-bottom: 1px dashed #000;
+        }
+        
+        .divider-hor:hover {
+            cursor: ns-resize;
+        }
+
+
+    
 
 			
 /***************** dropdown menu ******************/
@@ -270,10 +334,14 @@
 			background: #ddd;
 			color: #000;
 			overflow: auto;
+            white-space: nowrap;
 		}
 		
 		#project-dropdown .dropdown-toggle {
 			background: none;
+			display: block;
+			padding-bottom: 0;
+
 		}
 		
 			.dropdown .dropdown-toggle:hover, .dropdown .dropdown-toggle:focus {
@@ -290,72 +358,117 @@
 			
 	
 			
+				
+	
 			
 /***************** selectable ******************/
 	
 	
-	.ui-selectable {
-	    display: block;
-	    list-style-type: none;
-	    margin: 0px;
-	    padding: 0px;
-	    width: 100%;
-	}
-		.ui-selectable li {
-			border: 0;
-			border-bottom: 1px solid #ffa392;
-			height: 28px;
-		}
-			
-			 .ui-selectable li.ui-selectee {
-			    background: #fff;
-			}
-			
-			.ui-selectable li.ui-unselecting {
-			    background: #F00;
-			}
-			
-			.ui-selectable li.ui-selecting {
-			    background: #FECA40;
-			}
-			
-			.ui-selectable li.ui-selected {
-			    background: #f85c37;
-			}
-			
-	.ui-selectable li span {
-		display: inline-block;
-		
-	}
-			
-	li .selectable-diamond {
-		float: left;
-		clear: both;
-		height: 27px;
-		width: 28px;
-		background-image: url('../img/diamonds/diamond-full.png');
-	}	
-	
-	li:first-child .selectable-diamond {
-		background-image: url('../img/diamonds/diamond-top.png');
-	}
-	
-	li:last-child .selectable-diamond {
-		background-image: url('../img/diamonds/diamond-bottom.png');
-	}
-			
-	.selectable-ag {
-		float: left;
-		padding: 4px 8px;
-	}
-	
-	.selectable-name {
-		float: left;
-		padding: 4px;
-		height: 23px;
-	}
+    .sequence-ul {
+        display: block;
+        list-style-type: none;
+        font-size: 14px;
+    }
+    
+        .sequence-li {
+            display: block;
+        }
+        
+            .sequence-handle {
+                padding: 4px;
+                background: #aaa;
+                color: #fff;
+            }
+            
+                .sequence-handle:hover {
+                    cursor: move;
+                }
+            
+                .sequence-name {
+                    display: inline-block;
+                    padding: 4px;
+                    background: #fff;
+                    color: #000;
+                }
+        
+            .master-ul {
+                border-top: 1px solid #ffa392;
+                display: block;
+                list-style-type: none;
+                margin: 0 0 20px 0;
+                padding: 0px;
+                width: 100%;
+                background: #fff;
+                min-height: 20px;
+            }
+    
+                .master-ul .master-li {
+                    display: block;
+                    border: 0;
+                    border-bottom: 1px solid #ffa392;
+                    height: 28px;
+                }
+                
+                    .master-ul .master-li:hover {
+                        cursor: pointer;
+                    }
+            
+                        
+                    .master-ul .master-li span {
+                        display: inline-block;
+                    }
+                            
+                        .master-ul .master-li .selectable-diamond {
+                            float: left;
+                            height: 27px;
+                            width: 28px;
+                            background-image: url('../img/diamonds/diamond-full.png');
+                        }   
+                        
+                            .master-ul .master-li:first-child .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond-top.png');
+                            }
+                            
+                            .master-ul .master-li:last-child .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond-bottom.png');
+                            }
+                            
+                            .master-ul .master-li:only-child .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond-sole.png');
+                            }
+                            
+                        .master-ul .master-li .selectable-ag {
+                            float: left;
+                            text-align: center;
+                            width: 40px;
+                            height: 27px;
+                            padding: 4px;
+                        }
 
-
+                            
+                            .master-ul .master-li .ui-selected {
+                                background: #f85c37;
+                            }
+                    
+                        .master-ul .master-li .selectable-name {
+                            float: left;
+                            width: calc(100% - 68px);
+                            padding: 4px 8px;
+                            height: 27px;
+                            white-space: nowrap;
+                        }
+    
+            /* while dragging */
+            .ui-sortable-helper {
+                background: #fff;
+                box-shadow: 3px 3px 3px #aaa;
+            }
+            
+                .ui-sortable-helper .selectable-diamond {
+                    background-image: url('../img/diamonds/diamond.png')!important;
+                }
+                
+                
 
 
 /***************** readmore ******************/
@@ -365,6 +478,7 @@
 		padding: 8px;
 		background: #ddd;
 		border-bottom: 1px solid #fff;
+		white-space: nowrap;
 	}
 	
 		.readmore .readmore-header:hover {

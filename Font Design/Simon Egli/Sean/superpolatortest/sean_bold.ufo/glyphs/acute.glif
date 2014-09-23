@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="acute" format="1">
+  <advance width="223"/>
+  <unicode hex="00B4"/>
+  <outline>
+    <contour>
+      <point x="42" y="644" type="line"/>
+      <point x="27" y="656" type="line"/>
+      <point x="183" y="846" type="line"/>
+      <point x="197" y="835" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>acute</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>223</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

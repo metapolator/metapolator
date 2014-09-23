@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c_ma" format="1">
+  <advance width="551"/>
+  <outline>
+    <contour>
+      <point x="410" y="710" type="line"/>
+      <point x="410" y="0" type="line"/>
+      <point x="432" y="0" type="line"/>
+      <point x="432" y="710" type="line"/>
+    </contour>
+    <contour>
+      <point x="561" y="700" type="line"/>
+      <point x="561" y="722" type="line"/>
+      <point x="-10" y="722" type="line"/>
+      <point x="-10" y="700" type="line"/>
+    </contour>
+    <contour>
+      <point x="160" y="273" type="curve"/>
+      <point x="160" y="709" type="line"/>
+      <point x="140" y="709" type="line"/>
+      <point x="140" y="273" type="line"/>
+      <point x="140" y="240"/>
+      <point x="121" y="218"/>
+      <point x="89" y="218" type="curve" smooth="yes"/>
+      <point x="60" y="218"/>
+      <point x="39" y="231"/>
+      <point x="39" y="258" type="curve" smooth="yes"/>
+      <point x="39" y="285"/>
+      <point x="58" y="302"/>
+      <point x="86" y="302" type="curve"/>
+      <point x="425" y="302" type="line"/>
+      <point x="425" y="322" type="line"/>
+      <point x="87" y="322" type="line"/>
+      <point x="46" y="322"/>
+      <point x="18" y="297"/>
+      <point x="18" y="257" type="curve" smooth="yes"/>
+      <point x="18" y="219"/>
+      <point x="47" y="198"/>
+      <point x="88" y="198" type="curve" smooth="yes"/>
+      <point x="133" y="198"/>
+      <point x="160" y="228"/>
+    </contour>
+    <contour>
+      <point x="447.0" y="660.0" type="move" name="DVAnchor3"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>www</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>c_ma</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>551</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>1.0</real>
+        <real>1.0</real>
+        <real>0.0</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="T" format="1">
+  <advance width="565"/>
+  <unicode hex="0054"/>
+  <outline>
+    <contour>
+      <point x="555" y="581" type="line"/>
+      <point x="10" y="581" type="line"/>
+      <point x="10" y="685" type="line"/>
+      <point x="555" y="685" type="line"/>
+    </contour>
+    <contour>
+      <point x="228" y="0" type="line"/>
+      <point x="228" y="685" type="line"/>
+      <point x="337" y="685" type="line"/>
+      <point x="337" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>background</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+            <key>com.typemytype.robofont.image</key>
+            <dict>
+              <key>brightness</key>
+              <integer>0</integer>
+              <key>contrast</key>
+              <integer>1</integer>
+              <key>path</key>
+              <string>/Users/mapauln/Dropbox/Sharing/TypeDesignStudio/Projects/2014/#2_Metapolator/Font Design/Nicolas/Ref/Cap_alphabet.jpg</string>
+              <key>saturation</key>
+              <integer>1</integer>
+              <key>sharpness</key>
+              <real>0.4</real>
+              <key>transform</key>
+              <array>
+                <real>13.366370729815117</real>
+                <real>0.0</real>
+                <real>0.0</real>
+                <real>13.366370729815117</real>
+                <real>-12799.235434312417</real>
+                <real>-413.19335347432025</real>
+              </array>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>H</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>565</integer>
+        </dict>
+        <key>skeleton</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>T</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>565</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

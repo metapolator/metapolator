@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="component_3" format="1">
+  <advance width="630"/>
+  <outline>
+    <contour>
+      <point x="553" y="707" type="qcurve" smooth="yes"/>
+      <point x="534" y="707"/>
+      <point x="499" y="700"/>
+      <point x="479.0" y="691.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="459" y="683"/>
+      <point x="412" y="656"/>
+      <point x="382" y="636" type="qcurve"/>
+      <point x="331" y="740" type="line"/>
+      <point x="367" y="764"/>
+      <point x="425" y="796"/>
+      <point x="451.0" y="805.5" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="477" y="815"/>
+      <point x="527" y="823"/>
+      <point x="554" y="823" type="qcurve" smooth="yes"/>
+      <point x="603" y="823"/>
+      <point x="686" y="794"/>
+      <point x="724.0" y="766.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="762" y="738"/>
+      <point x="836" y="659"/>
+      <point x="875" y="609" type="qcurve"/>
+      <point x="761" y="571" type="line"/>
+      <point x="734" y="605"/>
+      <point x="685" y="656"/>
+      <point x="660.5" y="673.0" type="qcurve" smooth="yes" name="inserted"/>
+      <point x="636" y="690"/>
+      <point x="584" y="707"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>component_3</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>630</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

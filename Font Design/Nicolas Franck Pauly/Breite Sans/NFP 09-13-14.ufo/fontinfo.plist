@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ascender</key>
+	<integer>685</integer>
+	<key>capHeight</key>
+	<integer>685</integer>
+	<key>descender</key>
+	<integer>-185</integer>
+	<key>familyName</key>
+	<string>Breite Text</string>
+	<key>openTypeOS2Panose</key>
+	<array>
+		<integer>2</integer>
+		<integer>1</integer>
+		<integer>6</integer>
+		<integer>3</integer>
+		<integer>3</integer>
+		<integer>2</integer>
+		<integer>1</integer>
+		<integer>3</integer>
+		<integer>2</integer>
+		<integer>3</integer>
+	</array>
+	<key>postscriptBlueValues</key>
+	<array>
+		<integer>-15</integer>
+		<integer>5</integer>
+		<integer>295</integer>
+		<integer>394</integer>
+		<integer>495</integer>
+		<integer>515</integer>
+		<integer>680</integer>
+		<integer>700</integer>
+	</array>
+	<key>postscriptFamilyBlues</key>
+	<array>
+	</array>
+	<key>postscriptFamilyOtherBlues</key>
+	<array>
+	</array>
+	<key>postscriptOtherBlues</key>
+	<array>
+	</array>
+	<key>postscriptStemSnapH</key>
+	<array>
+		<integer>90</integer>
+	</array>
+	<key>postscriptStemSnapV</key>
+	<array>
+		<integer>102</integer>
+	</array>
+	<key>styleName</key>
+	<string>Medium</string>
+	<key>unitsPerEm</key>
+	<integer>1000</integer>
+	<key>xHeight</key>
+	<integer>500</integer>
+</dict>
+</plist>

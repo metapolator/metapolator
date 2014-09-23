@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="braceright" format="1">
+  <advance width="326"/>
+  <unicode hex="007D"/>
+  <outline>
+    <contour>
+      <point x="1" y="7" type="line"/>
+      <point x="45" y="7"/>
+      <point x="87" y="39"/>
+      <point x="87" y="64" type="qcurve" smooth="yes"/>
+      <point x="87" y="215" type="line" smooth="yes"/>
+      <point x="87" y="249"/>
+      <point x="104" y="304"/>
+      <point x="120" y="326" type="qcurve"/>
+      <point x="103.5" y="347.0" name="inserted"/>
+      <point x="87.0" y="401.5"/>
+      <point x="87" y="435" type="qcurve" smooth="yes"/>
+      <point x="87" y="587" type="line" smooth="yes"/>
+      <point x="87" y="612"/>
+      <point x="45" y="643"/>
+      <point x="1" y="643" type="qcurve"/>
+      <point x="1" y="757" type="line"/>
+      <point x="100" y="757"/>
+      <point x="201" y="661"/>
+      <point x="201" y="586" type="qcurve" smooth="yes"/>
+      <point x="201" y="433" type="line" smooth="yes"/>
+      <point x="201" y="411"/>
+      <point x="245" y="384"/>
+      <point x="287" y="384" type="qcurve"/>
+      <point x="287" y="267" type="line"/>
+      <point x="245" y="267"/>
+      <point x="201" y="240"/>
+      <point x="201" y="217" type="qcurve" smooth="yes"/>
+      <point x="201" y="64" type="line" smooth="yes"/>
+      <point x="201" y="-12"/>
+      <point x="100" y="-107"/>
+      <point x="1" y="-107" type="qcurve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>braceright</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>326</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
