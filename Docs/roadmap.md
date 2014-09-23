@@ -57,42 +57,23 @@ Completion Percentages are semantic, not time-based.
 
 * **Events:** *(DONE)* Simon will present at Tag der Schrift on June 14 and post about it on the G+
 
-2. Useful Code [September 1]
+2. Useful Code! [October 1, DONE]
 ----------------------
 
-[moved to a google doc](https://docs.google.com/document/d/15zZFMTjcUlW0_fN37_cE5dinnnazjbGMrJHNArhFCUo/edit#heading=h.41fvagdjd8j8)
+We moved roadmap development for the intense August + September summer work to a Google Doc, [Metapolator Milestone 2: Useful Code](https://docs.google.com/document/d/15zZFMTjcUlW0_fN37_cE5dinnnazjbGMrJHNArhFCUo/edit#heading=h.41fvagdjd8j8).
 
-3. Initial UI [September 26]
+3. Initial UI [November 1]
 ----------------------
 
-**Goal:** Create a UI to the Application Technology
-
-**Scope:** 
-
-**Complete When:** Designers connected to our developers can create new font masters using Metapolator v2 technology with a web UI. 
-
-* 100% Client Side
-
-* Support for working offline
-
-* UI-widgets. Almost everything of the UI should be a plugin. (We need probably some API here to persist the UI setup.)
-
-* Rounding corners plugin
-
-* Collaborate with Prototypo?
-
+We moved roadmap development for this intense phase to a Google Doc, [Metapolator Milestone 3: Initial UI](https://docs.google.com/document/d/1VJb19SPiW9N_hrC_xzNe9rGzRSJ2lwNgrG2U7BnuBgw/edit).
 
 Future plans
 ----------------------
 
-Document the project and application: This milestone does not include adding major new features, and is complete when Designers not connected to our developers can become effective users. It includes planning an outreach campaign to grow the userbase and running the plan.
+Document the project and application: We should spend some time not adding new features, but ensuring that web designers not connected to us developers can become effective users. We can also plan an outreach campaign to grow the userbase and run the plan.
 
-Responding to user feedback, without adding major new features, and is complete when new users say they enjoy the application and the whole project experience.
+Responding to user feedback: We should spend some time not adding major new features, but adding small things so that new users say they enjoy the application and the whole project experience.
 
-Plan 2015, and a Kickstarter (description, video, rewards, stretch goals) and pre-KS campaign, and pick 1 major feature to work on next (Real Time Multi User Mode?)
+Plan 2015: We should prepare a Kickstarter (description, video, rewards, stretch goals) and plan a pre-KS campaign, and pick 1 major feature to work on next (Real Time Multi User Mode?) as the focus of the kickstarter.
 
-Add the 1 major feature, so users are amazed; get the Kickstarter approved, outreach campaign underway.
-
-Launch a KS.
-
-Detect and automatically tag features of letters. [Paper on how to do this.](http://www.cs.huji.ac.il/~arir/extraction-typographic-elements.pdf)
+Kickstarter: Run the Kickstarter, add the 1 major feature, so users are amazed.
