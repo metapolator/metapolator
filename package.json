@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "cd app; ../.run_tests config=tests/intern"
+    "test": "cd app/tests; ./run_tests"
   },
   "repository": "",
   "author": "",
