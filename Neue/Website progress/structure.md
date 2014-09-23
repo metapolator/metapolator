@@ -1,6 +1,4 @@
-# Metapolator website hierarchy
-
-#### Introduction
+## Introduction
 
 Metapolator can turn any existing outline font into a parameterised font system.
 
@@ -12,65 +10,77 @@ It will go further, into 'metapolation': leveraging parameterization to create n
 
 The original drawn outline can be reconstructed from an inferred central skeleton and Hobby splines. This reconstruction process is flexible, working similarly to the 'nudge' tools of other font editors.
 
-Why the project? 
 
-when started?
+### Why the project? 
 
-key future dates
+We need fonts  
+Metafont 
+
+### Key future dates
 
 - Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.
 
 - web-based parametric font editor, providing a GUI for designing with UFO fonts and Metafont technologies. 
 
-#### Key Concepts
 
-1. Skeleton
+## Key Concepts
 
-fig. UFO font -> Skeleton 
+1. from Outline to Skeleton
 
-fig. pen compass
+		fig. UFO font -> Skeleton 
 
-2. METAFONT Contours
+		fig. pen compass
 
-fig. nicely stretched letter shapes
+2.  fron Skeleton to Contours
 
-3. Tagged Contours (shifting)
+		fig. nicely stretched letter shapes
 
-fig. Tagged Outline -> Design Spaces -> Metapolation
+3. Parameters
 
-2. Parameters from Metafont (tools, like tension, shifing, bla)
+		fig. tools, like tension, shifing, bla
+		fig. tagged glyph with paramenter
 
-3. Metapolation `fig. design spaces from peter`
+4. Metapolation 
+	
+		fig. design spaces from peter
 
-#### Examples of Metapolated Type Designs
+## Examples of Metapolated Fonts
 
 It can work with any prepared font just like:
 
-* `Sean : Latin and Devanagari`
-* `Breite : Latin and Cyrillic`
-* `Alice : Latin and Chinese`
+	* Sean : Latin and Devanagari
+	* Breite : Latin and Cyrillic
+	* Alice : Latin and Chinese
 
-The font we are working on and the output of those (upcomming..)
+The font we are working on and the output of those.
 
-#### Download
+## RedPill Demo
 
-1 Redpill progress proof of concept `fig. screenshot red pill`
+Redpill ? progress proof of concept 
 
-	Maybe we can show a bit of code in use, it's always nice to see code.
+	fig. screenshot red pill
+	
+Link to the clone Git
 
-2 explore a lot of different design ideas (contrast width etc) from one master `fig.universe `
+## User Cases 
 
-3 totaly new User interface whit design spaces `fig. new ui`
+Explore a lot of different design (contrast width etc) from one master
 
+	fig. universe
 
-#### License
+## BluePill Preview
+
+Revolutionary User interface for font design.
+
+	fig. new ui
+
+## License
 
 This project is licensed under the GNU General Public License v3.0 and your contributions are welcome via Github at https://github.com/metapolator/metapolator
 
+## Community
 
-#### Community
-
-fig. photograph of band members
+	fig. photograph of band members
  
 Github
 
