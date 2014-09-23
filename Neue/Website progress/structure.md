@@ -31,7 +31,7 @@ Metafont
 
 		fig. pen compass
 
-2.  fron Skeleton to Contours
+2.  from Skeleton to Contours
 
 		fig. nicely stretched letter shapes
 
