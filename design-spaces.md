@@ -36,6 +36,9 @@ We see the background is now of the content type and that an icon representing t
 some **general rules** for all spaces:
 
 * every instance that is created—whether part of a string or not—in the instances list immediately appears on the current design space and is part (exclusively) of that space;
+* masters, master sequences, adjustment masters and adjustment master sequences are added to a design space by dragging them from their list and dropping them on the design spaces panel; this can be done for multiple selections of those items also;
+* masters, master sequences can appear on multiple design spaces; a master that is part of a sequence can appear on its own in any design space; adjustment masters and adjustment master sequences can appear only on one design space, once;
+* masters, master sequences, adjustment masters and adjustment master sequences are removed from a design space by dragging them out of the design spaces panel and dropping them back over the masters column;
 * adjustment masters (sequences) cannot be dropped on a design space when it does not contain master or master sequence;
 * the size of the design spaces area is quite variable, in width (window resize) and in height (‘let’s have a good look at that specimen’). Therefore design spaces scroll where necessary;
 * reconfiguring a design space, by adding or deleting master & co, means change to all instances, because now more/less elements go into their mix.
@@ -154,7 +157,7 @@ And then we drop a third master and their representation matures:
 
 A second slider appears; for every master dropped here we get an extra slider. triangles next to the labels show that we can pop up a list to configure the sliders, together with the All item on the lower-left. _write up of configuration rules coming soon (an edit of [this](https://github.com/metapolator/metapolator/wiki/elements-of-design#metapolation-sliders), really)._
 
-When the number of (‘unsequenced’) masters is three, the Triangle with is shown (as is above). This switches to the following mode:
+When the number of (‘unsequenced’) masters is three, the Triangle switch is shown (as is above). This switches to the following mode:
 
 ![](http://mmiworks.net/metapolator/controltriangle.png)
 
@@ -186,5 +189,41 @@ Or the two sequences have no master in common and are said to **not cross**. Thi
 
 #### crossing sequences
 The more compact representation of crossing sequences is in slider form:
+
 ![](http://mmiworks.net/metapolator/control2sequences.png)
+
+The ‘crossing’ master is Regular and this is shown by the graceful connecting line; all metapolation is calculated as deltas with reference to this crossing master, allowing the stacking of design features (e.g. fully Bold _and_ fully Extended)—an implicit form of extrapolation _(psst, don’t tell the users)_.
+
+It is easy to see how this system deals with ever more complex setups (without breaking a sweat):
+
+![](http://mmiworks.net/metapolator/control3sequences.png)
+
+No matter where the crossing master master turns up in a sequence, it can be connected.
+
+We also see the Cross switch. This switches to show as many crossing x/y graphs as possible. Here the two-sequence version:
+
+![](http://mmiworks.net/metapolator/control2cross2.png)
+
+The second sequence has been plotted vertically (200px height) and the two axes cross exactly where the crossing master is on both—also when this is the first or last master of a sequence.
+
+It takes two axes to make an x/y graph, so when there are an odd number of crossing master sequences, one has to be a wallflower:
+
+![](http://mmiworks.net/metapolator/control3cross2.png)
+
+Nonetheless we can hook it up, using the common master. **rule**: with multiple x/y graphs, also a graceful line is drawn to connect the axes-crossings of the graphs.
+
+Normally, **masters, crossing sequences and non-crossing sequences live in different sections** and we will see later how they get mixed at the end. A cool **exception** is that when a master is dropped _directly_ on a crossing sequences area, it gets hooked up as a delta to the common master:
+
+![](http://mmiworks.net/metapolator/control2sequences+2.png)
+
+Here two masters—Italics and one called ‘Alt 2’—have been dropped on the the two-sequence section. Now whatever Italics and Alt 2 have to offer, compared to Regular, can be added to the instances. In cross representation: same deal. We see that the master sliders look different than sequence sliders, and that is a good thing.
+
+#### non-crossing sequences
+When two sequences have no common master, we can still mix between their results:
+
+![](http://mmiworks.net/metapolator/control2nocross.png)
+
+We see a diagonal ‘cross-fader’ hooked up between Weight and Vibe, and creates a mix between their outcomes. Numerical value and instance indicators are on the side. As more non-crossers are added, the chain grows:
+
+![](http://mmiworks.net/metapolator/control3nocross.png)
 
