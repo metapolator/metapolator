@@ -26,10 +26,10 @@ define([
             throw new ValueError('The formula of this CPSReal did '
                 + (result !== result
                     ? 'result in NaN (happens with division by 0 for example)'
-                    : 'not result in a number: "'+ val
-                        + '" typeof: ' +  typeof val +
-                        + (typeof val.constructor === 'function'
-                                ? ' a: ' + val.constructor.name
+                    : 'not result in a number: "'+ result
+                        + '" typeof: ' +  typeof result +
+                        + (typeof result.constructor === 'function'
+                                ? ' a: ' + result.constructor.name
                                 : ''
                         )
                 )

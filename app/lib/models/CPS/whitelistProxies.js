@@ -12,6 +12,7 @@ define([
     var CPSError = errors.CPS
       , KeyError = errors.Key
       , isInt = ufoJSUtils.isInt
+      , isIntString = ufoJSUtils.isIntString
       ;
 
 
@@ -24,6 +25,7 @@ define([
         var result = this._validate(target, name);
         if(!result[0])
             throw new KeyError(result[1]);
+
         return target[result[1]];
     }
 
@@ -69,6 +71,8 @@ define([
     }
 
     ArrayHandler.prototype._validate = function(target, key) {
+        if(isIntString(key))
+            key = parseInt(key, 10);
         if(key === 'length')
             return [true, key];
         else if(!isInt(key))
