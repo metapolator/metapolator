@@ -29,6 +29,8 @@ html {
 
 }
 
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
 body {
   font-family: seanregular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -38,8 +40,11 @@ body {
 }
 
 .caption {
-    font-family: robotolight;
+    font-family: 'Roboto', sans-serif;
     font-size: 14px;
+    letter-spacing: .02em;
+    -webkit-text-stroke-width: 0px;
+    color: black; 
 }
 
 .article {

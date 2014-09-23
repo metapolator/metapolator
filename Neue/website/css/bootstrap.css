@@ -48,6 +48,7 @@ html {
 
 body {
   margin: 0;
+  
 }
 
 a {
@@ -309,6 +310,7 @@ body {
   color: #333333;
   background-color: #ffffff;
   letter-spacing: .01em;
+    -webkit-text-stroke-width: .5px;
 }
 
 input,

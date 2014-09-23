@@ -10,12 +10,14 @@
 	<string>b2079fe10151ad0eef6cc553b7369ec78d67b9b5</string>
 	<key>fonts</key>
 	<array>
-		<string>HelveticaNeue-Light</string>
-		<string>Helvetica</string>
-		<string>Optima-Regular</string>
+		<string>Roboto-Regular</string>
+		<string>Roboto-Thin</string>
+		<string>Roboto-Light</string>
+		<string>Roboto-Bold</string>
+		<string>Roboto-Black</string>
 	</array>
 	<key>length</key>
-	<integer>3032036</integer>
+	<integer>1136485</integer>
 	<key>version</key>
 	<integer>37</integer>
 </dict>
