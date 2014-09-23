@@ -35,11 +35,12 @@ define([
      *
      */
     function whitelistGetter(item, name) {
-        if(item.cps_proxy)
+        if(item === undefined){}//pass
+        else if(item.cps_proxy)
             return item.cps_proxy[name]
-        if(item instanceof Array)
+        else if(item instanceof Array)
             return whitelistProxies.array(item)[name];
-        throw new KeyError('Item "'+item+'" doesn\'t specify a whitelist for cps.');
+        throw new KeyError('Item "'+item+'" doesn\'t specify a whitelist for cps, trying to read '+name);
     }
 
     return {

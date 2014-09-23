@@ -67,7 +67,7 @@ define([
     _p._getParameter = function(name) {
         var cpsParameterValue = this._getCPSParameterValue(name);
         if(cpsParameterValue === null)
-            throw new CPSKeyError(name);
+            throw new CPSKeyError(name + ' not found for ' + this._element.particulars);
         return cpsParameterValue.factory(name, this._element, this.getAPI);
     };
 
