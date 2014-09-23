@@ -338,7 +338,7 @@ define([
               , r: getSemanticPoint(right[i], right[i+1])
               , z: getSemanticPoint(getCenterSegment(left[i], right[i]), 
                         // if not both are undefined or both are defined
-                        // the structure of the points woul be broken!
+                        // the structure of the points would be broken!
                         (left[i+1] === undefined
                             ? undefined
                             : getCenterSegment(left[i+1], right[i+1])

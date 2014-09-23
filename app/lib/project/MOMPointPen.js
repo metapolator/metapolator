@@ -149,8 +149,9 @@ define([
         // we translate names into classes, because they dont have to be
         // unique
         if (name !== null)
-            name.split(' ').filter(function(item){ return !!item.length;})
-                    .map(setClass, poin)
+            (name.match(/\S+/g) || [])
+                    .filter(function(item){ return !!item.length;})
+                    .forEach(point.setClass, point)
 
         if(kwargs.identifier !== undefined)
             // MOM will have to check validity and uniqueness
