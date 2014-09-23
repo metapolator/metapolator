@@ -33,10 +33,11 @@ We see the background is now of the content type and that an icon representing t
 
 ![](http://mmiworks.net/metapolator/tabicons2.png)
 
-some general **rules** for all spaces:
+some **general rules** for all spaces:
 
 * every instance that is created—whether part of a string or not—in the instances list immediately appears on the current design space and is part (exclusively) of that space;
-* adjustment masters (sequences) cannot be dropped on a design space when it does not contain master or master sequence.
+* adjustment masters (sequences) cannot be dropped on a design space when it does not contain master or master sequence;
+* the size of the design spaces area is quite variable, in width (window resize) and in height (‘let’s have a good look at that specimen’). Therefore design spaces scroll where necessary.
 
 ## exploration space
 Action start when masters get drag ’n’ dropped to the exploration space. Adding one master is not _that_ interesting:
@@ -130,3 +131,5 @@ now start at hue = 54° for the next object and increment 72 ° for each next on
 now start again from the top.
 
 _yes, this has been tested for 8 types of color-blindness, with Sim Daltonism.app—the point is whether one can see the area delimeters._
+
+## control space
