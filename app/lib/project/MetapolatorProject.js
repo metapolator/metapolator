@@ -143,7 +143,6 @@ define([
         
         // create dir this.dataDir/cps
         this._io.mkDir(false, this.cpsDir);
-        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
