@@ -277,3 +277,47 @@ The crossed master sequence version is analogous to the slider version:
 ![](http://mmiworks.net/metapolator/extracross.png)
 
 ### putting it all together
+And now the challenge of fitting a control system that scales **up** into a rectangle of wildly different proportions.
+
+As controls are added, they get laid out in columns. Starting with a single central column (top):
+
+![](http://mmiworks.net/metapolator/columns1+2.png)
+
+and when that one is (nearly) full, switching to two columns. When the panel is made wider, extra margin is distributed left, right and in between the columns (top):
+
+![](http://mmiworks.net/metapolator/columnswider.png)
+
+Depending on the width of the panel, more than two columns can be fitted. **rule**: the maximum number of columns that can be fitted is \<panel width\> / 300px (always rounded down).
+
+All (interpolating) controls have been designed to fit a 280px width, leaving a bit of margin. Some of the extrapolating controls are wider than 280, and when the layout is not tightly packed it will be OK the
+let some widgets grow beyond the column. However, when things do get tight then the extrapolating controls may be scaled down (both dimensions) so that they do fit a 280px column.
+
+We try to avoid to scroll, but when users’ ambitions are greater than their screens, then the control design space scrolls vertically.
+
+#### combining different sections
+You may have noticed that for the control design space we have build up a collection of **different** control groups:
+
+1. standalone masters, shown as _one_ slider group;
+  * a special form of this group is 3 masters, that can be shown as a triangle.
+* crossing master sequences—sliders and/or crosses;
+  * when users manage to cross two sequences at master A and two other sequences at master B, then these count as _two separate groups_ in our algorithm (etc. for more separate crossings);
+  * standalone masters that have been dropped on crossing master sequences are part of that group.
+* non-crossing master sequences, shown as _one_ slider group.
+
+Each of the groups above supplies a metapolation result for a given instance, and now we have to combine these results to get one single metapolation for the instance. We do this with **group balancers**:
+
+![](http://mmiworks.net/metapolator/balancers.png)
+
+which set the mix between the applicable groups. Example:
+
+![](http://mmiworks.net/metapolator/balancing.png)
+
+We see that the instance and adjustment master (sequence) indicators also apply to the group balancer.
+
+This system does not only work within a column, but also across columns:
+
+![](http://mmiworks.net/metapolator/balancersacross.png)
+
+Example:
+
+![](http://mmiworks.net/metapolator/balancingacross.png)
