@@ -1,15 +1,17 @@
 masters:
-  bod:
-    cpsLocalFile: bod.cps
+  base:
+    cpsLocalFile: base.cps
     cpsChain:
-      - default.cps
-      - global.cps
-      - bod.cps
-    skeleton: skeleton.bod
-  god:
-    cpsLocalFile: bod.cps
+      - base.cps
+      - centreline-skeleton-to-symmetric-outline.cps
+    skeleton: skeleton.base
+  interpolated:
+    cpsLocalFile: interpolated.cps
     cpsChain:
-      - default.cps
-      - global.cps
-      - bod.cps
-    skeleton: skeleton.bod
+      - interpolated.cps
+    skeleton: skeleton.base
+  bold:
+    cpsLocalFile: bold.cps
+    cpsChain:
+      - bold.cps
+    skeleton: skeleton.base

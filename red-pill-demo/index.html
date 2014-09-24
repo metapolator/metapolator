@@ -8,11 +8,27 @@
     <meta name="author" content="">
 
     <title>Metapolator Neue: the Red Pill Interface</title>
-    <link rel="stylesheet" type="text/css" href="./main.css" />
-
-
-  <script src="./lib/bower_components/requirejs/require.js"></script>
-  <script src="./lib/main.js"></script>
+    <!-- development
+    <link rel="stylesheet/less" type="text/css" href="/lib/ui/redPill/app.less" />
+    
+    <script>
+    less = {
+        env: "development",
+        async: true,
+        fileAsync: true,
+    //    poll: 1000,
+        functions: {},
+        dumpLineNumbers: 'mediaquery',
+        relativeUrls: false,
+    };
+    </script>
+    <script src="/lib/bower_components/less.js/dist/less-1.7.0.min.js"></script>
+    <script src="/lib/bower_components/requirejs/require.js" data-main="/lib/redPillMain.js"></script>
+    <!-- end of development -->
+    <!-- production -->
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+    <script src="main.js"></script>
+    <!-- end of production -->
   </head>
   <body>
     <h1>Metapolator Neue</h1>
