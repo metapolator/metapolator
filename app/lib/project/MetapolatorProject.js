@@ -257,10 +257,6 @@ define([
     
     /**
      * create a master entry for this masterName
-     * {
-     *      cpsLocalFile: masterName.cps
-     *    , cpsChain: [global.cps, masterName.cps]
-     * }
      * 
      * and an entry in layercontents.plist:
      * skeleton.masterName, glyphs.skeleton.masterName
@@ -272,14 +268,12 @@ define([
             throw new ProjectError('Master "'+masterName+'" alredy exists.');
         var master = {};
         this._data.masters[masterName] = master;
-        master.cpsLocalFile = masterName + '.cps';
-        master.cpsChain = [this.cpsOutputConverterFile, this.cpsGlobalFile, master.cpsLocalFile];
+        master.cpsChain = [this.cpsOutputConverterFile, this.cpsGlobalFile, masterName + '.cps'];
         
         // create a skeleton layer for this master
         master.skeleton = 'skeleton.' + masterName;
         this._createGlyphLayer(master.skeleton);
-        
-        
+
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         return this.getMaster(masterName);
@@ -288,8 +282,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir
-                                , master.cpsLocalFile, master.cpsChain);
+        return new ProjectMaster(this._io, this, glyphSetDir, master.cpsChain);
     }
     
     _p.getMaster = function(masterName) {
