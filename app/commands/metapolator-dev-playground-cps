@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/bin/sh
+__hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: javascript; -*- */undefined
 
 "use strict";
 
@@ -43,9 +44,6 @@ if (require.main === module) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(CPSfile) {
-            if (program.args.length > program._args.length + 1)
-                program.help();
-
             var cpsString = io.readFile(false, CPSfile)
             var parameterRegistry = new Registry();
 
@@ -168,7 +166,5 @@ if (require.main === module) {
 
           });
         program.parse(process.argv);
-        if (process.argv.length < program._args.length + 2)
-            program.help();
     }
 )}
