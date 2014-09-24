@@ -214,7 +214,8 @@ The view column shows some characters, set in this master, to identify it. Which
 
 * The characters can also be edited by users: double click to get a text edit box; this allows users to set up their own identification system;
 * when a master is not part of the current selection, clicking its view column toggles display of this master in the specimen (in either Parameters or Design Spaces view); a highlight in this column confirms the view mode;
-  * mouse-down in the view column, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off.
+  * mouse-down in the view column, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off;
+  * the toggle is on mouse-down; when the mouse is down and moved outside the view column, the item is un-toggled (also for the swipe action above); when the mouse is released outside the view column, the view state of the item is un-changed(also for the swipe action above).
 * being (de)selected does not change the view mode of a master.
 
 ##### control column
@@ -229,6 +230,7 @@ The control column shows the name of the master and allow users to directly mani
 Here master sequences are managed. The connected dots show the extend of the sequence, and the arrow on the bottom item shows the top-down order of the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
 
 * create master sequences via local menu (see below), or by mouse-down, drag across multiple masters, release: all masters involved form a new master sequence; default title: "sequence \<number\>", where the number steadily increases (for the project scope);
+  * the sequencing starts on mouse-down; when the mouse is down and moved outside the sequence column, the sequencing is undone; when the mouse is released outside the view column, the sequencing did not take place.
 * drag and drop masters (via in the control column) to:
   * resort in the sequence;
   * add to sequence by dropping inside;
@@ -351,6 +353,7 @@ The view column shows some characters, set in this instance, to identify it. Whi
 * The characters can also be edited by users: double click to get a text edit box; this allows users to set up their own identification system;
 * when an instance is not part of the current selection, clicking its view column toggles display of this instance in the specimen (in Design Spaces view); a highlight in this column confirms the view mode;
   * mouse-down in the view column, drag across multiple instances, release: switches the view mode of all instances involved on/off, depending on whether the mouse-down instance went on or off.
+  * the toggle is on mouse-down; when the mouse is down and moved outside the view column, the item is un-toggled (also for the swipe action above); when the mouse is released outside the view column, the view state of the item is un-changed(also for the swipe action above).
 * being (de)selected does not change the view mode of an instance.
 
 ##### control column
@@ -369,6 +372,7 @@ Here strings of instances are managed. The connected diamonds show the extend of
 The changes to the number of instances is applied at the bottom of the list.
 
 * create strings of instances via local menu (see below), or by mouse-down, drag across multiple instances, release: all instances involved form a new string of instances; default title: "string \<number\>", where the number steadily increases (for the project scope);
+  * the stringing starts on mouse-down; when the mouse is down and moved outside the string column, the stringing is undone; when the mouse is released outside the view column, the stringing did not take place.
 * drag and drop instances (via in the control column) to:
   * resort in the string;
   * add to string by dropping inside;
