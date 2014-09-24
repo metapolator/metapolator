@@ -246,5 +246,34 @@ An adjustment master sequence introduces a hard-edged line of change into the de
 The triangle is the start of the sequence and the end-of-the-line symbol… the end (as seen in the adjustment master list).
 
 ### extrapolation
+Switching on extrapolation:
+
+![](http://mmiworks.net/metapolator/extraon.png)
+
+adds extra extensions to the controls. The master slider receives 50% extra (in pixels) on both sides:
+
+![](http://mmiworks.net/metapolator/extramasters.png)
+
+The extrapolation range is compressed for layout reasons; in metapolation terms users get 100% extra (e.g. above, from 2 × Alt-1 - Alt-2 to 2 × Alt-2 - Alt-1). **rule**: the extrapolation area is always shown in stippled lines (ticks are solid). The numerical values now go from -100 to 200. **rule**: we avoid labelling the extrapolation areas, avoiding faux-pas like ‘extra-Regular.’ In a sense, labelling is extrapolated by users from the regular labelling.
+
+**rule**: when instances or adjustment masters (sequences) have been placed on an extrapolation range, extrapolation mode cannot be switched off—all of the current state needs to be shown.
+
+Triangle extrapolation is again a work of beauty:
+
+![](http://mmiworks.net/metapolator/extratriangle.png)
+
+Three full-size extra triangles are added (no compression here). The numerical values now go from -100 to 100.
+
+Sequences are extended on both sides by one subdivision:
+
+![](http://mmiworks.net/metapolator/extrasequences.png)
+
+because that is what effectively happens: an extra subdivision is generated out of the outer interpolation division. There is no compression. Thus above, Weight gets on the left a subdivision that goes out to 2 × Thin - Light and on the right one that goes out to 2 × Bold - Regular. Width gets on the left a subdivision that goes out to 2 × Condensed - Regular and on the right one that goes out to 2 × Extended - Regular.
+
+The numerical values reflect the amount that the sequence got extended; Thus above, Weight now goes from -33 to 133 and Width from -50 to 150.
+
+The crossed master sequence version is analogous to the slider version:
+
+![](http://mmiworks.net/metapolator/extracross.png)
 
 ### putting it all together
