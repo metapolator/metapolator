@@ -19,7 +19,8 @@
     "gulp-require-convert": "0.0.1",
     "gulp": "~3.6.2",
     "gulp-replace": "~0.3.0",
-    "gulp-insert": "~0.3.0"
+    "gulp-insert": "~0.3.0",
+    "less": "~1.7.5"
   },
   "dependencies": {
     "commander": "~2.3.0",
