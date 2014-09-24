@@ -227,3 +227,24 @@ We see a diagonal ‘cross-fader’ hooked up between Weight and Vibe, and creat
 
 ![](http://mmiworks.net/metapolator/control3nocross.png)
 
+### adjustment masters
+An adjustment master has to be placed like an instance in the design space, on all controls/dimensions, to control both _where_ it works and what its underlying master mix is (aka 99% of its appearance—on top of which its adjustments are applied.
+
+Shown here is the placement of **one** adjustment master, on a **fictive** potpourri of controls:
+
+![](http://mmiworks.net/metapolator/controladjust.png)
+
+The symbol for an adjustment master is an up-pointing triangle, derived from the delta (Δ) symbol. Clicking (and/or holding) the triangle in the space identifies it in the adjustment master list by highlighting it exclusively (for the duration that the mouse is down).
+
+In effect an adjustment master sub-divides the dimension(s) on which it is placed. For instance above, chilly–earthy becomes chilly–adjustment–earthy and the Bold-Narrow-Italic triangle gets subdivided in adjustment-Narrow-Italic, Bold-adjustment-Italic and Bold-Narrow-adjustment.
+  
+### adjustment master sequences
+An adjustment master sequence introduces a hard-edged line of change into the design space. Shown here is the placement of **one** adjustment master sequence, again on a **fictive** potpourri of controls:
+
+![](http://mmiworks.net/metapolator/controladjustsequence.png)
+
+The triangle is the start of the sequence and the end-of-the-line symbol… the end (as seen in the adjustment master list).
+
+### extrapolation
+
+### putting it all together
