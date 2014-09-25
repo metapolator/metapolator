@@ -195,10 +195,11 @@ Command.prototype.addImplicitHelpCommand = function() {
  */
 
 Command.prototype.parseArgDescription = function(args){
-  if (!args.length) return;
+  if (!args.length) return null;
   var self = this
   var repeatToken = '...';
-  self._max_args = 0;
+  self._max_required_args = 0;
+  self._max_allowed_args = 0;
   args.forEach(function(arg){
     var repeat = false;
     if (arg.substr(repeatToken.length) == repeatToken) {
@@ -207,13 +208,15 @@ Command.prototype.parseArgDescription = function(args){
     }
     if (/<.*>/.test(arg)) {
       self._args.push({ required: true, name: arg.slice(1, -1) });
-      self._max_args += 1;
+      self._max_required_args += 1;
+      self._max_allowed_args += 1;
     } else if (/\[.*\]/.test(arg)) {
       self._args.push({ required: false, name: arg.slice(1, -1) });
+      self._max_allowed_args += 1;
     }
     // Works for both suffix and stand-alone repeatToken
     if (repeat) {
-      self._max_args = Infinity;
+      self._max_allowed_args = Infinity;
     }
   });
   return this;
@@ -264,7 +267,7 @@ Command.prototype.action = function(fn){
     args.push(self);
 
     // If there are more arguments than allowed, error exit
-    if (self.args.length > self._max_args + 1) {
+    if (self.args.length > self._max_allowed_args + 1) {
       this.help(1);
     }
 
@@ -499,7 +502,7 @@ Command.prototype.parseArgs = function(args, parsed){
     , len = cmds.length
     , name;
 
-  if (args.length || this._max_args == 0) {
+  if (args.length || this._max_required_args == 0) {
     if (args.length) {
       name = args[0];
     }
@@ -735,7 +738,7 @@ Command.prototype.usage = function(str){
     + (this.commands.length ? '] [command' : '')
     + ']'
     + (this._args.length ? ' ' + args.join(' ') : '')
-    + (this._max_args == Infinity ? '...' : '');
+    + (this._max_allowed_args == Infinity ? '...' : '');
 
   if (0 == arguments.length) return this._usage || usage;
   this._usage = str;
