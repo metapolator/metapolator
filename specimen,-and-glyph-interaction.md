@@ -52,3 +52,31 @@ by glyph:
 ![](http://mmiworks.net/metapolator/mixbyglyph.png)
 
 **rule**: the specimen scrolls. Where possible, horizontally all typesetting is fitted to the panel width. The setup line does not scroll with the specimen (fixed position).
+
+## glyph interaction
+This section is specific to the **specimen in the Parameters view**.
+
+### selections
+One of the most important jobs that this specimen has to perform is selection of the working context for parameter editing, below master level.<br/>
+**rule**: when nothing is selected in the specimen, the (adjustment) masters selected in the (adjustment) masters list(s) are the working context.<br/>
+**rule**: (adjustment) masters that are not selected in the (adjustment) masters list(s), but do have their view toggle (in the view column) set to true, cannot be sub-selected in the specimen; they are never the working context for parameter and skeleton work.<br/>
+**rule**: although there is multi-selection behaviour throughout the hierarchy, the items in a election must be of the same type: (adjustment) master, script, glyph, segment, line, point, vector shape.
+
+Here we see the specimen in the Parameters view, with the glyph select mechanism in action:
+
+![](http://mmiworks.net/metapolator/paraspeciselected.png)
+
+The selection mechanism is based on the icon grid model that is used in file browsers (i.e. not a text selection model). Based on the font metrics a containing box is calculated for each glyph. These boxes never overlap. For diacritics and other compound glyphs (e.g. via opentype features) the parts that make up the glyph have their own separate box (which may not always be a rectangle, then).
+
+* all of the icon grid model model selection interactions work: click to select, click in whitespace to select none, rubber banding of several boxes to select multiple, shift and cmd/ctrl to grow and reduce selections, pointer mouse cursor (not the text edit one) etc.
+* **rule**: the selection highlight is noticeable out of the corner of users’ eyes, but also completely out of the way of the ‘black on white’ of the selected glyphs (because user have to evaluate that while editing these glyphs); above it is done by a 4px blue rule right under the glyph containing box;
+* a selection is for that glyph, for that (adjustment) master (see: the italic ‘e’ above); **rule** when a glyph is selected, every instance of that glyph is highlighted in the specimen (see: the italic ‘a’ above);
+* yes, there is no way to insert a text cursor and edit the text in a specimen (But users can filter, see above).
+
+The selected glyph(s) is now the parameter edit context and this is reflected in the parameters panel.
+
+Alternatively one or more scripts can be selected:
+
+![](http://mmiworks.net/metapolator/paraspeciscript.png)
+
+only relevant scripts (from the master script configurations) are shown. of there is only one script relevant, the line is not shown. clicking each script toggles its selection. to keep the specimen clean, there is no highlighting of the glyphs when selecting a script. The selected script(s) is now the parameter edit context and this is reflected in the parameters panel.
