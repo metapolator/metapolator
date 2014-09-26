@@ -1,5 +1,8 @@
 # Design Concept
 
+![screenshot](https://dl.dropboxusercontent.com/s/qiugv7jcl4tvubo/concept.png)
+
+
 ### Color as Structure
 * User interface is colored
 	* Buttons
