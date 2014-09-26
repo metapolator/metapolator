@@ -101,3 +101,56 @@ Alternatively one or more scripts can be selected:
 ![](http://mmiworks.net/metapolator/paraspeciscript.png)
 
 only relevant scripts (from the master script configurations) are shown. of there is only one script relevant, the line is not shown. clicking each script toggles its selection. to keep the specimen clean, there is no highlighting of the glyphs when selecting a script. The selected script(s) is now the parameter edit context and this is reflected in the parameters panel.
+
+### getting down
+Let’s start with part of the specimen:
+
+![](http://mmiworks.net/metapolator/abc.png)
+
+when the font display size is sufficient (say 72pt and up) and the mouse is hovered for 500ms over the **white** of the glyph box, a skeleton and segments view is shown:
+
+![](http://mmiworks.net/metapolator/abcskeleton.png)
+
+the view disappears when the mouse leaves the glyph box. Users can now click one of the segments to select them _(simulated very crudely here)_:
+
+![](http://mmiworks.net/metapolator/abcsegment.png)
+
+multiple segments, of multiple glyphs, of several (adjustment) masters may be selected—using shift or ctrl/cmd. The selected segment(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
+
+if on the other hand the font display size is more sufficient (say 144pt and up) and the mouse is hovered for 500ms over the **black** of the glyph box, a skeleton, segments and points view is shown:
+
+![](http://mmiworks.net/metapolator/abcpoints.png)
+
+instead of having users interact with tiny points, each point is given a stout handle that stays out of the way of the black of the glyph itself. The view disappears after a delay of 1000ms after the mouse leaves black; this gives users time to reach a handle to click it, which selects it. Selection of a handle resets the timer. 
+
+In this view the segments can still be selected—this will then make the point handles disappear (i.e. becomes skeleton and segments view).
+
+Multiple points can be selected—using shift or ctrl/cmd:
+
+![](http://mmiworks.net/metapolator/abc2points.png)
+
+also of multiple glyphs, out of several (adjustment) masters:
+
+![](http://mmiworks.net/metapolator/abc4points.png)
+
+The selected point(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
+
+When only one point is selected, it is possible to directly edit it:
+
+![](http://mmiworks.net/metapolator/abcpointedit.png)
+
+* the point handle sets the position of the point, being connected to it by a ‘rigid stick’; we now see why it is positioned at a certain angle with regard to the real skeleton point: to stay out of the way of the other handles;
+* the two red handles set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up);
+* the two triangular handles (shades of a pen nib there) set the angle and the width of the pen; the handles are coupled for angle and change width proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up).
+
+To review the edit-in-progress, users can simply take the mouse pointer out of the glyph box:
+
+![](http://mmiworks.net/metapolator/abceditreview.png)
+
+return the mouse to the glyph box to continue making edits.
+
+**rule**: users can scroll to another occurrence in the specimen of the glyph whose point is being edited, and continue the edit work in that context—because it also has a blue handle sticking out.
+
+Apart from the time saving that is offered by using non-itty-bitty handles (say, saving 0,25 second _every time_ a user engages with a handle, for _every user_), one of the big advantages of taking all the handles outside the black of the glyph is that when the weight becomes very thin, truer are no repercussions on the handle system:
+
+![](http://mmiworks.net/metapolator/abcthinedit.png)
