@@ -70,6 +70,6 @@
 	* Width
 	* Angle
 	
-### Onscreen data informations
+### Onscreen informations
 * Coordinates
 * Components
