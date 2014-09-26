@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+// Make .tern-project from config.js
+// Run as "./make-tern-project > .tern-project"
+
+"use strict";
+
+var requirejs = require('requirejs');
+require('rootpath')();
+requirejs.config(require('config'));
+
+// Get the configuration
+var config = requirejs.s.contexts._.config;
+
+// Transform the configuration into a suitable form for Tern
+var tern = {libs: [], plugins: { node: {}, requirejs: {baseURL: "."} } };
+tern.plugins.requirejs.paths = config.paths;
+
+console.log(JSON.stringify(tern, null, 4));
