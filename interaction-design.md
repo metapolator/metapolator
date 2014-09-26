@@ -62,13 +62,13 @@ Using the user scenarios as a guide and the functionality overview as a checklis
 
 * [Elements of Design](https://github.com/metapolator/metapolator/wiki/elements-of-design)
 
-_(This is in progress throughout July and August)_
-
-## Detailed Design (wireframes)
-
-_(This will happen in August and September)_
+_(This is in progress throughout July, August and September)_
 
 # The Implementation Phase
 
 [Explanation of the Implementation Phase](http://mmiworks.net/wedo/implementation.html)
+_(This will happen in September and October)_
+
+## Detailed Design (wireframes)
+
 _(This will happen in September and October)_
