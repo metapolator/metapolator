@@ -2,6 +2,7 @@
 
 ![screenshot](https://dl.dropboxusercontent.com/s/qiugv7jcl4tvubo/concept.png)
 
+The UI visual design follows the characteristics and the architecture of Metapolator: Beeing an alien in the world of font production and stand out as an revolutionary tool. At the same time we want to hide the UI framework as much as possible to give the user clear view to the fonts he is working on without loosing interaction and intuitive workflow.
 
 ### Color as Structure
 * User interface is colored
