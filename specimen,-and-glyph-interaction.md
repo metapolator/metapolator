@@ -5,7 +5,7 @@ Masters, master sequences, adjustment masters, adjustment master sequences, inst
 
 here is the general panel (as seen in Design Spaces view):
 
-![](http://mmiworks.net/metapolator/specimen.png)
+![](http://mmiworks.net/metapolator/specimen2.png)
 
 from the top:
 
@@ -69,6 +69,8 @@ When the mouse pointer is hovered for 500ms over the border area of two adjacent
 
 Any other super-standard text editing (making/growing/reducing text selections; overwriting these; cut, copy, drag & drop of selections, to name some) would be only wise to implement when it comes ‘for free’ in the form of a library or widget.
 
+A click in whitespace between specimen lines or in the outer margins ends the text edit mode.
+
 ### glyph zoom
 A double-click on a glyph box zooms and pans the specimen so that this glyph is centred and zoomed so large that it _juuuust_ fits the specimen panel. A second double click in this super-zoomed state (on any glyph for that matter) returns the specimen to the zoom and pan that existed just before the first double-click.
 
@@ -79,13 +81,14 @@ This section is specific to the **specimen in the Parameters view**.
 One of the most important jobs that this specimen has to perform is selection of the working context for parameter editing, below master level.<br/>
 **rule**: when nothing is selected in the specimen, the (adjustment) masters selected in the (adjustment) masters list(s) are the working context.<br/>
 **rule**: (adjustment) masters that are not selected in the (adjustment) masters list(s), but do have their view toggle (in the view column) set to true, cannot be sub-selected in the specimen; they are never the working context for parameter and skeleton work.<br/>
-**rule**: although there is multi-selection behaviour throughout the hierarchy, the items in a election must be of the same type: (adjustment) master, script, glyph, segment, line, point, vector shape.
+**rule**: although there is multi-selection behaviour throughout the hierarchy, the items in a election must be of the same type: (adjustment) master, script, glyph, segment, line, point, or vector shape.<br/>
+**rule**: when there is a selection at glyph, segment, line, point, or vector shape level and the specimen is zoomed in (increase font size), then through panning the specimen tries as long as possible to keep the selected part(s) visible.
 
 Here we see the specimen in the Parameters view, with the glyph select mechanism in action:
 
 ![](http://mmiworks.net/metapolator/paraspeciselected.png)
 
-The selection mechanism is based on the icon grid model that is used in file browsers (i.e. not a text selection model). Based on the font metrics a containing box is calculated for each glyph. These boxes never overlap. For diacritics and other compound glyphs (e.g. via opentype features) the parts that make up the glyph have their own separate box (which may not always be a rectangle, then).
+The selection mechanism is based on the icon grid model that is used in file browsers (i.e. not a text selection model). The glyph boxes act as ‘icons’, in a way. For diacritics and other compound glyphs (e.g. via opentype features) the parts that make up the glyph have their own separate box (which may not always be a rectangle, then).
 
 * all of the icon grid model model selection interactions work: click to select, click in whitespace to select none, rubber banding of several boxes to select multiple, shift and cmd/ctrl to grow and reduce selections, pointer mouse cursor (not the text edit one) etc.
 * **rule**: the selection highlight is noticeable out of the corner of users’ eyes, but also completely out of the way of the ‘black on white’ of the selected glyphs (because user have to evaluate that while editing these glyphs); above it is done by a 4px blue rule right under the glyph containing box;
