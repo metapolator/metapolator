@@ -53,6 +53,25 @@ by glyph:
 
 **rule**: the specimen scrolls. Where possible, horizontally all typesetting is fitted to the panel width. The setup line does not scroll with the specimen (fixed position).
 
+### glyph boxes
+clicking on a glyph or between two glyphs depends on the glyph boxes; these are rectangles based on the font metrics that can be drawn ‘around’ each glyph. Below we see for the glyphs ‘A’ and ‘V’ how their box overlap is ‘split down the middle’ and how two non-overlapping boxes are created:
+
+![](http://mmiworks.net/metapolator/glyphboxes.png)
+
+### editing the specimen
+When the mouse pointer is hovered for 500ms over the border area of two adjacent glyph boxes, or in the whitespace area after the end of a paragraph, then the mouse cursor is changed to the I-beam (the one used for text editing). The cursor returns to a pointer when a moving threshold is crossed. A click when the pointer is an I-beam sets an edit cursor at this position, and the UI is in text edit mode. At least the following must work:
+
+* insert characters at the cursor;
+* delete characters before the cursor;
+* paste from clipboard;
+* auto-replacement of /-codes with the actual characters; type a code to completion, it gets subbed;
+* undo of edits.
+
+Any other super-standard text editing (making/growing/reducing text selections; overwriting these; cut, copy, drag & drop of selections, to name some) would be only wise to implement when it comes ‘for free’ in the form of a library or widget.
+
+### glyph zoom
+A double-click on a glyph box zooms and pans the specimen so that this glyph is centred and zoomed so large that it _juuuust_ fits the specimen panel. A second double click in this super-zoomed state (on any glyph for that matter) returns the specimen to the zoom and pan that existed just before the first double-click.
+
 ## glyph interaction
 This section is specific to the **specimen in the Parameters view**.
 
