@@ -40,17 +40,6 @@ template {
   display: none;
 }
 
-html {
-  font-family: seanregular;
-  -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  
-}
-
 a {
   background: transparent;
 }
@@ -296,22 +285,6 @@ table {
           box-sizing: border-box;
 }
 
-/*
-html {
-  font-size: 62.5%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-*/
-
-body {
-  font-family: seanregular, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 24px;
-  line-height: 1.428571429;
-  color: #333333;
-  background-color: #ffffff;
-  letter-spacing: .01em;
-    -webkit-text-stroke-width: .5px;
-}
 
 input,
 button,
@@ -482,10 +455,11 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: seanregular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: alicenormal, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 500;
   line-height: 1.1;
   color: inherit;
+    padding-top: 20px;
 }
 
 h1 small,
@@ -551,40 +525,39 @@ h6 .small {
 
 h1,
 .h1 {
-/*  font-size: 36px;*/
-    font-size: 24px;
-    text-decoration: underline;
+/*    font-size: 36px;*/
+    font-size: 17px;
+    color: #F44336;
 }
 
 h2,
 .h2 {
-/*  font-size: 30px;*/
-    font-size: 24px;
-    text-decoration: underline;
-    margin-left: 20px;
+/*    font-size: 30px;*/
+    font-size: 17px;
+    color: #FFC709;
 }
 
 h3,
 .h3 {
-  font-size: 24px;
+    font-size: 24px;
+    color: #5C72B7 ;
 }
 
 h4,
 .h4 {
-/*  font-size: 18px;*/
-    font-size: 24px;
+    font-size: 18px;
+    color: #C4D1CE;
 }
 
 h5,
 .h5 {
-/*  font-size: 14px;*/
-    font-size: 24px;
+    font-size: 14px;
+    color: #58595B ;
 }
 
 h6,
 .h6 {
-/*  font-size: 12px;*/
-    font-size: 24px;
+    font-size: 12px;
 }
 
 ul,
@@ -1097,7 +1070,7 @@ pre code {
 
 @media (min-width: 768px) {
   .container {
-    width: 750px;
+    width: 700px;
   }
   .col-sm-1,
   .col-sm-2,

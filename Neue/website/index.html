@@ -14,6 +14,9 @@
 	
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/style.css" rel="stylesheet">
+    
+    <link href="http://weiweihuanghuang.github.io/Alice-Devanagari/alicewebfonts.css" rel="stylesheet">
+    
 
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -75,9 +78,14 @@
 				<div class="col-md-2 hidden-sm hidden-xs page-header"> <!-- Left Menu -->  
 				    <div class="fixed-top"><ul class="list-unstyled">
                                 <li><img src="Links/logo.svg" height="70px" alt="logo"><br><br></li>
-                                <li><a href="#metapolation">Metapolation</a></li>
-								<li><a href="#concept">Concept</a></li>
-								<li><a href="#contact">Contact</a></li></ul>
+                                <li><a href="#Introduction">Introduction</a></li>
+								<li><a href="#keyconcept">Concept</a></li>
+                                <li><a href="#example">Example</a></li>
+                                <li><a href="#redpill">Red Pill</a></li>
+                                <li><a href="#usercase">User case</a></li>
+                                <li><a href="#bluepill">Blue Pill</a></li>
+                                <li><a href="#license">Licence</a></li>
+								<li><a href="#community">Community</a></li></ul>
                     </div>
 				</div> <!-- /Left Menu -->  
                 
@@ -96,96 +104,138 @@
             <div class="row clearfix"> <!-- Main row -->
                 
                 <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="metapolation">Introduction</h1> <!-- Title of Article -->
-                    <p>Metapolator can turn any existing outline font into a parameterised font system.</p>
+                    <h1 id="Introduction">Introduction</h1> <!-- Title of Article -->
+                    <p>Metapolator can turn any existing outline font into a parameterised font system.</p><!-- Content -->
 <p>Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their fonts for their exact needs. For example, expanding a single style design into a family of weights and widths, or fine-tuning the weight and width of a font for your exact needs.</p>
 <p>Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.</p>
 <p>It will go further, into 'metapolation': leveraging parameterization to create new masters. This will work best when glyphs are drawn as separate, overlapping shapes with pairs of points along each edge. This style of digital drawing is commonly practiced, as it helps when drawing shapes resembling strokes of pens.</p>
 <p>The original drawn outline can be reconstructed from an inferred central skeleton and Hobby splines. This reconstruction process is flexible, working similarly to the 'nudge' tools of other font editors.</p>
-                    <h2 id="metapolation">Why the project?</h2> <!-- Title of Article -->
+                    <h2 id="metapolation">Why the project?</h2> <!-- SubTitle of Article -->
                     <p>We need fonts</p>
                     <p>Metafont</p>
-                    <h2 id="metapolation">Key future dates</h2> <!-- Title of Article -->
+                    <h2 id="metapolation">Key future dates</h2> <!-- SubTitle of Article -->
                     <p>Metapolator first provides a typical 'super' interpolation system that works with unlimited numbers of masters and axes, and will load and save normal UFO fonts.</p>
                     <p>web-based parametric font editor, providing a GUI for designing with UFO fonts and Metafont technologies.</p>
 				</div> <!-- /Article -->
                 
                 <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="concept">Key Concepts</h1> <!-- Title of Article -->
+                    <h1 id="keyconcept">Key Concept</h1> <!-- Title of Article -->
                     <p>from Outline to Skeleton</p>
-				</div>
+				</div> <!-- /Article -->
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/banboum.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>UFO font -> Skeleton</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article"> <!-- Picture -->
+                            <img src="Links/banboum.svg" class="img-responsive" alt="Responsive image">
+                        </div> <!-- /Picture -->
+                        <div class="col-md-2 caption"> <!-- Caption -->
+                            <p>UFO font -> Skeleton</p>
+                        </div> <!-- /Caption -->
+
+                        <div class="col-md-8 col-md-offset-2 article"> <!-- Picture -->
+                            <img src="Links/PenCompas.svg" class="img-responsive" alt="Responsive image">
+                        </div> <!-- Picture -->
+                        <div class="col-md-2 caption"> <!-- Caption -->
+                            <p>pen compass</p>
+                        </div> <!-- /Caption -->
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/PenCompas.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>pen compass</p></div> <!-- Caption -->
-                
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                <div class="col-md-8 col-md-offset-2 article">
                     <p>from Skeleton to Contours</p>
 				</div>
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/banboum.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>nicely stretched letter shapes</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/banboum.svg" class="img-responsive" alt="Responsive image">
+                        </div> 
+                        <div class="col-md-2 caption">
+                            <p>nicely stretched letter shapes</p>
+                        </div>
                 
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                <div class="col-md-8 col-md-offset-2 article">
                     <p>Parameters</p>
 				</div>
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/banboum.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>tools, like tension, shifing, bla</p></div> <!-- Caption -->
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/banboum.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>tagged glyph with paramenter</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/banboum.svg" class="img-responsive" alt="Responsive image">
+                        </div>
+                        <div class="col-md-2 caption">
+                            <p>tools, like tension, shifing, bla</p>
+                        </div>
+
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/banboum.svg" class="img-responsive" alt="Responsive image">
+                        </div>
+                        <div class="col-md-2 caption"><p>tagged glyph with paramenter</p></div>
                 
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                <div class="col-md-8 col-md-offset-2 article">
                     <p>Metapolation</p>
 				</div>
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/masterbubbles.png" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>design spaces from peter</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/masterbubbles.png" class="img-responsive" alt="Responsive image">
+                        </div>
+                        <div class="col-md-2 caption">
+                            <p>design spaces from peter</p>
+                        </div>
                 
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="concept">Examples of Metapolated Fonts</h1> <!-- Title of Article -->
+                <div class="col-md-8 col-md-offset-2 article">
+                    <h1 id="example">Examples of Metapolated Fonts</h1>
                     <p>Here we display and showcase some examples of Metapolated Fonts.</p>
 				</div>
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/Font.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
                 
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="concept">Redpill Demo</h1> <!-- Title of Article -->
+                <div class="col-md-8 col-md-offset-2 article">
+                    <img src="Links/Font.svg" class="img-responsive" alt="Responsive image">
+                </div>
+                
+                <div class="col-md-8 col-md-offset-2 article">
+                    <h1 id="redpill">Redpill Demo</h1>
                     <p>Redpill ? progress proof of concept</br>Link to the clone Git</p>
 				</div>
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/placeholder.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>screenshot red pill</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/Ui.svg" class="img-responsive" alt="Responsive image">
+                        </div>
+                        <div class="col-md-2 caption">
+                            <p>Red pill beta version running</p>
+                        </div>
         
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="concept">User Case</h1> <!-- Title of Article -->
+                <div class="col-md-8 col-md-offset-2 article">
+                    <h1 id="usercase">User Case</h1>
                     <p>Explore a lot of different design (contrast width etc) from one master</p>
 				</div>
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/Univers.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>universe</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/Univers.svg" class="img-responsive" alt="Responsive image">
+                        </div>
+                        <div class="col-md-2 caption">
+                            <p>universe</p>
+                        </div>
         
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="concept">Bluepill Preview</h1> <!-- Title of Article -->
+                <div class="col-md-8 col-md-offset-2 article">
+                    <h1 id="bluepill">Bluepill Preview</h1>
                     <p>Revolutionary User interface for font design.</p>
 				</div>
                 
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/Ui.svg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>new ui</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/Ui.svg" class="img-responsive" alt="Responsive image">
+                        </div>
+                        <div class="col-md-2 caption">
+                            <p>new ui</p>
+                        </div>
         
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="concept">License</h1> <!-- Title of Article -->
+                <div class="col-md-8 col-md-offset-2 article">
+                    <h1 id="license">License</h1>
                     <p>This project is licensed under the GNU General Public License v3.0 and your contributions are welcome via Github at https://github.com/metapolator/metapolator</p>
 				</div>
         
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
-                    <h1 id="concept">Community</h1> <!-- Title of Article -->
+                <div class="col-md-8 col-md-offset-2 article">
+                    <h1 id="community">Community</h1>
 				</div>
-                <div class="col-md-8 col-md-offset-2 article"><img src="Links/Team/team.jpg" class="img-responsive" alt="Responsive image"></div> <!-- Picture -->
-                <div class="col-md-2 caption"><p>Photo of the team</p></div> <!-- Caption -->
+                        <div class="col-md-8 col-md-offset-2 article">
+                            <img src="Links/Team/team.jpg" class="img-responsive" alt="Responsive image">
+                        </div>
+                        <div class="col-md-2 caption">
+                            <p>Photo of the team</p>
+                        </div>
         
-                <div class="col-md-8 col-md-offset-2 article"> <!-- Article -->
+                <div class="col-md-8 col-md-offset-2 article">
                     <p><a href="">Github</a>
                         <a href="">G+ Communty </a>
                         Upcoming Events</p>
