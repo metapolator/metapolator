@@ -2,9 +2,9 @@
 
 ### Color as Structure
 * User interface is colored
-	* Buttons are colored
-	* Design Spaces are color-radient
-	* Ui Text is blue-grey
+	* Buttons
+	* Design Spaces
+	* Ui Text
 * Only Font specimen is 100% black
 	
 ### Sizes as Structure
