@@ -141,7 +141,7 @@ When only one point is selected, it is possible to directly edit it:
 
 * the point handle sets the position of the point, being connected to it by a ‘rigid stick’; we now see why it is positioned at a certain angle with regard to the real skeleton point: to stay out of the way of the other handles;
 * the two red handles set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up);
-* the two triangular handles (shades of a pen nib there) set the angle and the width of the pen; the handles are coupled for angle and change width proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up).
+* the two triangular handles (shades of a pen nib there) set the angle and the width of the pen, being connected to it by ‘rigid sticks’; the handles are coupled for angle and change width proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up).
 
 To review the edit-in-progress, users can simply take the mouse pointer out of the glyph box:
 
