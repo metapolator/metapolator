@@ -156,6 +156,8 @@ $ ./serve.sh
 
 ```
 
-# Debugging
+# Development tools
+
+Partial support for code navigation with [TernJS](http://ternjs.net) is available. See `make-tern-project` in the top-level directory to create a suitable `.tern-project` file.
 
 For debugging the command-line interface or server code, [node-inspector](https://github.com/node-inspector/node-inspector) is good.
