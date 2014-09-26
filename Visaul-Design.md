@@ -8,7 +8,7 @@
 * Only Font specimen is 100% black
 	
 ### Sizes as Structure
-* Text is small and almost always the same size (around 17px)
+* Text is small and almost always the same size
 * Font specimen is big
 	
 
