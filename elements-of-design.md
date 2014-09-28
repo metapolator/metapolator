@@ -66,11 +66,11 @@ Encouraged by a _constructive_ challenge from Simon and Wei, I have redesigned t
 * Design Spaces
 * Fonts
 
-![](http://mmiworks.net/metapolator/refined4.png)
+![](http://mmiworks.net/metapolator/refined8.png)
 
 here with the viewport:
 
-![](http://mmiworks.net/metapolator/slide4.png)
+![](http://mmiworks.net/metapolator/slide7.png)
 
 the transition time is 700ms.
 
@@ -95,11 +95,11 @@ _Place (adjustment) masters on one or more design spaces—to explore, or set up
 
 Fonts:
 
-![](http://mmiworks.net/metapolator/fontsview2.png)
+![](http://mmiworks.net/metapolator/fontsview3.png)
 
-_default column ratios: 3 : 4 : 9_
+_default column ratios: 3 : 1 : 12_
 
-_Map the (strings of) instances to font (families); manage metadata and assign to font (families). The metapolation sliders panel is hidden (by sliding down) in this view._
+_Map the (strings of) instances to font (families); manage metadata and assign to font (families)._
 
 **quick notes**:
 
