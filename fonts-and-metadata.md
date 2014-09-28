@@ -16,9 +16,9 @@ The local menu is as follows:
 * Check All
 * Uncheck All
 * -- \<separator\> --
-* Load Opentype Features from File…
-* Copy Opentype Features from Font…
 * Copy Opentype Features from Master…
+* Copy Opentype Features from Font…
+* Load Opentype Features File…
 * -- \<separator\> --
 * Show Opentype Features
 * -- \<separator\> --
@@ -27,9 +27,9 @@ The local menu is as follows:
 **notes:**
 
 * these menu commands operate on single and multiple selections of instances and strings of instances;
-* **Load Opentype Features from File…** reads .fea files and assigns the content to the selection;
-* **Copy Opentype Features from Font…** extracts the opentype features out of a ufo file and assigns the content to the selection;
 * **Copy Opentype Features from Master…** shows a list of masters in this project that have opentype features defined; after users pick one, it extracts the opentype features and assigns the content to the selection;
+* **Copy Opentype Features from Font…** extracts the opentype features out of a ufo file and assigns the content to the selection;
+* **Load Opentype Features File…** reads .fea files and assigns the content to the selection;
 * **Show Opentype Features** works only for items that have them; same as clicking the ot.fea indicator;
 * **Remove Opentype Features** works only for items that have them.
 
