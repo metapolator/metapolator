@@ -54,7 +54,7 @@ by glyph:
 **rule**: the specimen scrolls. Where possible, horizontally all typesetting is fitted to the panel width. The setup line does not scroll with the specimen (fixed position).
 
 ### glyph boxes
-clicking on a glyph or between two glyphs depends on the glyph boxes; these are rectangles based on the font metrics that can be drawn ‘around’ each glyph. Below we see for the glyphs ‘A’ and ‘V’ how their box overlap is ‘split down the middle’ and how two non-overlapping boxes are created:
+clicking on a glyph or between two glyphs depends on the glyph boxes; these are rectangles based on the font metrics that can be drawn ‘around’ each glyph. Below we see for the glyphs ‘A’ and ‘V’ how their box overlap is resolved by ‘splitting the difference’ and two non-overlapping boxes are created:
 
 ![](http://mmiworks.net/metapolator/glyphboxes.png)
 
@@ -109,7 +109,7 @@ Let’s start with part of the specimen:
 
 when the font display size is sufficient (say 72pt and up) and the mouse is hovered for 500ms over the **white** of the glyph box, a skeleton and segments view is shown:
 
-![](http://mmiworks.net/metapolator/abcskeleton.png)
+![](http://mmiworks.net/metapolator/abcskeleton2.png)
 
 the view disappears when the mouse leaves the glyph box. Users can now click one of the segments to select them _(simulated very crudely here)_:
 
@@ -119,7 +119,7 @@ multiple segments, of multiple glyphs, of several (adjustment) masters may be se
 
 if on the other hand the font display size is more sufficient (say 144pt and up) and the mouse is hovered for 500ms over the **black** of the glyph box, a skeleton, segments and points view is shown:
 
-![](http://mmiworks.net/metapolator/abcpoints.png)
+![](http://mmiworks.net/metapolator/abcpoints2.png)
 
 instead of having users interact with tiny points, each point is given a stout handle that stays out of the way of the black of the glyph itself. The view disappears after a delay of 1000ms after the mouse leaves black; this gives users time to reach a handle to click it, which selects it. Selection of a handle resets the timer. 
 
@@ -127,7 +127,7 @@ In this view the segments can still be selected—this will then make the point 
 
 Multiple points can be selected—using shift or ctrl/cmd:
 
-![](http://mmiworks.net/metapolator/abc2points.png)
+![](http://mmiworks.net/metapolator/abc2points2.png)
 
 also of multiple glyphs, out of several (adjustment) masters:
 
@@ -137,7 +137,7 @@ The selected point(s) is now the parameter edit context and this is reflected in
 
 When only one point is selected, it is possible to directly edit it:
 
-![](http://mmiworks.net/metapolator/abcpointedit.png)
+![](http://mmiworks.net/metapolator/abcpointedit2.png)
 
 * the point handle sets the position of the point, being connected to it by a ‘rigid stick’; we now see why it is positioned at a certain angle with regard to the real skeleton point: to stay out of the way of the other handles;
 * the two red handles set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up);
@@ -153,4 +153,4 @@ return the mouse to the glyph box to continue making edits.
 
 Apart from the time saving that is offered by using non-itty-bitty handles (say, saving 0,25 second _every time_ a user engages with a handle, for _every user_), one of the big advantages of taking all the handles outside the black of the glyph is that when the weight becomes very thin, there are no repercussions on the handle system:
 
-![](http://mmiworks.net/metapolator/abcthinedit.png)
+![](http://mmiworks.net/metapolator/abcthinedit2.png)
