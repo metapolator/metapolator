@@ -38,3 +38,14 @@ Checking a string of instances for export or setting its opentype features sets 
 ![](http://mmiworks.net/metapolator/fontsstring.png)
 
 No override is possible, to control the belonging instances individually, the check and/or opentype features must be removed from the string.
+
+## metadata
+We all know that setting and maintaining metadata is a pain in the neck. Therefore we will try to inflict as little as possible on users. Some basic strategies:
+
+* when metapolator can calculate or best-guess (e.g. font names from instance names) metadata, it pre fills the field;
+* edit data once, on a higher level—
+  * why edit data for each font when it can be set once for the family?
+  * why edit data for each family when it can be set once for the project?
+  * why edit data for each project when it can be set once for this user/computer?
+* segment the 50 or so keys into logical categories.
+
