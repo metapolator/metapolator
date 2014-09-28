@@ -47,5 +47,26 @@ We all know that setting and maintaining metadata is a pain in the neck. Therefo
   * why edit data for each font when it can be set once for the family?
   * why edit data for each family when it can be set once for the project?
   * why edit data for each project when it can be set once for this user/computer?
-* segment the 50 or so keys into logical categories.
+* cut down the jungle—segment the 50 or so keys into logical categories.
 
+This **general interaction mechanism** implements the strategies above:
+
+![](http://mmiworks.net/metapolator/metadata.png)
+
+The category segmentation (in a vertical tab system here) makes the number of keys to be shown reduced to around half a dozen. This makes that resorting them into global / project / family / font order is possible.
+
+Metapolator will push to define every key at the highest possible level (i.e. copyright is configured to be set at project level) and—even better—fill in the values where it can. Above we see that for this category nothing is set at global level, one key at project, two at family and three keys at font level.
+
+**rule**: for fonts that are not part of a family, the family level is not shown. For families the font level is not shown.
+
+If users want to redefine a high-level key definition (i.e. set at project level), then they can pick it from the overrides popup and the key appears at the lower level:
+
+![](http://mmiworks.net/metapolator/metaoverride.png)
+
+the high-level key definition is now disabled for this font, and editable at font level. We see that the override field can be removed (which enables again the high-level key definition).
+
+Users can promote key definition to a higher level through drag-and-drop:
+
+![](http://mmiworks.net/metapolator/metaup.png)
+
+this is how also the global level (the user/computer one) can be populated (e.g. always the same copyright? make it global).
