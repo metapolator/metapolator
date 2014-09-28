@@ -38,7 +38,7 @@ The second hierarchy is **the hierarchy of metapolation**—
     * instance
     * string of instances
 
-i.e. “a project consists of design spaces, which contain, and share, any number of masters, master sequences, adjustment masters and adjustment master sequences. Placed in the design spaces are instances and strings of instances.”
+i.e. “a project consists of design spaces, which contain, and share, any number of masters and master sequences. Placed in the design spaces are instances, strings of instances, adjustment masters and adjustment master sequences.”
 
 Below, we will exercise these hierarchies.
 
