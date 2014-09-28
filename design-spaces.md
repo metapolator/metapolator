@@ -9,7 +9,7 @@ The **local menu** contains these items:
 
 * New
 * Duplicate
-* -- <separator> --
+* -- \<separator\> --
 * Delete…
 
 **notes**:
