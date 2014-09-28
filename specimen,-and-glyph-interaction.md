@@ -81,7 +81,7 @@ This section is specific to the **specimen in the Parameters view**.
 One of the most important jobs that this specimen has to perform is selection of the working context for parameter editing, below master level.<br/>
 **rule**: when nothing is selected in the specimen, the (adjustment) masters selected in the (adjustment) masters list(s) are the working context.<br/>
 **rule**: (adjustment) masters that are not selected in the (adjustment) masters list(s), but do have their view toggle (in the view column) set to true, cannot be sub-selected in the specimen; they are never the working context for parameter and skeleton work.<br/>
-**rule**: although there is multi-selection behaviour throughout the hierarchy, the items in a election must be of the same type: (adjustment) master, script, glyph, segment, line, point, or vector shape.<br/>
+**rule**: although there is multi-selection behaviour throughout the hierarchy, the items in a selection must _all_ be of the same type: either (adjustment) master, script, glyph, segment, line, point, or vector shape.<br/>
 **rule**: when there is a selection at glyph, segment, line, point, or vector shape level and the specimen is zoomed in (increase font size), then through panning the specimen tries as long as possible to keep the selected part(s) visible.
 
 Here we see the specimen in the Parameters view, with the glyph select mechanism in action:
@@ -131,7 +131,7 @@ Multiple points can be selected—using shift or ctrl/cmd:
 
 also of multiple glyphs, out of several (adjustment) masters:
 
-![](http://mmiworks.net/metapolator/abc4points.png)
+![](http://mmiworks.net/metapolator/abc4points2.png)
 
 The selected point(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
 
@@ -140,8 +140,8 @@ When only one point is selected, it is possible to directly edit it:
 ![](http://mmiworks.net/metapolator/abcpointedit2.png)
 
 * the point handle sets the position of the point, being connected to it by a ‘rigid stick’; we now see why it is positioned at a certain angle with regard to the real skeleton point: to stay out of the way of the other handles;
-* the two red handles set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up);
-* the two triangular handles (shades of a pen nib there) set the angle and the width of the pen, being connected to it by ‘rigid sticks’; the handles are coupled for angle and change width proportionally, unless cmd/ctrl is pressed while using a handle (what matters is whether cmd/ctrl is down when the mouse goes up).
+* the two red handles set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up);
+* the two triangular handles (shades of a pen nib there) set the angle and the width of the pen, being connected to it by ‘rigid sticks’; the handles are coupled for angle and change width proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up).
 
 To review the edit-in-progress, users can simply take the mouse pointer out of the glyph box:
 
