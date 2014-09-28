@@ -140,8 +140,8 @@ When only one point is selected, it is possible to directly edit it:
 ![](http://mmiworks.net/metapolator/abcpointedit2.png)
 
 * the point handle sets the position of the point, being connected to it by a ‘rigid stick’; we now see why it is positioned at a certain angle with regard to the real skeleton point: to stay out of the way of the other handles;
-* the two red handles set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up);
-* the two triangular handles (shades of a pen nib there) set the angle and the width of the pen, being connected to it by ‘rigid sticks’; the handles are coupled for angle and change width proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up).
+* the two red handles are the curve handles and set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up);
+* the two triangular handles (shades of a pen nib there) are the pen handles and set the angle and the width of the pen, being connected to it by ‘rigid sticks’; the handles are coupled for angle and change width proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up).
 
 To review the edit-in-progress, users can simply take the mouse pointer out of the glyph box:
 
@@ -154,3 +154,17 @@ return the mouse to the glyph box to continue making edits.
 Apart from the time saving that is offered by using non-itty-bitty handles (say, saving 0,25 second _every time_ a user engages with a handle, for _every user_), one of the big advantages of taking all the handles outside the black of the glyph is that when the weight becomes very thin, there are no repercussions on the handle system:
 
 ![](http://mmiworks.net/metapolator/abcthinedit2.png)
+
+### glyph range
+A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
+
+![](http://mmiworks.net/metapolator/glyphrange.png)
+
+We see that at the bottom of the panel there is now a **glyph management bar**. The two encodings are click-to-edit. By drag-and-drop the glyph order can be rearranged, which is ultimately the order of exported fonts.
+
+The **local menu** now contains these items:
+
+* Add Glyph…
+* Duplicate Glyph
+* -- \<separator\> --
+* Delete Glyph…
