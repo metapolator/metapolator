@@ -545,9 +545,9 @@ For how to set the working context, see the [highlighting section](https://githu
 Above we see the parameters panel when a master is the working context. From the top—
 
 * project-level parameters are also displayed, in this case slant is scaled (* 2) for all masters;
-* for the mast fit self the point parameter ‘Direction in’ is set; it is shown next to it that 38% of all points in glyphs in this masters have this value overwritten somewhere along the hierarchy (it is also shown for the minimum and maximum operators, where applicable);
+* for the master itself the point parameter ‘Direction in’ is set; it is shown next to it that 38% of all points in glyphs in this masters have this value overwritten somewhere along the hierarchy (it is also shown for the minimum and maximum operators, where applicable);
 * the ‘+’ buttons allow to add a parameter entries to the different levels;
-* when master is the working context, the script level is also shown, if more than one is configured for this master; in this case both latin and cyrillic script have no parameters defined, hence they are closed by default.
+* when master is the working context, if more than one is configured for this master; in this case both latin and cyrillic script have no parameters defined, hence they are closed by default.
 
 ![](http://mmiworks.net/metapolator/moverpar.png)
 
