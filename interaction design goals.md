@@ -9,7 +9,7 @@ _‘Sometimes it does not take big stunts to meet big design goals.’ —ps_
 * ✓ preserve and build out from the stroke of genius—aka the smashing value—of metapolator: no matter how tricksy things get with parameters within a master, once in design space this all disappears; a master is a black box, a good font™ and the linking mechanism.<br/>_**realised** with the 3 views, Parameters–Design spaces–Fonts, and by general enforcement of this principle in all collaboration._
 * the pain of working glyph-by-glyph is still in the work with the skeletons; address it. _TBD, in the Parameters specimen/editor_
 * ✓ parameters up and down the hierarchy combine and override. make it work for users; it must be clear in a second why something is not changing as expected.<br/>_**realised** with the parameter panel. specifically the parameter operators scale (×) and offset (+) are vital for working high up the hierarchy with parameters._
-* if a parameter can be shown as a handle near a glyph, do it. _TBD, in the Parameters specimen/editor_
-* speaking of handles: no itty-bitty, teeny-weeny, hard-to-use, 80s handles. _TBD, in the Parameters specimen/editor_
-* manage the black/outlines duality in a natural way. _TBD, in the Parameters specimen/editor_
+* if a parameter can be shown as a handle near a glyph, do it. _**realised** for point and pen parameters in the Parameters specimen/editor; to be checked for glyph parameters._
+* ✓ speaking of handles: no itty-bitty, teeny-weeny, hard-to-use, 80s handles.<br/>_**realised** in the Parameters specimen/editor._
+* ✓ manage the black/outlines duality in a natural way. _**realised** in the Parameters specimen/editor, by eliminating outlines at all._
 * ✓ no administrative overhead for users (e.g. having to name stuff, all the time).<br/>_**realised** with auto-naming. only when users really care about how something is named (e.g. exported fonts, or the project) they have to name this ‘thing’, right there and then._
