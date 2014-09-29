@@ -1,5 +1,6 @@
 ## toc
-1. [overall structure](https://github.com/metapolator/metapolator/wiki/elements-of-design#overall-structure)
+1. [960px comps](https://github.com/metapolator/metapolator/wiki/elements-of-design#960px-comps)
+* [overall structure](https://github.com/metapolator/metapolator/wiki/elements-of-design#overall-structure)
   * [and then there were three](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three)
 * [where did the menus go](https://github.com/metapolator/metapolator/wiki/elements-of-design#where-did-the-menus-go)
 * [working with projects](https://github.com/metapolator/metapolator/wiki/elements-of-design#working-with-projects)
@@ -15,6 +16,21 @@
 This page lists the **first, rough** building blocks of the design. With that the Metapolator project is **out of the dark** and the [interaction design goals](https://github.com/metapolator/metapolator/wiki/interaction-design-goals) **start to be realised**. But this is not a complete solution; details are lacking; drawings are illustrations, not building plans; and the interaction is not _exactly_ specified. That is for a later phase in the project.
 
 So enjoy the fact that you can watch interaction being created ‘out of nothing’ and that you can plan with what you see here. Thanks for your patience where it comes to the last detail. _—ps_
+
+## 960px comps
+Designing for the minimum viewport size of 960px wide, 700px high is tough, but we want this to work on 1024x768 laptops. Here are the **wireframes** for the three views we have structured the UI around—
+
+Parameters view:
+
+![](http://mmiworks.net/metapolator/parametersviewbig.png)
+
+Design Spaces view _(note: the data of the different panels is not 100% consistent)_:
+
+![](http://mmiworks.net/metapolator/designviewbig.png)
+
+Fonts View
+
+![](http://mmiworks.net/metapolator/fontsviewbig.png)
 
 ## overall structure
 **updated**: read the first exploration below, or [jump to the update](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
