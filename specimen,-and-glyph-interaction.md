@@ -1,7 +1,7 @@
 The first part of this page describes what the specimen panels in the Parameters and Design Spaces views have in common. The second part describes the glyph interaction that is integrated with the specimen panel in the Parameters view.
 
 ## specimen
-Masters, master sequences, adjustment masters, adjustment master sequences, instances, strings of instances can appear in a specimen, and any combinations of these six. These six **are known as fonts**, here in this description and in the UI.
+Masters, master sequences, adjustment masters, adjustment master sequences, instances, families of instances can appear in a specimen, and any combinations of these six. These six **are known as fonts**, here in this description and in the UI.
 
 here is the general panel (as seen in Design Spaces view):
 
