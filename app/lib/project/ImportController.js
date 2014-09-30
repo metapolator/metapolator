@@ -79,12 +79,12 @@ define([
               , rules
         );
 
-        // this just overrides the local cps file
-        // we might come up with some smart merging in the future, in such
-        // a way, that it is possible to import changed glyphs into an
-        // existing cps files, changing only the new glyphs and keeping
-        // the old ones. But that ain't gonna be easy.
-        this._master.saveLocalCPS(cps);
+        // This just overrides the local CPS file
+        // We might come up with some smart merging in the future, so that
+        // it is possible to import changed glyphs into an existing CPS
+        // files, changing only the new glyphs and keeping the old ones. But
+        // that ain't gonna be easy.
+        this._master.saveCPS(this._masterName + '.cps', cps);
     }
 
     _p._readGlyphFromSource = function(glyphName) {

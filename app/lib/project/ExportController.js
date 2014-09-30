@@ -22,8 +22,6 @@ define([
         var glyphs = this._master.children
           , glyph
           , drawFunc
-          , ufoData
-          , ufoData_tmp
           ;
         console.log('exporting ...');
         for(var i = 0;i<glyphs.length;i++) {
@@ -31,16 +29,7 @@ define([
             console.log('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
 
-            // filter the 'lib' key because fontforge didn't like it (FontForge issue #1635)
-            ufoData_tmp = glyph.getUFOData();
-            ufoData = {}
-            for(var k in ufoData_tmp)
-                if(k === 'lib')
-                    continue;
-                else
-                    ufoData[k] = ufoData_tmp[k];
-
-            this._glyphSet.writeGlyph(false, glyph.id, ufoData, drawFunc,
+            this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
                                       undefined, {precision: this._precision})
         }
         this._glyphSet.writeContents(false);

@@ -61,8 +61,8 @@ define([
     
     /**
      * We will throttle the change rate and only update after a
-     * few millisecs of silence. because it's very likely
-     * that this event is fired often. i.e. a linebreak fires
+     * few millisecs of silence, because it's very likely
+     * that this event is fired often, i.e. a linebreak fires
      * change twice, first for the linebreak then for the auto
      * indent feature.
      * A good throttle interval is whatever requestAnimationFrame
