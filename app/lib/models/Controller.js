@@ -189,7 +189,7 @@ define([
     })
     
     /**
-    * returns a single interface to read the final cascaded, computed
+    * returns a single StyleDict to read the final cascaded, computed
     * style for that element.
     * 
     * Note: this interface element could be based on the result of

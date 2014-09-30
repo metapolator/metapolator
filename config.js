@@ -13,6 +13,7 @@ module.exports = {
       , 'obtain': 'obtainJS/lib'
       , 'ufojs': 'ufoJS/lib'
       , 'yaml': 'bower_components/js-yaml/dist/js-yaml.min'
+      , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
     }
   , shim: {
         angular: {

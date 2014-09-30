@@ -14,19 +14,19 @@ define([
   , Vector
 ) {
     "use strict";
-    
+
     var PointPenError = errors.PointPen
       , isNumber = ufoJSUtils.isNumber
       ;
-    
-    
+
+
     /**
      * Point Pen to draw a Skeleton outline into a MOM glyph, thus creating
      * the MOM Tree beyond glyph level
-     * 
+     *
      * This copies a lot of the validation logic of
      * ufojs/ufoLib/glifLib/GLIFPointPen
-     * 
+     *
      */
     function MOMPointPen(glyph) {
         Parent.call(this)
@@ -36,10 +36,10 @@ define([
         this._prevOffCurveCount = 0;
         this._prevPointTypes = [];
     }
-    
+
     var _p = MOMPointPen.prototype = Object.create(Parent.prototype);
     _p.constructor = MOMPointPen;
-    
+
     /**
      * Start a new sub path.
      */
@@ -50,14 +50,14 @@ define([
                     +' path. Call endPath first.')
         this._contour = new PenStroke();
         if(kwargs.identifier !== undefined)
-            // MOM will have to check validity and uniqueness 
+            // MOM will have to check validity and uniqueness
             this._contour.id = kwargs.identifier;
         this._prevOffCurveCount = 0;
         this._prevPointTypes = []
         this._lastVector = undefined;
         this._lastPointData = undefined;
     }
-    
+
     /**
      * End the current sub path.
      */
@@ -75,7 +75,7 @@ define([
         if(this._lastPointData)
             Object.seal(this._lastPointData);
     }
-    
+
     /**
      * Add a point to the current sub path.
      */
@@ -91,7 +91,7 @@ define([
         name = (name === undefined) ? null : name;
         kwargs = (kwargs || {});//an "options" object
         var vector, point, lastVector;
-        
+
         if(!this._contour)
             throw new PointPenError('Called addPoint but there is no open. '
                     +' path. Call beginPath first.')
@@ -100,11 +100,11 @@ define([
             throw new PointPenError('Missing point argument');
         if(pt.filter(isNumber).length < 2)
             throw new PointPenError('coordinates must be int or float')
-            
+
         vector = Vector.fromArray(pt.map(parseFloat));
         lastVector = this._lastVector;
         this._lastVector = lastVector;
-        
+
         // segment type
         if(segmentType !== 'move' && this._prevPointTypes.length === 0)
             throw new PointPenError('MOMPointPen expects only open contours. '
@@ -123,7 +123,7 @@ define([
             throw new PointPenError('too many offcurve points before '
                                                         + 'curve point.');
         this._prevPointTypes.push(segmentType || 'offcurve');
-        
+
         if (segmentType === null) {
             // off curve
             this._prevOffCurveCount += 1;
@@ -135,29 +135,30 @@ define([
         // seal the last point data element, it is complete
         if(this._lastPointData)
             Object.seal(this._lastPointData);
-        
-        this._lastPointData = {
+
+        this._lastPointData = new PenStrokePoint.SkeletonDataConstructor({
             in: this._prevOffCurveCount === 2
                 ? lastVector
                 : undefined
           , on: vector
           , out: undefined
-        }
+        });
         this._prevOffCurveCount = 0;
         point = new PenStrokePoint(this._lastPointData)
-        
+
         // we translate names into classes, because they dont have to be
         // unique
         if (name !== null)
-            name.split(' ').filter(function(item){ return !!item.length;})
-                    .map(setClass, poin)
-        
+            (name.match(/\S+/g) || [])
+                    .filter(function(item){ return !!item.length;})
+                    .forEach(point.setClass, point)
+
         if(kwargs.identifier !== undefined)
-            // MOM will have to check validity and uniqueness 
+            // MOM will have to check validity and uniqueness
             point.id = kwargs.identifier;
         this._contour.add(point);
     }
-    
+
     /**
      * Add a sub glyph.
      */

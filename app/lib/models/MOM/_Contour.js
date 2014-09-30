@@ -10,7 +10,7 @@ define([
     function _Contour() {
         Parent.call(this);
         if(this.constructor.prototype === _p)
-            throw new MOMError('MOM _Contour must not be instanciated '
+            throw new MOMError('MOM _Contour must not be instantiated '
                 +'directly');
     }
     var _p = _Contour.prototype = Object.create(Parent.prototype);

@@ -154,7 +154,7 @@ Command.prototype.command = function(name, desc) {
   if (desc) this.executables = true;
   if (desc) this._execs[cmd._name] = true;
   this.commands.push(cmd);
-  cmd.parseExpectedArgs(args);
+  cmd.parseArgDescription(args);
   cmd.parent = this;
   if (desc) return this;
   return cmd;
@@ -167,7 +167,7 @@ Command.prototype.command = function(name, desc) {
  */
 
 Command.prototype.arguments = function (desc) {
-  this.parseExpectedArgs(desc.split(/ +/));
+  this.parseArgDescription(desc.split(/ +/));
 }
 
 /**
@@ -182,26 +182,41 @@ Command.prototype.addImplicitHelpCommand = function() {
 };
 
 /**
- * Parse expected `args`.
+ * Parse `args` description.
  *
- * For example `["[type]"]` becomes `[{ required: false, name: 'type' }]`.
+ * Each argument can be either `<arg>` for a required argument, or `[arg]`
+ * for an optional argument. `...` as a suffix or standalone argument shows
+ * that the preceding argument may be repeated; it only makes sense to use
+ * this on the last argument.
  *
  * @param {Array} args
  * @return {Command} for chaining
  * @api public
  */
 
-Command.prototype.parseExpectedArgs = function(args){
-  if (!args.length) return;
-  var self = this;
+Command.prototype.parseArgDescription = function(args){
+  if (!args.length) return null;
+  var self = this
+  var repeatToken = '...';
+  self._max_required_args = 0;
+  self._max_allowed_args = 0;
   args.forEach(function(arg){
-    switch (arg[0]) {
-      case '<':
-        self._args.push({ required: true, name: arg.slice(1, -1) });
-        break;
-      case '[':
-        self._args.push({ required: false, name: arg.slice(1, -1) });
-        break;
+    var repeat = false;
+    if (arg.substr(repeatToken.length) == repeatToken) {
+      arg = arg.substr(1, -repeatToken.length - 1);
+      repeat = true;
+    }
+    if (/<.*>/.test(arg)) {
+      self._args.push({ required: true, name: arg.slice(1, -1) });
+      self._max_required_args += 1;
+      self._max_allowed_args += 1;
+    } else if (/\[.*\]/.test(arg)) {
+      self._args.push({ required: false, name: arg.slice(1, -1) });
+      self._max_allowed_args += 1;
+    }
+    // Works for both suffix and stand-alone repeatToken
+    if (repeat) {
+      self._max_allowed_args = Infinity;
     }
   });
   return this;
@@ -233,12 +248,7 @@ Command.prototype.action = function(fn){
 
     var parsed = self.parseOptions(unknown);
 
-    // Output help if necessary
-    outputHelpIfNecessary(self, parsed.unknown);
-
-    // If there are still any unknown options, then we simply
-    // die, unless someone asked for help, in which case we give it
-    // to them, and then we die.
+    // If there are still any unknown options, then we simply die.
     if (parsed.unknown.length > 0) {
       self.unknownOption(parsed.unknown[0]);
     }
@@ -256,6 +266,11 @@ Command.prototype.action = function(fn){
     // expects
     args.push(self);
 
+    // If there are more arguments than allowed, error exit
+    if (self.args.length > self._max_allowed_args + 1) {
+      this.help(1);
+    }
+
     fn.apply(this, args);
   };
   var parent = this.parent || this;
@@ -271,7 +286,7 @@ Command.prototype.action = function(fn){
  *
  * The `flags` string should contain both the short and long flags,
  * separated by comma, a pipe or space. The following are all valid
- * all will output this way when `--help` is used.
+ * all will output the same way when `--help` is used.
  *
  *    "-p, --pepper"
  *    "-p|--pepper"
@@ -370,6 +385,8 @@ Command.prototype.option = function(flags, description, fn, defaultValue){
 Command.prototype.parse = function(argv){
   // implicit help
   if (this.executables) this.addImplicitHelpCommand();
+  this.option('-h, --help', 'output usage information');
+  this.on('help', this.help);
 
   // store raw args
   this.rawArgs = argv;
@@ -381,7 +398,7 @@ Command.prototype.parse = function(argv){
   var parsed = this.parseOptions(this.normalize(argv.slice(2)));
   var args = this.args = parsed.args;
 
-  var result = this.parseArgs(this.args, parsed.unknown);
+  var result = this.parseArgs(this.args, parsed);
 
   // executable sub-commands
   var name = result.args[0];
@@ -402,7 +419,6 @@ Command.prototype.parse = function(argv){
 Command.prototype.executeSubCommand = function(argv, args, unknown) {
   args = args.concat(unknown);
 
-  if (!args.length) this.help();
   if ('help' == args[0] && 1 == args.length) this.help();
 
   // <cmd> --help
@@ -481,28 +497,26 @@ Command.prototype.normalize = function(args){
  * @api private
  */
 
-Command.prototype.parseArgs = function(args, unknown){
+Command.prototype.parseArgs = function(args, parsed){
   var cmds = this.commands
     , len = cmds.length
     , name;
 
-  if (args.length || this._args.length == 0) {
+  if (args.length || this._max_required_args == 0) {
     if (args.length) {
       name = args[0];
     }
     if (name && this.listeners(name).length) {
-      this.emit(args.shift(), args, unknown);
+      this.emit(args.shift(), args, parsed.unknown);
     } else {
       this.emit('*', args);
     }
   } else {
-    outputHelpIfNecessary(this, unknown);
-
-    // If there were no args and we have unknown options,
-    // then they are extraneous and we need to error.
-    if (unknown.length > 0) {
-      this.unknownOption(unknown[0]);
-    }
+    // There were no args and there can be at least one.
+    // If we have unknown options, they are extraneous: error.
+    if (parsed.unknown.length > 0) this.unknownOption(parsed.unknown[0]);
+    // If we have no options, give help and exit with error.
+    if (parsed.known.length == 0) this.help(1);
   }
 
   return this;
@@ -540,7 +554,8 @@ Command.prototype.parseOptions = function(argv){
     , option
     , arg;
 
-  var unknownOptions = [];
+  var unknownOptions = []
+    , knownOptions = [];
 
   // parse options
   for (var i = 0; i < len; ++i) {
@@ -562,6 +577,7 @@ Command.prototype.parseOptions = function(argv){
 
     // option is defined
     if (option) {
+      knownOptions.push(arg);
       // requires arg
       if (option.required) {
         arg = argv[++i];
@@ -600,7 +616,7 @@ Command.prototype.parseOptions = function(argv){
     args.push(arg);
   }
 
-  return { args: args, unknown: unknownOptions };
+  return { args: args, unknown: unknownOptions, known: knownOptions };
 };
 
 /**
@@ -721,7 +737,8 @@ Command.prototype.usage = function(str){
   var usage = '[options'
     + (this.commands.length ? '] [command' : '')
     + ']'
-    + (this._args.length ? ' ' + args.join(' ') : '');
+    + (this._args.length ? ' ' + args.join(' ') : '')
+    + (this._max_allowed_args == Infinity ? '...' : '');
 
   if (0 == arguments.length) return this._usage || usage;
   this._usage = str;
@@ -753,8 +770,7 @@ Command.prototype.optionHelp = function(){
   var width = this.largestOptionLength();
 
   // Prepend the help information
-  return [pad('-h, --help', width) + '  ' + 'output usage information']
-    .concat(this.options.map(function(option){
+  return (this.options.map(function(option){
       return pad(option.flags, width)
         + '  ' + option.description;
       }))
@@ -838,9 +854,9 @@ Command.prototype.outputHelp = function(){
  * @api public
  */
 
-Command.prototype.help = function(){
+Command.prototype.help = function(exitCode){
   this.outputHelp();
-  process.exit();
+  process.exit(exitCode);
 };
 
 /**
@@ -869,24 +885,6 @@ function camelcase(flag) {
 function pad(str, width) {
   var len = Math.max(0, width - str.length);
   return str + Array(len + 1).join(' ');
-}
-
-/**
- * Output help information if necessary
- *
- * @param {Command} command to output help for
- * @param {Array} array of options to search for -h or --help
- * @api private
- */
-
-function outputHelpIfNecessary(cmd, options) {
-  options = options || [];
-  for (var i = 0; i < options.length; i++) {
-    if (options[i] == '--help' || options[i] == '-h') {
-      cmd.outputHelp();
-      process.exit(0);
-    }
-  }
 }
 
 });

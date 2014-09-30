@@ -6,15 +6,15 @@ define(
       , './SegmentPoint'
     ],
     function(
-        main
+        ufoJSUtils
       , errors
       , Parent
       , Point
 ) {
     "use strict";
-    var enhance = main.enhance,
+    var enhance = ufoJSUtils.enhance,
         assert = errors.assert;
-    
+
     /*constructor*/
     /**
      * Based of a copy of PointToSegmentPen:
@@ -29,11 +29,11 @@ define(
         this.pen = segmentPen;
         this.outputImpliedClosingLine = (outputImpliedClosingLine || false);
     }
-        
+
     /*inheritance*/
     ImportOutlinePen.prototype = Object.create(Parent.prototype)
     ImportOutlinePen.prototype.constructor = ImportOutlinePen;
-    
+
     /*definition*/
     enhance(ImportOutlinePen, {
         _flushContour: function(segments)
@@ -78,7 +78,7 @@ define(
                     points = [];
                 for(var n = 0; n < segments[i][1].length; n++)
                     points.push(Point.factory.apply(null, segments[i][1][n]));
-                
+
                 if(segmentType == 'line') {
                     assert(points.length === 1, 'Points length is not 1');
                     var pt = points[0];

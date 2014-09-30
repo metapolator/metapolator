@@ -37,8 +37,44 @@ define([
         return l['+'](r)['*'](0.5);
     }
     
+    function makeNameDict(str) {
+        var result = {};
+        ((str || '').match(/\S+/g) || [])
+            .forEach(function(piece){ this[piece] = null;}, result);
+        return result;
+    }
+    
+    /**
+     * if a name/class/key "example" is only in left it becomes: "left-example"
+     * if a name/class/key "example" is only in right it becomes: "right-example"
+     * if a name/class/key "example" is in both it stays: "example"
+     *
+     * so if left is "hello world" and right is "hello univers" the result
+     * will be: "hello left-world right-univers"
+     */
+    function mergeNames(LeftName, RightName) {
+        var left = makeNameDict(LeftName)
+          , right =  makeNameDict(RightName)
+          , merged = {}
+          , k
+          ;
+
+        for(k in left)
+            if(k in right) {
+                merged[k] = null;
+                // it's in both, no need to see it again
+                delete right[k];
+            }
+            else
+                merged['left-' + k] = null;
+        for(k in right)
+            merged['right-' + k] = null;
+        return Object.keys(merged).join(' ') || null;
+    }
+    
     function getCenterPoint(l, r) {
-        return new Point(getCenter(l.vector, r.vector));
+        return new Point(getCenter(l.vector, r.vector), undefined
+                       , mergeNames(l.name, r.name));
     }
     
     function getCenterSegment(left, right) {
