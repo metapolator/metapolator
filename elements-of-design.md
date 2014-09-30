@@ -82,18 +82,18 @@ Encouraged by a _constructive_ challenge from Simon and Wei, I have redesigned t
 * Design Spaces
 * Fonts
 
-![](http://mmiworks.net/metapolator/refined8.png)
+![](http://mmiworks.net/metapolator/refined9.png)
 
 here with the viewport:
 
-![](http://mmiworks.net/metapolator/slide7.png)
+![](http://mmiworks.net/metapolator/slide8.png)
 
-the transition time is 700ms.
+the transition time for the sliding is 700ms.
 
 #### individual department views
 Parameters:
 
-![](http://mmiworks.net/metapolator/paraview2.png)
+![](http://mmiworks.net/metapolator/paraview3.png)
 
 _default column ratios: 3 : 10 : 3_
 
@@ -101,26 +101,26 @@ _On the right, manage (adjustment) masters and select which ones to work on—al
 
 Design Spaces:
 
-![](http://mmiworks.net/metapolator/designview5.png)
+![](http://mmiworks.net/metapolator/designview6.png)
 
 _default column ratios: 3 : 10 : 3, horizontal divider at 50% height_
 
-_Place (adjustment) masters on one or more design spaces—to explore, or set up instances in a controlled way; create and manage (families of) instances and adjust them in the design spaces; review (a mix of) masters and instances on the bottom of this department._
+_Place (adjustment) masters on one or more design spaces—to explore, or to set up instances in a controlled way; create and manage (families of) instances and adjust them in the design spaces; review (a mix of) masters and instances in the sepcimen._
 
 **note** that the activity of loading some existing fonts; setting up a design space; exploration of this space using some instances; evaluating and/or quicky exporting them can all be done here in this view.
 
 Fonts:
 
-![](http://mmiworks.net/metapolator/fontsview3.png)
+![](http://mmiworks.net/metapolator/fontsview4.png)
 
 _default column ratios: 3 : 1 : 12_
 
-_Map the (families of) instances to font (families); manage metadata and assign to font (families)._
+_Mark (families of) instances for font export; manage metadata and assign to font (families)._
 
 **quick notes**:
 
 * it will not be required to set up and navigate to the Fonts section to get a font out of Metapolator—for a quick try-out there will be quicky font export available for individual masters and instances (& co);
-* future support of kerning and hinting will find its home in the Fonts view.
+* future support of kerning and hinting will find its place in the Fonts view (location-sharing with metadata).
 
 #### sizing rules
 
@@ -129,7 +129,7 @@ _Map the (families of) instances to font (families); manage metadata and assign 
 * when the browser viewport is resized, column and divider proportions are maintained;
 * **all three** rules above are subject to the following limits:
   * minimum width of a view (what is shown in the viewport) is 960px (i.e. if the viewport is narrower than that, the view scrolls horizontally);
-  * the minimum width of the parameter, masters, instances, fonts and metadata columns is 180px;
+  * the minimum width of the parameter, masters and instances columns is 180px;
   * the maximum width of the parameter, masters and instances columns is 270px;
   * no further limits; user common sense prevails.
 
