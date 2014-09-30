@@ -22,15 +22,15 @@ Designing for the minimum viewport size of 960px wide, 700px high is tough, but 
 
 Parameters view:
 
-![](http://mmiworks.net/metapolator/parametersviewbig.png)
+![](http://mmiworks.net/metapolator/parametersviewbig2.png)
 
 Design Spaces view _(note: the data of the different panels is not 100% consistent)_:
 
-![](http://mmiworks.net/metapolator/designviewbig.png)
+![](http://mmiworks.net/metapolator/designviewbig2.png)
 
 Fonts View
 
-![](http://mmiworks.net/metapolator/fontsviewbig.png)
+![](http://mmiworks.net/metapolator/fontsviewbig2.png)
 
 ## overall structure
 **updated**: read the first exploration below, or [jump to the update](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
