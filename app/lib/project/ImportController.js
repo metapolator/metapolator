@@ -47,6 +47,14 @@ define([
         // open the source ufo glyphs layer of an UFOv2
         this._sourceGlyphSet  = this._project.getNewGlyphSet(
                 false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2);
+
+        // tell us about errors instead of throwing it away
+        this._sourceGlyphSet.setReadErrorCallback( 
+            function( pm, d ) {
+                console.log("ImportController: Got an error loading glyph '" 
+                            + d.glyphName + "' reason:" + d.message );
+                pm.rememberThatImportFailedForGlyph( d.glyphName, d.message );
+            }.bind( null, this._master ));
     }
     var _p = ImportController.prototype;
 
@@ -67,11 +75,13 @@ define([
                                     +missing.join(', '));
         }
         console.log('importing ...');
-        for(;i<glyphs.length;i++)
-            Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
-
+        for(;i<glyphs.length;i++) {
+            var glyphName = glyphs[i];
+            Array.prototype.push.apply(rules, this.importGlyph( glyphName ));
+        }
         this._master.glyphSet.writeContents(false);
-
+        this._master.saveMetaData();
+        
         // a namespace for the master ...
         cps = new AtNamespaceCollection(
                 new AtRuleName('namespace', [])
