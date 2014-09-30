@@ -36,9 +36,9 @@ The second hierarchy is **the hierarchy of metapolation**—
     * adjustment master
     * adjustment master sequence
     * instance
-    * string of instances
+    * family of instances
 
-i.e. “a project consists of design spaces, which contain, and share, any number of masters and master sequences. Placed in the design spaces are instances, strings of instances, adjustment masters and adjustment master sequences.”
+i.e. “a project consists of design spaces, which contain, and share, any number of masters and master sequences. Placed in the design spaces are instances, families of instances, adjustment masters and adjustment master sequences.”
 
 Below, we will exercise these hierarchies.
 
@@ -102,21 +102,21 @@ Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, segme
 **note**: an adjustment master can appear anywhere in a design space and anywhere on adjustment master sequences.
 
 ### adjustment master sequence
-ƒ— New, Duplicate, Delete, Span (on master sequences and strings of instances)
+ƒ— New, Duplicate, Delete, Span (on master sequences and families of instances)
 
 ### instance
 ƒ— New, Delete, Set Metapolation (i.e. mix of masters), Set Name, Export as font, Promote to master
 
-### string of instances
+### family of instances
 ƒ— New, Duplicate, Set # instances, Set Name Scheme, Span (in design space), Adjust instance position
 
 ## font families
-ƒ— New, Delete, Map instances and strings of instances, Map metadata, Export
+ƒ— New, Delete, Map instances and families of instances, Map metadata, Export
 
 ## type design evaluation
 ƒ— Set length (few glyphs–paragraphs, Set Size, Set characters of interest, Set Mix (generic text vs. chars of interest), Print Evaluation Kit
 
-**for**: masters, master sequences, adjustment masters, adjustment master sequences, instances, strings of instances—and combinations of these.
+**for**: masters, master sequences, adjustment masters, adjustment master sequences, instances, families of instances—and combinations of these.
 
 ## finishing
 * kerning _(later)_
