@@ -35,7 +35,7 @@ We see the background is now of the content type and that an icon representing t
 
 some **general rules** for all spaces:
 
-* every instance that is created—whether part of a string or not—in the instances list immediately appears on the current design space and is part (exclusively) of that space;
+* every instance that is created—whether part of a family or not—in the instances list immediately appears on the current design space and is part (exclusively) of that space;
 * masters, master sequences, adjustment masters and adjustment master sequences are added to a design space by dragging them from their list and dropping them on the design spaces panel; this can be done for multiple selections of those items also;
 * masters, master sequences can appear on multiple design spaces; a master that is part of a sequence can appear on its own in any design space; adjustment masters and adjustment master sequences can appear only on one design space, once;
 * masters, master sequences, adjustment masters and adjustment master sequences are removed from a design space by dragging them out of the design spaces panel and dropping them back over the masters column;
@@ -72,9 +72,9 @@ And then we drop a third master and their representation matures:
 
 **rule**: when multiple masters limit the field of a master, its field is an ellipse, which has its long axis pointing exactly at the _second-nearest_ neighbour, with the long axis length set to be the exact distance to that neighbour. the short axis is set so that the ellipse perimeter touches exactly the position of the _nearest_ neighbour.
 
-### (strings of) instances
+### (families of) instances
 
-The (strings of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
+The (families of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
 
 ![](http://mmiworks.net/metapolator/exploreinstances.png)
 
@@ -165,8 +165,8 @@ We see the three masters arranged at the tips of an equal-sided triangle. The pe
 
 It is a real shame that the triangle representation only works this beautifully and ‘zen’ for three masters, for more masters things just get, ehm, tangled. So it is only available for 3 masters; add or delete a master and it is back to straight sliders.
 
-### (strings of) instances
-The (strings of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
+### (families of) instances
+The (families of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
 
 ![](http://mmiworks.net/metapolator/controlinstances.png)
 
