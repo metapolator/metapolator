@@ -2,7 +2,7 @@ The fonts panel (in the Fonts view) is more or less a column extension of the in
 
 ![](http://mmiworks.net/metapolator/fontscolumn.png)
 
-the two scroll in sync. **note** that all instance management functions are also available here, including organisation into strings. Clicking in the fonts column checks (2nd time: unchecks) an instance to be exported as font.
+the two scroll in sync. **note** that all instance management functions are also available here, including organisation into families. Clicking in the fonts column checks (2nd time: unchecks) an instance to be exported as font.
 
 * mouse-down in the fonts panel, drag across multiple instances, release: switches the export mode of all instances involved on/off, depending on whether the mouse-down instance went on or off;
 * the toggle is on mouse-down; when the mouse is down and moved outside the fonts panel, the item is un-toggled (also for the swipe action above); when the mouse is released outside the fonts panel, the export mode of the item is un-changed(also for the swipe action above).
@@ -26,18 +26,18 @@ The local menu is as follows:
 
 **notes:**
 
-* these menu commands operate on single and multiple selections of instances and strings of instances;
+* these menu commands operate on single and multiple selections of instances and families of instances;
 * **Copy Opentype Features from Master…** shows a list of masters in this project that have opentype features defined; after users pick one, it extracts the opentype features and assigns the content to the selection;
 * **Copy Opentype Features from Font…** extracts the opentype features out of a ufo file and assigns the content to the selection;
 * **Load Opentype Features File…** reads .fea files and assigns the content to the selection;
 * **Show Opentype Features** works only for items that have them; same as clicking the ot.fea indicator;
 * **Remove Opentype Features** works only for items that have them.
 
-Checking a string of instances for export or setting its opentype features sets all the instance to belong to it:
+Checking a family of instances for export or setting its opentype features sets all the instance to belong to it:
 
 ![](http://mmiworks.net/metapolator/fontsstring.png)
 
-No override is possible, to control the belonging instances individually, the check and/or opentype features must be removed from the string.
+No override is possible, to control the belonging instances individually, the check and/or opentype features must be removed from the family.
 
 ## metadata
 We all know that setting and maintaining metadata is a pain in the neck. Therefore we will try to inflict as little as possible on users. Some basic strategies:
