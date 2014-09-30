@@ -131,6 +131,7 @@ _Mark (families of) instances for font export; manage metadata and assign to fon
   * minimum width of a view (what is shown in the viewport) is 960px (i.e. if the viewport is narrower than that, the view scrolls horizontally);
   * the minimum width of the parameter, masters and instances columns is 180px;
   * the maximum width of the parameter, masters and instances columns is 270px;
+  * the fonts column width is not user adjustable, it is 1/16th of the viewport width, capped by a maximum of 80px;
   * no further limits; user common sense prevails.
 
 _yes, horizontal dividers can be moved completely up/down, to the point where the panel above/below it is completely invisible._
