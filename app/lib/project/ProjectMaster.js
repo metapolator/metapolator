@@ -30,7 +30,7 @@ define([
             this._data = {
                 type: 'ProjectMaster',
                 masters: {},
-                importFailures: {}
+                rememberedFailures: {}
             };
         }
     }
@@ -47,17 +47,31 @@ define([
         }
     });
 
-    _p.rememberThatImportFailedForGlyph = function( glyphName, reason ) {
-        this._data.importFailures[glyphName] = 
-            { 
-                name: glyphName, 
+    /**
+     * For each type of failure, which is just a string like 'import'
+     * etc, we can store the most recent failure for each glyph and
+     * why that happened. This might be extended to record more than
+     * just the latest failure, but knowing that an import failed 5
+     * times in a row is likely not as interesting to the user as
+     * knowing why it failed the last time it was tried.
+     */
+    _p.setRememberedFailure = function( type, glyphName, reason ) {
+        if( this._data.rememberedFailures[glyphName] === undefined ) {
+            this._data.rememberedFailures[glyphName] = {};
+        }
+        this._data.rememberedFailures[glyphName][ type ] =
+            {
+                name: glyphName,
                 reason: reason,
                 incidenttime: new Date(),
             };
     }
+    _p.rememberThatImportFailedForGlyph = function( glyphName, reason ) {
+        this.setRememberedFailure( 'import', glyphName, reason );
+    }
 
     Object.defineProperty(_p, 'metaDataFilePath', {
-        get: function(){ return this._project.dataDir+'/'+this._glyphSetDir+'.yaml';}
+        get: function(){ return this._project.dataDir+'/messages/'+this._glyphSetDir+'.yaml';}
     });
 
     _p.saveMetaData = function() {

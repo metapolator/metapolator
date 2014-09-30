@@ -46,14 +46,14 @@ define([
 
         // open the source ufo glyphs layer of an UFOv2
         this._sourceGlyphSet  = this._project.getNewGlyphSet(
-                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2 );
+                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2);
 
         // tell us about errors instead of throwing it away
         this._sourceGlyphSet.setReadErrorCallback( 
-            function( pm, glyph, message ) {
+            function( pm, d ) {
                 console.log("ImportController: Got an error loading glyph '" 
-                            + glyph.name + "' reason:" + message );
-                pm.rememberThatImportFailedForGlyph( glyph.name, message );
+                            + d.glyphName + "' reason:" + d.message );
+                pm.rememberThatImportFailedForGlyph( d.glyphName, d.message );
             }.bind( null, this._master ));
     }
     var _p = ImportController.prototype;

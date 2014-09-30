@@ -136,6 +136,9 @@ define([
         this._io.mkDir(false, this.dirName+'/data');
         // create dir dirName/data/com.metaploator
         this._io.mkDir(false, this.dataDir);
+        // we store messages for the glyphs (failures etc)
+        // inside this subdir
+        this._io.mkDir(false, this.dataDir+'/messages');
         
         // project file:
         // create     this.dataDir/project.yaml => yaml({})
