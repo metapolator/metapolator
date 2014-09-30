@@ -22,11 +22,11 @@ Designing for the minimum viewport size of 960px wide, 700px high is tough, but 
 
 Parameters view:
 
-![](http://mmiworks.net/metapolator/parametersviewbig2.png)
+![](http://mmiworks.net/metapolator/parametersviewbig3.png)
 
 Design Spaces view _(note: the data of the different panels is not 100% consistent)_:
 
-![](http://mmiworks.net/metapolator/designviewbig2.png)
+![](http://mmiworks.net/metapolator/designviewbig3.png)
 
 Fonts View
 
@@ -171,8 +171,8 @@ When the project name is double-clicked on it becomes an editable text field, wh
 The local menu is as follows for file-based model:
 
 * New
-* Clone
 * Open…
+* Duplicate
 * -- \<separator\> --
 * Close
 * Save
@@ -181,24 +181,24 @@ The local menu is as follows for file-based model:
 for an auto-persistence model (surely the way to go in the future):
 
 * New
-* Clone
 * Open…
+* Duplicate
 * -- \<separator\> --
 * Close
 * -- \<separator\> --
+* Delete…
+* -- \<separator\> --
 * Open File…
 * Save As File…
-* -- \<separator\> --
-* Delete…
 
 **notes**:
 
 * **New** opens a new, empty project into a new Metapolator instance in a new browser tab.
-* **Clone** clones the current project into a new Metapolator instance in a new browser tab, with a derived project name ("\<project name\> copy").
+* **Duplicate** copies the current project into a new Metapolator instance in a new browser tab, with a derived project name ("\<project name\> copy").
 * **Open…** opens into this browser tab only when a new, empty project is loaded, else into a new Metapolator instance in a new browser tab.
 * **Close** leaves the tab open, with no project loaded.
-* **Open File…** and **Save As File…** interface to the file system instead of the database.
 * **Delete…** removes this project from the database, for ever…
+* **Open File…** and **Save As File…** interface to the file system instead of the database.
 
 Whenever this instance/tab of metapolator is running without a project loaded, the project name and local menu are not shown; instead simple links to open a project or create a new one are shown:
 
@@ -214,7 +214,7 @@ _(yep, the divider between the two can be moved up/down by users.)_
 ### master section
 The master section is completely occupied by the master list with a label + local menu above it:
 
-![](http://mmiworks.net/metapolator/masterlist3.png)
+![](http://mmiworks.net/metapolator/masterlist4.png)
 
 _**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
 
@@ -254,17 +254,25 @@ Here master sequences are managed. The connected dots show the extend of the seq
 * extend the sequence by grabbing the top/bottom dot and dragging it over masters above/below the sequence;
 * reduce the sequence by grabbing the top/bottom dot and dragging it over masters down/up towards centre of the sequence;
 * click in the sequence title item to select the complete sequence;<br/>
-![](http://mmiworks.net/metapolator/sequenceselecte2.png)<br/>
+![](http://mmiworks.net/metapolator/sequenceselected3.png)<br/>
 this is different than selecting all the masters in a sequence (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
 * drag and drop complete sequences, via the title item
 * a sequence contains two or more masters; reducing a sequence to one master by any means results in removing the sequence;
 * ps: masters and sequences can appear in any order on this list (as long as sequences are continuous, i.e. only sequence members are shown in a sequence).
 
+#### clones
+Clones are very useful for making the same master part of several master sequences, without creating the maintenance burden that copying would cause. Clones are indicated by the clone symbol in front of there name:
+
+![](http://mmiworks.net/metapolator/masterclones.png)
+
+Clones work like **hard links** on the unix file system: all clones are one and the same thing; there is **no** target and link relationship. all the data of related clones, even the name, is, well, one and the same thing. **rule**: when there are exactly two related clones, and one of them gets deleted, then the last one left stops being a clone and is a normal master, again. And just in case you wondered, clones can be cloned to simply increase the number of related clones.
+
 #### buttons
 At the bottom of the list action buttons are displayed. From left (for L–to–R UI locales) we see:
 
 1. Import ufo button; imports a ufo and creates a new master out of it;
-* Duplicate button; duplicate the current selection of master(s) or sequence(s) _(yes, the icon can use some more work…)_.
+* Duplicate button; duplicate the current selection of master(s) or sequence(s);
+* Clone button; clone the current selection of master(s) or sequence(s).
 
 #### local menu
 The local menu is as follows:
@@ -272,11 +280,14 @@ The local menu is as follows:
 * Import ufo…
 * Copy From Project…
 * -- \<separator\> --
+* Duplicate
+* Clone
+* -- \<separator\> --
+* Delete…
+* -- \<separator\> --
 * Set Scripts…
 * -- \<separator\> --
 * Quick Export…
-* -- \<separator\> --
-* Delete…
 * -- \<separator\> --
 * Create Sequence
 * Delete Sequence…
@@ -286,9 +297,9 @@ The local menu is as follows:
 * these menu commands operate on single and multiple selections of masters and master sequences;
 * **Import ufo…** imports a ufo and creates a new master out of it;
 * **Copy From Project…** shows a project browser and then a master browser within a selected project; then copies selected master(s) to this project;
+* **Delete…** of master(s);
 * **Set Scripts…** shows a dialog to manage which scripts are supported by master(s);
 * **Quick Export…** of master(s) or sequence(s) to ufo, using best guesses where it comes to the trimmings (e.g. metadata, kerning, and opentype features);
-* **Delete…** of master(s);
 * **Create Sequence** out of a multi-selection of masters that are all not part of a sequence; when it is a discontinuous selection, this pulls them together under the top master;
 * **Delete Sequence…** Deletes selected sequence(s), but not the masters they contain.
 
@@ -321,24 +332,33 @@ The label above the list shall be "Adjustment Masters".
 
 Different symbols are used in the sequence column: up-pointing triangles, derived from the delta (Δ) symbol, and the bottom item is identified by an end-of-the-line symbol.
 
+#### clones
+Adjustment master clones are like master clones where it comes to their (few shreds of) parameter data. However, several related clones can be placed in the same design space (to build structures of the same adjustment) or they can be placed on several design spaces.
+
+**note**: because related clones are placed in different locations or design spaces, _each of them will display differently in the specimen_, because ~99% of what they look like is determined by the underlying metapolation of their location.
+
 #### buttons
 Action buttons are different:
 
-![](http://mmiworks.net/metapolator/adjustmentbuttons.png)
+![](http://mmiworks.net/metapolator/adjustmentbuttons2.png)
 
-New button; create an empty adjustment master;
-Duplicate button;.
+* New button; create an empty adjustment master;
+* Duplicate button;
+* Clone button.
 
 #### local menu
 The local menu is a bit different:
 
 * New
 * -- \<separator\> --
+* Duplicate
+* Clone
+* -- \<separator\> --
+* Delete…
+* -- \<separator\> --
 * Set Scripts…
 * -- \<separator\> --
 * Quick Export…
-* -- \<separator\> --
-* Delete…
 * -- \<separator\> --
 * Create Sequence
 * Delete Sequence…
@@ -414,12 +434,12 @@ At the bottom of the list action buttons are displayed. From left (for L–to–
 The local menu is as follows:
 
 * New
+* Duplicate
+* Delete…
 * -- \<separator\> --
 * Promote To Master
 * -- \<separator\> --
 * Quick Export…
-* -- \<separator\> --
-* Delete…
 * -- \<separator\> --
 * Create String
 * Delete String…
@@ -428,9 +448,9 @@ The local menu is as follows:
 
 * these menu commands operate on single and multiple selections of instances and strings of instances;
 * **New** instance, set to default metapolation mix; when this instance is created _inside_ a string, the metapolation is a 50-50 mix of instances above and below; on the edge of a string, extrapolate;
+* **Delete…** of instance(s);
 * **Promote To Master** of instance(s)—transformed to master(s)—or string(s)—transformed to master sequences; the instance(s) or string(s) involved remain untouched;
 * **Quick Export…** of instance(s) or string(s) to ufo, using best guesses where it comes to the trimmings (e.g. metadata, kerning, and opentype features);
-* **Delete…** of instance(s);
 * **Create String** out of a multi-selection of instances that are all not part of a string; when it is a discontinuous selection, this pulls them together under the top instance; when there is no aforementioned multi-select, create a new string of 9 instances;
 * **Delete String…** Deletes selected string(s), but not the instances they contain.
 
