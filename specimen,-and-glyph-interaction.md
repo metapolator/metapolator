@@ -115,7 +115,7 @@ the view disappears when the mouse leaves the glyph box. Users can now click one
 
 ![](http://mmiworks.net/metapolator/abcsegment.png)
 
-multiple segments, of multiple glyphs, of several (adjustment) masters may be selected—using shift or ctrl/cmd. The selected segment(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
+multiple segments, of multiple glyphs, of several (adjustment) masters may be selected—using shift, ctrl/cmd, or rubber-banding. The selected segment(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
 
 if on the other hand the font display size is more sufficient (say 144pt and up) and the mouse is hovered for 500ms over the **black** of the glyph box, a skeleton, segments and points view is shown:
 
@@ -125,7 +125,7 @@ instead of having users interact with tiny points, each point is given a stout h
 
 In this view the segments can still be selected—this will then make the point handles disappear (i.e. becomes skeleton and segments view).
 
-Multiple points can be selected—using shift or ctrl/cmd:
+Multiple points can be selected—using shift, ctrl/cmd, or rubber-banding:
 
 ![](http://mmiworks.net/metapolator/abc2points2.png)
 
@@ -135,7 +135,10 @@ also of multiple glyphs, out of several (adjustment) masters:
 
 The selected point(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
 
-When only one point is selected, it is possible to directly edit it:
+### direct manipulation
+#### single point
+
+When only one point is selected, and the mouse pointer is in the white, close to the point handle, then a set of edit handles appears:
 
 ![](http://mmiworks.net/metapolator/abcpointedit2.png)
 
@@ -154,6 +157,17 @@ return the mouse to the glyph box to continue making edits.
 Apart from the time saving that is offered by using non-itty-bitty handles (say, saving 0,25 second _every time_ a user engages with a handle, for _every user_), one of the big advantages of taking all the handles outside the black of the glyph is that when the weight becomes very thin, there are no repercussions on the handle system:
 
 ![](http://mmiworks.net/metapolator/abcthinedit2.png)
+
+#### multiple points
+When multiple points are selected—also of several glyphs, of several masters—and the mouse pointer is in the white, close to one of the point handles, then a set of edit handles appears at that point handle.
+
+**rule**: all edits performed there are propagated to all selected points, in the following way:
+
+* changes to the point position: as x and y offsets (+);
+* changes to the curve direction: as offset in degrees (+);
+* changes to the curve tension: scale proportionally (×);
+* changes to the pen angle: as offset in degrees (+);
+* changes to the pen width: scale proportionally (×).
 
 ### glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
