@@ -33,7 +33,7 @@ define([
             ast = gonzales.srcToCSSP(css);
         }
         catch (error) {
-            // gonzales throws a pure JavaScript Error, but we wan't more
+            // gonzales throws a pure JavaScript Error, but we want more
             // certainty in the rest of our application
             throw new CPSParserError(error.message, error.stack);
         }
