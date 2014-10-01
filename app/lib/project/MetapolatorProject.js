@@ -33,18 +33,18 @@ define([
 ) {
     "use strict";
 
-        // FIXME: make this availabe for browsers, too
+        // FIXME: make this available for browsers too
     var metainfoV3 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobkect.org
+            // how strict robofab is on this, but unifiedfontobject.org
             // says this is an int
           , formatVersion: new IntObject(3)
         }
       , metainfoV2 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobkect.org
+            // how strict robofab is on this, but unifiedfontobject.org
             // says this is an int
           , formatVersion: new IntObject(2)
         }
