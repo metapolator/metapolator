@@ -18,8 +18,7 @@ If you are using emacs then you might find the following code useful in your ini
 
 ## Inheritance
 
-This is the definitve guide how class like structures should be written
-in Metapolator. A lot of people don't learn to do this in JavaScript (some even believe inheritance doesn't exist in JavaScript).
+This is the definitive guide to how class like structures should be written in Metapolator. A lot of people don't learn to do this in JavaScript (some even believe inheritance doesn't exist in JavaScript).
 
 I embed the examples into AMD/RequireJS modules, because this is how we
 will encounter classes in Metapolator.
