@@ -104,7 +104,7 @@ define([
         // ["s", " \n "] etc. so we can count line breaks. I hope the gonzales
         // parser doesn't hide line breaks from us.
         // Line numbers are VERY helpful when working with a CSS file
-        // thats why I want to keep them
+        // that's why I want to keep them
         while(frame = stack.pop()) {
             // if frame 2 is set this means that the element switched
             // nodeConstructors for its own object, and that the
@@ -146,7 +146,7 @@ define([
             // data is an array
             // DESCENDING
             
-            // switch nodeConstructors if its the right element
+            // switch nodeConstructors if it's the right element
             // currently only used for @dictionary, but this mechanism
             // is very generic
             oldNodeConstructors = undefined;
