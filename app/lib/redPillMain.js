@@ -44,7 +44,7 @@ define('GlobalCodeMirror', [
     ], function(codemirror) {
     window.CodeMirror = codemirror;
     return undefined;
-})
+});
 
 require([
     'webAPI/document'
@@ -74,4 +74,4 @@ require([
     domReady(function() {
         angular.bootstrap(document, [angularApp.name]);
     });
-})
+});

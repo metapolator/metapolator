@@ -1,0 +1,35 @@
+#!/bin/sh
+SOURCE="$(dirname $0)/../..";
+PROJECT=$1
+TARGET=$2
+
+mkdir "$TARGET" \
+    && cp -a "$PROJECT/." "$TARGET/project" \
+    && cp "$SOURCE/README.md" "$TARGET" \
+    && cp "$SOURCE/LICENSE.txt" "$TARGET";
+
+# build the javascript into one file
+node $SOURCE/node_modules/.bin/r.js -o \
+        optimize=none\
+        mainConfigFile="$SOURCE/app/lib/redPillMain.js" \
+        baseUrl="$SOURCE/app/lib" \
+        paths.requireLib="bower_components/requirejs/require" \
+        name="redPillMain" \
+        include=requireLib \
+        out="$TARGET/main.js";
+
+# build the less to css
+node $SOURCE/node_modules/.bin/lessc \
+        --include-path="$SOURCE/app/" \
+        --strict-imports "$SOURCE/app/lib/ui/redPill/app.less" \
+        "$TARGET/main.css";
+
+sed s":<!-- development -->:<!-- development:" "$SOURCE/app/red-pill.html" | \
+    sed s":<!-- production:<!-- production -->:" > "$TARGET/index.html";
+
+# There is a HTTP HEAD request whether the dir /project/glyphs.skeleton.base/
+# exists. git-hub pages does not return a directory listing, so we trick it
+# into returning a HTTP 200 status code
+# to read the dir, our file system abstraction would expect a \n separated list of
+# directory contents, where directories would end with a slash "/"
+touch "$TARGET/project/glyphs.skeleton.base/index.html";
