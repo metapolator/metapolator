@@ -146,7 +146,7 @@ define([
         for(var i=0;i<points.length;i++) {
             point = model.getComputedStyle(points[i].right);
             // Actually, all points have controls. We don't have to draw
-            // lines. We should make a CPS value if we wan't to draw a
+            // lines. We should make a CPS value if we want to draw a
             // point as a line segment point
             if(true /* always curve */) {
                 segmentType = 'curve';

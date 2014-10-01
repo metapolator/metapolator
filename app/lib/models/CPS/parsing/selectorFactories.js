@@ -142,7 +142,7 @@ define([
                     continue;
                 else if(item instanceof Comment)
                     // skip all comments
-                    // we can get them back in if we wan't though
+                    // we can get them back in if we want though
                     continue;
             
                 if(item instanceof Combinator) {
