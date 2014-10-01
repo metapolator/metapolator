@@ -1,5 +1,3 @@
-<button ng-click="updateCPS()">update preview</button>
-
 <label>glyphs selector:
     <input
         type="text"

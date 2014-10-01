@@ -1,0 +1,15 @@
+#!/bin/sh
+# Generate an ES5 file from ES6 source with regenerator
+# For simplicity, include the run-time in each file (we shouldn't have too many)
+
+name=`basename $0`
+source=$1
+base=${1%%.es6.js}
+dest=$base.js
+
+if test $# != 1 -o "$base" = "$source"; then
+    echo "Usage: $name FILE.es6.js"
+    exit 1
+fi
+
+./node_modules/.bin/regenerator -r $source > $dest
