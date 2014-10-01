@@ -7,45 +7,13 @@
 
 ## Emacs
 
-If you are using emacs then you might find the following code useful in your ~/.emacs or other startup file to have emacs help maintain the expected code formatting. Note that the code tries to keep settings local to the buffer so as not to intrude on your existing setup. You will have to edit the path /Develop/.../metapolator/ to the location(s) that you are storing local metapolator git checkouts.
-
-Updates to the below code are very welcome.
+If you are using emacs then you might find the following code useful in your init file.
 
 ```lisp
-(setq whitespace-display-mappings
-      '((space-mark   ?\    [?\xB7]     [?.])	; space
-        (space-mark   ?\xA0 [?\xA4]     [?_])	; hard space
-        (newline-mark ?\n   [?\n] [?\n])
-        ))
-
-(defun metapolator-style-hook ()
-  (setq js-indent-level 4)
-  (setq tab-width       4)
-  (setq js-indent-level 4)
-  (setq tab-stop-list   (number-sequence 4 120 4))
-  (make-local-variable 'indent-tabs-mode)
-  (setq indent-tabs-mode nil)
-  (whitespace-mode)
-  (make-local-variable 'dired-omit-files)
-  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-  )
-
-(defun my-js-mode-common-hook ()
-  (if (and (buffer-file-name)
-	    (string-match "/Develop/.../metapolator/" (buffer-file-name)))
-      (metapolator-style-hook))
-  (if (and (buffer-file-name)
-	    (string-match "/tmp/testjs" (buffer-file-name)))
-      (metapolator-style-hook))
-)
-
-(add-hook 'js-mode-hook 'my-js-mode-common-hook)
-
 ;; ensure that commands are shown with correct highlighting.
 (add-to-list 'interpreter-mode-alist '("nodejs" . js-mode))
 (add-to-list 'interpreter-mode-alist '("node" . js-mode))
 (add-to-list 'auto-mode-alist '("\\.cps\\'" . css-mode))
-
 ```
 
 ## Inheritance
