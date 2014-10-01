@@ -18,7 +18,7 @@ This page lists the **first, rough** building blocks of the design. With that th
 So enjoy the fact that you can watch interaction being created ‘out of nothing’ and that you can plan with what you see here. Thanks for your patience where it comes to the last detail. _—ps_
 
 ## 960px comps
-Designing for the minimum viewport size of 960px wide, 700px high is tough, but we want this to work on 1024x768 laptops. Here are the **wireframes** for the three views we have structured the UI around—
+Designing for the (effective) minimum viewport size of 960px wide, 700px high is tough, but we want this to work on 1024x768 laptops. Here are the **wireframes** for the three views we have structured the UI around—
 
 Parameters view:
 
@@ -123,6 +123,7 @@ _Mark (families of) instances for font export; manage metadata and assign to fon
 * future support of kerning and hinting will find its place in the Fonts view (location-sharing with metadata).
 
 #### sizing rules
+**note**: all talk about pixels on these interaction design pages is about **effective pixels**, as reported in the browser (i.e. divided down from physical pixels for retina displays).
 
 1. the default column and divider proportions are giving for each view above;
 * users can adjust the column widths and divider proportions; this will not cause the views to scroll, and is persisted for the project; resizing the masters or instances column will affect both views they appear on;
