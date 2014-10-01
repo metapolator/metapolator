@@ -135,11 +135,11 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    _p.drawPenstrokeOutline = function(model, pen, penstroke) {
+     _p._drawPenstrokeOutline = function*(model, pen, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
-          , segmentType, terminal, ctrls
+          , segmentType, terminal, ctrls, vector
           ;
         pen.beginPath();
         // first draw the right side
@@ -160,16 +160,16 @@ define([
                     prePoint = model.getComputedStyle(points[i-1].right);
                 }
                 ctrls = getControlsFromStyle(prePoint, point, terminal);
-                ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                })
+                for (vector of ctrls) {
+                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+                }
 
             }
             else {
                 segmentType =  'line';
                 console.log('implicit line segment, right side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         // draw the left side
         for(i=points.length-1;i>=0 ;i--) {
@@ -196,24 +196,24 @@ define([
                     ctrls.reverse();
                     point = prePoint;
                 }
-                ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                })
+                for (vector of ctrls) {
+                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+                }
             }
             else {
                 segmentType = 'line';
                 console.log('implicit line segment, left side, this should be explicit in CPS');
             }
-            pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }
 
-    _p.drawPenstrokeCenterline = function(model, pen, penstroke) {
+    _p._drawPenstrokeCenterline = function*(model, pen, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
-          , segmentType, ctrls
+          , segmentType, ctrls, vector
           ;
         // center line
         pen.beginPath()
@@ -223,19 +223,26 @@ define([
                 segmentType = 'curve';
                 prePoint = model.getComputedStyle(points[i-1].center);
                 ctrls = getControlsFromStyle(prePoint, point);
-                ctrls.forEach(function(vector) {
-                    pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                })
+                for (vector of ctrls) {
+                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+                }
             }
             else
                 // this contour is not closed, the first point is a move
                 segmentType = 'move';
-            pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
+            yield pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }
 
-
+    _p.drawGlyphToPointPenGenerator = function (model, glyph, /*method*/ pen) {
+        return function* () {
+            var stroke;
+            for (stroke of glyph.children)
+                yield* this._drawPenstrokeOutline(model, pen, stroke);
+                //yield* this._drawPenstrokeCenterline(model, pen, stroke);
+        }.call(this);
+    }
 
     _p.drawGlyphToPointPen = function(model, glyph, /*method,*/ pen) {
         // method may be tensions/control-points/metafont/native-js
@@ -250,8 +257,8 @@ define([
         // Maybe we can combine all metafont strokes into one job, to
         // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
-        glyph.children.map(this.drawPenstrokeOutline.bind(this, model, pen));
-        //glyph.children.map(this.drawPenstrokeCenterline.bind(this, model, pen));
+        var v;
+        for (v of this.drawGlyphToPointPenGenerator(model, glyph, pen));
     }
 
     return ExportController;
