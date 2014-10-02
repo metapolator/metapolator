@@ -174,24 +174,24 @@ In general this is about the lines that guide the eyes in reading direction, for
 
 ![](http://mmiworks.net/metapolator/5lines.png)
 
-within the Em block, the ascender, capital, x-height, base and descender lines run. **note** that the five lines divide the Em square into **six zones**. Every glyph has its skeleton points (here shown for the ‘d’) vertically somewhere in these zones (that a point can be exactly on a line does not change this story). When we look up close we see that none of the points are on a line here:
+within the Em block, the ascender, capital, x-height, base and descender lines run. **note** that the five lines divide the Em square into **six zones**. Every glyph has its skeleton points (here shown for the ‘d’) vertically somewhere in these zones (that a point can be exactly on a line does not change this story). When we look up close we see that none of the skeleton points are on a line here:
 
 ![](http://mmiworks.net/metapolator/notonlines.png)
 
 For metapolator we (Simon and Peter) are proposing the following system for how the glyphs react to change in the vertical position of optical horizontal lines:
 
-**rule**: when an optical horizontal line is moved up, then the zone above it gets compressed and the one below it stretched, and all points in these 2 zones move proportionately. Conversely when an optical horizontal line is moved down, then the zone above it gets stretched and the one below it compressed, again all points in these 2 zones move proportionately. Here an example:
+**rule**: when an optical horizontal line is moved up, then the zone above it gets compressed and the one below it stretched, and all skeleton points in these 2 zones move proportionately. Conversely when an optical horizontal line is moved down, then the zone above it gets stretched and the one below it compressed, again all skeleton points in these 2 zones move proportionately. Here an example:
 
 ![](http://mmiworks.net/metapolator/move20up.png)
 
-the proportional distance to the non-moving line is used to calculate the movement of the points.
+the proportional distance to the non-moving line is used to calculate the movement of the skeleton points.
 
-This system is actually **really similar** to the way that the width parameters changes x-coordinates of points.
+This system is actually **really similar** to the way that the width parameters changes x-coordinates of skeleton points (and did that not include a re-calculation of pen angles?).
 
 You may have noticed two things are missing from this story (we consider this beneficial):
 
-1. **tagging** is not necessary to make this work; all that needs to be known is the position of the points and the location of the horizontal lines, the latter which can be read out of an ufo (or initially set by users if need be);
-* **overshoot** has become implicit, instead of an explicit concept; it is there in the relationship of point positions and pen widths.
+1. **tagging** is not necessary to make this work; all that needs to be known is the position of the skeleton points and the location of the horizontal lines, the latter which can be read out of an ufo (or initially set by users if need be);
+* **overshoot** has become implicit, instead of an explicit concept; it is there in the relationship of skeleton point positions and pen widths.
 
 #### getting fixed
 To create exceptons to the proportionate behaviour, users can set for points to have **fixed** vertical offset, either to the line above or the one below.
