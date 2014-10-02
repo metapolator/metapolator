@@ -1,17 +1,23 @@
 define([
-    'metapolator/errors'
+    // the special 'exports' module helps us around circular dependency
+    // issues with the 'atImportFactories' module
+    'exports'
+  , 'metapolator/errors'
   , 'gonzales/gonzales'
   , './curry'
   , './engine'
   , './parameterFactories'
   , './atDictionaryFactories'
+  , './atImportFactories'
 ], function (
-    errors
+    exports
+  , errors
   , gonzales
   , curry
   , parserEngine
   , parameterFactoriesModule
   , atDictionaryFactories
+  , atImportFactories
 ) {
     "use strict";
     var CPSError = errors.CPS
@@ -20,7 +26,8 @@ define([
       ;
     
     var factorySwitches = [
-            atDictionaryFactories.atDictionaryParsingSwitch
+            atDictionaryFactories.atDictionaryParsingSwitch,
+            atImportFactories.atImportParsingSwitch
         ]
       , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
       ;
@@ -40,9 +47,7 @@ define([
         
         return rulesFromAST(ast, sourceName, parameterRegistry)
     }
-     
-    return {
-        fromString: rulesFromString
-      , fromAST: rulesFromAST
-    }
+    
+    exports.fromString = rulesFromString;
+    exports.fromAST = rulesFromAST;
 })
