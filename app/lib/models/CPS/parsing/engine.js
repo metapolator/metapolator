@@ -124,7 +124,7 @@ define([
                     node.instance = nodeConstructors[node.type]
                         .call(nodeConstructors, node, source, parameterRegistry);
                                         
-                //switch back nodeConstructors if this element switched em
+                //switch back nodeConstructors if this element switched it
                 if(frame[2])
                     nodeConstructors = frame[2];
                 continue;
