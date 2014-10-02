@@ -1,11 +1,11 @@
 ## getting started
 The design spaces panel provides a tabbed interface that looks by default like this:
 
-![](http://mmiworks.net/metapolator/startspace.png)
+![](http://mmiworks.net/metapolator/startspace2.png)
 
 from the top:
 
-The **local menu** contains these items:
+The **local menu** is placed on the active tab, and contains these items:
 
 * New
 * Duplicate
@@ -27,11 +27,11 @@ Exploration is not compatible with Control. Exploration is a flat-earth, limited
 
 Once the choice is made the tab transitions (suggestion: dissolve) to the empty state for that type:
 
-![](http://mmiworks.net/metapolator/explorempty.png)
+![](http://mmiworks.net/metapolator/explorempty2.png)
 
 We see the background is now of the content type and that an icon representing the type of design space has been inserted in the tab. This helps identifying multiple tabs:
 
-![](http://mmiworks.net/metapolator/tabicons2.png)
+![](http://mmiworks.net/metapolator/tabicons3.png)
 
 some **general rules** for all spaces:
 
@@ -46,7 +46,7 @@ some **general rules** for all spaces:
 ## exploration space
 The action starts when masters get drag ’n’ dropped on the exploration space. Adding one master is not _that_ interesting:
 
-![](http://mmiworks.net/metapolator/explore1master.png)
+![](http://mmiworks.net/metapolator/explore1master2.png)
 
 The single master dominates the whole space. **rule**: master can be placed anywhere in the space.
 
@@ -139,7 +139,7 @@ _yes, this has been tested for 8 types of color-blindness, with Sim Daltonism.ap
 ## control space
 Also here the action starts when masters get drag ’n’ dropped on the control space. Adding one master is not _that_ interesting:
 
-![](http://mmiworks.net/metapolator/control1master.png)
+![](http://mmiworks.net/metapolator/control1master2.png)
 
 The single master dominates the whole space. **rule**: layout of elements in this space is fully automatic, based on the order things are added and when in doubt, the order they appear in the master and adjustment masters lists.
 
