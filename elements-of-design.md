@@ -26,11 +26,15 @@ Parameters view:
 
 Design Spaces view _(note: the data of the different panels is not 100% consistent)_:
 
-![](http://mmiworks.net/metapolator/designviewbig3.png)
+![](http://mmiworks.net/metapolator/designviewbig4.png)
 
 Fonts View
 
 ![](http://mmiworks.net/metapolator/fontsviewbig2.png)
+
+and the complete panorama:
+
+![](http://mmiworks.net/metapolator/panorama.png)
 
 ## overall structure
 **updated**: read the first exploration below, or [jump to the update](https://github.com/metapolator/metapolator/wiki/elements-of-design#and-then-there-were-three).
