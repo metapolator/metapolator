@@ -96,11 +96,17 @@ The selection mechanism is based on the icon grid model that is used in file bro
 
 The selected glyph(s) is now the parameter edit context and this is reflected in the parameters panel.
 
+**rule**: the interaction is now in glyphs mode, and any script, segment, line, point, or vector shape interaction is suppressed.
+
 Alternatively one or more scripts can be selected:
 
 ![](http://mmiworks.net/metapolator/paraspeciscript.png)
 
-only relevant scripts (from the master script configurations) are shown. of there is only one script relevant, the line is not shown. clicking each script toggles its selection. to keep the specimen clean, there is no highlighting of the glyphs when selecting a script. The selected script(s) is now the parameter edit context and this is reflected in the parameters panel.
+only relevant scripts (from the master script configurations) are shown. of there is only one script relevant, the line is not shown. clicking each script toggles its selection. to keep the specimen clean, there is no highlighting of the glyphs when selecting a script.
+
+The selected script(s) is now the parameter edit context and this is reflected in the parameters panel.
+
+**rule**: the interaction is now in script mode, and any glyph, segment, line, point, or vector shape interaction is suppressed.
 
 ### getting down
 Let’s start with part of the specimen:
@@ -115,30 +121,39 @@ the view disappears when the mouse leaves the glyph box. Users can now click one
 
 ![](http://mmiworks.net/metapolator/abcsegment.png)
 
-multiple segments, of multiple glyphs, of several (adjustment) masters may be selected—using shift, ctrl/cmd, or rubber-banding. The selected segment(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
+multiple segments, of multiple glyphs, of several (adjustment) masters may be selected—using shift, ctrl/cmd, or rubber-banding.
+
+The selected segment(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
+
+**rule**: the interaction is now in segment mode, and any script, glyph, line, point, or vector shape interaction is suppressed. Also the skeleton and segments view is now shown instantly (no delay) when mousing over any part of any glyph box.
 
 if on the other hand the font display size is more sufficient (say 144pt and up) and the mouse is hovered for 500ms over the **black** of the glyph box, a skeleton, segments and points view is shown:
 
 ![](http://mmiworks.net/metapolator/abcpoints2.png)
 
-instead of having users interact with tiny points, each point is given a stout handle that stays out of the way of the black of the glyph itself. The view disappears after a delay of 1000ms after the mouse leaves black; this gives users time to reach a handle to click it, which selects it. Selection of a handle resets the timer. 
+instead of having users interact with tiny points, each point is given a stout handle that stays out of the way of the black of the glyph itself. The view disappears after a delay of 1000ms after the mouse leaves black; this gives users time to reach a handle to click it, which selects it.
 
-In this view the segments can still be selected—this will then make the point handles disappear (i.e. becomes skeleton and segments view).
+When no point handles have been selected in this view, the segments can still be selected—this will then make the point handles disappear (i.e. becomes skeleton and segments view).
 
 Multiple points can be selected—using shift, ctrl/cmd, or rubber-banding:
 
-![](http://mmiworks.net/metapolator/abc2points2.png)
+![](http://mmiworks.net/metapolator/abc2points3.png)
 
 also of multiple glyphs, out of several (adjustment) masters:
 
-![](http://mmiworks.net/metapolator/abc4points2.png)
+![](http://mmiworks.net/metapolator/abc4points3.png)
 
 The selected point(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
 
+**rule**: the interaction is now in point mode, and any script, glyph, segment, line, or vector shape interaction is suppressed. Also the skeleton, segments and points view is now shown instantly (no delay) when mousing over any part of any glyph box.
+
 ### direct manipulation
 #### single point
+When only one point is selected
 
-When only one point is selected, and the mouse pointer is in the white, close to the point handle, then a set of edit handles appears:
+![](http://mmiworks.net/metapolator/abceditreview2.png)
+
+then a click on the point handle makes a full set of edit handles appear:
 
 ![](http://mmiworks.net/metapolator/abcpointedit2.png)
 
@@ -148,9 +163,13 @@ When only one point is selected, and the mouse pointer is in the white, close to
 
 To review the edit-in-progress, users can simply take the mouse pointer out of the glyph box:
 
-![](http://mmiworks.net/metapolator/abceditreview.png)
+![](http://mmiworks.net/metapolator/abceditreview2.png)
 
 return the mouse to the glyph box to continue making edits.
+
+**rule**: the interaction is now in point edit mode, and now also any point selection behaviour is suppressed. All focus is on the editing.
+
+A second click on the point handle-in-edit-mode leaves the edit mode.
 
 **rule**: users can scroll to another occurrence in the specimen of the glyph whose point is being edited, and continue the edit work in that context—because it also has a blue handle sticking out.
 
@@ -159,7 +178,13 @@ Apart from the time saving that is offered by using non-itty-bitty handles (say,
 ![](http://mmiworks.net/metapolator/abcthinedit2.png)
 
 #### multiple points
-When multiple points are selected—also of several glyphs, of several masters—and the mouse pointer is in the white, close to one of the point handles, then a set of edit handles appears at that point handle.
+When multiple points are selected (also of several glyphs, of several masters):
+
+![](http://mmiworks.net/metapolator/abc4pointspreedit.png)
+
+then a click on the point handle makes a full set of edit handles appear:
+
+![](http://mmiworks.net/metapolator/abc4pointsedit.png)
 
 **rule**: all edits performed there are propagated to all selected points, in the following way:
 
@@ -168,6 +193,8 @@ When multiple points are selected—also of several glyphs, of several masters�
 * changes to the curve tension: scale proportionally (×);
 * changes to the pen angle: as offset in degrees (+);
 * changes to the pen width: scale proportionally (×).
+
+Edits can be continued by clicking on any other selected handle.
 
 ### optical horizontal lines
 In general this is about the lines that guide the eyes in reading direction, for any script. The **specific example** I will give here is for **Latin script**. First a very familiar situation:
