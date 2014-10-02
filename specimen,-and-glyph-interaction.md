@@ -174,7 +174,7 @@ In general this is about the lines that guide the eyes in reading direction, for
 
 ![](http://mmiworks.net/metapolator/5lines.png)
 
-within the Em block, the ascender, capital, x-height, base and descender lines run. **note** that the five lines divide the Em square into **six zones**. Every glyph has its skeleton points (here shown for the ‘d’) vertically somewhere in these zones (that a point can be exactly on a line does not change this story). When we look up close we see that none of the skeleton points are on a line here:
+within the Em square, the ascender, capital, x-height, base and descender lines run. **note** that the five lines divide the Em square into **six zones**. Every glyph has its skeleton points (here shown for the ‘d’) vertically somewhere in these zones (that a point can be exactly on a line does not change this story). When we look up close we see that none of the skeleton points are on a line here:
 
 ![](http://mmiworks.net/metapolator/notonlines.png)
 
