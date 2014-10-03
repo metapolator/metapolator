@@ -67,7 +67,7 @@ define([
          * item __get__ 'key'
          *
          * which should translate roughly to the javascript:
-         * item['key'] or item.get('key'), depending of the nature
+         * item['key'] or item.get('key'), depending on the nature
          * of item and the details of the implementation
          */
       , new Operator('__get__', false, Infinity, 1, 1, [

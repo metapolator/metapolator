@@ -28,7 +28,7 @@ define([
      *  reasons for invalid selectors:
      *      it's empty
      *      a child of it is invalid
-     *      it has two combinators followng after each other
+     *      it has two consecutive combinators
      *          only possible for > at the moment
      *          invalid: master>>penstroke
      *          valid: master>*>penstroke

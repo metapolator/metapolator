@@ -43,7 +43,7 @@ define([
                 // accept comments
                 continue;
             else if(!(rules[i] instanceof Rule))
-                throw new CPSParserError('The argument string describred a '
+                throw new CPSParserError('The argument string described a '
                         + rules[i].constructor.name + ' but it should be a'
                         + 'SelectorList.');
             else if(selectorList !== undefined)

@@ -74,7 +74,7 @@ define([
      * 
      * In the ParameterList Tree, there will be some arrays of the AST
      * referenced. SO if you are going to change the AST, you might change
-     * ParameterList items, too. Create a deep copy of the AST, if you
+     * ParameterList items, too. Create a deep copy of the AST if you
      * don't want this side effect.
      */
     function parserEngine(defaultNodeConstructors, factorySwitches, ast
