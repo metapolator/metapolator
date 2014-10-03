@@ -16,7 +16,6 @@ requirejs.config(require('config'));
 if (require.main === module) {
     requirejs([
         'commander'
-      , 'metapolator/errors'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/models/CPS/parsing/parseRules'
       , 'metapolator/models/Controller'
@@ -28,7 +27,6 @@ if (require.main === module) {
       , 'metapolator/models/CPS/Registry'
     ], function (
         program
-      , errors
       , io
       , parseRules
       , Controller
@@ -39,8 +37,6 @@ if (require.main === module) {
       , PenStrokePoint
       , Registry
     ) {
-        var CommandLineError = errors.CommandLine;
-
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(CPSfile) {

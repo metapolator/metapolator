@@ -16,10 +16,12 @@ requirejs.config(require('config'));
 if (require.main === module) {
     requirejs([
         'commander'
+      , 'metapolator/errors'
       , 'gonzales/gonzales'
       , 'metapolator/models/CPS/dataTypes/algebra'
     ], function (
         program
+      , errors
       , gonzales
       , algebra
     ) {
@@ -37,9 +39,9 @@ if (require.main === module) {
                   , bNum = typeof b !== 'number' ? parseFloat(b.literal) : b
                   ;
                 if(aNum !== aNum)
-                    throw new Error('Got NaN from: ' + a);
+                    throw new CommandLineError('Got NaN from: ' + a);
                 if(bNum !== bNum)
-                    throw new Error('Got NaN from: ' + b);
+                    throw new CommandLineError('Got NaN from: ' + b);
                 return this._routine(aNum, bNum);
             }
 
