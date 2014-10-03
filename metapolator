@@ -6,7 +6,7 @@
 
 var path = require('path');
 var helmsman = require('helmsman');
-    
+
 var name = path.basename(process.argv[1], '.js');
 var cli = helmsman({localDir: __dirname + '/app/commands'});
 cli.on('--help', function(){

@@ -85,6 +85,9 @@ define([
     
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
+    Object.defineProperty(_p, 'baseDir', {
+        get: function(){ return this.dirName + '/';}
+    });
     Object.defineProperty(_p, 'dataDir', {
         get: function(){ return this.dirName + '/data/com.metapolator';}
     });
@@ -109,14 +112,6 @@ define([
         get: function(){ return this.dirName+'/layercontents.plist'; }
     });
     
-    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, cb ) {
-        var ret = GlyphSet.factory(
-            async, this._io, dirName, glyphNameFunc, UFOVersion );
-        if( cb !== undefined ) {
-            ret.setReadErrorCallback( cb );
-        }
-        return ret;
-    }
     Object.defineProperty(_p, 'groupsFileName', {
         value: 'groups.plist'
     });
@@ -125,6 +120,10 @@ define([
         get: function(){ return this.dirName+'/' + this.groupsFileName; }
     });
     
+    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
+        return GlyphSet.factory(
+                    async, this._io, dirName, glyphNameFunc, UFOVersion);
+    }
     
     _p.init = function(dirName) {
         // everything synchronously right now
@@ -349,10 +348,6 @@ define([
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
         importer.import(glyphs);
-<<<<<<< HEAD
-    }
-
-=======
     
         this._importGroupsFile(sourceUFODir, true);
     };
@@ -408,7 +403,6 @@ define([
         console.log('Import of '+filename+' OK.\n');
     };
     
->>>>>>> upstream/master
     _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller
         var model = this.open(masterName)
@@ -439,7 +433,9 @@ define([
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
         
-        exportController = new ExportController(master, model, glyphSet, precision);
+        var projectMaster = this._getMaster(masterName);
+        exportController = new ExportController(master, model, glyphSet, precision, 
+                                                projectMaster, dirName);
         exportController.export();
     }
     
