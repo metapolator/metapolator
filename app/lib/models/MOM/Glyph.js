@@ -13,7 +13,7 @@ define([
      * Possible candiates for other children would be everything else
      * found in a UFO-Glyph. But, we can make properties about that stuff,
      * too. Guidelines would make a good candidate for further children,
-     * because we might actually wan't to access these via CPS.
+     * because we might actually want to access these via CPS.
      * 
      * In the first version we the only child of MOM _Contour is
      * MOM PenStroke.
@@ -41,7 +41,7 @@ define([
     }
     _p.getUFOData = function() {
         // Should be immutable or a copy, but we would have to make
-        // a deep copy for this, because we don't wan't the contents to
+        // a deep copy for this, because we don't want the contents to
         // be changed without us knowing, either.
         // Instead, we are going to invent more interfaces for UFO data
         // for a glyph in the future.

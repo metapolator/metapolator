@@ -16,33 +16,27 @@ requirejs.config(require('config'));
 if (require.main === module) {
     requirejs([
         'commander'
-      , 'metapolator/errors'
+      , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/project/MetapolatorProject'
       , 'metapolator/models/CPS/parsing/parseRules'
       , 'metapolator/models/CPS/Registry'
     ], function (
         program
-      , errors
+      , parseArgs
       , io
       , MetapolatorProject
       , parseRules
       , Registry
     ) {
-        var CommandLineError = errors.CommandLine;
-
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(masters, interpolators) {
-            var names = masters.split(',');
+            var names = masters.split(',')
+              , i;
             console.log(names);
-            // FIXME: very simple input validation, we'll need more I think
-            // FIXME: factor out this validation (see import.js)
-            for(var i = 0; i < names.length; i++) {
-                if(names[i].indexOf('/') !== -1 || names[i].indexOf('\\') !== -1)
-                    throw new CommandLineError('/ and \\ are not allowed in a '
-                                              + 'Master name: ' + names[i]);
-            }
+            for(i = 0; i < names.length; i++)
+                names[i] = parseArgs.masterName(names[i]);
 
             var rules = parseRules.fromString(rules, 'InterpolatorArgument', new Registry());
 

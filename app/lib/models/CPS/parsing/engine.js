@@ -75,7 +75,7 @@ define([
      * In the ParameterList Tree, there will be some arrays of the AST
      * referenced. SO if you are going to change the AST, you might change
      * ParameterList items, too. Create a deep copy of the AST, if you
-     * don't wan't this side effect.
+     * don't want this side effect.
      */
     function parserEngine(defaultNodeConstructors, factorySwitches, ast
                                     , sourceName, parameterRegistry) {
@@ -100,11 +100,11 @@ define([
         // use slice to make a copy of the ast array
         stack.push([ast.slice(), root]);
         
-        // we wan't to walk the complete tree, because we want to detect all
+        // we want to walk the complete tree, because we want to detect all
         // ["s", " \n "] etc. so we can count line breaks. I hope the gonzales
         // parser doesn't hide line breaks from us.
         // Line numbers are VERY helpful when working with a CSS file
-        // thats why I want to keep them
+        // that's why I want to keep them
         while(frame = stack.pop()) {
             // if frame 2 is set this means that the element switched
             // nodeConstructors for its own object, and that the
@@ -146,7 +146,7 @@ define([
             // data is an array
             // DESCENDING
             
-            // switch nodeConstructors if its the right element
+            // switch nodeConstructors if it's the right element
             // currently only used for @dictionary, but this mechanism
             // is very generic
             oldNodeConstructors = undefined;
@@ -160,7 +160,7 @@ define([
             }
             
             childNode = _makeNode(nodeConstructors, node, lineNo, data)
-            // Each frame needs to be visited, because we wan't to count
+            // Each frame needs to be visited, because we want to count
             // lines.
             // Use slice to make a copy of the data array
             stack.push([data.slice(), childNode, oldNodeConstructors])

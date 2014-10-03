@@ -16,25 +16,20 @@ requirejs.config(require('config'));
 if (require.main === module) {
     requirejs([
         'commander'
-      , 'metapolator/errors'
+      , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/project/MetapolatorProject'
     ], function (
         program
-      , errors
+      , parseArgs
       , io
       , MetapolatorProject
     ) {
-        var CommandLineError = errors.CommandLine;
-
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(sourceUFO, targetMaster) {
-            // FIXME: very simple input validation, we'll need more I think
-            if(targetMaster.indexOf('/') !== -1 || targetMaster.indexOf('\\') !== -1)
-                throw new CommandLineError('/ and \\ are not allowed in a '
-                                        + 'Master name: ' + targetMaster);
             var project = new MetapolatorProject(io);
+            targetMaster = parseArgs.masterName(targetMaster);
             project.load();
             project.import(targetMaster, sourceUFO, program.glyphs);
         })

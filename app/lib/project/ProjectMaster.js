@@ -13,13 +13,11 @@ define([
 ) {
     "use strict";
 
-    function ProjectMaster(io, project, glyphSetDir
-                                            , cpsLocalFile, cpsChain) {
+    function ProjectMaster(io, project, glyphSetDir, cpsChain) {
 
         this._io = io;
         this._project = project;
         this._glyphSetDir = glyphSetDir;
-        this._cpsLocalFile = cpsLocalFile;
         this._cpsChain = cpsChain.slice();
 
         this._glyphSet = undefined;
@@ -71,6 +69,9 @@ define([
     _p.saveLocalCPS = function(cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'
                                                 +this._cpsLocalFile, cps);
+    }
+    _p.saveCPS = function(filename, cps) {
+        this._io.writeFile(false, this._project.cpsDir+'/'+filename, cps);
     };
 
     _p.loadCPS = function() {

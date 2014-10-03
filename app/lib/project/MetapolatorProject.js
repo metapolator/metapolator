@@ -33,18 +33,18 @@ define([
 ) {
     "use strict";
 
-        // FIXME: make this availabe for browsers, too
+        // FIXME: make this available for browsers too
     var metainfoV3 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobkect.org
+            // how strict robofab is on this, but unifiedfontobject.org
             // says this is an int
           , formatVersion: new IntObject(3)
         }
       , metainfoV2 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobkect.org
+            // how strict robofab is on this, but unifiedfontobject.org
             // says this is an int
           , formatVersion: new IntObject(2)
         }
@@ -147,7 +147,6 @@ define([
         
         // create dir this.dataDir/cps
         this._io.mkDir(false, this.cpsDir);
-        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
@@ -261,10 +260,6 @@ define([
     
     /**
      * create a master entry for this masterName
-     * {
-     *      cpsLocalFile: masterName.cps
-     *    , cpsChain: [global.cps, masterName.cps]
-     * }
      * 
      * and an entry in layercontents.plist:
      * skeleton.masterName, glyphs.skeleton.masterName
@@ -276,14 +271,12 @@ define([
             throw new ProjectError('Master "'+masterName+'" alredy exists.');
         var master = {};
         this._data.masters[masterName] = master;
-        master.cpsLocalFile = masterName + '.cps';
-        master.cpsChain = [this.cpsOutputConverterFile, this.cpsGlobalFile, master.cpsLocalFile];
+        master.cpsChain = [this.cpsOutputConverterFile, this.cpsGlobalFile, masterName + '.cps'];
         
         // create a skeleton layer for this master
         master.skeleton = 'skeleton.' + masterName;
         this._createGlyphLayer(master.skeleton);
-        
-        
+
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         return this.getMaster(masterName);
@@ -292,8 +285,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir
-                                , master.cpsLocalFile, master.cpsChain);
+        return new ProjectMaster(this._io, this, glyphSetDir, master.cpsChain);
     }
     
     _p.getMaster = function(masterName) {

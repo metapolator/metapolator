@@ -61,8 +61,8 @@ define([
     
     /**
      * We will throttle the change rate and only update after a
-     * few millisecs of silence. because it's very likely
-     * that this event is fired often. i.e. a linebreak fires
+     * few millisecs of silence, because it's very likely
+     * that this event is fired often, i.e. a linebreak fires
      * change twice, first for the linebreak then for the auto
      * indent feature.
      * A good throttle interval is whatever requestAnimationFrame
@@ -115,8 +115,7 @@ define([
         // inform the ui that redrawing is needed. CodeMirror doesn't need
         // any information
         
-        // automatic updates are very slow at the moment. Also, this process
-        // freezes the ui, so that editing is very painful
+        // automatic updates are very slow at the moment.
         else if(broadcast){
             this.frontend.$scope.$broadcast('cpsUpdate');
         }
@@ -137,10 +136,7 @@ define([
                     this.project.getCPSRules(source).toString(), 'css');
             this._cache.codeMirrorDocs[source] = {
                 doc: doc
-                // set the third argument of the bind to false to enable
-                // automatic updates on change. false currently because
-                // updates are slow.
-              , changeHandler: this._throttledDocChangeHandler.bind(this, source, true)
+              , changeHandler: this._throttledDocChangeHandler.bind(this, source, false)
               , timeout: null
               , changes: []
             };

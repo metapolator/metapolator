@@ -15,10 +15,12 @@
   "devDependencies": {
     "bower": "~1.3.2",
     "intern": "~2.0.1",
+    "regenerator": "~0.6.5",
     "gulp-require-convert": "0.0.1",
     "gulp": "~3.6.2",
     "gulp-replace": "~0.3.0",
-    "gulp-insert": "~0.3.0"
+    "gulp-insert": "~0.3.0",
+    "less": "~1.7.5"
   },
   "dependencies": {
     "commander": "~2.3.0",
