@@ -1,0 +1,67 @@
+# bash-completion for metapolator
+# Add the contents of this file to ~/.bash_completion or similar
+
+# The following was submitted to helmsman as https://github.com/mattmcmanus/node-helmsman/issues/13
+
+# Parse helmsman top-level help output
+# @param $1  command; if "-", read from stdin and ignore rest of args
+# @param $2  command options (default: --help)
+#
+_parse_helmsman_subcommands ()
+{
+    eval local cmd=$( quote "$1" )
+
+    local line IFS=''
+    LC_ALL=C "$( dequote "$cmd" )" ${2:---help} 2>&1 \
+    | while read -r line; do
+	[[ $line == @(   )* ]] || continue
+	if [[ $line =~ ([A-Za-z][-A-Za-z0-9]*) ]]; then
+	    printf '%s ' "${BASH_REMATCH[1]}"
+	fi
+    done
+}
+
+# Parse helmsman help output
+# Assumes that subcommands accept --help and can be parsed with _parse_help
+# @param $1  command; if "-", read from stdin and ignore rest of args
+# @param $2  command options (default: --help)
+#
+_parse_helmsman ()
+{
+    eval local cmd=$( quote "$1" )
+    local cur dashoptions prev i
+
+    COMPREPLY=()
+    _get_comp_words_by_ref cur prev
+
+    dashoptions='--help'
+    commands=( $(_parse_helmsman_subcommands "$( dequote "$cmd" )") )
+
+    if [[ "$prev" == "$( dequote "$cmd" )" ]]; then
+	# Complete subcommand or top-level option
+	if [[ "$cur" == -* ]]; then
+	    COMPREPLY=( $( compgen -W "$dashoptions" -- "$cur" ) )
+	else
+	    COMPREPLY=( $( for command in "${commands[@]}"; do
+		    [[ ${command:0:${#cur}} == "$cur" ]] && printf '%s\n' $command
+		    done ) )
+	fi
+    else # Complete subcommand option or argument
+	for command in "${commands[@]}"; do
+	    if [[ "$command" == "$prev" ]]; then
+		COMPREPLY=( $( compgen -W '$( _parse_help "$( dequote "$cmd" )" "$prev --help")' -- "$cur" ) )
+	    fi
+	done
+	# If no option found, complete filenames
+	[[ ${#COMPREPLY[@]} -eq 0 ]] && _filedir
+    fi
+
+    return 0
+}
+
+complete -F _parse_helmsman metapolator
+
+# Local variables:
+# mode: shell-script
+# End:
+# ex: filetype=sh
