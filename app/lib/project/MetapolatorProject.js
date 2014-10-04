@@ -168,9 +168,9 @@ define([
         // the files created in _p.init need to exist
         // however, we try to load only
         // this.dirName+'/data/com.metapolator/project.yaml' as an indicator
-        // console.log('loading', this.projectFile);
+        // console.warn('loading', this.projectFile);
         var dataString = this._io.readFile(false, this.projectFile);
-        // console.log('loaded', dataString);
+        // console.warn('loaded', dataString);
         this._data = yaml.safeLoad(dataString);
         
         
@@ -324,7 +324,7 @@ define([
     
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(master)) {
-            // console.log('open', masterName)
+            // console.warn('open', masterName)
             var master = this.getMaster(masterName)
             , parameterCollections = master.loadCPS()
             , momMaster = master.loadMOM()
@@ -372,18 +372,18 @@ define([
 
         targetExists = this._io.pathExists(false, targetFile);
         if(targetExists && !override) {
-            console.log(filename + ' exists in the project, skipping import.');
+            console.warn(filename + ' exists in the project, skipping import.');
             return;
         }
 
         if(!this._io.pathExists(false, sourceFile)) {
-            console.log('No ' + filename + ' found for import.');
+            console.warn('No ' + filename + ' found for import.');
             return;
         }
 
-        console.log('Importing '+filename+' into the project.');
+        console.warn('Importing '+filename+' into the project.');
         if(targetExists)
-            console.log('The existing '+filename+' will be overridden.');
+            console.warn('The existing '+filename+' will be overridden.');
 
         content = this._io.readFile(false, sourceFile);
         try {
@@ -393,11 +393,11 @@ define([
             plistLib.readPlistFromString(content);
         }
         catch(error) {
-            console.log('Import of '+filename+' failed when trying to '
+            console.warn('Import of '+filename+' failed when trying to '
                                     +'parse it as a plist:\n'+ error);
         }
         this._io.writeFile(false, targetFile, content);
-        console.log('Import of '+filename+' OK.\n');
+        console.warn('Import of '+filename+' OK.\n');
     };
     
     _p.exportInstance = function(masterName, instanceName, precision) {
@@ -446,8 +446,7 @@ define([
         catch(error) {
             if(error instanceof IONoEntryError) {
                 // this is legal, we simply have no groups file
-                console.log('No groups.plist file found, thus no glyph '
-                                                +'classes are defined.');
+                console.warn('No groups.plist file found, thus no glyph classes are defined.');
                 return result;
             }
             throw error;

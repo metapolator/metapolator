@@ -15,7 +15,7 @@ define([
     
     WidgetModel.prototype.stub = function() {
         this.value +=1;
-        console.log(this.name, 'was stubbed.')
+        console.warn(this.name, 'was stubbed.')
     }
     return WidgetModel;
 })

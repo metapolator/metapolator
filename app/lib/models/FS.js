@@ -11,7 +11,7 @@ define([
 
 
     _p.setObject = function(key, value) {
-        console.log(_p);
+        console.warn(_p);
         this.setItem(key, JSON.stringify(value)).bind(this);
     }
 

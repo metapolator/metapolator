@@ -144,7 +144,7 @@ if (require.main === module) {
 
             var element = controller.query('master#ralph glyph point:i(23)');
 
-            console.log('element:', element.particulars);
+            console.warn('element:', element.particulars);
             var computed = controller.getComputedStyle(element)
               , valueInstance = computed.get('width')
               ;

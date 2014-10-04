@@ -4,7 +4,7 @@ define([], function() {
         this.$scope = $scope;
         
         this.$scope.name = 'container'
-        console.log('new', this, ':-)', this.$scope.name, this.$scope.model, this.$scope.$parent.name)
+        console.warn('new', this, ':-)', this.$scope.name, this.$scope.model, this.$scope.$parent.name)
     }
     ContainerController.$inject = ['$scope'];
     var _p = ContainerController.prototype;
