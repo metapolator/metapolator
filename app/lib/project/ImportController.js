@@ -15,6 +15,7 @@ define([
   , 'complex/Complex'
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , 'ufojs/plistLib/main'
 
 ], function(
     errors
@@ -32,12 +33,14 @@ define([
   , ParameterValue
   , Complex
   , parseSelectorList
+  , plistLib
 ) {
     "use strict";
 
     function ImportController(project, masterName, sourceUFODir) {
         this._project = project;
         this._masterName = masterName;
+        this._sourceUFODir = sourceUFODir;
 
         if(this._project.hasMaster(masterName))
             this._master = this._project.getMaster(masterName);
@@ -85,6 +88,17 @@ define([
         // files, changing only the new glyphs and keeping the old ones. But
         // that ain't gonna be easy.
         this._master.saveCPS(this._masterName + '.cps', cps);
+
+        try {
+            // if the fontinfo.plist file exists grab what metadata we can
+            // from there in the source UFO.
+            var fontinfoPath   = this._sourceUFODir + '/fontinfo.plist';
+            var fontinfoString = this._project._io.readFile(false, fontinfoPath);
+            this._master.fontinfo = plistLib.readPlistFromString(fontinfoString);
+        }
+        catch(e) {
+            console.log("failed to import fontinfo.plist. reason: " + e );
+        }
     }
 
     _p._readGlyphFromSource = function(glyphName) {
