@@ -4,8 +4,8 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'interpolate a comma-separated list of masters according to a CPS expression'
-  , arguments: '<masters> <interpolators>'
+    description: 'interpolate a comma-separated list of masters according to a corresponding list of proportions'
+  , arguments: '<masters> <proportions> <new-master>'
 };
 
 var path = require('path');
@@ -16,38 +16,109 @@ requirejs.config(require('config'));
 if (require.main === module) {
     requirejs([
         'commander'
+      , 'metapolator/errors'
       , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/project/MetapolatorProject'
-      , 'metapolator/models/CPS/parsing/parseRules'
-      , 'metapolator/models/CPS/Registry'
     ], function (
         program
+      , errors
       , parseArgs
       , io
       , MetapolatorProject
-      , parseRules
-      , Registry
     ) {
+        var CommandLineError = errors.CommandLine;
+
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
-        program.action(function(masters, interpolators) {
-            var names = masters.split(',')
-              , i;
-            console.log(names);
-            for(i = 0; i < names.length; i++)
-                names[i] = parseArgs.masterName(names[i]);
+        program.action(function(masters, proportions, newMaster) {
+            var i, k
+              , sum = 0
+              , project = new MetapolatorProject(io)
+              , interpKeys
+              , cps, cpsName;
+            // Get master list
+            masters = masters.split(',')
 
-            var rules = parseRules.fromString(rules, 'InterpolatorArgument', new Registry());
+            // Parse proportions
+            proportions = proportions.split(',')
+            if (masters.length != proportions.length)
+                throw new CommandLineError('number of proportions must match number of masters');
+            for(i = 0; i < proportions.length; i++)
+                proportions[i] = parseFloat(proportions[i]);
+            for(i = 0; i < proportions.length; i++)
+                sum += proportions[i];
+            if (Math.abs(sum - 1.0) > .001)
+                console.warn('Proportions do not sum to (roughly) 1');
 
-            var project = new MetapolatorProject(io);
+            // Load project and create new master
             project.load();
-            for(i = 0; i < names.length; i++)
-                project.open(names[i]);
+            newMaster = parseArgs.masterName(newMaster);
+            master = project.createMaster(newMaster);
+            cpsName = newMaster + '.cps';
+            master.cpsChain = [cpsName];
+            // FIXME: change the skeleton
 
-            console.log('interpolators:', rules);
+            // Open existing masters
+            for(i = 0; i < masters.length; i++) {
+                masters[i] = parseArgs.masterName(masters[i]);
+                project.open(masters[i]);
+            }
 
-            project.interpolate(rules);
+            // Load interpolation CPS, adjust it, and get to work
+            cps = '* {\n\
+    on: onIntrinsic;\n\
+    in: inIntrinsic;\n\
+    out: outIntrinsic;\n\
+    inDir: inDirIntrinsic;\n\
+    outDir: outDirIntrinsic;\n\
+    inTension: 0;\n\
+    outTension: 0;\n\
+    inIntrinsic: Vector 0 0;\n\
+    outIntrinsic: Vector 0 0;\n\
+    inDirIntrinsic: 0;\n\
+    outDirIntrinsic: 0;\n\
+}\n\
+\n\
+@dictionary {\n\
+    point>*{\n\
+        indexGlyph: parent:parent:parent:index;\n\
+        indexPenstroke: parent:parent:index;\n\
+        indexPoint: parent:index;\n\
+'
+
+            for(i = 0; i < masters.length; i++) {
+                cps += '        equivalent_' + (i+1) + ': S"master#' + masters[i] + '":children[indexGlyph]:children[indexPenstroke]:children[indexPoint]:children[index];\n' +
+                    '        proportion_' + (i+1) + ': ' + proportions[i] + ';\n';
+            }
+
+            cps += '    }\n\
+}\n\
+\n\
+* {\n\
+';
+
+            interpKeys = ['on', 'onLength', 'in', 'out', 'inDir', 'outDir', 'onDir', 'inTension', 'outTension', 'inIntrinsic', 'outIntrinsic', 'inDirInstrinsic', 'outDirIntrinsic', 'onIntrinsic'];
+            for(k in interpKeys) {
+                cps += '    ' + interpKeys[k] + ': ';
+                for(i = 0; i < masters.length; i++)
+                    cps += 'equivalent_' + (i+1) + ':' + interpKeys[k] + ' * proportion_' + (i+1) + (i < masters.length - 1 ? ' + ' : ';\n');
+            }
+
+            cps += '}\n\
+\n\
+point > left,\n\
+point > right {\n\
+    on: Polar onLength onDir + parent:center:on;\n\
+    in: inIntrinsic + parent:center:on + parent:center:inIntrinsic + onIntrinsic;\n\
+    out: outIntrinsic + parent:center:on + parent:center:outIntrinsic + onIntrinsic;\n\
+    inDir: inDirIntrinsic + parent:center:inDir;\n\
+    outDir: outDirIntrinsic + parent:center:outDir;\n\
+}\n\
+';
+
+            // Save interpolated master
+            master.saveCPS(cpsName, cps);
         });
         program.parse(process.argv);
     }
