@@ -66,7 +66,7 @@ define([
                                     +'are missing in the source GlyphSet: '
                                     +missing.join(', '));
         }
-        console.log('importing ...');
+        console.warn('importing ...');
         for(;i<glyphs.length;i++)
             Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
 
@@ -98,7 +98,7 @@ define([
     }
 
     _p.importGlyph = function(glyphName) {
-        console.log('> importing glyph:', glyphName);
+        console.warn('> importing glyph:', glyphName);
         var sourceGlyph = this._readGlyphFromSource(glyphName)
           , targetGlyph
           , contours = []
@@ -109,20 +109,20 @@ define([
           ;
         for(;i<sourceGlyph.contours.length;i++) {
             if(!sourceGlyph.contours[i].closed) {
-                console.log('    skipping contour '+ i +' because it is open.');
+                console.warn('    skipping contour '+ i +' because it is open.');
                 continue;
             }
             if(sourceGlyph.contours[i].commands.length < 5) {
-                console.log('    skipping contour '+ i +' because it has less '
+                console.warn('    skipping contour '+ i +' because it has less '
                                             +'than 4 on-curve points.');
                 continue;
             }
             if(!(sourceGlyph.contours[i].commands.length % 2)) {
-                 console.log('    skipping contour '+ i +' because count of '
+                 console.warn('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
             }
-            console.log('    importing contour '+ i);
+            console.warn('    importing contour '+ i);
              // the z points of this stroke can go directly to the skeleton glyph
             var penStrokeData = new StrokeContour(
                         sourceGlyph.contours[i].commands).getPenStroke(true);
