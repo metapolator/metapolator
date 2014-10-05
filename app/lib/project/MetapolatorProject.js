@@ -267,11 +267,8 @@ define([
         this._io.writeFile(false, this.layerContentsFile,
                            plistLib.createPlistString(layercontents));
 
-        // Remove layerDir/contents.plist
-        this._io.unlink(false, layerDir + '/contents.plist');
-
-        // (Try to) remove layer dir
-        this._io.rmDir(false, layerDir);
+        // Remove layer dir and its contents
+        this._io.rmDirRecursive(false, layerDir);
     }
     
     /**
@@ -306,7 +303,7 @@ define([
      * 
      */
     _p.createMaster = function(masterName) {
-        // get the name for this master from the cli
+        // get the name for this master from the CLI
         if(this.hasMaster(masterName))
             throw new ProjectError('Master "'+masterName+'" already exists.');
         var master = {};
@@ -339,7 +336,8 @@ define([
         this.getMaster(masterName).deleteCPS(masterName + '.cps');
 
         // Remove skeleton layer for this master
-        this._deleteGlyphLayer(master.skeleton);
+        if (master.skeleton ===  + 'skeleton.' + masterName)
+            this._deleteGlyphLayer(master.skeleton);
 
         // Remove project entry
         delete this._data.masters[masterName];
