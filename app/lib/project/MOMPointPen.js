@@ -29,7 +29,7 @@ define([
      *
      */
     function MOMPointPen(glyph) {
-        Parent.call(this)
+        Parent.call(this);
         this._glyph = glyph;
         this._contour = null;
         this._lastPointData = undefined;
