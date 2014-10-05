@@ -7,7 +7,7 @@
 
 ## Emacs
 
-If you are using emacs then you might find the following code useful in your init file.
+If you are using Emacs then you might find the following code useful in your init file.
 
 ```lisp
 ;; ensure that commands are shown with correct highlighting.
