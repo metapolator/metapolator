@@ -197,6 +197,8 @@ then a click on the point handle makes a full set of edit handles appear:
 Edits can be continued by clicking on any other selected handle.
 
 ### optical horizontal lines
+_(better known as vertical metrics)_
+
 In general this is about the lines that guide the eyes in reading direction, for any script. The **specific example** I will give here is for **Latin script**. First a very familiar situation:
 
 ![](http://mmiworks.net/metapolator/5lines.png)
@@ -222,6 +224,15 @@ You may have noticed two things are missing from this story (we consider this be
 
 #### getting fixed
 To create exceptons to the proportionate behaviour, users can set for points to have **fixed** vertical offset, either to the line above or the one below.
+
+#### refinement
+After a discussion with Simon, Wei and Nicolas, Peter adds the following—
+
+**rule**: lines are mapped to classes of glyphs. For instance in Latin, the cap height line only pertains to capitals, ascender, descender and x-height only to lowercase. This tagging will be provided by Metapolator (it was already in previous versions). Means to customise it are coming soon…
+
+**rule**: if the pen blade of a point crosses an optical horizontal line (i.e. the pint of the pen is on one side of the line and the edge of its stroke on the other side of it), then the point is attached at a fixed vertical offset to that line. This preserves overshoot, which that crossing is.
+
+**note**: zones are a concept in ufo and could match the meaning of zones we use here.
 
 ### glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
