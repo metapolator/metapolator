@@ -72,13 +72,24 @@ And then we drop a third master and their representation matures:
 
 **rule**: when multiple masters limit the field of a master, its field is an ellipse, which has its long axis pointing exactly at the _second-nearest_ neighbour, with the long axis length set to be the exact distance to that neighbour. the short axis is set so that the ellipse perimeter touches exactly the position of the _nearest_ neighbour.
 
-### (families of) instances
+### instances
 
 The (families of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
 
 ![](http://mmiworks.net/metapolator/exploreinstances.png)
 
 The currently selected instance is the one being moved about (i.e. edited) and represented by the cursor.
+
+#### family affair
+When a family is selected in the instances list:
+
+![](http://mmiworks.net/metapolator/stringselected2.png)
+
+then this family is manipulatable as a unit in the design space:
+
+![](http://mmiworks.net/metapolator/explorefamily.png)
+
+the head and tail of the family (i.e. its first and last font in the instances list) are now handles. Moving either one _stretches proportionately and rotates_ the entire family.
 
 ### master sequences
 Dropping one master sequence on an empty exploration space is not that exiting either:
@@ -165,7 +176,7 @@ We see the three masters arranged at the tips of an equal-sided triangle. The pe
 
 It is a real shame that the triangle representation only works this beautifully and ‘zen’ for three masters, for more masters things just get, ehm, tangled. So it is only available for 3 masters; add or delete a master and it is back to straight sliders.
 
-### (families of) instances
+### instances
 The (families of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
 
 ![](http://mmiworks.net/metapolator/controlinstances.png)
@@ -175,6 +186,17 @@ triangle form:
 ![](http://mmiworks.net/metapolator/controltriangleinstances.png)
 
 The currently selected instance is the one being edited and represented by the cursor.
+
+#### family affair
+When a family is selected in the instances list:
+
+![](http://mmiworks.net/metapolator/stringselected2.png)
+
+then this family is manipulatable as a unit in the design space—shown here on a **fictive** potpourri of controls:
+
+![](http://mmiworks.net/metapolator/controlfamily2.png)
+
+the head and tail of the family (i.e. its first and last font in the instances list) are now handles. Moving either one _stretches proportionately_—and in 2D controls _rotates_—the entire family. All numerical values are displayed as min–max over the whole family (not just for the endpoints); click to edit min or max. **note** that on the slider controls the direction of the arrow can be reversed by sliding one handle ‘past’ the other.
 
 ### master sequences
 Dropping one master sequence on an empty control space is already quite useful:
@@ -274,7 +296,7 @@ The numerical values reflect the amount that the sequence got extended; Thus abo
 
 The crossed master sequence version is analogous to the slider version:
 
-![](http://mmiworks.net/metapolator/extracross.png)
+![](http://mmiworks.net/metapolator/extracross2.png)
 
 ### putting it all together
 And now the challenge of fitting a control system that scales **up** into a rectangle of wildly different proportions.
@@ -310,7 +332,7 @@ Each of the groups above supplies a metapolation result for a given instance, an
 
 which set the mix between the applicable groups. Example:
 
-![](http://mmiworks.net/metapolator/balancing.png)
+![](http://mmiworks.net/metapolator/balancing2.png)
 
 We see that the instance and adjustment master (sequence) indicators also apply to the group balancer.
 
@@ -320,4 +342,4 @@ This system does not only work within a column, but also across columns:
 
 Example:
 
-![](http://mmiworks.net/metapolator/balancingacross.png)
+![](http://mmiworks.net/metapolator/balancingacross2.png)
