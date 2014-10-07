@@ -44,9 +44,21 @@ define([
         else
             this._master = this._project.createMaster(masterName);
 
+        // tell us about errors instead of throwing it away
+        var options = {
+            readErrorCallback: function( projectMaster, metadata ) {
+                console.log("ImportController: Got an error loading glyph '"
+                            + metadata.glyphName + "' reason:" + metadata.message );
+                projectMaster.rememberThatImportFailedForGlyph(
+                    metadata.glyphName, metadata.message );
+
+                // try to continue
+                return true;
+            }.bind( null, this._master )
+        };
         // open the source ufo glyphs layer of an UFOv2
         this._sourceGlyphSet  = this._project.getNewGlyphSet(
-                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2);
+                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2, options);
     }
     var _p = ImportController.prototype;
 
@@ -71,6 +83,7 @@ define([
             Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
 
         this._master.glyphSet.writeContents(false);
+        this._master.saveMetaData();
 
         // a namespace for the master ...
         cps = new AtNamespaceCollection(
