@@ -17,7 +17,7 @@ SHARED_DIR=/vagrant
 
 # System setup
 sudo apt-get update && sudo apt-get -y upgrade
-sudo apt-get -y install git npm nodejs-legacy # nodejs-legacy gives us /usr/bin/node
+sudo apt-get -y install git bash-completion npm nodejs-legacy # nodejs-legacy gives us /usr/bin/node
 
 # User setup
 if ! grep metapolator $HOME/.bashrc; then
@@ -42,6 +42,9 @@ fi
 # NPM setup
 cd metapolator
 npm install
+
+# bash-completion setup
+cp bash-completion ~/.bash_completion
 END
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|

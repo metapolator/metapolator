@@ -486,10 +486,10 @@ define([
           , glyph
           , drawFunc
           ;
-        console.log('exporting ...');
+        console.warn('exporting ...');
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
-            console.log('exporting', glyph.id);
+            console.warn('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
 
             this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
@@ -649,7 +649,7 @@ define([
                  break;
              case 19:
                  segmentType =  'line';
-                 console.log('implicit line segment, right side, this should be explicit in CPS');
+                 console.warn('implicit line segment, right side, this should be explicit in CPS');
              case 21:
                  context$2$0.next = 23;
                  return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
@@ -711,7 +711,7 @@ define([
                  break;
              case 43:
                  segmentType = 'line';
-                 console.log('implicit line segment, left side, this should be explicit in CPS');
+                 console.warn('implicit line segment, left side, this should be explicit in CPS');
              case 45:
                  context$2$0.next = 47;
                  return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);

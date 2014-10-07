@@ -384,7 +384,7 @@ define([
         
         // terminal of the beginning of the stroke
         if(this.terminals[0][0] === 'curveTo') {
-            console.log('Adding terminal to point 0')
+            console.warn('Adding terminal to point 0')
             point = result[0];
             point.l.in = this.terminals[0][1]
             point.r.in = this.terminals[0][2]

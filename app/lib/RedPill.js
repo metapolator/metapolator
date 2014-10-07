@@ -109,7 +109,7 @@ define([
         }
         
         if(error)
-            console.log('The document "' + source + '" can\'t be parsed: ', error.message);
+            console.warn('The document "' + source + '" can\'t be parsed: ', error.message);
         
         // if there was no error 
         // inform the ui that redrawing is needed. CodeMirror doesn't need
@@ -173,7 +173,7 @@ define([
         catch(error){
             if(!(error instanceof CPSError))
                 throw error;
-            console.log('selector "' + selector + '" did not parse:', error.message);
+            console.warn('selector "' + selector + '" did not parse:', error.message);
         }
         return false;
     }

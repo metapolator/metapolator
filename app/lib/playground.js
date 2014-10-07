@@ -48,7 +48,7 @@ another-one: def-unheard-of(style + css)/*this param has a comment*/;\
           , tree = gonzales.csspToTree(ast);
         
         var result = parameterFactories.rulesFromAST(ast)
-        console.log('parameterFactories.rulesFromAST(ast)', result)
+        console.warn('parameterFactories.rulesFromAST(ast)', result)
         var pre = document.createElement('pre');
         pre.appendChild(document.createTextNode(result));
         document.body.appendChild(pre);

@@ -16,15 +16,19 @@ requirejs.config(require('config'));
 if (require.main === module) {
     requirejs([
         'commander'
+      , 'metapolator/errors'
       , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/project/MetapolatorProject'
     ], function (
         program
+      , errors
       , parseArgs
       , io
       , MetapolatorProject
     ) {
+        var CommandLineError = errors.CommandLine;
+
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(sourceUFO, targetMaster) {

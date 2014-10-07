@@ -222,10 +222,11 @@ if (require.main === module) {
                     next();
             });
 
-            app.listen(3000);
-            console.log('Metapolator: Serving the red pill.');
-            console.log('Open http://localhost:3000 in your browser.');
-        });
+            var server = app.listen(program.port || 0);
+            console.warn('Metapolator: Serving the red pill.');
+            console.warn('Open http://localhost:'+server.address().port+' in your browser.');
+        })
+        .option('-p, --port <n>', 'The port to listen on (default: random)', parseInt);
         program.parse(process.argv);
     }
 )}

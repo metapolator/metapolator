@@ -33,4 +33,4 @@ Finally, upload the box to Vagrant Cloud:
 scp package.box adsensus.net:public_html/rrt/metapolator-vagrant-box/package-X.Y.Z.box # Reuben Thomas @rrthomas has to do this
 ```
 
-Finally, [release](https://vagrantcloud.com/metapolator/boxes/bleeding-edge/) on Vagrant Cloud.
+Finally, [release](https://vagrantcloud.com/metapolator/boxes/bleeding-edge/ ) on Vagrant Cloud.

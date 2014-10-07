@@ -68,8 +68,8 @@ define(function() {
         }
     };
     errors.warn = function(message) {
-        if(typeof console !== 'undefined' && console.log)
-            console.log('WARNING: ' + message);
+        if(typeof console !== 'undefined' && console.warn)
+            console.warn('WARNING: ' + message);
     };
 
     return errors;
