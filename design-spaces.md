@@ -91,6 +91,13 @@ then this family is manipulatable as a unit in the design space:
 
 the head and tail of the family (i.e. its first and last font in the instances list) are now handles. Moving either one _stretches proportionately and rotates_ the entire family.
 
+#### starting a family
+When a family of instances is created in the instances list, it is immediately placed on the current design space:
+
+![](http://mmiworks.net/metapolator/explorefamilystart2.png)
+
+the new family spans horizontally the area with the most overlapping fields, with the family instances at equal distance ‘along the line.’ Together with the heads-and-tail editing described above, it becomes fast and easy to active the first ballpark setup for the family, after which the individual instances can be optimised.
+
 ### master sequences
 Dropping one master sequence on an empty exploration space is not that exiting either:
 
@@ -197,6 +204,13 @@ then this family is manipulatable as a unit in the design space—shown here on 
 ![](http://mmiworks.net/metapolator/controlfamily2.png)
 
 the head and tail of the family (i.e. its first and last font in the instances list) are now handles. Moving either one _stretches proportionately_—and in 2D controls _rotates_—the entire family. All numerical values are displayed as min–max over the whole family (not just for the endpoints); click to edit min or max. **note** that on the slider controls the direction of the arrow can be reversed by sliding one handle ‘past’ the other.
+
+#### starting a family
+When a family of instances is created in the instances list, it is immediately placed on the current design space, as shown here for a **fictive** potpourri of controls:
+
+![](http://mmiworks.net/metapolator/controlfamilystart.png)
+
+as much as possible, the new family spans the complete gamut of all design space dimensions, with the family instances at equal distance ‘along the line.’ Together with the heads-and-tail editing described above, it becomes fast and easy to active the first ballpark setup for the family, after which the individual instances can be optimised.
 
 ### master sequences
 Dropping one master sequence on an empty control space is already quite useful:
