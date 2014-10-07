@@ -3,11 +3,13 @@ define([
   , 'metapolator/models/MOM/Master'
   , 'metapolator/models/MOM/Glyph'
   , './MOMPointPen'
+  , 'yaml'
 ], function(
     errors
   , Master
   , Glyph
   , MOMPointPen
+  , yaml
 ) {
     "use strict";
 
@@ -19,6 +21,16 @@ define([
         this._cpsChain = cpsChain.slice();
 
         this._glyphSet = undefined;
+
+        if( io.pathExists( false, this.metaDataFilePath )) {
+            this.loadMetaData();
+        } else {
+            this._data = {
+                type: 'ProjectMaster',
+                masters: {},
+                rememberedFailures: {}
+            };
+        }
     }
 
     var _p = ProjectMaster.prototype;
@@ -32,6 +44,41 @@ define([
             return this._glyphSet;
         }
     });
+
+    /**
+     * For each type of failure, which is just a string like 'import'
+     * etc, we can store the most recent failure for each glyph and
+     * why that happened. This might be extended to record more than
+     * just the latest failure, but knowing that an import failed 5
+     * times in a row is likely not as interesting to the user as
+     * knowing why it failed the last time it was tried.
+     */
+    _p.setRememberedFailure = function( type, glyphName, reason ) {
+        if( this._data.rememberedFailures[glyphName] === undefined ) {
+            this._data.rememberedFailures[glyphName] = {};
+        }
+        this._data.rememberedFailures[glyphName][ type ] =
+            {
+                name: glyphName,
+                reason: reason,
+                incidenttime: new Date(),
+            };
+    }
+    _p.rememberThatImportFailedForGlyph = function( glyphName, reason ) {
+        this.setRememberedFailure( 'import', glyphName, reason );
+    }
+
+    Object.defineProperty(_p, 'metaDataFilePath', {
+        get: function(){ return this._project.dataDir+'/messages/'+this._glyphSetDir+'.yaml';}
+    });
+
+    _p.saveMetaData = function() {
+        this._io.writeFile( false, this.metaDataFilePath, yaml.safeDump(this._data));
+    }
+    _p.loadMetaData = function() {
+        var dataString = this._io.readFile(false, this.metaDataFilePath );
+        this._data = yaml.safeLoad(dataString);
+    }
 
     _p.saveCPS = function(filename, cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'+filename, cps);
