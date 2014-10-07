@@ -46,15 +46,7 @@ define([
 
         // open the source ufo glyphs layer of an UFOv2
         this._sourceGlyphSet  = this._project.getNewGlyphSet(
-                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2 );
-
-        // tell us about errors instead of throwing it away
-        this._sourceGlyphSet.setReadErrorCallback( 
-            function( pm, glyph, message ) {
-                console.log("ImportController: Got an error loading glyph '" 
-                            + glyph.name + "' reason:" + message );
-                pm.rememberThatImportFailedForGlyph( glyph.name, message );
-            }.bind( null, this._master ));
+                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2);
     }
     var _p = ImportController.prototype;
 
@@ -79,8 +71,7 @@ define([
             Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
 
         this._master.glyphSet.writeContents(false);
-        this._master.saveMetaData();
-        
+
         // a namespace for the master ...
         cps = new AtNamespaceCollection(
                 new AtRuleName('namespace', [])

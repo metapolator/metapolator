@@ -109,14 +109,6 @@ define([
         get: function(){ return this.dirName+'/layercontents.plist'; }
     });
     
-    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, cb ) {
-        var ret = GlyphSet.factory(
-            async, this._io, dirName, glyphNameFunc, UFOVersion );
-        if( cb !== undefined ) {
-            ret.setReadErrorCallback( cb );
-        }
-        return ret;
-    }
     Object.defineProperty(_p, 'groupsFileName', {
         value: 'groups.plist'
     });
@@ -125,6 +117,10 @@ define([
         get: function(){ return this.dirName+'/' + this.groupsFileName; }
     });
     
+    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
+        return GlyphSet.factory(
+                    async, this._io, dirName, glyphNameFunc, UFOVersion);
+    }
     
     _p.init = function(dirName) {
         // everything synchronously right now
@@ -349,10 +345,6 @@ define([
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
         importer.import(glyphs);
-<<<<<<< HEAD
-    }
-
-=======
     
         this._importGroupsFile(sourceUFODir, true);
     };
@@ -408,7 +400,6 @@ define([
         console.warn('Import of '+filename+' OK.\n');
     };
     
->>>>>>> upstream/master
     _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller
         var model = this.open(masterName)
