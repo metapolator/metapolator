@@ -1,721 +1,233 @@
-<!DOCTYPE html>
-
-<html lang="en" ng-app="metapolatortestApp">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Metapolator</title>
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="assets/css/main.css" rel="stylesheet">
-    <link href="assets/css/timeline.css" rel="stylesheet">
-    <link href="assets/css/jquery-ui-1.9.1.custom.min.css" rel="stylesheet">
-    <link href="assets/css/jquery-1.9.1.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/fonts/oswald/stylesheet.css" type="text/css" charset="utf-8" />
-    <link rel="stylesheet" href="assets/fonts/sean/stylesheet.css" type="text/css" charset="utf-8" />
-    <link rel="stylesheet" href="assets/fonts/sean1/stylesheet.css" type="text/css" charset="utf-8" />
-
-    <link rel="stylesheet" href="assets/css/font-awesome.css">
-    <link rel="stylesheet" href="bower_components/angular/angular-csp.css">
-
-     <!-- Custom script for this template -->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-
-    <script>
-		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-		  ga('create', 'UA-49781038-1', 'metapolator.com');
-		  ga('send', 'pageview');
-
-		</script>
-
-  </head>
-
-  <body data-spy="scroll" data-target="#affix-nav">
-
-  <nav id="affix-nav" class="sidebar col-md-4 hidden-xs">
-    <ul class="nav console" data-spy="affix">
-        <li class="active"><a href="#one">Metapolator</a>
-        <li><a href="#two">Concept</a></li>
-        <li><a href="#three">Workflow (click to step through)</a></li>
-        <li><a href="#four">How does it work?</a></li>
-        <li><a href="#five">The Metapolator Universe</a>
-        <li><a href="#six">Naming Parts</a></li>
-        <li><a href="#seven">The Metapolation Method</a></li>
-        <li><a href="#eight">Strokes and Points</a></li>
-        <li><a href="#nine">Modularity</a></li>
-        <li><a href="#ten">Effecting Strokes</a></li>
-        <li><a href="#eleven">Summary</a></li>
-        <li><a href="#twelve">Roadmap</a></li>
-        <li><a href="#thirteen">Join Us!</a></li>
-    </ul>
-</nav>
-<article id="one">
-	 <div class="slide color3">
-	    <div class="container-fluid" >
-	    	<div class="row">
-	    		<div class="col-xs-12 centered" >
-	    			<h6>We need<br>fonts!</h6>
-	    		</div><!-- /col-lg-8 -->
-	    	</div><!-- /row -->
-	    </div> <!-- /container-fluid -->
-	 </div>
-</article>
-<article id="two">
-	<div class="slide color1">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-xs-2"></div>
-				<div class="col-xs-8 leftalign">
-					<h2 class="white">Metapolator will turn any existing outline font into a parameterised font system, so you can get the fonts you really want.
-					<br><br>
-					Today typography is becoming more and more important for us each to express ourselves. Typography has become an extension of who we are. Our choice of words to express the ideas in our minds is important, and so is the way that our typography expresses the emotions in our hearts. 
-					<br><br>
-					Billions of people are now online and each person need fonts that are tailor-made for themselves and their businesses. 
-					<br><br>
-					Metapolator will have a multidimensional design space to explore an almost infinite number of new fonts and font families, starting with only a single master font. Metapolator will combine a powerful parametric system with an intuitive user interface to make type design inherently consistent and much faster.
-				</div>
-				<div class="col-xs-2"></div>
-			</div>
-		</div>
-	</div>
-</article>
-<article id="three">
-	<div class="slide color2">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-12 ">
-					<div id="carousel" class="carousel"><!-- class of slide for animation -->
-					  <div class="carousel-inner">
-						    <div class="item active"><!-- class of active since it's the first item -->
-						      <img src="assets/img/carousel1/01.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/02.svg" />
-						    </div>
-						     <div class="item">
-						      <img src="assets/img/carousel1/03.svg" />
-						    </div>
-						     <div class="item">
-						      <img src="assets/img/carousel1/04.svg" />
-						    </div>
-						     <div class="item">
-						      <img src="assets/img/carousel1/05.svg" />
-						    </div>
-						     <div class="item">
-						      <img src="assets/img/carousel1/06.svg" />
-						    </div>
-						     <div class="item">
-						      <img src="assets/img/carousel1/07.svg" />
-						    </div>
-						     <div class="item">
-						      <img src="assets/img/carousel1/08.svg" />
-						    </div>
-						     <div class="item">
-						      <img src="assets/img/carousel1/09.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/10.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/11.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/12.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/14.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/15.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/16.svg" />
-						    </div>
-						    <div class="item">
-						      <img src="assets/img/carousel1/17.svg" />
-						    </div>
-						  	</div><!-- /.carousel-inner -->
-						  <!--  Next and Previous controls below
-						        href values must reference the id for this carousel -->
-					    <a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
-					    <a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
-					</div><!-- /.carousel -->
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-<article id="four">
-	<div class="slide color3">
-		<div class="container-fluid" >
-			<div class="row">
-				<div class="col-lg-2 col-xs-1"></div>
-				<div class="col-lg-8 col-xs-10"><div class="row">
-				<div class="col-md-4 white leftalign">
-					<h3>Tools</h3>
-					<p>Type designers need a toolbox to build a single typeface up into a family of styles. Metapolator will provide an initial set of tools for
-common processes, and it will be fully extendable.</p>
-						<ul>
-						<li>- spacing (tighter or looser)</li>
-						<li>- weight (regular to bold or light)</li>
-						<li>- width (normal to narrow or extended)</li>
-						<li>- x-height (increase or decrease, without distortion)</li></ul>
-				</div>
-				<div class=" col-md-4 white">
-					<h3>Workflow</h2>
-					<p>Type designers need tools that slide into their existing workflows. With <a href="http://fontforge.github.io">Fontforge</a> you can load any font and save it in the UFO font format, and convert UFOs into any other format.</p>
-				</div>
-				<div class=" col-md-4 white leftalign">
-					<h3>Standards</h3>
-					<p>The text-based and interchangeable <a href="http://unifiedfontobject.org/">UFO</a> font source format has become an industry standard. Metapolator imports and exports UFOs, releasing a new animal into the ecosystem of UFO tools. Its adjustments are described in CPS, similar to CSS. The calculations are all done in JavaScript. As a web application it will be built with the latest technologies, like <a href="http://polymer-project.org/">Polymer</a>.</p>
-				</div></div>
-				</div>
-				<div class="col-lg-2 col-xs-1"></div>
-
-			</div>
-		</div>
-	</div>
-</article>
-
-<article id="five">
-	<div class="slide color3" >
-		<div class="container-fluid">
-				<div class="centered caption">
-					<img src="assets/img/muniverse_globe_w.svg" class="img-responsive" alt="A huge family of 'a' glyphs">
-				</div>
-		</div>
-	</div>
-</article>
-
-<article id="six">
-	 <div class="slide color1">
-	    <div class="container-fluid" >
-	    	<div class="row">
-	    		<div class="col-xs-12 centered" >
-	    			<h1>If you can name it, you can control it.</h1>
-	    		</div><!-- /col-lg-8 -->
-	    	</div><!-- /row -->
-	    </div> <!-- /container-fluid -->
-	 </div>
-</article>
-
-
-</article>
-<article id="six">
-	<div class="slide color4" >
-		<div class="container">
-			<div class="row" >
-				<div class="centered caption">
-					<img src="assets/img/pino.gif" class="img-responsive" alt="Responsive image">
-				</div>
-				</div>
-				<div >
-			</div>
-		</div>
-	</div>
-</article>
-<article id="six">
-	<div class="slide color4" >
-		<div class="container-fluid">
-			<div class="row" >
-				<div class="centered caption">
-					<img src="assets/img/04.svg" class="img-responsive" alt="Responsive image">
-					</div>
-				</div>
-				<div class="col-md-2 col-xs-1">
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="six">
-	<div class="slide color3">
-		<div class="container-fluid" >
-			<div class="row">
-				<div class="col-lg-2 col-xs-1"></div>
-				<div class="col-lg-8 col-xs-10"><div class="row">
-				<div class="col-md-4 white leftalign">
-					<p>The core principle of Metapolator: Typefaces are systems of shapes,
-and by naming the parts we can control the system.</p>
-				</div>
-				<div class=" col-md-4 white">
-					<p>How is it possible to keep a clear understanding of a parameterised letter shape?</p>
-				</div>
-				<div class=" col-md-4 white leftalign">
-					<p>The Metapolator solution is to make copies of the original, and add specific parameter values to each copy. Then, instead of constantly switching on and off parameter values for one
-single meta-font, we select a pair of fonts and interpolate them, which simply travels inbetween font A and font B. Its just like a cross-fader that mixes 2 turntables.</p>
-				</div></div>
-				</div>
-				<div class="col-lg-2 col-xs-1"></div>
-
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="seven">
-	 <div class="slide color1">
-	    <div class="container-fluid" >
-	    	<div class="row">
-	    		<div class="col-xs-12 centered" >
-	    			<h1>Interpolation multiplied by Metapolation</h1>
-	    		</div><!-- /col-lg-8 -->
-	    	</div><!-- /row -->
-	    </div> <!-- /container-fluid -->
-	 </div>
-</article>
-
-
-<article id="seven">
-	<div class="slide color2">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/07.svg" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="seven">
-	<div class="slide color2">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/05.svg" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="seven">
-	<div class="slide color3">
-		<div class="container-fluid" >
-			<div class="row">
-				<div class="col-lg-2 col-xs-1"></div>
-				<div class="col-lg-8 col-xs-10"><div class="row">
-				<div class="col-md-4 white leftalign">
-					<p>Replication with Metapolator: When we start using one single font, we can extrapolate to a 2nd replica by calculating a skeleton or ductus stroke from the glyph outline. The stroke can reconstruct the original outline exactly, and go on to can create new interpolations, extrapolations and interpretations of the form.</p>
-
-				</div>
-				<div class=" col-md-4 white">
-					<p>We create new instances from masters. An instance is located between 2 or more masters. Masters can be created from instances, too.</p>
-				</div>
-				<div class=" col-md-4 white leftalign">
-					<p>As soon we have more than one master, we can create children and
-siblings. None of this is limited to Latin alphabets. We expect that Devanagari fonts can be matched with Latin ones by translating parameters from one to another.</p>
-				</div></div>
-				</div>
-				<div class="col-lg-2 col-xs-1"></div>
-
-			</div>
-		</div>
-	</div>
-</article>
-
-
-
-<article id="eight">
-	 <div class="slide color1">
-	    <div class="container-fluid" >
-	    	<div class="row">
-	    		<div class="col-xs-12 centered" >
-	    			<h1>From control points to pen strokes</h1>
-	    		</div><!-- /col-lg-8 -->
-	    	</div><!-- /row -->
-	    </div> <!-- /container-fluid -->
-	 </div>
-</article>
-
-<article id="eight">
-	<div class="slide color2">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/stroke.png" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-<article id="eight">
-	<div class="slide color2">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/12.svg" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-<article id="eight">
-	<div class="slide color2">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/skeleton_a.svg" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="eight">
-	<div class="slide color3">
-		<div class="container-fluid" >
-			<div class="row">
-				<div class="col-lg-2 col-xs-1"></div>
-				<div class="col-lg-8 col-xs-10"><div class="row">
-				<div class="col-md-4 white leftalign">
-					<p>We believe type design should always be in the hands of the
-designer. Metapolator is NOT drawing shapes out of nothing.</p>
-
-				</div>
-				<div class=" col-md-4 white">
-					<p>Control points can be accessed and interpolated in
-Metapolator, along with composites, anchor points and kerning values. </p>
-				</div>
-				<div class=" col-md-4 white leftalign">
-					<p>Additionally, if Metapolator sees that all the points in a contour are in pairs, with a point opposite each point, then you can control this contour as a skeleton stroke. This gives you more control over your bezier control points.</p>
-				</div></div>
-				</div>
-				<div class="col-lg-2 col-xs-1"></div>
-
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="nine">
-	 <div class="slide color1">
-	    <div class="container-fluid" >
-	    	<div class="row">
-	    		<div class="col-xs-12 centered" >
-	    			<h1>Modularity</h1>
-	    		</div><!-- /col-lg-8 -->
-	    	</div><!-- /row -->
-	    </div> <!-- /container-fluid -->
-	 </div>
-</article>
-
-<article id="nine">
-	<div class="slide color3">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/modular.svg" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-<article id="nine">
-	<div class="slide color3">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/ui.gif" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-<article id="nine">
-	<div class="slide color4">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/cube.png" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-
-<article id="nine">
-	<div class="slide color3">
-		<div class="container-fluid" >
-			<div class="row">
-				<div class="col-lg-2 col-xs-1"></div>
-				<div class="col-lg-8 col-xs-10"><div class="row">
-				<div class="col-md-4 white leftalign">
-					<p>Metapolator will allows you to use an unlimited number of axes, and link together an unlimited number of masters into complex interpolation design spaces to explore.</p>
-
-				</div>
-				<div class=" col-md-4 white">
-					<p>Again drawing a connection to the world of music production, consider modular synthesizers, where stacks of modules (or masters, in our case) can be linked in all possible ways.</p>
-				</div>
-				<div class=" col-md-4 white leftalign">
-					<p>Metapolator will let you construct your very own Noordzij cubes.</p>
-				</div></div>
-				</div>
-				<div class="col-lg-2 col-xs-1"></div>
-
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="ten">
-	 <div class="slide color1">
-	    <div class="container-fluid" >
-	    	<div class="row">
-	    		<div class="col-xs-12 centered" >
-	    			<h1>Nudging the outline is bad, nudging the skeleton is awesome</h1>
-	    		</div><!-- /col-lg-8 -->
-	    	</div><!-- /row -->
-	    </div> <!-- /container-fluid -->
-	 </div>
-</article>
-
-
-
-<article id="ten">
-	<div class="slide color4">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/aaa.gif" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="ten">
-		<div class="slide color2" >
-		<div class="container-fluid">
-			<div class="row" >
-				<div class="centered caption">
-				<img src="assets/img/xheight_sretch_new.svg" class="img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<!-- /here we need to put the dat-gui examples from index.html (metapolator.com) -->
-
-<article class="" id="eleven" ng-controller="canvasCtrl">
-    <div class="slide color4" >
-        <div class="container-fluid" ng-controller="SliderCtrl">
-            <div class="row" >
-                <div class="col-md-2 col-xs-1"></div>
-                <div class="col-md-8 col-xs-10">
-                <div class="row" ng-controller="paperjsCtrl">
-
-                    <div id="paperjsCanvas"></div>
-                    <div id="paperGlyphSlider"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</article>
-<!-- /examples -->
-
-
-
-<article id="eleven">
-	<div class="slide color4" >
-		<div class="container-fluid" >
-			<div class="row" >
-				<div class="col-md-2 col-xs-1"></div>
-				<div class="col-md-8 col-xs-10"><div class="row">
-					<div class="col-md-4 leftalign">
-						<ul>
-						<li>Core Functionality Will Include:</li>
-						<li>- creating masters from instances</li>
-						<li>- duplicating masters</li>
-						<li>- positioning on-curve points</li>
-						<li>- loading unlimited masters and axes </li>
-						<li>- control-point mode for parameterised outlines</li>
-						<li>- pen mode for parameterised strokes</li>
-						<li>- storage of projects</li>
-						<li>- importing UFOs, exporting UFOs plus OTF and TTF</li>
-					</div>
-					<div class=" col-md-4 ">
-						<ul>
-						<li>Metafont-like Parameters That Will Be Available:</li>
-						<li>- tension, shifting, slanting, serifs, vertical metrics (including x-height</li>
-						<li>- stroke (pen) width, stroke direction, stroke angle</li>
-						<li>- glyph width, glyph spacing, font size</li>
-						</ul>
-					</div>
-					<div class=" col-md-4  leftalign">
-						<ul>
-						<li>Command Line Tool Will Allow:</li>
-						<li>- interpolation, extrapolation of outlines</li>
-						<li>- interpolation of kerning</li>
-						<li>- define unlimited axes</li>
-						<li>- replicate instances from other interpolation tools, 1:1</li></ul>
-					</div>
-				</div>
-				</div>
-				<div class="col-md-2 col-xs-1"></div>
-			</div>
-		</div>
-	</div>
-</article>
-<article id="twelve">
-	<div class="slide color1" >
-		<div class="container-fluid" >
-			<div class="row" >
-				<div class="col-sm-2 col-xs-1"></div>
-				<div class="col-sm-8 col-xs-10 leftalign">
-	    <ul class="timeline roadmap white">
-    	<li>
-    	<div class="timeline-badge">1</div>
-          <div class="timeline-panel">
-            <div class="timeline-heading">
-              <h3 class="timeline-title">3rd of April, 2014</h3>
-            </div>
-            <div class="timeline-body">
-              <p>Presentation at Libre Graphics Meeting, Leipzig, Germany</p>
-            </div>
-          </div>
-        </li>
-        <li>
-        <div class="timeline-badge">2</div>
-          <div class="timeline-panel">
-            <div class="timeline-heading">
-              <h3 class="timeline-title">7th of May, 2014</h3>
-            </div>
-            <div class="timeline-body">
-              <p>Seminar at Atelier National Research Typographic, Nancy, France</p>
-            </div>
-          </div>
-        </li>
-        <li>
-        <div class="timeline-badge">3</div>
-          <div class="timeline-panel">
-            <div class="timeline-heading">
-              <h3 class="timeline-title">14th of June, 2014</h3>
-            </div>
-            <div class="timeline-body">
-              <p>
-              Presentation at Tag der Schrift, Zurich, Switzerland</p>
-            </div>
-          </div>
-        </li>
-        <li>
-            <div class="timeline-panel">
-            <div class="timeline-heading">
-              <h3 class="timeline-title">Release Date: v1.0.0, A Developer's Version</h3>
-            </div>
-            <div class="timeline-body">
-              <p>Launching a beta version for developers and brave users to test and explore</p>
-            </div>
-          </div>
-        </li>
-        <li>
-            <div class="timeline-panel">
-            <div class="timeline-heading">
-              <h3 class="timeline-title">Release Date: v2.0.0, A Designer's Version</h3>
-            </div>
-            <div class="timeline-body">
-              <p>Inviting type designers and typographers around the world to review, use and contribute</p>
-            </div>
-          </div>
-        </li>
-
-            </ul>
-				</div>
-				<div class="col-sm-2 col-xs-1">
-				</div>
-			</div>
-		</div>
-		</article>
-		</div>
-
-		<div class="slide color3">
-		<article id="thirteen">
-		<div class="container-fluid">
-			<div class="row" id="unpin13">
-				<div class="col-sm-2 centered"></div>
-				<div class="col-sm-4 centered white"><h2><a href="https://plus.google.com/communities/110027004108709154749">Join our community on Google+</a></h2></div>
-				<div class="col-sm-4 centered white"><h2><a href="https://github.com/metapolator/">Join our developers on Github</a></h2></div>
-				<div class="col-sm-2 centered"></div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-<article id="thirteen">
-	<div class="slide color3">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="centered caption">
-					<img src="assets/img/logo.svg" class=" img-responsive" alt="Responsive image">
-				</div>
-			</div>
-		</div>
-	</div>
-</article>
-
-
-
-        <script src="assets/js/bootstrap.js"></script>
-        <script src="bower_components/angular/angular.min.js"></script>
-        <script src="app/js/app.js"></script>
-        <script src="app/js/instance.js"></script>
-        <script src="app/js/paper-full.js"></script>
-        <script src="app/js/dat.gui.min.js"></script>
-        <script src="app/js/opentype.js"></script>
-        <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-            <script type="text/javascript">
-
-             $('#my-affix').affix({
-                offset: {
-                  top: 100
-                , bottom: function () {
-                    return (this.bottom = $('.footer').outerHeight(true))
-                  }
-                }
-            });
-
-            $('.carousel').carousel({
-              interval: 200 // in milliseconds
-            });
-
-         </script>
-
-  </body>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Metapolator Neue</title>
+<link rel="stylesheet" type="text/css" href="alicewebfonts.css">
+<style type="text/css" media="screen">
+body {
+	background-color: #ffffff;
+	color: #000000;
+	font-family: 'alicenormal', 'AdobeBlank';
+	font-size: 17px;
+	font-size-adjust: 0.50;
+	text-align: left;
+	margin: 2rem 0 2rem;
+	-moz-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	-moz-font-feature-settings:"kern=1, liga=1, dlig=1"; 
+	-ms-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	-o-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	-webkit-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	font-feature-settings:"kern" 1, "liga" 1, "dlig" 1;
+}
+
+p {
+	margin-bottom:0;
+	text-align: left;
+}
+
+p + p {
+	text-indent:2.7em;
+	margin-top:0
+}
+
+h1 {
+	font-size: 24px;
+	margin-top:2em;
+	margin-bottom:0.2em;
+/* 	font-weight: 700; */
+	font-style: normal;
+	letter-spacing:-0.5px;
+	line-height: 1;
+	text-align: left;
+}
+
+header {
+	font-size: 96px;
+	margin-top:0.2em;
+	margin-bottom:0em;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 1.2;
+}
+
+.banner {
+	font-size: 96px;
+	margin-top:0em;
+	margin-bottom:0em;
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing:-2px;
+	line-height: 1;
+	display:block;
+}
+
+em {
+	font-style: normal;
+/* 	font-weight: 700; */
+	color: red;
+}
+
+div#bodytext { margin: 0 auto; line-height: 1.5em; }
+
+@media only screen and (min-width:720px){
+	div#bodytext { width: 700px; margin: 0 auto; line-height: 1.5em; }
+}
+@media only screen and (max-width:719px){
+	div#bodytext { margin: 2% 2% ; line-height: 1.5em;}
+}
+@media only screen and (max-width:560px){
+	div#bodytext { margin: 2% 2% ; line-height: 1.4em;}
+}
+
+div#center {
+	text-align: center;
+	margin-bottom:0;
+	margin-top:0;
+}
+
+.red {
+	color:rgb(255,70,0);
+}
+
+a:link {
+	color:rgb(0,0,0);
+	text-decoration: underline;
+}
+
+a:visited {
+	color:rgb(0,0,0);
+	text-decoration: underline;
+}
+
+a:hover {
+	color:rgb(255,70,0);
+	text-decoration: underline;
+}
+
+a:active {
+	color:rgb(0,0,0);
+	text-decoration: underline;
+}
+
+.fractions {
+	-moz-font-feature-settings:"frac" 1, "kern" 1; 
+	-moz-font-feature-settings:"frac=1, kern=1"; 
+	-ms-font-feature-settings:"frac" 1, "kern" 1; 
+	-o-font-feature-settings:"frac" 1, "kern" 1; 
+	-webkit-font-feature-settings:"frac" 1, "kern" 1; 
+	font-feature-settings:"frac" 1, "kern" 1;
+}
+.case {
+	-moz-font-feature-settings:"case" 1, "kern" 1; 
+	-moz-font-feature-settings:"case=1, kern=1"; 
+	-ms-font-feature-settings:"case" 1, "kern" 1; 
+	-o-font-feature-settings:"case" 1, "kern" 1; 
+	-webkit-font-feature-settings:"case" 1, "kern" 1; 
+	font-feature-settings:"case" 1, "kern" 1;
+}
+
+.dlig {
+	-moz-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	-moz-font-feature-settings:"kern=1, liga=1, dlig=1"; 
+	-ms-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	-o-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	-webkit-font-feature-settings:"kern" 1, "liga" 1, "dlig" 1; 
+	font-feature-settings:"kern" 1, "liga" 1, "dlig" 1;
+}
+
+.nocalt {
+	-moz-font-feature-settings:"calt" 0, "kern" 1; 
+	-moz-font-feature-settings:"calt=0, kern=1"; 
+	-ms-font-feature-settings:"calt" 0, "kern" 1; 
+	-o-font-feature-settings:"calt" 0, "kern" 1; 
+	-webkit-font-feature-settings:"calt" 0, "kern" 1; 
+	font-feature-settings:"calt" 0, "kern" 1;
+}
+
+.ss01 {
+	-moz-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1; 
+	-moz-font-feature-settings:"kern=1, liga=1, ss01=1"; 
+	-ms-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1; 
+	-o-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1; 
+	-webkit-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1; 
+	font-feature-settings:"kern" 1, "liga" 1, "ss01" 1;
+}
+
+.ss02 {
+	-moz-font-feature-settings:"kern" 1, "liga" 1, "ss02" 1; 
+	-moz-font-feature-settings:"kern=1, liga=1, ss02=1"; 
+	-ms-font-feature-settings:"kern" 1, "liga" 1, "ss02" 1; 
+	-o-font-feature-settings:"kern" 1, "liga" 1, "ss02" 1; 
+	-webkit-font-feature-settings:"kern" 1, "liga" 1, "ss02" 1; 
+	font-feature-settings:"kern" 1, "liga" 1, "ss02" 1;
+}
+
+.ss0102 {
+	-moz-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1, "ss02" 1; 
+	-moz-font-feature-settings:"kern=1, liga=1, ss01=1, ss02=1"; 
+	-ms-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1, "ss02" 1; 
+	-o-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1, "ss02" 1; 
+	-webkit-font-feature-settings:"kern" 1, "liga" 1, "ss01" 1, "ss02" 1; 
+	font-feature-settings:"kern" 1, "liga" 1, "ss01" 1, "ss02" 1;
+}
+</style>
+</head>
+<body>
+<br>
+
+<div id="bodytext">
+<img src="mp-logo.svg" alt="Metapolator Logo"   style="display: block;
+    margin-left: auto;
+    margin-right: auto">
+<br>
+<br>
+
+<p>“Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.
+
+With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency. They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.
+
+With Metapolator, typographers gain the possibility to change existing fonts — or even create new ones — to their needs.
+
+Metapolator is extendible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.” 1
+
+<div class="footnotes">
+<hr/>
+<ol>
+
+<li id="fn:1">
+<p><a href="https://github.com/metapolator/metapolator/wiki/interaction-design#the-product-phase" title="Excerpt on Wikipedia">Product Vision</a> compiled by Peter Sikking, UI Architect.&#160;<a href="#fnref:1" rev="footnote">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+<p>
+<h1>Approaching our Product Vision</h1>
+<br>
+<em>Red Pill and Blue Pill</em></br>
+In May 2014 the metapolator team has started to develop a professional version based on last years prototypes. Under the hood, Lasse Fister has developed Red Pill, a develper interface with a unique system to work with parameters (css) together with ufo.js. We completely left out metafont this time but kept most of its functionality and concepts like the brilliant Hobby Spline. At the same time Peter Sikking layd out his cornerstones for the User Interface Architecture which is serving now as the guide to the new User Interace (which is under heavy development right now). Digging from both sides under the Mt. Metapolator, we hope we can present Blue Pill, a version 1.0 by the end of the year. In the meantime we can share our last presentation and welcome you on our G+ community. 
+Presentation(link to old website). 
+
+<center></br></br>* * *</br></center>
+<p>
+<h1>Fonts designed for and with Metapolator</h1>
+<br>
+<em>Pre-Metapolating</em></br>
+Fonts need to be prepared in a certain way so the can be processed with Metapolator. For example, every glyph needs to show up an equal amount of pair points. One way to achieve this is to break up a glyph into its induvidual parts and strokes.
+<p>
+<br>
+<img src="Latin.svg" alt="glyphs and parts" style="width: 700px">
+<br>
+<br>
+<em>3 New Fontfamilies</em></br>
+Alice, Sean Sans and Breite are beeing developed as the first true Metapolator font families.
+<br>
+<p>
+<br>
+<img src="Font.svg" alt="glyphs and parts" style="width: 700px">
+
+
+<center></br></br>* * *</br></center>
+
+</div>
+</body>
 </html>
