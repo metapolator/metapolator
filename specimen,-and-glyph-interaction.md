@@ -196,6 +196,31 @@ then a click on the point handle makes a full set of edit handles appear:
 
 Edits can be continued by clicking on any other selected handle.
 
+### point alignments
+_(aka point-nailing, formerly known as penshifted)_
+
+When _exactly two_ skeleton points in total are selected, both of the _same glyph_:
+
+![](http://mmiworks.net/metapolator/2points1glyph.png)
+
+then when the mouse is hovered for 500ms in a zone enclosed by the two pints and the mid-points of the two handles:
+
+![](http://mmiworks.net/metapolator/hovercorner.png)
+
+then after another 500ms timeout a panel pops up with 3 choices for fixing the distance that exists between the two skeleton points:
+
+![](http://mmiworks.net/metapolator/fixpanel.png)
+
+after a fix is picked, the handles permanently show, in selected state, a transparent colouring to indicate a fixed relationship exists for that handle—also a rather modest line to show that relationship:
+
+![](http://mmiworks.net/metapolator/fixed.png)
+
+Changing the nature of, or removing, the fixed relationship follows the same path:
+
+![](http://mmiworks.net/metapolator/unfix.png)
+
+**note**: to change actual distances of a fixed relationship, users can either edit them in the parameter panel, or remove; reposition point(s); reapply fixed relationship in the specimen.
+
 ### optical horizontal lines
 _(better known as vertical metrics)_
 
