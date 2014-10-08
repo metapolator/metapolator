@@ -70,15 +70,26 @@ define([
             resource = args[0].data.slice(1,-1);
             
             // TODO:
-            // at this point: at least "io" and "parameterRegistry"
-            // should be somehow given by the code that invoked the parser
-            // in the first place!
-            // Also, it would be interesting to create and return a special
-            // subclass of ParameterCollection => AtImportCollection,
-            // this would be a good marker for us!
-            // This could be done by using a (sub-)version of parameterFactories
-            // that overides the "stylesheet" factory, which is declared in
-            // baseFactories.
+            // * at this point: at least "io" and "parameterRegistry"
+            //   MUST be somehow given by the code that invoked the parser
+            //   in the first place!
+            // * Also, it is desired to create and return a special
+            //   subclass of ParameterCollection => AtImportCollection,
+            //   This will be a good marker for us and allow for all kinds
+            //   of specialization!
+            //   This could be done by using a (sub-)version of parameterFactories
+            //   that overides the "stylesheet" factory, which is declared in
+            //   baseFactories.
+            // * when printing the new subclass of ParameterCollection we
+            //   will wrap the output into special comments mentioning that
+            //   the source of the rules is a import
+            // * This change breaks the red pill on a deep level:
+            //   changing one of these rules should propagate to all instances
+            //   where this file was imported.
+            // * ALSO: When a change to this file
+            //   hapens, a reloading of the affected styles MUST NOT read
+            //   this files version from disc, but use the buffered version
+            //   as a source.
             
             //parse the file and return the resulting ParameterCollection
             var cpsString = io.readFile(false, resource);
