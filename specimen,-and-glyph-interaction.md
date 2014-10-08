@@ -197,7 +197,9 @@ then a click on the point handle makes a full set of edit handles appear:
 Edits can be continued by clicking on any other selected handle.
 
 ### point alignments
-_(aka point-nailing, formerly known as penshifted)_
+_(aka point-nailing, formerly known as pen shifted)_
+
+The purpose of point alignment is to **nail down the spatial relationship** (horizontal or vertical distance, or both) of two points (be them the skeleton point, port or starboard pen-end/on-curve point), no matter how much the coordinates of points in a glyph get transformed (directly, or as knock-on effect of higher parameters, e.g. width), or the pen gets modified (width _and_ angle, again directly, or as knock-on effect of higher parameters, e.g. weight).
 
 When _exactly two_ skeleton points in total are selected, both of the _same glyph_:
 
@@ -207,17 +209,27 @@ then when the mouse is hovered for 500ms in a zone enclosed by the two pints and
 
 ![](http://mmiworks.net/metapolator/hovercorner.png)
 
-then after another 500ms timeout a panel pops up with 3 choices for fixing the distance that exists between the two skeleton points:
+then after another 500ms timeout a panel pops up:
 
-![](http://mmiworks.net/metapolator/fixpanel.png)
+![](http://mmiworks.net/metapolator/fixpanel3.png)
 
-after a fix is picked, the handles permanently show, in selected state, a transparent colouring to indicate a fixed relationship exists for that handle—also a rather modest line to show that relationship:
+on the left and right of the panel we see two schematic representations of the-point-and-pen. Having separate representations allows us to untangle those hairy situations where the two points are (nearly) on top of each other (or bring them together when they are far apart); having schematic representations allows us to deal with those hairy situations where any stroke width is (near) zero. We see that the representations are connected to their point.
+
+In each representation the skeleton point, port or starboard pen-end can be selected to be aligned. The skeleton point is the default. The middle of the panel lists the horizontal and vertical distances between the selected points—these are absolute, never negative. When the point selection is changed, the distances update:
+
+![](http://mmiworks.net/metapolator/fixalign2.png)
+
+we also see that when a distance is zero milliEm, the word ‘align’ is displayed instead. **note** that users can use the two selected skeleton point handles to fine-tune the horizontal and vertical distances in this state, also using the arrow keys.
+
+When point selection and distances are OK, users pick horizontal, vertical or both to be fixed in the middle of the panel. This closes the panel, as does the close box at the top, which makes no change to the alignment setup.
+
+After a fix is picked, the handles permanently show, in selected state, a transparent colouring to indicate a fixed relationship exists for that handle—also a rather modest line to show that relationship:
 
 ![](http://mmiworks.net/metapolator/fixed.png)
 
 Changing the nature of, or removing, the fixed relationship follows the same path:
 
-![](http://mmiworks.net/metapolator/unfix.png)
+![](http://mmiworks.net/metapolator/unfix2.png)
 
 **note**: to change actual distances of a fixed relationship, users can either edit them in the parameter panel, or remove; reposition point(s); reapply fixed relationship in the specimen.
 
