@@ -21,8 +21,8 @@ define([
     _p._cps_whitelist = {
         x: 'x'
       , y: 'y'
-      , len: 'length'
-      , rad: 'angle'
+      , length: 'len'
+      , angle: 'rad'
     }
 
 
@@ -92,9 +92,7 @@ define([
      * then: rename this to 'length'
      */
     Object.defineProperty(_p, 'len', {
-        get: function() {
-            return Parent.prototype.magnitude.call(this);
-        }
+        get: Parent.prototype.magnitude
     })
 
     /**
@@ -103,9 +101,7 @@ define([
      * this to 'angle'
      */
     Object.defineProperty(_p, 'rad', {
-        get: function() {
-            return Parent.prototype.angle.call(this);
-        }
+        get: Parent.prototype.angle
     })
 
     return Vector;
