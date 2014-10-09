@@ -85,6 +85,10 @@ define([
         return rules;
     };
 
+    _p.deleteCPS = function(filename) {
+        this._io.unlink(false, this._project.cpsDir+'/'+filename);
+    };
+
     _p.loadMOM = function() {
         // create a MOM Master use this.glyphSet to create glyphs, penstrokes and points
         var master = new Master()

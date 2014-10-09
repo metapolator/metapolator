@@ -1,0 +1,40 @@
+#!/bin/sh
+__hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: javascript; -*- */undefined
+
+"use strict";
+
+exports.command = {
+    description: 'delete the given master'
+  , arguments: '<master>'
+};
+
+var path = require('path');
+var requirejs = require('requirejs');
+require('rootpath')();
+requirejs.config(require('config'));
+
+if (require.main === module) {
+    requirejs([
+        'commander'
+      , 'metapolator/parseArgs'
+      , 'ufojs/tools/io/staticNodeJS'
+      , 'metapolator/project/MetapolatorProject'
+    ], function (
+        program
+      , parseArgs
+      , io
+      , MetapolatorProject
+    ) {
+        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program.arguments(exports.command.arguments);
+        program.action(function(master) {
+            var project = new MetapolatorProject(io)
+                ;
+            // Load project and delete master in it
+            project.load();
+            master = parseArgs.masterName(master);
+            project.deleteMaster(master);
+        });
+        program.parse(process.argv);
+    }
+)}

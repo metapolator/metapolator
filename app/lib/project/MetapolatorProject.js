@@ -232,6 +232,47 @@ define([
         this._io.writeFile(false, layerDir + '/contents.plist',
                                         plistLib.createPlistString({}));
     }
+
+    /**
+     * Delete a glyph layer.
+     *
+     * FIXME: Currently, only works properly if no glyphs are defined:
+     * simply removes the plist and then tries to delete the directory.
+     * Also removes the glyph layer from layercontents.plist.
+     *
+     */
+    _p._deleteGlyphLayer = function(name) {
+        var layerDir = this._getLayerDir(name)
+          , layerIndex;
+
+        // Read layercontents.plist
+        var layercontents = plistLib.readPlistFromString(
+                this._io.readFile(false, this.layerContentsFile));
+
+        // Find the layer with this name
+        layerIndex = null;
+        for(var i=0;i<layercontents.length;i++) {
+            if(layercontents[i][0] === name) {
+                layerIndex = i;
+                break;
+            }
+        }
+        if (layerIndex === null)
+            throw new ProjectError('No such glyph layer "'+name+'".');
+        layercontents.splice(layerIndex, 1);
+
+        // Check there is a directory with the name layerDir
+        if(!this._io.pathExists(false, layerDir+'/'))
+            throw new ProjectError('No glyph layer directory "' + layerDir
+                                    +'".');
+
+        // Update layercontents
+        this._io.writeFile(false, this.layerContentsFile,
+                           plistLib.createPlistString(layercontents));
+
+        // Remove layer dir and its contents
+        this._io.rmDirRecursive(false, layerDir);
+    }
     
     /**
      * Returns the path needed to instantiate a GlyphSet
@@ -252,7 +293,7 @@ define([
             throw new KeyError('Layer named "' + name + '" not found.');
         if(!this._io.pathExists(false, layerDir + '/'))
             throw new KeyError('Layer directory "' + layerDir
-                                + '" does not exist, but is linked in '
+                                + '" does not exist, but is mentioned in '
                                 +'layercontents.plist.');
         return layerDir;
     }
@@ -265,9 +306,9 @@ define([
      * 
      */
     _p.createMaster = function(masterName) {
-        // get the name for this master from the cli
+        // get the name for this master from the CLI
         if(this.hasMaster(masterName))
-            throw new ProjectError('Master "'+masterName+'" alredy exists.');
+            throw new ProjectError('Master "'+masterName+'" already exists.');
         var master = {};
         this._data.masters[masterName] = master;
         master.cpsChain = [this.cpsOutputConverterFile, this.cpsGlobalFile, masterName + '.cps'];
@@ -280,6 +321,37 @@ define([
         
         return this.getMaster(masterName);
     }
+
+    /**
+     * delete a master entry for this masterName
+     *
+     * and remove entry in layercontents.plist:
+     * skeleton.masterName, glyphs.skeleton.masterName
+     *
+     */
+    _p.deleteMaster = function(masterName) {
+        // get the name for this master from the cli
+        if(!this.hasMaster(masterName))
+            throw new ProjectError('No such Master "'+masterName+'".');
+        var master = this._data.masters[masterName];
+
+        // Remove CPS file
+        this.getMaster(masterName).deleteCPS(masterName + '.cps');
+
+        // Remove skeleton layer for this master
+        if (master.skeleton ===  + 'skeleton.' + masterName)
+            this._deleteGlyphLayer(master.skeleton);
+
+        // Remove project entry
+        delete this._data.masters[masterName];
+
+        // Update project file
+        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
+
+        // FIXME: Check we successfully deleted it
+        return true;
+    }
+
     _p._getMaster = function(masterName) {
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
@@ -392,7 +464,7 @@ define([
         try {
             // Just a rough look if we can parse it, we are not interested
             // in the result of parsing at the moment.
-            // TODO: validation (this is a tasl for ufoJS)
+            // TODO: validation (this is a task for ufoJS)
             plistLib.readPlistFromString(content);
         }
         catch(error) {
