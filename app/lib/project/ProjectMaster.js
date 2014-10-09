@@ -22,6 +22,7 @@ define([
 
         this._glyphSet = undefined;
 
+        this._showRememberedErrorsToConsole = true;
         if( io.pathExists( false, this.metaDataFilePath )) {
             this.loadMetaData();
         } else {
@@ -47,25 +48,64 @@ define([
 
     /**
      * For each type of failure, which is just a string like 'import'
-     * etc, we can store the most recent failure for each glyph and
-     * why that happened. This might be extended to record more than
-     * just the latest failure, but knowing that an import failed 5
-     * times in a row is likely not as interesting to the user as
-     * knowing why it failed the last time it was tried.
+     * etc, we can store many failures for each glyph and why that
+     * happened. If you are starting an operation again, like an
+     * import, or hinting etc, then you might like to call
+     * clearAllRememberedFailuresOfType to clear away past errors so
+     * that only the errors from the current operation are recorded.
      */
-    _p.setRememberedFailure = function( type, glyphName, reason ) {
+    _p.appendRememberedFailure = function( type, glyphName, reason ) {
         if( this._data.rememberedFailures[glyphName] === undefined ) {
             this._data.rememberedFailures[glyphName] = {};
         }
-        this._data.rememberedFailures[glyphName][ type ] =
+        if( this._data.rememberedFailures[glyphName][ type ] === undefined ) {
+            this._data.rememberedFailures[glyphName][ type ] = [];
+        }
+        this._data.rememberedFailures[glyphName][ type ].push(
             {
                 name: glyphName,
                 reason: reason,
                 incidenttime: new Date(),
-            };
+            });
+
+        if( this._showRememberedErrorsToConsole ) {
+            console.log("appendRememberedFailure() type:" + type 
+                        + " glyphName:" + glyphName + " reason:" + reason );
+        }
     }
+    /**
+     * If there can only be one interesting failure for the 'type'
+     * then this method will ensure that only the last reported error
+     * for the glyph is recorded.
+     */
+    _p.setRememberedFailure = function( type, glyphName, reason ) {
+        this.clearRememberedFailure( type, glyphName );
+        this.appendRememberedFailure( type, glyphName, reason );
+    }
+
+    /**
+     * clear the remembered failures for the specified type.
+     */
+    _p.clearRememberedFailure = function( type, glyphName ) {
+        if( this._data.rememberedFailures[glyphName] === undefined ) {
+            this._data.rememberedFailures[glyphName] = {};
+        }
+        this._data.rememberedFailures[glyphName][ type ] = [];
+    }
+    /**
+     * Clear any errors of 'type' for all glyphs
+     */
+    _p.clearAllRememberedFailuresOfType = function( type ) {
+        var glyphName;
+        for(glyphName in this._data.rememberedFailures) {
+            this.clearRememberedFailure( type, glyphName );
+        }
+    }
+    /**
+     * Remember that an import failed for the given reason on the glyph.
+     */
     _p.rememberThatImportFailedForGlyph = function( glyphName, reason ) {
-        this.setRememberedFailure( 'import', glyphName, reason );
+        this.appendRememberedFailure( 'import', glyphName, reason );
     }
 
     Object.defineProperty(_p, 'metaDataFilePath', {

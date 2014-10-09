@@ -15,6 +15,7 @@ define([
   , 'complex/Complex'
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , 'ufojs/errors'
 
 ], function(
     errors
@@ -32,8 +33,10 @@ define([
   , ParameterValue
   , Complex
   , parseSelectorList
+  , ufojsErrors
 ) {
     "use strict";
+    var GlifLibError = ufojsErrors.GlifLib;
 
     function ImportController(project, masterName, sourceUFODir) {
         this._project = project;
@@ -68,6 +71,7 @@ define([
           , cps
           ;
 
+        this._master.clearAllRememberedFailuresOfType('import');
         if(!glyphs)
             glyphs = this._sourceGlyphSet.keys();
         else {
@@ -79,8 +83,21 @@ define([
                                     +missing.join(', '));
         }
         console.warn('importing ...');
-        for(;i<glyphs.length;i++)
-            Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
+        for(;i<glyphs.length;i++) {
+            var glyphName = glyphs[i];
+            try {
+                var g = this.importGlyph(glyphName);
+                Array.prototype.push.apply(rules, g);
+            }
+            catch(error) {
+                if(error instanceof GlifLibError) {
+                    // we have already recorded this in the error
+                    // callback function
+                } else {
+                    throw error;
+                }
+            }
+        }
 
         this._master.glyphSet.writeContents(false);
         this._master.saveMetaData();
