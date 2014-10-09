@@ -472,11 +472,13 @@ define([
 ) {
     "use strict";
 
-    function ExportController(master, model, glyphSet, precision) {
+    function ExportController(master, model, glyphSet, precision, projectMaster, dirName) {
         this._master = master;
+        this._projectMaster = projectMaster;
         this._model = model;
         this._glyphSet = glyphSet;
         this._precision = precision;
+        this._dirName = dirName;
     }
     var _p = ExportController.prototype;
 
@@ -487,6 +489,13 @@ define([
           , drawFunc
           ;
         console.warn('exporting ...');
+        try {
+            this._projectMaster.writeFontInfoToFile(this._dirName+'/fontinfo.plist');
+        }
+        catch(error) {
+            console.log('Export of fontinfo.plist failed. reason:\n' + error);
+        }
+
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
             console.warn('exporting', glyph.id);

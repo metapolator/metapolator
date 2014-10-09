@@ -3,13 +3,17 @@ define([
   , 'metapolator/models/MOM/Master'
   , 'metapolator/models/MOM/Glyph'
   , './MOMPointPen'
+  , 'ufojs/plistLib/main'
 ], function(
     errors
   , Master
   , Glyph
   , MOMPointPen
+  , plistLib
 ) {
     "use strict";
+    var readPlistFromString = plistLib.readPlistFromString
+    , writePlistToString = plistLib.createPlistString;
 
     function ProjectMaster(io, project, glyphSetDir, cpsChain) {
 
@@ -19,6 +23,11 @@ define([
         this._cpsChain = cpsChain.slice();
 
         this._glyphSet = undefined;
+	    this._fontinfo = {};
+        if( io.pathExists( false, this._fontInfoFilePath )) {
+            this._fontinfo = plistLib.readPlistFromString(
+                io.readFile(false, this._fontInfoFilePath));
+        }
     }
 
     var _p = ProjectMaster.prototype;
@@ -32,6 +41,36 @@ define([
             return this._glyphSet;
         }
     });
+
+    /**
+     * Path of the fontinfo.plist file for an imported master
+     */
+    Object.defineProperty(_p, '_fontInfoFilePath', {
+        get: function() { return this._project.baseDir+'/'+this._glyphSetDir+'/fontinfo.plist';}
+    });
+
+    /**
+     * The information from the fontinfo.plist if there is any. Setting this property will
+     * also save the new data to disk
+     */
+    Object.defineProperty(_p, 'fontinfo', {
+        get: function() { return this._fontinfo; }
+        ,
+        set: function(x) {
+            this._fontinfo = x;
+            this.writeFontInfoToFile( this._fontInfoFilePath );
+        }
+    });
+
+    /**
+     * Export the current fontinfo to a file at 'path'.
+     */
+    _p.writeFontInfoToFile = function( path ) {
+        console.log("writeFontInfoToFile() path:" + path );
+        console.log("writeFontInfoToFile() fi:" + this._fontinfo );
+        this._io.writeFile( false, path,
+                            writePlistToString(this._fontinfo));
+    }
 
     _p.saveCPS = function(filename, cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'+filename, cps);
