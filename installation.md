@@ -1,7 +1,7 @@
 Metapolator Installation
 ========================
 
-The simplest and recommended method is to use the [Vagrant](http://www.vagrantup.com) box, for which you also need [Virtualbox](http://www.virtualbox.org):
+The simplest and recommended method is to use the [Vagrant](http://www.vagrantup.com) box, for which you also need [Virtualbox](http://www.virtualbox.org). In an empty directory, run the commands:
 
 ```
 vagrant init metapolator/bleeding-edge
