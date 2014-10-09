@@ -44,7 +44,9 @@ define([
         if(this._project.hasMaster(masterName))
             this._master = this._project.getMaster(masterName);
         else
-            this._master = this._project.createMaster(masterName);
+            this._master = this._project.createMaster(masterName,
+                                                      [this._project.cpsOutputConverterFile, this._project.cpsGlobalFile, masterName + '.cps'],
+                                                      'skeleton.' + masterName);
 
         // open the source ufo glyphs layer of an UFOv2
         this._sourceGlyphSet  = this._project.getNewGlyphSet(
