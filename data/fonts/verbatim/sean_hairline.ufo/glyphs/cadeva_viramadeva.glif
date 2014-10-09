@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="cadeva_viramadeva" format="1">
+  <advance width="783"/>
+  <outline>
+    <contour>
+      <point x="549" y="511" type="curve"/>
+      <point x="549" y="528" type="line"/>
+      <point x="412" y="528"/>
+      <point x="305" y="460"/>
+      <point x="305" y="333" type="curve" smooth="yes"/>
+      <point x="305" y="217"/>
+      <point x="390" y="144"/>
+      <point x="508" y="144" type="curve" smooth="yes"/>
+      <point x="615" y="144"/>
+      <point x="682" y="212"/>
+      <point x="722" y="313" type="curve"/>
+      <point x="701" y="323" type="line"/>
+      <point x="666" y="229"/>
+      <point x="604" y="165"/>
+      <point x="506" y="165" type="curve" smooth="yes"/>
+      <point x="401" y="165"/>
+      <point x="326" y="228"/>
+      <point x="326" y="330" type="curve" smooth="yes"/>
+      <point x="326" y="447"/>
+      <point x="423" y="511"/>
+    </contour>
+    <contour>
+      <point x="-12" y="700" type="line"/>
+      <point x="645" y="700" type="line"/>
+      <point x="645" y="722" type="line"/>
+      <point x="-12" y="722" type="line"/>
+    </contour>
+    <contour>
+      <point x="109" y="511" type="line"/>
+      <point x="549" y="511" type="line"/>
+      <point x="549" y="533" type="line"/>
+      <point x="109" y="533" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>holes</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>cadeva_viramadeva</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>783</integer>
+        </dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>cadeva_viramadeva</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>783</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1.0</real>
+        <real>0.9416</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

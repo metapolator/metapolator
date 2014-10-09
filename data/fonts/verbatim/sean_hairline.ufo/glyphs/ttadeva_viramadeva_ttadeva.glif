@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="ttadeva_viramadeva_ttadeva" format="1">
+  <advance width="563"/>
+  <outline>
+    <contour>
+      <point x="574" y="700" type="line"/>
+      <point x="574" y="722" type="line"/>
+      <point x="-12" y="722" type="line"/>
+      <point x="-12" y="700" type="line"/>
+    </contour>
+    <contour>
+      <point x="389" y="719" type="line"/>
+      <point x="389" y="599" type="line"/>
+      <point x="411" y="599" type="line"/>
+      <point x="411" y="719" type="line"/>
+    </contour>
+    <contour>
+      <point x="411" y="598" type="curve"/>
+      <point x="411" y="618" type="line"/>
+      <point x="354" y="618"/>
+      <point x="313" y="618"/>
+      <point x="256" y="618" type="curve" smooth="yes"/>
+      <point x="136" y="618"/>
+      <point x="60" y="537"/>
+      <point x="60" y="415" type="curve" smooth="yes"/>
+      <point x="60" y="270"/>
+      <point x="173" y="192"/>
+      <point x="327" y="192" type="curve" smooth="yes"/>
+      <point x="389" y="192"/>
+      <point x="434" y="206"/>
+      <point x="490" y="233" type="curve"/>
+      <point x="481" y="253" type="line"/>
+      <point x="429" y="226"/>
+      <point x="386" y="214"/>
+      <point x="327" y="214" type="curve" smooth="yes"/>
+      <point x="187" y="214"/>
+      <point x="82" y="283"/>
+      <point x="82" y="415" type="curve" smooth="yes"/>
+      <point x="82" y="524"/>
+      <point x="149" y="598"/>
+      <point x="257" y="598" type="curve" smooth="yes"/>
+      <point x="313" y="598"/>
+      <point x="355" y="598"/>
+    </contour>
+    <contour>
+      <point x="411" y="30" type="curve"/>
+      <point x="411" y="53" type="line"/>
+      <point x="354" y="53"/>
+      <point x="313" y="53"/>
+      <point x="256" y="53" type="curve" smooth="yes"/>
+      <point x="136" y="53"/>
+      <point x="60" y="-34"/>
+      <point x="60" y="-156" type="curve" smooth="yes"/>
+      <point x="60" y="-301"/>
+      <point x="173" y="-393"/>
+      <point x="327" y="-393" type="curve" smooth="yes"/>
+      <point x="389" y="-393"/>
+      <point x="434" y="-379"/>
+      <point x="490" y="-352" type="curve"/>
+      <point x="481" y="-332" type="line"/>
+      <point x="429" y="-359"/>
+      <point x="386" y="-371"/>
+      <point x="327" y="-371" type="curve" smooth="yes"/>
+      <point x="187" y="-371"/>
+      <point x="82" y="-288"/>
+      <point x="82" y="-156" type="curve" smooth="yes"/>
+      <point x="82" y="-48"/>
+      <point x="150" y="30"/>
+      <point x="257" y="30" type="curve" smooth="yes"/>
+      <point x="313" y="30"/>
+      <point x="355" y="30"/>
+    </contour>
+    <contour>
+      <point x="389" y="210" type="line"/>
+      <point x="389" y="30" type="line"/>
+      <point x="411" y="30" type="line"/>
+      <point x="411" y="210" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>holes</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>ddadeva_viramadeva_ttadeva</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>563</integer>
+        </dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>ddadeva_viramadeva_ttadeva</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>563</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1.0</real>
+        <real>0.9416</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

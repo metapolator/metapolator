@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="guillemotleft" format="1">
+  <advance width="432"/>
+  <unicode hex="00AB"/>
+  <outline>
+    <contour>
+      <point x="215" y="287" type="line"/>
+      <point x="215" y="265" type="line"/>
+      <point x="396" y="141" type="line"/>
+      <point x="396" y="163" type="line"/>
+    </contour>
+    <contour>
+      <point x="215" y="265" type="line"/>
+      <point x="386" y="385" type="line"/>
+      <point x="386" y="407" type="line"/>
+      <point x="215" y="287" type="line"/>
+    </contour>
+    <contour>
+      <point x="39" y="287" type="line"/>
+      <point x="39" y="265" type="line"/>
+      <point x="220" y="141" type="line"/>
+      <point x="220" y="163" type="line"/>
+    </contour>
+    <contour>
+      <point x="39" y="265" type="line"/>
+      <point x="210" y="385" type="line"/>
+      <point x="210" y="407" type="line"/>
+      <point x="39" y="287" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>guillemotleft</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>432</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>guillemotleft</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>432</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1</real>
+        <real>0.9416</real>
+        <real>1</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

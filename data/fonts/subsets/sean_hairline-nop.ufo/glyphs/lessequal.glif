@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="lessequal" format="1">
+  <advance width="691"/>
+  <unicode hex="2264"/>
+  <outline>
+    <contour>
+      <point x="646" y="142" type="line"/>
+      <point x="37" y="412" type="line"/>
+      <point x="37" y="390" type="line"/>
+      <point x="646" y="120" type="line"/>
+    </contour>
+    <contour>
+      <point x="37" y="390" type="line"/>
+      <point x="656" y="654" type="line"/>
+      <point x="656" y="676" type="line"/>
+      <point x="37" y="412" type="line"/>
+    </contour>
+    <contour>
+      <point x="646" y="-13" type="line"/>
+      <point x="646" y="9" type="line"/>
+      <point x="57" y="9" type="line"/>
+      <point x="57" y="-13" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>lessequal</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>691</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>lessequal</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>691</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1</real>
+        <real>0.9416</real>
+        <real>1</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>
