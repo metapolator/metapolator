@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="scedilla" format="1">
+  <advance width="500"/>
+  <unicode hex="015F"/>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>scedilla</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>500</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>scedilla</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>500</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

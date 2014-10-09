@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Ncaron" format="1">
+  <advance width="800"/>
+  <unicode hex="0147"/>
+  <outline>
+    <contour>
+      <point x="684" y="0" type="line"/>
+      <point x="148" y="722" type="line"/>
+      <point x="122" y="722" type="line"/>
+      <point x="658" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="662" y="722" type="line"/>
+      <point x="662" y="0" type="line"/>
+      <point x="684" y="0" type="line"/>
+      <point x="684" y="722" type="line"/>
+    </contour>
+    <contour>
+      <point x="144" y="722" type="line"/>
+      <point x="122" y="722" type="line"/>
+      <point x="122" y="0" type="line"/>
+      <point x="144" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>N</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>800</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>N</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>800</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1</real>
+        <real>0.9416</real>
+        <real>1</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

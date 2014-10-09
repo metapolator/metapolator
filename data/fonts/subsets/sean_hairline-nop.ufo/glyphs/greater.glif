@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="greater" format="1">
+  <advance width="691"/>
+  <unicode hex="003E"/>
+  <outline>
+    <contour>
+      <point x="656" y="317" type="line"/>
+      <point x="47" y="47" type="line"/>
+      <point x="47" y="25" type="line"/>
+      <point x="656" y="295" type="line"/>
+    </contour>
+    <contour>
+      <point x="656" y="295" type="line"/>
+      <point x="656" y="317" type="line"/>
+      <point x="37" y="581" type="line"/>
+      <point x="37" y="559" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>greater</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>691</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>greater</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>691</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1</real>
+        <real>0.9416</real>
+        <real>1</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

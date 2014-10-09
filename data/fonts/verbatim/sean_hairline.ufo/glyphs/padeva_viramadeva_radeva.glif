@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="padeva_viramadeva_radeva" format="1">
+  <advance width="573"/>
+  <outline>
+    <contour>
+      <point x="432" y="324" type="line"/>
+      <point x="138" y="50" type="line"/>
+      <point x="153" y="32" type="line"/>
+      <point x="444" y="311" type="line"/>
+    </contour>
+    <component base="padeva"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>holes</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>padeva_viramadeva_radeva</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>573</integer>
+        </dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>padeva_viramadeva_radeva</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>573</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1.0</real>
+        <real>0.9416</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

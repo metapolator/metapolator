@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Ydieresis" format="1">
+  <advance width="509"/>
+  <unicode hex="0178"/>
+  <outline>
+    <component base="dieresis" xOffset="99" yOffset="195"/>
+    <contour>
+      <point x="258" y="337" type="line"/>
+      <point x="23" y="722" type="line"/>
+      <point x="-1" y="722" type="line"/>
+      <point x="234" y="337" type="line"/>
+    </contour>
+    <contour>
+      <point x="482" y="722" type="line"/>
+      <point x="234" y="337" type="line"/>
+      <point x="258" y="337" type="line"/>
+      <point x="506" y="722" type="line"/>
+    </contour>
+    <contour>
+      <point x="258" y="0" type="line"/>
+      <point x="258" y="346" type="line"/>
+      <point x="234" y="346" type="line"/>
+      <point x="234" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array/>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>Ydieresis</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>509</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>Ydieresis</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>509</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1</real>
+        <real>0.9416</real>
+        <real>1</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

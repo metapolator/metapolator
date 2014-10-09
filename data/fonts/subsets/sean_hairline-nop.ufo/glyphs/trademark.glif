@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="trademark" format="1">
+  <advance width="733"/>
+  <unicode hex="2122"/>
+  <outline>
+    <contour>
+      <point x="604" y="722" type="line"/>
+      <point x="490" y="388" type="line"/>
+      <point x="515" y="388" type="line"/>
+      <point x="626" y="722" type="line"/>
+    </contour>
+    <contour>
+      <point x="397" y="722" type="line"/>
+      <point x="375" y="722" type="line"/>
+      <point x="343" y="388" type="line"/>
+      <point x="365" y="388" type="line"/>
+    </contour>
+    <contour>
+      <point x="508" y="388" type="line"/>
+      <point x="397" y="722" type="line"/>
+      <point x="375" y="722" type="line"/>
+      <point x="484" y="388" type="line"/>
+    </contour>
+    <contour>
+      <point x="604" y="722" type="line"/>
+      <point x="649" y="388" type="line"/>
+      <point x="671" y="388" type="line"/>
+      <point x="626" y="722" type="line"/>
+    </contour>
+    <contour>
+      <point x="160" y="710" type="line"/>
+      <point x="160" y="388" type="line"/>
+      <point x="182" y="388" type="line"/>
+      <point x="182" y="710" type="line"/>
+    </contour>
+    <contour>
+      <point x="300" y="700" type="line"/>
+      <point x="300" y="722" type="line"/>
+      <point x="43" y="722" type="line"/>
+      <point x="43" y="700" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>trademark</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>733</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>trademark</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>733</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1</real>
+        <real>0.9416</real>
+        <real>1</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>
