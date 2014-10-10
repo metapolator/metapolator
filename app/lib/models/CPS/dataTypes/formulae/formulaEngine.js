@@ -86,7 +86,7 @@ define([
                 var result = node.query(selector);
                 if(!result)
                     throw new CPSFormulaError('Not found: an element for '
-                                        + SelectorList + ' '
+                                        + selector + ' '
                                         + 'in ' + node.particulars
                                     );
                 return result;
@@ -118,7 +118,7 @@ define([
                 var item = getAPI('this').multivers.query(selector);
                 if(!item)
                     throw new CPSFormulaError('Not found: an element for '
-                                                        + SelectorList);
+                                                        + selector);
                 return cpsGetters.generic(item, key.getValue());
             }]
           , ['*getAPI*', '*anything*', NameToken, function(getAPI, item, key) {
