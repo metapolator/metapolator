@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="o" format="1">
+  <advance width="644"/>
+  <unicode hex="006F"/>
+  <outline>
+    <contour>
+      <point x="109" y="268" type="line"/>
+      <point x="109" y="413"/>
+      <point x="175" y="518"/>
+      <point x="311" y="518" type="curve" smooth="yes"/>
+      <point x="450" y="518"/>
+      <point x="521" y="414"/>
+      <point x="521" y="267" type="curve" smooth="yes"/>
+      <point x="521" y="121"/>
+      <point x="453" y="17"/>
+      <point x="316" y="17" type="curve" smooth="yes"/>
+      <point x="178" y="17"/>
+      <point x="109" y="121"/>
+      <point x="109" y="268" type="curve"/>
+      <point x="87" y="268" type="line"/>
+      <point x="87" y="108"/>
+      <point x="163" y="-6"/>
+      <point x="314" y="-6" type="curve" smooth="yes"/>
+      <point x="465" y="-6"/>
+      <point x="542" y="107"/>
+      <point x="542" y="268" type="curve" smooth="yes"/>
+      <point x="542" y="428"/>
+      <point x="463" y="539"/>
+      <point x="312" y="539" type="curve" smooth="yes"/>
+      <point x="163" y="539"/>
+      <point x="87" y="427"/>
+      <point x="87" y="268" type="curve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>holes</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>o</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>644</integer>
+        </dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>o</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>644</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1.0</real>
+        <real>0.9416</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>
