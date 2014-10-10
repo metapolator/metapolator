@@ -85,7 +85,7 @@ define([
           , [_MOMNode, SelectorList, function(node, selector) {
                 var result = node.query(selector);
                 if(!result)
-                    throw new KeyError('Not found: an element for '
+                    throw new CPSFormulaError('Not found: an element for '
                                         + SelectorList + ' '
                                         + 'in ' + node.particulars
                                     );
@@ -117,7 +117,7 @@ define([
                 // SelectorList selects from global scope, aka multivers
                 var item = getAPI('this').multivers.query(selector);
                 if(!item)
-                    throw new KeyError('Not found: an element for '
+                    throw new CPSFormulaError('Not found: an element for '
                                                         + SelectorList);
                 return cpsGetters.generic(item, key.getValue());
             }]
