@@ -28,6 +28,11 @@ if (require.main === module) {
         program.action(function(masterName, instanceName) {
             var project = new MetapolatorProject(io);
             project.load();
+            
+            // load all masters, because right now it is very confusing
+            // when some masters are missing from the MOM
+            project.masters.forEach(project.open, project);
+            
             project.exportInstance(masterName, instanceName, program.precision);
         })
         .option('-p, --precision <n>', 'The number of decimal places to use in output coordinates, '
