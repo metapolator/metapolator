@@ -51,19 +51,18 @@ if (require.main === module) {
             if (Math.abs(sum - 1.0) > .001)
                 console.warn('Proportions do not sum to (roughly) 1');
 
-            // Load project and create new master
             project.load();
-            newMaster = parseArgs.masterName(newMaster);
-            master = project.createMaster(newMaster);
-            cpsName = newMaster + '.cps';
-            master.cpsChain = [cpsName];
-            // FIXME: change the skeleton
 
             // Open existing masters
             for(i = 0; i < masters.length; i++) {
                 masters[i] = parseArgs.masterName(masters[i]);
                 project.open(masters[i]);
             }
+
+            // Create new master
+            newMaster = parseArgs.masterName(newMaster);
+            cpsName = newMaster + '.cps';
+            master = project.createMaster(newMaster, [cpsName], project._data.masters[masters[0]].skeleton);
 
             // Load interpolation CPS, adjust it, and get to work
             cps = '* {\n\
