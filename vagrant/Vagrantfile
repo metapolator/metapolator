@@ -37,6 +37,10 @@ if test ! -d metapolator; then
     fi
     echo "Checking out Metapolator $CHECKOUT_METHOD"
     git clone --recursive $GIT_URL # --recursive to get submodules
+elif test ! -d metapolator/.git; then
+    echo "You have a directory called 'metapolator' here, but it doesn't seem to be a git checkout"
+    echo "Aborting: I don't want to overwrite this directory, whatever it is!"
+    exit 1
 fi
 
 # NPM setup
