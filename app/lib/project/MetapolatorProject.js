@@ -85,9 +85,6 @@ define([
     
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
-    Object.defineProperty(_p, 'baseDir', {
-        get: function(){ return this.dirName + '/';}
-    });
     Object.defineProperty(_p, 'dataDir', {
         get: function(){ return this.dirName + '/data/com.metapolator';}
     });
@@ -510,9 +507,7 @@ define([
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
         
-        var projectMaster = this._getMaster(masterName);
-        exportController = new ExportController(master, model, glyphSet, precision,
-                                                projectMaster, dirName);
+        exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
     }
     
