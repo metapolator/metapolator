@@ -261,13 +261,8 @@ Command.prototype.action = function(fn){
       }
     });
 
-    // Always append ourselves to the end of the arguments,
-    // to make sure we match the number of arguments the user
-    // expects
-    args.push(self);
-
     // If there are more arguments than allowed, error exit
-    if (self.args.length > self._max_allowed_args + 1) {
+    if (self.args.length > self._max_allowed_args) {
       this.help(1);
     }
 
