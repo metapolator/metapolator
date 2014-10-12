@@ -183,7 +183,7 @@ define(["./StaticParent"], function(parent) {
 
 Modules that contain just a collection of functions:
 
-```
+```js
 stuff.js
 define([], function() {
     "use strict";
@@ -235,7 +235,7 @@ then we can think about how to handle these errors appropriately. This is
 also important as a quality assurance, because it helps us to detect the 
 exceptional cases where we need to put additional work in.
 
-```
+```js
 // DON'T DO THIS ANYWHERE
 // Errors are like very good friends, they show us honestly where things
 // go wrong. So we owe them some respect. If an error is thrown, a sub-
@@ -251,7 +251,7 @@ catch(error) {
 
 // DO THIS
 define([
-     **/
+     /**
      * We use central modules to distribute errors across our project.
      * Have a look at these modules to know what is defined so far.
      *
@@ -321,8 +321,10 @@ define([
         throw error;
     }
     
-     **/
-     * Another very good case for error handling is using IO:
+    /** Another very good case for error handling is using IO: **/
+
+    // DON'T DO THIS
+    /**
      * BAD because
      *    A) io.readFile may still fail when we got into a race condition
      *    B) we need two calls to IO which is rather costly
@@ -332,7 +334,7 @@ define([
     else
         do_something_about_that_missing_file();
     
-    /** GOOD **/
+    // INSTEAD DO THIS
     try {
         var data = io.readFile(false, 'path/to/file');
     }
@@ -343,9 +345,6 @@ define([
     }
 })
 ```
-
-
-
 
 Todo:
 
