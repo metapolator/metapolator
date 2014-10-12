@@ -226,7 +226,7 @@ define([], function() {
 
 We don't have yet decided a general strategy to cope with every *generic*
 error (like a central logging or such). So what we do instead is catching
-and handling at any instance only *specific* errors, when we now how to 
+and handling at any instance only *specific* errors, when we know how to 
 deal with them.
 
 This means that we know that errors will be thrown and that these errors
