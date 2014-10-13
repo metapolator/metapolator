@@ -211,13 +211,13 @@ then when the mouse is hovered for 500ms in a zone enclosed by the two points an
 
 then after another 500ms timeout a panel pops up:
 
-![](http://mmiworks.net/metapolator/fixpanel3.png)
+![](http://mmiworks.net/metapolator/fixpanel4.png)
 
 on the left and right of the panel we see two schematic representations of the-point-and-pen. Having separate representations allows us to untangle those hairy situations where the two points are (nearly) on top of each other (or bring them together when they are far apart); having schematic representations allows us to deal with those hairy situations where any stroke width is (near) zero. We see that the representations are connected to their point.
 
 In each representation the skeleton point, port or starboard pen-end can be selected to be aligned. The skeleton point is the default. The middle of the panel lists the horizontal and vertical distances between the selected points—these are absolute, never negative. When the point selection is changed, the distances update:
 
-![](http://mmiworks.net/metapolator/fixalign2.png)
+![](http://mmiworks.net/metapolator/fixalign3.png)
 
 we also see that when a distance is zero milliEm, the word ‘align’ is displayed instead. **note** that users can use the two selected skeleton point handles to fine-tune the horizontal and vertical distances in this state, also using the arrow keys.
 
@@ -229,7 +229,7 @@ After a fix is picked, the handles permanently show, in selected state, a transp
 
 Changing the nature of, or removing, the fixed relationship follows the same path:
 
-![](http://mmiworks.net/metapolator/unfix2.png)
+![](http://mmiworks.net/metapolator/unfix3.png)
 
 **note**: to change actual distances of a fixed relationship, users can either edit them in the parameter panel, or remove; reposition point(s); reapply fixed relationship in the specimen.
 
