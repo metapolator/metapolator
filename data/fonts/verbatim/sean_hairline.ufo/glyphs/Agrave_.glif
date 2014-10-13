@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Agrave" format="1">
+  <advance width="654"/>
+  <unicode hex="00C0"/>
+  <outline>
+    <contour>
+      <point x="504" y="296" type="line"/>
+      <point x="170" y="296" type="line"/>
+      <point x="161" y="275" type="line"/>
+      <point x="511" y="275" type="line"/>
+    </contour>
+    <contour>
+      <point x="333" y="722" type="line"/>
+      <point x="333" y="722"/>
+      <point x="602" y="1"/>
+      <point x="602" y="1" type="curve"/>
+      <point x="625" y="1" type="line"/>
+      <point x="355" y="722" type="line"/>
+    </contour>
+    <contour>
+      <point x="333" y="722" type="line"/>
+      <point x="31" y="0" type="line"/>
+      <point x="55" y="0" type="line"/>
+      <point x="55" y="0"/>
+      <point x="355" y="722"/>
+      <point x="355" y="722" type="curve"/>
+    </contour>
+    <component base="grave" xOffset="90" yOffset="139"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>holes</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>Agrave</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>654</integer>
+        </dict>
+        <key>mask</key>
+        <dict>
+          <key>anchors</key>
+          <array>
+          </array>
+          <key>components</key>
+          <array>
+          </array>
+          <key>contours</key>
+          <array>
+          </array>
+          <key>lib</key>
+          <dict>
+          </dict>
+          <key>name</key>
+          <string>Agrave</string>
+          <key>unicodes</key>
+          <array>
+          </array>
+          <key>width</key>
+          <integer>654</integer>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1.0</real>
+        <real>0.9416</real>
+        <real>1.0</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

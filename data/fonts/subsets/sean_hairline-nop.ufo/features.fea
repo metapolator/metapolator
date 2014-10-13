@@ -1,0 +1,327 @@
+languagesystem DFLT dflt;
+languagesystem deva dflt;
+languagesystem latn dflt;
+
+
+# GPOS 
+
+
+lookup kernHorizontalKerninglookup0 {
+  lookupflag 0;
+    pos \comma \quotedblright -130;
+    pos \four \seven -60;
+    pos \period \quotedblright -150;
+    pos \seven \zero -30;
+    pos \seven \two -40;
+    pos \seven \six -60;
+    pos \seven \four -80;
+    pos \seven \eight -20;
+    pos \two \seven -40;
+} kernHorizontalKerninglookup0;
+
+lookup kernHorizontalKerninginDevanaga {
+  lookupflag 0;
+    pos \aadeva \rradeva 30;
+    pos \adeva \rradeva 30;
+    pos \aideva \rradeva 30;
+    pos \anusvaradeva \space 0;
+    pos \bhadeva \rradeva 30;
+    pos \cadeva \rradeva 30;
+    pos \cadeva_viramadeva \uni0915094D0937094D0930 -20;
+    pos \cadeva_viramadeva \ngadeva 80;
+    pos \cadeva_viramadeva \lladeva 16;
+    pos \cadeva_viramadeva \dhadeva -50;
+    pos \cadeva_viramadeva_radeva \rradeva 30;
+    pos \candrabindudeva \space 0;
+    pos \chadeva \uni092C -10;
+    pos \chadeva \rradeva 20;
+    pos \chadeva_viramadeva_nadeva \uni092C -10;
+    pos \chadeva_viramadeva_nadeva \rradeva 20;
+    pos \chadeva_viramadeva_vadeva \uni092C -10;
+    pos \chadeva_viramadeva_vadeva \rradeva 20;
+    pos \ddadeva \nyadeva -90;
+    pos \ddadeva_viramadeva_ddadeva \nyadeva -90;
+    pos \ddadeva_viramadeva_ddhadeva \nyadeva -90;
+    pos \ddadeva_viramadeva_ghadeva \nyadeva -90;
+    pos \ddadeva_viramadeva_madeva \rradeva 30;
+    pos \ddadeva_viramadeva_nadeva \nyadeva -90;
+    pos \ddadeva_viramadeva_ttadeva \nyadeva -90;
+    pos \ddhadeva_viramadeva_ddhadeva \nyadeva -90;
+    pos \ddhadeva_viramadeva_nadeva \nyadeva -90;
+    pos \dhadeva \rradeva 30;
+    pos \dottedcircle \viramadeva -800;
+    pos \dottedcircle \uvowelsigndeva -800;
+    pos \dottedcircle \uuvowelsigndeva -800;
+    pos \dottedcircle \udattadeva -800;
+    pos \dottedcircle \rvocalicvowelsigndeva -800;
+    pos \dottedcircle \rrvocalicvowelsigndeva -800;
+    pos \dottedcircle \nuktadeva -800;
+    pos \dottedcircle \gravedeva -750;
+    pos \dottedcircle \evowelsigndeva -800;
+    pos \dottedcircle \eshortvowelsigndeva -700;
+    pos \dottedcircle \ecandravowelsigndeva -700;
+    pos \dottedcircle \candrabindudeva -700;
+    pos \dottedcircle \anusvaradeva -790;
+    pos \dottedcircle \anudattadeva -150;
+    pos \dottedcircle \aivowelsigndeva -800;
+    pos \dottedcircle \acutedeva -750;
+    pos \edeva \rradeva 30;
+    pos \gadeva \rradeva 30;
+    pos \gadeva_viramadeva_nadeva \rradeva 30;
+    pos \gadeva_viramadeva_radeva \rradeva 30;
+    pos \ghadeva \rradeva 30;
+    pos \ghadeva_viramadeva \nnadeva -20;
+    pos \ghadeva_viramadeva \ngadeva 60;
+    pos \ghadeva_viramadeva \dhadeva -60;
+    pos \ghadeva_viramadeva_nadeva \rradeva 30;
+    pos \ghadeva_viramadeva_radeva \rradeva 30;
+    pos \hadeva \nyadeva -90;
+    pos \ideva \nyadeva -90;
+    pos \iideva \nyadeva -90;
+    pos \jadeva \rradeva 30;
+    pos \jadeva_viramadeva_nyadeva \rradeva 30;
+    pos \jadeva_viramadeva_radeva \rradeva 30;
+    pos \jhadeva \rradeva 30;
+    pos \jhadeva_uvowelsigndeva \rradeva 30;
+    pos \jhadeva_viramadeva_radeva \rradeva 30;
+    pos \kadeva_viramadeva \nyadeva 40;
+    pos \kadeva_viramadeva \ngadeva -20;
+    pos \kadeva_viramadeva \lladeva -90;
+    pos \kadeva_viramadeva \dhadeva -50;
+    pos \kadeva_viramadeva_ssadeva \rradeva 30;
+    pos \khadeva \rradeva 30;
+    pos \khadeva_viramadeva \nyadeva -20;
+    pos \khadeva_viramadeva \lladeva 10;
+    pos \khadeva_viramadeva_nadeva \rradeva 30;
+    pos \khadeva_viramadeva_radeva \rradeva 30;
+    pos \madeva \rradeva 30;
+    pos \nadeva \rradeva 30;
+    pos \nnadeva \rradeva 30;
+    pos \nnadeva_viramadeva_radeva \rradeva 30;
+    pos \nyadeva \rradeva 30;
+    pos \nyadeva_viramadeva_cadeva \rradeva 30;
+    pos \nyadeva_viramadeva_jadeva \rradeva 30;
+    pos \nyadeva_viramadeva_radeva \rradeva 30;
+    pos \ocandravowelsigndeva \rradeva 30;
+    pos \padeva \rradeva 30;
+    pos \padeva_viramadeva_radeva \rradeva 30;
+    pos \rrvocalicdeva \nyadeva -90;
+    pos \rvocalicdeva \nyadeva -90;
+    pos \sadeva \rradeva 30;
+    pos \shadeva \rradeva 30;
+    pos \sixdeva \twodeva -50;
+    pos \ssadeva \rradeva 30;
+    pos \tadeva \rradeva 30;
+    pos \tadeva_viramadeva \shadeva -30;
+    pos \tadeva_viramadeva \nnnadeva -70;
+    pos \tadeva_viramadeva \jadeva 130;
+    pos \tadeva_viramadeva_radeva \rradeva 30;
+    pos \tadeva_viramadeva_tadeva \rradeva 30;
+    pos \thadeva \rradeva 30;
+    pos \thadeva_viramadeva_radeva \rradeva 30;
+    pos \uni0915094D0937094D092E \rradeva 30;
+    pos \uni0915094D0937094D092F \rradeva 30;
+    pos \uni0915094D0937094D0930 \rradeva 30;
+    pos \uni0917094D0930094D092F \rradeva 30;
+    pos \uni0918094D0930094D \nnadeva -20;
+    pos \uni0918094D0930094D \ngadeva 60;
+    pos \uni0918094D0930094D \dhadeva -60;
+    pos \uni091F094D091F094D092F \rradeva 30;
+    pos \uni091F094D092F \rradeva 30;
+    pos \uni0920094D0920094D092F \rradeva 30;
+    pos \uni0920094D092F \rradeva 30;
+    pos \uni0921094D0921094D092F \rradeva 30;
+    pos \uni0921094D092F \rradeva 30;
+    pos \uni0922094D0922094D092F \rradeva 30;
+    pos \uni0922094D092F \rradeva 30;
+    pos \uni0924094D0924094D \shadeva -30;
+    pos \uni0924094D0924094D \nnnadeva -70;
+    pos \uni0924094D0924094D \jadeva 130;
+    pos \uni0926094D0926094D092F \rradeva 30;
+    pos \uni0926094D0927094D092F \rradeva 30;
+    pos \uni092C \rradeva 30;
+    pos \uni092F \rradeva 30;
+    pos \uni092F094D0930 \rradeva 30;
+    pos \uni0932 \rradeva 30;
+    pos \uni093E \uni093F 30;
+    pos \uni093E \nyadeva 50;
+    pos \uudeva \nyadeva -90;
+    pos \vadeva \rradeva 30;
+} kernHorizontalKerninginDevanaga;
+
+lookup kernHorizontalKerninginLatinloo {
+  lookupflag 0;
+    pos \A \quotedblright -120;
+    pos \A \W -100;
+    pos \A \V -100;
+    pos \A \T -80;
+    pos \L \quotedblright -270;
+    pos \R \quotedblright -130;
+    pos \T \y -30;
+    pos \T \quoteright 50;
+    pos \T \quotedblright 40;
+    pos \T \period -110;
+    pos \T \o -90;
+    pos \T \comma -120;
+    pos \T \A -80;
+    pos \V \quoteright 40;
+    pos \V \quotedblright 60;
+    pos \V \period -100;
+    pos \V \comma -130;
+    pos \V \A -100;
+    pos \W \quoteright 50;
+    pos \W \quotedblright 60;
+    pos \W \period -160;
+    pos \W \comma -170;
+    pos \W \A -100;
+    pos \X \quoteright 20;
+    pos \Y \quoteright 40;
+    pos \Y \quotedblright 80;
+    pos \Y \comma -180;
+    pos \e \quotedblright -30;
+    pos \e \T -80;
+    pos \f \quoteright 160;
+    pos \f \quotedblright 180;
+    pos \hyphen \Y -100;
+    pos \m \quotedblright -90;
+    pos \o \quoteright -80;
+    pos \o \T -60;
+    pos \quotedblleft \o -120;
+    pos \quotedblleft \g -60;
+    pos \quotedblleft \e -60;
+    pos \quotedblleft \c -90;
+    pos \quotedblleft \Y 80;
+    pos \quotedblleft \W 60;
+    pos \quotedblleft \V 60;
+    pos \quotedblleft \T 30;
+    pos \quotedblleft \S -30;
+    pos \quotedblleft \O -40;
+    pos \quotedblleft \G -70;
+    pos \quotedblleft \C -30;
+    pos \quotedblleft \A -130;
+    pos \quoteleft \o -90;
+    pos \quoteleft \Y 30;
+    pos \quoteleft \X 20;
+    pos \quoteleft \W 40;
+    pos \quoteleft \V 30;
+    pos \quoteleft \T 30;
+    pos \quoteleft \G -30;
+    pos \quoteleft \C -40;
+} kernHorizontalKerninginLatinloo;
+
+feature kern {
+
+ script DFLT;
+     language dflt ;
+      lookup kernHorizontalKerninglookup0;
+
+ script deva;
+     language dflt ;
+      lookup kernHorizontalKerninginDevanaga;
+
+ script latn;
+     language dflt ;
+      lookup kernHorizontalKerninginLatinloo;
+} kern;
+
+@GDEF_Simple = [\A \AE \Aacute \Abreve \Acircumflex \Adieresis \Agrave \Aogonek 
+	\Aring \Atilde \B \C \CR \Cacute \Ccedilla \D \Dcroat \E \Eacute \Ecircumflex 
+	\Edieresis \Egrave \Euro \F \G \H \I \J \K \L \Lacute \M \N \Nacute \Ncaron 
+	\Ncommaaccent \O \OE \Oacute \Ocircumflex \Odieresis \Ograve \Ohungarumlaut 
+	\Omacron \Oslash \Otilde \P \Q \R \Racute \Rcaron \Rcommaaccent \S \Sacute \Scaron 
+	\Scedilla \Scommaaccent \T \Tcaron \U \Uacute \Ucircumflex \Udieresis \Ugrave 
+	\Uhungarumlaut \Umacron \Uogonek \Uring \V \W \X \Y \Yacute \Ydieresis \Z \Zacute 
+	\Zcaron \Zdotaccent \a \aacute \aadeva \abbreviationsigndeva \abreve 
+	\acircumflex \acute \acutedeva \adeva \adieresis \ae \agrave \aideva 
+	\aivowelsigndeva \amacron \ampersand \anudattadeva \anusvaradeva \aogonek 
+	\approxequal \aring \asciicircum \asciitilde \asterisk \at \atilde \audeva 
+	\avagrahadeva \b \backslash \bar \bhadeva \braceleft \braceright \bracketleft 
+	\bracketright \breve \brokenbar \bullet \c \cacute \cadeva \cadeva_viramadeva 
+	\cadeva_viramadeva_radeva \candrabindudeva \caron \ccaron \ccedilla \cedilla 
+	\cent \chadeva \chadeva_viramadeva \chadeva_viramadeva_nadeva 
+	\chadeva_viramadeva_vadeva \circumflex \colon \comma \copyright \currency \d 
+	\dadeva \dadeva_uuvowelsigndeva \dadeva_uvowelsigndeva 
+	\dadeva_viramadeva_dadeva \dadeva_viramadeva_dhadeva 
+	\dadeva_viramadeva_gadeva \dadeva_viramadeva_ghadeva 
+	\dadeva_viramadeva_nadeva \dagger \daggerdbl \danda \dbldanda-deva \ddadeva 
+	\ddadeva_viramadeva_ddadeva \ddadeva_viramadeva_ddhadeva 
+	\ddadeva_viramadeva_ghadeva \ddadeva_viramadeva_madeva 
+	\ddadeva_viramadeva_nadeva \ddadeva_viramadeva_ttadeva \dddhadeva \ddhadeva 
+	\ddhadeva_viramadeva_ddhadeva \ddhadeva_viramadeva_nadeva \degree \dhadeva 
+	\dieresis \divide \dollar \dotaccent \dotlessi \dottedcircle \e \eacute 
+	\ecandradeva \ecandravowelsigndeva \ecaron \ecircumflex \edeva \edieresis 
+	\edotaccent \egrave \eight \eightdeva \ellipsis \emacron \emdash \endash 
+	\eogonek \equal \eshortdeva \eshortvowelsigndeva \evowelsigndeva \exclam 
+	\exclamdown \f \fadeva \fi \figuredash \five \fivedeva \fl \florin \four \fourdeva 
+	\fraction \g \gadeva \gadeva_viramadeva \gadeva_viramadeva_nadeva 
+	\gadeva_viramadeva_radeva \ghadeva \ghadeva_viramadeva 
+	\ghadeva_viramadeva_nadeva \ghadeva_viramadeva_radeva \ghhadeva \grave 
+	\gravedeva \greater \greaterequal \guillemotleft \guillemotright 
+	\guilsinglleft \guilsinglright \h \hadeva \hungarumlaut \hyphen \i \iacute 
+	\icircumflex \ideva \idieresis \igrave \iideva \j \jadeva \jadeva_viramadeva 
+	\jadeva_viramadeva_nyadeva \jadeva_viramadeva_radeva \jhadeva 
+	\jhadeva.loclNEP \jhadeva_uvowelsigndeva \jhadeva_viramadeva 
+	\jhadeva_viramadeva_radeva \k \kadeva \kadeva_viramadeva 
+	\kadeva_viramadeva_radeva \kadeva_viramadeva_ssadeva \khadeva 
+	\khadeva_viramadeva \khadeva_viramadeva_nadeva \khadeva_viramadeva_radeva 
+	\khhadeva \l \less \lessequal \lladeva \llladeva \llvocalicdeva 
+	\llvocalicvowelsigndeva \lvocalicdeva \lvocalicvowelsigndeva \m \macron 
+	\madeva \minus \multiply \n \nacute \nadeva \ncaron \ncommaaccent \ngadeva 
+	\ngadeva_viramadeva_gadeva \ngadeva_viramadeva_ghadeva 
+	\ngadeva_viramadeva_kadeva \ngadeva_viramadeva_khadeva 
+	\ngadeva_viramadeva_madeva \nine \ninedeva \nnadeva \nnadeva_viramadeva 
+	\nnadeva_viramadeva_radeva \nnnadeva \notequal \ntilde \nuktadeva \numbersign 
+	\nyadeva \nyadeva_viramadeva \nyadeva_viramadeva_cadeva 
+	\nyadeva_viramadeva_jadeva \nyadeva_viramadeva_radeva \o \oacute 
+	\ocandradeva \ocandravowelsigndeva \ocircumflex \odeva \odieresis \oe \ogonek 
+	\ograve \ohungarumlaut \omacron \omdeva \one \onedeva \onehalf \onequarter 
+	\onesuperior \ordfeminine \oshortdeva \otilde \ovowelsigndeva \p \padeva 
+	\padeva_viramadeva_radeva \parenleft \parenright \percent \period 
+	\periodcentered \perthousand \plus \plusminus \q \qadeva \question 
+	\questiondown \quotedbl \quotedblbase \quotedblleft \quotedblright \quoteleft 
+	\quoteright \quotesinglbase \quotesingle \racute \radeva \rcaron \rcommaaccent 
+	\registered \rhadeva \ring \rradeva \rrvocalicdeva \rrvocalicvowelsigndeva 
+	\rvocalicdeva \rvocalicvowelsigndeva \s \sacute \sadeva \scaron \scedilla 
+	\scommaaccent \section \semicolon \seven \sevendeva \shadeva \shadeva.loclMAR 
+	\six \sixdeva \slash \space \spacedeva \ssadeva \sterling \t \tadeva 
+	\tadeva_viramadeva \tadeva_viramadeva_radeva \tadeva_viramadeva_tadeva 
+	\tcaron \thadeva \thadeva_viramadeva \thadeva_viramadeva_radeva \three 
+	\threedeva \threequarters \threesuperior \tilde \trademark \ttadeva 
+	\ttadeva_viramadeva_ddhadeva \ttadeva_viramadeva_nadeva 
+	\ttadeva_viramadeva_ttadeva \ttadeva_viramadeva_tthadeva 
+	\ttadeva_viramadeva_vadeva \tthadeva \tthadeva_viramadeva_nadeva 
+	\tthadeva_viramadeva_tthadeva \two \twodeva \twosuperior \u \uacute 
+	\ucircumflex \udattadeva \udeva \udieresis \ugrave \uhungarumlaut \umacron 
+	\underscore \uni021A \uni021B \uni0904 \uni0915094D0924094D0924 
+	\uni0915094D0937094D \uni0915094D0937094D092E \uni0915094D0937094D092F 
+	\uni0915094D0937094D0930 \uni0917094D0928094D \uni0917094D0930094D 
+	\uni0917094D0930094D092F \uni0918094D0930094D 
+	\uni0919094D0915094D0924094D0924 \uni0919094D0915094D0930 
+	\uni0919094D0915094D0937 \uni0919094D0917094D0930 \uni0919094D0918094D0930 
+	\uni091C094D091E094D \uni091C094D091E094D0930 \uni091C094D0930094D 
+	\uni091F094D091F094D092F \uni091F094D092F \uni0920094D0920094D092F 
+	\uni0920094D092F \uni0921094D0921094D092F \uni0921094D092F 
+	\uni0922094D0922094D092F \uni0922094D092F \uni0924094D0924094D 
+	\uni0924094D0930094D \uni0926094D09170941 \uni0926094D09170942 
+	\uni0926094D0917094D0930 \uni0926094D09180941 \uni0926094D09180942 
+	\uni0926094D0918094D092F \uni0926094D09260941 \uni0926094D09260942 
+	\uni0926094D0926094D092F \uni0926094D09270941 \uni0926094D09270942 
+	\uni0926094D0927094D092F \uni0926094D0927094D0930094D092F 
+	\uni0926094D09280941 \uni0926094D09280942 \uni092B \uni092B094D 
+	\uni092B094D0930 \uni092C \uni092F \uni092F.post \uni092F094D 
+	\uni092F094D0930 \uni092F094D0930094D \uni0932 \uni0932.loclMAR \uni093A 
+	\uni093B \uni093E \uni093F \uni0940 \uni094A \uni094C \uni094E \uni094F \uni0956 
+	\uni0957 \uni0972 \uni0973 \uni0974 \uni0975 \uni0976 \uni0977 \uni0979 
+	\uni0979.loclNEP \uni097A \uni097B \uni097C \uni097D \uni097E \uni097F \uni20A8 
+	\uogonek \uring \uudeva \uuvowelsigndeva \uvowelsigndeva \v \vadeva \viramadeva 
+	\visargadeva \w \x \y \yen \yyadeva \z \zacute \zadeva \zcaron \zdotaccent \zero 
+	\zerodeva \eMatra \aiMatra \ra_halant \halant_ra \la \sha \sha_halant \jha \zha 
+	\jha_halant \ordmasculine \iiMatra \candraBindu \anusvara \eCandraMatra \ka 
+	\kha \ga \ja \dda \ddha \na \pha \ya \ra \lla \ka_halant \ja_halant \gha \ca \nya \nna 
+	\ta \tha \da ];
+
+table GDEF {
+  GlyphClassDef @GDEF_Simple, , , ;
+
+} GDEF;
+

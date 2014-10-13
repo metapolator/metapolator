@@ -222,21 +222,23 @@ var extend = {
 
 	from: function(real, im) {
 		if (real instanceof Complex) return new Complex(real.real, real.imag);
-		var match;
-		if (typeof real == 'string'){
-			if (real == 'i') real = '0+1i';
-			match = real.match(/(\d+)?([\+\-]\d*)[ij]/);
-			if (match){
-				real = match[1];
-				im = (match[2] == '+' || match[2] == '-') ? match[2] + '1' : match[2];
-			}
-		}
-		real = +real;
-		im = +im;
-		return new Complex(isNaN(real) ? 0 : real, isNaN(im) ? 0 : im);
+		return new Complex(real, im);
 	},
 
-	fromPolar: function(r, phi){
+	fromString: function(str) {
+		var match, real, im;
+		if (str == 'i') str = '0+1i';
+		match = str.match(/(\d+)?([\+\-]\d*)[ij]/);
+		if (match) {
+			real = match[1];
+			im = (match[2] == '+' || match[2] == '-')
+				? match[2] + '1'
+				: match[2];
+		}
+		return new Complex(+real, +im);
+	},
+
+	fromPolar: function(r, phi) {
 		return new Complex(1, 1).fromPolar(r, phi);
 	},
 

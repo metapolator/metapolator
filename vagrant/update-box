@@ -1,0 +1,26 @@
+#!/bin/sh
+
+VERSION=$1
+
+# Stop on error
+set -e
+
+# Update the box
+vagrant destroy --force
+vagrant up
+vagrant package --vagrantfile Vagrantfile
+
+# Test the box: first, add it to the system:
+vagrant box add --force --name metapolator package.box
+
+# Then install it in another directory
+mkdir -p tmp
+cd tmp
+vagrant destroy --force
+vagrant init metapolator
+vagrant up
+
+# Finally, upload the box to Vagrant Cloud
+# Reuben Thomas @rrthomas has to do this
+chmod 644 package.box
+scp package.box adsensus.net:public_html/rrt/metapolator-vagrant-box/package-$VERSION.box

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="uni092B094D" format="1">
+  <advance width="573"/>
+  <outline>
+    <component base="padeva"/>
+    <contour>
+      <point x="603" y="391" type="curve" smooth="yes"/>
+      <point x="675" y="391"/>
+      <point x="728" y="353"/>
+      <point x="769" y="298" type="curve"/>
+      <point x="786" y="311" type="line"/>
+      <point x="742" y="373"/>
+      <point x="684" y="413"/>
+      <point x="605" y="413" type="curve" smooth="yes"/>
+      <point x="523" y="413"/>
+      <point x="464" y="379"/>
+      <point x="419" y="315" type="curve"/>
+      <point x="435" y="303" type="line"/>
+      <point x="477" y="360"/>
+      <point x="531" y="391"/>
+    </contour>
+    <contour>
+      <point x="432" y="324" type="line"/>
+      <point x="138" y="50" type="line"/>
+      <point x="153" y="32" type="line"/>
+      <point x="444" y="311" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>mask</key>
+        <dict>
+          <key>name</key>
+          <string>padeva_viramadeva_radeva</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>573</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+        <key>holes</key>
+        <dict>
+          <key>name</key>
+          <string>padeva_viramadeva_radeva</string>
+          <key>lib</key>
+          <dict/>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>573</integer>
+          <key>contours</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>anchors</key>
+          <array/>
+        </dict>
+      </dict>
+      <key>com.typemytype.robofont.mark</key>
+      <array>
+        <real>0.2005</real>
+        <real>1</real>
+        <real>0.9416</real>
+        <real>1</real>
+      </array>
+    </dict>
+  </lib>
+</glyph>

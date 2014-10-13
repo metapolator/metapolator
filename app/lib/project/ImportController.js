@@ -45,7 +45,9 @@ define([
         if(this._project.hasMaster(masterName))
             this._master = this._project.getMaster(masterName);
         else
-            this._master = this._project.createMaster(masterName);
+            this._master = this._project.createMaster(masterName,
+                                                      [this._project.cpsOutputConverterFile, this._project.cpsGlobalFile, masterName + '.cps'],
+                                                      'skeleton.' + masterName);
 
         // tell us about errors instead of throwing it away
         var options = {
