@@ -16,6 +16,17 @@ If you are using Emacs then you might find the following code useful in your ini
 (add-to-list 'auto-mode-alist '("\\.cps\\'" . css-mode))
 ```
 
+## Variable declaration
+
+Multiple variable declarations should look like this:
+
+```js
+var i = 0
+  , j
+  , obj = new Foo()
+  ;
+```
+
 ## Inheritance
 
 ### Class-like inheritance
