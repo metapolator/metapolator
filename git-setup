@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Configure git to make hacking on Metapolator easier
+# Read the rest of the script to see the new shortcuts added
+#
+# It is recommended also to use hub from https://hub.github.com/ which adds
+# and improves many git commands for github work
+
+# Instruct the user
+echo "Run \`git fetch upstream' to get upstream branches, PRs etc."
+
+# Exit on error, to make script idempotent: next command will give error if run twice
+set -e
+
+# Set upstream
+git remote add upstream https://github.com/metapolator/metapolator.git
+
+# Alias for fetching pull requests from upstream, e.g.:
+# $ git checkout pr/165
+# Note: This will be added to hub 1.13: https://github.com/github/hub/issues/633
+git config --add remote.upstream.fetch '+refs/pull/*/head:refs/remotes/upstream/pr/*'
+
+# Update current branch from upstream/master, including submodules
+# $ git upstream-update
+# TODO: allow origin and branch to be specified, to allow testing e.g. a PR
+# N.B.: shell trickery ahead
+git config alias.upstream-update "$(echo \!sh -c $(cat <<EOF
+"
+    git fetch upstream
+ && git merge upstream/master
+ && git rebase upstream/master
+ && git submodule update
+"
+EOF
+))";
+
