@@ -312,9 +312,9 @@ _work in progress_
 * height _(scales all vertical metrics)_
 * width _(scales the skeleton horizontally)_
 * slant
-* spacing
-* back/front
-* vertical metrics, depending on script and glyph; for instance for Latin, lowercase:
+* spacing _(= front sidebearing)_
+* back/front _(back sidebearing = back/front × spacing)_
+* [vertical metrics](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#optical-horizontal-lines), depending on script and glyph; for instance for Latin, lowercase:
   * x-height
   * ascender
   * descender
@@ -331,10 +331,10 @@ _work in progress_
   * tension out
   * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
 * pen
-  * angle
-  * kink _(i.e. port-starboard angle difference, looking in the direction in which the pen moves)_
   * weight
   * port/starboard _(i.e. left/right weight ratio, looking in the direction in which the pen moves)_
+  * angle
+  * kink _(port-starboard angle difference)_
 
 ### glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
