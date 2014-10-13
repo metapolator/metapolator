@@ -3,13 +3,17 @@ define([
   , 'metapolator/models/MOM/Master'
   , 'metapolator/models/MOM/Glyph'
   , './MOMPointPen'
+  , 'ufojs/plistLib/main'
 ], function(
     errors
   , Master
   , Glyph
   , MOMPointPen
+  , plistLib
 ) {
     "use strict";
+    var readPlistFromString = plistLib.readPlistFromString
+    , writePlistToString = plistLib.createPlistString;
 
     function ProjectMaster(io, project, glyphSetDir, cpsChain) {
 
@@ -19,6 +23,7 @@ define([
         this._cpsChain = cpsChain.slice();
 
         this._glyphSet = undefined;
+        this._fontinfo = this.readFontInfoFromFile();
     }
 
     var _p = ProjectMaster.prototype;
@@ -32,6 +37,56 @@ define([
             return this._glyphSet;
         }
     });
+
+    /**
+     * Path of the fontinfo.plist file for an imported master
+     */
+    Object.defineProperty(_p, '_fontInfoFilePath', {
+        get: function() { return this._glyphSetDir+'/fontinfo.plist';}
+    });
+
+    /**
+     * The information from the fontinfo.plist if there is any. Setting this property will
+     * also save the new data to disk
+     */
+    Object.defineProperty(_p, 'fontinfo', {
+        get: function() { return this._fontinfo; }
+        ,
+        set: function(x) {
+            this._fontinfo = x;
+            console.log("writing fontinfo.plist to:" + this._fontInfoFilePath );
+            this.writeFontInfoToFile();
+        }
+    });
+
+    /**
+     * Read a fontinfo.plist file for this master if it exists.
+     */
+    _p.readFontInfoFromFile = function() {
+        var path = this._fontInfoFilePath;
+        var fontInfoString = null;
+        try {
+            fontInfoString = io.readFile(false, path);
+        } catch(error){
+            if(!(error instanceof IONoEntry))
+                throw error;
+        }
+        return plistLib.readPlistFromString(fontInfoString);
+    }
+
+    /**
+     * Export the current fontinfo to a file at 'path'. If you do not
+     * specify the path then save the fontinfo.plist to a default
+     * location for this project master.
+     */
+    _p.writeFontInfoToFile = function( path ) {
+        if( path === undefined ) {
+            path = this._fontInfoFilePath;
+        }
+        this._io.writeFile( false, path,
+                            writePlistToString(this._fontinfo));
+    }
+
 
     _p.saveCPS = function(filename, cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'+filename, cps);

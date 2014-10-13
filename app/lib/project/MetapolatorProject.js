@@ -503,6 +503,10 @@ define([
         
         this._io.mkDir(false, dirName+'/glyphs');
         this._io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
+
+        var projectMaster = this._getMaster(masterName);
+        projectMaster.writeFontInfoToFile(dirName+'/fontinfo.plist');
+
         
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
