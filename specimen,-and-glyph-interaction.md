@@ -205,7 +205,7 @@ When _exactly two_ skeleton points in total are selected, both of the _same glyp
 
 ![](http://mmiworks.net/metapolator/2points1glyph.png)
 
-then when the mouse is hovered for 500ms in a zone enclosed by the two pints and the mid-points of the two handles:
+then when the mouse is hovered for 500ms in a zone enclosed by the two points and the mid-points of the two handles:
 
 ![](http://mmiworks.net/metapolator/hovercorner.png)
 
@@ -267,7 +267,7 @@ After a discussion with Simon, Wei and Nicolas, Peter adds the following—
 
 **rule**: lines are mapped to classes of glyphs. For instance in Latin, the cap height line only pertains to capitals, ascender, descender and x-height only to lowercase. This tagging will be provided by Metapolator (it was already in previous versions). Means to customise it are coming soon…
 
-**rule**: if the pen blade of a point crosses an optical horizontal line (i.e. the pint of the pen is on one side of the line and the edge of its stroke on the other side of it), then the point is attached at a fixed vertical offset to that line. This preserves overshoot, which that crossing is.
+**rule**: if the pen blade of a point crosses an optical horizontal line (i.e. the point of the pen is on one side of the line and the edge of its stroke on the other side of it), then the point is attached at a fixed vertical offset to that line. This preserves overshoot, which that crossing _is_.
 
 **note**: zones are a concept in ufo and could match the meaning of zones we use here.
 
