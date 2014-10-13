@@ -330,8 +330,9 @@ _this allows users to express at point, or any level above (e.g. segment, glyph,
   * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
 * pen
   * angle
+  * kink _(i.e. left-right angle difference, looking in the direction in which the pen moves)_
   * weight
-  * port/starboard _(i.e. left/right width ratio, looking in the direction in which the pen moves)_
+  * port/starboard _(i.e. left/right weight ratio, looking in the direction in which the pen moves)_
 
 ### glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
