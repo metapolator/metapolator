@@ -287,12 +287,12 @@ After looking at a lot of possible metrics combinations, we picked the following
 
 ![](http://mmiworks.net/metapolator/width+space.png)
 
-* **width**: this is b–c above; this is a scalar (default: 1.0) that is multiplied with the actual x-coordinates of the points in the glyph; **convention**: the front-most (in reading direction) point of the glyph has x-coordinate = zero;<br/>
+* **width**: this is b–c above; this is a scalar (default: 1.0) that multiplies the actual x-coordinates of the points in the glyph; **convention**: the front-most (in reading direction) point of the glyph has x-coordinate = zero;<br/>
 _this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘width × 1.1’ and the skeleton of all glyphs concerned is extended by 10%_
-* **spacing**: this is directly a–b above (and indirectly c–d, see below); expressed in units, this is in general the spacing of the glyph, by default calculated for each glyph individually out of the imported ufo;<br/>
-_this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘spacing × 0.9’ or ‘spacing + -12 units’ and the spacing of all glyphs concerned, front and back sidebearings, is reduced_
+* **spacing**: this is directly a–b above (and indirectly c–d—see below); expressed in units, this is in general the spacing of the glyph, by default calculated for each glyph individually out of the imported ufo;<br/>
+_this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘spacing × 0.9’, or ‘spacing + -12 units’, and the spacing of all glyphs concerned, front and back sidebearings, is reduced_
   * **note**: this number can be negative; this means directly that the front sidebearing is negative (at the back? see below).
-* **back/front** this is a scalar that sets the ratio between c–d and a–b above; by default calculated for each glyph individually out of the imported ufo.
+* **back/front** this is a scalar that sets the ratio between c–d and a–b above, e.g. spacing = 74 units and back/front* = 0.94m then back sidebearing is 70 units; by default calculated for each glyph individually out of the imported ufo.
   * **note**: this number can be negative; this means that the back sidebearing is opposite in sign to the front one; example: spacing = -55 units and back/front = -2, then the front sidebearing is -55 and the back sidebearing is 110.
 
 #### preserving kerning
@@ -302,7 +302,7 @@ If now the spacing of glyphs, or even a whole master gets changed, then the kern
 
 #### pen weight
 The point parameter (pen) width can be renamed to **weight**, while maintaining the port/starboard parameter (i.e. left/right ~~width~~ weight ratio, looking in the direction in which the pen moves).<br/>
-_this allows users to express at point, or any level above (e.g. segment, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’ and the stroke of all points concerned is increased in weight._
+_this allows users to express at point, or any level above (e.g. segment, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’, and the stroke weight of all points concerned is increased._
 
 ## an interim parameter overview
 _work in progress_
