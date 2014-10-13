@@ -271,6 +271,68 @@ After a discussion with Simon, Wei and Nicolas, Peter adds the following—
 
 **note**: zones are a concept in ufo and could match the meaning of zones we use here.
 
+### width, weight and spacing
+Character width, body width, spacing, sidebearings—front and back, there are quite a few overlapping
+horizontal metrics in type design. On top of that traditionally changing the weight of the glyph interacts with these metrics.
+
+Interestingly, one does not need so many parameters to _technically_ fully describe this system: on top of the point coordinates, one needs an advance for each glyph, and a number for (let’s call it) pen weight to drive the rendering. The conclusion is that it is the UI, that aims to offer directness and flexibility to users, drives the choice of parameters.
+
+The other day we (Simon and Peter) discussed all this and came to a system that offers this directness and flexibility, without ending up with parameter-bloat. We observed these basic principles:
+
+1. imported ufos come with spacing set; this can be good or so-so, but we assume that it is a workable spacing for type designers;
+* imported ufos (quite likely) come with kerning tables; these can be good or so-so, but we assume that it is a workable kerning for type designers;
+* if one measures the spacing from the first and last skeleton point of the glyph—instead from the first and last black—then a wholesale stroke weight cis unlikely to trigger a need for wholesale spacing adjustment (the stroke grows/shrinks equally into the inner-glyph space and outwards into the sidebearings).
+
+After looking at a lot of possible metrics combinations, we picked the following glyph-level parameters:
+
+![](http://mmiworks.net/metapolator/width+space.png)
+
+* **width**: this is b–c above; this is a scalar (default: 1.0) that is multiplied with the actual x-coordinates of the points in the glyph; **convention**: the front-most (in reading direction) point of the glyph has x-coordinate = zero;<br/>
+_this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘width × 1.1’ and the skeleton of all glyphs concerned is extended by 10%_
+* **spacing**: this is directly a–b above (and indirectly c–d, see below); expressed in units, this is in general the spacing of the glyph, by default calculated for each glyph individually out of the imported ufo;<br/>
+_this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘spacing × 0.9’ or ‘spacing + -12 units’ and the spacing of all glyphs concerned, front and back sidebearings, is reduced_
+  * **note**: this number can be negative; this means directly that the front sidebearing is negative (at the back? see below).
+* **back/front** this is a scalar that sets the ratio between c–d and a–b above; by default calculated for each glyph individually out of the imported ufo.
+  * **note**: this number can be negative; this means that the back sidebearing is opposite in sign to the front one; example: spacing = -55 units and back/front = -2, then the front sidebearing is -55 and the back sidebearing is 110.
+
+#### preserving kerning
+We say: apply kerning within metapolator on a relative basis. This means that on import the kerning is converted from absolute (in units) to relative (in %). Example: between glyphs ‘a’ and ‘b’ the combined—measured between skeleton points—spacing is 150 units and kerning is -7 units, then the relative kerning is -7 / 150 = -4.67%.
+
+If now the spacing of glyphs, or even a whole master gets changed, then the kerning is simply applied as a percentage of that new spacing. Both spacing and kerning can be interpolated. This gives us a workable basis to deal with kerning in the short term. A real kerning editor has to be designed for the Fonts view, where it is used to finish fonts. Also the specimen of the Parameters view needs a means to adjust kerning for a master.
+
+#### pen weight
+The point parameter (pen) width can be renamed to **weight**, while maintaining the port/starboard parameter (i.e. left/right ~~width~~ weight ratio, looking in the direction in which the pen moves).<br/>
+_this allows users to express at point, or any level above (e.g. segment, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’ and the stroke of all points concerned is increased in weight._
+
+## an interim parameter overview
+**glyph** parameters (can be set at glyph, script, master and project level)
+
+* height _(scales all vertical metrics)_
+* width _(scales the skeleton horizontally)_
+* spacing
+* back/front
+* slant
+* vertical metrics, depending on script and glyph; for instance for Latin, lowercase:
+  * x-height
+  * ascender
+  * descender
+* point alignments _(aka point-nailing, fka penshifted)_; [see here](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#point-alignments)
+
+**point** parameters (can be set at point, segment, glyph, script, master and project level)
+
+* skeleton
+  * x
+  * y
+  * direction in
+  * direction out
+  * tension in
+  * tension out
+  * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
+* pen
+  * angle
+  * weight
+  * port/starboard _(i.e. left/right width ratio, looking in the direction in which the pen moves)_
+
 ### glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
 
