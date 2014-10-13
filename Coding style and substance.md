@@ -66,10 +66,11 @@ define([], function() {
 
 ```
 #### Let's do inheritance
-JavaScript uses prototype based-inheritance. This is a pattern that allows a lot of things, but also it makes some things harder to do right. One of the latter is a system of inheritance that behaves like a class-based inheritance system.
-The main difficulty is that in Javascript the "new" keyword does two things. A) it creates a new object using the .prototype property of the constructor function as prototype for the new object B) it invokes the constructor function--bound to the newly created object--which sets initial state properties.
+JavaScript uses prototype-based inheritance. This is a pattern that allows a lot of things, but also it makes some things harder to do right. One of the latter is a system of inheritance that behaves like a class-based inheritance system.
 
-This is fine when you want to create a new instance of a "class" to use right away, but it fails short when setting up a system of inheritance. In the following, the two tasks of the new keyword are replaced by:
+The main difficulty is that in Javascript the `new` keyword does two things. A) it creates a new object using the `.prototype` property of the constructor function as prototype for the new object B) it invokes the constructor function—bound to the newly created object—which sets initial state properties.
+
+This is fine when you want to create a new instance of a "class" to use right away, but it falls short when setting up a system of inheritance. In the following, the two tasks of the new keyword are replaced by:
 
 * *Object.create(Parent.prototype)*: does only A)
 * *Parent.call(this)*: inside of the child constructor does only B)
@@ -141,18 +142,18 @@ define(["metapolator/errors"], function(errors) {
     "use strict";
     /**
      * The static parent class, it defines for example an interface, but
-     * it needs no own `state` per instance to operate. It can be just
-     * an object with a collection of methods.
+     * it needs no per-instance state. It can be just an object with a
+     * collection of methods.
      */
     return {
         /**
-         * Description about the expected behavior of the do interface.
+         * Description of the expected behavior of the do interface.
          */
         do: function(arg) {
             throw new errors.NotImplemented('implement "do" in a deriving object');
         }
       , somethingGeneric: function() {
-      
+          ...
       }
     }
 })
@@ -161,7 +162,7 @@ define(["metapolator/errors"], function(errors) {
 // file staticParent.js
 define(["./StaticParent"], function(parent) {
     "use strict";
-    // the most straight forward way to inherit from parent
+    // the most straightforward way to inherit from parent
     var staticChild = Object.create(parent);
     
     staticChild.do = function(arg) {
@@ -189,15 +190,15 @@ define([], function() {
     "use strict";
     
     /**
-     * Creating not anonymous functions has sometimes benefits
-     *   - In many interpreters the functions `name` property is set to 
+     * Creating named functions has some benefits:
+     *   - In many interpreters the function’s `name` property is set to 
      *     the name of the function, which can be handy for debugging.
      *     `function hello(){}.name === 'hello'`
-     *     I mostly use this to get the name of the constructor of an object
+     *     This can also be used to get an object’s constructor’s name
      *     `object.constructor.name` but for some cases it might be useful
      *     to have this available for functions, too.
-     *   - You can reference such a function before it was declared, the
-     *     parser knows how to handle that (I don't know if this is a benefit).
+     *   - You can reference such a function before it is declared, the
+     *     parser knows how to handle that.
      */
     function writeStuff(){}
     function readStuff(){
@@ -213,8 +214,7 @@ define([], function() {
     
     /**
      * The module will have a name itself, so it's OK to account for that
-     * in the exported name.
-     * e.g. `writeStuff` will be used as `stuff.write`
+     * in the exported names: e.g. `writeStuff` will be used as `stuff.write`
      */
     return {
         write: writeStuff
