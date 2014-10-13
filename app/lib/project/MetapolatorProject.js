@@ -138,7 +138,7 @@ define([
         this._io.mkDir(false, this.dataDir);
         
         // project file:
-        // create     this.dataDir/project.yaml => yaml({})
+        // create this.dataDir/project.yaml => yaml({})
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create dir this.dataDir/cps
@@ -148,7 +148,7 @@ define([
         this._io.writeFile(false, this.layerContentsFile,
                                         plistLib.createPlistString([]));
         
-        // the glyphs dir must be there, so the ufo is valid. but we don't
+        // the glyphs dir must be there to make the UFO valid, but we don't
         // use it currently :-(
         // create dir dirName/glyphs
         this._createGlyphLayer('public.default', 'glyphs');
