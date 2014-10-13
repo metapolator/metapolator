@@ -305,13 +305,15 @@ The point parameter (pen) width can be renamed to **weight**, while maintaining 
 _this allows users to express at point, or any level above (e.g. segment, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’ and the stroke of all points concerned is increased in weight._
 
 ## an interim parameter overview
+_work in progress_
+
 **glyph** parameters (can be set at glyph, script, master and project level)
 
 * height _(scales all vertical metrics)_
 * width _(scales the skeleton horizontally)_
+* slant
 * spacing
 * back/front
-* slant
 * vertical metrics, depending on script and glyph; for instance for Latin, lowercase:
   * x-height
   * ascender
@@ -330,7 +332,7 @@ _this allows users to express at point, or any level above (e.g. segment, glyph,
   * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
 * pen
   * angle
-  * kink _(i.e. left-right angle difference, looking in the direction in which the pen moves)_
+  * kink _(i.e. port-starboard angle difference, looking in the direction in which the pen moves)_
   * weight
   * port/starboard _(i.e. left/right weight ratio, looking in the direction in which the pen moves)_
 
