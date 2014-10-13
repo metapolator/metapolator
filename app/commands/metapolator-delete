@@ -5,7 +5,7 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 
 exports.command = {
     description: 'delete the given master'
-  , arguments: '<master>'
+  , arguments: '<[project/]master>'
 };
 
 var path = require('path');
@@ -28,11 +28,11 @@ if (require.main === module) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
         program.action(function(master) {
-            var project = new MetapolatorProject(io)
-                ;
+            var pm = parseArgs.projectMaster(io, master);
+            var project = pm[0];
+            master = pm[1];
             // Load project and delete master in it
             project.load();
-            master = parseArgs.masterName(master);
             project.deleteMaster(master);
         });
         program.parse(process.argv);

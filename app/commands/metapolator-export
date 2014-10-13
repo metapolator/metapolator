@@ -4,8 +4,8 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'export the given master to directory <project>'
-  , arguments: '<master> <ufo>'
+    description: 'export a master to a UFO'
+  , arguments: '<[project/]master> <ufo>'
 };
 
 var path = require('path');
@@ -16,24 +16,28 @@ requirejs.config(require('config'));
 if (require.main === module) {
     requirejs([
         'commander'
+      , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/project/MetapolatorProject'
     ], function (
         program
+      , parseArgs
       , io
       , MetapolatorProject
 ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
-        program.action(function(masterName, instanceName) {
-            var project = new MetapolatorProject(io);
+        program.action(function(master, instance) {
+            var pm = parseArgs.projectMaster(io, master);
+            var project = pm[0];
+            master = pm[1];
             project.load();
             
             // load all masters, because right now it is very confusing
             // when some masters are missing from the MOM
             project.masters.forEach(project.open, project);
             
-            project.exportInstance(masterName, instanceName, program.precision);
+            project.exportInstance(master, instance, program.precision);
         })
         .option('-p, --precision <n>', 'The number of decimal places to use in output coordinates, '
                                      + 'or -1 for no rounding',
