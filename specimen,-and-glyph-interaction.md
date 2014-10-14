@@ -296,7 +296,9 @@ _this allows users to express at glyph, or any level above (e.g. script, master 
   * **note**: this number can be negative; this means that the back sidebearing is opposite in sign to the front one; example: spacing = -55 units and back/front = -2, then the front sidebearing is -55 and the back sidebearing is 110.
 
 #### preserving kerning
-The two sidebearings of a glyph each consist of two parts: (half) the general spacing of the font, plus—or usually, minus—a shape compensation—a generalised one, in relation to ‘o’ & ‘n‘, or ‘O’ & ‘N’, for Latin. Kerning is the glyph-pair optimisation of the shape compensation.
+It all starts with **spacing**. The two sidebearings of a glyph each consist of two parts: (half) the general spacing of the font, plus—or usually, minus—a shape compensation—a generalised one, in relation to ‘o’ & ‘n‘, or ‘O’ & ‘N’, for Latin. So far, so good, for the **spacing** of both sides of a glyph.
+
+**Kerning** is the glyph-pair optimisation of the shape compensation.
 
 Since wholesale changes of spacing imply changing the general spacing of the font, and not the shape compensation, the kerning can be left untouched for these.
 
