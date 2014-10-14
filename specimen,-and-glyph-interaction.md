@@ -281,6 +281,7 @@ The other day we (Simon and Peter) discussed all this and came to a system that 
 
 1. imported ufos come with spacing set; this can be good or so-so, but we assume that it is a workable spacing for type designers;
 * imported ufos (quite likely) come with kerning tables; these can be good or so-so, but we assume that it is a workable kerning for type designers;
+  * a font with 1000 glyphs has _potentially_ 1 million kerning pairs; this is however impractical—if only for the file size—and we assume that a decent font has around 100, _maybe_ hundreds, kerning pairs defined.
 * if one measures the spacing from the first and last skeleton point of the glyph—instead from the first and last black—then a wholesale stroke weight cis unlikely to trigger a need for wholesale spacing adjustment (the stroke grows/shrinks equally into the inner-glyph space and outwards into the sidebearings).
 
 After looking at a lot of possible metrics combinations, we picked the following glyph-level parameters:
@@ -301,6 +302,32 @@ It all starts with **spacing**. The two sidebearings of a glyph each consist of 
 **Kerning** is the glyph-pair optimisation of the shape compensation.
 
 Since wholesale changes of spacing imply changing the general spacing of the font, and not the shape compensation, the kerning can be left untouched for these.
+
+#### editing kerning
+**note**: the kerning editor is designed for _updating_ kerning, not for defining kerning from scratch. it is however an _educated_ kerning editor.
+
+When two adjacent glyphs are selected, then hovering the mouse for 500ms over the ‘inter-glyph’ part of the selection indication bar shows the kerning control:
+
+![](http://mmiworks.net/metapolator/kernhover.png)
+
+we see the kerning value for this pair—click to edit; the diamond control we have [seen before](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#specimen) for the specimen display size, here it controls the kerning—normal increase/decrease 1 unit per (effective) pixel ‘pulled’, with the ctrl/cmd key pressed 0.1 unit, with shift 10 units.
+
+Users can select whole lines at the same time, and point wherever they want to check the kerning or take action:
+
+![](http://mmiworks.net/metapolator/kernscrape.png)
+
+##### getting educated
+Since we primarily import ufos with existing spacing and kerning, we can do some educated guessing to offer users to propagate kerning updates to similarly spaced + kerned pairs.
+
+When starting to interact with a kerning pair, this pair is characterised by 3 numbers: the pertaining sidebearing of the first glyph, the kerning value and the sidebearing of the second glyph. Metapolator can look up of there are any other pairs with the same triplet of numbers, where the two sidebearings are interchangeable (e.g. 64, -34, 74 is equivalent to 74, -34, 64). If this is the case, an indicator is shown next to the kerning value:
+
+![](http://mmiworks.net/metapolator/kernindication.png)
+
+clicking it shows an overview of the pairs that share the same triplet of numbers:
+
+![](http://mmiworks.net/metapolator/kernalso.png)
+
+which lets users select (icon grid model, again) the pairs that also should receive this update. This can be done before or right after the kerning is adjusted (up to the point where a different edit action is started).
 
 #### pen weight
 The point parameter (pen) width can be renamed to **weight**, while maintaining the port/starboard parameter (i.e. left/right ~~width~~ weight ratio, looking in the direction in which the pen moves).<br/>
