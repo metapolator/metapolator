@@ -217,7 +217,7 @@ on the left and right of the panel we see two schematic representations of the-p
 
 In each representation the skeleton point, port or starboard pen-end can be selected to be aligned. The skeleton point is the default. The middle of the panel lists the horizontal and vertical distances between the selected points—these are absolute, never negative. When the point selection is changed, the distances update:
 
-![](http://mmiworks.net/metapolator/fixalign3.png)
+![](http://mmiworks.net/metapolator/fixalign4.png)
 
 we also see that when a distance is zero milliEm, the word ‘align’ is displayed instead. **note** that users can use the two selected skeleton point handles to fine-tune the horizontal and vertical distances in this state, also using the arrow keys.
 
