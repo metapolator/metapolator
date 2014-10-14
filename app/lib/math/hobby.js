@@ -6,8 +6,8 @@ define([
     "use strict";
 
     /**
-     * All points in this module are expected to be complex numbers
-     * i.E. instances of metapolator/math/Vector
+     * All points in this module are expected instances of
+     * metapolator/math/Vector (complex numbers)
      */
 
 
@@ -25,7 +25,7 @@ define([
     }
 
     /**
-     * Returns two distances from the respective on curve points to their
+     * Returns two distances from the respective on-curve points to their
      * control points on the given curve segment.
      *
      * dir0 and dir1 are the tangent directions as radians or instances
@@ -34,20 +34,14 @@ define([
      * alpha and beta are the tension parameters. The tensions values alpha
      * and beta have no influence on the resulting distance of each other.
      *
-     * When one of the tension values === undefined, it's return value is
-     * not calculated and undefined as well. This is used internally to
-     * enforce the DRY pattern. The exported method returns NaN in these
-     * cases, as calculating the values using undefined would do.
-     *
-     *
-     * Tensions are bigger the closer they are at their on curve points.
+     * Tensions are bigger the closer they are to their on-curve points.
      * When using Infinity as a tension the returned magnitude is 0;
      * When using 0 as a tension the returned magnitude is Infinity.
-     *    When the tension is 0 and z0 equals z1 it's resulting
-     *    magnitude is NaN. (instead of Infinity) this case it is
-     *    short circuited into returning Infinity, which is OK as
-     *    a behavior; because it obeys the rule above, also it's
-     *    compatible with the reverse operation magnitude2tension.
+     *    When the tension is 0 and z0 equals z1 its resulting
+     *    magnitude is NaN; in this case it is short circuited into
+     *    returning Infinity, which is OK as a behavior; because it obeys
+     *    the rule above, also it's compatible with the reverse operation
+     *    magnitude2tension.
      */
     function _tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
         var diff_z1z0 = z1['-'](z0)
@@ -56,7 +50,7 @@ define([
             // calculating this using the polar form helps us by not
             // getting into trouble when z1['-'](z0) is <Vector 0, 0>
             // because that would cause a division by 0 when calculating
-            // theta and pi using cartesian utilities.
+            // theta and pi using cartesian arithmetic.
           , theta = dir0 - angle_z1z0
           , phi = angle_z1z0 - dir1
           , u, v;
@@ -101,7 +95,7 @@ define([
     function _magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
         var uv = _tension2control(
                       z0, dir0
-                      // 1 is standard tension
+                      // 1 is the default tension
                     , alpha === undefined ? undefined : 1
                     , beta === undefined ? undefined : 1
                     , dir1, z1)
@@ -189,7 +183,7 @@ define([
         return magnitude2tensionOut(p1, dir0, alpha, dir1, p3);
     }
     /**
-     * returns the tension for the seccond on-curve point
+     * returns the tension for the second on-curve point
      */
     function control2tensionIn(p0, p1, p2, p3) {
         var diffp0p1 = p1['-'](p0)
@@ -213,15 +207,15 @@ define([
       , magnitude2tensionIn: magnitude2tensionIn
 
       , tension2control: tension2control
-      , hobby2cubic: tension2control // deprecated
+      , hobby2cubic: tension2control // DEPRECATED
       , tension2controlOut: tension2controlOut
       , tension2controlIn: tension2controlIn
 
       , control2tension: control2tension
-      , tensions: control2tension // deprecated
+      , tensions: control2tension // DEPRECATED
       , control2tensionOut: control2tensionOut
-      , posttension: control2tensionOut // deprecated
+      , posttension: control2tensionOut // DEPRECATED
       , control2tensionIn: control2tensionIn
-      , pretension: control2tensionIn // deprecated
+      , pretension: control2tensionIn // DEPRECATED
     };
 });
