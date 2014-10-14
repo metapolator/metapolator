@@ -296,7 +296,7 @@ _this allows users to express at glyph, or any level above (e.g. script, master 
   * **note**: this number can be negative; this means that the back sidebearing is opposite in sign to the front one; example: spacing = -55 units and back/front = -2, then the front sidebearing is -55 and the back sidebearing is 110.
 
 #### preserving kerning
-The two sidebearings of a glyph consists of two parts: the general spacing of the font, plus (or rather, minus) a shape compensation—a generalised one, in relation to ‘o’ & ‘n‘, or ‘O’ & ‘N’, for Latin. Kerning is the glyph-pair optimisation of the shape compensation.
+The two sidebearings of a glyph each consist of two parts: (half) the general spacing of the font, plus—or usually, minus—a shape compensation—a generalised one, in relation to ‘o’ & ‘n‘, or ‘O’ & ‘N’, for Latin. Kerning is the glyph-pair optimisation of the shape compensation.
 
 Since wholesale changes of spacing imply changing the general spacing of the font, and not the shape compensation, the kerning can be left untouched for these.
 
@@ -312,8 +312,9 @@ _work in progress_
 * height _(scales all vertical metrics)_
 * width _(scales the skeleton horizontally)_
 * slant
-* spacing _(= front sidebearing)_
-* back/front _(back sidebearing = back/front × spacing)_
+* horizontal metrics
+  * spacing _(= front sidebearing)_
+  * back/front _(back sidebearing = back/front × spacing)_
 * [vertical metrics](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#optical-horizontal-lines), depending on script and glyph; for instance for Latin, lowercase:
   * x-height
   * ascender
