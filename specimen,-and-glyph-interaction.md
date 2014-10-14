@@ -296,9 +296,9 @@ _this allows users to express at glyph, or any level above (e.g. script, master 
   * **note**: this number can be negative; this means that the back sidebearing is opposite in sign to the front one; example: spacing = -55 units and back/front = -2, then the front sidebearing is -55 and the back sidebearing is 110.
 
 #### preserving kerning
-We say: apply kerning within metapolator on a relative basis. This means that on import the kerning is converted from absolute (in units) to relative (in %). Example: between glyphs ‘a’ and ‘b’ the combined—measured between skeleton points—spacing is 150 units and kerning is -7 units, then the relative kerning is -7 / 150 = -4.67%.
+The two sidebearings of a glyph consists of two parts: the general spacing of the font, plus the generalised shape (of-this-side-of-the-glyph) compensator—in relation to ‘o’ & ‘n‘, or ‘O’ & ‘N’, for Latin. Kerning is the glyph-pair optimiser of the shape compensator.
 
-If now the spacing of glyphs, or even a whole master gets changed, then the kerning is simply applied as a percentage of that new spacing. Both spacing and kerning can be interpolated. This gives us a workable basis to deal with kerning in the short term. A real kerning editor has to be designed for the Fonts view, where it is used to finish fonts. Also the specimen of the Parameters view needs a means to adjust kerning for a master.
+Since wholesale changes of spacing imply changing the general spacing of the font—better done by offset than by multiplying—the kerning can be left untouched for these (since kerning does not relate to it).
 
 #### pen weight
 The point parameter (pen) width can be renamed to **weight**, while maintaining the port/starboard parameter (i.e. left/right ~~width~~ weight ratio, looking in the direction in which the pen moves).<br/>
