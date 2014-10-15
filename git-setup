@@ -32,5 +32,4 @@ git config alias.upstream-update "$(echo \!sh -c $(cat <<EOF
  && git submodule update
 "
 EOF
-))";
-
+))"
