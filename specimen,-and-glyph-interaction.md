@@ -290,11 +290,11 @@ After looking at a lot of possible metrics combinations, we picked the following
 
 * **width**: this is b–c above; this is a scalar (default: 1.0) that multiplies the actual x-coordinates of the points in the glyph; **convention**: the front-most (in reading direction) point of the glyph has x-coordinate = zero;<br/>
 _this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘width × 1.1’ and the skeleton of all glyphs concerned is extended by 10%_
-* **spacing**: this is directly a–b above (and indirectly c–d—see below); expressed in units, this is in general the spacing of the glyph, by default calculated for each glyph individually out of the imported ufo;<br/>
+* **spacing**: this is a–b + c–d above; expressed in units, this is the total space surrounding this glyph, by default calculated for each glyph individually out of the imported ufo; any change to this value is split 50/50% for the front and back sidebearing;<br/>
 _this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘spacing + -12 units’, and the spacing of all glyphs concerned, front and back sidebearings, is reduced_
-  * **note**: this number can be negative; this means directly that the front sidebearing is negative (at the back? see below).
-* **back/front** this is a scalar that sets the ratio between c–d and a–b above, e.g. spacing = 74 units and back/front* = 0.94m then back sidebearing is 70 units; by default calculated for each glyph individually out of the imported ufo.
-  * **note**: this number can be negative; this means that the back sidebearing is opposite in sign to the front one; example: spacing = -55 units and back/front = -2, then the front sidebearing is -55 and the back sidebearing is 110.
+* **sidebearings** this is a value pair, a–b and c–d (e.g. “40|30”), expressed in units; any change of either number updates the spacing parameter too; all operators (=, +, ×, >=, <=) can be applied, with scalar and pair values; by default calculated for each glyph individually out of the imported ufo.
+
+**note** that spacing and either of the sidebearings pair can be negative.
 
 #### preserving kerning
 It all starts with **spacing**. The two sidebearings of a glyph each consist of two parts: (half) the general spacing of the font, plus—or usually, minus—a shape compensation—a generalised one, e.g. for Latin, in relation to ‘o’ & ‘n‘, or ‘O’ & ‘N’. So far, so good, for the **spacing** of both sides of a glyph.
@@ -302,6 +302,8 @@ It all starts with **spacing**. The two sidebearings of a glyph each consist of 
 **Kerning** is the glyph-pair optimisation of the shape compensation.
 
 Since wholesale changes of spacing imply changing the general spacing of the font, and not the shape compensation, the kerning can be left untouched for these.
+
+**note**: kerning _will_ need updating for a whole catalog of design changes to masters, and are to be interpolated for instances.
 
 #### editing kerning
 **note**: the kerning editor is designed for _updating_ kerning, not for defining kerning from scratch. it is however an _educated_ kerning editor.
@@ -327,14 +329,14 @@ clicking it shows an overview of the pairs that share the same triplet of number
 
 ![](http://mmiworks.net/metapolator/kernalso.png)
 
-which lets users select (icon grid model, again) the pairs that also should receive this update. This can be done before or right after the kerning is adjusted (up to the point where a different edit action is started).
+which lets users select (icon grid model, again) the pairs that also should receive this update. This can be done before or right after the kerning is adjusted (up to the point where the _next_ edit action is started—that is not the kerning of this pair).
 
 #### pen weight
 The point parameter (pen) width can be renamed to **weight**, while maintaining the port/starboard parameter (i.e. left/right ~~width~~ weight ratio, looking in the direction in which the pen moves).<br/>
 _this allows users to express at point, or any level above (e.g. segment, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’, and the stroke weight of all points concerned is increased._
 
 ## an interim parameter overview
-_work in progress_
+_—work in progress_
 
 **glyph** parameters (can be set at glyph, script, master and project level)
 
@@ -342,8 +344,8 @@ _work in progress_
 * width _(scales the skeleton horizontally)_
 * slant
 * horizontal metrics
-  * spacing _(= front sidebearing)_
-  * back/front _(back sidebearing = back/front × spacing)_
+  * spacing _(total space surrounding this glyph, = front + back)_
+  * sidebearings _(value pair, e.g. “40|30”, = front|back, **not** left|right)_
 * [vertical metrics](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#optical-horizontal-lines), depending on script and glyph; for instance for Latin, lowercase:
   * x-height
   * ascender
@@ -362,7 +364,7 @@ _work in progress_
   * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
 * pen
   * weight
-  * port/starboard _(i.e. left/right weight ratio, looking in the direction in which the pen moves)_
+  * port|starboard _(value pair, e.g. “12|10”, = left & right weight, looking in the direction in which the pen moves)_
   * angle
   * kink _(port-starboard angle difference)_
 
