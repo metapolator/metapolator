@@ -60,28 +60,13 @@ if (require.main === module) {
             };
 
             /**
-             * express seems to sanitize req.path for us. so this method may
-             * be superflous. Beeing very paranoid, I keep it however
+             * Sanitize a file path, ensuring it doesn't go above /
              */
-            function _clearPath(path) {
-                var isDir = path.slice(-1) === '/'
-                  , parts = path.split('/')
-                  , result = []
-                  , i = 0
-                ;
-                for(;i<parts.length;i++) {
-                    if(parts[i] in {'': null, '.':null})
-                        continue;
-                    else if (parts[i] === '..')
-                        if(result.lenght === 0)
-                            // use a forbidden error
-                            throw new ForbiddenError('path "' + path + '" is below root');
-                    else
-                        result.pop();
-                    else
-                        result.push(parts[i]);
-                }
-                return result.join('/') + (isDir ? '/' : '');
+            function _cleanPath(s) {
+                s = path.normalize(s);
+                if (s.split('/')[0] === '..')
+                    throw new ForbiddenError('path "' + path + '" is above root');
+                return s;
             }
 
             // callback for fs.readdir
@@ -148,7 +133,7 @@ if (require.main === module) {
 
             // project is a RESTful directory
             app.use('/project', function(req, res, next) {
-                var path = _clearPath(req.path)
+                var path = _cleanPath(req.path)
                   , method = req.method
                   , data
                 ;
