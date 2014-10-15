@@ -296,6 +296,37 @@ _this allows users to express at glyph, or any level above (e.g. script, master 
 
 **note** that spacing and either of the sidebearings pair can be negative.
 
+#### editing width and sidebearings
+When a glyph is selected, then hovering the mouse for 500ms over the ‘inner’ part of the selection indication bar shows the width and sidebearings controls:
+
+![](http://mmiworks.net/metapolator/horhover.png)
+
+we see the width and sidebearings values for this glyph—click each to edit; the diamond control we have [seen before](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#specimen) for the specimen display size, here it controls—
+
+1. the width—normal increase/decrease 0.1 unit per (effective) input pixel ‘pulled’, with the ctrl/cmd key pressed 0.01 unit, with shift 1 unit;
+* each sidebearing—normal increase/decrease 1 unit per (effective) input pixel ‘pulled’, with the ctrl/cmd key pressed 0.1 unit, with shift 10 units.
+
+Users can select whole lines at the same time, and point wherever they want to check the width and/or sidebearings, or take action:
+
+![](http://mmiworks.net/metapolator/horscrape.png)
+
+##### keeping it together
+We can do some educated guessing based on the existing sidebearings, to offer users to propagate sidebearing updates to similarly spaced glyphs.
+
+When _starting_ to interact with a sidebearing, Metapolator can look up if there are any other glyphs with the same sidebearing—whether front or back. If this is the case, an indicator is shown next to the sidebearing value:
+
+![](http://mmiworks.net/metapolator/horindication.png)
+
+clicking it shows an overview of the glyphs that share the sidebearing and at which side they occur (occurs on both sides? show glyph twice):
+
+![](http://mmiworks.net/metapolator/horalso.png)
+
+which lets users select the glyph (sides) that also should receive this update. This can be done before, during or right after the sidebearing is adjusted (up to the point where the _next_ edit action is started—that is not adjusting this sidebearing). The starting sidebearing value matters, not the in-between values, for what gets shown in the dialog.
+
+The selection behaviour is for each glyph shown in the dialog: click to select, click again to deselect. Rubber-banding can also be performed, whether the first enclosed glyph is selected or deselected, determines whether the rest of the banded glyphs is too.
+
+The dialog expands in rows and columns to accommodate the glyphs, growing to a 7×7 grid to show 49 glyphs is not exceptional.
+
 #### preserving kerning
 It all starts with **spacing**. The two sidebearings of a glyph each consist of two parts: (half) the general spacing of the font, plus—or usually, minus—a shape compensation—a generalised one, e.g. for Latin, in relation to ‘o’ & ‘n‘, or ‘O’ & ‘N’. So far, so good, for the **spacing** of both sides of a glyph.
 
@@ -310,26 +341,30 @@ Since wholesale changes of spacing imply changing the general spacing of the fon
 
 When two adjacent glyphs are selected, then hovering the mouse for 500ms over the ‘inter-glyph’ part of the selection indication bar shows the kerning control:
 
-![](http://mmiworks.net/metapolator/kernhover.png)
+![](http://mmiworks.net/metapolator/kernhover2.png)
 
-we see the kerning value for this pair—click to edit; the diamond control we have [seen before](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#specimen) for the specimen display size, here it controls the kerning—normal increase/decrease 1 unit per (effective) pixel ‘pulled’, with the ctrl/cmd key pressed 0.1 unit, with shift 10 units.
+we see the kerning value for this pair—click to edit; the diamond control we have [seen before](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#specimen) for the specimen display size, here it controls the kerning—normal increase/decrease 1 unit per (effective) input pixel ‘pulled’, with the ctrl/cmd key pressed 0.1 unit, with shift 10 units.
 
 Users can select whole lines at the same time, and point wherever they want to check the kerning or take action:
 
-![](http://mmiworks.net/metapolator/kernscrape.png)
+![](http://mmiworks.net/metapolator/kernscrape2.png)
 
 ##### getting educated
-Since we primarily import ufos with existing spacing and kerning, we can do some educated guessing to offer users to propagate kerning updates to similarly spaced + kerned pairs.
+Since we predominantly import ufos with existing spacing and kerning, we can do some educated guessing to offer users to propagate kerning updates to similarly spaced + kerned pairs.
 
-When starting to interact with a kerning pair, this pair is characterised by 3 numbers: the pertaining sidebearing of the first glyph, the kerning value and the sidebearing of the second glyph. Metapolator can look up of there are any other pairs with the same triplet of numbers, where the two sidebearings are interchangeable (e.g. 64, -34, 74 is equivalent to 74, -34, 64). If this is the case, an indicator is shown next to the kerning value:
+When _starting_ to interact with a kerning pair, this pair is characterised by 3 numbers: the pertaining sidebearing of the first glyph, the kerning value and the pertaining sidebearing of the second glyph. Metapolator can look up if there are any other pairs with the same triplet of numbers—where the two sidebearings are interchangeable (e.g. 64, -34, 74 is equivalent to 74, -34, 64). If this is the case, an indicator is shown next to the kerning value:
 
-![](http://mmiworks.net/metapolator/kernindication.png)
+![](http://mmiworks.net/metapolator/kernindication2.png)
 
 clicking it shows an overview of the pairs that share the same triplet of numbers:
 
-![](http://mmiworks.net/metapolator/kernalso.png)
+![](http://mmiworks.net/metapolator/kernalso2.png)
 
-which lets users select (icon grid model, again) the pairs that also should receive this update. This can be done before or right after the kerning is adjusted (up to the point where the _next_ edit action is started—that is not the kerning of this pair).
+which lets users select the pairs that also should receive this update. This can be done before, during or right after the kerning is adjusted (up to the point where the _next_ edit action is started—that is not the kerning of this pair). The starting kerning matters, not the in-between values, for what gets shown in the dialog.
+
+The selection behaviour is for each pair shown in the dialog: click to select, click again to deselect. Rubber-banding can also be performed, whether the first enclosed pair is selected or deselected, determines whether the rest of the banded pairs is too.
+
+The dialog expands in rows and columns to accommodate the pairs, growing to a 10×10 grid to show 100 pairs is not exceptional.
 
 #### pen weight
 The point parameter (pen) width can be renamed to **weight**, while maintaining the port/starboard parameter (i.e. left/right ~~width~~ weight ratio, looking in the direction in which the pen moves).<br/>
