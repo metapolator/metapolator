@@ -16,74 +16,112 @@ If you prefer to install manually, see the provisioning script at the top of `va
 
 ## Command-line interface
 
-The following assumes that you have added the metapolator checkout directory to your PATH.
+An example session:
 
 ```
-$ mkdir ~/metapolator_tests
-$ cd ~/metapolator_tests
+$ mkdir metapolator_tests
+$ cd metapolator_tests
+/home/rrt/repo/metapolator-rrthomas/metapolator_tests
 $ metapolator
 Usage: metapolator [options] [command]
 
 Commands:
 
+   delete <[project/]master>                             delete the given master
    dev-playground-cps <cps-file>                         process the given CPS file
    dev-playground-cps-algebra <equation>                 insert a linear equation
    dev-playground-cps-selectors <master> <selectors>     run a comma-separated list of selectors on the given master
-   export <master> <ufo>                                 export the given master to directory <project>
-   import <ufo> <target-master>                          import the given UFO directory to master <target-master>
+   export <[project/]master> <ufo>                       export a master to a UFO
+   import <ufo> <[project]/master>                       import a UFO to a master
    init <name>                                           initialise a new project called <name>
-   interpolate <masters> <interpolators>                 interpolate a comma-separated list of masters according to a CPS expression
+   interpolate <masters> <proportions> <new-master>      interpolate a comma-separated list of masters according to a corresponding list of proportions
    red-pill [ufo]                                        open a UFO (default: current directory) in the red-pill web interface
    help <sub-command>                                    Show the --help for a specific command
-# create your first project test.ufo
 $ metapolator init test.ufo
 $ ls
 test.ufo
+$ metapolator import ../app/tests/lib/export/test-data/Sean_hairline-PAN.ufo ./test.ufo/first_master
+importing ...
+> importing glyph: P
+WARNING: test this openContourOffCurveLeniency
+WARNING: test this openContourOffCurveLeniency
+    importing contour 0
+    importing contour 1
+> importing glyph: A
+WARNING: test this openContourOffCurveLeniency
+WARNING: test this openContourOffCurveLeniency
+WARNING: test this openContourOffCurveLeniency
+    importing contour 0
+    importing contour 1
+    importing contour 2
+> importing glyph: N
+WARNING: test this openContourOffCurveLeniency
+WARNING: test this openContourOffCurveLeniency
+WARNING: test this openContourOffCurveLeniency
+    importing contour 0
+    importing contour 1
+    importing contour 2
+Importing groups.plist into the project.
+Import of groups.plist OK.
 
-# import a ufo. IMPORTANT: The outlines of this ufo should be preparead
-# as 'strokes':
-#  - even number of points per contour otherwise we skip it
-#  - more than 3 points per contour otherwise we skip it
-#  - the first point should be the first right outline point of your
-#    stroke contour otherwise the skeleton gets imported scrumbled
-$ cd test.ufo
-$ metapolator import ~/path/to/font.ufo first_master
-
-# your current metapolator project directory tree (if you imported a font
-# with the glyphs a and e)
 $ tree
 .
-├── data
-│   └── com.metapolator
-│       ├── cps
-│       │   ├── default.cps
-│       │   ├── first_master.cps
-│       │   └── global.cps
-│       └── project.yaml
-├── glyphs
-│   └── contents.plist
-├── glyphs.skeleton.first_master
-│   ├── a.glif
-│   ├── contents.plist
-│   └── e.glif
-├── layercontents.plist
-└── metainfo.plist
+└── test.ufo
+    ├── data
+    │   └── com.metapolator
+    │       ├── cps
+    │       │   ├── centreline-skeleton-to-symmetric-outline.cps
+    │       │   ├── first_master.cps
+    │       │   └── global.cps
+    │       └── project.yaml
+    ├── glyphs
+    │   └── contents.plist
+    ├── glyphs.skeleton.first_master
+    │   ├── A_.glif
+    │   ├── contents.plist
+    │   ├── N_.glif
+    │   └── P_.glif
+    ├── groups.plist
+    ├── layercontents.plist
+    └── metainfo.plist
 
-# This is a good time to start playing with the metapolator project data.
-# We will create a first steps tutorial soon.
-# Have a look at data/com.metapolator/project.yaml: you can set up new
-# masters in that file by copying the data of first_master.
+6 directories, 12 files
+$ metapolator export ./test.ufo/first_master export.ufo
+exporting ...
+exporting P
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+exporting A
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+exporting N
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
+It is deprecated to use Vectors for dir0 or dir1
 
-# Export first_master to ../export.ufo
-$ metapolator export first_master ../export.ufo
-
-# At this point you can start the metapolator red-pill GUI server.
-# NOTE: the GUI won't yet let you save changes, but it is a good way to experiment with CPS
-# Here is a short screencast: https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL
-$ metapolator red-pill .
-# Open http://localhost:3000 in your browser.
-
+$ metapolator red-pill ./test.ufo
+Metapolator: Serving the red pill.
+Open http://localhost:39250 in your browser.
 ```
+
+NOTE: the GUI won't yet let you save changes, but it is a good way to experiment with CPS. There is a short [screencast](https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL) of an early version.
+
+Have a look at data/com.metapolator/project.yaml: you can set up new masters in that file by copying the data of first_master.
 
 ## Run the testsuite:
 
@@ -155,6 +193,16 @@ $ ./serve.sh
 # you'll see a simple scene where you can add 'widgets' to a 'container'
 
 ```
+
+# Preparing fonts for import
+
+The outlines should be preparead as _strokes_:
+
+* even number of points per contour otherwise we skip it
+* more than 3 points per contour otherwise we skip it
+* the first point should be the first right outline point of your stroke contour otherwise the skeleton gets scrambled
+
+TODO: create a first steps tutorial
 
 # Development tools
 
