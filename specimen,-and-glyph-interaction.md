@@ -297,7 +297,7 @@ _this allows users to express at glyph, or any level above (e.g. script, master 
 **note** that spacing and either of the sidebearings pair can be negative.
 
 #### editing width and sidebearings
-This editing is ‘fly by wire’ instead of wysiwyg, in order to provide (sub-)uint input precision, independent of specimen viewing size.
+This editing is fly-by-wire instead of wysiwyg, in order to provide (sub-)unit input precision, independent of specimen viewing size.
 
 When a glyph is selected, then hovering the mouse for 500ms over the ‘inner’ part of the selection indication bar shows the width and sidebearings controls:
 
@@ -343,7 +343,7 @@ Since wholesale changes of spacing imply changing the general spacing of the fon
 **note**: kerning _will_ need updating for a whole catalog of design changes to masters, and are to be interpolated for instances.
 
 #### editing kerning
-**note**: the kerning editor is designed for _updating_ kerning, not for defining kerning from scratch. it is however an _educated_ kerning editor. This editing is ‘fly by wire’ instead of wysiwyg, in order to provide (sub-)uint input precision, independent of specimen viewing size.
+**note**: the kerning editor is designed for _updating_ kerning, not for defining kerning from scratch. it is however an _educated_ kerning editor. This editing is fly-by-wire instead of wysiwyg, in order to provide (sub-)unit input precision, independent of specimen viewing size.
 
 When two adjacent glyphs are selected, then hovering the mouse for 500ms over the ‘inter-glyph’ part of the selection indication bar shows the kerning control:
 
