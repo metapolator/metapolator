@@ -90,7 +90,7 @@ define([
         // that ain't gonna be easy.
         this._master.saveCPS(this._masterName + '.cps', cps);
 
-        _importFontInfo();
+        this._importFontInfo();
     }
 
     /**
@@ -100,21 +100,25 @@ define([
      * Almost all errors are propagated.
      */
     _p._importFontInfo = function() {
+        var fontinfoPath   = this._sourceUFODir + '/fontinfo.plist'
+          , fontinfoString;
+
         try {
             // if the fontinfo.plist file exists grab what metadata we can
             // from there in the source UFO.
-            var fontinfoPath   = this._sourceUFODir + '/fontinfo.plist';
             var fontinfoString = this._project._io.readFile(false, fontinfoPath);
             this._master.fontinfo = plistLib.readPlistFromString(fontinfoString);
-            this._master.writeFontInfoToFile();
         }
         catch(error) {
-            if(error instanceof IONoEntryError) {
+            if(error instanceof IONoEntryError 
+               || error instanceof ValueError
+               || error instanceof TypeError ) {
                 console.log("Failed to import fontinfo.plist because it doesn't exist. message: " + e );
             } else {
                 throw error;
             }
         }
+        this._master.writeFontInfoToFile();
     }
 
     _p._readGlyphFromSource = function(glyphName) {

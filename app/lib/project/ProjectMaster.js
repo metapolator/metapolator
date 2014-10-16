@@ -15,15 +15,17 @@ define([
     var readPlistFromString = plistLib.readPlistFromString
     , writePlistToString = plistLib.createPlistString;
 
-    function ProjectMaster(io, project, glyphSetDir, cpsChain) {
+    function ProjectMaster(io, project, masterName, glyphSetDir, cpsChain) {
 
         this._io = io;
         this._project = project;
+        this._masterName = masterName;
         this._glyphSetDir = glyphSetDir;
         this._cpsChain = cpsChain.slice();
 
         this._glyphSet = undefined;
-        this._fontinfo = this.readFontInfoFromFile();
+        this._fontinfoIsInitialized = false;
+        this._fontinfo = undefined;
     }
 
     var _p = ProjectMaster.prototype;
@@ -39,10 +41,22 @@ define([
     });
 
     /**
+     * Where we can store custom data for the master (a master
+     * specific subdir of data/com.metapolator)
+     */
+    Object.defineProperty(_p, '_customDataDir', {
+        get: function() { 
+            return this._project.dataDir + '/' + this._masterName + '/';
+        }
+    });
+
+    /**
      * Path of the fontinfo.plist file for an imported master
      */
     Object.defineProperty(_p, '_fontInfoFilePath', {
-        get: function() { return this._glyphSetDir+'/fontinfo.plist';}
+        get: function() { 
+            return this._customDataDir + '/fontinfo.plist';
+        }
     });
 
     /**
@@ -50,12 +64,17 @@ define([
      * also save the new data to disk
      */
     Object.defineProperty(_p, 'fontinfo', {
-        get: function() { return this._fontinfo; }
+        get: function() { 
+            if(!this._fontinfoIsInitialized) {
+                this._fontinfoIsInitialized = true;
+                this._fontinfo = this.readFontInfoFromFile();
+            }
+            return this._fontinfo; 
+        }
         ,
         set: function(x) {
+            this._fontinfoIsInitialized = true;
             this._fontinfo = x;
-            console.log("writing fontinfo.plist to:" + this._fontInfoFilePath );
-            this.writeFontInfoToFile();
         }
     });
 
@@ -82,6 +101,10 @@ define([
     _p.writeFontInfoToFile = function( path ) {
         if( path === undefined ) {
             path = this._fontInfoFilePath;
+        }
+        // if we don't have any fontinfo then try to lazy load it
+        if(!this._fontinfoIsInitialized) {
+            this._fontinfo = this.readFontInfoFromFile();
         }
         this._io.writeFile( false, path,
                             writePlistToString(this._fontinfo));
