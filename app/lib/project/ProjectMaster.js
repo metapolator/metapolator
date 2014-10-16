@@ -13,10 +13,11 @@ define([
 ) {
     "use strict";
 
-    function ProjectMaster(io, project, glyphSetDir, cpsChain) {
+    function ProjectMaster(io, project, name, glyphSetDir, cpsChain) {
 
         this._io = io;
         this._project = project;
+        this._name = name;
         this._glyphSetDir = glyphSetDir;
         this._cpsChain = cpsChain.slice();
 
@@ -109,7 +110,7 @@ define([
     }
 
     Object.defineProperty(_p, 'metaDataFilePath', {
-        get: function(){ return this._project.dataDir+'/messages/'+this._glyphSetDir+'.yaml';}
+        get: function(){ return this._project.dataDir+'/messages/'+this._name+'.yaml';}
     });
 
     _p.saveMetaData = function() {
