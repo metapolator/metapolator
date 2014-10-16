@@ -23,7 +23,7 @@ At the top of the panel itself we find the setup line. From left (R–to–L loc
   * this control is a relative one, it in/decreases; users grab the diamond and pull it away (it is attached ‘by wire’ to its centre point) to make a change in the following fashion _(showing the diamond twice here, for educational purposes)_:<br/>
 ![](http://mmiworks.net/metapolator/tunebywire.png)<br/>
 (for R–to–L locales, right and left have to be flipped); we see there is plenty of bail-out area, to make no change;
-  * the amount of in/decrease is simply the sum of the x and y offsets the diamond makes; the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
+  * the amount of in/decrease is simply the sum of the x and y offsets the diamond makes; normal increase/decrease 1 point per (effective) input pixel ‘pulled’, with shift 10 points; the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
   * when users release the diamond, it returns to its resting position and the change is permanent.
 * the **filter box** is where users type characters to filter the specimen;
   * when the specimen contains real-life words, the Strict control—a discrete, 3-position slider—is displayed next to it—
@@ -159,7 +159,7 @@ then a click on the point handle makes a full set of edit handles appear:
 
 * the point handle sets the position of the point, being connected to it by a ‘rigid stick’; we now see why it is positioned at a certain angle with regard to the real skeleton point: to stay out of the way of the other handles;
 * the two red handles are the curve handles and set the direction and tension of the skeleton curve; the handles are coupled for direction and change tensions proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up);
-* the two triangular handles (shades of a pen nib there) are the pen handles and set the angle and the width of the pen, being connected to it by ‘rigid sticks’; the handles are coupled for angle and change width proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up).
+* the two triangular handles (shades of a pen nib there) are the pen handles and set the angle and the weight of the pen, being connected to it by ‘rigid sticks’; the handles are coupled for angle and change weight proportionally—unless cmd/ctrl is pressed which allows a handle to be manipulated individually (cmd/ctrl can be pressed and released repeatedly while manipulating the handle and the feedback updates accordingly; what matters is whether cmd/ctrl is down when the mouse goes up).
 
 To review the edit-in-progress, users can simply take the mouse pointer out of the glyph box:
 
@@ -192,14 +192,14 @@ then a click on the point handle makes a full set of edit handles appear:
 * changes to the curve direction: as offset in degrees (+);
 * changes to the curve tension: scale proportionally (×);
 * changes to the pen angle: as offset in degrees (+);
-* changes to the pen width: scale proportionally (×).
+* changes to the pen weight: scale proportionally (×).
 
 Edits can be continued by clicking on any other selected handle.
 
 ### point alignments
 _(aka point-nailing, formerly known as pen shifted)_
 
-The purpose of point alignment is to **nail down the spatial relationship** (horizontal or vertical distance, or both) of two points (be them the skeleton point, port or starboard pen-end/on-curve point), no matter how much the coordinates of points in a glyph get transformed (directly, or as knock-on effect of higher parameters, e.g. width), or the pen gets modified (width _and_ angle, again directly, or as knock-on effect of higher parameters, e.g. weight).
+The purpose of point alignment is to **nail down the spatial relationship** (horizontal or vertical distance, or both) of two points (be them the skeleton point, port or starboard pen-end/on-curve point), no matter how much the coordinates of points in a glyph get transformed (directly, or as knock-on effect of higher parameters, e.g. width), or the pen gets modified (weight _and_ angle, again directly, or as knock-on effect of higher parameters).
 
 When _exactly two_ skeleton points in total are selected, both of the _same glyph_:
 
@@ -209,17 +209,17 @@ then when the mouse is hovered for 500ms in a zone enclosed by the two points an
 
 ![](http://mmiworks.net/metapolator/hovercorner.png)
 
-then after another 500ms timeout a panel pops up:
+then after another 500ms timeout, or a click, a panel pops up:
 
 ![](http://mmiworks.net/metapolator/fixpanel4.png)
 
-on the left and right of the panel we see two schematic representations of the-point-and-pen. Having separate representations allows us to untangle those hairy situations where the two points are (nearly) on top of each other (or bring them together when they are far apart); having schematic representations allows us to deal with those hairy situations where any stroke width is (near) zero. We see that the representations are connected to their point.
+on the left and right of the panel we see two schematic representations of the point-and-pen. Having separate representations allows us to untangle those hairy situations where the two points are (nearly) on top of each other (or bring them together when they are far apart); having schematic representations allows us to deal with those hairy situations where any stroke weight is (near) zero. We see that the representations are connected to their point.
 
 In each representation the skeleton point, port or starboard pen-end can be selected to be aligned. The skeleton point is the default. The middle of the panel lists the horizontal and vertical distances between the selected points—these are absolute, never negative. When the point selection is changed, the distances update:
 
 ![](http://mmiworks.net/metapolator/fixalign4.png)
 
-we also see that when a distance is zero milliEm, the word ‘align’ is displayed instead. **note** that users can use the two selected skeleton point handles to fine-tune the horizontal and vertical distances in this state, also using the arrow keys.
+we also see that when a distance is zero units, the word ‘align’ is displayed instead. **note** that users can use the two selected skeleton point handles to fine-tune the horizontal and vertical distances in this state, also using the arrow keys.
 
 When point selection and distances are OK, users pick horizontal, vertical or both to be fixed in the middle of the panel. This closes the panel, as does the close box at the top, which makes no change to the alignment setup.
 
@@ -236,7 +236,7 @@ Changing the nature of, or removing, the fixed relationship follows the same pat
 ### optical horizontal lines
 _(better known as vertical metrics)_
 
-In general this is about the lines that guide the eyes in reading direction, for any script. The **specific example** I will give here is for **Latin script**. First a very familiar situation:
+In general this is about the lines that guide the eyes in reading direction, for any script. The **specific example** here is for **Latin script**. First a very familiar situation:
 
 ![](http://mmiworks.net/metapolator/5lines.png)
 
@@ -257,7 +257,7 @@ This system is actually **really similar** to the way that the width parameters 
 You may have noticed two things are missing from this story (we consider this beneficial):
 
 1. **tagging** is not necessary to make this work; all that needs to be known is the position of the skeleton points and the location of the horizontal lines, the latter which can be read out of an ufo (or initially set by users if need be);
-* **overshoot** has become implicit, instead of an explicit concept; it is there in the relationship of skeleton point positions and pen widths.
+* **overshoot** has become implicit, instead of an explicit concept; it is there in the relationship of skeleton point positions and pen weight.
 
 #### getting fixed
 To create exceptons to the proportionate behaviour, users can set for points to have **fixed** vertical offset, either to the line above or the one below.
@@ -265,7 +265,7 @@ To create exceptons to the proportionate behaviour, users can set for points to 
 #### refinement
 After a discussion with Simon, Wei and Nicolas, Peter adds the following—
 
-**rule**: lines are mapped to classes of glyphs. For instance in Latin, the cap height line only pertains to capitals, ascender, descender and x-height only to lowercase. This tagging will be provided by Metapolator (it was already in previous versions). Means to customise it are coming soon…
+**rule**: lines are mapped to classes of glyphs. For instance in Latin, the cap-height line only pertains to capitals; ascender, descender and x-height only to lowercase. This tagging will be provided by Metapolator (it was already in previous versions). Means to customise it are coming soon…
 
 **rule**: if the pen blade of a point crosses an optical horizontal line (i.e. the point of the pen is on one side of the line and the edge of its stroke on the other side of it), then the point is attached at a fixed vertical offset to that line. This preserves overshoot, which that crossing _is_.
 
@@ -275,14 +275,14 @@ After a discussion with Simon, Wei and Nicolas, Peter adds the following—
 Character width, body width, spacing, sidebearings—front and back, there are quite a few overlapping
 horizontal metrics in type design. On top of that traditionally changing the weight of the glyph interacts with these metrics.
 
-Interestingly, one does not need so many parameters to _technically_ fully describe this system: on top of the point coordinates, one needs an advance for each glyph, and a number for (let’s call it) pen weight to drive the rendering. The conclusion is that it is the UI, that aims to offer directness and flexibility to users, drives the choice of parameters.
+Interestingly, one does not need so many parameters to _technically_ fully describe this system: on top of the point coordinates, one needs an advance for each glyph, and a number for pen weight to drive the rendering. The conclusion is that it is the UI, that aims to offer direct-action and flexibility to users, drives the choice of parameters.
 
-The other day we (Simon and Peter) discussed all this and came to a system that offers this directness and flexibility, without ending up with parameter-bloat. We observed these basic principles:
+The other day we (Simon and Peter) discussed all this and came to a system that offers this direct-action and flexibility, without ending up with parameter bloat. We observed these basic principles:
 
 1. imported ufos come with spacing set; this can be good or so-so, but we assume that it is a workable spacing for type designers;
 * imported ufos (quite likely) come with kerning tables; these can be good or so-so, but we assume that it is a workable kerning for type designers;
   * a font with 1000 glyphs has _potentially_ 1 million kerning pairs; this is however impractical—if only for the file size—and we assume that a decent font has around 100, _maybe_ hundreds, kerning pairs defined.
-* if one measures the spacing from the first and last skeleton point of the glyph—instead from the first and last black—then a wholesale stroke weight cis unlikely to trigger a need for wholesale spacing adjustment (the stroke grows/shrinks equally into the inner-glyph space and outwards into the sidebearings).
+* if one measures the spacing from the first and last skeleton point of the glyph—instead from the first and last black—then a wholesale stroke weight change is unlikely to trigger a need for wholesale spacing adjustment (the stroke grows/shrinks equally into the inner-glyph space and outwards into the sidebearings).
 
 After looking at a lot of possible metrics combinations, we picked the following glyph-level parameters:
 
@@ -290,13 +290,15 @@ After looking at a lot of possible metrics combinations, we picked the following
 
 * **width**: this is b–c above; this is a scalar (default: 1.0) that multiplies the actual x-coordinates of the points in the glyph; **convention**: the front-most (in reading direction) point of the glyph has x-coordinate = zero;<br/>
 _this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘width × 1.1’ and the skeleton of all glyphs concerned is extended by 10%_
-* **spacing**: this is a–b + c–d above; expressed in units, this is the total space surrounding this glyph, by default calculated for each glyph individually out of the imported ufo; any change to this value is split 50/50% for the front and back sidebearing;<br/>
+* **spacing**: this is a–b + c–d above; expressed in units, this is the total space surrounding this glyph, by default calculated for each glyph individually out of the imported ufo; any change to this value is applied 50/50% to the front and back sidebearing;<br/>
 _this allows users to express at glyph, or any level above (e.g. script, master or project level), ‘spacing + -12 units’, and the spacing of all glyphs concerned, front and back sidebearings, is reduced_
 * **sidebearings** this is a value pair, a–b and c–d (e.g. “40|30”), expressed in units; any change of either number updates the spacing parameter too; all operators (=, +, ×, >=, <=) can be applied, with scalar and pair values; by default calculated for each glyph individually out of the imported ufo.
 
 **note** that spacing and either of the sidebearings pair can be negative.
 
 #### editing width and sidebearings
+This editing is ‘fly by wire’ instead of wysiwyg, in order to provide (sub-)uint input precision, independent of specimen viewing size.
+
 When a glyph is selected, then hovering the mouse for 500ms over the ‘inner’ part of the selection indication bar shows the width and sidebearings controls:
 
 ![](http://mmiworks.net/metapolator/horhover.png)
@@ -309,6 +311,8 @@ we see the width and sidebearings values for this glyph—click each to edit; th
 Users can select whole lines at the same time, and point wherever they want to check the width and/or sidebearings, or take action:
 
 ![](http://mmiworks.net/metapolator/horscrape.png)
+
+**rule**: width changes are propagated to all selected characters, on a proportional basis.
 
 ##### keeping it together
 We can do some educated guessing based on the existing sidebearings, to offer users to propagate sidebearing updates to similarly spaced glyphs.
@@ -325,6 +329,8 @@ which lets users select the glyph (sides) that also should receive this update. 
 
 The selection behaviour is for each glyph shown in the dialog: click to select, click again to deselect. Rubber-banding can also be performed, whether the first enclosed glyph is selected or deselected, determines whether the rest of the banded glyphs is too.
 
+**rule**: the glyph sides that got selected in the dialog, together with the one that is edited, is persisted as a set for this master after the OK button is pressed. Any sidebearing change to any glyph side of this set is propagated automatically. When the dialog is shown again for any glyph side of the set, then the glyph sides are shown as selected by default.
+
 The dialog expands in rows and columns to accommodate the glyphs, growing to a 7×7 grid to show 49 glyphs is not exceptional.
 
 #### preserving kerning
@@ -337,7 +343,7 @@ Since wholesale changes of spacing imply changing the general spacing of the fon
 **note**: kerning _will_ need updating for a whole catalog of design changes to masters, and are to be interpolated for instances.
 
 #### editing kerning
-**note**: the kerning editor is designed for _updating_ kerning, not for defining kerning from scratch. it is however an _educated_ kerning editor.
+**note**: the kerning editor is designed for _updating_ kerning, not for defining kerning from scratch. it is however an _educated_ kerning editor. This editing is ‘fly by wire’ instead of wysiwyg, in order to provide (sub-)uint input precision, independent of specimen viewing size.
 
 When two adjacent glyphs are selected, then hovering the mouse for 500ms over the ‘inter-glyph’ part of the selection indication bar shows the kerning control:
 
@@ -364,10 +370,12 @@ which lets users select the pairs that also should receive this update. This can
 
 The selection behaviour is for each pair shown in the dialog: click to select, click again to deselect. Rubber-banding can also be performed, whether the first enclosed pair is selected or deselected, determines whether the rest of the banded pairs is too.
 
+**rule**: the pairs that got selected in the dialog, together with the one that is edited, is persisted as a set for this master after the OK button is pressed. Any kerning change to any pair of this set is propagated automatically. When the dialog is shown again for any pair of the set, then the pairs are shown as selected by default.
+
 The dialog expands in rows and columns to accommodate the pairs, growing to a 10×10 grid to show 100 pairs is not exceptional.
 
 #### pen weight
-The point parameter (pen) width can be renamed to **weight**, while maintaining the port/starboard parameter (i.e. left/right ~~width~~ weight ratio, looking in the direction in which the pen moves).<br/>
+The point parameter (pen) width can be renamed to **weight**, while maintaining the port|starboard parameter.<br/>
 _this allows users to express at point, or any level above (e.g. segment, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’, and the stroke weight of all points concerned is increased._
 
 ## an interim parameter overview
