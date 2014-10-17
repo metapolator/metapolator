@@ -381,6 +381,14 @@ _this allows users to express at point, or any level above (e.g. segment, glyph,
 ## an interim parameter overview
 _—work in progress_
 
+**script** parameters (can be set at script, master and project level)
+
+* [vertical metrics](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#optical-horizontal-lines), always depend on script; for instance for Latin:
+  * cap-height
+  * x-height
+  * ascender
+  * descender
+
 **glyph** parameters (can be set at glyph, script, master and project level)
 
 * height _(scales all vertical metrics)_
@@ -389,10 +397,6 @@ _—work in progress_
 * horizontal metrics
   * spacing _(total space surrounding this glyph, = front + back)_
   * sidebearings _(value pair, e.g. “40|30”, = front|back, **not** left|right)_
-* [vertical metrics](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#optical-horizontal-lines), depending on script and glyph; for instance for Latin, lowercase:
-  * x-height
-  * ascender
-  * descender
 * point alignments _(aka point-nailing, fka penshifted)_; [see here](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#point-alignments)
 
 **point** parameters (can be set at point, segment, glyph, script, master and project level)
@@ -424,3 +428,6 @@ The **local menu** now contains these items:
 * Duplicate Glyph
 * -- \<separator\> --
 * Delete Glyph…
+
+#### copy and paste
+In the glyph range specimen glyphs can be also cut, copied and pasted. For instance, all latin capitals from A to Z can be selected, copied, then the selection set on lowercase ‘a’, paste; A to Z is pasted over a to z, and one can start making small caps.
