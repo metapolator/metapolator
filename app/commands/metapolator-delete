@@ -4,7 +4,7 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'delete the given master'
+    description: 'Delete the given master'
   , arguments: '<[project/]master>'
 };
 
@@ -27,6 +27,7 @@ if (require.main === module) {
     ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
+        program.description(exports.command.description);
         program.action(function(master) {
             var pm = parseArgs.projectMaster(io, master);
             var project = pm[0];
