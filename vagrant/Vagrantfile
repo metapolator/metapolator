@@ -27,7 +27,7 @@ fi
 
 # Clone metapolator (read-write if we have an SSH key)
 cd $SHARED_DIR
-if test ! -d metapolator; then
+if test ! -e metapolator; then
     GIT_URL=https://github.com/metapolator/metapolator.git
     CHECKOUT_TYPE=read-only
     if test -e /vagrant/.ssh; then
