@@ -24,6 +24,13 @@ define([
         );
     }
 
+    function normalizeAngle(angle) {
+        var result = angle % (2*Math.PI);
+        if(result < 0)
+            result += (2*Math.PI);
+        return result;
+    }
+
     /**
      * Returns two distances from the respective on-curve points to their
      * control points on the given curve segment.
@@ -51,8 +58,8 @@ define([
             // getting into trouble when z1['-'](z0) is <Vector 0, 0>
             // because that would cause a division by 0 when calculating
             // theta and pi using cartesian arithmetic.
-          , theta = dir0 - angle_z1z0
-          , phi = angle_z1z0 - dir1
+          , theta = normalizeAngle(dir0 - angle_z1z0)
+          , phi = normalizeAngle(angle_z1z0 - dir1)
           , u, v;
         
         if(alpha !== undefined)
@@ -71,7 +78,7 @@ define([
     function tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
         var uv = _tension2magnitude(z0, dir0, alpha, beta, dir1, z1);
         if(uv[0] === undefined) uv[0] = NaN;
-        if(uv[0] === undefined) uv[1] = NaN;
+        if(uv[1] === undefined) uv[1] = NaN;
         return uv;
     }
 
@@ -93,15 +100,24 @@ define([
      * control is 0
      */
     function _magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
-        var uv = _tension2control(
-                      z0, dir0
-                      // 1 is the default tension
-                    , alpha === undefined ? undefined : 1
-                    , beta === undefined ? undefined : 1
-                    , dir1, z1)
-          , u, v ;
-        if(uv[0] !== undefined) u = uv[0]['-'](z0).magnitude()/alpha;
-        if(uv[1] !== undefined) v= uv[1]['-'](z1).magnitude()/beta;
+        var uv, u, v
+            // 1 is the default tension
+          , _alpha = alpha === 0 || alpha === undefined ? undefined : 1
+          , _beta = beta === 0 || beta === undefined ? undefined : 1
+          ;
+        if(_alpha || _beta)
+            uv = _tension2control(z0, dir0, _alpha, _beta, dir1, z1);
+    
+        if(alpha === 0)
+            u = Infinity;
+        else if (alpha !== undefined)
+            u = uv[0]['-'](z0).magnitude()/alpha;
+    
+        if(beta === 0)
+            v = Infinity;
+        else if (beta !== undefined)
+            v = uv[1]['-'](z1).magnitude()/beta;
+    
         return[u, v];
     }
 
@@ -144,16 +160,16 @@ define([
     function tension2control(z0, dir0, alpha, beta, dir1, z1) {
         var uv = _tension2control(z0, dir0, alpha, beta, dir1, z1);
         if(uv[0] === undefined) uv[0] = new Vector(NaN, NaN);
-        if(uv[0] === undefined) uv[1] = new Vector(NaN, NaN);
+        if(uv[1] === undefined) uv[1] = new Vector(NaN, NaN);
         return uv;
     }
 
     function tension2controlOut (z0, dir0, alpha, dir1, z1) {
-        return _tension2control(z0, dir0, alpha, undefined, dir1, z1);
+        return tension2control(z0, dir0, alpha, undefined, dir1, z1)[0];
     }
 
     function tension2controlIn (z0, dir0, beta, dir1, z1) {
-        return _tension2control(z0, dir0, undefined, beta, dir0, z1);
+        return tension2control(z0, dir0, undefined, beta, dir1, z1)[1];
     }
 
     /**
