@@ -2,18 +2,9 @@
 #
 # Configure git to make hacking on Metapolator easier
 # Read the rest of the script to see the new shortcuts added
-#
-# It is recommended also to use hub from https://hub.github.com/ which adds
-# and improves many git commands for github work
 
-# Instruct the user
-echo "Run \`git fetch upstream' to get upstream branches, PRs etc."
-
-# Exit on error, to make script idempotent: next command will give error if run twice
-set -e
-
-# Set upstream
-git remote add upstream https://github.com/metapolator/metapolator.git
+# Set and fetch upstream, or fetch and exit if already set
+git remote add -f upstream https://github.com/metapolator/metapolator.git || ( git fetch upstream; exit )
 
 # Alias for fetching pull requests from upstream, e.g.:
 # $ git checkout pr/165
