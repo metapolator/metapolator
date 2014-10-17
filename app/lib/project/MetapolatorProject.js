@@ -136,6 +136,9 @@ define([
         this._io.mkDir(false, this.dirName+'/data');
         // create dir dirName/data/com.metaploator
         this._io.mkDir(false, this.dataDir);
+
+        // create dir for storing per master data like fontinfo.plist.
+        this._io.mkDir(false, this.dataDir + '/masters');
         
         // project file:
         // create     this.dataDir/project.yaml => yaml({})
@@ -320,8 +323,8 @@ define([
             this._createGlyphLayer(master.skeleton);
 
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
-        this._io.mkDir(false, this.dataDir + '/' + masterName);
-        
+        this._io.mkDir(false, this.dataDir + '/masters/' + masterName);
+
         return this.getMaster(masterName);
     }
 
@@ -422,6 +425,7 @@ define([
     _p.import = function(masterName, sourceUFODir, glyphs) {
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
+
         importer.import(glyphs);
     
         this._importGroupsFile(sourceUFODir, true);

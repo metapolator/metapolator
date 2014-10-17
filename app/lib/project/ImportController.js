@@ -16,6 +16,8 @@ define([
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
   , 'ufojs/plistLib/main'
+  , 'ufojs/errors'
+
 ], function(
     errors
   , GlyphSet
@@ -33,6 +35,7 @@ define([
   , Complex
   , parseSelectorList
   , plistLib
+  , ufoErrors
 ) {
     "use strict";
 
@@ -111,8 +114,8 @@ define([
         }
         catch(error) {
             if(error instanceof IONoEntryError 
-               || error instanceof ValueError
-               || error instanceof TypeError ) {
+               || error instanceof ufoErrors.ValueError
+               || error instanceof ufoErrors.TypeError ) {
                 console.log("Failed to import fontinfo.plist because it doesn't exist. message: " + e );
             } else {
                 throw error;

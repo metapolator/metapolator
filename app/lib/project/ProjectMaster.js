@@ -24,7 +24,6 @@ define([
         this._cpsChain = cpsChain.slice();
 
         this._glyphSet = undefined;
-        this._fontinfoIsInitialized = false;
         this._fontinfo = undefined;
     }
 
@@ -46,7 +45,7 @@ define([
      */
     Object.defineProperty(_p, '_customDataDir', {
         get: function() { 
-            return this._project.dataDir + '/' + this._masterName + '/';
+            return this._project.dataDir + '/masters/' + this._masterName + '/';
         }
     });
 
@@ -65,15 +64,16 @@ define([
      */
     Object.defineProperty(_p, 'fontinfo', {
         get: function() { 
-            if(!this._fontinfoIsInitialized) {
-                this._fontinfoIsInitialized = true;
+            if(this._fontinfo === undefined) {
                 this._fontinfo = this.readFontInfoFromFile();
             }
             return this._fontinfo; 
         }
         ,
         set: function(x) {
-            this._fontinfoIsInitialized = true;
+            if( x === undefined ) {
+                throw new AssertionError('Can not set fontinfo.plist to undefined on Master "'+masterName+'"');
+            }
             this._fontinfo = x;
         }
     });
@@ -83,13 +83,7 @@ define([
      */
     _p.readFontInfoFromFile = function() {
         var path = this._fontInfoFilePath;
-        var fontInfoString = null;
-        try {
-            fontInfoString = io.readFile(false, path);
-        } catch(error){
-            if(!(error instanceof IONoEntry))
-                throw error;
-        }
+        var fontInfoString = io.readFile(false, path);
         return plistLib.readPlistFromString(fontInfoString);
     }
 
@@ -99,15 +93,19 @@ define([
      * location for this project master.
      */
     _p.writeFontInfoToFile = function( path ) {
+        var theFontInfo;
         if( path === undefined ) {
             path = this._fontInfoFilePath;
         }
-        // if we don't have any fontinfo then try to lazy load it
-        if(!this._fontinfoIsInitialized) {
-            this._fontinfo = this.readFontInfoFromFile();
+        try {
+            theFontInfo = this.fontinfo;
+        } catch(error) {
+            if(error instanceof IONoEntry) {
+                throw new KeyError('Can not load fontinfo.plist for Master "'+masterName+'"');
+            }
         }
         this._io.writeFile( false, path,
-                            writePlistToString(this._fontinfo));
+                            writePlistToString(theFontInfo));
     }
 
 
