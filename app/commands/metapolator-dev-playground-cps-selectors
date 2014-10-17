@@ -4,7 +4,7 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'run a comma-separated list of selectors on the given master'
+    description: 'Run a comma-separated list of selectors on the given master'
   , arguments: '<master> <selectors>'
 };
 
@@ -25,6 +25,7 @@ if (require.main === module) {
     ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
+        program.description(exports.command.description);
         program.action(function(masterName, selectors) {
             var project = new MetapolatorProject(io);
             project.load();
