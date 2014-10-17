@@ -1,13 +1,26 @@
 #!/bin/sh
+# Update the Vagrant box
+
+if [ $# -ne 1 ]; then
+    echo "Usage: update-box VERSION"
+    exit 1
+fi
 
 VERSION=$1
 
 # Stop on error
 set -e
 
+# Update git checkout, if any, to make it less likely that "vagrant up" will fail
+# when it depends on things in the checkout
+if test -e metapolator; then
+    cd metapolator && git upstream-update && cd ..
+fi
+
 # Update the box
 vagrant destroy --force
 vagrant up
+rm -f package.box
 vagrant package --vagrantfile Vagrantfile
 
 # Test the box: first, add it to the system:
@@ -16,9 +29,12 @@ vagrant box add --force --name metapolator package.box
 # Then install it in another directory
 mkdir -p tmp
 cd tmp
-vagrant destroy --force
+vagrant destroy --force # in case a previous run was interrupted
+rm Vagrantfile
 vagrant init metapolator
 vagrant up
+vagrant destroy --force # don't leave a VM running
+cd ..
 
 # Finally, upload the box to Vagrant Cloud
 # Reuben Thomas @rrthomas has to do this
