@@ -408,7 +408,6 @@ _—work in progress_
   * direction out
   * tension in
   * tension out
-  * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
 * pen
   * weight
   * port|starboard _(value pair, e.g. “12|10”, = left & right weight, looking in the direction in which the pen moves)_
