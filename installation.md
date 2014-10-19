@@ -8,7 +8,7 @@ vagrant init metapolator/bleeding-edge
 vagrant up
 ```
 
-You can then `vagrant ssh` into the box, or `vagrant ssh -- COMMAND ARG...` to run a command on it.
+You can then `vagrant ssh` into the box, or `vagrant ssh -- COMMAND ARG...` to run a command on it. Note that the Vagrant box can only see the directory in which it was created on the host machine: in the VM, this is available under `/vagrant`. Symlinking into that directory won't work: UFOs and Metapolator projects have to be copied (or hard-linked) there.
 
 If you prefer to install manually, see the provisioning script at the top of `vagrant/Vagrantfile`. It is written for Ubuntu 14.04, from which you can infer dependencies for other platforms (primarily: node 0.10).
 
