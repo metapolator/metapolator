@@ -204,11 +204,15 @@ if (require.main === module) {
                     next();
             });
 
+            if (program.port === undefined)
+                program.port = parseInt(process.env.RED_PILL_PORT);
             var server = app.listen(program.port || 0);
-            console.warn('Metapolator: Serving the red pill.');
-            console.warn('Open http://localhost:'+server.address().port+' in your browser.');
+            if (server.address()) {
+                console.warn('Metapolator: Serving the red pill.');
+                console.warn('Open http://localhost:'+server.address().port+' in your browser.');
+            }
         })
-        .option('-p, --port <n>', 'The port to listen on (default: random)', parseInt);
+        .option('-p, --port <n>', 'The port to listen on (default: environment variable RED_PILL_PORT (if unset, random))', parseInt);
         program.parse(process.argv);
     }
 )}
