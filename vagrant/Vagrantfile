@@ -1,8 +1,26 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Global configuration
+red_pill_ports = ENV['VAGRANT_RED_PILL_PORTS'] || "3000"
+
 # Vagrantfile API/syntax version.
 VAGRANTFILE_API_VERSION = "2" if not defined?(VAGRANTFILE_API_VERSION)
+
+# Parse red_pill_ports
+class PortsError < Vagrant::Errors::VagrantError
+  error_message = "Invalid port or port range"
+end
+ports = red_pill_ports.split('-')
+if not (1..2).include?(ports.length) then
+  raise PortsError.new
+end
+begin
+  red_pill_port_from, red_pill_port_to = ports.map { |n| Integer(n) }
+rescue
+  raise PortsError.new
+end
+red_pill_port_to ||= red_pill_port_from
 
 # Provision a Vagrant box with the Metapolator environment
 # N.B. The following should be idempotent
@@ -21,7 +39,10 @@ sudo apt-get -y install git ruby bash-completion npm nodejs-legacy # nodejs-lega
 
 # User setup
 if ! grep metapolator $HOME/.bashrc; then
-    echo 'export PATH="'"$SHARED_DIR/metapolator"':$PATH"' | cat - $HOME/.bashrc > bashrc
+    cat - $HOME/.bashrc > bashrc <<ENDSH
+export PATH="$SHARED_DIR/metapolator:\$PATH"
+export RED_PILL_PORT=#{red_pill_port_from}
+ENDSH
     mv bashrc .bashrc
 fi
 
@@ -76,9 +97,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.box_check_update = false
 
   # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # within the machine from a port on the host machine.
+  for i in red_pill_port_from..red_pill_port_to
+    config.vm.network "forwarded_port", guest: i, host: i
+  end
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
