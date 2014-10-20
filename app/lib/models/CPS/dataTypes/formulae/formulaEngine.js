@@ -12,6 +12,7 @@ define([
   , 'metapolator/models/CPS/cpsGetters'
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
+  , 'metapolator/math/hobby'
 ], function(
     errors
   , Parser
@@ -26,6 +27,7 @@ define([
   , cpsGetters
   , transform
   , Vector
+  , hobby
 ) {
     "use strict";
 
@@ -212,6 +214,63 @@ define([
       , new Operator('Polar', false, 40, 0, 2, [
             ['number' , 'number', function(a, b){ return Vector.fromPolar(a, b); }]
         ])
+        /**
+         * vector constructor operator
+         * Creates a vector from two point coordinates, two directions
+         * and one tension value;
+         * The returned vector is the position of the outgoing control
+         * of point0;
+         *
+         * Arguments: point0 outDir outTension inDir point1
+         */
+      , new Operator('tension2controlOut', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2controlOut]
+        ])
+        /**
+         * vector constructor operator
+         * Creates a vector from two point coordinates, two directions
+         * and one tension value;
+         * The returned vector is the position of the incoming control
+         * of point1;
+         *
+         * Arguments: point0 outDir inTension inDir point1
+         */
+      , new Operator('tension2controlIn', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2controlIn]
+        ])
+        /**
+         * Get the maginitude of the incoming control point.
+         *
+         * Arguments: point0 outDir inTension inDir point1
+         */
+      , new Operator('tension2magnitudeIn', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2magnitudeIn]
+        ])
+        /**
+         * Get the maginitude of the outgoing control point.
+         *
+         * Arguments: point0 outDir outTension inDir point1
+         */
+      , new Operator('tension2magnitudeOut', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2magnitudeOut]
+        ])
+        /**
+         * Get the tension of the outgoing control point.
+         *
+         * Arguments: point0 outDir outLength inDir point1
+         */
+      , new Operator('magnitude2tensionOut', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.magnitude2tensionOut]
+        ])
+        /**
+         * Get the tension of the incoming control point.
+         *
+         * Arguments: point0 outDir inLength inDir point1.
+         */
+      , new Operator('magnitude2tensionIn', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.magnitude2tensionIn]
+        ])
+
         /**
          * Convert a number from degree to radians
          * This has higher precedence than "polar" because it makes writing:

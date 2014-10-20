@@ -30,8 +30,13 @@ define([
             case 'root':
                 return element.type === 'univers';
             case 'i':
-                return (element.parent
-                    && element.parent.find(element) === simpleSelector.value);
+                if(!element.parent)
+                    return false;
+                return (simpleSelector.value < 0
+                    // negative serch index
+                    ? element.parent.children.length + simpleSelector.value === element.index
+                    // positive serch index
+                    : simpleSelector.value === element.index);
         }
     }
     
