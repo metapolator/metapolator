@@ -187,7 +187,7 @@ define([
         if(!(operatorLiteral in this._operators))
             throw new KeyError('No operator found for literal: '
                                                         + operatorLiteral);
-        this._negateOperator = (negateLiteral, operatorLiteral);
+        this._negateOperator = [negateLiteral, operatorLiteral];
     };
 
 
