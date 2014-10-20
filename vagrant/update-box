@@ -30,7 +30,7 @@ vagrant box add --force --name metapolator package.box
 mkdir -p tmp
 cd tmp
 vagrant destroy --force # in case a previous run was interrupted
-rm Vagrantfile
+rm -f Vagrantfile
 vagrant init metapolator
 vagrant up
 vagrant destroy --force # don't leave a VM running
