@@ -46,6 +46,7 @@ define([
       , univers: 'univers'
       , multivers: 'multivers'
       , index: 'index'
+      , type: 'type'
     }
 
     Object.defineProperty(_p, 'MOMType', {
