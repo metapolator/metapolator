@@ -175,8 +175,21 @@ And then we drop a third master and their representation matures:
 
 ![](http://mmiworks.net/metapolator/control3masters.png)
 
-A second slider appears; for every master dropped here we get an extra slider. triangles next to the labels show that we can pop up a list to configure the sliders, together with the All item on the lower-left. _write up of configuration rules coming soon (an edit of [this](https://github.com/metapolator/metapolator/wiki/elements-of-design#metapolation-sliders), really)._
+A second slider appears; for every master dropped here we get an extra slider; when the total number of lone masters for a design space is N, the number of sliders is always N-1. This gives exactly enough input, together with the 100% rule, for an N-master mix. Triangles next to the labels show that we can pop up a list to configure the sliders, together with the All item on the lower-left.
 
+* The popups on the right and left of the sliders contain all the (dropped) master labels that—
+  * do not appear at the opposite side of this slider;
+  * do not appear on any _other_ slider together with the one at the opposite side of this slider;
+  * does not have its relationship, with the one at the opposite side of this slider, already defined by a _chain_ formed by any number of _other_ sliders (an example of a chain that defines the relation of masters A & B is sliders A–C + D–C + B–D); note that in chains the masters of interest appear exactly once and the other masters exactly twice.
+* the popups on the left of the sliders also contain, the item ‘From zero’ it sets the slider to direct-percentage mode (i.e. directly control how much of this parameter is part of this master mix):<br/>
+![](http://mmiworks.net/metapolator/controlzeromaster.png)
+  * of the sliders A—from zero, B—from zero and A–B, a _maximum_ of two can be shown together at any time; this is regulated by availability in the slider popups.
+* when a label on a slider is changed (via the popups), the slider value gets recalculated and set;
+* the extra ‘All’ popup at the bottom-left contains as values all the (dropped) master labels plus ‘From zero’; it sets all the popups on the left of the sliders to whatever is picked (below, bold):<br/>
+![](http://mmiworks.net/metapolator/controlallbold.png)<br/>
+…while the right side is set to all the other (dropped) masters—in case of All from zero, to all but one (dropped) masters—in the same order as in the masters list).
+
+#### golden triangle
 When the number of (‘unsequenced’) masters is three, the Triangle switch is shown (as is above). This switches to the following mode:
 
 ![](http://mmiworks.net/metapolator/controltriangle.png)
