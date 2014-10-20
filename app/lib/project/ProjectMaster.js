@@ -1,11 +1,13 @@
 define([
     'metapolator/errors'
+  , 'ufojs/errors'
   , 'metapolator/models/MOM/Master'
   , 'metapolator/models/MOM/Glyph'
   , './MOMPointPen'
   , 'ufojs/plistLib/main'
 ], function(
     errors
+  , ufoErrors
   , Master
   , Glyph
   , MOMPointPen
@@ -13,10 +15,10 @@ define([
 ) {
     "use strict";
     var readPlistFromString = plistLib.readPlistFromString
-    , writePlistToString = plistLib.createPlistString;
+      , writePlistToString = plistLib.createPlistString
+      , IONoEntryError = ufoErrors.IONoEntry;
 
     function ProjectMaster(io, project, masterName, glyphSetDir, cpsChain) {
-
         this._io = io;
         this._project = project;
         this._masterName = masterName;
@@ -83,7 +85,7 @@ define([
      */
     _p.readFontInfoFromFile = function() {
         var path = this._fontInfoFilePath;
-        var fontInfoString = io.readFile(false, path);
+        var fontInfoString = this._io.readFile(false, path);
         return plistLib.readPlistFromString(fontInfoString);
     }
 
@@ -100,7 +102,7 @@ define([
         try {
             theFontInfo = this.fontinfo;
         } catch(error) {
-            if(error instanceof IONoEntry) {
+            if(error instanceof IONoEntryError) {
                 throw new KeyError('Can not load fontinfo.plist for Master "'+masterName+'"');
             }
         }
