@@ -55,8 +55,7 @@ define([
          * index numbers.
          */
         new Operator('List', false, -Infinity, 0, Infinity, function(/*args, ...*/) {
-            // the first args is the 'get' interface, we don't return it.
-            return Array.protoype.slice(arguments, 1);
+            return Array.prototype.slice.call(arguments);
         })
         /**
          * Returns a generic Value, could be virtually anything
