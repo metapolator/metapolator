@@ -413,13 +413,6 @@ define([
             // if we don't find anything a CPSFormulaError is thrown
             splitExpected = true;
 
-            // test for all NOT splitting operators, length first
-            if(!!(foundOperator = this._testNotSplittingOperators(string, i))) {
-                tokens.push(foundOperator);
-                i += foundOperator.literal.length;
-                continue;
-            }
-
             // prepare for RegEx.exec searches
             // the string must be truncated to the current index
             // because RegEx.exec has no offset parameter like indexOf
@@ -428,8 +421,19 @@ define([
 
             // name literals are not splitting
             if((reResult = R_name.exec(string)) !== null) {
-                tokens.push(new NameToken(reResult[0]));
+                if(this._operators[reResult[0]] && !this._operators[reResult[0]].splitting)
+                    // could also be a not splitting operator
+                    tokens.push(this._operators[reResult[0]]);
+                else
+                    tokens.push(new NameToken(reResult[0]));
                 i += reResult[0].length;
+                continue;
+            }
+
+            // test for all NOT splitting operators, length first
+            if(!!(foundOperator = this._testNotSplittingOperators(string, i))) {
+                tokens.push(foundOperator);
+                i += foundOperator.literal.length;
                 continue;
             }
 
@@ -530,7 +534,6 @@ define([
           , endPost
           , operation
           ;
-
         // replace - with negate when looks like this was the intention
         if(this._negateOperator) {
             for(i=0;i<tokensArg.length;i++) {
@@ -545,6 +548,7 @@ define([
                 }
             }
         }
+
         // find brackets and call this method recursively
         tokens = this._resolveBrackets(tokensArg);
 
