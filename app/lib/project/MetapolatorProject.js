@@ -117,9 +117,9 @@ define([
         get: function(){ return this.dirName+'/' + this.groupsFileName; }
     });
     
-    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
+    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, options) {
         return GlyphSet.factory(
-                    async, this._io, dirName, glyphNameFunc, UFOVersion);
+                    async, this._io, dirName, glyphNameFunc, UFOVersion, options);
     }
     
     _p.init = function(dirName) {
@@ -136,6 +136,9 @@ define([
         this._io.mkDir(false, this.dirName+'/data');
         // create dir dirName/data/com.metaploator
         this._io.mkDir(false, this.dataDir);
+        // we store messages for the glyphs (failures etc)
+        // inside this subdir
+        this._io.mkDir(false, this.dataDir+'/messages');
         
         // project file:
         // create this.dataDir/project.yaml => yaml({})
@@ -358,7 +361,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir, master.cpsChain);
+        return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsChain);
     }
     
     _p.getMaster = function(masterName) {
@@ -422,7 +425,6 @@ define([
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
         importer.import(glyphs);
-    
         this._importGroupsFile(sourceUFODir, true);
     };
 
