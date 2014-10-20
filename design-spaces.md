@@ -72,6 +72,8 @@ And then we drop a third master and their representation matures:
 
 **rule**: when multiple masters limit the field of a master, its field is an ellipse, which has its long axis pointing exactly at the _second-nearest_ neighbour, with the long axis length set to be the exact distance to that neighbour. the short axis is set so that the ellipse perimeter touches exactly the position of the _nearest_ neighbour.
 
+**note**: when the master in question, the nearest neighbour and second-nearest neighbour all lay _on single line_ (no matter the order they lay on it), then the field of the master is effectively limited by one master and is a circle.
+
 ### instances
 
 The (families of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
