@@ -264,6 +264,7 @@ define([
     function _getSimpleSelectorClassValueForIndex(element) {
         var body
           , number
+          , sign
           ;
         if(element._ast[1][0] !== 'funktion'
                     || element._ast[1][2][0] !== 'functionBody')
@@ -272,8 +273,15 @@ define([
                    .filter(function(item) {
                         return !(item[0] in {'s':null,'comment':null});
                     })
+        
+        sign = '+';
+        if(body.length === 2 && body[0][0] === 'unary') {
+            //  as the docs say: unary is either - or +
+            sign = body[0][1];
+            body.shift();
+        }
         if(body.length === 1 && body[0][0] === 'number')
-            number = parseInt(body[0][1], 10);
+            number = parseInt(sign + body[0][1], 10);
             // if the result is NaN return undefined
             return (number === number) ? number : undefined;
     }
