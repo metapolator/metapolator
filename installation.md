@@ -16,35 +16,35 @@ If you prefer to install manually, see the provisioning script at the top of `va
 
 ## Command-line interface
 
-An example session:
+An example session (remembering first to `vagrant ssh`!):
 
 ```
+$ cd /vagrant/metapolator
 $ npm test
 
-> metapolator-next@0.0.0 test /usr/local/var/home/rrt/repo/metapolator-rrthomas
+> metapolator-next@0.0.0 test /vagrant/metapolator
 > cd app/tests; ./run_tests
 
-/home/rrt/repo/metapolator-rrthomas/app/tests
 ./run_tests
-PASS: main - Metapolator - Metapolator_Constructor (1ms)
+PASS: main - Metapolator - Metapolator_Constructor (2ms)
 1/1 tests passed
-PASS: main - Export - Export_Constructor (7ms)
+PASS: main - Export - Export_Constructor (6ms)
 1/1 tests passed
-PASS: main - CPS dataTypes formulaEngine - CPS_formulaEngine_vs_eval (17ms)
+PASS: main - CPS dataTypes formulaEngine - CPS_formulaEngine_vs_eval (28ms)
 1/1 tests passed
-PASS: main - CPS StyleDict - CPS_StyleDict_detect_recursion (71ms)
+PASS: main - CPS StyleDict - CPS_StyleDict_detect_recursion (171ms)
 1/1 tests passed
-PASS: main - MOM _Node - Node_Constructor (0ms)
+PASS: main - MOM _Node - Node_Constructor (5ms)
 PASS: main - MOM _Node - Node_add (1ms)
 PASS: main - MOM _Node - Node_find (1ms)
 PASS: main - MOM _Node - Node_remove (1ms)
 PASS: main - MOM _Node - Node_qualifiesAsChild (1ms)
-PASS: main - MOM _Node - Node_children (1ms)
-PASS: main - MOM _Node - Node_parent (1ms)
+PASS: main - MOM _Node - Node_children (2ms)
+PASS: main - MOM _Node - Node_parent (3ms)
 7/7 tests passed
 PASS: main - MOM relationship - Node_ (1ms)
 1/1 tests passed
-PASS: main - EcmaScript 6 direct proxies - Proxy_as_a_whitelist (1ms)
+PASS: main - EcmaScript 6 direct proxies - Proxy_as_a_whitelist (6ms)
 1/1 tests passed
 13/13 tests passed
 
@@ -151,21 +151,20 @@ All files                                     |     56.83 |     32.94 |     55.5
 
 $ mkdir metapolator_tests
 $ cd metapolator_tests
-/home/rrt/repo/metapolator-rrthomas/metapolator_tests
 $ metapolator
 Usage: metapolator [options] [command]
 
 Commands:
 
-   delete <[project/]master>                             delete the given master
-   dev-playground-cps <cps-file>                         process the given CPS file
-   dev-playground-cps-algebra <equation>                 insert a linear equation
-   dev-playground-cps-selectors <master> <selectors>     run a comma-separated list of selectors on the given master
-   export <[project/]master> <ufo>                       export a master to a UFO
-   import <ufo> <[project]/master>                       import a UFO to a master
-   init <name>                                           initialise a new project called <name>
-   interpolate <masters> <proportions> <new-master>      interpolate a comma-separated list of masters according to a corresponding list of proportions
-   red-pill [ufo]                                        open a UFO (default: current directory) in the red-pill web interface
+   delete <[project/]master>                             Delete the given master
+   dev-playground-cps <cps-file>                         Process the given CPS file
+   dev-playground-cps-algebra <equation>                 Insert a linear equation
+   dev-playground-cps-selectors <master> <selectors>     Run a comma-separated list of selectors on the given master
+   export <[project/]master> <ufo>                       Export a master to a UFO
+   import <ufo> <[project]/master>                       Import a UFO to a master
+   init <name>                                           Initialise a new project called <name>
+   interpolate <masters> <proportions> <new-master>      Interpolate a comma-separated list of masters according to a corresponding list of proportions
+   red-pill [ufo]                                        Open a UFO (default: current directory) in the red-pill web interface
    help <sub-command>                                    Show the --help for a specific command
 $ metapolator init test.ufo
 $ ls
@@ -243,10 +242,10 @@ It is deprecated to use Vectors for dir0 or dir1
 It is deprecated to use Vectors for dir0 or dir1
 It is deprecated to use Vectors for dir0 or dir1
 It is deprecated to use Vectors for dir0 or dir1
-
+0
 $ metapolator red-pill ./test.ufo
 Metapolator: Serving the red pill.
-Open http://localhost:50550 in your browser.
+Open http://localhost:3000 in your browser.
 ```
 
 NOTE: the GUI won't yet let you save changes, but it is a good way to experiment with CPS. There is a short [screencast](https://plus.google.com/101961686124685905596/posts/QghMpxt5NpL) of an early version.
