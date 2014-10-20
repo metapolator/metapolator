@@ -421,7 +421,9 @@ define([
 
             // name literals are not splitting
             if((reResult = R_name.exec(string)) !== null) {
-                if(this._operators[reResult[0]] && !this._operators[reResult[0]].splitting)
+                if(reResult[0] === 'Infinity')
+                    tokens.push(new NumberToken(reResult[0]));
+                else if(this._operators[reResult[0]] && !this._operators[reResult[0]].splitting)
                     // could also be a not splitting operator
                     tokens.push(this._operators[reResult[0]]);
                 else
