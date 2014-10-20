@@ -181,6 +181,7 @@ A second slider appears; for every master dropped here we get an extra slider; w
   * do not appear at the opposite side of this slider;
   * do not appear on any _other_ slider together with the one at the opposite side of this slider;
   * does not have its relationship, with the one at the opposite side of this slider, already defined by a _chain_ formed by any number of _other_ sliders (an example of a chain that defines the relation of masters A & B is sliders A–C + D–C + B–D); note that in chains the masters of interest appear exactly once and the other masters exactly twice.
+* if a popup contain no items (i.e. there is nothing to choose there for users), then its triangle is greyed out and no popup is shown.
 * the popups on the left of the sliders also contain, the item ‘From zero’ it sets the slider to direct-percentage mode (i.e. directly control how much of this parameter is part of this master mix):<br/>
 ![](http://mmiworks.net/metapolator/controlzeromaster.png)
   * of the sliders A—from zero, B—from zero and A–B, a _maximum_ of two can be shown together at any time; this is regulated by availability in the slider popups.
