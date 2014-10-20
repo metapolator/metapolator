@@ -18,7 +18,7 @@ replace () {
 }
 
 # Clear any old demo output
-rm -rf metapolator_tests
+rm -rf /vagrant/metapolator/metapolator_tests
 
 # Run the demo script
 # To get the output of red-pill without blocking we do some trickery:
@@ -38,7 +38,7 @@ metapolator import ../app/tests/lib/export/test-data/Sean_hairline-PAN.ufo ./tes
 tree
 metapolator export ./test.ufo/first_master export.ufo
 metapolator red-pill ./test.ufo &
-sleep 1
+sleep 10
 "
 EOF
 )"
