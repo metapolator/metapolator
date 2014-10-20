@@ -3,7 +3,7 @@
 
 # Get command-line arguments
 if test $# -ne 1; then
-    echo "Usage: $0 OUTFILE"
+    echo "Usage: vagrant ssh -c \"/vagrant/metapolator/"`basename $0`" OUTFILE\""
     exit 1
 fi
 OUTFILE=$1
@@ -27,6 +27,7 @@ rm -rf metapolator_tests
 # 3. We then excise the sleep command from the record
 script $OUTFILE -c "sh -x -c $(cat <<EOF
 "
+cd /vagrant/metapolator
 npm test
 mkdir metapolator_tests
 cd metapolator_tests
