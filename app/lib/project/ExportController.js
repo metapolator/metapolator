@@ -775,7 +775,7 @@ define([
                 segmentType = 'move';
             case 20:
                 context$2$0.next = 22;
-                return pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
             case 22:
                 i++;
                 context$2$0.next = 4;

@@ -163,7 +163,6 @@ define([
                 for (vector of ctrls) {
                     yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
                 }
-
             }
             else {
                 segmentType =  'line';
@@ -230,7 +229,7 @@ define([
             else
                 // this contour is not closed, the first point is a move
                 segmentType = 'move';
-            yield pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
+            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }
@@ -238,9 +237,14 @@ define([
     _p.drawGlyphToPointPenGenerator = function (model, glyph, /*method*/ pen) {
         return function* () {
             var stroke;
-            for (stroke of glyph.children)
+            for (stroke of glyph.children) {
                 yield* this._drawPenstrokeOutline(model, pen, stroke);
+                // Uncomment the following line to draw the center-line
+                // onto the canvas. You can use `_drawPenstrokeCenterline` and
+                // `_drawPenstrokeCenterline` exclusively or at the same time.
+                // The latter can help to see what's happening with your strokes.
                 //yield* this._drawPenstrokeCenterline(model, pen, stroke);
+            }
         }.call(this);
     }
 
