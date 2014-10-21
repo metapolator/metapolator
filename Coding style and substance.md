@@ -356,6 +356,66 @@ define([
     }
 })
 ```
+##IO
+
+Always remember, even though you might be writing code for a shell
+command at the moment, the code of Metapolator is intended to be executed
+in web browsers as well. One consequence of this is that we are using an
+IO abstraction layer that lets us change from a file system based backend 
+to an XMLHTTPRequest/REST based backend. Some things may be totally
+OK when writing code for a local command, but they can become bad decisions
+when doing them in a browser via a HTTP connection.
+
+Currently we are doing most of our IO in a synchronous fashion. This means
+that the user has to wait until the reading or writing of the data has
+finished: the program execution halts during that time, the interface is
+locked. The advantage for us is that we can focus on implementing
+the functionality but we'll have to pay the price later and refactor some
+of these situations. For client facing code, we will sooner or later have to
+either A) add a mixed asynchronous/synchronous API, probably using
+[obtainJS](https://github.com/graphicore/obtainJS) or B) just convert the
+synchronous calls to asynchronous ones, probably based on ECMAScript 6 `Promises`.
+
+Until then, if you need IO, we collect here a set of rules to make the
+upcoming conversion work less painful:
+
+**Don't do IO in constructors.** It's expensive, especially when we are not
+going to read the data. We don't want to dig into each constructor to see
+if it does something expensive like IO. Also, when we move to more asynchronous
+IO calls: it is hard to create an asynchronous version of a constructor.
+If you *really* need IO for construction, a factory function may be the way
+to go.
+
+If you don't really need the result of your IO on load, it is maybe enough
+to lazy load the data using getters:
+
+```
+var _p = Constructor.prototype;
+Object.defineProperty(_p, 'fileContents', {
+    get: function() {
+        return this._io.readFile(false, this.filePath);
+    }
+});
+
+// if a cached version of the file's contents is needed:
+Object.defineProperty(_p, 'fileContents', {
+    get: function() {
+        if(this._fileContents === undefined)
+            this._fileContents = this._io.readFile(false, this.filePath);
+        return this._fileContents;
+    }
+});
+```
+
+The getter pattern is still bad to "asynchronize". But at least the lazy
+loading of the data is given.
+
+**Don't save file contents using a setter.** This is considered a unwanted
+side effect in almost all cases. Just make a method to save the data
+explicitly. Rather use setters to validate or sanitize data on input.
+
+
+
 
 Todo:
 
