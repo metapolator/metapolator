@@ -19,7 +19,7 @@ define([
   
     SegmentPoint.factory = function(xy, smooth, name, kwargs) {
         return new SegmentPoint(xy, smooth, name, kwargs);
-    }
+    };
     
     var _p = SegmentPoint.prototype
       , _xProperty = {
@@ -40,17 +40,17 @@ define([
         return '<SegmentPoint'
             + (this.name ? ' ' + this.name : '')
             + ' ' + this.vector.valueOf() +'>';
-    }
+    };
     
-    Object.defineProperty(_p, 'x', _xProperty)
-    Object.defineProperty(_p, 'y', _yProperty)
+    Object.defineProperty(_p, 'x', _xProperty);
+    Object.defineProperty(_p, 'y', _yProperty);
     // array interface
     Object.defineProperty(_p, 'length', {
         value: 2
       , writable: false
-    })
-    Object.defineProperty(_p, '0', _xProperty)
-    Object.defineProperty(_p, '1', _yProperty)
+    });
+    Object.defineProperty(_p, '0', _xProperty);
+    Object.defineProperty(_p, '1', _yProperty);
     
     return SegmentPoint;
 });

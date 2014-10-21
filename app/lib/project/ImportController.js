@@ -34,7 +34,8 @@ define([
   , parseSelectorList
 ) {
     "use strict";
-
+    // jshint option
+    /*global console:true*/
     function ImportController(project, masterName, sourceUFODir) {
         this._project = project;
         this._masterName = masterName;
@@ -52,7 +53,7 @@ define([
     }
     var _p = ImportController.prototype;
 
-    _p.import = function(glyphs) {
+    _p['import'] = function(glyphs) {
         var missing, i=0
           , rules = []
           , cps
@@ -62,7 +63,7 @@ define([
             glyphs = this._sourceGlyphSet.keys();
         else {
             missing = glyphs.filter(function(name) {
-                        return !this._sourceGlyphSet.has_key(name);}, this)
+                        return !this._sourceGlyphSet.has_key(name);}, this);
             if(missing.length)
                 throw new errors.Key('Some glyphs requested for import '
                                     +'are missing in the source GlyphSet: '
@@ -87,7 +88,7 @@ define([
         // files, changing only the new glyphs and keeping the old ones. But
         // that ain't gonna be easy.
         this._master.saveCPS(this._masterName + '.cps', cps);
-    }
+    };
 
     _p._readGlyphFromSource = function(glyphName) {
         var glyph = this._sourceGlyphSet.get(glyphName)
@@ -97,7 +98,7 @@ define([
 
         glyph.drawPoints(false, pen);
         return {data:glyph, contours:segmentPen.flush()};
-    }
+    };
 
     _p.importGlyph = function(glyphName) {
         console.warn('> importing glyph:', glyphName);
@@ -119,7 +120,7 @@ define([
                                             +'than 4 on-curve points.');
                 continue;
             }
-            if(!(sourceGlyph.contours[i].commands.length % 2)) {
+            if(sourceGlyph.contours[i].commands.length % 2 === 0) {
                  console.warn('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
@@ -150,38 +151,38 @@ define([
         this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph.data,
             // draw the outline to the new glif
             drawPenStroke.bind(null, contours)
-        )
+        );
 
         return [new AtNamespaceCollection(
                     new AtRuleName('namespace', [])
                   , parseSelectorList.fromString('glyph#'+(glyphName.replace('.', '\\.')))
                   , rules)
                 ];
-    }
+    };
 
     function drawPenStroke(contours, pen) {
         var i=0, j, segmentType, point;
 
         for(;i<contours.length;i++) {
-            pen.beginPath()
+            pen.beginPath();
             // draw just the skeleton
             for(j=0;j<contours[i].length;j++) {
                 if(j===0)
                     // this is a non closed path
                     segmentType = 'move';
-                else if((point = contours[i][j].z.in) !== undefined) {
+                else if((point = contours[i][j].z['in']) !== undefined) {
                     segmentType = 'curve';
                     pen.addPoint(point.vector.valueOf(), undefined
-                                                , undefined, point.name)
+                                                , undefined, point.name);
                 }
                 else
                     segmentType =  'line';
                 point = contours[i][j].z.on;
                 pen.addPoint(point.vector.valueOf(), segmentType
-                                                , undefined, point.name)
+                                                , undefined, point.name);
                 if((point = contours[i][j].z.ou) !== undefined)
                     pen.addPoint(point.vector.valueOf(), undefined
-                                                , undefined, point.name)
+                                                , undefined, point.name);
             }
             pen.endPath();
         }
@@ -203,7 +204,7 @@ define([
                 ( obj[k] instanceof Complex
                     ? 'Vector ' + [obj[k].real, obj[k].imag].join(' ')
                     : obj[k] )], []);
-            items.push(new Parameter(name, value))
+            items.push(new Parameter(name, value));
         }
 
         return new ParameterDict(items);
@@ -224,36 +225,36 @@ define([
           ;
 
         // center
-        selectorList = parseSelectorList.fromString('point:i('+index+') > center')
+        selectorList = parseSelectorList.fromString('point:i('+index+') > center');
         center = {
             onIntrinsic:  'Vector 0 0'
-        }
-        if(point.z.in !== undefined) {
-            center.inIntrinsic = point.z.in.vector['-'](zon)
+        };
+        if(point.z['in'] !== undefined) {
+            center.inIntrinsic = point.z['in'].vector['-'](zon);
             center.inTension = point.z.inTension;
             center.inDirIntrinsic = point.z.inDir.angle();
         }
         if(point.z.ou !== undefined) {
-            center.outIntrinsic = point.z.ou.vector['-'](zon)
-            center.outTension = point.z.ouTension
-            center.outDirIntrinsic = point.z.ouDir.angle()
+            center.outIntrinsic = point.z.ou.vector['-'](zon);
+            center.outTension = point.z.ouTension;
+            center.outDirIntrinsic = point.z.ouDir.angle();
         }
         rules.push(
             new Rule(selectorList, parameterDictFromObject(center)));
 
         // left
-        selectorList = parseSelectorList.fromString('point:i('+index+')>left')
+        selectorList = parseSelectorList.fromString('point:i('+index+')>left');
         left = {
             onIntrinsic: point.l.on.vector['-'](zon)
-        }
+        };
         // Don't import these values, because they are dependent on their
         // right side counterpart in the defaults.cps setup.
         // left.onDir is defined as the inverse of right.onDir (+ deg 180)
         // left.onLength is defined being equal to right.onLength
         // left.onLength = left.onIntrinsic.magnitude()
         // left.onDir = left.onIntrinsic.angle()
-        if(point.l.in !== undefined) {
-            left.inIntrinsic = point.l.in.vector['-'](zon)
+        if(point.l['in'] !== undefined) {
+            left.inIntrinsic = point.l['in'].vector['-'](zon)
                                                 ['-'](center.inIntrinsic)
                                                 ['-'](left.onIntrinsic);
 
@@ -261,7 +262,7 @@ define([
                                                 ? point.z.inDir.angle()
                                                 : 0
                                             );
-            left.inTension = point.l.inTension
+            left.inTension = point.l.inTension;
         }
         if(point.l.ou !== undefined) {
             left.outIntrinsic = point.l.ou.vector['-'](zon)
@@ -280,19 +281,19 @@ define([
         selectorList = parseSelectorList.fromString('point:i('+index+')>right');
         right = {
             onIntrinsic: point.r.on.vector['-'](zon)
-        }
+        };
 
-        right.onLength = right.onIntrinsic.magnitude()
-        right.onDir = right.onIntrinsic.angle()
-        if(point.r.in !== undefined) {
-            right.inIntrinsic = point.r.in.vector['-'](zon)
+        right.onLength = right.onIntrinsic.magnitude();
+        right.onDir = right.onIntrinsic.angle();
+        if(point.r['in'] !== undefined) {
+            right.inIntrinsic = point.r['in'].vector['-'](zon)
                                                  ['-'](center.inIntrinsic)
                                                  ['-'](right.onIntrinsic);
             right.inDirIntrinsic = point.r.inDir.angle() - (point.z.inDir
                                                 ? point.z.inDir.angle()
                                                 : 0
                                             );
-            right.inTension = point.r.inTension
+            right.inTension = point.r.inTension;
         }
         if(point.r.ou !== undefined) {
             right.outIntrinsic = point.r.ou.vector['-'](zon)
