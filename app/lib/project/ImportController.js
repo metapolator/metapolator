@@ -5,6 +5,7 @@ define([
   , './import/ImportOutlinePen'
   , './import/StrokeContour'
 
+  , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
@@ -23,6 +24,7 @@ define([
   , ImportOutlinePen
   , StrokeContour
 
+  , ParameterCollection
   , AtNamespaceCollection
   , AtRuleName
   , Rule
@@ -76,12 +78,7 @@ define([
 
         this._master.glyphSet.writeContents(false);
 
-        // a namespace for the master ...
-        cps = new AtNamespaceCollection(
-                new AtRuleName('namespace', [])
-              , parseSelectorList.fromString('master#'+this._masterName)
-              , rules
-        );
+        cps = new ParameterCollection(rules);
 
         // This just overrides the local CPS file
         // We might come up with some smart merging in the future, so that
