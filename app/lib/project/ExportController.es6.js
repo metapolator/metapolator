@@ -53,29 +53,6 @@ define([
      */
 
     function getControlsFromStyle(p0, p1, terminal) {
-        var outTension = p0.get(terminal === 'start' ? 'inTension' :'outTension')
-          , inTension = p1.get(terminal === 'end' ? 'outTension' : 'inTension')
-          , on0
-          , on1
-          , outDirAngle
-          , inDirAngle
-          , outDir
-          , inDir
-          ;
-
-        if(outTension && inTension) {
-            on0 = p0.get('on')
-            on1 = p1.get('on')
-            outDirAngle = p0.get(terminal === 'start' ? 'inDir' : 'outDir')
-            inDirAngle = p1.get(terminal === 'end' ? 'outDir' :'inDir')
-            outDir = Vector.fromPolar(1, outDirAngle)
-            inDir = Vector.fromPolar(1, inDirAngle)
-            return hobby.hobby2cubic(on0, outDir, outTension,
-                                            inTension, inDir, on1);
-        }
-        // fallback to control points is always possible. Although,
-        // depending on the cps setup the value may not be useful
-        // does this affect outline quality?
         return [
               p0.get(terminal === 'start' ? 'in': 'out')
             , p1.get(terminal === 'end' ? 'out' :'in')
