@@ -132,13 +132,6 @@ define([
 
             // this goes into the glyph/skeleton
             contours.push(penStrokeData);
-            // draws only the center line using the absolute points, no
-            // hobby or so for the moment. Because we don't use the control
-            // points of the skeleton as reference, it might be also an
-            // option to draw the centerline with tension = 1, to get a
-            // sort of "normalized" skeleton line.
-            // ... will try out when I have time
-            // makeSkeletonContour(penStroke)
 
             // this goes into the glyph
             // returns an atNamespaceRule(penstroke:i({penStrokeIndex})){ points ... }
