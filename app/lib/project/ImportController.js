@@ -12,7 +12,7 @@ define([
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterName'
   , 'metapolator/models/CPS/elements/ParameterValue'
-  , 'complex/Complex'
+  , 'metapolator/math/Vector'
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 
@@ -30,7 +30,8 @@ define([
   , Parameter
   , ParameterName
   , ParameterValue
-  , Complex
+  , Vector
+
   , parseSelectorList
 ) {
     "use strict";
@@ -193,8 +194,7 @@ define([
                 continue;
             name = new ParameterName(k, []);
             value = new ParameterValue([
-                // Vector is instanceof Complex, too
-                ( obj[k] instanceof Complex
+                ( obj[k] instanceof Vector
                     ? 'Vector ' + [obj[k].real, obj[k].imag].join(' ')
                     : obj[k] )], []);
             items.push(new Parameter(name, value));
