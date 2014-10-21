@@ -57,6 +57,8 @@ define(function() {
     makeError('Project', undefined , new errors.CPS);
     makeError('PointPen', undefined , new errors.CPS);
     makeError('CPSParser', undefined , new errors.CPS);
+    makeError('Import', undefined , new errors.CPS);
+    makeError('ImportPenstroke', undefined , new errors.Import);
 
     /**
      * if expression is false, throw an Assertion

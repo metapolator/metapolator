@@ -8,400 +8,495 @@ define([
   , hobby
 ) {
     "use strict";
-    var Parent = Array
+    var AssertionError = errors.Assertion
+      , ImportPenstroke = errors.ImportPenstroke
       , line2curve = tools.line2curve
-      , getStrokeTerminals = tools.getStrokeTerminals
       , getCenterPoint = tools.getCenterPoint
-      , getCenter = tools.getCenter
-      , getCenterSegment = tools.getCenterSegment
       ;
-    
-    
-    
+
     /**
-     * From a semantic point of view we have only on-curve points, which:
-     *     may have an incoming control( point || tension + direction)
-     *     may have an outgoing control( point || tension + direction)
-     * 
-     * This is also the representation font-editors commonly use
-     * they are not concerned with a segment based presentation. So
-     * this is the way most people think about vector graphics.
-     */
-    function getSemanticPoint(segmentA, segmentB) {
-        var point = {
-            on: segmentA[segmentA.length-1]
-            // whether this was the on curve point of a lineTo Segment
-          , wasLine: !!segmentA.wasLine
-          , in: undefined
-          , ou: undefined
-        };
-        
-        if(segmentA[0] === 'curveTo')
-            // this shouldnt happen with the first item.
-            // That one should be moveTo
-            point.in = segmentA[2];
-        
-        if(segmentB && segmentB[0] === 'curveTo')
-            // if this is the last item segmentB is undefined
-            point.ou = segmentB[1];
-        return point;
-    }
-    
-    /**
-     * augment a PenStroke point with direction and tensions parameters
-     */
-    function addHobby(p0, p1) {
-        var tensions;
-        // add directions
-        if(p0.ou)
-            p0.ouDir = p0.ou.vector['-'](p0.on.vector);
-        if(p1.in)
-            p1.inDir = p1.on.vector['-'](p1.in.vector);
-        
-        // addTensions
-        
-        // FIXME: there should be a when the directions
-        // are 0 but the distance from p0.on to p1.on is != 0
-        // because then we can use the directions of the straight line
-        // but to make some progress I skip the corner cases
-        // for now!
-        if(!p0.ou || !p1.in || p0.ouDir.magnitude() === 0
-                            || p1.inDir.magnitude() === 0)
-            return;
-        // else
-        tensions = hobby.tensions(
-              p0.on.vector
-            , p0.ou.vector
-            , p1.in.vector
-            , p1.on.vector
-        )
-        p0.ouTension = tensions[0];
-        p1.inTension = tensions[1];
-    }
-    
-    /**
-     * The terminals are a very special case! because of the structure
-     * of the Penstroke two in points at the beginning of the stroke
-     * describe the curve there. At the end of the stroke, two out
-     * points "ou" describe the curve.
-     * 
-     * "ctrl" is the control to affect, must be either 'in' or 'ou'
-     * 
-     * see getAbsolutePenStroke for the calls to this function.
-     * 
-     * beginning terminal of the segment
-     *              addTerminalHobby(point.l, point.r, 'in');
-     * ending terminal of the segment
-     *              addTerminalHobby(point.r, point.l, 'ou');
-     * 
-     */
-    function addTerminalHobby(a, b, ctrl) {
-        var dir = ({in: 'inDir', ou: 'ouDir'})[ctrl]
-          , tension = ({in: 'inTension', ou: 'ouTension'})[ctrl]
-          , tensions
-          ;
-        // add directions
-        if(a[ctrl])
-            a[dir] = a[ctrl].vector['-'](a.on.vector);
-        if(b[ctrl])
-            b[dir] = b.on.vector['-'](b[ctrl].vector);
-        
-        // add tensions
-        if(!a[ctrl] || !b[ctrl] || a[dir].magnitude() === 0
-                                || b[dir].magnitude() === 0)
-            return;
-        tensions = hobby.tensions(
-            a.on.vector
-          , a[ctrl].vector
-          , b[ctrl].vector
-          , b.on.vector
-        );
-        a[tension] = tensions[0];
-        b[tension] = tensions[1];
-    }
-    
-    /**
-     * This methods expects a input-contour like a SegementPen produces it.
-     * 
-     * The 'implied' closing line must be included
+     * This methods expects an input-contour like a SegementPen produces it.
+     *
+     * The 'implied' closing line argument of SegementPen must be included
      * which is *not* the default when using a ufoJS like PointToSegmentPen!
-     * see the outputImpliedClosingLine of the PointToSegmentPen constructor.
-     * 
+     * See the outputImpliedClosingLine of the PointToSegmentPen constructor.
+     *
      * The input-contour must be a closed contour.
-     * 
-     * The minimal length of the input-contour is 3 which yields in a one item
-     * result.
-     * 
+     *
+     * The minimal length of the input-contour is 3 which yields in a one
+     * item result.
+     *
      * The input-contour is expected to have an uneven number of segments:
      * An initial 'moveTo' segment and an even number of either 'lineTo'
      * or 'curveTo' segments.
-     * 
-     * The result of this method is an array of arrays of left and right segment
-     * pairs:
-     * 
-     * var result = [
-     *      [left, right],
-     *      [left, right],
-     *      [left, right],
-     *      [left, right],
-     * ]
-     * 
-     * The result length is (input.length -1) /2
-     * 
-     * 
+     *
      * This method treats the first on curve point as first point on
      * the right side and the on curve point before the last on curve
      * point as the first point on the left side. Each segement has one
      * on curve point and 0 or 3 off curve points.
-     * 
-     * The last segment is skipped as well as the segment with the index
-     * (contour.length-1)/2. Both segments are the 'width' of the stroke
-     * and not part of the outline.
-     * ## Note: it would be cool to preserve these segments as line
-     *    endings of the stroke
-     * 
-     * The results left segments are a direction reversed representation
+     *
+     * The last segment and segment with the index (contour.length-1)/2.
+     * are used to reconstruct the imported shape using opening and closing
+     * terminals.
+     *
+     * The result of this method is an array of arrays of left and right segment
+     * pairs.
+     *
+     * The resulting left segments are a direction reversed representation
      * of the input-contours left-side segments. So the results left
      * and right side contours share the same direction.
-     * 
+     *
      * EXMAPLE:
      * A contour of length 11: 1 moveto  + 10 segments:
      *  [moveto, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-     * 
+     *
      * left    4    right
      *         _
      *      5 | | 3
      *      6 | | 2
      *      7 | | 1
      *      8 |_| 0
-     *           * 
-     *         9   
-     * 
+     *           *
+     *         9
+     *
      * (*) moveTo is the point in the lower right corner.
-     * 
+     *
      *     result = [
-     *        [moveTo, moveTo]
+     *        [openingTerminalSegment, openingTerminalSegment]
      *        [8, 0]
      *        [7, 1]
      *        [6, 2]
      *        [5, 3]
+     *        [closingTerminalSegment, closingTerminalSegment]
      *     ]
      */
     function StrokeContour(contour) {
-        Parent.call(this);
+        this.length = 0;
             // skip the first moveto
         var right = 1
             // -1 for length to index translation,
-            // -1 because the very last segment is the vector of the 
+            // -1 because the very last segment is the vector of the
             // pen, not part of the stroke
           , left = contour.length-2
           , zLength = (contour.length-1)*0.5
           , leftSegment, points
+          , terminals = this._getTerminals(contour)
           ;
-        
-        this.terminals = getStrokeTerminals(contour);
-        
-        // add the initial moveTo to this
-        this.push([
-            ['moveTo', contour[left].slice(-1).pop()]
-            , contour[0]
-        ])
+
+        // add the information needed for the opening terminal
+        this._push([
+            [undefined, terminals[0][1], contour[left].slice(-1).pop()]
+          , [undefined, terminals[0][2], terminals[0][3]]
+        ]);
+
         for(;right<zLength; right++, left--) {
             // the problem is, that the left contour is in the wrong
             // direction. so we have to reverse its direction:
-            leftSegment = []
-            
-            // start with the command
-            leftSegment.push(contour[left][0])
-            // add the control points (if any) in reverse order
-            leftSegment.push.apply(leftSegment,
-                                contour[left].slice(1,-1).reverse())
+            leftSegment = contour[left].slice(1,-1).reverse();
             // oncurve point of the previous segment
-            leftSegment.push(contour[left-1].slice(-1).pop())
-            
-            this.push([leftSegment, contour[right]]);
+            leftSegment.push(contour[left-1].slice(-1).pop());
+
+            this._push([leftSegment, contour[right].slice(1)]);
         }
+
+        // add the information needed for the closing terminal
+        this._push([
+            [terminals[1][2], undefined, undefined]
+          , [terminals[1][1], undefined, undefined]
+        ]);
     }
-    
-    var _p = StrokeContour.prototype = Object.create(Array.prototype);
+
+    var _p = StrokeContour.prototype;
     _p.constructor = StrokeContour;
-    
-    _p.push = function(/* ... */) {
+
+    /**
+     * Return the control points for both terminal lines.
+     * the direction for the stroke beginning terminal line left to right
+     * the direction for the stroke ending terminal line is right to left.
+     *
+     * returns: [ beginning_segment, ending_segment ]
+     */
+    _p._getTerminals = function (contour) {
+        var beginningIndex = contour.length-1
+          , endingIndex = (contour.length-1) * 0.5
+          , beginning = contour[beginningIndex]
+          , ending = contour[endingIndex];
+
+        if(beginning[0] !== 'curveTo') {
+            beginning = line2curve(
+                contour[beginningIndex-1].slice(-1).pop()
+              , beginning[1]
+            );
+        }
+        if(ending[0] !== 'curveTo') {
+            ending = line2curve(
+                contour[endingIndex-1].slice(-1).pop()
+              , ending[1]
+            );
+        }
+
+        return [beginning, ending];
+    };
+
+    _p._push = function(/* ... */) {
         var args = Array.prototype.slice.apply(arguments)
-          , i=0
+          , i=0, j
           , segments
-          , left = 0
-          , right = 1
+          , segment
           ;
-        
         for(;i<args.length;i++) {
-            args[i]; // === [leftSegment, rightSegment]
+            // args[i] === [leftSegment, rightSegment]
             segments = [];
-            
-            // we convert ALL lineTo to curveTo
-            // but the Segment is marked with .wasLine = true;
-            if(args[i][left][0] === 'lineTo') {
-                segments[left] = line2curve(
-                    this[this.length-1][left].slice(-1).pop()
-                    , args[i][left][1]
-                );
-                segments[left].wasLine = true;
+            for(j=0;j<2;j++) {
+                // Convert ALL lineTo to curveTo;
+                // line2curve marks the new segment is marked with
+                // segment.wasLine = true;
+                if(args[i][j].length === 1) {
+                    segment = line2curve(
+                        this[this.length-1][j].slice(-1).pop()
+                      , args[i][j][0]
+                    );
+                    // remove the segmentType
+                    segment.shift();
+                }
+                else if(args[i][j].length === 3)
+                    segment = args[i][j];
+                else
+                    // This means that probably  the code that created
+                    // the contour argument for StrokeContour is faulty
+                    // and must be repaired.
+                    throw new AssertionError('A segment is expected to '
+                        + ' have 3 items at this stage, but this has '
+                        + args[i][j].length + ' items. '
+                        + 'Segment: ' + args[i][j].join(', '));
+                segments.push(segment);
             }
-            else
-                segments[left] = args[i][left].slice();//??? need as copy?
-                
-            
-            if(args[i][right][0] === 'lineTo') {
-                segments[right] = line2curve(
-                    this[this.length-1][right].slice(-1).pop()
-                    , args[i][right][1]
-                );
-                segments[right].wasLine = true;
-            }
-            else
-                segments[right] = args[i][right].slice();// ??? need as copy?
-            
-            Parent.prototype.push.call(this, segments);
+            Array.prototype.push.call(this, segments);
         }
     };
-    
-    _p.separate = function(left, right) {
-        var separated = [left || [], right || []]
-          , i=0
-          ;
-        for(;i<this.length;i++) {
-            separated[0].push(this[i][0]);
-            separated[1].push(this[i][1]);
-        }
-        return separated;
-    }
-    
-    
+
     /**
      * Returns a list of points like following:
-     * 
+     *
      * the coordinates are absolute.
-     * 
+     *
      * // one "point"
      *  {
      *      l: {
-     *          in: SegmentPoint
-     *        , out: SegmentPoint
-     *        , on: SegmentPoint
-     *        , // only when withHobby is true
-     *        , ouDir: Vector
-     *        , inDir: Vector
-     *        , ouTension: Number
-     *        , inTension: Number
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
      *      }
      *    , r: {
-     *          in: SegmentPoint
-     *        , out: SegmentPoint
-     *        , on: SegmentPoint
-     *        , // only when withHobby is true
-     *        , ouDir: Vector
-     *        , inDir: Vector
-     *        , ouTension: Number
-     *        , inTension: Number
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
      *      }
      *    , z: {
-     *          in: SegmentPoint
-     *        , out: SegmentPoint
-     *        , on: SegmentPoint
-     *        , // only when withHobby is true
-     *        , ouDir: Vector
-     *        , inDir: Vector
-     *        , ouTension: Number
-     *        , inTension: Number
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
      *      }
      * }
-     * 
-     * The withHobby flag could be removed when there would be a plugin
-     * infrastructure that would allow processing and augmenting the
-     * returned pen stroke.
-     * 
      */
-    _p.getPenStroke = function(withHobby) {
-        var point
-          , left = []
-          , right = []
-          , result = []
-          , i = 0
-          ;
-        
-        // writes to left and right
-        this.separate(left, right);
-        
-        for(;i<this.length; i++) {
-            point = {
-                l: getSemanticPoint(left[i], left[i+1])
-              , r: getSemanticPoint(right[i], right[i+1])
-              , z: getSemanticPoint(getCenterSegment(left[i], right[i]), 
-                        // if not both are undefined or both are defined
-                        // the structure of the points would be broken!
-                        (left[i+1] === undefined
-                            ? undefined
-                            : getCenterSegment(left[i+1], right[i+1])
-                        )
-                    )
+
+    _p._getMetapolatorPoint = function(i) {
+        var point, left=0, right =1;
+
+        // i   [[ , leftIn, leftOn], [ , rightIn, rightOn]]
+        // i+1 [[leftOut , , ], [rightOut, , ]]
+
+        point = {
+            l: {
+                'in': this[i][left][1]
+               , on: this[i][left][2]
+               , out: this[i+1][left][0]
+               , wasLine: !!this[i][left].wasLine
             }
-            result.push(point);
-            
-            // NOTE: adding hobby spline info (tension and dir) could
-            // already be a Plugin. This can happen independently from
-            // the rest here.
-            // Track the withHobby Parameter to get an idea of what
-            // the hobby plugin would do (it is used for the terminals, too)
-            //
-            // A plugin approach would make it easier to extract more data
-            // from a PenStroke without making this method bigger and bigger,
-            // and it would make it easier to come up with new things to
-            // extract.
-            
-            if(!withHobby || i===0)
-                // because we'll look behind
-                continue;
-            // left hobby
-            addHobby(result[i-1].l, point.l);
-            // right hobby
-            addHobby(result[i-1].r, point.r)
-            // center hobby
-            addHobby(result[i-1].z, point.z)
-            
-            // This happens with my test glif BodonMP.ufo
-            // if(point.l.inTension > 5) {
-            //     console.log('>>BIG>> StroleContour getPenStroke point.l.inTension', point.l.inTension)
-            //     console.log('check if this is the same when done with mpost')
-            // }
-        }
-        
-        // add the terminal control points
-        
-        // the terminals are a very special case! because of the structure
-        // of the Penstroke two "in" points at the beginning of the stroke
-        // describe the curve there. At the end of the stroke, two out
-        // points "ou" describe the curve.
-        
-        // terminal of the beginning of the stroke
-        if(this.terminals[0][0] === 'curveTo') {
-            console.warn('Adding terminal to point 0')
-            point = result[0];
-            point.l.in = this.terminals[0][1]
-            point.r.in = this.terminals[0][2]
-            if(withHobby)
-                addTerminalHobby(point.l, point.r, 'in');
-        }
-        //terminal of the ending of the stroke
-        if(this.terminals[1][0] === 'curveTo') {
-            point = result[result.length-1];
-            point.r.ou = this.terminals[1][1]
-            point.l.ou = this.terminals[1][2]
-            if(withHobby)
-                addTerminalHobby(point.r, point.l, 'ou');
-        }
+          , r: {
+                'in': this[i][right][1]
+              , on: this[i][right][2]
+              , out: this[i+1][right][0]
+              , wasLine: !!this[i][right].wasLine
+            }
+          , z: {}
+        };
+
+        point.z.on = getCenterPoint(point.l.on, point.r.on);
+        point.z['in'] = getCenterPoint(point.l['in'], point.r['in']);
+        point.z.out = getCenterPoint(point.l.out, point.r.out);
+        point.z.wasLine = point.l.wasLine && point.r.wasLine;
+
+        return point;
+    };
+
+    _p._getPenStroke = function() {
+        var i
+            // end is the element before the last element, because the last
+            // element is just for the ending terminal of interest
+          , end = this.length-1
+          , result = []
+          ;
+
+        for(i=0; i<end; i++)
+            result.push(this._getMetapolatorPoint(i));
         return result;
+    };
+
+    function _extractKey(key, value) {
+        return value[key];
     }
-    
-    
+
+    function _setKey(stroke, key, value, index) {
+        stroke[index][key] = value;
+    }
+
+    /**
+     * see the docstring of _findNextDirection
+     */
+    function _getDirection(point, firstRound, lastRound, testDirection,
+                                                        test, control) {
+        var testPointKeys, testPointKey, testPoint, offset;
+
+        if(!firstRound || !lastRound)
+            testPointKeys = testDirection === 1
+                ? {out:true, on:true, 'in':true}
+                : {'in':true, on:true, out:true}
+                ;
+        else if(firstRound)
+            testPointKeys = testDirection === 1
+                ? {out: true}
+                : {'in': true}
+                ;
+        else // lastRound == true
+            testPointKeys = testDirection === 1
+                ? {'in': true}
+                : {out: true}
+                ;
+        for(testPointKey in testPointKeys) {
+            testPoint = test[testPointKey];
+            offset = control === 'out'
+                ? testPoint['-'](point.on)// point.out['-'](point.on)
+                : point.on['-'](testPoint)// point.on['-'](point['in']);
+                ;
+            if(offset.magnitude())
+                return offset.angle();
+        }
+        return false;
+    }
+    /**
+     * Find directions for any control point even when the naive approach
+     * has no direction, because the distance of the offset to the on
+     * curve point is 0.
+     *
+     * The algorithm finds the next point in control direction
+     * (in|on|out OR out|on|in) that has a different position than
+     * point.on and returns that direction in radians.
+     *
+     * In the normal case, just the direction of the control point is
+     * returned.
+     *
+     * If the control shares the position with the on curve point,
+     * i.e. point.on - point[control] === Vector 0, 0
+     * the search t traverses the whole path until a direction can be
+     * returned.
+     * For the left and right path it traces the whole outline, for
+     * the centerline it looks only at that. Not too many steps should be
+     * needed to find a direction, but in the worst case -- when all
+     * points are on the same position -- this will return false.
+     *
+     * Arguments:
+     *
+     * `stroke` is a stroke array as returned by StrokeContour._getPenStroke
+     *
+     * `pointIndex` is the numeric index of the stroke point in `stroke`
+     *
+     * `key` is 'l' (left), 'z' (center) or 'r' (right)
+     *
+     * `point` equals stroke[pointIndex][key]
+     *
+     * `control` is 'out' or 'in' to indicate in which direction we
+     *      are searching. This means that we are searching an angle
+     *      from `point.on` to 'point[control]' and if there is no
+     *      natural angle for that point we go on and look at the next
+     *      coordinate the path.
+     */
+    function _findNextDirection(stroke, pointIndex, key, point, control) {
+        var normalIncrement = control === 'out' ? 1 : -1
+          , increment = normalIncrement
+          , i = pointIndex
+          , countourKey = key
+          , firstRound = true
+          , lastRound
+          , result
+          ;
+
+        while(true) {
+            lastRound = i === pointIndex && !firstRound;
+            result = _getDirection(point, firstRound, lastRound,
+                            increment, stroke[i][countourKey], control);
+            firstRound = false;
+            if(result !== false || lastRound)
+                return result;
+
+            // iterate
+            if(key === 'z') {
+                // we only change i
+                if(increment === 1 && i === stroke.length-1)
+                    i = 0;
+                else if (increment === -1 && i === 0)
+                    i = stroke.length-1;
+                else
+                    i += increment;
+            }
+            else { // key is 'l' or 'r'
+                increment = (countourKey === key)
+                    ? normalIncrement
+                    : normalIncrement * -1
+                    ;
+
+                if((increment === 1 && i === stroke.length-1)
+                                    || (increment === -1 && i === 0)) {
+                    // switch to the other side of the stroke;
+                    // i stays the same
+                    countourKey = key === 'l' ? 'r':'l';
+                    increment = increment * -1;
+                }
+                else
+                    i += increment;
+            }
+        }
+    }
+
+    // TODO: Take care of contours marked as smooth, when the obvious
+    // direction of a control point was not available. Then we could
+    // improve the result of _findNextDirection by returning a smooth
+    // connection.
+    // If only one direction is a normal direction, the other
+    // should be the inverse of that direction.
+    // If both directions are 'artificial' the result should be averaged
+    // to create a smooth direction.
+    function _setPolarControls(stroke, key, point, index, contour) {
+        var outVector, inVector, dir;
+        outVector = point.out['-'](point.on);
+        point.outLength = outVector.magnitude();
+        dir = _findNextDirection(stroke, index, key, point, 'out');
+        if(dir === false)
+            throw new ImportPenstroke('can\'t find a outgoing direction '
+                                        +'for point['+index+'].'+key);
+        point.outDir = dir;
+        inVector = point.on['-'](point['in']);
+        point.inLength = inVector.magnitude();
+        dir = _findNextDirection(stroke, index, key, point, 'in');
+        if(dir === false)
+            throw new ImportPenstroke('can\'t find a incoming direction '
+                                        +'for point['+index+'].'+key);
+        point.inDir = dir;
+        return point;
+    }
+
+    function _setTensions(stroke, key, metapoint, index, contour) {
+        var next
+          , uv
+          , point = metapoint[key]
+          ;
+        if(index !== contour.length-1) {
+            next = contour[index+1][key];
+            uv = hobby.magnitude2tension(
+                                    point.on, point.outDir, point.outLength,
+                                    next.inLength, next.inDir, next.on);
+            point.outTension = uv[0];
+            next.inTension = uv[1];
+        }
+
+        if(index === 0 && key === 'l') {
+            // beginning terminal
+            // only handled on the left side for both: 'l' and 'r'
+            next =  metapoint.r;
+            uv = hobby.magnitude2tension(
+                                    point.on, point.inDir  + Math.PI, point.inLength,
+                                    next.inLength, next.inDir, next.on);
+            point.inTension = uv[0];
+            next.inTension = uv[1];
+        }
+        else if(index === contour.length-1 && key === 'r') {
+            // ending terminal
+            // only handled on the right side for both: 'l' and 'r'
+            next =  metapoint.l;
+            uv = hobby.magnitude2tension(
+                                    point.on, point.outDir, point.outLength,
+                                    next.outLength, next.outDir + Math.PI, next.on);
+            point.outTension = uv[0];
+            next.outTension = uv[1];
+        }
+    }
+
+    /**
+     * Returns a list of points like following:
+     *
+     * the coordinates are absolute.
+     *
+     * // one "point"
+     *  {
+     *      l: {
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
+     *        , outLength: real number
+     *        , outDir: , angle in radians
+     *        , inLength: real number
+     *        , inDir: real number, angle in radians
+     *        , outTension: real number or Infinity if outLength === 0
+     *        , inTension: real number or Infinity if inLength === 0
+     *      }
+     *    , r: {
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
+     *        , outLength: real number
+     *        , outDir: , angle in radians
+     *        , inLength: real number
+     *        , inDir: real number, angle in radians
+     *        , outTension: real number or Infinity if outLength === 0
+     *        , inTension: real number or Infinity if inLength === 0
+     *      }
+     *    , z: {
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
+     *        , outLength: real number
+     *        , outDir: , angle in radians
+     *        , inLength: real number
+     *        , inDir: real number, angle in radians
+     *      }
+     * }
+     */
+    _p.getPenStroke = function() {
+        var stroke = this._getPenStroke();
+        stroke.map(_extractKey.bind(null,'l'))
+              .map(_setPolarControls.bind(null, stroke,'l'))
+              .forEach(_setKey.bind(null, stroke,'l'))
+              ;
+        stroke.map(_extractKey.bind(null,'r'))
+              .map(_setPolarControls.bind(null, stroke,'r'))
+              .forEach(_setKey.bind(null, stroke,'r'))
+              ;
+        
+        stroke.map(_extractKey.bind(null,'z'))
+              .map(_setPolarControls.bind(null, stroke,'z'))
+              .forEach(_setKey.bind(null, stroke,'z'))
+              ;
+        
+        stroke.forEach(_setTensions.bind(null, stroke,'l'))
+        stroke.forEach(_setTensions.bind(null, stroke,'r'));
+        return stroke;
+    };
+
     return StrokeContour;
-})
+});

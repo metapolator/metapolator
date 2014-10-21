@@ -1,13 +1,15 @@
 define([
-    'metapolator/math/Vector'
+    'metapolator/errors'
+  , 'metapolator/math/Vector'
 ], function(
-    Vector
+    errors
+  , Parent
 ) {
     "use strict";
+    var DeprecatedError = errors.Deprecated;
     
     function SegmentPoint(xy, smooth, name, kwargs) {
-        var k;
-        this.vector = Vector.from.apply(null, xy);
+        Parent.apply(this, xy);
         
         this.smooth = smooth;
         this.name = name;
@@ -21,36 +23,20 @@ define([
         return new SegmentPoint(xy, smooth, name, kwargs);
     };
     
-    var _p = SegmentPoint.prototype
-      , _xProperty = {
-            get: function(){ return this.vector.x; }
-          , set: function(x) {
-                this.vector = new Vector(x, this.vector.y);
-            }
-        }
-      , _yProperty = {
-            get: function(){ return this.vector.y; }
-          , set: function(y) {
-                this.vector = new Vector(this.vector.x, y);
-            }
-        }
-      ;
+    var _p = SegmentPoint.prototype = Object.create(Parent.prototype);
     
     _p.toString = function() {
         return '<SegmentPoint'
             + (this.name ? ' ' + this.name : '')
-            + ' ' + this.vector.valueOf() +'>';
+            + ' ' + this.valueOf() +'>';
     };
     
-    Object.defineProperty(_p, 'x', _xProperty);
-    Object.defineProperty(_p, 'y', _yProperty);
-    // array interface
-    Object.defineProperty(_p, 'length', {
-        value: 2
-      , writable: false
+    Object.defineProperty(_p, 'vector', {
+        get: function() {
+            throw new DeprecatedError('SegmentPoint is now a subclass of '
+                +' metapolator/math/Vector don\'t use this property.');
+        }
     });
-    Object.defineProperty(_p, '0', _xProperty);
-    Object.defineProperty(_p, '1', _yProperty);
     
     return SegmentPoint;
 });
