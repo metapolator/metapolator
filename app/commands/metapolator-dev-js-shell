@@ -1,0 +1,91 @@
+#!/bin/sh
+__hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: javascript; -*- */undefined
+
+"use strict";
+
+exports.command = {
+    description: 'Start a prompt in an environment where require is configured as in metapoaltor.'
+  , arguments: ''
+};
+
+var path = require('path');
+var repl = require('repl');
+var requirejs = require('requirejs');
+require('rootpath')();
+requirejs.config(require('config'));
+
+if (require.main === module) {
+    requirejs([
+        'commander'
+    ], function (
+        program
+    ) {
+        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program.arguments(exports.command.arguments);
+        
+        program.on('--help', function(){
+        console.log(
+"This shows an example session with some tricks and gotchas:\n\
+===========================================================\n\
+\n\
+$ metapolator dev-js-shell\n\
+\n\
+// Load some modules\n\
+\n\
+metapolator> var hobby = require('metapolator/math/hobby');\n\
+undefined\n\
+metapolator> Vector = require('metapolator/math/Vector');\n\
+undefined\n\
+\n\
+// work around a bug in nodejs: joyent/node#8539\n\
+\n\
+metapolator> Vector.prototype._cps_whitelist.inspect = 'inspect';\n\
+\n\
+// Do math\n\
+\n\
+metapolator> var p0 = new Vector(14.671, -0.863), p1 = new Vector(234.736, 634.305);\n\
+undefined\n\
+metapolator> var p2 = new Vector(60.546, 131.544), p3 = new Vector(263.192, 716.437);\n\
+undefined\n\
+metapolator> hobby.control2tension(p0, p1, p2, p3)\n\
+[ 0.3764358308915479, 0.4087927848941421 ]\n\
+\n\
+// Note below that we use +'' to triger the toString method of the returned Vectors.\n\
+\n\
+metapolator> hobby.tension2control(p0, p1['-'](p0).angle(), 0.3764358308915479, 0.408792784894142\n\
+'<Vector 234.736,634.3049999999998>,<Vector 60.54600000000002,131.54399999999998>'\n\
+\n\
+// The result is same as the input was, despite of precision errors.\n\
+\n\
+metapolator>[p1,p2]+''\n\
+'<Vector 234.736,634.305>,<Vector 60.546,131.544>'\n\
+\n\
+// Suppose you have changed the math/hobby library and want to reload it:\n\
+\n\
+metapolator> require.undef('metapolator/math/hobby');\n\
+undefined\n\
+var hobby = require('metapolator/math/hobby')\n\
+undefined\n\
+\n\
+// leave press Ctrl+D or enter `process.exit()`\n\
+metapolator> Bye!\n\
+==========================================================\n\
+");
+        });
+        
+        program.action(function() {
+            // drop into repl here
+            var r = repl.start({
+                prompt: "metapolator> ",
+                input: process.stdin,
+                output: process.stdout,
+            });
+            r.on('exit', function(){
+                console.log('Bye!');
+                process.exit();
+            });
+            r.context.require = requirejs;
+        })
+        program.parse(process.argv);
+    }
+)}
