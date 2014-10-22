@@ -39,7 +39,7 @@ if (require.main === module) {
             project.load();
             project.import(targetMaster, sourceUFO, program.glyphs);
         })
-        .option('-g', '--glyphs <glyphs>', 'A comma-separated of glyph names to import',
+        .option('-g, --glyphs <glyphs>', 'A comma-separated of glyph names to import',
             function(value) {
                 var glyphNames = value.split(',')
                                  .map(function(item){ return item.trim(); })
