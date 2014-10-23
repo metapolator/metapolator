@@ -24,7 +24,7 @@ define([
         this._glyphSet = undefined;
 
         this._showRememberedErrorsToConsole = true;
-        this._data = undefined;
+        this.__data = undefined;
     }
 
     var _p = ProjectMaster.prototype;
@@ -40,17 +40,17 @@ define([
     });
     Object.defineProperty(_p, 'data', {
         get: function() {
-            if(this._data === undefined) {
+            if(this.__data === undefined) {
                 if( io.pathExists( false, this.metaDataFilePath )) {
                     this.loadMetaData();
                 } else {
-                    this._data = {
+                    this.__data = {
                         type: 'ProjectMaster',
                         masters: {},
                         rememberedFailures: {}
                     };
                 }
-                return this._data;
+                return this.__data;
             }
         }
     });
@@ -64,13 +64,13 @@ define([
      * that only the errors from the current operation are recorded.
      */
     _p.appendRememberedFailure = function( type, glyphName, reason ) {
-        if( this.data.rememberedFailures[glyphName] === undefined ) {
-            this.data.rememberedFailures[glyphName] = {};
+        if( this._data.rememberedFailures[glyphName] === undefined ) {
+            this._data.rememberedFailures[glyphName] = {};
         }
-        if( this.data.rememberedFailures[glyphName][ type ] === undefined ) {
-            this.data.rememberedFailures[glyphName][ type ] = [];
+        if( this._data.rememberedFailures[glyphName][ type ] === undefined ) {
+            this._data.rememberedFailures[glyphName][ type ] = [];
         }
-        this.data.rememberedFailures[glyphName][ type ].push(
+        this._data.rememberedFailures[glyphName][ type ].push(
             {
                 name: glyphName,
                 reason: reason,
@@ -96,17 +96,17 @@ define([
      * clear the remembered failures for the specified type.
      */
     _p.clearRememberedFailure = function( type, glyphName ) {
-        if( this.data.rememberedFailures[glyphName] === undefined ) {
-            this.data.rememberedFailures[glyphName] = {};
+        if( this._data.rememberedFailures[glyphName] === undefined ) {
+            this._data.rememberedFailures[glyphName] = {};
         }
-        this.data.rememberedFailures[glyphName][ type ] = [];
+        this._data.rememberedFailures[glyphName][ type ] = [];
     }
     /**
      * Clear any errors of 'type' for all glyphs
      */
     _p.clearAllRememberedFailuresOfType = function( type ) {
         var glyphName;
-        for(glyphName in this.data.rememberedFailures) {
+        for(glyphName in this._data.rememberedFailures) {
             this.clearRememberedFailure( type, glyphName );
         }
     }
@@ -122,11 +122,11 @@ define([
     });
 
     _p.saveMetaData = function() {
-        this._io.writeFile( false, this.metaDataFilePath, yaml.safeDump(this.data));
+        this._io.writeFile( false, this.metaDataFilePath, yaml.safeDump(this._data));
     }
     _p.loadMetaData = function() {
         var dataString = this._io.readFile(false, this.metaDataFilePath );
-        this._data = yaml.safeLoad(dataString);
+        this.__data = yaml.safeLoad(dataString);
     }
 
     _p.saveCPS = function(filename, cps) {
