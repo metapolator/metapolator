@@ -522,7 +522,7 @@ Let us develop the section called ‘parameters’, the one at the very start (i
   * master
     * script
       * glyph
-        * (skeleton) segment
+        * stroke (fka skeleton, or segment)
           * line
           * point
         * vector shape
@@ -540,9 +540,9 @@ Some interesting dynamics are at play:
 
 ### challenges
 
-1. why does this master / glyph / segment / line look like this?
+1. why does this master / glyph / stroke / line look like this?
   * on which hierarchy level(s) is the parameter set?
-* for a given context (global, master, script, glyph, segment, line, point, vector shape), what parameters are set?
+* for a given context (global, master, script, glyph, stroke, line, point, vector shape), what parameters are set?
   * is there interaction with settings at higher hierarchy levels—if so, where?
   * are there settings on lower levels that make this one ineffective?
 * for a given _leaf_ context (glyph, line, point, vector shape) what are the effective values of the native parameters of that level?
