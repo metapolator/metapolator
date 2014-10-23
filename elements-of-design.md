@@ -588,7 +588,7 @@ Above we see the different **mouse-over** interaction. From the top—
 
 #### leaf nodes
 
-![](http://mmiworks.net/metapolator/pointpar.png)
+![](http://mmiworks.net/metapolator/pointpar2.png)
 
 Above we see the parameters panel when a leaf node, a point, is the working context. From the top—
 
@@ -615,7 +615,7 @@ Any parameter-configuring item can be grabbed by the parameter name and dragged 
 #### multi-select contexts
 On every level of the hierarchy (below project) it is possible to make several objects _of the same type_ the working context, i.e. several masters, scripts, glyphs, lines, points, or vector shapes. The challenge is that different values may be set for the same parameter, or that for one or more selected items it is not set at all.
 
-![](http://mmiworks.net/metapolator/multipara.png)
+![](http://mmiworks.net/metapolator/multipara2.png)
 
 Above we see the display of a multi-select of four points. From the top—
 
