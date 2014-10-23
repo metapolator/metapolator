@@ -81,8 +81,8 @@ This section is specific to the **specimen in the Parameters view**.
 One of the most important jobs that this specimen has to perform is selection of the working context for parameter editing, below master level.<br/>
 **rule**: when nothing is selected in the specimen, the (adjustment) masters selected in the (adjustment) masters list(s) are the working context.<br/>
 **rule**: (adjustment) masters that are not selected in the (adjustment) masters list(s), but do have their view toggle (in the view column) set to true, cannot be sub-selected in the specimen; they are never the working context for parameter and skeleton work.<br/>
-**rule**: although there is multi-selection behaviour throughout the hierarchy, the items in a selection must _all_ be of the same type: either (adjustment) master, script, glyph, segment, line, point, or vector shape.<br/>
-**rule**: when there is a selection at glyph, segment, line, point, or vector shape level and the specimen is zoomed in (increase font size), then through panning the specimen tries as long as possible to keep the selected part(s) visible.
+**rule**: although there is multi-selection behaviour throughout the hierarchy, the items in a selection must _all_ be of the same type: either (adjustment) master, script, glyph, stroke, line, point, or vector shape.<br/>
+**rule**: when there is a selection at glyph, stroke, line, point, or vector shape level and the specimen is zoomed in (increase font size), then through panning the specimen tries as long as possible to keep the selected part(s) visible.
 
 Here we see the specimen in the Parameters view, with the glyph select mechanism in action:
 
@@ -96,7 +96,7 @@ The selection mechanism is based on the icon grid model that is used in file bro
 
 The selected glyph(s) is now the parameter edit context and this is reflected in the parameters panel.
 
-**rule**: the interaction is now in glyphs mode, and any script, segment, line, point, or vector shape interaction is suppressed.
+**rule**: the interaction is now in glyphs mode, and any script, stroke, line, point, or vector shape interaction is suppressed.
 
 Alternatively one or more scripts can be selected:
 
@@ -106,34 +106,34 @@ only relevant scripts (from the master script configurations) are shown. of ther
 
 The selected script(s) is now the parameter edit context and this is reflected in the parameters panel.
 
-**rule**: the interaction is now in script mode, and any glyph, segment, line, point, or vector shape interaction is suppressed.
+**rule**: the interaction is now in script mode, and any glyph, stroke, line, point, or vector shape interaction is suppressed.
 
 ### getting down
 Let’s start with part of the specimen:
 
 ![](http://mmiworks.net/metapolator/abc.png)
 
-when the font display size is sufficient (say 72pt and up) and the mouse is hovered for 500ms over the **white** of the glyph box, a skeleton and segments view is shown:
+when the font display size is sufficient (say 72pt and up) and the mouse is hovered for 500ms over the **white** of the glyph box, a skeleton and strokes view is shown:
 
 ![](http://mmiworks.net/metapolator/abcskeleton2.png)
 
-the view disappears when the mouse leaves the glyph box. Users can now click one of the segments to select them _(simulated very crudely here)_:
+the view disappears when the mouse leaves the glyph box. Users can now click one of the strokes to select them _(simulated very crudely here)_:
 
 ![](http://mmiworks.net/metapolator/abcsegment.png)
 
-multiple segments, of multiple glyphs, of several (adjustment) masters may be selected—using shift, ctrl/cmd, or rubber-banding.
+multiple strokes, of multiple glyphs, of several (adjustment) masters may be selected—using shift, ctrl/cmd, or rubber-banding.
 
-The selected segment(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
+The selected stroke(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
 
-**rule**: the interaction is now in segment mode, and any script, glyph, line, point, or vector shape interaction is suppressed. Also the skeleton and segments view is now shown instantly (no delay) when mousing over any part of any glyph box.
+**rule**: the interaction is now in stroke mode, and any script, glyph, line, point, or vector shape interaction is suppressed. Also the skeleton and strokes view is now shown instantly (no delay) when mousing over any part of any glyph box.
 
-if on the other hand the font display size is more sufficient (say 144pt and up) and the mouse is hovered for 500ms over the **black** of the glyph box, a skeleton, segments and points view is shown:
+if on the other hand the font display size is more sufficient (say 144pt and up) and the mouse is hovered for 500ms over the **black** of the glyph box, a skeleton, strokes and points view is shown:
 
 ![](http://mmiworks.net/metapolator/abcpoints2.png)
 
 instead of having users interact with tiny points, each point is given a stout handle that stays out of the way of the black of the glyph itself. The view disappears after a delay of 1000ms after the mouse leaves black; this gives users time to reach a handle to click it, which selects it.
 
-When no point handles have been selected in this view, the segments can still be selected—this will then make the point handles disappear (i.e. becomes skeleton and segments view).
+When no point handles have been selected in this view, the strokes can still be selected—this will then make the point handles disappear (i.e. becomes skeleton and strokes view).
 
 Multiple points can be selected—using shift, ctrl/cmd, or rubber-banding:
 
@@ -145,7 +145,7 @@ also of multiple glyphs, out of several (adjustment) masters:
 
 The selected point(s) is now the parameter edit context and this is reflected in the parameters panel. Reminder: ‘click in whitespace to select none.’
 
-**rule**: the interaction is now in point mode, and any script, glyph, segment, line, or vector shape interaction is suppressed. Also the skeleton, segments and points view is now shown instantly (no delay) when mousing over any part of any glyph box.
+**rule**: the interaction is now in point mode, and any script, glyph, stroke, line, or vector shape interaction is suppressed. Also the skeleton, strokes and points view is now shown instantly (no delay) when mousing over any part of any glyph box.
 
 ### direct manipulation
 #### single point
@@ -376,7 +376,7 @@ The dialog expands in rows and columns to accommodate the pairs, growing to a 10
 
 #### pen weight
 The point parameter (pen) width can be renamed to **weight**, while maintaining the port|starboard parameter.<br/>
-_this allows users to express at point, or any level above (e.g. segment, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’, and the stroke weight of all points concerned is increased._
+_this allows users to express at point, or any level above (e.g. stroke, glyph, or master level), ‘weight × 1.1’, or ‘weight + 2 units’, and the stroke weight of all points concerned is increased._
 
 ## an interim parameter overview
 _—work in progress_
@@ -399,7 +399,7 @@ _—work in progress_
   * sidebearings _(value pair, e.g. “40|30”, = front|back, **not** left|right)_
 * point alignments _(aka point-nailing, fka penshifted)_; [see here](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#point-alignments)
 
-**point** parameters (can be set at point, segment, glyph, script, master and project level)
+**point** parameters (can be set at point, stroke, glyph, script, master and project level)
 
 * skeleton
   * x
