@@ -10,7 +10,7 @@
   "dependencies": {
     "nexpect": "~0.4.2",
     "replace": "0.3.0",
-    "xpath.js": "~1.0.5",
-    "xmldom": "~0.1.19"
+    "jsdom": "~0.10.5",
+    "libxmljs": "~0.9.0"
   }
 }
