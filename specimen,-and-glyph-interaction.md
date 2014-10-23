@@ -391,13 +391,17 @@ _—work in progress_
 
 **glyph** parameters (can be set at glyph, script, master and project level)
 
-* height _(scales all vertical metrics)_
-* width _(scales the skeleton horizontally)_
 * slant
 * horizontal metrics
   * spacing _(total space surrounding this glyph, = front + back)_
   * sidebearings _(value pair, e.g. “40|30”, = front|back, **not** left|right)_
 * point alignments _(aka point-nailing, fka penshifted)_; [see here](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#point-alignments)
+
+**stroke** parameters (can be set at stroke, glyph, script, master and project level)
+
+* width _(scales horizontally)_
+* height _(scales vertically)_
+* rotation 
 
 **point** parameters (can be set at point, stroke, glyph, script, master and project level)
 
@@ -413,6 +417,14 @@ _—work in progress_
   * port|starboard _(value pair, e.g. “12|10”, = left & right weight, looking in the direction in which the pen moves)_
   * angle
   * kink _(port-starboard angle difference)_
+
+**vector shape** parameters (can be set at vector shape, glyph, script, master and project level)
+
+* x
+* y
+* width _(scales horizontally)_
+* height _(scales vertically)_
+* rotation 
 
 ### glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
