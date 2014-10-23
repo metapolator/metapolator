@@ -63,13 +63,13 @@ define([
           , u, v;
         
         if(alpha !== undefined)
-            u = (magnitude_z1z0 === 0 && alpha === 0)
-                ? Infinity
+            u = (magnitude_z1z0 === 0 && (alpha === 0 || alpha === Infinity))
+                ? (alpha === 0 ? Infinity : 0)
                 : magnitude_z1z0 * hobby(theta, phi) / alpha
                 ;
         if(beta !== undefined)
-            v = (magnitude_z1z0 === 0 && beta === 0)
-                ? Infinity
+            v = (magnitude_z1z0 === 0 && (beta === 0 || beta === Infinity))
+                ? (beta === 0 ? Infinity : 0)
                 : magnitude_z1z0 * hobby(phi, theta) / beta
                 ;
         return [u, v];
