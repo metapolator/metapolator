@@ -14,6 +14,12 @@ npmConvert = [
     'gonzales/lib'
     ,'immutable-complex/lib'
     ,'commander'
+    ,'util-logging'
+    ,'util-logging/lib'
+    ,'path'
+    ,'util'
+    ,'util/support'
+    ,'inherits'
 ];
 for(; i<npmConvert.length;i++) {
     module = npmConvert[i];

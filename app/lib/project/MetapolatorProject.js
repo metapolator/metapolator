@@ -1,5 +1,6 @@
 define([
     'metapolator/errors'
+  , 'util-logging/util-logging'
   , 'ufojs/errors'
   , 'obtain/obtain'
   , 'ufojs/plistLib/main'
@@ -16,6 +17,7 @@ define([
   , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
     errors
+  , log
   , ufoErrors
   , obtain
   , plistLib
@@ -67,6 +69,7 @@ define([
         };
         
         this._controller = new ModelController(parameterRegistry);
+        this.log = new log.ConsoleLogger().setLevel(log.Level.INFO);
         
         // here is a way to define a directory offset
         // this is used with _p.init after the dir was created for example
@@ -168,9 +171,9 @@ define([
         // the files created in _p.init need to exist
         // however, we try to load only
         // this.dirName+'/data/com.metapolator/project.yaml' as an indicator
-        // console.warn('loading', this.projectFile);
+        // this.log.warning('loading', this.projectFile);
         var dataString = this._io.readFile(false, this.projectFile);
-        // console.warn('loaded', dataString);
+        // this.log.warning('loaded', dataString);
         this._data = yaml.safeLoad(dataString);
         
         
@@ -401,7 +404,7 @@ define([
     
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(master)) {
-            // console.warn('open', masterName)
+            // this.log.warning('open', masterName)
             var master = this.getMaster(masterName)
             , parameterCollections = master.loadCPS()
             , momMaster = master.loadMOM()
@@ -449,18 +452,18 @@ define([
 
         targetExists = this._io.pathExists(false, targetFile);
         if(targetExists && !override) {
-            console.warn(filename + ' exists in the project, skipping import.');
+            this.log.warning(filename + ' exists in the project, skipping import.');
             return;
         }
 
         if(!this._io.pathExists(false, sourceFile)) {
-            console.warn('No ' + filename + ' found for import.');
+            this.log.warning('No ' + filename + ' found for import.');
             return;
         }
 
-        console.warn('Importing '+filename+' into the project.');
+        this.log.warning('Importing '+filename+' into the project.');
         if(targetExists)
-            console.warn('The existing '+filename+' will be overridden.');
+            this.log.warning('The existing '+filename+' will be overridden.');
 
         content = this._io.readFile(false, sourceFile);
         try {
@@ -470,11 +473,11 @@ define([
             plistLib.readPlistFromString(content);
         }
         catch(error) {
-            console.warn('Import of '+filename+' failed when trying to '
+            this.log.warning('Import of '+filename+' failed when trying to '
                                     +'parse it as a plist:\n'+ error);
         }
         this._io.writeFile(false, targetFile, content);
-        console.warn('Import of '+filename+' OK.\n');
+        this.log.warning('Import of '+filename+' OK.\n');
     };
     
     _p.exportInstance = function(masterName, instanceName, precision) {
@@ -523,7 +526,7 @@ define([
         catch(error) {
             if(error instanceof IONoEntryError) {
                 // this is legal, we simply have no groups file
-                console.warn('No groups.plist file found, thus no glyph classes are defined.');
+                this.log.warning('No groups.plist file found, thus no glyph classes are defined.');
                 return result;
             }
             throw error;

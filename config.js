@@ -9,6 +9,7 @@ module.exports = {
       , 'gonzales': 'npm_converted/gonzales/lib'
       , 'commander': 'npm_converted/commander/index'
       , 'complex':  'npm_converted/immutable-complex/lib'
+      , 'util-logging': 'npm_converted/util-logging/lib'
       , 'angular': 'bower_components/angular/angular'
       , 'obtain': 'obtainJS/lib'
       , 'ufojs': 'ufoJS/lib'

@@ -6,6 +6,10 @@ requirejs.config({
       , 'metapolator': './'
       , 'gonzales': 'npm_converted/gonzales/lib'
       , 'complex':  'npm_converted/immutable-complex/lib'
+      , 'util-logging': 'npm_converted/util-logging/lib'
+      , 'util': 'npm_converted/util'
+      , 'path': 'npm_converted/path/path'
+      , 'inherits': 'npm_converted/inherits/inherits'
       , 'angular': 'bower_components/angular/angular'
       , 'obtain': 'obtainJS/lib'
       , 'ufojs': 'ufoJS/lib'
@@ -64,7 +68,6 @@ require([
   , MetapolatorProject
 ) {
     "use strict";
-
 
     var project = new MetapolatorProject(io, 'project');
     project.load();
