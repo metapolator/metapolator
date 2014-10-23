@@ -6,7 +6,7 @@ define([
      * This controller is needed to organize the destruction of the
      * doc or the codemirror instance itself if either of these is
      * cached somewhere else.
-     * If the doc of this editor or the editor is not cahched somewhere
+     * If the doc of this editor or the editor is not cached somewhere
      * else it is probably unnecessary to use this controller.
      */
     function CodeMirrorController($scope) {

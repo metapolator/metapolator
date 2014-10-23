@@ -10,7 +10,7 @@
     <li ng-repeat="source in data.files track by source">
         <span>file: {{ source }}</span>
         <!--
-            Don't use ng-model here. the history of the resultong doc 
+            Don't use ng-model here. the history of the resulting doc
             will have ther instertion of the content as first entry.
             Also the change event will fire immediately. We create the
             doc in codemirrors on load event.
