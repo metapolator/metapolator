@@ -733,7 +733,8 @@ Command.prototype.usage = function(str){
     + (this.commands.length ? '] [command' : '')
     + ']'
     + (this._args.length ? ' ' + args.join(' ') : '')
-    + (this._max_allowed_args == Infinity ? '...' : '');
+    + (this._max_allowed_args == Infinity ? '...' : '')
+    + (this._description ? '\n' + this._description : '');
 
   if (0 == arguments.length) return this._usage || usage;
   this._usage = str;
@@ -822,7 +823,7 @@ Command.prototype.helpInformation = function(){
         + (this._alias
           ? '|' + this._alias
           : '')
-        + ' ' + this.usage()
+        + ' ' + this.usage().replace(/\n/g, '\n  ')
     , '' + this.commandHelp()
     , '  Options:'
     , ''

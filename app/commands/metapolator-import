@@ -4,7 +4,7 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'import a UFO to a master'
+    description: 'Import a UFO to a master'
   , arguments: '<ufo> <[project]/master>'
 };
 
@@ -31,6 +31,7 @@ if (require.main === module) {
 
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments);
+        program.description(exports.command.description);
         program.action(function(sourceUFO, targetMaster) {
             var pm = parseArgs.projectMaster(io, targetMaster);
             var project = pm[0];
@@ -38,7 +39,7 @@ if (require.main === module) {
             project.load();
             project.import(targetMaster, sourceUFO, program.glyphs);
         })
-        .option('-g', '--glyphs <glyphs>', 'A comma-separated of glyph names to import',
+        .option('-g, --glyphs <glyphs>', 'A comma-separated of glyph names to import',
             function(value) {
                 var glyphNames = value.split(',')
                                  .map(function(item){ return item.trim(); })

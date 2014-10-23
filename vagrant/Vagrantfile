@@ -1,8 +1,26 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Global configuration
+red_pill_ports = ENV['VAGRANT_RED_PILL_PORTS'] || "3000"
+
 # Vagrantfile API/syntax version.
 VAGRANTFILE_API_VERSION = "2" if not defined?(VAGRANTFILE_API_VERSION)
+
+# Parse red_pill_ports
+class PortsError < Vagrant::Errors::VagrantError
+  error_message = "Invalid port or port range"
+end
+ports = red_pill_ports.split('-')
+if not (1..2).include?(ports.length) then
+  raise PortsError.new
+end
+begin
+  red_pill_port_from, red_pill_port_to = ports.map { |n| Integer(n) }
+rescue
+  raise PortsError.new
+end
+red_pill_port_to ||= red_pill_port_from
 
 # Provision a Vagrant box with the Metapolator environment
 # N.B. The following should be idempotent
@@ -17,17 +35,20 @@ SHARED_DIR=/vagrant
 
 # System setup
 sudo apt-get update && sudo apt-get -y upgrade
-sudo apt-get -y install git bash-completion npm nodejs-legacy # nodejs-legacy gives us /usr/bin/node
+sudo apt-get -y install git tree ruby bash-completion npm nodejs-legacy # nodejs-legacy gives us /usr/bin/node
 
 # User setup
 if ! grep metapolator $HOME/.bashrc; then
-    echo 'export PATH="'"$SHARED_DIR/metapolator"':$PATH"' | cat - $HOME/.bashrc > bashrc
+    cat - $HOME/.bashrc > bashrc <<ENDSH
+export PATH="$SHARED_DIR/metapolator:\$PATH"
+export RED_PILL_PORT=#{red_pill_port_from}
+ENDSH
     mv bashrc .bashrc
 fi
 
 # Clone metapolator (read-write if we have an SSH key)
 cd $SHARED_DIR
-if test ! -d metapolator; then
+if test ! -e metapolator; then
     GIT_URL=https://github.com/metapolator/metapolator.git
     CHECKOUT_TYPE=read-only
     if test -e /vagrant/.ssh; then
@@ -49,6 +70,14 @@ npm install
 
 # bash-completion setup
 cp bash-completion ~/.bash_completion
+
+# git setup
+./git-setup
+
+# hub setup
+sudo gem install hub
+mkdir -p ~/bin
+hub hub standalone > ~/bin/hub
 END
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -68,22 +97,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.box_check_update = false
 
   # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # within the machine from a port on the host machine.
+  for i in red_pill_port_from..red_pill_port_to
+    config.vm.network "forwarded_port", guest: i, host: i
+  end
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
-
-  # If true, then any SSH connections made will enable agent forwarding.
-  # Default value: false
-  # config.ssh.forward_agent = true
+  # Use vagrant-cachier to get cached packages if available
+  if Vagrant.has_plugin?("vagrant-cachier")
+    # Configure cached packages to be shared between instances of the same base box.
+    config.cache.scope = :box
+  end
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -105,68 +128,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   # View the documentation for the provider you're using for more
   # information on available options.
-
-  # Enable provisioning with CFEngine. CFEngine Community packages are
-  # automatically installed. For example, configure the host as a
-  # policy server and optionally a policy file to run:
-  #
-  # config.vm.provision "cfengine" do |cf|
-  #   cf.am_policy_hub = true
-  #   # cf.run_file = "motd.cf"
-  # end
-  #
-  # You can also configure and bootstrap a client to an existing
-  # policy server:
-  #
-  # config.vm.provision "cfengine" do |cf|
-  #   cf.policy_server_address = "10.0.2.15"
-  # end
-
-  # Enable provisioning with Puppet stand alone.  Puppet manifests
-  # are contained in a directory path relative to this Vagrantfile.
-  # You will need to create the manifests directory and a manifest in
-  # the file default.pp in the manifests_path directory.
-  #
-  # config.vm.provision "puppet" do |puppet|
-  #   puppet.manifests_path = "manifests"
-  #   puppet.manifest_file  = "default.pp"
-  # end
-
-  # Enable provisioning with chef solo, specifying a cookbooks path, roles
-  # path, and data_bags path (all relative to this Vagrantfile), and adding
-  # some recipes and/or roles.
-  #
-  # config.vm.provision "chef_solo" do |chef|
-  #   chef.cookbooks_path = "../my-recipes/cookbooks"
-  #   chef.roles_path = "../my-recipes/roles"
-  #   chef.data_bags_path = "../my-recipes/data_bags"
-  #   chef.add_recipe "mysql"
-  #   chef.add_role "web"
-  #
-  #   # You may also specify custom JSON attributes:
-  #   chef.json = { mysql_password: "foo" }
-  # end
-
-  # Enable provisioning with chef server, specifying the chef server URL,
-  # and the path to the validation key (relative to this Vagrantfile).
-  #
-  # The Opscode Platform uses HTTPS. Substitute your organization for
-  # ORGNAME in the URL and validation key.
-  #
-  # If you have your own Chef Server, use the appropriate URL, which may be
-  # HTTP instead of HTTPS depending on your configuration. Also change the
-  # validation key to validation.pem.
-  #
-  # config.vm.provision "chef_client" do |chef|
-  #   chef.chef_server_url = "https://api.opscode.com/organizations/ORGNAME"
-  #   chef.validation_key_path = "ORGNAME-validator.pem"
-  # end
-  #
-  # If you're using the Opscode platform, your validator client is
-  # ORGNAME-validator, replacing ORGNAME with your organization name.
-  #
-  # If you have your own Chef Server, the default validation client name is
-  # chef-validator, unless you changed the configuration.
-  #
-  #   chef.validation_client_name = "ORGNAME-validator"
 end

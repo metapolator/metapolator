@@ -5,6 +5,7 @@ define([
   , './import/ImportOutlinePen'
   , './import/StrokeContour'
 
+  , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
@@ -12,7 +13,7 @@ define([
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterName'
   , 'metapolator/models/CPS/elements/ParameterValue'
-  , 'complex/Complex'
+  , 'metapolator/math/Vector'
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
   , 'ufojs/plistLib/main'
@@ -25,6 +26,7 @@ define([
   , ImportOutlinePen
   , StrokeContour
 
+  , ParameterCollection
   , AtNamespaceCollection
   , AtRuleName
   , Rule
@@ -32,13 +34,15 @@ define([
   , Parameter
   , ParameterName
   , ParameterValue
-  , Complex
+  , Vector
+
   , parseSelectorList
   , plistLib
   , ufoErrors
 ) {
     "use strict";
-
+    // jshint option
+    /*global console:true*/
     function ImportController(project, masterName, sourceUFODir) {
         this._project = project;
         this._masterName = masterName;
@@ -57,7 +61,7 @@ define([
     }
     var _p = ImportController.prototype;
 
-    _p.import = function(glyphs) {
+    _p['import'] = function(glyphs) {
         var missing, i=0
           , rules = []
           , cps
@@ -67,7 +71,7 @@ define([
             glyphs = this._sourceGlyphSet.keys();
         else {
             missing = glyphs.filter(function(name) {
-                        return !this._sourceGlyphSet.has_key(name);}, this)
+                        return !this._sourceGlyphSet.has_key(name);}, this);
             if(missing.length)
                 throw new errors.Key('Some glyphs requested for import '
                                     +'are missing in the source GlyphSet: '
@@ -79,12 +83,7 @@ define([
 
         this._master.glyphSet.writeContents(false);
 
-        // a namespace for the master ...
-        cps = new AtNamespaceCollection(
-                new AtRuleName('namespace', [])
-              , parseSelectorList.fromString('master#'+this._masterName)
-              , rules
-        );
+        cps = new ParameterCollection(rules);
 
         // This just overrides the local CPS file
         // We might come up with some smart merging in the future, so that
@@ -94,7 +93,7 @@ define([
         this._master.saveCPS(this._masterName + '.cps', cps);
 
         this._importFontInfo();
-    }
+    };
 
     /**
      * Import a fontinfo.plist file from the source UFO file and set
@@ -132,7 +131,7 @@ define([
 
         glyph.drawPoints(false, pen);
         return {data:glyph, contours:segmentPen.flush()};
-    }
+    };
 
     _p.importGlyph = function(glyphName) {
         console.warn('> importing glyph:', glyphName);
@@ -154,7 +153,7 @@ define([
                                             +'than 4 on-curve points.');
                 continue;
             }
-            if(!(sourceGlyph.contours[i].commands.length % 2)) {
+            if(sourceGlyph.contours[i].commands.length % 2 === 0) {
                  console.warn('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
@@ -162,22 +161,14 @@ define([
             console.warn('    importing contour '+ i);
              // the z points of this stroke can go directly to the skeleton glyph
             var penStrokeData = new StrokeContour(
-                        sourceGlyph.contours[i].commands).getPenStroke(true);
+                        sourceGlyph.contours[i].commands).getPenStroke();
 
             // this goes into the glyph/skeleton
             contours.push(penStrokeData);
-            // draws only the center line using the absolute points, no
-            // hobby or so for the moment. Because we don't use the control
-            // points of the skeleton as reference, it might be also an
-            // option to draw the centerline with tension = 1, to get a
-            // sort of "normalized" skeleton line.
-            // ... will try out when I have time
-            // makeSkeletonContour(penStroke)
 
             // this goes into the glyph
             // returns an atNamespaceRule(penstroke:i({penStrokeIndex})){ points ... }
             rules.push(makeCPSPenStrokeRule(penStrokeData, penStrokeIndex));
-
 
             penStrokeIndex += 1;
         }
@@ -185,38 +176,41 @@ define([
         this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph.data,
             // draw the outline to the new glif
             drawPenStroke.bind(null, contours)
-        )
+        );
 
         return [new AtNamespaceCollection(
                     new AtRuleName('namespace', [])
                   , parseSelectorList.fromString('glyph#'+(glyphName.replace('.', '\\.')))
                   , rules)
                 ];
-    }
+    };
 
     function drawPenStroke(contours, pen) {
         var i=0, j, segmentType, point;
 
         for(;i<contours.length;i++) {
-            pen.beginPath()
+            pen.beginPath();
             // draw just the skeleton
             for(j=0;j<contours[i].length;j++) {
                 if(j===0)
                     // this is a non closed path
                     segmentType = 'move';
-                else if((point = contours[i][j].z.in) !== undefined) {
+                else {
                     segmentType = 'curve';
-                    pen.addPoint(point.vector.valueOf(), undefined
-                                                , undefined, point.name)
+
+                    point = contours[i][j-1].z.out;
+                    pen.addPoint(point.valueOf(), undefined
+                                                , undefined, point.name);
+
+                    point = contours[i][j].z['in'];
+                    pen.addPoint(point.valueOf(), undefined
+                                                , undefined, point.name);
                 }
-                else
-                    segmentType =  'line';
+                // we don't have line segments on skeletons
+                //    segmentType = 'line';
                 point = contours[i][j].z.on;
-                pen.addPoint(point.vector.valueOf(), segmentType
-                                                , undefined, point.name)
-                if((point = contours[i][j].z.ou) !== undefined)
-                    pen.addPoint(point.vector.valueOf(), undefined
-                                                , undefined, point.name)
+                pen.addPoint(point.valueOf(), segmentType
+                                                , undefined, point.name);
             }
             pen.endPath();
         }
@@ -234,11 +228,10 @@ define([
                 continue;
             name = new ParameterName(k, []);
             value = new ParameterValue([
-                // Vector is instanceof Complex, too
-                ( obj[k] instanceof Complex
+                ( obj[k] instanceof Vector
                     ? 'Vector ' + [obj[k].real, obj[k].imag].join(' ')
                     : obj[k] )], []);
-            items.push(new Parameter(name, value))
+            items.push(new Parameter(name, value));
         }
 
         return new ParameterDict(items);
@@ -250,97 +243,99 @@ define([
      * It knows for example how the CompoundValues are configured, etc.
      * This should be in a package together with the configuration
      * keyword: import plugins
+     *
+     * For terminals inDir and outDir are imported instead of inDirIntrinsic
+     * and outDirIntrinsic, because they cannot be relative to the skeleton.
+     *
+     * If we can't extract useful values for controls, we create a rule
+     * that places the control in question directly on the on-curve point
+     * "in: on;" OR "out: on;" thus overriding the general rule here,
+     * because we are very specific.
      */
-    function makeCPSPointRules(point, index) {
+    function makeCPSPointRules(point, index, length) {
         var rules = []
-          , left, center, right
+          , left={}, center={}, right={}
           , selectorList
-          , zon = point.z.on.vector
+          , rightOnIntrinsic
           ;
 
         // center
-        selectorList = parseSelectorList.fromString('point:i('+index+') > center')
-        center = {
-            onIntrinsic:  'Vector 0 0'
+        // there's not much to import for center
+        selectorList = parseSelectorList.fromString('point:i('+index+') > center');
+        // In cases where the general rules:
+        //     inDir: (on - in):angle;
+        //     outDir: (out - on):angle;
+        // produce worse results
+        if(point.z.inLenght === 0) {
+            center.inDir = point.z.inDir;
+            center['in'] = 'on';
         }
-        if(point.z.in !== undefined) {
-            center.inIntrinsic = point.z.in.vector['-'](zon)
-            center.inTension = point.z.inTension;
-            center.inDirIntrinsic = point.z.inDir.angle();
+        if(point.z.outLenght === 0){
+            center.outDir = point.z.outDir;
+            center.out = 'on';
         }
-        if(point.z.ou !== undefined) {
-            center.outIntrinsic = point.z.ou.vector['-'](zon)
-            center.outTension = point.z.ouTension
-            center.outDirIntrinsic = point.z.ouDir.angle()
-        }
-        rules.push(
-            new Rule(selectorList, parameterDictFromObject(center)));
+        if(Object.keys(center).length)
+            rules.push(
+                new Rule(selectorList, parameterDictFromObject(center)));
 
-        // left
-        selectorList = parseSelectorList.fromString('point:i('+index+')>left')
-        left = {
-            onIntrinsic: point.l.on.vector['-'](zon)
-        }
-        // Don't import these values, because they are dependent on their
-        // right side counterpart in the defaults.cps setup.
+
+        rightOnIntrinsic = point.r.on['-'](point.z.on);
+        // TODO: we could import onLength and onDir in ./tools/StrokeContour?
+        // TODO: in rare cases this may be 0, we could still try to create
+        //       a meaningful direction. StrokeContour does alredy something
+        //        similar in its _findNextDirection function.
+        // Don't import these values for left because they are dependent
+        // on their right side counterpart in the defaults.cps setup.
         // left.onDir is defined as the inverse of right.onDir (+ deg 180)
         // left.onLength is defined being equal to right.onLength
-        // left.onLength = left.onIntrinsic.magnitude()
-        // left.onDir = left.onIntrinsic.angle()
-        if(point.l.in !== undefined) {
-            left.inIntrinsic = point.l.in.vector['-'](zon)
-                                                ['-'](center.inIntrinsic)
-                                                ['-'](left.onIntrinsic);
+        right.onLength = rightOnIntrinsic.magnitude();
+        right.onDir = rightOnIntrinsic.angle();
 
-            left.inDirIntrinsic =  point.l.inDir.angle() - (point.z.inDir
-                                                ? point.z.inDir.angle()
-                                                : 0
-                                            );
-            left.inTension = point.l.inTension
+        if(index === 0) {
+            // opening terminal is not relative to skeleton
+            left.inDir = point.l.inDir;
+            right.inDir = point.r.inDir;
         }
-        if(point.l.ou !== undefined) {
-            left.outIntrinsic = point.l.ou.vector['-'](zon)
-                                                 ['-'](center.outIntrinsic)
-                                                 ['-'](left.onIntrinsic);
-            left.outDirIntrinsic = point.l.ouDir.angle() - (point.z.ouDir
-                                                ? point.z.ouDir.angle()
-                                                : 0
-                                            );
-            left.outTension = point.l.ouTension;
+        else {
+            left.inDirIntrinsic = point.l.inDir - point.z.inDir;
+            right.inDirIntrinsic = point.r.inDir - point.z.inDir;
         }
+        if(index === length-1) {
+            // ending terminal is not relative to skeleton
+            left.outDir = point.l.outDir;
+            right.outDir = point.r.outDir;
+        }
+        else {
+            left.outDirIntrinsic = point.l.outDir - point.z.outDir;
+            right.outDirIntrinsic = point.r.outDir - point.z.outDir;
+        }
+
+        left.inTension = point.l.inTension;
+        right.inTension = point.r.inTension;
+
+        left.inLength = point.l.inLength;
+        right.inLength = point.r.inLength;
+
+        if(point.l.inLength === 0)
+            left['in'] = 'on';
+        if(point.r.inLength === 0)
+            right['in'] = 'on';
+
+        left.outTension = point.l.outTension;
+        right.outTension = point.r.outTension;
+
+        left.outLength = point.l.outLength;
+        right.outLength = point.r.outLength;
+
+        if(point.l.outLength === 0)
+            left.out = 'on';
+        if(point.r.outLength === 0)
+            right.out = 'on';
+
+        selectorList = parseSelectorList.fromString('point:i('+index+')>left');
         rules.push(
             new Rule(selectorList, parameterDictFromObject(left)));
-
-        //right
         selectorList = parseSelectorList.fromString('point:i('+index+')>right');
-        right = {
-            onIntrinsic: point.r.on.vector['-'](zon)
-        }
-
-        right.onLength = right.onIntrinsic.magnitude()
-        right.onDir = right.onIntrinsic.angle()
-        if(point.r.in !== undefined) {
-            right.inIntrinsic = point.r.in.vector['-'](zon)
-                                                 ['-'](center.inIntrinsic)
-                                                 ['-'](right.onIntrinsic);
-            right.inDirIntrinsic = point.r.inDir.angle() - (point.z.inDir
-                                                ? point.z.inDir.angle()
-                                                : 0
-                                            );
-            right.inTension = point.r.inTension
-        }
-        if(point.r.ou !== undefined) {
-            right.outIntrinsic = point.r.ou.vector['-'](zon)
-                                                  ['-'](center.outIntrinsic)
-                                                  ['-'](right.onIntrinsic);
-
-
-            right.outDirIntrinsic = point.r.ouDir.angle() - (point.z.ouDir
-                                                ? point.z.ouDir.angle()
-                                                : 0
-                                            );
-            right.outTension = point.r.ouTension;
-        }
         rules.push(
             new Rule(selectorList, parameterDictFromObject(right)));
 
@@ -358,12 +353,11 @@ define([
           ;
         for(;i<penStrokeData.length;i++)
             Array.prototype.push.apply(
-                items, makeCPSPointRules(penStrokeData[i], i));
+                items, makeCPSPointRules(penStrokeData[i], i, penStrokeData.length));
 
 
         return new AtNamespaceCollection(name, selectorList, items);
     }
-
 
     return ImportController;
 });

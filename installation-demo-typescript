@@ -1,0 +1,60 @@
+#!/bin/sh
+# Run and capture output of demo session for https://github.com/metapolator/metapolator/wiki/installation
+
+# Get command-line arguments
+if test $# -ne 1; then
+    echo "Usage: vagrant ssh -c \"/vagrant/metapolator/"`basename $0`" OUTFILE\""
+    exit 1
+fi
+OUTFILE=$1
+
+# Create a temporary file
+TMPFILE=`mktemp` || exit 1
+
+# Utility function
+replace () {
+    sed -e "$1" < $OUTFILE > $TMPFILE
+    mv $TMPFILE $OUTFILE
+}
+
+# Clear any old demo output
+rm -rf /vagrant/metapolator/metapolator_tests
+
+# Run the demo script
+# To get the output of red-pill without blocking we do some trickery:
+# 1. We run it in the background; the & is not captured by script
+# 2. We sleep, so it has time to start up
+# 3. We then excise the sleep command from the record
+script $OUTFILE -c "sh -x -c $(cat <<EOF
+"
+cd /vagrant/metapolator
+npm test
+mkdir metapolator_tests
+cd metapolator_tests
+metapolator
+metapolator init test.ufo
+ls
+metapolator import ../app/tests/lib/export/test-data/Sean_hairline-PAN.ufo ./test.ufo/first_master
+tree
+metapolator export ./test.ufo/first_master export.ufo
+metapolator red-pill ./test.ufo &
+sleep 10
+"
+EOF
+)"
+
+# Remove sleep command
+replace 's/^+ sleep 1//'
+
+# Remove CRs
+replace 's/\r$//'
+
+# Remove color codes
+replace 's,\x1B\[[0-9;]*[a-zA-Z],,g'
+
+# Make commands look legit
+replace 's/^+/$/'
+
+# Get rid of first and last two lines
+head --lines=-2 $OUTFILE | tail --lines=+2 > $TMPFILE
+mv $TMPFILE $OUTFILE

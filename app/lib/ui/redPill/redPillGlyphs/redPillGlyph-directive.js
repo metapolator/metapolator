@@ -21,7 +21,9 @@ define([
           ;
         svg.setAttribute('width', '100%');
         svg.setAttribute('viewBox', '0 0 1000 1000');
-        
+        // A quick way to draw the path as outline instead of filled:
+        //pathElement.setAttribute('stroke', 'black');
+        //pathElement.setAttribute('fill', 'none');
         gElement.setAttribute('transform', 'matrix(1, 0, 0, -1, 0, 800)');
         gElement.appendChild(pathElement);
         svg.appendChild(gElement);

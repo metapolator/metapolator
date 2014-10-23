@@ -69,9 +69,13 @@ define([
                         && this._prevPointTypes[0] === 'move'
                         && this._prevPointTypes.slice(-1)[0] == 'offcurve')
             throw new PointPenError('open contour has loose offcurve point');
+        // seal the last point data element, it is complete
+        this._sealLastPoint();
         this._glyph.add(this._contour);
         this._contour = null;
-        // seal the last point data element, it is complete
+    }
+
+    _p._sealLastPoint = function() {
         if(this._lastPointData)
             Object.seal(this._lastPointData);
     }
@@ -103,7 +107,7 @@ define([
 
         vector = Vector.fromArray(pt.map(parseFloat));
         lastVector = this._lastVector;
-        this._lastVector = lastVector;
+        this._lastVector = vector;
 
         // segment type
         if(segmentType !== 'move' && this._prevPointTypes.length === 0)
@@ -131,10 +135,10 @@ define([
                 this._lastPointData.out = vector
             return;
         }
-        // Metapolator points are all on curve points
-        // seal the last point data element, it is complete
-        if(this._lastPointData)
-            Object.seal(this._lastPointData);
+        // If we get here, this is an on-curve point.
+        // Metapolator points are all on-curve points.
+        // Seal the last point data element, it is complete.
+        this._sealLastPoint();
 
         this._lastPointData = new PenStrokePoint.SkeletonDataConstructor({
             in: this._prevOffCurveCount === 2
