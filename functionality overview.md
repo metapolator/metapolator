@@ -20,12 +20,12 @@ There are two hierarchies within a project. The first one is **the hierarchy of 
   * master
     * script
       * glyph
-        * (skeleton) segment
+        * stroke (fka skeleton, or segment)
           * line
           * point
         * vector shape
 
-i.e. “a project consists of masters, which contain one or more scripts, which map to glyphs, made out of segments—drawn with lines between points—and vector shapes.”
+i.e. “a project consists of masters, which contain one or more scripts, which map to glyphs, made out of strokes—drawn with lines between points—and vector shapes.”
 
 The second hierarchy is **the hierarchy of metapolation**—
 
@@ -36,7 +36,7 @@ The second hierarchy is **the hierarchy of metapolation**—
     * adjustment master
     * adjustment master sequence
     * instance
-    * family of instances
+    * family of instances (fka string of instances)
 
 i.e. “a project consists of design spaces, which contain, and share, any number of masters and master sequences. Placed in the design spaces are instances, families of instances, adjustment masters and adjustment master sequences.”
 
@@ -55,10 +55,10 @@ Set/Change/Clear [parameter(s)](#parameters) (for whole master or several master
 
 Set/Change/Clear point/line/glyph/vector shape [parameter(s)](#parameters) (for whole glyph or several glyphs).
 
-### (skeleton) segment
+### stroke
 ƒ— New, Duplicate, Delete, Translate, Scale, Rotate
 
-Set/Change/Clear point/line/glyph/vector shape [parameter(s)](#parameters) (for whole segment or several segments).
+Set/Change/Clear point/line/glyph/vector shape [parameter(s)](#parameters) (for whole stroke or several strokes).
 
 #### line
 Set/Change/Clear line [parameter(s)](#parameters) (for one or more lines).
@@ -97,7 +97,7 @@ Parameters can be adjusted using operators: scale (*), offset (+), set value (=)
 ### adjustment master
 ƒ— New, Duplicate, Delete, Set Name, Set Position
 
-Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, segment, line, point and/or vector shape level.
+Set/Change/Clear adjustment [parameter(s)](#parameters), at master, glyph, stroke, line, point and/or vector shape level.
 
 **note**: an adjustment master can appear anywhere in a design space and anywhere on adjustment master sequences.
 
@@ -138,7 +138,7 @@ Undo (of edit steps on any data)
 Cut, Copy and Paste of—
 
 * glyphs
-* (skeleton) segments
+* strokes
 * points (with lines)
 * vector shapes
 * parameter+value pairs
