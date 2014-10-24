@@ -84,7 +84,7 @@ curve defines a curve from the previous on curve point to a new on curve
 point one, using two off-curve control points. It thus needs 3 points to 
 be defined and of course one previous existing point.
  
-## FromUFO to Metapolator and MetaPost
+## From UFO to Metapolator and MetaPost
 
 In Metapolator we aren't going to describe our curves using CurveTo commands.
 Instead we are going to use a curve type defined by John Hobby, "Hobby splines".
