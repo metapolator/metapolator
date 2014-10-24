@@ -101,7 +101,7 @@ by Hobby splines.
 ### The Stroke
 
 is a concept best explained by talking about a pen. A pen moves along a
-path, leaving a trace of itself, the sroke. The stroke has a thickness,
+path, leaving a trace of itself, the stroke. The stroke has a thickness,
 thus where the path of the pen is just a line (one dimension) in the center 
 of the pen, the stroke is a plane (two dimension).
 
