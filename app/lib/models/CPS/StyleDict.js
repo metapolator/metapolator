@@ -1,9 +1,11 @@
 define([
     'metapolator/errors'
   , './cpsGetters'
+  , 'metapolator/memoize'
 ], function(
     errors
   , cpsGetters
+  , memoize
 ) {
     "use strict";
 
@@ -90,7 +92,7 @@ define([
      * is accessible or constructable from CPS formulae, or a white-listed
      * value on any reachable element.
      */
-    _p.get = function(name) {
+    _p._get = function(name) {
         var errors = [];
         if(name === 'this')
             return this._element;
@@ -132,6 +134,8 @@ define([
             delete this._getting[name];
         }
     }
+
+    _p.get = memoize('get', _p._get);
 
     return StyleDict;
 });
