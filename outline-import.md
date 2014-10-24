@@ -38,7 +38,7 @@ The commands of a contour are the well known commands used by postscript itself:
 PostScript, UFO, Metapost and thus Metapolator are all interwoven. Because
 at the end of the day for us everything boils down to the creation of
 PostScript-Outlines. So when thinking about outline data, we should have
-a little undertstanding on how these different applications and formats
+a little understanding on how these different applications and formats
 connect to each other.
 
 ### closepath
@@ -87,18 +87,16 @@ be defined and of course one previous existing point.
 ## FromUFO to Metapolator and MetaPost
 
 In Metapolator we aren't going to describe our curves using CurveTo commands.
-Instead we are going to use a curve type defined by John Hobby, we are calling
-these curves "Hobby's Curve". These curves can be calculated from cubic 
-curves and even more important, we can use hobby's curves to draw cubics
-again. Hobby's curves don't use the two control points of cubics to define 
-the curve, instead, they use two angles and two "tension" parameters, which
+Instead we are going to use a curve type defined by John Hobby, "Hobby splines".
+These curves can be calculated from cubic curves and even more important,
+we can convert them back to cubics. Hobby splines don't use the two control points
+of cubics to define the curve; instead, they use two angles and two "tension" parameters, which
 allows us to define curves in a more semantic way. An even more striking
-point for Hobby's curves is, that via the tension parameter a "most pleasing
-curve" can be defined, which gives us a very smooth transition between points.
+point is that via the tension parameter a "most pleasing curve" can be defined, which gives us a very smooth transition between points.
 (is this correct)?
 
-What we will to extract from our UFOs is the data of a "stroke", defined 
-by hobby's curves.
+What we want to extract from our UFOs is the data of a "stroke", defined 
+by Hobby splines.
 
 ### The Stroke
 
