@@ -33415,6 +33415,8 @@ define('metapolator/errors',[],function() {
     makeError('Project', undefined , new errors.CPS);
     makeError('PointPen', undefined , new errors.CPS);
     makeError('CPSParser', undefined , new errors.CPS);
+    makeError('Import', undefined , new errors.CPS);
+    makeError('ImportPenstroke', undefined , new errors.Import);
 
     /**
      * if expression is false, throw an Assertion
@@ -33426,8 +33428,8 @@ define('metapolator/errors',[],function() {
         }
     };
     errors.warn = function(message) {
-        if(typeof console !== 'undefined' && console.log)
-            console.log('WARNING: ' + message);
+        if(typeof console !== 'undefined' && console.warn)
+            console.warn('WARNING: ' + message);
     };
 
     return errors;
@@ -33657,21 +33659,23 @@ var extend = {
 
 	from: function(real, im) {
 		if (real instanceof Complex) return new Complex(real.real, real.imag);
-		var match;
-		if (typeof real == 'string'){
-			if (real == 'i') real = '0+1i';
-			match = real.match(/(\d+)?([\+\-]\d*)[ij]/);
-			if (match){
-				real = match[1];
-				im = (match[2] == '+' || match[2] == '-') ? match[2] + '1' : match[2];
-			}
-		}
-		real = +real;
-		im = +im;
-		return new Complex(isNaN(real) ? 0 : real, isNaN(im) ? 0 : im);
+		return new Complex(real, im);
 	},
 
-	fromPolar: function(r, phi){
+	fromString: function(str) {
+		var match, real, im;
+		if (str == 'i') str = '0+1i';
+		match = str.match(/(\d+)?([\+\-]\d*)[ij]/);
+		if (match) {
+			real = match[1];
+			im = (match[2] == '+' || match[2] == '-')
+				? match[2] + '1'
+				: match[2];
+		}
+		return new Complex(+real, +im);
+	},
+
+	fromPolar: function(r, phi) {
 		return new Complex(1, 1).fromPolar(r, phi);
 	},
 
@@ -33696,118 +33700,6 @@ module.exports = Complex;
 
 });
 
-define('metapolator/math/hobby',[
-    'complex/Complex'
-], function(
-    Vector
-) {
-    
-    
-    /**
-     * All points in this module are expected to be complex numbers like
-     * complex/Complex or metapolator/math/Vector (which inherits from Complex)
-     */
-    
-    function hobby(theta, phi) {
-        var st = Math.sin(theta)
-          , ct = Math.cos(theta)
-          , sp = Math.sin(phi)
-          , cp = Math.cos(phi)
-          ;
-        return (
-        (2 + Math.sqrt(2) * (st-1/16*sp) * (sp-1/16*st) * (ct-cp)) /
-        (3 * (1 + 0.5*(Math.sqrt(5)-1)* ct + 0.5*(3-Math.sqrt(5))*cp))
-        )
-    }
-    
-    // hobby2cubic
-    /**
-     * There is freedom to allow tangent directions and “tension”
-     * parameters to be specified at knots, and special “curl” parameters
-     * may be given for additional control near the endpoints
-     * of open curves.
-     * 
-     * w0 and w1 are the tangent directions.
-     * alpha and beta are the tension parameters, AKA the length of the
-     * control point vector.
-     */
-    function hobby2cubic(z0, w0, alpha, beta, w1, z1) {
-        var theta, phi, e, u, v;
-        theta = w0['/'](z1['-'](z0)).arg();
-        phi = z1['-'](z0)['/'](w1).arg();
-        
-        e = new Vector(Math.E);
-        u = z0['+'](
-                e['**'](new Vector(0, 1)['*'](theta))
-            ['*'] (z1['-'](z0))
-            ['*'] (hobby(theta, phi))
-            ['/'] (alpha)
-        );
-        v = z1['-'](
-                e['**'](new Vector(0, -1)['*'](phi))
-            ['*'] (z1['-'](z0))
-            ['*'] (hobby(phi, theta))
-            ['/'] (beta)
-        );
-        return [u, v]
-    }
-    
-    /**
-     * returns the tension for the first on-curve point.
-     */
-    function posttension(p0, p1, p2, p3) {
-        var u = hobby2cubic(
-                        p0,
-                        p1['-'](p0) /*direction 1*/,
-                        1, 1, // std. tension is 1
-                        p3['-'](p2) /*direction 2*/,
-                        p3)[0];
-        return u['-'](p0).magnitude()/p1['-'](p0).magnitude();
-    }
-    /**
-     * returns the tension for the seccond on-curve point
-     */
-    function pretension(p0, p1, p2, p3) {
-        var v = hobby2cubic(
-                            p0,
-                            p1['-'](p0) /*direction 1*/,
-                            1, 1, // std. tension is 1
-                            p3['-'](p2) /*direction 2*/,
-                            p3)[1];
-        return v['-'](p3).magnitude()/p2['-'](p3).magnitude();
-    }
-    
-    /**
-     * If you need both tension values, this version is more efficient
-     * Than calling posttension and pretension.
-     */
-    function tensions(p0, p1, p2, p3) {
-        var dir1 = p1['-'](p0) /*direction 1*/
-          , dir2 = p3['-'](p2) /*direction 2*/
-          , uv = hobby2cubic(
-                            p0,
-                            dir1,
-                            1, 1, // std. tension is 1
-                            dir2,
-                            p3)
-          , u = uv[0]
-          , v= uv[1]
-          ;
-        return[
-              u['-'](p0).magnitude()/dir1.magnitude()
-            , v['-'](p3).magnitude()/dir2.magnitude()
-        ]
-    }
-
-    return {
-        hobby: hobby
-      , hobby2cubic: hobby2cubic
-      , posttension: posttension
-      , pretension: pretension
-      , tensions: tensions
-    }
-})
-;
 // Copyright (C) 2011-2012 Software Languages Lab, Vrije Universiteit Brussel
 // This code is dual-licensed under both the Apache License and the MPL
 
@@ -36429,8 +36321,8 @@ define('metapolator/math/Vector',[
     _p._cps_whitelist = {
         x: 'x'
       , y: 'y'
-      , len: 'length'
-      , rad: 'angle'
+      , length: 'len'
+      , angle: 'rad'
     }
 
 
@@ -36500,9 +36392,7 @@ define('metapolator/math/Vector',[
      * then: rename this to 'length'
      */
     Object.defineProperty(_p, 'len', {
-        get: function() {
-            return Parent.prototype.magnitude.call(this);
-        }
+        get: Parent.prototype.magnitude
     })
 
     /**
@@ -36511,14 +36401,250 @@ define('metapolator/math/Vector',[
      * this to 'angle'
      */
     Object.defineProperty(_p, 'rad', {
-        get: function() {
-            return Parent.prototype.angle.call(this);
-        }
+        get: Parent.prototype.angle
     })
 
     return Vector;
 })
 ;
+define('metapolator/math/hobby',[
+    './Vector'
+], function(
+    Vector
+) {
+    
+
+    /**
+     * All points in this module are expected instances of
+     * metapolator/math/Vector (complex numbers)
+     */
+
+
+
+    function hobby(theta, phi) {
+        var st = Math.sin(theta)
+          , ct = Math.cos(theta)
+          , sp = Math.sin(phi)
+          , cp = Math.cos(phi)
+          ;
+        return (
+        (2 + Math.sqrt(2) * (st-1/16*sp) * (sp-1/16*st) * (ct-cp)) /
+        (3 * (1 + 0.5*(Math.sqrt(5)-1)* ct + 0.5*(3-Math.sqrt(5))*cp))
+        );
+    }
+
+    function normalizeAngle(angle) {
+        var result = angle % (2*Math.PI);
+        if(result < 0)
+            result += (2*Math.PI);
+        return result;
+    }
+
+    /**
+     * Returns two distances from the respective on-curve points to their
+     * control points on the given curve segment.
+     *
+     * dir0 and dir1 are the tangent directions as radians or instances
+     * of Vector.
+     *
+     * alpha and beta are the tension parameters. The tensions values alpha
+     * and beta have no influence on the resulting distance of each other.
+     *
+     * Tensions are bigger the closer they are to their on-curve points.
+     * When using Infinity as a tension the returned magnitude is 0;
+     * When using 0 as a tension the returned magnitude is Infinity.
+     *    When the tension is 0 and z0 equals z1 its resulting
+     *    magnitude is NaN; in this case it is short circuited into
+     *    returning Infinity, which is OK as a behavior; because it obeys
+     *    the rule above, also it's compatible with the reverse operation
+     *    magnitude2tension.
+     */
+    function _tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
+        var diff_z1z0 = z1['-'](z0)
+          , angle_z1z0 = diff_z1z0.angle()
+          , magnitude_z1z0 = diff_z1z0.magnitude()
+            // calculating this using the polar form helps us by not
+            // getting into trouble when z1['-'](z0) is <Vector 0, 0>
+            // because that would cause a division by 0 when calculating
+            // theta and pi using cartesian arithmetic.
+          , theta = normalizeAngle(dir0 - angle_z1z0)
+          , phi = normalizeAngle(angle_z1z0 - dir1)
+          , u, v;
+        
+        if(alpha !== undefined)
+            u = (magnitude_z1z0 === 0 && (alpha === 0 || alpha === Infinity))
+                ? (alpha === 0 ? Infinity : 0)
+                : magnitude_z1z0 * hobby(theta, phi) / alpha
+                ;
+        if(beta !== undefined)
+            v = (magnitude_z1z0 === 0 && (beta === 0 || beta === Infinity))
+                ? (beta === 0 ? Infinity : 0)
+                : magnitude_z1z0 * hobby(phi, theta) / beta
+                ;
+        return [u, v];
+    }
+
+    function tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
+        var uv = _tension2magnitude(z0, dir0, alpha, beta, dir1, z1);
+        if(uv[0] === undefined) uv[0] = NaN;
+        if(uv[1] === undefined) uv[1] = NaN;
+        return uv;
+    }
+
+    function tension2magnitudeOut(z0, dir0, alpha, dir1, z1) {
+        return _tension2magnitude(z0, dir0, alpha, undefined, dir1, z1)[0];
+    }
+
+    function tension2magnitudeIn(z0, dir0, beta, dir1, z1) {
+        return _tension2magnitude(z0, dir0, undefined, beta, dir1, z1)[1];
+    }
+
+    /**
+     * dir0 and dir1 are radians
+     * alpha, beta are the magnitudes
+     *
+     * Also
+     * [Infinity, Infinity] instead of [NaN, NaN] when the magnitudes are 0
+     * And it can still return a tension for one control when the other
+     * control is 0
+     */
+    function _magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
+        var uv, u, v
+            // 1 is the default tension
+          , _alpha = alpha === 0 || alpha === undefined ? undefined : 1
+          , _beta = beta === 0 || beta === undefined ? undefined : 1
+          ;
+        if(_alpha || _beta)
+            uv = _tension2control(z0, dir0, _alpha, _beta, dir1, z1);
+    
+        if(alpha === 0)
+            u = Infinity;
+        else if (alpha !== undefined)
+            u = uv[0]['-'](z0).magnitude()/alpha;
+    
+        if(beta === 0)
+            v = Infinity;
+        else if (beta !== undefined)
+            v = uv[1]['-'](z1).magnitude()/beta;
+    
+        return[u, v];
+    }
+
+    function magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
+        var uv = _magnitude2tension(z0, dir0, alpha, beta, dir1, z1);
+        if(uv[0] === undefined) uv[0] = NaN;
+        if(uv[1] === undefined) uv[1] = NaN;
+        return uv;
+    }
+
+    function magnitude2tensionOut(z0, dir0, alpha, dir1, z1) {
+        return _magnitude2tension(z0, dir0, alpha, undefined, dir1, z1)[0];
+    }
+
+    function magnitude2tensionIn(z0, dir0, beta, dir1, z1) {
+        return _magnitude2tension(z0, dir0, undefined, beta, dir1, z1)[1];
+    }
+
+    /**
+     * returns vectors for the absolute positions of the control points
+     * used to be called hobby2cubic
+     */
+    function _tension2control(z0, dir0, alpha, beta, dir1, z1) {
+        var d0, d1, uv, u, v;
+
+        if(dir0 instanceof Vector || dir1 instanceof Vector)
+            console.warn('It is deprecated to use Vectors for dir0 or dir1');
+
+        d0 = (dir0 instanceof Vector) ? dir0.arg() : dir0;
+        d1 = (dir1 instanceof Vector) ? dir1.arg() : dir1;
+
+        uv = _tension2magnitude(z0, d0, alpha, beta, d1, z1);
+        if(uv[0] !== undefined)
+            u = Vector.fromPolar(uv[0], d0)['+'](z0);
+        if(uv[1] !== undefined)
+            v = z1['-'](Vector.fromPolar(uv[1], d1));
+        return [u, v];
+    }
+
+    function tension2control(z0, dir0, alpha, beta, dir1, z1) {
+        var uv = _tension2control(z0, dir0, alpha, beta, dir1, z1);
+        if(uv[0] === undefined) uv[0] = new Vector(NaN, NaN);
+        if(uv[1] === undefined) uv[1] = new Vector(NaN, NaN);
+        return uv;
+    }
+
+    function tension2controlOut (z0, dir0, alpha, dir1, z1) {
+        return tension2control(z0, dir0, alpha, undefined, dir1, z1)[0];
+    }
+
+    function tension2controlIn (z0, dir0, beta, dir1, z1) {
+        return tension2control(z0, dir0, undefined, beta, dir1, z1)[1];
+    }
+
+    /**
+     * If you need both tension values, this version is more efficient
+     * than calling posttension and pretension.
+     */
+    function control2tension(p0, p1, p2, p3) {
+        var diffp0p1 = p1['-'](p0)
+          , diffp3p2 = p3['-'](p2)
+          , dir0 = diffp0p1.angle()
+          , dir1 = diffp3p2.angle()
+          , alpha = diffp0p1.magnitude()
+          , beta = diffp3p2.magnitude()
+          ;
+        return _magnitude2tension(p0, dir0, alpha, beta, dir1, p3);
+    }
+    /**
+     * returns the tension for the first on-curve point.
+     */
+    function control2tensionOut(p0, p1, p2, p3) {
+        var diffp0p1 = p1['-'](p0)
+          , diffp3p2 = p3['-'](p2)
+          , dir0 = diffp0p1.angle()
+          , dir1 = diffp3p2.magnitude()
+          , alpha = diffp0p1.magnitude()
+          ;
+        return magnitude2tensionOut(p1, dir0, alpha, dir1, p3);
+    }
+    /**
+     * returns the tension for the second on-curve point
+     */
+    function control2tensionIn(p0, p1, p2, p3) {
+        var diffp0p1 = p1['-'](p0)
+          , diffp3p2 = p3['-'](p2)
+          , dir0 = diffp0p1.angle()
+          , dir1 = diffp3p2.magnitude()
+          , beta = diffp3p2.magnitude()
+          ;
+        return magnitude2tensionIn(p1, dir0, beta, dir1, p3);
+    }
+
+    return {
+        hobby: hobby
+
+      , tension2magnitude: tension2magnitude
+      , tension2magnitudeOut: tension2magnitudeOut
+      , tension2magnitudeIn: tension2magnitudeIn
+
+      , magnitude2tension: magnitude2tension
+      , magnitude2tensionOut: magnitude2tensionOut
+      , magnitude2tensionIn: magnitude2tensionIn
+
+      , tension2control: tension2control
+      , hobby2cubic: tension2control // DEPRECATED
+      , tension2controlOut: tension2controlOut
+      , tension2controlIn: tension2controlIn
+
+      , control2tension: control2tension
+      , tensions: control2tension // DEPRECATED
+      , control2tensionOut: control2tensionOut
+      , posttension: control2tensionOut // DEPRECATED
+      , control2tensionIn: control2tensionIn
+      , pretension: control2tensionIn // DEPRECATED
+    };
+});
+
 (function(
   // Reliable reference to the global object (i.e. window in browsers).
   global,
@@ -37007,10 +37133,10 @@ define('metapolator/project/ExportController',[
           , glyph
           , drawFunc
           ;
-        console.log('exporting ...');
+        console.warn('exporting ...');
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
-            console.log('exporting', glyph.id);
+            console.warn('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
 
             this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
@@ -37037,29 +37163,6 @@ define('metapolator/project/ExportController',[
      */
 
     function getControlsFromStyle(p0, p1, terminal) {
-        var outTension = p0.get(terminal === 'start' ? 'inTension' :'outTension')
-          , inTension = p1.get(terminal === 'end' ? 'outTension' : 'inTension')
-          , on0
-          , on1
-          , outDirAngle
-          , inDirAngle
-          , outDir
-          , inDir
-          ;
-
-        if(outTension && inTension) {
-            on0 = p0.get('on')
-            on1 = p1.get('on')
-            outDirAngle = p0.get(terminal === 'start' ? 'inDir' : 'outDir')
-            inDirAngle = p1.get(terminal === 'end' ? 'outDir' :'inDir')
-            outDir = Vector.fromPolar(1, outDirAngle)
-            inDir = Vector.fromPolar(1, inDirAngle)
-            return hobby.hobby2cubic(on0, outDir, outTension,
-                                            inTension, inDir, on1);
-        }
-        // fallback to control points is always possible. Although,
-        // depending on the cps setup the value may not be useful
-        // does this affect outline quality?
         return [
               p0.get(terminal === 'start' ? 'in': 'out')
             , p1.get(terminal === 'end' ? 'out' :'in')
@@ -37170,7 +37273,7 @@ define('metapolator/project/ExportController',[
                  break;
              case 19:
                  segmentType =  'line';
-                 console.log('implicit line segment, right side, this should be explicit in CPS');
+                 console.warn('implicit line segment, right side, this should be explicit in CPS');
              case 21:
                  context$2$0.next = 23;
                  return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
@@ -37232,7 +37335,7 @@ define('metapolator/project/ExportController',[
                  break;
              case 43:
                  segmentType = 'line';
-                 console.log('implicit line segment, left side, this should be explicit in CPS');
+                 console.warn('implicit line segment, left side, this should be explicit in CPS');
              case 45:
                  context$2$0.next = 47;
                  return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
@@ -37296,7 +37399,7 @@ define('metapolator/project/ExportController',[
                 segmentType = 'move';
             case 20:
                 context$2$0.next = 22;
-                return pen.addPoint(point.get('on').value.valueOf(), segmentType, undefined, undefined);
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
             case 22:
                 i++;
                 context$2$0.next = 4;
@@ -38892,7 +38995,9 @@ define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
           ;
         svg.setAttribute('width', '100%');
         svg.setAttribute('viewBox', '0 0 1000 1000');
-        
+        // A quick way to draw the path as outline instead of filled:
+        //pathElement.setAttribute('stroke', 'black');
+        //pathElement.setAttribute('fill', 'none');
         gElement.setAttribute('transform', 'matrix(1, 0, 0, -1, 0, 800)');
         gElement.appendChild(pathElement);
         svg.appendChild(gElement);
@@ -38906,7 +39011,18 @@ define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
           ;
         var gen = ep.drawGlyphToPointPenGenerator(model, glyph, pointPen);
         var promise = interval(function () {
-                          if (gen.next().done) {
+                var done = false;
+                try {
+                    done = gen.next().done
+                }
+                catch(error) {
+                    if(error.message === "Generator has already finished")
+                        done = true;
+                    else
+                        throw error;
+                }
+            
+                          if (done) {
                               interval.cancel(promise);
                               var old = element[0].getElementsByTagName('svg')[0];
                               if(old)
@@ -39088,7 +39204,7 @@ define('RedPill',[
         }
         
         if(error)
-            console.log('The document "' + source + '" can\'t be parsed: ', error.message);
+            console.warn('The document "' + source + '" can\'t be parsed: ', error.message);
         
         // if there was no error 
         // inform the ui that redrawing is needed. CodeMirror doesn't need
@@ -39152,7 +39268,7 @@ define('RedPill',[
         catch(error){
             if(!(error instanceof CPSError))
                 throw error;
-            console.log('selector "' + selector + '" did not parse:', error.message);
+            console.warn('selector "' + selector + '" did not parse:', error.message);
         }
         return false;
     }
@@ -39887,9 +40003,22 @@ define('obtain/obtain',['./Promise'], function(Promise) {
 });
 
 /**
- * This is a simple NodeJS implementation for io/_base.
+ * This describes the API that is expected of all I/O modules.
+ * 
+ * It makes heavy use of obtainJS.
+ * 
+ * You can and should use this module as prototype for your implementation
+ * (if there is inheritance). We might use that as a base for unit-testing,
+ * however ufoJS will use ducktyping and just expect your implementation
+ * to work.
+ * 
+ * All methods raise errors.NotImplemented
+ * 
+ * This API is by no means fixed! It's still in exploring state, AFAIK
+ * there is no good cross plattform solution for I/O. So we move slow and
+ * see what we need to do.
  */
-define('ufojs/tools/io/staticBrowserREST',[
+define('ufojs/tools/io/_base',[
     'ufojs/errors'
   , 'obtain/obtain'
 
@@ -39899,12 +40028,200 @@ define('ufojs/tools/io/staticBrowserREST',[
 ) {
     
     
+    var NotImplementedError = errors.NotImplemented
+      , Parent = Object
+      ;
+
+    function io() {
+        Parent.call(this);
+    };
+
+    var _p = io.prototype = Object.create(Parent.prototype);
+
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.readFile = obtain.factory(
+        {
+            readFile:['path', function(path) {
+                throw new NotImplementedError('readFile');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('readFile'); }
+    );
+    
+    /**
+     * raises IONoEntry when points to a non-existent directory
+     */
+    _p.writeFile = obtain.factory(
+        {
+            writeFile:['path', 'data', function(path, data) {
+                throw new NotImplementedError('writeFile');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path', 'data']
+      , function(obtain){ return obtain('writeFile'); }
+    );
+    
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.unlink = obtain.factory(
+        {
+            unlink:['filename', function(filename) {
+                throw new NotImplementedError('unlink');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['filename']
+      , function(obtain){ return obtain('unlink'); }
+    );
+    
+    _p.readBytes = obtain.factory(
+        {
+            readBytes:['path', 'bytes', function(path, bytes) {
+                throw new NotImplementedError('readBytes');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path', 'bytes']
+      , function(obtain){ return obtain('readBytes'); }
+    );
+    
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.stat = obtain.factory(
+        {
+            stat:['path', function(path) {
+                throw new NotImplementedError('stat');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('stat'); }
+    );
+
+    _p.pathExists = obtain.factory(
+        {
+            pathExists:['path', function(path) {
+                throw new NotImplementedError('pathExists');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('pathExists'); }
+    );
+    
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.getMtime = obtain.factory(
+        {
+            getMtime:['path', function(path) {
+                throw new NotImplementedError('getMtime');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('getMtime'); }
+    );
+    
+    /**
+     * raises IOError if dir can't be created
+     */
+    _p.readDir = obtain.factory(
+        {
+            readDir:['path', function(path) {
+                throw new NotImplementedError('readDir');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('readDir'); }
+    );
+
+    /**
+     * raises IOError if dir can't be created
+     */
+    _p.mkDir = obtain.factory(
+        {
+            mkDir:['path', function(path) {
+                throw new NotImplementedError('mkDir');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('mkDir'); }
+    );
+    
+    /**
+     * raises IOError if dir can't be deleted
+     */
+    _p.rmDir = obtain.factory(
+        {
+            rmDir:['path', function(path) {
+                throw new NotImplementedError('rmDir');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('rmDir'); }
+    );
+
+    /**
+     * Implemented in terms of other io methods
+     */
+    _p.rmDirRecursive = obtain.factory(
+        {
+            rmDirRecursive:['dir', function(dir) {
+                var objs = this.readDir(false, dir);
+                for(var i = 0; i < objs.length; i++) {
+                    var obj = dir + '/' + objs[i]; // path.join is node-specific
+                    (this.stat(false, obj).isDirectory() ? this.rmDirRecursive : this.unlink)(false, obj);
+                }
+                this.rmDir(false, dir);
+            }]
+        }
+      // For an async implementation, try starting here:
+      // https://gist.github.com/yoavniran/adbbe12ddf7978e070c0
+      , {/* no need for async here */}
+      , ['dir']
+      , function(obtain){ return obtain('rmDirRecursive'); }
+    );
+
+    return io;
+});
+
+/**
+ * This is a NodeJS implementation of io/_base.
+ */
+define('ufojs/tools/io/staticBrowserREST',[
+    'ufojs/errors'
+  , 'obtain/obtain'
+  , './_base'
+], function(
+    errors
+  , obtain
+  , Parent
+) {
+    
+    
     if(typeof require.nodeRequire === 'function')
-        return;
+        return null;
     
     var IOError = errors.IO
       , IONoEntry = errors.IONoEntry
       ;
+
+    function Io() {
+        Parent.call(this);
+    }
+
+    var _p = Io.prototype = Object.create(Parent.prototype);
 
     var _errorFromRequest = function(request) {
         var message = ['Status', request.status, request.statusText].join(' ')
@@ -39918,7 +40235,7 @@ define('ufojs/tools/io/staticBrowserREST',[
         return path.split('/').map(encodeURIComponent).join('/')
     }
     
-    var readFile = obtain.factory(
+    _p.readFile = obtain.factory(
         {
             uri: ['path', _path2uri]
           , readFile:['uri', function(path) {
@@ -39957,7 +40274,7 @@ define('ufojs/tools/io/staticBrowserREST',[
       , function(obtain){ return obtain('readFile'); }
     );
     
-    var writeFile = obtain.factory(
+    _p.writeFile = obtain.factory(
         {
             uri: ['path', _path2uri]
           , writeFile:['uri', 'data', function(path, data) {
@@ -39991,7 +40308,7 @@ define('ufojs/tools/io/staticBrowserREST',[
       , function(obtain){ return obtain('writeFile'); }
     );
     
-    var unlink = obtain.factory(
+    _p.unlink = obtain.factory(
         {
             uri: ['filename', _path2uri]
           , unlink:['uri', function(filename) {
@@ -40024,7 +40341,7 @@ define('ufojs/tools/io/staticBrowserREST',[
       , function(obtain){ return obtain('unlink'); }
     );
     
-    var readBytes = obtain.factory(
+    _p.readBytes = obtain.factory(
         {
             uri: ['path', _path2uri]
           , readBytes:['uri', 'bytes', function(path, bytes) {
@@ -40078,10 +40395,10 @@ define('ufojs/tools/io/staticBrowserREST',[
     // which should work for files and directories regardless,
     // but to work for directories it shoud attach a slash (so the REST
     // server) can easily know what is meant
-    // POPOSED FIX: the io api needs a split into: dirExists and fileExists
+    // PROPOSED FIX: the io api needs a split into: dirExists and fileExists
     // so we could create a clear distinction and append the indicating
     // slash. path exists would be removed
-    var pathExists = obtain.factory(
+    _p.pathExists = obtain.factory(
         {
             uri: ['path', _path2uri]
           , pathExists:['uri', function(path) {
@@ -40106,7 +40423,7 @@ define('ufojs/tools/io/staticBrowserREST',[
       , function(obtain){ return obtain('pathExists'); }
     );
     
-    var getMtime = obtain.factory(
+    _p.getMtime = obtain.factory(
         {
             uri: ['path', _path2uri]
           , getMtime:['uri', function(path) {
@@ -40142,7 +40459,7 @@ define('ufojs/tools/io/staticBrowserREST',[
       , function(obtain){ return obtain('getMtime'); }
     );
     
-    var mkDir = obtain.factory({
+    _p.mkDir = obtain.factory({
             uri: ['path', _path2uri]
           , dirName: ['uri', function(uri) {
                 // the endpoint will only create a directory if uri ends width
@@ -40182,10 +40499,10 @@ define('ufojs/tools/io/staticBrowserREST',[
       , function(obtain){ return obtain('mkDir'); }
     );
     
-    var rmDir = obtain.factory({
+    _p.rmDir = obtain.factory({
             uri: ['path', _path2uri]
           , dirName: ['uri', function(uri) {
-                // the endpoint will only create a directory if uri ends width
+                // the endpoint will only remove a directory if uri ends width
                 // a slash
                 return uri + (uri.slice(-1) !== '/' ? '/' : '');
             }]
@@ -40199,7 +40516,7 @@ define('ufojs/tools/io/staticBrowserREST',[
             }]
         }
       , {
-            mkDir:['dirName', '_callback', function(path, callback) {
+            rmDir:['dirName', '_callback', function(path, callback) {
                 var request = new XMLHttpRequest()
                     , result
                     , error
@@ -40220,16 +40537,7 @@ define('ufojs/tools/io/staticBrowserREST',[
       , function(obtain){ return obtain('rmDir'); }
     );
     
-    return {
-        readFile: readFile
-      , writeFile: writeFile
-      , unlink: unlink
-      , readBytes: readBytes
-      , pathExists: pathExists
-      , getMtime: getMtime
-      , mkDir: mkDir
-      , rmDir: rmDir
-    };
+    return new Io(); // Single instance of static type
 });
 
 /**
@@ -41081,6 +41389,7 @@ define('metapolator/models/MOM/_Node',[
       , univers: 'univers'
       , multivers: 'multivers'
       , index: 'index'
+      , type: 'type'
     }
 
     Object.defineProperty(_p, 'MOMType', {
@@ -41356,7 +41665,7 @@ define('metapolator/models/MOM/Glyph',[
      * Possible candiates for other children would be everything else
      * found in a UFO-Glyph. But, we can make properties about that stuff,
      * too. Guidelines would make a good candidate for further children,
-     * because we might actually wan't to access these via CPS.
+     * because we might actually want to access these via CPS.
      * 
      * In the first version we the only child of MOM _Contour is
      * MOM PenStroke.
@@ -41384,7 +41693,7 @@ define('metapolator/models/MOM/Glyph',[
     }
     _p.getUFOData = function() {
         // Should be immutable or a copy, but we would have to make
-        // a deep copy for this, because we don't wan't the contents to
+        // a deep copy for this, because we don't want the contents to
         // be changed without us knowing, either.
         // Instead, we are going to invent more interfaces for UFO data
         // for a glyph in the future.
@@ -41712,7 +42021,7 @@ define('metapolator/project/MOMPointPen',[
      *
      */
     function MOMPointPen(glyph) {
-        Parent.call(this)
+        Parent.call(this);
         this._glyph = glyph;
         this._contour = null;
         this._lastPointData = undefined;
@@ -41752,9 +42061,13 @@ define('metapolator/project/MOMPointPen',[
                         && this._prevPointTypes[0] === 'move'
                         && this._prevPointTypes.slice(-1)[0] == 'offcurve')
             throw new PointPenError('open contour has loose offcurve point');
+        // seal the last point data element, it is complete
+        this._sealLastPoint();
         this._glyph.add(this._contour);
         this._contour = null;
-        // seal the last point data element, it is complete
+    }
+
+    _p._sealLastPoint = function() {
         if(this._lastPointData)
             Object.seal(this._lastPointData);
     }
@@ -41786,7 +42099,7 @@ define('metapolator/project/MOMPointPen',[
 
         vector = Vector.fromArray(pt.map(parseFloat));
         lastVector = this._lastVector;
-        this._lastVector = lastVector;
+        this._lastVector = vector;
 
         // segment type
         if(segmentType !== 'move' && this._prevPointTypes.length === 0)
@@ -41814,10 +42127,10 @@ define('metapolator/project/MOMPointPen',[
                 this._lastPointData.out = vector
             return;
         }
-        // Metapolator points are all on curve points
-        // seal the last point data element, it is complete
-        if(this._lastPointData)
-            Object.seal(this._lastPointData);
+        // If we get here, this is an on-curve point.
+        // Metapolator points are all on-curve points.
+        // Seal the last point data element, it is complete.
+        this._sealLastPoint();
 
         this._lastPointData = new PenStrokePoint.SkeletonDataConstructor({
             in: this._prevOffCurveCount === 2
@@ -41899,6 +42212,10 @@ define('metapolator/project/ProjectMaster',[
         for(;i<this._cpsChain.length;i++)
             rules.push(this._project.getCPSRules(this._cpsChain[i]));
         return rules;
+    };
+
+    _p.deleteCPS = function(filename) {
+        this._io.unlink(false, this._project.cpsDir+'/'+filename);
     };
 
     _p.loadMOM = function() {
@@ -45228,8 +45545,8 @@ define('metapolator/models/CPS/parsing/engine',[
      * 
      * In the ParameterList Tree, there will be some arrays of the AST
      * referenced. SO if you are going to change the AST, you might change
-     * ParameterList items, too. Create a deep copy of the AST, if you
-     * don't wan't this side effect.
+     * ParameterList items, too. Create a deep copy of the AST if you
+     * don't want this side effect.
      */
     function parserEngine(defaultNodeConstructors, factorySwitches, ast
                                     , sourceName, parameterRegistry) {
@@ -45254,11 +45571,11 @@ define('metapolator/models/CPS/parsing/engine',[
         // use slice to make a copy of the ast array
         stack.push([ast.slice(), root]);
         
-        // we wan't to walk the complete tree, because we want to detect all
+        // we want to walk the complete tree, because we want to detect all
         // ["s", " \n "] etc. so we can count line breaks. I hope the gonzales
         // parser doesn't hide line breaks from us.
         // Line numbers are VERY helpful when working with a CSS file
-        // thats why I want to keep them
+        // that's why I want to keep them
         while(frame = stack.pop()) {
             // if frame 2 is set this means that the element switched
             // nodeConstructors for its own object, and that the
@@ -45300,7 +45617,7 @@ define('metapolator/models/CPS/parsing/engine',[
             // data is an array
             // DESCENDING
             
-            // switch nodeConstructors if its the right element
+            // switch nodeConstructors if it's the right element
             // currently only used for @dictionary, but this mechanism
             // is very generic
             oldNodeConstructors = undefined;
@@ -45314,7 +45631,7 @@ define('metapolator/models/CPS/parsing/engine',[
             }
             
             childNode = _makeNode(nodeConstructors, node, lineNo, data)
-            // Each frame needs to be visited, because we wan't to count
+            // Each frame needs to be visited, because we want to count
             // lines.
             // Use slice to make a copy of the data array
             stack.push([data.slice(), childNode, oldNodeConstructors])
@@ -45562,7 +45879,7 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
      *  reasons for invalid selectors:
      *      it's empty
      *      a child of it is invalid
-     *      it has two combinators followng after each other
+     *      it has two consecutive combinators
      *          only possible for > at the moment
      *          invalid: master>>penstroke
      *          valid: master>*>penstroke
@@ -46092,7 +46409,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                     continue;
                 else if(item instanceof Comment)
                     // skip all comments
-                    // we can get them back in if we wan't though
+                    // we can get them back in if we want though
                     continue;
             
                 if(item instanceof Combinator) {
@@ -46214,6 +46531,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
     function _getSimpleSelectorClassValueForIndex(element) {
         var body
           , number
+          , sign
           ;
         if(element._ast[1][0] !== 'funktion'
                     || element._ast[1][2][0] !== 'functionBody')
@@ -46222,8 +46540,15 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                    .filter(function(item) {
                         return !(item[0] in {'s':null,'comment':null});
                     })
+        
+        sign = '+';
+        if(body.length === 2 && body[0][0] === 'unary') {
+            //  as the docs say: unary is either - or +
+            sign = body[0][1];
+            body.shift();
+        }
         if(body.length === 1 && body[0][0] === 'number')
-            number = parseInt(body[0][1], 10);
+            number = parseInt(sign + body[0][1], 10);
             // if the result is NaN return undefined
             return (number === number) ? number : undefined;
     }
@@ -46287,7 +46612,7 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
                 // accept comments
                 continue;
             else if(!(rules[i] instanceof Rule))
-                throw new CPSParserError('The argument string describred a '
+                throw new CPSParserError('The argument string described a '
                         + rules[i].constructor.name + ' but it should be a'
                         + 'SelectorList.');
             else if(selectorList !== undefined)
@@ -46297,7 +46622,7 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
                 throw new CPSParserError('Found parameters where there should '
                             + 'be only a SelectorList: ' + rules[i].paramters);
             selectorList = rules[i].selectorList;
-            // don't break! we wan't to validate the rules, if there is
+            // don't break! we want to validate the rules, if there is
             // awkward stuff in it it's better to complain, because it
             // might be a programming error.
         }
@@ -47025,7 +47350,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
         if(!(operatorLiteral in this._operators))
             throw new KeyError('No operator found for literal: '
                                                         + operatorLiteral);
-        this._negateOperator = (negateLiteral, operatorLiteral);
+        this._negateOperator = [negateLiteral, operatorLiteral];
     };
 
 
@@ -47251,13 +47576,6 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
             // if we don't find anything a CPSFormulaError is thrown
             splitExpected = true;
 
-            // test for all NOT splitting operators, length first
-            if(!!(foundOperator = this._testNotSplittingOperators(string, i))) {
-                tokens.push(foundOperator);
-                i += foundOperator.literal.length;
-                continue;
-            }
-
             // prepare for RegEx.exec searches
             // the string must be truncated to the current index
             // because RegEx.exec has no offset parameter like indexOf
@@ -47266,8 +47584,21 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
 
             // name literals are not splitting
             if((reResult = R_name.exec(string)) !== null) {
-                tokens.push(new NameToken(reResult[0]));
+                if(reResult[0] === 'Infinity')
+                    tokens.push(new NumberToken(reResult[0]));
+                else if(this._operators[reResult[0]] && !this._operators[reResult[0]].splitting)
+                    // could also be a not splitting operator
+                    tokens.push(this._operators[reResult[0]]);
+                else
+                    tokens.push(new NameToken(reResult[0]));
                 i += reResult[0].length;
+                continue;
+            }
+
+            // test for all NOT splitting operators, length first
+            if(!!(foundOperator = this._testNotSplittingOperators(string, i))) {
+                tokens.push(foundOperator);
+                i += foundOperator.literal.length;
                 continue;
             }
 
@@ -47368,7 +47699,6 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
           , endPost
           , operation
           ;
-
         // replace - with negate when looks like this was the intention
         if(this._negateOperator) {
             for(i=0;i<tokensArg.length;i++) {
@@ -47383,6 +47713,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
                 }
             }
         }
+
         // find brackets and call this method recursively
         tokens = this._resolveBrackets(tokensArg);
 
@@ -47541,6 +47872,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
   , 'metapolator/models/CPS/cpsGetters'
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
+  , 'metapolator/math/hobby'
 ], function(
     errors
   , Parser
@@ -47555,6 +47887,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
   , cpsGetters
   , transform
   , Vector
+  , hobby
 ) {
     
 
@@ -47584,8 +47917,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
          * index numbers.
          */
         new Operator('List', false, -Infinity, 0, Infinity, function(/*args, ...*/) {
-            // the first args is the 'get' interface, we don't return it.
-            return Array.protoype.slice(arguments, 1);
+            return Array.prototype.slice.call(arguments);
         })
         /**
          * Returns a generic Value, could be virtually anything
@@ -47596,7 +47928,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
          * item __get__ 'key'
          *
          * which should translate roughly to the javascript:
-         * item['key'] or item.get('key'), depending of the nature
+         * item['key'] or item.get('key'), depending on the nature
          * of item and the details of the implementation
          */
       , new Operator('__get__', false, Infinity, 1, 1, [
@@ -47614,8 +47946,8 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
           , [_MOMNode, SelectorList, function(node, selector) {
                 var result = node.query(selector);
                 if(!result)
-                    throw new KeyError('Not found: an element for '
-                                        + SelectorList + ' '
+                    throw new CPSFormulaError('Not found: an element for '
+                                        + selector + ' '
                                         + 'in ' + node.particulars
                                     );
                 return result;
@@ -47646,8 +47978,8 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
                 // SelectorList selects from global scope, aka multivers
                 var item = getAPI('this').multivers.query(selector);
                 if(!item)
-                    throw new KeyError('Not found: an element for '
-                                                        + SelectorList);
+                    throw new CPSFormulaError('Not found: an element for '
+                                                        + selector);
                 return cpsGetters.generic(item, key.getValue());
             }]
           , ['*getAPI*', '*anything*', NameToken, function(getAPI, item, key) {
@@ -47742,6 +48074,63 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
       , new Operator('Polar', false, 40, 0, 2, [
             ['number' , 'number', function(a, b){ return Vector.fromPolar(a, b); }]
         ])
+        /**
+         * vector constructor operator
+         * Creates a vector from two point coordinates, two directions
+         * and one tension value;
+         * The returned vector is the position of the outgoing control
+         * of point0;
+         *
+         * Arguments: point0 outDir outTension inDir point1
+         */
+      , new Operator('tension2controlOut', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2controlOut]
+        ])
+        /**
+         * vector constructor operator
+         * Creates a vector from two point coordinates, two directions
+         * and one tension value;
+         * The returned vector is the position of the incoming control
+         * of point1;
+         *
+         * Arguments: point0 outDir inTension inDir point1
+         */
+      , new Operator('tension2controlIn', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2controlIn]
+        ])
+        /**
+         * Get the maginitude of the incoming control point.
+         *
+         * Arguments: point0 outDir inTension inDir point1
+         */
+      , new Operator('tension2magnitudeIn', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2magnitudeIn]
+        ])
+        /**
+         * Get the maginitude of the outgoing control point.
+         *
+         * Arguments: point0 outDir outTension inDir point1
+         */
+      , new Operator('tension2magnitudeOut', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.tension2magnitudeOut]
+        ])
+        /**
+         * Get the tension of the outgoing control point.
+         *
+         * Arguments: point0 outDir outLength inDir point1
+         */
+      , new Operator('magnitude2tensionOut', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.magnitude2tensionOut]
+        ])
+        /**
+         * Get the tension of the incoming control point.
+         *
+         * Arguments: point0 outDir inLength inDir point1.
+         */
+      , new Operator('magnitude2tensionIn', false, 40, 0, 5, [
+            [Vector , 'number', 'number', 'number', Vector, hobby.magnitude2tensionIn]
+        ])
+
         /**
          * Convert a number from degree to radians
          * This has higher precedence than "polar" because it makes writing:
@@ -48044,29 +48433,16 @@ define('metapolator/project/parameters/registry',[
                 type: 'vector'
               , description: 'An On-Curve Point.'
     })
-    parameterRegistry.register('onIntrinsic', {
-                type: 'vector'
-              , description: 'The intrinsic value of an On-Curve Point.'
-    })
 
     parameterRegistry.register('in', {
                 type: 'vector'
               , description: 'An incoming Control Point.'
-    })
-    parameterRegistry.register('inIntrinsic', {
-                type: 'vector'
-              , description: 'The intrinsic value of an incoming Control Point.'
     })
 
     parameterRegistry.register('out', {
                 type: 'vector'
               , description: 'An outgoing Control Point.'
     })
-    parameterRegistry.register('outIntrinsic', {
-                type: 'vector'
-              , description: 'The intrinsic value of an outgoing Control Point.'
-    })
-
 
     parameterRegistry.register('inTension', {
                 type: 'real'
@@ -48078,9 +48454,33 @@ define('metapolator/project/parameters/registry',[
               , description: 'The tension value of an outgoing Control Point.'
     });
 
+    parameterRegistry.register('onLength', {
+                type: 'real'
+              , description: 'The distance from center point to left or '
+                            + 'right on curve point'
+    })
+
+    parameterRegistry.register('inLength', {
+                type: 'real'
+              , description: 'The distance from on-curve point to the Control Point'
+                            + 'usually unused in favor of inTension'
+    })
+
+    parameterRegistry.register('outLength', {
+                type: 'real'
+              , description: 'The distance from on-curve point to the Control Point'
+                            + 'usually unused in favor of outTension'
+    })
+
+    parameterRegistry.register('onDir', {
+                type: 'real'
+              , description: 'The direction in radians from center point '
+                            + 'to left or right on curve point'
+    })
+
     parameterRegistry.register('inDir', {
                 type: 'real'
-              , description: 'Direction vector of an incoming Control Point.'
+              , description: 'Direction of an incoming Control Point in radians.'
     });
 
     parameterRegistry.register('inDirIntrinsic', {
@@ -48091,7 +48491,7 @@ define('metapolator/project/parameters/registry',[
 
     parameterRegistry.register('outDir', {
                 type: 'real'
-              , description: 'Direction vector of an outgoing Control Point.'
+              , description: 'Direction of an outgoing Control Point in radians.'
     });
 
     parameterRegistry.register('outDirIntrinsic', {
@@ -48099,17 +48499,6 @@ define('metapolator/project/parameters/registry',[
               , description: 'The intrinsic value of the direction of an '
                                                 + 'outgoing Control Point.'
     });
-
-    parameterRegistry.register('onLength', {
-                type: 'real'
-              , description: 'The distance from center point to left or '
-                            + 'right on curve point'
-    })
-    parameterRegistry.register('onDir', {
-                type: 'real'
-              , description: 'The direction in radians from center point '
-                            + 'to left or right on curve point'
-    })
 
     return parameterRegistry;
 });
@@ -48402,21 +48791,27 @@ define('metapolator/project/parameters/outputConverter',[
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/Source'
   , 'metapolator/models/CPS/elements/ParameterCollection'
+  , 'metapolator/models/CPS/elements/AtRuleCollection'
+  , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterName'
   , 'metapolator/models/CPS/elements/ParameterValue'
+  , 'metapolator/models/CPS/elements/Comment'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 ], function(
     errors
   , Source
   , ParameterCollection
+  , AtRuleCollection
+  , AtRuleName
   , Rule
   , ParameterDict
   , Parameter
   , ParameterName
   , ParameterValue
+  , Comment
   , parseSelectorList
 ) {
     
@@ -48446,45 +48841,104 @@ define('metapolator/project/parameters/outputConverter',[
         new Rule(
             parseSelectorList.fromString('*', source.name)
           , parameterDictFromObject({
-                  on: 'onIntrinsic'
-                , in: 'inIntrinsic'
-                , out: 'outIntrinsic'
-                , inDir: 'inDirIntrinsic'
-                , outDir: 'outDirIntrinsic'
-                , inTension: '0'
-                , outTension: '0'
-                , inIntrinsic: 'Vector 0 0'
-                , outIntrinsic: 'Vector 0 0'
-                , inDirIntrinsic: '0'
-                , outDirIntrinsic: '0'
+            // let's see what is still needed here.
+            //      on: 'onIntrinsic'
+            //    , in: 'inIntrinsic'
+            //    , out: 'outIntrinsic'
+            //    , inDir: 'inDirIntrinsic'
+            //    , outDir: 'outDirIntrinsic'
+            //    , inTension: '0'
+            //    , outTension: '0'
+            //    , inIntrinsic: 'Vector 0 0'
+            //    , outIntrinsic: 'Vector 0 0'
+            //    , inDirIntrinsic: '0'
+            //    , outDirIntrinsic: '0'
               })
           , source
       )
       , new Rule(
             parseSelectorList.fromString('point>center', source.name)
           , parameterDictFromObject({
-                  on: 'onIntrinsic + parent:skeleton:on'
-                , in: 'inIntrinsic + on'
-                , out: 'outIntrinsic + on'
+                  on: 'parent:skeleton:on'
+                , 'in': 'parent:skeleton:in'
+                , out: 'parent:skeleton:out'
+                // the dirs are defined by the importer if this calculations
+                // would not produce a good result
+                , inDir: '(on - in):angle'
+                , outDir: '(out - on):angle'
               })
+          , source
+        )
+        // @dict
+      , new AtRuleCollection(
+            new AtRuleName('dictionary', [])
+          , [
+                new Rule(
+                    parseSelectorList.fromString('point>*', source.name)
+                  , parameterDictFromObject({
+                        pointBefore: 'parent:parent:children[parent:index - 1][this:type]'
+                      , pointAfter: 'parent:parent:children[parent:index+1][this:type]'
+                    })
+                  , source
+                )
+            ]
           , source
         )
       , new Rule(
             parseSelectorList.fromString('point>left, point>right', source.name)
           , parameterDictFromObject({
                   on: 'Polar onLength onDir + parent:center:on'
-                , in: 'inIntrinsic + parent:center:on + parent:center:inIntrinsic + onIntrinsic'
-                , out: 'outIntrinsic + parent:center:on + parent:center:outIntrinsic + onIntrinsic'
+                // this makes it possible to *JUST* use a Vector creation
+                // for pure beziers as well:
+                //, 'in': 'Polar inLength inDir + on'
+                //, out: 'Polar outLength outDir + on'
+                // , 'in': 'Polar (tension2magnitude pointBefore:on pointBefore:outDir pointBefore:outTension inTension inDir on)[0] inDir + on'
+                // , out:  'Polar (tension2magnitude on outDir outTension  pointAfter:inTension pointAfter:inDir pointAfter:on)[1] outDir + on'
+                , 'in': 'tension2controlIn pointBefore:on pointBefore:outDir inTension inDir on'
+                , out: 'tension2controlOut on outDir outTension pointAfter:inDir pointAfter:on'
+
                 , inDir: 'inDirIntrinsic + parent:center:inDir'
                 , outDir: 'outDirIntrinsic + parent:center:outDir'
-              })
-          , source
+            })
+           , source
         )
       , new Rule(
             parseSelectorList.fromString('point>left', source.name)
           , parameterDictFromObject({
                   onDir: 'deg 180 + parent:right:onDir'
                 , onLength: 'parent:right:onLength'
+            })
+          , source
+        )
+      // opening terminal; drawn from left to right using both 'in' values
+      , new Comment('opening terminal')
+      , new Rule(
+            parseSelectorList.fromString('point:i(0)>left', source.name)
+          , parameterDictFromObject({
+                'in': 'tension2controlOut on (inDir + deg 180) inTension parent:right:inDir parent:right:on'
+              })
+          , source
+        )
+      , new Rule(
+            parseSelectorList.fromString('point:i(0)>right', source.name)
+          , parameterDictFromObject({
+                  'in': 'tension2controlIn parent:left:on (parent:left:inDir  + deg 180) inTension inDir on'
+              })
+          , source
+        )
+      // closing terminal; drawn from right to left using both 'out' values
+      , new Comment('closing terminal')
+      , new Rule(
+            parseSelectorList.fromString('point:i(-1)>right', source.name)
+          , parameterDictFromObject({
+                  out: 'tension2controlOut on outDir outTension (parent:left:outDir + deg 180) parent:left:on'
+              })
+          , source
+        )
+      , new Rule(
+            parseSelectorList.fromString('point:i(-1)>left', source.name)
+          , parameterDictFromObject({
+                out: 'tension2controlIn parent:right:on parent:right:outDir outTension (outDir + deg 180) on'
               })
           , source
         )
@@ -48556,8 +49010,13 @@ define('metapolator/models/CPS/selectorEngine',[
             case 'root':
                 return element.type === 'univers';
             case 'i':
-                return (element.parent
-                    && element.parent.find(element) === simpleSelector.value);
+                if(!element.parent)
+                    return false;
+                return (simpleSelector.value < 0
+                    // negative serch index
+                    ? element.parent.children.length + simpleSelector.value === element.index
+                    // positive serch index
+                    : simpleSelector.value === element.index);
         }
     }
     
@@ -48608,6 +49067,8 @@ define('metapolator/models/CPS/selectorEngine',[
         return true;
     }
     
+    // evil cache. don't do this without thinking through
+    var _complexSelectorMatchesCache = Object.create(null);
     function complexSelectorMatches(complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
@@ -48616,7 +49077,19 @@ define('metapolator/models/CPS/selectorEngine',[
           , compoundSelector
           , combinator
           , combinatorType
+          
+          , hash = complexSelector+''
+          , cache
+          , cacheKey = [(scopeElement ? scopeElement.nodeID : '') ,element.nodeID].join('|')
           ;
+        if(!(hash in _complexSelectorMatchesCache))
+            _complexSelectorMatchesCache[hash] = cache = Object.create(null);
+        else 
+            cache = _complexSelectorMatchesCache[hash];
+        
+        if(cacheKey in cache)
+            return cache[cacheKey];
+        
         // first round: fake a child combinator, so we don't go on
         // if the first selector doesn't match
         combinatorType = 'child'
@@ -48629,7 +49102,7 @@ define('metapolator/models/CPS/selectorEngine',[
                 combinator = compoundSelectors.pop();
                 if(combinator === undefined) {
                     // that's it all compoundSelectors are consumed
-                    return true;
+                    return cache[cacheKey] = true;
                 }
                 // there are selectors left, prepare the next round
                 // combinatorType is 'child' or 'descendant'
@@ -48653,7 +49126,7 @@ define('metapolator/models/CPS/selectorEngine',[
                 throw new CPSError('Combinator type "'+combinatorType
                                                     +'" is unsuported');
         }
-        return false;
+        return cache[cacheKey] = false;
     }
     
     /**
@@ -48784,6 +49257,7 @@ define('metapolator/models/CPS/selectorEngine',[
         return result;
     }
     
+    var _queryCache = Object.create(null);
     /**
      * scope is an array of zero or more elements, we will search only
      * within the scope elements
@@ -48807,7 +49281,19 @@ define('metapolator/models/CPS/selectorEngine',[
                                              , currentScope);
             }
           , filterMethod
+
+          , hash = complexSelector+''
+          , cache
+          , cacheKey = scope.map(function(item){ return item.nodeId + '!!'+item; }).join('|')
           ;
+        if(!(hash in _queryCache))
+            _queryCache[hash] = cache = Object.create(null);
+        else
+            cache =_queryCache[hash];
+        
+        if(cacheKey in cache) {
+            return cache[cacheKey];
+        }
         
         // first round is descendants
         filterMethod = _filterElementDescendants;
@@ -48848,6 +49334,7 @@ define('metapolator/models/CPS/selectorEngine',[
                                                     +'" is unsuported');
             }
         }
+        cache[cacheKey] = matches;
         return matches;
     }
     
@@ -48905,7 +49392,7 @@ define('metapolator/models/CPS/selectorEngine',[
                     + selector + ' typeof: '+ typeof selector);
         complexSelectors = selector.value;
         for(;i<complexSelectors.length;i++) {
-            matches = queryComplexSelector(scope, complexSelectors[i]);
+            matches = queryComplexSelector(scope.slice(), complexSelectors[i]);
             if(matches.length)
                 return matches[0];
         }
@@ -48994,6 +49481,7 @@ define('metapolator/models/CPS/StyleDict',[
         this._controller = controller;
         this.getAPI = this.get.bind(this);
         this._getting = {};
+        this._cache = Object.create(null);
     }
 
     var _p = StyleDict.prototype;
@@ -49063,7 +49551,7 @@ define('metapolator/models/CPS/StyleDict',[
      * is accessible or constructable from CPS formulae, or a white-listed
      * value on any reachable element.
      */
-    _p.get = function(name) {
+    _p._get = function(name) {
         if(name === 'this')
             return this._element;
 
@@ -49093,6 +49581,12 @@ define('metapolator/models/CPS/StyleDict',[
         finally {
             delete this._getting[name];
         }
+    }
+    
+    _p.get = function(name) {
+        if(!(name in this._cache))
+            this._cache[name] = this._get(name);
+        return this._cache[name];
     }
 
     return StyleDict;
@@ -49804,7 +50298,7 @@ define(
  * There are blocking functions in here:
  *    pngValidator
  *    layerContentsValidator
- * for these none blocking counterparts exist
+ * for these non-blocking counterparts exist
  *    pngValidatorAsync
  *    layerContentsValidatorAsync
  * 
@@ -50797,7 +51291,7 @@ define(
      * This checks the signature of the image data.
      * 
      * pngValidatorSync is a blocking api like the one in python
-     * pngValidatorAsync is a non blocking api and takes a nodeJS like 
+     * pngValidatorAsync is a non-blocking api and takes a nodeJS like
      * callback as second argument
      * pngValidator uses obtainJS-like syntax: pngValidator(switch (a)sync, arg)
      */
@@ -50838,7 +51332,7 @@ define(
             else if (arg.data !== undefined)
                 signature = arg.data.slice(0, 8);
             else if (arg.fileObj !== undefined) {
-                // this depends on a propper FileObject Implementation!
+                // this depends on a proper FileObject Implementation!
                 // implement this explicitly when there is a FileObject API
                 throw new NotImplementedError('There\'s no FileObject available yet');
                 var pos = arg.fileObj.tell();
@@ -51626,6 +52120,42 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         imageValidator = validators.imageValidator,
         identifierValidator = validators.identifierValidator,
         transformationInfo = constants.transformationInfo;
+
+    /**
+     * You may pass a callback function as errorCallback. This
+     * function will be called when an error is encountered during the
+     * loading of a glyph. The errorCallback can return true and try
+     * to let ReadGlyph do more parsing or false which will raise the
+     * error immediately. Also, if "errorCallbackData.recoverable" is
+     * false, errorCallback can report the error but not prevent it
+     * from being thrown by returning true.
+     */
+    function ReadGlyph( errorCallback /* undefined or function*/ 
+    ) {
+        if(errorCallback) {
+            this._errorCallback = errorCallback;
+        }
+        this._resetErrorCallbackData();
+    }
+
+    var _p = ReadGlyph.prototype;
+    _p.constructor = ReadGlyph;
+
+    _p._resetErrorCallbackData = function() {
+        this._errorCallbackData = { glyphName: '' };
+    }
+    _p._executeErrorCallback = function(recoverable, msg) {
+        var recover;
+        this._errorCallbackData.message = msg;
+        this._errorCallbackData.recoverable = recoverable;
+        recover = this._errorCallback
+            ? this._errorCallback( this._errorCallbackData )
+            : false;
+        if(!recover || !recoverable)
+            throw new GlifLibError(msg);
+    }
+
+
     /*
      * Read .glif data from a string into a glyph object.
      * 
@@ -51659,7 +52189,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
      * 
      * _glifTreeFromFile from the python code should lead you here
      */
-    function readGlyphFromString(
+    _p.fromString = function(
         glyphDataString,
         glyphObject /* undefined */,
         pointPen /* undefined */,
@@ -51667,42 +52197,48 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         formatVersions /* default = [1, 2]*/
     ) {
         var glifDoc = xml.parseXMLString(glyphDataString);
-        readGlyphFromDOM(glifDoc, glyphObject, pointPen, formatVersions);
+        this.fromDOM(glifDoc, glyphObject, pointPen, formatVersions );
     }
     
     /**
      * defined as _readGlyphFromTree in the python code
      */
-    function readGlyphFromDOM(
+    _p.fromDOM = function(
         glifDoc,
         glyphObject /* undefined */,
         pointPen /* undefined */,
         // the formatVersions argument is not used! this was in the python code.
         formatVersions /* default = [1, 2]*/
     ) {
-        // quick format validation
-        var root = glifDoc.documentElement,
+        try {
+            // quick format validation
+            var root = glifDoc.documentElement,
             formatError = false,
             formatVersion;
-        if( typeof root === 'undefined'
-            || typeof root.tagName !== 'string'
-            || root.tagName !== 'glyph')
-            formatError = true;
-        if(formatError)
-            throw new GlifLibError('GLIF data is not properly formatted.');
-        // check the format version
-        
-        formatVersion = root.getAttribute('format');
-        formatVersion = main.isIntString(formatVersion)
-            ? parseInt(formatVersion, 10)
-            : formatVersion;
-        if(formatVersion === 1)
-            _readGlyphFromTreeFormat1(glifDoc, glyphObject, pointPen);
-        else if(formatVersion === 2)
-            _readGlyphFromTreeFormat2(glifDoc, glyphObject, pointPen);
-        else
-            throw new GlifLibError('Unsupported GLIF format version: '
-                + formatVersion + '.');
+            if( typeof root === 'undefined'
+                || typeof root.tagName !== 'string'
+                || root.tagName !== 'glyph')
+                formatError = true;
+            if(formatError) {
+                this._executeErrorCallback(false,'GLIF data is not properly formatted.');
+            }
+
+            // check the format version
+            formatVersion = root.getAttribute('format');
+            formatVersion = main.isIntString(formatVersion)
+                ? parseInt(formatVersion, 10)
+                : formatVersion;
+            if(formatVersion === 1)
+                this._readGlyphFromTreeFormat1(glifDoc, glyphObject, pointPen);
+            else if(formatVersion === 2)
+                this._readGlyphFromTreeFormat2(glifDoc, glyphObject, pointPen);
+            else
+                this._executeErrorCallback(false,'Unsupported GLIF format version: '
+                                           + formatVersion + '.');
+        }
+        finally {
+            this._resetErrorCallbackData();
+        }
     }
     
     // this method is inherited from the python code
@@ -51710,7 +52246,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
     // values on an undefined object
     // it's propably a good idea to make it superfluous by not setting
     // values on undefined
-    function _relaxedSetattr(object, attr, value) {
+    _p._relaxedSetattr = function (object, attr, value) {
         try {
             object[attr] = value;
             return true;
@@ -51723,12 +52259,12 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         return false;
     }
     
-    function _relaxedSetattrDict(object, dict) {
+    _p._relaxedSetattrDict = function (object, dict) {
         for(var k in dict)
-            _relaxedSetattr(object, k, dict[k]);
+            this._relaxedSetattr(object, k, dict[k]);
     }
     
-    function _isDOMElement(node) {
+    _p._isDOMElement = function (node) {
         return (
             (node instanceof xml.Node)
             && node.nodeType === xml.Node.ELEMENT_NODE
@@ -51753,7 +52289,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
      *     ...
      * GlifLibError: Could not convert a to an int or float.
      */
-    function _toNumber(string) {
+    _p._toNumber = function (string) {
         var number;
         if(main.isNumber(string))
             return parseFloat(string);
@@ -51773,7 +52309,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
      * use this like:
      * _getAttribute.call(domElement, 'attrbuteName', 'fallbackValue');
      */
-    function _getAttribute(attribute, fallback /* default: null*/) {
+    _p._getAttribute = function (attribute, fallback /* default: null*/) {
         // this method allows undefined as a fallback value
         if(arguments.length < 2)
             fallback = null;
@@ -51789,7 +52325,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
      * array and applies (using Function.prototype.apply) the array items
      * as arguments to the input function.
      */
-    function _getArrayInterface(func) {
+    _p._getArrayInterface = function (func) {
         return function(args) {
             return func.apply(this, args);
         }
@@ -51798,18 +52334,18 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
     /**
      * return a real array out of the children of a DOM Element
      */
-    function _listOfChildren(element) {
+    _p._listOfChildren = function (element) {
         return [].slice.call(element.children);
     }
     
-    function _attributesDict(node) {
+    _p._attributesDict = function (node) {
         var attributes = {};
         for(var i=0; i<node.attributes.length; i++)
             attributes[node.attributes.item(i).name] = node.attributes.item(i).value;
         return attributes;
     }
     
-    function _checkAttributesWhitelist(
+    _p._checkAttributesWhitelist = function (
         element /* DOM Element*/,
         whitelist /* setLike */
     ) {
@@ -51822,22 +52358,25 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         }
     }
     
-    function _readGlyphFromTreeFormat1(
+    _p._readGlyphFromTreeFormat1 = function (
         glifDoc,
         glyphObject/* undefined */,
         pointPen/* undefined */
     ) {
         var root = glifDoc.documentElement;
         // get the name
-        _relaxedSetattr( glyphObject, 'name', _readName(root));
-        
+        this._relaxedSetattr( glyphObject, 'name', this._readName(root));
+
+        // bind the glyph name so that lower methods don't need it
+        this._errorCallbackData.glyphName = glyphObject['name'];
+
         // populate the sub elements
         var unicodes = {list: [], dict: {}},
             haveSeenAdvance = false,
             haveSeenOutline = false,
             haveSeenLib = false,
             haveSeenNote = false,
-            children = _listOfChildren(root),
+            children = this._listOfChildren(root),
             i, node, element, v;
         
         for(i=0; i<children.length; i++) {
@@ -51852,15 +52391,15 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                         + 'unknown attributes.');
                 haveSeenOutline = true;
                 if(pointPen !== undefined)
-                    buildOutlineFormat1(glyphObject, pointPen,
-                        _listOfChildren(node));
+                    this._buildOutlineFormat1(glyphObject, pointPen,
+                                        this._listOfChildren(node));
             }
             else if(element === 'advance') {
                 if(haveSeenAdvance)
                     throw new GlifLibError('The advance element occurs '
                         + 'more than once.');
                 haveSeenAdvance = true;
-                _relaxedSetattrDict(glyphObject, _readAdvance(node));
+                this._relaxedSetattrDict(glyphObject, this._readAdvance(node));
             }
             else if(element === 'unicode') {
                 v = node.getAttribute('hex');
@@ -51881,32 +52420,34 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                     throw new GlifLibError('The note element occurs more '
                         + 'than once.');
                 haveSeenNote = true;
-                _relaxedSetattr(glyphObject, 'note', _readNote(node));
+                this._relaxedSetattr(glyphObject, 'note', this._readNote(node));
             }
             else if(element === 'lib') {
                 if(haveSeenLib)
                     throw new GlifLibError('The lib element occurs more '
                     + 'than once.');
                 haveSeenLib = true;
-                _relaxedSetattr(glyphObject, 'lib', _readLib(node));
+                this._relaxedSetattr(glyphObject, 'lib', this._readLib(node));
             }
             else throw new GlifLibError('Unknown element in GLIF: '
                     + element + '.');
         }
         // set the collected unicodes
         if(unicodes.list.length)
-            _relaxedSetattr(glyphObject, 'unicodes', unicodes.list);
+            this._relaxedSetattr(glyphObject, 'unicodes', unicodes.list);
     }
     
     
-    function _readGlyphFromTreeFormat2(
+    _p._readGlyphFromTreeFormat2 = function (
         glifDoc,
         glyphObject/* undefined */,
         pointPen/* undefined */
     ) {
         var root = glifDoc.documentElement;
         // get the name
-        _relaxedSetattr(glyphObject, 'name', _readName(root));
+        this._relaxedSetattr(glyphObject, 'name', this._readName(root));
+        this._errorCallbackData.glyphName = glyphObject['name'];
+
         // populate the sub elements
         var unicodes = {list: [], dict: {}},
             guidelines = [],
@@ -51917,7 +52458,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             haveSeenLib = false,
             haveSeenNote = false,
             identifiers = {}, // set() in python
-            children = _listOfChildren(root),
+            children = this._listOfChildren(root),
             i, node, element, attrs, attr, v;
         for(i=0; i<children.length; i++) {
             node = children[i];
@@ -51949,15 +52490,15 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                     // That is a bad thing.
                     // I'm leaving it for now, because the first aim is
                     // to be compatible to robofab.
-                    buildOutlineFormat2(pointPen, _listOfChildren(node),
-                        identifiers);
+                    this._buildOutlineFormat2( pointPen, this._listOfChildren(node),
+                                              identifiers );
             }
             else if(element === 'advance') {
                 if(haveSeenAdvance)
                     throw new GlifLibError('The advance element occurs '
                         + 'more than once.');
                 haveSeenAdvance = true;
-                _relaxedSetattrDict(glyphObject, _readAdvance(node));
+                this._relaxedSetattrDict(glyphObject, this._readAdvance(node));
             }
             else if(element === 'unicode') {
                 v = node.getAttribute('hex');
@@ -51976,19 +52517,19 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             else if(element === 'guideline') {
                 if (node.childNodes.length)
                     throw new GlifLibError('Unknown children in guideline element.');
-                attrs = _attributesDict(node);
+                attrs = this._attributesDict(node);
                 for(attr in {x: null, y: null, angle: null})
                     if(attr in attrs)
-                        attrs[attr] = _toNumber(attrs[attr]);
+                        attrs[attr] = this._toNumber(attrs[attr]);
                 guidelines.push(attrs);
             }
             else if(element === 'anchor') {
                 if (node.childNodes.length)
                     throw new GlifLibError('Unknown children in anchor element.')
-                attrs = _attributesDict(node);
+                attrs = this._attributesDict(node);
                 for(attr in {x: null, y: null})
                     if(attr in attrs)
-                        attrs[attr] = _toNumber(attrs[attr]);
+                        attrs[attr] = this._toNumber(attrs[attr]);
                 anchors.push(attrs);
             }
             else if(element === 'image') {
@@ -51999,21 +52540,21 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                     throw new GlifLibError('Unknown children in image '
                         + 'element.');
                 haveSeenImage = true;
-                _relaxedSetattr(glyphObject, 'image',_readImage(node));
+                this._relaxedSetattr(glyphObject, 'image',this._readImage(node));
             }
             else if(element === 'note') {
                 if(haveSeenNote)
                     throw new GlifLibError('The note element occurs more '
                         + 'than once.');
                 haveSeenNote = true;
-                _relaxedSetattr(glyphObject, 'note',_readNote(node));
+                this._relaxedSetattr(glyphObject, 'note',this._readNote(node));
             }
             else if(element === 'lib') {
                 if(haveSeenLib)
                     throw new GlifLibError('The lib element occurs more '
                     + 'than once.');
                 haveSeenLib = true;
-                _relaxedSetattr(glyphObject, 'lib', _readLib(node));
+                this._relaxedSetattr(glyphObject, 'lib', this._readLib(node));
             }
             else throw new GlifLibError('Unknown element in GLIF: '
                     + element + '.');
@@ -52023,21 +52564,21 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             if(!guidelinesValidator(guidelines, identifiers))
                 // FIXME: in case of duolicate identifieres be more clear
                 throw new GlifLibError('The guidelines are improperly formatted.')
-             _relaxedSetattr(glyphObject, 'guidelines', guidelines);
+             this._relaxedSetattr(glyphObject, 'guidelines', guidelines);
         }
         // set the collected anchors
         if(anchors.length) {
             if(!anchorsValidator(anchors, identifiers))
                 // FIXME: in case of duolicate identifieres be more clear
                 throw new GlifLibError('The anchors are improperly formatted.')
-            _relaxedSetattr(glyphObject, 'anchors', anchors);
+            this._relaxedSetattr(glyphObject, 'anchors', anchors);
         }
         // set the collected unicodes
         if(unicodes.list.length)
-            _relaxedSetattr(glyphObject, 'unicodes', unicodes.list);
+            this._relaxedSetattr(glyphObject, 'unicodes', unicodes.list);
     }
     
-    function _readName(node) {
+    _p._readName = function (node) {
         var glyphName = node.getAttribute('name');
         
         if(typeof glyphName !== 'string' || glyphName === '')
@@ -52045,19 +52586,19 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         return glyphName;
     }
     
-    function _readAdvance(node) {
+    _p._readAdvance = function (node) {
         var values = ['width', 'height']
             .map(node.getAttribute, node)
             .map(function(value){ return value === null ? 0 : value;})
-            .map(_toNumber);
+            .map(this._toNumber);
         return {
             width: values[0],
             height: values[1]
         }
     }
     
-    function _readNote(node) {
-        return _listOfChildren(node) // array
+    _p._readNote = function (node) {
+        return this._listOfChildren(node) // array
             .map(function(item){return item.textContent;}) // array
             .join('\n') // string
             .split('\n')// array
@@ -52065,7 +52606,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             .join('\n'); // string
     }
     
-    function _readLib(node) {
+    _p._readLib = function (node) {
         if(node.children.length !== 1)
             throw new GlifLibError('lib node may have only one child, '
                 +'but has ' + node.children.length + '.');
@@ -52085,8 +52626,8 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         return lib;
     }
     
-    function _readImage(node) {
-        var imageData = _attributesDict(node),
+    _p._readImage = function (node) {
+        var imageData = this._attributesDict(node),
             i=0, attr, value;
         // FIXME: it would be nice to have a single transformation value
         // at this point on the glyphObject instead of all those xScale,
@@ -52100,7 +52641,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             value = transformationInfo[i][1];
             if(attr in imageData)
                 value = imageData[attr];
-            imageData[attr] = _toNumber(value);
+            imageData[attr] = this._toNumber(value);
         }
         // needs to happen after parsing, because the type of teh attributes
         // must be number
@@ -52135,13 +52676,13 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
     
     // format 1
     
-    function buildOutlineFormat1(glyphObject, pen, nodes) {
+    _p._buildOutlineFormat1 = function (glyphObject, pen, nodes ) {
         var i = 0,
             anchors = [],
             node, child, anchor;
         for(; i<nodes.length; i++) {
             node = nodes[i];
-            if(!_isDOMElement(node))
+            if(!this._isDOMElement(node))
                 throw new GlifLibError('The outline element is not '
                     + 'properly structured.');
             if(node.tagName == 'contour') {
@@ -52149,7 +52690,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                     // its an anchor
                     child = node.children[0];
                     if(child.tagName == "point") {
-                        anchor = _buildAnchorFormat1(child);
+                        anchor = this._buildAnchorFormat1(child);
                         if(anchor)
                             anchors.push(anchor);
                     }
@@ -52163,10 +52704,10 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                     //         + 'element: ' + child.tagName);
                 }
                 else
-                    _buildOutlineContourFormat1(pen, node)
+                    this._buildOutlineContourFormat1(pen, node)
             }
             else if(node.tagName == 'component')
-                _buildOutlineComponentFormat1(pen, node);
+                this._buildOutlineComponentFormat1(pen, node);
             else
                 throw new GlifLibError('Unknown element in outline element '
                     +  node.tagName);
@@ -52177,11 +52718,11 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             if(!anchorsValidator(anchors))
                 throw new GlifLibError('GLIF 1 anchors are not properly '
                     + 'formatted.');
-            _relaxedSetattr(glyphObject, 'anchors', anchors);
+            this._relaxedSetattr(glyphObject, 'anchors', anchors);
         }
     }
     
-    function _buildAnchorFormat1(point /* a DOM Node */ ) {
+    _p._buildAnchorFormat1 = function (point /* a DOM Node */ ) {
         if( point.getAttribute('type') !== 'move')
             return;
         
@@ -52192,28 +52733,28 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             throw new GlifLibError('Required y attribute is missing in '
                 + 'point element.');
         return {
-            x: _toNumber(point.getAttribute('x')),
-            y: _toNumber(point.getAttribute('y')),
+            x: this._toNumber(point.getAttribute('x')),
+            y: this._toNumber(point.getAttribute('y')),
             name: point.getAttribute('name')
         }
     }
     
-    function _buildOutlineContourFormat1(pen, contour) {
+    _p._buildOutlineContourFormat1 = function (pen, contour) {
         var children
         if (contour.attributes.length)
             throw new GlifLibError('Unknown attributes in contour element.')
         pen.beginPath();
         if (contour.children.length) {
-            children = _validateAndMassagePointStructures(
-                _listOfChildren(contour),
+            children = this._validateAndMassagePointStructures(
+                this._listOfChildren(contour),
                 pointAttributesFormat1,
-                /* openContourOffCurveLeniency */ true)
-            _buildOutlinePointsFormat1(pen, children)
+                /* openContourOffCurveLeniency */ true )
+            this._buildOutlinePointsFormat1(pen, children)
         }
         pen.endPath();
     }
     
-    function _buildOutlinePointsFormat1(pen, points) {
+    _p._buildOutlinePointsFormat1 = function (pen, points) {
         var i = 0,
             attrs;
         for (; i<points.length; i++) {
@@ -52227,7 +52768,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         }
     }
     
-    function _buildOutlineComponentFormat1(pen, component) {
+    _p._buildOutlineComponentFormat1 = function (pen, component) {
         var baseGlyphName,
             transformation;
         
@@ -52236,7 +52777,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                 + 'element.');
         
         // throws GlifLibError
-        _checkAttributesWhitelist(component, componentAttributesFormat1);
+        this._checkAttributesWhitelist(component, componentAttributesFormat1);
         
         if(!component.hasAttribute('base'))
             throw new GlifLibError('The base attribute is not defined '
@@ -52246,8 +52787,8 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         transformation = transformationInfo
             // the contents of transformatiooInfo work well as arguments
             // of _getAttribute
-            .map(_getArrayInterface(_getAttribute), component)
-            .map(_toNumber);
+            .map(this._getArrayInterface(this._getAttribute), component)
+            .map(this._toNumber);
         pen.addComponent(baseGlyphName, transformation);
     }
     
@@ -52256,7 +52797,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
     /**
      * little helper
      */
-    function _processIdentifier(identifier, identifiers) {
+    _p._processIdentifier = function (identifier, identifiers) {
         if(identifier in identifiers)
             throw new GlifLibError('The identifier "' + identifier
                 + '" is used more than once.');
@@ -52267,33 +52808,33 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             identifiers[identifier] = true;
     }
     
-    function buildOutlineFormat2(pen, nodes, identifiers) {
+    _p._buildOutlineFormat2 = function (pen, nodes, identifiers ) {
         var anchors = [], node, i=0;
         for (; i<nodes.length; i++) {
             node = nodes[i];
-             if(!_isDOMElement(node))
+             if(!this._isDOMElement(node))
                 throw new GlifLibError('The outline element is not '
                     + 'properly structured.');
             
             if(node.tagName === 'contour')
-                _buildOutlineContourFormat2(pen, node, identifiers)
+                this._buildOutlineContourFormat2(pen, node, identifiers )
             else if(node.tagName == 'component')
-                _buildOutlineComponentFormat2(pen, node, identifiers)
+                this._buildOutlineComponentFormat2(pen, node, identifiers )
             else
                 throw new GlifLibError('Unknown element in outline '
                     + 'element: ' + node.tagName);
         }
     }
     
-    function _buildOutlineContourFormat2(pen, contour, identifiers) {
+    _p._buildOutlineContourFormat2 = function (pen, contour, identifiers) {
         var identifier, children;
         
         // throws GlifLibError
-        _checkAttributesWhitelist(contour, contourAttributesFormat2);
+        this._checkAttributesWhitelist(contour, contourAttributesFormat2);
         
         if (contour.hasAttribute('identifier')) {
             identifier = contour.getAttribute('identifier');
-             _processIdentifier(identifier, identifiers);
+             this._processIdentifier(identifier, identifiers);
         }
         try {
             pen.beginPath({identifier:identifier});
@@ -52312,16 +52853,17 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         }
         
         if (contour.children.length) {
-            children = _validateAndMassagePointStructures(
-                _listOfChildren(contour),
-                pointAttributesFormat2
+            children = this._validateAndMassagePointStructures(
+                this._listOfChildren(contour),
+                pointAttributesFormat2,
+                false
             );
-            _buildOutlinePointsFormat2(pen, children, identifiers);
+            this._buildOutlinePointsFormat2(pen, children, identifiers);
         }
         pen.endPath()
     }
     
-    function _buildOutlinePointsFormat2(pen, points, identifiers) {
+    _p._buildOutlinePointsFormat2 = function (pen, points, identifiers) {
         var i = 0,
             attrs, identifier;
         for (; i<points.length; i++) {
@@ -52329,7 +52871,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
             
             if(attrs.identifier !== undefined) {
                 identifier = attrs.identifier;
-                _processIdentifier(identifier, identifiers);
+                this._processIdentifier(identifier, identifiers);
             }
             
             try {
@@ -52362,14 +52904,14 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         }
     }
     
-    function _buildOutlineComponentFormat2(pen, component, identifiers) {
+    _p._buildOutlineComponentFormat2 = function (pen, component, identifiers ) {
         var baseGlyphName, transformation, identifier;
         
         if (component.children.length)
             throw new GlifLibError('Unknown child elements of component element.')
         
         // throws GlifLibError
-        _checkAttributesWhitelist(component, componentAttributesFormat2);
+        this._checkAttributesWhitelist(component, componentAttributesFormat2);
         
         if(!component.hasAttribute('base'))
             throw new GlifLibError('The base attribute is not defined '
@@ -52379,12 +52921,12 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         transformation = transformationInfo
             // the contents of transformatiooInfo work well as arguments
             // of _getAttribute
-            .map(_getArrayInterface(_getAttribute), component)
-            .map(_toNumber);
+            .map(this._getArrayInterface(this._getAttribute), component)
+            .map(this._toNumber);
         
         if (component.hasAttribute('identifier')) {
             identifier = component.getAttribute('identifier');
-            _processIdentifier(identifier, identifiers);
+            this._processIdentifier(identifier, identifiers);
         }
         
         try {
@@ -52406,7 +52948,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
     
     // all formats
     
-    function _validateAndMassagePointStructures(
+    _p._validateAndMassagePointStructures = function (
         children /* a list of DOM Elements */,
         pointAttributes /* a setlike Objekt */,
         openContourOffCurveLeniency /* default: False */
@@ -52432,9 +52974,9 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                     + child.tagName + ') of contour element.');
             
             // unknown attributes, throws GlifLibError
-            _checkAttributesWhitelist(point, pointAttributes);
+            this._checkAttributesWhitelist(point, pointAttributes);
             
-            resultPoint = _attributesDict(point);
+            resultPoint = this._attributesDict(point);
             resultChildren.push(resultPoint);
             // search for unknown children
             if(point.children.length)
@@ -52446,7 +52988,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                 if(resultPoint[k] === undefined)
                     throw new GlifLibError('Required ' + k +' attribute is '
                         + 'missing in point element.');
-                resultPoint[k] = _toNumber(resultPoint[k]);
+                resultPoint[k] = this._toNumber(resultPoint[k]);
             }
             
             // segment type
@@ -52524,12 +53066,21 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                         throw new GlifLibError('move can not have an '
                             + 'offcurve.');
                     else if(segmentType === 'line')
-                        throw new GlifLibError('line can not have an '
-                            + 'offcurve.');
+                        {
+                            this._executeErrorCallback(true, 'line can not have an offcurve.');
+
+                            // still here, try to recover.
+                            resultChildren = [];
+                            return resultChildren;
+                        }
                     else if(segmentType === 'curve')
-                        if (offCurves.length > 2)
-                            throw new GlifLibError('Too many offcurves '
-                                + 'defined for curve.');
+                        if (offCurves.length > 2) {
+                            this._executeErrorCallback(true, 'Too many offcurves defined for curve.');
+
+                            // still here, try to recover.
+                            resultChildren = [];
+                            return resultChildren;
+                        }
                 //    else if(segmentType === "qcurve")
                 //        {/* pass */}
                 //    else
@@ -52544,8 +53095,9 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
     }
     
     return {
-        fromString: readGlyphFromString, 
-        fromDOM: readGlyphFromDOM
+        fromString: _p.fromString.bind(new ReadGlyph()),
+        fromDOM:    _p.fromDOM.bind(new ReadGlyph()),
+        ReadGlyph:  ReadGlyph
     }
 });
 
@@ -53387,7 +53939,57 @@ define(
           , ['path']
           , function(obtain){ return obtain('unlink'); }
         )
-      ;
+
+        // internal methods
+
+        /**
+         * reads a plist from path synchronously or asynchronously
+         * using obtainJS for the switch.
+         */
+      , _readPlist = obtain.factory(
+          {
+              // a constructor for a lib of shared methods
+              // this is a bit hackish, should maybe become formalized
+              lib: [function() {
+                  return {
+                      makeError: function(error, path) {
+                          if(error instanceof IONoEntryError)
+                              return error;
+                          return new GlifLibError(
+                              ['The file "', path ,'" could not be read.('
+                              , error.message,')'].join(''), error.stack);
+                      }
+                  }
+              }]
+            , plist: ['plistString', 'path', 'lib',
+              function(string, path, lib) {
+                  try {
+                      return readPlistFromString(string);
+                  } catch(e) {
+                      throw lib.makeError(e, path);
+                  }
+              }]
+            , plistString: ['path', 'lib', function(path, lib) {
+                  try {
+                      return this._io.readFile(false, path);
+                  } catch(e) {
+                      throw lib.makeError(e, path);
+                  }
+              }]
+          }
+        , {
+              plistString: ['path', 'lib', '_callback', '_errback',
+              function(path, lib, callback, errback)
+              {
+                  this._io.readFile(true, path)
+                      .then(callback, function(error) {
+                          errback(lib.makeError(error, path))
+                      })
+              }]
+          }
+        , ['path']
+        , function(obtain, path) {return obtain('plist');}
+      );
 
     // ---------
     // Glyph Set
@@ -53410,11 +54012,16 @@ define(
         io,
         dirName,
         glyphNameToFileNameFunc /* undefined */,
-        ufoFormatVersion /* 3 */
+        ufoFormatVersion /* 3 */,
+        options /* object default undefined, 
+                   optional, readErrorCallback: see readGlyph/ReadGlyph
+                */
     ) {
         if(io === undefined)
             throw new GlifLibError('GlyphSet I/O module missing');
         this._io = io;
+        this._options = options || {};
+        this._glyphReader = new readGlyph.ReadGlyph(this._options.readErrorCallback)
 
         if(dirName === undefined)
             throw new GlifLibError('GlyphSet: dirName is missing');
@@ -53443,8 +54050,8 @@ define(
 
     GlyphSet.factory = obtain.factory(
         {
-            instance: ['io', 'dirName', 'glyphNameToFileNameFunc', 'ufoFormatVersion',
-                function(i, d, g, u) { return new GlyphSet(i, d, g, u); }]
+            instance: ['io', 'dirName', 'glyphNameToFileNameFunc', 'ufoFormatVersion', 'options',
+                function(i, d, g, u, o) { return new GlyphSet(i, d, g, u, o); }]
           , init: ['instance', function(instance) {
                                     instance.rebuildContents(false);}]
         }
@@ -53453,7 +54060,7 @@ define(
                                     // returns a promise
                                     return instance.rebuildContents(true);}]
       , }
-      , ['io', 'dirName', 'glyphNameToFileNameFunc', 'ufoFormatVersion']
+      , ['io', 'dirName', 'glyphNameToFileNameFunc', 'ufoFormatVersion','options']
       , function(obtain) {
             obtain('init');
             return obtain('instance');
@@ -53469,6 +54076,8 @@ define(
     _p._writeFile = _writeFile;
     _p._unlink = _unlink;
 
+    _p._readPlist = _readPlist;
+
     /**
      * Rebuild the contents dict by loading contents.plist.
      */
@@ -53478,9 +54087,7 @@ define(
             contentsPath: [function() {
                 return [this.dirName, 'contents.plist'].join('/');
             }]
-          , contentsPlist: ['contentsPath', function(contentsPath) {
-                return this._readPlist(false, contentsPath);
-            }]
+          , contentsPlist: [false, 'contentsPath', _p._readPlist]
           , filePaths: ['contentsPlist', function(contents) {
                 if( plistLib.getType(contents) !== 'dict' )
                     throw new GlifLibError('contents.plist is not properly '
@@ -53512,18 +54119,7 @@ define(
             }]
         }
       , {
-            contentsPlist: ['contentsPath', '_callback', '_errback',
-            function(contentsPath, callback, errback) {
-                this._readPlist(true, contentsPath)
-                    .then(callback, function(error) {
-                        if(error instanceof IONoEntryError)
-                            // missing, consider the glyphset empty.
-                            callback({});
-                        else
-                            errback(error);
-                    })
-
-            }]
+            contentsPlist: [true, 'contentsPath', _p._readPlist]
           , validContents: ['contentsPlist', 'filePaths', '_callback',
                             '_errback',
             function(contentsPlist, filePaths, callback, errback) {
@@ -53961,7 +54557,8 @@ define(
             formatVersions = this.ufoFormatVersion < 3
                     ? [1]
                     : [1, 2];
-            readGlyph.fromDOM(glifDoc, glyphObject, pointPen, formatVersions)
+
+            this._glyphReader.fromDOM(glifDoc, glyphObject, pointPen, formatVersions);
             return glyphObject;
         }
     )
@@ -54224,69 +54821,21 @@ define(
                                                 fetchImageFileName)
     }
 
-    // internal methods
-
-    /**
-     * reads a plist from path synchronously or asynchronously
-     * using obtainJS for the switch.
-     */
-    _p._readPlist = obtain.factory(
-        {
-            // a constructor for a lib of shared methods
-            // this is a bit hackish, should maybe become formalized
-            lib: [function() {
-                return {
-                    makeError: function(error, path) {
-                        if(error instanceof IONoEntryError)
-                            return error;
-                        return new GlifLibError(
-                            ['The file "', path ,'" could not be read.('
-                            , error.message,')'].join(''), error.stack);
-                    }
-                }
-            }]
-          , plist: ['plistString', 'path', 'lib',
-            function(string, path, lib) {
-                try {
-                    return readPlistFromString(string);
-                } catch(e) {
-                    throw lib.makeError(e, path);
-                }
-            }]
-          , plistString: ['path', 'lib', function(path, lib) {
-                try {
-                    return this._io.readFile(false, path);
-                } catch(e) {
-                    throw lib.makeError(e, path);
-                }
-            }]
-        }
-      , {
-            plistString: ['path', 'lib', '_callback', '_errback',
-            function(path, lib, callback, errback)
-            {
-                this._io.readFile(true, path)
-                    .then(callback, function(error) {
-                        errback(lib.makeError(error, path))
-                    })
-            }]
-        }
-      , ['path']
-      , function(obtain, path) {return obtain('plist');}
-    )
     return GlyphSet;
 });
 
 define('metapolator/project/import/SegmentPoint',[
-    'metapolator/math/Vector'
+    'metapolator/errors'
+  , 'metapolator/math/Vector'
 ], function(
-    Vector
+    errors
+  , Parent
 ) {
     
+    var DeprecatedError = errors.Deprecated;
     
     function SegmentPoint(xy, smooth, name, kwargs) {
-        var k;
-        this.vector = Vector.from.apply(null, xy);
+        Parent.apply(this, xy);
         
         this.smooth = smooth;
         this.name = name;
@@ -54298,38 +54847,22 @@ define('metapolator/project/import/SegmentPoint',[
   
     SegmentPoint.factory = function(xy, smooth, name, kwargs) {
         return new SegmentPoint(xy, smooth, name, kwargs);
-    }
+    };
     
-    var _p = SegmentPoint.prototype
-      , _xProperty = {
-            get: function(){ return this.vector.x; }
-          , set: function(x) {
-                this.vector = new Vector(x, this.vector.y);
-            }
-        }
-      , _yProperty = {
-            get: function(){ return this.vector.y; }
-          , set: function(y) {
-                this.vector = new Vector(this.vector.x, y);
-            }
-        }
-      ;
+    var _p = SegmentPoint.prototype = Object.create(Parent.prototype);
     
     _p.toString = function() {
         return '<SegmentPoint'
             + (this.name ? ' ' + this.name : '')
-            + ' ' + this.vector.valueOf() +'>';
-    }
+            + ' ' + this.valueOf() +'>';
+    };
     
-    Object.defineProperty(_p, 'x', _xProperty)
-    Object.defineProperty(_p, 'y', _yProperty)
-    // array interface
-    Object.defineProperty(_p, 'length', {
-        value: 2
-      , writable: false
-    })
-    Object.defineProperty(_p, '0', _xProperty)
-    Object.defineProperty(_p, '1', _yProperty)
+    Object.defineProperty(_p, 'vector', {
+        get: function() {
+            throw new DeprecatedError('SegmentPoint is now a subclass of '
+                +' metapolator/math/Vector don\'t use this property.');
+        }
+    });
     
     return SegmentPoint;
 });
@@ -54556,30 +55089,17 @@ define('metapolator/project/import/tools',[
     
     function line2curve(p0, p3) {
         var p1, p2
-          , distance = (p3.vector['-'](p0.vector))['*'](.33333)
+          , distance = (p3['-'](p0))['*'](.33333)
           , newCurve = ['curveTo']
           ;
         // at a third between p0 and p3
-        p1 = new Point(p0.vector['+'](distance));
+        p1 = new Point(p0['+'](distance));
         // at 2 thirds between p3 and p0
-        p2 = new Point(p3.vector['-'](distance));
+        p2 = new Point(p3['-'](distance));
         
         newCurve.push(p1, p2, p3);
+        newCurve.wasLine = true;
         return newCurve;
-    }
-    
-    /**
-     * Return the control points for both terminal lines.
-     * the direction for the stroke beginning terminal line left to right
-     * the direction for the stroke ending terminal line is right to left.
-     * 
-     * returns: [ beginning_segment, ending_segment ]
-     */
-    function getStrokeTerminals(contour) {
-        return [
-                 contour[contour.length-1]
-               , contour[(contour.length-1) * 0.5]
-               ];
     }
     
     function getCenter(l, r) {
@@ -54622,7 +55142,7 @@ define('metapolator/project/import/tools',[
     }
     
     function getCenterPoint(l, r) {
-        return new Point(getCenter(l.vector, r.vector), undefined
+        return new Point(getCenter(l, r), undefined
                        , mergeNames(l.name, r.name));
     }
     
@@ -54635,7 +55155,6 @@ define('metapolator/project/import/tools',[
     
     return {
         line2curve: line2curve
-      , getStrokeTerminals: getStrokeTerminals
       , getCenter: getCenter
       , getCenterPoint: getCenterPoint
       , getCenterSegment: getCenterSegment
@@ -54652,404 +55171,499 @@ define('metapolator/project/import/StrokeContour',[
   , hobby
 ) {
     
-    var Parent = Array
+    var AssertionError = errors.Assertion
+      , ImportPenstroke = errors.ImportPenstroke
       , line2curve = tools.line2curve
-      , getStrokeTerminals = tools.getStrokeTerminals
       , getCenterPoint = tools.getCenterPoint
-      , getCenter = tools.getCenter
-      , getCenterSegment = tools.getCenterSegment
       ;
-    
-    
-    
+
     /**
-     * From a semantic point of view we have only on-curve points, which:
-     *     may have an incoming control( point || tension + direction)
-     *     may have an outgoing control( point || tension + direction)
-     * 
-     * This is also the representation font-editors commonly use
-     * they are not concerned with a segment based presentation. So
-     * this is the way most people think about vector graphics.
-     */
-    function getSemanticPoint(segmentA, segmentB) {
-        var point = {
-            on: segmentA[segmentA.length-1]
-            // whether this was the on curve point of a lineTo Segment
-          , wasLine: !!segmentA.wasLine
-          , in: undefined
-          , ou: undefined
-        };
-        
-        if(segmentA[0] === 'curveTo')
-            // this shouldnt happen with the first item.
-            // That one should be moveTo
-            point.in = segmentA[2];
-        
-        if(segmentB && segmentB[0] === 'curveTo')
-            // if this is the last item segmentB is undefined
-            point.ou = segmentB[1];
-        return point;
-    }
-    
-    /**
-     * augment a PenStroke point with direction and tensions parameters
-     */
-    function addHobby(p0, p1) {
-        var tensions;
-        // add directions
-        if(p0.ou)
-            p0.ouDir = p0.ou.vector['-'](p0.on.vector);
-        if(p1.in)
-            p1.inDir = p1.on.vector['-'](p1.in.vector);
-        
-        // addTensions
-        
-        // FIXME: there should be a when the directions
-        // are 0 but the distance from p0.on to p1.on is != 0
-        // because then we can use the directions of the straight line
-        // but to make some progress I skip the corner cases
-        // for now!
-        if(!p0.ou || !p1.in || p0.ouDir.magnitude() === 0
-                            || p1.inDir.magnitude() === 0)
-            return;
-        // else
-        tensions = hobby.tensions(
-              p0.on.vector
-            , p0.ou.vector
-            , p1.in.vector
-            , p1.on.vector
-        )
-        p0.ouTension = tensions[0];
-        p1.inTension = tensions[1];
-    }
-    
-    /**
-     * The terminals are a very special case! because of the structure
-     * of the Penstroke two in points at the beginning of the stroke
-     * describe the curve there. At the end of the stroke, two out
-     * points "ou" describe the curve.
-     * 
-     * "ctrl" is the control to affect, must be either 'in' or 'ou'
-     * 
-     * see getAbsolutePenStroke for the calls to this function.
-     * 
-     * beginning terminal of the segment
-     *              addTerminalHobby(point.l, point.r, 'in');
-     * ending terminal of the segment
-     *              addTerminalHobby(point.r, point.l, 'ou');
-     * 
-     */
-    function addTerminalHobby(a, b, ctrl) {
-        var dir = ({in: 'inDir', ou: 'ouDir'})[ctrl]
-          , tension = ({in: 'inTension', ou: 'ouTension'})[ctrl]
-          , tensions
-          ;
-        // add directions
-        if(a[ctrl])
-            a[dir] = a[ctrl].vector['-'](a.on.vector);
-        if(b[ctrl])
-            b[dir] = b.on.vector['-'](b[ctrl].vector);
-        
-        // add tensions
-        if(!a[ctrl] || !b[ctrl] || a[dir].magnitude() === 0
-                                || b[dir].magnitude() === 0)
-            return;
-        tensions = hobby.tensions(
-            a.on.vector
-          , a[ctrl].vector
-          , b[ctrl].vector
-          , b.on.vector
-        );
-        a[tension] = tensions[0];
-        b[tension] = tensions[1];
-    }
-    
-    /**
-     * This methods expects a input-contour like a SegementPen produces it.
-     * 
-     * The 'implied' closing line must be included
+     * This methods expects an input-contour like a SegementPen produces it.
+     *
+     * The 'implied' closing line argument of SegementPen must be included
      * which is *not* the default when using a ufoJS like PointToSegmentPen!
-     * see the outputImpliedClosingLine of the PointToSegmentPen constructor.
-     * 
+     * See the outputImpliedClosingLine of the PointToSegmentPen constructor.
+     *
      * The input-contour must be a closed contour.
-     * 
-     * The minimal length of the input-contour is 3 which yields in a one item
-     * result.
-     * 
+     *
+     * The minimal length of the input-contour is 3 which yields in a one
+     * item result.
+     *
      * The input-contour is expected to have an uneven number of segments:
      * An initial 'moveTo' segment and an even number of either 'lineTo'
      * or 'curveTo' segments.
-     * 
-     * The result of this method is an array of arrays of left and right segment
-     * pairs:
-     * 
-     * var result = [
-     *      [left, right],
-     *      [left, right],
-     *      [left, right],
-     *      [left, right],
-     * ]
-     * 
-     * The result length is (input.length -1) /2
-     * 
-     * 
+     *
      * This method treats the first on curve point as first point on
      * the right side and the on curve point before the last on curve
      * point as the first point on the left side. Each segement has one
      * on curve point and 0 or 3 off curve points.
-     * 
-     * The last segment is skipped as well as the segment with the index
-     * (contour.length-1)/2. Both segments are the 'width' of the stroke
-     * and not part of the outline.
-     * ## Note: it would be cool to preserve these segments as line
-     *    endings of the stroke
-     * 
-     * The results left segments are a direction reversed representation
+     *
+     * The last segment and segment with the index (contour.length-1)/2.
+     * are used to reconstruct the imported shape using opening and closing
+     * terminals.
+     *
+     * The result of this method is an array of arrays of left and right segment
+     * pairs.
+     *
+     * The resulting left segments are a direction reversed representation
      * of the input-contours left-side segments. So the results left
      * and right side contours share the same direction.
-     * 
+     *
      * EXMAPLE:
      * A contour of length 11: 1 moveto  + 10 segments:
      *  [moveto, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-     * 
+     *
      * left    4    right
      *         _
      *      5 | | 3
      *      6 | | 2
      *      7 | | 1
      *      8 |_| 0
-     *           * 
-     *         9   
-     * 
+     *           *
+     *         9
+     *
      * (*) moveTo is the point in the lower right corner.
-     * 
+     *
      *     result = [
-     *        [moveTo, moveTo]
+     *        [openingTerminalSegment, openingTerminalSegment]
      *        [8, 0]
      *        [7, 1]
      *        [6, 2]
      *        [5, 3]
+     *        [closingTerminalSegment, closingTerminalSegment]
      *     ]
      */
     function StrokeContour(contour) {
-        Parent.call(this);
+        this.length = 0;
             // skip the first moveto
         var right = 1
             // -1 for length to index translation,
-            // -1 because the very last segment is the vector of the 
+            // -1 because the very last segment is the vector of the
             // pen, not part of the stroke
           , left = contour.length-2
           , zLength = (contour.length-1)*0.5
           , leftSegment, points
+          , terminals = this._getTerminals(contour)
           ;
-        
-        this.terminals = getStrokeTerminals(contour);
-        
-        // add the initial moveTo to this
-        this.push([
-            ['moveTo', contour[left].slice(-1).pop()]
-            , contour[0]
-        ])
+
+        // add the information needed for the opening terminal
+        this._push([
+            [undefined, terminals[0][1], contour[left].slice(-1).pop()]
+          , [undefined, terminals[0][2], terminals[0][3]]
+        ]);
+
         for(;right<zLength; right++, left--) {
             // the problem is, that the left contour is in the wrong
             // direction. so we have to reverse its direction:
-            leftSegment = []
-            
-            // start with the command
-            leftSegment.push(contour[left][0])
-            // add the control points (if any) in reverse order
-            leftSegment.push.apply(leftSegment,
-                                contour[left].slice(1,-1).reverse())
+            leftSegment = contour[left].slice(1,-1).reverse();
             // oncurve point of the previous segment
-            leftSegment.push(contour[left-1].slice(-1).pop())
-            
-            this.push([leftSegment, contour[right]]);
+            leftSegment.push(contour[left-1].slice(-1).pop());
+
+            this._push([leftSegment, contour[right].slice(1)]);
         }
+
+        // add the information needed for the closing terminal
+        this._push([
+            [terminals[1][2], undefined, undefined]
+          , [terminals[1][1], undefined, undefined]
+        ]);
     }
-    
-    var _p = StrokeContour.prototype = Object.create(Array.prototype);
+
+    var _p = StrokeContour.prototype;
     _p.constructor = StrokeContour;
-    
-    _p.push = function(/* ... */) {
+
+    /**
+     * Return the control points for both terminal lines.
+     * the direction for the stroke beginning terminal line left to right
+     * the direction for the stroke ending terminal line is right to left.
+     *
+     * returns: [ beginning_segment, ending_segment ]
+     */
+    _p._getTerminals = function (contour) {
+        var beginningIndex = contour.length-1
+          , endingIndex = (contour.length-1) * 0.5
+          , beginning = contour[beginningIndex]
+          , ending = contour[endingIndex];
+
+        if(beginning[0] !== 'curveTo') {
+            beginning = line2curve(
+                contour[beginningIndex-1].slice(-1).pop()
+              , beginning[1]
+            );
+        }
+        if(ending[0] !== 'curveTo') {
+            ending = line2curve(
+                contour[endingIndex-1].slice(-1).pop()
+              , ending[1]
+            );
+        }
+
+        return [beginning, ending];
+    };
+
+    _p._push = function(/* ... */) {
         var args = Array.prototype.slice.apply(arguments)
-          , i=0
+          , i=0, j
           , segments
-          , left = 0
-          , right = 1
+          , segment
           ;
-        
         for(;i<args.length;i++) {
-            args[i]; // === [leftSegment, rightSegment]
+            // args[i] === [leftSegment, rightSegment]
             segments = [];
-            
-            // we convert ALL lineTo to curveTo
-            // but the Segment is marked with .wasLine = true;
-            if(args[i][left][0] === 'lineTo') {
-                segments[left] = line2curve(
-                    this[this.length-1][left].slice(-1).pop()
-                    , args[i][left][1]
-                );
-                segments[left].wasLine = true;
+            for(j=0;j<2;j++) {
+                // Convert ALL lineTo to curveTo;
+                // line2curve marks the new segment is marked with
+                // segment.wasLine = true;
+                if(args[i][j].length === 1) {
+                    segment = line2curve(
+                        this[this.length-1][j].slice(-1).pop()
+                      , args[i][j][0]
+                    );
+                    // remove the segmentType
+                    segment.shift();
+                }
+                else if(args[i][j].length === 3)
+                    segment = args[i][j];
+                else
+                    // This means that probably  the code that created
+                    // the contour argument for StrokeContour is faulty
+                    // and must be repaired.
+                    throw new AssertionError('A segment is expected to '
+                        + ' have 3 items at this stage, but this has '
+                        + args[i][j].length + ' items. '
+                        + 'Segment: ' + args[i][j].join(', '));
+                segments.push(segment);
             }
-            else
-                segments[left] = args[i][left].slice();//??? need as copy?
-                
-            
-            if(args[i][right][0] === 'lineTo') {
-                segments[right] = line2curve(
-                    this[this.length-1][right].slice(-1).pop()
-                    , args[i][right][1]
-                );
-                segments[right].wasLine = true;
-            }
-            else
-                segments[right] = args[i][right].slice();// ??? need as copy?
-            
-            Parent.prototype.push.call(this, segments);
+            Array.prototype.push.call(this, segments);
         }
     };
-    
-    _p.separate = function(left, right) {
-        var separated = [left || [], right || []]
-          , i=0
-          ;
-        for(;i<this.length;i++) {
-            separated[0].push(this[i][0]);
-            separated[1].push(this[i][1]);
-        }
-        return separated;
-    }
-    
-    
+
     /**
      * Returns a list of points like following:
-     * 
+     *
      * the coordinates are absolute.
-     * 
+     *
      * // one "point"
      *  {
      *      l: {
-     *          in: SegmentPoint
-     *        , out: SegmentPoint
-     *        , on: SegmentPoint
-     *        , // only when withHobby is true
-     *        , ouDir: Vector
-     *        , inDir: Vector
-     *        , ouTension: Number
-     *        , inTension: Number
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
      *      }
      *    , r: {
-     *          in: SegmentPoint
-     *        , out: SegmentPoint
-     *        , on: SegmentPoint
-     *        , // only when withHobby is true
-     *        , ouDir: Vector
-     *        , inDir: Vector
-     *        , ouTension: Number
-     *        , inTension: Number
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
      *      }
      *    , z: {
-     *          in: SegmentPoint
-     *        , out: SegmentPoint
-     *        , on: SegmentPoint
-     *        , // only when withHobby is true
-     *        , ouDir: Vector
-     *        , inDir: Vector
-     *        , ouTension: Number
-     *        , inTension: Number
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
      *      }
      * }
-     * 
-     * The withHobby flag could be removed when there would be a plugin
-     * infrastructure that would allow processing and augmenting the
-     * returned pen stroke.
-     * 
      */
-    _p.getPenStroke = function(withHobby) {
-        var point
-          , left = []
-          , right = []
-          , result = []
-          , i = 0
-          ;
-        
-        // writes to left and right
-        this.separate(left, right);
-        
-        for(;i<this.length; i++) {
-            point = {
-                l: getSemanticPoint(left[i], left[i+1])
-              , r: getSemanticPoint(right[i], right[i+1])
-              , z: getSemanticPoint(getCenterSegment(left[i], right[i]), 
-                        // if not both are undefined or both are defined
-                        // the structure of the points would be broken!
-                        (left[i+1] === undefined
-                            ? undefined
-                            : getCenterSegment(left[i+1], right[i+1])
-                        )
-                    )
+
+    _p._getMetapolatorPoint = function(i) {
+        var point, left=0, right =1;
+
+        // i   [[ , leftIn, leftOn], [ , rightIn, rightOn]]
+        // i+1 [[leftOut , , ], [rightOut, , ]]
+
+        point = {
+            l: {
+                'in': this[i][left][1]
+               , on: this[i][left][2]
+               , out: this[i+1][left][0]
+               , wasLine: !!this[i][left].wasLine
             }
-            result.push(point);
-            
-            // NOTE: adding hobby spline info (tension and dir) could
-            // already be a Plugin. This can happen independently from
-            // the rest here.
-            // Track the withHobby Parameter to get an idea of what
-            // the hobby plugin would do (it is used for the terminals, too)
-            //
-            // A plugin approach would make it easier to extract more data
-            // from a PenStroke without making this method bigger and bigger,
-            // and it would make it easier to come up with new things to
-            // extract.
-            
-            if(!withHobby || i===0)
-                // because we'll look behind
-                continue;
-            // left hobby
-            addHobby(result[i-1].l, point.l);
-            // right hobby
-            addHobby(result[i-1].r, point.r)
-            // center hobby
-            addHobby(result[i-1].z, point.z)
-            
-            // This happens with my test glif BodonMP.ufo
-            // if(point.l.inTension > 5) {
-            //     console.log('>>BIG>> StroleContour getPenStroke point.l.inTension', point.l.inTension)
-            //     console.log('check if this is the same when done with mpost')
-            // }
-        }
-        
-        // add the terminal control points
-        
-        // the terminals are a very special case! because of the structure
-        // of the Penstroke two "in" points at the beginning of the stroke
-        // describe the curve there. At the end of the stroke, two out
-        // points "ou" describe the curve.
-        
-        // terminal of the beginning of the stroke
-        if(this.terminals[0][0] === 'curveTo') {
-            console.log('Adding terminal to point 0')
-            point = result[0];
-            point.l.in = this.terminals[0][1]
-            point.r.in = this.terminals[0][2]
-            if(withHobby)
-                addTerminalHobby(point.l, point.r, 'in');
-        }
-        //terminal of the ending of the stroke
-        if(this.terminals[1][0] === 'curveTo') {
-            point = result[result.length-1];
-            point.r.ou = this.terminals[1][1]
-            point.l.ou = this.terminals[1][2]
-            if(withHobby)
-                addTerminalHobby(point.r, point.l, 'ou');
-        }
+          , r: {
+                'in': this[i][right][1]
+              , on: this[i][right][2]
+              , out: this[i+1][right][0]
+              , wasLine: !!this[i][right].wasLine
+            }
+          , z: {}
+        };
+
+        point.z.on = getCenterPoint(point.l.on, point.r.on);
+        point.z['in'] = getCenterPoint(point.l['in'], point.r['in']);
+        point.z.out = getCenterPoint(point.l.out, point.r.out);
+        point.z.wasLine = point.l.wasLine && point.r.wasLine;
+
+        return point;
+    };
+
+    _p._getPenStroke = function() {
+        var i
+            // end is the element before the last element, because the last
+            // element is just for the ending terminal of interest
+          , end = this.length-1
+          , result = []
+          ;
+
+        for(i=0; i<end; i++)
+            result.push(this._getMetapolatorPoint(i));
         return result;
+    };
+
+    function _extractKey(key, value) {
+        return value[key];
     }
-    
-    
+
+    function _setKey(stroke, key, value, index) {
+        stroke[index][key] = value;
+    }
+
+    /**
+     * see the docstring of _findNextDirection
+     */
+    function _getDirection(point, firstRound, lastRound, testDirection,
+                                                        test, control) {
+        var testPointKeys, testPointKey, testPoint, offset;
+
+        if(!firstRound || !lastRound)
+            testPointKeys = testDirection === 1
+                ? {out:true, on:true, 'in':true}
+                : {'in':true, on:true, out:true}
+                ;
+        else if(firstRound)
+            testPointKeys = testDirection === 1
+                ? {out: true}
+                : {'in': true}
+                ;
+        else // lastRound == true
+            testPointKeys = testDirection === 1
+                ? {'in': true}
+                : {out: true}
+                ;
+        for(testPointKey in testPointKeys) {
+            testPoint = test[testPointKey];
+            offset = control === 'out'
+                ? testPoint['-'](point.on)// point.out['-'](point.on)
+                : point.on['-'](testPoint)// point.on['-'](point['in']);
+                ;
+            if(offset.magnitude())
+                return offset.angle();
+        }
+        return false;
+    }
+    /**
+     * Find directions for any control point even when the naive approach
+     * has no direction, because the distance of the offset to the on
+     * curve point is 0.
+     *
+     * The algorithm finds the next point in control direction
+     * (in|on|out OR out|on|in) that has a different position than
+     * point.on and returns that direction in radians.
+     *
+     * In the normal case, just the direction of the control point is
+     * returned.
+     *
+     * If the control shares the position with the on curve point,
+     * i.e. point.on - point[control] === Vector 0, 0
+     * the search t traverses the whole path until a direction can be
+     * returned.
+     * For the left and right path it traces the whole outline, for
+     * the centerline it looks only at that. Not too many steps should be
+     * needed to find a direction, but in the worst case -- when all
+     * points are on the same position -- this will return false.
+     *
+     * Arguments:
+     *
+     * `stroke` is a stroke array as returned by StrokeContour._getPenStroke
+     *
+     * `pointIndex` is the numeric index of the stroke point in `stroke`
+     *
+     * `key` is 'l' (left), 'z' (center) or 'r' (right)
+     *
+     * `point` equals stroke[pointIndex][key]
+     *
+     * `control` is 'out' or 'in' to indicate in which direction we
+     *      are searching. This means that we are searching an angle
+     *      from `point.on` to 'point[control]' and if there is no
+     *      natural angle for that point we go on and look at the next
+     *      coordinate the path.
+     */
+    function _findNextDirection(stroke, pointIndex, key, point, control) {
+        var normalIncrement = control === 'out' ? 1 : -1
+          , increment = normalIncrement
+          , i = pointIndex
+          , countourKey = key
+          , firstRound = true
+          , lastRound
+          , result
+          ;
+
+        while(true) {
+            lastRound = i === pointIndex && !firstRound;
+            result = _getDirection(point, firstRound, lastRound,
+                            increment, stroke[i][countourKey], control);
+            firstRound = false;
+            if(result !== false || lastRound)
+                return result;
+
+            // iterate
+            if(key === 'z') {
+                // we only change i
+                if(increment === 1 && i === stroke.length-1)
+                    i = 0;
+                else if (increment === -1 && i === 0)
+                    i = stroke.length-1;
+                else
+                    i += increment;
+            }
+            else { // key is 'l' or 'r'
+                increment = (countourKey === key)
+                    ? normalIncrement
+                    : normalIncrement * -1
+                    ;
+
+                if((increment === 1 && i === stroke.length-1)
+                                    || (increment === -1 && i === 0)) {
+                    // switch to the other side of the stroke;
+                    // i stays the same
+                    countourKey = key === 'l' ? 'r':'l';
+                    increment = increment * -1;
+                }
+                else
+                    i += increment;
+            }
+        }
+    }
+
+    // TODO: Take care of contours marked as smooth, when the obvious
+    // direction of a control point was not available. Then we could
+    // improve the result of _findNextDirection by returning a smooth
+    // connection.
+    // If only one direction is a normal direction, the other
+    // should be the inverse of that direction.
+    // If both directions are 'artificial' the result should be averaged
+    // to create a smooth direction.
+    function _setPolarControls(stroke, key, point, index, contour) {
+        var outVector, inVector, dir;
+        outVector = point.out['-'](point.on);
+        point.outLength = outVector.magnitude();
+        dir = _findNextDirection(stroke, index, key, point, 'out');
+        if(dir === false)
+            throw new ImportPenstroke('can\'t find a outgoing direction '
+                                        +'for point['+index+'].'+key);
+        point.outDir = dir;
+        inVector = point.on['-'](point['in']);
+        point.inLength = inVector.magnitude();
+        dir = _findNextDirection(stroke, index, key, point, 'in');
+        if(dir === false)
+            throw new ImportPenstroke('can\'t find a incoming direction '
+                                        +'for point['+index+'].'+key);
+        point.inDir = dir;
+        return point;
+    }
+
+    function _setTensions(stroke, key, metapoint, index, contour) {
+        var next
+          , uv
+          , point = metapoint[key]
+          ;
+        if(index !== contour.length-1) {
+            next = contour[index+1][key];
+            uv = hobby.magnitude2tension(
+                                    point.on, point.outDir, point.outLength,
+                                    next.inLength, next.inDir, next.on);
+            point.outTension = uv[0];
+            next.inTension = uv[1];
+        }
+
+        if(index === 0 && key === 'l') {
+            // beginning terminal
+            // only handled on the left side for both: 'l' and 'r'
+            next =  metapoint.r;
+            uv = hobby.magnitude2tension(
+                                    point.on, point.inDir  + Math.PI, point.inLength,
+                                    next.inLength, next.inDir, next.on);
+            point.inTension = uv[0];
+            next.inTension = uv[1];
+        }
+        else if(index === contour.length-1 && key === 'r') {
+            // ending terminal
+            // only handled on the right side for both: 'l' and 'r'
+            next =  metapoint.l;
+            uv = hobby.magnitude2tension(
+                                    point.on, point.outDir, point.outLength,
+                                    next.outLength, next.outDir + Math.PI, next.on);
+            point.outTension = uv[0];
+            next.outTension = uv[1];
+        }
+    }
+
+    /**
+     * Returns a list of points like following:
+     *
+     * the coordinates are absolute.
+     *
+     * // one "point"
+     *  {
+     *      l: {
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
+     *        , outLength: real number
+     *        , outDir: , angle in radians
+     *        , inLength: real number
+     *        , inDir: real number, angle in radians
+     *        , outTension: real number or Infinity if outLength === 0
+     *        , inTension: real number or Infinity if inLength === 0
+     *      }
+     *    , r: {
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
+     *        , outLength: real number
+     *        , outDir: , angle in radians
+     *        , inLength: real number
+     *        , inDir: real number, angle in radians
+     *        , outTension: real number or Infinity if outLength === 0
+     *        , inTension: real number or Infinity if inLength === 0
+     *      }
+     *    , z: {
+     *          in: Vector
+     *        , out: Vector
+     *        , on: Vector
+     *        , wasLine: true|false
+     *        , outLength: real number
+     *        , outDir: , angle in radians
+     *        , inLength: real number
+     *        , inDir: real number, angle in radians
+     *      }
+     * }
+     */
+    _p.getPenStroke = function() {
+        var stroke = this._getPenStroke();
+        stroke.map(_extractKey.bind(null,'l'))
+              .map(_setPolarControls.bind(null, stroke,'l'))
+              .forEach(_setKey.bind(null, stroke,'l'))
+              ;
+        stroke.map(_extractKey.bind(null,'r'))
+              .map(_setPolarControls.bind(null, stroke,'r'))
+              .forEach(_setKey.bind(null, stroke,'r'))
+              ;
+        
+        stroke.map(_extractKey.bind(null,'z'))
+              .map(_setPolarControls.bind(null, stroke,'z'))
+              .forEach(_setKey.bind(null, stroke,'z'))
+              ;
+        
+        stroke.forEach(_setTensions.bind(null, stroke,'l'))
+        stroke.forEach(_setTensions.bind(null, stroke,'r'));
+        return stroke;
+    };
+
     return StrokeContour;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/AtNamespaceCollection',[
     'metapolator/errors'
   , './ParameterCollection'
@@ -55089,6 +55703,7 @@ define('metapolator/project/ImportController',[
   , './import/ImportOutlinePen'
   , './import/StrokeContour'
 
+  , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
@@ -55096,7 +55711,7 @@ define('metapolator/project/ImportController',[
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterName'
   , 'metapolator/models/CPS/elements/ParameterValue'
-  , 'complex/Complex'
+  , 'metapolator/math/Vector'
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 
@@ -55107,6 +55722,7 @@ define('metapolator/project/ImportController',[
   , ImportOutlinePen
   , StrokeContour
 
+  , ParameterCollection
   , AtNamespaceCollection
   , AtRuleName
   , Rule
@@ -55114,11 +55730,13 @@ define('metapolator/project/ImportController',[
   , Parameter
   , ParameterName
   , ParameterValue
-  , Complex
+  , Vector
+
   , parseSelectorList
 ) {
     
-
+    // jshint option
+    /*global console:true*/
     function ImportController(project, masterName, sourceUFODir) {
         this._project = project;
         this._masterName = masterName;
@@ -55126,7 +55744,9 @@ define('metapolator/project/ImportController',[
         if(this._project.hasMaster(masterName))
             this._master = this._project.getMaster(masterName);
         else
-            this._master = this._project.createMaster(masterName);
+            this._master = this._project.createMaster(masterName,
+                                                      [this._project.cpsOutputConverterFile, this._project.cpsGlobalFile, masterName + '.cps'],
+                                                      'skeleton.' + masterName);
 
         // open the source ufo glyphs layer of an UFOv2
         this._sourceGlyphSet  = this._project.getNewGlyphSet(
@@ -55134,7 +55754,7 @@ define('metapolator/project/ImportController',[
     }
     var _p = ImportController.prototype;
 
-    _p.import = function(glyphs) {
+    _p['import'] = function(glyphs) {
         var missing, i=0
           , rules = []
           , cps
@@ -55144,24 +55764,19 @@ define('metapolator/project/ImportController',[
             glyphs = this._sourceGlyphSet.keys();
         else {
             missing = glyphs.filter(function(name) {
-                        return !this._sourceGlyphSet.has_key(name);}, this)
+                        return !this._sourceGlyphSet.has_key(name);}, this);
             if(missing.length)
                 throw new errors.Key('Some glyphs requested for import '
                                     +'are missing in the source GlyphSet: '
                                     +missing.join(', '));
         }
-        console.log('importing ...');
+        console.warn('importing ...');
         for(;i<glyphs.length;i++)
             Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
 
         this._master.glyphSet.writeContents(false);
 
-        // a namespace for the master ...
-        cps = new AtNamespaceCollection(
-                new AtRuleName('namespace', [])
-              , parseSelectorList.fromString('master#'+this._masterName)
-              , rules
-        );
+        cps = new ParameterCollection(rules);
 
         // This just overrides the local CPS file
         // We might come up with some smart merging in the future, so that
@@ -55169,7 +55784,7 @@ define('metapolator/project/ImportController',[
         // files, changing only the new glyphs and keeping the old ones. But
         // that ain't gonna be easy.
         this._master.saveCPS(this._masterName + '.cps', cps);
-    }
+    };
 
     _p._readGlyphFromSource = function(glyphName) {
         var glyph = this._sourceGlyphSet.get(glyphName)
@@ -55179,10 +55794,10 @@ define('metapolator/project/ImportController',[
 
         glyph.drawPoints(false, pen);
         return {data:glyph, contours:segmentPen.flush()};
-    }
+    };
 
     _p.importGlyph = function(glyphName) {
-        console.log('> importing glyph:', glyphName);
+        console.warn('> importing glyph:', glyphName);
         var sourceGlyph = this._readGlyphFromSource(glyphName)
           , targetGlyph
           , contours = []
@@ -55193,38 +55808,30 @@ define('metapolator/project/ImportController',[
           ;
         for(;i<sourceGlyph.contours.length;i++) {
             if(!sourceGlyph.contours[i].closed) {
-                console.log('    skipping contour '+ i +' because it is open.');
+                console.warn('    skipping contour '+ i +' because it is open.');
                 continue;
             }
             if(sourceGlyph.contours[i].commands.length < 5) {
-                console.log('    skipping contour '+ i +' because it has less '
+                console.warn('    skipping contour '+ i +' because it has less '
                                             +'than 4 on-curve points.');
                 continue;
             }
-            if(!(sourceGlyph.contours[i].commands.length % 2)) {
-                 console.log('    skipping contour '+ i +' because count of '
+            if(sourceGlyph.contours[i].commands.length % 2 === 0) {
+                 console.warn('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
             }
-            console.log('    importing contour '+ i);
+            console.warn('    importing contour '+ i);
              // the z points of this stroke can go directly to the skeleton glyph
             var penStrokeData = new StrokeContour(
-                        sourceGlyph.contours[i].commands).getPenStroke(true);
+                        sourceGlyph.contours[i].commands).getPenStroke();
 
             // this goes into the glyph/skeleton
             contours.push(penStrokeData);
-            // draws only the center line using the absolute points, no
-            // hobby or so for the moment. Because we don't use the control
-            // points of the skeleton as reference, it might be also an
-            // option to draw the centerline with tension = 1, to get a
-            // sort of "normalized" skeleton line.
-            // ... will try out when I have time
-            // makeSkeletonContour(penStroke)
 
             // this goes into the glyph
             // returns an atNamespaceRule(penstroke:i({penStrokeIndex})){ points ... }
             rules.push(makeCPSPenStrokeRule(penStrokeData, penStrokeIndex));
-
 
             penStrokeIndex += 1;
         }
@@ -55232,38 +55839,41 @@ define('metapolator/project/ImportController',[
         this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph.data,
             // draw the outline to the new glif
             drawPenStroke.bind(null, contours)
-        )
+        );
 
         return [new AtNamespaceCollection(
                     new AtRuleName('namespace', [])
                   , parseSelectorList.fromString('glyph#'+(glyphName.replace('.', '\\.')))
                   , rules)
                 ];
-    }
+    };
 
     function drawPenStroke(contours, pen) {
         var i=0, j, segmentType, point;
 
         for(;i<contours.length;i++) {
-            pen.beginPath()
+            pen.beginPath();
             // draw just the skeleton
             for(j=0;j<contours[i].length;j++) {
                 if(j===0)
                     // this is a non closed path
                     segmentType = 'move';
-                else if((point = contours[i][j].z.in) !== undefined) {
+                else {
                     segmentType = 'curve';
-                    pen.addPoint(point.vector.valueOf(), undefined
-                                                , undefined, point.name)
+
+                    point = contours[i][j-1].z.out;
+                    pen.addPoint(point.valueOf(), undefined
+                                                , undefined, point.name);
+
+                    point = contours[i][j].z['in'];
+                    pen.addPoint(point.valueOf(), undefined
+                                                , undefined, point.name);
                 }
-                else
-                    segmentType =  'line';
+                // we don't have line segments on skeletons
+                //    segmentType = 'line';
                 point = contours[i][j].z.on;
-                pen.addPoint(point.vector.valueOf(), segmentType
-                                                , undefined, point.name)
-                if((point = contours[i][j].z.ou) !== undefined)
-                    pen.addPoint(point.vector.valueOf(), undefined
-                                                , undefined, point.name)
+                pen.addPoint(point.valueOf(), segmentType
+                                                , undefined, point.name);
             }
             pen.endPath();
         }
@@ -55281,11 +55891,10 @@ define('metapolator/project/ImportController',[
                 continue;
             name = new ParameterName(k, []);
             value = new ParameterValue([
-                // Vector is instanceof Complex, too
-                ( obj[k] instanceof Complex
+                ( obj[k] instanceof Vector
                     ? 'Vector ' + [obj[k].real, obj[k].imag].join(' ')
                     : obj[k] )], []);
-            items.push(new Parameter(name, value))
+            items.push(new Parameter(name, value));
         }
 
         return new ParameterDict(items);
@@ -55297,97 +55906,99 @@ define('metapolator/project/ImportController',[
      * It knows for example how the CompoundValues are configured, etc.
      * This should be in a package together with the configuration
      * keyword: import plugins
+     *
+     * For terminals inDir and outDir are imported instead of inDirIntrinsic
+     * and outDirIntrinsic, because they cannot be relative to the skeleton.
+     *
+     * If we can't extract useful values for controls, we create a rule
+     * that places the control in question directly on the on-curve point
+     * "in: on;" OR "out: on;" thus overriding the general rule here,
+     * because we are very specific.
      */
-    function makeCPSPointRules(point, index) {
+    function makeCPSPointRules(point, index, length) {
         var rules = []
-          , left, center, right
+          , left={}, center={}, right={}
           , selectorList
-          , zon = point.z.on.vector
+          , rightOnIntrinsic
           ;
 
         // center
-        selectorList = parseSelectorList.fromString('point:i('+index+') > center')
-        center = {
-            onIntrinsic:  'Vector 0 0'
+        // there's not much to import for center
+        selectorList = parseSelectorList.fromString('point:i('+index+') > center');
+        // In cases where the general rules:
+        //     inDir: (on - in):angle;
+        //     outDir: (out - on):angle;
+        // produce worse results
+        if(point.z.inLenght === 0) {
+            center.inDir = point.z.inDir;
+            center['in'] = 'on';
         }
-        if(point.z.in !== undefined) {
-            center.inIntrinsic = point.z.in.vector['-'](zon)
-            center.inTension = point.z.inTension;
-            center.inDirIntrinsic = point.z.inDir.angle();
+        if(point.z.outLenght === 0){
+            center.outDir = point.z.outDir;
+            center.out = 'on';
         }
-        if(point.z.ou !== undefined) {
-            center.outIntrinsic = point.z.ou.vector['-'](zon)
-            center.outTension = point.z.ouTension
-            center.outDirIntrinsic = point.z.ouDir.angle()
-        }
-        rules.push(
-            new Rule(selectorList, parameterDictFromObject(center)));
+        if(Object.keys(center).length)
+            rules.push(
+                new Rule(selectorList, parameterDictFromObject(center)));
 
-        // left
-        selectorList = parseSelectorList.fromString('point:i('+index+')>left')
-        left = {
-            onIntrinsic: point.l.on.vector['-'](zon)
-        }
-        // Don't import these values, because they are dependent on their
-        // right side counterpart in the defaults.cps setup.
+
+        rightOnIntrinsic = point.r.on['-'](point.z.on);
+        // TODO: we could import onLength and onDir in ./tools/StrokeContour?
+        // TODO: in rare cases this may be 0, we could still try to create
+        //       a meaningful direction. StrokeContour does alredy something
+        //        similar in its _findNextDirection function.
+        // Don't import these values for left because they are dependent
+        // on their right side counterpart in the defaults.cps setup.
         // left.onDir is defined as the inverse of right.onDir (+ deg 180)
         // left.onLength is defined being equal to right.onLength
-        // left.onLength = left.onIntrinsic.magnitude()
-        // left.onDir = left.onIntrinsic.angle()
-        if(point.l.in !== undefined) {
-            left.inIntrinsic = point.l.in.vector['-'](zon)
-                                                ['-'](center.inIntrinsic)
-                                                ['-'](left.onIntrinsic);
+        right.onLength = rightOnIntrinsic.magnitude();
+        right.onDir = rightOnIntrinsic.angle();
 
-            left.inDirIntrinsic =  point.l.inDir.angle() - (point.z.inDir
-                                                ? point.z.inDir.angle()
-                                                : 0
-                                            );
-            left.inTension = point.l.inTension
+        if(index === 0) {
+            // opening terminal is not relative to skeleton
+            left.inDir = point.l.inDir;
+            right.inDir = point.r.inDir;
         }
-        if(point.l.ou !== undefined) {
-            left.outIntrinsic = point.l.ou.vector['-'](zon)
-                                                 ['-'](center.outIntrinsic)
-                                                 ['-'](left.onIntrinsic);
-            left.outDirIntrinsic = point.l.ouDir.angle() - (point.z.ouDir
-                                                ? point.z.ouDir.angle()
-                                                : 0
-                                            );
-            left.outTension = point.l.ouTension;
+        else {
+            left.inDirIntrinsic = point.l.inDir - point.z.inDir;
+            right.inDirIntrinsic = point.r.inDir - point.z.inDir;
         }
+        if(index === length-1) {
+            // ending terminal is not relative to skeleton
+            left.outDir = point.l.outDir;
+            right.outDir = point.r.outDir;
+        }
+        else {
+            left.outDirIntrinsic = point.l.outDir - point.z.outDir;
+            right.outDirIntrinsic = point.r.outDir - point.z.outDir;
+        }
+
+        left.inTension = point.l.inTension;
+        right.inTension = point.r.inTension;
+
+        left.inLength = point.l.inLength;
+        right.inLength = point.r.inLength;
+
+        if(point.l.inLength === 0)
+            left['in'] = 'on';
+        if(point.r.inLength === 0)
+            right['in'] = 'on';
+
+        left.outTension = point.l.outTension;
+        right.outTension = point.r.outTension;
+
+        left.outLength = point.l.outLength;
+        right.outLength = point.r.outLength;
+
+        if(point.l.outLength === 0)
+            left.out = 'on';
+        if(point.r.outLength === 0)
+            right.out = 'on';
+
+        selectorList = parseSelectorList.fromString('point:i('+index+')>left');
         rules.push(
             new Rule(selectorList, parameterDictFromObject(left)));
-
-        //right
         selectorList = parseSelectorList.fromString('point:i('+index+')>right');
-        right = {
-            onIntrinsic: point.r.on.vector['-'](zon)
-        }
-
-        right.onLength = right.onIntrinsic.magnitude()
-        right.onDir = right.onIntrinsic.angle()
-        if(point.r.in !== undefined) {
-            right.inIntrinsic = point.r.in.vector['-'](zon)
-                                                 ['-'](center.inIntrinsic)
-                                                 ['-'](right.onIntrinsic);
-            right.inDirIntrinsic = point.r.inDir.angle() - (point.z.inDir
-                                                ? point.z.inDir.angle()
-                                                : 0
-                                            );
-            right.inTension = point.r.inTension
-        }
-        if(point.r.ou !== undefined) {
-            right.outIntrinsic = point.r.ou.vector['-'](zon)
-                                                  ['-'](center.outIntrinsic)
-                                                  ['-'](right.onIntrinsic);
-
-
-            right.outDirIntrinsic = point.r.ouDir.angle() - (point.z.ouDir
-                                                ? point.z.ouDir.angle()
-                                                : 0
-                                            );
-            right.outTension = point.r.ouTension;
-        }
         rules.push(
             new Rule(selectorList, parameterDictFromObject(right)));
 
@@ -55405,12 +56016,11 @@ define('metapolator/project/ImportController',[
           ;
         for(;i<penStrokeData.length;i++)
             Array.prototype.push.apply(
-                items, makeCPSPointRules(penStrokeData[i], i));
+                items, makeCPSPointRules(penStrokeData[i], i, penStrokeData.length));
 
 
         return new AtNamespaceCollection(name, selectorList, items);
     }
-
 
     return ImportController;
 });
@@ -55982,7 +56592,7 @@ define('metapolator/models/CPS/parsing/parseRules',[
             ast = gonzales.srcToCSSP(css);
         }
         catch (error) {
-            // gonzales throws a pure JavaScript Error, but we wan't more
+            // gonzales throws a pure JavaScript Error, but we want more
             // certainty in the rest of our application
             throw new CPSParserError(error.message, error.stack);
         }
@@ -56031,18 +56641,18 @@ define('metapolator/project/MetapolatorProject',[
 ) {
     
 
-        // FIXME: make this availabe for browsers, too
+        // FIXME: make this available for browsers too
     var metainfoV3 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobkect.org
+            // how strict robofab is on this, but unifiedfontobject.org
             // says this is an int
           , formatVersion: new IntObject(3)
         }
       , metainfoV2 = {
             creator: 'org.ufojs.lib'
             // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobkect.org
+            // how strict robofab is on this, but unifiedfontobject.org
             // says this is an int
           , formatVersion: new IntObject(2)
         }
@@ -56136,7 +56746,7 @@ define('metapolator/project/MetapolatorProject',[
         this._io.mkDir(false, this.dataDir);
         
         // project file:
-        // create     this.dataDir/project.yaml => yaml({})
+        // create this.dataDir/project.yaml => yaml({})
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         // create dir this.dataDir/cps
@@ -56146,7 +56756,7 @@ define('metapolator/project/MetapolatorProject',[
         this._io.writeFile(false, this.layerContentsFile,
                                         plistLib.createPlistString([]));
         
-        // the glyphs dir must be there, so the ufo is valid. but we don't
+        // the glyphs dir must be there to make the UFO valid, but we don't
         // use it currently :-(
         // create dir dirName/glyphs
         this._createGlyphLayer('public.default', 'glyphs');
@@ -56166,9 +56776,9 @@ define('metapolator/project/MetapolatorProject',[
         // the files created in _p.init need to exist
         // however, we try to load only
         // this.dirName+'/data/com.metapolator/project.yaml' as an indicator
-        // console.log('loading', this.projectFile);
+        // console.warn('loading', this.projectFile);
         var dataString = this._io.readFile(false, this.projectFile);
-        // console.log('loaded', dataString);
+        // console.warn('loaded', dataString);
         this._data = yaml.safeLoad(dataString);
         
         
@@ -56227,6 +56837,47 @@ define('metapolator/project/MetapolatorProject',[
         this._io.writeFile(false, layerDir + '/contents.plist',
                                         plistLib.createPlistString({}));
     }
+
+    /**
+     * Delete a glyph layer.
+     *
+     * FIXME: Currently, only works properly if no glyphs are defined:
+     * simply removes the plist and then tries to delete the directory.
+     * Also removes the glyph layer from layercontents.plist.
+     *
+     */
+    _p._deleteGlyphLayer = function(name) {
+        var layerDir = this._getLayerDir(name)
+          , layerIndex;
+
+        // Read layercontents.plist
+        var layercontents = plistLib.readPlistFromString(
+                this._io.readFile(false, this.layerContentsFile));
+
+        // Find the layer with this name
+        layerIndex = null;
+        for(var i=0;i<layercontents.length;i++) {
+            if(layercontents[i][0] === name) {
+                layerIndex = i;
+                break;
+            }
+        }
+        if (layerIndex === null)
+            throw new ProjectError('No such glyph layer "'+name+'".');
+        layercontents.splice(layerIndex, 1);
+
+        // Check there is a directory with the name layerDir
+        if(!this._io.pathExists(false, layerDir+'/'))
+            throw new ProjectError('No glyph layer directory "' + layerDir
+                                    +'".');
+
+        // Update layercontents
+        this._io.writeFile(false, this.layerContentsFile,
+                           plistLib.createPlistString(layercontents));
+
+        // Remove layer dir and its contents
+        this._io.rmDirRecursive(false, layerDir);
+    }
     
     /**
      * Returns the path needed to instantiate a GlyphSet
@@ -56247,34 +56898,70 @@ define('metapolator/project/MetapolatorProject',[
             throw new KeyError('Layer named "' + name + '" not found.');
         if(!this._io.pathExists(false, layerDir + '/'))
             throw new KeyError('Layer directory "' + layerDir
-                                + '" does not exist, but is linked in '
+                                + '" does not exist, but is mentioned in '
                                 +'layercontents.plist.');
         return layerDir;
     }
     
     /**
-     * create a master entry for this masterName
-     * 
-     * and an entry in layercontents.plist:
-     * skeleton.masterName, glyphs.skeleton.masterName
+     * Create a master entry for this masterName, with the given cpsChain
+     * and skeleton.
+     *
+     * Also creates an entry in layercontents.plist: `skeleton`,
+     * glyphs.`skeleton`
+     *
+     * If any element does not exist, it is assumed the caller will create
+     * it before attempting to use the font.
      * 
      */
-    _p.createMaster = function(masterName) {
-        // get the name for this master from the cli
+    _p.createMaster = function(masterName, cpsChain, skeleton) {
+        // get the name for this master from the CLI
         if(this.hasMaster(masterName))
-            throw new ProjectError('Master "'+masterName+'" alredy exists.');
+            throw new ProjectError('Master "'+masterName+'" already exists.');
         var master = {};
         this._data.masters[masterName] = master;
-        master.cpsChain = [this.cpsOutputConverterFile, this.cpsGlobalFile, masterName + '.cps'];
+        master.cpsChain = cpsChain;
         
         // create a skeleton layer for this master
-        master.skeleton = 'skeleton.' + masterName;
-        this._createGlyphLayer(master.skeleton);
+        master.skeleton = skeleton;
+        if (skeleton === 'skeleton.' + masterName)
+            this._createGlyphLayer(master.skeleton);
 
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
         
         return this.getMaster(masterName);
     }
+
+    /**
+     * delete a master entry for this masterName
+     *
+     * and remove entry in layercontents.plist:
+     * skeleton.masterName, glyphs.skeleton.masterName
+     *
+     */
+    _p.deleteMaster = function(masterName) {
+        // get the name for this master from the cli
+        if(!this.hasMaster(masterName))
+            throw new ProjectError('No such Master "'+masterName+'".');
+        var master = this._data.masters[masterName];
+
+        // Remove CPS file
+        this.getMaster(masterName).deleteCPS(masterName + '.cps');
+
+        // Remove skeleton layer for this master
+        if (master.skeleton ===  + 'skeleton.' + masterName)
+            this._deleteGlyphLayer(master.skeleton);
+
+        // Remove project entry
+        delete this._data.masters[masterName];
+
+        // Update project file
+        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
+
+        // FIXME: Check we successfully deleted it
+        return true;
+    }
+
     _p._getMaster = function(masterName) {
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
@@ -56322,7 +57009,7 @@ define('metapolator/project/MetapolatorProject',[
     
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(master)) {
-            // console.log('open', masterName)
+            // console.warn('open', masterName)
             var master = this.getMaster(masterName)
             , parameterCollections = master.loadCPS()
             , momMaster = master.loadMOM()
@@ -56370,32 +57057,32 @@ define('metapolator/project/MetapolatorProject',[
 
         targetExists = this._io.pathExists(false, targetFile);
         if(targetExists && !override) {
-            console.log(filename + ' exists in the project, skipping import.');
+            console.warn(filename + ' exists in the project, skipping import.');
             return;
         }
 
         if(!this._io.pathExists(false, sourceFile)) {
-            console.log('No ' + filename + ' found for import.');
+            console.warn('No ' + filename + ' found for import.');
             return;
         }
 
-        console.log('Importing '+filename+' into the project.');
+        console.warn('Importing '+filename+' into the project.');
         if(targetExists)
-            console.log('The existing '+filename+' will be overridden.');
+            console.warn('The existing '+filename+' will be overridden.');
 
         content = this._io.readFile(false, sourceFile);
         try {
             // Just a rough look if we can parse it, we are not interested
             // in the result of parsing at the moment.
-            // TODO: validation (this is a tasl for ufoJS)
+            // TODO: validation (this is a task for ufoJS)
             plistLib.readPlistFromString(content);
         }
         catch(error) {
-            console.log('Import of '+filename+' failed when trying to '
+            console.warn('Import of '+filename+' failed when trying to '
                                     +'parse it as a plist:\n'+ error);
         }
         this._io.writeFile(false, targetFile, content);
-        console.log('Import of '+filename+' OK.\n');
+        console.warn('Import of '+filename+' OK.\n');
     };
     
     _p.exportInstance = function(masterName, instanceName, precision) {
@@ -56444,8 +57131,7 @@ define('metapolator/project/MetapolatorProject',[
         catch(error) {
             if(error instanceof IONoEntryError) {
                 // this is legal, we simply have no groups file
-                console.log('No groups.plist file found, thus no glyph '
-                                                +'classes are defined.');
+                console.warn('No groups.plist file found, thus no glyph classes are defined.');
                 return result;
             }
             throw error;
