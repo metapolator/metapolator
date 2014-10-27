@@ -1,6 +1,9 @@
 define([
     'metapolator/errors'
   , 'util-logging/util-logging'
+  , 'logging/callbackhandler'
+  , 'logging/yamlformatter'
+  , 'logging/logger-patch'
   , 'ufojs/errors'
   , 'obtain/obtain'
   , 'ufojs/plistLib/main'
@@ -18,6 +21,9 @@ define([
 ], function(
     errors
   , log
+  , CallbackHandler
+  , YAMLFormatter
+  , LoggerRelog
   , ufoErrors
   , obtain
   , plistLib
@@ -69,11 +75,12 @@ define([
         };
         
         this._controller = new ModelController(parameterRegistry);
-        this.log = new log.ConsoleLogger().setLevel(log.Level.INFO);
         
         // here is a way to define a directory offset
         // this is used with _p.init after the dir was created for example
         this.dirName = dirName || '.';
+        this._log = new log.Logger().setLevel(log.Level.INFO);
+        this._log.addHandler(new log.Handler());
     }
     
     MetapolatorProject.init = function(io, name) {
@@ -120,6 +127,10 @@ define([
         get: function(){ return this.dirName+'/' + this.groupsFileName; }
     });
     
+    Object.defineProperty(_p, 'logFile', {
+        get: function(){ return this.dataDir + '/log.yaml';}
+    });
+
     _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
         return GlyphSet.factory(
                     async, this._io, dirName, glyphNameFunc, UFOVersion);
@@ -171,12 +182,42 @@ define([
         // the files created in _p.init need to exist
         // however, we try to load only
         // this.dirName+'/data/com.metapolator/project.yaml' as an indicator
-        // this.log.warning('loading', this.projectFile);
-        var dataString = this._io.readFile(false, this.projectFile);
-        // this.log.warning('loaded', dataString);
+        this._log.debug('loading ' + this.projectFile);
+        var dataString = this._io.readFile(false, this.projectFile)
+          , fh
+          ;
+        this._log.debug('loaded ' + dataString);
         this._data = yaml.safeLoad(dataString);
+
+        // Add ConsoleHandler for debugging (also replays existing entries)
+        this._log.addHandler(new log.ConsoleHandler());
         
-        
+        // Reload any saved log entries before adding CallbackHandler for new entries
+        var logText, logRecords;
+        try {
+            logText = this._io.readFile(false, this.logFile);
+        }
+        catch (error) { // Ignore file not found
+            if(!(error instanceof IONoEntryError))
+                throw error;
+            logText = ""; // Work around upstream bug https://github.com/nodeca/js-yaml/issues/149
+        }
+        try {
+            logRecords = yaml.safeLoad(logText);
+        }
+        catch(e) { // Translate YAML errors
+            throw new ProjectError('Invalid log file ' + e);
+        }
+        if(logRecords) {
+            logRecords.forEach(function (obj) {
+                this._log.relog(log.LogRecord.prototype.fromObject(obj));
+            }, this);
+        }
+
+        // Add CallbackHandler to log to add new entries to the log file
+        fh = new CallbackHandler(this._io.appendFile.bind(this._io, true, this._file));
+        fh.setFormatter(new YAMLFormatter());
+        this._log.addHandler(fh);
     }
     
     /**
@@ -404,7 +445,7 @@ define([
     
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(master)) {
-            // this.log.warning('open', masterName)
+            // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
             , parameterCollections = master.loadCPS()
             , momMaster = master.loadMOM()
@@ -452,18 +493,18 @@ define([
 
         targetExists = this._io.pathExists(false, targetFile);
         if(targetExists && !override) {
-            this.log.warning(filename + ' exists in the project, skipping import.');
+            this._log.warning(filename + ' exists in the project, skipping import.');
             return;
         }
 
         if(!this._io.pathExists(false, sourceFile)) {
-            this.log.warning('No ' + filename + ' found for import.');
+            this._log.warning('No ' + filename + ' found for import.');
             return;
         }
 
-        this.log.warning('Importing '+filename+' into the project.');
+        this._log.warning('Importing '+filename+' into the project.');
         if(targetExists)
-            this.log.warning('The existing '+filename+' will be overridden.');
+            this._log.warning('The existing '+filename+' will be overridden.');
 
         content = this._io.readFile(false, sourceFile);
         try {
@@ -473,11 +514,11 @@ define([
             plistLib.readPlistFromString(content);
         }
         catch(error) {
-            this.log.warning('Import of '+filename+' failed when trying to '
+            this._log.warning('Import of '+filename+' failed when trying to '
                                     +'parse it as a plist:\n'+ error);
         }
         this._io.writeFile(false, targetFile, content);
-        this.log.warning('Import of '+filename+' OK.\n');
+        this._log.warning('Import of '+filename+' OK.\n');
     };
     
     _p.exportInstance = function(masterName, instanceName, precision) {
@@ -526,7 +567,7 @@ define([
         catch(error) {
             if(error instanceof IONoEntryError) {
                 // this is legal, we simply have no groups file
-                this.log.warning('No groups.plist file found, thus no glyph classes are defined.');
+                this._log.warning('No groups.plist file found, thus no glyph classes are defined.');
                 return result;
             }
             throw error;
