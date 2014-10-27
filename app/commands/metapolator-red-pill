@@ -98,7 +98,7 @@ if (require.main === module) {
                     res.send(204);// No content returned
             }
 
-            // file PUT
+            // file PUT and POST
             function _writeFileHandler(res, next, err) {
                 if(err)
                     next(err);
@@ -168,6 +168,7 @@ if (require.main === module) {
                         res.sendfile([project.dirName, path].join('/'));
                         break;
                         case 'PUT':
+                        case 'POST':
                         // write the file
                         // get the data
                         req.rawData = '';
@@ -182,10 +183,13 @@ if (require.main === module) {
                         req.on('data', function(chunk) {
                             req.rawData += chunk;
                         });
-                        req.on('end', function() {
-                            fs.writeFile(path, req.rawData,
-                                         _writeFileHandler.bind(null, res, next))
-                        });
+                        req.on('end', function(method) {
+                            // assert method === PUT || method === POST
+                            // use appendFile for POST
+                            fs[method === 'PUT' ? 'writeFile': 'appendFile'](
+                                path, req.rawData,
+                                    _writeFileHandler.bind(null, res, next));
+                        }.bind(null, method));
                         break;
                         case 'DELETE':
                         fs.unlink(path, _unlinkFileHandler.bind(null, res, next));
