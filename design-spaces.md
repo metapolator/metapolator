@@ -190,6 +190,25 @@ A second slider appears; for every master dropped here we get an extra slider; w
 ![](http://mmiworks.net/metapolator/controlallbold.png)<br/>
 …while the right side is set to all the other (dropped) masters—in case of All from zero, to all but one (dropped) masters—in the same order as in the masters list).
 
+##### metapolation math
+Although the UI of this group is configurable with many possible permutations, there is only one, unique metapolation equation that is sent to the backend—for N masters dropped:
+
+Metapolation = <i>a</i>M<sub>1</sub> + <i>b</i>M<sub>2</sub> + <i>c</i>M<sub>3</sub> + … + <i>n</i>M<sub>N</sub>, where <i>a</i> + <i>b</i> + <i>c</i> + … + <i>n</i> = 100%
+
+We see that any slider, however its configuration, can be calculated from the metapolation equation; either a quotient of two coefficients of two masters (normal slider) or the slider **is** the coefficient of one master (from-zero slider).
+
+Input from sliders to the metapolation equation follows the reverse path. This is easy-peasy for normal sliders (i.e. rebalancing two coefficients), but slightly more complicated for from-zero sliders—
+
+1. when a from-zero slider is decreased, all coefficients linked to other from-zero sliders remain untouched (i.e. the other from-zero sliders set hard numbers), while all coefficients that are determined by normal sliders see their combined percentage _budget_ increase—which they then split between them proportionately;
+* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders see their combined percentage budget decrease, **until that budget hits zero**; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately.
+
+_example_: 4-master group, Metapolation = 25%M<sub>1</sub> + 25%M<sub>2</sub> + 25%M<sub>3</sub> + 25%M<sub>4</sub>. Slider setup is M<sub>1</sub> from zero (value 25), M<sub>2</sub> from zero (25) and M<sub>3</sub>–M<sub>4</sub> (50).
+
+1. M<sub>1</sub> is decreased (via slider) to 15%, then M<sub>2</sub> remains 25%, the budget of M<sub>3</sub> & M<sub>4</sub> is increased from 50% to 60%, which they split 50/50 (30% each);
+* M<sub>1</sub> is increased to 85%, then the budget of M<sub>3</sub> & M<sub>4</sub> has hit zero and M<sub>2</sub> is reduced to 15%.
+
+<a name="100rule"></a>**100.00% rule**: rounding errors can happen. Every group ensures that the sum of the coefficients is exactly 100% (i.e. **not** 99.8% or 100.03%) by scaling all the coefficients—and maybe adding/subtracting 0.0000000561 to the largest coefficient to hit 100% exactly—just before they are passed on (to the backend or the group balancers). The settings/numbers in the UI are not adjusted.
+
 #### golden triangle
 When the number of (‘unsequenced’) masters is three, the Triangle switch is shown (as is above). This switches to the following mode:
 
@@ -198,6 +217,9 @@ When the number of (‘unsequenced’) masters is three, the Triangle switch is 
 We see the three masters arranged at the tips of an equal-sided triangle. The percentage of each master in the mix goes from 0 to 100 (and the three always add up to 100); click to edit.
 
 It is a real shame that the triangle representation only works this beautifully and ‘zen’ for three masters, for more masters things just get, ehm, tangled. So it is only available for 3 masters; add or delete a master and it is back to straight sliders.
+
+##### metapolation math
+When we project the cursor at right angles on the triangle sides, we see that three virtual sliders are set up. That is one more slider than we need, but the triangle geometry keeps it all coherent. We can pick any two sides as ‘sliders’ and use the metapolation math described above.
 
 ### instances
 The (families of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
@@ -264,11 +286,11 @@ It takes two axes to make an x/y graph, so when there are an odd number of cross
 
 Nonetheless we can hook it up, using the common master. **rule**: with multiple x/y graphs, also a graceful line is drawn to connect the axes-crossings of the graphs.
 
-Normally, **masters, crossing sequences and non-crossing sequences live in different sections** and we will see later how they get mixed at the end. A cool **exception** is that when a master is dropped _directly_ on a crossing sequences area, it gets hooked up as a delta to the common master:
+Normally, **masters, crossing sequences and non-crossing sequences live in different groups** and we will see later how they get mixed at the end. A cool **exception** is that when a master is dropped _directly_ on a crossing sequences area, it gets hooked up as a delta to the common master:
 
 ![](http://mmiworks.net/metapolator/control2sequences+2.png)
 
-Here two masters—Italics and one called ‘Alt 2’—have been dropped on the the two-sequence section. Now whatever Italics and Alt 2 have to offer, compared to Regular, can be added to the instances. In cross representation: same deal. We see that the master sliders look different than sequence sliders, and that is a good thing.
+Here two masters—Italics and one called ‘Alt 2’—have been dropped on the the two-sequence group. Now whatever Italics and Alt 2 have to offer, compared to Regular, can be added to the instances. In cross representation: same deal. We see that the master sliders look different than sequence sliders, and that is a good thing.
 
 #### non-crossing sequences
 When two sequences have no common master, we can still mix between their results:
@@ -346,7 +368,7 @@ let some widgets grow beyond the column. However, when things do get tight then 
 
 We try to avoid to scroll, but when users’ ambitions are greater than their screens, then the control design space scrolls vertically.
 
-#### combining different sections
+#### combining different groups
 You may have noticed that for the control design space we have build up a collection of **different** control groups:
 
 1. standalone masters, shown as _one_ slider group;
