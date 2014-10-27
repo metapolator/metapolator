@@ -341,7 +341,7 @@ define([
         this.getMaster(masterName).deleteCPS(masterName + '.cps');
 
         // Remove skeleton layer for this master
-        if (master.skeleton ===  + 'skeleton.' + masterName)
+        if (master.skeleton === 'skeleton.' + masterName)
             this._deleteGlyphLayer(master.skeleton);
 
         // Remove project entry
