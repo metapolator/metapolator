@@ -263,7 +263,6 @@ $ ./serve.sh
 
 # go to: http://localhost:8000
 # you'll see a simple scene where you can add 'widgets' to a 'container'
-
 ```
 
 Running the tests in the browser will be supported, too.
