@@ -214,6 +214,7 @@ if (require.main === module) {
             if (server.address()) {
                 console.warn('Metapolator: Serving the red pill.');
                 console.warn('Open http://localhost:'+server.address().port+' in your browser.');
+                console.warn('If you are using Chromium (or Chrome), you should run it as: chromium --js-flags="--harmony_proxies"');
             }
         })
         .option('-p, --port <n>', 'The port to listen on (default: environment variable RED_PILL_PORT (if unset, random))', parseInt);
