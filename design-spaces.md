@@ -190,7 +190,7 @@ A second slider appears; for every master dropped here we get an extra slider; w
 ![](http://mmiworks.net/metapolator/controlallbold.png)<br/>
 …while the right side is set to all the other (dropped) masters—in case of All from zero, to all but one (dropped) masters—in the same order as in the masters list).
 
-##### metapolation math
+### metapolation math
 Although the UI of this group is configurable with many possible permutations, there is only one, unique metapolation equation that is sent to the backend—for N masters dropped:
 
 Metapolation = <i>a</i>M<sub>1</sub> + <i>b</i>M<sub>2</sub> + <i>c</i>M<sub>3</sub> + … + <i>n</i>M<sub>N</sub>, where <i>a</i> + <i>b</i> + <i>c</i> + … + <i>n</i> = 100%
@@ -209,7 +209,7 @@ _example_: 4-master group, Metapolation = 25%M<sub>1</sub> + 25%M<sub>2</sub> + 
 
 <a name="100rule"></a>**100.00% rule**: rounding errors can happen. Every group ensures that the sum of the coefficients is exactly 100% (i.e. **not** 99.8% or 100.03%) by scaling all the coefficients—and maybe adding/subtracting 0.0000000561 to the largest coefficient to hit 100% exactly—just before they are passed on (to the backend or the group balancers). The settings/numbers in the UI are not adjusted.
 
-#### golden triangle
+### golden triangle
 When the number of (‘unsequenced’) masters is three, the Triangle switch is shown (as is above). This switches to the following mode:
 
 ![](http://mmiworks.net/metapolator/controltriangle.png)
@@ -218,7 +218,7 @@ We see the three masters arranged at the tips of an equal-sided triangle. The pe
 
 It is a real shame that the triangle representation only works this beautifully and ‘zen’ for three masters, for more masters things just get, ehm, tangled. So it is only available for 3 masters; add or delete a master and it is back to straight sliders.
 
-##### metapolation math
+#### metapolation math
 When we project the cursor at right angles on the triangle sides, we see that three virtual sliders are set up. That is one more slider than we need, but the triangle geometry keeps it all coherent. We can pick any two sides as ‘sliders’ and use the metapolation math described above.
 
 ### instances
@@ -257,6 +257,14 @@ Dropping one master sequence on an empty control space is already quite useful:
 
 Plenty of instances can be pulled from this alone. The slider length (200px) is divided down equally for the number of master in the sequence (here: 4). The master sequence name is shown top-left, with the numerical value, representing the slider position after it; it goes from 0 to 100; click to edit.
 
+#### metapolation math
+For each master sequence, at most two masters are contributing to the metapolation—the pair that the cursor is in-between—the coefficients of all other masters in the sequence are zero. This is called the **pair mix**. If the cursor is _exactly_ on one master, it is the sole contributor and the rest is zero (add a dummy zero to make a pair).
+
+_example_: for the sequence slider above, Metapolation = 56% Light + 44% Regular
+
+with Thin and Bold both zero.
+
+#### to cross or not to cross
 When a second master sequence is added, two different cases can occur. Either the two sequences have one master in common (e.g. both contain a master called ‘Body’, which are exactly the same—most easily done my cloning a master and putting the results in both sequences). Then the two sequences are said **to cross**.
 
 Or the two sequences have no master in common and are said to **not cross**. This because it will be nigh impossible to find one point on each sequence where the ~50.000 datapoints that (easily) make up a font are _quite_ (say, within 1%) the same.
@@ -292,6 +300,27 @@ Normally, **masters, crossing sequences and non-crossing sequences live in diffe
 
 Here two masters—Italics and one called ‘Alt 2’—have been dropped on the the two-sequence group. Now whatever Italics and Alt 2 have to offer, compared to Regular, can be added to the instances. In cross representation: same deal. We see that the master sliders look different than sequence sliders, and that is a good thing.
 
+##### metapolation math
+For crossing sequences the math is always in reference to the common master (M<sub>c</sub>). When N sequences (including the delta sliders above made out of dropped masters) are part of this group:
+
+Metapolation = M<sub>c</sub> + ∑<sub>N</sub> \<pair mix of each sequence\> - N × M<sub>c</sub>
+
+which can be shortened to
+
+Metapolation = ∑<sub>N</sub> \<pair mix of each sequence\> - (N-1) × M<sub>c</sub>
+
+where the ‘pair mix of each sequence’ is what we saw above for the metapolation math for a single master sequence. Since each pair mix adds up to 100%, after deducting N-1 common masters we are always back at 100% for the group mix.
+
+_example_: for the sequence sliders directly above—
+
+Metapolation = 56% Light + 44% Regular + 58% Regular + 42% Extended + 36.5% Regular + 63.5% Italic + 86% Regular + 14% Alt 2 - 300% Regular
+
+which reduces to
+
+Metapolation = 56% Light + 42% Extended + 63.5% Italic + 14% Alt 2 - 75.5% Regular
+
+**note** the [100.00% rule](#100rule).
+
 #### non-crossing sequences
 When two sequences have no common master, we can still mix between their results:
 
@@ -300,6 +329,9 @@ When two sequences have no common master, we can still mix between their results
 We see a diagonal ‘cross-fader’ hooked up between Weight and Vibe, and creates a mix between their outcomes. Numerical value and instance indicators are on the side. As more non-crossers are added, the chain grows:
 
 ![](http://mmiworks.net/metapolator/control3nocross.png)
+
+##### metapolation math
+The math consists of two components; each sequence slider produces a pair mix, and these are mixed together using normal sliders which are completely analogous to normal master sliders. **note** the [100.00% rule](#100rule).
 
 ### adjustment masters
 An adjustment master has to be placed like an instance in the design space, on all controls/dimensions, to control both _where_ it works and what its underlying master mix is (aka 99% of its appearance—on top of which its adjustments are applied.
@@ -312,12 +344,26 @@ The symbol for an adjustment master is an up-pointing triangle, derived from the
 
 In effect an adjustment master sub-divides the dimension(s) on which it is placed. For instance above, chilly–earthy becomes chilly–adjustment–earthy and the Bold-Narrow-Italic triangle gets subdivided in adjustment-Narrow-Italic, Bold-adjustment-Italic and Bold-Narrow-adjustment.
   
+#### metapolation math
+Dealing with adjustment masters is a two-step plan:
+
+1. calculate the underlying metapolation of this adjustment master—out of masters and master sequences **only** (there is going to be no circular definitions here); apply adjustment-master adjustments on top;
+* where the adjustment master is placed on the sliders—projection on axis for master sequence crosses, and projection on the sides for the triangle—it sub-divides—
+  * master sequences just get another ‘master’ inserted, at some irregular spacing;
+  * master sliders change from M<sub>1</sub>–M<sub>2</sub> to M<sub>1</sub>–adjustment master–M<sub>2</sub>, or zero–M<sub>3</sub> to zero–adjustment master–M<sub>3</sub>; triangle: analogous.
+
 ### adjustment master sequences
 An adjustment master sequence introduces a hard-edged line of change into the design space. Shown here is the placement of **one** adjustment master sequence, again on a **fictive** potpourri of controls:
 
 ![](http://mmiworks.net/metapolator/controladjustsequence.png)
 
 The triangle is the start of the sequence and the end-of-the-line symbol… the end (as seen in the adjustment master list).
+
+#### metapolation math
+Dealing with adjustment master sequences is also a two-step plan, but a different one:
+
+1. calculate the underlying metapolation of all adjustment masters that make up the sequence—as for adjustment masters; apply adjustment-master adjustments on top of each;
+* _exactly_ for the stretch where the adjustment master sequence is placed on the sliders—projection on axis for master sequence crosses, and projection on the sides for the triangle—the metapolation of this adjustment master sequence **replaces** the normal metapolation, _hard_.
 
 ### extrapolation
 Switching on extrapolation:
