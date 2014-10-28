@@ -40,7 +40,7 @@ sudo apt-get -y install git tree ruby bash-completion npm nodejs-legacy # nodejs
 # User setup
 if ! grep metapolator $HOME/.bashrc; then
     cat - $HOME/.bashrc > bashrc <<ENDSH
-export PATH="$SHARED_DIR/metapolator:\$PATH"
+export PATH="$SHARED_DIR/metapolator/bin:\$PATH"
 export RED_PILL_PORT=#{red_pill_port_from}
 ENDSH
     mv bashrc .bashrc
@@ -69,10 +69,10 @@ cd metapolator
 npm install
 
 # bash-completion setup
-cp bash-completion ~/.bash_completion
+cp dev-scripts/bash-completion ~/.bash_completion
 
 # git setup
-./git-setup
+./dev-scripts/git-setup
 
 # hub setup
 sudo gem install hub

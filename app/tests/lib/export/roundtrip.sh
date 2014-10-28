@@ -5,7 +5,7 @@ set -e
 
 MASTER_NAME=new_master
 IMPORT_UFO=imported
-METAPOLATOR="node --stack_trace_limit=100 `pwd`/../../../../../metapolator"
+METAPOLATOR="node --stack_trace_limit=100 `pwd`/../../../../../bin/metapolator"
 
 if test $# -ne 2; then
     echo Usage: roundtrip.sh FONT EXPORT_UFO

@@ -3,7 +3,7 @@
 
 # Get command-line arguments
 if test $# -ne 1; then
-    echo "Usage: vagrant ssh -c \"/vagrant/metapolator/"`basename $0`" OUTFILE\""
+    echo "Usage: vagrant ssh -c \"/vagrant/metapolator/dev-scripts/"`basename $0`" OUTFILE\""
     exit 1
 fi
 OUTFILE=$1
