@@ -197,17 +197,17 @@ Metapolation = <i>a</i>M<sub>1</sub> + <i>b</i>M<sub>2</sub> + <i>c</i>M<sub>3</
 
 We see that any slider, however its configuration, can be calculated from the metapolation equation; either a quotient of two coefficients of two masters (normal slider) or the slider **is** the coefficient of one master (from-zero slider).
 
-Input from sliders to the metapolation equation follows the reverse path. This is easy-peasy for normal sliders (i.e. rebalancing two coefficients), but slightly more complicated for from-zero sliders—
+Input from sliders to the metapolation equation follows the reverse path. This is easy-peasy for normal sliders (i.e. rebalancing two coefficients, whose sum is invariant), but slightly more complicated for from-zero sliders—
 
-1. when a from-zero slider is decreased, all coefficients linked to other from-zero sliders remain untouched (i.e. the other from-zero sliders set hard numbers), while all coefficients that are determined by normal sliders see their combined percentage _budget_ increase—which they then split between them proportionately;
-* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders see their combined percentage budget decrease, **until that budget hits zero**; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately.
+1. when a from-zero slider is decreased, all coefficients linked to other from-zero sliders remain untouched (i.e. the other from-zero sliders set hard percentages), while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage _budget_ increase—which they then split between them proportionately;
+* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage budget decrease, **until that budget hits zero**; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately.
 
-_example_: 4-master group, Metapolation = 25%M<sub>1</sub> + 25%M<sub>2</sub> + 25%M<sub>3</sub> + 25%M<sub>4</sub>. Slider setup is M<sub>1</sub> from zero (value 25), M<sub>2</sub> from zero (25) and M<sub>3</sub>–M<sub>4</sub> (50).
+_example_: 4-master group, Metapolation = 25%M<sub>1</sub> + 25%M<sub>2</sub> + 30%M<sub>3</sub> + 20%M<sub>4</sub>. Slider setup is M<sub>1</sub> from zero (value 25), M<sub>2</sub> from zero (25) and M<sub>3</sub>–M<sub>4</sub> (40).
 
-1. M<sub>1</sub> is decreased (via slider) to 15%, then M<sub>2</sub> remains 25%, the budget of M<sub>3</sub> & M<sub>4</sub> is increased from 50% to 60%, which they split 50/50 (30% each);
+1. M<sub>1</sub> is decreased (via slider) to 15%, then M<sub>2</sub> remains 25%, the budget of M<sub>3</sub> & M<sub>4</sub> is increased from 50% to 60%, which they split 60/40 (36% and 24%, respectively);
 * M<sub>1</sub> is increased to 85%, then the budget of M<sub>3</sub> & M<sub>4</sub> has hit zero and M<sub>2</sub> is reduced to 15%.
 
-<a name="100rule"></a>**100.00% rule**: rounding errors can happen. Every group ensures that the sum of the coefficients is exactly 100% (i.e. **not** 99.8% or 100.03%) by scaling all the coefficients—and maybe adding/subtracting 0.0000000561 to the largest coefficient to hit 100% exactly—just before they are passed on (to the backend or the group balancers). The settings/numbers in the UI are not adjusted.
+<a name="100rule"></a>**100.00% rule**: rounding errors can happen. Every group ensures that the sum of the coefficients is exactly 100% (i.e. **not** 99.8% or 100.03%) by scaling all the coefficients—and maybe adding/subtracting 0.0000000561 to the largest coefficient to hit 100% exactly—just before they are passed on (to the backend or the group balancers). The settings/numbers in the UI do not reflect this adjustment.
 
 ### golden triangle
 When the number of (‘unsequenced’) masters is three, the Triangle switch is shown (as is above). This switches to the following mode:
@@ -219,7 +219,7 @@ We see the three masters arranged at the tips of an equal-sided triangle. The pe
 It is a real shame that the triangle representation only works this beautifully and ‘zen’ for three masters, for more masters things just get, ehm, tangled. So it is only available for 3 masters; add or delete a master and it is back to straight sliders.
 
 #### metapolation math
-When we project the cursor at right angles on the triangle sides, we see that three virtual sliders are set up. That is one more slider than we need, but the triangle geometry keeps it all coherent. We can pick any two sides as ‘sliders’ and use the metapolation math described above.
+When we project the cursor at right angles on the triangle sides, we see three virtual sliders appear. That’s one more than we need, but the perfect triangle geometry keeps it all coherent. We can pick any two sides as normal ‘sliders’ and use the metapolation math described above.
 
 ### instances
 The (families of) instances that live in this design space and are not the currently selected ones are shown in symbols that match the ones in the instances list:
@@ -258,7 +258,7 @@ Dropping one master sequence on an empty control space is already quite useful:
 Plenty of instances can be pulled from this alone. The slider length (200px) is divided down equally for the number of master in the sequence (here: 4). The master sequence name is shown top-left, with the numerical value, representing the slider position after it; it goes from 0 to 100; click to edit.
 
 #### metapolation math
-For each master sequence, at most two masters are contributing to the metapolation—the pair that the cursor is in-between—the coefficients of all other masters in the sequence are zero. This is called the **pair mix**. If the cursor is _exactly_ on one master, it is the sole contributor and the rest is zero (add a dummy zero to make a pair).
+For each master sequence, at most two masters are contributing to the metapolation: the pair that the cursor is between. The coefficients of all other masters in the sequence are zero. This is called the **pair mix**. If the cursor is _exactly_ on one master, it is the sole contributor and the rest is zero (_really_ need a pair? Add a dummy zero).
 
 _example_: for the sequence slider above, Metapolation = 56% Light + 44% Regular
 
@@ -331,7 +331,7 @@ We see a diagonal ‘cross-fader’ hooked up between Weight and Vibe, and creat
 ![](http://mmiworks.net/metapolator/control3nocross.png)
 
 ##### metapolation math
-The math consists of two components; each sequence slider produces a pair mix, and these are mixed together using normal sliders which are completely analogous to normal master sliders. **note** the [100.00% rule](#100rule).
+The math consists of two components; each sequence slider produces a pair mix, and these are mixed together using sliders which are completely analogous to normal master sliders, just with a fixed configuration. **note** the [100.00% rule](#100rule).
 
 ### adjustment masters
 An adjustment master has to be placed like an instance in the design space, on all controls/dimensions, to control both _where_ it works and what its underlying master mix is (aka 99% of its appearance—on top of which its adjustments are applied.
@@ -350,7 +350,7 @@ Dealing with adjustment masters is a two-step plan:
 1. calculate the underlying metapolation of this adjustment master—out of masters and master sequences **only** (there is going to be no circular definitions here); apply adjustment-master adjustments on top;
 * where the adjustment master is placed on the sliders—projection on axis for master sequence crosses, and projection on the sides for the triangle—it sub-divides—
   * master sequences just get another ‘master’ inserted, at some irregular spacing;
-  * master sliders change from M<sub>1</sub>–M<sub>2</sub> to M<sub>1</sub>–adjustment master–M<sub>2</sub>, or zero–M<sub>3</sub> to zero–adjustment master–M<sub>3</sub>; triangle: analogous.
+  * normal master sliders change from M<sub>1</sub>–M<sub>2</sub> to M<sub>1</sub>–adjustment master–M<sub>2</sub>; the triangle: analogous; from-zero sliders change from zero–M<sub>3</sub> to zero–adjustment master–M<sub>3</sub>.
 
 ### adjustment master sequences
 An adjustment master sequence introduces a hard-edged line of change into the design space. Shown here is the placement of **one** adjustment master sequence, again on a **fictive** potpourri of controls:
@@ -362,8 +362,10 @@ The triangle is the start of the sequence and the end-of-the-line symbol… the 
 #### metapolation math
 Dealing with adjustment master sequences is also a two-step plan, but a different one:
 
-1. calculate the underlying metapolation of all adjustment masters that make up the sequence—as for adjustment masters; apply adjustment-master adjustments on top of each;
-* _exactly_ for the stretch where the adjustment master sequence is placed on the sliders—projection on axis for master sequence crosses, and projection on the sides for the triangle—the metapolation of this adjustment master sequence **replaces** the normal metapolation, _hard_.
+1. calculate the underlying metapolation of all adjustment masters that make up the sequence—as for adjustment masters; apply the adjustment-master adjustments on top of each;
+* _exactly_ for the stretch where the adjustment master sequence is placed on the sliders—projection on axis for master sequence crosses, and projection on the sides for the triangle—the metapolation of this adjustment master sequence **replaces** the normal metapolation.
+
+**note**: there is something about adjustment master sequences, how they sit in multi-dimensional spaces, that is just not _right_. Stay tuned.
 
 ### extrapolation
 Switching on extrapolation:
