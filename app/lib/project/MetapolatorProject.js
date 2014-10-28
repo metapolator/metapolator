@@ -63,7 +63,7 @@ define([
       , IONoEntryError = ufoErrors.IONoEntry
       ;
     
-    function MetapolatorProject(io, dirName) {
+    function MetapolatorProject(io, baseDir) {
         this._io = io;
         this._data = {
             masters: {}
@@ -75,28 +75,15 @@ define([
         };
         
         this._controller = new ModelController(parameterRegistry);
-        
-        // here is a way to define a directory offset
-        // this is used with _p.init after the dir was created for example
-        this.dirName = dirName || '.';
+        this.baseDir = baseDir || '.';
         this._log = new log.Logger().setLevel(log.Level.INFO);
         this._log.addHandler(new log.Handler());
     }
     
-    MetapolatorProject.init = function(io, name) {
-        var project = new MetapolatorProject(io)
-          , dirName = name
-          ;
-        // create dirName
-        if(io.pathExists(false, dirName+'/'))
-            throw new ProjectError('Dir exists already: '+ dirName);
-        project.init(dirName);
-    };
-    
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
     Object.defineProperty(_p, 'dataDir', {
-        get: function(){ return this.dirName + '/data/com.metapolator';}
+        get: function(){ return this.baseDir + '/data/com.metapolator';}
     });
     
     Object.defineProperty(_p, 'projectFile', {
@@ -116,7 +103,7 @@ define([
     });
     
     Object.defineProperty(_p, 'layerContentsFile', {
-        get: function(){ return this.dirName+'/layercontents.plist'; }
+        get: function(){ return this.baseDir+'/layercontents.plist'; }
     });
     
     Object.defineProperty(_p, 'groupsFileName', {
@@ -124,31 +111,32 @@ define([
     });
 
     Object.defineProperty(_p, 'groupsFile', {
-        get: function(){ return this.dirName+'/' + this.groupsFileName; }
+        get: function(){ return this.baseDir+'/' + this.groupsFileName; }
     });
     
     Object.defineProperty(_p, 'logFile', {
         get: function(){ return this.dataDir + '/log.yaml';}
     });
 
-    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
+    _p.getNewGlyphSet = function(async, baseDir, glyphNameFunc, UFOVersion) {
         return GlyphSet.factory(
-                    async, this._io, dirName, glyphNameFunc, UFOVersion);
+                    async, this._io, baseDir, glyphNameFunc, UFOVersion);
     }
     
-    _p.init = function(dirName) {
+    _p.init = function() {
         // everything synchronously right now
-        this.dirName = dirName;
+
+        if(this._io.pathExists(false, this.baseDir+'/'))
+            throw new ProjectError('Dir exists already: '+ this.baseDir);
+        this._io.mkDir(false, this.baseDir);
         
-        this._io.mkDir(false, this.dirName);
-        
-        // create dirName/metainfo.plist
-        this._io.writeFile(false, this.dirName+'/metainfo.plist'
+        // create baseDir/metainfo.plist
+        this._io.writeFile(false, this.baseDir+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV3));
         
-        // create dir dirName/data
-        this._io.mkDir(false, this.dirName+'/data');
-        // create dir dirName/data/com.metaploator
+        // create dir baseDir/data
+        this._io.mkDir(false, this.baseDir+'/data');
+        // create dir baseDir/data/com.metapolator
         this._io.mkDir(false, this.dataDir);
         
         // project file:
@@ -164,7 +152,7 @@ define([
         
         // the glyphs dir must be there to make the UFO valid, but we don't
         // use it currently :-(
-        // create dir dirName/glyphs
+        // create dir baseDir/glyphs
         this._createGlyphLayer('public.default', 'glyphs');
         
         // create default CPS output stage
@@ -181,7 +169,7 @@ define([
     _p.load = function() {
         // the files created in _p.init need to exist
         // however, we try to load only
-        // this.dirName+'/data/com.metapolator/project.yaml' as an indicator
+        // this.baseDir+'/data/com.metapolator/project.yaml' as an indicator
         this._log.debug('loading ' + this.projectFile);
         var dataString = this._io.readFile(false, this.projectFile)
           , fh
@@ -244,7 +232,7 @@ define([
         if(layerDirName === undefined)
             layerDirName = 'glyphs.' + name;
         
-        var layerDir = [this.dirName,'/',layerDirName].join('');
+        var layerDir = [this.baseDir,'/',layerDirName].join('');
         
         // read layercontents.plist
         var layercontents = plistLib.readPlistFromString(
@@ -327,7 +315,7 @@ define([
         
         for(var i=0;i<layercontents.length;i++)
             if(layercontents[i][0] === name) {
-                layerDir = [this.dirName,'/',layercontents[i][1]].join('');
+                layerDir = [this.baseDir,'/',layercontents[i][1]].join('');
                 break;
             }
         if(!layerDir)

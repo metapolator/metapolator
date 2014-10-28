@@ -27,7 +27,8 @@ if (require.main === module) {
         program.arguments(exports.command.arguments);
         program.description(exports.command.description);
         program.action(function (name) {
-            new MetapolatorProject.init(io, name);
+            var project = new MetapolatorProject(io, name);
+            project.init();
         });
         program.parse(process.argv);
     }
