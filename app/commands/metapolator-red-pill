@@ -144,7 +144,7 @@ if (require.main === module) {
                         case 'GET':
                         case 'HEAD':
                         // return a directory listing
-                        fs.readdir([project.dirName, path].join('/')
+                        fs.readdir([project.baseDir, path].join('/')
                                   , _getDirectoryListingHandler
                                     .bind(null, res, next));
                         break;
@@ -165,7 +165,7 @@ if (require.main === module) {
                         case 'GET':
                         case 'HEAD':
                         // return the file content
-                        res.sendfile([project.dirName, path].join('/'));
+                        res.sendfile([project.baseDir, path].join('/'));
                         break;
                         case 'PUT':
                         case 'POST':
