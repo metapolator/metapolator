@@ -6,4 +6,4 @@ Metapolator, aside from the base box, which comes from Vagrant Cloud.
 
 ## Updating the box
 
-Run `update-box VERSION`, then [release](https://vagrantcloud.com/metapolator/boxes/bleeding-edge/ ) on Vagrant Cloud.
+Run `./update-box VERSION`, then [release](https://vagrantcloud.com/metapolator/boxes/bleeding-edge/ ) on Vagrant Cloud.

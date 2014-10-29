@@ -12,4 +12,4 @@ if test $# != 1 -o "$base" = "$source"; then
     exit 1
 fi
 
-./node_modules/.bin/regenerator -r $source > $dest
+../node_modules/.bin/regenerator -r $source > $dest

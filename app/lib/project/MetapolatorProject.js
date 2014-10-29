@@ -124,7 +124,7 @@ define([
     }
     
     _p.init = function() {
-        // everything synchronously right now
+        // FIXME: all I/O is synchronous for now
 
         if(this._io.pathExists(false, this.baseDir+'/'))
             throw new ProjectError('Dir exists already: '+ this.baseDir);

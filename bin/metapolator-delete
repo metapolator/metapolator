@@ -4,8 +4,8 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'Export a master to a UFO'
-  , arguments: '<[project/]master> <ufo>'
+    description: 'Delete the given master'
+  , arguments: '<[project/]master>'
 };
 
 var path = require('path');
@@ -24,25 +24,18 @@ if (require.main === module) {
       , parseArgs
       , io
       , MetapolatorProject
-) {
+    ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
-        program.arguments(exports.command.arguments);
-        program.description(exports.command.description);
-        program.action(function(master, instance) {
+        program.arguments(exports.command.arguments)
+        .description(exports.command.description)
+        .action(function(master) {
             var pm = parseArgs.projectMaster(io, master);
             var project = pm[0];
             master = pm[1];
+            // Load project and delete master in it
             project.load();
-            
-            // load all masters, because right now it is very confusing
-            // when some masters are missing from the MOM
-            project.masters.forEach(project.open, project);
-            
-            project.exportInstance(master, instance, program.precision);
-        })
-        .option('-p, --precision <n>', 'The number of decimal places to use in output coordinates, '
-                                     + 'or -1 for no rounding',
-                parseInt);
+            project.deleteMaster(master);
+        });
         program.parse(process.argv);
     }
 )}
