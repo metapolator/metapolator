@@ -30,9 +30,9 @@ if (require.main === module) {
         var CommandLineError = errors.CommandLine;
 
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
-        program.arguments(exports.command.arguments);
-        program.description(exports.command.description);
-        program.action(function(sourceUFO, targetMaster) {
+        program.arguments(exports.command.arguments)
+        .description(exports.command.description)
+        .action(function(sourceUFO, targetMaster) {
             var pm = parseArgs.projectMaster(io, targetMaster);
             var project = pm[0];
             targetMaster = pm[1];

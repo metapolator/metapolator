@@ -26,9 +26,9 @@ if (require.main === module) {
       , MetapolatorProject
     ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
-        program.arguments(exports.command.arguments);
-        program.description(exports.command.description);
-        program.action(function(master) {
+        program.arguments(exports.command.arguments)
+        .description(exports.command.description)
+        .action(function(master) {
             var pm = parseArgs.projectMaster(io, master);
             var project = pm[0];
             master = pm[1];
