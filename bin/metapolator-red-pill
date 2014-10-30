@@ -31,9 +31,9 @@ if (require.main === module) {
         .action(function(projectDir) {
             var express = require('express')
               , app = express()
-            // expect require.main.filename to be path/to/metapolator-code/app/commands/<command>
+            // expect require.main.filename to be path/to/metapolator-code/bin/<command>
             // thus path/to/metapolator-code is the root directory
-              , rootDir = path.dirname(path.dirname(path.dirname(require.main.filename)))
+              , rootDir = path.dirname(path.dirname(require.main.filename))
               , libDir = rootDir + '/app/lib'
               , index = rootDir + '/app/red-pill.html'
             ;
