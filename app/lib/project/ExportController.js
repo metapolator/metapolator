@@ -1,3 +1,13 @@
+/**
+ * Copyright (c) 2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * https://raw.github.com/facebook/regenerator/master/LICENSE file. An
+ * additional grant of patent rights can be found in the PATENTS file in
+ * the same directory.
+ */
+
 (function(
   // Reliable reference to the global object (i.e. window in browsers).
   global,
@@ -8,6 +18,8 @@
 ) {
   var hasOwn = Object.prototype.hasOwnProperty;
   var undefined; // More compressible than void 0.
+  var iteratorSymbol =
+    typeof Symbol === "function" && Symbol.iterator || "@@iterator";
 
   try {
     // Make a reasonable attempt to provide a Promise polyfill.
@@ -47,9 +59,9 @@
     return genFun;
   };
 
-  runtime.async = function(innerFn, self, tryList) {
+  runtime.async = function(innerFn, outerFn, self, tryList) {
     return new Promise(function(resolve, reject) {
-      var generator = wrap(innerFn, self, tryList);
+      var generator = wrap(innerFn, outerFn, self, tryList);
       var callNext = step.bind(generator.next);
       var callThrow = step.bind(generator.throw);
 
@@ -207,9 +219,7 @@
     return generator;
   }
 
-  Gp[typeof Symbol === "function"
-     && Symbol.iterator
-     || "@@iterator"] = function() {
+  Gp[iteratorSymbol] = function() {
     return this;
   };
 
@@ -276,9 +286,8 @@
 
   function values(iterable) {
     var iterator = iterable;
-    var Symbol = global.Symbol;
-    if (Symbol && Symbol.iterator in iterable) {
-      iterator = iterable[Symbol.iterator]();
+    if (iteratorSymbol in iterable) {
+      iterator = iterable[iteratorSymbol]();
     } else if (!isNaN(iterable.length)) {
       var i = -1;
       iterator = function next() {
@@ -472,56 +481,6 @@ define([
 ) {
     "use strict";
 
-    function ExportController(master, model, glyphSet, precision) {
-        this._master = master;
-        this._model = model;
-        this._glyphSet = glyphSet;
-        this._precision = precision;
-    }
-    var _p = ExportController.prototype;
-
-    // FIXME: "export" is a future reserved keyword
-    _p.export = function() {
-        var glyphs = this._master.children
-          , glyph
-          , drawFunc
-          ;
-        console.warn('exporting ...');
-        for(var i = 0;i<glyphs.length;i++) {
-            glyph = glyphs[i];
-            console.warn('exporting', glyph.id);
-            drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
-
-            this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
-                                      undefined, {precision: this._precision})
-        }
-        this._glyphSet.writeContents(false);
-    }
-
-    /**
-     * Get control point vectors from (MOM Point) StyleDicts.
-     * try to use hobby splines but fall back to the control point values
-     * of the points if hobbys would fail when there are no good tensions
-     * or directions.
-     *
-     * The terminal parameter is a switch used to draw the penstroke terminals
-     * for the start terminal of the stroke all controls are from the incoming
-     * control points. p0 in in p1
-     * for the end terminal of the stroke all controls are from the outgoing
-     * control points. p0 out out p1
-     * Without terminal beeing set or having a value of "start" or "end"
-     * the default behavior is: p0 out in p1
-     *
-     * See the comment of drawPenstrokeToPointPen for more detail.
-     */
-
-    function getControlsFromStyle(p0, p1, terminal) {
-        return [
-              p0.get(terminal === 'start' ? 'in': 'out')
-            , p1.get(terminal === 'end' ? 'out' :'in')
-        ];
-    }
-
     /**
      * The translation from Metapolator Penstrokes to Outlines:
      *
@@ -575,140 +534,193 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-     _p._drawPenstrokeOutline = regeneratorRuntime.mark(function callee$1$0(model, pen, penstroke) {
-         var points, point, prePoint, segmentType, terminal, ctrls, vector, i, t$2$0, t$2$1, t$2$2, t$2$3;
+    var renderPenstrokeOutline = regeneratorRuntime.mark(/**
+     * The translation from Metapolator Penstrokes to Outlines:
+     *
+     * The example uses a penstroke with 7 points indexed from 0 to 6
+     *
+     *  Penstroke       Outline
+     *
+     *  ending
+     *  terminal
+     *    ___              7___
+     *   | 6 |           8 |   | 6
+     *   | 5 |           9 |   | 5
+     *   | 4 |          10 |   | 4
+     *   | 3 |          11 |   | 3
+     *   | 2 |          12 |   | 2
+     *   |_1_|          13 |___| 1
+     *     0                 14/0
+     *  starting
+     *  terminal
+     *
+     *
+     *
+     * We draw first the right side from 0 to 6,
+     * then the left side from 6 to 0.
+     *
+     * In each iteration only one on-curve point is drawn; in the
+     * following example, that is always the last point of the four-
+     * point tuples. Also, the out and in controls are drawn.
+     * The first point of the tuples is needed to calculate the control
+     * point position when we use hobby splines.
+     *
+     * for i=0;i<n;i++;
+     *      i===0:
+     *          //starting terminal segment:
+     *          on0.left in in on0.right
+     *              => out in 0
+     *      i!==0:
+     *          // segments right side:
+     *          // here i=1
+     *          on0.right out in on1.right
+     *              => out in 1
+     * for i=n-1;i>0;i--;
+     *      i===n-1
+     *          // ending terminal segmnet
+     *          // here i=6
+     *          on6.right out out on6.left
+     *              => out in 7
+     *      i!===n-1
+     *          // segments left side
+     *          // here i=5
+     *          on6.left in out on5.left
+     *              => out in 8
+     */
+    function renderPenstrokeOutline(pen, model, penstroke) {
+        var points, point, prePoint, segmentType, terminal, ctrls, vector, i, t$2$0, t$2$1, t$2$2, t$2$3;
 
-         return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
-             while (1) switch (context$2$0.prev = context$2$0.next) {
-             case 0:
-                 points = penstroke.children;
-                 pen.beginPath();
-                 i = 0;
-             case 4:
-                 if (!(i < points.length)) {
-                     context$2$0.next = 26;
-                     break;
-                 }
+        return regeneratorRuntime.wrap(function renderPenstrokeOutline$(context$2$0) {
+            while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+                points = penstroke.children;
+                pen.beginPath();
+                i = 0;
+            case 4:
+                if (!(i < points.length)) {
+                    context$2$0.next = 26;
+                    break;
+                }
 
-                 point = model.getComputedStyle(points[i].right);
+                point = model.getComputedStyle(points[i].right);
 
-                 if (!true /* always curve */) {
-                     context$2$0.next = 19;
-                     break;
-                 }
+                if (!true /* always curve */) {
+                    context$2$0.next = 19;
+                    break;
+                }
 
-                 segmentType = 'curve';
-                 if(i === 0) {
-                     // this reproduces the starting terminal
-                     prePoint = model.getComputedStyle(points[i].left);
-                     terminal = 'start'
-                 }
-                 else {
-                     terminal = false;
-                     prePoint = model.getComputedStyle(points[i-1].right);
-                 }
-                 ctrls = getControlsFromStyle(prePoint, point, terminal);
-                 t$2$0 = regeneratorRuntime.values(ctrls);
-             case 11:
-                 if ((t$2$1 = t$2$0.next()).done) {
-                     context$2$0.next = 17;
-                     break;
-                 }
+                segmentType = 'curve';
+                if(i === 0) {
+                    // this reproduces the starting terminal
+                    prePoint = model.getComputedStyle(points[i].left);
+                    terminal = 'start'
+                }
+                else {
+                    terminal = false;
+                    prePoint = model.getComputedStyle(points[i-1].right);
+                }
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
+                t$2$0 = regeneratorRuntime.values(ctrls);
+            case 11:
+                if ((t$2$1 = t$2$0.next()).done) {
+                    context$2$0.next = 17;
+                    break;
+                }
 
-                 vector = t$2$1.value;
-                 context$2$0.next = 15;
-                 return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-             case 15:
-                 context$2$0.next = 11;
-                 break;
-             case 17:
-                 context$2$0.next = 21;
-                 break;
-             case 19:
-                 segmentType =  'line';
-                 console.warn('implicit line segment, right side, this should be explicit in CPS');
-             case 21:
-                 context$2$0.next = 23;
-                 return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-             case 23:
-                 i++;
-                 context$2$0.next = 4;
-                 break;
-             case 26:
-                 i=points.length-1;
-             case 27:
-                 if (!(i >= 0)) {
-                     context$2$0.next = 50;
-                     break;
-                 }
+                vector = t$2$1.value;
+                context$2$0.next = 15;
+                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+            case 15:
+                context$2$0.next = 11;
+                break;
+            case 17:
+                context$2$0.next = 21;
+                break;
+            case 19:
+                segmentType =  'line';
+                console.warn('implicit line segment, right side, this should be explicit in CPS');
+            case 21:
+                context$2$0.next = 23;
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            case 23:
+                i++;
+                context$2$0.next = 4;
+                break;
+            case 26:
+                i=points.length-1;
+            case 27:
+                if (!(i >= 0)) {
+                    context$2$0.next = 50;
+                    break;
+                }
 
-                 point = model.getComputedStyle(points[i].left);
+                point = model.getComputedStyle(points[i].left);
 
-                 if (!true/*always curve*/) {
-                     context$2$0.next = 43;
-                     break;
-                 }
+                if (!true/*always curve*/) {
+                    context$2$0.next = 43;
+                    break;
+                }
 
-                 segmentType = 'curve';
-                 if(i === points.length-1) {
-                     // this reproduces the ending terminal
-                     terminal = 'end';
-                     prePoint = model.getComputedStyle(points[i].right);
-                 }
-                 else {
-                     terminal = false;
-                     // the left side is of the outline is drawn from the
-                     // end to the beginning. This reverses the point order
-                     // for getComputedStyle
-                     prePoint = point;
-                     point = model.getComputedStyle(points[i+1].left);
-                 }
-                 ctrls = getControlsFromStyle(prePoint, point, terminal);
-                 if(!terminal) {
-                     // reverse on curve and of curve points, prePoint
-                     // is no longer needed.
-                     ctrls.reverse();
-                     point = prePoint;
-                 }
-                 t$2$2 = regeneratorRuntime.values(ctrls);
-             case 35:
-                 if ((t$2$3 = t$2$2.next()).done) {
-                     context$2$0.next = 41;
-                     break;
-                 }
+                segmentType = 'curve';
+                if(i === points.length-1) {
+                    // this reproduces the ending terminal
+                    terminal = 'end';
+                    prePoint = model.getComputedStyle(points[i].right);
+                }
+                else {
+                    terminal = false;
+                    // the left side is of the outline is drawn from the
+                    // end to the beginning. This reverses the point order
+                    // for getComputedStyle
+                    prePoint = point;
+                    point = model.getComputedStyle(points[i+1].left);
+                }
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
+                if(!terminal) {
+                    // reverse on curve and of curve points, prePoint
+                    // is no longer needed.
+                    ctrls.reverse();
+                    point = prePoint;
+                }
+                t$2$2 = regeneratorRuntime.values(ctrls);
+            case 35:
+                if ((t$2$3 = t$2$2.next()).done) {
+                    context$2$0.next = 41;
+                    break;
+                }
 
-                 vector = t$2$3.value;
-                 context$2$0.next = 39;
-                 return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-             case 39:
-                 context$2$0.next = 35;
-                 break;
-             case 41:
-                 context$2$0.next = 45;
-                 break;
-             case 43:
-                 segmentType = 'line';
-                 console.warn('implicit line segment, left side, this should be explicit in CPS');
-             case 45:
-                 context$2$0.next = 47;
-                 return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-             case 47:
-                 i--;
-                 context$2$0.next = 27;
-                 break;
-             case 50:
-                 pen.endPath();
-             case 51:
-             case "end":
-                 return context$2$0.stop();
-             }
-         }, callee$1$0, this);
-     })
+                vector = t$2$3.value;
+                context$2$0.next = 39;
+                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+            case 39:
+                context$2$0.next = 35;
+                break;
+            case 41:
+                context$2$0.next = 45;
+                break;
+            case 43:
+                segmentType = 'line';
+                console.warn('implicit line segment, left side, this should be explicit in CPS');
+            case 45:
+                context$2$0.next = 47;
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            case 47:
+                i--;
+                context$2$0.next = 27;
+                break;
+            case 50:
+                pen.endPath();
+            case 51:
+            case "end":
+                return context$2$0.stop();
+            }
+        }, renderPenstrokeOutline, this);
+    });
 
-    _p._drawPenstrokeCenterline = regeneratorRuntime.mark(function callee$1$1(model, pen, penstroke) {
+    var renderPenstrokeCenterline = regeneratorRuntime.mark(function renderPenstrokeCenterline(pen, model, penstroke) {
         var points, point, prePoint, segmentType, ctrls, vector, i, t$2$0, t$2$1;
 
-        return regeneratorRuntime.wrap(function callee$1$1$(context$2$0) {
+        return regeneratorRuntime.wrap(function renderPenstrokeCenterline$(context$2$0) {
             while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
                 points = penstroke.children;
@@ -763,10 +775,65 @@ define([
             case "end":
                 return context$2$0.stop();
             }
-        }, callee$1$1, this);
-    })
+        }, renderPenstrokeCenterline, this);
+    });
 
-    _p.drawGlyphToPointPenGenerator = function (model, glyph, /*method*/ pen) {
+    function ExportController(master, model, glyphSet, precision) {
+        this._master = master;
+        this._model = model;
+        this._glyphSet = glyphSet;
+        this._precision = precision;
+    }
+    var _p = ExportController.prototype;
+
+    // FIXME: "export" is a future reserved keyword
+    _p.export = function() {
+        var glyphs = this._master.children
+          , glyph
+          , drawFunc
+          ;
+        console.warn('exporting ...');
+        for(var i = 0;i<glyphs.length;i++) {
+            glyph = glyphs[i];
+            console.warn('exporting', glyph.id);
+            drawFunc = this.drawGlyphToPointPen.bind(this,
+                ExportController.renderPenstrokeOutline, this._model, glyph)
+
+            this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
+                                      undefined, {precision: this._precision})
+        }
+        this._glyphSet.writeContents(false);
+    }
+
+    /**
+     * Get control point vectors from (MOM Point) StyleDicts.
+     * try to use hobby splines but fall back to the control point values
+     * of the points if hobbys would fail when there are no good tensions
+     * or directions.
+     *
+     * The terminal parameter is a switch used to draw the penstroke terminals
+     * for the start terminal of the stroke all controls are from the incoming
+     * control points. p0 in in p1
+     * for the end terminal of the stroke all controls are from the outgoing
+     * control points. p0 out out p1
+     * Without terminal beeing set or having a value of "start" or "end"
+     * the default behavior is: p0 out in p1
+     *
+     * See the comment of drawPenstrokeToPointPen for more detail.
+     */
+
+    function getControlsFromStyle(p0, p1, terminal) {
+        return [
+              p0.get(terminal === 'start' ? 'in': 'out')
+            , p1.get(terminal === 'end' ? 'out' :'in')
+        ];
+    }
+
+    ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
+
+    ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
+
+    _p.drawGlyphToPointPenGenerator = function (renderer, model, glyph, /*method*/ pen) {
         return regeneratorRuntime.mark(function callee$2$0() {
             var stroke, t$3$0, t$3$1;
 
@@ -781,7 +848,7 @@ define([
                     }
 
                     stroke = t$3$1.value;
-                    return context$3$0.delegateYield(this._drawPenstrokeOutline(model, pen, stroke), "t0", 4);
+                    return context$3$0.delegateYield(renderer(pen, model, stroke), "t0", 4);
                 case 4:
                     context$3$0.next = 1;
                     break;
@@ -793,7 +860,7 @@ define([
         }).call(this);
     }
 
-    _p.drawGlyphToPointPen = function(model, glyph, /*method,*/ pen) {
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen) {
         // method may be tensions/control-points/metafont/native-js
         // the possibilities are a lot.
         // I'm starting with tensions/native-js
@@ -808,7 +875,7 @@ define([
         // be in every job for metafont.
         var v;
 
-        for (var t$2$0 = regeneratorRuntime.values(this.drawGlyphToPointPenGenerator(model, glyph, pen)), t$2$1; !(t$2$1 = t$2$0.next()).done; ) {
+        for (var t$2$0 = regeneratorRuntime.values(this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen)), t$2$1; !(t$2$1 = t$2$0.next()).done; ) {
             v = t$2$1.value;
         }
     }

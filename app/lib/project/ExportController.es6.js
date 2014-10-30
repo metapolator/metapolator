@@ -27,7 +27,8 @@ define([
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
             console.warn('exporting', glyph.id);
-            drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
+            drawFunc = this.drawGlyphToPointPen.bind(this,
+                ExportController.renderPenstrokeOutline, this._model, glyph)
 
             this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
                                       undefined, {precision: this._precision})
@@ -112,7 +113,7 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-     _p._drawPenstrokeOutline = function*(model, pen, penstroke) {
+    function* renderPenstrokeOutline(pen, model, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
@@ -184,8 +185,9 @@ define([
         }
         pen.endPath();
     }
+    ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
-    _p._drawPenstrokeCenterline = function*(model, pen, penstroke) {
+    function* renderPenstrokeCenterline(pen, model, penstroke) {
         var points = penstroke.children
           , point
           , prePoint
@@ -210,22 +212,17 @@ define([
         }
         pen.endPath();
     }
+    ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
-    _p.drawGlyphToPointPenGenerator = function (model, glyph, /*method*/ pen) {
+    _p.drawGlyphToPointPenGenerator = function (renderer, model, glyph, /*method*/ pen) {
         return function* () {
             var stroke;
-            for (stroke of glyph.children) {
-                yield* this._drawPenstrokeOutline(model, pen, stroke);
-                // Uncomment the following line to draw the center-line
-                // onto the canvas. You can use `_drawPenstrokeCenterline` and
-                // `_drawPenstrokeCenterline` exclusively or at the same time.
-                // The latter can help to see what's happening with your strokes.
-                //yield* this._drawPenstrokeCenterline(model, pen, stroke);
-            }
+            for (stroke of glyph.children)
+                yield* renderer(pen, model, stroke);
         }.call(this);
     }
 
-    _p.drawGlyphToPointPen = function(model, glyph, /*method,*/ pen) {
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen) {
         // method may be tensions/control-points/metafont/native-js
         // the possibilities are a lot.
         // I'm starting with tensions/native-js
@@ -239,7 +236,7 @@ define([
         // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
         var v;
-        for (v of this.drawGlyphToPointPenGenerator(model, glyph, pen));
+        for (v of this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen));
     }
 
     return ExportController;
