@@ -200,7 +200,7 @@ We see that any slider, however its configuration, can be calculated from the me
 Input from sliders to the metapolation equation follows the reverse path. This is easy-peasy for normal sliders (i.e. rebalancing two coefficients, whose sum is invariant), but slightly more complicated for from-zero sliders—
 
 1. when a from-zero slider is decreased, all coefficients linked to other from-zero sliders remain untouched (i.e. the other from-zero sliders set hard percentages), while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage _budget_ increase—which they then split between them proportionately;
-* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage budget decrease, **until that budget hits zero**; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately.
+* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage budget decrease, **until that budget hits zero**—when _interpolating_; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately; when _extrapolating_ the normal-slider budget can go negative and there is no need to touch the other from-zero sliders.
 
 _example_: 4-master group, Metapolation = 25%M<sub>1</sub> + 25%M<sub>2</sub> + 30%M<sub>3</sub> + 20%M<sub>4</sub>. Slider setup is M<sub>1</sub> from zero (value 25), M<sub>2</sub> from zero (25) and M<sub>3</sub>–M<sub>4</sub> (40).
 
@@ -378,7 +378,9 @@ adds extra extensions to the controls. The master slider receives 50% extra (in 
 
 The extrapolation range is compressed for layout reasons; in metapolation terms users get 100% extra (e.g. above, from 2 × Alt-1 - Alt-2 to 2 × Alt-2 - Alt-1). **rule**: the extrapolation area is always shown in stippled lines (ticks are solid). The numerical values now go from -100 to 200. **rule**: we avoid labelling the extrapolation areas, avoiding faux-pas like ‘extra-Regular.’ In a sense, labelling is extrapolated by users from the regular labelling.
 
-**rule**: when instances or adjustment masters (sequences) have been placed on an extrapolation range, extrapolation mode cannot be switched off—all of the current state needs to be shown.
+**rule**: when instances or adjustment masters (sequences) have been placed on an extrapolation range, extrapolation mode cannot be switched off—all of the current state needs to be shown; the switch become an indicator text:
+
+![](http://mmiworks.net/metapolator/extranoswitch.png)
 
 Triangle extrapolation is again a work of beauty:
 
