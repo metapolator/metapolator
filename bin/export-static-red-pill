@@ -1,5 +1,5 @@
 #!/bin/sh
-SOURCE="$(dirname $0)/../..";
+SOURCE="$(dirname $0)/..";
 PROJECT=$1
 TARGET=$2
 
