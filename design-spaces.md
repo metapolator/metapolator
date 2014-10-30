@@ -200,7 +200,7 @@ We see that any slider, however its configuration, can be calculated from the me
 Input from sliders to the metapolation equation follows the reverse path. This is easy-peasy for normal sliders (i.e. rebalancing two coefficients, whose sum is invariant), but slightly more complicated for from-zero sliders—
 
 1. when a from-zero slider is decreased, all coefficients linked to other from-zero sliders remain untouched (i.e. the other from-zero sliders set hard percentages), while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage _budget_ increase—which they then split between them proportionately;
-* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage budget decrease, **until that budget hits zero**—when _interpolating_; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately; when _extrapolating_ the normal-slider budget can go negative and there is no need to touch the other from-zero sliders.
+* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage budget decrease, **until that budget hits zero**—when _interpolating_; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately; when _extrapolating_, the normal-slider budget can go negative and there is no need to touch the other from-zero sliders.
 
 _example_: 4-master group, Metapolation = 25%M<sub>1</sub> + 25%M<sub>2</sub> + 30%M<sub>3</sub> + 20%M<sub>4</sub>. Slider setup is M<sub>1</sub> from zero (value 25), M<sub>2</sub> from zero (25) and M<sub>3</sub>–M<sub>4</sub> (40).
 
@@ -466,5 +466,5 @@ Example:
 
 ![](http://mmiworks.net/metapolator/balancingacross2.png)
 
-#### metapolation math
+##### metapolation math
 The balancers work exactly like normal master sliders, and non-crossing master sequence cross-faders. They also do extrapolation, like normal master sliders. **note** the [100.00% rule](#100rule).
