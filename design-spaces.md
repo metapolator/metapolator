@@ -465,3 +465,6 @@ This system does not only work within a column, but also across columns:
 Example:
 
 ![](http://mmiworks.net/metapolator/balancingacross2.png)
+
+#### metapolation math
+The balancers work exactly like normal master sliders, and non-crossing master sequence cross-faders. They also do extrapolation, like normal master sliders. **note** the [100.00% rule](#100rule).
