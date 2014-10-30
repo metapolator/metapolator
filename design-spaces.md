@@ -331,7 +331,7 @@ We see a diagonal ‘cross-fader’ hooked up between Weight and Vibe, and creat
 ![](http://mmiworks.net/metapolator/control3nocross.png)
 
 ##### metapolation math
-The math consists of two components; each sequence slider produces a pair mix, and these are mixed together using sliders which are completely analogous to normal master sliders, just with a fixed configuration. **note** the [100.00% rule](#100rule).
+The math consists of two components; each sequence slider produces a pair mix, and these are mixed together using the cross-faders which are completely analogous to normal master sliders, just with a fixed configuration. **note** the [100.00% rule](#100rule).
 
 ### adjustment masters
 An adjustment master has to be placed like an instance in the design space, on all controls/dimensions, to control both _where_ it works and what its underlying master mix is (aka 99% of its appearance—on top of which its adjustments are applied.
@@ -382,23 +382,43 @@ The extrapolation range is compressed for layout reasons; in metapolation terms 
 
 ![](http://mmiworks.net/metapolator/extranoswitch.png)
 
+#### metapolation math
+When extrapolated, normal sliders, M<sub>a</sub>–M<sub>b</sub, get extended to 2M<sub>a</sub> - M<sub>b</sub> and 2M<sub>b</sub> - M<sub>a</sub>, same for from-zero sliders: -M and 2M.
+
+#### love triangle
 Triangle extrapolation is again a work of beauty:
 
 ![](http://mmiworks.net/metapolator/extratriangle.png)
 
 Three full-size extra triangles are added (no compression here). The numerical values now go from -100 to 100.
 
+##### metapolation math
+The extrapolation triangle has corner points M<sub>a</sub> + M<sub>b</sub>, M<sub>b</sub> + M<sub>c</sub>, M<sub>c</sub> + M<sub>a</sub>, with M<sub>b</sub>, M<sub>c</sub> and M<sub>a</sub> at the midpoints.
+
+_example_: above the corners are (from top-left): Bold + Narrow, Narrow + Italic, Italic + Bold.
+
+#### master sequences
 Sequences are extended on both sides by one subdivision:
 
 ![](http://mmiworks.net/metapolator/extrasequences.png)
 
-because that is what effectively happens: an extra subdivision is generated out of the outer interpolation division. There is no compression. Thus above, Weight gets on the left a subdivision that goes out to 2 × Thin - Light and on the right one that goes out to 2 × Bold - Regular. Width gets on the left a subdivision that goes out to 2 × Condensed - Regular and on the right one that goes out to 2 × Extended - Regular.
+because that is what effectively happens: an extra subdivision is generated out of the outer interpolation division. Thus above, Weight gets on the left a subdivision that goes out to 2 × Thin - Light and on the right one that goes out to 2 × Bold - Regular. Width gets on the left a subdivision that goes out to 2 × Condensed - Regular and on the right one that goes out to 2 × Extended - Regular. Only when the sequence consists of 2 masters, there is compression: 50% like regular sliders.
 
 The numerical values reflect the amount that the sequence got extended; Thus above, Weight now goes from -33 to 133 and Width from -50 to 150.
 
 The crossed master sequence version is analogous to the slider version:
 
 ![](http://mmiworks.net/metapolator/extracross2.png)
+
+##### metapolation math
+Of sequence M<sub>1</sub> … M<sub>N</sub> (N > 1), the start of the sequence gets extended to 2M<sub>1</sub> - M<sub>2</sub>, the end to 2M<sub>N</sub> - M<sub>N-1</sub>.
+
+#### non-crossing
+What happens to the sequences is clear. The cross-faders also extrapolate like normal master sliders:
+
+![](http://mmiworks.net/metapolator/extranoncross.png)
+
+the vertical spacing is increased by 50%; the line is stippled to indicate that the cross-fader extrapolates, but no solid stretch of the line or tick to indicate the interpolating range: it would just be crammed in.
 
 ### putting it all together
 And now the challenge of fitting a control system that scales **up** into a rectangle of wildly different proportions.
