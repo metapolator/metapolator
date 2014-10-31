@@ -38,7 +38,7 @@ requirejs.config({
 });
 
 
-// ui code mirror searches a global CodeMirror object, which is not defined
+// ui code mirror looks for a global CodeMirror object, which is not defined
 // by code mirror when loaded via AMD ... m(
 // this is the test in the file:
 // if (angular.isUndefined(window.CodeMirror))
@@ -73,7 +73,7 @@ require([
     project.load();
     new RedPill(project, angularApp);
     // this should be the last thing here, because domReady will execute
-    // immediately if dom is already ready.
+    // immediately if the DOM is already ready.
     domReady(function() {
         angular.bootstrap(document, [angularApp.name]);
     });
