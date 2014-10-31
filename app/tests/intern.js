@@ -81,6 +81,7 @@ define({
       , 'tests/lib/models/CPS/_all_'
       , 'tests/lib/models/MOM/_all_'
       , 'tests/lib/es6/Proxy'
+      , 'tests/lib/memoize'
     ],
 
     // Functional test suite(s) to run in each browser once non-functional tests are completed
