@@ -126,8 +126,6 @@ define([
     _p.init = function() {
         // FIXME: all I/O is synchronous for now
 
-        if(this._io.pathExists(false, this.baseDir+'/'))
-            throw new ProjectError('Dir exists already: '+ this.baseDir);
         this._io.mkDir(false, this.baseDir);
         
         // create baseDir/metainfo.plist
@@ -244,11 +242,6 @@ define([
                 throw new ProjectError('A glyph layer with name "'+name
                                                 +'" already exists.');
         
-        // see if there is a directory with the name layerDir already
-        if(this._io.pathExists(false, layerDir+'/'))
-            throw new ProjectError('Can\'t create glyph layer. A directory '
-                                    +'with name "' + layerDir
-                                    +'" already exists.');
         // create new layer dir
         this._io.mkDir(false, layerDir);
         
@@ -289,11 +282,6 @@ define([
         if (layerIndex === null)
             throw new ProjectError('No such glyph layer "'+name+'".');
         layercontents.splice(layerIndex, 1);
-
-        // Check there is a directory with the name layerDir
-        if(!this._io.pathExists(false, layerDir+'/'))
-            throw new ProjectError('No glyph layer directory "' + layerDir
-                                    +'".');
 
         // Update layercontents
         this._io.writeFile(false, this.layerContentsFile,
@@ -519,10 +507,6 @@ define([
           ;
         
         // create a bare ufoV2 directory
-        if(this._io.pathExists(false, dirName +'/'))
-             throw new ProjectError('Can\'t create instance. A directory '
-                                    +'with name "' + dirName
-                                    +'" already exists.');
         this._io.mkDir(false, dirName);
         
         // create dirName/metainfo.plist
