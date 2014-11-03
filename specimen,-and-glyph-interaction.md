@@ -401,7 +401,9 @@ _—work in progress_
 
 * width _(scales horizontally)_
 * height _(scales vertically)_
-* rotation 
+* rotation
+
+<a name="nobrainer"></a>**no-brainer rule**: when width, height, or rotation are operated on at glyph level or up, then the complete glyph is scaled or rotated—not just the individual strokes—which most likely involves also translating strokes.
 
 **point** parameters (can be set at point, stroke, glyph, script, master and project level)
 
@@ -424,7 +426,9 @@ _—work in progress_
 * y
 * width _(scales horizontally)_
 * height _(scales vertically)_
-* rotation 
+* rotation
+
+**note**: also here the [no-brainer rule](#nobrainer) holds for width, height and rotation.
 
 ### glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
