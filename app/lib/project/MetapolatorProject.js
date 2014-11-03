@@ -186,10 +186,9 @@ define([
         catch (error) { // Ignore file not found
             if(!(error instanceof IONoEntryError))
                 throw error;
-            logText = ""; // Work around upstream bug https://github.com/nodeca/js-yaml/issues/149
         }
         try {
-            logRecords = yaml.safeLoad(logText);
+            logRecords = yaml.safeLoad(logText || "");
         }
         catch(e) { // Translate YAML errors
             throw new ProjectError('Invalid log file ' + e);
