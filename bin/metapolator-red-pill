@@ -19,11 +19,13 @@ if (require.main === module) {
       , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
       , 'fs'
+      , 'restfs'
     ], function (
         program
       , parseArgs
       , io
       , fs
+      , restfs
     ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments)
@@ -53,66 +55,6 @@ if (require.main === module) {
             // serve index at '' (index)
             // serve hello world at project/{...}
 
-            function ForbiddenError(msg){
-                this.name = 'NotFound';
-                this.message = msg;
-                Error.call(this, msg);
-                Error.captureStackTrace(this, ForbiddenError);
-            };
-
-            /**
-             * Sanitize a file path, ensuring it doesn't go above /
-             */
-            function _cleanPath(s) {
-                s = path.normalize(s);
-                if (s.split('/')[0] === '..')
-                    throw new ForbiddenError('path "' + path + '" is above root');
-                return s;
-            }
-
-            // callback for fs.readdir
-            function _getDirectoryListingHandler(res, next, err, files) {
-                if(err)
-                    next(err);
-                else
-                    res.send(files.join('\n'));
-            }
-
-            // serve usable status codes for the directory PUT
-            function _mkDirHandler(res, next, err) {
-                if(err)
-                    if(err.code === 'EEXIST')
-                        // I allow the trial to create an existing
-                        // dir, response is 204 in that case
-                        res.send(204);// No content returned
-                else
-                    res.send(400, 'Can\'t create dir: ' + err); // Bad Request
-                else
-                    res.send(201);// Created
-            }
-            // serve usable status codes for the directory DELETE
-            function _rmDirHandler (res, next, err) {
-                if(err && err.code !== 'ENOENT')
-                    res.send(400, 'Can\'t delete dir: ' + err); // Bad Request
-                else
-                    res.send(204);// No content returned
-            }
-
-            // file PUT and POST
-            function _writeFileHandler(res, next, err) {
-                if(err)
-                    next(err);
-                else
-                    res.send(204);
-            }
-
-            function _unlinkFileHandler(res, next, err) {
-                if(err && err.code !== 'ENOENT')
-                    next(err);
-                else
-                    res.send(204);
-            }
-
             // simple logger
             // Let this be the first middleware, to make sure every request
             // is logged to console.
@@ -122,91 +64,15 @@ if (require.main === module) {
             //     next();
             // });
 
-            app.use('', function(req, res, next) {
-                if(req.path === '/')
-                    res.sendfile(index);
-                else
-                    next();
+            app.get('/', function(req, res, next) {
+                res.sendfile(index);
             });
 
             // serve the contents of rootDir + "app/lib" at lib
             app.use('/lib', express.static(libDir));
 
             // project is a RESTful directory
-            app.use('/project', function(req, res, next) {
-                var path = _cleanPath(req.path)
-                  , method = req.method
-                  , data
-                ;
-                if(path.slice(-1) === '/') {
-                    // directory
-                    switch(method) {
-                        case 'GET':
-                        case 'HEAD':
-                        // return a directory listing
-                        fs.readdir([project.baseDir, path].join('/')
-                                  , _getDirectoryListingHandler
-                                    .bind(null, res, next));
-                        break;
-                        case 'PUT':
-                        // try to create the directory
-                        fs.mkdir(path, _mkDirHandler.bind(null, res, next))
-                        break;
-                        case 'DELETE':
-                        fs.rmdir(path, _rmDirHandler.bind(null, res, next))
-                        break;
-                        default:
-                        res.send(405);// 405 Method Not Allowed
-                    }
-                }
-                else {
-                    // file
-                    switch(method) {
-                        case 'GET':
-                        case 'HEAD':
-                        // return the file content
-                        res.sendfile([project.baseDir, path].join('/'));
-                        break;
-                        case 'PUT':
-                        case 'POST':
-                        // write the file
-                        // get the data
-                        req.rawData = '';
-                        // FIXME: for real server usage we should at least
-                        // control the length of the data, also, content
-                        // validation should happen. For that we must have
-                        // an idea of the file type that is sent ...
-                        // However, this code is intended to run locally
-                        // not on the internet.
-                        // also, it would be interesting to see if binary
-                        // data survives this ...
-                        req.on('data', function(chunk) {
-                            req.rawData += chunk;
-                        });
-                        req.on('end', function(method) {
-                            // assert method === PUT || method === POST
-                            // use appendFile for POST
-                            fs[method === 'PUT' ? 'writeFile': 'appendFile'](
-                                path, req.rawData,
-                                    _writeFileHandler.bind(null, res, next));
-                        }.bind(null, method));
-                        break;
-                        case 'DELETE':
-                        fs.unlink(path, _unlinkFileHandler.bind(null, res, next));
-                        break;
-                        default:
-                        res.send(405);// 405 Method Not Allowed
-                    }
-                }
-            });
-
-            app.use(function errorHandler(err, req, res, next) {
-                if(err instanceof ForbiddenError)
-                    res.send(403, 'Forbidden: ' + err.message);
-                else
-                    // default error handler of express
-                    next();
-            });
+            app.use('/project', restfs(project.baseDir));
 
             if (program.port === undefined)
                 program.port = parseInt(process.env.RED_PILL_PORT);
