@@ -37,7 +37,7 @@ if (require.main === module) {
       , PenStrokePoint
       , Registry
     ) {
-        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program._name = path.basename(process.argv[1]).replace('-', ' ');
         program.arguments(exports.command.arguments)
         .description(exports.command.description)
         .action(function(CPSfile) {

@@ -20,7 +20,7 @@ if (require.main === module) {
     ], function (
         program
     ) {
-        program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
+        program._name = path.basename(process.argv[1]).replace('-', ' ');
         program.arguments(exports.command.arguments)
         .on('--help', function(){
         console.log(
