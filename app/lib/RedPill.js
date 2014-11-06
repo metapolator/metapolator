@@ -12,10 +12,11 @@ define([
       , CPSError = errors.CPS
       ;
     
-    function RedPill(project, angularApp) {
+    function RedPill(project, angularApp, fsEvents) {
         this.angularApp = angularApp
         this.frontend = undefined;
         this.project = project;
+        this.fsEvents = fsEvents;
         this.model = {
             masters: this.project.masters
         }
@@ -34,6 +35,8 @@ define([
         this.angularApp.constant('redPillModel', this.model);
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
+        
+        this.fsEvents.on('change', this.fileChangeHandler.bind(this));
     }
     
     var _p = RedPill.prototype;
@@ -122,6 +125,30 @@ define([
         this._cache.lastSelection = result;
         return result;
     }
+    
+ _p.fileChangeHandler = function (path) {
+        var match = path.indexOf(this.project.cpsDir)
+          , sourceName
+          ;
+        if(match !== 0)
+            return;
+        // +1 to remove the leading slash
+        sourceName = path.slice(this.project.cpsDir.length + 1);
+        try {
+            this.project.refreshCPSRules(true, sourceName)
+                // then update the display
+                .then(function() {
+                    this.frontend.$scope.$broadcast('cpsUpdate');
+                }.bind(this));
+        }
+        catch(error) {
+            // KeyError will be thrown by refreshCPSRules if sourceName
+            // is unknown, which is expected at this point, because
+            // that means that sourceName is unused.
+            if(!(error instanceof errors.Key))
+                throw error;
+        }
+    };
     
     return RedPill;
 })
