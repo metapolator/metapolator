@@ -1,5 +1,4 @@
-Metapolator Installation
-========================
+# Metapolator Installation
 
 The simplest and recommended method is to use the [Vagrant](http://www.vagrantup.com) box, for which you also need [Virtualbox](http://www.virtualbox.org). In an empty directory, run the commands:
 
@@ -11,6 +10,14 @@ vagrant up
 You can then `vagrant ssh` into the box, or `vagrant ssh -- COMMAND ARG...` to run a command on it. Note that the Vagrant box can only see the directory in which it was created on the host machine: in the VM, this is available under `/vagrant`. Symlinking into that directory won't work: UFOs and Metapolator projects have to be copied (or hard-linked) there.
 
 If you prefer to install manually, see the provisioning script at the top of `vagrant/Vagrantfile`. It is written for Ubuntu 14.04, from which you can infer dependencies for other platforms (primarily: node 0.10).
+
+## Using metapolator in other projects
+
+Metapolator can be installed as a Node module, for which you need [Node](http://nodejs.org/) and [git](http://git-scm.org/), then in your project directory run:
+
+```
+npm install metapolator/metapolator
+```
 
 # Usage
 
