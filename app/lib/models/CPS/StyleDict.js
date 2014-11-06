@@ -91,6 +91,7 @@ define([
      * value on any reachable element.
      */
     _p.get = function(name) {
+        var errors = [];
         if(name === 'this')
             return this._element;
 
@@ -113,9 +114,19 @@ define([
             catch(error) {
                 if(!(error instanceof KeyError))
                     throw error;
+                errors.push(error.message);
             }
-            // Will throw KeyError if not found
-            return cpsGetters.whitelist(this._element, name);
+
+            try {
+                // Will throw KeyError if not found
+                return cpsGetters.whitelist(this._element, name);
+            }
+            catch(error) {
+                if(!(error instanceof KeyError))
+                    throw error;
+                errors.push(error.message);
+                throw new KeyError(errors.join('\n----\n'))
+            }
         }
         finally {
             delete this._getting[name];
