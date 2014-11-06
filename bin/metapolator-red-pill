@@ -10,6 +10,7 @@ exports.command = {
 
 var path = require('path');
 var requirejs = require('requirejs');
+var express = require('express');
 require('rootpath')();
 requirejs.config(require('config'));
 
@@ -18,61 +19,29 @@ if (require.main === module) {
         'commander'
       , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
-      , 'fs'
       , 'restfs'
     ], function (
         program
       , parseArgs
       , io
-      , fs
       , restfs
     ) {
         program._name = path.basename(process.argv[1], '.js').replace('-', ' ');
         program.arguments(exports.command.arguments)
         .description(exports.command.description)
         .action(function(projectDir) {
-            var express = require('express')
-              , app = express()
             // expect require.main.filename to be path/to/metapolator-code/bin/<command>
             // thus path/to/metapolator-code is the root directory
-              , rootDir = path.dirname(path.dirname(require.main.filename))
+            var rootDir = path.dirname(path.dirname(require.main.filename))
               , libDir = rootDir + '/app/lib'
               , index = rootDir + '/app/red-pill.html'
-            ;
+              , project = parseArgs.project(io, projectDir)
+              ;
 
-            var project = parseArgs.project(io, projectDir);
-
-            // red-pill.html as index
-            // all contents of /lib are served for GET at /lib
-            // the current working directory
-            // if it is a metapolator project
-            // served as a full featured REST service at /project
-            // dirs end with a / files don't end with a /
-            // we resolve all ./ and ../ if we have a 'buffer underrun' because
-            // ../ removes more dirs than there are in path, we return a 500
-
-
-            // serve index at '' (index)
-            // serve hello world at project/{...}
-
-            // simple logger
-            // Let this be the first middleware, to make sure every request
-            // is logged to console.
-            // Uncomment when of interest.
-            // app.use(function(req, res, next) {
-            //     console.log('logger ! %s %s', req.method, req.url);
-            //     next();
-            // });
-
-            app.get('/', function(req, res, next) {
-                res.sendfile(index);
-            });
-
-            // serve the contents of rootDir + "app/lib" at lib
-            app.use('/lib', express.static(libDir));
-
-            // project is a RESTful directory
-            app.use('/project', restfs(project.baseDir));
+            var app = express()
+            .get('/', function(req, res, next) { res.sendfile(index); }) // index file
+            .use('/lib', express.static(libDir)) // application code
+            .use('/project', restfs(project.baseDir)); // the project, as a RESTful directory
 
             if (program.port === undefined)
                 program.port = parseInt(process.env.RED_PILL_PORT);
