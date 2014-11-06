@@ -11,7 +11,7 @@ define([], function() {
         
         this.$scope.glypsize = this.$scope.initialGlypsize = 50;
     }
-    RedPillGlyphsController.$inject = ['$scope', 'selectGlyphs', 'updateCPS'];
+    RedPillGlyphsController.$inject = ['$scope', 'selectGlyphs'];
     var _p = RedPillGlyphsController.prototype;
     
     return RedPillGlyphsController;
