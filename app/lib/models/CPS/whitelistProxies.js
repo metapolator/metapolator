@@ -71,6 +71,7 @@ define([
     }
 
     ArrayHandler.prototype._validate = function(target, key) {
+        var processedKey;
         if(isIntString(key))
             key = parseInt(key, 10);
         if(key === 'length')
@@ -78,10 +79,15 @@ define([
         else if(!isInt(key))
             return [false, 'Key must be "length" or an integer but it is: '
                                             + key + ' '+ typeof key];
-        else if(key<0 || key>=target.length)
+        else if(key<0)
+            processedKey = target.length + key;
+        else
+            processedKey = key;
+
+        if(processedKey<0 || processedKey>=target.length)
              throw new KeyError('The index "'+ key +'" is not in the array. '
                                         + 'Length: ' + target.length);
-        return [true, key];
+        return [true, processedKey];
     };
 
     return {
