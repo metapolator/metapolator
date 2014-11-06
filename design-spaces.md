@@ -137,9 +137,9 @@ Dropping an adjustment master has an interesting effect:
 Because an adjustment master is a _soft adjustment_ to the design space, and not a _hard definition_ like a master is, it **does not limit** the fields of other master (sequences). It is however limited by other master (sequences), as we can see above. The symbol for an adjustment master is an up-pointing triangle, derived from the delta (Δ) symbol. Apart from this an adjustment master _functions like a normal master._
 
 ### adjustment master sequences
-Adjustment master sequences can be applied to master sequences and families of instances:
+Adjustment master sequences can only be applied to master sequences:
 
-![](http://mmiworks.net/metapolator/exploreadjustsequence2.png)
+![](http://mmiworks.net/metapolator/exploreadjustsequence3.png)
 
 adjustment master sequence attach ‘magnetically’ to these; position of start and end can be adjusted; the stretch where the adjustment master sequence applies is shown in a contrasting color; also the field of the master sequence where the adjustment applies is coloured differently; an adjustment master sequence is identified by a ‘price tag’, connected by a ‘wire’ to the start of the sequence _(optionally, a ‘breeze’ can be implemented that keeps the tag always out of the way of the mouse pointer)_.
 
@@ -353,19 +353,17 @@ Dealing with adjustment masters is a two-step plan:
   * normal master sliders change from M<sub>1</sub>–M<sub>2</sub> to M<sub>1</sub>–adjustment master–M<sub>2</sub>; the triangle: analogous; from-zero sliders change from zero–M<sub>3</sub> to zero–adjustment master–M<sub>3</sub>.
 
 ### adjustment master sequences
-An adjustment master sequence introduces a hard-edged line of change into the design space. Shown here is the placement of **one** adjustment master sequence, again on a **fictive** potpourri of controls:
+An adjustment master sequence introduces a hard-edged stretch of change to a master sequence. Shown here is the placement of several adjustment master sequences, on a **fictive** potpourri of master sequences:
 
-![](http://mmiworks.net/metapolator/controladjustsequence.png)
+![](http://mmiworks.net/metapolator/controladjustsequence2.png)
 
-The triangle is the start of the sequence and the end-of-the-line symbol… the end (as seen in the adjustment master list).
+adjustment master sequence attach ‘magnetically’ to these; position of start and end can be adjusted; the stretch where the adjustment master sequence applies is shown in a contrasting color; an adjustment master sequence is identified by a ‘price tag’, connected by a ‘wire’ to the start of the sequence _(optionally, a ‘breeze’ can be implemented that keeps the tag always out of the way of the mouse pointer)_.
 
 #### metapolation math
 Dealing with adjustment master sequences is also a two-step plan, but a different one:
 
 1. calculate the underlying metapolation of all adjustment masters that make up the sequence—as for adjustment masters; apply the adjustment-master adjustments on top of each;
-* _exactly_ for the stretch where the adjustment master sequence is placed on the sliders—projection on axis for master sequence crosses, and projection on the sides for the triangle—the metapolation of this adjustment master sequence **replaces** the normal metapolation.
-
-**note**: there is something about adjustment master sequences, how they sit in multi-dimensional spaces, that is just not _right_. Stay tuned.
+* _exactly_ for the stretch where the adjustment master sequence is placed on the master sequence, this adjustment master sequence **replaces** the normal master sequence.
 
 ### extrapolation
 Switching on extrapolation:
