@@ -18,12 +18,10 @@ if (require.main === module) {
         'commander'
       , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
-      , 'metapolator/project/MetapolatorProject'
     ], function (
         program
       , parseArgs
       , io
-      , MetapolatorProject
     ) {
         program._name = path.basename(process.argv[1]).replace('-', ' ');
         program.arguments(exports.command.arguments)
