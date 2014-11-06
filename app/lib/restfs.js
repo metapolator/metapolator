@@ -1,4 +1,5 @@
 // REST interface to FS
+// dirs end with a / files don't end with a /
 define([
 ], function(
 ){
@@ -15,11 +16,10 @@ define([
         Error.captureStackTrace(this, _ForbiddenError);
     };
 
-    /**
-     * Sanitize a file path, ensuring it doesn't go above /
-     */
+    // Sanitize a file path, ensuring it doesn't go above /
     var _cleanPath = function(s) {
         s = path.normalize(s);
+        // If the path goes above root, return 500
         if (s.split('/')[0] === '..')
             throw new _ForbiddenError('path "' + s + '" is above root');
         return s;
