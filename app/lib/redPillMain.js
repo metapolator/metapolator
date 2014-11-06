@@ -18,6 +18,7 @@ requirejs.config({
       , 'codemirror': 'bower_components/codemirror'
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
+      , 'socketio': '../socket.io/socket.io'
     }
   , shim: {
         angular: {
@@ -33,6 +34,9 @@ requirejs.config({
         //ui-codemirror
       , 'ui-codemirror': {
             deps: ['angular', 'GlobalCodeMirror']
+        }
+      , 'socketio': {
+            exports: 'io'
         }
     }
 });
@@ -57,6 +61,7 @@ require([
   , 'ui/redPill/app'
   , 'RedPill'
   , 'ufojs/tools/io/staticBrowserREST'
+  , 'socketio'
   , 'metapolator/project/MetapolatorProject'
 ], function (
     document
@@ -65,13 +70,16 @@ require([
   , angularApp
   , RedPill
   , io
+  , socketio
   , MetapolatorProject
 ) {
     "use strict";
 
-    var project = new MetapolatorProject(io, 'project');
+    var project = new MetapolatorProject(io, 'project')
+      , fsEvents = socketio.connect('/fsEvents/project')
+      ;
     project.load();
-    new RedPill(project, angularApp);
+    new RedPill(project, angularApp, fsEvents);
     // this should be the last thing here, because domReady will execute
     // immediately if the DOM is already ready.
     domReady(function() {
