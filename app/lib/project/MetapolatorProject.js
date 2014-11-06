@@ -389,11 +389,13 @@ define([
         return this._cache.masters[masterName];
     }
     
+    _p._readCPS = function (async, sourceName) {
+        var fileName = [this.cpsDir, sourceName].join('/');
+        return this._io.readFile(async, fileName);
+    }
     
-    _p._getCPSRules = function getCPSRule(sourceName) {
-        var fileName = [this.cpsDir, sourceName].join('/')
-          , cpsString = this._io.readFile(false, fileName)
-          ;
+    _p._getCPSRules = function _readCPSRules(sourceName) {
+        var cpsString = this._readCPS(false, sourceName);
         return parseRules.fromString(cpsString, sourceName, parameterRegistry);
     }
     
@@ -410,12 +412,29 @@ define([
      * this might involve pruning some caches of ModelControllers.
      * 
      * If this doesn't parse, a CPSParserError is thrown
+     * 
+     * FIXME: rename into "updateCPSRules" to match related api function names
      */
     _p.updateCPSRule = function(sourceName, cpsString) {
+        if(!this._cache.rules[sourceName])
+            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
         var source = parseRules.fromString(cpsString, sourceName, parameterRegistry);
         // if we are still here parsing was a success
         this._cache.rules[sourceName] = source;
         this._controller.replaceSource(source);
+    }
+    
+    /**
+     * async is propagated to the obtain api
+     * if async is tru a promise is returned, otherwise nothing
+     */
+    _p.refreshCPSRules = function(async, sourceName) {
+        if(!this._cache.rules[sourceName])
+            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
+        var result = this._readCPS(async, sourceName);
+        if(async)
+            return result.then(this.updateCPSRule.bind(this, sourceName));
+        this.updateCPSRule(sourceName);
     }
     
     _p.open = function(masterName) {
