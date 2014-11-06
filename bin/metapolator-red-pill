@@ -38,7 +38,7 @@ if (require.main === module) {
               ;
             app.use(location, restfs(baseDir));
             return fsEventsServer.createEmitter(
-                                socketNamespace, baseDir, relativeLocation);
+                                socketNamespace, baseDir, relativeLocation + '/');
         }
 
         function getPort(program) {
