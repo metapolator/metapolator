@@ -17,12 +17,10 @@ if (require.main === module) {
     requirejs([
         'commander'
       , 'metapolator/errors'
-      , 'gonzales/gonzales'
       , 'metapolator/models/CPS/dataTypes/algebra'
     ], function (
         program
       , errors
-      , gonzales
       , algebra
     ) {
         var CommandLineError = errors.CommandLine;
@@ -58,7 +56,7 @@ if (require.main === module) {
                 )
               , stack = algebraParser.getExecuteableStack(equation)
               ;
-            console.log('stack: ' + stack);
+            console.log('stack: ', stack);
             console.log('calculated: ', stack.execute());
             console.log('evaled: ', eval(equation));
           });
