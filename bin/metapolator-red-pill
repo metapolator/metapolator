@@ -20,12 +20,33 @@ if (require.main === module) {
       , 'metapolator/parseArgs'
       , 'ufojs/tools/io/staticNodeJS'
       , 'restfs'
+      , 'socket.io'
+      , 'fsEventsServer'
     ], function (
         program
       , parseArgs
       , io
       , restfs
+      , SocketIO
+      , fsEventsServer
     ) {
+        function mountAndMonitorRESTDirectory(location, baseDir, socketIO, app) {
+            var relativeLocation = location[0] === '/'
+                    ? location.slice(1)
+                    : location
+              , socketNamespace = socketIO.of('/fsEvents/' + relativeLocation)
+              ;
+            app.use(location, restfs(baseDir));
+            return fsEventsServer.createEmitter(
+                                socketNamespace, baseDir, relativeLocation);
+        }
+
+        function getPort(program) {
+            if(program.port === undefined)
+                program.port = parseInt(process.env.RED_PILL_PORT) || 0;
+            return program.port;
+        }
+
         program._name = path.basename(process.argv[1]).replace('-', ' ');
         program.arguments(exports.command.arguments)
         .description(exports.command.description)
@@ -36,16 +57,18 @@ if (require.main === module) {
               , libDir = rootDir + '/app/lib'
               , index = rootDir + '/app/red-pill.html'
               , project = parseArgs.project(io, projectDir)
+              , app = express()
+              , server = app.listen(getPort(program))
+              , socketIO = SocketIO(server)
               ;
+            app.get('/', function(req, res, next) { res.sendfile(index); }) // index file
+               .use('/lib', express.static(libDir)) // application code
+               ;
+            // project is a RESTful directory with a socket io channel
+            // that emits change events at "/fsEvents/project"
+            mountAndMonitorRESTDirectory('/project', project.baseDir
+                                                        , socketIO, app);
 
-            var app = express()
-            .get('/', function(req, res, next) { res.sendfile(index); }) // index file
-            .use('/lib', express.static(libDir)) // application code
-            .use('/project', restfs(project.baseDir)); // the project, as a RESTful directory
-
-            if (program.port === undefined)
-                program.port = parseInt(process.env.RED_PILL_PORT);
-            var server = app.listen(program.port || 0);
             if (server.address()) {
                 console.warn('Metapolator: Serving the red pill.');
                 console.warn('Open http://localhost:'+server.address().port+' in your browser.');

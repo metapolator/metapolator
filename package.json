@@ -57,6 +57,8 @@
     "util-logging": "~0.0.1",
     "path": "~0.4.9",
     "util": "~0.10.3",
-    "inherits": "2.0.1"
+    "inherits": "2.0.1",
+    "chokidar": "^0.10.4",
+    "socket.io": "^1.2.0"
   }
 }
