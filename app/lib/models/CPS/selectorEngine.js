@@ -358,7 +358,7 @@ define([
             for(;k<matches.length;k++) {
                 if(matches[k].nodeID in seen)
                     continue;
-                seen[matches[k].nodeId] = null;
+                seen[matches[k].nodeID] = null;
                 result.push(matches[k]);
             }
         }
