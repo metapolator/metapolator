@@ -5,7 +5,6 @@ define([
 ], function(
     errors
   , window
-  , CodeMirror
 ) {
     "use strict";
     
@@ -21,8 +20,7 @@ define([
             masters: this.project.masters
         }
         this._cache = {
-            codeMirrorDocs: {}
-          , lastSelection: []
+            lastSelection: []
         }
         
         // load all masters, because right now it is very confusing
@@ -32,22 +30,10 @@ define([
         
         // will be called on angular.bootstrap
         // see ui/app-controller.js 
-        this.angularApp.constant('registerFrontend',
-                                this._registerFrontend.bind(this))
+        this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this))
         this.angularApp.constant('redPillModel', this.model);
-        this.angularApp.constant('getMasterSources',
-                                this.project.getMasterSources
-                                        .bind(this.project));
-        this.angularApp.constant('getCodeMirrorDoc',
-                                this.getCodeMirrorDoc.bind(this));
-        this.angularApp.constant('returnCodeMirrorDoc',
-                                this.returnCodeMirrorDoc.bind(this));
-        
-        this.angularApp.constant('selectGlyphs',
-                                this.selectGlyphs.bind(this));
+        this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
-        
-        this.angularApp.constant('updateCPS', this.digestCodeMirrorChanges.bind(this));
     }
     
     var _p = RedPill.prototype;
@@ -110,59 +96,10 @@ define([
         
         if(error)
             console.warn('The document "' + source + '" can\'t be parsed: ', error.message);
-        
-        // if there was no error 
-        // inform the ui that redrawing is needed. CodeMirror doesn't need
-        // any information
-        
-        // automatic updates are very slow at the moment.
-        else if(broadcast){
+        // broadcast if there was no error
+        else if(broadcast) {
             this.frontend.$scope.$broadcast('cpsUpdate');
         }
-    }
-    
-    _p.getCodeMirrorDoc = function(source) {
-        var doc;
-        if(!this._cache.codeMirrorDocs[source]) {
-            // when we keep this doc around, we can even restore the history
-            // when loading the doc a second time
-            // also, codemirror is smart enough to propagate changes on one
-            // doc to all editor instances that show the doc! However,
-            // this is done by instances of linked doc, and we need to
-            // manage their creation and destruction
-            doc = new CodeMirror.Doc(
-                    // this is the initial fill of the doc. later, the doc
-                    // will be our  single source of truth (the CPS string)
-                    this.project.getCPSRules(source).toString(), 'css');
-            this._cache.codeMirrorDocs[source] = {
-                doc: doc
-              , changeHandler: this._throttledDocChangeHandler.bind(this, source, false)
-              , timeout: null
-              , changes: []
-            };
-            doc.on('change', this._cache.codeMirrorDocs[source].changeHandler);
-        }
-        return this._cache.codeMirrorDocs[source]
-                                    .doc.linkedDoc({sharedHist: true});
-    }
-    
-    _p.digestCodeMirrorChanges = function() {
-        var source;
-        for(source in this._cache.codeMirrorDocs)
-            if(this._cache.codeMirrorDocs[source].changes.length)
-                this._processChangedDoc(source, false);
-        this.frontend.$scope.$broadcast('cpsUpdate');
-    }
-    
-    
-    _p.returnCodeMirrorDoc = function(linked) {
-        // TODO: if all links of a doc are returned AND if the doc is
-        // clean (saved) we might consider purging its cache in
-        // this._cache.codeMirrorDocs to free some memory.
-        // we can get the correct cache
-        linked.iterLinkedDocs(
-            function(doc){ doc.unlinkDoc(linked); }
-        );
     }
     
     _p._selectGlyphs = function(selector) {
