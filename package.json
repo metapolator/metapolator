@@ -6,11 +6,27 @@
   "bugs": {
     "url": "https://github.com/metapolator/metapolator/issues/"
   },
+  "files": [
+    "app",
+    "bin",
+    "bower.json",
+    ".bowerrc",
+    "config.js",
+    "CONTRIBUTING.md",
+    "data",
+    "dev-scripts",
+    "examples",
+    "gulpfile.js",
+    ".jshintrc",
+    "LICENSE.txt",
+    "README.md"
+  ],
   "scripts": {
     "test": "cd app/tests; ./run_tests"
   },
   "directories": {
-    "bin": "bin"
+    "bin": "bin",
+    "lib": "app/lib"
   },
   "repository": {
     "type": "git",
