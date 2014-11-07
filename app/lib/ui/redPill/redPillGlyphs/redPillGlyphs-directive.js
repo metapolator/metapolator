@@ -13,6 +13,6 @@ define([
           , scope: {}
         };
     }
-    redPillGlyphsDirective.$inject = ['$interval'];
+    redPillGlyphsDirective.$inject = [];
     return redPillGlyphsDirective;
 })
