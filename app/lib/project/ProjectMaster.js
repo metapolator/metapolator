@@ -43,7 +43,7 @@ define([
           , rules = []
           ;
         for(;i<this._cpsChain.length;i++)
-            rules.push(this._project.getCPSRules(this._cpsChain[i]));
+            rules.push(this._project.controller.getCPSRules(this._cpsChain[i]));
         return rules;
     };
 

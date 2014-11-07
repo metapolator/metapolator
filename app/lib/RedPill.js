@@ -89,7 +89,7 @@ define([
         // todo: try catch here. an error will be thrown when the
         // document content is garbage 
         try {
-            this.project.updateCPSRule(source, data.doc.getValue());
+            this.project.controller.updateCPSRule(source, data.doc.getValue());
         }
         catch(err){
             error = err;
@@ -135,7 +135,7 @@ define([
         // +1 to remove the leading slash
         sourceName = path.slice(this.project.cpsDir.length + 1);
         try {
-            this.project.refreshCPSRules(true, sourceName)
+            this.project.controller.refreshCPSRules(true, sourceName)
                 // then update the display
                 .then(function() {
                     this.frontend.$scope.$broadcast('cpsUpdate');
