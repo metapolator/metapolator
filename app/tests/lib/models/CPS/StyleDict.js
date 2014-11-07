@@ -33,7 +33,7 @@
                   , 'master#master_1 point>left'
                   , 'master#master_2 point'
               ]
-              , modelController = new ModelController(parameterRegistry)
+              , modelController = new ModelController(undefined, parameterRegistry, undefined)
               , i=0
               , source
               , master

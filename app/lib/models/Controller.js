@@ -5,6 +5,7 @@ define([
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/CPS/StyleDict'
   , 'metapolator/models/CPS/ReferenceDict'
+  , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
     errors
   , selectorEngine
@@ -12,14 +13,17 @@ define([
   , Univers
   , StyleDict
   , ReferenceDict
+  , parseRules
 ) {
     "use strict";
     var CPSError = errors.CPS
       , KeyError = errors.Key
       ;
     
-    function Controller(parameterRegistry) {
+    function Controller(io, parameterRegistry, cpsDir) {
+        this._io = io;
         this._parameterRegistry = parameterRegistry;
+        this._cpsDir = cpsDir;
         this._sources = [];
         this._sourceIndex = {};
         // source names of the masters
@@ -63,7 +67,8 @@ define([
         this._caches = {
             styleDicts: {}
           , referenceDicts: {}
-          , rules: {}
+          , mergedRules: {}
+          , ruleFiles: this._caches ? this._caches.ruleFiles : {}
           , dictionaries: {}
         }
     };
@@ -162,9 +167,9 @@ define([
                             .map(function(item){return item.rules;}));
     }
     _p.getMergedRules = function(master) {
-        if(!this._caches.rules[master])
-            this._caches.rules[master] = this._getMergedRules(master);
-        return this._caches.rules[master];
+        if(!this._caches.mergedRules[master])
+            this._caches.mergedRules[master] = this._getMergedRules(master);
+        return this._caches.mergedRules[master];
     }
     
     /**
@@ -274,5 +279,53 @@ define([
         return selectorEngine.query(scope, selector);
     }
     
+    _p._readCPS = function (async, sourceName) {
+        var fileName = [this._cpsDir, sourceName].join('/');
+        return this._io.readFile(async, fileName);
+    }
+
+    _p._getCPSRules = function(sourceName) {
+        var cpsString = this._readCPS(false, sourceName);
+        return parseRules.fromString(cpsString, sourceName, this._parameterRegistry);
+    }
+
+    _p.getCPSRules = function(sourceName) {
+        if(!this._caches.ruleFiles[sourceName])
+            this._caches.ruleFiles[sourceName] = this._getCPSRules(sourceName);
+        return this._caches.ruleFiles[sourceName];
+    }
+
+    /**
+     * parse the doc content
+     * if it parses, replace the old cps rule with the new cps rule
+     * inform all *consumers* of these rules that there was an update
+     * this might involve pruning some caches of ModelControllers.
+     *
+     * If this doesn't parse, a CPSParserError is thrown
+     *
+     * FIXME: rename into "updateCPSRules" to match related api function names
+     */
+    _p.updateCPSRule = function(sourceName, cpsString) {
+        if(!this._caches.ruleFiles[sourceName])
+            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
+        var source = parseRules.fromString(cpsString, sourceName, parameterRegistry);
+        // if we are still here parsing was a success
+        this._caches.ruleFiles[sourceName] = source;
+        this.replaceSource(source);
+    }
+
+    /**
+     * async is propagated to the obtain API
+     * if async is true a promise is returned, otherwise nothing
+     */
+    _p.refreshCPSRules = function(async, sourceName) {
+        if(!this._caches.ruleFiles[sourceName])
+            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
+        var result = this._readCPS(async, sourceName);
+        if(async)
+            return result.then(this.updateCPSRule.bind(this, sourceName));
+        this.updateCPSRule(sourceName);
+    }
+
     return Controller;
 })

@@ -70,12 +70,11 @@ define([
         };
         this._cache = {
             masters: {}
-          , rules: {}
           , glyphClasses:{}
         };
         
-        this._controller = new ModelController(parameterRegistry);
         this.baseDir = baseDir || '.';
+        this._controller = new ModelController(io, parameterRegistry, this.cpsDir);
         this._log = new log.Logger().setLevel(log.Level.INFO);
         this._log.addHandler(new log.Handler());
     }
@@ -329,9 +328,8 @@ define([
         // get the name for this master from the CLI
         if(this.hasMaster(masterName))
             throw new ProjectError('Master "'+masterName+'" already exists.');
-        var master = {};
+        var master = {cpsChain: cpsChain};
         this._data.masters[masterName] = master;
-        master.cpsChain = cpsChain;
         
         // create a skeleton layer for this master
         master.skeleton = skeleton;
@@ -389,56 +387,8 @@ define([
         return this._cache.masters[masterName];
     }
     
-    _p._readCPS = function (async, sourceName) {
-        var fileName = [this.cpsDir, sourceName].join('/');
-        return this._io.readFile(async, fileName);
-    }
-    
-    _p._getCPSRules = function _readCPSRules(sourceName) {
-        var cpsString = this._readCPS(false, sourceName);
-        return parseRules.fromString(cpsString, sourceName, parameterRegistry);
-    }
-    
-    _p.getCPSRules = function(sourceName) {
-        if(!this._cache.rules[sourceName])
-            this._cache.rules[sourceName] = this._getCPSRules(sourceName);
-        return this._cache.rules[sourceName];
-    }
-    
-    /**
-     * parse the doc content
-     * if it parses, replace the old cps rule with the new cps rule
-     * inform all *consumers* of these rules that there was an update
-     * this might involve pruning some caches of ModelControllers.
-     * 
-     * If this doesn't parse, a CPSParserError is thrown
-     * 
-     * FIXME: rename into "updateCPSRules" to match related api function names
-     */
-    _p.updateCPSRule = function(sourceName, cpsString) {
-        if(!this._cache.rules[sourceName])
-            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
-        var source = parseRules.fromString(cpsString, sourceName, parameterRegistry);
-        // if we are still here parsing was a success
-        this._cache.rules[sourceName] = source;
-        this._controller.replaceSource(source);
-    }
-    
-    /**
-     * async is propagated to the obtain api
-     * if async is tru a promise is returned, otherwise nothing
-     */
-    _p.refreshCPSRules = function(async, sourceName) {
-        if(!this._cache.rules[sourceName])
-            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
-        var result = this._readCPS(async, sourceName);
-        if(async)
-            return result.then(this.updateCPSRule.bind(this, sourceName));
-        this.updateCPSRule(sourceName);
-    }
-    
     _p.open = function(masterName) {
-        if(!this._controller.hasMaster(master)) {
+        if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
             , parameterCollections = master.loadCPS()
