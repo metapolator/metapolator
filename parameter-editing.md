@@ -55,7 +55,7 @@ _—work in progress_
 ## types and units
 Parameters use the following units:
 
-* the most used unit is, ehm, _unit_ (milliEm); demanding: can be negative, fractions over 4 decades (from 1, 2, 3 to 1000+);
+* the most used unit is, ehm, _unit_ (milliEm); demanding: can be negative, fractions and spans 4 decades (from 1, 2, 3 to 1000+);
 * angles in degrees, 0–360, can be fractions; input handling can keep anything within that range;
-* scalers; multipliers without unit (e.g tension and width, but also for all input with scaling (×) operation); normal range: 0–3, but can go towards ∞;
-* for point alignments, a list of alignments of the form: “p1-p2:0,0 p3.port.x-p4.starb.x:123 p5.y-p6.y:0”.
+* scalers; multipliers without unit (e.g tension and width, but also for all input with scaling (×) operation); normal range: 0–3, but can veer towards ∞;
+* for point alignments, a list of alignments of the form: “p1-p2:0,0 p3.port.x-p4.starb.x:123 p5.y-p6.y:0”, where the numbers are units.
