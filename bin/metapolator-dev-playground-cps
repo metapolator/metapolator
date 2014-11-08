@@ -81,8 +81,8 @@ if (require.main === module) {
                       , description: 'the intrinsic value of the zon'
             })
 
-            var result = parseRules.fromString(cpsString, CPSfile, parameterRegistry)
-              , controller = new Controller(parameterRegistry)
+            var controller = new Controller(parameterRegistry)
+              , result = parseRules.fromString(cpsString, CPSfile, controller)
               , univers = controller.query('univers')
               , ralph = new Master()
               , heidi = new Master()

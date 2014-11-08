@@ -53,7 +53,7 @@ define([
             this._master = this._project.getMaster(masterName);
         else
             this._master = this._project.createMaster(masterName,
-                                                      [this._project.cpsOutputConverterFile, this._project.cpsGlobalFile, masterName + '.cps'],
+                                                      masterName + '.cps',
                                                       'skeleton.' + masterName);
 
         // tell us about errors instead of throwing it away
@@ -113,7 +113,7 @@ define([
         // it is possible to import changed glyphs into an existing CPS
         // files, changing only the new glyphs and keeping the old ones. But
         // that ain't gonna be easy.
-        this._master.saveCPS(this._masterName + '.cps', cps);
+        this._master.saveCPS(this._masterName + '.cps', '@import "' + this._project.cpsOutputConverterFile + '";\n@import "' + this._project.cpsGlobalFile + '";\n\n' + cps);
     };
 
     _p._readGlyphFromSource = function(glyphName) {

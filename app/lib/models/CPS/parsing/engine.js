@@ -78,7 +78,7 @@ define([
      * don't want this side effect.
      */
     function parserEngine(defaultNodeConstructors, factorySwitches, ast
-                                    , sourceName, parameterRegistry) {
+                                    , sourceName, controller) {
         if(sourceName === undefined)
             sourceName = '(unkown source)';
         var source = new Source(sourceName)
@@ -122,7 +122,7 @@ define([
                 // All children are already initialized.
                 if(node.makeInstance)
                     node.instance = nodeConstructors[node.type]
-                        .call(nodeConstructors, node, source, parameterRegistry);
+                        .call(nodeConstructors, node, source, controller);
                                         
                 //switch back nodeConstructors if this element switched it
                 if(frame[2])

@@ -11,14 +11,12 @@ define([
 ) {
     "use strict";
 
-    function ProjectMaster(io, project, name, glyphSetDir, cpsChain) {
-
+    function ProjectMaster(io, project, name, glyphSetDir, cpsFile) {
         this._io = io;
         this._project = project;
         this._name = name;
         this._glyphSetDir = glyphSetDir;
-        this._cpsChain = cpsChain.slice();
-
+        this._cpsFile = cpsFile;
         this._glyphSet = undefined;
     }
 
@@ -39,12 +37,8 @@ define([
     };
 
     _p.loadCPS = function() {
-        var i = 0
-          , rules = []
-          ;
-        for(;i<this._cpsChain.length;i++)
-            rules.push(this._project.controller.getCPSRules(this._cpsChain[i]));
-        return rules;
+        // FIXME: return a scalar
+        return [this._project.controller.getCPSRules(this._cpsFile)];
     };
 
     _p.deleteCPS = function(filename) {
