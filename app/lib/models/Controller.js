@@ -286,7 +286,7 @@ define([
 
     _p._getCPSRules = function(sourceName) {
         var cpsString = this._readCPS(false, sourceName);
-        return parseRules.fromString(cpsString, sourceName, this._parameterRegistry);
+        return parseRules.fromString(cpsString, sourceName, this);
     }
 
     _p.getCPSRules = function(sourceName) {
@@ -308,7 +308,7 @@ define([
     _p.updateCPSRule = function(sourceName, cpsString) {
         if(!this._caches.ruleFiles[sourceName])
             throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
-        var source = parseRules.fromString(cpsString, sourceName, parameterRegistry);
+        var source = parseRules.fromString(cpsString, sourceName, this);
         // if we are still here parsing was a success
         this._caches.ruleFiles[sourceName] = source;
         this.replaceSource(source);

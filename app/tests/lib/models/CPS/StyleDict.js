@@ -44,7 +44,7 @@
                 source = cpsParser.fromString(
                          recursive_cps[i]
                        , 'recursive_cps at '+ i
-                       , parameterRegistry
+                       , modelController
                 );
                 master = makeMasterFixture('master_'+ i, ['a']);
                 modelController.addMaster(master, [source]);
