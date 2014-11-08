@@ -105,10 +105,6 @@ define([
         }
     })
     
-    _p.usesSource = function(source) {
-        return source in this._sourceIndex;
-    }
-    
     _p.replaceSource = function(collection) {
         var source = collection.source.name
           , index = this._sourceIndex[source]
@@ -126,10 +122,6 @@ define([
             throw new KeyError(['The Source with name "', source ,'" was '
                     , 'not found in: ',this.sources.join(', ')].join(''));
         return this._sources[index];
-    }
-    
-    _p.getSourceStringByName = function(source) {
-        return this.getSource(source).toString();
     }
     
     _p.addMaster = function(master, sources) {
