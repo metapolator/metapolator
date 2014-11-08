@@ -314,7 +314,7 @@ define([
     }
     
     /**
-     * Create a master entry for this masterName, with the given cpsChain
+     * Create a master entry for this masterName, with the given cpsFile
      * and skeleton.
      *
      * Also creates an entry in layercontents.plist: `skeleton`,
@@ -324,11 +324,11 @@ define([
      * it before attempting to use the font.
      * 
      */
-    _p.createMaster = function(masterName, cpsChain, skeleton) {
+    _p.createMaster = function(masterName, cpsFile, skeleton) {
         // get the name for this master from the CLI
         if(this.hasMaster(masterName))
             throw new ProjectError('Master "'+masterName+'" already exists.');
-        var master = {cpsChain: cpsChain};
+        var master = {cpsFile: cpsFile};
         this._data.masters[masterName] = master;
         
         // create a skeleton layer for this master
@@ -375,7 +375,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsChain);
+        return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsFile);
     }
     
     _p.getMaster = function(masterName) {
@@ -386,7 +386,7 @@ define([
         }
         return this._cache.masters[masterName];
     }
-    
+
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)

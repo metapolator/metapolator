@@ -1,32 +1,19 @@
 define([
-    // the special 'exports' module helps us around circular dependency
-    // issues with the parseRules module
-    'exports'
-  , 'metapolator/errors'
+    'metapolator/errors'
   , './curry'
   , './parameterFactories'
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/AtRuleCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/GenericCPSNode'
-  
-  , 'ufojs/tools/io/static'
-  , 'metapolator/project/parameters/registry'
-  , 'metapolator/models/CPS/parsing/parseRules'
-    
 ], function (
-    exports
-  , errors
+    errors
   , curry
   , parameterFactories
   , Parameter
   , AtRuleCollection
   , AtRuleName
   , GenericCPSNode
-  
-  , io
-  , parameterRegistry
-  , parseRules
 ) {
     "use strict";
     var CPSError = errors.CPS
@@ -52,9 +39,8 @@ define([
         /**
          * Find the name of the resource to load and return a ParameterCollection
          */
-        'atrules': function(node, source) {
+        'atrules': function(node, source, controller) {
             var args, resource;
-            
             // filter all whitespace
             args = node.children.slice(1).filter(function(child) {
                 if(child.instance instanceof GenericCPSNode && child.instance.type === 's')
@@ -70,30 +56,25 @@ define([
             resource = args[0].data.slice(1,-1);
             
             // TODO:
-            // * at this point: at least "io" and "parameterRegistry"
-            //   MUST be somehow given by the code that invoked the parser
-            //   in the first place!
-            // * Also, it is desired to create and return a special
+            // * It is desired to create and return a special
             //   subclass of ParameterCollection => AtImportCollection,
             //   This will be a good marker for us and allow for all kinds
             //   of specialization!
             //   This could be done by using a (sub-)version of parameterFactories
             //   that overides the "stylesheet" factory, which is declared in
             //   baseFactories.
-            // * when printing the new subclass of ParameterCollection we
-            //   will wrap the output into special comments mentioning that
-            //   the source of the rules is a import
+            // * The new subclass of ParameterCollection will stringify as the
+            //   original @import directive
             // * This change breaks the red pill on a deep level:
             //   changing one of these rules should propagate to all instances
             //   where this file was imported.
             // * ALSO: When a change to this file
-            //   hapens, a reloading of the affected styles MUST NOT read
-            //   this files version from disc, but use the buffered version
+            //   happens, a reloading of the affected styles MUST NOT read
+            //   this file's version from disc, but use the buffered version
             //   as a source.
             
             //parse the file and return the resulting ParameterCollection
-            var cpsString = io.readFile(false, resource);
-            return parseRules.fromString(cpsString, resource, parameterRegistry);
+            return controller.getCPSRules(resource);
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
     });
@@ -108,6 +89,8 @@ define([
 
     atImportParsingSwitch = [test_switchToAtImport, atImportFactories];
 
-    exports.factories = atImportFactories;
-    exports.atImportParsingSwitch = atImportParsingSwitch;
+    return {
+        factories: atImportFactories
+      , atImportParsingSwitch: atImportParsingSwitch
+    };
 });
