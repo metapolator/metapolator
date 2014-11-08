@@ -42,18 +42,14 @@ define([
     "use strict";
 
         // FIXME: make this available for browsers too
+    // Specify formatVersion as an int, as required by
+    // unifiedfontobject.org, otherwise it becomes a 'real' in the plist.
     var metainfoV3 = {
             creator: 'org.ufojs.lib'
-            // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobject.org
-            // says this is an int
           , formatVersion: new IntObject(3)
         }
       , metainfoV2 = {
             creator: 'org.ufojs.lib'
-            // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobject.org
-            // says this is an int
           , formatVersion: new IntObject(2)
         }
       , // fontforge requires a fontinfo.plist that defines unitsPerEm

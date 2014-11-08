@@ -34,7 +34,7 @@ define([
      * @source: instance of parameters/Source
      *
      * We'll use mostly factories, because the "node" we use as argument
-     * is not exactly a nice interface. However, its called _nodeConstructors
+     * is not exactly a nice interface. However, it's called _nodeConstructors
      * because that implies that these functions are beeing called using
      * the `new` keyword.
      *
