@@ -24,9 +24,9 @@ define([
         this._io = io;
         this._parameterRegistry = parameterRegistry;
         this._cpsDir = cpsDir;
-        this._sources = [];
-        this._sourceIndex = {};
-        // source names of the masters
+        this._rules = [];
+        this._ruleIndex = {};
+        // rule names of the masters
         this._masters = {};
         
         this._MOM = new Multivers(this);
@@ -47,14 +47,14 @@ define([
     _p.ReferenceDict = ReferenceDict;
     
     
-    _p._rebuildSourceIndex = function() {
-        this._sourceIndex = {};
+    _p._rebuildRuleIndex = function() {
+        this._ruleIndex = {};
         var i=0
           , name
           ;
-        for(;i<this._sources.length;i++) {
-            name = this._sources[i].source.name;
-            this._sourceIndex[name] = i;
+        for(;i<this._rules.length;i++) {
+            name = this._rules[i].rule.name;
+            this._ruleIndex[name] = i;
         }
     }
     
@@ -73,64 +73,64 @@ define([
         }
     };
     
-    _p.addSource = function(parameterSource) {
-        var ownSource
-          , name = parameterSource.source.name
+    _p.addRule = function(parameterRule) {
+        var ownRule
+          , name = parameterRule.source.name
           ;
         try {
-            ownSource = this.getSource(name);
+            ownRule = this.getRule(name);
         }
         catch(error){
             if(!(error instanceof KeyError))
                 throw error;
         }
-        if(!ownSource)
-            // we don't have a source named like that yet
-            this._sourceIndex[name] = this._sources.push(parameterSource) - 1;
-        else if(ownSource !== parameterSource)
-            throw new KeyError('A parameterSource object with the same '
-                + 'name  "'+name+'" exists already. Use replaceSource to '
-                +'change a source objcet?');
-        // else: pass, we aleady have that source
+        if(!ownRule)
+            // we don't have a rule named like that yet
+            this._ruleIndex[name] = this._rules.push(parameterRule) - 1;
+        else if(ownRule !== parameterRule)
+            throw new KeyError('A parameterRule object with the '
+                + 'name "'+name+'" exists already. Use replaceRule to '
+                +'change a rule object?');
+        // else: pass, we aleady have that rule
         return;
     }
     
-    _p.addSources = function(sources) {
-        sources.map(this.addSource, this);
+    _p.addRules = function(rules) {
+        rules.map(this.addRule, this);
     }
     
-    Object.defineProperty(_p, 'sources', {
+    Object.defineProperty(_p, 'rules', {
         get: function() {
-            return Object.keys(this._sourceIndex)
+            return Object.keys(this._ruleIndex)
         }
     })
     
-    _p.replaceSource = function(collection) {
-        var source = collection.source.name
-          , index = this._sourceIndex[source]
+    _p.replaceRule = function(collection) {
+        var rule = collection.source.name
+          , index = this._ruleIndex[rule]
           ;
         if(index === undefined)
-            throw new KeyError('Can\'t replace source "'+ source
+            throw new KeyError('Can\'t replace rule "'+ rule
                                 +'" because it\'s not in this controller');
-        this._sources[index] = collection;
+        this._rules[index] = collection;
         this._resetCaches();
     }
     
-    _p.getSource = function(source) {
-        var index = this._sourceIndex[source];
+    _p.getRule = function(rule) {
+        var index = this._ruleIndex[rule];
         if(index === undefined)
-            throw new KeyError(['The Source with name "', source ,'" was '
-                    , 'not found in: ',this.sources.join(', ')].join(''));
-        return this._sources[index];
+            throw new KeyError(['The Rule with name "', rule ,'" was '
+                    , 'not found in: ',this.rules.join(', ')].join(''));
+        return this._rules[index];
     }
     
-    _p.addMaster = function(master, sources) {
-        var i=0, sourceSet = {};
+    _p.addMaster = function(master, rules) {
+        var i=0, ruleSet = {};
         
-        this.addSources(sources);
-        for(;i<sources.length;i++)
-            sourceSet[sources[i].source.name] = null;
-        this._masters[master.id] = sourceSet;
+        this.addRules(rules);
+        for(;i<rules.length;i++)
+            ruleSet[rules[i].source.name] = null;
+        this._masters[master.id] = ruleSet;
         this._univers.add(master);
     }
     
@@ -138,7 +138,7 @@ define([
         return master in this._masters;
     }
     
-    _p.getMasterSources = function (master) {
+    _p.getMasterRules = function (master) {
         if(!(master in this._masters))
             throw new KeyError('Master "'+ master +'" not found in '
                                 + Object.keys(this._masters).join(', '));
@@ -154,8 +154,8 @@ define([
      */
     _p._getMergedRules = function(master) {
         return Array.prototype.concat.apply([]
-                    , this.getMasterSources(master)
-                            .map(this.getSource, this)
+                    , this.getMasterRules(master)
+                            .map(this.getRule, this)
                             .map(function(item){return item.rules;}));
     }
     _p.getMergedRules = function(master) {
@@ -169,8 +169,8 @@ define([
      */
     _p._getMergedDictionaries = function(master) {
         return Array.prototype.concat.apply([]
-                    , this.getMasterSources(master)
-                            .map(this.getSource, this)
+                    , this.getMasterRules(master)
+                            .map(this.getRule, this)
                             .map(function(item){return item.dictionaryRules; }));
     }
     _p.getMergedDictionaries = function(master) {
@@ -300,10 +300,10 @@ define([
     _p.updateCPSRule = function(sourceName, cpsString) {
         if(!this._caches.ruleFiles[sourceName])
             throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
-        var source = parseRules.fromString(cpsString, sourceName, this);
+        var rule = parseRules.fromString(cpsString, sourceName, this);
         // if we are still here parsing was a success
-        this._caches.ruleFiles[sourceName] = source;
-        this.replaceSource(source);
+        this._caches.ruleFiles[sourceName] = rule;
+        this.replaceRule(rule);
     }
 
     /**
