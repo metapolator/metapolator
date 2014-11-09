@@ -399,7 +399,7 @@ define([
     _p.getMasterSources = function(master) {
         if(!this._controller.hasMaster(master))
             this.open(master);
-        return this._controller.getMasterSources(master);
+        return this._controller.getMasterRules(master);
     }
     
     _p.import = function(masterName, sourceUFODir, glyphs) {
