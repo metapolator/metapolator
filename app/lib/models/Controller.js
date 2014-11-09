@@ -138,7 +138,7 @@ define([
         return master in this._masters;
     }
     
-    _p.getMasterSources = function (master) {
+    _p.getMasterRules = function (master) {
         if(!(master in this._masters))
             throw new KeyError('Master "'+ master +'" not found in '
                                 + Object.keys(this._masters).join(', '));
@@ -154,7 +154,7 @@ define([
      */
     _p._getMergedRules = function(master) {
         return Array.prototype.concat.apply([]
-                    , this.getMasterSources(master)
+                    , this.getMasterRules(master)
                             .map(this.getSource, this)
                             .map(function(item){return item.rules;}));
     }
@@ -169,7 +169,7 @@ define([
      */
     _p._getMergedDictionaries = function(master) {
         return Array.prototype.concat.apply([]
-                    , this.getMasterSources(master)
+                    , this.getMasterRules(master)
                             .map(this.getSource, this)
                             .map(function(item){return item.dictionaryRules; }));
     }
