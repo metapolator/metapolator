@@ -183,10 +183,8 @@ define([
         return this._caches.referenceDicts[element.nodeID];
     }
     
-    _p.queryAll = function(selector, scope) {
-        var i=0
-          , result
-          ;
+    _p._checkScope = function(scope) {
+        var i=0;
         if(scope) {
             if(!(scope instanceof Array))
                 scope = [scope];
@@ -198,7 +196,11 @@ define([
         }
         else
             scope = [this._MOM];
-        result = selectorEngine.queryAll(scope, selector);
+        return scope;
+    }
+
+    _p.queryAll = function(selector, scope) {
+        var result = selectorEngine.queryAll(this._checkScope(scope), selector);
         // monkey patching the returned array.
         // it may become useful to invent an analogue to Web API NodeList
         result.query = selectorEngine.queryAll.bind(selectorEngine, result);
@@ -206,21 +208,7 @@ define([
     }
     
     _p.query = function(selector, scope) {
-        var i=0
-          , result
-          ;
-        if(scope) {
-            if(!(scope instanceof Array))
-                scope = [scope];
-            for(;i<scope.length;i++)
-                if(scope[i].multivers !== this._MOM)
-                    throw new CPSError('Query with a scope that is not '
-                        +'part of the multivers is not supported: '
-                        + scope[i].pariculars);
-        }
-        else
-            scope = [this._MOM];
-        return selectorEngine.query(scope, selector);
+        return selectorEngine.query(this._checkScope(scope), selector);
     }
 
     var obtainId = obtain.factory({}, {}, ['x'], function(obtain, x) { return x; });
