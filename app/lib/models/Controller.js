@@ -6,6 +6,7 @@ define([
   , 'metapolator/models/CPS/StyleDict'
   , 'metapolator/models/CPS/ReferenceDict'
   , 'metapolator/models/CPS/parsing/parseRules'
+  , 'obtain/obtain'
 ], function(
     errors
   , selectorEngine
@@ -14,6 +15,7 @@ define([
   , StyleDict
   , ReferenceDict
   , parseRules
+  , obtain
 ) {
     "use strict";
     var CPSError = errors.CPS
@@ -55,8 +57,6 @@ define([
         this._caches = {
             styleDicts: {}
           , referenceDicts: {}
-          , mergedRules: {}
-          , dictionaries: {}
         }
     };
     
@@ -98,7 +98,7 @@ define([
         if(index === undefined)
             throw new KeyError('Can\'t replace rule "'+ sourceName
                                 +'" because it\'s not in this controller');
-        // FIXME: invalidate cache
+        delete this._ruleIndex[sourceName]; // Invalidate cache for readCPS
         this.readCPS(true, sourceName).then(function (result) {
             this._rules[index] = result;
             this._resetCaches();
@@ -222,15 +222,22 @@ define([
             scope = [this._MOM];
         return selectorEngine.query(scope, selector);
     }
-    
+
+    var obtainId = obtain.factory({}, {}, ['x'], function(obtain, x) { return x; });
+
     _p.readCPS = function (async, sourceName) {
-        // FIXME: Check cache
-        var fileName = [this._cpsDir, sourceName].join('/');
-        var f = function (result) { return parseRules.fromString(result, sourceName, this); }.bind(this);
-        var result = this._io.readFile(async, fileName);
-        if (async)
-            return result.then(f);
-        return f(result);
+        try {
+            return obtainId(async, this._getRule(sourceName));
+        } catch (error) {
+            if(!(error instanceof KeyError))
+                throw error;
+            var fileName = [this._cpsDir, sourceName].join('/');
+            var f = function (result) { return parseRules.fromString(result, sourceName, this); }.bind(this);
+            var result = this._io.readFile(async, fileName);
+            if (async)
+                return result.then(f);
+            return f(result);
+        }
     }
 
     return Controller;
