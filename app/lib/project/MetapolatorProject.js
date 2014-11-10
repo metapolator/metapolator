@@ -395,12 +395,6 @@ define([
         return this._controller;
     }
     
-    _p.getMasterSources = function(master) {
-        if(!this._controller.hasMaster(master))
-            this.open(master);
-        return this._controller.getMasterRule(master);
-    }
-    
     _p.import = function(masterName, sourceUFODir, glyphs) {
         var importer = new ImportController( this._log, this, 
                                              masterName, sourceUFODir);

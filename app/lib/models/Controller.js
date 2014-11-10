@@ -124,7 +124,7 @@ define([
         return master in this._masters;
     }
     
-    _p.getMasterRule = function (master) {
+    _p._getMasterRule = function (master) {
         if(!(master in this._masters))
             throw new KeyError('Master "'+ master +'" not found in '
                                 + Object.keys(this._masters).join(', '));
@@ -146,7 +146,7 @@ define([
     */
     _p._getComputedStyle = function(element) {
         var masterRules = element.master
-                ? this._getRule(this.getMasterRule(element.master.id)).rules
+                ? this._getRule(this._getMasterRule(element.master.id)).rules
                 : []
           , rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.StyleDict(this, rules, element);
@@ -163,7 +163,7 @@ define([
     
     _p._getReferenceDictionary = function(element) {
         var masterRules = element.master
-                ? this._getRule(this.getMasterRule(element.master.id)).dictionaryRules
+                ? this._getRule(this._getMasterRule(element.master.id)).dictionaryRules
                 : []
         var rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
