@@ -37,7 +37,7 @@ define([
                                     , sourceName || 'selector parser');
         rules = rules.items;
         // search the first instance of SelectorList
-        // and verify that nothing else was submited.
+        // and verify that nothing else was submitted.
         for(;i<rules.length;i++) {
             if(rules[i] instanceof Comment)
                 // accept comments
