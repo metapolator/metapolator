@@ -17,7 +17,6 @@ define([
   , './ImportController'
   , './ExportController'
   , 'yaml'
-  , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
     errors
   , log
@@ -37,7 +36,6 @@ define([
   , ImportController
   , ExportController
   , yaml
-  , parseRules
 ) {
     "use strict";
 
