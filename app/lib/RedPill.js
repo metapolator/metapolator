@@ -48,63 +48,6 @@ define([
         this.frontend = appController;
     }
     
-    /**
-     * We will throttle the change rate and only update after a
-     * few millisecs of silence, because it's very likely
-     * that this event is fired often, i.e. a linebreak fires
-     * change twice, first for the linebreak then for the auto
-     * indent feature.
-     * A good throttle interval is whatever requestAnimationFrame
-     * does, rather than an arbitrary value with setTimeout.
-     * 
-     * if recordChangesOnly is true the processing of the changes will
-     * not be scheduled. This is currently used, because auto-updating
-     * takes too much time and slows down the ui.
-     */
-    _p._throttledDocChangeHandler = function(source, recordChangesOnly, doc, changeObj) {
-        var data = this._cache.codeMirrorDocs[source];
-        data.changes.push(changeObj);
-        
-        if(recordChangesOnly)
-            return;
-        
-        // reset the timeout
-        if(data.timeout)
-            window.cancelAnimationFrame(data.timeout);
-        data.timeout = window.requestAnimationFrame(
-                            this._processChangedDoc.bind(this, source, true));
-    }
-    
-    /**
-     * Called after a culminating changes in a requestAnimationFrame period.
-     * All doc data is in the cache.
-     */
-    _p._processChangedDoc = function(source, broadcast) {
-        var data = this._cache.codeMirrorDocs[source]
-          , error
-          ;
-        data.timeout = null;
-        data.changes = [];
-        
-        // todo: try catch here. an error will be thrown when the
-        // document content is garbage 
-        try {
-            this.project.controller.updateCPSRule(source, data.doc.getValue());
-        }
-        catch(err){
-            error = err;
-            if(!(error instanceof CPSParserError))
-                throw error;
-        }
-        
-        if(error)
-            console.warn('The document "' + source + '" can\'t be parsed: ', error.message);
-        // broadcast if there was no error
-        else if(broadcast) {
-            this.frontend.$scope.$broadcast('cpsUpdate');
-        }
-    }
-    
     _p._selectGlyphs = function(selector) {
         try {
             return this.project.controller.queryAll(selector)
@@ -135,7 +78,7 @@ define([
         // +1 to remove the leading slash
         sourceName = path.slice(this.project.cpsDir.length + 1);
         try {
-            this.project.controller.refreshCPSRules(true, sourceName)
+            this.project.controller.readCPS(true, sourceName).then(this.project.controller.replaceRule.bind(this.project.controller))
                 // then update the display
                 .then(function() {
                     this.frontend.$scope.$broadcast('cpsUpdate');
