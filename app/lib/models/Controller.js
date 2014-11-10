@@ -46,20 +46,8 @@ define([
     _p.StyleDict = StyleDict;
     _p.ReferenceDict = ReferenceDict;
     
-    
-    _p._rebuildRuleIndex = function() {
-        this._ruleIndex = {};
-        var i=0
-          , name
-          ;
-        for(;i<this._rules.length;i++) {
-            name = this._rules[i].rule.name;
-            this._ruleIndex[name] = i;
-        }
-    }
-    
     /**
-     * todo: check if deleting only parts of the cache is possible
+     * TODO: see if it's possible to invalidate only parts of the cache:
      * when only one master is affected by a change, it is overkill
      * to delete all the other items as well.
      */
@@ -68,17 +56,16 @@ define([
             styleDicts: {}
           , referenceDicts: {}
           , mergedRules: {}
-          , ruleFiles: this._caches ? this._caches.ruleFiles : {}
           , dictionaries: {}
         }
     };
     
-    _p.addRule = function(parameterRule) {
+    _p._addRule = function(parameterRule) {
         var ownRule
           , name = parameterRule.source.name
           ;
         try {
-            ownRule = this.getRule(name);
+            ownRule = this._getRule(name);
         }
         catch(error){
             if(!(error instanceof KeyError))
@@ -95,16 +82,17 @@ define([
         return;
     }
     
-    _p.addRules = function(rules) {
-        rules.map(this.addRule, this);
-    }
-    
     Object.defineProperty(_p, 'rules', {
         get: function() {
             return Object.keys(this._ruleIndex)
         }
     })
     
+    /**
+     * replace the old cps rule with the new cps rule
+     * inform all *consumers* of these rules that there was an update
+     * this might involve pruning some caches of ModelControllers.
+     */
     _p.replaceRule = function(collection) {
         var rule = collection.source.name
           , index = this._ruleIndex[rule]
@@ -116,7 +104,7 @@ define([
         this._resetCaches();
     }
     
-    _p.getRule = function(rule) {
+    _p._getRule = function(rule) {
         var index = this._ruleIndex[rule];
         if(index === undefined)
             throw new KeyError(['The Rule with name "', rule ,'" was '
@@ -124,13 +112,10 @@ define([
         return this._rules[index];
     }
     
-    _p.addMaster = function(master, rules) {
-        var i=0, ruleSet = {};
-        
-        this.addRules(rules);
-        for(;i<rules.length;i++)
-            ruleSet[rules[i].source.name] = null;
-        this._masters[master.id] = ruleSet;
+    _p.addMaster = function(master, cpsFile) {
+        var rule = this.readCPS(false, cpsFile);
+        this._addRule(rule);
+        this._masters[master.id] = rule.source.name;
         this._univers.add(master);
     }
     
@@ -138,45 +123,11 @@ define([
         return master in this._masters;
     }
     
-    _p.getMasterRules = function (master) {
+    _p.getMasterRule = function (master) {
         if(!(master in this._masters))
             throw new KeyError('Master "'+ master +'" not found in '
                                 + Object.keys(this._masters).join(', '));
-        return Object.keys(this._masters[master]);
-    }
-    
-    
-    /**
-     * getComputedStyle returns the matching rules in the correct
-     * order by specificity, so all rules should be included. The 
-     * order of the rules is important, too, and used as last weighting
-     * information, if all other specificity numbers equal.
-     */
-    _p._getMergedRules = function(master) {
-        return Array.prototype.concat.apply([]
-                    , this.getMasterRules(master)
-                            .map(this.getRule, this)
-                            .map(function(item){return item.rules;}));
-    }
-    _p.getMergedRules = function(master) {
-        if(!this._caches.mergedRules[master])
-            this._caches.mergedRules[master] = this._getMergedRules(master);
-        return this._caches.mergedRules[master];
-    }
-    
-    /**
-     * get all @dictionary rules for master
-     */
-    _p._getMergedDictionaries = function(master) {
-        return Array.prototype.concat.apply([]
-                    , this.getMasterRules(master)
-                            .map(this.getRule, this)
-                            .map(function(item){return item.dictionaryRules; }));
-    }
-    _p.getMergedDictionaries = function(master) {
-        if(!this._caches.dictionaries[master])
-            this._caches.dictionaries[master] = this._getMergedDictionaries(master);
-        return this._caches.dictionaries[master];
+        return this._masters[master];
     }
     
     Object.defineProperty(_p, 'parameterRegistry', {
@@ -194,7 +145,7 @@ define([
     */
     _p._getComputedStyle = function(element) {
         var masterRules = element.master
-                ? this.getMergedRules(element.master.id)
+                ? this._getRule(this.getMasterRule(element.master.id)).rules
                 : []
           , rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.StyleDict(this, rules, element);
@@ -211,7 +162,7 @@ define([
     
     _p._getReferenceDictionary = function(element) {
         var masterRules = element.master
-                ? this.getMergedDictionaries(element.master.id)
+                ? this._getRule(this.getMasterRule(element.master.id)).dictionaryRules
                 : []
         var rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
@@ -271,52 +222,13 @@ define([
         return selectorEngine.query(scope, selector);
     }
     
-    _p._readCPS = function (async, sourceName) {
+    _p.readCPS = function (async, sourceName) {
         var fileName = [this._cpsDir, sourceName].join('/');
-        return this._io.readFile(async, fileName);
-    }
-
-    _p._getCPSRules = function(sourceName) {
-        var cpsString = this._readCPS(false, sourceName);
-        return parseRules.fromString(cpsString, sourceName, this);
-    }
-
-    _p.getCPSRules = function(sourceName) {
-        if(!this._caches.ruleFiles[sourceName])
-            this._caches.ruleFiles[sourceName] = this._getCPSRules(sourceName);
-        return this._caches.ruleFiles[sourceName];
-    }
-
-    /**
-     * parse the doc content
-     * if it parses, replace the old cps rule with the new cps rule
-     * inform all *consumers* of these rules that there was an update
-     * this might involve pruning some caches of ModelControllers.
-     *
-     * If this doesn't parse, a CPSParserError is thrown
-     *
-     * FIXME: rename into "updateCPSRules" to match related api function names
-     */
-    _p.updateCPSRule = function(sourceName, cpsString) {
-        if(!this._caches.ruleFiles[sourceName])
-            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
-        var rule = parseRules.fromString(cpsString, sourceName, this);
-        // if we are still here parsing was a success
-        this._caches.ruleFiles[sourceName] = rule;
-        this.replaceRule(rule);
-    }
-
-    /**
-     * async is propagated to the obtain API
-     * if async is true a promise is returned, otherwise nothing
-     */
-    _p.refreshCPSRules = function(async, sourceName) {
-        if(!this._caches.ruleFiles[sourceName])
-            throw new KeyError('There is no CPS Rule named: ' + sourceName + '.');
-        var result = this._readCPS(async, sourceName);
-        if(async)
-            return result.then(this.updateCPSRule.bind(this, sourceName));
-        this.updateCPSRule(sourceName);
+        var f = function (result) { return parseRules.fromString(result, sourceName, this); }.bind(this);
+        var result = this._io.readFile(async, fileName);
+        if (async)
+            return result.then(f);
+        return f(result);
     }
 
     return Controller;

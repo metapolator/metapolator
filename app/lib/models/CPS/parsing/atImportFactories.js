@@ -74,7 +74,7 @@ define([
             //   as a source.
             
             //parse the file and return the resulting ParameterCollection
-            return controller.getCPSRules(resource);
+            return controller.readCPS(false, resource);
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
     });
