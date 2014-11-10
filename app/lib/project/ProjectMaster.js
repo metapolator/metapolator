@@ -36,11 +36,6 @@ define([
         this._io.writeFile(false, this._project.cpsDir+'/'+filename, cps);
     };
 
-    _p.loadCPS = function() {
-        // FIXME: return a scalar
-        return [this._project.controller.getCPSRules(this._cpsFile)];
-    };
-
     _p.deleteCPS = function(filename) {
         this._io.unlink(false, this._project.cpsDir+'/'+filename);
     };

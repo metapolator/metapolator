@@ -387,11 +387,10 @@ define([
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
-            , parameterCollections = master.loadCPS()
             , momMaster = master.loadMOM()
             ;
             momMaster.id = masterName;
-            this._controller.addMaster(momMaster, parameterCollections);
+            this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
     }
@@ -399,7 +398,7 @@ define([
     _p.getMasterSources = function(master) {
         if(!this._controller.hasMaster(master))
             this.open(master);
-        return this._controller.getMasterRules(master);
+        return this._controller.getMasterRule(master);
     }
     
     _p.import = function(masterName, sourceUFODir, glyphs) {
