@@ -47,7 +47,7 @@ define([
     _p.ReferenceDict = ReferenceDict;
     
     /**
-     * todo: check if deleting only parts of the cache is possible
+     * TODO: see if it's possible to invalidate only parts of the cache:
      * when only one master is affected by a change, it is overkill
      * to delete all the other items as well.
      */
