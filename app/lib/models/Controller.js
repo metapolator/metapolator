@@ -89,19 +89,20 @@ define([
     })
     
     /**
-     * replace the old cps rule with the new cps rule
+     * Asynchronously replace the old cps rule with the new cps rule
      * inform all *consumers* of these rules that there was an update
      * this might involve pruning some caches of ModelControllers.
      */
-    _p.replaceRule = function(collection) {
-        var rule = collection.source.name
-          , index = this._ruleIndex[rule]
-          ;
+    _p.replaceRule = function(sourceName) {
+        var index = this._ruleIndex[sourceName];
         if(index === undefined)
-            throw new KeyError('Can\'t replace rule "'+ rule
+            throw new KeyError('Can\'t replace rule "'+ sourceName
                                 +'" because it\'s not in this controller');
-        this._rules[index] = collection;
-        this._resetCaches();
+        // FIXME: invalidate cache
+        this.readCPS(true, sourceName).then(function (result) {
+            this._rules[index] = result;
+            this._resetCaches();
+        }.bind(this));
     }
     
     _p._getRule = function(rule) {
@@ -223,6 +224,7 @@ define([
     }
     
     _p.readCPS = function (async, sourceName) {
+        // FIXME: Check cache
         var fileName = [this._cpsDir, sourceName].join('/');
         var f = function (result) { return parseRules.fromString(result, sourceName, this); }.bind(this);
         var result = this._io.readFile(async, fileName);

@@ -78,7 +78,7 @@ define([
         // +1 to remove the leading slash
         sourceName = path.slice(this.project.cpsDir.length + 1);
         try {
-            this.project.controller.readCPS(true, sourceName).then(this.project.controller.replaceRule.bind(this.project.controller))
+            this.project.controller.replaceRule(sourceName)
                 // then update the display
                 .then(function() {
                     this.frontend.$scope.$broadcast('cpsUpdate');
