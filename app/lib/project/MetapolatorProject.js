@@ -17,7 +17,6 @@ define([
   , './ImportController'
   , './ExportController'
   , 'yaml'
-  , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
     errors
   , log
@@ -37,7 +36,6 @@ define([
   , ImportController
   , ExportController
   , yaml
-  , parseRules
 ) {
     "use strict";
 
@@ -393,12 +391,6 @@ define([
             this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
-    }
-    
-    _p.getMasterSources = function(master) {
-        if(!this._controller.hasMaster(master))
-            this.open(master);
-        return this._controller.getMasterRule(master);
     }
     
     _p.import = function(masterName, sourceUFODir, glyphs) {

@@ -80,7 +80,7 @@ define([
     function parserEngine(defaultNodeConstructors, factorySwitches, ast
                                     , sourceName, controller) {
         if(sourceName === undefined)
-            sourceName = '(unkown source)';
+            sourceName = '(unknown source)';
         var source = new Source(sourceName)
           , stack = []
           , lineNo = 1
