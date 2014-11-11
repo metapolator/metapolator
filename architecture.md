@@ -190,3 +190,10 @@ Testing is done by [The Intern](http://theintern.io/), because:
  * integrates with TravisCI
  * Code Coverage is builtin
  * A Grunt Task is available
+
+To run a subset of the tests:
+
+```
+cd tests
+./run_tests --suite=tests/lib/path/to/tests # The leaf should correspond to a test driver ending in .js
+```
