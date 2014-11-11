@@ -3,6 +3,7 @@
   , 'intern/chai!assert'
   , 'metapolator/errors'
   , 'metapolator/models/Controller'
+  , 'metapolator/models/CPS/RuleController'
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/parsing/parseRules'
   , 'ufojs/tools/io/TestingIO'
@@ -12,6 +13,7 @@
   , assert
   , errors
   , ModelController
+  , RuleController
   , parameterRegistry
   , cpsParser
   , TestingIO
@@ -36,7 +38,8 @@
                   , 'master#master_2 point'
               ]
               , io = new TestingIO()
-              , modelController = new ModelController(io, parameterRegistry, '')
+              , ruleController = new RuleController(io, parameterRegistry, '')
+              , modelController = new ModelController(ruleController)
               , i=0
               , source
               , master
@@ -45,7 +48,7 @@
             for(;i<recursive_cps.length;i++) {
                 io.writeFile(false, '/recursive_cps_'+i, recursive_cps[i]);
                 master = makeMasterFixture('master_'+ i, ['a']);
-                modelController.addMaster(master, 'recursive_cps_'+i);
+                modelController.addMaster(master, ruleController.parseFile(false, 'recursive_cps_'+i));
             }
             i=0;
             for(;i<failingSelectors.length;i++) {

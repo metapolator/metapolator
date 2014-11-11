@@ -78,16 +78,17 @@ define([
         // +1 to remove the leading slash
         sourceName = path.slice(this.project.cpsDir.length + 1);
         try {
-            this.project.controller.replaceRule(sourceName)
-                // then update the display
-                .then(function() {
+            this.project.controller.ruleController.parseFile(true, sourceName)
+                .then(function(result) {
+                    this.project.controller.replaceRule(result);
+                    // then update the display
                     this.frontend.$scope.$broadcast('cpsUpdate');
                 }.bind(this));
         }
         catch(error) {
-            // KeyError will be thrown by refreshCPSRules if sourceName
-            // is unknown, which is expected at this point, because
-            // that means that sourceName is unused.
+            // KeyError will be thrown by RuleController.replaceRule if
+            // sourceName is unknown, which is expected at this point,
+            // because that means that sourceName is unused.
             if(!(error instanceof errors.Key))
                 throw error;
         }

@@ -142,7 +142,7 @@ define([
          * objects. But for performance reasons, this decision is made in
          * _makeNode.
          */
-      , 'declaration': function (node, source, controller) {
+      , 'declaration': function (node, source, ruleController) {
             var name, value, typeDefinition;
 
             if(node.children[0].type !== 'property')
@@ -163,9 +163,9 @@ define([
             value = node.children[1].instance;
             // selectorListFromString uses the parser but doesn't need
             // initialized parameters
-            if(controller) {
+            if(ruleController) {
                 try {
-                    typeDefinition = controller.parameterRegistry.getTypeDefinition(name.name);
+                    typeDefinition = ruleController.parameterRegistry.getTypeDefinition(name.name);
                 }
                 catch(error) {
                     if(!(error instanceof errors.CPSRegistryKey))

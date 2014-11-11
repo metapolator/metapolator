@@ -30,7 +30,7 @@ define([
     /**
      * Create a ParameterCollection from a CSS string
      */
-    function rulesFromString(css, sourceName, controller) {
+    function rulesFromString(css, sourceName, ruleController) {
         var ast;
         try {
             ast = gonzales.srcToCSSP(css);
@@ -41,7 +41,7 @@ define([
             throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
         }
         
-        return rulesFromAST(ast, sourceName, controller)
+        return rulesFromAST(ast, sourceName, ruleController)
     }
     
     return {
