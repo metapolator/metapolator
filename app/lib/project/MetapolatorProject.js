@@ -13,6 +13,7 @@ define([
   , './parameters/outputConverter'
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/Controller'
+  , 'metapolator/models/CPS/RuleController'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
   , './ExportController'
@@ -32,6 +33,7 @@ define([
   , defaultParameters
   , Univers
   , ModelController
+  , RuleController
   , GlyphSet
   , ImportController
   , ExportController
@@ -68,7 +70,7 @@ define([
         };
         
         this.baseDir = baseDir || '.';
-        this._controller = new ModelController(io, parameterRegistry, this.cpsDir);
+        this._controller = new ModelController(new RuleController(io, parameterRegistry, this.cpsDir));
         this._log = new log.Logger().setLevel(log.Level.INFO);
         this._log.addHandler(new log.Handler());
     }

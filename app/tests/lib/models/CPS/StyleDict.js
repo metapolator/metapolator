@@ -3,6 +3,7 @@
   , 'intern/chai!assert'
   , 'metapolator/errors'
   , 'metapolator/models/Controller'
+  , 'metapolator/models/CPS/RuleController'
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/parsing/parseRules'
   , 'tests/lib/models/test_data/makeMasterFixture'
@@ -11,6 +12,7 @@
   , assert
   , errors
   , ModelController
+  , RuleController
   , parameterRegistry
   , cpsParser
   , makeMasterFixture
@@ -33,7 +35,7 @@
                   , 'master#master_1 point>left'
                   , 'master#master_2 point'
               ]
-              , modelController = new ModelController(undefined, parameterRegistry, undefined)
+              , modelController = new ModelController(new RuleController(undefined, parameterRegistry, undefined))
               , i=0
               , source
               , master
