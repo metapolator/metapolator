@@ -81,6 +81,18 @@ define([
     });
 
     /**
+     * Because the customDataDir may be in any location, this method can be used
+     * to ensure that the directory exists. 
+     *
+     * raises IOError if dir can't be created
+     */
+    _p.ensureCustomDataDirExists = function() {
+        var cdd = this._customDataDir;
+        this._io.mkDir(false, this._project.dataDir + '/masters' );
+        this._io.mkDir(false, this._project.dataDir + '/masters/' + this._masterName );
+    }
+
+    /**
      * Read a fontinfo.plist file for this master if it exists.
      */
     _p.readFontInfoFromFile = function() {

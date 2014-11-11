@@ -137,9 +137,6 @@ define([
         // create dir baseDir/data/com.metapolator
         this._io.mkDir(false, this.dataDir);
 
-        // create dir for storing per master data like fontinfo.plist.
-        this._io.mkDir(false, this.dataDir + '/masters');
-        
         // project file:
         // create this.dataDir/project.yaml => yaml({})
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
@@ -342,9 +339,10 @@ define([
             this._createGlyphLayer(master.skeleton);
 
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
-        this._io.mkDir(false, this.dataDir + '/masters/' + masterName);
 
-        return this.getMaster(masterName);
+        master = this.getMaster(masterName);
+        master.ensureCustomDataDirExists();
+        return master;
     }
 
     /**
