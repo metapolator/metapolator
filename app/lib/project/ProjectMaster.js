@@ -84,7 +84,7 @@ define([
      * Because the customDataDir may be in any location, this method can be used
      * to ensure that the directory exists. 
      *
-     * raises IOError if dir can't be created
+     * raises IOError if dir can't be created.
      */
     _p.ensureCustomDataDirExists = function() {
         var cdd = this._customDataDir;
