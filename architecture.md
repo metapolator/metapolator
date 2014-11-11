@@ -194,6 +194,6 @@ Testing is done by [The Intern](http://theintern.io/), because:
 To run a subset of the tests:
 
 ```
-cd tests
+cd app/tests
 ./run_tests --suite=SUITE # a suite listed in `suites` in app/tests/intern.js
 ```
