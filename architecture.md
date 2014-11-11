@@ -195,5 +195,5 @@ To run a subset of the tests:
 
 ```
 cd tests
-./run_tests --suite=tests/lib/path/to/tests.js # a test driver file
+./run_tests --suite=SUITE # a suite listed in `suites` in app/tests/intern.js
 ```
