@@ -35,7 +35,8 @@
                   , 'master#master_1 point>left'
                   , 'master#master_2 point'
               ]
-              , modelController = new ModelController(new RuleController(undefined, parameterRegistry, undefined))
+              , ruleController = new RuleController(undefined, parameterRegistry, undefined)
+              , modelController = new ModelController(ruleController)
               , i=0
               , source
               , master
@@ -46,10 +47,10 @@
                 source = cpsParser.fromString(
                          recursive_cps[i]
                        , 'recursive_cps at '+ i
-                       , parameterRegistry
+                       , ruleController
                 );
                 master = makeMasterFixture('master_'+ i, ['a']);
-                modelController.addMaster(master, [source]);
+                modelController.addMaster(master, source);
             }
             i=0;
             for(;i<failingSelectors.length;i++) {
