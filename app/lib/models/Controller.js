@@ -22,12 +22,8 @@ define([
       , KeyError = errors.Key
       ;
     
-    function Controller(io, parameterRegistry, cpsDir) {
-        this._io = io;
-        this._parameterRegistry = parameterRegistry;
-        this._cpsDir = cpsDir;
-        this._rules = [];
-        this._ruleIndex = {};
+    function Controller(ruleController) {
+        this.ruleController = ruleController;
         // rule names of the masters
         this._masters = {};
         
@@ -60,62 +56,16 @@ define([
         }
     };
     
-    _p._addRule = function(parameterRule) {
-        var ownRule
-          , name = parameterRule.source.name
-          ;
-        try {
-            ownRule = this._getRule(name);
-        }
-        catch(error){
-            if(!(error instanceof KeyError))
-                throw error;
-        }
-        if(!ownRule)
-            // we don't have a rule named like that yet
-            this._ruleIndex[name] = this._rules.push(parameterRule) - 1;
-        else if(ownRule !== parameterRule)
-            throw new KeyError('A parameterRule object with the '
-                + 'name "'+name+'" exists already. Use replaceRule to '
-                +'change a rule object?');
-        // else: pass, we aleady have that rule
-        return;
-    }
-    
-    Object.defineProperty(_p, 'rules', {
-        get: function() {
-            return Object.keys(this._ruleIndex)
-        }
-    })
-    
     /**
-     * Asynchronously replace the old cps rule with the new cps rule
-     * inform all *consumers* of these rules that there was an update
-     * this might involve pruning some caches of ModelControllers.
+     * Replace a CPS rule and reset caches.
      */
-    _p.replaceRule = function(sourceName) {
-        var index = this._ruleIndex[sourceName];
-        if(index === undefined)
-            throw new KeyError('Can\'t replace rule "'+ sourceName
-                                +'" because it\'s not in this controller');
-        delete this._ruleIndex[sourceName]; // Invalidate cache for readCPS
-        this.readCPS(true, sourceName).then(function (result) {
-            this._rules[index] = result;
-            this._resetCaches();
-        }.bind(this));
+    _p.replaceRule = function(rule) {
+        this.ruleController.replaceRule(rule);
+        this._resetCaches();
     }
     
-    _p._getRule = function(rule) {
-        var index = this._ruleIndex[rule];
-        if(index === undefined)
-            throw new KeyError(['The Rule with name "', rule ,'" was '
-                    , 'not found in: ',this.rules.join(', ')].join(''));
-        return this._rules[index];
-    }
-    
-    _p.addMaster = function(master, cpsFile) {
-        var rule = this.readCPS(false, cpsFile);
-        this._addRule(rule);
+    _p.addMaster = function(master, rule) {
+        this.ruleController.addRule(rule);
         this._masters[master.id] = rule.source.name;
         this._univers.add(master);
     }
@@ -131,12 +81,6 @@ define([
         return this._masters[master];
     }
     
-    Object.defineProperty(_p, 'parameterRegistry', {
-        get: function() {
-            return this._parameterRegistry;
-        }
-    })
-    
     /**
     * returns a single StyleDict to read the final cascaded, computed
     * style for that element.
@@ -146,7 +90,7 @@ define([
     */
     _p._getComputedStyle = function(element) {
         var masterRules = element.master
-                ? this._getRule(this._getMasterRule(element.master.id)).rules
+                ? this.ruleController.getRule(this._getMasterRule(element.master.id)).rules
                 : []
           , rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.StyleDict(this, rules, element);
@@ -163,7 +107,7 @@ define([
     
     _p._getReferenceDictionary = function(element) {
         var masterRules = element.master
-                ? this._getRule(this._getMasterRule(element.master.id)).dictionaryRules
+                ? this.ruleController.getRule(this._getMasterRule(element.master.id)).dictionaryRules
                 : []
         var rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
@@ -209,23 +153,6 @@ define([
     
     _p.query = function(selector, scope) {
         return selectorEngine.query(this._checkScope(scope), selector);
-    }
-
-    var obtainId = obtain.factory({}, {}, ['x'], function(obtain, x) { return x; });
-
-    _p.readCPS = function (async, sourceName) {
-        try {
-            return obtainId(async, this._getRule(sourceName));
-        } catch (error) {
-            if(!(error instanceof KeyError))
-                throw error;
-            var fileName = [this._cpsDir, sourceName].join('/');
-            var f = function (result) { return parseRules.fromString(result, sourceName, this); }.bind(this);
-            var result = this._io.readFile(async, fileName);
-            if (async)
-                return result.then(f);
-            return f(result);
-        }
     }
 
     return Controller;

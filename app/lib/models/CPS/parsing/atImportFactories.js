@@ -39,7 +39,7 @@ define([
         /**
          * Find the name of the resource to load and return a ParameterCollection
          */
-        'atrules': function(node, source, controller) {
+        'atrules': function(node, source, ruleController) {
             var args, resource;
             // filter all whitespace
             args = node.children.slice(1).filter(function(child) {
@@ -74,7 +74,7 @@ define([
             //   as a source.
             
             //parse the file and return the resulting ParameterCollection
-            return controller.readCPS(false, resource);
+            return ruleController.parseFile(false, resource);
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
     });
