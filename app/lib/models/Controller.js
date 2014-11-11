@@ -70,8 +70,7 @@ define([
         }.bind(this));
     }
     
-    _p.addMaster = function(master, cpsFile) {
-        var rule = this.ruleController.parse(false, cpsFile);
+    _p.addMaster = function(master, rule) {
         this.ruleController.addRule(rule);
         this._masters[master.id] = rule.source.name;
         this._univers.add(master);
