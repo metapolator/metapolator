@@ -58,11 +58,8 @@ define([
         // tell us about errors instead of throwing it away
         var options = {
             readErrorCallback: function( projectMaster, metadata ) {
-                console.log("ImportController: Got an error loading glyph '"
-                            + metadata.glyphName + "' reason:" + metadata.message );
-                projectMaster.rememberThatImportFailedForGlyph(
-                    metadata.glyphName, metadata.message );
-
+                this._project._log.warning("ImportController: Got an error loading glyph '"
+                                           + metadata.glyphName + "' reason:" + metadata.message );
                 // try to continue
                 return true;
             }.bind( null, this._master )
@@ -79,7 +76,6 @@ define([
           , cps
           ;
 
-        this._master.clearAllRememberedFailuresOfType('import');
         if(!glyphs)
             glyphs = this._sourceGlyphSet.keys();
         else {
@@ -108,7 +104,6 @@ define([
         }
 
         this._master.glyphSet.writeContents(false);
-        this._master.saveMetaData();
 
         cps = new ParameterCollection(rules);
 

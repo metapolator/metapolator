@@ -136,9 +136,6 @@ define([
         this._io.mkDir(false, this.baseDir+'/data');
         // create dir baseDir/data/com.metapolator
         this._io.mkDir(false, this.dataDir);
-        // we store messages for the glyphs (failures etc)
-        // inside this subdir
-        this._io.mkDir(false, this.dataDir+'/messages');
         
         // project file:
         // create this.dataDir/project.yaml => yaml({})
@@ -463,6 +460,7 @@ define([
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
         importer.import(glyphs);
+    
         this._importGroupsFile(sourceUFODir, true);
     };
 
