@@ -74,7 +74,7 @@ define([
             //   as a source.
             
             //parse the file and return the resulting ParameterCollection
-            return ruleController.parse(false, resource);
+            return ruleController.parseFile(false, resource);
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
     });

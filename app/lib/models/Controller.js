@@ -58,16 +58,15 @@ define([
     };
     
     /**
-     * Asynchronously replace the old cps rule with the new cps rule and
-     * inform all *consumers* of these rules that there was an update
-     * this might involve pruning some caches of ModelControllers.
+     * Replace a CPS rule and inform all *consumers* of these rules that
+     * there was an update; this might involve pruning some caches of
+     * ModelControllers.
      * FIXME: actually inform consumers
      */
-    _p.replaceRule = function(sourceName) {
-        this.ruleController.replaceRule(sourceName).then(function (result) {
-            this._rules[index] = result;
-            this._resetCaches();
-        }.bind(this));
+    _p.replaceRule = function(rule) {
+        this._rules[index] = rule;
+        this.ruleController.replaceRule(rule);
+        this._resetCaches();
     }
     
     _p.addMaster = function(master, rule) {

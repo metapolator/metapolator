@@ -57,28 +57,28 @@ define([
     })
 
     /**
-     * Asynchronously replace the old cps rule with the new cps rule
+     * Replace an existing CPS rule
      */
-    _p.replaceRule = function(sourceName) {
-        var index = this._ruleIndex[sourceName];
+    _p.replaceRule = function(parameterRule) {
+        var name = parameterRule.source.name
+          , index = this._ruleIndex[name];
         if(index === undefined)
-            throw new KeyError('Can\'t replace rule "'+ sourceName
+            throw new KeyError('Can\'t replace rule "'+ name
                                 +'" because it\'s not in this controller');
-        delete this._ruleIndex[sourceName]; // Invalidate cache
-        return this.parse(true, sourceName);
+        this._rules[index] = parameterRule;
     }
 
-    _p.getRule = function(rule) {
-        var index = this._ruleIndex[rule];
+    _p.getRule = function(sourceName) {
+        var index = this._ruleIndex[sourceName];
         if(index === undefined)
-            throw new KeyError(['The Rule with name "', rule ,'" was '
+            throw new KeyError(['The Rule with name "', sourceName ,'" was '
                     , 'not found in: ',this.rules.join(', ')].join(''));
         return this._rules[index];
     }
 
     var obtainId = obtain.factory({}, {}, ['x'], function(obtain, x) { return x; });
 
-    _p.parse = function (async, sourceName) {
+    _p.parseFile = function (async, sourceName) {
         try {
             return obtainId(async, this.getRule(sourceName));
         } catch (error) {
