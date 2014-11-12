@@ -57,10 +57,7 @@ define([
     };
     
     /**
-     * Replace a CPS rule and inform all *consumers* of these rules that
-     * there was an update; this might involve pruning some caches of
-     * ModelControllers.
-     * FIXME: actually inform consumers
+     * Replace a CPS rule and reset caches.
      */
     _p.replaceRule = function(rule) {
         this.ruleController.replaceRule(rule);
