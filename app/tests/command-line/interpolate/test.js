@@ -53,7 +53,7 @@ if (require.main === module) {
         {
             var nodes = xml.evaluateXPath( doc, xpath );
             var actual = nodes.length;
-            
+
             if( actual == expected ) {
                 console.log("PASS: " + msg );
                 return;
