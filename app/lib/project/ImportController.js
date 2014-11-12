@@ -44,8 +44,9 @@ define([
 
     var GlifLibError = ufojsErrors.GlifLib;
 
-    function ImportController(project, masterName, sourceUFODir) {
+    function ImportController(project, log, masterName, sourceUFODir) {
         this._project = project;
+        this._log = log;
         this._masterName = masterName;
 
         if(this._project.hasMaster(masterName))
@@ -58,8 +59,8 @@ define([
         // tell us about errors instead of throwing it away
         var options = {
             readErrorCallback: function( projectMaster, metadata ) {
-                this._project._log.warning("ImportController: Got an error loading glyph '"
-                                           + metadata.glyphName + "' reason:" + metadata.message );
+                this._log.warning("ImportController: Got an error loading glyph '"
+                                  + metadata.glyphName + "' reason:" + metadata.message );
                 // try to continue
                 return true;
             }.bind( null, this._master )

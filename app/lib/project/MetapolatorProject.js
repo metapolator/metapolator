@@ -458,7 +458,7 @@ define([
     
     _p.import = function(masterName, sourceUFODir, glyphs) {
         var importer = new ImportController(
-                                        this, masterName, sourceUFODir);
+                                        this, this._log, masterName, sourceUFODir);
         importer.import(glyphs);
     
         this._importGroupsFile(sourceUFODir, true);
