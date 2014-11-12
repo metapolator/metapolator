@@ -24,7 +24,6 @@ define([
     
     function Controller(ruleController) {
         this.ruleController = ruleController;
-        this._rules = [];
         // rule names of the masters
         this._masters = {};
         
@@ -64,7 +63,6 @@ define([
      * FIXME: actually inform consumers
      */
     _p.replaceRule = function(rule) {
-        this._rules[index] = rule;
         this.ruleController.replaceRule(rule);
         this._resetCaches();
     }
