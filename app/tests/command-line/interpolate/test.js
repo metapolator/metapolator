@@ -20,23 +20,6 @@ if (require.main === module) {
         ,   xmlString  = ""
         ,   doc;
 
-        // FIXME: as said in https://github.com/graphicore/ufoJS/blob/master/lib/ufoLib/glifLib/rapidValueFetching.js
-        // this func should be in ufojs
-        function evaluateXPath(aNode, aExpr) {
-            var xpe = new xml.XPathEvaluator()
-            , nsResolver = xpe.createNSResolver(
-                aNode.ownerDocument == null
-                    ? aNode.documentElement
-                    : aNode.ownerDocument.documentElement
-            )
-            , result = xpe.evaluate(aExpr, aNode, nsResolver, 0, null)
-            , found = []
-            , res
-            ;
-            while (res = result.iterateNext())
-                found.push(res);
-            return found;
-        }
 
         /**
          * Compare the result of an xpath expresson on doc to the expected
@@ -44,7 +27,7 @@ if (require.main === module) {
          */
         var compare_xpath_equal = function( msg, doc, xpath, expected ) 
         {
-            var nodes = evaluateXPath( doc, xpath );
+            var nodes = xml.evaluateXPath( doc, xpath );
             var actual = 'XPath returned more than one result';
 
             if( nodes.length == 1 ) {
@@ -68,7 +51,7 @@ if (require.main === module) {
          */
         var compare_xpath_node_count = function( msg, doc, xpath, expected ) 
         {
-            var nodes = evaluateXPath( doc, xpath );
+            var nodes = xml.evaluateXPath( doc, xpath );
             var actual = nodes.length;
             
             if( actual == expected ) {
@@ -113,9 +96,10 @@ if (require.main === module) {
                                           "//key",
                                           "1" );
 
-
-
             });
+
+        // next nexpoect.spawn() test here.
+
     }
 )}
 
