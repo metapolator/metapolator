@@ -1,0 +1,16 @@
+{
+  "name": "metapolator-commandline-tests",
+  "version": "0.0.0",
+  "description": "tests using command line metapolator tool",
+  "main": "(none)",
+  "repository": "",
+  "author": "",
+  "license": "GPL-3.0",
+  "devDependencies": {},
+  "dependencies": {
+    "nexpect": "~0.4.2",
+    "replace": "0.3.0",
+    "xpath.js": "~1.0.5",
+    "xmldom": "~0.1.19"
+  }
+}
