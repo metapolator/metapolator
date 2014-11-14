@@ -15,8 +15,14 @@ glyph and a component reference to the 'b' glyph. Thus the 'a' glyph
 should be rendered as three horizontal lines. This allows testing not
 only single component references, but also recursive references.
 
-I also hand crafted test/circular-components.ufo to test bad font
-loading. The circular-components font is based on the above but having
+components-reverse.ufo is a semantic reverse of components.ufo in that
+the 'c' glyph has a reference to 'b' which references 'a'. This is to
+test out if the order of loading glyphs has any impact on the
+correctness of the result. ie, if it just happens that loading the glyphs
+in a specific order allows the component references to be connected.
+
+I also hand crafted test/components-circular.ufo to test bad font
+loading. The components-circular font is based on the above but having
 'c' referencing 'a' and thus creating a circular reference which is
 expressly not allowed by the UFO specification:
 http://unifiedfontobject.org/versions/ufo3/glif.html#component
