@@ -136,7 +136,7 @@ define([
         this._io.mkDir(false, this.baseDir+'/data');
         // create dir baseDir/data/com.metapolator
         this._io.mkDir(false, this.dataDir);
-        
+
         // project file:
         // create this.dataDir/project.yaml => yaml({})
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
@@ -339,8 +339,10 @@ define([
             this._createGlyphLayer(master.skeleton);
 
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
-        
-        return this.getMaster(masterName);
+
+        master = this.getMaster(masterName);
+        master.ensureCustomDataDirExists();
+        return master;
     }
 
     /**
@@ -377,7 +379,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir, master.cpsChain);
+        return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsChain);
     }
     
     _p.getMaster = function(masterName) {
@@ -459,6 +461,7 @@ define([
     _p.import = function(masterName, sourceUFODir, glyphs) {
         var importer = new ImportController(
                                         this, masterName, sourceUFODir);
+
         importer.import(glyphs);
     
         this._importGroupsFile(sourceUFODir, true);
@@ -537,6 +540,10 @@ define([
         
         this._io.mkDir(false, dirName+'/glyphs');
         this._io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
+
+        var projectMaster = this._getMaster(masterName);
+        projectMaster.writeFontInfoToFile(dirName+'/fontinfo.plist');
+
         
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
