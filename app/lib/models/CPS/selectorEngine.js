@@ -189,10 +189,10 @@ define([
      * of the element. That Item would probably define which properties
      * are available for the Element, too ???
      */
-    function getMatchingRules(rules, element) {
+    function getMatchingRules(namespacedRules, element) {
         var i=0, j
           , matchingRules = []
-          , rule
+          , namespacedRule
           , complexSelectors
           , compoundSelectors
           , compoundSelector
@@ -201,15 +201,15 @@ define([
           , matchingSelectors
           , specificity
           ;
-        for(;i<rules.length;i++) {
-            if(!(rules[i] instanceof Rule))
+        for(;i<namespacedRules.length;i++) {
+            namespacedRule = namespacedRules[i];
+            if(!(namespacedRule[1] instanceof Rule))
                 throw new CPSError('Item at index ' + i + ' is not of type '
                                          + 'CPS Rule');
-            rule = rules[i];
             matchingSelectors = []
             // the complexSelectors are all selecting when obtained via
             // the value property of SelectorList
-            complexSelectors = rule.selectorList.value;
+            complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
             for(j=0;j<complexSelectors.length; j++) {
                 if(complexSelectorMatches(complexSelectors[j], element))
                     // got a match
@@ -229,7 +229,7 @@ define([
                 // anyways
                 specificity = matchingSelectors[0][0];
                 specificity.push(i);
-                matchingRules.push([specificity, rule]);
+                matchingRules.push([specificity, namespacedRule[1]]);
             }
         }
         matchingRules.sort(_compareSpecificity);
