@@ -26,7 +26,14 @@ define([
         this._currentContour = null;
         this.contours = [];
         
-        Parent.apply(this, [{}].concat(arguments));
+        console.log("segpen.len:" + arguments.length );
+        if(arguments.length > 0 ) {
+            var a = arguments[0];
+            console.log("typeof a.get is func:" + (typeof a.get === 'function'));
+
+        }
+//        Parent.apply(this, [{}].concat(arguments));
+        Parent.apply(this, arguments.length ? arguments : [{}] );
     };
     
     /*inheritance*/

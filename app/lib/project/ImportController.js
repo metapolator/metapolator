@@ -90,11 +90,9 @@ define([
 
     _p._readGlyphFromSource = function(glyphName) {
         var glyph = this._sourceGlyphSet.get(glyphName)
-          , segmentPen = new SegmentPen()
+          , segmentPen = new SegmentPen(this._sourceGlyphSet)
           , pen = new ImportOutlinePen(segmentPen, true)
           ;
-
-        segmentPen.glyphSet = this._sourceGlyphSet;
 
         glyph.drawPoints(false, pen);
         return {data:glyph, contours:segmentPen.flush()};
