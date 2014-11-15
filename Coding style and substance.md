@@ -426,4 +426,9 @@ Todo:
 
 # ES6
 
-In one or two places we need some of the future goodness that is ES6. Some features are already supported by node and major browsers; for the rest we use [regenerator](https://github.com/facebook/regenerator). Currently we've not found a way to use it on the fly with RequireJS, and since node 0.12 should support the features we need and render the translation obsolete, there's little point trying further. Hence temporarily there's a script `es6to5` in the top-level directory which should be used to translate any `.es6.js` to the corresponding `.js` every time it is edited.
+In one or two places we need some of the future goodness that is ES6. Some features are already supported by node and major browsers; for the rest we use [regenerator](https://github.com/facebook/regenerator). Currently we've not found a way to use it on the fly with RequireJS, and since node 0.12 should support the features we need and render the translation obsolete, there's little point trying further. Hence temporarily there's a script `es6to5` in the top-level directory which should be used to translate any `.es6.js` to the corresponding `.js` every time it is edited, for example:
+
+```
+./dev-scripts/es6to5  app/lib/project/ExportController.es6.js
+```
+
