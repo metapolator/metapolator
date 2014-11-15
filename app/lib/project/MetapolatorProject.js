@@ -118,9 +118,9 @@ define([
         get: function(){ return this.dataDir + '/log.yaml';}
     });
 
-    _p.getNewGlyphSet = function(async, baseDir, glyphNameFunc, UFOVersion) {
+    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, options) {
         return GlyphSet.factory(
-                    async, this._io, baseDir, glyphNameFunc, UFOVersion);
+                    async, this._io, dirName, glyphNameFunc, UFOVersion, options);
     }
     
     _p.init = function() {
@@ -377,7 +377,7 @@ define([
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir, master.cpsChain);
+        return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsChain);
     }
     
     _p.getMaster = function(masterName) {
@@ -457,8 +457,8 @@ define([
     }
     
     _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController(
-                                        this, masterName, sourceUFODir);
+        var importer = new ImportController( this._log, this, 
+                                             masterName, sourceUFODir);
         importer.import(glyphs);
     
         this._importGroupsFile(sourceUFODir, true);

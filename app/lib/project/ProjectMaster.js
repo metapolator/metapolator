@@ -11,10 +11,11 @@ define([
 ) {
     "use strict";
 
-    function ProjectMaster(io, project, glyphSetDir, cpsChain) {
+    function ProjectMaster(io, project, name, glyphSetDir, cpsChain) {
 
         this._io = io;
         this._project = project;
+        this._name = name;
         this._glyphSetDir = glyphSetDir;
         this._cpsChain = cpsChain.slice();
 
