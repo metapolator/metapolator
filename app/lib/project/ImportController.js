@@ -94,6 +94,8 @@ define([
           , pen = new ImportOutlinePen(segmentPen, true)
           ;
 
+        segmentPen.glyphSet = this._sourceGlyphSet;
+
         glyph.drawPoints(false, pen);
         return {data:glyph, contours:segmentPen.flush()};
     };
