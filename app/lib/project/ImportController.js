@@ -44,7 +44,7 @@ define([
 
     var GlifLibError = ufojsErrors.GlifLib;
 
-    function ImportController(project, log, masterName, sourceUFODir) {
+    function ImportController(log, project, masterName, sourceUFODir) {
         this._project = project;
         this._log = log;
         this._masterName = masterName;
