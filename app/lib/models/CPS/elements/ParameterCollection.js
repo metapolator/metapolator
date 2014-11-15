@@ -62,15 +62,8 @@ define([
     })
 
 
-    function _ruleAddNamespace(rule) {
-        rule.addNamespace(this._selectorList);
-    }
     Object.defineProperty(_p, 'selectorList', {
         enumerable: true
-        /**
-         * Add the selectorList of this namespace to all children
-         * and children's children's rules
-         */
       , set: function(selectorList) {
             if('_selectorList' in this)
                 throw new CPSError('selectorList is already set');
@@ -85,10 +78,6 @@ define([
                         ? selectorList.constructor.name
                         : selectorList.constructor));
             this._selectorList = selectorList;
-
-            this.rules.forEach(_ruleAddNamespace, this);
-            this.dictionaryRules.forEach(_ruleAddNamespace, this);
-
         }
       , get: function() {
             return this._selectorList || null;
@@ -117,11 +106,8 @@ define([
     /**
      * This returns only rules that are direct children of this collection
      */
-    function _filterRules(item) {
-        return item instanceof Rule;
-    }
     Object.defineProperty(_p, 'ownRules', {
-        get: function(){ return this._items.filter(_filterRules); }
+        get: function(){ return this._items.filter(function (rule) { return rule instanceof Rule; }); }
     })
 
     /**
@@ -132,36 +118,41 @@ define([
     Object.defineProperty(_p, 'rules', {
         get: function() {
             var i=0
-              , rules = []
+              , namespacedRules = []
+              , namespace = [this.selectorList]
               ;
             for(;i<this._items.length;i++) {
-                if(_filterRules(this._items[i]))
-                    rules.push(this._items[i]);
+                if(this._items[i] instanceof Rule)
+                    namespacedRules.push([namespace, this._items[i]]);
                 else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(rules, this._items[i].rules);
+                    Array.prototype.push.apply(namespacedRules, this._items[i].rules);
             }
-            return rules;
+            return namespacedRules;
         }
     })
 
     /**
      * this returns all rules of dictionaries that are direct children of
-     * this collection AND all rules of dictionaroies that are children of
+     * this collection AND all rules of dictionaries that are children of
      * ParameterCollection instances that are direct children of this collection
      */
+    var _pairWith = function(item, array) {
+        return array.map(function (element) { return [item, element]; });
+    }
     Object.defineProperty(_p, 'dictionaryRules', {
         get: function() {
             var i=0
-              , rules = []
+              , namespacedRules = []
+              , namespace = [this.selectorList]
               , dictionaries
               ;
             for(;i<this._items.length;i++) {
                 if(_filterCollections(AtRuleCollection, 'dictionary', this._items[i]))
-                    Array.prototype.push.apply(rules, this._items[i].rules);
+                    Array.prototype.push.apply(namespacedRules, _pairWith(namespace, this._items[i].rules));
                 else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(rules, this._items[i].dictionaryRules);
+                    Array.prototype.push.apply(namespacedRules, this._items[i].dictionaryRules);
             }
-            return rules;
+            return namespacedRules;
         }
     })
 
