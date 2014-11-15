@@ -52,7 +52,7 @@ define([
             else if(rules[i].paramters)
                 throw new CPSParserError('Found parameters where there should '
                             + 'be only a SelectorList: ' + rules[i].paramters);
-            selectorList = rules[i].selectorList;
+            selectorList = rules[i].getSelectorList();
             // don't break! we want to validate the rules, if there is
             // awkward stuff in it it's better to complain, because it
             // might be a programming error.
