@@ -26,7 +26,7 @@ define([
         this._currentContour = null;
         this.contours = [];
         
-        Parent.apply(this, [{}].concat(arguments));
+        Parent.apply(this, arguments.length ? arguments : [{}] );
     };
     
     /*inheritance*/
