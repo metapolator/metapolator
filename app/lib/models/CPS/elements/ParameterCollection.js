@@ -119,42 +119,45 @@ define([
         get: function() {
             var i=0
               , namespacedRules = []
-              , namespace = [this.selectorList]
+              , namespace = this.selectorList
+              , childRules
+              , addNamespace = function(namespacedRule) { namespacedRule[0].push(namespace); }
               ;
             for(;i<this._items.length;i++) {
                 if(this._items[i] instanceof Rule)
-                    namespacedRules.push([namespace, this._items[i]]);
-                else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(namespacedRules, this._items[i].rules);
+                    namespacedRules.push([[namespace], this._items[i]]);
+                else if(this._items[i] instanceof ParameterCollection) {
+                    childRules = this._items[i].rules;
+                    childRules.forEach(addNamespace);
+                    Array.prototype.push.apply(namespacedRules, childRules);
+                }
             }
             return namespacedRules;
         }
-    })
+    });
 
     /**
      * this returns all rules of dictionaries that are direct children of
      * this collection AND all rules of dictionaries that are children of
      * ParameterCollection instances that are direct children of this collection
      */
-    var _pairWith = function(item, array) {
-        return array.map(function (element) { return [item, element]; });
-    }
     Object.defineProperty(_p, 'dictionaryRules', {
         get: function() {
             var i=0
               , namespacedRules = []
-              , namespace = [this.selectorList]
-              , dictionaries
+              , namespace = this.selectorList ? [this.selectorList] : []
+              , addNamespace = function(namespace, rules) { return rules.map(function(rule) { return [namespace, rule]; }); }
               ;
             for(;i<this._items.length;i++) {
                 if(_filterCollections(AtRuleCollection, 'dictionary', this._items[i]))
-                    Array.prototype.push.apply(namespacedRules, _pairWith(namespace, this._items[i].rules));
+                    // N.B. In the line below we invoke Rule.rules, not ParameterCollection.rules
+                    Array.prototype.push.apply(namespacedRules, addNamespace(namespace, this._items[i].rules));
                 else if(this._items[i] instanceof ParameterCollection)
                     Array.prototype.push.apply(namespacedRules, this._items[i].dictionaryRules);
             }
             return namespacedRules;
         }
-    })
+    });
 
     return ParameterCollection;
 })
