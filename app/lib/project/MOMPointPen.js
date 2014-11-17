@@ -169,9 +169,7 @@ define([
      * Add a sub glyph.
      */
     _p.addComponent = function(baseGlyphName, transformation) {
-        var component = new Component();
-        component.baseGlyphName  = baseGlyphName;
-        component.transformation = transformation;
+        var component = new Component( baseGlyphName, transformation );
         this._glyph.add(component);
     }
 
