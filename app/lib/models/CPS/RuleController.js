@@ -41,10 +41,7 @@ define([
             return this._parameterRegistry;
         }
     });
-    _p._parseFile = function(async, sourceName) {
-        this.getRule(async, sourceName, false);
-    };
-
+    
     _p._readFile = function(async, fileName) {
                             return this._io.readFile(async, fileName); };
     _p.getRule = obtain.factory (
@@ -54,23 +51,18 @@ define([
           , cps: [false, 'fileName', 'commissionId', _p._readFile]
           , rule: ['cps', 'sourceName', 'commissionId' ,
                 function(cps, sourceName, bypassCache, commissionId) {
-                    if(sourceName in this._rules
-                        && commissionId <= this._rules[sourceName][0])
-                            // There is a current cache and it was
-                            // created while we where waiting for the
-                            // async `cps` call to finish.
-                            // AND
-                            // The current cache was comissioned after
-                            // this request, so we keep it.
-                            // This may not be the more current data, but
-                            // it is **hopefully** in most cases.
+                    if(!(sourceName in this._rules)
+                            // There is a current cache but it was comissioned
+                            // before this requets was comissioned, also it
+                            // finished loading before.
                             // FIXME: a maybe better alternative would be
                             //        to fail here!
-                        return this._rules[sourceName];
-                    return [
-                        commissionId
-                      , parseRules.fromString(cps, sourceName, this)
-                    ];
+                            || (sourceName in this._rules) && commissionId >= this._rules[sourceName][0])
+                        this._rules[sourceName] = [
+                              commissionId
+                            , parseRules.fromString(cps, sourceName, this)
+                        ];
+                    return this._rules[sourceName];
                 }]
           , isCached: ['sourceName', function(sourceName) {
                 return sourceName in this._rules;}]
