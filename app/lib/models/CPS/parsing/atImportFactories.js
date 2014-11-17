@@ -52,7 +52,7 @@ define([
             if(args.length !== 1
                 || !(args[0].instance instanceof GenericCPSNode
                                     && args[0].instance.type === 'string'))
-                return this,['__GenericAST__'](node, source);
+                return this['__GenericAST__'](node, source);
             resource = args[0].data.slice(1,-1);
             
             // TODO:
@@ -65,13 +65,6 @@ define([
             //   baseFactories.
             // * The new subclass of ParameterCollection will stringify as the
             //   original @import directive
-            // * This change breaks the red pill on a deep level:
-            //   changing one of these rules should propagate to all instances
-            //   where this file was imported.
-            // * ALSO: When a change to this file
-            //   happens, a reloading of the affected styles MUST NOT read
-            //   this file's version from disc, but use the buffered version
-            //   as a source.
             
             //parse the file and return the resulting ParameterCollection
             return ruleController.getRule(false, resource);

@@ -11,7 +11,7 @@ define([
 ) {
     "use strict";
     var KeyError = errors.Key;
-    
+
     // FIXME: note that we have a race condition in here:
     //        One request with an older result can respond after
     //        a newer result was cached, the most obvious example
@@ -19,19 +19,17 @@ define([
     //              ruleController.getRule(true, name)
     //              ruleController.getRule(false, name)
     //
-    //        The seccond call will write the cache before the first call.
-    //        This problem exists with all asyncchronous requests, of
+    //        The second call will write the cache before the first call.
+    //        This problem exists with all asynchronous requests, of
     //        course, but in this case it is more probable.
     //        See the implementation of `getRule` (the `rule` getter)
-    //        for a try to make the situation a better and a further comment.
-    
+    //        for an attempt to improve the situation, and a further comment.
+
     function RuleController(io, parameterRegistry, cpsDir) {
         this._io = io;
         this._parameterRegistry = parameterRegistry;
         this._cpsDir = cpsDir;
-
         this._commissionIdCounter = 0;
-
         this._rules = Object.create(null);
     }
     var _p = RuleController.prototype;
@@ -41,9 +39,10 @@ define([
             return this._parameterRegistry;
         }
     });
-    
+
     _p._readFile = function(async, fileName) {
                             return this._io.readFile(async, fileName); };
+
     _p.getRule = obtain.factory (
         {
             fileName: ['sourceName', function(sourceName) {
@@ -52,9 +51,8 @@ define([
           , rule: ['cps', 'sourceName', 'commissionId' ,
                 function(cps, sourceName, bypassCache, commissionId) {
                     if(!(sourceName in this._rules)
-                            // There is a current cache but it was comissioned
-                            // before this requets was comissioned, also it
-                            // finished loading before.
+                            // There is a current cache but it was commissioned
+                            // before this request, and finished loading before it.
                             // FIXME: a maybe better alternative would be
                             //        to fail here!
                             || (sourceName in this._rules) && commissionId >= this._rules[sourceName][0])

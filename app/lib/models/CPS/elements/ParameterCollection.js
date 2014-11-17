@@ -61,7 +61,6 @@ define([
         }
     })
 
-
     Object.defineProperty(_p, 'selectorList', {
         enumerable: true
       , set: function(selectorList) {
@@ -137,6 +136,7 @@ define([
     function _createNamespacedRule(namespace, rule) {
         return [ (namespace ? [namespace] : []), rule];
     }
+
     /**
      * this returns all rules that are direct children of this collection
      * AND all rules of ParameterCollection instances that are
@@ -160,5 +160,6 @@ define([
             return collection.rules.map(_createNamespacedRule.bind(null, namespace))
         }
     );
+
     return ParameterCollection;
 });
