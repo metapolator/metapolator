@@ -1,3 +1,10 @@
+/**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ * 
+ * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ *
+ */
 define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
@@ -119,6 +126,12 @@ define([
           , prePoint
           , segmentType, terminal, ctrls, vector
           ;
+
+        if( penstroke.type == 'component' ) {
+            pen.addComponent( penstroke.baseGlyphName, penstroke.transformation );
+            return;
+        }
+
         pen.beginPath();
         // first draw the right side
         for(var i=0;i<points.length;i++) {

@@ -137,6 +137,11 @@ define([
           , rules = []
           ;
         for(;i<sourceGlyph.contours.length;i++) {
+
+            if(sourceGlyph.contours[i].type == 'component' ) {
+                contours.push(sourceGlyph.contours[i]);
+                continue;
+            }
             if(!sourceGlyph.contours[i].closed) {
                 console.warn('    skipping contour '+ i +' because it is open.');
                 continue;
@@ -182,30 +187,37 @@ define([
         var i=0, j, segmentType, point;
 
         for(;i<contours.length;i++) {
-            pen.beginPath();
-            // draw just the skeleton
-            for(j=0;j<contours[i].length;j++) {
-                if(j===0)
-                    // this is a non closed path
-                    segmentType = 'move';
-                else {
-                    segmentType = 'curve';
+            if( contours[i].type == 'component' ) {
 
-                    point = contours[i][j-1].z.out;
-                    pen.addPoint(point.valueOf(), undefined
-                                                , undefined, point.name);
+                console.log( "drawPenStroke, component gn: " + contours[i].glyphName );
+                pen.addComponent( contours[i].glyphName, contours[i].transformation );
 
-                    point = contours[i][j].z['in'];
-                    pen.addPoint(point.valueOf(), undefined
-                                                , undefined, point.name);
+            } else {
+                pen.beginPath();
+                // draw just the skeleton
+                for(j=0;j<contours[i].length;j++) {
+                    if(j===0)
+                        // this is a non closed path
+                        segmentType = 'move';
+                    else {
+                        segmentType = 'curve';
+
+                        point = contours[i][j-1].z.out;
+                        pen.addPoint(point.valueOf(), undefined
+                                     , undefined, point.name);
+
+                        point = contours[i][j].z['in'];
+                        pen.addPoint(point.valueOf(), undefined
+                                     , undefined, point.name);
+                    }
+                    // we don't have line segments on skeletons
+                    //    segmentType = 'line';
+                    point = contours[i][j].z.on;
+                    pen.addPoint(point.valueOf(), segmentType
+                                 , undefined, point.name);
                 }
-                // we don't have line segments on skeletons
-                //    segmentType = 'line';
-                point = contours[i][j].z.on;
-                pen.addPoint(point.valueOf(), segmentType
-                                                , undefined, point.name);
+                pen.endPath();
             }
-            pen.endPath();
         }
     }
 
