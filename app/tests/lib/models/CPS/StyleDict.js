@@ -5,6 +5,7 @@
   , 'metapolator/models/Controller'
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/parsing/parseRules'
+  , 'ufojs/tools/io/TestingIO'
   , 'tests/lib/models/test_data/makeMasterFixture'
 ], function (
     registerSuite
@@ -13,6 +14,7 @@
   , ModelController
   , parameterRegistry
   , cpsParser
+  , TestingIO
   , makeMasterFixture
 ) {
     "use strict";
@@ -33,28 +35,23 @@
                   , 'master#master_1 point>left'
                   , 'master#master_2 point'
               ]
-              , modelController = new ModelController(undefined, parameterRegistry, undefined)
+              , io = new TestingIO()
+              , modelController = new ModelController(io, parameterRegistry, '')
               , i=0
               , source
               , master
               , elementStyle
               ;
-            // prepare
-            for(;i<recursive_cps.length; i++) {
-                source = cpsParser.fromString(
-                         recursive_cps[i]
-                       , 'recursive_cps at '+ i
-                       , modelController
-                );
+            for(;i<recursive_cps.length;i++) {
+                io.writeFile(false, '/recursive_cps_'+i, recursive_cps[i]);
                 master = makeMasterFixture('master_'+ i, ['a']);
-                modelController.addMaster(master, [source]);
+                modelController.addMaster(master, [modelController.getCPSRules('recursive_cps_'+i)]);
             }
             i=0;
             for(;i<failingSelectors.length;i++) {
                 elementStyle = modelController.query(failingSelectors[i])
-                                              .getComputedStyle()
+                                              .getComputedStyle();
                 // fails with CPSRecursionError
-
                 assert.throws(
                     elementStyle.get.bind(elementStyle, 'on')
                   , CPSRecursionError
