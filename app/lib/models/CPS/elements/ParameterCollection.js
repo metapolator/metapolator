@@ -108,56 +108,48 @@ define([
      */
     Object.defineProperty(_p, 'ownRules', {
         get: function(){ return this._items.filter(function (rule) { return rule instanceof Rule; }); }
-    })
+    });
+
+    function _addNamespacedRuleGetter(propertyName, baseType, baseName, baseConstructor) {
+        Object.defineProperty(_p, propertyName, {
+            get: function() {
+                var i=0
+                  , namespacedRules = []
+                  , namespace = this.selectorList
+                  , childRules
+                  , addNamespace = function(namespacedRule) { namespacedRule[0].push(namespace); }
+                  ;
+                for(;i<this._items.length;i++) {
+                    if(_filterCollections(baseType, baseName, this._items[i]))
+                        Array.prototype.push.apply(namespacedRules, baseConstructor(namespace, this._items[i]));
+                    else if(this._items[i] instanceof ParameterCollection) {
+                        childRules = this._items[i][propertyName];
+                        if (namespace)
+                            childRules.forEach(addNamespace);
+                        Array.prototype.push.apply(namespacedRules, childRules);
+                    }
+                }
+                return namespacedRules;
+            }
+        });
+    }
 
     /**
      * this returns all rules that are direct children of this collection
      * AND all rules of ParameterCollection instances that are
      * direct children of this collection
      */
-    Object.defineProperty(_p, 'rules', {
-        get: function() {
-            var i=0
-              , namespacedRules = []
-              , namespace = this.selectorList
-              , childRules
-              , addNamespace = function(namespacedRule) { namespacedRule[0].push(namespace); }
-              ;
-            for(;i<this._items.length;i++) {
-                if(this._items[i] instanceof Rule)
-                    namespacedRules.push([[namespace], this._items[i]]);
-                else if(this._items[i] instanceof ParameterCollection) {
-                    childRules = this._items[i].rules;
-                    childRules.forEach(addNamespace);
-                    Array.prototype.push.apply(namespacedRules, childRules);
-                }
-            }
-            return namespacedRules;
-        }
-    });
+    _addNamespacedRuleGetter('rules', Rule, undefined,
+                             function(namespace, rule) { return [[[namespace], rule]]; });
 
     /**
      * this returns all rules of dictionaries that are direct children of
      * this collection AND all rules of dictionaries that are children of
      * ParameterCollection instances that are direct children of this collection
      */
-    Object.defineProperty(_p, 'dictionaryRules', {
-        get: function() {
-            var i=0
-              , namespacedRules = []
-              , namespace = this.selectorList ? [this.selectorList] : []
-              , addNamespace = function(namespace, rules) { return rules.map(function(rule) { return [namespace, rule]; }); }
-              ;
-            for(;i<this._items.length;i++) {
-                if(_filterCollections(AtRuleCollection, 'dictionary', this._items[i]))
-                    // N.B. In the line below we invoke Rule.rules, not ParameterCollection.rules
-                    Array.prototype.push.apply(namespacedRules, addNamespace(namespace, this._items[i].rules));
-                else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(namespacedRules, this._items[i].dictionaryRules);
-            }
-            return namespacedRules;
-        }
-    });
+    _addNamespacedRuleGetter('dictionaryRules', AtRuleCollection, 'dictionary',
+                             // N.B. Here we invoke AtRuleCollection.rules, not ParameterCollection.rules
+                             function(namespace, collection) { return collection.rules.map(function(rule) { return [[namespace], rule]; }); });
 
     return ParameterCollection;
-})
+});
