@@ -390,7 +390,7 @@ define([
             , momMaster = master.loadMOM()
             ;
             momMaster.id = masterName;
-            this._controller.addMaster(momMaster, this._controller.ruleController.parseFile(false, master._cpsFile));
+            this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
     }

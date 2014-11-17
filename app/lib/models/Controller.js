@@ -23,7 +23,8 @@ define([
       ;
     
     function Controller(ruleController) {
-        this.ruleController = ruleController;
+        this._ruleController = ruleController;
+        this.parameterRegistry = ruleController.parameterRegistry;
         // rule names of the masters
         this._masters = {};
         
@@ -56,17 +57,16 @@ define([
         }
     };
     
-    /**
-     * Replace a CPS rule and reset caches.
-     */
-    _p.replaceRule = function(rule) {
-        this.ruleController.replaceRule(rule);
-        this._resetCaches();
-    }
+    _p.updateChangedRule = function(async, sourceName) {
+        var promise = this._ruleController.reloadRule(async, sourceName);
+        return async
+            ? promise.then(this._resetCaches.bind(this))
+            : this._resetCaches()
+            ;
+    };
     
-    _p.addMaster = function(master, rule) {
-        this.ruleController.addRule(rule);
-        this._masters[master.id] = rule.source.name;
+    _p.addMaster = function(master, sourceName) {
+        this._masters[master.id] = sourceName;
         this._univers.add(master);
     }
     
@@ -90,7 +90,7 @@ define([
     */
     _p._getComputedStyle = function(element) {
         var masterRules = element.master
-                ? this.ruleController.getRule(this._getMasterRule(element.master.id)).rules
+                ? this._ruleController.getRule(false, this._getMasterRule(element.master.id)).rules
                 : []
           , rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.StyleDict(this, rules, element);
@@ -107,7 +107,7 @@ define([
     
     _p._getReferenceDictionary = function(element) {
         var masterRules = element.master
-                ? this.ruleController.getRule(this._getMasterRule(element.master.id)).dictionaryRules
+                ? this._ruleController.getRule(false, this._getMasterRule(element.master.id)).dictionaryRules
                 : []
         var rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
