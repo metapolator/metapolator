@@ -11,87 +11,81 @@ define([
 ) {
     "use strict";
     var KeyError = errors.Key;
-
+    
+    // FIXME: note that we have a race condition in here:
+    //        One request with an older result can respond after
+    //        a newer result was cached, the most obvious example
+    //        is:
+    //              ruleController.getRule(true, name)
+    //              ruleController.getRule(false, name)
+    //
+    //        The seccond call will write the cache before the first call.
+    //        This problem exists with all asyncchronous requests, of
+    //        course, but in this case it is more probable.
+    //        See the implementation of `getRule` (the `rule` getter)
+    //        for a try to make the situation a better and a further comment.
+    
     function RuleController(io, parameterRegistry, cpsDir) {
         this._io = io;
         this._parameterRegistry = parameterRegistry;
         this._cpsDir = cpsDir;
-        this._rules = [];
-        this._ruleIndex = {};
-    }
 
+        this._commissionIdCounter = 0;
+
+        this._rules = Object.create(null);
+    }
     var _p = RuleController.prototype;
 
     Object.defineProperty(_p, 'parameterRegistry', {
         get: function() {
             return this._parameterRegistry;
         }
-    })
-
-    _p.addRule = function(parameterRule) {
-        var ownRule
-          , name = parameterRule.source.name
-          ;
-        try {
-            ownRule = this.getRule(name);
+    });
+    
+    _p._readFile = function(async, fileName) {
+                            return this._io.readFile(async, fileName); };
+    _p.getRule = obtain.factory (
+        {
+            fileName: ['sourceName', function(sourceName) {
+                return [this._cpsDir, sourceName].join('/');}]
+          , cps: [false, 'fileName', 'commissionId', _p._readFile]
+          , rule: ['cps', 'sourceName', 'commissionId' ,
+                function(cps, sourceName, bypassCache, commissionId) {
+                    if(!(sourceName in this._rules)
+                            // There is a current cache but it was comissioned
+                            // before this requets was comissioned, also it
+                            // finished loading before.
+                            // FIXME: a maybe better alternative would be
+                            //        to fail here!
+                            || (sourceName in this._rules) && commissionId >= this._rules[sourceName][0])
+                        this._rules[sourceName] = [
+                              commissionId
+                            , parseRules.fromString(cps, sourceName, this)
+                        ];
+                    return this._rules[sourceName];
+                }]
+          , isCached: ['sourceName', function(sourceName) {
+                return sourceName in this._rules;}]
+          , commissionId:[function(){ return this._commissionIdCounter++;}]
         }
-        catch(error){
-            if(!(error instanceof KeyError))
-                throw error;
+      , {cps: [true, 'fileName', 'commissionId', _p._readFile]}
+      , ['sourceName']
+      , function(obtain, sourceName) {
+            if(!obtain('isCached'))
+                return obtain('rule')[1];
+            return this._rules[sourceName][1];
         }
-        if(!ownRule)
-            // we don't have a rule named like that yet
-            this._ruleIndex[name] = this._rules.push(parameterRule) - 1;
-        else if(ownRule !== parameterRule)
-            throw new KeyError('A parameterRule object with the '
-                + 'name "'+name+'" exists already. Use replaceRule to '
-                +'change a rule object?');
-        // else: pass, we aleady have that rule
-        return;
-    }
-
-    Object.defineProperty(_p, 'rules', {
-        get: function() {
-            return Object.keys(this._ruleIndex)
-        }
-    })
+    );
 
     /**
-     * Replace an existing CPS rule
+     * Reload an existing CPS rule
      */
-    _p.replaceRule = function(parameterRule) {
-        var name = parameterRule.source.name
-          , index = this._ruleIndex[name];
-        if(index === undefined)
-            throw new KeyError('Can\'t replace rule "'+ name
+    _p.reloadRule = function(async, sourceName) {
+        if(!(sourceName in this._rules))
+            throw new KeyError('Can\'t reload rule "'+ sourceName
                                 +'" because it\'s not in this controller');
-        this._rules[index] = parameterRule;
-    }
-
-    _p.getRule = function(sourceName) {
-        var index = this._ruleIndex[sourceName];
-        if(index === undefined)
-            throw new KeyError(['The Rule with name "', sourceName ,'" was '
-                    , 'not found in: ',this.rules.join(', ')].join(''));
-        return this._rules[index];
-    }
-
-    var obtainId = obtain.factory({}, {}, ['x'], function(obtain, x) { return x; });
-
-    _p.parseFile = function (async, sourceName) {
-        try {
-            return obtainId(async, this.getRule(sourceName));
-        } catch (error) {
-            if(!(error instanceof KeyError))
-                throw error;
-            var fileName = [this._cpsDir, sourceName].join('/');
-            var f = function (result) { return parseRules.fromString(result, sourceName, this); }.bind(this);
-            var result = this._io.readFile(async, fileName);
-            if (async)
-                return result.then(f);
-            return f(result);
-        }
-    }
-
+        delete this._rules[sourceName];
+        return this.getRule(async, sourceName);
+    };
     return RuleController;
-})
+});

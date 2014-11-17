@@ -78,10 +78,8 @@ define([
         // +1 to remove the leading slash
         sourceName = path.slice(this.project.cpsDir.length + 1);
         try {
-            this.project.controller.ruleController.parseFile(true, sourceName)
-                .then(function(result) {
-                    this.project.controller.replaceRule(result);
-                    // then update the display
+            this.project.controller.updateChangedRule(true, sourceName)
+                .then(function() {
                     this.frontend.$scope.$broadcast('cpsUpdate');
                 }.bind(this));
         }

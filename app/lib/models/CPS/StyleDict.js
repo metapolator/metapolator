@@ -36,7 +36,7 @@ define([
      */
     _p._getCPSParameterValue = function(name) {
         var i=0, value;
-        if(!this._controller.ruleController.parameterRegistry.exists(name))
+        if(!this._controller.parameterRegistry.exists(name))
             throw new KeyError('No such parameter "'+ name +'" '
                 +'has been registered.');
         for(;i<this._rules.length;i++) {
@@ -104,7 +104,7 @@ define([
                             + this._element.particulars);
         this._getting[name] = true;
         try {
-            if(this._controller.ruleController.parameterRegistry.exists(name))
+            if(this._controller.parameterRegistry.exists(name))
                 // Will throw CPSKeyError if not found.
                 return this._getParameter(name).getValue();
 

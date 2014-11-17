@@ -48,7 +48,7 @@
             for(;i<recursive_cps.length;i++) {
                 io.writeFile(false, '/recursive_cps_'+i, recursive_cps[i]);
                 master = makeMasterFixture('master_'+ i, ['a']);
-                modelController.addMaster(master, ruleController.parseFile(false, 'recursive_cps_'+i));
+                modelController.addMaster(master, 'recursive_cps_'+i);
             }
             i=0;
             for(;i<failingSelectors.length;i++) {
