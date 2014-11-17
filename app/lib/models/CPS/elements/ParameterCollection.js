@@ -103,44 +103,50 @@ define([
                         .bind(null, ParameterCollection, 'namespace'));
     }
 
-    /**
-     * This returns only rules that are direct children of this collection
-     */
-    Object.defineProperty(_p, 'ownRules', {
-        get: function(){ return this._items.filter(function (rule) { return rule instanceof Rule; }); }
-    });
-
-    function _addNamespacedRuleGetter(propertyName, baseType, baseName, baseConstructor) {
+    function _addNamespacedRuleGetter(propertyName, baseType, baseName
+                                                    , baseConstructor) {
         Object.defineProperty(_p, propertyName, {
             get: function() {
                 var i=0
                   , namespacedRules = []
                   , namespace = this.selectorList
                   , childRules
-                  , addNamespace = function(namespacedRule) { namespacedRule[0].push(namespace); }
+                  , addNamespace = _addNamespace.bind(null, namespace)
                   ;
                 for(;i<this._items.length;i++) {
                     if(_filterCollections(baseType, baseName, this._items[i]))
-                        Array.prototype.push.apply(namespacedRules, baseConstructor(namespace, this._items[i]));
+                        childRules = baseConstructor(namespace, this._items[i]);
                     else if(this._items[i] instanceof ParameterCollection) {
                         childRules = this._items[i][propertyName];
                         if (namespace)
                             childRules.forEach(addNamespace);
-                        Array.prototype.push.apply(namespacedRules, childRules);
                     }
+                    else
+                        continue;
+                    Array.prototype.push.apply(namespacedRules, childRules)
                 }
                 return namespacedRules;
             }
         });
     }
 
+    function _addNamespace(namespace, namespacedRule) {
+        namespacedRule[0].push(namespace);
+    }
+
+    function _createNamespacedRule(namespace, rule) {
+        return [ (namespace ? [namespace] : []), rule];
+    }
     /**
      * this returns all rules that are direct children of this collection
      * AND all rules of ParameterCollection instances that are
      * direct children of this collection
      */
     _addNamespacedRuleGetter('rules', Rule, undefined,
-                             function(namespace, rule) { return [[[namespace], rule]]; });
+        function(namespace, rule) {
+            return [_createNamespacedRule(namespace, rule)];
+        }
+    );
 
     /**
      * this returns all rules of dictionaries that are direct children of
@@ -148,8 +154,11 @@ define([
      * ParameterCollection instances that are direct children of this collection
      */
     _addNamespacedRuleGetter('dictionaryRules', AtRuleCollection, 'dictionary',
-                             // N.B. Here we invoke AtRuleCollection.rules, not ParameterCollection.rules
-                             function(namespace, collection) { return collection.rules.map(function(rule) { return [[namespace], rule]; }); });
-
+        // N.B. Here we invoke AtRuleCollection.rules, not ParameterCollection.rules
+        // AtRuleCollection.rules returns [Rule, Rule, Rule, ... ]
+        function(namespace, collection) {
+            return collection.rules.map(_createNamespacedRule.bind(null, namespace))
+        }
+    );
     return ParameterCollection;
 });
