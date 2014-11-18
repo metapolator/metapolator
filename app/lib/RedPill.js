@@ -126,7 +126,7 @@ define([
         return result;
     }
     
- _p.fileChangeHandler = function (path) {
+    _p.fileChangeHandler = function (path) {
         var match = path.indexOf(this.project.cpsDir)
           , sourceName
           ;
