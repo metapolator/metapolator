@@ -2,7 +2,7 @@ define([
     'metapolator/errors'
   , './_FormulaeValue'
   , './SharedFormulaeFactory'
-  , 'tools/misc/transform.js'
+  , 'ufojs/tools/misc/transform'
 ], function(
     errors
   , Parent

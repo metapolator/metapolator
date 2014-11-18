@@ -20,9 +20,9 @@ define([
     _p.constructor = Component;
 
     _p._cps_whitelist = {
-      , baseGlyphName:   '_baseGlyphName'
+        baseGlyphName:   '_baseGlyphName'
       , transformation:  '_transformation'
-    }
+    };
     //inherit from parent
     (function(source) {
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
