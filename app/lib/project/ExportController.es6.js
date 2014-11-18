@@ -127,7 +127,7 @@ define([
           , segmentType, terminal, ctrls, vector
           ;
 
-        if( penstroke.type == 'Component' ) {
+        if( penstroke.type == 'component' ) {
             pen.addComponent( penstroke.baseGlyphName, penstroke.transformation );
             return;
         }

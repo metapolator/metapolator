@@ -20,35 +20,22 @@ define([
     _p.constructor = Component;
 
     _p._cps_whitelist = {
-        parent:          'parent'
-      , children:        'children'
-      , baseGlyphName:   'baseGlyphName'
-      , transformation:  'transformation'
-      , type:            'type'
+      , baseGlyphName:   '_baseGlyphName'
+      , transformation:  '_transformation'
     }
+    //inherit from parent
+    (function(source) {
+        for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
+    }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
-    Object.defineProperty(_p, 'baseGlyphName', {
-        get: function() {
-            return this._baseGlyphName;
-        }
-//        , set: function(v) { this._baseGlyphName = v; }
-    })
 
-    Object.defineProperty(_p, 'transformation', {
-        get: function() {
-            return this._transformation;
-        }
-//        , set: function(v) { this._transformation = v; }
-    })
-
-    
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Component'
     })
     
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
-        value: 'Component'
+        value: 'component'
     })
     
     _p._acceptedChildren = [];
