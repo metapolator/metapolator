@@ -127,7 +127,10 @@ define([
           , segmentType, terminal, ctrls, vector
           ;
 
+        console.log("renderPenstrokeOutline() penstroke.type:" + penstroke.type );
         if( penstroke.type == 'component' ) {
+            console.log("renderPenstrokeOutline() component:" + penstroke.baseGlyphName );
+            console.log("renderPenstrokeOutline() trans:" + penstroke.transformation );
             pen.addComponent( penstroke.baseGlyphName, penstroke.transformation );
             return;
         }
