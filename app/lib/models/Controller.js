@@ -52,17 +52,18 @@ define([
      */
     _p._resetCaches = function() {
         this._caches = {
-            styleDicts: {}
-          , referenceDicts: {}
+            styleDicts: Object.create(null)
+          , referenceDicts: Object.create(null)
+          , rules: Object.create(null)
         }
     };
     
     _p.updateChangedRule = function(async, sourceName) {
         var promise = this._ruleController.reloadRule(async, sourceName);
-        return async
-            ? promise.then(this._resetCaches.bind(this))
-            : this._resetCaches()
-            ;
+        return (async
+                    ? promise.then(this._resetCaches.bind(this))
+                    : this._resetCaches()
+               );
     };
     
     _p.addMaster = function(master, sourceName) {
@@ -81,6 +82,18 @@ define([
         return this._masters[master];
     }
     
+    _p._getRules = function(masterName, property) {
+        var key = [masterName, property].join(',')
+          , ruleName
+          , parameterCollection
+          ;
+        if(!(key in this._caches.rules)) {
+            ruleName = this._getMasterRule(masterName)
+            parameterCollection = this._ruleController.getRule(false, ruleName);
+            this._caches.rules[key] = parameterCollection[property];
+        }
+        return this._caches.rules[key];
+    };
     /**
     * returns a single StyleDict to read the final cascaded, computed
     * style for that element.
@@ -90,9 +103,10 @@ define([
     */
     _p._getComputedStyle = function(element) {
         var masterRules = element.master
-                ? this._ruleController.getRule(false, this._getMasterRule(element.master.id)).rules
+                ? this._getRules(element.master.id, 'rules')
                 : []
-          , rules = selectorEngine.getMatchingRules(masterRules, element);
+          , rules = selectorEngine.getMatchingRules(masterRules, element)
+          ;
         return new this.StyleDict(this, rules, element);
     }
     
@@ -107,7 +121,7 @@ define([
     
     _p._getReferenceDictionary = function(element) {
         var masterRules = element.master
-                ? this._ruleController.getRule(false, this._getMasterRule(element.master.id)).dictionaryRules
+                ? this._getRules(element.master.id, 'dictionaryRules')
                 : []
         var rules = selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
@@ -121,11 +135,10 @@ define([
         if(element.multivers !== this._MOM)
             throw new CPSError('getReferenceDictionary with an element that is not '
                 + 'part of the multivers is not supported' + element);
-        
         if(!this._caches.referenceDicts[element.nodeID])
             this._caches.referenceDicts[element.nodeID] = this._getReferenceDictionary(element);
         return this._caches.referenceDicts[element.nodeID];
-    }
+    };
     
     _p._checkScope = function(scope) {
         var i=0;
