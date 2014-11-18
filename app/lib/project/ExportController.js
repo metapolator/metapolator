@@ -1,3 +1,10 @@
+/**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ * 
+ * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ *
+ */
 (function(
   // Reliable reference to the global object (i.e. window in browsers).
   global,
@@ -532,34 +539,27 @@ define([
             while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
                 points = penstroke.children;
-                console.log("writing out a penstroke:" + penstroke.type );
 
-                console.log("aaa. writing out a penstroke:" + penstroke.type );
-
-                if (!(penstroke.type == 'Component')) {
-                    context$2$0.next = 9;
+                if (!(penstroke.type == 'component')) {
+                    context$2$0.next = 5;
                     break;
                 }
 
-                console.log("aaa. gn:" + penstroke.baseGlyphName );
-                console.log("aaa. pen:" + typeof pen );
-                //    console.log("aaa. pen:" + pen.toString() );
-                // GLIFPointPen.
                 pen.addComponent( penstroke.baseGlyphName, penstroke.transformation );
                 return context$2$0.abrupt("return");
-            case 9:
+            case 5:
                 pen.beginPath();
                 i = 0;
-            case 11:
+            case 7:
                 if (!(i < points.length)) {
-                    context$2$0.next = 33;
+                    context$2$0.next = 29;
                     break;
                 }
 
                 point = model.getComputedStyle(points[i].right);
 
                 if (!true /* always curve */) {
-                    context$2$0.next = 26;
+                    context$2$0.next = 22;
                     break;
                 }
 
@@ -575,43 +575,43 @@ define([
                 }
                 ctrls = getControlsFromStyle(prePoint, point, terminal);
                 t$2$0 = regeneratorRuntime.values(ctrls);
-            case 18:
+            case 14:
                 if ((t$2$1 = t$2$0.next()).done) {
-                    context$2$0.next = 24;
+                    context$2$0.next = 20;
                     break;
                 }
 
                 vector = t$2$1.value;
-                context$2$0.next = 22;
-                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-            case 22:
                 context$2$0.next = 18;
+                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+            case 18:
+                context$2$0.next = 14;
                 break;
-            case 24:
-                context$2$0.next = 28;
+            case 20:
+                context$2$0.next = 24;
                 break;
-            case 26:
+            case 22:
                 segmentType =  'line';
                 console.warn('implicit line segment, right side, this should be explicit in CPS');
-            case 28:
-                context$2$0.next = 30;
+            case 24:
+                context$2$0.next = 26;
                 return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-            case 30:
+            case 26:
                 i++;
-                context$2$0.next = 11;
+                context$2$0.next = 7;
                 break;
-            case 33:
+            case 29:
                 i=points.length-1;
-            case 34:
+            case 30:
                 if (!(i >= 0)) {
-                    context$2$0.next = 57;
+                    context$2$0.next = 53;
                     break;
                 }
 
                 point = model.getComputedStyle(points[i].left);
 
                 if (!true/*always curve*/) {
-                    context$2$0.next = 50;
+                    context$2$0.next = 46;
                     break;
                 }
 
@@ -637,34 +637,34 @@ define([
                     point = prePoint;
                 }
                 t$2$2 = regeneratorRuntime.values(ctrls);
-            case 42:
+            case 38:
                 if ((t$2$3 = t$2$2.next()).done) {
-                    context$2$0.next = 48;
+                    context$2$0.next = 44;
                     break;
                 }
 
                 vector = t$2$3.value;
-                context$2$0.next = 46;
-                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-            case 46:
                 context$2$0.next = 42;
+                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+            case 42:
+                context$2$0.next = 38;
                 break;
-            case 48:
-                context$2$0.next = 52;
+            case 44:
+                context$2$0.next = 48;
                 break;
-            case 50:
+            case 46:
                 segmentType = 'line';
                 console.warn('implicit line segment, left side, this should be explicit in CPS');
-            case 52:
-                context$2$0.next = 54;
+            case 48:
+                context$2$0.next = 50;
                 return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-            case 54:
+            case 50:
                 i--;
-                context$2$0.next = 34;
+                context$2$0.next = 30;
                 break;
-            case 57:
+            case 53:
                 pen.endPath();
-            case 58:
+            case 54:
             case "end":
                 return context$2$0.stop();
             }

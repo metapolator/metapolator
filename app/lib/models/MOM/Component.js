@@ -28,6 +28,16 @@ define([
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
+    Object.defineProperty(_p, 'baseGlyphName', {
+        get: function() {
+            return this._baseGlyphName;
+        }
+    });
+    Object.defineProperty(_p, 'transformation', {
+        get: function() {
+            return this._transformation;
+        }
+    });
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Component'
