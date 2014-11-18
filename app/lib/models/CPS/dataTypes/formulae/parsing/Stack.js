@@ -15,6 +15,7 @@ define([
         this._check(postfixStack);
         this._stack = postfixStack;
         this._finalizeMethod = finalizeMethod;
+        this._compiled = undefined;
     }
 
     var _p = Stack.prototype;
@@ -39,7 +40,7 @@ define([
             }
         }
         return stck.join(' | ');
-    }
+    };
 
     _p._check = function(stack) {
         var i=0, stackLen = 0;
@@ -65,7 +66,36 @@ define([
                         + this._makeDebugMessageStackDetails(stack));
     };
 
-    _p.execute = function(getAPI) {
+    _p._compile = function() {
+        var i=0
+          , args
+          , stack = []
+          , resultCounter = 0
+          , resultName = 'commands[0]'
+          , body = [
+               '"use strict";'
+          ];
+        for(;i<this._stack.length;i++) {
+            if(this._stack[i] instanceof _ValueToken)
+                stack.push('commands[' + i +']');
+            else {
+                args = ['getAPI'];
+                Array.prototype.push.apply(args
+                                , stack.splice(-this._stack[i].consumes));
+                resultName = 'r'+ (resultCounter++);
+                body.push('var '+resultName+' = commands['+ i +'].execute('+ args.join(',') +');');
+                stack.push(resultName);
+            }
+        }
+        // return the last result
+        if(this._finalizeMethod)
+            body.push('return finalize(' + resultName + ', getAPI);');
+        else
+            body.push('return '+ resultName + ';');
+        return new Function('getAPI', 'commands', 'finalize', body.slice(1).join('\n'));
+    };
+
+    _p.interpret = function(getAPI) {
         var commands = this._stack.slice()
           , stack = []
           , args
@@ -101,6 +131,17 @@ define([
             ?  this._finalizeMethod(result, getAPI)
             : result
         );
+    };
+
+    _p.execute = function(getAPI) {
+        // FIXME: if/how much the complile strategy is faster must be measured
+        // the one alternative is interpreting the stack using the following
+        // line.
+        // return this.interprete(getAPI);
+        if(!this._compiled)
+            this._compiled = this._compile();
+        return this._compiled(getAPI, this._stack, this._finalizeMethod);
+
     };
 
     return Stack;
