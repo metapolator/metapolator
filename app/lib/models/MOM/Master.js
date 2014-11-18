@@ -24,6 +24,20 @@ define([
         /* this is used for CPS selectors*/
         value: 'master'
     })
+
+    _p.findGlyph = function( glyphName ) {
+        var col = this.children
+        , i = 0
+        , glyph
+        ;
+        for( i=0; i<col.length; i++ ) {
+            glyph = col[i];
+            if( glyph.id == glyphName ) {
+                return glyph;
+            }
+        }
+        return null;
+    }
     
      /**
      * As long as there is just one univers, we don't need to display

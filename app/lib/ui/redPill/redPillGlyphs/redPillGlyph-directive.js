@@ -3,11 +3,13 @@ define([
   , 'metapolator/project/ExportController'
   , 'ufojs/tools/pens/PointToSegmentPen'
   , 'ufojs/tools/pens/SVGPen'
+  , 'ufojs/tools/pens/TransformPen'
     ], function(
     document
   , ExportController
   , PointToSegmentPen
   , SVGPen
+  , TransformPen
 ) {
     "use strict";
     
@@ -58,6 +60,18 @@ define([
           ;
         return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen);
     }
+
+    function getLayerComponentGenerator(ep, svg, model, glyph, layername, renderer, contour ) {
+        var layer = getLayer(svg, layername)
+          , momMaster = glyph.parent
+          , svgPen = svgPenFactory(layer, {})
+          , tPen = new TransformPen(svgPen, contour.transformation)
+          , pointPen = new PointToSegmentPen(tPen)
+          ;
+        console.log("getLayerCG() contour.glyphName:" + contour.baseGlyphName);
+        glyph = momMaster.findGlyph(contour.baseGlyphName);
+        return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen);
+    }
     
     function iterateGenerator(gen) {
         var done = false;
@@ -74,15 +88,44 @@ define([
         return done;
     }
     
+    var renderComponentsID = 1;
+    function renderComponents( generator, layers, glyph, renderPenstroke ) {
+        var momMaster = glyph.parent;
+
+        glyph.children.map( function( contour ) { 
+            if( contour.type == 'component' ) {
+                layers.push( generator('outline' + contour.baseGlyphName + renderComponentsID, 
+                                       renderPenstroke, contour ));
+                renderComponentsID++;
+
+                glyph = momMaster.findGlyph( contour.baseGlyphName );
+                console.log("contour.glyphName: " + contour.baseGlyphName );
+                console.log("glyph: " + glyph );
+                if( glyph ) {
+                    renderComponents( generator, layers, glyph, renderPenstroke );
+                }
+            }
+        });
+    }
+
     function render(scope, element, glyph, model) {
+        console.warn("render() g: " + glyph ); // mom glyph
+        console.warn("render() s: " + scope );
+        console.warn("render() m: " + model );
+
         var ep = Object.create(ExportController.prototype)
           , svg = getSVG(element)
           , _getLayerGenerator = getLayerGenerator.bind(null, ep, svg, model, glyph)
+          , _getLayerComponentGenerator = getLayerComponentGenerator.bind(null, ep, svg, model, glyph)
           , layers = [
                 _getLayerGenerator('outline', ExportController.renderPenstrokeOutline)
               , _getLayerGenerator('centerline', ExportController.renderPenstrokeCenterline)
             ]
           ;
+        
+        renderComponents( _getLayerComponentGenerator, layers, glyph, 
+                          ExportController.renderPenstrokeOutline );
+        
         function layerCtrl() {
             // execute
             var done = layers.map(iterateGenerator);
