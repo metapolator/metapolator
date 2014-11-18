@@ -34,6 +34,7 @@ define([
         this._commissionIdCounter = 0;
         this._rules = Object.create(null);
         this._importing = {};
+        this._references = Object.create(null);
     }
     var _p = RuleController.prototype;
 
@@ -63,12 +64,15 @@ define([
                             // FIXME: a maybe better alternative would be
                             //        to fail here!
                             || (sourceName in this._rules) && commissionId >= this._rules[sourceName][0])
-                        this._rules[sourceName] = [
-                              commissionId
-                            , parseRules.fromString(cps, sourceName, this)
-                        ];
-                    delete this._importing[sourceName];
-                    return this._rules[sourceName];
+                    {
+                        var rule = parseRules.fromString(cps, sourceName, this);
+                        if(!(sourceName in this._references))
+                            this._references[sourceName] = rule;
+                        else
+                            this._references[sourceName].reset(rule.items, rule.source, rule.lineNo);
+                        this._rules[sourceName] = [commissionId, this._references[sourceName]];
+                    }
+                    return this._rules[sourceName][1];
                 }]
           , isCached: ['sourceName', function(sourceName) {
                 return sourceName in this._rules;}]
@@ -78,7 +82,7 @@ define([
       , ['sourceName']
       , function(obtain, sourceName) {
             if(!obtain('isCached'))
-                return obtain('rule')[1];
+                return obtain('rule');
             return this._rules[sourceName][1];
         }
     );
