@@ -33,9 +33,9 @@ define([
                 if(!element.parent)
                     return false;
                 return (simpleSelector.value < 0
-                    // negative serch index
+                    // negative search index
                     ? element.parent.children.length + simpleSelector.value === element.index
-                    // positive serch index
+                    // positive search index
                     : simpleSelector.value === element.index);
         }
     }
@@ -52,15 +52,20 @@ define([
         if(!(simpleSelector instanceof SimpleSelector))
             throw new CPSError('simpleSelector is not of type '
                                          + 'SimpleSelector');
-        // no pseudoclass/pseudoelement checks at the moment
-        return ( simpleSelector.type === 'universal'
-              || simpleSelector.type === 'type' && element.type === simpleSelector.name
-              || simpleSelector.type === 'id' && element.id === simpleSelector.name
-              || simpleSelector.type === 'class' && element.hasClass(simpleSelector.name)
-              || simpleSelector.type === 'pseudo-class'
-                    && _pseudoClassSelectorMatches(simpleSelector, element, scopeElement)
-              || false
-              );
+        switch(simpleSelector.type) {
+            case 'type':
+                return  element.type === simpleSelector.name;
+            case 'id':
+                return  element.id === simpleSelector.name;
+            case 'class':
+                return element.hasClass(simpleSelector.name);
+            case 'pseudo-class':
+                return _pseudoClassSelectorMatches(
+                                simpleSelector, element, scopeElement);
+            case 'universal':
+                return true;
+        }
+        return false;
     }
     
     /**
@@ -166,28 +171,17 @@ define([
                 return sB[i]-sA[i];
         }
         return 0;
-        
     }
     function _compareSpecificity (itemA, itemB) {
+        return compareSpecificity(itemA.specificity, itemB.specificity);
+    }
+    function _rulesCompareSpecificity (itemA, itemB) {
         return compareSpecificity(itemA[0], itemB[0]);
     }
     
     /**
      * Returns a list of all of the rules currently applying to the element,
      * sorted from most specific to least.
-     * 
-     * TODO: when there are more sources than one ParameterCollection,
-     * we should be able to perform this action for all the collections.
-     * therefore, it would be wise to move the selector engine methods to
-     * another module. 
-     * The signature of this method could be:
-     *      function(target, parameterCollection[, ... parameterCollection])
-     * with this approach we could keep the information of the specificity.
-     * In other words, the order of the parameterCollection matters!
-     * 
-     * TODO: We should maybe add a last item with the default parameters
-     * of the element. That Item would probably define which properties
-     * are available for the Element, too ???
      */
     function getMatchingRules(namespacedRules, element) {
         var i=0, j
@@ -198,42 +192,40 @@ define([
           , compoundSelector
           , combinator
           , selects
-          , matchingSelectors
           , specificity
+          , match
           ;
         for(;i<namespacedRules.length;i++) {
             namespacedRule = namespacedRules[i];
             if(!(namespacedRule[1] instanceof Rule))
                 throw new CPSError('Item at index ' + i + ' is not of type '
                                          + 'CPS Rule');
-            matchingSelectors = []
+            match = undefined;
             // the complexSelectors are all selecting when obtained via
             // the value property of SelectorList
             complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
-            for(j=0;j<complexSelectors.length; j++) {
-                if(complexSelectorMatches(complexSelectors[j], element))
-                    // got a match
-                    matchingSelectors.push([complexSelectors[j].specificity
-                                           , complexSelectors[j]]);
+            complexSelectors.sort(_compareSpecificity);
+            for(j=0;j<complexSelectors.length;j++) {
+                if(complexSelectorMatches(complexSelectors[j], element)) {
+                    // got a match with the most specific selector
+                    match = complexSelectors[j];
+                    break;
+                }
             }
-            if(matchingSelectors.length > 1)
-                // we only use the matching selector with the higest
-                // specificity. This sorts it at position 0
-                matchingSelectors.sort(_compareSpecificity);
-            if(matchingSelectors.length) {
+            if(match) {
                 // augment the specifity with the index number, so we can
                 // make sure, that the order of rules with otherwise
                 // equal specifity is not mixed up. The later rules
                 // are more specific/overide the previous one, so it
                 // is a good match for the sorting function that we use
                 // anyways
-                specificity = matchingSelectors[0][0];
+                specificity = match.specificity.slice();
                 specificity.push(i);
                 matchingRules.push([specificity, namespacedRule[1]]);
             }
         }
-        matchingRules.sort(_compareSpecificity);
-        return matchingRules.map(function(item){return item[1]});
+        matchingRules.sort(_rulesCompareSpecificity);
+        return matchingRules.map(function(item){return item[1];});
     }
     
     function _filterElementChildren(element, filter) {
