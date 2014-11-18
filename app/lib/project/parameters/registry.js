@@ -80,5 +80,10 @@ define([
                                                 + 'outgoing Control Point.'
     });
 
+    parameterRegistry.register('transformation', {
+                type: 'transformation'
+              , description: 'Affine 2D transformation matrix.'
+    });
+
     return parameterRegistry;
 });
