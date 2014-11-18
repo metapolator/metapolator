@@ -10,7 +10,9 @@ define([
   , obtain
 ) {
     "use strict";
-    var KeyError = errors.Key;
+    var KeyError = errors.Key
+      , CPSRecursionError = errors.CPSRecursion
+      ;
 
     // FIXME: note that we have a race condition in here:
     //        One request with an older result can respond after
@@ -31,6 +33,7 @@ define([
         this._cpsDir = cpsDir;
         this._commissionIdCounter = 0;
         this._rules = Object.create(null);
+        this._importing = {};
     }
     var _p = RuleController.prototype;
 
@@ -43,9 +46,13 @@ define([
     _p._readFile = function(async, fileName) {
                             return this._io.readFile(async, fileName); };
 
-    _p.getRule = obtain.factory (
+    _p.getRule = obtain.factory(
         {
             fileName: ['sourceName', function(sourceName) {
+                // Detect recursive definition (by @import)
+                if(sourceName in this._importing)
+                    throw new CPSRecursionError(sourceName + ' @imports itself');
+                this._importing[sourceName] = true;
                 return [this._cpsDir, sourceName].join('/');}]
           , cps: [false, 'fileName', 'commissionId', _p._readFile]
           , rule: ['cps', 'sourceName', 'commissionId' ,
@@ -60,6 +67,7 @@ define([
                               commissionId
                             , parseRules.fromString(cps, sourceName, this)
                         ];
+                    delete this._importing[sourceName];
                     return this._rules[sourceName];
                 }]
           , isCached: ['sourceName', function(sourceName) {
