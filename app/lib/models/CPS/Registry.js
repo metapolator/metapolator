@@ -2,10 +2,12 @@ define([
     'metapolator/errors'
   , './dataTypes/CPSReal'
   , './dataTypes/CPSVector'
+  , './dataTypes/CPSTransformation'
 ], function(
     errors
   , CPSReal
   , CPSVector
+  , CPSTransformation
 ) {
     "use strict";
     /**
@@ -25,6 +27,7 @@ define([
             // thus the idea of factories.
             real: CPSReal.factory
           , vector: CPSVector.factory
+          , transformation: CPSTransformation.factory
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
