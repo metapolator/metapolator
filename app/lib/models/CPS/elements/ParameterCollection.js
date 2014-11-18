@@ -30,6 +30,12 @@ define([
     var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterCollection;
 
+    _p.reset = function(/* same as constructor ! */) {
+        // reset all 'own' properties
+        Object.keys(this).forEach(function(key){ delete this[key];}, this);
+        this.constructor.apply(this, Array.prototype.slice.call(arguments));
+    }
+
     _p.toString = function() {
         var result;
         if(!this._name)
