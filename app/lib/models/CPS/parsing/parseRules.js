@@ -5,6 +5,7 @@ define([
   , './engine'
   , './parameterFactories'
   , './atDictionaryFactories'
+  , './atImportFactories'
 ], function (
     errors
   , gonzales
@@ -12,6 +13,7 @@ define([
   , parserEngine
   , parameterFactoriesModule
   , atDictionaryFactories
+  , atImportFactories
 ) {
     "use strict";
     var CPSError = errors.CPS
@@ -20,14 +22,15 @@ define([
       ;
     
     var factorySwitches = [
-            atDictionaryFactories.atDictionaryParsingSwitch
+            atDictionaryFactories.atDictionaryParsingSwitch,
+            atImportFactories.atImportParsingSwitch
         ]
       , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
       ;
     /**
      * Create a ParameterCollection from a CSS string
      */
-    function rulesFromString(css, sourceName, parameterRegistry) {
+    function rulesFromString(css, sourceName, ruleController) {
         var ast;
         try {
             ast = gonzales.srcToCSSP(css);
@@ -38,11 +41,11 @@ define([
             throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
         }
         
-        return rulesFromAST(ast, sourceName, parameterRegistry)
+        return rulesFromAST(ast, sourceName, ruleController)
     }
-     
+    
     return {
         fromString: rulesFromString
       , fromAST: rulesFromAST
-    }
+    };
 })
