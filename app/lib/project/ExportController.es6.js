@@ -124,14 +124,17 @@ define([
         var points = penstroke.children
           , point
           , prePoint
-          , segmentType, terminal, ctrls, vector
+          , segmentType, terminal, ctrls, vector, transformation
           ;
 
         console.log("renderPenstrokeOutline() penstroke.type:" + penstroke.type );
         if( penstroke.type == 'component' ) {
+//            transformation = model.getComputedStyle(penstroke).get('transformation');
+            transformation = penstroke.transformation;
             console.log("renderPenstrokeOutline() component:" + penstroke.baseGlyphName );
-            console.log("renderPenstrokeOutline() trans:" + penstroke.transformation );
-            pen.addComponent( penstroke.baseGlyphName, penstroke.transformation );
+            console.log("renderPenstrokeOutline() pen.trans:" + penstroke.transformation );
+            console.log("renderPenstrokeOutline() cps.trans:" + transformation );
+            yield pen.addComponent( penstroke.baseGlyphName, transformation );
             return;
         }
 
