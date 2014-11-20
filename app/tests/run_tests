@@ -1,5 +1,8 @@
 #!/bin/sh
 echo "$0"
+echo "For a test failure that doesn't show up in intern's count do:"
+echo "  cd app/tests/lib/export"
+echo "  ./test.sh"
 cd .. &&
 node --harmony ../node_modules/intern/client config=tests/intern "$@"
 
