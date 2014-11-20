@@ -37,7 +37,7 @@ define([
                                     , sourceName || 'selector parser');
         rules = rules.items;
         // search the first instance of SelectorList
-        // and verify that nothing else was submited.
+        // and verify that nothing else was submitted.
         for(;i<rules.length;i++) {
             if(rules[i] instanceof Comment)
                 // accept comments
@@ -52,7 +52,7 @@ define([
             else if(rules[i].paramters)
                 throw new CPSParserError('Found parameters where there should '
                             + 'be only a SelectorList: ' + rules[i].paramters);
-            selectorList = rules[i].selectorList;
+            selectorList = rules[i].getSelectorList();
             // don't break! we want to validate the rules, if there is
             // awkward stuff in it it's better to complain, because it
             // might be a programming error.

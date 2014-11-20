@@ -30,6 +30,12 @@ define([
     var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterCollection;
 
+    _p.reset = function(/* same as constructor ! */) {
+        // reset all 'own' properties
+        Object.keys(this).forEach(function(key){ delete this[key];}, this);
+        this.constructor.apply(this, Array.prototype.slice.call(arguments));
+    }
+
     _p.toString = function() {
         var result;
         if(!this._name)
@@ -61,16 +67,8 @@ define([
         }
     })
 
-
-    function _ruleAddNamespace(rule) {
-        rule.addNamespace(this._selectorList);
-    }
     Object.defineProperty(_p, 'selectorList', {
         enumerable: true
-        /**
-         * Add the selectorList of this namespace to all children
-         * and children's children's rules
-         */
       , set: function(selectorList) {
             if('_selectorList' in this)
                 throw new CPSError('selectorList is already set');
@@ -85,10 +83,6 @@ define([
                         ? selectorList.constructor.name
                         : selectorList.constructor));
             this._selectorList = selectorList;
-
-            this.rules.forEach(_ruleAddNamespace, this);
-            this.dictionaryRules.forEach(_ruleAddNamespace, this);
-
         }
       , get: function() {
             return this._selectorList || null;
@@ -114,56 +108,64 @@ define([
                         .bind(null, ParameterCollection, 'namespace'));
     }
 
-    /**
-     * This returns only rules that are direct children of this collection
-     */
-    function _filterRules(item) {
-        return item instanceof Rule;
+    function _addNamespacedRuleGetter(propertyName, baseType, baseName
+                                                    , baseConstructor) {
+        Object.defineProperty(_p, propertyName, {
+            get: function() {
+                var i=0
+                  , namespacedRules = []
+                  , namespace = this.selectorList
+                  , childRules
+                  , addNamespace = _addNamespace.bind(null, namespace)
+                  ;
+                for(;i<this._items.length;i++) {
+                    if(_filterCollections(baseType, baseName, this._items[i]))
+                        childRules = baseConstructor(namespace, this._items[i]);
+                    else if(this._items[i] instanceof ParameterCollection) {
+                        childRules = this._items[i][propertyName];
+                        if (namespace)
+                            childRules.forEach(addNamespace);
+                    }
+                    else
+                        continue;
+                    Array.prototype.push.apply(namespacedRules, childRules)
+                }
+                return namespacedRules;
+            }
+        });
     }
-    Object.defineProperty(_p, 'ownRules', {
-        get: function(){ return this._items.filter(_filterRules); }
-    })
+
+    function _addNamespace(namespace, namespacedRule) {
+        namespacedRule[0].push(namespace);
+    }
+
+    function _createNamespacedRule(namespace, rule) {
+        return [ (namespace ? [namespace] : []), rule];
+    }
 
     /**
      * this returns all rules that are direct children of this collection
      * AND all rules of ParameterCollection instances that are
      * direct children of this collection
      */
-    Object.defineProperty(_p, 'rules', {
-        get: function() {
-            var i=0
-              , rules = []
-              ;
-            for(;i<this._items.length;i++) {
-                if(_filterRules(this._items[i]))
-                    rules.push(this._items[i]);
-                else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(rules, this._items[i].rules);
-            }
-            return rules;
+    _addNamespacedRuleGetter('rules', Rule, undefined,
+        function(namespace, rule) {
+            return [_createNamespacedRule(namespace, rule)];
         }
-    })
+    );
 
     /**
      * this returns all rules of dictionaries that are direct children of
-     * this collection AND all rules of dictionaroies that are children of
+     * this collection AND all rules of dictionaries that are children of
      * ParameterCollection instances that are direct children of this collection
      */
-    Object.defineProperty(_p, 'dictionaryRules', {
-        get: function() {
-            var i=0
-              , rules = []
-              , dictionaries
-              ;
-            for(;i<this._items.length;i++) {
-                if(_filterCollections(AtRuleCollection, 'dictionary', this._items[i]))
-                    Array.prototype.push.apply(rules, this._items[i].rules);
-                else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(rules, this._items[i].dictionaryRules);
-            }
-            return rules;
+    _addNamespacedRuleGetter('dictionaryRules', AtRuleCollection, 'dictionary',
+        // N.B. Here we invoke AtRuleCollection.rules, not ParameterCollection.rules
+        // AtRuleCollection.rules returns [Rule, Rule, Rule, ... ]
+        function(namespace, collection) {
+            return collection.rules.map(_createNamespacedRule.bind(null, namespace))
         }
-    })
+    );
 
     return ParameterCollection;
-})
+});

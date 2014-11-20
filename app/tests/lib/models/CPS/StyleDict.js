@@ -3,16 +3,20 @@
   , 'intern/chai!assert'
   , 'metapolator/errors'
   , 'metapolator/models/Controller'
+  , 'metapolator/models/CPS/RuleController'
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/parsing/parseRules'
+  , 'ufojs/tools/io/TestingIO'
   , 'tests/lib/models/test_data/makeMasterFixture'
 ], function (
     registerSuite
   , assert
   , errors
   , ModelController
+  , RuleController
   , parameterRegistry
   , cpsParser
+  , TestingIO
   , makeMasterFixture
 ) {
     "use strict";
@@ -33,28 +37,24 @@
                   , 'master#master_1 point>left'
                   , 'master#master_2 point'
               ]
-              , modelController = new ModelController(parameterRegistry)
+              , io = new TestingIO()
+              , ruleController = new RuleController(io, parameterRegistry, '')
+              , modelController = new ModelController(ruleController)
               , i=0
               , source
               , master
               , elementStyle
               ;
-            // prepare
-            for(;i<recursive_cps.length; i++) {
-                source = cpsParser.fromString(
-                         recursive_cps[i]
-                       , 'recursive_cps at '+ i
-                       , parameterRegistry
-                );
+            for(;i<recursive_cps.length;i++) {
+                io.writeFile(false, '/recursive_cps_'+i, recursive_cps[i]);
                 master = makeMasterFixture('master_'+ i, ['a']);
-                modelController.addMaster(master, [source]);
+                modelController.addMaster(master, 'recursive_cps_'+i);
             }
             i=0;
             for(;i<failingSelectors.length;i++) {
                 elementStyle = modelController.query(failingSelectors[i])
-                                              .getComputedStyle()
+                                              .getComputedStyle();
                 // fails with CPSRecursionError
-
                 assert.throws(
                     elementStyle.get.bind(elementStyle, 'on')
                   , CPSRecursionError

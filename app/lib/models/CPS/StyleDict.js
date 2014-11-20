@@ -32,7 +32,7 @@ define([
      * Get a cps ParameterValue from the _rules
      * This is needed to construct the instance of the Parameter Type.
      *
-     * Raises KeyError if name is not in this._controller.parameterRegistry.
+     * Raises KeyError if name is not in this._controller.ruleController.parameterRegistry.
      */
     _p._getCPSParameterValue = function(name) {
         var i=0, value;

@@ -3,4 +3,5 @@ define([
 // load all CPS related tests
     './dataTypes/formulae/formulaEngine'
   , './StyleDict'
+  , './atImport'
 ], function(){})

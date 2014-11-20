@@ -19,6 +19,7 @@ if (require.main === module) {
       , 'ufojs/tools/io/staticNodeJS'
       , 'metapolator/models/CPS/parsing/parseRules'
       , 'metapolator/models/Controller'
+      , 'metapolator/models/CPS/RuleController'
       , 'metapolator/models/MOM/Univers'
       , 'metapolator/models/MOM/Master'
       , 'metapolator/models/MOM/Glyph'
@@ -30,6 +31,7 @@ if (require.main === module) {
       , io
       , parseRules
       , Controller
+      , RuleController
       , Univers
       , Master
       , Glyph
@@ -81,8 +83,9 @@ if (require.main === module) {
                       , description: 'the intrinsic value of the zon'
             })
 
-            var result = parseRules.fromString(cpsString, CPSfile, parameterRegistry)
-              , controller = new Controller(parameterRegistry)
+            var ruleController = new RuleController(parameterRegistry)
+              , controller = new Controller(ruleController)
+              , result = parseRules.fromString(cpsString, CPSfile, ruleController)
               , univers = controller.query('univers')
               , ralph = new Master()
               , heidi = new Master()
