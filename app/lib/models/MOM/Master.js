@@ -25,6 +25,9 @@ define([
         value: 'master'
     })
 
+    /**
+     * TODO: make indexed lookup for _Node.id
+     */
     _p.findGlyph = function( glyphName ) {
         var col = this.children
         , i = 0
