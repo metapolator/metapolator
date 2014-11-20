@@ -124,14 +124,17 @@ define([
         var points = penstroke.children
           , point
           , prePoint
-          , segmentType, terminal, ctrls, vector
+          , segmentType, terminal, ctrls, vector, transformation
           ;
 
         console.log("renderPenstrokeOutline() penstroke.type:" + penstroke.type );
         if( penstroke.type == 'component' ) {
+//            transformation = model.getComputedStyle(penstroke).get('transformation');
+            transformation = penstroke.transformation;
             console.log("renderPenstrokeOutline() component:" + penstroke.baseGlyphName );
-            console.log("renderPenstrokeOutline() trans:" + penstroke.transformation );
-            pen.addComponent( penstroke.baseGlyphName, penstroke.transformation );
+            console.log("renderPenstrokeOutline() pen.trans:" + penstroke.transformation );
+            console.log("renderPenstrokeOutline() cps.trans:" + transformation );
+            yield pen.addComponent( penstroke.baseGlyphName, transformation );
             return;
         }
 
@@ -202,6 +205,94 @@ define([
         pen.endPath();
     }
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
+
+    function* renderPenstrokeOutlineB(options, pen, model, penstroke) {
+        var points = penstroke.children
+          , point
+          , prePoint
+          , segmentType, terminal, ctrls, vector, transformation
+          ;
+        // if( options === undefined ) 
+        //     options = {};
+
+        console.log("renderPenstrokeOutline() penstroke.type:" + penstroke.type );
+        if( penstroke.type == 'component' ) {
+//            transformation = model.getComputedStyle(penstroke).get('transformation');
+            transformation = penstroke.transformation;
+            console.log("renderPenstrokeOutline() component:" + penstroke.baseGlyphName );
+            console.log("renderPenstrokeOutline() pen.trans:" + penstroke.transformation );
+            console.log("renderPenstrokeOutline() cps.trans:" + transformation );
+            yield pen.addComponent( penstroke.baseGlyphName, transformation );
+            return;
+        }
+
+        pen.beginPath();
+        // first draw the right side
+        for(var i=0;i<points.length;i++) {
+            point = model.getComputedStyle(points[i].right);
+            // Actually, all points have controls. We don't have to draw
+            // lines. We should make a CPS value if we want to draw a
+            // point as a line segment point
+            if(true /* always curve */) {
+                segmentType = 'curve';
+                if(i === 0) {
+                    // this reproduces the starting terminal
+                    prePoint = model.getComputedStyle(points[i].left);
+                    terminal = 'start'
+                }
+                else {
+                    terminal = false;
+                    prePoint = model.getComputedStyle(points[i-1].right);
+                }
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
+                for (vector of ctrls) {
+                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+                }
+            }
+            else {
+                segmentType =  'line';
+                console.warn('implicit line segment, right side, this should be explicit in CPS');
+            }
+            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+        }
+        // draw the left side
+        for(i=points.length-1;i>=0 ;i--) {
+            point = model.getComputedStyle(points[i].left);
+            if(true/*always curve*/) {
+                segmentType = 'curve';
+                if(i === points.length-1) {
+                    // this reproduces the ending terminal
+                    terminal = 'end';
+                    prePoint = model.getComputedStyle(points[i].right);
+                }
+                else {
+                    terminal = false;
+                    // the left side is of the outline is drawn from the
+                    // end to the beginning. This reverses the point order
+                    // for getComputedStyle
+                    prePoint = point;
+                    point = model.getComputedStyle(points[i+1].left);
+                }
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
+                if(!terminal) {
+                    // reverse on curve and of curve points, prePoint
+                    // is no longer needed.
+                    ctrls.reverse();
+                    point = prePoint;
+                }
+                for (vector of ctrls) {
+                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+                }
+            }
+            else {
+                segmentType = 'line';
+                console.warn('implicit line segment, left side, this should be explicit in CPS');
+            }
+            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+        }
+        pen.endPath();
+    }
+    ExportController.renderPenstrokeOutlineB = renderPenstrokeOutlineB;
 
     function* renderPenstrokeCenterline(pen, model, penstroke) {
         var points = penstroke.children
