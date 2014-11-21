@@ -1,9 +1,11 @@
 define([
     'metapolator/errors'
+  , './_CPSDict'
   , './cpsGetters'
   , 'metapolator/memoize'
 ], function(
     errors
+  , Parent
   , cpsGetters
   , memoize
 ) {
@@ -18,14 +20,12 @@ define([
      * StyleDict is an interface to a List of CPS.Rule elements.
      */
     function StyleDict(controller, rules, element) {
-        this._rules = rules;
-        this._element = element;
-        this._controller = controller;
+        Parent.apply(this, arguments);
         this.getAPI = this.get.bind(this);
         this._getting = {};
     }
 
-    var _p = StyleDict.prototype;
+    var _p = StyleDict.prototype = Object.create(Parent.prototype);
     _p.constructor = StyleDict;
 
     /**
@@ -35,24 +35,11 @@ define([
      * Raises KeyError if name is not in this._controller.ruleController.parameterRegistry.
      */
     _p._getCPSParameterValue = function(name) {
-        var i=0, value;
         if(!this._controller.parameterRegistry.exists(name))
             throw new KeyError('No such parameter "'+ name +'" '
                 +'has been registered.');
-        for(;i<this._rules.length;i++) {
-            try {
-                value = this._rules[i].parameters.get(name);
-            }
-            catch(error) {
-                if(!(error instanceof KeyError))
-                    throw error;
-                // pass, the name is not in the rule
-                continue;
-            }
-            if(!value.invalid)
-                return value;
-        }
-        return null;
+        if(!this._dict) this._buildIndex();
+        return (name in this._dict) ? this._dict[name] : null;
     };
 
     /**
@@ -127,13 +114,13 @@ define([
                 if(!(error instanceof KeyError))
                     throw error;
                 errors.push(error.message);
-                throw new KeyError(errors.join('\n----\n'))
+                throw new KeyError(errors.join('\n----\n'));
             }
         }
         finally {
             delete this._getting[name];
         }
-    }
+    };
 
     _p.get = memoize('get', _p._get);
 
