@@ -156,8 +156,10 @@ define([
           , svg = getSVG(element)
           , _getLayerGenerator = getLayerGenerator.bind(null, ep, svg, model, glyph)
           , layers = [
-              _getLayerGenerator('outline', ExportController.renderPenstrokeOutline)
-              , _getLayerGenerator('centerline', ExportController.renderPenstrokeCenterline)
+              _getLayerGenerator('outline', 
+                                 ExportController.renderPenstrokeOutline.bind( null, {} ))
+              , _getLayerGenerator('centerline', 
+                                   ExportController.renderPenstrokeCenterline.bind( null, {} ))
             ]
           ;
         
