@@ -67,6 +67,7 @@ define([
         ];
     }
 
+
     /**
      * The translation from Metapolator Penstrokes to Outlines:
      *
@@ -120,21 +121,45 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    function* renderPenstrokeOutline(pen, model, penstroke) {
+    function* renderPenstrokeOutline( circularComponentReferenceGuard, pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
-          , segmentType, terminal, ctrls, vector, transformation
+          , segmentType, terminal, ctrls, vector, transformation, glyphName, circularKey
           ;
 
+
         console.log("renderPenstrokeOutline() penstroke.type:" + penstroke.type );
+        console.log("renderPenstrokeOutline() particulars:" + penstroke.particulars );
+        console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
+
         if( penstroke.type == 'component' ) {
-//            transformation = model.getComputedStyle(penstroke).get('transformation');
-            transformation = penstroke.transformation;
+
+            circularKey = penstroke.particulars;
+            glyphName = penstroke.baseGlyphName;
+            transformation = model.getComputedStyle(penstroke).get('originalTransformation');
             console.log("renderPenstrokeOutline() component:" + penstroke.baseGlyphName );
             console.log("renderPenstrokeOutline() pen.trans:" + penstroke.transformation );
             console.log("renderPenstrokeOutline() cps.trans:" + transformation );
-            yield pen.addComponent( penstroke.baseGlyphName, transformation );
+
+            // Detect recursion on this._element
+            if(circularKey in circularComponentReferenceGuard) {
+                console.warn("Circular component reference detected in font at '"
+                             + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
+                return;
+            } 
+
+            circularComponentReferenceGuard[circularKey] = true;
+            
+            try {
+                console.log("renderPenstrokeOutline(a) component:" + glyphName );
+                yield pen.addComponent( glyphName, transformation );
+                console.log("renderPenstrokeOutline(b) component:" + glyphName );
+            }
+            finally {
+                console.log("renderPenstrokeOutline(FIN) component:" + glyphName );
+                delete circularComponentReferenceGuard[circularKey];
+            }
             return;
         }
 
@@ -206,7 +231,9 @@ define([
     }
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
-    function* renderPenstrokeCenterline(pen, model, penstroke) {
+
+
+    function* renderPenstrokeCenterline( circularComponentReferenceGuard, pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint

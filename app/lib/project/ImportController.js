@@ -184,13 +184,16 @@ define([
     };
 
     function drawPenStroke(contours, pen) {
-        var i=0, j, segmentType, point;
+        var i=0, j, segmentType, point, glyphName;
+
+        console.log( "drawPenStroke(top), this:" + this + " component gn: " + glyphName );
 
         for(;i<contours.length;i++) {
             if( contours[i].type == 'component' ) {
+                glyphName = contours[i].glyphName;
 
-                console.log( "drawPenStroke, component gn: " + contours[i].glyphName );
-                pen.addComponent( contours[i].glyphName, contours[i].transformation );
+                console.log( "drawPenStroke CIRC, this:" + this + " component gn: " + glyphName );
+                pen.addComponent( glyphName, contours[i].transformation );
 
             } else {
                 pen.beginPath();
@@ -219,6 +222,7 @@ define([
                 pen.endPath();
             }
         }
+        console.log( "drawPenStroke(bottom), this:" + this + " component gn: " + glyphName );
     }
 
     function parameterDictFromObject(obj) {

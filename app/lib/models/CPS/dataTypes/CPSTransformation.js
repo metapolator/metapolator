@@ -7,11 +7,13 @@ define([
     errors
   , Parent
   , SharedFormulaeFactory
-  , Transform
+  , transform
 ) {
     "use strict";
 
-    var ValueError = errors.Value;
+    var ValueError = errors.Value
+    , Transformation = transform.Transform
+    ;
 
     function CPSTransformation(getAPI, stack) {
         Parent.call(this, getAPI, stack);
@@ -24,10 +26,10 @@ define([
     _p.getValue = function() {
         var result = this._stack.execute(this._getAPI);
         //result MUST be a ufoJS Transform
-        if(!(result instanceof Transform))
+        if(!(result instanceof Transformation))
             throw new ValueError('The formula of this CPSTransformation '
                             + 'didn\'t resolve to a ufoJS Transform: "'+ result
-                            + '" typeof ' +  typeof result);
+                            + '" typeof ' +  typeof result + "  json:" + JSON.stringify(result));
         return result;
     };
 

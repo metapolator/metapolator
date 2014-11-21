@@ -13,6 +13,7 @@ define([
         Parent.call(this);
         this._baseGlyphName  = baseGlyphName;
         this._transformation = transformation;
+        console.log("transformation:" + transformation );
         Object.freeze(this._children);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
     }
@@ -20,8 +21,8 @@ define([
     _p.constructor = Component;
 
     _p._cps_whitelist = {
-        baseGlyphName:   '_baseGlyphName'
-      , transformation:  '_transformation'
+        baseGlyphName:           '_baseGlyphName'
+      , originalTransformation:  '_transformation'
     };
     //inherit from parent
     (function(source) {
