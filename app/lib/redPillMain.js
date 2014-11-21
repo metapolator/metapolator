@@ -19,6 +19,7 @@ requirejs.config({
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
       , 'socketio': '../socket.io/socket.io'
+      , 'metapolator/project/ExportController': 'project/ExportController.es6'
     }
   , shim: {
         angular: {
