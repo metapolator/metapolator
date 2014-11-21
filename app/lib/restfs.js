@@ -26,11 +26,30 @@ define([
     }
 
     // callback for fs.readdir
-    var _getDirectoryListingHandler = function(res, next, err, files) {
+    // attaches a slash to every directory name
+    var _getDirectoryListingHandler = function(dirName, res, next, err, files) {
+        var i
+          , failed = false
+          , resolved = 0
+          , callback = function(files, i, err, stat) {
+                resolved++;
+                if(failed) return; // failed already
+                if(err) {
+                    failed = true;
+                    next(err);
+                    return;
+                }
+                if(stat.isDirectory())
+                    files[i] += '/';
+                if(resolved === files.length)
+                    res.send(files.join('\n'));
+            }
+         ;
         if(err)
             next(err);
         else
-            res.send(files.join('\n'));
+            for(i=0;i<files.length;i++)
+                fs.stat(dirName+'/'+files[i], callback.bind(null, files, i));
     }
 
     // serve usable status codes for the directory PUT
@@ -82,9 +101,10 @@ define([
                     case 'GET':
                     case 'HEAD':
                     // return a directory listing
-                    fs.readdir([rootDir, name].join('/')
+                    var dirName = [rootDir, name].join('/')
+                    fs.readdir(dirName
                               , _getDirectoryListingHandler
-                                .bind(null, res, next));
+                                .bind(null, dirName, res, next));
                     break;
                     case 'PUT':
                     // try to create the directory
