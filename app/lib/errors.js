@@ -40,6 +40,7 @@ define(function() {
      * the definitions go here
      */
     makeError('Error');
+    makeError('Unhandled');
     makeError('Assertion', undefined , new errors.Error);
     makeError('CommandLine', undefined , new errors.Error);
     makeError('Value', undefined , new RangeError);
@@ -73,6 +74,27 @@ define(function() {
         if(typeof console !== 'undefined' && console.warn)
             console.warn('WARNING: ' + message);
     };
+
+    /**
+     * ES6/Promises have the fundamental flaw, that, if there is no
+     * Error handler attached, an unhandled error stays unnoticed and
+     * just disappears.
+     * Because handling all Errors always correctly is not possible at
+     * any given time e.g. a program may still be under construction for
+     * example, this is a default handler to mark a promise as unhandled.
+     *
+     * Using this error-handler at the very end of the promise chain
+     * ensures that the unhandled Proxy exception is not just disappearing
+     * unnoticed by the main program.
+     */
+    function unhandledPromise(originalError) {
+        var error = new errors.Unhandled(originalError+'');
+        error.originalError = originalError;
+        // use setTimout to escape the catch all that es6/Promise applies
+        // and that silences unhandled errors
+        setTimeout(function unhandledError(){throw error;}, 0);
+    }
+    errors.unhandledPromise = unhandledPromise;
 
     return errors;
 });
