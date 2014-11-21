@@ -27,10 +27,11 @@ define([
      
     function ParameterDict(items, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._items = [];
-        if(items.length)
-            this.push.apply(this, items);
+        this._items = items.slice();
+        this._dict = undefined;
+        this._keys = undefined;
     }
+    
     var _p = ParameterDict.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterDict;
     
@@ -65,32 +66,41 @@ define([
         get: function(){ return this.items.length; }
     })
     
-    _p.keys = function() {
+    _p._buildIndex = function() {
         var items = this.items
-          , i = 0
-          , keys = {}
+          , i=items.length-1
           , key
           ;
-        for(;i<this.items.length;i++) {
-            key = items[i].name;
-            keys[key] = null;// we throw the value away again
-        }
-        return Object.keys(keys);
-    }
-    
-    _p.get = function(key) {
-        var items = this.items
-          , i = items.length-1
-          , value
-          ;
+        this._dict = Object.create(null);
         // searching backwards, because the last item with key === name has
         // the highest precedence
         for(;i>=0;i--) {
-            if(key === items[i].name)
-                return items[i].value;
+            key = this.items[i].name;
+            if(!(key in this._dict))
+                this._dict[key] = items[i].value;
         }
-        throw new errors.Key('Key "'+key+'" not in ParameterDict')
-    }
+        this._keys = Object.keys(this._dict);
+    };
+
+    _p.keys = function() {
+        if(!this._keys)
+            this._buildIndex();
+        return this._keys;
+    };
+
+    _p.get = function(key) {
+        if(!this._dict)
+            this._buildIndex();
+        if(!(key in this._dict))
+            throw new errors.Key('Key "'+key+'" not in ParameterDict');
+        return this._dict[key];
+    };
+
+    _p.has = function(key) {
+        if(!this._dict)
+            this._buildIndex();
+        return key in this._dict;
+    };
     
     _p.find = function(key) {
         var items = this.items
@@ -106,16 +116,6 @@ define([
     
     _p.itemValue = function(index) {
         return this._items[index].value;
-    }
-    
-    
-    
-    /**
-     * Add items
-     */
-    _p.push = function(item /*, ... items */) {
-        var items = Array.prototype.slice.call(arguments)
-        return this._items.push.apply(this._items, items);
     }
     
     return ParameterDict;

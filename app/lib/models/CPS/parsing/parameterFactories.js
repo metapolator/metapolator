@@ -107,7 +107,7 @@ define([
          */
         'block': function(node, source) {
             var i=0
-              , parameterDict = new ParameterDict([], source, node.lineNo)
+              , items = []
               , whitelist = {
                     'comment': null,
                     'declaration': null
@@ -120,16 +120,14 @@ define([
                             ? node.children
                             : []
               ;
-            for(;i<children.length; i++) {
+            for(;i<children.length; i++)
                 if(children[i].type in whitelist
                         || (children[i].type === '__GenericAST__'
                             && !(children[i].instance.type in astBlacklist)
                         )
-                ) {
-                    parameterDict.push(children[i].instance);
-                }
-            }
-            return parameterDict;
+                )
+                    items.push(children[i].instance);
+            return new ParameterDict(items, source, node.lineNo);
         }
 
         /**
