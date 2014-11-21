@@ -81,7 +81,7 @@ define([
             this.project.controller.updateChangedRule(true, sourceName)
                 .then(function() {
                     this.frontend.$scope.$broadcast('cpsUpdate');
-                }.bind(this));
+                }.bind(this), errors.unhandledPromise);
         }
         catch(error) {
             // KeyError will be thrown by RuleController.replaceRule if
