@@ -17,6 +17,7 @@ module.exports = {
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
       , 'codemirror': 'bower_components/codemirror'
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
+      , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
     }
   , shim: {
         angular: {

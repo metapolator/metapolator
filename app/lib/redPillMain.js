@@ -20,6 +20,7 @@ requirejs.config({
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
       , 'socketio': '../socket.io/socket.io'
       , 'metapolator/project/ExportController': 'project/ExportController.es6'
+      , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
     }
   , shim: {
         angular: {
