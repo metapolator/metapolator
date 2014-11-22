@@ -1,7 +1,7 @@
 define([
     'angular'
-  , './filesMode-controller'
-  , './filesMode-directive'
+  , './textEditor-controller'
+  , './textEditor-directive'
   , './CodeMirrorController'
   , 'ui-codemirror'
 ], function(
@@ -13,9 +13,9 @@ define([
 ) {
     "use strict";
     
-    return angular.module('mtk.filesMode', ['ui.codemirror'])
-           .controller('FilesModeController', Controller)
-           .directive('mtkFilesMode', directive)
+    return angular.module('mtk.textEditor', ['ui.codemirror'])
+           .controller('TextEditorController', Controller)
+           .directive('mtkTextEditor', directive)
            .controller('CodeMirrorController', CodeMirrorController)
            ;
 })
