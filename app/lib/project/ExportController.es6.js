@@ -121,47 +121,12 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    function* renderPenstrokeOutline( circularComponentReferenceGuard, pen, model, penstroke ) {
+    function* renderPenstrokeOutline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
           , segmentType, terminal, ctrls, vector, transformation, glyphName, circularKey
           ;
-
-
-        console.log("renderPenstrokeOutline() penstroke.type:" + penstroke.type );
-        console.log("renderPenstrokeOutline() particulars:" + penstroke.particulars );
-        console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
-
-        if( penstroke.type == 'component' ) {
-
-            circularKey = penstroke.particulars;
-            glyphName = penstroke.baseGlyphName;
-            transformation = model.getComputedStyle(penstroke).get('originalTransformation');
-            console.log("renderPenstrokeOutline() component:" + penstroke.baseGlyphName );
-            console.log("renderPenstrokeOutline() pen.trans:" + penstroke.transformation );
-            console.log("renderPenstrokeOutline() cps.trans:" + transformation );
-
-            // Detect recursion on this._element
-            if(circularKey in circularComponentReferenceGuard) {
-                console.warn("Circular component reference detected in font at '"
-                             + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
-                return;
-            } 
-
-            circularComponentReferenceGuard[circularKey] = true;
-            
-            try {
-                console.log("renderPenstrokeOutline(a) component:" + glyphName );
-                yield pen.addComponent( glyphName, transformation );
-                console.log("renderPenstrokeOutline(b) component:" + glyphName );
-            }
-            finally {
-                console.log("renderPenstrokeOutline(FIN) component:" + glyphName );
-                delete circularComponentReferenceGuard[circularKey];
-            }
-            return;
-        }
 
         pen.beginPath();
         // first draw the right side
@@ -233,7 +198,7 @@ define([
 
 
 
-    function* renderPenstrokeCenterline( circularComponentReferenceGuard, pen, model, penstroke ) {
+    function* renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
@@ -260,15 +225,77 @@ define([
     }
     ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
-    _p.drawGlyphToPointPenGenerator = function (renderer, model, glyph, /*method*/ pen) {
-        return function* () {
+    _p.drawGlyphToPointPenGenerator = function ( renderer, model, glyph, /*method*/ pen, 
+                                                 circularComponentReferenceGuard ) {
+        var transformation, glyphName, circularKey;
+
+        if( circularComponentReferenceGuard === undefined ) {
+            circularComponentReferenceGuard = {};
+        }
+
+        // return function* () {
+        //     var stroke;
+        //     for (stroke of glyph.children) {
+        //         yield* renderer( pen, model, stroke );
+        //     }
+        // }.call(this);
+
+
+        function* generator( glyph, circularComponentReferenceGuard ) {
+            console.log("drawGlyphToPointPenGenerator(top)..");
+            console.log("glyph: " + glyph );
+            console.log("m: " + model );
+            console.log("p: " + pen );
             var stroke;
-            for (stroke of glyph.children)
-                yield* renderer(pen, model, stroke);
-        }.call(this);
+            for (stroke of glyph.children) {
+
+                if( stroke.type == 'component' ) {
+
+                    circularKey = stroke.particulars;
+                    glyphName = stroke.baseGlyphName;
+                    transformation = model.getComputedStyle(stroke).get('transformation');
+                    console.log("renderStrokeOutline() component:" + stroke.baseGlyphName );
+                    console.log("renderStrokeOutline() circularKey:" + circularKey );
+                    console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
+                    console.log("renderStrokeOutline() pen.trans:" + stroke.transformation );
+                    console.log("renderStrokeOutline() cps.trans:" + transformation );
+
+                    // Detect recursion on this._element
+                    if(circularKey in circularComponentReferenceGuard) {
+                        console.warn("Circular component reference detected in font at '"
+                                     + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
+                        return;
+                    } 
+
+                    circularComponentReferenceGuard[circularKey] = true;
+                    
+                    try {
+                        console.log("renderStrokeOutline(a) component:" + glyphName );
+                        console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
+                        yield pen.addComponent( glyphName, transformation );
+
+                          // this results in 'stamping' the component.
+                          // yield* generator( glyph );
+
+                        console.log("renderStrokeOutline(b) component:" + glyphName );
+                    }
+                    finally {
+                        console.log("renderstrokeOutline(FIN) component:" + glyphName );
+                        delete circularComponentReferenceGuard[circularKey];
+                    }
+                    return;
+                }
+
+                yield* renderer( pen, model, stroke );
+            }
+        };
+
+        return generator.call(this, glyph, circularComponentReferenceGuard);
+
+
     }
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen) {
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen, circularComponentReferenceGuard ) {
         // method may be tensions/control-points/metafont/native-js
         // the possibilities are a lot.
         // I'm starting with tensions/native-js
@@ -282,7 +309,7 @@ define([
         // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
         var v;
-        for (v of this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen));
+        for (v of this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen, circularComponentReferenceGuard ));
     }
 
     return ExportController;

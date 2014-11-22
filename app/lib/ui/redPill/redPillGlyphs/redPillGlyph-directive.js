@@ -92,7 +92,8 @@ define([
 
             ep.drawGlyphToPointPen( this.glyphSet.renderer, 
                                     this.glyphSet.model, 
-                                    glyph, pointPen );
+                                    glyph, pointPen,
+                                    this.glyphSet.circularComponentReferenceGuard );
             console.log( "SVGPen_addComponent(done) for glyph: " + glyphName );
         }
 
@@ -107,12 +108,14 @@ define([
     function getLayerGenerator(ep, svg, model, glyph, layername, renderer) {
         var layer = getLayer(svg, layername)
         , momMaster = glyph.parent
+        , circularComponentReferenceGuard = {}
         , svgPen = svgPenFactory(layer,
                                  { 
                                      // the SVGPen_addComponent() needs these to survive.
                                        ep:       ep
                                      , model:    model
                                      , renderer: renderer
+                                     , circularComponentReferenceGuard: circularComponentReferenceGuard
                                      , get: function(glyphName) 
                                              { return momMaster.findGlyph(glyphName); } 
                                  })
@@ -125,7 +128,7 @@ define([
         // 
         enhance(SVGPen, { addComponent : SVGPen_addComponent });
 
-        return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen);
+        return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen, circularComponentReferenceGuard );
     }
 
     function iterateGenerator(gen) {
@@ -156,10 +159,8 @@ define([
           , svg = getSVG(element)
           , _getLayerGenerator = getLayerGenerator.bind(null, ep, svg, model, glyph)
           , layers = [
-              _getLayerGenerator('outline', 
-                                 ExportController.renderPenstrokeOutline.bind( null, {} ))
-              , _getLayerGenerator('centerline', 
-                                   ExportController.renderPenstrokeCenterline.bind( null, {} ))
+              _getLayerGenerator('outline', ExportController.renderPenstrokeOutline )
+              , _getLayerGenerator('centerline', ExportController.renderPenstrokeCenterline )
             ]
           ;
         

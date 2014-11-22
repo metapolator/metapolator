@@ -532,243 +532,197 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    var renderPenstrokeOutline = regeneratorRuntime.mark(
-        function renderPenstrokeOutline(circularComponentReferenceGuard, pen, model, penstroke) {
-            var points, point, prePoint, segmentType, terminal, ctrls, vector, transformation, glyphName, circularKey, i, t$2$0, t$2$1, t$2$2, t$2$3;
+    var renderPenstrokeOutline = regeneratorRuntime.mark(function renderPenstrokeOutline(pen, model, penstroke) {
+        var points, point, prePoint, segmentType, terminal, ctrls, vector, transformation, glyphName, circularKey, i, t$2$0, t$2$1, t$2$2, t$2$3;
 
-            return regeneratorRuntime.wrap(function renderPenstrokeOutline$(context$2$0) {
-                while (1) switch (context$2$0.prev = context$2$0.next) {
-                case 0:
-                    points = penstroke.children;
+        return regeneratorRuntime.wrap(function renderPenstrokeOutline$(context$2$0) {
+            while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+                points = penstroke.children;
 
-
-                    console.log("renderPenstrokeOutline() penstroke.type:" + penstroke.type );
-                    console.log("renderPenstrokeOutline() particulars:" + penstroke.particulars );
-                    console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
-
-                    if (!(penstroke.type == 'component')) {
-                        context$2$0.next = 26;
-                        break;
-                    }
-
-                    circularKey = penstroke.particulars;
-                    glyphName = penstroke.baseGlyphName;
-                    transformation = model.getComputedStyle(penstroke).get('originalTransformation');
-                    console.log("renderPenstrokeOutline() component:" + penstroke.baseGlyphName );
-                    console.log("renderPenstrokeOutline() pen.trans:" + penstroke.transformation );
-                    console.log("renderPenstrokeOutline() cps.trans:" + transformation );
-
-                    if (!(circularKey in circularComponentReferenceGuard)) {
-                        context$2$0.next = 15;
-                        break;
-                    }
-
-                    console.warn("Circular component reference detected in font at '"
-                                 + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
-                    return context$2$0.abrupt("return");
-                case 15:
-                    circularComponentReferenceGuard[circularKey] = true;
-
-                    context$2$0.prev = 16;
-                    console.log("renderPenstrokeOutline(a) component:" + glyphName );
-                    context$2$0.next = 20;
-                    return pen.addComponent( glyphName, transformation );
-                case 20:
-                    console.log("renderPenstrokeOutline(b) component:" + glyphName );
-                case 21:
-                    context$2$0.prev = 21;
-                    console.log("renderPenstrokeOutline(FIN) component:" + glyphName );
-                    delete circularComponentReferenceGuard[circularKey];
-                    context$2$0.finish(21);
-                case 25:
-                    return context$2$0.abrupt("return");
-                case 26:
-                    pen.beginPath();
-                    i = 0;
-                case 28:
-                    if (!(i < points.length)) {
-                        context$2$0.next = 50;
-                        break;
-                    }
-
-                    point = model.getComputedStyle(points[i].right);
-
-                    if (!true /* always curve */) {
-                        context$2$0.next = 43;
-                        break;
-                    }
-
-                    segmentType = 'curve';
-                    if(i === 0) {
-                        // this reproduces the starting terminal
-                        prePoint = model.getComputedStyle(points[i].left);
-                        terminal = 'start'
-                    }
-                    else {
-                        terminal = false;
-                        prePoint = model.getComputedStyle(points[i-1].right);
-                    }
-                    ctrls = getControlsFromStyle(prePoint, point, terminal);
-                    t$2$0 = regeneratorRuntime.values(ctrls);
-                case 35:
-                    if ((t$2$1 = t$2$0.next()).done) {
-                        context$2$0.next = 41;
-                        break;
-                    }
-
-                    vector = t$2$1.value;
-                    context$2$0.next = 39;
-                    return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                case 39:
-                    context$2$0.next = 35;
+                pen.beginPath();
+                i = 0;
+            case 4:
+                if (!(i < points.length)) {
+                    context$2$0.next = 26;
                     break;
-                case 41:
-                    context$2$0.next = 45;
-                    break;
-                case 43:
-                    segmentType =  'line';
-                    console.warn('implicit line segment, right side, this should be explicit in CPS');
-                case 45:
-                    context$2$0.next = 47;
-                    return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-                case 47:
-                    i++;
-                    context$2$0.next = 28;
-                    break;
-                case 50:
-                    i=points.length-1;
-                case 51:
-                    if (!(i >= 0)) {
-                        context$2$0.next = 74;
-                        break;
-                    }
-
-                    point = model.getComputedStyle(points[i].left);
-
-                    if (!true/*always curve*/) {
-                        context$2$0.next = 67;
-                        break;
-                    }
-
-                    segmentType = 'curve';
-                    if(i === points.length-1) {
-                        // this reproduces the ending terminal
-                        terminal = 'end';
-                        prePoint = model.getComputedStyle(points[i].right);
-                    }
-                    else {
-                        terminal = false;
-                        // the left side is of the outline is drawn from the
-                        // end to the beginning. This reverses the point order
-                        // for getComputedStyle
-                        prePoint = point;
-                        point = model.getComputedStyle(points[i+1].left);
-                    }
-                    ctrls = getControlsFromStyle(prePoint, point, terminal);
-                    if(!terminal) {
-                        // reverse on curve and of curve points, prePoint
-                        // is no longer needed.
-                        ctrls.reverse();
-                        point = prePoint;
-                    }
-                    t$2$2 = regeneratorRuntime.values(ctrls);
-                case 59:
-                    if ((t$2$3 = t$2$2.next()).done) {
-                        context$2$0.next = 65;
-                        break;
-                    }
-
-                    vector = t$2$3.value;
-                    context$2$0.next = 63;
-                    return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                case 63:
-                    context$2$0.next = 59;
-                    break;
-                case 65:
-                    context$2$0.next = 69;
-                    break;
-                case 67:
-                    segmentType = 'line';
-                    console.warn('implicit line segment, left side, this should be explicit in CPS');
-                case 69:
-                    context$2$0.next = 71;
-                    return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-                case 71:
-                    i--;
-                    context$2$0.next = 51;
-                    break;
-                case 74:
-                    pen.endPath();
-                case 75:
-                case "end":
-                    return context$2$0.stop();
                 }
-            }, renderPenstrokeOutline, this, [[16,, 21]]);
-        }
-    );
 
-    var renderPenstrokeCenterline = regeneratorRuntime.mark(
-        function renderPenstrokeCenterline(circularComponentReferenceGuard, pen, model, penstroke) {
-            var points, point, prePoint, segmentType, ctrls, vector, i, t$2$0, t$2$1;
+                point = model.getComputedStyle(points[i].right);
 
-            return regeneratorRuntime.wrap(function renderPenstrokeCenterline$(context$2$0) {
-                while (1) switch (context$2$0.prev = context$2$0.next) {
-                case 0:
-                    points = penstroke.children;
-                    // center line
-                    pen.beginPath();
-                    i = 0;
-                case 4:
-                    if (!(i < points.length)) {
-                        context$2$0.next = 25;
-                        break;
-                    }
-
-                    point = model.getComputedStyle(points[i].center);
-
-                    if (!(i !== 0)) {
-                        context$2$0.next = 19;
-                        break;
-                    }
-
-                    segmentType = 'curve';
-                    prePoint = model.getComputedStyle(points[i-1].center);
-                    ctrls = getControlsFromStyle(prePoint, point);
-                    t$2$0 = regeneratorRuntime.values(ctrls);
-                case 11:
-                    if ((t$2$1 = t$2$0.next()).done) {
-                        context$2$0.next = 17;
-                        break;
-                    }
-
-                    vector = t$2$1.value;
-                    context$2$0.next = 15;
-                    return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                case 15:
-                    context$2$0.next = 11;
+                if (!true /* always curve */) {
+                    context$2$0.next = 19;
                     break;
-                case 17:
-                    context$2$0.next = 20;
-                    break;
-                case 19:
-                    // this contour is not closed, the first point is a move
-                    segmentType = 'move';
-                case 20:
-                    context$2$0.next = 22;
-                    return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-                case 22:
-                    i++;
-                    context$2$0.next = 4;
-                    break;
-                case 25:
-                    pen.endPath();
-                case 26:
-                case "end":
-                    return context$2$0.stop();
                 }
-            }, renderPenstrokeCenterline, this);
-        }
-    );
+
+                segmentType = 'curve';
+                if(i === 0) {
+                    // this reproduces the starting terminal
+                    prePoint = model.getComputedStyle(points[i].left);
+                    terminal = 'start'
+                }
+                else {
+                    terminal = false;
+                    prePoint = model.getComputedStyle(points[i-1].right);
+                }
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
+                t$2$0 = regeneratorRuntime.values(ctrls);
+            case 11:
+                if ((t$2$1 = t$2$0.next()).done) {
+                    context$2$0.next = 17;
+                    break;
+                }
+
+                vector = t$2$1.value;
+                context$2$0.next = 15;
+                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+            case 15:
+                context$2$0.next = 11;
+                break;
+            case 17:
+                context$2$0.next = 21;
+                break;
+            case 19:
+                segmentType =  'line';
+                console.warn('implicit line segment, right side, this should be explicit in CPS');
+            case 21:
+                context$2$0.next = 23;
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            case 23:
+                i++;
+                context$2$0.next = 4;
+                break;
+            case 26:
+                i=points.length-1;
+            case 27:
+                if (!(i >= 0)) {
+                    context$2$0.next = 50;
+                    break;
+                }
+
+                point = model.getComputedStyle(points[i].left);
+
+                if (!true/*always curve*/) {
+                    context$2$0.next = 43;
+                    break;
+                }
+
+                segmentType = 'curve';
+                if(i === points.length-1) {
+                    // this reproduces the ending terminal
+                    terminal = 'end';
+                    prePoint = model.getComputedStyle(points[i].right);
+                }
+                else {
+                    terminal = false;
+                    // the left side is of the outline is drawn from the
+                    // end to the beginning. This reverses the point order
+                    // for getComputedStyle
+                    prePoint = point;
+                    point = model.getComputedStyle(points[i+1].left);
+                }
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
+                if(!terminal) {
+                    // reverse on curve and of curve points, prePoint
+                    // is no longer needed.
+                    ctrls.reverse();
+                    point = prePoint;
+                }
+                t$2$2 = regeneratorRuntime.values(ctrls);
+            case 35:
+                if ((t$2$3 = t$2$2.next()).done) {
+                    context$2$0.next = 41;
+                    break;
+                }
+
+                vector = t$2$3.value;
+                context$2$0.next = 39;
+                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+            case 39:
+                context$2$0.next = 35;
+                break;
+            case 41:
+                context$2$0.next = 45;
+                break;
+            case 43:
+                segmentType = 'line';
+                console.warn('implicit line segment, left side, this should be explicit in CPS');
+            case 45:
+                context$2$0.next = 47;
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            case 47:
+                i--;
+                context$2$0.next = 27;
+                break;
+            case 50:
+                pen.endPath();
+            case 51:
+            case "end":
+                return context$2$0.stop();
+            }
+        }, renderPenstrokeOutline, this);
+    });
+
+    var renderPenstrokeCenterline = regeneratorRuntime.mark(function renderPenstrokeCenterline(pen, model, penstroke) {
+        var points, point, prePoint, segmentType, ctrls, vector, i, t$2$0, t$2$1;
+
+        return regeneratorRuntime.wrap(function renderPenstrokeCenterline$(context$2$0) {
+            while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+                points = penstroke.children;
+                // center line
+                pen.beginPath();
+                i = 0;
+            case 4:
+                if (!(i < points.length)) {
+                    context$2$0.next = 25;
+                    break;
+                }
+
+                point = model.getComputedStyle(points[i].center);
+
+                if (!(i !== 0)) {
+                    context$2$0.next = 19;
+                    break;
+                }
+
+                segmentType = 'curve';
+                prePoint = model.getComputedStyle(points[i-1].center);
+                ctrls = getControlsFromStyle(prePoint, point);
+                t$2$0 = regeneratorRuntime.values(ctrls);
+            case 11:
+                if ((t$2$1 = t$2$0.next()).done) {
+                    context$2$0.next = 17;
+                    break;
+                }
+
+                vector = t$2$1.value;
+                context$2$0.next = 15;
+                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
+            case 15:
+                context$2$0.next = 11;
+                break;
+            case 17:
+                context$2$0.next = 20;
+                break;
+            case 19:
+                // this contour is not closed, the first point is a move
+                segmentType = 'move';
+            case 20:
+                context$2$0.next = 22;
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            case 22:
+                i++;
+                context$2$0.next = 4;
+                break;
+            case 25:
+                pen.endPath();
+            case 26:
+            case "end":
+                return context$2$0.stop();
+            }
+        }, renderPenstrokeCenterline, this);
+    });
 
     function ExportController(master, model, glyphSet, precision) {
         this._master = master;
@@ -828,34 +782,96 @@ define([
 
     ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
-    _p.drawGlyphToPointPenGenerator = function (renderer, model, glyph, /*method*/ pen) {
-        return regeneratorRuntime.mark(function callee$2$0() {
+    _p.drawGlyphToPointPenGenerator = function ( renderer, model, glyph, /*method*/ pen, 
+                                                 circularComponentReferenceGuard ) {
+        // return function* () {
+        //     var stroke;
+        //     for (stroke of glyph.children) {
+        //         yield* renderer( pen, model, stroke );
+        //     }
+        // }.call(this);
+
+
+        var generator = regeneratorRuntime.mark(function generator(glyph, circularComponentReferenceGuard) {
             var stroke, t$3$0, t$3$1;
 
-            return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
+            return regeneratorRuntime.wrap(function generator$(context$3$0) {
                 while (1) switch (context$3$0.prev = context$3$0.next) {
                 case 0:
+                    console.log("drawGlyphToPointPenGenerator(top)..");
+                    console.log("glyph: " + glyph );
+                    console.log("m: " + model );
+                    console.log("p: " + pen );
                     t$3$0 = regeneratorRuntime.values(glyph.children);
-                case 1:
+                case 5:
                     if ((t$3$1 = t$3$0.next()).done) {
-                        context$3$0.next = 6;
+                        context$3$0.next = 34;
                         break;
                     }
 
                     stroke = t$3$1.value;
-                    return context$3$0.delegateYield(renderer(pen, model, stroke), "t0", 4);
-                case 4:
-                    context$3$0.next = 1;
+
+                    if (!(stroke.type == 'component')) {
+                        context$3$0.next = 31;
+                        break;
+                    }
+
+                    circularKey = stroke.particulars;
+                    glyphName = stroke.baseGlyphName;
+                    transformation = model.getComputedStyle(stroke).get('transformation');
+                    console.log("renderStrokeOutline() component:" + stroke.baseGlyphName );
+                    console.log("renderStrokeOutline() circularKey:" + circularKey );
+                    console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
+                    console.log("renderStrokeOutline() pen.trans:" + stroke.transformation );
+                    console.log("renderStrokeOutline() cps.trans:" + transformation );
+
+                    if (!(circularKey in circularComponentReferenceGuard)) {
+                        context$3$0.next = 19;
+                        break;
+                    }
+
+                    console.warn("Circular component reference detected in font at '"
+                                 + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
+                    return context$3$0.abrupt("return");
+                case 19:
+                    circularComponentReferenceGuard[circularKey] = true;
+
+                    context$3$0.prev = 20;
+                    console.log("renderStrokeOutline(a) component:" + glyphName );
+                    console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
+                    context$3$0.next = 25;
+                    return pen.addComponent( glyphName, transformation );
+                case 25:
+                    console.log("renderStrokeOutline(b) component:" + glyphName );
+                case 26:
+                    context$3$0.prev = 26;
+                    console.log("renderstrokeOutline(FIN) component:" + glyphName );
+                    delete circularComponentReferenceGuard[circularKey];
+                    context$3$0.finish(26);
+                case 30:
+                    return context$3$0.abrupt("return");
+                case 31:
+                    return context$3$0.delegateYield(renderer( pen, model, stroke ), "t0", 32);
+                case 32:
+                    context$3$0.next = 5;
                     break;
-                case 6:
+                case 34:
                 case "end":
                     return context$3$0.stop();
                 }
-            }, callee$2$0, this);
-        }).call(this);
+            }, generator, this, [[20,, 26]]);
+        });
+
+        var transformation, glyphName, circularKey;
+
+        if( circularComponentReferenceGuard === undefined ) {
+            circularComponentReferenceGuard = {};
+        }
+
+        return generator.call(this, glyph, circularComponentReferenceGuard);
     }
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen) {
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen, circularComponentReferenceGuard ) {
         // method may be tensions/control-points/metafont/native-js
         // the possibilities are a lot.
         // I'm starting with tensions/native-js
@@ -870,7 +886,13 @@ define([
         // be in every job for metafont.
         var v;
 
-        for (var t$2$0 = regeneratorRuntime.values(this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen)), t$2$1; !(t$2$1 = t$2$0.next()).done; ) {
+        for (var t$2$0 = regeneratorRuntime.values(
+                     this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen, circularComponentReferenceGuard )
+                 ),
+                 t$2$1;
+             !(t$2$1 = t$2$0.next()).done;
+        )
+        {
             v = t$2$1.value;
         }
     }
