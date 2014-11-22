@@ -33,7 +33,6 @@ define([
         this._cpsDir = cpsDir;
         this._commissionIdCounter = 0;
         this._rules = Object.create(null);
-        this._importing = {};
     }
     var _p = RuleController.prototype;
 
@@ -62,17 +61,29 @@ define([
     _p._readFile = function(async, fileName) {
                             return this._io.readFile(async, fileName); };
 
-    _p.getRule = obtain.factory(
+    _p._getRule = obtain.factory(
         {
-            fileName: ['sourceName', function(sourceName) {
-                // Detect recursive definition (by @import)
-                if(sourceName in this._importing)
-                    throw new CPSRecursionError(sourceName + ' @imports itself');
-                this._importing[sourceName] = true;
+            fileName: ['importing', 'sourceName', function(importing, sourceName) {
+                if(sourceName in importing)
+                throw new CPSRecursionError(sourceName + ' @imports itself: '
+                                    + Object.keys(importing).join(' » '));
+                importing[sourceName] = true;
                 return [this._cpsDir, sourceName].join('/');}]
           , cps: [false, 'fileName', 'commissionId', _p._readFile]
-          , rule: ['cps', 'sourceName', 'commissionId' ,
-                function(cps, sourceName, bypassCache, commissionId) {
+          , api: ['importing', function(importing) {
+                // return the api needed by parseRules.fromString
+                // but create a version of `_getRule` that is aware of the
+                // @import history `importing`
+                var api = {
+                    parameterRegistry: this._parameterRegistry
+                  , getRule: function ruleControllerGetRuleAPI(async, sourceName) {
+                                return this._getRule(async, importing, sourceName);
+                             }.bind(this)
+                };
+                return api;
+            }]
+          , rule: ['cps', 'sourceName', 'commissionId', 'importing', 'api',
+                function(cps, sourceName, commissionId, importing, api) {
                     if(!this._isCached(sourceName)
                             // There is a current cache but it was commissioned
                             // before this request, and finished loading before it.
@@ -80,22 +91,29 @@ define([
                             //        to fail here!
                             || this._isCached(sourceName) && commissionId >= this._rules[sourceName].commissionId)
                     {
-                        var rule = parseRules.fromString(cps, sourceName, this);
+                        var rule = parseRules.fromString(cps, sourceName, api);
                         this._set(sourceName, rule, commissionId);
                     }
+                    delete importing[sourceName];
                     return this._rules[sourceName].parameterCollection;
                 }]
           , isCached: ['sourceName', _p._isCached]
           , commissionId:[function(){ return this._commissionIdCounter++;}]
         }
       , {cps: [true, 'fileName', 'commissionId', _p._readFile]}
-      , ['sourceName']
-      , function(obtain, sourceName) {
+      , [ 'importing', 'sourceName']
+      , function job(obtain, importing, sourceName) {
             if(!obtain('isCached'))
                 return obtain('rule');
             return this._rules[sourceName].parameterCollection;
         }
     );
+
+    _p.getRule = function(async, sourceName) {
+        // initial recursion detection stack
+        var importing = Object.create(null);
+        return this._getRule(async, importing, sourceName);
+    };
 
     /**
      * Reload an existing CPS rule
