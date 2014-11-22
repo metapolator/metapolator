@@ -1,6 +1,6 @@
 @import (reference) "/lib/bower_components/bootstrap/less/mixins";
 
-@import "./redPillMaster/redPillMaster";
+@import "./textEditor/textEditor";
 
 @app-color: #CCC;
 @app-gap: .5em;
@@ -35,7 +35,7 @@ red-pill {
 
 mtk-red-pill-glyphs {
     display:block;
-    width: 100%;/* calc(~"100% - 450px")*/
+    width: calc(~"100% - 450px");/* 100% */
 }
 
 mtk-red-pill-glyphs label{
@@ -88,12 +88,12 @@ mtk-red-pill-glyphs li {
 red-pill .children {
     white-space: nowrap;
     
-    .masters{
+    mtk-text-editor{
         width: 450px;
     }
     
     mtk-red-pill-glyphs,
-    .masters {
+    mtk-text-editor {
         display: inline-block;
         vertical-align: top;
     }
