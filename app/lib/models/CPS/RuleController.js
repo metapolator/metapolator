@@ -33,7 +33,7 @@ define([
         this._cpsDir = cpsDir;
         this._commissionIdCounter = 0;
         this._rules = Object.create(null);
-        this._importing = {};
+        this._importing = Object.create(null);
     }
     var _p = RuleController.prototype;
 
@@ -83,6 +83,7 @@ define([
                         var rule = parseRules.fromString(cps, sourceName, this);
                         this._set(sourceName, rule, commissionId);
                     }
+                    delete this._importing[sourceName];
                     return this._rules[sourceName].parameterCollection;
                 }]
           , isCached: ['sourceName', _p._isCached]
