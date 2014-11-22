@@ -12,11 +12,12 @@ define([
       , CPSError = errors.CPS
       ;
     
-    function RedPill(project, angularApp, fsEvents) {
+    function RedPill(io, fsEvents, project, angularApp, loadTextEditor) {
         this.angularApp = angularApp
         this.frontend = undefined;
         this.project = project;
         this.fsEvents = fsEvents;
+        this.loadTextEditor = loadTextEditor;
         this.model = {
             masters: this.project.masters
         }
@@ -35,6 +36,8 @@ define([
         this.angularApp.constant('redPillModel', this.model);
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
+        this.angularApp.constant('io', io);
+        this.angularApp.constant('config', {loadTextEditor: loadTextEditor})
         
         this.fsEvents.on('change', this.fileChangeHandler.bind(this));
     }
