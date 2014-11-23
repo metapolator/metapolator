@@ -74,35 +74,24 @@ define([
      *
      */
     function SVGPen_addComponent(glyphName, transform) {
-        console.log( "SVGPen_addComponent(top) gn: " + glyphName );
-        var glyph = (typeof this.glyphSet.get === 'function')
+        var transformPen
+          , pointPen
+          , ep
+          , glyph = (typeof this.glyphSet.get === 'function')
             ? this.glyphSet.get(glyphName)
-            : this.glyphSet[glyphName];
+            : this.glyphSet[glyphName]
+        ;
 
         if(glyph !== undefined) {
-            console.log("have looked up glyph..." + glyph.id );
-            var transformPen = new TransformPen(this, transform);
-            var pointPen     = new PointToSegmentPen(transformPen)
-
-            var ep = this.glyphSet.ep;
-            console.log( " ep: " + ep );
-//            console.log( "ren: " + this.glyphSet.renderer );
-            console.log( "mod: " + this.glyphSet.model );
-            console.log( "transformPen: " + transformPen );
+            transformPen = new TransformPen(this, transform);
+            pointPen     = new PointToSegmentPen(transformPen)
+            ep           = this.glyphSet.ep;
 
             ep.drawGlyphToPointPen( this.glyphSet.renderer, 
                                     this.glyphSet.model, 
                                     glyph, pointPen,
                                     this.glyphSet.circularComponentReferenceGuard );
-            console.log( "SVGPen_addComponent(done) for glyph: " + glyphName );
         }
-
-        // just a silly little test to see if the draw works.
-        // this.moveTo( [ 0, 0 ] );
-        // this.lineTo( [ 10, 0 ] );
-        // this.lineTo( [ 10, 10 ] );
-        // this.lineTo( [ 0, 10 ] );
-        // this.closePath();
     }
     
     function getLayerGenerator(ep, svg, model, glyph, layername, renderer) {
@@ -151,15 +140,11 @@ define([
      * @param glyph is a MOM glyph object
      */
     function render(scope, element, glyph, model) {
-        console.warn("render() g: " + glyph );
-        console.warn("render() s: " + scope );
-        console.warn("render() m: " + model );
-
         var ep = Object.create(ExportController.prototype)
           , svg = getSVG(element)
           , _getLayerGenerator = getLayerGenerator.bind(null, ep, svg, model, glyph)
           , layers = [
-              _getLayerGenerator('outline', ExportController.renderPenstrokeOutline )
+                _getLayerGenerator('outline', ExportController.renderPenstrokeOutline )
               , _getLayerGenerator('centerline', ExportController.renderPenstrokeCenterline )
             ]
           ;

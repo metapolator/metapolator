@@ -16,7 +16,6 @@ EXPORT_UFO=exported
 
 cd $TEST_DIR
 
-if [ y = xx ]; then
 # Test fonts that should pass
 for i in $FONTS_SUCCEED; do
     echo "Testing $i"
@@ -39,31 +38,34 @@ for i in $FONTS_CRASH; do
     ( ../roundtrip.sh $i $EXPORT_UFO && exit 1 ) || true
     echo Result $?
 done
-fi
+
 
 cd ../../../../../
 BASEDIR=`pwd`
 cd -
 
 TESTFONTDIR="$BASEDIR/data/fonts/test/"
-# Test component round tripping
+######
+# Simple test of component round tripping
 ../roundtrip.sh "$TESTFONTDIR/components" $EXPORT_UFO
-# ../xpath-selector.js exported1.ufo/glyphs/a.glif '//component[@base="b"]' 1
-# echo Result $?
-# ../xpath-selector.js exported1.ufo/glyphs/b.glif '//component[@base="c"]' 1
-# echo Result $?
-# ../xpath-selector.js exported1.ufo/glyphs/c.glif '//component' 0
-# echo Result $?
-# ../xpath-selector.js exported2.ufo/glyphs/a.glif '//component[@base="b"]' 1
-# echo Result $?
-# ../xpath-selector.js exported2.ufo/glyphs/b.glif '//component[@base="c"]' 1
-# echo Result $?
-# ../xpath-selector.js exported2.ufo/glyphs/c.glif '//component' 0
-# echo Result $?
-#diff -r ${EXPORT_UFO}1.ufo ${EXPORT_UFO}2.ufo
-#echo Result $?
+../xpath-selector.js exported1.ufo/glyphs/a.glif '//component[@base="b"]' 1
+echo Result $?
+../xpath-selector.js exported1.ufo/glyphs/b.glif '//component[@base="c"]' 1
+echo Result $?
+../xpath-selector.js exported1.ufo/glyphs/c.glif '//component' 0
+echo Result $?
+../xpath-selector.js exported2.ufo/glyphs/a.glif '//component[@base="b"]' 1
+echo Result $?
+../xpath-selector.js exported2.ufo/glyphs/b.glif '//component[@base="c"]' 1
+echo Result $?
+../xpath-selector.js exported2.ufo/glyphs/c.glif '//component' 0
+echo Result $?
+diff -r ${EXPORT_UFO}1.ufo ${EXPORT_UFO}2.ufo
+echo Result $?
 
 
+
+#############
 # A case to 
 #   import, 
 #   modify the component transformation, 
@@ -73,7 +75,7 @@ TESTFONTDIR="$BASEDIR/data/fonts/test/"
 cat >> imported1.ufo/data/com.metapolator/cps/new_master.cps <<EOF
 
 glyph#b component:i(1) {
-    transformation: (Translation 100 0) * originalTransformation;
+    transformation: (Translation -100 0) * originalTransformation;
 }
 
 glyph#a component:i(1) {
@@ -85,3 +87,12 @@ EOF
 rm -rf ${EXPORT_UFO}1.ufo
 METAPOLATOR="node --stack_trace_limit=100 `pwd`/../../../../../bin/metapolator"
 $METAPOLATOR export imported1.ufo/new_master ${EXPORT_UFO}1.ufo
+
+sed -i -e 's/yOffset/yoffset/g' exported1.ufo/glyphs/a.glif
+sed -i -e 's/xOffset/xoffset/g' exported1.ufo/glyphs/b.glif
+../xpath-selector.js ${EXPORT_UFO}1.ufo/glyphs/a.glif '//component[@base="b" and @yoffset="100"]' 1
+echo Result $?
+../xpath-selector.js ${EXPORT_UFO}1.ufo/glyphs/b.glif '//component[@base="c" and @xoffset="-100"]' 1
+echo Result $?
+
+

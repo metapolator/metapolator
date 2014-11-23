@@ -23,7 +23,7 @@ if (require.main === module) {
         var compare_xpath_count = function( msg, doc, xpath, expected ) 
         {
             var nodes = xml.evaluateXPath( doc, xpath );
-            var actual = 'XPath returned more than one result';
+            var actual = 'XPath returned incorrect number of result(s)';
 
             if( nodes.length == expected ) {
                 console.log("PASS: " + msg );

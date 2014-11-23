@@ -13,7 +13,6 @@ define([
         Parent.call(this);
         this._baseGlyphName  = baseGlyphName;
         this._transformation = transformation;
-        console.log("transformation:" + transformation );
         Object.freeze(this._children);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
     }
