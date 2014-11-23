@@ -818,7 +818,7 @@ define([
 
                     circularKey = stroke.particulars;
                     glyphName = stroke.baseGlyphName;
-                    transformation = model.getComputedStyle(stroke).get('originalTransformation');
+                    transformation = model.getComputedStyle(stroke).get('transformation');
                     console.log("renderStrokeOutline() component:" + stroke.baseGlyphName );
                     console.log("renderStrokeOutline() circularKey:" + circularKey );
                     console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
