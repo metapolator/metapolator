@@ -67,7 +67,6 @@ define([
         ];
     }
 
-
     /**
      * The translation from Metapolator Penstrokes to Outlines:
      *
@@ -125,7 +124,7 @@ define([
         var points = penstroke.children
           , point
           , prePoint
-          , segmentType, terminal, ctrls, vector, transformation, glyphName, circularKey
+          , segmentType, terminal, ctrls, vector
           ;
 
         pen.beginPath();
@@ -233,32 +232,15 @@ define([
             circularComponentReferenceGuard = {};
         }
 
-        // return function* () {
-        //     var stroke;
-        //     for (stroke of glyph.children) {
-        //         yield* renderer( pen, model, stroke );
-        //     }
-        // }.call(this);
-
-
         function* generator( glyph, circularComponentReferenceGuard ) {
-            console.log("drawGlyphToPointPenGenerator(top)..");
-            console.log("glyph: " + glyph );
-            console.log("m: " + model );
-            console.log("p: " + pen );
             var stroke;
             for (stroke of glyph.children) {
 
                 if( stroke.type == 'component' ) {
 
                     circularKey = stroke.particulars;
-                    glyphName = stroke.baseGlyphName;
+                    glyphName   = stroke.baseGlyphName;
                     transformation = model.getComputedStyle(stroke).get('transformation');
-                    console.log("renderStrokeOutline() component:" + stroke.baseGlyphName );
-                    console.log("renderStrokeOutline() circularKey:" + circularKey );
-                    console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
-                    console.log("renderStrokeOutline() pen.trans:" + stroke.transformation );
-                    console.log("renderStrokeOutline() cps.trans:" + transformation );
 
                     // Detect recursion on this._element
                     if(circularKey in circularComponentReferenceGuard) {
@@ -270,17 +252,9 @@ define([
                     circularComponentReferenceGuard[circularKey] = true;
                     
                     try {
-                        console.log("renderStrokeOutline(a) component:" + glyphName );
-                        console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
                         yield pen.addComponent( glyphName, transformation );
-
-                          // this results in 'stamping' the component.
-                          // yield* generator( glyph );
-
-                        console.log("renderStrokeOutline(b) component:" + glyphName );
                     }
                     finally {
-                        console.log("renderstrokeOutline(FIN) component:" + glyphName );
                         delete circularComponentReferenceGuard[circularKey];
                     }
                     return;

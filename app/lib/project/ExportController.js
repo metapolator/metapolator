@@ -533,7 +533,7 @@ define([
      *              => out in 8
      */
     var renderPenstrokeOutline = regeneratorRuntime.mark(function renderPenstrokeOutline(pen, model, penstroke) {
-        var points, point, prePoint, segmentType, terminal, ctrls, vector, transformation, glyphName, circularKey, i, t$2$0, t$2$1, t$2$2, t$2$3;
+        var points, point, prePoint, segmentType, terminal, ctrls, vector, i, t$2$0, t$2$1, t$2$2, t$2$3;
 
         return regeneratorRuntime.wrap(function renderPenstrokeOutline$(context$2$0) {
             while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -775,7 +775,6 @@ define([
         ];
     }
 
-
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
 
@@ -784,82 +783,60 @@ define([
 
     _p.drawGlyphToPointPenGenerator = function ( renderer, model, glyph, /*method*/ pen, 
                                                  circularComponentReferenceGuard ) {
-        // return function* () {
-        //     var stroke;
-        //     for (stroke of glyph.children) {
-        //         yield* renderer( pen, model, stroke );
-        //     }
-        // }.call(this);
-
-
         var generator = regeneratorRuntime.mark(function generator(glyph, circularComponentReferenceGuard) {
             var stroke, t$3$0, t$3$1;
 
             return regeneratorRuntime.wrap(function generator$(context$3$0) {
                 while (1) switch (context$3$0.prev = context$3$0.next) {
                 case 0:
-                    console.log("drawGlyphToPointPenGenerator(top)..");
-                    console.log("glyph: " + glyph );
-                    console.log("m: " + model );
-                    console.log("p: " + pen );
                     t$3$0 = regeneratorRuntime.values(glyph.children);
-                case 5:
+                case 1:
                     if ((t$3$1 = t$3$0.next()).done) {
-                        context$3$0.next = 34;
+                        context$3$0.next = 21;
                         break;
                     }
 
                     stroke = t$3$1.value;
 
                     if (!(stroke.type == 'component')) {
-                        context$3$0.next = 31;
+                        context$3$0.next = 18;
                         break;
                     }
 
                     circularKey = stroke.particulars;
-                    glyphName = stroke.baseGlyphName;
+                    glyphName   = stroke.baseGlyphName;
                     transformation = model.getComputedStyle(stroke).get('transformation');
-                    console.log("renderStrokeOutline() component:" + stroke.baseGlyphName );
-                    console.log("renderStrokeOutline() circularKey:" + circularKey );
-                    console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
-                    console.log("renderStrokeOutline() pen.trans:" + stroke.transformation );
-                    console.log("renderStrokeOutline() cps.trans:" + transformation );
 
                     if (!(circularKey in circularComponentReferenceGuard)) {
-                        context$3$0.next = 19;
+                        context$3$0.next = 10;
                         break;
                     }
 
                     console.warn("Circular component reference detected in font at '"
                                  + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
                     return context$3$0.abrupt("return");
-                case 19:
+                case 10:
                     circularComponentReferenceGuard[circularKey] = true;
 
-                    context$3$0.prev = 20;
-                    console.log("renderStrokeOutline(a) component:" + glyphName );
-                    console.log("renderPenstrokeOutline() refguard:" + JSON.stringify(circularComponentReferenceGuard));
-                    context$3$0.next = 25;
+                    context$3$0.prev = 11;
+                    context$3$0.next = 14;
                     return pen.addComponent( glyphName, transformation );
-                case 25:
-                    console.log("renderStrokeOutline(b) component:" + glyphName );
-                case 26:
-                    context$3$0.prev = 26;
-                    console.log("renderstrokeOutline(FIN) component:" + glyphName );
+                case 14:
+                    context$3$0.prev = 14;
                     delete circularComponentReferenceGuard[circularKey];
-                    context$3$0.finish(26);
-                case 30:
+                    context$3$0.finish(14);
+                case 17:
                     return context$3$0.abrupt("return");
-                case 31:
-                    return context$3$0.delegateYield(renderer( pen, model, stroke ), "t0", 32);
-                case 32:
-                    context$3$0.next = 5;
+                case 18:
+                    return context$3$0.delegateYield(renderer( pen, model, stroke ), "t0", 19);
+                case 19:
+                    context$3$0.next = 1;
                     break;
-                case 34:
+                case 21:
                 case "end":
                     return context$3$0.stop();
                 }
-            }, generator, this, [[20,, 26]]);
+            }, generator, this, [[11,, 14]]);
         });
 
         var transformation, glyphName, circularKey;
