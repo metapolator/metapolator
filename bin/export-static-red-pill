@@ -27,9 +27,25 @@ node $SOURCE/node_modules/.bin/lessc \
 sed s":<!-- development -->:<!-- development:" "$SOURCE/app/red-pill.html" | \
     sed s":<!-- production:<!-- production -->:" > "$TARGET/index.html";
 
-# There is a HTTP HEAD request whether the dir /project/glyphs.skeleton.base/
-# exists. git-hub pages does not return a directory listing, so we trick it
+# make a directory listing at index.html in $TARGET for every directory recursively
+
+# There is a HTTP HEAD request to test whether a dir exists.
+# git-hub pages does not return a directory listing, so we trick it
 # into returning a HTTP 200 status code
-# to read the dir, our file system abstraction would expect a \n separated list of
-# directory contents, where directories would end with a slash "/"
-touch "$TARGET/project/glyphs.skeleton.base/index.html";
+# To read the dir, our file system abstraction would expect a \n separated list of
+# directory contents, where directories end with a slash "/"
+TARGETPROJECT="$TARGET/project"
+for line in $(find $TARGETPROJECT -type d); do
+    touch "$line/index.html";
+    if [ "$line" = "$TARGETPROJECT" ]; then
+        continue;
+    fi
+    echo "$(basename $line)/" >> "$(dirname $line)/index.html";
+done
+echo "----------------------";
+for line in $(find $TARGETPROJECT -type f); do
+    if [ "$(basename $line)" = 'index.html' ]; then
+        continue;
+    fi
+    echo "$(basename $line)" >> "$(dirname $line)/index.html";
+done
