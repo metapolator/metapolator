@@ -112,10 +112,9 @@ define([
           ;
 
         //
-        // Monkey patch the addComponent onto the svgPen. This is a
-        // hard patch on the class itself, and works ok.
-        // 
-        enhance(SVGPen, { addComponent : SVGPen_addComponent });
+        // Monkey patch the addComponent onto the svgPen. 
+        //
+        svgPen.addComponent = SVGPen_addComponent;
 
         return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen, circularComponentReferenceGuard );
     }
