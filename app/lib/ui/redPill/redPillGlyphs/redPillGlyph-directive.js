@@ -19,7 +19,7 @@ define([
         , enhance = main.enhance
         ;
 
-    function svgPenFactory(layer, glyphset) {
+    function svgPenFactory(layer, glyphset, addComponentHandler) {
         var pathElement = document.createElementNS(svgns, 'path')
           , svgPen = new SVGPen(pathElement, glyphset)
           ;
@@ -27,6 +27,14 @@ define([
         while (layer.firstChild)
             layer.removeChild(layer.firstChild);
         layer.appendChild(pathElement);
+
+        //
+        // Monkey patch the addComponentHandler onto the svgPen. 
+        //
+        if( addComponentHandler !== undefined ) {
+            svgPen.addComponent = addComponentHandler;
+        }
+
         return svgPen;
     }
     
@@ -107,15 +115,10 @@ define([
                                      , circularComponentReferenceGuard: circularComponentReferenceGuard
                                      , get: function(glyphName) 
                                              { return momMaster.findGlyph(glyphName); } 
-                                 })
+                                 },
+                                 SVGPen_addComponent )
           , pointPen = new PointToSegmentPen(svgPen)
           ;
-
-        //
-        // Monkey patch the addComponent onto the svgPen. This is a
-        // hard patch on the class itself, and works ok.
-        // 
-        enhance(SVGPen, { addComponent : SVGPen_addComponent });
 
         return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen, circularComponentReferenceGuard );
     }
