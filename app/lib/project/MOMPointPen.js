@@ -175,7 +175,7 @@ define([
         var transMatrix, component;
 
         transMatrix = new Transformation( transformation );
-        component = new Component( baseGlyphName, transformation );
+        component = new Component( baseGlyphName, transMatrix );
         this._glyph.add(component);
     }
 
