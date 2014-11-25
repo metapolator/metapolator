@@ -1,5 +1,13 @@
 #!/bin/sh
 # Do a round-trip import/export
+#
+# args: neither have the .ufo extension or postfixes supplied on the
+# command line
+#
+#   1 - UFO font to import
+#   2 - Path to export UFOs to. Two files are created 
+#         ${2}1.ufo is the first export.
+#         ${2}2.ufo is ${2}1.ufo reimported and exported again
 
 set -e
 

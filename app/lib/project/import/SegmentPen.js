@@ -47,6 +47,7 @@ define([
                                 'this._currentContour should be null')
         this._currentContour = {
             commands: []
+          , type: 'contour'
           , closed: undefined
         }
     }
@@ -97,6 +98,16 @@ define([
         pt3 = this._pointFactory(pt3);
         this._currentContour.commands.push(['curveTo', pt1, pt2, pt3]);
     }
-    
+
+    _p.addComponent = function(glyphName, transformation)
+    {
+        var component = {
+            type:             'component'
+            , transformation: transformation
+            , glyphName:      glyphName
+        };
+        this.contours.push(component);
+    }
+
     return SegmentPen;
 });

@@ -1,3 +1,10 @@
+/**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ * 
+ * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ *
+ */
 define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
@@ -113,12 +120,13 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    function* renderPenstrokeOutline(pen, model, penstroke) {
+    function* renderPenstrokeOutline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
           , segmentType, terminal, ctrls, vector
           ;
+
         pen.beginPath();
         // first draw the right side
         for(var i=0;i<points.length;i++) {
@@ -187,7 +195,9 @@ define([
     }
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
-    function* renderPenstrokeCenterline(pen, model, penstroke) {
+
+
+    function* renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
@@ -214,15 +224,52 @@ define([
     }
     ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
-    _p.drawGlyphToPointPenGenerator = function (renderer, model, glyph, /*method*/ pen) {
-        return function* () {
+    _p.drawGlyphToPointPenGenerator = function ( renderer, model, glyph, /*method*/ pen, 
+                                                 circularComponentReferenceGuard ) {
+        var transformation, glyphName, circularKey;
+
+        if( circularComponentReferenceGuard === undefined ) {
+            circularComponentReferenceGuard = {};
+        }
+
+        function* generator( glyph, circularComponentReferenceGuard ) {
             var stroke;
-            for (stroke of glyph.children)
-                yield* renderer(pen, model, stroke);
-        }.call(this);
+            for (stroke of glyph.children) {
+
+                if( stroke.type == 'component' ) {
+
+                    circularKey = stroke.particulars;
+                    glyphName   = stroke.baseGlyphName;
+                    transformation = model.getComputedStyle(stroke).get('transformation');
+
+                    // Detect recursion on this._element
+                    if(circularKey in circularComponentReferenceGuard) {
+                        console.warn("Circular component reference detected in font at '"
+                                     + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
+                        return;
+                    } 
+
+                    circularComponentReferenceGuard[circularKey] = true;
+                    
+                    try {
+                        yield pen.addComponent( glyphName, transformation );
+                    }
+                    finally {
+                        delete circularComponentReferenceGuard[circularKey];
+                    }
+                    return;
+                }
+
+                yield* renderer( pen, model, stroke );
+            }
+        };
+
+        return generator.call(this, glyph, circularComponentReferenceGuard);
+
+
     }
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen) {
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen, circularComponentReferenceGuard ) {
         // method may be tensions/control-points/metafont/native-js
         // the possibilities are a lot.
         // I'm starting with tensions/native-js
@@ -236,7 +283,7 @@ define([
         // reduce the overhead. The needed parameters would of course
         // be in every job for metafont.
         var v;
-        for (v of this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen));
+        for (v of this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen, circularComponentReferenceGuard ));
     }
 
     return ExportController;

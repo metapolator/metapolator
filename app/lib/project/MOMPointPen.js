@@ -5,6 +5,8 @@ define([
   , 'metapolator/models/MOM/PenStroke'
   , 'metapolator/models/MOM/PenStrokePoint'
   , 'metapolator/math/Vector'
+  , 'metapolator/models/MOM/Component'
+  , 'ufojs/tools/misc/transform'
 ], function(
     errors
   , ufoJSUtils
@@ -12,11 +14,14 @@ define([
   , PenStroke
   , PenStrokePoint
   , Vector
+  , Component
+  , transform
 ) {
     "use strict";
 
     var PointPenError = errors.PointPen
       , isNumber = ufoJSUtils.isNumber
+      , Transformation = transform.Transform
       ;
 
 
@@ -167,8 +172,11 @@ define([
      * Add a sub glyph.
      */
     _p.addComponent = function(baseGlyphName, transformation) {
-        //TODO: we will have to implement this!
-        errors.warn('MOMPointPen skipping a component:' + baseGlyphName)
+        var transMatrix, component;
+
+        transMatrix = new Transformation( transformation );
+        component = new Component( baseGlyphName, transMatrix );
+        this._glyph.add(component);
     }
 
     return MOMPointPen;

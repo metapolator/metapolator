@@ -68,6 +68,13 @@ define([
           , source
       )
       , new Rule(
+            parseSelectorList.fromString('component', source.name)
+          , parameterDictFromObject({
+              transformation: 'originalTransformation'
+              })
+          , source
+      )
+      , new Rule(
             parseSelectorList.fromString('point>center', source.name)
           , parameterDictFromObject({
                   on: 'parent:skeleton:on'

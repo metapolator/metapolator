@@ -3,17 +3,23 @@ define([
   , 'metapolator/project/ExportController'
   , 'ufojs/tools/pens/PointToSegmentPen'
   , 'ufojs/tools/pens/SVGPen'
+  , 'ufojs/tools/pens/TransformPen'
+  , 'ufojs/main'
     ], function(
     document
   , ExportController
   , PointToSegmentPen
   , SVGPen
+  , TransformPen
+  , main
 ) {
     "use strict";
     
-    var svgns = 'http://www.w3.org/2000/svg';
-    
-    function svgPenFactory(layer, glyphset) {
+    var svgns = 'http://www.w3.org/2000/svg'
+        , enhance = main.enhance
+        ;
+
+    function svgPenFactory(layer, glyphset, addComponentHandler) {
         var pathElement = document.createElementNS(svgns, 'path')
           , svgPen = new SVGPen(pathElement, glyphset)
           ;
@@ -21,6 +27,14 @@ define([
         while (layer.firstChild)
             layer.removeChild(layer.firstChild);
         layer.appendChild(pathElement);
+
+        //
+        // Monkey patch the addComponentHandler onto the svgPen. 
+        //
+        if( addComponentHandler !== undefined ) {
+            svgPen.addComponent = addComponentHandler;
+        }
+
         return svgPen;
     }
     
@@ -50,15 +64,65 @@ define([
         }
         return layer;
     }
+
+    /**
+     * When a component is discovered during the rendering of a glyph
+     * this method is called. We have to lookup the referenced glyph
+     * and perform a render of that glyph with the desired
+     * tranformation. Note that this can be recursive, in that the
+     * referred to glyph may itself have componenets which will need
+     * to be rendered.
+     *
+     * This method requires this.glyphSet to have certain members
+     * to work. These are; 
+     * @param ep an ExportController object
+     * @param model
+     * @param renderer to use
+     * @param get() which can be used to lookup a glyph by name.
+     *
+     */
+    function SVGPen_addComponent(glyphName, transform) {
+        var transformPen
+          , pointPen
+          , ep
+          , glyph = (typeof this.glyphSet.get === 'function')
+            ? this.glyphSet.get(glyphName)
+            : this.glyphSet[glyphName]
+        ;
+
+        if(glyph !== undefined) {
+            transformPen = new TransformPen(this, transform);
+            pointPen     = new PointToSegmentPen(transformPen)
+            ep           = this.glyphSet.ep;
+
+            ep.drawGlyphToPointPen( this.glyphSet.renderer, 
+                                    this.glyphSet.model, 
+                                    glyph, pointPen,
+                                    this.glyphSet.circularComponentReferenceGuard );
+        }
+    }
     
     function getLayerGenerator(ep, svg, model, glyph, layername, renderer) {
         var layer = getLayer(svg, layername)
-          , svgPen = svgPenFactory(layer, {})
+        , momMaster = glyph.parent
+        , circularComponentReferenceGuard = {}
+        , svgPen = svgPenFactory(layer,
+                                 { 
+                                     // the SVGPen_addComponent() needs these to survive.
+                                       ep:       ep
+                                     , model:    model
+                                     , renderer: renderer
+                                     , circularComponentReferenceGuard: circularComponentReferenceGuard
+                                     , get: function(glyphName) 
+                                             { return momMaster.findGlyph(glyphName); } 
+                                 },
+                                 SVGPen_addComponent )
           , pointPen = new PointToSegmentPen(svgPen)
           ;
-        return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen);
+
+        return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen, circularComponentReferenceGuard );
     }
-    
+
     function iterateGenerator(gen) {
         var done = false;
         try {
@@ -74,15 +138,20 @@ define([
         return done;
     }
     
+    /**
+     *
+     * @param glyph is a MOM glyph object
+     */
     function render(scope, element, glyph, model) {
         var ep = Object.create(ExportController.prototype)
           , svg = getSVG(element)
           , _getLayerGenerator = getLayerGenerator.bind(null, ep, svg, model, glyph)
           , layers = [
-                _getLayerGenerator('outline', ExportController.renderPenstrokeOutline)
-              , _getLayerGenerator('centerline', ExportController.renderPenstrokeCenterline)
+                _getLayerGenerator('outline', ExportController.renderPenstrokeOutline )
+              , _getLayerGenerator('centerline', ExportController.renderPenstrokeCenterline )
             ]
           ;
+        
         function layerCtrl() {
             // execute
             var done = layers.map(iterateGenerator);
