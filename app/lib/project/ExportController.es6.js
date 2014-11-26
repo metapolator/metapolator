@@ -224,66 +224,25 @@ define([
     }
     ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
-    _p.drawGlyphToPointPenGenerator = function ( renderer, model, glyph, /*method*/ pen, 
-                                                 circularComponentReferenceGuard ) {
-        var transformation, glyphName, circularKey;
-
-        if( circularComponentReferenceGuard === undefined ) {
-            circularComponentReferenceGuard = {};
-        }
-
-        function* generator( glyph, circularComponentReferenceGuard ) {
-            var stroke;
-            for (stroke of glyph.children) {
-
-                if( stroke.type == 'component' ) {
-
-                    circularKey = stroke.particulars;
-                    glyphName   = stroke.baseGlyphName;
-                    transformation = model.getComputedStyle(stroke).get('transformation');
-
-                    // Detect recursion on this._element
-                    if(circularKey in circularComponentReferenceGuard) {
-                        console.warn("Circular component reference detected in font at '"
-                                     + glyphName + "' cache: " + JSON.stringify(circularComponentReferenceGuard) );
-                        return;
-                    } 
-
-                    circularComponentReferenceGuard[circularKey] = true;
-                    
-                    try {
-                        yield pen.addComponent( glyphName, transformation );
-                    }
-                    finally {
-                        delete circularComponentReferenceGuard[circularKey];
-                    }
-                    return;
+    function drawGlyphToPointPenGenerator ( renderer, model, glyph, pen) {
+        function* generator() {
+            var item, glyphName, transformation;
+            for (item of glyph.children) {
+                if( item.type === 'component' ) {
+                    glyphName = item.baseGlyphName;
+                    transformation = model.getComputedStyle(item).get( 'transformation' );
+                    pen.addComponent( glyphName, transformation );
                 }
-
-                yield* renderer( pen, model, stroke );
+                else
+                    yield* renderer( pen, model, item );
             }
         };
-
-        return generator.call(this, glyph, circularComponentReferenceGuard);
-
-
+        return generator();
     }
+    ExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen, circularComponentReferenceGuard ) {
-        // method may be tensions/control-points/metafont/native-js
-        // the possibilities are a lot.
-        // I'm starting with tensions/native-js
-        // then I add a tensions/metafont implementation
-        // eventually we should be able to control this via CPS!
-        // The parameter could be set for all levels from univers to
-        // penstroke, this would be a good test of inhertance;
-        // also, it should be possible to render just one penstroke
-        // of a glyph using metafont, for example.
-        // Maybe we can combine all metafont strokes into one job, to
-        // reduce the overhead. The needed parameters would of course
-        // be in every job for metafont.
-        var v;
-        for (v of this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen, circularComponentReferenceGuard ));
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
+        for (var v of drawGlyphToPointPenGenerator(renderer, model, glyph, pen));
     }
 
     return ExportController;

@@ -15,25 +15,22 @@ define([
 ) {
     "use strict";
     
+    /*global clearTimeout: true*/
+    /*global setTimeout: true*/
+    /*global console:true*/
+
     var svgns = 'http://www.w3.org/2000/svg'
         , enhance = main.enhance
         ;
 
-    function svgPenFactory(layer, glyphset, addComponentHandler) {
+    function svgPenFactory(layer) {
         var pathElement = document.createElementNS(svgns, 'path')
-          , svgPen = new SVGPen(pathElement, glyphset)
+          , svgPen = new SVGPen(pathElement, {})
           ;
         // make empty
         while (layer.firstChild)
             layer.removeChild(layer.firstChild);
         layer.appendChild(pathElement);
-
-        //
-        // Monkey patch the addComponentHandler onto the svgPen. 
-        //
-        if( addComponentHandler !== undefined ) {
-            svgPen.addComponent = addComponentHandler;
-        }
 
         return svgPen;
     }
@@ -48,7 +45,8 @@ define([
         }
         return svg;
     }
-    function getLayer(svg, name) {
+
+    function getSVGLayer(svg, name) {
         // Use classnames, because ids are available from the host document
         // as well, and thus they could create unwanted situations.
         // Classes are also available from the host document, but they don't
@@ -65,64 +63,6 @@ define([
         return layer;
     }
 
-    /**
-     * When a component is discovered during the rendering of a glyph
-     * this method is called. We have to lookup the referenced glyph
-     * and perform a render of that glyph with the desired
-     * tranformation. Note that this can be recursive, in that the
-     * referred to glyph may itself have componenets which will need
-     * to be rendered.
-     *
-     * This method requires this.glyphSet to have certain members
-     * to work. These are; 
-     * @param ep an ExportController object
-     * @param model
-     * @param renderer to use
-     * @param get() which can be used to lookup a glyph by name.
-     *
-     */
-    function SVGPen_addComponent(glyphName, transform) {
-        var transformPen
-          , pointPen
-          , ep
-          , glyph = (typeof this.glyphSet.get === 'function')
-            ? this.glyphSet.get(glyphName)
-            : this.glyphSet[glyphName]
-        ;
-
-        if(glyph !== undefined) {
-            transformPen = new TransformPen(this, transform);
-            pointPen     = new PointToSegmentPen(transformPen)
-            ep           = this.glyphSet.ep;
-
-            ep.drawGlyphToPointPen( this.glyphSet.renderer, 
-                                    this.glyphSet.model, 
-                                    glyph, pointPen,
-                                    this.glyphSet.circularComponentReferenceGuard );
-        }
-    }
-    
-    function getLayerGenerator(ep, svg, model, glyph, layername, renderer) {
-        var layer = getLayer(svg, layername)
-        , momMaster = glyph.parent
-        , circularComponentReferenceGuard = {}
-        , svgPen = svgPenFactory(layer,
-                                 { 
-                                     // the SVGPen_addComponent() needs these to survive.
-                                       ep:       ep
-                                     , model:    model
-                                     , renderer: renderer
-                                     , circularComponentReferenceGuard: circularComponentReferenceGuard
-                                     , get: function(glyphName) 
-                                             { return momMaster.findGlyph(glyphName); } 
-                                 },
-                                 SVGPen_addComponent )
-          , pointPen = new PointToSegmentPen(svgPen)
-          ;
-
-        return ep.drawGlyphToPointPenGenerator(renderer, model, glyph, pointPen, circularComponentReferenceGuard );
-    }
-
     function iterateGenerator(gen) {
         var done = false;
         try {
@@ -137,32 +77,131 @@ define([
         // clear this from the list
         return done;
     }
-    
+
+    function RenderController(svg, model, momMaster) {
+        this._jobs = [];
+        this._timeoutId = undefined;
+        this._svg = svg;
+        this._momMaster = momMaster;
+        this._model = model;
+    }
+    var _p = RenderController.prototype;
+
+    _p.get = function(glyphName) {
+        return this._momMaster.findGlyph(glyphName);
+    };
+
+    _p.addLayer = function(glyph, layername, renderer, renderComponents) {
+        var layer = getSVGLayer(this._svg, layername)
+        , componentPath = [glyph.particulars]
+        , svgPen = svgPenFactory(layer)
+        ;
+
+        //
+        // Monkey patch the addComponentHandler onto the svgPen.
+        //
+        if(renderComponents)
+            svgPen.addComponent = this.addComponent.bind(this, renderer, componentPath, layer);
+        else
+            svgPen.addComponent = function(){};
+        this._addJob(renderer, glyph, svgPen);
+    };
+
+    /**
+     * When a component is discovered during the rendering of a glyph
+     * this method is called. We have to lookup the referenced glyph
+     * and perform a render of that glyph with the desired
+     * tranformation. Note that this can be recursive, in that the
+     * referred to glyph may itself have componenets which will need
+     * to be rendered.
+     */
+    _p.addComponent = function(renderer, parentComponents, parentNode, glyphName, transform) {
+        var glyph = this.get(glyphName)
+          , layer = document.createElementNS(svgns, 'g')
+          , svgPen = svgPenFactory(layer)
+          , transformPen = new TransformPen(svgPen, transform)
+          , circularKey, i=0, componentPath
+          ;
+        if(!glyph) {
+            console.warn('Not found: glyph with name "'+ glyphName
+                                                +'" for a component.');
+            return;
+        }
+        // detect recursion here
+        circularKey = glyph.particulars;
+        for(;i<parentComponents.length;i++)
+            if(parentComponents[i] === circularKey) {
+                console.warn('Circular component reference detected in font at "'
+                    + glyphName + '" in: ' + parentComponents.join('/'));
+                return;
+            }
+        componentPath = parentComponents.slice();
+        componentPath.push(glyph.particulars);
+
+        layer.setAttribute('class', 'component');
+        // Keep this here as a reminder: Alternatively to the usage
+        // of TransformPen, we can also apply the transformation
+        // directly on the container, using the svg transform attribute:
+        // layer.setAttribute('transform', 'matrix('+transform.toString()+')');
+        parentNode.appendChild(layer);
+
+        //
+        // Monkey patch the addComponentHandler onto the svgPen.
+        //
+        svgPen.addComponent = this.addComponent.bind(this, renderer, componentPath, layer);
+        this._addJob(renderer, glyph, transformPen);
+    };
+
+    _p._addJob = function(renderer, glyph, segmentPen) {
+        var pen = new PointToSegmentPen(segmentPen)
+          , generator = ExportController.drawGlyphToPointPenGenerator(
+                renderer,
+                this._model,
+                glyph,
+                pen
+            )
+          ;
+        this._jobs.push(generator);
+    };
+
+    _p.abort = function() {
+        if(this._timeoutId)
+            clearTimeout(this._timeoutId);
+        this._jobs = [];
+    };
+
+    _p.run = function() {
+        var layerCtrl = function () {
+            // execute
+            var done = this._jobs.map(iterateGenerator);
+            // remove finished generators from back to front, so the
+            // indexes in `done` stay valid
+            for(var i=done.length-1;i>=0;i--) {
+                if(!done[i]) continue;
+                this._jobs.splice(i, 1);
+            }
+            if(this._jobs.length)
+                this._timeoutId = setTimeout(layerCtrl, 0);
+        }.bind(this);
+        this._timeoutId = setTimeout(layerCtrl, 0);
+    };
+
     /**
      *
      * @param glyph is a MOM glyph object
      */
     function render(scope, element, glyph, model) {
-        var ep = Object.create(ExportController.prototype)
-          , svg = getSVG(element)
-          , _getLayerGenerator = getLayerGenerator.bind(null, ep, svg, model, glyph)
-          , layers = [
-                _getLayerGenerator('outline', ExportController.renderPenstrokeOutline )
-              , _getLayerGenerator('centerline', ExportController.renderPenstrokeCenterline )
-            ]
+        var svg = getSVG(element)
+          , renderer
           ;
+        if(!scope.renderer)
+            scope.renderer = new RenderController(svg, model, glyph.parent);
+        renderer = scope.renderer;
         
-        function layerCtrl() {
-            // execute
-            var done = layers.map(iterateGenerator);
-            // remove finished generators
-            layers = layers.filter(function(item, i){return !done[i];});
-            if(layers.length)
-                scope.timeoutId = setTimeout(layerCtrl, 0);
-        }
-        if(scope.timeoutId)
-            clearTimeout(scope.timeoutId);
-        scope.timeoutId = setTimeout(layerCtrl, 0);
+        renderer.abort();
+        renderer.addLayer(glyph, 'outline', ExportController.renderPenstrokeOutline, true);
+        renderer.addLayer(glyph, 'centerline', ExportController.renderPenstrokeCenterline, false);
+        renderer.run();
     }
     
     function redPillGlyphDirective(model) {
