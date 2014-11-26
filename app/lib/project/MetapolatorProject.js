@@ -195,7 +195,7 @@ define([
         }
 
         // Add CallbackHandler to log to add new entries to the log file
-        fh = new CallbackHandler(this._io.appendFile.bind(this._io, true, this._file));
+        fh = new CallbackHandler(this._io.appendFile.bind(this._io, true, this.logFile));
         fh.setFormatter(new YAMLFormatter());
         this._log.addHandler(fh);
     }
