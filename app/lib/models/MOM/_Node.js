@@ -32,6 +32,7 @@ define([
 
         this._children = [];
         this._parent = null;
+        this._index = null;
         this._id = null;
         this._classes = {};
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
@@ -206,7 +207,7 @@ define([
     }
 
     Object.defineProperty(_p, 'index', {
-        get: function(){ return this.parent.find(this);}
+        get: function(){ return this._index;}
     });
 
     Object.defineProperty(_p, 'parent', {
@@ -229,6 +230,7 @@ define([
                     throw new MOMError('Can\'t unset the parent property '
                         +'when the parent still has this Node as a child');
                 this._parent = null;
+                this._index = null;
                 return;
             }
             else if(this._parent !== null)
@@ -243,6 +245,7 @@ define([
                     + 'of its parent when trying to set its parent property. '
                     + 'Use "parent.add(child)" instead.');
             this._parent = parent;
+            this._index = this.parent.find(this);
         }
       , get: function(){ return this._parent; }
     })
