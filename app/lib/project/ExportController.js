@@ -1,4 +1,11 @@
 /**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ * 
+ * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ *
+ */
+/**
  * Copyright (c) 2014, Facebook, Inc.
  * All rights reserved.
  *
@@ -470,6 +477,13 @@
     }
   };
 }).apply(this, Function("return [this, function GeneratorFunction(){}]")());
+/**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ * 
+ * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ *
+ */
 define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
@@ -594,6 +608,7 @@ define([
             while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
                 points = penstroke.children;
+
                 pen.beginPath();
                 i = 0;
             case 4:
@@ -831,51 +846,54 @@ define([
 
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
+
+
     ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
-    _p.drawGlyphToPointPenGenerator = function (renderer, model, glyph, /*method*/ pen) {
-        return regeneratorRuntime.mark(function callee$2$0() {
-            var stroke, t$3$0, t$3$1;
+    function drawGlyphToPointPenGenerator ( renderer, model, glyph, pen) {
+        var generator = regeneratorRuntime.mark(function generator() {
+            var item, glyphName, transformation, t$3$0, t$3$1;
 
-            return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
+            return regeneratorRuntime.wrap(function generator$(context$3$0) {
                 while (1) switch (context$3$0.prev = context$3$0.next) {
                 case 0:
                     t$3$0 = regeneratorRuntime.values(glyph.children);
                 case 1:
                     if ((t$3$1 = t$3$0.next()).done) {
-                        context$3$0.next = 6;
+                        context$3$0.next = 12;
                         break;
                     }
 
-                    stroke = t$3$1.value;
-                    return context$3$0.delegateYield(renderer(pen, model, stroke), "t0", 4);
-                case 4:
+                    item = t$3$1.value;
+
+                    if (!(item.type === 'component')) {
+                        context$3$0.next = 9;
+                        break;
+                    }
+
+                    glyphName = item.baseGlyphName;
+                    transformation = model.getComputedStyle(item).get( 'transformation' );
+                    pen.addComponent( glyphName, transformation );
+                    context$3$0.next = 10;
+                    break;
+                case 9:
+                    return context$3$0.delegateYield(renderer( pen, model, item ), "t0", 10);
+                case 10:
                     context$3$0.next = 1;
                     break;
-                case 6:
+                case 12:
                 case "end":
                     return context$3$0.stop();
                 }
-            }, callee$2$0, this);
-        }).call(this);
+            }, generator, this);
+        });
+
+        return generator();
     }
+    ExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen) {
-        // method may be tensions/control-points/metafont/native-js
-        // the possibilities are a lot.
-        // I'm starting with tensions/native-js
-        // then I add a tensions/metafont implementation
-        // eventually we should be able to control this via CPS!
-        // The parameter could be set for all levels from univers to
-        // penstroke, this would be a good test of inhertance;
-        // also, it should be possible to render just one penstroke
-        // of a glyph using metafont, for example.
-        // Maybe we can combine all metafont strokes into one job, to
-        // reduce the overhead. The needed parameters would of course
-        // be in every job for metafont.
-        var v;
-
-        for (var t$2$0 = regeneratorRuntime.values(this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen)), t$2$1; !(t$2$1 = t$2$0.next()).done; ) {
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
+        for (var v, t$2$0 = regeneratorRuntime.values(drawGlyphToPointPenGenerator(renderer, model, glyph, pen)), t$2$1; !(t$2$1 = t$2$0.next()).done; ) {
             v = t$2$1.value;
         }
     }

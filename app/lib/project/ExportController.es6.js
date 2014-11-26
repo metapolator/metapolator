@@ -1,3 +1,10 @@
+/**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ * 
+ * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ *
+ */
 define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
@@ -113,12 +120,13 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    function* renderPenstrokeOutline(pen, model, penstroke) {
+    function* renderPenstrokeOutline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
           , segmentType, terminal, ctrls, vector
           ;
+
         pen.beginPath();
         // first draw the right side
         for(var i=0;i<points.length;i++) {
@@ -187,7 +195,9 @@ define([
     }
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
-    function* renderPenstrokeCenterline(pen, model, penstroke) {
+
+
+    function* renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
@@ -214,29 +224,25 @@ define([
     }
     ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
-    _p.drawGlyphToPointPenGenerator = function (renderer, model, glyph, /*method*/ pen) {
-        return function* () {
-            var stroke;
-            for (stroke of glyph.children)
-                yield* renderer(pen, model, stroke);
-        }.call(this);
+    function drawGlyphToPointPenGenerator ( renderer, model, glyph, pen) {
+        function* generator() {
+            var item, glyphName, transformation;
+            for (item of glyph.children) {
+                if( item.type === 'component' ) {
+                    glyphName = item.baseGlyphName;
+                    transformation = model.getComputedStyle(item).get( 'transformation' );
+                    pen.addComponent( glyphName, transformation );
+                }
+                else
+                    yield* renderer( pen, model, item );
+            }
+        };
+        return generator();
     }
+    ExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, /*method,*/ pen) {
-        // method may be tensions/control-points/metafont/native-js
-        // the possibilities are a lot.
-        // I'm starting with tensions/native-js
-        // then I add a tensions/metafont implementation
-        // eventually we should be able to control this via CPS!
-        // The parameter could be set for all levels from univers to
-        // penstroke, this would be a good test of inhertance;
-        // also, it should be possible to render just one penstroke
-        // of a glyph using metafont, for example.
-        // Maybe we can combine all metafont strokes into one job, to
-        // reduce the overhead. The needed parameters would of course
-        // be in every job for metafont.
-        var v;
-        for (v of this.drawGlyphToPointPenGenerator(renderer, model, glyph, pen));
+    _p.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
+        for (var v of drawGlyphToPointPenGenerator(renderer, model, glyph, pen));
     }
 
     return ExportController;
