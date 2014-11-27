@@ -5,7 +5,7 @@ _—work in progress_
 
 **script** parameters (can be set at script, master and project level)
 
-* [vertical metrics](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#optical-horizontal-lines), always depend on script; for instance for Latin:
+* [vertical metrics](https://github.com/metapolator/metapolator/wiki/specimen,-and-glyph-interaction#optical-horizontal-lines), always depend on the script; for instance for Latin:
   * cap-height
   * x-height
   * ascender
