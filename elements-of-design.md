@@ -552,14 +552,12 @@ Some interesting dynamics are at play:
 
 From a user interaction perspective, this is a simple but effective system for how the parameter operators cascade along the hierarchy:
 
-1. only parameters who have their value set (=) anywhere in the hierarchy are defined;<br/>
-_(e.g. any scaling (*), offset (+), etc operators may be defined for width along the hierarchy, but is width is not set to value anywhere, it is undefined)_
+1. only parameters who have their value set (=) anywhere in the hierarchy are defined; for most parameters a sensible default can be defined to make sure this does not happen, but not for all (e.g coordinates);<br/>
+_(e.g. any scaling (×), offset (+), etc operators may be defined for _x_ along the hierarchy, but if _x_ is not set to a value anywhere, it is undefined)_
 * the lowest hierarchy level that sets the value (=) wins;<br/>
 _(e.g. script level sets a parameter and glyph level too, then the glyph one wins—for this glyph)_
-* all scaling (*) that is performed at any hierarchy level is applied;<br/>
-_(e.g. if at project, master and glyph level a parameter is scaled, all 3 are multiplied and then applied to the set value)_
-* all offsets (+) that are defined at any hierarchy level are applied; **TBD:** does scaling affect offsets?<br/>
-_(e.g. if at project, master and glyph level a parameter is offset, all 3 are added up and then applied to the set value)_
+* all scaling (×) and offsets (+) that are defined at any hierarchy level is applied; evaluation is bottom–to–top along the hierarchy and scaling is performed before offset if both are defined on the same hierarchy node<br/>
+_(e.g. if there is a mix of scaling and offsets at project (× 2.0), master (× 0.9 + -12) and glyph (+ 9) level of a parameter then first + 9, then × 0.9, then - 12 and last × 2.0 is performed on the parameter_
 * the lowest hierarchy level that sets a maximum (<=) wins;<br/>
 _(e.g. master level sets a maximum and point level too, then the point one wins—for that point)_
 * the lowest hierarchy level that sets a minimum (>=) wins.<br/>
