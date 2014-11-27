@@ -74,7 +74,7 @@ First of all, the hierarchy:
           * point (1–10)
         * vector shape (1–10)
 
-The numbers between brackets show an estimate of the _normal_ number of children that are added to each parent at that level of hierarchy. Two things stand out: one or two orders of magnitude more children than elsewhere at glyph level, and that the depth of the hierarchy makes that one can easily end up with one million points per project, and that is a _normal_ situation. The further up the hierarchy, the more laborious it becomes to iterate over all the points.
+The numbers between brackets show an estimate of the _normal_ number of children that are added to each parent at that level of hierarchy. Two things stand out: the one or two orders of magnitude more children at glyph level than elsewhere, and that the depth of the hierarchy makes that one can easily end up with one million points per project, and that is a _normal_ situation. That means the further up the hierarchy, the more laborious it becomes to iterate over all the points.
 
 ### input, output
 When users edit parameters, they either work on one node in the hierarchy,or several nodes on the same hierarchy level. Let us looks at single node editing first. Two things **can** happen at any node—
@@ -82,7 +82,7 @@ When users edit parameters, they either work on one node in the hierarchy,or sev
 1. there **can be** native parameters, which effective values drive the computation of the master; from the [parameter overview](https://github.com/metapolator/metapolator/wiki/parameter-editing#an-interim-parameter-overview) above we can see that _spacing_ is native to glyph level and _direction out_ to point level;
 * there **can be** parameter input using the triplet of parameter-operator-value, either for parameters that are native to this node, or are native to lower hierarchy levels.
 
-From this we can deduct the various jobs the UI has to perform:
+From this we can multiply out the various jobs the UI has to perform:
 
 1. show the effective value of all parameters that are native to this node;
 * for all these native parameters show the trail of parameter input that results in this effective value;
