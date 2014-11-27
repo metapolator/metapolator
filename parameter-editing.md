@@ -63,4 +63,28 @@ Parameters use the following units:
 ## analysis
 A closer look at how cascading parameter editing work shows the following picture.
 
-### input and output
+First of all, the hierarchy:
+
+* project
+  * master (1–20)
+    * script (1–20)
+      * glyph (hundreds)
+        * stroke (fka skeleton, or segment; 1–20)
+          * line (1–10)
+          * point (1–10)
+        * vector shape (1–10)
+
+The numbers between brackets show an estimate of the _normal_ number of children that are added to each parent at that level of hierarchy. Two things stand out: one or two orders of magnitude more children than elsewhere at glyph level, and that the depth of the hierarchy makes that one can easily end up with one million points per project, and that is a _normal_ situation. The further up the hierarchy, the more laborious it becomes to iterate over all the points.
+
+### input, output
+When users edit parameters, they either work on one node in the hierarchy,or several nodes on the same hierarchy level. Let us looks at single node editing first. Two things **can** happen at any node—
+
+1. there **can be** native parameters, which effective values drive the computation of the master; from the [parameter overview](https://github.com/metapolator/metapolator/wiki/parameter-editing#an-interim-parameter-overview) above we can see that _spacing_ is native to glyph level and _direction out_ to point level;
+* there **can be** parameter input using the triplet of parameter-operator-value, either for parameters that are native to this node, or are native to lower hierarchy levels.
+
+From this we can deduct the various jobs the UI has to perform:
+
+1. show the effective value of all parameters that are native to this node;
+* for all these native parameters show the trail of parameter input that results in this effective value;
+* highlight the input at his node for native parameters, because it is unique, i.e. local to this node;
+* show the parameter input at this node that is effective at lower hierarchy levels.
