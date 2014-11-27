@@ -553,7 +553,7 @@ Some interesting dynamics are at play:
 From a user interaction perspective, this is a simple but effective system for how the parameter operators cascade along the hierarchy:
 
 1. only parameters who have their value set (=) anywhere in the hierarchy are defined; for most parameters a sensible default can be defined to make sure this does not happen, but not for all (e.g coordinates);<br/>
-_(e.g. any scaling (×), offset (+), etc operators may be defined for _x_ along the hierarchy, but if _x_ is not set to a value anywhere, it is undefined)_
+_(e.g. any scaling (×), offset (+), etc operators may be defined for coordinate x along the hierarchy, but if x is not set to a value anywhere, it is undefined)_
 * the lowest hierarchy level that sets the value (=) wins;<br/>
 _(e.g. script level sets a parameter and glyph level too, then the glyph one wins—for this glyph)_
 * all scaling (×) and offsets (+) that are defined at any hierarchy level is applied; evaluation is bottom–to–top along the hierarchy and scaling is performed before offset if both are defined on the same hierarchy node<br/>
