@@ -19,9 +19,18 @@ requirejs.config({
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
       , 'socketio': '../socket.io/socket.io'
-      , 'metapolator/project/ExportController': 'project/ExportController.es6'
       , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
     }
+  // exclude on build 
+  , excludeShallow: [
+        // the optimizer can't read es6 generators
+        // NOTE: for dependency tracing the genereated es5 version is used
+        // by the optimizer. The feature detection below then swaps the path
+        // used to load ExportController when the browser executes this.
+        'metapolator/project/ExportController'
+        // see the es6/Proxy module, we load this only when needed
+      , 'es6/Reflect'
+    ]
   , shim: {
         angular: {
             exports: 'angular'
@@ -42,6 +51,19 @@ requirejs.config({
         }
     }
 });
+
+// feature detection for generators
+try {
+    eval("(function *(){})()");
+    requirejs.config({
+    paths: {
+        'metapolator/project/ExportController': 'project/ExportController.es6'
+    }});
+} catch(err) {
+    console,log(err);
+    console.info("No generators, falling back.");
+}
+
 // ui code mirror looks for a global CodeMirror object, which is not defined
 // by code mirror when loaded via AMD ... m(
 // this is the test in the file:

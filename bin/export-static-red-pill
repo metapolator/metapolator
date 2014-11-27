@@ -8,6 +8,22 @@ mkdir "$TARGET" \
     && cp "$SOURCE/README.md" "$TARGET" \
     && cp "$SOURCE/LICENSE.txt" "$TARGET";
 
+
+# copy files not suited for the optimizer
+
+# The optimizer won't include this, because we load it as a shim
+# when the browser has only the older (i.e. non-direct) Harmony Proxies
+MODULE_0="lib/bower_components/harmony-reflect/reflect.js"
+# The optimizer fails on Harmony generators
+MODULE_1="lib/project/ExportController.es6.js"
+# We have a feature detection in the main file, if generators
+# are not supported, this file needs to be present
+MODULE_2="lib/project/ExportController.js"
+MODULES="$MODULE_0 $MODULE_1 $MODULE_2"
+for module in $MODULES; do
+    mkdir -p "$(dirname $TARGET/$module)" && cp "$SOURCE/app/$module" "$TARGET/$module";
+done
+
 # build the javascript into one file
 node $SOURCE/node_modules/.bin/r.js -o \
         optimize=none\
