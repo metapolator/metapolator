@@ -28,6 +28,7 @@
     "bootstrap": "~3.1.1",
     "js-yaml": "~3.1.0",
     "angular-ui-codemirror": "~0.1.6",
-    "harmony-reflect": "~1.1.0"
+    "harmony-reflect": "~1.1.0",
+    "event-emitter.js": "~0.2.0"
   }
 }

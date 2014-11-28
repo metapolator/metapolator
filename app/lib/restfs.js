@@ -26,11 +26,30 @@ define([
     }
 
     // callback for fs.readdir
-    var _getDirectoryListingHandler = function(res, next, err, files) {
+    // attaches a slash to every directory name
+    var _getDirectoryListingHandler = function(dirName, res, next, err, files) {
+        var i
+          , failed = false
+          , resolved = 0
+          , callback = function(files, i, err, stat) {
+                resolved++;
+                if(failed) return; // failed already
+                if(err) {
+                    failed = true;
+                    next(err);
+                    return;
+                }
+                if(stat.isDirectory())
+                    files[i] += '/';
+                if(resolved === files.length)
+                    res.send(files.join('\n'));
+            }
+         ;
         if(err)
             next(err);
         else
-            res.send(files.join('\n'));
+            for(i=0;i<files.length;i++)
+                fs.stat(dirName+'/'+files[i], callback.bind(null, files, i));
     }
 
     // serve usable status codes for the directory PUT
@@ -75,6 +94,7 @@ define([
         .use(function(req, res, next) {
             var name = _cleanPath(req.path)
               , method = req.method
+              , fullPath = [rootDir, name].join('/')
               ;
             if(name.slice(-1) === '/') {
                 // directory
@@ -82,16 +102,15 @@ define([
                     case 'GET':
                     case 'HEAD':
                     // return a directory listing
-                    fs.readdir([rootDir, name].join('/')
-                              , _getDirectoryListingHandler
-                                .bind(null, res, next));
+                    fs.readdir(fullPath
+                            , _getDirectoryListingHandler.bind(null, fullPath, res, next));
                     break;
                     case 'PUT':
                     // try to create the directory
-                    fs.mkdir(name, _mkDirHandler.bind(null, res, next))
+                    fs.mkdir(fullPath, _mkDirHandler.bind(null, res, next))
                     break;
                     case 'DELETE':
-                    fs.rmdir(name, _rmDirHandler.bind(null, res, next))
+                    fs.rmdir(fullPath, _rmDirHandler.bind(null, res, next))
                     break;
                     default:
                     res.send(405);// 405 Method Not Allowed
@@ -103,7 +122,7 @@ define([
                     case 'GET':
                     case 'HEAD':
                     // return the file content
-                    res.sendfile([rootDir, name].join('/'));
+                    res.sendfile(fullPath);
                     break;
                     case 'PUT':
                     case 'POST':
@@ -125,12 +144,12 @@ define([
                         // assert method === PUT || method === POST
                         // use appendFile for POST
                         fs[method === 'PUT' ? 'writeFile': 'appendFile'](
-                            name, req.rawData,
+                            fullPath, req.rawData,
                                 _writeFileHandler.bind(null, res, next));
                     }.bind(null, method));
                     break;
                     case 'DELETE':
-                    fs.unlink(name, _unlinkFileHandler.bind(null, res, next));
+                    fs.unlink(fullPath, _unlinkFileHandler.bind(null, res, next));
                     break;
                     default:
                     res.send(405);// 405 Method Not Allowed

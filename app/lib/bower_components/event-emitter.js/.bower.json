@@ -1,0 +1,23 @@
+{
+  "name": "event-emitter.js",
+  "version": "0.2.0",
+  "ignore": [
+    "**/.*",
+    "Gruntfile.js",
+    "src",
+    "docs",
+    "test",
+    "build"
+  ],
+  "homepage": "https://github.com/jaridmargolin/event-emitter.js",
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.0",
+    "commit": "1925c578b9db8dc815c9a17b6122aa0cdb375267"
+  },
+  "_source": "git://github.com/jaridmargolin/event-emitter.js.git",
+  "_target": "~0.2.0",
+  "_originalSource": "event-emitter.js",
+  "_direct": true
+}

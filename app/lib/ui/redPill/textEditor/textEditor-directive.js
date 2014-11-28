@@ -1,18 +1,18 @@
 define([
-    'require/text!./filesMode.tpl'
+    'require/text!./textEditor.tpl'
     ], function(
     template
 ) {
     "use strict";
-    function filesModeDirective() {
+    function textEditorDirective() {
         return {
             restrict: 'E' // only matches element names
-          , controller: 'FilesModeController'
+          , controller: 'TextEditorController'
           , replace: false
           , template: template
           , scope: {}
         };
     }
-    filesModeDirective.$inject = [];
-    return filesModeDirective;
+    textEditorDirective.$inject = [];
+    return textEditorDirective;
 })
