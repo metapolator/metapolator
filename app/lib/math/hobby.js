@@ -1,7 +1,9 @@
 define([
     './Vector'
+  , './utils'
 ], function(
     Vector
+  , utils
 ) {
     "use strict";
 
@@ -10,7 +12,7 @@ define([
      * metapolator/math/Vector (complex numbers)
      */
 
-
+    var normalizeAngle = utils.normalizeAngle;
 
     function hobby(theta, phi) {
         var st = Math.sin(theta)
@@ -22,13 +24,6 @@ define([
         (2 + Math.sqrt(2) * (st-1/16*sp) * (sp-1/16*st) * (ct-cp)) /
         (3 * (1 + 0.5*(Math.sqrt(5)-1)* ct + 0.5*(3-Math.sqrt(5))*cp))
         );
-    }
-
-    function normalizeAngle(angle) {
-        var result = angle % (2*Math.PI);
-        if(result < 0)
-            result += (2*Math.PI);
-        return result;
     }
 
     /**
