@@ -83,13 +83,6 @@ define([
      * A getter for the "length" of the vector, however "length" is already
      * used for an array like interface of Vector. So "len" it is, because
      * its short and often used to abbreviate "length".
-     *
-     * FIXME: we should have proper whitelisting facilities in CPS
-     * to overcome 'accidental' access to properties that weren't meant
-     * to be used in CPS. Also, this could add a re-mapping of names
-     * to getter methods (or getters). This would make the namespace
-     * less crowded and allow a better names for he CPS user!
-     * then: rename this to 'length'
      */
     Object.defineProperty(_p, 'len', {
         get: Parent.prototype.magnitude
@@ -97,12 +90,10 @@ define([
 
     /**
      * A getter for the angle of the vector in radians.
-     * FIXME: see the fixme comment in property "len" above, then: rename
-     * this to 'angle'
      */
     Object.defineProperty(_p, 'rad', {
         get: Parent.prototype.angle
-    })
+    });
 
     return Vector;
 })
