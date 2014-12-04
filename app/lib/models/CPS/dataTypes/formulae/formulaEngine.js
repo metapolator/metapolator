@@ -198,6 +198,12 @@ define([
           , [Vector, Vector, function(a, b){ return a['**'](b);}]
           , [Vector, 'number', function(a, b){ return a['**'](b);}]
         ])
+      , new Operator('min', true, 40, 0, 2, [
+            ['number' , 'number', function(a, b){ return Math.min(a, b); }]
+        ])
+      , new Operator('max', true, 40, 0, 2, [
+            ['number' , 'number', function(a, b){ return Math.max(a, b); }]
+      ])
         /**
          * vector constructor operator
          * Creates a vector from Cartesian coordinates
