@@ -13,6 +13,7 @@ define([
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
   , 'metapolator/math/hobby'
+  , 'metapolator/math/utils'
 ], function(
     errors
   , Parser
@@ -28,6 +29,7 @@ define([
   , transform
   , Vector
   , hobby
+  , mathUtils
 ) {
     "use strict";
 
@@ -285,6 +287,14 @@ define([
       , new Operator('deg', false, 50, 0, 1, [
             ['number', function(a) {
                 return a * Math.PI/180;
+            }]
+        ])
+        /**
+         * Normalize `angle` given in radians between 0 and 2*PI
+         */
+      , new Operator('normalizeAngle', false, 50, 0, 1, [
+            ['number', function(a) {
+                return mathUtils.normalizeAngle(a);
             }]
         ])
         /**
