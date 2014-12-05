@@ -200,10 +200,12 @@ Command.prototype.parseArgDescription = function(args){
   var repeatToken = '...';
   self._max_required_args = 0;
   self._max_allowed_args = 0;
-  args.forEach(function(arg){
+  args.forEach(function(arg) {
     var repeat = false;
-    if (arg.substr(repeatToken.length) == repeatToken) {
-      arg = arg.substr(1, -repeatToken.length - 1);
+    if(arg === repeatToken)
+        repeat = true;
+    else if (arg.substr(arg.length-repeatToken.length-1, repeatToken.length) == repeatToken) {
+      arg = arg.substr(0, arg.length-repeatToken.length - 1) + arg[arg.length - 1];
       repeat = true;
     }
     if (/<.*>/.test(arg)) {
