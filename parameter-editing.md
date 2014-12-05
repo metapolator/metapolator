@@ -68,13 +68,13 @@ First of all, the hierarchy:
 * project
   * master (1–20)
     * script (1–20)
-      * glyph (hundreds)
+      * glyph (normally hundreds, could be tens of thousands)
         * stroke (fka skeleton, or segment; 1–20)
           * line (1–10)
           * point (1–10)
         * vector shape (1–10)
 
-The numbers between brackets show an estimate of the _normal_ number of children that are added to each parent at that level of hierarchy. Two things stand out: the one or two orders of magnitude more children at glyph level than elsewhere, and that the depth of the hierarchy makes that one can easily end up with one million points per project, and that is a _normal_ situation. That means the further up the hierarchy, the more laborious it becomes to iterate over all the points.
+The numbers between brackets show an estimate of the _normal_ number of children that are added to each parent at that level of hierarchy. Two things stand out: the one–to–four orders of magnitude more children at glyph level than elsewhere, and that the depth of the hierarchy makes that one can easily end up with one million points per project, and that is a _normal_ situation. That means the further up the hierarchy, the more laborious it becomes to iterate over all the points.
 
 ### input, output
 When users edit parameters, they either work on one node in the hierarchy,or several nodes on the same hierarchy level. Let us looks at single node editing first. Two things **can** happen at any node—
@@ -88,3 +88,9 @@ From this we can multiply out the various jobs the UI has to perform:
 * for all these native parameters show the trail of parameter input that results in this effective value;
 * highlight the input at his node for native parameters, because it is unique, i.e. local to this node;
 * show the parameter input at this node that is effective at lower hierarchy levels.
+
+### the special one
+No, not José Mourinho; it is the glyph level that is the special one in the hierarchy. This has several reasons:
+
+* as mentioned [above](#analysis), at this level the hierarchy explodes—so many glyphs per script; the pain that glyph-by-glyph working causes is even referred to in the product vision;
+* 
