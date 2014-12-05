@@ -1,9 +1,11 @@
 define([
     './_Node'
   , './_Contour'
+  , 'metapolator/models/CPS/whitelistProxies'
 ], function(
     Parent
   , _Contour
+  , whitelistProxies
 ) {
     "use strict";
     /**
@@ -20,10 +22,23 @@ define([
      */
     function Glyph() {
         Parent.call(this);
+        this._advanceWidth  = 0;
+        this._advanceHeight = 0;
         this._ufoData = {};
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
     }
     var _p = Glyph.prototype = Object.create(Parent.prototype);
     _p.constructor = Glyph;
+
+    _p._cps_whitelist = {
+        originalAdvanceWidth:  '_advanceWidth'
+      , originalAdvanceHeight: '_advanceHeight'
+    };
+    //inherit from parent
+    (function(source) {
+        for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
+    }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
+
     
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Glyph'
@@ -38,8 +53,16 @@ define([
         var i=0, keys = Object.keys(ufoGlyph);
         for(;i<keys.length;i++)
             this._ufoData[keys[i]] = ufoGlyph[keys[i]];
+        if( ufoGlyph['width'] ) {
+            this._advanceWidth = ufoGlyph['width'];
+        }
+        if( ufoGlyph['height'] ) {
+            this._advanceHeight = ufoGlyph['height'];
+        }
     }
     _p.getUFOData = function() {
+        this._ufoData['width']  = this._advanceWidth;
+        this._ufoData['height'] = this._advanceHeight;
         // Should be immutable or a copy, but we would have to make
         // a deep copy for this, because we don't want the contents to
         // be changed without us knowing, either.

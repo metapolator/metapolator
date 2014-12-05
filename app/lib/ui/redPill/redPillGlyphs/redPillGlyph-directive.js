@@ -193,11 +193,12 @@ define([
     function render(scope, element, glyph, model) {
         var svg = getSVG(element)
           , renderer
+          , advanceWidth = 1000
           ;
         if(!scope.renderer)
             scope.renderer = new RenderController(svg, model, glyph.parent);
         renderer = scope.renderer;
-        
+
         renderer.abort();
         renderer.addLayer(glyph, 'outline', ExportController.renderPenstrokeOutline, true);
         renderer.addLayer(glyph, 'centerline', ExportController.renderPenstrokeCenterline, false);

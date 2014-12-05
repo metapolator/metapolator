@@ -15,6 +15,9 @@ define([
   , Vector
 ) {
     "use strict";
+    var KeyError = errors.Key
+      , CPSKeyError = errors.CPSKey
+    ;
 
     function ExportController(master, model, glyphSet, precision) {
         this._master = master;
@@ -29,6 +32,13 @@ define([
         var glyphs = this._master.children
           , glyph
           , drawFunc
+          , updatedUFOData
+          , v, ki, k, keys
+          // Use UFOtoCPSKeyMap.perform( ufokey ) to get the CPS name that you should read
+          // for example UFOtoCPSKeyMap.perform('width') returns 'advanceWidth'
+          , UFOtoCPSKeyMap = { 'width': 'advanceWidth'
+                               , 'height': 'advanceHeight'
+                               , perform: function(v) { if(this[v]) return this[v]; return v; }} 
           ;
         console.warn('exporting ...');
         for(var i = 0;i<glyphs.length;i++) {
@@ -37,7 +47,23 @@ define([
             drawFunc = this.drawGlyphToPointPen.bind(this,
                 ExportController.renderPenstrokeOutline, this._model, glyph)
 
-            this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
+            // Allow the glyph ufo data to be updated by the CPS.
+            updatedUFOData = glyph.getUFOData();
+            keys = Object.keys(updatedUFOData);
+            for(ki=0;ki<keys.length;ki++) {
+                try {
+                    k = keys[ki];
+                    v = this._model.getComputedStyle(glyph).get(UFOtoCPSKeyMap.perform(k));
+                    updatedUFOData[k] = v;
+                }
+                catch( error ) {
+                    console.log("have error obj!");
+                    if(!(error instanceof KeyError)) {
+                        throw error;
+                    }
+                }
+            }
+            this._glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
                                       undefined, {precision: this._precision})
         }
         this._glyphSet.writeContents(false);

@@ -64,6 +64,19 @@ diff -r ${EXPORT_UFO}1.ufo ${EXPORT_UFO}2.ufo
 echo Result $?
 
 
+#######
+#
+# Export imported1 from the project to ${EXPORT_UFO}1.ufo
+#
+function export1 {
+    echo "exporting ${EXPORT_UFO}1.ufo from project..."
+    rm -rf ${EXPORT_UFO}1.ufo
+    METAPOLATOR="node --stack_trace_limit=100 `pwd`/../../../../../bin/metapolator"
+    $METAPOLATOR export imported1.ufo/new_master ${EXPORT_UFO}1.ufo
+    sed -i -e 's/yOffset/yoffset/g' exported1.ufo/glyphs/a.glif
+    sed -i -e 's/xOffset/xoffset/g' exported1.ufo/glyphs/b.glif
+}
+
 
 #############
 # A case to 
@@ -84,15 +97,30 @@ glyph#a component:i(1) {
 
 EOF
 
-rm -rf ${EXPORT_UFO}1.ufo
-METAPOLATOR="node --stack_trace_limit=100 `pwd`/../../../../../bin/metapolator"
-$METAPOLATOR export imported1.ufo/new_master ${EXPORT_UFO}1.ufo
+export1
 
-sed -i -e 's/yOffset/yoffset/g' exported1.ufo/glyphs/a.glif
-sed -i -e 's/xOffset/xoffset/g' exported1.ufo/glyphs/b.glif
 ../xpath-selector.js ${EXPORT_UFO}1.ufo/glyphs/a.glif '//component[@base="b" and @yoffset="100"]' 1
 echo Result $?
 ../xpath-selector.js ${EXPORT_UFO}1.ufo/glyphs/b.glif '//component[@base="c" and @xoffset="-100"]' 1
+echo Result $?
+
+
+###########################
+#
+# Test for advance width modification through CPS
+#
+../roundtrip.sh "$TESTFONTDIR/components" $EXPORT_UFO
+
+cat >> imported1.ufo/data/com.metapolator/cps/new_master.cps <<EOF
+
+glyph#c {
+   advanceWidth: 500;
+}
+EOF
+
+export1
+
+../xpath-selector.js ${EXPORT_UFO}1.ufo/glyphs/c.glif '//advance[@width="500"]' 1
 echo Result $?
 
 
