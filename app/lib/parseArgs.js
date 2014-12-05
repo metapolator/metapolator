@@ -36,5 +36,15 @@ define([
         return [parseArgs.project(io, s.substr(0, split)), parseArgs.masterName(s.substr(split + 1))];
     }
 
+    parseArgs.masterInstancePairs = function (args) {
+        if(args.length%2 !== 0)
+            throw new CommandLineError('There must be an even-length '
+                    + 'list of [master ufo] arguments. Otherwise '
+                    + 'not all masters have an instance target.');
+        for(var i=0;i<args.length;i=i+2)
+            args[i] = parseArgs.masterName(args[i]);
+        return args;
+    }
+
     return parseArgs;
 })

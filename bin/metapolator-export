@@ -4,8 +4,10 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'Export a master to a UFO'
-  , arguments: '<[project/]master> <ufo>'
+    description: 'Export one or more masters to UFO'
+    // \xA0 is a non breakable space, to create a good --help string while
+    // outsmarting the command parser of commander
+  , arguments: '<[project/]master> <ufo> [master\xA0ufo] ...'
 };
 
 var path = require('path');
@@ -28,17 +30,26 @@ if (require.main === module) {
         program._name = path.basename(process.argv[1]).replace('-', ' ');
         program.arguments(exports.command.arguments)
         .description(exports.command.description)
-        .action(function(master, instance) {
-            var pm = parseArgs.projectMaster(io, master);
-            var project = pm[0];
-            master = pm[1];
+        .action(function(projectMaster, instance/* , master, instance ...*/) {
+            var masterInstancePairs = parseArgs.masterInstancePairs(
+                                Array.prototype.slice.call(arguments, 2))
+              , pm = parseArgs.projectMaster(io, projectMaster)
+              , project = pm[0]
+              , master = pm[1]
+              ;
             project.load();
-            
             // load all masters, because right now it is very confusing
             // when some masters are missing from the MOM
             project.masters.forEach(project.open, project);
             
-            project.exportInstance(master, instance, program.precision);
+            masterInstancePairs.unshift(master, instance)
+            while(true) {
+                master = masterInstancePairs.shift();
+                instance = masterInstancePairs.shift();
+                console.warn('Exporting "'+master+'" to "'+instance+'"');
+                project.exportInstance(master, instance, program.precision);
+                if(!masterInstancePairs.length) break;
+            }
         })
         .option('-p, --precision <n>', 'The number of decimal places to use in output coordinates, '
                                      + 'or -1 for no rounding',
