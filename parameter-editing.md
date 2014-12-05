@@ -93,4 +93,7 @@ From this we can multiply out the various jobs the UI has to perform:
 No, not José Mourinho; it is the glyph level that is the special one in the hierarchy. This has several reasons:
 
 * as mentioned [above](#analysis), at this level the hierarchy explodes—so many glyphs per script; the pain that glyph-by-glyph working causes is even referred to in the product vision;
+* this is the lowest hierarchy level that **works** as a means of communication; a ‘J’ is more than a part of an arc and a straight line, it is a consonant that has a pronunciation in every language that uses latin script; then looking up and down the hierarchy—
+  * the **sub-glyph** levels (stroke, line, point, vector) is all about the details; nuts and bolts;
+  * the **super-glyph** levels (script, master, project) is all about working faster, in big broad strokes.
 * 
