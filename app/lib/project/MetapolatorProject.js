@@ -407,20 +407,22 @@ define([
                                              masterName, sourceUFODir);
         importer.import(glyphs);
     
-        this._importGroupsFile(sourceUFODir, true);
-        this._importFontInfoFile(sourceUFODir, true);
+        this._importGroupsFile(sourceUFODir, false);
+        this._importFontInfoFile(sourceUFODir, false);
     };
 
     /**
-     * If there is no groups.plist in the project but the import
+     * If there is no 'targetFile' in the project but the import
      * has one, we do the import.
-     * If there is a groups.plist in the project and overide is true
+     *
+     * If there is a 'targetFile' in the project and overide is true
      * we overide by doing the import.
      * Otherwise, we skip importing the file.
      *
      * This rule may get changed in the future, but having the first
-     * possible groupd file also imported into the project is better
-     * than not having it to happen.
+     * possible file also imported into the project is better than not
+     * having it to happen.
+     *
      * Also, ufoJS can't validate this file at the moment
      * however, we can try to parse it with plistlib and see if it works.
      */
@@ -462,17 +464,10 @@ define([
 
 
     /**
-     * If there is no groups.plist in the project but the import
-     * has one, we do the import.
-     * If there is a groups.plist in the project and overide is true
-     * we overide by doing the import.
-     * Otherwise, we skip importing the file.
+     * Only imports groups.plist if we don't have one already and
+     * !override.
      *
-     * This rule may get changed in the future, but having the first
-     * possible groupd file also imported into the project is better
-     * than not having it to happen.
-     * Also, ufoJS can't validate this file at the moment
-     * however, we can try to parse it with plistlib and see if it works.
+     * @see _importPListFile
      */
     _p._importGroupsFile = function(sourceUFODir, override) {
         this._importPListFile( sourceUFODir, override, 
@@ -480,12 +475,10 @@ define([
     };
 
     /**
-     * If there is no fontinfo.plist in the project but the import
-     * has one, we do the import.
-     * If there is a fontinfo.plist in the project and overide is true
-     * we overide by doing the import.
-     * Otherwise, we skip importing the file.
+     * Only imports fontinfo.plist if we don't have one already and
+     * !override.
      *
+     * @see _importPListFile
      */
     _p._importFontInfoFile = function(sourceUFODir, override) {
         this._importPListFile( sourceUFODir, override, 
