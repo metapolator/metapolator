@@ -77,14 +77,8 @@ define([
       , new Rule(
             parseSelectorList.fromString('glyph', source.name)
           , parameterDictFromObject({
-              advanceWidth: 'originalAdvanceWidth'
-              })
-          , source
-      )
-      , new Rule(
-            parseSelectorList.fromString('glyph', source.name)
-          , parameterDictFromObject({
-              advanceHeight: 'originalAdvanceHeight'
+                advanceWidth:  'originalAdvanceWidth'
+              , advanceHeight: 'originalAdvanceHeight'
               })
           , source
       )

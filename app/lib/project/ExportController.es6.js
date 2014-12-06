@@ -9,10 +9,12 @@ define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
   , 'metapolator/math/Vector'
+  , 'models/MOM/Glyph.js'
 ], function(
     errors
   , hobby
   , Vector
+  , MOMGlyph
 ) {
     "use strict";
     var KeyError = errors.Key
@@ -34,15 +36,12 @@ define([
           , drawFunc
           , updatedUFOData
           , v, ki, k, keys
-          // Use UFOtoCPSKeyMap.perform( ufokey ) to get the CPS name that you should read
-          // for example UFOtoCPSKeyMap.perform('width') returns 'advanceWidth'
-          , UFOtoCPSKeyMap = { 'width': 'advanceWidth'
-                               , 'height': 'advanceHeight'
-                               , perform: function(v) { if(this[v]) return this[v]; return v; }} 
-          ;
+          , style
+          };
         console.warn('exporting ...');
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
+            style = this._model.getComputedStyle(glyph);
             console.warn('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this,
                 ExportController.renderPenstrokeOutline, this._model, glyph)
@@ -53,7 +52,7 @@ define([
             for(ki=0;ki<keys.length;ki++) {
                 try {
                     k = keys[ki];
-                    v = this._model.getComputedStyle(glyph).get(UFOtoCPSKeyMap.perform(k));
+                    v = style.get(MOMGlyph.convertUFOtoCPSKey(k));
                     updatedUFOData[k] = v;
                 }
                 catch( error ) {

@@ -60,15 +60,40 @@ define([
             this._advanceHeight = ufoGlyph['height'];
         }
     }
+
+    /**
+     * Return value is a copy of the UFO data for the Glyph.
+     *
+     * Should be immutable or a copy, but we would have to make
+     * a deep copy for this, because we don't want the contents to
+     * be changed without us knowing, either.
+     *
+     * We might also invent more interfaces for UFO data for a glyph
+     * in the future.
+     **/
     _p.getUFOData = function() {
-        this._ufoData['width']  = this._advanceWidth;
-        this._ufoData['height'] = this._advanceHeight;
-        // Should be immutable or a copy, but we would have to make
-        // a deep copy for this, because we don't want the contents to
-        // be changed without us knowing, either.
-        // Instead, we are going to invent more interfaces for UFO data
-        // for a glyph in the future.
+        var ret = {}, i=0, keys = Object.keys(this._ufoData);
+        for(;i<keys.length;i++) {
+            ret[keys[i]] = this._ufoData[keys[i]];
+        }
+
+        ret['width']  = this._advanceWidth;
+        ret['height'] = this._advanceHeight;
         return this._ufoData;
+    }
+
+    /**
+     * Convert the UFO key to the key you should use for CPS. For example,
+     * convertUFOtoCPSKey('width') returns 'advanceWidth'
+     **/
+    _p.convertUFOtoCPSKey = function( ufokey ) {
+        var UFOtoCPSKeyMap = {   'width': 'advanceWidth'
+                               , 'height': 'advanceHeight'
+                             };
+        
+        if(UFOtoCPSKeyMap[ufokey]) 
+            return UFOtoCPSKeyMap[ufokey]; 
+        return ufokey;
     }
     
     _p._acceptedChildren = [_Contour];
