@@ -104,9 +104,16 @@ define([
     Object.defineProperty(_p, 'groupsFileName', {
         value: 'groups.plist'
     });
+    Object.defineProperty(_p, 'fontinfoFileName', {
+        value: 'fontinfo.plist'
+    });
+
 
     Object.defineProperty(_p, 'groupsFile', {
         get: function(){ return this.baseDir+'/' + this.groupsFileName; }
+    });
+    Object.defineProperty(_p, 'fontinfoFile', {
+        get: function(){ return this.baseDir+'/' + this.fontinfoFileName; }
     });
     
     Object.defineProperty(_p, 'logFile', {
@@ -400,26 +407,27 @@ define([
                                              masterName, sourceUFODir);
         importer.import(glyphs);
     
-        this._importGroupsFile(sourceUFODir, true);
+        this._importGroupsFile(sourceUFODir, false);
+        this._importFontInfoFile(sourceUFODir, false);
     };
 
     /**
-     * If there is no groups.plist in the project but the import
+     * If there is no 'targetFile' in the project but the import
      * has one, we do the import.
-     * If there is a groups.plist in the project and overide is true
+     *
+     * If there is a 'targetFile' in the project and overide is true
      * we overide by doing the import.
      * Otherwise, we skip importing the file.
      *
      * This rule may get changed in the future, but having the first
-     * possible groupd file also imported into the project is better
-     * than not having it to happen.
+     * possible file also imported into the project is better than not
+     * having it to happen.
+     *
      * Also, ufoJS can't validate this file at the moment
      * however, we can try to parse it with plistlib and see if it works.
      */
-    _p._importGroupsFile = function(sourceUFODir, override) {
-        var filename = this.groupsFileName
-          , sourceFile = [sourceUFODir, filename].join('/')
-          , targetFile = this.groupsFile
+    _p._importPListFile = function(sourceUFODir, override, filename, targetFile ) {
+        var sourceFile = [sourceUFODir, filename].join('/')
           , targetExists
           , content
           ;
@@ -452,6 +460,29 @@ define([
         }
         this._io.writeFile(false, targetFile, content);
         this._log.warning('Import of '+filename+' OK.\n');
+    };
+
+
+    /**
+     * Only imports groups.plist if we don't have one already and
+     * !override.
+     *
+     * @see _importPListFile
+     */
+    _p._importGroupsFile = function(sourceUFODir, override) {
+        this._importPListFile( sourceUFODir, override, 
+                               this.groupsFileName, this.groupsFile );
+    };
+
+    /**
+     * Only imports fontinfo.plist if we don't have one already and
+     * !override.
+     *
+     * @see _importPListFile
+     */
+    _p._importFontInfoFile = function(sourceUFODir, override) {
+        this._importPListFile( sourceUFODir, override, 
+                               this.fontinfoFileName, this.fontinfoFile );
     };
     
     _p.exportInstance = function(masterName, instanceName, precision) {
