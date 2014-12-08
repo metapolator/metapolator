@@ -1,5 +1,6 @@
 define([
     './_Node'
+  , './PointData'
   , './_PenStrokePointChild'
   , './PenStrokePointLeft'
   , './PenStrokePointCenter'
@@ -7,6 +8,7 @@ define([
   , 'metapolator/models/CPS/whitelistProxies'
 ], function(
     Parent
+  , PointData
   , _PenStrokePointChild
   , PenStrokePointLeft
   , PenStrokePointCenter
@@ -24,7 +26,7 @@ define([
      * It has three children, in order: left, center, right
      * It doesn't accept add or removal of children.
      *
-     * skeleton is expected to be a structure with three readable keys:
+     * pointData is expected to be a PointData instance with three readable keys:
      * {
      *      in: Vector || undefined
      *    , on: Vector // must be set
@@ -33,9 +35,11 @@ define([
      * These are the absolute coordinates of the skeleton.
      *
      */
-    function PenStrokePoint(skeleton) {
+    function PenStrokePoint(pointData) {
         Parent.call(this);
-        this._skeleton = skeleton;
+        if(!(pointData) instanceof PointData)
+            throw new TypeError('Expected an instance of PointData.');
+        this._skeleton = pointData;
 
         this.add(new PenStrokePointLeft());  // 0
         this.add(new PenStrokePointCenter());// 1
@@ -44,16 +48,6 @@ define([
     }
     var _p = PenStrokePoint.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePoint;
-
-    PenStrokePoint.SkeletonDataConstructor = function(obj) {
-        for(var k in obj) this[k] = obj[k];
-        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
-    };
-    PenStrokePoint.SkeletonDataConstructor.prototype._cps_whitelist = {
-        on: 'on'
-      , in: 'in'
-      , out: 'out'
-    };
 
     //inherit from parent
     _p._cps_whitelist = {

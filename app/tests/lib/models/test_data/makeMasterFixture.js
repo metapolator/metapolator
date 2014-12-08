@@ -3,11 +3,13 @@ define([
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/models/MOM/PenStroke'
   , 'metapolator/models/MOM/PenStrokePoint'
+  , 'metapolator/models/MOM/PointData'
 ], function(
     Master
   , Glyph
   , PenStroke
   , PenStrokePoint
+  , PointData
 ){
     /**
      * Create a simple MOM Master tree as a test fixture
@@ -30,7 +32,7 @@ define([
           , i = 0
           ;
         for(;i<points;i++) {
-            skeleton = new PenStrokePoint.SkeletonDataConstructor({});
+            skeleton = new PointData({});
             stroke.add(new PenStrokePoint(skeleton));
         }
         return stroke;
