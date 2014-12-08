@@ -43,8 +43,13 @@ define([
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             console.warn('exporting', glyph.id);
-            drawFunc = this.drawGlyphToPointPen.bind(this,
-                ExportController.renderPenstrokeOutline, this._model, glyph)
+            drawFunc = this.drawGlyphToPointPen.bind(
+                this
+              , {
+                      penstroke: ExportController.renderPenstrokeOutline
+                    , contour: ExportController.renderContour
+                }
+              , this._model, glyph);
 
             // Allow the glyph ufo data to be updated by the CPS.
             updatedUFOData = glyph.getUFOData();
@@ -65,7 +70,7 @@ define([
                                       undefined, {precision: this._precision})
         }
         this._glyphSet.writeContents(false);
-    }
+    };
 
     /**
      * Get control point vectors from (MOM Point) StyleDicts.
@@ -219,7 +224,30 @@ define([
     }
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
-
+    function* renderContour( pen, model, contour ) {
+        var points = contour.children
+          , point
+          , segmentType
+          ;
+        pen.beginPath();
+        for(var i=0;i<points.length;i++) {
+            point = model.getComputedStyle(points[i]);
+            // Actually, all points have controls. We don't have to draw
+            // lines. We should make a CPS value if we want to draw a
+            // point as a line segment point
+            if(true /* always curve */) {
+                segmentType = 'curve';
+            }
+            else {
+                segmentType =  'line';
+            }
+            yield pen.addPoint(point.get('in').valueOf(), undefined, undefined, undefined);
+            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            yield pen.addPoint(point.get('out').valueOf(), undefined, undefined, undefined);
+        }
+        pen.endPath();
+    }
+    ExportController.renderContour = renderContour;
 
     function* renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
@@ -257,8 +285,10 @@ define([
                     transformation = model.getComputedStyle(item).get( 'transformation' );
                     pen.addComponent( glyphName, transformation );
                 }
-                else
-                    yield* renderer( pen, model, item );
+                else if(renderer.contour && item.type === 'contour' )
+                    yield* renderer.contour( pen, model, item );
+                else if(renderer.penstroke && item.type === 'penstroke')
+                    yield* renderer.penstroke( pen, model, item );
             }
         };
         return generator();

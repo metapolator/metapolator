@@ -199,8 +199,13 @@ define([
         renderer = scope.renderer;
         
         renderer.abort();
-        renderer.addLayer(glyph, 'outline', ExportController.renderPenstrokeOutline, true);
-        renderer.addLayer(glyph, 'centerline', ExportController.renderPenstrokeCenterline, false);
+        renderer.addLayer(glyph, 'outline', {
+            penstroke: ExportController.renderPenstrokeOutline
+          , contour: ExportController.renderContour
+        }, true);
+        renderer.addLayer(glyph, 'centerline', {
+            penstroke: ExportController.renderPenstrokeCenterline
+        }, false);
         renderer.run();
     }
     
