@@ -123,8 +123,82 @@ define([
     _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, options) {
         return GlyphSet.factory(
                     async, this._io, dirName, glyphNameFunc, UFOVersion, options);
-    }
-    
+    };
+
+    _p._readPlist = obtain.factory(
+        {
+            'path': ['ufoDir', 'fileName',
+                function(ufoDir, fileName){ return [ufoDir, fileName].join('/'); }]
+          , 'data': ['contents', plistLib.readPlistFromString.bind(plistLib)]
+          , 'contents': ['path',
+                function(path){ return this._io.readFile(false, path);}]
+        }
+      , {
+            'contents': ['path',
+                function(path){ return this._io.readFile(true, path);}]
+        }
+      , ['ufoDir', 'fileName']
+      , function(obtain){ return obtain('data'); }
+    );
+
+    _p._readUFOFormatVersion = obtain.factory(
+        {
+            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+          , 'formatVersion': ['metainfo', function(data){return data.formatVersion;}]
+        }
+      , {
+            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+        }
+      , ['ufoDir']
+      , function(obtain){ return obtain('formatVersion'); }
+    );
+
+    /**
+     * Initialize a GlyphSet for the UFO at `ufoDir`. Read the
+     * ufo format version before, to load the glyphset the right way.
+     *
+     * If the ufo version is 3 `layername` can be given as argument,
+     * it defaults to the ufo v3 default "public.default"
+     *
+     * FIXME: Once ufoJS finished porting ufoLib/UFOReader, this functionality
+     * will large be located there.
+     */
+    _p.getGlyphSet = obtain.factory(
+        {
+            'UFOVersion': [false, 'ufoDir', _p._readUFOFormatVersion]
+          , 'dirName': ['ufoDir', 'layer', function(ufoDir, layer) {
+                                    return [ufoDir, layer].join('/');}]
+          , 'layer': ['UFOVersion', 'ufoDir', 'layerName',
+            function(UFOVersion, ufoDir, layerName) {
+                var layerContents;
+                if(UFOVersion < 3)
+                    return 'glyphs';
+                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist');
+                return _getLayerDir(layerContents, layerName || 'public.default');
+            }]
+          , 'GlyphSet': [false, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
+        }
+      , {
+            'UFOVersion': [true, 'ufoDir', _p._readUFOFormatVersion]
+          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback',
+            function(UFOVersion, ufoDir, layerName, callback, errback) {
+                if(UFOVersion < 3) {
+                    setTimeout(callback.bind('glyphs'));
+                    return;
+                }
+                this._readPlist(true, ufoDir, 'layercontents.plist')
+                .then(function(layerContents) {
+                    callback(_getLayerDir(layerContents, layerName || 'public.default'));
+                })
+                .then(undefined, errback);
+            }]
+          , 'GlyphSet': [true, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
+        }
+      , ['ufoDir', 'glyphNameFunc'/*optional*/, 'options'/*optional*/
+                    , 'layerName'/*optional default: 'public.default'*/]
+      , function(obtain) {return obtain('GlyphSet');}
+    );
+
     _p.init = function() {
         // FIXME: all I/O is synchronous for now
 
@@ -293,22 +367,28 @@ define([
     }
     
     /**
-     * Returns the path needed to instantiate a GlyphSet
+     * lookup a name in a laycontents list as defined for layercontents.plist
+     */
+    function _getLayerDir(layercontents, name) {
+        var layerDir;
+        for(var i=0;i<layercontents.length;i++)
+            if(layercontents[i][0] === name) {
+                layerDir = layercontents[i][1];
+                break;
+            }
+        if(!layerDir)
+            throw new KeyError('Layer named "' + name + '" not found.');
+        return layerDir;
+    }
+    /**
+     * Returns the path needed to instantiate a GlyphSet for this project
      */
     _p._getLayerDir = function(name) {
         // read layercontents.plist
         var layercontents = plistLib.readPlistFromString(
                 this._io.readFile(false, this.layerContentsFile))
-          , layerDir
+          , layerDir = [this.baseDir, _getLayerDir(layercontents, name)].join('/')
           ;
-        
-        for(var i=0;i<layercontents.length;i++)
-            if(layercontents[i][0] === name) {
-                layerDir = [this.baseDir,'/',layercontents[i][1]].join('');
-                break;
-            }
-        if(!layerDir)
-            throw new KeyError('Layer named "' + name + '" not found.');
         if(!this._io.pathExists(false, layerDir + '/'))
             throw new KeyError('Layer directory "' + layerDir
                                 + '" does not exist, but is mentioned in '

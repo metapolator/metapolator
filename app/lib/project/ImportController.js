@@ -55,33 +55,44 @@ define([
             this._master = this._project.createMaster(masterName,
                                                       masterName + '.cps',
                                                       'skeleton.' + masterName);
-
-        // tell us about errors instead of throwing it away
-        var options = {
-            readErrorCallback: function( projectMaster, metadata ) {
-                this._log.warning("ImportController: Got an error loading glyph '"
-                                  + metadata.glyphName + "' reason:" + metadata.message );
-                // try to continue
-                return true;
-            }.bind( null, this._master )
-        };
-        // open the source ufo glyphs layer of an UFOv2
-        this._sourceGlyphSet  = this._project.getNewGlyphSet(
-                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2, options);
+        this._sourceUFODir = sourceUFODir;
+        this._sourceGlyphSet = undefined;
     }
     var _p = ImportController.prototype;
+
+    /**
+     * NOTE: This performs synchronous IO via this._project.getGlyphSet
+     */
+    _p._getSourceGlyphSet = function() {
+        var options;
+        if(!this._sourceGlyphSet) {
+            // tell us about errors instead of throwing it away
+            options = {
+                readErrorCallback: function( projectMaster, metadata ) {
+                    this._log.warning("ImportController: Got an error loading glyph '"
+                                    + metadata.glyphName + "' reason:" + metadata.message );
+                    // try to continue
+                    return true;
+                }.bind( null, this._master )
+            };
+            this._sourceGlyphSet = this._project.getGlyphSet(
+                        false, this._sourceUFODir, undefined, options);
+        }
+        return this._sourceGlyphSet;
+    }
 
     _p['import'] = function(glyphs) {
         var missing, i=0
           , rules = []
           , cps
+          , sourceGlyphSet = this._getSourceGlyphSet(false)
           ;
 
         if(!glyphs)
-            glyphs = this._sourceGlyphSet.keys();
+            glyphs = sourceGlyphSet.keys();
         else {
             missing = glyphs.filter(function(name) {
-                        return !this._sourceGlyphSet.has_key(name);}, this);
+                        return !sourceGlyphSet.has_key(name);}, this);
             if(missing.length)
                 throw new errors.Key('Some glyphs requested for import '
                                     +'are missing in the source GlyphSet: '
@@ -117,7 +128,8 @@ define([
     };
 
     _p._readGlyphFromSource = function(glyphName) {
-        var glyph = this._sourceGlyphSet.get(glyphName)
+        var sourceGlyphSet = this._getSourceGlyphSet(false)
+          , glyph = sourceGlyphSet.get(glyphName)
           , segmentPen = new SegmentPen()
           , pen = new ImportOutlinePen(segmentPen, true)
           ;
