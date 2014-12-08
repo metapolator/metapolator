@@ -60,6 +60,7 @@ define(function() {
     makeError('CPSParser', undefined , new errors.CPS);
     makeError('Import', undefined , new errors.CPS);
     makeError('ImportPenstroke', undefined , new errors.Import);
+    makeError('ImportContour', undefined , new errors.Import);
 
     /**
      * if expression is false, throw an Assertion
