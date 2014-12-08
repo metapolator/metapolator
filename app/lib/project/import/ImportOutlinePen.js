@@ -36,7 +36,7 @@ define(
 
     /*definition*/
     enhance(ImportOutlinePen, {
-        _flushContour: function(segments)
+        _flushContour: function(segments, contour_kwargs)
         {
             assert(segments.length >= 1, 'Less than one segment');
             var pen = this.pen;
@@ -69,7 +69,7 @@ define(
                 // that's null. We must not output a moveTo() in that case.
                 // pass
             } else {
-                pen.moveTo(new Point(movePt, smooth, name, kwargs));
+                pen.moveTo(new Point(movePt, smooth, name, kwargs), contour_kwargs);
             }
             var outputImpliedClosingLine = this.outputImpliedClosingLine,
                 nSegments = segments.length;
