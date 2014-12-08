@@ -4,6 +4,7 @@ define([
   , './import/SegmentPen'
   , './import/ImportOutlinePen'
   , './import/StrokeContour'
+  , './import/contourFromContour'
 
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
@@ -24,6 +25,7 @@ define([
   , SegmentPen
   , ImportOutlinePen
   , StrokeContour
+  , contourFromContour
 
   , ParameterCollection
   , AtNamespaceCollection
@@ -143,49 +145,84 @@ define([
         var sourceGlyph = this._readGlyphFromSource(glyphName)
           , targetGlyph
           , contours = []
+          , item
           , i=0
             // the index at which the contour will be addressable in CPS
-          , penStrokeIndex = 0
+          , parentIndex = 0
           , rules = []
+          , id
+          // If the identifier starts with C: (for *C*ontour)
+          , contourIndicator = 'C:'
           ;
         for(;i<sourceGlyph.contours.length;i++) {
+            item = sourceGlyph.contours[i];
 
-            if(sourceGlyph.contours[i].type == 'component' ) {
-                contours.push(sourceGlyph.contours[i]);
+            // component
+            if(item.type == 'component' ) {
+                contours.push(item);
+                parentIndex += 1;
                 continue;
             }
-            if(!sourceGlyph.contours[i].closed) {
+
+            if(!item.closed) {
                 console.warn('    skipping contour '+ i +' because it is open.');
                 continue;
             }
-            if(sourceGlyph.contours[i].commands.length < 5) {
+
+            // import as contour
+            id = undefined;
+            try {
+                id = item.kwargs.identifier;
+            }
+            catch(error) {
+                //TypeError: Cannot read property 'identifier' of undefined
+                if(!(error instanceof TypeError))
+                    throw error;
+            }
+            if(id && id.slice(0, contourIndicator.length) === contourIndicator) {
+                Vector.prototype._cps_whitelist.inspect = 'inspect';
+                console.warn('importing contour '+ i + ' as contour');
+                var contourData = contourFromContour(item.commands);
+                contours.push({
+                      type:'contour'
+                    , data: contourData
+                    , kwargs: item.kwargs
+                });
+                rules.push(makeCPSContourRule(contourData, parentIndex));
+                parentIndex += 1;
+                continue;
+            }
+
+            // import as penstroke if possible
+            if(item.commands.length < 5) {
                 console.warn('    skipping contour '+ i +' because it has less '
                                             +'than 4 on-curve points.');
                 continue;
             }
-            if(sourceGlyph.contours[i].commands.length % 2 === 0) {
+            if(item.commands.length % 2 === 0) {
                  console.warn('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
             }
-            console.warn('    importing contour '+ i);
+            console.warn('importing contour '+ i + ' as penstroke');
              // the z points of this stroke can go directly to the skeleton glyph
-            var penStrokeData = new StrokeContour(
-                        sourceGlyph.contours[i].commands).getPenStroke();
-
+            var penStrokeData = new StrokeContour(item.commands).getPenStroke();
             // this goes into the glyph/skeleton
-            contours.push(penStrokeData);
+            contours.push({
+                  type:'penstroke'
+                , data:penStrokeData
+                , kwargs: item.kwargs
+            });
 
             // this goes into the glyph
-            // returns an atNamespaceRule(penstroke:i({penStrokeIndex})){ points ... }
-            rules.push(makeCPSPenStrokeRule(penStrokeData, penStrokeIndex));
-
-            penStrokeIndex += 1;
+            // returns an atNamespaceRule(penstroke:i({parentIndex})){ points ... }
+            rules.push(makeCPSPenStrokeRule(penStrokeData, parentIndex));
+            parentIndex += 1;
         }
 
         this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph.data,
             // draw the outline to the new glif
-            drawPenStroke.bind(null, contours)
+            draw.bind(null, contours)
         );
 
         return [new AtNamespaceCollection(
@@ -195,34 +232,48 @@ define([
                 ];
     };
 
-    function drawPenStroke(contours, pen) {
-        var i=0, j, segmentType, point, glyphName;
+    function draw(contours, pen) {
+        var i=0, j, segmentType, point, item, command;
 
         for(;i<contours.length;i++) {
-            if( contours[i].type == 'component' ) {
-                glyphName = contours[i].glyphName;
-                pen.addComponent( glyphName, contours[i].transformation );
-            } else {
-                pen.beginPath();
-                // draw just the skeleton
-                for(j=0;j<contours[i].length;j++) {
+            item = contours[i];
+            if( item.type == 'component' ) {
+                pen.addComponent( item.glyphName, item.transformation, item.kwargs );
+            }
+            else if(item.type == 'contour') {
+                // everything is a curve, so this is easy
+                pen.beginPath(item.kwargs);
+                for(j=0;j<item.data.length;j++) {
+                    point = item.data[j]['in'];
+                    pen.addPoint(point.valueOf(), undefined, undefined, point.name);
+                    point = item.data[j]['on'];
+                    pen.addPoint(point.valueOf(), 'curve', undefined, point.name);
+                    point = item.data[j]['out'];
+                    pen.addPoint(point.valueOf(), undefined, undefined, point.name);
+                }
+                pen.endPath();
+            }
+            else { // item.type === 'penstroke'
+                pen.beginPath(item.kwargs);
+                // draw just the centerline
+                for(j=0;j<item.data.length;j++) {
                     if(j===0)
                         // this is a non closed path
                         segmentType = 'move';
                     else {
                         segmentType = 'curve';
 
-                        point = contours[i][j-1].z.out;
+                        point = item.data[j-1].z.out;
                         pen.addPoint(point.valueOf(), undefined
                                      , undefined, point.name);
 
-                        point = contours[i][j].z['in'];
+                        point = item.data[j].z['in'];
                         pen.addPoint(point.valueOf(), undefined
                                      , undefined, point.name);
                     }
                     // we don't have line segments on skeletons
                     //    segmentType = 'line';
-                    point = contours[i][j].z.on;
+                    point = item.data[j].z.on;
                     pen.addPoint(point.valueOf(), segmentType
                                  , undefined, point.name);
                 }
@@ -369,6 +420,46 @@ define([
         for(;i<penStrokeData.length;i++)
             Array.prototype.push.apply(
                 items, makeCPSPointRules(penStrokeData[i], i, penStrokeData.length));
+
+
+        return new AtNamespaceCollection(name, selectorList, items);
+    }
+
+    function makeCPSContourPointRules(point, index, length) {
+        var rules = []
+          , dict={}
+          , selectorList
+          , rightOnIntrinsic
+          ;
+        // there's not much to import for `p` (for *p*oint)
+        selectorList = parseSelectorList.fromString('p:i('+index+')');
+        // In cases where the general rules:
+        //     inDir: (on - in):angle;
+        //     outDir: (out - on):angle;
+        // produce worse results
+        if(point.inLenght === 0) {
+            dict.inDir = point.inDir;
+            dict['in'] = 'on';
+        }
+        if(point.outLenght === 0) {
+            dict.outDir = point.outDir;
+            dict.out = 'on';
+        }
+        if(Object.keys(dict).length)
+            rules.push(
+                new Rule(selectorList, parameterDictFromObject(dict)));
+        return rules;
+    }
+
+    function makeCPSContourRule(contourData, index) {
+        var name = new AtRuleName('namespace', [])
+          , selectorList = parseSelectorList.fromString('contour:i('+index+')')
+          , i = 0
+          , items = []
+          ;
+        for(;i<contourData.length;i++)
+            Array.prototype.push.apply(
+                items, makeCPSContourPointRules(contourData[i], i));
 
 
         return new AtNamespaceCollection(name, selectorList, items);

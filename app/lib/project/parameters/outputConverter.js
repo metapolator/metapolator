@@ -75,6 +75,20 @@ define([
           , source
       )
       , new Rule(
+            parseSelectorList.fromString('contour>p', source.name)
+            // FIXME: draw with tensions!
+          , parameterDictFromObject({
+                  on: 'skeleton:on'
+                , 'in': 'skeleton:in'
+                , out: 'skeleton:out'
+                // the dirs are defined by the importer if this calculations
+                // would not produce a good result
+                , inDir: '(on - in):angle'
+                , outDir: '(out - on):angle'
+              })
+          , source
+      )
+      , new Rule(
             parseSelectorList.fromString('point>center', source.name)
           , parameterDictFromObject({
                   on: 'parent:skeleton:on'
