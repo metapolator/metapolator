@@ -56,7 +56,6 @@ define([
                     updatedUFOData[k] = v;
                 }
                 catch( error ) {
-                    console.log("have error obj!");
                     if(!(error instanceof KeyError)) {
                         throw error;
                     }

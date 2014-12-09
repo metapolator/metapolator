@@ -193,7 +193,6 @@ define([
     function render(scope, element, glyph, model) {
         var svg = getSVG(element)
           , renderer
-          , advanceWidth = 1000
           ;
         if(!scope.renderer)
             scope.renderer = new RenderController(svg, model, glyph.parent);

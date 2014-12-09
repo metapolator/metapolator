@@ -79,7 +79,7 @@ define([
 
         ret['width']  = this._advanceWidth;
         ret['height'] = this._advanceHeight;
-        return this._ufoData;
+        return ret;
     }
 
     /**
