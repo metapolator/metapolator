@@ -37,7 +37,7 @@ define([
           , updatedUFOData
           , v, ki, k, keys
           , style
-          };
+          ;
         console.warn('exporting ...');
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
