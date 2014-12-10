@@ -8,6 +8,7 @@ define([
   , whitelistProxies
 ) {
     "use strict";
+
     /**
      * This Element is the container of all contours of a glyph.
      * It will have some metadata and contain children of type MOM _Contour.
