@@ -2,7 +2,7 @@
  * This can be distilled down to the non es6 file by running the following
  * from the root of the git repository
  * 
- * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ * cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js && cd -
  *
  */
 define([
