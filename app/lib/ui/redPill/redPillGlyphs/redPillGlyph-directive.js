@@ -197,7 +197,7 @@ define([
         if(!scope.renderer)
             scope.renderer = new RenderController(svg, model, glyph.parent);
         renderer = scope.renderer;
-        
+
         renderer.abort();
         renderer.addLayer(glyph, 'outline', ExportController.renderPenstrokeOutline, true);
         renderer.addLayer(glyph, 'centerline', ExportController.renderPenstrokeCenterline, false);

@@ -85,5 +85,14 @@ define([
               , description: 'Affine 2D transformation matrix.'
     });
 
+    parameterRegistry.register('advanceWidth', {
+                type: 'real'
+              , description: 'The advance width of a glyph.'
+    });
+    parameterRegistry.register('advanceHeight', {
+                type: 'real'
+              , description: 'The advance height of a glyph.'
+    });
+
     return parameterRegistry;
 });

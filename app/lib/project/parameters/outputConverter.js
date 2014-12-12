@@ -75,6 +75,14 @@ define([
           , source
       )
       , new Rule(
+            parseSelectorList.fromString('glyph', source.name)
+          , parameterDictFromObject({
+                advanceWidth:  'originalAdvanceWidth'
+              , advanceHeight: 'originalAdvanceHeight'
+              })
+          , source
+      )
+      , new Rule(
             parseSelectorList.fromString('point>center', source.name)
           , parameterDictFromObject({
                   on: 'parent:skeleton:on'
