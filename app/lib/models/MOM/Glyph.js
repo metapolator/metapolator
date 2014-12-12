@@ -87,7 +87,7 @@ define([
      * Convert the UFO key to the key you should use for CPS. For example,
      * convertUFOtoCPSKey('width') returns 'advanceWidth'
      **/
-    _p.convertUFOtoCPSKey = function( ufokey ) {
+    function convertUFOtoCPSKey( ufokey ) {
         var UFOtoCPSKeyMap = {   'width': 'advanceWidth'
                                , 'height': 'advanceHeight'
                              };
@@ -96,7 +96,7 @@ define([
             return UFOtoCPSKeyMap[ufokey]; 
         return ufokey;
     }
-    
+    Glyph.convertUFOtoCPSKey = convertUFOtoCPSKey;
     _p._acceptedChildren = [_Contour];
     
     return Glyph;

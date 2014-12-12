@@ -472,7 +472,7 @@ define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
   , 'metapolator/math/Vector'
-  , 'models/MOM/Glyph.js'
+  , 'metapolator/models/MOM/Glyph'
 ], function(
     errors
   , hobby
