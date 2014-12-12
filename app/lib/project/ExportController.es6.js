@@ -2,19 +2,24 @@
  * This can be distilled down to the non es6 file by running the following
  * from the root of the git repository
  * 
- * cd ./dev-scripts && es6to5 ../app/lib/project/ExportController.es6.js
+ * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js; popd
  *
  */
 define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
   , 'metapolator/math/Vector'
+  , 'metapolator/models/MOM/Glyph'
 ], function(
     errors
   , hobby
   , Vector
+  , MOMGlyph
 ) {
     "use strict";
+    var KeyError = errors.Key
+      , CPSKeyError = errors.CPSKey
+    ;
 
     function ExportController(master, model, glyphSet, precision) {
         this._master = master;
@@ -29,15 +34,34 @@ define([
         var glyphs = this._master.children
           , glyph
           , drawFunc
+          , updatedUFOData
+          , v, ki, k, keys
+          , style
           ;
         console.warn('exporting ...');
         for(var i = 0;i<glyphs.length;i++) {
             glyph = glyphs[i];
+            style = this._model.getComputedStyle(glyph);
             console.warn('exporting', glyph.id);
             drawFunc = this.drawGlyphToPointPen.bind(this,
                 ExportController.renderPenstrokeOutline, this._model, glyph)
 
-            this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
+            // Allow the glyph ufo data to be updated by the CPS.
+            updatedUFOData = glyph.getUFOData();
+            keys = Object.keys(updatedUFOData);
+            for(ki=0;ki<keys.length;ki++) {
+                try {
+                    k = keys[ki];
+                    v = style.get(MOMGlyph.convertUFOtoCPSKey(k));
+                    updatedUFOData[k] = v;
+                }
+                catch( error ) {
+                    if(!(error instanceof KeyError)) {
+                        throw error;
+                    }
+                }
+            }
+            this._glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
                                       undefined, {precision: this._precision})
         }
         this._glyphSet.writeContents(false);
