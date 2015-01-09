@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="UTF-8">
+        <title>Lines</title>
+        
+        <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
+        <script src='js/paper.js' type='text/javascript'></script>
+    </head>
+    
+    <body ng-controller="PaperController">
+        <canvas id="canvas" resize ng-mousedown="mouseDown($event)" ng-mousemove="mouseDrag($event)" ng-mouseup="mouseUp()"></canvas>
+    </body>
+    
+    <script type="text/javascript">
+        function PaperController($scope) {
+            var path;
+            var drag = false;
+
+            $scope.mouseUp = function() {
+                //Clear Mouse Drag Flag
+                drag = false;
+            };
+
+            $scope.mouseDrag = function(event) {
+                if (drag) {
+                    path.add(new paper.Point(event.x, event.y));
+                    path.smooth();
+                    console.log(path);
+                }
+            };
+
+            $scope.mouseDown = function(event) {
+                //Set flag to detect mouse drag
+                drag = true;
+                path = new paper.Path();
+                path.strokeColor = 'black';
+                path.add(new paper.Point(event.x, event.y));
+            };
+
+            init();
+            function init() {
+                paper.install(window);
+                paper.setup('canvas');
+            }
+
+        }
+
+    </script>
+</html>

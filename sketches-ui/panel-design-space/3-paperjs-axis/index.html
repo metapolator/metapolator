@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Design spaces</title>
+
+        <!-- jQuery -->
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
+        <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
+
+        <!-- Angular -->
+        <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
+        <script src='js/app.js' type='text/javascript'></script>
+        <script src='js/designSpaceController.js' type='text/javascript'></script>
+        <script src='js/sortable.js' type='text/javascript'></script>
+        <script src='js/directives.js' type='text/javascript'></script>
+
+        <!-- PaperJS -->
+        <script src='js/paper.js' type='text/javascript'></script>
+
+        <style>
+            html {
+            }
+
+            body {
+            }
+
+            * {
+                box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+            }
+
+            #masters-panel {
+                float: left;
+                padding-right: 50px;
+            }
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .master {
+                height: 40px;
+                width: 100px;
+                background: #f85c37;
+                border: 1px solid #fff;
+                color: #fff;
+                padding: 10px;
+                cursor: move;
+            }
+
+            #design-space-panel {
+                float: left;
+                width: 700px;
+                margin: 0 auto;
+                height: 100%;
+            }
+
+            #design-space-tabs {
+                list-style: none;
+                overflow: auto;
+                margin: 0;
+                padding: 0;
+            }
+
+            #design-space-tabs li {
+                float: left;
+                padding: 6px 10px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                margin-right: 4px;
+                cursor: pointer;
+                background: #ddd;
+            }
+
+            #design-space-tabs li.selected {
+                background: #f85c37;
+                color: #fff;
+            }
+
+            #design-space-tabs li div {
+                float: left;
+            }
+
+            #design-space-tabs li img {
+                height: 12px;
+                width: 12px;
+                margin-right: 4px;
+            }
+
+            .design-space {
+                height: 300px;
+                background: #fff;
+                border: 1px solid #ddd;
+            }
+
+            .unconfigured {
+                background: #ddd;
+            }
+
+            .choose-space-type {
+                width: 50%;
+                float: left;
+                text-align: center;
+            }
+
+            .choose-space-type-button {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            .choose-space-type-button:hover {
+                color: #f85c37;
+            }
+
+            .drop-area {
+                height: 100%;
+                width: 100%;
+                background: #ddd;
+                padding: 10px;
+            }
+            
+            canvas {
+                border: 1px solid #000;
+            }
+
+        </style>
+    </head>
+
+    <BODY ng-app="Metapolator" ng-controller="designSpaceController">
+        <div id="masters-panel">
+            <ul ng-model="sequences">
+                <li ng-repeat="sequence in sequences">
+                    <div class="sequence-name">
+                        {{sequence.name}}
+                    </div>
+                    <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="sequence">
+                        <li ng-repeat="master in sequence.masters" class="master">
+                            {{master.name}}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div id="design-space-panel">
+            <ul id="design-space-tabs">
+                <li ng-repeat="space in designSpaces" ng-click="selectDesignSpace(space)" ng-class="{selected : space == selectedDesignSpaces}">
+                    <div><img ng-src="{{ 'img/' + space.type + '.png'}}">
+                    </div>
+                    <div>
+                        {{space.name}}
+                    </div>
+                </li>
+                <li ng-click="addDesignSpace()">
+                    +
+                </li>
+            </ul>
+            <div class="design-space" ng-class="{unconfigured : selectedDesignSpaces.type =='x'}">
+                <div ng-show="selectedDesignSpaces.type == 'x'">
+                    <div class="choose-space-type">
+                        <div class="choose-space-type-button" ng-click="selectedDesignSpaces.type = 'Explore'">
+                            <img src="img/Explore.png">
+                            <br>
+                            Explore
+                        </div>
+                    </div>
+                    <div class="choose-space-type">
+                        <div class="choose-space-type-button" ng-click="selectedDesignSpaces.type = 'Control'">
+                            <img src="img/Control.png">
+                            <br>
+                            Control
+                        </div>
+                    </div>
+                </div>
+                
+                <ul class="drop-area" ui-sortable="sortableOptionsMasters" ng-model="selectedDesignSpaces.masters" ng-show="selectedDesignSpaces.type != 'x'">
+                    <li class="no-drag" ng-repeat="master in selectedDesignSpaces.masters track by $index">
+                        {{master.name}}
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+
+        <canvas id="canvas" resize draw></canvas>
+        
+        <script type="text/paperscript" canvas="canvas">
+          
+            
+            var sliderHit = false;
+            
+            function onMouseDown(event) {
+                console.log (event);
+                if (event.item == window.sliderKnob) {
+                    sliderHit = true;
+                }
+            }
+            
+            function onMouseDrag(event) {
+                if (sliderHit === true) {
+                    if (event.point.x > 10 && event.point.x < 210) {
+                        window.sliderKnob.position.x = event.point.x;
+                    }
+                    else if (event.point.x < 11) {
+                        window.sliderKnob.position.x = 10;
+                    }
+                    else if (event.point.x > 209) {
+                        window.sliderKnob.position.x = 210;
+                    }
+                     var percent = ( window.sliderKnob.position.x - 10 ) / 200;
+                     circle.position = path.getPointAt(path.length * percent);
+                     
+                }
+                
+            }
+            
+            function onMouseUp(event) {
+                sliderHit = false;
+            }
+        </script>
+
+    </body>
+</html>

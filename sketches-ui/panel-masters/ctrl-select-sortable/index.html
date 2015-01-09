@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>View-select</title>
+
+        <!-- jQuery -->
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
+        <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
+
+        <link rel="stylesheet" href="">
+        <style>
+            body {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: moz-none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            .master {
+                width: 200px;
+                margin: 20px;
+                padding: 20px;
+                background: #ddd;
+                text-align: center;
+            }
+
+            .selected {
+                background: #f85c37;
+            }
+
+            .master-name {
+                border: 1px solid transparent;
+            }
+
+            .editable {
+                background: #fff;
+                border: 1px dotted #000;
+            }
+
+            #selection {
+                position: absolute;
+                background: #1e90ff;
+                opacity: 0.4;
+                width: 100px;
+                height: 100px;
+                display: none;
+            }
+        </style>
+
+        <script>
+            // selection is based on $("#container .master").index(this)
+            // this selects the position in the interface, so it is reacting on drag and drop reordening
+            // setting is done by $("#container .master:eq(" + i + ")") / :nth-child(j) is confusing, because array starts with 1 instead of 0
+
+            $(function() {
+
+                var mouseDown = false;
+                var controlDown = false;
+                var shiftDown = false;
+                var start, end;
+
+                $("#container").sortable({
+                    helper : 'clone'
+                });
+
+                $(window).keydown(function(e) {
+                    if (e.metaKey) {
+                        controlDown = true;
+                    }
+                    if (e.shiftKey) {
+                        shiftDown = true;
+                    }
+                });
+
+                $(window).keyup(function(e) {
+                    controlDown = false;
+                    shiftDown = false;
+                });
+
+                $(window).mouseup(function() {
+                    mouseDown = false;
+                    $("#selection").css("display", "none");
+                });
+
+                // set start for potential drag. Exclude shift
+                $(".master").mousedown(function(e) {
+                    mouseDown = true;
+                    if (!shiftDown) {
+                        start = $("#container .master").index(this);
+                    }
+                });
+
+                $(".master").on("click", function(e) {
+                    if (controlDown) {// toggle on ctrl click
+                        if ($(this).hasClass("selected")) {
+                            $(this).removeClass("selected");
+                        } else {
+                            $(this).addClass("selected");
+                        }
+                    } else if (shiftDown) {// set end for shift click
+                        end = $("#container .master").index(this);
+                        selectSet();
+                    } else {// clean click clears all but current
+                        start = $("#container .master").index(this);
+                        nrOfMasters = $("#container .master").size();
+                        for (var i = 0; i < nrOfMasters; i++) {
+                            $("#container .master:eq(" + i + ")").removeClass("selected");
+                        }
+                        $(this).addClass("selected");
+                    }
+                });
+
+                function selectSet() {
+                    nrOfMasters = $("#container .master").size();
+                    for (var i = 0; i < nrOfMasters; i++) {
+                        $("#container .master:eq(" + i + ")").removeClass("selected");
+                    }
+                    if (start > end) {// switch start and end for the loop
+                        countstart = end;
+                        countend = start + 1;
+                    } else {
+                        countstart = start;
+                        countend = end + 1;
+                    }
+                    for (var j = countstart; j < countend; j++) {
+                        $("#container .master:eq(" + j + ")").addClass("selected");
+                    }
+                }
+
+                // change master name
+                $(".master-name").dblclick(function() {
+                    $(this).attr('contenteditable', 'true');
+                    $(this).focus();
+                    $(this).addClass("editable");
+                });
+
+                $(".master-name").blur(function() {
+                    if ($(this).hasClass("editable")) {
+                        $(this).attr('contenteditable', 'false');
+                        $(this).removeClass("editable");
+                        console.log("blur");
+                    }
+                });
+                
+                $("#test").on('click', function(e){
+                    
+                    var first = e.timeStamp;
+                   
+                    
+                    
+                    
+                    
+                })
+            });
+        </script>
+
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="master-0" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 0
+                </div>
+            </div>
+            <div id="master-1" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 1
+                </div>
+            </div>
+            <div id="master-2" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 2
+                </div>
+            </div>
+            <div id="master-3" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 3
+                </div>
+            </div>
+            <div id="master-4" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 4
+                </div>
+            </div>
+            <div id="master-5" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 5
+                </div>
+            </div>
+            <div id="master-6" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 6
+                </div>
+            </div>
+            <div id="master-7" class="master">
+                <div class="master-name" contenteditable="false">
+                    Master 7
+                </div>
+            </div>
+        </div>
+
+        <div id="test">
+            test
+        </div>
+
+        <div id="selection"></div>
+    </body>
+</html>

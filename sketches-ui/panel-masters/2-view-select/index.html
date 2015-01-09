@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>View-select</title>
+
+        <!-- jQuery -->
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
+        <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
+
+        <link rel="stylesheet" href="">
+        <style>
+            body {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: moz-none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            .master {
+                width: 200px;
+                margin: 20px;
+                padding: 20px;
+                background: #ddd;
+                text-align: center;
+            }
+
+            .selected {
+                background: #f85c37;
+            }
+
+            #selection {
+                position: absolute;
+                background: #1e90ff;
+                opacity: 0.4;
+                width: 100px;
+                height: 100px;
+                display: none;
+            }
+        </style>
+
+        <script>
+            // selection is based on $("#container .master").index(this)
+            // this selects the position in the interface, so it is reacting on drag and drop reordening
+            // setting is done by $("#container .master:eq(" + i + ")") / :nth-child(j) is confusing, because array starts with 1 instead of 0
+
+            $(function() {
+                $(".master").disableSelection();
+
+                var mouseDown = false;
+                var start, end, mode, mouseStartX, mouseStartY;
+
+                $(window).mouseup(function() {
+                    mouseDown = false;
+                    $("#selection").css("display", "none");
+                });
+
+                $(window).mousemove(function(event) {
+                    if (mouseDown) {
+                        $("#selection").css("display", "block");
+                        if (event.pageX > mouseStartX) {
+                            $("#selection").css("left", mouseStartX);
+                            $("#selection").css("width", (event.pageX - mouseStartX));
+                        } else {
+                            $("#selection").css("left", event.pageX);
+                            $("#selection").css("width", (mouseStartX - event.pageX));
+                        }
+                        if (event.pageY > mouseStartY) {
+                            $("#selection").css("top", mouseStartY);
+                            $("#selection").css("height", (event.pageY - mouseStartY));
+                        } else {
+                            $("#selection").css("top", event.pageY);
+                            $("#selection").css("height", (mouseStartY - event.pageY));
+                        }
+                    }
+                });
+
+                // set start for potential drag. Exclude shift
+                $(".master").mousedown(function(event) {
+                    mouseDown = true;
+                    if ($(this).hasClass("selected")) {
+                        mode = "on";
+                    } else {
+                        mode = "off";
+                    }
+                    $(this).toggleClass("selected");
+                    start = $("#container .master").index(this);
+                    mouseStartX = event.pageX;
+                    mouseStartY = event.pageY;
+                });
+
+                // set end if dragging
+                $(".master").hover(function() {
+                    if (mouseDown) {
+                        end = $("#container .master").index(this);
+                        selectSet();
+                    }
+                });
+
+                function selectSet() {
+                    if (start > end) {// switch start and end for the loop
+                        countstart = end;
+                        countend = start + 1;
+                    } else {
+                        countstart = start;
+                        countend = end + 1;
+                    }
+                    for (var j = countstart; j < countend; j++) {
+                        if (mode == "on") {
+                            $("#container .master:eq(" + j + ")").removeClass("selected");
+                        } else {
+                            $("#container .master:eq(" + j + ")").addClass("selected");
+                        }
+                    }
+                }
+
+            });
+        </script>
+
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="master-0" class="master">
+                View 0
+            </div>
+            <div id="master-1" class="master">
+                View 1
+            </div>
+            <div id="master-2" class="master">
+                View 2
+            </div>
+            <div id="master-3" class="master">
+                View 3
+            </div>
+            <div id="master-4" class="master">
+                View 4
+            </div>
+            <div id="master-5" class="master">
+                View 5
+            </div>
+            <div id="master-6" class="master">
+                View 6
+            </div>
+            <div id="master-7" class="master">
+                View 7
+            </div>
+        </div>
+
+        <div id="selection"></div>
+    </body>
+</html>
