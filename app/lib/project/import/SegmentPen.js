@@ -42,13 +42,14 @@ define([
             : val;
     }
     
-    _p._newContour = function() {
+    _p._newContour = function(kwargs) {
         errors.assert(this._currentContour === null,
                                 'this._currentContour should be null')
         this._currentContour = {
             commands: []
           , type: 'contour'
           , closed: undefined
+          , kwargs: kwargs
         }
     }
     
@@ -79,8 +80,8 @@ define([
         return contours;
     }
     
-    _p._moveTo = function(pt) {
-        this._newContour();
+    _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
+        this._newContour(kwargs);
         pt = this._pointFactory(pt);
         this._currentContour.commands.push(['moveTo', pt]);
     }
@@ -99,12 +100,13 @@ define([
         this._currentContour.commands.push(['curveTo', pt1, pt2, pt3]);
     }
 
-    _p.addComponent = function(glyphName, transformation)
+    _p.addComponent = function(glyphName, transformation, kwargs)
     {
         var component = {
             type:             'component'
             , transformation: transformation
             , glyphName:      glyphName
+            , kwargs:         kwargs
         };
         this.contours.push(component);
     }

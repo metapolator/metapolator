@@ -5,6 +5,16 @@
  * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js; popd
  *
  */
+/**
+ * Copyright (c) 2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * https://raw.github.com/facebook/regenerator/master/LICENSE file. An
+ * additional grant of patent rights can be found in the PATENTS file in
+ * the same directory.
+ */
+
 (function(
   // Reliable reference to the global object (i.e. window in browsers).
   global,
@@ -15,6 +25,8 @@
 ) {
   var hasOwn = Object.prototype.hasOwnProperty;
   var undefined; // More compressible than void 0.
+  var iteratorSymbol =
+    typeof Symbol === "function" && Symbol.iterator || "@@iterator";
 
   try {
     // Make a reasonable attempt to provide a Promise polyfill.
@@ -54,9 +66,9 @@
     return genFun;
   };
 
-  runtime.async = function(innerFn, self, tryList) {
+  runtime.async = function(innerFn, outerFn, self, tryList) {
     return new Promise(function(resolve, reject) {
-      var generator = wrap(innerFn, self, tryList);
+      var generator = wrap(innerFn, outerFn, self, tryList);
       var callNext = step.bind(generator.next);
       var callThrow = step.bind(generator.throw);
 
@@ -214,9 +226,7 @@
     return generator;
   }
 
-  Gp[typeof Symbol === "function"
-     && Symbol.iterator
-     || "@@iterator"] = function() {
+  Gp[iteratorSymbol] = function() {
     return this;
   };
 
@@ -283,9 +293,8 @@
 
   function values(iterable) {
     var iterator = iterable;
-    var Symbol = global.Symbol;
-    if (Symbol && Symbol.iterator in iterable) {
-      iterator = iterable[Symbol.iterator]();
+    if (iteratorSymbol in iterable) {
+      iterator = iterable[iteratorSymbol]();
     } else if (!isNaN(iterable.length)) {
       var i = -1;
       iterator = function next() {
@@ -468,6 +477,13 @@
     }
   };
 }).apply(this, Function("return [this, function GeneratorFunction(){}]")());
+/**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ * 
+ * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js; popd
+ *
+ */
 define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
@@ -534,7 +550,60 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    var renderPenstrokeOutline = regeneratorRuntime.mark(function renderPenstrokeOutline(pen, model, penstroke) {
+    var renderPenstrokeOutline = regeneratorRuntime.mark(/**
+     * The translation from Metapolator Penstrokes to Outlines:
+     *
+     * The example uses a penstroke with 7 points indexed from 0 to 6
+     *
+     *  Penstroke       Outline
+     *
+     *  ending
+     *  terminal
+     *    ___              7___
+     *   | 6 |           8 |   | 6
+     *   | 5 |           9 |   | 5
+     *   | 4 |          10 |   | 4
+     *   | 3 |          11 |   | 3
+     *   | 2 |          12 |   | 2
+     *   |_1_|          13 |___| 1
+     *     0                 14/0
+     *  starting
+     *  terminal
+     *
+     *
+     *
+     * We draw first the right side from 0 to 6,
+     * then the left side from 6 to 0.
+     *
+     * In each iteration only one on-curve point is drawn; in the
+     * following example, that is always the last point of the four-
+     * point tuples. Also, the out and in controls are drawn.
+     * The first point of the tuples is needed to calculate the control
+     * point position when we use hobby splines.
+     *
+     * for i=0;i<n;i++;
+     *      i===0:
+     *          //starting terminal segment:
+     *          on0.left in in on0.right
+     *              => out in 0
+     *      i!==0:
+     *          // segments right side:
+     *          // here i=1
+     *          on0.right out in on1.right
+     *              => out in 1
+     * for i=n-1;i>0;i--;
+     *      i===n-1
+     *          // ending terminal segmnet
+     *          // here i=6
+     *          on6.right out out on6.left
+     *              => out in 7
+     *      i!===n-1
+     *          // segments left side
+     *          // here i=5
+     *          on6.left in out on5.left
+     *              => out in 8
+     */
+    function renderPenstrokeOutline(pen, model, penstroke) {
         var points, point, prePoint, segmentType, terminal, ctrls, vector, i, t$2$0, t$2$1, t$2$2, t$2$3;
 
         return regeneratorRuntime.wrap(function renderPenstrokeOutline$(context$2$0) {
@@ -665,6 +734,52 @@ define([
         }, renderPenstrokeOutline, this);
     });
 
+    var renderContour = regeneratorRuntime.mark(function renderContour(pen, model, contour) {
+        var points, point, segmentType, i;
+
+        return regeneratorRuntime.wrap(function renderContour$(context$2$0) {
+            while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+                points = contour.children;
+                pen.beginPath();
+                i = 0;
+            case 4:
+                if (!(i < points.length)) {
+                    context$2$0.next = 16;
+                    break;
+                }
+
+                point = model.getComputedStyle(points[i]);
+                // Actually, all points have controls. We don't have to draw
+                // lines. We should make a CPS value if we want to draw a
+                // point as a line segment point
+                if(true /* always curve */) {
+                    segmentType = 'curve';
+                }
+                else {
+                    segmentType =  'line';
+                }
+                context$2$0.next = 9;
+                return pen.addPoint(point.get('in').valueOf(), undefined, undefined, undefined);
+            case 9:
+                context$2$0.next = 11;
+                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            case 11:
+                context$2$0.next = 13;
+                return pen.addPoint(point.get('out').valueOf(), undefined, undefined, undefined);
+            case 13:
+                i++;
+                context$2$0.next = 4;
+                break;
+            case 16:
+                pen.endPath();
+            case 17:
+            case "end":
+                return context$2$0.stop();
+            }
+        }, renderContour, this);
+    });
+
     var renderPenstrokeCenterline = regeneratorRuntime.mark(function renderPenstrokeCenterline(pen, model, penstroke) {
         var points, point, prePoint, segmentType, ctrls, vector, i, t$2$0, t$2$1;
 
@@ -751,8 +866,13 @@ define([
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             console.warn('exporting', glyph.id);
-            drawFunc = this.drawGlyphToPointPen.bind(this,
-                ExportController.renderPenstrokeOutline, this._model, glyph)
+            drawFunc = this.drawGlyphToPointPen.bind(
+                this
+              , {
+                      penstroke: ExportController.renderPenstrokeOutline
+                    , contour: ExportController.renderContour
+                }
+              , this._model, glyph);
 
             // Allow the glyph ufo data to be updated by the CPS.
             updatedUFOData = glyph.getUFOData();
@@ -764,7 +884,7 @@ define([
                     updatedUFOData[k] = v;
                 }
                 catch( error ) {
-                    if(!((error instanceof KeyError))) {
+                    if(!(error instanceof KeyError)) {
                         throw error;
                     }
                 }
@@ -773,7 +893,7 @@ define([
                                       undefined, {precision: this._precision})
         }
         this._glyphSet.writeContents(false);
-    }
+    };
 
     /**
      * Get control point vectors from (MOM Point) StyleDicts.
@@ -801,7 +921,7 @@ define([
 
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
-
+    ExportController.renderContour = renderContour;
 
     ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
@@ -815,7 +935,7 @@ define([
                     t$3$0 = regeneratorRuntime.values(glyph.children);
                 case 1:
                     if ((t$3$1 = t$3$0.next()).done) {
-                        context$3$0.next = 12;
+                        context$3$0.next = 17;
                         break;
                     }
 
@@ -829,14 +949,29 @@ define([
                     glyphName = item.baseGlyphName;
                     transformation = model.getComputedStyle(item).get( 'transformation' );
                     pen.addComponent( glyphName, transformation );
-                    context$3$0.next = 10;
+                    context$3$0.next = 15;
                     break;
                 case 9:
-                    return context$3$0.delegateYield(renderer( pen, model, item ), "t0", 10);
-                case 10:
+                    if (!(renderer.contour && item.type === 'contour')) {
+                        context$3$0.next = 13;
+                        break;
+                    }
+
+                    return context$3$0.delegateYield(renderer.contour( pen, model, item ), "t0", 11);
+                case 11:
+                    context$3$0.next = 15;
+                    break;
+                case 13:
+                    if (!(renderer.penstroke && item.type === 'penstroke')) {
+                        context$3$0.next = 15;
+                        break;
+                    }
+
+                    return context$3$0.delegateYield(renderer.penstroke( pen, model, item ), "t1", 15);
+                case 15:
                     context$3$0.next = 1;
                     break;
-                case 12:
+                case 17:
                 case "end":
                     return context$3$0.stop();
                 }

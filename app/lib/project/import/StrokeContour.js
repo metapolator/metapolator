@@ -12,6 +12,7 @@ define([
       , ImportPenstroke = errors.ImportPenstroke
       , line2curve = tools.line2curve
       , getCenterPoint = tools.getCenterPoint
+      , getDirection = tools.getDirection
       ;
 
     /**
@@ -255,39 +256,6 @@ define([
     }
 
     /**
-     * see the docstring of _findNextDirection
-     */
-    function _getDirection(point, firstRound, lastRound, testDirection,
-                                                        test, control) {
-        var testPointKeys, testPointKey, testPoint, offset;
-
-        if(!firstRound || !lastRound)
-            testPointKeys = testDirection === 1
-                ? {out:true, on:true, 'in':true}
-                : {'in':true, on:true, out:true}
-                ;
-        else if(firstRound)
-            testPointKeys = testDirection === 1
-                ? {out: true}
-                : {'in': true}
-                ;
-        else // lastRound == true
-            testPointKeys = testDirection === 1
-                ? {'in': true}
-                : {out: true}
-                ;
-        for(testPointKey in testPointKeys) {
-            testPoint = test[testPointKey];
-            offset = control === 'out'
-                ? testPoint['-'](point.on)// point.out['-'](point.on)
-                : point.on['-'](testPoint)// point.on['-'](point['in']);
-                ;
-            if(offset.magnitude())
-                return offset.angle();
-        }
-        return false;
-    }
-    /**
      * Find directions for any control point even when the naive approach
      * has no direction, because the distance of the offset to the on
      * curve point is 0.
@@ -336,7 +304,7 @@ define([
 
         while(true) {
             lastRound = i === pointIndex && !firstRound;
-            result = _getDirection(point, firstRound, lastRound,
+            result = getDirection(point, firstRound, lastRound,
                             increment, stroke[i][countourKey], control);
             firstRound = false;
             if(result !== false || lastRound)

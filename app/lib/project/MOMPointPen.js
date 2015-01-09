@@ -4,8 +4,11 @@ define([
   , 'ufojs/tools/pens/AbstractPointPen'
   , 'metapolator/models/MOM/PenStroke'
   , 'metapolator/models/MOM/PenStrokePoint'
+  , 'metapolator/models/MOM/Contour'
+  , 'metapolator/models/MOM/ContourPoint'
   , 'metapolator/math/Vector'
   , 'metapolator/models/MOM/Component'
+  , 'metapolator/models/MOM/PointData'
   , 'ufojs/tools/misc/transform'
 ], function(
     errors
@@ -13,8 +16,11 @@ define([
   , Parent
   , PenStroke
   , PenStrokePoint
+  , Contour
+  , ContourPoint
   , Vector
   , Component
+  , PointData
   , transform
 ) {
     "use strict";
@@ -37,7 +43,6 @@ define([
         Parent.call(this);
         this._glyph = glyph;
         this._contour = null;
-        this._lastPointData = undefined;
         this._prevOffCurveCount = 0;
         this._prevPointTypes = [];
     }
@@ -45,23 +50,39 @@ define([
     var _p = MOMPointPen.prototype = Object.create(Parent.prototype);
     _p.constructor = MOMPointPen;
 
-    /**
-     * Start a new sub path.
-     */
-    _p.beginPath =  function(kwargs/*optional, dict*/) {
-        kwargs = kwargs || {}
+    _p.beginPath = function(kwargs/*optional, dict*/) {
+        kwargs = kwargs || {};
         if(this._contour)
-            throw new PointPenError('Called beginPath but there is an open. '
-                    +' path. Call endPath first.')
-        this._contour = new PenStroke();
+            throw new PointPenError('Called beginPath but there is an open '
+                    + 'path. Call endPath first.');
+        this._contour = [];
+        this._contour.element = this._makeContour(kwargs);
+
+        this._prevOffCurveCount = 0;
+        this._prevPointTypes = [];
+    };
+
+    var contourIndicator = 'C:';
+    _p._isContourPath = function(identifier) {
+        if(!identifier) return false;
+        return identifier
+            ? (identifier.slice(0, contourIndicator.length) === contourIndicator)
+            : false// no identifier => penstroke
+            ;
+    };
+
+    _p._makeContour =  function(kwargs) {
+        var isContour = this._isContourPath(kwargs.identifier)
+          , element = isContour ? new Contour() : new PenStroke()
+          ;
         if(kwargs.identifier !== undefined)
             // MOM will have to check validity and uniqueness
-            this._contour.id = kwargs.identifier;
-        this._prevOffCurveCount = 0;
-        this._prevPointTypes = []
-        this._lastVector = undefined;
-        this._lastPointData = undefined;
-    }
+            element.id = (isContour)
+                 ? kwargs.identifier.slice(contourIndicator.length)
+                 : kwargs.identifier
+                 ;
+        return element;
+    };
 
     /**
      * End the current sub path.
@@ -75,15 +96,40 @@ define([
                         && this._prevPointTypes.slice(-1)[0] == 'offcurve')
             throw new PointPenError('open contour has loose offcurve point');
         // seal the last point data element, it is complete
-        this._sealLastPoint();
-        this._glyph.add(this._contour);
-        this._contour = null;
-    }
 
-    _p._sealLastPoint = function() {
-        if(this._lastPointData)
-            Object.seal(this._lastPointData);
-    }
+
+        if(this._contour.element instanceof Contour) {
+            // rotate, so that the list is like so: [in, on, out, in, on, out, ...]
+            // the first on point must stay the first on point:
+            // [in, on, ...] nothing to do
+            // [on, ..., out, in] pop in and unshift it to the start
+            // [out, in, on, ...] shift out and push it to the end
+            // it's enough to find the first on point:
+            if(this._contour[0][0] instanceof ContourPoint)
+                this._contour.unshift(this._contour.pop());
+            else if((this._contour[2][0] instanceof ContourPoint))
+                this._contour.push(this._contour.shift());
+        }
+
+        var i, pointData;
+        for(i=0;i<this._contour.length;i++) {
+            if(this._contour[i][0] === undefined)
+                // the first item of off-curve points is undefined
+                continue;
+            pointData =  this._contour[i][1];
+            if(i>0)
+                // the moveTo at the beginning of a penstroke has no
+                // incoming control-point
+                pointData['in'] = this._contour[i-1][1];
+            if(this._contour[i+1])
+                pointData.out = this._contour[i+1][1];
+            Object.seal(pointData);
+            this._contour.element.add(this._contour[i][0]);
+        }
+
+        this._glyph.add(this._contour.element);
+        this._contour = null;
+    };
 
     /**
      * Add a point to the current sub path.
@@ -99,28 +145,35 @@ define([
         smooth = !!smooth;
         name = (name === undefined) ? null : name;
         kwargs = (kwargs || {});//an "options" object
-        var vector, point, lastVector;
+        var vector, point, pointData, lastVector;
 
         if(!this._contour)
             throw new PointPenError('Called addPoint but there is no open. '
-                    +' path. Call beginPath first.')
+                    +' path. Call beginPath first.');
             // coordinates
         if(pt === undefined)
             throw new PointPenError('Missing point argument');
         if(pt.filter(isNumber).length < 2)
-            throw new PointPenError('coordinates must be int or float')
+            throw new PointPenError('coordinates must be int or float');
 
         vector = Vector.fromArray(pt.map(parseFloat));
-        lastVector = this._lastVector;
-        this._lastVector = vector;
 
         // segment type
-        if(segmentType !== 'move' && this._prevPointTypes.length === 0)
-            throw new PointPenError('MOMPointPen expects only open contours. '
+        if(this._contour.element instanceof PenStroke
+                    && segmentType !== 'move'
+                    && this._prevPointTypes.length === 0)
+            throw new PointPenError('MOMPointPen expects only open contours '
+                        + 'for PenStroke elements. '
                         + 'This are contours that begin with a "move" point. '
                         + 'This contour begins with "'+segmentType+'"');
         else if (segmentType === 'offcurve')
             segmentType = null;
+        else if(this._contour.element instanceof Contour
+                    && segmentType !== 'curve'
+                    && segmentType !== null)
+            throw new PointPenError('MOMPointPen expects only the segment '
+                        + 'type "curve" for on-curve points of Contour elements. '
+                        + 'This point is a "'+segmentType+'"');
         else if(segmentType === 'move' && this._prevPointTypes.length)
             throw new PointPenError('move occurs after a point has '
                                     +'already been added to the contour.');
@@ -136,37 +189,31 @@ define([
         if (segmentType === null) {
             // off curve
             this._prevOffCurveCount += 1;
-            if(this._prevOffCurveCount === 1)
-                this._lastPointData.out = vector
+            this._contour.push([undefined, vector]);
             return;
         }
         // If we get here, this is an on-curve point.
-        // Metapolator points are all on-curve points.
-        // Seal the last point data element, it is complete.
-        this._sealLastPoint();
-
-        this._lastPointData = new PenStrokePoint.SkeletonDataConstructor({
-            in: this._prevOffCurveCount === 2
-                ? lastVector
-                : undefined
+        this._prevOffCurveCount = 0;
+        pointData = new PointData({
+            'in': undefined
           , on: vector
           , out: undefined
         });
-        this._prevOffCurveCount = 0;
-        point = new PenStrokePoint(this._lastPointData)
-
+        point = this._contour.element instanceof Contour
+                    ? new ContourPoint(pointData)
+                    : new PenStrokePoint(pointData)
+                    ;
         // we translate names into classes, because they dont have to be
         // unique
         if (name !== null)
             (name.match(/\S+/g) || [])
                     .filter(function(item){ return !!item.length;})
-                    .forEach(point.setClass, point)
-
+                    .forEach(point.setClass, point);
         if(kwargs.identifier !== undefined)
             // MOM will have to check validity and uniqueness
             point.id = kwargs.identifier;
-        this._contour.add(point);
-    }
+        this._contour.push([point, pointData]);
+    };
 
     /**
      * Add a sub glyph.
@@ -177,7 +224,7 @@ define([
         transMatrix = new Transformation( transformation );
         component = new Component( baseGlyphName, transMatrix );
         this._glyph.add(component);
-    }
+    };
 
     return MOMPointPen;
 });

@@ -71,10 +71,45 @@ define([
         return result;
     }
     
+    /**
+     * see the docstring of StrokeContoue._findNextDirection
+     */
+    function getDirection(point, firstRound, lastRound, testDirection,
+                                                        test, control) {
+        var testPointKeys, testPointKey, testPoint, offset;
+
+        if(!firstRound || !lastRound)
+            testPointKeys = testDirection === 1
+                ? {out:true, on:true, 'in':true}
+                : {'in':true, on:true, out:true}
+                ;
+        else if(firstRound)
+            testPointKeys = testDirection === 1
+                ? {out: true}
+                : {'in': true}
+                ;
+        else // lastRound == true
+            testPointKeys = testDirection === 1
+                ? {'in': true}
+                : {out: true}
+                ;
+        for(testPointKey in testPointKeys) {
+            testPoint = test[testPointKey];
+            offset = control === 'out'
+                ? testPoint['-'](point.on)// point.out['-'](point.on)
+                : point.on['-'](testPoint)// point.on['-'](point['in']);
+                ;
+            if(offset.magnitude())
+                return offset.angle();
+        }
+        return false;
+    }
+
     return {
         line2curve: line2curve
       , getCenter: getCenter
       , getCenterPoint: getCenterPoint
       , getCenterSegment: getCenterSegment
+      , getDirection: getDirection
     }
 })
