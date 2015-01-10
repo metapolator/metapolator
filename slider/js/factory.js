@@ -62,8 +62,16 @@ app.factory("sharedScope", function($rootScope) {
             fontFamily : 'Lato',
             name : 'Lato Black',
             weight : '900'
-        }]
-    };
+        }],
+        designSpaces : [{
+            name : "Space 1",
+            type : "Control",
+            masters : [],
+            axes : [],
+            triangle : false
+        }],
+        currentDesignSpace : 0
+    }
     return scope;
 });
 

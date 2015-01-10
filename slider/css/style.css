@@ -85,6 +85,10 @@
 				border: 4px solid #d7d2c8;
 			}
 			
+			#subpanel-3-top.sub-panel {
+			    overflow: visible;
+			}
+			
 			#panel-1 {
 				width: calc(3/42 * 100%);
 			}

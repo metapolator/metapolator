@@ -5,13 +5,13 @@ function($document) {
         link : function(scope, element, attrs, ctrl) {
             var svg = d3.select(element[0]).append('svg');
             // watch for data changes and re-render
-            scope.$watchCollection('[designSpaces[currentDesignSpace].masters.length, designSpaces[currentDesignSpace].triangle, currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
             }, true);
 
             // (RE-)RENDER
             scope.render = function() {
-                var data = scope.designSpaces[scope.currentDesignSpace];
+                var data = scope.data.designSpaces[scope.data.currentDesignSpace];
                 // remove all previous items before render
                 svg.selectAll('*').remove();
 
@@ -128,13 +128,13 @@ function($document) {
             var layer1 = svg.append('g');
 
             // watch for data changes and re-render
-            scope.$watchCollection('[designSpaces[currentDesignSpace].masters.length, currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
             }, true);
 
             // (RE-)RENDER
             scope.render = function() {
-                var data = scope.designSpaces[scope.currentDesignSpace];
+                var data = scope.data.designSpaces[scope.data.currentDesignSpace];
                 // remove all previous items before render
                 layer2.selectAll('*').remove();
                 layer1.selectAll('*').remove();
