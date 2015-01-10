@@ -29,6 +29,30 @@
     </ul>
 </div>
 
+<ul ui-sortable="sortableOptionsSequences" ng-model="data.sequences">
+    <li ng-repeat="sequence in data.sequences">
+        <div class="sequence-name" ng-click="selectSequenceForEdit(sequence)" ng-class="{selected: allMastersSelected(sequence)}">{{sequence.name}}</div>
+        <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="sequence">
+            
+            <li ng-repeat="master in sequence.masters" class="master" ng-class="{selected: master.edit}">
+                <span class="diamond" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
+                    <div class="diamond-line">
+                        <div class="diamond-line-up"></div>
+                        <div class="diamond-line-down"></div>
+                    </div>
+                    <div class="diamond-fix" ng-class="{diamonddrag: !$middle}"></div>
+                </span>
+                <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
+                <span class="master-name" ng-click="selectMastersForEdit(master, $parent.$index, $index)" ng-class="{'selected': master.edit}">
+                    {{master.name}}
+                </span>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+
+<!--
 <ul ui-sortable="sortableOptions" ng-model="data.sequence.masters" class="master-ul" ng-repeat="sequence in data.sequences">
     {{sequence.name}}
     <li ng-repeat="master in sequence.masters" class="master-li">
@@ -37,3 +61,4 @@
         <span class="selectable-name" ng-click="master.edit = !master.edit" ng-class="{'ui-selected': master.edit}" >{{master.name}}</span>
     </li>
 </ul>
+-->

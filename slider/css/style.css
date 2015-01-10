@@ -410,7 +410,7 @@
                                 background-image: url('../img/diamonds/diamond.png')!important;
                             }
                 
-                        .master-ul .master-li .selectable-ag {
+                        .selectable-ag {
                             float: left;
                             text-align: center;
                             width: 40px;
@@ -758,3 +758,131 @@
             .show-name-full .explore-name-full {
                 opacity: 1;
             }	
+
+
+
+
+/**************** masters ************************/
+
+
+    masters ul {
+        list-style: none;
+        
+        margin: 0;
+        padding: 0;
+
+    }
+
+        .sequence-name {
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+            .sequence-name.selected {
+               background: #f85c37; 
+            }
+
+        .sequence {
+            border-top: 1px solid #ffa392;
+            width: 100%;
+            background: #ddd; 
+        }
+
+            .master {
+                width: 100%;
+                height: 40px;
+                background: #fff;
+                border-bottom: 1px solid #ffa392;
+            }
+        
+                .diamond {
+                    float: left;
+                    width: 40px;
+                    height: 100%;
+                    position: relative;
+                    cursor: pointer;
+                }
+            
+                    .diamond-line {
+                        position: absolute;
+                        left: 19px;
+                        top: 0;
+                        width: 2px;
+                        height: 40px;
+                    }
+                
+                        .end .diamond-line-up, .middle .diamond-line-up {
+                            width: 100%;
+                            height: 20px;
+                            background: #000;
+                        }
+                    
+                        .start .diamond-line-up, .solo .diamond-line-up {
+                            width: 100%;
+                            height: 20px;
+                            background: transparent;
+                        }
+                    
+                        .start .diamond-line-down, .middle .diamond-line-down {
+                            width: 100%;
+                            height: 20px;
+                            background: #000;
+                        }
+                    
+                        .end .diamond-line-down, .solo .diamond-line-up {
+                            width: 100%;
+                            height: 20px;
+                            background: transparent;
+                        }
+                    
+                        .diamond-fix {
+                            position: absolute;
+                            width: 12px;
+                            height: 12px;
+                            border-radius: 6px;
+                            background: #000;
+                            z-index: 10;
+                            left: 14px;
+                            top: 14px;
+                        }
+                    
+                        .diamond-clone, .diamonddrag:hover {
+                            position: absolute;
+                            width: 12px;
+                            height: 12px;
+                            border-radius: 6px;
+                            border: 3px solid #0ff;
+                            background: #000;
+                            z-index: 11;
+                            left: 14px;
+                            top: 14px;
+                            cursor: pointer;
+                        }
+                        
+                .selectable-ag {
+                    float: left;
+                    text-align: center;
+                    width: 40px;
+                    height: 100%;
+                    padding: 9px 4px;
+                    background: #fff;
+                    cursor: pointer;
+                }
+                
+                    .selectable-ag.selected {
+                        background: #f85c37;
+                    }
+                    
+                .master-name {
+                    float: left;
+                    width: calc(100% - 80px);
+                    height: 100%;
+                    padding: 10px;
+                    cursor: move;
+                    background: #fff;
+                }
+                
+                  .master-name.selected {
+                        background: #f85c37;
+                    }
