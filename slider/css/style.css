@@ -331,7 +331,7 @@
 				margin-top: 16px;
 				border-radius: 0;
 				border: 0;
-				box-shadow: 3px 3px 3px #ddd;
+				box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
 			}
 			
 	
@@ -405,7 +405,7 @@
                         /* while dragging */
                         .ui-sortable-helper {
                             background: #fff;
-                            box-shadow: 3px 3px 3px #aaa;
+                            box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
                         }
                         
                             .ui-sortable-helper .selectable-diamond {
@@ -528,7 +528,7 @@
                 
                    .ui-draggable-dragging {
                        background: #f85c37;
-                       box-shadow: 2px 2px 3px #555;
+                       box-shadow: 2px 2px 3px rgba(0,0,0,0.5);
                    }
                 
     #size-slider-line {
@@ -773,127 +773,123 @@
 
 
     masters ul {
-        list-style: none;
-        
+        list-style: none;     
         margin: 0;
         padding: 0;
-
     }
 
         .sequence-name {
-            padding: 10px;
-            width: 100%;
+            margin-left: 24px;
+            padding: 4px 10px;
+            width: 50%;
+            color: #ddd;
             cursor: pointer;
+            background: #fff;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border: 1px solid #ddd;
+            border-bottom: 0px;
         }
         
             .sequence-name.selected {
                background: #f85c37; 
+               color: #fff;
             }
 
         .sequence {
             border-top: 1px solid #ffa392;
             width: 100%;
             background: #ddd; 
+            margin-bottom: 10px;
         }
 
             .master {
                 width: 100%;
-                height: 40px;
+                height: 28px;
                 background: #fff;
                 border-bottom: 1px solid #ffa392;
             }
         
                 .diamond {
                     float: left;
-                    width: 40px;
-                    height: 100%;
+                    width: 24px;
+                    height: 28px;
                     position: relative;
                     cursor: pointer;
                 }
-            
-                    .diamond-line {
-                        position: absolute;
-                        left: 19px;
-                        top: 0;
-                        width: 2px;
-                        height: 40px;
-                    }
-                
-                        .end .diamond-line-up, .middle .diamond-line-up {
-                            width: 100%;
-                            height: 20px;
-                            background: #000;
-                        }
                     
-                        .start .diamond-line-up, .solo .diamond-line-up {
-                            width: 100%;
-                            height: 20px;
-                            background: transparent;
-                        }
-                    
-                        .start .diamond-line-down, .middle .diamond-line-down {
-                            width: 100%;
-                            height: 20px;
-                            background: #000;
-                        }
-                    
-                        .end .diamond-line-down, .solo .diamond-line-up {
-                            width: 100%;
-                            height: 20px;
-                            background: transparent;
-                        }
-                    
-                        .diamond-fix {
-                            position: absolute;
-                            width: 12px;
-                            height: 12px;
-                            border-radius: 6px;
-                            background: #000;
-                            z-index: 10;
-                            left: 14px;
-                            top: 14px;
-                        }
-                    
-                        .diamond-clone, .diamonddrag:hover {
-                            position: absolute;
-                            width: 12px;
-                            height: 12px;
-                            border-radius: 6px;
-                            border: 3px solid #0ff;
-                            background: #000;
-                            z-index: 11;
-                            left: 14px;
-                            top: 14px;
-                            cursor: pointer;
-                        }
-                        
-                .selectable-ag {
-                    float: left;
-                    text-align: center;
-                    width: 40px;
+                .diamond-fix {
+                    width: 100%;
                     height: 100%;
-                    padding: 9px 4px;
-                    background: #fff;
+                }
+                
+                    .start .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-top.png');
+                    }
+                    
+                    .middle .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-full.png');
+                    }
+                    
+                    .end .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-bottom.png');
+                    }
+                    
+                    .solo .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-sole.png');
+                    }
+            
+                .diamond-clone, .diamonddrag:hover {
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 6px;
+                    border: 3px solid #0ff;
+                    background: #000;
+                    z-index: 11;
+                    left: 14px;
+                    top: 14px;
                     cursor: pointer;
                 }
-                
-                    .selectable-ag.selected {
-                        background: #f85c37;
-                    }
+
                     
-                .master-name {
-                    float: left;
-                    width: calc(100% - 80px);
-                    height: 100%;
-                    padding: 10px;
-                    cursor: move;
+                /* while dragging */
+                .ui-sortable-helper {
                     background: #fff;
+                    box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
                 }
                 
-                  .master-name.selected {
-                        background: #f85c37;
+                    .ui-sortable-helper > .diamond > .diamond-fix {
+                        background-image: url('../img/diamonds/diamond.png')!important;
                     }
-                    
+                
+        .selectable-ag {
+            float: left;
+            text-align: center;
+            width: 32px;
+            height: 100%;
+            padding: 2px;
+            background: #fff;
+            cursor: pointer;
+        }
+        
+            .selectable-ag.selected {
+                background: #f85c37;
+            }
+            
+        .master-name {
+            float: left;
+            width: calc(100% - 56px);
+            height: 100%;
+            padding: 2px 10px;
+            cursor: move;
+            background: #fff;
+        }
+        
+          .master-name.selected {
+                background: #f85c37;
+            }
+            
 
 
 
