@@ -62,6 +62,7 @@
 		width: 100%;
 		height: calc(100% - 50px);
 		position: relative;
+		overflow-x: hidden;
 	}
 	
 		#landscape {
@@ -128,7 +129,7 @@
 				padding-left: 5px;
 			}
 				#subpanel-3-top {
-					height: 50%;
+					height: 100%;
 					position: relative;
 				}
 				
@@ -202,17 +203,18 @@
 					margin: 8px;
 				}
 			
-				.mapping-a {
+				.mapping {
 					width: 100%;
 					padding: 8px;
-					background: #f85c37;
+					border-bottom: 1px solid #f85c37;
+					cursor: pointer;
 				}
 				
-				.mapping-b {
-					width: 100%;
-					padding: 8px;
-					background: #ffa392;
+				.mapping.selected {
+				    background: #f85c37;
+				    border-bottom: 1px solid #fff;
 				}
+				
 			
 			#panel-7 {
 				width: calc(9/42 * 100%);
@@ -489,6 +491,11 @@
             overflow: auto;
             padding-bottom: 12px;
             border-bottom: 1px solid #ddd;
+            z-index: 1000;
+        }
+        
+        #specimen-content {
+            overflow: hidden;
         }
         
            .specimen-tool {
@@ -886,3 +893,66 @@
                   .master-name.selected {
                         background: #f85c37;
                     }
+                    
+
+
+
+/**************** parameters ************************/
+
+  
+    #panel-1 {
+        padding: 16px;
+    }
+    
+    parameters {
+        font-size: 14px;
+        font-family: "roboto condensed";
+    }
+    
+        .inspector-branche {
+            margin-left: 16px;
+            display: none;
+        }
+        
+        .inspector-header {
+            color: #224DB3;
+        }
+        
+        .inspector-inactive {
+            color: #aaa;
+            margin-left: 17px;
+        }
+        
+        arrow {
+            cursor: pointer;
+            color: #555;
+        }
+        
+        arrow::before {
+            content: "►";
+        }
+        
+        arrow.open::before {
+            content: "▼";
+        }
+
+
+
+
+/**************** metadata ************************/
+
+
+    metadata input {
+        padding: 20px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-family: "Lato";
+        border: 0px;
+        background: #ddd;
+        color: #f85c37;
+    }
+    
+        metadata input:focus {
+            background: #f85c37;
+            color: #fff;
+        }

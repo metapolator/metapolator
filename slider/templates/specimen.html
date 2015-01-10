@@ -17,18 +17,19 @@
 </div>
 
 <!-- standard view -->
-<div ng-bind-html="filteredText()" ng-if="selectedSpecimen.name != 'glyph range'" style="font-size: {{fontSize}}px; line-height: {{fontSize}}px;"></div>
-
-<!-- glyph range -->
-<div ng-if="selectedSpecimen.name == 'glyph range'">
-    <div ng-repeat="sequence in data.sequences">
-        <ul ui-sortable="sortableOptions" ng-model="selectedSpecimen.text" ng-repeat="master in sequence.masters | filter:master.edit" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
-            <li ng-repeat="glyph in selectedSpecimen.text track by $index" class="glyph-box">
-                {{glyph}}
-            </li>
+<div id="specimen-content">
+    <div ng-bind-html="filteredText()" ng-if="selectedSpecimen.name != 'glyph range'" style="font-size: {{fontSize}}px; line-height: {{fontSize}}px;"></div>
+    
+    <!-- glyph range -->
+    <div ng-if="selectedSpecimen.name == 'glyph range'">
+        <div ng-repeat="sequence in data.sequences">
+            <ul ui-sortable="sortableOptions" ng-model="selectedSpecimen.text" ng-repeat="master in sequence.masters | filter:master.edit" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
+                <li ng-repeat="glyph in selectedSpecimen.text track by $index" class="glyph-box">
+                    {{glyph}}
+                </li>
+        </div>
     </div>
 </div>
-
 <script type='text/javascript'>
     $(function() {
         var paper = $("#size-slider-line");

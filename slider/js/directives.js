@@ -1,3 +1,16 @@
+app.directive('arrow', function($document) {
+    return {
+        restrict : 'E',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('click', function(e) {
+                var childBranche = element.parent().parent().find("> .inspector-branche")
+                childBranche.toggle();
+                element.toggleClass("open");
+            });
+        }
+    }
+});
+
 app.directive('control', ['$document',
 function($document) {
     return {
