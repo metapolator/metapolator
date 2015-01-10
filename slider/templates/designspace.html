@@ -1,0 +1,40 @@
+<ul id="design-space-tabs">
+    <li ng-repeat="space in designSpaces" ng-click="selectDesignSpace($index)" ng-class="{selected : $index == currentDesignSpace}">
+        <div><img ng-src="{{ 'img/' + space.type + '.png'}}">
+        </div>
+        <div>
+            {{space.name}}
+        </div>
+    </li>
+    <li ng-click="addDesignSpace()">
+        +
+    </li>
+</ul>
+<!-- end of tabs -->
+
+<div class="design-space" ng-class="{unconfigured : designSpaces[currentDesignSpace].type =='x'}">
+    <div ng-show="designSpaces[currentDesignSpace].type == 'x'">
+        <div class="choose-space-type">
+            <div class="choose-space-type-button" ng-click="designSpaces[currentDesignSpace].type = 'Explore'">
+                <img src="img/Explore.png">
+                <br>
+                Explore
+            </div>
+        </div>
+        <div class="choose-space-type">
+            <div class="choose-space-type-button" ng-click="designSpaces[currentDesignSpace].type = 'Control'">
+                <img src="img/Control.png">
+                <br>
+                Control
+            </div>
+        </div>
+    </div>
+    
+    <div class="drop-area" ng-show="designSpaces[currentDesignSpace].type != 'x'">
+        <control ng-if="designSpaces[currentDesignSpace].type == 'Control'"></control>
+        <explore ng-if="designSpaces[currentDesignSpace].type == 'Explore'"></explore>
+        <button ng-if="designSpaces[currentDesignSpace].type == 'Control' && designSpaces[currentDesignSpace].masters.length == 3" class="triangle-button" ng-click="designSpaces[currentDesignSpace].triangle = !designSpaces[currentDesignSpace].triangle">
+            Triangles: {{!designSpaces[currentDesignSpace].triangle}}
+        </button>
+    </div> 
+</div>

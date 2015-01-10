@@ -33,18 +33,26 @@
         <!-- Angular -->
         <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
         <script src='js/app.js' type='text/javascript'></script>
+        <script src='js/factory.js' type='text/javascript'></script>
+        <script src='js/templates.js' type='text/javascript'></script>
+        <script src='js/_specimenController.js' type='text/javascript'></script>
+        <script src='js/_mastersController.js' type='text/javascript'></script>
+        <script src='js/_adjustmentMastersController.js' type='text/javascript'></script>
+        <script src='js/_designspaceController.js' type='text/javascript'></script>
+        <script src='js/_instancesController.js' type='text/javascript'></script>
+        <script src='js/_parametersController.js' type='text/javascript'></script>     
         <script src='js/maincontroller.js' type='text/javascript'></script>
         <script src='js/directives.js' type='text/javascript'></script>
-        <script src='js/maincontroller.js' type='text/javascript'></script>
         <script src='js/sortable.js' type='text/javascript'></script>
-
         <script src='js/functions.js'></script>
+        
+        <!-- d3 JS -->
+        <script src="js/d3-v3-min.js" charset="utf-8"></script>
 
     </HEAD>
 
-    <BODY ng-app="Metapolator" ng-controller="MetapolatorController">
+    <BODY ng-app="Metapolator">
         <div id="menu">
-
             <div id="project">
                 <div id="project-dropdown" class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Project</b> {{projectName}} <span class="caret"></span></a>
@@ -89,185 +97,38 @@
             <div id="landscape">
 
                 <div id="panel-1" class="panel sub-panel">
-                    <div class="readmore">
-                        <div class="readmore-header">
-                            Project
-                        </div>
-                        <div class="readmore-content">
-                            {{projectName}}
-                        </div>
-                    </div>
-                    <div ng-repeat="sequence in sequences" >
-                        <div ng-repeat="master in sequence.masters | filter:{edit: true}" class="readmore">
-                            <div class="readmore-header">
-                                Master: {{master.name}}
-                            </div>
-                            <div class="readmore-content">
-                                Direction in = 1.0
-                                <br>
-                                Direction in max = 2.0
-                            </div>
-                        </div>
-                    </div>
+                    <parameters ng-controller="parametersController"></parameters>
                 </div>
-                <!-- end of parameters -->
 
                 <div id="panel-2" class="panel sub-panel standard-padding">
-                    <div id="specimen-toolbar">
-                        <input type="text" ng-model="specimen.text">
-                    </div>
-
-                    <div ng-repeat="sequence in sequences">
-                        <div ng-repeat="master in sequence.masters | filter:{display: true}">
-                            <div class="specimen-info-holder">
-                                <div class="specimen-info">
-                                    {{master.fontFamily}} {{master.name}} {{master.weight}}
-                                </div>
-                            </div>
-                            <div class="specimen" style="font-family: '{{master.fontFamily}}'; font-weight: {{master.weight}}; font-size: {{specimen.fontSize}}px; line-height: {{specimen.lineHeight}}px;">
-                                {{specimen.text}}
-                            </div>
-                        </div>
-                    </div>
+                    <specimen ng-controller="specimenController"></specimen>
+                    
                 </div>
-                <!-- end of specimen -->
+
 
                 <!-- start of view 2 -->
-
                 <div id="panel-3" class="panel">
 
                     <div id="subpanel-3-top" class="sub-panel">
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Masters <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="#">Import ufo...</a>
-                                </li>
-                                <li>
-                                    <a href="#">Copy From Project...</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Set Scripts…</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Quick Export...</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Delete...</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Create Sequence</a>
-                                </li>
-                                <li>
-                                    <a href="#">Delete Sequence...</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <ul ui-sortable="sortableOptions" ng-model="sequence.masters" class="master-ul" ng-repeat="sequence in sequences" id="master-{{$index}}">
-                            {{sequence.name}}
-                            <li ng-repeat="master in sequence.masters" class="master-li">
-                                <span class="selectable-diamond"></span>
-                                <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'ui-selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
-                                <span class="selectable-name" ng-click="master.edit = !master.edit" ng-class="{'ui-selected': master.edit}" >{{master.fontFamily}} {{master.name}} {{master.weight}}</span>
-                            </li>
-                        </ul>
-
-                        <!--
-                        <ul ui-selectable id="master-ul-2"></ul>
-                        -->
-
-                        <!-- this is temporarily for testing adding functionality
-                        <form class="masters-add-item" ng-submit="addMaster()">
-                        <input size="9" placeholder="Font Family..." ng-model="newMaster.fontFamily">
-                        <input size="9" placeholder="Name..." ng-model="newMaster.name">
-                        <input size="4" placeholder="Weight..." ng-model="newMaster.weight">
-                        <input type="submit" value="Add">
-                        </form>
-                        -->
-
+                        <masters ng-controller="mastersController"></masters>
                     </div>
-                    <!-- end of masters sub panel -->
 
                     <div id="subpanel-3-bottom" class="sub-panel">
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Adjustment Masters <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="#">New</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Set Scripts…</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Quick Export...</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Delete...</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Create Sequence</a>
-                                </li>
-                                <li>
-                                    <a href="#">Delete Sequence...</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- this is temporarily for testing adding functionality -->
-                        <form class="masters-add-item" ng-submit="addAdjustmentMaster()">
-                            <input size="9" placeholder="Font Family..." ng-model="newAdjustmentMaster.fontFamily">
-                            <input size="9" placeholder="Name..." ng-model="newAdjustmentMaster.name">
-                            <input size="4" placeholder="Weight..." ng-model="newAdjustmentMaster.weight">
-                            <input type="submit" value="Add">
-                        </form>
+                        <adjustment-masters ng-controller="adjustmentMastersController"></adjustment-masters>
                     </div>
-                    <!-- end of adustment masters sub panel -->
 
                     <div class="divider-hor" id="divider-3">
                         <div class="divider-left"></div>
                     </div>
-
                 </div>
-                <!-- end of masters-container -->
 
                 <div id="panel-4" class="panel">
                     <div id="subpanel-4-top" class="sub-panel">
-                        <div id="block-1" class="block"></div>
-                        <div id="block-2" class="block"></div>
-                        <div id="block-3" class="block"></div>
+                        <designspace ng-controller="designspaceController"></designspace>
                     </div>
 
                     <div id="subpanel-4-bottom" class="sub-panel standard-padding">
-                        <div ng-repeat="index in mastersInView">
-                            <div class="specimen-info-holder">
-                                <div class="specimen-info">
-                                    {{masters[index].fontFamily}} {{masters[index].name}} {{masters[index].weight}}
-                                </div>
-                            </div>
-                            <div class="specimen" style="font-family: '{{masters[index].fontFamily}}'; font-weight: {{masters[index].weight}}">
-                                {{specimen.text}}
-                            </div>
-                        </div>
-
-                        <div ng-repeat="index in adjustmentMastersInView">
-                            <div class="specimen-info-holder">
-                                <div class="specimen-info">
-                                    {{adjustmentMasters[index].fontFamily}} {{adjustmentMasters[index].name}} {{adjustmentMasters[index].weight}}
-                                </div>
-                            </div>
-                            <div class="specimen" style="font-family: '{{adjustmentMasters[index].fontFamily}}'; font-weight: {{adjustmentMasters[index].weight}}">
-                                {{specimen.text}}
-                            </div>
-                        </div>
+                        <specimen ng-controller="specimenController"></specimen>
                     </div>
                     <!-- end of specimen 2 -->
 
@@ -275,95 +136,19 @@
                         <div class="divider-left"></div>
                     </div>
                 </div>
-                <!-- end of design space container -->
 
                 <!-- start of view 3 -->
-
                 <div id="panel-5" class="panel sub-panel">
-                    <div class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>
-                                <a href="#">New</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">Promote To Master</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">Quick Export...</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">Delete...</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">Create String</a>
-                            </li>
-                            <li>
-                                <a href="#">Delete String...</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- end of menu -->
-
-                    <ul ui-selectable>
-                        <li value="3" ng-repeat="instance in instances" class="ui-selectee">
-                            <div class="handle"></div>
-                            <span class="selectable-diamond"></span>
-                            <span class="selectable-ag" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.weight}};">Ag</span>
-                            <span class="selectable-name">{{instance.fontFamily}} {{instance.name}} {{instance.weight}}</span>
-                        </li>
-                    </ul>
+                    <instances ng-controller="instancesController"></instances>
                 </div>
-                <!-- end of instances -->
 
                 <div id="panel-6" class="panel sub-panel standard-padding">
-                    <b>Font Mapping</b>
-                    <br>
-                    <br>
-                    <div class="mapping-a">
-                        Thin
-                    </div>
-                    <div class="mapping-b">
-                        Extra Light
-                    </div>
-                    <div class="mapping-a">
-                        Light
-                    </div>
-                    <div class="mapping-b">
-                        Regular
-                    </div>
-                    <div class="mapping-a">
-                        Medium
-                    </div>
-                    <div class="mapping-b">
-                        Semi Bold
-                    </div>
-                    <div class="mapping-a">
-                        Bold
-                    </div>
-
-                    <input id="font-mapping-export" type="submit" value="Export">
+                    <fontmapping></fontmapping>
                 </div>
-                <!-- end of font-mapping -->
 
                 <div id="panel-7" class="panel sub-panel standard-padding">
-                    <b>Metadata</b>
-                    <br>
-                    <br>
-                    <input type="text" placeholder="Family Name...">
-                    <br>
-                    <input type="text" placeholder="Style Name...">
-                    <br>
-                    <input type="text" placeholder="Style Map Family Name...">
-                    <br>
-                    <input type="text" placeholder="Style Map Style...">
+                    <metadata></metadata>
                 </div>
-                <!-- end of font-meta-data -->
-
             </div>
             <!-- end of landscape -->
 
@@ -377,6 +162,7 @@
         <div class="divider" id="divider-2">
             <div class="divider-top"></div>
         </div>
-
+        <div id="size-slider-line"></div>
+        <!-- end of dividers -->
     </BODY>
 </html>

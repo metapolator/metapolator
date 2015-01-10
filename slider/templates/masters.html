@@ -1,0 +1,39 @@
+<div class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Masters <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+            <a href="#">Import ufo...</a>
+        </li>
+        <li>
+            <a href="#">Copy From Project...</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Set Scripts…</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Quick Export...</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Delete...</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Create Sequence</a>
+        </li>
+        <li>
+            <a href="#">Delete Sequence...</a>
+        </li>
+    </ul>
+</div>
+
+<ul ui-sortable="sortableOptions" ng-model="data.sequence.masters" class="master-ul" ng-repeat="sequence in data.sequences">
+    {{sequence.name}}
+    <li ng-repeat="master in sequence.masters" class="master-li">
+        <span class="selectable-diamond"></span>
+        <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'ui-selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
+        <span class="selectable-name" ng-click="master.edit = !master.edit" ng-class="{'ui-selected': master.edit}" >{{master.name}}</span>
+    </li>
+</ul>

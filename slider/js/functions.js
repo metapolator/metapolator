@@ -1,27 +1,26 @@
+// some issues with outerWidth() and offsetWidth
+
 $(function() {
-    var currentView = 0;
-    var bufferIn = 180;
-    var bufferOut = 350;
+    var currentView = 0, bufferIn = 180, bufferOut = 270, id, leftPanel, rightPanel, leftStart, rightStart, mirror = 0, dividerStart;
+
     updateContainment();
     setSizesAbsolute();
+    setLandscapeWidth();
+    
+    $(".readmore-header").on("click", function() {
+        $(this).parent(".readmore").toggleClass("readmore-show");
+    });
 
-    function updateContainment() {
-        if (currentView == 2) {
-            var containment_1 = $("#divider-1").offset().left + bufferOut;
-        } else {
-            var containment_1 = $(window).outerWidth() - bufferOut;
-        }
-        var containment_2 = $(window).outerWidth() - bufferIn;
+    $(".menu-item").on("click", function() {
+        var view = parseInt($(this).context.id.split("-")[2]);
+        moveLandscape(view, 1);
+    });
+    
+    $(window).resize(function() {
+        resizeLandscape();
+    });
 
-        $("#divider-1").draggable({
-            containment : [bufferIn, 0, bufferOut, 0]
-        });
-        $("#divider-2").draggable({
-            containment : [containment_1, 0, containment_2, 0]
-        });
-    }
 
-    var id, leftPanel, rightPanel, leftStart, rightStart, mirror = 0, dividerStart;
 
     $(".divider").draggable({
         axis : "x",
@@ -58,7 +57,7 @@ $(function() {
                     $("#panel-" + mirror).css("width", mirrorStart - (ui.position.left - ui.originalPosition.left));
                 }
             }
-            setLandscape();
+            setLandscapeWidth();
             moveLandscape(currentView, 0);
 
         },
@@ -66,38 +65,69 @@ $(function() {
             mirror = 0;
         }
     });
+    
+    
+    var containmentBottom = $(window).outerHeight() - bufferIn;
 
-    $(".readmore-header").on("click", function() {
-        $(this).parent(".readmore").toggleClass("readmore-show");
+    $(".divider-hor").draggable({
+        containment : [0, bufferIn, 0, containmentBottom],
+        axis : "y",
+        start : function(event, ui) {
+            id = parseInt($(this).context.id.split("-")[1]);
+            topPanel = $("#subpanel-" + id + "-top");
+            bottomPanel = $("#subpanel-" + id + "-bottom");
+            topStart = topPanel.outerHeight();
+            bottomStart = bottomPanel.outerHeight();
+            dividerStart = $(this).position().top;
+        },
+        drag : function(event, ui) {
+            topPanel.css("height", topStart + (ui.position.top - dividerStart));
+            bottomPanel.css("height", bottomStart - (ui.position.top - dividerStart));
+        }
     });
 
-    $(".menu-item").on("click", function() {
-        var view = parseInt($(this).context.id.split("-")[2]);
-        moveLandscape(view, 1);
-    });
+
+
+
+    function updateContainment() {
+        if (currentView == 2) {
+            var containment_1 = $("#divider-1").offset().left + bufferOut;
+        } else {
+            var containment_1 = $(window).outerWidth() - bufferOut;
+        }
+        var containment_2 = $(window).outerWidth() - bufferIn;
+
+        $("#divider-1").draggable({
+            containment : [bufferIn, 0, bufferOut, 0]
+        });
+        $("#divider-2").draggable({
+            containment : [containment_1, 0, containment_2, 0]
+        });
+    }
+
+
 
     function setSizesAbsolute() {
         for (var i = 1; i < 8; i++) {
+            
             $("#panel-" + i).css("width", $("#panel-" + i).outerWidth());
         }
         for (var j = 1; j < 3; j++) {
             $("#divider-" + j).css("left", $("#panel-" + (j + 1)).offset().left);
         }
-        /*
-         for (var k = 3; k < 5; k++) {
-         $("#subpanel-" + k + "-top").css("height", $("#panel-" + k).outerHeight() / 2);
-         $("#subpanel-" + k + "-bottm").css("height", $("#subpanel-" + k + "-bottm").outerHeight());
-         }
-         */
     }
 
-    function setLandscape() {
+
+
+    function setLandscapeWidth() {
         var landscapeWidth = 0;
         for (var i = 1; i < 8; i++) {
             landscapeWidth += $("#panel-" + i).outerWidth();
         }
         $("#landscape").css("width", landscapeWidth);
     }
+
+
 
     function moveLandscape(view, transition) {
         // move virtual dividers
@@ -122,22 +152,43 @@ $(function() {
         $("#menu-item-" + view).addClass("menu-item-current");
     }
 
-    var containmentBottom = $(window).outerHeight() - bufferIn;
 
-    $(".divider-hor").draggable({
-        containment : [0, bufferIn, 0, containmentBottom],
-        axis : "y",
-        start : function(event, ui) {
-            id = parseInt($(this).context.id.split("-")[1]);
-            topPanel = $("#subpanel-" + id + "-top");
-            bottomPanel = $("#subpanel-" + id + "-bottom");
-            topStart = topPanel.outerHeight();
-            bottomStart = bottomPanel.outerHeight();
-            dividerStart = $(this).position().top;
-        },
-        drag : function(event, ui) {
-            topPanel.css("height", topStart + (ui.position.top - dividerStart));
-            bottomPanel.css("height", bottomStart - (ui.position.top - dividerStart));
+
+    function resizeLandscape() {
+        newWindowSize = $(window).outerWidth();
+        oldWindowSize = $("#panel-1").outerWidth() + $("#panel-2").outerWidth() + $("#panel-3").outerWidth();
+        var restant = new Array();
+        for (var i = 1; i < 8; i++) {
+            restant[i] = 0;
+            var newWidth = Math.round($("#panel-" + i).outerWidth() / oldWindowSize * newWindowSize);
+            if (i != 2 && i != 4) {
+                if (newWidth < 180) {
+                    restant[i] += newWidth - 180;
+                    newWidth = 180;
+                }
+            }
+            if (i == 1 || i == 3 || i == 5) {
+                if (newWidth > 270) {
+                    restant[i] += newWidth - 270;
+                    newWidth = 270;
+                }
+            }
+            $("#panel-" + i).css("width", newWidth);
         }
-    });
+        
+        //distribute restants
+        $("#panel-2").css("width", $("#panel-2").outerWidth() + restant[1] + restant[3]);
+        $("#panel-4").css("width", $("#panel-4").outerWidth() + restant[3] + restant[5]);
+        $("#panel-6").css("width", $("#panel-6").outerWidth() + restant[5]);
+        $("#panel-7").css("width", $("#panel-7").outerWidth() + restant[6]);
+        
+
+        // TBD vertical resize on panel 3 and 4
+
+        setLandscapeWidth();
+        moveLandscape(currentView);
+        setSizesAbsolute();
+    }
+
 });
+

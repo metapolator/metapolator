@@ -1,0 +1,38 @@
+<div class="dropdown">
+    
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+            <a href="#">New</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Promote To Master</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Quick Export...</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Delete...</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#">Create String</a>
+        </li>
+        <li>
+            <a href="#">Delete String...</a>
+        </li>
+    </ul>
+</div>
+<!-- end of menu -->
+
+<ul ui-selectable>
+    <li value="3" ng-repeat="instance in instances" class="ui-selectee">
+        <div class="handle"></div>
+        <span class="selectable-diamond"></span>
+        <span class="selectable-ag" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.weight}};">Ag</span>
+        <span class="selectable-name">{{instance.fontFamily}} {{instance.name}} {{instance.weight}}</span>
+    </li>
+</ul>

@@ -1,0 +1,114 @@
+
+<div id="specimen-toolbar">
+    <select ng-model="selectedSpecimen" ng-options="specim.name for specim in specimen" class="specimen-tool"></select>
+    <div id="standard-view-tools" ng-show="selectedSpecimen.name != 'glyph range'" ng-hide="selectedSpecimen.name == 'glyph range'">
+        <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
+        <div id="size-slider-container" class="specimen-tool">
+            <div id="size-slider"></div>
+        </div>
+        <input type="text" id="filter" ng-model="filter" size="5" class="specimen-tool">
+        <input type="radio" ng-model="strict" value="3" class="specimen-tool">
+        <input type="radio" ng-model="strict" value="2" class="specimen-tool">
+        <input type="radio" ng-model="strict" value="1" class="specimen-tool">
+        <div id="font-by">
+            font by <select ng-model="selectedFontby" ng-options="fontby for fontby in fontbys"></select>
+        </div>
+    </div>
+</div>
+
+<!-- standard view -->
+<div ng-bind-html="filteredText()" ng-if="selectedSpecimen.name != 'glyph range'" style="font-size: {{fontSize}}px; line-height: {{fontSize}}px;"></div>
+
+<!-- glyph range -->
+<div ng-if="selectedSpecimen.name == 'glyph range'">
+    <div ng-repeat="sequence in data.sequences">
+        <ul ui-sortable="sortableOptions" ng-model="selectedSpecimen.text" ng-repeat="master in sequence.masters | filter:master.edit" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
+            <li ng-repeat="glyph in selectedSpecimen.text track by $index" class="glyph-box">
+                {{glyph}}
+            </li>
+    </div>
+</div>
+
+<script type='text/javascript'>
+    $(function() {
+        var paper = $("#size-slider-line");
+
+        $("#size-slider").draggable({
+            helper : 'clone',
+            revert : true,
+            revertDuration : 150,
+            appendTo : 'body',
+            drag : function(e, ui) {
+                dragx = parseInt(ui.helper.css("left"));
+                dragy = parseInt(ui.helper.css("top"));
+                originx = $("#size-slider").offset().left;
+                originy = $("#size-slider").offset().top;
+                xPosition = dragx - originx;
+                yPosition = originy - dragy
+
+                // redraw line
+                paper.show();
+                var svgLeft, svgTop, svgHeight, svgWidth, line_x1, line_y1, line_x2, line_y2;
+                svgHeight = Math.abs(yPosition);
+                svgWidth = Math.abs(xPosition);
+                if (svgHeight < 2) {
+                    svgHeight = 2;
+                }
+                if (svgWidth < 2) {
+                    svgWidth = 2;
+                }
+
+                if (xPosition > 0) {
+                    svgLeft = originx;
+                } else {
+                    svgLeft = dragx;
+                }
+                if (yPosition > 0) {
+                    svgTop = dragy;
+                } else {
+                    svgTop = originy;
+                }
+                line_x1 = 0;
+                line_x2 = svgWidth;
+                if ((yPosition > 0 && xPosition > 0) || (yPosition < 0 && xPosition < 0)) {
+                    line_y1 = svgHeight;
+                    line_y2 = 0;
+                } else {
+                    line_y1 = 0;
+                    line_y2 = svgHeight;
+                }
+                paper.css({
+                    "left" : svgLeft + 8,
+                    "top" : svgTop + 8,
+                    "height" : svgHeight,
+                    "width" : svgWidth
+                });
+                var line = "<svg height='" + svgHeight + "' width='" + svgWidth + "'><line x1='" + line_x1 + "' y1='" + line_y1 + "' x2='" + line_x2 + "' y2='" + line_y2 + "' style='stroke:rgb(0,0,0);stroke-width:2' /></svg>";
+                $(paper).html(line);
+
+                // check if position is in active area
+                if ((xPosition > 0 && yPosition > 0) || xPosition < 0 && yPosition < 0) {
+                    var current = parseInt($("#size-nr").val());
+                    growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)) / 30);
+                    if (yPosition < 0) {
+                        growth *= -1;
+                    }
+                    var newSize = current + growth;
+                    if (newSize < 10) {
+                        newSize = 10;
+                    }
+                    var input = $("#size-nr");
+                    input.val(newSize);
+                    input.trigger('input');
+                }
+            },
+            stop : function() {
+                $(this).css({
+                    "left" : 0,
+                    "top" : 0
+                });
+                paper.hide();
+            }
+        });
+    });
+</script>

@@ -61,7 +61,6 @@
 	#pagewrap {
 		width: 100%;
 		height: calc(100% - 50px);
-		overflow-x: hidden;
 		position: relative;
 	}
 	
@@ -75,23 +74,23 @@
 		
 			.panel {
 				float: left;
+                height: 100%;
 			}
 			
 			.sub-panel {
+			    overflow-y: auto;
+			    overflow-x: hidden;
+			    position: relative;
 				background: #fff;
 				border: 4px solid #d7d2c8;
 			}
 			
 			#panel-1 {
 				width: calc(3/42 * 100%);
-				height: 100%;
-				overflow: auto;
 			}
 			
 			#panel-2 {
 				width: calc(10/42 * 100%);
-				height: 100%;
-				overflow-y: auto
 			}
 			
 				#specimen-toolbar {
@@ -122,19 +121,16 @@
 			#panel-3 {
 				position: relative;
 				width: calc(3/42 * 100%);
-				height: 100%;
 				padding-left: 5px;
 			}
 				#subpanel-3-top {
 					height: 50%;
 					position: relative;
-					overflow: auto;
 				}
 				
 				#subpanel-3-bottom {
 					height: 50%;
 					position: relative;
-					overflow: auto;
 				}
 				
 					.masters-add-item {
@@ -146,19 +142,17 @@
 			
 			#panel-4 {
 				width: calc(10/42 * 100%);
-				height: 100%;
 				position: relative;
 			}
 			
 				#subpanel-4-top {
 					position: relative;
 					height: 50%;
-					overflow: auto;
 				}
 				
 					.block {
-						width: 50%;
-						height: 50%;
+						width: 200px;
+						height: 200px;
 						border-radius: 50%;
 						position: absolute;
 						opacity: 0.5;
@@ -166,55 +160,35 @@
 					
 					#block-1 {
 						background: #f00;
-						left: 5%;
-						top: 5%;
+						left: 30px;
+						top: 30px;
 					}
 					
 					#block-2 {
 						background: #ff0;
-						left: 40%;
-						top: 5%;
+						left: 180px;
+						top: 30px;
 					}
 					
 					#block-3 {
 						background: #00f;
-						left: 25%;
-						top: 40%;
+						left: 105px;
+						top: 105px;
 					}
 			
 				#subpanel-4-bottom {
-					overflow-y: auto;
 					height: 50%;
 				}
 				
-					#specimen-2-1 {
-						font-weight: 100;
-					}
-					
-					#specimen-2-2 {
-						font-weight: 300;
-					}
-					
-					#specimen-2-3 {
-						font-weight: 400;
-					}
-					
-					#specimen-2-4 {
-						font-weight: 700;
-					}
-			
+		
 			#panel-5 {
 				width: calc(3/42 * 100%);
-				height: 100%;
 				position: relative;
-				overflow: auto;
 			}
 					
 			#panel-6 {
 				width: calc(4/42 * 100%);
-				height: 100%;
 				position: relative;
-				overflow: auto;
 			}
 			
 				#font-mapping-export {
@@ -238,9 +212,7 @@
 			
 			#panel-7 {
 				width: calc(9/42 * 100%);
-				height: 100%;
 				position: relative;
-				overflow: auto;
 			}
 			
 				#meta-data input {
@@ -367,52 +339,39 @@
     .sequence-ul {
         display: block;
         list-style-type: none;
-        font-size: 14px;
     }
     
         .sequence-li {
             display: block;
         }
-        
-            .sequence-handle {
+          
+            .sequence-name {
+                display: inline-block;
                 padding: 4px;
-                background: #aaa;
-                color: #fff;
+                background: #fff;
+                color: #000;
             }
-            
-                .sequence-handle:hover {
-                    cursor: move;
-                }
-            
-                .sequence-name {
-                    display: inline-block;
-                    padding: 4px;
-                    background: #fff;
-                    color: #000;
-                }
         
             .master-ul {
-                border-top: 1px solid #ffa392;
                 display: block;
                 list-style-type: none;
                 margin: 0 0 20px 0;
-                padding: 0px;
+                padding: 0;
                 width: 100%;
                 background: #fff;
                 min-height: 20px;
+                border-bottom: 1px solid #ffa392;
             }
     
                 .master-ul .master-li {
                     display: block;
-                    border: 0;
-                    border-bottom: 1px solid #ffa392;
+                    border-top: 1px solid #ffa392;
                     height: 28px;
                 }
                 
                     .master-ul .master-li:hover {
                         cursor: pointer;
                     }
-            
                         
                     .master-ul .master-li span {
                         display: inline-block;
@@ -437,6 +396,16 @@
                                 background-image: url('../img/diamonds/diamond-sole.png');
                             }
                             
+                        /* while dragging */
+                        .ui-sortable-helper {
+                            background: #fff;
+                            box-shadow: 3px 3px 3px #aaa;
+                        }
+                        
+                            .ui-sortable-helper .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond.png')!important;
+                            }
+                
                         .master-ul .master-li .selectable-ag {
                             float: left;
                             text-align: center;
@@ -444,7 +413,6 @@
                             height: 27px;
                             padding: 4px;
                         }
-
                             
                             .master-ul .master-li .ui-selected {
                                 background: #f85c37;
@@ -458,18 +426,8 @@
                             white-space: nowrap;
                         }
     
-            /* while dragging */
-            .ui-sortable-helper {
-                background: #fff;
-                box-shadow: 3px 3px 3px #aaa;
-            }
-            
-                .ui-sortable-helper .selectable-diamond {
-                    background-image: url('../img/diamonds/diamond.png')!important;
-                }
-                
-                
 
+                
 
 /***************** readmore ******************/
 
@@ -491,6 +449,12 @@
 			font-size: 8px;
 			content: "\25b6";
 		}
+		
+        .readmore-show .readmore-header::before {
+            margin-right: 6px;
+            font-size: 12px;
+            content: "\25be";
+        }
 	
 	.readmore .readmore-content {
 		padding: 8px;
@@ -501,9 +465,292 @@
 		display: block;
 	}
 	
-		.readmore-show .readmore-header::before {
-			margin-right: 6px;
-			font-size: 12px;
-			content: "\25be";
-		}
-		
+	
+	
+	
+/******************* specimen ********************/
+
+
+    #specimen {
+        background: #fff;
+        width: 800px;
+        margin: 0 auto;
+        padding: 40px;
+        height: calc(100% - 50px);
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    
+        #specimen-toolbar {
+            overflow: auto;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+           .specimen-tool {
+               float: left;
+               margin-right: 8px;
+           }
+        
+            #size-slider-container {
+                position: relative;
+                width: 16px;
+                height: 16px;
+                background: #ddd;
+                border-radius: 8px;
+            }
+        
+                #size-slider, .ui-draggable-dragging {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    z-index: 10;
+                    width: 16px;
+                    height: 16px;
+                    background: #f85c37;
+                    border-radius: 8px;
+                }
+                
+                   #size-slider:hover, .ui-draggable-dragging:hover {
+                       cursor: pointer;
+                   }
+                
+                   .ui-draggable-dragging {
+                       background: #f85c37;
+                       box-shadow: 2px 2px 3px #555;
+                   }
+                
+    #size-slider-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }  
+    
+        #size-slider-line svg {
+            position: absolute;
+            left; 0;
+            top: 0;
+        }       
+       
+       
+   #font-by {
+    float: right;
+   }
+   
+   .chunk {
+    display: inline-block;
+    float: left;
+   }
+   
+   .glyph-range {
+       clear: both;
+       overflow: auto;
+       margin-bottom: 20px;
+       list-style: none;
+   }
+   
+   .glyph-box {
+       float: left;
+       background: #fff;
+       width: 100px;
+       font-size: 60px;
+       text-align: center;
+       padding: 30px;
+       border: 1px solid #ddd;
+   }
+
+	
+	
+	
+/************ design space ****************/
+
+
+    #design-space-panel {
+        float: left;
+        width: 700px;
+        margin: 0 auto;
+        height: 100%;
+    }
+
+    #design-space-tabs {
+        list-style: none;
+        overflow: auto;
+        margin: 0;
+        padding: 0;
+        background: #d7d2c8;
+        height: 32px;
+    }
+
+    #design-space-tabs li {
+        float: left;
+        padding: 6px 10px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        margin-right: 4px;
+        cursor: pointer;
+        background: #fff;
+    }
+
+    #design-space-tabs li.selected {
+        background: #f85c37;
+        color: #fff;
+    }
+
+    #design-space-tabs li div {
+        float: left;
+    }
+
+    #design-space-tabs li img {
+        height: 12px;
+        width: 12px;
+        margin-right: 4px;
+    }
+    
+    designspace {
+        height: 100%;
+    }
+
+    .design-space {
+        height: calc(100% - 32px);
+        background: #fff;
+    }
+
+    .unconfigured {
+        background: #ddd;
+    }
+
+    .choose-space-type {
+        width: 50%;
+        float: left;
+        text-align: center;
+        padding-top: 5%;
+    }
+
+    .choose-space-type-button {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .choose-space-type-button:hover {
+        color: #f85c37;
+    }
+
+    .drop-area {
+        height: 100%;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+    
+        .drag-over {
+            border: 1px dashed #000;
+        }
+    
+    
+            control, explore {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            
+            control svg, explore svg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                top: 0;
+            }
+                    
+                .slider-axis {
+                    stroke: #000;
+                    stroke-width: 2;
+                }
+                
+    
+                .slider-handle {
+                    position: absolute;
+                    top: 3px;
+                    cursor: pointer;
+                }
+                    
+                .slider-label {
+                    font-size: 12px;
+                }
+                
+                .triangle-button {
+                    position: absolute;
+                    bottom: 10px;
+                    left: 10px;
+                    cursor: pointer;
+                }
+                
+                
+                
+                li:first-child .slider-label-first {
+                    display: none;
+                }
+                
+                li:first-child .slider-label-last {
+                    left: 50%;
+                }
+                
+                    .slider-label {
+                        border: none;
+                        background: transparent;
+                    }
+
+                .slider-label-first {
+                    left: 0;
+                    top: 10px;
+                }
+                
+                .slider-label-last {
+                    text-align: right;
+                    right: 0;
+                }
+                
+                .slider-label-middle {
+                    position: absolute;
+                    text-align: center;
+                    right: 0;
+                    top: 10px;
+                    width: 100%;
+                    font-size: 16px;
+                }
+                
+        .li-explore {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #000;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+            .explore-name {
+                position: absolute;
+                z-index: 10;
+                color: #fff;
+                left: 6px;
+                top: 4px;
+                text-align: center;
+                font-size: 12px;
+            }
+            
+            .explore-name-full {
+                position: absolute;
+                z-index: 10;
+                left: 24px;
+                top: 0px;
+                background: #ddd;
+                color: #333;
+                padding: 4px 8px;
+                font-size: 12px;
+                opacity: 0;
+                transition: all 1s ease;
+            }
+            
+            .show-name-full .explore-name-full {
+                opacity: 1;
+            }	
