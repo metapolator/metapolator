@@ -41,7 +41,7 @@ app.factory("sharedScope", function($rootScope) {
         }, {
             name : "Slab",
             masters : [{
-                fontFamily : 'Roboto Slag',
+                fontFamily : 'Roboto Slab',
                 name : 'Roboto S Regular',
                 weight : '400',
                 display : false,
