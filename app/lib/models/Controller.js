@@ -1,6 +1,6 @@
 define([
     'metapolator/errors'
-  , 'metapolator/models/CPS/selectorEngine'
+  , 'metapolator/models/CPS/SelectorEngine'
   , 'metapolator/models/MOM/Multivers'
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/CPS/StyleDict'
@@ -9,7 +9,7 @@ define([
   , 'obtain/obtain'
 ], function(
     errors
-  , selectorEngine
+  , SelectorEngine
   , Multivers
   , Univers
   , StyleDict
@@ -21,30 +21,31 @@ define([
     var CPSError = errors.CPS
       , KeyError = errors.Key
       ;
-    
+
     function Controller(ruleController) {
         this._ruleController = ruleController;
         this.parameterRegistry = ruleController.parameterRegistry;
         // rule names of the masters
         this._masters = {};
-        
+
+        this._selectorEngine = new SelectorEngine();
         this._MOM = new Multivers(this);
         this._univers = new Univers();
         this._MOM.add(this._univers);
-        
+
         this._caches = undefined;
         this._resetCaches();
     }
-    
+
     var _p = Controller.prototype;
-    
+
     /**
      * StyleDict constructor, can be changed by inheritance or
      * monkey patched on instances
      */
     _p.StyleDict = StyleDict;
     _p.ReferenceDict = ReferenceDict;
-    
+
     /**
      * TODO: see if it's possible to invalidate only parts of the cache:
      * when only one master is affected by a change, it is overkill
@@ -57,7 +58,7 @@ define([
           , rules: Object.create(null)
         }
     };
-    
+
     _p.updateChangedRule = function(async, sourceName) {
         var promise = this._ruleController.reloadRule(async, sourceName);
         return (async
@@ -65,16 +66,16 @@ define([
                     : this._resetCaches()
                );
     };
-    
+
     _p.addMaster = function(master, sourceName) {
         this._masters[master.id] = sourceName;
         this._univers.add(master);
     }
-    
+
     _p.hasMaster = function (master) {
         return master in this._masters;
     }
-    
+
     _p._getMasterRule = function (master) {
         if(!(master in this._masters))
             throw new KeyError('Master "'+ master +'" not found in '
@@ -103,7 +104,7 @@ define([
     /**
     * returns a single StyleDict to read the final cascaded, computed
     * style for that element.
-    * 
+    *
     * Note: this interface element could be based on the result of
     * rulesForElement and just search that rules up to the end
     */
@@ -111,11 +112,11 @@ define([
         var masterRules = element.master
                 ? this._getRules(element.master.id, 'rules')
                 : []
-          , rules = selectorEngine.getMatchingRules(masterRules, element)
+          , rules = this._selectorEngine.getMatchingRules(masterRules, element)
           ;
         return new this.StyleDict(this, rules, element);
     }
-    
+
     _p.getComputedStyle = function(element) {
         if(element.multivers !== this._MOM)
             throw new CPSError('getComputedStyle with an element that is not '
@@ -124,15 +125,15 @@ define([
             this._caches.styleDicts[element.nodeID] = this._getComputedStyle(element);
         return this._caches.styleDicts[element.nodeID];
     }
-    
+
     _p._getReferenceDictionary = function(element) {
         var masterRules = element.master
                 ? this._getRules(element.master.id, 'dictionaryRules')
                 : []
-        var rules = selectorEngine.getMatchingRules(masterRules, element);
+        var rules = this._selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
     }
-    
+
     /**
      * A reference dictionary is the interface to the values referenced
      * by the @dictionary CPS rules
@@ -145,7 +146,7 @@ define([
             this._caches.referenceDicts[element.nodeID] = this._getReferenceDictionary(element);
         return this._caches.referenceDicts[element.nodeID];
     };
-    
+
     _p._checkScope = function(scope) {
         var i=0;
         if(scope) {
@@ -163,15 +164,15 @@ define([
     }
 
     _p.queryAll = function(selector, scope) {
-        var result = selectorEngine.queryAll(this._checkScope(scope), selector);
+        var result = this._selectorEngine.queryAll(this._checkScope(scope), selector);
         // monkey patching the returned array.
         // it may become useful to invent an analogue to Web API NodeList
-        result.query = selectorEngine.queryAll.bind(selectorEngine, result);
+        result.query = this._selectorEngine.queryAll.bind(this._selectorEngine, result);
         return result;
     }
-    
+
     _p.query = function(selector, scope) {
-        return selectorEngine.query(this._checkScope(scope), selector);
+        return this._selectorEngine.query(this._checkScope(scope), selector);
     }
 
     return Controller;

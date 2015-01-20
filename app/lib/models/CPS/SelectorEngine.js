@@ -19,9 +19,13 @@ define([
     var CPSError = errors.CPS
       , selectorListFromString = parseSelectorList.fromString
       ;
-    
+
     // start selector engine
-    
+    function SelectorEngine(){
+
+    }
+    var _p = SelectorEngine.prototype;
+
     /**
      * this is a subroutine of simpleSelectorMatches
      */
@@ -39,11 +43,11 @@ define([
                     : simpleSelector.value === element.index);
         }
     }
-    
+
     /**
      * A simple selector is either a type selector, universal selector,
-     * class selector, ID selector or pseudo-class. 
-     * 
+     * class selector, ID selector or pseudo-class.
+     *
      * This method returns true if all of its arguments are simple selectors
      * and match this node. If one argument is no simple selector
      * this method raises a CPSError.
@@ -67,15 +71,15 @@ define([
         }
         return false;
     }
-    
+
     /**
      * A compound selector is a chain (list) of simple selectors that
      * are not separated by a combinator.
-     * 
+     *
      * It always begins with a type selector or a (possibly implied)
      * universal selector. No other type selector or universal
      * selector is allowed in the sequence.
-     * 
+     *
      * If one item of the  simple selectors list is no simple selector
      * this method raises a CPSError.
      */
@@ -91,7 +95,7 @@ define([
                 return false;
         return true;
     }
-    
+
     function complexSelectorMatches(complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
@@ -103,10 +107,10 @@ define([
           ;
         // first round: fake a child combinator, so we don't go on
         // if the first selector doesn't match
-        combinatorType = 'child'
+        combinatorType = 'child';
         // this is a compound selector
         compoundSelector = compoundSelectors.pop();
-        
+
         while(element) {
             if(compoundSelectorMatches(compoundSelector, element, scopeElement)) {
                 //  we got a hit
@@ -119,7 +123,7 @@ define([
                 // combinatorType is 'child' or 'descendant'
                 combinatorType = combinator.type;
                 compoundSelector = compoundSelectors.pop();
-                
+
                 element = (scopeElement && scopeElement === element)
                         // do not search above scopeElement
                         ? undefined
@@ -139,27 +143,27 @@ define([
         }
         return false;
     }
-    
+
     /**
      * A (complex) selector's specificity is calculated as follows:
      *     count the number of ID selectors in the selector (= a)
      *     count the number of class selectors, attributes selectors, and pseudo-classes in the selector (= b)
      *     count the number of type selectors and pseudo-elements in the selector (= c)
-     *     ignore the universal selector 
-     * 
+     *     ignore the universal selector
+     *
      * Specificities are compared by comparing the three components in
      * order: the specificity with a larger A value is more specific;
      * if the two A values are tied, then the specificity with a larger
      * B value is more specific; if the two B values are also tied, then
      * the specificity with a larger c value is more specific;
      * if all the values are tied, the two specifities are equal.
-     * 
+     *
      * Array.prototype.sort: "The sort is not necessarily stable."
      * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
      * https://en.wikipedia.org/wiki/Sorting_algorithm#Stability
-     * 
+     *
      * To ensure stability it is possible to introduce more than the above
-     * mentioned three elements of specificity. 
+     * mentioned three elements of specificity.
      */
     function compareSpecificity(sA, sB) {
         var i=0;
@@ -178,12 +182,12 @@ define([
     function _rulesCompareSpecificity (itemA, itemB) {
         return compareSpecificity(itemA[0], itemB[0]);
     }
-    
+
     /**
      * Returns a list of all of the rules currently applying to the element,
      * sorted from most specific to least.
      */
-    function getMatchingRules(namespacedRules, element) {
+    _p.getMatchingRules = function(namespacedRules, element) {
         var i=0, j
           , matchingRules = []
           , namespacedRule
@@ -201,6 +205,9 @@ define([
                 throw new CPSError('Item at index ' + i + ' is not of type '
                                          + 'CPS Rule');
             match = undefined;
+            // FIXME: it would be much better to create the complexSelectors
+            // once outside of the loop
+
             // the complexSelectors are all selecting when obtained via
             // the value property of SelectorList
             complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
@@ -226,8 +233,8 @@ define([
         }
         matchingRules.sort(_rulesCompareSpecificity);
         return matchingRules.map(function(item){return item[1];});
-    }
-    
+    };
+
     function _filterElementChildren(element, filter) {
         var i = 0
           , children = element.children
@@ -241,11 +248,12 @@ define([
     }
     function _filterElementDescendants(element, filter) {
         var i = 0
+            // FIXME: remove the slice, it's already a copy
           , children = element.children.slice().reverse()
           , child
           , result = []
           ;
-        while(child = children.pop()) {
+        while((child = children.pop())) {
             if(filter(child))
                 result.push(child);
             // add all children of this child
@@ -254,7 +262,7 @@ define([
         }
         return result;
     }
-    
+
     /**
      * scope is an array of zero or more elements, we will search only
      * within the scope elements
@@ -279,7 +287,7 @@ define([
             }
           , filterMethod
           ;
-        
+
         // first round is descendants
         filterMethod = _filterElementDescendants;
         while(true) {
@@ -295,18 +303,18 @@ define([
             // most likely to encounter. Asking every node if its type
             // is 'univers' is however no good idea, with the knowledge
             // that there is only one 'univers', the root of the tree.
-            matches = []
-            while(currentScope = scope.pop())
+            matches = [];
+            while((currentScope = scope.pop()))
                 // get ALL elements inside of currentScope
                 // and ask if the compound selector matches ...
                 Array.prototype.push.apply(matches, filterMethod(currentScope, filter));
             scope = matches;
-            
+
             combinator = compoundSelectors.shift();
             if(combinator === undefined)
                 //that's it
                 break;
-            
+
             switch(combinator.type) {
                 case 'descendant':
                     filterMethod = _filterElementDescendants;
@@ -321,16 +329,16 @@ define([
         }
         return matches;
     }
-    
+
     /**
      * selector may be a string or a SelectorList
      * Returns a set of elements in scope matching at least one of
      * the selectors in selector.
-     * 
+     *
      * scope is an array of zero or more elements, we will search only
      * within the scope elements
      */
-    function queryAll(scope, selector) {
+    _p.queryAll = function(scope, selector) {
         var complexSelectors
           , i=0
           , k
@@ -355,16 +363,16 @@ define([
             }
         }
         return result;
-    }
-    
+    };
+
     /**
      * Returns the first element within the scope that matches.
-     * 
+     *
      * Matching only one element could be better optimized, especially
      * further down: queryComplexSelector, doesn't know anything about
      * selecting only one element.
      */
-    function query(scope, selector) {
+    _p.query = function(scope, selector) {
         var complexSelectors
           , i=0
           , matches
@@ -381,11 +389,7 @@ define([
                 return matches[0];
         }
         return null;
-    }
-    
-    return {
-        getMatchingRules: getMatchingRules
-      , query: query
-      , queryAll: queryAll
     };
-})
+
+    return SelectorEngine;
+});
