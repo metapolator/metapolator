@@ -81,18 +81,24 @@ define([
                                 + Object.keys(this._masters).join(', '));
         return this._masters[master];
     }
-    
-    _p._getRules = function(masterName, property) {
-        var key = [masterName, property].join(',')
-          , ruleName
-          , parameterCollection
+
+    _p.__getRules = function(masterName, property) {
+        var ruleName = this._getMasterRule(masterName)
+          , parameterCollection = this._ruleController.getRule(false, ruleName)
           ;
-        if(!(key in this._caches.rules)) {
-            ruleName = this._getMasterRule(masterName)
-            parameterCollection = this._ruleController.getRule(false, ruleName);
-            this._caches.rules[key] = parameterCollection[property];
-        }
-        return this._caches.rules[key];
+        return parameterCollection[property];
+    };
+
+    _p._getRules = function(masterName, property) {
+        // FIXME: with this cache key the parameterCollection has to be
+        // created twice, once for rules and once fo dictionaryRules
+        // HOWEVER! the parameterCollection is cached in the rule controller
+        var key = [masterName, property].join(',')
+          , result = this._caches.rules[key];
+          ;
+        if(!result)
+            result = this._caches.rules[key] = this.__getRules(masterName, property);
+        return result;
     };
     /**
     * returns a single StyleDict to read the final cascaded, computed
