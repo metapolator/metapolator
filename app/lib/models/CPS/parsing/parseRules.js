@@ -19,8 +19,11 @@ define([
     var CPSError = errors.CPS
       , CPSParserError = errors.CPSParser
       , parameterFactories = parameterFactoriesModule.factories
+      , module = {
+          parser: gonzales.srcToCSSP
+      }
       ;
-    
+
     var factorySwitches = [
             atDictionaryFactories.atDictionaryParsingSwitch,
             atImportFactories.atImportParsingSwitch
@@ -33,19 +36,19 @@ define([
     function rulesFromString(css, sourceName, ruleController) {
         var ast;
         try {
-            ast = gonzales.srcToCSSP(css);
+            ast = module.parser(css);
         }
         catch (error) {
             // gonzales throws a pure JavaScript Error, but we want more
             // certainty in the rest of our application
             throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
         }
-        
-        return rulesFromAST(ast, sourceName, ruleController)
+
+        return module.fromAST(ast, sourceName, ruleController)
     }
-    
-    return {
-        fromString: rulesFromString
-      , fromAST: rulesFromAST
-    };
+
+    module.fromString = rulesFromString;
+    module.fromAST = rulesFromAST;
+
+    return module;
 })
