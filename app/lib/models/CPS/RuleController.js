@@ -1,11 +1,9 @@
 define([
     'metapolator/errors'
-  , 'metapolator/models/CPS/selectorEngine'
   , 'metapolator/models/CPS/parsing/parseRules'
   , 'obtain/obtain'
 ], function(
     errors
-  , selectorEngine
   , parseRules
   , obtain
 ) {
