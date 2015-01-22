@@ -15,6 +15,12 @@ define([
     }
     var _p = _Contour.prototype = Object.create(Parent.prototype);
     _p.constructor = _Contour;
-    
+
+    Object.defineProperty(_p, 'glyph', {
+        get: function() {
+            return this.parent;
+        }
+    })
+
     return _Contour;
 })

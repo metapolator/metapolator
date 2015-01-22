@@ -133,6 +133,12 @@ define([
         }
     })
 
+    Object.defineProperty(_p, 'glyph', {
+        get: function() {
+            return this.parent && this.parent.glyph;
+        }
+    })
+
     /**
      * returns a selector for this element, currently it is used for
      * display puposes, so the additionial information "(no parent) "

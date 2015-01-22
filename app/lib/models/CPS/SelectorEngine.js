@@ -40,6 +40,28 @@ define([
         // if the first selector doesn't match
         combinatorType = 'child';
         // this is a compound selector
+
+        // a shortcut, in the best case this should be generated from
+        // structure information of the MOM.
+        var length = compoundSelectors.value
+          , precheckElem
+          , matches
+          , type
+          ;
+        for(var i=0; i<length; i+=2) {
+            compoundSelector = compoundSelectors[i];
+            type = compoundSelector.type;
+            if(type === 'master')
+                precheckElem = element.master;
+            else if(type === 'glyph')
+                precheckElem = element.glyph;
+            else
+                continue;
+            if(precheckElem && !compoundSelector.matches(precheckElem, this))
+                return false;
+        }
+        // end of shortcut
+
         compoundSelector = compoundSelectors.pop();
 
         while(element) {
