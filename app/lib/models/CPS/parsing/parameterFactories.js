@@ -256,7 +256,7 @@ define([
             return collection;
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
-      , 'atrulerq': function(node, source) {
+      , 'atrulerq': function(node, source, ruleController) {
             var i=0
               , braces
               , selectorString
@@ -290,7 +290,8 @@ define([
                 .join(', ')
 
             try {
-                return parseSelectorList.fromString(selectorString);
+                return parseSelectorList.fromString(selectorString, undefined
+                        , ruleController && ruleController.selectorEngine);
             }
             catch(error) {
                 if(!(error instanceof CPSError))

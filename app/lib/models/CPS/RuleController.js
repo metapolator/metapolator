@@ -25,20 +25,24 @@ define([
     //        See the implementation of `getRule` (the `rule` getter)
     //        for an attempt to improve the situation, and a further comment.
 
-    function RuleController(io, parameterRegistry, cpsDir) {
+    function RuleController(io, parameterRegistry, cpsDir, selectorEngine) {
         this._io = io;
-        this._parameterRegistry = parameterRegistry;
         this._cpsDir = cpsDir;
         this._commissionIdCounter = 0;
         this._rules = Object.create(null);
+        Object.defineProperty(this, 'parameterRegistry', {
+            value: parameterRegistry
+          , enumarable: true
+          , writable: false
+        });
+        Object.defineProperty(this, 'selectorEngine', {
+            value: selectorEngine
+          , enumarable: true
+          , writable: false
+        });
     }
-    var _p = RuleController.prototype;
 
-    Object.defineProperty(_p, 'parameterRegistry', {
-        get: function() {
-            return this._parameterRegistry;
-        }
-    });
+    var _p = RuleController.prototype;
 
     _p._isCached = function(sourceName) {
         return (sourceName in this._rules) && this._rules[sourceName].cached;
@@ -73,7 +77,8 @@ define([
                 // but create a version of `_getRule` that is aware of the
                 // @import history `importing`
                 var api = {
-                    parameterRegistry: this._parameterRegistry
+                    parameterRegistry: this.parameterRegistry
+                  , selectorEngine: this.selectorEngine
                   , getRule: function ruleControllerGetRuleAPI(async, sourceName) {
                                 return this._getRule(async, importing, sourceName);
                              }.bind(this)

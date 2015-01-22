@@ -18,85 +18,16 @@ define([
     "use strict";
     var CPSError = errors.CPS
       , selectorListFromString = parseSelectorList.fromString
+      , stringify = JSON.stringify
       ;
 
     // start selector engine
-    function SelectorEngine(){
-
+    function SelectorEngine() {
+        this._compoundSelectorCache = Object.create(null);
     }
     var _p = SelectorEngine.prototype;
 
-    /**
-     * this is a subroutine of simpleSelectorMatches
-     */
-    function _pseudoClassSelectorMatches(simpleSelector, element, scopeElement) {
-        switch(simpleSelector.name) {
-            case 'root':
-                return element.type === 'univers';
-            case 'i':
-                if(!element.parent)
-                    return false;
-                return (simpleSelector.value < 0
-                    // negative search index
-                    ? element.parent.children.length + simpleSelector.value === element.index
-                    // positive search index
-                    : simpleSelector.value === element.index);
-        }
-    }
-
-    /**
-     * A simple selector is either a type selector, universal selector,
-     * class selector, ID selector or pseudo-class.
-     *
-     * This method returns true if all of its arguments are simple selectors
-     * and match this node. If one argument is no simple selector
-     * this method raises a CPSError.
-     */
-    function simpleSelectorMatches(simpleSelector, element, scopeElement) {
-        if(!(simpleSelector instanceof SimpleSelector))
-            throw new CPSError('simpleSelector is not of type '
-                                         + 'SimpleSelector');
-        switch(simpleSelector.type) {
-            case 'type':
-                return  element.type === simpleSelector.name;
-            case 'id':
-                return  element.id === simpleSelector.name;
-            case 'class':
-                return element.hasClass(simpleSelector.name);
-            case 'pseudo-class':
-                return _pseudoClassSelectorMatches(
-                                simpleSelector, element, scopeElement);
-            case 'universal':
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * A compound selector is a chain (list) of simple selectors that
-     * are not separated by a combinator.
-     *
-     * It always begins with a type selector or a (possibly implied)
-     * universal selector. No other type selector or universal
-     * selector is allowed in the sequence.
-     *
-     * If one item of the  simple selectors list is no simple selector
-     * this method raises a CPSError.
-     */
-    function compoundSelectorMatches(compoundSelector, element, scopeElement) {
-        if(!(compoundSelector instanceof CompoundSelector))
-            throw new CPSError('compoundSelector is not of type '
-                                         + 'CompoundSelector');
-        var simpleSelectors = compoundSelector.value
-          , i = 0
-          ;
-        for(;i<simpleSelectors.length;i++)
-            if(!simpleSelectorMatches(simpleSelectors[i], element, scopeElement))
-                return false;
-        return true;
-    }
-
-    _p._complexSelectorMatches = function (complexSelector, element, scopeElement) {
+    _p._complexSelectorMatches = function(complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
                                          + 'ComplexSelector');
@@ -112,7 +43,7 @@ define([
         compoundSelector = compoundSelectors.pop();
 
         while(element) {
-            if(compoundSelectorMatches(compoundSelector, element, scopeElement)) {
+            if(compoundSelector.matches(element, this)) {
                 //  we got a hit
                 combinator = compoundSelectors.pop();
                 if(combinator === undefined) {
@@ -142,7 +73,77 @@ define([
                                                     +'" is unsuported');
         }
         return false;
+    };
+
+    function _compileCompoundSelector(compoundSelector) {
+        /*jshint evil:true*/
+        var simpleSelectors = compoundSelector.normalizedValue
+          , simpleSelector
+          , body = ['"use strict";', 'return (true']
+          , tests = []
+          , i,l
+          , val
+          , varname
+          , name
+          ;
+        for(i=0, l=simpleSelectors.length;i<l;i++) {
+            simpleSelector = simpleSelectors[i];
+            name = simpleSelector.name;
+            switch(simpleSelector.type) {
+                case 'type':
+                    body.push(' && (element.type === ', stringify(name), ')');
+                    break;
+                case 'id':
+                    body.push(' && (element.id === ', stringify(name), ')');
+                    break;
+                case 'class':
+                    body.push(' && (element.hasClass(', stringify(name), '))');
+                    break;
+                case 'pseudo-class':
+                    if(name === 'i') {
+                        // must have a parent for this
+                        body.push(' && (!!element.parent)');
+                        val = simpleSelector.value;
+                        if(val < 0)
+                            body.push(' && (element.parent.children.length + ', val, ' === element.index)');
+                        else
+                            body.push(' && (', val, ' === element.index)');
+                    }
+                    else
+                        // we know only :i right now
+                        body.push('&& false');
+                    break;
+                case 'universal':
+                    // this is always true
+                    break;
+                default:
+                    throw new CPSError('simpleSelector.type "'+ simpleSelector.type +'" is not implemented.');
+            }
+        }
+        body.push(');')
+        return new Function(['element'], body.join(''));
     }
+
+    /**
+     * A compound selector is a chain (list) of simple selectors that
+     * are not separated by a combinator.
+     *
+     * It always begins with a type selector or a (possibly implied)
+     * universal selector. No other type selector or universal
+     * selector is allowed in the sequence.
+     *
+     * If one item of the  simple selectors list is no simple selector
+     * this method raises a CPSError.
+     */
+    _p.compileCompoundSelector = function(compoundSelector) {
+        var key = compoundSelector.normalizedName
+          , _compoundSelectorCache = this._compoundSelectorCache
+          ;
+        if(!(key in _compoundSelectorCache))
+            _compoundSelectorCache[key] = _compileCompoundSelector(compoundSelector);
+        return _compoundSelectorCache[key];
+    };
+
 
     /**
      * A (complex) selector's specificity is calculated as follows:
@@ -245,7 +246,7 @@ define([
             while(i<l) {
                 child = frame[0][i];
                 i++;
-                if(compoundSelectorMatches(compoundSelector, child)) {
+                if(compoundSelector.matches(child, selectorEngine)) {
                     // it matches
                     if(combinator === null) // do this lazy and only once
                         combinator = complexSelectorArray[1];
@@ -309,7 +310,7 @@ define([
             while(i<l) {
                 child = frame[0][i];
                 i++;
-                if(compoundSelectorMatches(compoundSelector, child)) {
+                if(compoundSelector.matches(child, selectorEngine)) {
                     // it matches
                     if(combinator === null) // do this lazy and only once
                         combinator = complexSelectorArray[1];

@@ -114,7 +114,7 @@ define([
          * 
          * creates a ComplexSelector
          */
-      , 'simpleselector': function(node, source) {
+      , 'simpleselector': function(node, source, ruleController) {
             var elements = node.children
                     .map(function(item){return item.instance;})
               , invalid = false
@@ -181,7 +181,8 @@ define([
                     continue;
                 // replace directly
                 value[i] = compoundSelectorFactory(value[i],
-                                value[i][0]._source, value[i][0]._lineNo)
+                                value[i][0]._source, value[i][0]._lineNo
+                              , ruleController && ruleController.selectorEngine)
             }
             return new ComplexSelector(value, source, node.lineNo);
         }
@@ -207,11 +208,16 @@ define([
           Object.defineProperty(selector, '___implicit', {value: true});
         return selector;
     }
-    
-    function compoundSelectorFactory(elements, source, lineNo) {
+
+    /**
+     * selectorEngine is optional if not present the selector will be compiled
+     * lazily when used first.
+     */
+    function compoundSelectorFactory(elements, source, lineNo, selectorEngine) {
         var i = 0
           , selectors = []
-        ;
+          , cs
+          ;
         for(;i<elements.length;i++) {
             if(!(elements[i] instanceof GenericCPSNode))
                 throw new CPSError(['Unknown type for a simple selector:'
@@ -220,7 +226,11 @@ define([
                                   );
             selectors.push(simpleSelectorFactory(elements[i]));
         }
-        return new CompoundSelector(selectors, source, lineNo);
+        cs = new CompoundSelector(selectors, source, lineNo);
+        // compiling now moves the load to the parsing process
+        if(selectorEngine)
+            cs.compile(selectorEngine);
+        return cs;
     }
     
     
@@ -256,7 +266,7 @@ define([
                 name = element._ast[1][1][1];
         }
         if(typeof name !== 'string' && name !== undefined)
-            throw new CPSError('Can\'t find a name for SimpleSelector (' 
+            throw new CPSError('Can\'t find a name for SimpleSelector ('
                             + element + ')')
         return name;
     }

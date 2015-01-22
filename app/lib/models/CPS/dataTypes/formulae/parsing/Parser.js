@@ -315,8 +315,12 @@ define([
      * - brackets: one of these four at a time ( ) [ ]
      * - operators
      * - names
+     *
+     *
+     * selectorEngine is optional, it will cause a selector to be compiled
+     * immediately, contrary to beeing compiled when first used.
      */
-    _p.tokenize = function(string) {
+    _p.tokenize = function(string, selectorEngine) {
         var i=0, j, tokenEnd
           , tokens = []
           , reResult
@@ -358,7 +362,7 @@ define([
                     throw new CPSFormulaError('A closing double quote is '
                         +' missing for an opening selector literal S" ...in: '
                         + string.substr(i));
-                tokens.push(new SelectorToken(string.substring(i+2, tokenEnd)));
+                tokens.push(new SelectorToken(string.substring(i+2, tokenEnd), selectorEngine));
                 i = tokenEnd+1;
                 splitExpected = false; // a splitting token was found
                 continue;
@@ -635,8 +639,12 @@ define([
         return _flatten(tokens);
     };
 
-    _p.parse = function(string) {
-        var tokens = this.tokenize(string);
+    /**
+     * selectorEngine is optional, it will cause a selector to be compiled
+     * immediately, contrary to beeing compiled when first used.
+     */
+    _p.parse = function(string, selectorEngine) {
+        var tokens = this.tokenize(string, selectorEngine);
         tokens = this.infixToPostfix(tokens);
         return new Stack(tokens, this._finalizeMethod);
     };

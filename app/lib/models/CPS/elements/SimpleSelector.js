@@ -41,9 +41,10 @@ define([
         this._name = name;
         
         if(this._type === 'pseudo-class' && this._name === 'i') {
-            if(value === undefined || value !== value) {
+            if(value === undefined || value !== value || typeof value !== 'number') {
                 this._invalid = true;
-                this._message = 'No valid value for pseudoclass "i": ' + value;
+                this._message = 'No valid value for pseudoclass "i": ('
+                                            + typeof value +') '  + value;
                 return;
             }
             this._value = value;

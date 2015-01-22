@@ -17,10 +17,13 @@ define([
      * FIXME: value should maybe rather be the result of query(this.selectorList)
      *
      * Raises a CPSParserError if literal can't be parsed into a selector
+     *
+     * selectorEngine is optional, it will cause a selector to be compiled
+     * immediately, contrary to beeing compiled when first used.
      */
-    function SelectorToken(literal) {
+    function SelectorToken(literal, selectorEngine) {
         Parent.call(this, literal, 0, 0);
-        this._value = parseSelectorList.fromString(this.literal);
+        this._value = parseSelectorList.fromString(this.literal, undefined, selectorEngine);
     }
 
     var _p = SelectorToken.prototype = Object.create(Parent.prototype);

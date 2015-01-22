@@ -71,19 +71,40 @@ define([
                 break;
             }
         }
+
+        this._normalizedValue = undefined;
+        this._normalizedName = undefined;
+        this.compiled = false;
+        this.matches = matchesPlaceholder;
     }
-    
-    var _p = CompoundSelector.prototype = Object.create(Parent.prototype)
+
+    function matchesPlaceholder(element, selectorEngine) {
+        /*jshint validthis: true */
+        if(selectorEngine) {
+            this.compile(selectorEngine);
+            return this.matches(element);
+        }
+        throw new CPSError('Not yet compiled, use the `compile` method '
+                        + 'or supply an instance of SelectorEngine to '
+                        + 'this method as a second argument');
+    }
+
+    var _p = CompoundSelector.prototype = Object.create(Parent.prototype);
     _p.constructor = CompoundSelector;
-    
+
     _p.toString = function() {
         // don't serialize the first item if it's marked as implicit
         return (this._value[0] && this._value[0].___implicit
                     ? this._value.slice(1)
                     : this._value
-            ).join('')
-    }
-    
+            ).join('');
+    };
+
+    _p.compile = function(selectorEngine) {
+        this.matches = selectorEngine.compileCompoundSelector(this);
+        this.compiled = true;
+    };
+
     Object.defineProperty(_p, 'selects', {
         get: function(){ return !this._invalid && !this._alien; }
     });
@@ -102,6 +123,36 @@ define([
             // if value is falsy, return its falsy value (probably undefiend)
             return this._value && this._value.slice();}
     });
+    // a element type name or *
+    Object.defineProperty(_p, 'type', {
+        get: function() {
+            return this._value[0].name;
+        }
+    });
+
+    /**
+     *  sort by type, then by name if type equals.
+     */
+    function normalize(a, b) {
+        var order = {'type':0, 'universal':0, 'id':1, 'pseudo-class':2, 'class':3}
+          , val = order[b.type] - order[a.type]
+          ;
+        return val || (a.name < b.name) ? -1 : (a.name > b.name ? 1 : 0);
+    }
+
+    Object.defineProperty(_p, 'normalizedValue', {
+        get: function() {
+            if(!this._normalizedValue)
+                this._normalizedValue = this.value.sort(normalize);
+            return this._normalizedValue.slice();
+        }
+    });
+    Object.defineProperty(_p, 'normalizedName', {
+        get: function() {
+            return this._normalizedName || (this._normalizedName = this.normalizedValue.join(''));
+        }
+    });
+
     Object.defineProperty(_p, 'specificity', {
         get: function() {
             var a, b, c, i=0, specificity;
@@ -114,7 +165,7 @@ define([
             }
             return [a, b, c];
         }
-    })
-    
+    });
+
     return CompoundSelector;
-})
+});
