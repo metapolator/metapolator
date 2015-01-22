@@ -3,6 +3,7 @@ define([
   , 'metapolator/models/CPS/SelectorEngine'
   , 'metapolator/models/MOM/Multivers'
   , 'metapolator/models/MOM/Univers'
+  , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/StyleDict'
   , 'metapolator/models/CPS/ReferenceDict'
   , 'metapolator/models/CPS/parsing/parseRules'
@@ -12,6 +13,7 @@ define([
   , SelectorEngine
   , Multivers
   , Univers
+  , Rule
   , StyleDict
   , ReferenceDict
   , parseRules
@@ -86,8 +88,25 @@ define([
     _p.__getRules = function(masterName, property) {
         var ruleName = this._getMasterRule(masterName)
           , parameterCollection = this._ruleController.getRule(false, ruleName)
+          , namespacedRules = parameterCollection[property]
+          , i = 0
+          , len = namespacedRules.length
+          , namespacedRule
+          , complexSelectors
           ;
-        return parameterCollection[property];
+
+        //FIXME: I've seen Firefox of dying by "too much recursion" here,
+        // once, in a heavily timer instrumented situation.
+        // It may be better to rewrite the getSelectorList into a
+        // one-big-loop function, then there is less recursion.
+        for(;i<len;i++) {
+            namespacedRule = namespacedRules[i];
+            // this is expensive
+            complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
+            complexSelectors.sort(SelectorEngine.compareSelectorSpecificity);
+            namespacedRules[i][0] = complexSelectors;
+        }
+        return namespacedRules;
     };
 
     _p._getRules = function(masterName, property) {

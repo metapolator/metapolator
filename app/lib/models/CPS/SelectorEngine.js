@@ -96,7 +96,7 @@ define([
         return true;
     }
 
-    function complexSelectorMatches(complexSelector, element, scopeElement) {
+    _p._complexSelectorMatches = function (complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
                                          + 'ComplexSelector');
@@ -166,9 +166,7 @@ define([
      * mentioned three elements of specificity.
      */
     function compareSpecificity(sA, sB) {
-        var i=0;
-
-        for(;i<sA.length && i<sB.length;i++) {
+        for(var i=0, len = Math.min(sA.length, sB.length);i<len;i++) {
             if(sA[i] !== sB[i])
                 // id return value is < 0 selectorA will get a lower index
                 // id return value is > 0 selectorB will get a lower index
@@ -176,9 +174,13 @@ define([
         }
         return 0;
     }
-    function _compareSpecificity (itemA, itemB) {
+    function compareSelectorSpecificity (itemA, itemB) {
         return compareSpecificity(itemA.specificity, itemB.specificity);
     }
+    // export static functions
+    SelectorEngine.compareSpecificity = compareSpecificity;
+    SelectorEngine.compareSelectorSpecificity = compareSelectorSpecificity;
+
     function _rulesCompareSpecificity (itemA, itemB) {
         return compareSpecificity(itemA[0], itemB[0]);
     }
@@ -186,49 +188,34 @@ define([
     /**
      * Returns a list of all of the rules currently applying to the element,
      * sorted from most specific to least.
+     *
+     * the complexSelectors in namespacedRules[n][0] should be sorted, so that the
+     * first complexSelector in namespacedRule has the highest specificity
      */
     _p.getMatchingRules = function(namespacedRules, element) {
-        var i=0, j
-          , matchingRules = []
+        var matchingRules = []
           , namespacedRule
           , complexSelectors
-          , compoundSelectors
-          , compoundSelector
-          , combinator
-          , selects
           , specificity
-          , match
+          , i, j, length, lengthCS
           ;
-        for(;i<namespacedRules.length;i++) {
+        for(i=0, length = namespacedRules.length;i<length;i++) {
             namespacedRule = namespacedRules[i];
-            if(!(namespacedRule[1] instanceof Rule))
-                throw new CPSError('Item at index ' + i + ' is not of type '
-                                         + 'CPS Rule');
-            match = undefined;
-            // FIXME: it would be much better to create the complexSelectors
-            // once outside of the loop
-
-            // the complexSelectors are all selecting when obtained via
-            // the value property of SelectorList
-            complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
-            complexSelectors.sort(_compareSpecificity);
-            for(j=0;j<complexSelectors.length;j++) {
-                if(complexSelectorMatches(complexSelectors[j], element)) {
+            complexSelectors = namespacedRule[0];
+            for(j=0, lengthCS = complexSelectors.length;j<lengthCS;j++) {
+                if(this._complexSelectorMatches(complexSelectors[j], element)) {
                     // got a match with the most specific selector
-                    match = complexSelectors[j];
+                    // augment the specifity with the index number, so we can
+                    // make sure, that the order of rules with otherwise
+                    // equal specifity is not mixed up. The later rules
+                    // are more specific/overide the previous one, so it
+                    // is a good match for the sorting function that we use
+                    // anyways
+                    specificity = complexSelectors[j].specificity.slice();
+                    specificity.push(i);
+                    matchingRules.push([specificity, namespacedRule[1]]);
                     break;
                 }
-            }
-            if(match) {
-                // augment the specifity with the index number, so we can
-                // make sure, that the order of rules with otherwise
-                // equal specifity is not mixed up. The later rules
-                // are more specific/overide the previous one, so it
-                // is a good match for the sorting function that we use
-                // anyways
-                specificity = match.specificity.slice();
-                specificity.push(i);
-                matchingRules.push([specificity, namespacedRule[1]]);
             }
         }
         matchingRules.sort(_rulesCompareSpecificity);
