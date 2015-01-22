@@ -222,99 +222,122 @@ define([
         return matchingRules.map(function(item){return item[1];});
     };
 
-    function _filterElementChildren(element, filter) {
-        var i = 0
-          , children = element.children
-          , result = []
-          ;
-        for(;i<children.length;i++) {
-            if(filter(children[i]))
-                result.push(children[i]);
-        }
-        return result;
-    }
-    function _filterElementDescendants(element, filter) {
-        var i = 0
-            // FIXME: remove the slice, it's already a copy
-          , children = element.children.slice().reverse()
+    function _combinateAll(type, element, complexSelectorArray, seen, selectorEngine) {
+        var compoundSelector = complexSelectorArray[0]
+          , stack = []
+          , frame
+          , combinator = null
+          , nextComplexSelectorArray
+          , result
+          , results = []
           , child
-          , result = []
+          , descendant = type === 'descendant'
+          , i,l
           ;
-        while((child = children.pop())) {
-            if(filter(child))
-                result.push(child);
-            // add all children of this child
-            // and reverse to keep the a clean depth first traversal order
-            Array.prototype.push.apply(children, child.children.reverse());
-        }
-        return result;
+        if(!descendant && type !== 'child')
+            throw new CPSError('Combinator type "' + type +'" is unsuported');
+        //initial frame setup
+        frame = [element.children, 0, 0]
+        frame[2] = frame[0].length;
+        do {
+            i=frame[1];
+            l=frame[2];
+            while(i<l) {
+                child = frame[0][i];
+                i++;
+                if(compoundSelectorMatches(compoundSelector, child)) {
+                    // it matches
+                    if(combinator === null) // do this lazy and only once
+                        combinator = complexSelectorArray[1];
+                    if(!combinator) {
+                        // no more selectors. we got a hit
+                        if(!(child.nodeID in seen)) {
+                            results.push(child);
+                            seen[child.nodeID] = null;
+                        }
+                        continue;
+                    }
+                    if(!nextComplexSelectorArray) // do this lazy and only once
+                        nextComplexSelectorArray = complexSelectorArray.slice(2);
+                    result = _combinateAll(combinator.type, child, nextComplexSelectorArray, seen, selectorEngine);
+                    if(result.length)
+                        Array.prototype.push.apply(results, result);
+                }
+                if(!descendant) continue;
+                if(i<l) {
+                    // save this frame
+                    frame[1]=i;
+                    frame[2]=l;
+                    stack.push(frame);
+                }
+                // setup the next frame
+                frame = [child.children, 0, 0];
+                frame[2] = frame[0].length;
+                i=frame[1];
+                l=frame[2];
+            }
+        } while((frame = stack.pop()));
+        return results;
     }
 
     /**
-     * scope is an array of zero or more elements, we will search only
-     * within the scope elements
+     * return only the first hit in depth first order
+     * complexSelectorArray is an array of the form compoundSelectors
+     * separated by combinator.
+     * [compoundSelector, combinator, compoundSelector, combinator, compoundSelector]
+     * min length is 1. length has to be odd always
      */
-    function queryComplexSelector(scope, complexSelector) {
-        if(!(scope instanceof Array))
-            throw new CPSError('scope must be an Array');
-        if(!(complexSelector instanceof ComplexSelector))
-            throw new CPSError('complexSelector is not of type '
-                                         + 'ComplexSelector');
-        var compoundSelectors = complexSelector.value
-          , compoundSelector
-          , combinator
-          , matches = []
-          , currentScope
-          // this filter depends on the fact that compoundSelector and
-          // currentScope will change in this closure during the loops below
-          , filter = function(element) {
-                return compoundSelectorMatches(compoundSelector
-                                             , element
-                                             , currentScope);
-            }
-          , filterMethod
+    function _combinateFirst(type, element, complexSelectorArray, selectorEngine) {
+        var compoundSelector = complexSelectorArray[0]
+          , stack = []
+          , frame
+          , combinator = null
+          , nextComplexSelectorArray
+          , result
+          , child
+          , descendant = type === 'descendant'
+          , i,l
           ;
-
-        // first round is descendants
-        filterMethod = _filterElementDescendants;
-        while(true) {
-            compoundSelector = compoundSelectors.shift();
-            // Here is a lot of room for optimization! I only made a very
-            // general bruteforce approach, so we visit a big amount of
-            // nodes!
-            // One way to optimize would be to take the MOM structure
-            // into account. I.e.: it's impossible to select this:
-            //      point outline master
-            // But on the other hand, we should rather optimize
-            // meaningful queries, because these are the ones we are
-            // most likely to encounter. Asking every node if its type
-            // is 'univers' is however no good idea, with the knowledge
-            // that there is only one 'univers', the root of the tree.
-            matches = [];
-            while((currentScope = scope.pop()))
-                // get ALL elements inside of currentScope
-                // and ask if the compound selector matches ...
-                Array.prototype.push.apply(matches, filterMethod(currentScope, filter));
-            scope = matches;
-
-            combinator = compoundSelectors.shift();
-            if(combinator === undefined)
-                //that's it
-                break;
-
-            switch(combinator.type) {
-                case 'descendant':
-                    filterMethod = _filterElementDescendants;
-                    break;
-                case 'child':
-                    filterMethod = _filterElementChildren;
-                    break;
-                default:
-                    throw new CPSError('Combinator type "'+combinator.type
-                                                    +'" is unsuported');
+        if(!descendant && type !== 'child')
+            throw new CPSError('Combinator type "' + type +'" is unsuported');
+        //initial frame setup
+        frame = [element.children, 0, 0]
+        frame[2] = frame[0].length;
+        do {
+            i=frame[1];
+            l=frame[2];
+            while(i<l) {
+                child = frame[0][i];
+                i++;
+                if(compoundSelectorMatches(compoundSelector, child)) {
+                    // it matches
+                    if(combinator === null) // do this lazy and only once
+                        combinator = complexSelectorArray[1];
+                    if(!combinator)
+                        // no more selectors. we got a hit
+                        return child;
+                    if(!nextComplexSelectorArray) // do this lazy and only once
+                        nextComplexSelectorArray = complexSelectorArray.slice(2);
+                    result = _combinateFirst(combinator.type, child, nextComplexSelectorArray, selectorEngine);
+                    if(result)
+                        return result;
+                }
+                if(!descendant) continue;
+                if(i<l) {
+                    // save this frame
+                    frame[1]=i;
+                    frame[2]=l;
+                    stack.push(frame);
+                }
+                // setup the next frame
+                frame = [child.children, 0, 0];
+                frame[2] = frame[0].length;
+                i=frame[1];
+                l=frame[2];
             }
-        }
-        return matches;
+        } while((frame = stack.pop()));
+        // nothing found
+        return null;
     }
 
     /**
@@ -325,28 +348,30 @@ define([
      * scope is an array of zero or more elements, we will search only
      * within the scope elements
      */
-    _p.queryAll = function(scope, selector) {
+    _p.queryAll = function(scope, _selector) {
         var complexSelectors
-          , i=0
-          , k
-          , seen = {}
+          , complexSelectorArray
+          , i,l, k, ll, j
+          , seen = Object.create(null)
           , result = []
-          , matches
+          , matches, node
+          , selector
           ;
-        if(typeof selector === 'string')
-            selector = selectorListFromString(selector);
-        if(!(selector instanceof SelectorList))
+        if(typeof _selector === 'string')
+            selector = selectorListFromString(_selector, undefined, this);
+        else if(_selector instanceof SelectorList)
+            selector = _selector;
+        else
              throw new CPSError('SelectorList expected, but got a '
-                    + selector + ' typeof: '+ typeof selector);
+                            + _selector + ' typeof: '+ typeof _selector);
+        if(!(scope instanceof Array))
+            throw new CPSError('scope must be an Array');
         complexSelectors = selector.value;
-        for(;i<complexSelectors.length;i++) {
-            matches = queryComplexSelector(scope.slice(), complexSelectors[i]);
-            k = 0;
-            for(;k<matches.length;k++) {
-                if(matches[k].nodeID in seen)
-                    continue;
-                seen[matches[k].nodeID] = null;
-                result.push(matches[k]);
+        for(i=0,l=complexSelectors.length;i<l;i++) {
+            complexSelectorArray = complexSelectors[i].value;
+            for(k=0,ll=scope.length;k<ll;k++) {
+                matches = _combinateAll('descendant', scope[k], complexSelectorArray, seen, this);
+                Array.prototype.push.apply(result, matches);
             }
         }
         return result;
@@ -359,21 +384,30 @@ define([
      * further down: queryComplexSelector, doesn't know anything about
      * selecting only one element.
      */
-    _p.query = function(scope, selector) {
+    _p.query = function(scope, _selector) {
         var complexSelectors
-          , i=0
-          , matches
+          , complexSelectorArray
+          , i,l, k, ll
+          , match
+          , selector
           ;
-        if(typeof selector === 'string')
-            selector = selectorListFromString(selector);
-        if(!(selector instanceof SelectorList))
+        if(typeof _selector === 'string')
+            selector = selectorListFromString(_selector, undefined, this);
+        else if(_selector instanceof SelectorList)
+            selector = _selector;
+        else
              throw new CPSError('SelectorList expected, but got a '
-                    + selector + ' typeof: '+ typeof selector);
+                            + _selector + ' typeof: '+ typeof _selector);
+        if(!(scope instanceof Array))
+            throw new CPSError('scope must be an Array');
+
         complexSelectors = selector.value;
-        for(;i<complexSelectors.length;i++) {
-            matches = queryComplexSelector(scope, complexSelectors[i]);
-            if(matches.length)
-                return matches[0];
+        for(i=0,l=complexSelectors.length;i<l;i++) {
+            complexSelectorArray = complexSelectors[i].value;
+            for(k=0,ll=scope.length;k<ll;k++) {
+                match = _combinateFirst('descendant', scope[k], complexSelectorArray, this);
+                if(match) return match;
+            }
         }
         return null;
     };
