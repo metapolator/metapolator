@@ -49,12 +49,12 @@ define([
     Object.defineProperty(_p, 'particulars', {
         get: function() {
             return [
-                    this.parent ? '' : '(no parent)'
+                    this._parent ? '' : '(no parent)'
                   , ' '
                   , this.type,
                   , (this.id ? '#' + this.id : '')
-                  , (this.parent
-                        ? ':i(' + this.parent.find(this) + ')'
+                  , (this._parent
+                        ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }

@@ -18,7 +18,7 @@ define([
 
     Object.defineProperty(_p, 'glyph', {
         get: function() {
-            return this.parent;
+            return this._parent;
         }
     })
 

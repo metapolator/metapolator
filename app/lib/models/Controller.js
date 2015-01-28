@@ -93,6 +93,7 @@ define([
           , len = namespacedRules.length
           , namespacedRule
           , complexSelectors
+          , sortFunc = SelectorEngine.compareSelectorSpecificity
           ;
 
         //FIXME: I've seen Firefox of dying by "too much recursion" here,
@@ -103,7 +104,7 @@ define([
             namespacedRule = namespacedRules[i];
             // this is expensive
             complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
-            complexSelectors.sort(SelectorEngine.compareSelectorSpecificity);
+            complexSelectors.sort(sortFunc);
             namespacedRules[i][0] = complexSelectors;
         }
         return namespacedRules;

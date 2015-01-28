@@ -26,7 +26,8 @@ define([
         this._alien = false;
         this._message = undefined;
         this._value = undefined;
-        
+        this._specificity = null;
+
         if(!(type in this._supportedTypes)) {
             this._alien = true;
             this._message = 'Type of SimpleSelector is unsupported:' + type;
@@ -103,23 +104,27 @@ define([
     });
     Object.defineProperty(_p, 'specificity', {
         get: function() {
-            var a, b, c;
-            a = b = c = 0;
-            switch(this._type) {
-                case 'id':
-                    a = 1;
-                    break;
-                case 'class':
-                case 'attribute': // unsupported at the moment
-                case 'pseudo-class':
-                    b = 1;
-                    break;
-                case 'type':
-                case 'pseudo-element':
-                    c = 1;
-                    break;
+            var s = this._specificity;
+            if(!s) {
+                var a, b, c;
+                a = b = c = 0;
+                switch(this._type) {
+                    case 'id':
+                        a = 1;
+                        break;
+                    case 'class':
+                    case 'attribute': // unsupported at the moment
+                    case 'pseudo-class':
+                        b = 1;
+                        break;
+                    case 'type':
+                    case 'pseudo-element':
+                        c = 1;
+                        break;
+                }
+                this._specificity = s = [a, b, c];
             }
-            return [a, b, c];
+            return s;
         }
     });
     

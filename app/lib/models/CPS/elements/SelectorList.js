@@ -10,19 +10,23 @@ define([
     function SelectorList(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
         this._selectors = [];
+        this._value = [];
+        this._multiplyCache = new WeakMap();
         if(selectors.length)
             Array.prototype.push.apply(this._selectors, selectors);
         
         // Maybe we'll need to determine the following on demand, not on init??
-        var i=0, count=0;
-        for(;i<this._selectors.length;i++) {
-            if(this._selectors[i].invalid) {
+        var i, l, selector, count=0;
+        for(i=0,l=this._selectors.length;i<l;i++) {
+            selector = this._selectors[i];
+            if(selector.invalid) {
                 this._invalid = true;
-                this._message = this._selectors[i].message;
+                this._message = selector.message;
                 break;
             }
-            if(!this._selectors[i].selects)
+            if(!selector.selects)
                 continue;
+            this._value.push(selector)
             count +=1;
         }
         if(!count) {
@@ -41,15 +45,13 @@ define([
      * The ComplexSelectors are combined using the descendant combinator.
      */
     SelectorList.multiply = function(a, b) {
-        var x=0
-          , y
-          , selectorsA = a.selectors
-          , selectorsB = b.selectors
+        var x, y, l, ll
+          , selectorsA = a._selectors
+          , selectorsB = b._selectors
           , result = []
           ;
-        for(;x<selectorsA.length;x++) {
-            y=0;
-            for(;y<selectorsB.length;y++)
+        for(x=0,l=selectorsA.length;x<l;x++) {
+            for(y=0, ll=selectorsB.length;y<ll;y++)
                 result.push(selectorsA[x].add(selectorsB[y]));
         }
         return new SelectorList(result);
@@ -89,11 +91,16 @@ define([
         get: function(){ return this._message;}
     });
     Object.defineProperty(_p, 'value', {
-        get: function(){ return this._selectors.filter(_filterSelecting); }
+        get: function(){ return this._value.slice(); }
     });
     
     _p.multiply = function(selectorList) {
-        return this.constructor.multiply(this, selectorList);
+        var r = this._multiplyCache.get(selectorList);
+        if(!r) {
+            r = this.constructor.multiply(this, selectorList);
+            this._multiplyCache.set(selectorList, r);
+        }
+        return r;
     }
     
     /**

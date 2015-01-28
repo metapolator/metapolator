@@ -10,20 +10,21 @@ define([
   , SimpleSelector
 ) {
     "use strict";
-    
-    var CPSError = errors.CPS
+
+    var CPSError = errors.CPS;
+
     /**
-     * A CompoundSelector is a chain of one or more compound selectors
-     * 
+     * A CompoundSelector is a chain of one or more `SimpleSelector`s
+     *
      * a compound selector is invalid if
      *      - it has more than one of universal or type selector
      *      - a universal or type selector occurs at a later than
      *        the first position
      *      - if it is empty
-     * 
+     *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     * 
+     *
      *  reasons for invalid selectors:
      *
      * A selector may be alien, which means we ignore it, because we don't

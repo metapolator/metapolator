@@ -15,18 +15,18 @@ define([
         this._rules = rules;
         this._element = element;
         this._controller = controller;
-        this._dict = undefined;
+        this._dict = null;
     }
 
     var _p = _CPSDict.prototype;
     _p.constructor = _CPSDict;
 
     _p._buildIndex = function() {
-        var i=0, j, keys, key;
+        var i=0,l=this._rules.length, j, ll, keys, key;
         this._dict = Object.create(null);
-        for(;i<this._rules.length;i++) {
+        for(;i<l;i++) {
             keys = this._rules[i].parameters.keys();
-            for(j=0; j<keys.length; j++) {
+            for(j=0, ll=keys.length; j<ll; j++) {
                 key = keys[j];
                 if(!(key in this._dict))
                     this._dict[key] = this._rules[i].parameters.get(key);

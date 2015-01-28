@@ -21,8 +21,15 @@ define([
      */
     function StyleDict(controller, rules, element) {
         Parent.apply(this, arguments);
-        this.getAPI = this.get.bind(this);
+
+        // FIXME: can we measure if bind or self plus closure is faster
+        // this.get.bind(this);
+        var self = this;
+        this.getAPI = function(name){ return self.get(name);}
+
         this._getting = {};
+
+        this._cache = Object.create(null);
     }
 
     var _p = StyleDict.prototype = Object.create(Parent.prototype);
@@ -121,8 +128,13 @@ define([
             delete this._getting[name];
         }
     };
-
-    _p.get = memoize('get', _p._get);
+    //_p.get = memoize('get', _p._get);
+    _p.get = function(name) {
+        var val = this._cache[name];
+        if(val === undefined)
+            this._cache[name] = val = this._get(name);
+        return val;
+    }
 
     return StyleDict;
 });

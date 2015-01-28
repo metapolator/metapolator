@@ -21,6 +21,8 @@ define([
      */
     function ParameterCollection(items, source, lineNo) {
         Parent.call(this, items, source, lineNo);
+        this._name = null;
+        this._selectorList = null;
         if(!this._allowNamespace) {
             // lock this.name and this.selectorList
             this.name = undefined;
@@ -51,7 +53,7 @@ define([
             return (this._name ? this._name.name : null);
         }
       , set: function(name) {
-            if('_name' in this)
+            if(this._name !== null)
                 throw new CPSError('Name is already set');
             if(name === undefined) {
                 this._name = undefined;
@@ -70,7 +72,7 @@ define([
     Object.defineProperty(_p, 'selectorList', {
         enumerable: true
       , set: function(selectorList) {
-            if('_selectorList' in this)
+            if(this._selectorList !== null)
                 throw new CPSError('selectorList is already set');
             if(selectorList === undefined) {
                 this._selectorList = undefined;

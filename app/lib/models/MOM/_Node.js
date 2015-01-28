@@ -95,11 +95,11 @@ define([
      */
     Object.defineProperty(_p, 'univers', {
         get: function() {
-            if(!this.parent)
+            if(!this._parent)
                 return null;
-            if(this.parent.MOMType === 'MOM Univers')
-                return this.parent;
-            return this.parent.univers;
+            if(this._parent.MOMType === 'MOM Univers')
+                return this._parent;
+            return this._parent.univers;
         }
     })
 
@@ -110,11 +110,11 @@ define([
      */
     Object.defineProperty(_p, 'multivers', {
         get: function() {
-            if(!this.parent)
+            if(!this._parent)
                 return null;
-            if(this.parent.MOMType === 'MOM Multivers')
-                return this.parent;
-            return this.parent.multivers;
+            if(this._parent.MOMType === 'MOM Multivers')
+                return this._parent;
+            return this._parent.multivers;
         }
     })
 
@@ -125,17 +125,17 @@ define([
      */
     Object.defineProperty(_p, 'master', {
         get: function() {
-            if(!this.parent)
+            if(!this._parent)
                 return null;
-            if(this.parent.MOMType === 'MOM Master')
-                return this.parent;
-            return this.parent.master;
+            if(this._parent.MOMType === 'MOM Master')
+                return this._parent;
+            return this._parent.master;
         }
     })
 
     Object.defineProperty(_p, 'glyph', {
         get: function() {
-            return this.parent && this.parent.glyph;
+            return this._parent && this._parent.glyph;
         }
     })
 
@@ -147,12 +147,12 @@ define([
     Object.defineProperty(_p, 'particulars', {
         get: function() {
             return [
-                    this.parent ? this.parent.particulars : '(no parent)'
+                    this._parent ? this._parent.particulars : '(no parent)'
                   , ' '
                   , this.type,
                   , (this.id ? '#' + this.id : '')
-                  , (this.parent
-                        ? ':i(' + this.parent.find(this) + ')'
+                  , (this._parent
+                        ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }
@@ -251,7 +251,7 @@ define([
                     + 'of its parent when trying to set its parent property. '
                     + 'Use "parent.add(child)" instead.');
             this._parent = parent;
-            this._index = this.parent.find(this);
+            this._index = this._parent.find(this);
         }
       , get: function(){ return this._parent; }
     })

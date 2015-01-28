@@ -21,6 +21,7 @@ define([
         this._value = value;
         this._comments = comments;
         this._factory = undefined;
+        this.factory = undefined;
         this._invalid = undefined;
     }
     var _p = ParameterValue.prototype = Object.create(Parent.prototype)
@@ -49,6 +50,10 @@ define([
             throw new errors.CPS('Factory must be a function but is: '
                                 + typeof factory);
         this._factory = factory;
+        Object.defineProperty(this, 'factory', {
+            enumerable: true
+          , value: factory
+        })
     }
 
     _p.initializeTypeFactory = function(name, typeDefinition) {
@@ -62,19 +67,8 @@ define([
 
         if(this._factory === undefined && this._invalid === undefined)
             throw new errors.CPS('TypeDefinition for ' + name
-                            + 'did not initialize this ParameterValue');
+                            + ' did not initialize this ParameterValue');
     }
-
-    Object.defineProperty(_p, 'factory', {
-        get: function() {
-            if(this._invalid)
-                throw new errors.CPS('Can\'t return factory: value was '
-                    + 'marked as invalid: ' + this._message);
-            if(this._factory === undefined)
-                throw new errors.CPS('No Factory is set!');
-            return this._factory;
-        }
-    })
 
     Object.defineProperty(_p, 'invalid', {
         get: function(){ return this._invalid;}
