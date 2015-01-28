@@ -74,7 +74,7 @@ define([
          * of item and the details of the implementation
          */
       , new Operator('__get__', false, Infinity, 1, 1, [
-            ['*getAPI*', NameToken, 'String', function(getApi, name, key) {
+            ['*getAPI*', NameToken, 'string', function(getApi, name, key) {
                 var item = getApi(name.getValue());
                 return cpsGetters.generic(item, key);
             }]
