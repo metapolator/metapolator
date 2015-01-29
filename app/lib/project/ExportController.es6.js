@@ -1,7 +1,7 @@
 /**
  * This can be distilled down to the non es6 file by running the following
  * from the root of the git repository
- * 
+ *
  * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js; popd
  *
  */
@@ -10,11 +10,13 @@ define([
   , 'metapolator/math/hobby'
   , 'metapolator/math/Vector'
   , 'metapolator/models/MOM/Glyph'
+  , 'metapolator/timer'
 ], function(
     errors
   , hobby
   , Vector
   , MOMGlyph
+  , timer
 ) {
     "use strict";
     var KeyError = errors.Key
@@ -37,12 +39,13 @@ define([
           , updatedUFOData
           , i, l, v, ki, kil, k, keys
           , style
+          , time, one, total = 0
           ;
         console.warn('exporting ...');
         for(i = 0,l=glyphs.length;i<l;i++) {
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
-            console.warn('exporting', glyph.id);
+            time = timer.now();
             drawFunc = this.drawGlyphToPointPen.bind(
                 this
               , {
@@ -68,7 +71,14 @@ define([
             }
             this._glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
                                       undefined, {precision: this._precision});
+            one = timer.now() - time;
+            total += one;
+            console.warn('exported', glyph.id, 'this took', one,'ms');
         }
+        console.warn('finished ', i, 'glyphs in', total
+            , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
+            , (1000 * i / total)  ,' glyphs per second.'
+        );
         this._glyphSet.writeContents(false);
     };
 
