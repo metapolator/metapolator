@@ -96,10 +96,6 @@ define([
           , sortFunc = SelectorEngine.compareSelectorSpecificity
           ;
 
-        //FIXME: I've seen Firefox of dying by "too much recursion" here,
-        // once, in a heavily timer instrumented situation.
-        // It may be better to rewrite the getSelectorList into a
-        // one-big-loop function, then there is less recursion.
         for(;i<len;i++) {
             namespacedRule = namespacedRules[i];
             // this is expensive
@@ -147,6 +143,7 @@ define([
     }
 
     _p._getReferenceDictionary = function(element) {
+        throw new errors.Deprecated('@dictionary should not get intialized anymore!');
         var masterRules = element.master
                 ? this._getRules(element.master.id, 'dictionaryRules')
                 : []
