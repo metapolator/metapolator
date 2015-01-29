@@ -353,10 +353,8 @@ define([
     engine.setFinalizeMethod(function(result, getAPI) {
         if(result instanceof NameToken)
             return getAPI(result.getValue());
-        else if(result instanceof SelectorToken)
-            return getAPI('this').multivers.query(result.getValue());
-        else if(result instanceof StringToken || result instanceof NumberToken)
-            return result.getValue();
+        else if(result instanceof SelectorList)
+            return getAPI('this').multivers.query(result);
         else if(result instanceof _Token)
             // maybe one day we allow stuff like operators as first class
             // values, but not now.

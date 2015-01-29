@@ -1,17 +1,11 @@
 define([
      'metapolator/errors'
    , './_Token'
-   , './NumberToken'
-   , './StringToken'
-   , './SelectorToken'
    , './NameToken'
    , 'ufojs/main'
 ], function(
     errors
   , Parent
-  , NumberToken
-  , StringToken
-  , SelectorToken
   , NameToken
   , ufoJSUtils
 ) {
@@ -20,6 +14,7 @@ define([
     var CPSFormulaError = errors.CPSFormula
       , ValueError = errors.Value
       , isInstance = ufoJSUtils.isInstance
+      , stringify = JSON.stringify
       ;
 
     /**
@@ -49,7 +44,7 @@ define([
      * methods:     See this._setMethods for a description of the methods argument.
      */
     function OperatorToken(literal, splitting, precedence, preConsumes
-                                                , postConsumes, methods) {
+                                             , postConsumes, methods) {
         Parent.call(this, literal, preConsumes, postConsumes);
         this._splitting = !!splitting;
         if(typeof precedence !== 'number')
@@ -58,6 +53,16 @@ define([
         this._precedence = precedence;
         this._methods = [];
         this._setMethods(methods);
+
+        // need these for access from the compiled functions
+        this.CPSFormulaError = CPSFormulaError;
+        this.NameToken = NameToken;
+
+        // NOTE: List has a variable argument length, so may others too!
+        // The stack compiler will take care of that, but we'll have to
+        // wait with compiling
+        if(isFinite(this.preConsumes) && isFinite(this.postConsumes))
+            this.execute = this.compile();
     }
 
     var _p = OperatorToken.prototype = Object.create(Parent.prototype);
@@ -88,8 +93,13 @@ define([
      * be used, so an early match all function will shadow later ones.
      *
      * typename/constructor can be everything that is useful with ufoJS/main.isInstance
+     * However, the compiled version does not use ufoJS/main.isInstance!
+     * That may lead to problems when ufoJS/main.isInstance changes but not
+     * the compiling code in here!
+     * Usually all Operators will be compiled. Interpreting is still here
+     * for legacy reasons, also, the algorithm is easier to read.
      *
-     * Also, typename/constructor can have special values:
+     * typename/constructor can have special values:
      *
      * - The string: "*getAPI*", only as very first element:
      *        this does two things:
@@ -100,13 +110,15 @@ define([
      *        In turn, this means NameToken can be used as a typename/constructor
      *        but it will only ever appear as argument when *getAPI* is requested,
      *        otherwise it will be resolved before invocation.
+     *        IMPORTANT: All *getAPI* methods must be defined before the ones without
+     *        *getAPI*.
      * - The string "*anything*" which matches anything
      *
      * ufoJS/main.isInstance takes:
-     *  - functions which would be checked using "instanceof" or a string
-     *  - strings can be: int float NaN null Infinity -Infinity
-     *  - strings can be also everything where typeof actually works, like:
-     *                  number, string, undefined, object
+     *  - functions which will be checked using "instanceof" or a string
+     *  - strings can be everything where typeof actually works, like:
+     *                  "number", "string", "undefined", "object"
+     *  - strings can be: "int" "float" "NaN" "null" "Infinity" "-Infinity"
      *  - arrays of the above
      */
     _p._setMethods = function(methods) {
@@ -145,9 +157,278 @@ define([
             throw new ValueError('The last item of an operator definition '
                 + 'must be a type of "function" but this is a "'
                 + (typeof description[description.length-1])+'"');
+        else if(this._methods.length // this is not the first
+                    && description[0] === '*getAPI*' // this is boxed
+                    && this._methods[this._methods.length-1][0] !== '*getAPI*')// the previous is unboxed
+            throw new ValueError('The previous operator uses "unboxed" NameTokens '
+                + 'but this one unboxes itself. (*getAPI* is the  first argument) '
+                + 'This is illegal. Operators that unbox themselves  must be '
+                + 'defined before operators that expect unboxed values.\n'
+                + 'This is because automatic unboxing could cause '
+                + 'unpredictable behavior (like a hit where no hit should be) '
+                + 'and also errors for not found names. Also, automatic '
+                + 'unboxing for a value that doesn\'t need it is bad for '
+                + 'performance.'
+            );
         // accept it
         // description is an array that suits our expectations
         this._methods.push(description);
+    };
+
+    // helper for compile
+    function _makeArgNames(length, _prefix, _postfix) {
+        var result = [], i, prefix = _prefix || '', postfix = _postfix || '';
+        for(i=0;i<length;i++) result.push(prefix + i + postfix);
+        return result;
+    }
+
+    // helper for compile
+    function _makeLocalBoxedNames(body, methods, consumes) {
+        var i, l, isBoxed
+          , usersOfBoxed = 0
+          , args = _makeArgNames(consumes, 'args[', ']')
+          , boxedNames
+          ;
+        for(i=0, l=methods.length;i<l; i++) {
+            isBoxed = methods[i][0] === '*getAPI*';
+            // The first unboxed user uses the boxed values for unboxing
+            // and thus makes also an access to the unboxed values.
+            usersOfBoxed += 1;
+            // After the first unboxed user, boxed will not be used anymore.
+            if(!isBoxed) break;
+        }
+        if(usersOfBoxed < 2)
+            // We don't declare the vars if less than 2 accesses to boxed NameTokens
+            // are done. This assumes that declaring locally and two subsequent
+            // accesses are cheaper than always accessing the args array;
+            return args;
+        boxedNames = _makeArgNames(consumes, 'aN');
+        for(i=0,l=consumes;i<l;i++)
+            body.push('var ' , boxedNames[i] ,' = ', args[i], ';\n');
+        return boxedNames;
+    }
+
+    // helper for compile
+    function _makeLocalUnboxedNames(body, consumes, boxedNames) {
+        var i, arg, unboxedNames = _makeArgNames(consumes, 'aV');
+        for(i=0;i<consumes;i++) {
+            arg = boxedNames[i];
+            body.push('var ' , unboxedNames[i] , ' = ' , arg , ' instanceof NameToken '
+                    , '? getAPI(' , arg , '.getValue()) '
+                    , ': ' , arg , ';\n');
+        }
+        return unboxedNames;
+    }
+
+    // helper for compile
+    function _makeTypeTest(arg, typeAdress, typeVal, ctors) {
+        var typeTest = []
+          , typeOfType = typeof typeVal
+          , ctorCache
+          , ctorName
+          ;
+        if(typeOfType === 'function') {
+            ctorCache = ctors.cache;
+            ctorName = ctorCache.get(typeVal);
+            if(!ctorName) {
+                ctorName = 'c' + (ctors.i++);
+                ctors.init.push('var ', ctorName, ' = ', typeAdress,';\n');
+                ctorCache.set(typeVal, ctorName);
+            }
+            typeTest.push( arg, ' instanceof ', ctorName);
+        }
+        else if (typeOfType === 'string') {
+            switch(typeVal) {
+                case 'int':
+                    typeTest.push('typeof ', arg,' === "number" && '
+                            , arg, ' === (',arg,'|0)');
+                    break;
+                case 'float':
+                    typeTest.push('typeof ', arg,' === "number" && '
+                            , 'isFinite(', arg, ') && '
+                            , arg, ' !== (',arg,'|0)');
+                    break;
+                case 'number':
+                    typeTest.push('typeof ', arg,' === "number" && '
+                            , arg, ' === ', arg);
+                    break;
+                case 'NaN':
+                    typeTest.push(arg, ' !== ', arg);
+                    break;
+                case 'null':
+                    typeTest.push(arg, ' === null');
+                    break;
+                case 'Infinity':
+                    typeTest.push(arg, ' === Number.POSITIVE_INFINITY');
+                    break;
+                case '-Infinity':
+                    typeTest.push(arg, ' === Number.NEGATIVE_INFINITY');
+                    break;
+                default:
+                    typeTest.push('typeof ',arg ,' === ', stringify(typeVal));
+                    break;
+            }
+        }
+        else
+            throw new ValueError('Unkown type for a value-type: ' + typeOfType);
+
+        return typeTest.join('');
+    }
+
+    // helper for compile
+    function _makeTypeTests(body, typeTests, ctors, name, type, adress) {
+        var i
+          , l = type instanceof Array ? type.length : 1
+          , typeAdress
+          , typeVal
+          , test
+          ;
+        for(i=0;i<l;i++) {
+            if(i) body.push(' || ');
+            if(type instanceof Array) {
+                typeAdress = adress + '[' + i + ']';
+                typeVal = type[i];
+            }
+            else {
+                typeAdress = adress;
+                typeVal = type;
+            }
+            test = _makeTypeTest(name, typeAdress, typeVal, ctors);
+            // Caching the results of identical tests
+            // without _cacheTypeTest this would be just: body.push(test);
+            _cacheTypeTest(body, typeTests, test);
+        }
+    }
+
+    // helper for compile
+    function _cacheTypeTest(body, typeTests, typeTest) {
+        var typeData = typeTests[typeTest];
+        if(!typeData) {
+            // Rember the body index (bi) for later replacement
+            typeTests[typeTest] = {bi: body.length, varName: null};
+            body.push(typeTest);
+            return;
+        }
+        // We had this test once! Prepare to save its result when it's
+        // executed the first time.
+        if(!typeData.varName) {
+            typeData.varName = 'tt' + typeTests.__length;
+            typeTests.__length++;
+
+            // Initialize the name in the prelude of the function.
+            // We can't  do this inline.
+            typeTests.__init.push('var ' + typeData.varName + ';\n');
+
+            // The first occurance of the test is replaced to store
+            // its result in a name.
+            body[typeData.bi] = typeData.varName + ' = (' + typeTest + ')';
+
+        }
+        // The current test tries to use the cached version if it was already
+        // executed. Otherwise it falls back to initializie the var itself.
+        body.push('(', typeData.varName, ' || (', typeData.varName ,' === false ? false'
+                ,' : ',typeData.varName ,' = (',typeTest,')))');
+    }
+
+    /**
+     * compile the Operator description to native JavaScript.
+     */
+    _p.compile = function () {
+        /*jshint evil:true*/
+        var body = ['"use strict";\n']
+          , i, j, k, l, ll, description, methodName
+          , names, args, type, typeVarsIndex, ctorIndex, isBoxed
+          , hasMatchAll = false
+          , unboxedNameTokens = false
+          , typeTests = {
+                __length: 0
+              , __init: []
+            }
+          , ctors = {
+                i: 0
+              , cache: new Map()
+              , init: []
+            }
+          ;
+        body.push(
+            '//', this.literal, '\n',
+            'var NameToken = this.NameToken\n'
+          , '  , methods = this._methods\n'
+          , '  ;\n'
+        );
+        names = _makeLocalBoxedNames(body, this._methods, this.consumes);
+        args = 'getAPI' + (this.consumes ? ', ' + names.join(', ') : '');
+
+        // a placeholder
+        typeVarsIndex = body.length;
+        body.push('');
+
+        for(i=0, l=this._methods.length;i<l; i++) {
+            description = this._methods[i];
+            methodName = 'm' + i;
+            body.push('var ',methodName,' = methods[', i ,'];\n');
+
+            isBoxed = description[0] === '*getAPI*';
+            if(unboxedNameTokens && isBoxed)
+                // This is a problem in the design of the operator
+                // see the lengthy error message in p._setMethod
+                throw new ValueError('Found a *getAPI* after names where already unboxed!');
+            else if(!unboxedNameTokens && !isBoxed) {
+                //unbox NameTokens
+                unboxedNameTokens = true;
+                names = _makeLocalUnboxedNames(body, this.consumes, names);
+                args = names.join(', ');
+            }
+
+            if(typeof description === 'function') {
+                // That's it! This is a match-all method, no further
+                // evaluation is needed.
+                hasMatchAll = true;
+                body.push('return ',methodName,'(', args, ');');
+                break;
+            }
+
+            // a placeholder
+            ctorIndex = body.length;
+            body.push('');
+
+            body.push('if(true');
+            // k: start at 1 if the first item is *getAPI*
+            for(j=0, k=isBoxed?1:0,ll=this.consumes;j<ll;k++,j++) {
+                type = description[k];
+                // always true
+                if(type === '*anything*') continue;
+                body.push(' && (');
+                _makeTypeTests(body, typeTests, ctors, names[j], type,  methodName + '[' + k +']');
+                body.push(')');
+            }
+            body.push(
+                ')\n    '
+              , 'return ' ,methodName,'[', description.length-1, '](', args, ');\n'
+            );
+
+            // write the constructor references
+            body[ctorIndex] = ctors.init.join('');
+            ctors.init = [];
+        }
+        // write the type test result var names
+        if(typeTests.__init.length)
+            body[typeVarsIndex] = typeTests.__init.join('');
+
+        if(!hasMatchAll)
+            // raise if we are still here
+            body.push(
+                'throw new this.CPSFormulaError('
+              , stringify('Can\'t find an implementation for the operator '
+                    + stringify(this.literal)
+                    + ' that matches the given combination of argument types:\n')
+              , '\n    '
+              , ' + args.map(function(item){\n    '
+              , 'return "\\"" + item + "\\" (typeof: " + (typeof item) + ")";}'
+              , ').join(", ")'
+              , '\n    );'
+            );
+        return new Function('getAPI', 'args', body.join(''));
     };
 
     /**
@@ -155,10 +436,9 @@ define([
      * implementation for the given arguments or -1.
      */
     _p._findMethod = function(getAPI, argsObj) {
-        var index=0, j, k, type, value, args;
+        var index=0, length=this._methods.length, j, k, type, value, args;
 
-
-        for(;index<this._methods.length; index++) {
+        for(;index<length; index++) {
             // the routine can request as first argument getAPI
             // this however changes how NameToken is processed
             // without *getAPI* the lookup is made for the operator
@@ -168,22 +448,20 @@ define([
 
             // convert from TokenType (container) to the JavaScript Value
             // equivalents, before running the following methods
-            if(this._methods[index][0] !== '*getAPI*'){
+            if(this._methods[index][0] !== '*getAPI*') {
                 j = 0;
-                args = argsObj.convertedNameTokens;
+                args = argsObj.unboxedNameTokens;
             }
             else {
                 j = 1;
-                args = argsObj.keptNameTokens;
+                args = argsObj.original;
             }
-
-            k = 0;
 
             if(typeof this._methods[index] === 'function')
                 // match all
                 return index;
 
-            for(;k<args.length;j++, k++) {
+            for(k = 0;k<args.length;j++, k++) {
                 type = this._methods[index][j];
                 if(type !== "*anything*" && !isInstance(args[k], type))
                     break;
@@ -195,8 +473,15 @@ define([
         return -1;
     };
 
-    _p.execute = function(getAPI /*, arguments */) {
-        var argsObj = new Internal_Arguments(Array.prototype.slice.call(arguments, 1), getAPI)
+    /**
+     * This method interpretes the the Operator description.
+     *
+     * However, usually the Operator will compile itself into
+     * native JavaScript upon initializaiton and override this
+     * implementation
+     */
+    _p.execute = function(getAPI , _args) {
+        var argsObj = new Internal_Arguments(_args, getAPI)
           , index
           , args
           , result
@@ -207,7 +492,7 @@ define([
             throw new CPSFormulaError('Can\'t find an implementation for the '
                 + 'operator "'+this.literal+'" that matches the given '
                 + 'combination of argument types: '
-                + argsObj.pure.map(function(item){
+                + argsObj.original.map(function(item){
                         return 'type "' + (typeof item)
                                             + '" string "' + item +'"';})
                     .join(', ')
@@ -215,16 +500,16 @@ define([
         }
         if(typeof this._methods[index] === 'function') {
             operator = this._methods[index];
-            args = argsObj.convertedNameTokens;
+            args = argsObj.unboxedNameTokens;
         }
         else {
             operator = this._methods[index].slice(-1).pop();
             if(this._methods[index][0] === '*getAPI*') {
-                args = argsObj.keptNameTokens;
+                args = argsObj.original;
                 args.unshift(getAPI);
             }
             else
-                args = argsObj.convertedNameTokens;
+                args = argsObj.unboxedNameTokens;
         }
         result = operator.apply(this, args);
 
@@ -242,56 +527,31 @@ define([
      *
      * The two versions of the arguments array are available at the
      * property getters:
-     *   - convertedNameTokens:
-     *   - keptNameTokens
-     * In both cases, Tokens of the type NumberToken, StringToken, SelectorToken
-     * are converted to their value (using their getValue method)
-     * within convertedNameTokens NameTokens are converted to the value
+     *   - unboxedNameTokens:
+     *   - original
+     * within unboxedNameTokens NameTokens are converted to the value
      * returned by getAPI(token.getValue())
      */
     function Internal_Arguments(args, getAPI) {
-        this.pure = args;
+        this.original = args;
         this._getAPI = getAPI;
-        this._keptNameTokens = null;
-        this._convertedNameTokens = null;
+        this._unboxedNameTokens = null;
     }
 
-    Object.defineProperty(Internal_Arguments.prototype, 'convertedNameTokens', {
+    Object.defineProperty(Internal_Arguments.prototype, 'unboxedNameTokens', {
         get: function(){
-            if(!this._convertedNameTokens)
-                this._convertedNameTokens = this.pure
-                        .map(this._convertTokenToValue.bind(this, true));
-            return this._convertedNameTokens;
+            if(!this._unboxedNameTokens)
+                this._unboxedNameTokens = this.original.map(_unbox, this);
+            return this._unboxedNameTokens;
         }
     });
 
-    Object.defineProperty(Internal_Arguments.prototype, 'keptNameTokens', {
-        get: function(){
-            if(!this._keptNameTokens)
-                this._keptNameTokens = this.pure
-                        .map(this._convertTokenToValue.bind(this, false));
-            return this._keptNameTokens;
-        }
-    });
-
-    Internal_Arguments.prototype._convertTokenToValue  = function(convertNameTokens, token) {
-        // types that need conversion:
-        if(token instanceof NumberToken || token instanceof StringToken
-                || token instanceof SelectorToken)
-            return token.getValue();
-
-        // in some cases it is important that we unpack//resolve NameToken
-        // namely when they refer to a value of the host (that can be obtained)
-        // via getAPI.
-        // this is a good place to do, but we need to know if this operator
-        // is going to handle name tokens itself or not.
-        // The presence of *getAPI* as first argumnt  which indicates
-        // that the operator implementation is aware of such things like
-        // names.
-        if(convertNameTokens && token instanceof NameToken)
+    function _unbox (token) {
+         /*jshint validthis:true */
+        if(token instanceof NameToken)
             return this._getAPI(token.getValue());
         return token;
-    };
+    }
 
     return OperatorToken;
 });
