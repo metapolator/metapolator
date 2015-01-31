@@ -16,3 +16,7 @@ _site
 app/lib/obtainJS/
 
 app/lib/ufoJS/
+
+next/app/lib/ufoJS/
+
+next/app/lib/obtainJS/

@@ -26,7 +26,7 @@ app.controller('specimenController', ['$scope', '$sce', 'sharedScope', function(
     $scope.filter = "";
     $scope.strict = 1;
     $scope.fontbys = [
-        "glyph", "word"
+        "word", "glyph"
     ];
     $scope.selectedFontby = $scope.fontbys[0];
 
