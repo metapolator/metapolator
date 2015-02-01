@@ -22,6 +22,14 @@
 		padding: 16px;
 	}
 	
+	#temp-output {
+	    position: absolute;
+	    left: 50%;
+	    top: 100px;
+	    width: 50%;
+	    padding: 20px;
+	}
+	
 	
 /***********************************/
 	
@@ -686,7 +694,7 @@
                 }
                     
                 .slider-label {
-                    font-size: 12px;
+                    font-size: 9px;
                 }
                 
                 .triangle-button {

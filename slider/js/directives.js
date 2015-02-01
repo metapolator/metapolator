@@ -25,6 +25,9 @@ function($document) {
             // (RE-)RENDER
             scope.render = function() {
                 var data = scope.data.designSpaces[scope.data.currentDesignSpace];
+                
+                
+                
                 // remove all previous items before render
                 svg.selectAll('*').remove();
 
@@ -87,6 +90,7 @@ function($document) {
                         // update scope and redraw ellipses
                         var thisIndex = d3.select(this).attr('index');
                         data.axes[thisIndex].value = ((d3.event.x - 10) / 2);
+                        scope.getMetapolationRatios(data);
                         scope.$apply();
                     }).on('dragend', function() {
                         // dragstop
@@ -110,14 +114,14 @@ function($document) {
                     }).call(drag);
 
                     // create left label
-                    svg.selectAll('text.label-left').data(data.axes).enter().append('text').attr('class', 'label-left').attr('x', 10).attr('y', function(d, i) {
+                    svg.selectAll('text.label-left').data(data.axes).enter().append('text').attr('class', 'label-left slider-label').attr('x', 10).attr('y', function(d, i) {
                         return i * 50 + 38;
                     }).text(function(d) {
                         return data.masters[d.m1].name;
                     });
 
                     // create rigth label
-                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right').attr('x', 210).attr('y', function(d, i) {
+                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right slider-label').attr('x', 210).attr('y', function(d, i) {
                         return i * 50 + 38;
                     }).text(function(d) {
                         return data.masters[d.m2].name;
