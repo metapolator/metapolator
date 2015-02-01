@@ -33,10 +33,11 @@ function($document) {
 
                 // 1 master in Design Space
                 if (data.axes.length == 0 && data.masters.length == 1) {
-                    // create slider
-                    svg.append('circle').attr('class', 'slider-handle').attr('r', 8).attr('fill', '#000').attr('cx', 110).attr('cy', 20);
+                    
+                    // create axes
+                    svg.append('line').attr('class', 'slider-axis').attr('x1', '10').attr('x2', '210').attr('y1', 20).attr('y2', 20);
                     // create  label
-                    svg.append('text').attr('class', 'label-left').attr('x', 10).attr('y', 38).text(function() {
+                    svg.append('text').attr('class', 'label-center slider-label').attr('x', 10).attr('y', 38).text(function() {
                         return data.masters[0].name;
                     });
                 }
