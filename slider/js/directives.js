@@ -164,7 +164,7 @@ function($document) {
                 }).on('drag', function() {
                     d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y);
                     var thisIndex = d3.select(this).attr('index');
-                    d3.select('#label-' + thisIndex).attr('x', d3.event.x).attr('y', d3.event.y);
+                    d3.select('#label-' + thisIndex).attr('x', d3.event.x).attr('y', d3.event.y + 25);
                     //select corresponding label
                     // update scope and redraw ellipses
                     data.masters[thisIndex].coordinates = [d3.event.x, d3.event.y];
@@ -191,7 +191,7 @@ function($document) {
                 layer1.selectAll('text').data(data.masters).enter().append('text').attr('x', function(d) {
                     return d.coordinates[0];
                 }).attr('y', function(d) {
-                    return d.coordinates[1];
+                    return d.coordinates[1] + 25;
                 }).text(function(d) {
                     return d.master.name;
                 }).attr("font-size", "10px").attr("text-anchor", "middle").attr("font-size", "8px").attr("fill", "#fff").attr("id", function(d, i) {
