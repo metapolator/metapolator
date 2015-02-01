@@ -25,47 +25,15 @@ app.factory("sharedScope", function($rootScope) {
                 weight : '700',
                 display : true,
                 edit : false
-            }]
-        }, {
-            name : "Width",
-            masters : [{
-                fontFamily : 'Roboto Condensed',
-                name : 'Roboto C Regular',
-                weight : '400',
-                display : true,
-                edit : false
             }, {
-                fontFamily : 'Roboto Condensed',
-                name : 'Roboto C Bold',
-                weight : '700',
-                display : true,
-                edit : false
-            }]
-        }, {
-            name : "Slab",
-            masters : [{
-                fontFamily : 'Roboto Slab',
-                name : 'Roboto S Regular',
-                weight : '400',
-                display : false,
-                edit : false
-            }, {
-                fontFamily : 'Roboto Slab',
-                name : 'Roboto S Bold',
-                weight : '700',
+                fontFamily : 'Roboto',
+                name : 'Roboto Ultra-Bold',
+                weight : '900',
                 display : true,
                 edit : false
             }]
         }],
-        adjustmentMasters : [{
-            fontFamily : 'Droid sans mono',
-            name : 'Droid Regular',
-            weight : '400'
-        }, {
-            fontFamily : 'Lato',
-            name : 'Lato Black',
-            weight : '900'
-        }],
+        adjustmentMasters : [],
         designSpaces : [{
             name : "Space 1",
             type : "Control",
