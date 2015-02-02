@@ -37,5 +37,5 @@
             Triangles: {{!data.designSpaces[data.currentDesignSpace].triangle}}
         </button>
     </div> 
-    <div id="temp-output"><div ng-repeat="outp in output track by $index">{{outp}}</div></div>
+    <div id="temp-output"><div ng-if="data.designSpaces[data.currentDesignSpace].type == 'Control'" ng-repeat="outp in output track by $index">{{outp}}</div></div>
 </div>

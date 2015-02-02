@@ -17,6 +17,13 @@ function($document) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var svg = d3.select(element[0]).append('svg');
+            var paddingLeft = 30;
+            var paddingTop = 30;
+            var axisWidth = 200;
+            var paddingLabel = 20;
+            var axisDistance = 50;
+            
+            
             // watch for data changes and re-render
             scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
@@ -35,9 +42,9 @@ function($document) {
                 if (data.axes.length == 0 && data.masters.length == 1) {
                     
                     // create axes
-                    svg.append('line').attr('class', 'slider-axis').attr('x1', '10').attr('x2', '210').attr('y1', 20).attr('y2', 20);
+                    svg.append('line').attr('class', 'slider-axis').attr('x1', paddingLeft).attr('x2', (paddingLeft + axisWidth)).attr('y1', paddingTop).attr('y2', paddingTop);
                     // create  label
-                    svg.append('text').attr('class', 'label-center slider-label').attr('x', 10).attr('y', 38).text(function() {
+                    svg.append('text').attr('class', 'label-center slider-label').attr('x', paddingLeft).attr('y', paddingTop + paddingLabel).text(function() {
                         return data.masters[0].name;
                     });
                 }
@@ -82,51 +89,61 @@ function($document) {
                 // All other cases
                 else {
                     // create drag events
-                    var containment = d3.scale.linear().domain([1, 100]).range([0, 200]).clamp(true);
                     var drag = d3.behavior.drag().on('dragstart', function() {
                         // dragstart
                         d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
                     }).on('drag', function() {
-                        d3.select(this).attr('cx', d3.event.x);
+                        d3.select(this).attr('cx', limitX(d3.event.x));
                         // update scope and redraw ellipses
                         var thisIndex = d3.select(this).attr('index');
-                        data.axes[thisIndex].value = ((d3.event.x - 10) / 2);
+                        data.axes[thisIndex].value = ((limitX(d3.event.x) - paddingLeft) / (axisWidth / 100));
                         scope.getMetapolationRatios(data);
                         scope.$apply();
                     }).on('dragend', function() {
                         // dragstop
                         d3.select(this).attr('stroke', 'none');
                     });
+                    
+                    function limitX(x) {
+                        if (x < paddingLeft) {
+                            x = paddingLeft;
+                        }
+                        if (x > (axisWidth + paddingLeft)) {
+                            x = axisWidth + paddingLeft;
+                        }
+                        return x;
+                    }
 
                     // create axes
-                    svg.selectAll('line').data(data.axes).enter().append('line').attr('class', 'slider-axis').attr('x1', '10').attr('x2', '210').attr('y1', function(d, i) {
-                        return i * 50 + 20;
+                    svg.selectAll('line').data(data.axes).enter().append('line').attr('class', 'slider-axis').attr('x1', paddingLeft).attr('x2', (paddingLeft + axisWidth)).attr('y1', function(d, i) {
+                        return i * axisDistance + paddingTop;
                     }).attr('y2', function(d, i) {
-                        return i * 50 + 20;
+                        return i * axisDistance + paddingTop;
                     });
 
                     // create slider handles
                     svg.selectAll('circle').data(data.axes).enter().append('circle').attr('class', 'slider-handle').attr('r', 8).attr('fill', '#000').attr('cx', function(d) {
-                        return d.value * 2 + 10;
+                        return d.value * (axisWidth / 100) + paddingLeft;
                     }).attr('cy', function(d, i) {
-                        return i * 50 + 20;
+                        return i * axisDistance + paddingTop;
                     }).attr('index', function(d, i) {
                         return i;
                     }).call(drag);
 
                     // create left label
-                    svg.selectAll('text.label-left').data(data.axes).enter().append('text').attr('class', 'label-left slider-label').attr('x', 10).attr('y', function(d, i) {
-                        return i * 50 + 38;
+                    svg.selectAll('text.label-left').data(data.axes).enter().append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft).attr('y', function(d, i) {
+                        return i * axisDistance + paddingTop + paddingLabel;
                     }).text(function(d) {
                         return data.masters[d.m1].name;
                     });
 
                     // create rigth label
-                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right slider-label').attr('x', 210).attr('y', function(d, i) {
-                        return i * 50 + 38;
+                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right slider-label').attr('x', (paddingLeft + axisWidth)).attr('y', function(d, i) {
+                        return i * axisDistance + paddingTop + paddingLabel;
                     }).text(function(d) {
                         return data.masters[d.m2].name;
                     });
+                    scope.getMetapolationRatios(data);
 
                 }
 
