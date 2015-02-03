@@ -1,7 +1,7 @@
 /**
  * This can be distilled down to the non es6 file by running the following
  * from the root of the git repository
- * 
+ *
  * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js; popd
  *
  */
@@ -10,11 +10,13 @@ define([
   , 'metapolator/math/hobby'
   , 'metapolator/math/Vector'
   , 'metapolator/models/MOM/Glyph'
+  , 'metapolator/timer'
 ], function(
     errors
   , hobby
   , Vector
   , MOMGlyph
+  , timer
 ) {
     "use strict";
     var KeyError = errors.Key
@@ -35,14 +37,15 @@ define([
           , glyph
           , drawFunc
           , updatedUFOData
-          , v, ki, k, keys
+          , i, l, v, ki, kil, k, keys
           , style
+          , time, one, total = 0
           ;
         console.warn('exporting ...');
-        for(var i = 0;i<glyphs.length;i++) {
+        for(i = 0,l=glyphs.length;i<l;i++) {
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
-            console.warn('exporting', glyph.id);
+            time = timer.now();
             drawFunc = this.drawGlyphToPointPen.bind(
                 this
               , {
@@ -54,7 +57,7 @@ define([
             // Allow the glyph ufo data to be updated by the CPS.
             updatedUFOData = glyph.getUFOData();
             keys = Object.keys(updatedUFOData);
-            for(ki=0;ki<keys.length;ki++) {
+            for(ki=0,kil=keys.length;ki<kil;ki++) {
                 try {
                     k = keys[ki];
                     v = style.get(MOMGlyph.convertUFOtoCPSKey(k));
@@ -67,8 +70,15 @@ define([
                 }
             }
             this._glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
-                                      undefined, {precision: this._precision})
+                                      undefined, {precision: this._precision});
+            one = timer.now() - time;
+            total += one;
+            console.warn('exported', glyph.id, 'this took', one,'ms');
         }
+        console.warn('finished ', i, 'glyphs in', total
+            , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
+            , (1000 * i / total)  ,' glyphs per second.'
+        );
         this._glyphSet.writeContents(false);
     };
 
@@ -149,16 +159,17 @@ define([
      *          on6.left in out on5.left
      *              => out in 8
      */
-    function* renderPenstrokeOutline( pen, model, penstroke ) {
+    function renderPenstrokeOutline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
           , segmentType, terminal, ctrls, vector
+          , i,l
           ;
 
         pen.beginPath();
         // first draw the right side
-        for(var i=0;i<points.length;i++) {
+        for(i=0,l=points.length;i<l;i++) {
             point = model.getComputedStyle(points[i].right);
             // Actually, all points have controls. We don't have to draw
             // lines. We should make a CPS value if we want to draw a
@@ -168,29 +179,28 @@ define([
                 if(i === 0) {
                     // this reproduces the starting terminal
                     prePoint = model.getComputedStyle(points[i].left);
-                    terminal = 'start'
+                    terminal = 'start';
                 }
                 else {
                     terminal = false;
                     prePoint = model.getComputedStyle(points[i-1].right);
                 }
                 ctrls = getControlsFromStyle(prePoint, point, terminal);
-                for (vector of ctrls) {
-                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                }
+                /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
+                /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
             }
             else {
                 segmentType =  'line';
                 console.warn('implicit line segment, right side, this should be explicit in CPS');
             }
-            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         // draw the left side
-        for(i=points.length-1;i>=0 ;i--) {
+        for(i=l-1;i>=0 ;i--) {
             point = model.getComputedStyle(points[i].left);
             if(true/*always curve*/) {
                 segmentType = 'curve';
-                if(i === points.length-1) {
+                if(i === l-1) {
                     // this reproduces the ending terminal
                     terminal = 'end';
                     prePoint = model.getComputedStyle(points[i].right);
@@ -210,27 +220,27 @@ define([
                     ctrls.reverse();
                     point = prePoint;
                 }
-                for (vector of ctrls) {
-                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                }
+                /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
+                /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
             }
             else {
                 segmentType = 'line';
                 console.warn('implicit line segment, left side, this should be explicit in CPS');
             }
-            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }
     ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
-    function* renderContour( pen, model, contour ) {
+    function renderContour( pen, model, contour ) {
         var points = contour.children
           , point
           , segmentType
+          , i, l
           ;
         pen.beginPath();
-        for(var i=0;i<points.length;i++) {
+        for(i=0, l=points.length;i<l;i++) {
             point = model.getComputedStyle(points[i]);
             // Actually, all points have controls. We don't have to draw
             // lines. We should make a CPS value if we want to draw a
@@ -241,36 +251,36 @@ define([
             else {
                 segmentType =  'line';
             }
-            yield pen.addPoint(point.get('in').valueOf(), undefined, undefined, undefined);
-            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-            yield pen.addPoint(point.get('out').valueOf(), undefined, undefined, undefined);
+            /* yield*/ pen.addPoint(point.get('in').valueOf(), undefined, undefined, undefined);
+            /* yield*/ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            /* yield*/ pen.addPoint(point.get('out').valueOf(), undefined, undefined, undefined);
         }
         pen.endPath();
     }
     ExportController.renderContour = renderContour;
 
-    function* renderPenstrokeCenterline( pen, model, penstroke ) {
+    function renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
           , segmentType, ctrls, vector
+          , i, l
           ;
         // center line
-        pen.beginPath()
-        for(var i=0;i<points.length;i++) {
+        pen.beginPath();
+        for(i=0,l=points.length;i<l;i++) {
             point = model.getComputedStyle(points[i].center);
             if(i !== 0) {
                 segmentType = 'curve';
                 prePoint = model.getComputedStyle(points[i-1].center);
                 ctrls = getControlsFromStyle(prePoint, point);
-                for (vector of ctrls) {
-                    yield pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-                }
+                /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
+                /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
             }
             else
                 // this contour is not closed, the first point is a move
                 segmentType = 'move';
-            yield pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
+            /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
     }
@@ -278,26 +288,28 @@ define([
 
     function drawGlyphToPointPenGenerator ( renderer, model, glyph, pen) {
         function* generator() {
-            var item, glyphName, transformation;
-            for (item of glyph.children) {
+            var item, glyphName, transformation, i,l, children = glyph.children;
+            for (i=0,l=children.length;i<l;i++) {
+                item = children[i];
                 if( item.type === 'component' ) {
                     glyphName = item.baseGlyphName;
                     transformation = model.getComputedStyle(item).get( 'transformation' );
                     pen.addComponent( glyphName, transformation );
                 }
                 else if(renderer.contour && item.type === 'contour' )
-                    yield* renderer.contour( pen, model, item );
+                    yield renderer.contour( pen, model, item );
                 else if(renderer.penstroke && item.type === 'penstroke')
-                    yield* renderer.penstroke( pen, model, item );
+                    yield renderer.penstroke( pen, model, item );
             }
-        };
+        }
         return generator();
     }
     ExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
 
     _p.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
-        for (var v of drawGlyphToPointPenGenerator(renderer, model, glyph, pen));
-    }
+        var gen = drawGlyphToPointPenGenerator(renderer, model, glyph, pen);
+        while(!(gen.next().done));
+    };
 
     return ExportController;
 });

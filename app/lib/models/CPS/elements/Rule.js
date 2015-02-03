@@ -26,11 +26,11 @@ define([
      */
     _p.getSelectorList = function(namespaces) {
         var selectorList = this._selectorList
-          , i = 0
+          , i, l
           ;
         // Multiply the selectorList on the left by each namespace in turn
         if (namespaces !== undefined) {
-            for(;i<namespaces.length;i++)
+            for(i=0, l=namespaces.length;i<l;i++)
                 if(namespaces[i] !== null)
                     selectorList = namespaces[i].multiply(selectorList);
         }

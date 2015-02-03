@@ -45,41 +45,52 @@ define([
         prepared.unshift('{');
         prepared.push('}');
         return prepared.join('\n');
-    }
-    
-    
+    };
+
+
     function _filterParameters(item) {
         return (item instanceof Parameter && !item.invalid);
     }
     
     Object.defineProperty(_p, 'items', {
         get: function() {
-            return this._items.filter(_filterParameters);
+            var _items = this._items, items = [], i, l, item;
+            for(i=0,l=this._items.length;i<l;i++)
+                if(_filterParameters(item = _items[i]))
+                    items.push(item);
+            return items;
         }
-    })
-    
+    });
+
     _p._getAllItems = function() {
         return this._items.slice();
-    }
-    
+    };
+
+    // FIXME: maybe this should be deprecated, it's expensive
+    // also, this.items could be cached, maybe
     Object.defineProperty(_p, 'length', {
         get: function(){ return this.items.length; }
-    })
-    
+    });
+
     _p._buildIndex = function() {
-        var items = this.items
+        var items = this._items
+          , item
           , i=items.length-1
-          , key
+          , key, dict, keys
           ;
-        this._dict = Object.create(null);
+        this._dict = dict = Object.create(null);
+        this._keys = keys = [];
         // searching backwards, because the last item with key === name has
         // the highest precedence
         for(;i>=0;i--) {
-            key = this.items[i].name;
-            if(!(key in this._dict))
-                this._dict[key] = items[i].value;
+            if(!_filterParameters(item = items[i]))
+                continue;
+            key = item.name;
+            if(!(key in dict)) {
+                dict[key] = item.value;
+                keys.push(key);
+            }
         }
-        this._keys = Object.keys(this._dict);
     };
 
     _p.keys = function() {
@@ -112,11 +123,11 @@ define([
                 indexes.push(i);
         }
         return indexes;
-    }
-    
+    };
+
     _p.itemValue = function(index) {
         return this._items[index].value;
-    }
-    
+    };
+
     return ParameterDict;
-})
+});

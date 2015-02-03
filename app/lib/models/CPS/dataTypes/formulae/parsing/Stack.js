@@ -1,21 +1,33 @@
 define([
     'metapolator/errors'
   , './_ValueToken'
-
+  , './NumberToken'
+  , './StringToken'
+  , './SelectorToken'
 ], function(
     errors
   , _ValueToken
+  , NumberToken
+  , StringToken
+  , SelectorToken
 ) {
     "use strict";
 
-    var CPSFormulaError = errors.CPSFormula;
+    var CPSFormulaError = errors.CPSFormula
+      , stackCache = Object.create(null)
+      ;
+
 
     function Stack(postfixStack, finalizeMethod) {
         // raises CPSFormulaError
         this._check(postfixStack);
-        this._stack = postfixStack;
         this._finalizeMethod = finalizeMethod;
-        this._compiled = undefined;
+        var sig;
+        this._signature = sig = this._makeSignature(postfixStack);
+        this._stack = this._unwrap(postfixStack);
+
+        this.execute = stackCache[sig] || (stackCache[sig] = this._compile(postfixStack));
+        // this.execute = this._compile();
     }
 
     var _p = Stack.prototype;
@@ -26,6 +38,37 @@ define([
     Object.defineProperty(_p, 'items', {
         get: function(){ return this._stack.slice(); }
     });
+
+    _p._unwrap = function(stack) {
+        var result = [], i,l, token;
+        for(i=0,l=stack.length;i<l;i++) {
+            token = stack[i];
+            result.push((token instanceof NumberToken || token instanceof StringToken
+                                                      || token instanceof SelectorToken
+                ? token.getValue()
+                : token
+                ));
+        }
+        return result;
+    };
+
+    _p._makeSignature = function (stack) {
+        var i,l, result = [], c=0;
+        for(i=0,l=stack.length;i<l;i++) {
+            if(stack[i] instanceof _ValueToken)
+                c++;
+            else {
+                if(c) {
+                    result.push('c', c);
+                    c = 0;
+                }
+                result.push('e', stack[i].consumes);
+            }
+        }
+        if(c) result.push('c', c);
+        if(this._finalizeMethod) result.push('f');
+        return result.join('');
+    };
 
     _p._makeDebugMessageStackDetails = function(stack){
         var commands = stack.slice()
@@ -66,36 +109,39 @@ define([
                         + this._makeDebugMessageStackDetails(stack));
     };
 
-    _p._compile = function() {
-        var i=0
+    _p._compile = function(_stack) {
+        var i, l
           , args
           , stack = []
           , resultCounter = 0
           , resultName = 'commands[0]'
           , body = [
                '"use strict";'
+              , 'var commands = this._stack;'
           ];
-        for(;i<this._stack.length;i++) {
-            if(this._stack[i] instanceof _ValueToken)
+        for(i=0,l=this._stack.length;i<l;i++) {
+            if(_stack[i] instanceof _ValueToken)
                 stack.push('commands[' + i +']');
             else {
-                args = ['getAPI'];
+                args = [];
                 Array.prototype.push.apply(args
-                                , stack.splice(-this._stack[i].consumes));
+                                , stack.splice(-_stack[i].consumes));
                 resultName = 'r'+ (resultCounter++);
-                body.push('var '+resultName+' = commands['+ i +'].execute('+ args.join(',') +');');
+                body.push('var '+resultName+' = commands['+ i +'].execute(getAPI, ['+ args.join(',') +']);');
                 stack.push(resultName);
             }
         }
         // return the last result
         if(this._finalizeMethod)
-            body.push('return finalize(' + resultName + ', getAPI);');
+            body.push('return this._finalizeMethod(' + resultName + ', getAPI);');
         else
             body.push('return '+ resultName + ';');
-        return new Function('getAPI', 'commands', 'finalize', body.slice(1).join('\n'));
+        return new Function('getAPI', body.slice(1).join('\n'));
     };
 
-    _p.interpret = function(getAPI) {
+    // This is replaced with a compiled version on initialisation.
+    // It remains here because the algorithm is more obvious.
+    _p.execute = function(getAPI) {
         var commands = this._stack.slice()
           , stack = []
           , args
@@ -131,17 +177,6 @@ define([
             ?  this._finalizeMethod(result, getAPI)
             : result
         );
-    };
-
-    _p.execute = function(getAPI) {
-        // FIXME: if/how much the complile strategy is faster must be measured
-        // the one alternative is interpreting the stack using the following
-        // line.
-        // return this.interprete(getAPI);
-        if(!this._compiled)
-            this._compiled = this._compile();
-        return this._compiled(getAPI, this._stack, this._finalizeMethod);
-
     };
 
     return Stack;

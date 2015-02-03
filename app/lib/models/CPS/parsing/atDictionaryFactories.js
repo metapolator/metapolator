@@ -4,6 +4,7 @@ define([
   , './parameterFactories'
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/AtRuleCollection'
+  , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
 
@@ -13,6 +14,7 @@ define([
   , parameterFactories
   , Parameter
   , AtRuleCollection
+  , ParameterCollection
   , AtRuleName
   , CPSDictionaryEntry
 ) {
@@ -52,6 +54,7 @@ define([
      */
     var atDictionaryFactories = Object.create(parameterFactories.factories)
       , atDictionaryParsingSwitch
+      , _atDictionaryDeprecationWarning
       ;
     (function(factories) {
             var k;
@@ -66,17 +69,28 @@ define([
               , collection
               , name
               ;
+            // FIXME: remove all this ASAP, it will make the codebase
+            // much smaller!
+
+            if(!_atDictionaryDeprecationWarning) {
+                _atDictionaryDeprecationWarning = true;
+                console.warn("@dictionary is deprecated!\n"
+                    , 'Remove all occurences of "@dictionary {" and it\'s'
+                    , 'closing "}" and you should be good to go.\nThe contents of '
+                    , '@dictionary will continue to work as normal parameters.'
+                );
+            }
             for(;i<node.children.length; i++)
                 if(name && collection)
                     break;
                 else if(!collection
-                        && node.children[i].instance instanceof AtRuleCollection)
+                        && node.children[i].instance instanceof ParameterCollection)
                     collection = node.children[i].instance;
                 else if(!name && node.children[i].instance instanceof AtRuleName)
                     name = node.children[i].instance;
             if(!collection || !name)
                 return this['__GenericAST__'](node, source);
-            collection.name = name;
+            //collection.name = name;
             return collection;
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
@@ -90,8 +104,9 @@ define([
                     continue;
                 items.push(node.children[i].instance)
             }
-
-            return new AtRuleCollection(undefined, items, source, node.lineNo);
+            //return new AtRuleCollection(undefined, items, source, node.lineNo);
+            // We are NOT creating AtRuleCollections anymore!
+            return new ParameterCollection(items, source, node.lineNo);
         }
       , 'declaration': function(node, source) {
             // this is an @dictionary declaration

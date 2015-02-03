@@ -23,7 +23,12 @@
     };
     </script>
     <script src="/lib/bower_components/less.js/dist/less-1.7.0.min.js"></script>
-    <script src="/lib/bower_components/requirejs/require.js" data-main="/lib/redPillMain.js"></script>
+    <script src="/lib/bower_components/requirejs/require.js"></script>
+    <script>
+    require(['/lib/browserConfig.js'], function(){
+        require(['/lib/redPillMain.js']);
+    });
+    </script>
     <!-- end of development -->
     <!-- production
     <script> window.demoMode = true; </script>

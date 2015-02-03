@@ -26,7 +26,8 @@ define([
         this._alien = false;
         this._message = undefined;
         this._value = undefined;
-        
+        this._specificity = null;
+
         if(!(type in this._supportedTypes)) {
             this._alien = true;
             this._message = 'Type of SimpleSelector is unsupported:' + type;
@@ -41,9 +42,10 @@ define([
         this._name = name;
         
         if(this._type === 'pseudo-class' && this._name === 'i') {
-            if(value === undefined || value !== value) {
+            if(value === undefined || value !== value || typeof value !== 'number') {
                 this._invalid = true;
-                this._message = 'No valid value for pseudoclass "i": ' + value;
+                this._message = 'No valid value for pseudoclass "i": ('
+                                            + typeof value +') '  + value;
                 return;
             }
             this._value = value;
@@ -102,23 +104,27 @@ define([
     });
     Object.defineProperty(_p, 'specificity', {
         get: function() {
-            var a, b, c;
-            a = b = c = 0;
-            switch(this._type) {
-                case 'id':
-                    a = 1;
-                    break;
-                case 'class':
-                case 'attribute': // unsupported at the moment
-                case 'pseudo-class':
-                    b = 1;
-                    break;
-                case 'type':
-                case 'pseudo-element':
-                    c = 1;
-                    break;
+            var s = this._specificity;
+            if(!s) {
+                var a, b, c;
+                a = b = c = 0;
+                switch(this._type) {
+                    case 'id':
+                        a = 1;
+                        break;
+                    case 'class':
+                    case 'attribute': // unsupported at the moment
+                    case 'pseudo-class':
+                        b = 1;
+                        break;
+                    case 'type':
+                    case 'pseudo-element':
+                        c = 1;
+                        break;
+                }
+                this._specificity = s = [a, b, c];
             }
-            return [a, b, c];
+            return s;
         }
     });
     

@@ -9,6 +9,7 @@ define([
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/SelectorList'
+  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
   , 'gonzales/gonzales'
   , './parseSelectorList'
 ], function (
@@ -22,6 +23,7 @@ define([
   , AtRuleName
   , AtNamespaceCollection
   , SelectorList
+  , CPSDictionaryEntry
   , gonzales
   , parseSelectorList
 ) {
@@ -168,8 +170,8 @@ define([
                 catch(error) {
                     if(!(error instanceof errors.CPSRegistryKey))
                         throw error;
-                    // key error means the value is unknown to us
-                    return new this['__GenericAST__'](node, source);
+                    // initialize the generic datatype
+                    typeDefinition = CPSDictionaryEntry.factory;
                 }
                 value.initializeTypeFactory(name.name, typeDefinition);
             }
@@ -256,7 +258,7 @@ define([
             return collection;
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
-      , 'atrulerq': function(node, source) {
+      , 'atrulerq': function(node, source, ruleController) {
             var i=0
               , braces
               , selectorString
@@ -290,7 +292,8 @@ define([
                 .join(', ')
 
             try {
-                return parseSelectorList.fromString(selectorString);
+                return parseSelectorList.fromString(selectorString, undefined
+                        , ruleController && ruleController.selectorEngine);
             }
             catch(error) {
                 if(!(error instanceof CPSError))
@@ -322,10 +325,6 @@ define([
             // name, selectorList
             return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);
         }
-
-
-
-
     })
 
     return {

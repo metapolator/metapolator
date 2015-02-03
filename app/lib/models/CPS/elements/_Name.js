@@ -9,21 +9,20 @@ define([
      */
     function _Name(name, comments ,source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._name = name;
         this._comments = comments;
+        Object.defineProperty(this, 'name', {
+            value: name
+          , enumerable: true
+        });
     }
     var _p = _Name.prototype = Object.create(Parent.prototype)
     _p.constructor = _Name;
-    
-    Object.defineProperty(_p, 'name', {
-        get: function(){ return this._name; }
-    })
-    
+
     /**
      * Prints all comments after the name.
      */
     _p.toString = function() {
-        return [this._name,
+        return [this.name,
                 this._comments.length ? ' ': '',
                 this._comments.join('\n')].join('');
     }

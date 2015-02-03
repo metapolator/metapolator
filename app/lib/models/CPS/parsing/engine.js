@@ -121,9 +121,8 @@ define([
                 // ASCENDING
                 // All children are already initialized.
                 if(node.makeInstance)
-                    node.instance = nodeConstructors[node.type]
-                        .call(nodeConstructors, node, source, ruleController);
-                                        
+                    node.instance = nodeConstructors[node.type](node, source, ruleController);
+
                 //switch back nodeConstructors if this element switched it
                 if(frame[2])
                     nodeConstructors = frame[2];

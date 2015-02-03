@@ -50,7 +50,8 @@ define([
         this._invalid = false;
         this._alien = false;
         this._message = undefined;
-        
+        this._specificity = null;
+
         var i = 0
           , item
           ;
@@ -104,7 +105,7 @@ define([
     ComplexSelector.add = function(a, b) {
         var value = a.value;
         value.push(new Combinator(' ', a.source, a.lineNo));
-        Array.prototype.push.apply(value, b.value);
+        Array.prototype.push.apply(value, b._value);
         return new ComplexSelector(value, a.source, a.lineNo);
     }
     
@@ -144,7 +145,7 @@ define([
         get: function() {
             var a, b, c, i=0, specificity;
             a = b = c = 0;
-            if(this._specificity === undefined) {
+            if(!this._specificity) {
                 for(;i<this._value.length;i++) {
                     if(this._value[i] instanceof Combinator)
                         continue;

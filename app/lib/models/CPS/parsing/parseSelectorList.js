@@ -17,24 +17,25 @@ define([
     "use strict";
     var CPSError = errors.CPS
       , CPSParserError = errors.CPSParser;;
-    
-    function selectorListFromString(string, sourceName) {
+
+    function selectorListFromString(string, sourceName, selectorEngine) {
         try {
             var ast = gonzales.srcToCSSP(string + '{}');
         } catch(error) {
             throw new CPSParserError('Error parsing "' + string + '" as a selector. '
                 + 'Message: ' + error.message);
         }
-        return selectorListFromAST(ast, sourceName)
+        return selectorListFromAST(ast, sourceName, selectorEngine)
     }
-    
-    function selectorListFromAST(ast, sourceName) {
+
+    function selectorListFromAST(ast, sourceName, selectorEngine) {
         var rules
           , selectorList
           , i=0
           ;
         rules = parserEngine(selectorFactories, [], ast
-                                    , sourceName || 'selector parser');
+                                    , sourceName || 'selector parser'
+                                    , {selectorEngine: selectorEngine});
         rules = rules.items;
         // search the first instance of SelectorList
         // and verify that nothing else was submitted.
