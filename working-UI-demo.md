@@ -1,37 +1,98 @@
-This page contains the deltas for the working UI demo of February–March 2015, in comparison to the contemporary overall interaction design. The working UI demo is meant to wrap up the current project phase, and to enable the next phase.
+This page contains the design deltas for the working UI demo of February–March 2015, as compared to the contemporary overall interaction design. The working UI demo is meant to wrap up the current project phase, and to enable the next phase.
 
 Naturally this will stick closely to what has been achieved up to now and what will be done for minipolator. Some of the choices that have to be made will hurt, but it will enable us to make something that can be useful to font designers.
 
 In general the working UI demo must be visual-designed, really communicating that people with visual design acumen work on this, but it should not look finished. The message should be in every way, also visually: this is just a start.
 
-This page is organised by UI section and refined just-in-time.
+This page is organised by UI section and will be refined just-in-time for development.
 
-## project + view control
-If there is a back-end for metapolator project files, then we can do some basic Open and Save; if not we bite the bullet and work with no projects: one-shot editing. view control is basically done; a few mins of fine tuning.
+## project + view control panel
+If there is a back-end for metapolator project files, then we can do some basic Open and Save; if not we bite the bullet and work with no projects: one-shot editing. view control is done, apart from a bit of fine-tuning.
 
-## parameters
-Stick to minipolator, i.e. offer only weight and width controls. Simon and I can make a nice interim design for this panel, something very simple with a hint of things to come.
+### local menu
+_When_ there is metapolator project file I/O, the local menu is as follows:
 
-## specimen + glyph editor
-forget about any direct-manipulation (i.e. with the mouse) parameter editing. our pain is changing glyphs in real-time, maybe we can show only 2, 3, or 5 glyphs that get their weight or width changed. these can still be mixed with other glyphs that are static (because they belong to another master, or are not part of the selection). the filter of the specimen needs to be re-jigged to show only those few chars that we can handle. glyph selections in the specimen must work.
+* New
+* Open…
+* -- \<separator\> --
+* Close
+* Save
+* Save As…
+
+When not:
+
+* New
+* -- \<separator\> --
+* Close
+
+## parameters panel
+Stick to minipolator, i.e. offer only weight and width controls. These work on (multiple) master and (multiple) glyph level. We can make a nice interim design for this panel, something very simple with a hint of things to come.
+
+**local menu**: none
+
+## specimen + glyph editor panel
+Forget about any direct-manipulation (i.e. with the mouse) parameter editing. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master).
+
+Our pain is changing glyphs in real-time, maybe we can show only 2, 3, or 5 glyphs that get their weight or width changed. These can still be mixed with other glyphs that are static (because they belong to another master, or are not part of the selection). The filter of the specimen needs to be re-jigged to show only those few chars that we can handle.
+
+**local menu**: none
 
 ## masters column
-stand-alone masters only; forget about master sequences and adjustment master (sequences). this saves us from a lot of exponential complexity, especially in the design spaces. Simon and I will come up with a (picture) glimpse of things to come for the adjustment master list. it should be possible in this working UI demo to load one ufo, and create a total of 5 masters out of it (width and height variations).
+Stand-alone masters only; forget about master sequences and adjustment master (sequences). This saves us from a lot of exponential complexity, especially in the design spaces panel. Simon and I will come up with a (picture) glimpse of things to come for the adjustment master list. It should be possible in this working UI demo to load one ufo and create a total of 5 masters out of it (width and height variations).
 
-## design spaces
-here you can now see how much work I saved us in the masters column. the control design space can be rigged up with simple sliders and triangles (+Jeroen Breen demoed them). maybe we set a limit of max 3 masters. maybe we drop, for now, free configuration of the sliders. optional: explore spaces (we look pretty close to having that working too).
+### local menu
+The local menu is as follows:
 
-## specimen (metapolation)
-even more pain with doing this in real-time. same, or even tougher, limits (re: parameter specimen) on how few glyphs we can show changing (surrounded by static masters and instances, again).
+* Import ufo…
+* -- \<separator\> --
+* Duplicate
+* -- \<separator\> --
+* Delete…
+
+## design spaces panel
+Here we can now see how much work we saved us in the masters column. The control design space can be rigged up with simple sliders and triangles (+Jeroen Breen demoed them). The sliders work in one specific mode, detailed below.
+
+Optional: explore spaces (we look pretty close to having that working too).
+
+### local menu
+The **local menu** is placed on the active tab, and contains these items:
+
+* New
+* Duplicate
+* -- \<separator\> --
+* Delete…
+
+## specimen panel (metapolation)
+even more pain with doing this in real-time. Same, or even tougher, limits (re: parameter specimen) on how few glyphs we can show changing (surrounded by static masters and instances, again).
+
+**local menu**: none
 
 ## instances column
-stand-alone instances only; this saves the complication of family handling, also in the design spaces. working with 8 instances should not be a problem.
+Stand-alone instances only; This saves the complication of family handling, also in the design spaces. Working with 8 instances should not be a problem.
 
-## font export
-forget about opentype mapping, unless there is a no-brainer default. I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
+### local menu
+The local menu is as follows:
 
-## metadata
-completely forgetaboutit. Simon and I will come up with a (picture) glimpse of things to come for metadata.
+* New
+* Duplicate
+* -- \<separator\> --
+* Delete…
 
-## et cetera
-an important but invisible category of interaction that we can forget about for the working UI demo is copy & paste, and undo. that is a tough portion of development work.﻿
+## font export panel
+Forget about opentype mapping, unless there is a no-brainer default. I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
+
+### local menu
+The local menu is as follows:
+
+* Check All
+* Uncheck All
+* -- \<separator\> --
+* Copy Opentype Features from Master…
+* Copy Opentype Features from Font…
+* Load Opentype Features File…
+
+## metadata panel
+Completely forgetaboutit. This is not easily dealt with. Simon and I will come up with a (picture) glimpse of things to come for metadata.
+
+## miscellaneous
+An important but invisible category of interaction that we can forget about for the working UI demo is copy & paste (e.g. of masters, instances), and undo. That is a tough portion of development work.﻿
