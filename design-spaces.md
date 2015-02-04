@@ -433,11 +433,11 @@ We try to avoid to scroll, but when users’ ambitions are greater than their sc
 #### combining different groups
 You may have noticed that for the control design space we have build up a collection of **different** control groups:
 
-1. standalone masters, shown as _one_ slider group;
+1. stand-alone masters, shown as _one_ slider group;
   * a special form of this group is 3 masters, that can be shown as a triangle.
 * crossing master sequences—sliders and/or crosses;
   * when users manage to cross two sequences at master A and two other sequences at master B, then these count as _two separate groups_ in our algorithm (etc. for more separate crossings);
-  * standalone masters that have been dropped on crossing master sequences are part of that group.
+  * stand-alone masters that have been dropped on crossing master sequences are part of that group.
 * non-crossing master sequences, shown as _one_ slider group.
 
 Each of the groups above supplies a metapolation result for a given instance, and now we have to combine these results to get one single metapolation for the instance. We do this with **group balancers**:
