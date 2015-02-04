@@ -197,15 +197,9 @@ Metapolation = <i>a</i>M<sub>1</sub> + <i>b</i>M<sub>2</sub> + <i>c</i>M<sub>3</
 
 We see that any slider, however its configuration, can be calculated from the metapolation equation; either a quotient of two coefficients of two masters (normal slider) or the slider **is** the coefficient of one master (from-zero slider).
 
-Input from sliders to the metapolation equation follows the reverse path. This is easy-peasy for normal sliders (i.e. rebalancing two coefficients, whose sum is invariant), but slightly more complicated for from-zero sliders—
+Input from sliders to the metapolation equation follows the reverse path. 
 
-1. when a from-zero slider is decreased, all coefficients linked to other from-zero sliders remain untouched (i.e. the other from-zero sliders set hard percentages), while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage _budget_ increase—which they then split between them proportionately;
-* when a from-zero slider is increased, all coefficients linked to other from-zero sliders remain _first_ untouched, while all coefficients that are determined by normal sliders (and the 100% rule) see their combined percentage budget decrease, **until that budget hits zero**—when _interpolating_; from then on the combined percentage _budget_ of the other from-zero sliders gets decreased—which they then split between them proportionately; when _extrapolating_, the normal-slider budget can go negative and there is no need to touch the other from-zero sliders.
-
-_example_: 4-master group, Metapolation = 25%M<sub>1</sub> + 25%M<sub>2</sub> + 30%M<sub>3</sub> + 20%M<sub>4</sub>. Slider setup is M<sub>1</sub> from zero (value 25), M<sub>2</sub> from zero (25) and M<sub>3</sub>–M<sub>4</sub> (40).
-
-1. M<sub>1</sub> is decreased (via slider) to 15%, then M<sub>2</sub> remains 25%, the budget of M<sub>3</sub> & M<sub>4</sub> is increased from 50% to 60%, which they split 60/40 (36% and 24%, respectively);
-* M<sub>1</sub> is increased to 85%, then the budget of M<sub>3</sub> & M<sub>4</sub> has hit zero and M<sub>2</sub> is reduced to 15%.
+**superseded, new math forthcoming**
 
 <a name="100rule"></a>**100.00% rule**: rounding errors can happen. Every group ensures that the sum of the coefficients is exactly 100% (i.e. **not** 99.8% or 100.03%) by scaling all the coefficients—and maybe adding/subtracting 0.0000000561 to the largest coefficient to hit 100% exactly—just before they are passed on (to the backend or the group balancers). The settings/numbers in the UI do not reflect this adjustment.
 
