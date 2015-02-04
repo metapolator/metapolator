@@ -1,4 +1,4 @@
-This page contains the design deltas for the working UI demo of February–March 2015, as compared to the contemporary overall interaction design. The working UI demo is meant to wrap up the current project phase, and to enable the next phase.
+This page contains the design deltas for the working UI demo of February–March 2015, as compared to the contemporary overall interaction design. The working UI demo is an MVP (minimal viable product), meant to wrap up the current project phase, and to enable the next phase.
 
 Naturally this will stick closely to what has been achieved up to now and what will be done for minipolator. Some of the choices that have to be made will hurt, but it will enable us to make something that can be useful to font designers.
 
@@ -54,6 +54,39 @@ Here we can now see how much work we saved us in the masters column. The control
 
 Optional: explore spaces (we look pretty close to having that working too).
 
+### control space sliders
+Since there are only stand-alone masters, only simple mixing of masters (e.g. 50% bold, 50% italic) can be performed. Feature stacking (100% bold **and** 100% italic) is the realm of mater sequences and cannot be performed. To further the do-more-with-less vibe, the configuration possibilities of the slider group was decimated and a new default behaviour picked: **one-master centric**:
+
+![](http://mmiworks.net/metapolator/centric3.png)
+
+* When 3 or more masters have been dropped on the control design space, one of them is shown on the lefthand side of _all_ sliders; all other masters are set in relation to this one, by the sliders; _this quite suits font designers, who tend to start their thinking from an ‘origin’ (say, the Regular font) and branch out from there—bolder, thinner, wider, etc._
+* the popup on the lower-lefthand side contains all dropped masters, in the order they were dropped, and allow any of these to be picked as the ‘lefthand master’; the default is the first master that was dropped on this design space; _in the example above it is possible to set up the sliders Regular-centric (shown), Bold-centric and Italic-centric_
+* all other masters are listed on the righthand side of the sliders, top–to–bottom in the order they were dropped;
+* for every additional master dropped on this design space, one additional slider is created.
+
+After dropping the first master the design space looks like this:
+
+![](http://mmiworks.net/metapolator/centric1.png)
+
+and after the second like this:
+
+![](http://mmiworks.net/metapolator/centric2.png)
+
+a simple slider with no configuration.
+
+#### metapolation math
+To calculate the metapolation, express all the righthand side masters in terms of the lefthand master:
+
+M<sub>x</sub> = (slider %) / (1 - slider %) × M<sub>lh</sub>
+
+substitue all these in the 100% rule and solve for M<sub>lh</sub>; then all other master coefficients follow.
+
+A **special case** rises when one or more sliders are set to 100%. In that case the coefficient of M<sub>lh</sub> is **zero** and it falls out of the equations. The solution is to express all the righthand side masters in terms of the one that is 100% (if there are more than one, pick any):
+
+M<sub>x</sub> = (slider %)<sub>x</sub> × M<sub>100%</sub>
+
+substitue all these in the 100% rule and solve for M<sub>100%</sub>; then all other master coefficients follow—remember, M<sub>lh</sub> is 0.
+
 ### local menu
 The **local menu** is placed on the active tab, and contains these items:
 
@@ -79,7 +112,7 @@ The local menu is as follows:
 * Delete…
 
 ## font export panel
-Forget about opentype mapping, unless there is a no-brainer default. I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
+Simple manual opentype mapping, good chance that we can do it. I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
 
 ### local menu
 The local menu is as follows:
