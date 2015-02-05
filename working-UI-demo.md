@@ -74,16 +74,22 @@ and after the second like this:
 
 a simple slider with no configuration.
 
-![](http://mmiworks.net/metapolator/centricX.png)
-
-Righthand-side masters can be removed _(it is logical that removing the lefthand-side one involves a prior step of setting what the new centre of thinking is)_. When the mouse hovers the label of a righthand-side master, a closing box appears nest to it. Clicking it **removes the master from the metapolation of every instance that lives on this design space**.
-
 #### metapolation math
 To calculate the metapolation, express all the righthand side masters in terms of the lefthand master:
 
-M<sub>x</sub> = (N - 1)(slider %) / (1 + (N - 3)(1 - slider %)) × M<sub>lh</sub>, where N is the number of masters dropped on this design space
+M<sub>x</sub> = (slider %) / (1 - slider %) × M<sub>lh</sub>
 
 substitue all these in the 100% rule and solve for M<sub>lh</sub>; then all other master coefficients follow.
+
+A **special case** rises when one or more sliders are set to 100%. In that case the coefficient of M<sub>lh</sub> is **zero** and it falls out of the equations. The solution is to express all the righthand side masters in terms of the one that is 100% (if there are more than one, pick any):
+
+M<sub>x</sub> = (slider %)<sub>x</sub> × M<sub>100%</sub>
+
+substitue all these in the 100% rule and solve for M<sub>100%</sub>; then all other master coefficients follow—remember, M<sub>lh</sub> is 0.
+
+![](http://mmiworks.net/metapolator/centricX.png)
+
+Righthand-side masters can be removed _(it is logical that removing the lefthand-side one involves a prior step of setting what the new centre of thinking is)_. When the mouse hovers the label of a righthand-side master, a closing box appears nest to it. Clicking it **removes the master from the metapolation of every instance that lives on this design space**.
 
 ### local menu
 The **local menu** is placed on the active tab, and contains these items:
