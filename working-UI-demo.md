@@ -85,7 +85,7 @@ M<sub>x</sub> = (slider %) / (1.002 - slider %) × M<sub>lh</sub>
 
 substitue all these in the 100% rule and solve for M<sub>lh</sub>; then all other master coefficients follow. _(the 0.002 extra in the denominator avoids divide-by-zero at the 100% slider setting—while giving an error, and 100% value, that is tuned to the fact that the resolution of the slider is 0.5%.)_
 
-A **special case** rises **when all** sliders are set to 100%. In that case M<sub>lh</sub> is hard-set to zero, and all other masters equally divide the 100%.
+A **special case** rises when **all sliders are set to 100%**. In that case M<sub>lh</sub> is hard-set to zero, and all other masters equally divide the 100%.
 
 ### local menu
 The **local menu** is placed on the active tab, and contains these items:
