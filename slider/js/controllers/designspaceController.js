@@ -17,7 +17,24 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     }
 
     $scope.output = [];
+    $scope.output2 = [];
     $scope.total = 0;
+    
+    $scope.secondMethod = function(data) {
+        $scope.output2 = [];
+        var axes = data.axes;
+        var n = axes.length;
+        var cake = 1;
+        for (var i = 0; i < n; i++) {
+            cake += axes[i].value  / (100.2 - axes[i].value);
+
+        }
+        $scope.output2.push(data.masters[0].name + ": " + roundup(1 / cake));
+        for (var i = 0; i < n; i++) {
+            var piece = axes[i].value / (100.2 - axes[i].value);
+            $scope.output2.push(data.masters[i + 1].name + ": " + roundup(piece / cake));
+        }
+    }
 
     $scope.getMetapolationRatios = function(data) {
         $scope.output = [];

@@ -99,6 +99,7 @@ function($document) {
                         var thisIndex = d3.select(this).attr('index');
                         data.axes[thisIndex].value = ((limitX(d3.event.x) - paddingLeft) / (axisWidth / 100));
                         scope.getMetapolationRatios(data);
+                        scope.secondMethod(data);
                         scope.$apply();
                     }).on('dragend', function() {
                         // dragstop
@@ -156,6 +157,7 @@ function($document) {
                     */
                     
                     scope.getMetapolationRatios(data);
+                    scope.secondMethod(data);
 
                 }
 

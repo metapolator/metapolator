@@ -24,11 +24,19 @@
 	
 	#temp-output {
 	    position: absolute;
-	    left: 50%;
+	    left: 40%;
 	    top: 100px;
-	    width: 50%;
+	    width: 30%;
 	    padding: 20px;
 	}
+	
+    #temp-output2 {
+        position: absolute;
+        left: 70%;
+        top: 100px;
+        width: 30%;
+        padding: 20px;
+    }
 	
 	
 /***********************************/
