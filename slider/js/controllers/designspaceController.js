@@ -23,28 +23,16 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         $scope.output = [];
         var axes = data.axes;
         var n = axes.length;
-        var endSum = 0;
-        var cumulusRatio = 1;
-        //
+        var cake = 1;
         for (var i = 0; i < n; i++) {
-            var a = axes[i].value / 100;
-            var b = 1 - a;
-            var currentRatio = a / b;
-            
-            endSum = endSum + cumulusRatio * currentRatio;
-            cumulusRatio = cumulusRatio * currentRatio;
+            cake += axes[i].value / ( 100 - axes[i].value);
         }
-        var thisMaster = 1 / (1 + endSum);
-        $scope.output.push("Master 0: " + roundup(thisMaster));
-        var lastMaster = thisMaster;
-        //
+        $scope.output.push("Master 0: " + roundup(1 / cake));
         for (var i = 0; i < n; i++) {
-            var a = axes[i].value / 100;
-            var b = 1 - a;
-            lastMaster = lastMaster * a/b;
-            $scope.output.push("Master " + (i + 1) + ": " + roundup(lastMaster));
+            var piece = axes[i].value / ( 100 - axes[i].value);
+            $scope.output.push("Master " + (i + 1) + ": " + roundup(piece/cake));
         }
-    }
+    };
     
     function roundup (a) {
         var b = Math.round(a * 1000) / 1000;
