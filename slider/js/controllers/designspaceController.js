@@ -35,10 +35,10 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
         }
         if (!foundZero) {
-            $scope.output.push("Master 0: " + roundup(1 / cake));
+            $scope.output.push(data.masters[0].name + ": " + roundup(1 / cake));
             for (var i = 0; i < n; i++) {
                 var piece = axes[i].value / (100 - axes[i].value);
-                $scope.output.push("Master " + (i + 1) + ": " + roundup(piece / cake));
+                $scope.output.push(data.masters[i + 1].name + ": " + roundup(piece / cake));
             }
         }
     };
@@ -49,7 +49,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var n = axes.length;
         var cake = 0;
         var mastersNotZero = [];
-        $scope.output.push("Master 0: " + 0);
+        $scope.output.push(data.masters[0].name + ": " + 0);
         for (var i = 0; i < n; i++) {
             if (axes[i].value == 100) {
                 mastersNotZero.push(1);
@@ -60,9 +60,9 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         }
         for (var i = 0; i < n; i++) {
             if (mastersNotZero[i] == 1) {
-                $scope.output.push("Master " + (i + 1) + ": " + roundup(1 / cake));
+                $scope.output.push(data.masters[i+1].name + ": " + roundup(1 / cake));
             } else {
-                $scope.output.push("Master " + (i + 1) + ": 0");
+                $scope.output.push(data.masters[i+1].name + ": 0");
             }
         }
     }
