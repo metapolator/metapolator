@@ -705,6 +705,11 @@
                     text-align: right;
                 }
                 
+                .label-right-inactive {
+                    fill: #aaa;
+                    font-style: italic;
+                }
+                
                 .triangle-button {
                     position: absolute;
                     bottom: 10px;

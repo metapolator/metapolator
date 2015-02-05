@@ -20,9 +20,10 @@ function($document) {
             var paddingLeft = 30;
             var paddingTop = 30;
             var axisWidth = 200;
-            var paddingLabel = 20;
+            var paddingLabel = 25;
             var axisDistance = 50;
-            
+            var axisTab = 10;
+            var indent = 20;
             
             // watch for data changes and re-render
             scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
@@ -40,13 +41,13 @@ function($document) {
 
                 // 1 master in Design Space
                 if (data.axes.length == 0 && data.masters.length == 1) {
-                    
                     // create axes
-                    svg.append('line').attr('class', 'slider-axis').attr('x1', paddingLeft).attr('x2', (paddingLeft + axisWidth)).attr('y1', paddingTop).attr('y2', paddingTop);
+                    svg.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft+axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
                     // create  label
-                    svg.append('text').attr('class', 'label-center slider-label').attr('x', paddingLeft).attr('y', paddingTop + paddingLabel).text(function() {
+                    svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indent).attr('y', paddingTop + paddingLabel).text(function() {
                         return data.masters[0].name;
                     });
+                    svg.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indent).attr('y', paddingTop + paddingLabel).text("Just one more...");
                 }
 
                 // Triangle view
@@ -87,7 +88,7 @@ function($document) {
                 }
 
                 // All other cases
-                else {
+                else if (data.masters.length > 0) {
                     // create drag events
                     var drag = d3.behavior.drag().on('dragstart', function() {
                         // dragstart
@@ -115,11 +116,15 @@ function($document) {
                     }
 
                     // create axes
-                    svg.selectAll('line').data(data.axes).enter().append('line').attr('class', 'slider-axis').attr('x1', paddingLeft).attr('x2', (paddingLeft + axisWidth)).attr('y1', function(d, i) {
-                        return i * axisDistance + paddingTop;
-                    }).attr('y2', function(d, i) {
-                        return i * axisDistance + paddingTop;
-                    });
+                    svg.selectAll('path').data(data.axes).enter().append('path').attr('class', 'slider-axis').attr('d', function (d, i) {
+                        // prevent last axis from having the vertical offset
+                        if (i != (data.axes.length - 1)) {
+                            var offset = 1;
+                        } else {
+                            var offset = 0;
+                        }
+                        return 'M' + paddingLeft + ' ' + (paddingTop + axisTab + (i + offset) * axisDistance) + ' L' + paddingLeft + ' ' + (paddingTop + i * axisDistance) + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + i * axisDistance) + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab + i * axisDistance);
+                    }).attr('fill', 'none');
 
                     // create slider handles
                     svg.selectAll('circle').data(data.axes).enter().append('circle').attr('class', 'slider-handle').attr('r', 8).attr('fill', '#000').attr('cx', function(d) {
@@ -131,18 +136,25 @@ function($document) {
                     }).call(drag);
 
                     // create left label
-                    svg.selectAll('text.label-left').data(data.axes).enter().append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft).attr('y', function(d, i) {
-                        return i * axisDistance + paddingTop + paddingLabel;
-                    }).text(function(d) {
-                        return data.masters[d.m1].name;
-                    });
+                    svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indent).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(data.masters[0].name);
+
 
                     // create rigth label
-                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right slider-label').attr('x', (paddingLeft + axisWidth)).attr('y', function(d, i) {
+                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right slider-label').attr('x', (paddingLeft + axisWidth - indent)).attr('y', function(d, i) {
                         return i * axisDistance + paddingTop + paddingLabel;
                     }).text(function(d) {
                         return data.masters[d.m2].name;
                     });
+                    
+                    // create output label: nog koppelen aan drag
+                    /*
+                    svg.selectAll('text.label-output').data(data.axes).enter().append('text').attr('class', 'label-output slider-label').attr('x', (paddingLeft + (0.5 * axisWidth))).attr('y', function(d, i) {
+                        return i * axisDistance + paddingTop + paddingLabel;
+                    }).text(function(d, i) {
+                        return data.axes[i].value + '%';
+                    });
+                    */
+                    
                     scope.getMetapolationRatios(data);
 
                 }
