@@ -24,7 +24,7 @@ function($document) {
             var axisDistance = 50;
             var axisTab = 10;
             var indent = 20;
-            
+
             // watch for data changes and re-render
             scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
@@ -33,16 +33,14 @@ function($document) {
             // (RE-)RENDER
             scope.render = function() {
                 var data = scope.data.designSpaces[scope.data.currentDesignSpace];
-                
-                
-                
+
                 // remove all previous items before render
                 svg.selectAll('*').remove();
 
                 // 1 master in Design Space
                 if (data.axes.length == 0 && data.masters.length == 1) {
                     // create axes
-                    svg.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft+axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
+                    svg.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
                     // create  label
                     svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indent).attr('y', paddingTop + paddingLabel).text(function() {
                         return data.masters[0].name;
@@ -97,7 +95,10 @@ function($document) {
                         d3.select(this).attr('cx', limitX(d3.event.x));
                         // update scope and redraw ellipses
                         var thisIndex = d3.select(this).attr('index');
-                        data.axes[thisIndex].value = ((limitX(d3.event.x) - paddingLeft) / (axisWidth / 100));
+                        var thisValue = (limitX(d3.event.x) - paddingLeft) / (axisWidth / 100)
+                        data.axes[thisIndex].value = thisValue;
+                        d3.select("#output-label-" + thisIndex).text(thisValue + "%");
+                        // get ratios
                         scope.getMetapolationRatios(data);
                         scope.secondMethod(data);
                         scope.$apply();
@@ -105,7 +106,7 @@ function($document) {
                         // dragstop
                         d3.select(this).attr('stroke', 'none');
                     });
-                    
+
                     function limitX(x) {
                         if (x < paddingLeft) {
                             x = paddingLeft;
@@ -117,7 +118,7 @@ function($document) {
                     }
 
                     // create axes
-                    svg.selectAll('path').data(data.axes).enter().append('path').attr('class', 'slider-axis').attr('d', function (d, i) {
+                    svg.selectAll('path').data(data.axes).enter().append('path').attr('class', 'slider-axis').attr('d', function(d, i) {
                         // prevent last axis from having the vertical offset
                         if (i != (data.axes.length - 1)) {
                             var offset = 1;
@@ -139,23 +140,33 @@ function($document) {
                     // create left label
                     svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indent).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(data.masters[0].name);
 
-
                     // create rigth label
                     svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right slider-label').attr('x', (paddingLeft + axisWidth - indent)).attr('y', function(d, i) {
                         return i * axisDistance + paddingTop + paddingLabel;
                     }).text(function(d) {
                         return data.masters[d.m2].name;
                     });
-                    
-                    // create output label: nog koppelen aan drag
-                    /*
+
+                    // create output label
                     svg.selectAll('text.label-output').data(data.axes).enter().append('text').attr('class', 'label-output slider-label').attr('x', (paddingLeft + (0.5 * axisWidth))).attr('y', function(d, i) {
                         return i * axisDistance + paddingTop + paddingLabel;
                     }).text(function(d, i) {
                         return data.axes[i].value + '%';
+                    }).attr("id", function(d, i) {
+                        return "output-label-" + i;
                     });
-                    */
-                    
+
+                    // create remove button
+                    svg.selectAll('text.control-remove-master').data(data.axes).enter().append('text').attr('class', 'control-remove-master').attr('x', (paddingLeft + axisWidth + 60)).attr('y', function(d, i) {
+                        return i * axisDistance + paddingTop + paddingLabel;
+                    }).text(function(d, i) {
+                        return "o";
+                    }).attr("masterid", function(d, i) {
+                        return i;
+                    }).on("click", function(d, i) {
+                        scope.removeMaster(i + 1)
+                    });
+
                     scope.getMetapolationRatios(data);
                     scope.secondMethod(data);
 
@@ -232,7 +243,7 @@ function($document) {
             drawEllipses = function(data) {
                 layer2.selectAll('ellipse').remove();
                 layer2.selectAll('circle').remove();
-                
+
                 // get nr of masters
                 var dataLength = data.masters.length;
                 // color range for fields
@@ -243,16 +254,16 @@ function($document) {
                     var c = Math.sqrt(Math.pow((a1 - a2), 2) + Math.pow((b1 - b2), 2));
                     return c;
                 }
-                
+
                 // only one master: big circle
                 if (data.masters.length == 1) {
                     layer2.selectAll('circle').data(data.masters).enter().append('circle').attr('r', 100).attr('fill', '#f00').attr('cx', function(d) {
                         return d.coordinates[0];
                     }).attr('cy', function(d) {
                         return d.coordinates[1];
-                    }).style("opacity", 0.3); 
+                    }).style("opacity", 0.3);
                 }
-                
+
                 // two masters: two circles
                 else if (data.masters.length == 2) {
                     var distanceTwo = getDistance(data.masters[0].coordinates[0], data.masters[1].coordinates[0], data.masters[0].coordinates[1], data.masters[1].coordinates[1]);
@@ -262,7 +273,7 @@ function($document) {
                         return d.coordinates[0];
                     }).attr('cy', function(d) {
                         return d.coordinates[1];
-                    }).style("opacity", 0.3); 
+                    }).style("opacity", 0.3);
                 }
 
                 // all other cases

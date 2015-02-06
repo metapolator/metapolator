@@ -1,3 +1,10 @@
+    @font-face {
+        font-family: 'glyphs';
+        src: url('../fonts/glyphs.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
 	html {
 		height: 100%;
 		width: 100%;
@@ -700,32 +707,8 @@
                     top: 3px;
                     cursor: pointer;
                 }
-                    
-                .slider-label {
-                    font-size: 9px;
-                }
                 
-                .label-center {
-                    
-                }
-                
-                .label-right {
-                    text-align: right;
-                }
-                
-                .label-right-inactive {
-                    fill: #aaa;
-                    font-style: italic;
-                }
-                
-                .triangle-button {
-                    position: absolute;
-                    bottom: 10px;
-                    left: 10px;
-                    cursor: pointer;
-                }
-                
-                
+      
                 
                 li:first-child .slider-label-first {
                     display: none;
@@ -794,7 +777,41 @@
             .show-name-full .explore-name-full {
                 opacity: 1;
             }	
-
+            
+/************ labels etc on control ***************/
+        
+    .slider-label {
+        font-size: 9px;
+    }
+    
+    .label-center {
+        
+    }
+    
+    .label-right {
+        text-align: right;
+    }
+    
+    .label-right-inactive {
+        fill: #aaa;
+        font-style: italic;
+    }
+    
+    .triangle-button {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        cursor: pointer;
+    }
+    
+    .control-remove-master {
+        font-family: "glyphs";
+        cursor: pointer;
+    }
+    
+        .control-remove-master:hover {
+            fill: #f00;
+        }
 
 
 

@@ -26,12 +26,12 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var n = axes.length;
         var cake = 1;
         for (var i = 0; i < n; i++) {
-            cake += axes[i].value  / (100.2 - axes[i].value);
+            cake += (axes[i].value + 0.5) / (100.5 - axes[i].value);
 
         }
         $scope.output2.push(data.masters[0].name + ": " + roundup(1 / cake));
         for (var i = 0; i < n; i++) {
-            var piece = axes[i].value / (100.2 - axes[i].value);
+            var piece = (axes[i].value + 0.5) / (100.5 - axes[i].value);
             $scope.output2.push(data.masters[i + 1].name + ": " + roundup(piece / cake));
         }
     }
@@ -88,5 +88,19 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var b = Math.round(a * 1000) / 1000;
         return b;
     }
+    
+    //
+    
+    $scope.removeMaster = function(m) {
+        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var masterSet = designspace.masters
+        var master = masterSet[m].name;
+        if (confirm("Remove '" + master + "' from this Design Space. Sure?")) {
+            masterSet.splice(masterSet.indexOf(master), 1);
+            designspace.axes.splice((m - 1), 1);
+            $scope.$apply();
+        }
+    }
+        
 
 });
