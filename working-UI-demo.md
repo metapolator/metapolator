@@ -81,9 +81,9 @@ Righthand-side masters can be removed _(it is logical that removing the lefthand
 #### metapolation math
 To calculate the metapolation, express all the righthand side masters in terms of the lefthand master:
 
-M<sub>x</sub> = (slider %) / (1.002 - slider %) × M<sub>lh</sub>
+M<sub>x</sub> = (slider %) / (1.005 - slider %) × M<sub>lh</sub>
 
-substitue all these in the 100% rule and solve for M<sub>lh</sub>; then all other master coefficients follow. _(the 0.002 extra in the denominator avoids divide-by-zero at the 100% slider setting—while giving an error, and 100% value, that is tuned to the fact that the resolution of the slider is 0.5%.)_
+substitue all these in the 100% rule and solve for M<sub>lh</sub>; then all other master coefficients follow. _(the 0.005 extra in the denominator avoids divide-by-zero at the 100% slider setting—while giving an error, and 100% value, that is tuned to the fact that the resolution of the slider is 0.5%.)_
 
 A **special case** rises when **all sliders are set to 100%**. In that case M<sub>lh</sub> is hard-set to zero, and all other masters equally divide the 100%.
 
