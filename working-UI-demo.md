@@ -62,7 +62,11 @@ Since there are only stand-alone masters, only simple mixing of masters (e.g. 50
 * When 3 or more masters have been dropped on the control design space, one of them is shown on the lefthand side of _all_ sliders; all other masters are set in relation to this one, by the sliders; _this quite suits font designers, who tend to start their thinking from an ‘origin’ (say, the Regular font) and branch out from there—bolder, thinner, wider, etc._
 * the popup on the lower-lefthand side contains all dropped masters, in the order they were dropped, and allow any of these to be picked as the ‘lefthand master’; the default is the first master that was dropped on this design space; _in the example above it is possible to set up the sliders Regular-centric (shown), Bold-centric and Italic-centric_; when the lefthand master is changed, the slider setting are recalculated from the current metapolation coefficients;
 * all other masters are listed on the righthand side of the sliders, top–to–bottom in the order they were dropped;
-* for every additional master dropped on this design space, one additional slider is created; its default setting is 50%.
+* for every additional master dropped on this design space, one additional slider is created; its default setting is 50%;
+* numerical input/output under the slider:
+  * only one decimal point is to be shown;
+  * since the slider has a resolution of 0.5% all values input by slider show exactly this resolution;
+  * values that are typed in by users or a result from calculation (from metapolation coefficients) can be any, single-decimal, value.
 
 After dropping the first master the design space looks like this:
 
