@@ -3,7 +3,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.selectDesignSpace = function(i) {
         $scope.data.currentDesignSpace = i;
-    }
+    };
+    
     $scope.addDesignSpace = function() {
         var i = $scope.data.designSpaces.length;
         $scope.data.designSpaces.push({
@@ -14,75 +15,31 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             triangle : false
         });
         $scope.data.currentDesignSpace = i;
-    }
+    };
 
     $scope.output = [];
-    $scope.output2 = [];
     $scope.total = 0;
     
-    $scope.secondMethod = function(data) {
-        $scope.output2 = [];
+    $scope.getMetapolationRatios = function(data) {
+        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var masterSet = designspace.masters;
+        $scope.output = [];
         var axes = data.axes;
         var n = axes.length;
         var cake = 1;
         for (var i = 0; i < n; i++) {
             cake += (axes[i].value + 0.5) / (100.5 - axes[i].value);
-
         }
-        $scope.output2.push(data.masters[0].name + ": " + roundup(1 / cake));
+        $scope.output.push(data.masters[0].master.name + ": " + roundup(1 / cake));
+        masterSet[0].value = roundup(1 / cake);
+        
         for (var i = 0; i < n; i++) {
             var piece = (axes[i].value + 0.5) / (100.5 - axes[i].value);
-            $scope.output2.push(data.masters[i + 1].name + ": " + roundup(piece / cake));
-        }
-    }
-
-    $scope.getMetapolationRatios = function(data) {
-        $scope.output = [];
-        var axes = data.axes;
-        var n = axes.length;
-        var foundZero = false;
-        var cake = 1;
-        for (var i = 0; i < n; i++) {
-            if (axes[i].value == 100) {
-                foundZero = true;
-                metapolationRatiosWithZero(data);
-                break;
-            }
-            cake += axes[i].value / (100 - axes[i].value);
-
-        }
-        if (!foundZero) {
-            $scope.output.push(data.masters[0].name + ": " + roundup(1 / cake));
-            for (var i = 0; i < n; i++) {
-                var piece = axes[i].value / (100 - axes[i].value);
-                $scope.output.push(data.masters[i + 1].name + ": " + roundup(piece / cake));
-            }
+            $scope.output.push(data.masters[i + 1].master.name + ": " + roundup(piece / cake));
+            masterSet[i + 1].value = roundup(piece / cake);
         }
     };
 
-    function metapolationRatiosWithZero(data) {
-        $scope.output = [];
-        var axes = data.axes;
-        var n = axes.length;
-        var cake = 0;
-        var mastersNotZero = [];
-        $scope.output.push(data.masters[0].name + ": " + 0);
-        for (var i = 0; i < n; i++) {
-            if (axes[i].value == 100) {
-                mastersNotZero.push(1);
-                cake++;
-            } else {
-                mastersNotZero.push(0);
-            }
-        }
-        for (var i = 0; i < n; i++) {
-            if (mastersNotZero[i] == 1) {
-                $scope.output.push(data.masters[i+1].name + ": " + roundup(1 / cake));
-            } else {
-                $scope.output.push(data.masters[i+1].name + ": 0");
-            }
-        }
-    }
 
     function roundup(a) {
         var b = Math.round(a * 1000) / 1000;
@@ -93,13 +50,37 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     
     $scope.removeMaster = function(m) {
         var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
-        var masterSet = designspace.masters
+        var masterSet = designspace.masters;
         var master = masterSet[m].name;
         if (confirm("Remove '" + master + "' from this Design Space. Sure?")) {
-            masterSet.splice(masterSet.indexOf(master), 1);
+            masterSet.splice(m, 1);
             designspace.axes.splice((m - 1), 1);
             $scope.$apply();
         }
+    };
+    
+    $scope.promoteMaster = function(m) {
+        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var masterSet = designspace.masters;
+        var master = masterSet[m];
+        var tempMaster = masterSet[0];
+        masterSet[0] = masterSet[m];
+        masterSet[m] = tempMaster;
+        valueToAxes();
+    };
+    
+    function valueToAxes() {
+        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        designspace.axes = [];
+        var masters = designspace.masters;
+        for (var i = 1; i < masters.length; i++) {
+            var thisRatio = masters[i].value / masters[0].value;
+            var thisValue = roundup(thisRatio / (1 + thisRatio) * 100);
+            designspace.axes.push({
+                value : thisValue
+            });
+        }
+        $scope.$apply();
     }
         
 

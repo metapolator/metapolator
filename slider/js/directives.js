@@ -26,7 +26,7 @@ function($document) {
             var indent = 20;
 
             // watch for data changes and re-render
-            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].masters[0], data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
             }, true);
 
@@ -38,12 +38,12 @@ function($document) {
                 svg.selectAll('*').remove();
 
                 // 1 master in Design Space
-                if (data.axes.length == 0 && data.masters.length == 1) {
+                if (data.masters.length == 1) {
                     // create axes
                     svg.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
                     // create  label
                     svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indent).attr('y', paddingTop + paddingLabel).text(function() {
-                        return data.masters[0].name;
+                        return data.masters[0].master.name;
                     });
                     svg.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indent).attr('y', paddingTop + paddingLabel).text("Just one more...");
                 }
@@ -95,12 +95,11 @@ function($document) {
                         d3.select(this).attr('cx', limitX(d3.event.x));
                         // update scope and redraw ellipses
                         var thisIndex = d3.select(this).attr('index');
-                        var thisValue = (limitX(d3.event.x) - paddingLeft) / (axisWidth / 100)
+                        var thisValue = (limitX(d3.event.x) - indent) / (axisWidth / 100)
                         data.axes[thisIndex].value = thisValue;
                         d3.select("#output-label-" + thisIndex).text(thisValue + "%");
                         // get ratios
                         scope.getMetapolationRatios(data);
-                        scope.secondMethod(data);
                         scope.$apply();
                     }).on('dragend', function() {
                         // dragstop
@@ -108,70 +107,77 @@ function($document) {
                     });
 
                     function limitX(x) {
-                        if (x < paddingLeft) {
-                            x = paddingLeft;
+                        if (x < indent) {
+                            x = indent;
                         }
-                        if (x > (axisWidth + paddingLeft)) {
-                            x = axisWidth + paddingLeft;
+                        if (x > (axisWidth + indent)) {
+                            x = axisWidth + indent;
                         }
                         return x;
                     }
 
-                    // create axes
-                    svg.selectAll('path').data(data.axes).enter().append('path').attr('class', 'slider-axis').attr('d', function(d, i) {
+                    // create slider containers
+                    var axes = svg.selectAll('g').data(data.axes).enter().append('g').attr('transform', function(d,i) {
+                        var x = paddingLeft - indent;
+                        var y = i * axisDistance + paddingTop;
+                        return "translate(" + x + "," + y + ")";
+                    }).attr('class', 'slider-container');
+                    
+                    // append axis itself
+                    axes.append('path').attr('d', function(d, i) {
                         // prevent last axis from having the vertical offset
                         if (i != (data.axes.length - 1)) {
                             var offset = 1;
                         } else {
                             var offset = 0;
                         }
-                        return 'M' + paddingLeft + ' ' + (paddingTop + axisTab + (i + offset) * axisDistance) + ' L' + paddingLeft + ' ' + (paddingTop + i * axisDistance) + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + i * axisDistance) + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab + i * axisDistance);
-                    }).attr('fill', 'none');
+                        return 'M' + indent + ' ' + (axisTab + offset * axisDistance) + ' L' + indent + ' 0  L' + (indent + axisWidth) + ' 0 L' + (indent + axisWidth) + ' ' +  axisTab;
+                    }).attr('class', 'slider-axis');
 
-                    // create slider handles
-                    svg.selectAll('circle').data(data.axes).enter().append('circle').attr('class', 'slider-handle').attr('r', 8).attr('fill', '#000').attr('cx', function(d) {
-                        return d.value * (axisWidth / 100) + paddingLeft;
-                    }).attr('cy', function(d, i) {
-                        return i * axisDistance + paddingTop;
-                    }).attr('index', function(d, i) {
+                    // append slider handles
+                    axes.append('circle').attr('r', 8).attr('cx', function(d) {
+                        return d.value * (axisWidth / 100) + indent;
+                    }).attr('cy', '0').attr('index', function(d, i) {
                         return i;
-                    }).call(drag);
-
-                    // create left label
-                    svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indent).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(data.masters[0].name);
-
-                    // create rigth label
-                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right slider-label').attr('x', (paddingLeft + axisWidth - indent)).attr('y', function(d, i) {
-                        return i * axisDistance + paddingTop + paddingLabel;
-                    }).text(function(d) {
-                        return data.masters[d.m2].name;
-                    });
-
+                    }).attr('class', 'slider-handle').call(drag);
+                    
                     // create output label
-                    svg.selectAll('text.label-output').data(data.axes).enter().append('text').attr('class', 'label-output slider-label').attr('x', (paddingLeft + (0.5 * axisWidth))).attr('y', function(d, i) {
-                        return i * axisDistance + paddingTop + paddingLabel;
-                    }).text(function(d, i) {
+                    axes.append('text').attr('x', (indent + (0.5 * axisWidth))).attr('y', paddingLabel).text(function(d, i) {
                         return data.axes[i].value + '%';
                     }).attr("id", function(d, i) {
                         return "output-label-" + i;
-                    });
+                    }).attr('class', 'slider-label-output slider-label');
 
-                    // create remove button
-                    svg.selectAll('text.control-remove-master').data(data.axes).enter().append('text').attr('class', 'control-remove-master').attr('x', (paddingLeft + axisWidth + 60)).attr('y', function(d, i) {
-                        return i * axisDistance + paddingTop + paddingLabel;
-                    }).text(function(d, i) {
-                        return "o";
-                    }).attr("masterid", function(d, i) {
+                    // create left label
+                    svg.append('text').attr('x', paddingLeft - indent).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(data.masters[0].master.name).attr('class', 'slider-label-left slider-label');
+
+                    // create rigth label
+                    var rightlabels = axes.append('g').attr('transform', function(d,i) {
+                        var x = axisWidth;
+                        var y = paddingLabel;
+                        return "translate(" + x + "," + y + ")";
+                    }).attr('class', 'slider-label-right-container');
+                    
+                    rightlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width','100').attr('height','20').attr('fill', '#fff').attr('class', 'slider-hover-square');
+                    
+                    rightlabels.append('text').text(function(d, i) {
+                        return data.masters[i + 1].master.name;
+                    }).attr('class', 'slider-label-right slider-label');
+                    
+                    rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
                         return i;
-                    }).on("click", function(d, i) {
+                    }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
                         scope.removeMaster(i + 1)
+                    });
+                    
+                    rightlabels.append('text').attr('x', '95').attr('y', '2').text("I").attr('masterid', function(d, i) {
+                        return i;
+                    }).attr('class', 'slider-button slider-promote-master').on("click", function(d, i) {
+                        scope.promoteMaster(i + 1)
                     });
 
                     scope.getMetapolationRatios(data);
-                    scope.secondMethod(data);
-
                 }
-
             }
         }
     }
