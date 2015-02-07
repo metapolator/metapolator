@@ -76,7 +76,7 @@ a simple slider with no configuration.
 
 ![](http://mmiworks.net/metapolator/centricX.png)
 
-Righthand-side masters can be removed _(it is logical that removing the lefthand-side one involves a prior step of setting what the new centre of thinking is)_. When the mouse hovers the label of a righthand-side master, a closing box appears nest to it. Clicking it **removes the master from the metapolation of every instance that lives on this design space**.
+Righthand-side masters can be removed _(it is logical that removing the lefthand-side one involves a prior step of setting what the new centre of thinking is)_. When the mouse hovers the label of a righthand-side master, and after a 500ms timeout, a closing box appears nest to it. Clicking it **removes the master from the metapolation of every instance that lives on this design space**.
 
 #### metapolation math
 To calculate the metapolation, express all the righthand side masters in terms of the lefthand master:
