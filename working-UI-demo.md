@@ -26,12 +26,12 @@ When not:
 * Close
 
 ## parameters panel
-Stick to minipolator, i.e. offer only weight and width controls. These work on (multiple) master and (multiple) glyph level. We can make a nice interim design for this panel, something very simple with a hint of things to come.
+Stick to minipolator, i.e. offer only weight and width controls. These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs. We can make a nice interim design for this panel, something very simple with a hint of things to come.
 
 **local menu**: none
 
 ## specimen + glyph editor panel
-Forget about any direct-manipulation (i.e. with the mouse) parameter editing. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master).
+Forget about any direct-manipulation (i.e. with the mouse) parameter editing, or of making selections on sub-glyph (e.g. stroke, point) level. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master).
 
 Our pain is changing glyphs in real-time, maybe we can show only 2, 3, or 5 glyphs that get their weight or width changed. These can still be mixed with other glyphs that are static (because they belong to another master, or are not part of the selection). The filter of the specimen needs to be re-jigged to show only those few chars that we can handle.
 
