@@ -27,11 +27,11 @@ done
 # build the javascript into one file
 node $SOURCE/node_modules/.bin/r.js -o \
         optimize=none\
-        mainConfigFile="$SOURCE/app/lib/redPillMain.js" \
+        mainConfigFile="$SOURCE/app/lib/browserConfig.js" \
         baseUrl="$SOURCE/app/lib" \
         paths.requireLib="bower_components/requirejs/require" \
         name="redPillMain" \
-        include=requireLib \
+        include=requireLib,browserConfig \
         out="$TARGET/main.js";
 
 # build the less to css
