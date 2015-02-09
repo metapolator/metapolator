@@ -47,6 +47,10 @@ mtk-red-pill-glyphs label{
     vertical-align: bottom;
 }
 
+mtk-red-pill-glyphs label:first-child{
+    margin-left: @app-gap;
+}
+
 mtk-red-pill-glyphs > label > * {
     vertical-align: middle;
 }
@@ -58,7 +62,7 @@ mtk-red-pill-glyph {
     margin-bottom: @app-gap;
     overflow: auto;
     background: white;
-    
+
     svg g.layer-centerline {
         fill: none;
         stroke: lime;
@@ -91,11 +95,11 @@ mtk-red-pill-glyphs li {
 
 red-pill .children {
     white-space: nowrap;
-    
+
     mtk-text-editor{
         width: 450px;
     }
-    
+
     mtk-red-pill-glyphs,
     mtk-text-editor {
         display: inline-block;
