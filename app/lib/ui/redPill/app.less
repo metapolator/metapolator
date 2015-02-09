@@ -16,6 +16,30 @@ body {
     padding: 0 3em;
 }
 
+.compatibility-info {
+    background: orange;
+    color: white;
+    border: .5em solid red;
+    padding: 1em;
+}
+.compatibility-info pre {
+    background: black;
+    padding: .5em;
+}
+
+
+body.dependencies-ready .compatibility-info{
+    display: none;
+}
+
+
+red-pill {
+    display: none;
+}
+body.dependencies-ready red-pill{
+    display: block;
+}
+
 red-pill label {
     display: block;
 }
@@ -25,7 +49,6 @@ red-pill label select {
 }
 
 red-pill {
-    display: block;
     color: black;
     border: @app-border;
     padding: @app-gap;

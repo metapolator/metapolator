@@ -59,7 +59,7 @@ function (
   , setup
 ) {
     "use strict";
-    
+    document.body.classList.add('dependencies-ready');
     function main() {
         var io = setup.io
           , fsEvents = setup.fsEvents
@@ -73,7 +73,7 @@ function (
             angular.bootstrap(document, [angularApp.name]);
         });
     }
-    
+
     if(setup.promise)
         setup.promise.then(main);
     else
