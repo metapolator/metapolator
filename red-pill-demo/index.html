@@ -21,12 +21,6 @@
         dumpLineNumbers: 'mediaquery',
         relativeUrls: false,
     };
-    function checkFirefox() {
-      if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
-      {
-        alert("This demo only works out of the box with the latest version of Firefox");
-      }
-    }
     </script>
     <script src="/lib/bower_components/less.js/dist/less-1.7.0.min.js"></script>
     <script src="/lib/bower_components/requirejs/require.js" data-main="/lib/redPillMain.js"></script>
@@ -34,6 +28,13 @@
     <!-- production -->
     <link rel="stylesheet" type="text/css" href="main.css" />
     <script src="main.js"></script>
+    <script>
+    function checkFirefox() {
+      if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        alert("This demo only works out of the box with the latest version of Firefox\n\nIt can run with Chrome if you start it with \n\nchrome --js-flags=\"--harmony --harmony_proxies\"");
+      }
+    }
+    </script>
     <!-- end of production -->
   </head>
   <body onload="checkFirefox()">
