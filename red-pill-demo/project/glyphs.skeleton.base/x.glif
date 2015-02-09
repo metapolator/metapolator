@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="x" format="2">
+  <advance width="576"/>
+  <unicode hex="0078"/>
+  <outline>
+    <contour identifier="upStrokeRight">
+      <point x="325.348" y="269" type="move" name="connection"/>
+      <point x="373.89818116000004" y="329.33273"/>
+      <point x="422.44981884000003" y="389.66727"/>
+      <point x="471" y="450" type="curve" name="top"/>
+    </contour>
+    <contour identifier="upStrokeLeft">
+      <point x="79" y="10" type="move" name="bottom"/>
+      <point x="129.03583297" y="75.99934"/>
+      <point x="179.07316702999998" y="142.00065999999998"/>
+      <point x="229.10899999999998" y="208" type="curve" name="connection"/>
+    </contour>
+    <contour identifier="bottomRightSerif">
+      <point x="566" y="10" type="move" name="serif right bottom"/>
+      <point x="478.66754000000003" y="10"/>
+      <point x="391.33245999999997" y="10"/>
+      <point x="304" y="10" type="curve" name="serif left bottom"/>
+    </contour>
+    <contour identifier="topRightSerif">
+      <point x="537" y="450" type="move" name="serif right top"/>
+      <point x="481.00056" y="450"/>
+      <point x="424.99944" y="450"/>
+      <point x="369" y="450" type="curve" name="serif left top"/>
+    </contour>
+    <contour identifier="bottomLeftSerif">
+      <point x="182" y="10" type="move" name="serif right bottom"/>
+      <point x="125.66722999999999" y="10"/>
+      <point x="69.33277000000001" y="10"/>
+      <point x="13" y="10" type="curve" name="serif left bottom"/>
+    </contour>
+    <contour identifier="topLeftSerif">
+      <point x="263" y="450" type="move" name="serif right top"/>
+      <point x="175.33420999999998" y="450"/>
+      <point x="87.66579" y="450"/>
+      <point x="0" y="450" type="curve" name="serif left top"/>
+    </contour>
+    <contour identifier="downStroke">
+      <point x="447" y="10" type="move" name="bottom"/>
+      <point x="337.834425" y="156.6652"/>
+      <point x="228.66557500000002" y="303.3348"/>
+      <point x="119.5" y="450" type="curve" name="top"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>x</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>576</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

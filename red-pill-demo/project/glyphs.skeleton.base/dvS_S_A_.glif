@@ -1,2 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<glyph name="dvSSA" format="2"><advance width="562"/><unicode hex="0937"/><outline><contour><point x="343" y="221.5" type="move"/><point x="332" y="191"/><point x="288.5" y="158"/><point x="242" y="158" type="curve"/><point x="135.5" y="158"/><point x="124" y="255.5"/><point x="124" y="341.5" type="curve"/><point x="124" y="414.332605"/><point x="124" y="487.167395"/><point x="124" y="560" type="curve"/></contour><contour><point x="412" y="0" type="move"/><point x="412" y="186.6648"/><point x="412" y="373.3352"/><point x="412" y="560" type="curve"/></contour><contour><point x="580" y="550" type="move"/><point x="380.00199999999995" y="550"/><point x="179.99800000000002" y="550"/><point x="-20" y="550" type="curve"/></contour><contour><point x="393.5" y="269.5" type="move"/><point x="321.33405500000003" y="337.33265500000005"/><point x="249.16594500000002" y="405.16734499999995"/><point x="177" y="473" type="curve"/></contour></outline></glyph>
+<glyph name="dvSSA" format="2">
+  <advance width="562"/>
+  <unicode hex="0937"/>
+  <outline>
+    <contour identifier="bow">
+      <point x="343" y="221.5" type="move"/>
+      <point x="332" y="191"/>
+      <point x="288.5" y="158"/>
+      <point x="242" y="158" type="curve"/>
+      <point x="135.5" y="158"/>
+      <point x="124" y="255.5"/>
+      <point x="124" y="341.5" type="curve"/>
+      <point x="124" y="410.999305"/>
+      <point x="124" y="480.500695"/>
+      <point x="124" y="550" type="curve"/>
+    </contour>
+    <contour identifier="stem">
+      <point x="412" y="0" type="move"/>
+      <point x="412" y="183.3315"/>
+      <point x="412" y="366.6685"/>
+      <point x="412" y="550" type="curve"/>
+    </contour>
+    <contour identifier="bar">
+      <point x="580" y="550" type="move"/>
+      <point x="380.00199999999995" y="550"/>
+      <point x="179.99800000000002" y="550"/>
+      <point x="-20" y="550" type="curve"/>
+    </contour>
+    <contour identifier="crossBar">
+      <point x="405.5" y="257.5" type="move"/>
+      <point x="313.000925" y="344.33246499999996"/>
+      <point x="220.499075" y="431.16753500000004"/>
+      <point x="128" y="518" type="curve"/>
+    </contour>
+  </outline>
+</glyph>

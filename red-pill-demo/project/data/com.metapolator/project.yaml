@@ -1,39 +1,26 @@
 masters:
   base:
-    cpsChain:
-      - lib/centreline-skeleton-to-symmetric-outline.cps
-      - base.cps
+    cpsFile: base.cps
     skeleton: skeleton.base
-# this is just an enhancement of base
-  enhanced:
-    cpsChain:
-      - lib/centreline-skeleton-to-symmetric-outline.cps
-      - base.cps
-      - lib/point-child-base.cps
-      - lib/weight.cps
-      - lib/scale.cps
-      - enhanced.cps
+# condensed light
+  cl:
+    cpsFile: condensed-light.cps
     skeleton: skeleton.base
-# based on inheriting all via @dictionary
-# this would be good to have it working for 
-# the interpolation patterns
-  inherited:
-    cpsChain:
-      - lib/centreline-skeleton-to-symmetric-outline.cps
-      - lib/point-child-base.cps
-      - lib/single-inheritance.cps
-      - lib/weight.cps
-      - lib/scale.cps
-      - inherited.cps
+# wide light
+  wl:
+    cpsFile: wide-light.cps
     skeleton: skeleton.base
-  interpolated:
-    cpsChain:
-      - lib/interpolate-2.cps
-      - interpolated.cps
+# condensed extra bold
+  ceb:
+    cpsFile: condensed-extra-bold.cps
     skeleton: skeleton.base
-  metapolated:
-    cpsChain:
-      - lib/centreline-skeleton-to-symmetric-outline.cps
-      - lib/metapolate-2.cps
-      - metapolated.cps
+# wide extra bold
+  web:
+    cpsFile: wide-extra-bold.cps
     skeleton: skeleton.base
+#   metapolated:
+#     cpsFile: metapolated.cps
+#     skeleton: skeleton.base
+#   interpolated:
+#     cpsFile: interpolated.cps
+#     skeleton: skeleton.base

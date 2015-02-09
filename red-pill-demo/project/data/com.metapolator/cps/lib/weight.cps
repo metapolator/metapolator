@@ -15,7 +15,8 @@ point > right {
 /* define  higher level parameters, override in your master */
 @dictionary {
     point > left,
-        point > right {
+    point > right,
+    p {
         weightFactor: 1;
         weightSummand: 0;
     }
