@@ -793,6 +793,22 @@
             .slider-label-output {
                 fill: #f85c37;
             }
+            
+            .slider-input-container {
+                position: absolute;
+                z-index: 1000;
+                left: 120px; 
+                color: #f85c37;
+                font-size: 9px;
+            }
+            
+                .slider-input-output {
+                    width: 30px;
+                    border: 0;
+                    color: #f85c37;
+                    text-align: right;
+                    font-size: 9px;
+                }
     
         .triangle-button {
             position: absolute;
@@ -805,8 +821,7 @@
             font-family: "glyphs";
             cursor: pointer;
             opacity: 0;
-            transition: all 0.3s ease;
-            fill: #000;
+            transition: all 0.5s ease;
         }
         
             .slider-button.slider-remove-master {
@@ -816,6 +831,14 @@
             .slider-label-right-container:hover .slider-button {
                 opacity: 1;
             }
+            
+        .left-label-select {
+            position: absolute;
+            left: 10px;
+            top: 100px;
+            z-index: 1000;
+            font-size: 9px;
+        }
 
 
 

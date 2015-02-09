@@ -39,7 +39,8 @@ app.factory("sharedScope", function($rootScope) {
             type : "Control",
             masters : [],
             axes : [],
-            triangle : false
+            triangle : false,
+            mainMaster : "0"
         }],
         currentDesignSpace : 0
     }

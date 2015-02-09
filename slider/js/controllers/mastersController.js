@@ -296,7 +296,8 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     function addNewMaster(master) {
-        var masterSet = $scope.data.designSpaces[$scope.data.currentDesignSpace].masters;
+        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var masterSet = designspace.masters;
         $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push({
             master : master,
             value : null

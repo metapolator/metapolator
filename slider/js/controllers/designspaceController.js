@@ -12,7 +12,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             type : "x",
             masters : [],
             axes : [],
-            triangle : false
+            triangle : false,
+            mainMaster : "0"
         });
         $scope.data.currentDesignSpace = i;
     };
@@ -51,12 +52,23 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.removeMaster = function(m) {
         var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
         var masterSet = designspace.masters;
-        var master = masterSet[m].name;
+        var master = masterSet[m].master.name;
         if (confirm("Remove '" + master + "' from this Design Space. Sure?")) {
             masterSet.splice(m, 1);
             designspace.axes.splice((m - 1), 1);
             $scope.$apply();
         }
+    };
+    
+    $scope.changeMainMaster = function () {
+        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var masterSet = designspace.masters;
+        var n = designspace.mainMaster;
+        var tempMaster = masterSet[0];
+        masterSet[0] = masterSet[n];
+        masterSet[n] = tempMaster;
+        designspace.mainMaster = "0";
+        valueToAxes();
     };
     
     $scope.promoteMaster = function(m) {
