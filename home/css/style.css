@@ -27,9 +27,9 @@
  
         #menu {
             position: fixed;
-            left: calc(50% - 630px);
+            left: calc(50% - 650px);
             top: 20px;
-            width: 150px;
+            width: 170px;
             padding: 20px;
         }
         
