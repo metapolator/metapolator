@@ -300,26 +300,25 @@ div.CodeMirror-cursors {
   }
 }
 
-mtk-files-mode {
+mtk-text-editor {
   display: block;
 }
-mtk-files-mode > ol {
+mtk-text-editor > ol {
   list-style: none;
   padding: 0 0 0.5em 0;
 }
-mtk-files-mode > ol > li {
+mtk-text-editor > ol > li {
   margin-bottom: 0.5em;
   border: 1px solid #000000;
   background: #cccccc;
 }
-mtk-files-mode .CodeMirror {
+mtk-text-editor .CodeMirror {
   height: 400px;
 }
-mtk-red-pill-master {
+mtk-text-editor label select {
   display: block;
-}
-mtk-red-pill-master .controls {
-  width: 450px;
+  width: 100%;
+  overflow-x: auto;
 }
 html {
   font-family: monospace;
@@ -330,6 +329,25 @@ body {
   margin: 0;
   padding: 0 3em;
 }
+.compatibility-info {
+  background: orange;
+  color: white;
+  border: .5em solid red;
+  padding: 1em;
+}
+.compatibility-info pre {
+  background: black;
+  padding: .5em;
+}
+body.dependencies-ready .compatibility-info {
+  display: none;
+}
+red-pill {
+  display: none;
+}
+body.dependencies-ready red-pill {
+  display: block;
+}
 red-pill label {
   display: block;
 }
@@ -337,7 +355,6 @@ red-pill label select {
   vertical-align: top;
 }
 red-pill {
-  display: block;
   color: black;
   border: 1px solid #000000;
   padding: 0.5em;
@@ -345,11 +362,17 @@ red-pill {
 }
 mtk-red-pill-glyphs {
   display: block;
+  width: 100%;
+}
+.hasEditor mtk-red-pill-glyphs {
   width: calc(100% - 450px);
 }
 mtk-red-pill-glyphs label {
   display: inline;
   vertical-align: bottom;
+}
+mtk-red-pill-glyphs label:first-child {
+  margin-left: 0.5em;
 }
 mtk-red-pill-glyphs > label > * {
   vertical-align: middle;
@@ -360,6 +383,24 @@ mtk-red-pill-glyph {
   margin-left: 0.5em;
   margin-bottom: 0.5em;
   overflow: auto;
+  background: white;
+}
+mtk-red-pill-glyph svg g.layer-centerline {
+  fill: none;
+  stroke: lime;
+  stroke-width: 0.5;
+}
+mtk-red-pill-glyph svg g.layer-outline {
+  fill: black;
+  stroke: white;
+  stroke-width: 0.5;
+  /* disabled for now, we should have a switch for this in the ui */
+  stroke: none;
+}
+mtk-red-pill-glyph svg g.component {
+  fill: #333;
+  opacity: 0.9;
+  stroke: none;
 }
 mtk-red-pill-glyphs ol {
   white-space: normal;
@@ -373,11 +414,11 @@ mtk-red-pill-glyphs li {
 red-pill .children {
   white-space: nowrap;
 }
-red-pill .children .masters {
+red-pill .children mtk-text-editor {
   width: 450px;
 }
 red-pill .children mtk-red-pill-glyphs,
-red-pill .children .masters {
+red-pill .children mtk-text-editor {
   display: inline-block;
   vertical-align: top;
 }

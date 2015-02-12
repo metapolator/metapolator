@@ -1,3 +1,5 @@
+@import 'lib/centreline-skeleton-to-symmetric-outline.cps';
+
 /* Boilerplate of a two master metapolation
  * Before this you may want to read single-inheritance.cps
  * because it basically does the same, but less complex.
@@ -31,19 +33,24 @@
 }
 
 point > * {
-    onDir: base1:onDir * _p1 + base2:onDir * _p2; 
-    
     inLength: base1:inLength * _p1 + base2:inLength * _p2;
     outLength: base1:outLength * _p1 + base2:outLength * _p2;
     
-    inTension: base1:inTension * _p1 + base2:inTension * _p2;
-    outTension: base1:outTension * _p1 + base2:outTension * _p2;
+    inTension: (min 10000 base1:inTension) * _p1
+             + (min 10000 base2:inTension) * _p2;
     
-    inDirIntrinsic: base1:inDirIntrinsic * _p1 + base2:inDirIntrinsic * _p2;
-    outDirIntrinsic: base1:outDirIntrinsic * _p1 + base2:outDirIntrinsic * _p2;
+    outTension: (min 10000 base1:outTension) * _p1
+              + (min 10000 base2:outTension) * _p2;
+    
+    inDirIntrinsic: (normalizeAngle base1:inDirIntrinsic) * _p1
+                  + (normalizeAngle base2:inDirIntrinsic) * _p2;
+    outDirIntrinsic: (normalizeAngle base1:outDirIntrinsic) * _p1
+                   + (normalizeAngle base2:outDirIntrinsic) * _p2;
 }
 
-point > left, point > right{
+point > left, point > right {
+    onDir: (normalizeAngle base1:onDir) * _p1
+         + (normalizeAngle base2:onDir) * _p2;
     onLength: base1:onLength * _p1 + base2:onLength * _p2;
 }
 
@@ -56,12 +63,14 @@ point > center {
 /* terminals overide of skeleton2outline */
 point:i(0) > left,
 point:i(0) > right {
-    inDir: base1:inDir * _p1 + base2:inDir * _p2;
+    inDir: (normalizeAngle base1:inDir) * _p1
+         + (normalizeAngle base2:inDir) * _p2;
 }
 
 point:i(-1) > right,
 point:i(-1) > left {
-    outDir: base1:outDir * _p1 + base2:outDir * _p2;
+    outDir: (normalizeAngle base1:outDir) * _p1
+          + (normalizeAngle base2:outDir) * _p2;
 }
 /* end boilerplate two master metapolation */
 
