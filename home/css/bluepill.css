@@ -92,7 +92,7 @@
                         }
                             
                             .master-ul .master-li .ui-selected {
-                                background: #f85c37;
+                                background: #ED1C24;
                             }
                     
                         .master-ul .master-li .selectable-name {
@@ -137,7 +137,7 @@
     }
 
     #design-space-tabs li.selected {
-        background: #f85c37;
+        background: #ED1C24;
         color: #fff;
     }
 
@@ -177,7 +177,7 @@
     }
 
     .choose-space-type-button:hover {
-        color: #f85c37;
+        color: #ED1C24;
     }
 
     .drop-area {
@@ -310,21 +310,21 @@
             }
             
             .slider-label-output {
-                fill: #f85c37;
+                fill: #ED1C24;
             }
             
             .slider-input-container {
                 position: absolute;
                 z-index: 1000;
                 left: 120px; 
-                color: #f85c37;
+                color: #ED1C24;
                 font-size: 9px;
             }
             
                 .slider-input-output {
                     width: 30px;
                     border: 0;
-                    color: #f85c37;
+                    color: #ED1C24;
                     text-align: right;
                     font-size: 9px;
                 }
@@ -384,7 +384,7 @@
         }
         
             .sequence-name.selected {
-               background: #f85c37; 
+               background: #ED1C24; 
                color: #fff;
             }
 
@@ -466,7 +466,7 @@
         }
         
             .selectable-ag.selected {
-                background: #f85c37;
+                background: #ED1C24;
             }
             
         .master-name {
@@ -479,7 +479,7 @@
         }
         
           .master-name.selected {
-                background: #f85c37;
+                background: #ED1C24;
             }
             
 
