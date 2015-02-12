@@ -20,7 +20,7 @@
         font-family: "alice";
         font-size: 18px;
         line-height: 27px;
-        background: #d7d2c8;
+        background: #fff;
         padding: 0;
         margin: 0;
     } 
@@ -67,7 +67,7 @@
             width: 960px;
             margin: 40px auto 300px auto;
             background: #fff;
-            box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
 
 
@@ -77,6 +77,7 @@
     h1 {
         font-weight: 100;
         font-size: 54px;
+        line-height: 50px;
         text-align: center;
     }
     
@@ -99,6 +100,10 @@
         font-size: 32px;
     }
     
+        .bullets:after {
+            content: "•••";
+        }
+    
         .bullets.black {
             color: #000;
         }
@@ -111,9 +116,29 @@
         padding: 60px;
     }
     
+        section a {
+            color: #000;
+        }
+        
+            section a:hover {
+                color: #f85c37;
+            }
+    
     section.red {
         background: #f85c37;
         color: #fff;
+    }
+    
+        section.red a {
+            color: #fff;
+        }
+    
+            section.red a:hover {
+                color: #000;
+            }
+            
+    section.grey {
+        background: #ddd;
     }
     
     
@@ -145,6 +170,34 @@
         
             .subscript a:hover {
                 text-decoration: underline;
+            }
+            
+            
+/* blue pill */
+
+    #blue-pill {
+
+    }
+
+    .bluepill-left {
+        width: 40%;
+        float: left;
+        padding-right: 20px;
+    }
+    
+    .bluepill-right {
+        width: 60%;
+        min-height: 500px;
+        float: left;
+    }
+    
+        .bluepill-right designspace {
+            height: 500px;
+        }
+        
+            .bluepill-right designspace .design-space {
+                height: 461px;
+                position: relative;
             }
 
     

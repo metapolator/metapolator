@@ -24042,22 +24042,17 @@ define("angular", (function (global) {
 
 define('ui/redPill/app-controller',[], function() {
     
-    function AppController($scope, model, registerFrontend) {
+    function AppController($scope, model, registerFrontend, config) {
         this.$scope = $scope;
         this.$scope.name = 'app'
         // registering the root of the app, for callback purposes
         registerFrontend(this);
         
         this.$scope.model = this.model = model;
-        
-        // These are used to store the application state.
-        // When we switch between masters, for example, a RedPillMasterController
-        // will remember its last state via this.$scope.masterData
-        this.$scope.currentMaster = model.masters[0]
-        this.$scope.masterData = {}
+        this.$scope.config = config;
     }
     
-    AppController.$inject = ['$scope', 'redPillModel', 'registerFrontend'];
+    AppController.$inject = ['$scope', 'redPillModel', 'registerFrontend', 'config'];
     var _p = AppController.prototype;
     
     _p.redraw = function() {
@@ -24459,7 +24454,7 @@ define('require/text',['module'], function (module) {
 });
 
 
-define('require/text!ui/redPill/app.tpl',[],function () { return '\n\n<div class="children">\n    <div class="masters">\n        <label class="master-selection">select master:\n            <select\n                ng-model="currentMaster"\n                ng-options="name for name in model.masters">\n                </select>\n        </label>\n    \n    \n        <mtk-red-pill-master\n            ng-repeat="name in [currentMaster] track by name"\n            mtk-master-name="name" />\n    </div><!--\n    no whitespace in here!\n    --><mtk-red-pill-glyphs></mtk-red-pill-glyphs>\n</div>\n';});
+define('require/text!ui/redPill/app.tpl',[],function () { return '<div class="children" ng-class="{hasEditor:  config.loadTextEditor}">\n    <mtk-text-editor ng-if=" config.loadTextEditor"></mtk-text-editor><!--\n    No whitespace between elements!\n    --><mtk-red-pill-glyphs></mtk-red-pill-glyphs>\n</div>\n';});
 
 define('ui/redPill/app-directive',[
     'require/text!./app.tpl'
@@ -24479,171 +24474,3602 @@ define('ui/redPill/app-directive',[
     return appDirective;
 })
 ;
-define('ui/redPill/redPillMaster/redPillMaster-controller',[], function() {
+define('ui/redPill/redPillGlyphs/redPillGlyphs-controller',[], function() {
     
-    function RedPillMasterController($scope) {
+    function RedPillGlyphsController($scope, selectGlyphs, updateCPS) {
         this.$scope = $scope;
-        this.$scope.name = 'redPillMaster';
+        this.$scope.name = 'redPillGlyphs';
+        this.$scope.selectGlyphs = selectGlyphs;
+        this.$scope.updateCPS = updateCPS;
         
-        this.$scope.modes = [
-            'files',
-            'rules'
-        ]
+        // a default value
+        this.$scope.selector = 'glyph';
         
-        // if there is no data element cached already (from a previous
-        // incarnation of this element) create a new one, and fill it 
-        // with defaults
-        if( this.$scope.$parent.masterData[this.$scope.master] === undefined)
-             this.$scope.$parent.masterData[this.$scope.master] = {
-                // default values
-                mode: this.$scope.modes[0]
-              , modeData: {}
-            };
-        // shortcut
-        this.$scope.data = this.$scope.$parent.masterData[this.$scope.master];
+        this.$scope.glypsize = this.$scope.initialGlypsize = 50;
     }
-    RedPillMasterController.$inject = ['$scope'];
-    var _p = RedPillMasterController.prototype;
+    RedPillGlyphsController.$inject = ['$scope', 'selectGlyphs'];
+    var _p = RedPillGlyphsController.prototype;
     
-    return RedPillMasterController;
+    return RedPillGlyphsController;
 })
 ;
 
-define('require/text!ui/redPill/redPillMaster/redPillMaster.tpl',[],function () { return '<h2>Master: <em>{{ master }}</em></h2>\n\n<!--\n<label>edit Mode:\n    <select ng-model="data.mode" \n            ng-options="name for name in modes"\n            ></select>\n</label>\n-->\n\n<div class="controls" ng-switch on="data.mode">\n      <div ng-switch-when="rules">rules mode, placeholder</div>\n      <mtk-files-mode ng-switch-when="files">files mode placeholder</mtk-files-mode>\n      <div ng-switch-default>This is the "default" item and shoul NEVER appear on screen.</div>\n</div>\n';});
+define('require/text!ui/redPill/redPillGlyphs/redPillGlyphs.tpl',[],function () { return '<label>glyphs selector:\n    <input\n        type="text"\n        ng-model="selector"\n        />\n</label>\n<label>glyph size:\n    <input type="range" min="0.01" max="100" step="0.0001" ng-model="glyphsize"/>\n    {{ glyphsize || initialGlypsize}} %\n</label>\n\n<ol>\n    <li style="width:{{ glyphsize || initialGlypsize}}%"\n        ng-repeat="glyph in selectGlyphs(selector) track by glyph.nodeID">\n        <mtk-red-pill-glyph\n            mtk-glyph-element="glyph">\n            {{ glyph.particulars }}\n            </mtk-red-pill-glyph>\n\n    </li>\n</ol>\n';});
 
-define('ui/redPill/redPillMaster/redPillMaster-directive',[
-    'require/text!./redPillMaster.tpl'
+define('ui/redPill/redPillGlyphs/redPillGlyphs-directive',[
+    'require/text!./redPillGlyphs.tpl'
     ], function(
     template
 ) {
     
-    function redPillMasterDirective() {
+    function redPillGlyphsDirective() {
         return {
             restrict: 'E' // only matches element names
-          , controller: 'RedPillMasterController'
-          , replace: false
-          , template: template
-          , scope: {
-                master: '=mtkMasterName'
-          }
-        };
-    }
-    redPillMasterDirective.$inject = [];
-    return redPillMasterDirective;
-})
-;
-define('ui/redPill/filesMode/filesMode-controller',[
-
-], function(
-
-) {
-    
-    function FilesModeController($scope, getMasterSources, getCodeMirrorDoc
-                                                , returnCodeMirrorDoc) {
-        this.$scope = $scope;
-        this.$scope.name = 'filesMode'
-        if($scope.$parent.data.modeData[$scope.$parent.data.mode] === undefined)
-            $scope.$parent.data.modeData[$scope.$parent.data.mode] = {
-                files: []
-                
-            }
-        $scope.data = $scope.$parent.data.modeData[$scope.$parent.data.mode];
-        
-        this._getCodeMirrorDoc = getCodeMirrorDoc;
-        this._returnCodeMirrorDoc = returnCodeMirrorDoc;
-        
-        $scope.sources = getMasterSources($scope.$parent.master);
-        
-        $scope.$on("codeMirrorDestroy", this._codemirrorDestroyHandler.bind(this));
-        $scope.getEditorOptions = this.getEditorOptions.bind(this)
-    }
-    FilesModeController.$inject = ['$scope', 'getMasterSources', 'getCodeMirrorDoc', 'returnCodeMirrorDoc'];
-    var _p = FilesModeController.prototype;
-    
-    
-    _p.getEditorOptions = function(source) {
-        // From the CodeMirror docs:
-        // Note that the options object passed to the constructor will
-        // be mutated when the instance's options are changed, so you
-        // shouldn't share such objects between instances.
-        return {
-            lineWrapping : true
-          , lineNumbers: true
-          //,  readOnly: 'nocursor'
-          // firstLineNumber: 10 // interesting for rules mode
-          , mode: 'css'
-          , onLoad: this._codemirrorLoadedHandler.bind(this, source)
-        };
-    }
-    
-    _p._codemirrorLoadedHandler = function(source, cm) {
-        var doc = this._getCodeMirrorDoc(source);
-        cm.swapDoc(doc);
-    }
-    
-    _p._codemirrorDestroyHandler = function(event, cm) {
-        this._returnCodeMirrorDoc(cm.getDoc());
-    }
-    
-    return FilesModeController;
-})
-;
-
-define('require/text!ui/redPill/filesMode/filesMode.tpl',[],function () { return '<label>select files:\n    <select \n            multiple\n            ng-model="data.files" \n            ng-options="name for name in {{ sources }}"\n            ></select>\n</label>\n\n<ol>\n    <li ng-repeat="source in data.files track by source">\n        <span>file: {{ source }}</span>\n        <!--\n            Don\'t use ng-model here. the history of the resultong doc \n            will have ther instertion of the content as first entry.\n            Also the change event will fire immediately. We create the\n            doc in codemirrors on load event.\n        -->\n        <ui-codemirror\n            ui-codemirror-opts="getEditorOptions(source)"\n            ng-controller="CodeMirrorController"\n            ></ui-codemirror>\n    </li>\n</ol>\n';});
-
-define('ui/redPill/filesMode/filesMode-directive',[
-    'require/text!./filesMode.tpl'
-    ], function(
-    template
-) {
-    
-    function filesModeDirective() {
-        return {
-            restrict: 'E' // only matches element names
-          , controller: 'FilesModeController'
+          , controller: 'RedPillGlyphsController'
           , replace: false
           , template: template
           , scope: {}
         };
     }
-    filesModeDirective.$inject = [];
-    return filesModeDirective;
+    redPillGlyphsDirective.$inject = [];
+    return redPillGlyphsDirective;
 })
 ;
-define('ui/redPill/filesMode/CodeMirrorController',[
+// we can define document as a dependency
+// works only in a browser context
+define('metapolator/webAPI/document',[], document)
+;
+define('metapolator/errors',[],function() {
+    
+    //metapolator errors
+    var errors = {}
+
+    /**
+     * save three lines of coding for each error with this factory
+     *
+     * and observe that extending Error is uncool
+     */
+    var makeError = function(name, Constructor, prototype, namespace)
+    {
+        if(prototype === undefined)
+            var prototype = new Error;
+
+        if(Constructor === undefined) {
+            var Constructor = function(message, stack) {
+                if(message !== undefined) {
+                    this.name = name + 'Error';
+                    this.message = message || "(no error message)";
+                }
+
+                if(!stack && typeof Error.captureStackTrace === 'function')
+                    Error.captureStackTrace(this, Constructor);
+                else {
+                    stack = stack || (new Error).stack || '(no stack available)'
+                    this.stack = [this.name+': ', this.message, '\n'
+                                                    , stack].join('');
+                }
+            };
+        };
+        Constructor.prototype = prototype;
+        Constructor.prototype.constructor = Constructor;
+        if(namespace === undefined)
+            namespace = errors;
+        namespace[name] = Constructor;
+    }
+    errors.makeError = makeError;
+    /**
+     * the definitions go here
+     */
+    makeError('Error');
+    makeError('Unhandled');
+    makeError('Assertion', undefined , new errors.Error);
+    makeError('CommandLine', undefined , new errors.Error);
+    makeError('Value', undefined , new RangeError);
+    makeError('MOM', undefined , new errors.Error);
+    makeError('NotImplemented', undefined , new errors.Error);
+    makeError('Deprecated', undefined , new errors.Error);
+    makeError('CPS', undefined , new errors.Error);
+    makeError('Key', undefined , new errors.Error);
+    makeError('CPSRegistryKey', undefined , new errors.Key);
+    makeError('CPSKey', undefined , new errors.Key);
+    makeError('CPSRecursion', undefined , new errors.CPS);
+    makeError('CPSFormula', undefined , new errors.CPS);
+    // deprecated, CPSFormula superseeds this
+    makeError('CPSAlgebra', undefined , new errors.CPSFormula);
+    makeError('Project', undefined , new errors.CPS);
+    makeError('PointPen', undefined , new errors.CPS);
+    makeError('CPSParser', undefined , new errors.CPS);
+    makeError('Import', undefined , new errors.CPS);
+    makeError('ImportPenstroke', undefined , new errors.Import);
+    makeError('ImportContour', undefined , new errors.Import);
+
+    /**
+     * if expression is false, throw an Assertion
+     * pass a message to explain yourself
+     **/
+    errors.assert = function(exp, message) {
+        if (!exp) {
+            throw new errors.Assertion(message);
+        }
+    };
+    errors.warn = function(message) {
+        if(typeof console !== 'undefined' && console.warn)
+            console.warn('WARNING: ' + message);
+    };
+
+    /**
+     * ES6/Promises have the fundamental flaw, that, if there is no
+     * Error handler attached, an unhandled error stays unnoticed and
+     * just disappears.
+     * Because handling all Errors always correctly is not possible at
+     * any given time e.g. a program may still be under construction for
+     * example, this is a default handler to mark a promise as unhandled.
+     *
+     * Using this error-handler at the very end of the promise chain
+     * ensures that the unhandled Proxy exception is not just disappearing
+     * unnoticed by the main program.
+     */
+    function unhandledPromise(originalError) {
+        var error = new errors.Unhandled(originalError+'');
+        error.originalError = originalError;
+        // use setTimout to escape the catch all that es6/Promise applies
+        // and that silences unhandled errors
+        setTimeout(function unhandledError(){throw error;}, 0);
+    }
+    errors.unhandledPromise = unhandledPromise;
+
+    return errors;
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('complex/Complex',['require','exports','module'],function (require, exports, module) {
+var Complex = function(real, imag){
+	Object.defineProperty(this, 'real', {
+		value: real !== undefined ? real : 0
+		, writable: false
+	})
+	
+	Object.defineProperty(this, 'imag', {
+		value: imag !== undefined ? imag : 0
+		, writable: false
+	})
+};
+
+var prototype = Complex.prototype = {
+	constructor: Complex,
+	fromRect: function(a, b) {
+		return new this.constructor(a, b)
+	},
+
+	fromPolar: function(r, phi){
+		if (typeof r == 'string'){
+			var parts = r.split(' ');
+			r = parts[0];
+			phi = parts[1];
+		}
+		return new this.constructor(
+			r * Math.cos(phi),
+			r * Math.sin(phi)
+		);
+	},
+
+	toPrecision: function(k){
+		return new this.constructor(
+			this.real.toPrecision(k),
+			this.imag.toPrecision(k)
+		);
+	},
+
+	toFixed: function(k){
+		return new this.constructor(
+			this.real.toFixed(k),
+			this.imag.toFixed(k)
+		);
+	},
+
+	magnitude: function(){
+		var a = this.real, b = this.imag;
+		return Math.sqrt(a * a + b * b);
+	},
+
+	angle: function(){
+		return Math.atan2(this.imag, this.real);
+	},
+
+	conjugate: function(){
+		return new this.constructor(this.real, -this.imag);
+	},
+
+	negate: function(){
+		return new this.constructor(-this.real, -this.imag);
+	},
+
+	multiply: function(z){
+		z = this.constructor.from(z);
+		var a = this.real, b = this.imag;
+		return new this.constructor(
+			z.real * a - z.imag * b,
+			b * z.real + z.imag * a
+		);
+	},
+
+	divide: function(z){
+		z = this.constructor.from(z);
+		var divident = (Math.pow(z.real, 2) + Math.pow(z.imag, 2)),
+			a = this.real, b = this.imag;
+		return new this.constructor(
+			(a * z.real + b * z.imag) / divident,
+			(b * z.real - a * z.imag) / divident
+		);
+	},
+
+	add: function(z){
+		z = this.constructor.from(z);
+		return new this.constructor(this.real + z.real, this.imag + z.imag);
+	},
+
+	subtract: function(z){
+		z = this.constructor.from(z);
+		return new this.constructor(this.real - z.real, this.imag - z.imag);
+	},
+
+	pow: function(z){
+		z = this.constructor.from(z);
+		var result = z.multiply(this.clone().log()).exp(); // z^w = e^(w*log(z))
+		return new this.constructor(result.real, result.imag);
+	},
+
+	sqrt: function(){
+		var abs = this.magnitude(),
+			sgn = this.imag < 0 ? -1 : 1;
+		return new this.constructor(
+			Math.sqrt((abs + this.real) / 2),
+			sgn * Math.sqrt((abs - this.real) / 2)
+		);
+	},
+
+	log: function(k){
+		if (!k) k = 0;
+		return new this.constructor(
+			Math.log(this.magnitude()),
+			this.angle() + k * 2 * Math.PI
+		);
+	},
+
+	exp: function(){
+		return this.fromPolar(
+			Math.exp(this.real),
+			this.imag
+		);
+	},
+
+	sin: function(){
+		var a = this.real, b = this.imag;
+		return new this.constructor(
+			Math.sin(a) * cosh(b),
+			Math.cos(a) * sinh(b)
+		);
+	},
+
+	cos: function(){
+		var a = this.real, b = this.imag;
+		return new this.constructor(
+			Math.cos(a) * cosh(b),
+			Math.sin(a) * sinh(b) * -1
+		);
+	},
+
+	tan: function(){
+		var a = this.real, b = this.imag,
+			divident = Math.cos(2 * a) + cosh(2 * b);
+		return new this.constructor(
+			Math.sin(2 * a) / divident,
+			sinh(2 * b) / divident
+		);
+	},
+
+	sinh: function(){
+		var a = this.real, b = this.imag;
+		return new this.constructor(
+			sinh(a) * Math.cos(b),
+			cosh(a) * Math.sin(b)
+		);
+	},
+
+	cosh: function(){
+		var a = this.real, b = this.imag;
+		return new this.constructor(
+			cosh(a) * Math.cos(b),
+			sinh(a) * Math.sin(b)
+		);
+	},
+
+	tanh: function(){
+		var a = this.real, b = this.imag,
+			divident = cosh(2 * a) + Math.cos(2 * b);
+		return new this.constructor(
+			sinh(2 * a) / divident,
+			Math.sin(2 * b) / divident
+		);
+	},
+
+	clone: function(){
+		return new this.constructor(this.real, this.imag);
+	},
+
+	toString: function(polar){
+		if (polar) return this.magnitude() + ' ' + this.angle();
+
+		var ret = '', a = this.real, b = this.imag;
+		if (a) ret += a;
+		if (a && b || b < 0) ret += b < 0 ? '-' : '+';
+		if (b){
+			var absIm = Math.abs(b);
+			if (absIm != 1) ret += absIm;
+			ret += 'i';
+		}
+		return ret || '0';
+	},
+
+	equals: function(z) {
+		z = this.constructor.from(z);
+		return (z.real == this.real && z.imag == this.imag);
+	}
+
+};
+
+var alias = {
+	abs: 'magnitude'
+  , arg: 'angle'
+  , phase: 'angle'
+  , conj: 'conjugate'
+  , '**': 'pow'
+  , mult: 'multiply'
+  , '*':  'multiply'
+  , dev: 'divide'
+  , '/': 'divide'
+  , '+': 'add'
+  , sub: 'subtract'
+  , '-': 'subtract'
+  , '=': 'equals'
+};
+
+for (var a in alias) prototype[a] = prototype[alias[a]];
+
+// factories and constants
+var extend = {
+
+	from: function(real, im) {
+		if (real instanceof Complex) return new Complex(real.real, real.imag);
+		return new Complex(real, im);
+	},
+
+	fromString: function(str) {
+		var match, real, im;
+		if (str == 'i') str = '0+1i';
+		match = str.match(/(\d+)?([\+\-]\d*)[ij]/);
+		if (match) {
+			real = match[1];
+			im = (match[2] == '+' || match[2] == '-')
+				? match[2] + '1'
+				: match[2];
+		}
+		return new Complex(+real, +im);
+	},
+
+	fromPolar: function(r, phi) {
+		return new Complex(1, 1).fromPolar(r, phi);
+	},
+
+	i: new Complex(0, 1),
+
+	one: new Complex(1, 0)
+
+};
+
+for (var e in extend) Complex[e] = extend[e];
+
+var sinh = function(x){
+	return (Math.pow(Math.E, x) - Math.pow(Math.E, -x)) / 2;
+};
+
+var cosh = function(x){
+	return (Math.pow(Math.E, x) + Math.pow(Math.E, -x)) / 2;
+};
+
+module.exports = Complex;
+
+
+});
+
+if(typeof Proxy === 'function')
+    define('es6/Proxy', [], function() {return Proxy;});
+else // typeof Proxy === 'object' => the old Proxy Proposal
+    // mockup module, Proxy must be global
+    // es6/Reflect patches it only
+    define('es6/Proxy', ['es6/Reflect'], function(require) {return Proxy;});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ */
+ 
+define('ufojs/errors',[],function() {
+    
+    //ufojs errors
+    var errors = {}
+    
+    /**
+     * safe three lines of coding for each error with this factory
+     * 
+     * and observe that extending Error is uncool
+     */
+    var makeError = function(name, Constructor, prototype, namespace)
+    {
+        if(prototype === undefined)
+            var prototype = new Error;
+        
+        if(Constructor === undefined) {
+            var Constructor = function(message, stack) {
+                if(message !== undefined) {
+                    this.name = name;
+                    this.message = message || "(no error message)";
+                    stack = stack || (new Error).stack || '(no stack available)'
+                    this.stack = [name, ' Error: ', this.message, '\n'
+                                                       , stack].join('');
+                }
+            };
+        };
+        Constructor.prototype = prototype;
+        Constructor.prototype.constructor = Constructor;
+        if(namespace === undefined)
+            var namespace = errors
+        namespace[name] = Constructor;
+    }
+    errors.makeError = makeError;
+    /**
+     * here the definitions go
+     */
+    makeError('Error');
+    makeError('NotImplemented', undefined , new errors.Error);
+    makeError('Assertion', undefined , new errors.Error);
+    makeError('Value', undefined , new errors.Error);
+    makeError('Type', undefined , new TypeError);
+    makeError('Dependency', undefined , new errors.Error);
+    makeError('Parser', undefined , new errors.Error);
+    makeError('IO', undefined , new errors.Error);
+    makeError('IONoEntry', undefined, new errors.IO)
+    makeError('IOEntryExists', undefined, new errors.IO)
+    // the following IO errors are optional for IO implementations
+    makeError('IONotDir', undefined, new errors.IO)
+    makeError('IOIsDir', undefined, new errors.IO)
+    makeError('IONotEmpty', undefined, new errors.IO)
+    makeError('NameTranslation', undefined , new errors.Error);
+    makeError('GlifLib', undefined , new errors.Error);
+    makeError('Key', undefined , new TypeError);
+    
+    /**
+     * if expression is false errors.Assertion is thrown
+     * pass a message to explain yourself 
+     **/
+    errors.assert = function(exp, message) {
+        if (!exp) {
+            throw new errors.Assertion(message);
+        }
+    };
+    errors.warn = function(message) {
+        if(typeof console !== 'undefined' && console.log)
+            console.log('WARNING: ' + message);
+    };
+    
+    return errors;
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ *
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ *
+ */
+
+define('ufojs/main',['./errors'], function(errors) {
+    
+    var ValueError = errors.Value,
+        TypeError = errors.Type;
+
+    /**
+     * enhance helps with class building
+     * FIXME: put description in here
+     */
+    var enhance =  function(constructor, blueprint)
+    {
+        for(var i in blueprint)
+        {
+            //TODO:
+            // use Object.getOwnPropertyDescriptor and Object.defineProperty
+            // instead of __lookup(S/G)etter__ and __define(S/G)etter__
+            // its the future
+            var getter = blueprint.__lookupGetter__(i),
+                setter = blueprint.__lookupSetter__(i);
+            if ( getter || setter ) {
+                if ( getter )
+                    constructor.prototype.__defineGetter__(i, getter);
+                if ( setter )
+                    constructor.prototype.__defineSetter__(i, setter);
+            } else
+                constructor.prototype[i] = blueprint[i];
+        };
+    };
+
+    /**
+     * check whether val is a number and not NaN
+     */
+    function isNumber(n) {
+        return typeof n === 'number' && isFinite(n);
+    };
+
+    /**
+     * check whether val is an integer
+     */
+    function isInt (n) {
+        // n === n NaN will return false
+        // n|0 rounds
+        return typeof n === 'number' && n === n && n === (n|0);
+    }
+
+    /**
+     * check whether val is a float
+     */
+    function isFloat (n) {
+        // n === n NaN will return false
+        // n|0 rounds
+        return typeof n === 'number' && isFinite(n) && n !== (n|0);
+    }
+
+    /**
+     * check whether the string is made out of digits only
+     */
+    var _isDigitsTest = /^[0-9]+$/;
+    function isDigits(str){
+        if( typeof str != 'string') return false;
+        return _isDigitsTest.test(str);
+    }
+    /**
+     * check whether the string is formatted like a propper int
+     */
+    var _isIntStringTest = /^[+-]?[0-9]+$/;
+    function isIntString(str){
+        if( typeof str != 'string') return false;
+        return _isIntStringTest.test(str);
+    }
+
+    /**
+     * check whether the string is formatted like a propper float
+     */
+    var _isFloatStringTest = /^([+-]?(((\d+(\.)?)|(\d*\.\d+))([eE][+-]?\d+)?))$/;
+    function isFloatString(str) {
+        if( typeof str != 'string') return false;
+        return _isFloatStringTest.test(str);
+    }
+
+
+   /**
+    * this is used like the python range method
+    *
+    * examples:
+    * for(var i in range(10)){
+    *     console.log(i)
+    *     //0 1 2 3 4 5 6 7 8 9
+    * }
+    * for(var i in range(10)){
+    *     console.log(i)
+    *     //0 1 2 3 4 5 6 7 8 9
+    * }
+    * for(var i in range(5, 15, 3)) {
+    *     console.log(i)
+    *     //5 8 11 14
+    * }
+    **/
+    var range = function (/*[start], stop, [step]*/)
+    {
+        //here comes alot of input validation
+        //to mimic what python does
+        var start = 0,
+            step = 1,
+            stop, condition;
+        if (arguments.length < 1) {
+            throw new TypeError(
+                'range() expected at least 1 arguments, got 0 '
+                + arguments.length
+            );
+        } else if (arguments.length > 3) {
+            throw new TypeError(
+                'range() expected at most 3 arguments, got '
+                + arguments.length
+            );
+        } else if (arguments.length == 1) {
+            stop = arguments[0];
+        } else if(arguments.length >= 2 ) {
+            start = arguments[0];
+            stop = arguments[1];
+            if(arguments.length == 3)
+                step = arguments[2];
+        }
+        var vals = [ ['start', start], ['stop', stop], ['step', step] ];
+        for (var i in vals) {
+            var val = vals[i];
+            if (!isInt(val[1])) {
+                var type = typeof val[1];
+                if(type === 'number') type = 'float';
+                throw new TypeError(
+                    'range() integer ' + val[0]
+                    + ' argument expected, got ' + type);
+            }
+        }
+        if(step === 0)
+            throw new ValueError('range() step argument must not be zero');
+
+        //now the important stuff
+        if (step > 0)
+            condition = function(i) { return i < stop };
+        else
+            condition = function(i) { return i > stop };
+
+        var list = {};//list is an object because the array prototype might be extended
+        for (var i = start; condition(i); i += step) {
+            //yield i;//oh future looking forward to hearing from you
+            list[i] = i;
+        }
+        return list;
+    }
+
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param   {String}    type    The type of adjustment: "round" | "ceil" | "floor"
+     * @param   {Number}    value   The number.
+     * @param   {Integer}   exp     The exponent (the 10 logarithm of the adjustment base).
+     * @returns {Number}            The adjusted value.
+     *
+     * Note: to have a precision of 2 decimal places exp should be -2
+     *
+     * This is the implementation of decimal rounding found at mdn:
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#Example%3a_Decimal_rounding
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    /**
+     * Rounds val.
+     *
+     * Use the 'decimalPlaces' argument to round to a specific decimal
+     * position. To have a precision of 2 decimal places decimalPlaces
+     * should be 2
+     *
+     * Fontforge defines a similar method.
+     * Its good to compare values that potentially have some floating
+     * point rounding errors
+     */
+    function round(value, decimalPlaces) {
+        return decimalAdjust('round', value,
+            typeof decimalPlaces === 'number'
+                ? -decimalPlaces
+                : decimalPlaces
+        );
+    };
+
+    // Decimal floor
+    /**
+     * Rounds val down.
+     *
+     * Use the 'decimalPlaces' argument to round to a specific decimal
+     * position. To have a precision of 2 decimal places decimalPlaces
+     * should be 2
+     */
+    function floor(value, decimalPlaces) {
+        return decimalAdjust('floor', value,
+            typeof decimalPlaces === 'number'
+                ? -decimalPlaces
+                : decimalPlaces
+        );
+    };
+
+    // Decimal ceil
+    /**
+     * Rounds val up.
+     *
+     * Use the 'decimalPlaces' argument to round to a specific decimal
+     * position. To have a precision of 2 decimal places decimalPlaces
+     * should be 2
+     */
+    function ceil(value, decimalPlaces) {
+        return decimalAdjust('ceil', value,
+            typeof decimalPlaces === 'number'
+                ? -decimalPlaces
+                : decimalPlaces
+        );
+    };
+
+    /**
+     * Returns a function that rounds to a decimal precision recursively
+     * all items of type number in all items that are instances of array
+     * and returns the result
+     *
+     * Use the 'decimalPlaces' argument to round to a specific decimal
+     * position. To have a precision of 2 decimal places decimalPlaces
+     * should be 2
+     */
+    var roundRecursiveFunc = function(decimalPlaces) {
+        // the function existing in this closure is important, so the
+        // function can call itself. just saying that we can't return the
+        // function directly
+        var roundRecursive = function(item) {
+            if(item instanceof Array)
+                return item.map(roundRecursive);
+            if(typeof item === 'number')
+                return round(item, decimalPlaces);
+            return item;
+        };
+        return roundRecursive;
+    }
+
+    /**
+     * Rounds to a decimal precision recursively all items of type
+     * number in all items that are instances of array and returns the
+     * result.
+     *
+     * Use the 'decimalPlaces' argument to round to a specific decimal
+     * position. To have a precision of 2 decimal places decimalPlaces
+     * should be 2
+     */
+    var roundRecursive = function(item, decimalPlaces) {
+        var roundRecursive = roundRecursiveFunc(decimalPlaces);
+        return roundRecursive(item);
+    };
+
+
+    /**
+    * parseDate came with the following header. I just tailored it in here.
+    * it returns a timestamp indicating the milliseconds since the Unix Epoch
+    *
+    * Date.parse with progressive enhancement for ISO 8601 <https://github.com/csnover/js-iso8601>
+    * © 2011 Colin Snover <http://zetafleet.com>
+    * Released under MIT license.
+    */
+    var origParse = Date.parse, numericKeys = [ 1, 4, 5, 6, 7, 10, 11 ],
+        parseDate = function (date) {
+        var timestamp, struct, minutesOffset = 0;
+        // ES5 §15.9.4.2 states that the string should attempt to be parsed as a Date Time String Format string
+        // before falling back to any implementation-specific date parsing, so that’s what we do, even if native
+        // implementations could be faster
+        // 1 YYYY 2 MM 3 DD 4 HH 5 mm 6 ss 7 msec 8 Z 9 ± 10 tzHH 11 tzmm
+        if ((struct = /^(\d{4}|[+\-]\d{6})(?:-(\d{2})(?:-(\d{2}))?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:(Z)|([+\-])(\d{2})(?::(\d{2}))?)?)?$/.exec(date))) {
+            // avoid NaN timestamps caused by “undefined” values being passed to Date.UTC
+            for (var i = 0, k; (k = numericKeys[i]); ++i) {
+                struct[k] = +struct[k] || 0;
+            }
+
+            // allow undefined days and months
+            struct[2] = (+struct[2] || 1) - 1;
+            struct[3] = +struct[3] || 1;
+
+            if (struct[8] !== 'Z' && struct[9] !== undefined) {
+                minutesOffset = struct[10] * 60 + struct[11];
+
+                if (struct[9] === '+') {
+                    minutesOffset = 0 - minutesOffset;
+                }
+            }
+
+            timestamp = Date.UTC(struct[1], struct[2], struct[3], struct[4], struct[5] + minutesOffset, struct[6], struct[7]);
+        } else {
+            timestamp = origParse ? origParse(date) : NaN;
+        }
+
+        return timestamp;
+    };
+
+    /**
+     * This is a wrapper around typeof and instanceof
+     * it's there to make me type less and loosely inspired by the python
+     * builtin instanceof.
+     */
+    var isInstance = function(
+        value,
+        types /* function or typeof string or a list of these */
+    ) {
+        if(arguments.length < 2)
+            throw new TypeError(
+                'isInstance() expects 2 arguments, got ' + arguments.length
+            );
+        var types = (types instanceof Array) ? types : [types],
+            typeOfType, i;
+        for(i = 0; i < types.length; i++) {
+            typeOfType = typeof types[i];
+            if( typeOfType === 'function' && value instanceof types[i]
+                || types[i] === 'int' && isInt(value)
+                || types[i] === 'float' && isFloat(value)
+                || types[i] === 'NaN' && value !== value
+                || types[i] === 'null' && value === null
+                || types[i] === 'Infinity' && value === Number.POSITIVE_INFINITY
+                || types[i] === '-Infinity' && value === Number.NEGATIVE_INFINITY
+                // this will test strings like 'number', 'undefined', string
+                || typeOfType === 'string'
+                    && typeof value === types[i]
+                    && value === value /*not true for NaN*/
+            )
+                return true;
+        }
+        return false;
+    };
+
+
+    /**
+     * String.prototype.charCodeAt is broken , so mdn provides fixes.
+     * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String/charCodeAt
+     *
+     * Example 2: Fixing charCodeAt to handle non-Basic-Multilingual-Plane
+     * characters if their presence earlier in the string is unknown
+     *
+     * this version might be used in for loops and the like when it is
+     * unknown whether non-BMP characters exist before the specified index
+     * position.
+     */
+    function fixedCharCodeAt (str, idx) {
+        // ex. fixedCharCodeAt ('\uD800\uDC00', 0); // 65536
+        // ex. fixedCharCodeAt ('\uD800\uDC00', 1); // 65536
+        idx = idx || 0;
+        var code = str.charCodeAt(idx);
+        var hi, low;
+        if (0xD800 <= code && code <= 0xDBFF) { // High surrogate (could change last hex to 0xDB7F to treat high private surrogates as single characters)
+            hi = code;
+            low = str.charCodeAt(idx+1);
+            if (isNaN(low)) {
+                throw 'High surrogate not followed by low surrogate in fixedCharCodeAt()';
+            }
+            return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;
+        }
+        if (0xDC00 <= code && code <= 0xDFFF) { // Low surrogate
+            // We return false to allow loops to skip this iteration since should have already handled high surrogate above in the previous iteration
+            return false;
+            /*hi = str.charCodeAt(idx-1);
+            low = code;
+            return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;*/
+        }
+        return code;
+    }
+
+    // make out of a list of strings an object with those strings as keys
+    // for easy membership testing with the "in" keyword
+    function setLike(list, fill /* default true*/) {
+        if(fill === undefined) fill = true;
+        var setLike = {};
+        for(var i=0; i<list.length; i++)
+            setLike[list[i]] = fill;
+        return setLike;
+    }
+
+
+    return {
+        enhance: enhance,
+        range: range,
+        round: round,
+        roundRecursiveFunc: roundRecursiveFunc,
+        roundRecursive: roundRecursive,
+        isNumber: isNumber,
+        isInt: isInt,
+        isFloat: isFloat,
+        isDigits: isDigits,
+        isIntString: isIntString,
+        isFloatString: isFloatString,
+        parseDate: parseDate,
+        isInstance: isInstance,
+        fixedCharCodeAt: fixedCharCodeAt,
+        setLike: setLike
+    }
+});
+
+define('metapolator/models/CPS/whitelistProxies',[
+    'metapolator/errors'
+  , 'es6/Proxy'
+  , 'ufojs/main'
 ], function(
+    errors
+  , proxy
+  , ufoJSUtils
+) {
+    
+
+    var CPSError = errors.CPS
+      , KeyError = errors.Key
+      , isInt = ufoJSUtils.isInt
+      , isIntString = ufoJSUtils.isIntString
+      ;
+
+
+    function _handlerFactory(target, whitelist) {
+        return proxy(target, new this(whitelist));
+    }
+
+    function _get(target, name, receiver) {
+        /* jshint validthis: true */
+        var result = this._validate(target, name);
+        if(!result[0])
+            throw new KeyError(result[1]);
+
+        return target[result[1]];
+    }
+
+    function _set(target, name) {
+        throw new CPSError('Can\'t set "'+name+'". It\'s not allowed '
+                                        +'to set values on this object.');
+    }
+
+    function _has (target, name, receiver) {
+        /* jshint validthis: true */
+        return this._validate(target, name)[0];
+    }
+
+    /**
+     * "whitelist" is an object where the keys are the public names
+     * and the values are the names on the target.
+     * In the most cases key and value will equal. But this is also a
+     * mechanism to create mappings to properties with other names.
+     */
+    function GenericHandler(whitelist) {
+        this._whitelist = whitelist;
+        this.get = _get;
+        this.has = _has;
+        this.set = _set;
+    }
+
+    GenericHandler.prototype._validate = function(target, name) {
+        if(typeof name !== 'string')
+            return [false, 'name must be string but it is: '+ typeof name];
+
+        if(!this._whitelist.hasOwnProperty(name))
+            return [false ,'Name "'+ name +'" is not whitelisted '
+                            + 'for item "'+ target +'" '
+                            + Object.keys(this._whitelist).join(', ')];
+        return [true, this._whitelist[name]];
+
+    };
+
+    function ArrayHandler() {
+        this.get = _get;
+        this.has = _has;
+        this.set = _set;
+    }
+
+    ArrayHandler.prototype._validate = function(target, key) {
+        var processedKey;
+        if(isIntString(key))
+            key = parseInt(key, 10);
+        if(key === 'length')
+            return [true, key];
+        else if(!isInt(key))
+            return [false, 'Key must be "length" or an integer but it is: '
+                                            + key + ' '+ typeof key];
+        else if(key<0)
+            processedKey = target.length + key;
+        else
+            processedKey = key;
+
+        if(processedKey<0 || processedKey>=target.length)
+             throw new KeyError('The index "'+ key +'" is not in the array. '
+                                        + 'Length: ' + target.length);
+        return [true, processedKey];
+    };
+
+    return {
+        generic: _handlerFactory.bind(GenericHandler)
+      , array: _handlerFactory.bind(ArrayHandler)
+    };
+});
+
+define('metapolator/math/Vector',[
+    'complex/Complex'
+  , 'metapolator/models/CPS/whitelistProxies'
+], function(
+    Parent
+  , whitelistProxies
+) {
+    
+
+    /**
+     * Add access with geometry names "x" and "y" and a minimal
+     * array interface with length (== 2), 0, 1;
+     */
+    function Vector(x, y) {
+        Parent.call(this, x, y);
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+    }
+    var _p = Vector.prototype = Object.create(Parent.prototype);
+    _p.constructor = Vector;
+
+    _p._cps_whitelist = {
+        x: 'x'
+      , y: 'y'
+      , length: 'len'
+      , angle: 'rad'
+    }
+
+
+    Vector.fromArray = function(arr) {
+        return new _p.constructor(arr[0], arr[1]);
+    }
+
+    function _getReal() {
+        return this.real;
+    }
+
+    function _getImaginary() {
+        return this.imag;
+    }
+
+    Object.defineProperty(_p, 'x', {get: _getReal})
+    Object.defineProperty(_p, 'y', {get: _getImaginary})
+
+    // array interface
+    Object.defineProperty(_p, 'length', {
+        value: 2
+      , writable: false
+      , enumerable: true
+    })
+    Object.defineProperty(_p, '0', {get: _getReal})
+    Object.defineProperty(_p, '1', {get: _getImaginary})
+
+    _p.valueOf = function() {
+        return Array.prototype.slice.call(this);
+    }
+
+    _p.toString = function() {
+        return '<Vector ' + this.valueOf() +'>';
+    }
+
+    // factories and constants
+    Vector.i = new Vector(0, 1),
+    Vector.one = new Vector(1, 0)
+
+    Vector.from = function(x, y) {
+        // just map to Parent and then convert
+        var complex = Parent.from(x, y);
+        return new Vector(complex.real, complex.imag);
+    },
+
+    Vector.fromPolar = function(r, phi) {
+        return new Vector(1, 1).fromPolar(r, phi);
+    }
+
+
+    // Some getters, so we can use these easily with CPS. At the moment
+    // CPS doesn't provide facilities to call external methods, i.e.
+    // methods that are not defined as operators but properties of the
+    // element at hand. I think this would make more problems than it
+    // would solve, so getters is the way.
+
+    /**
+     * A getter for the "length" of the vector, however "length" is already
+     * used for an array like interface of Vector. So "len" it is, because
+     * its short and often used to abbreviate "length".
+     */
+    Object.defineProperty(_p, 'len', {
+        get: Parent.prototype.magnitude
+    })
+
+    /**
+     * A getter for the angle of the vector in radians.
+     */
+    Object.defineProperty(_p, 'rad', {
+        get: Parent.prototype.angle
+    });
+
+    return Vector;
+})
+;
+/* Shared math functions */
+define('metapolator/math/utils',[], function() {
+    
+
+    /**
+     * Normalize `angle` given in radians between 0 and 2*PI
+     */
+    function normalizeAngle(angle) {
+        var result = angle % (2*Math.PI);
+        if(result < 0)
+            result += (2*Math.PI);
+        return result;
+    }
+
+    return {
+        normalizeAngle: normalizeAngle
+    };
+});
+
+define('metapolator/math/hobby',[
+    './Vector'
+  , './utils'
+], function(
+    Vector
+  , utils
+) {
+    
+
+    /**
+     * All points in this module are expected instances of
+     * metapolator/math/Vector (complex numbers)
+     */
+
+    var normalizeAngle = utils.normalizeAngle;
+
+    function hobby(theta, phi) {
+        var st = Math.sin(theta)
+          , ct = Math.cos(theta)
+          , sp = Math.sin(phi)
+          , cp = Math.cos(phi)
+          ;
+        return (
+        (2 + Math.sqrt(2) * (st-1/16*sp) * (sp-1/16*st) * (ct-cp)) /
+        (3 * (1 + 0.5*(Math.sqrt(5)-1)* ct + 0.5*(3-Math.sqrt(5))*cp))
+        );
+    }
+
+    /**
+     * Returns two distances from the respective on-curve points to their
+     * control points on the given curve segment.
+     *
+     * dir0 and dir1 are the tangent directions as radians or instances
+     * of Vector.
+     *
+     * alpha and beta are the tension parameters. The tensions values alpha
+     * and beta have no influence on the resulting distance of each other.
+     *
+     * Tensions are bigger the closer they are to their on-curve points.
+     * When using Infinity as a tension the returned magnitude is 0;
+     * When using 0 as a tension the returned magnitude is Infinity.
+     *    When the tension is 0 and z0 equals z1 its resulting
+     *    magnitude is NaN; in this case it is short circuited into
+     *    returning Infinity, which is OK as a behavior; because it obeys
+     *    the rule above, also it's compatible with the reverse operation
+     *    magnitude2tension.
+     */
+    function _tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
+        var diff_z1z0 = z1['-'](z0)
+          , angle_z1z0 = diff_z1z0.angle()
+          , magnitude_z1z0 = diff_z1z0.magnitude()
+            // calculating this using the polar form helps us by not
+            // getting into trouble when z1['-'](z0) is <Vector 0, 0>
+            // because that would cause a division by 0 when calculating
+            // theta and pi using cartesian arithmetic.
+          , theta = normalizeAngle(dir0 - angle_z1z0)
+          , phi = normalizeAngle(angle_z1z0 - dir1)
+          , u, v;
+        
+        if(alpha !== undefined)
+            u = (magnitude_z1z0 === 0 && (alpha === 0 || alpha === Infinity))
+                ? (alpha === 0 ? Infinity : 0)
+                : magnitude_z1z0 * hobby(theta, phi) / alpha
+                ;
+        if(beta !== undefined)
+            v = (magnitude_z1z0 === 0 && (beta === 0 || beta === Infinity))
+                ? (beta === 0 ? Infinity : 0)
+                : magnitude_z1z0 * hobby(phi, theta) / beta
+                ;
+        return [u, v];
+    }
+
+    function tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
+        var uv = _tension2magnitude(z0, dir0, alpha, beta, dir1, z1);
+        if(uv[0] === undefined) uv[0] = NaN;
+        if(uv[1] === undefined) uv[1] = NaN;
+        return uv;
+    }
+
+    function tension2magnitudeOut(z0, dir0, alpha, dir1, z1) {
+        return _tension2magnitude(z0, dir0, alpha, undefined, dir1, z1)[0];
+    }
+
+    function tension2magnitudeIn(z0, dir0, beta, dir1, z1) {
+        return _tension2magnitude(z0, dir0, undefined, beta, dir1, z1)[1];
+    }
+
+    /**
+     * dir0 and dir1 are radians
+     * alpha, beta are the magnitudes
+     *
+     * Also
+     * [Infinity, Infinity] instead of [NaN, NaN] when the magnitudes are 0
+     * And it can still return a tension for one control when the other
+     * control is 0
+     */
+    function _magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
+        var uv, u, v
+            // 1 is the default tension
+          , _alpha = alpha === 0 || alpha === undefined ? undefined : 1
+          , _beta = beta === 0 || beta === undefined ? undefined : 1
+          ;
+        if(_alpha || _beta)
+            uv = _tension2control(z0, dir0, _alpha, _beta, dir1, z1);
+    
+        if(alpha === 0)
+            u = Infinity;
+        else if (alpha !== undefined)
+            u = uv[0]['-'](z0).magnitude()/alpha;
+    
+        if(beta === 0)
+            v = Infinity;
+        else if (beta !== undefined)
+            v = uv[1]['-'](z1).magnitude()/beta;
+    
+        return[u, v];
+    }
+
+    function magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
+        var uv = _magnitude2tension(z0, dir0, alpha, beta, dir1, z1);
+        if(uv[0] === undefined) uv[0] = NaN;
+        if(uv[1] === undefined) uv[1] = NaN;
+        return uv;
+    }
+
+    function magnitude2tensionOut(z0, dir0, alpha, dir1, z1) {
+        return _magnitude2tension(z0, dir0, alpha, undefined, dir1, z1)[0];
+    }
+
+    function magnitude2tensionIn(z0, dir0, beta, dir1, z1) {
+        return _magnitude2tension(z0, dir0, undefined, beta, dir1, z1)[1];
+    }
+
+    /**
+     * returns vectors for the absolute positions of the control points
+     * used to be called hobby2cubic
+     */
+    function _tension2control(z0, dir0, alpha, beta, dir1, z1) {
+        var d0, d1, uv, u, v;
+
+        if(dir0 instanceof Vector || dir1 instanceof Vector)
+            console.warn('It is deprecated to use Vectors for dir0 or dir1');
+
+        d0 = (dir0 instanceof Vector) ? dir0.arg() : dir0;
+        d1 = (dir1 instanceof Vector) ? dir1.arg() : dir1;
+
+        uv = _tension2magnitude(z0, d0, alpha, beta, d1, z1);
+        if(uv[0] !== undefined)
+            u = Vector.fromPolar(uv[0], d0)['+'](z0);
+        if(uv[1] !== undefined)
+            v = z1['-'](Vector.fromPolar(uv[1], d1));
+        return [u, v];
+    }
+
+    function tension2control(z0, dir0, alpha, beta, dir1, z1) {
+        var uv = _tension2control(z0, dir0, alpha, beta, dir1, z1);
+        if(uv[0] === undefined) uv[0] = new Vector(NaN, NaN);
+        if(uv[1] === undefined) uv[1] = new Vector(NaN, NaN);
+        return uv;
+    }
+
+    function tension2controlOut (z0, dir0, alpha, dir1, z1) {
+        return tension2control(z0, dir0, alpha, undefined, dir1, z1)[0];
+    }
+
+    function tension2controlIn (z0, dir0, beta, dir1, z1) {
+        return tension2control(z0, dir0, undefined, beta, dir1, z1)[1];
+    }
+
+    /**
+     * If you need both tension values, this version is more efficient
+     * than calling posttension and pretension.
+     */
+    function control2tension(p0, p1, p2, p3) {
+        var diffp0p1 = p1['-'](p0)
+          , diffp3p2 = p3['-'](p2)
+          , dir0 = diffp0p1.angle()
+          , dir1 = diffp3p2.angle()
+          , alpha = diffp0p1.magnitude()
+          , beta = diffp3p2.magnitude()
+          ;
+        return _magnitude2tension(p0, dir0, alpha, beta, dir1, p3);
+    }
+    /**
+     * returns the tension for the first on-curve point.
+     */
+    function control2tensionOut(p0, p1, p2, p3) {
+        var diffp0p1 = p1['-'](p0)
+          , diffp3p2 = p3['-'](p2)
+          , dir0 = diffp0p1.angle()
+          , dir1 = diffp3p2.magnitude()
+          , alpha = diffp0p1.magnitude()
+          ;
+        return magnitude2tensionOut(p1, dir0, alpha, dir1, p3);
+    }
+    /**
+     * returns the tension for the second on-curve point
+     */
+    function control2tensionIn(p0, p1, p2, p3) {
+        var diffp0p1 = p1['-'](p0)
+          , diffp3p2 = p3['-'](p2)
+          , dir0 = diffp0p1.angle()
+          , dir1 = diffp3p2.magnitude()
+          , beta = diffp3p2.magnitude()
+          ;
+        return magnitude2tensionIn(p1, dir0, beta, dir1, p3);
+    }
+
+    return {
+        hobby: hobby
+
+      , tension2magnitude: tension2magnitude
+      , tension2magnitudeOut: tension2magnitudeOut
+      , tension2magnitudeIn: tension2magnitudeIn
+
+      , magnitude2tension: magnitude2tension
+      , magnitude2tensionOut: magnitude2tensionOut
+      , magnitude2tensionIn: magnitude2tensionIn
+
+      , tension2control: tension2control
+      , hobby2cubic: tension2control // DEPRECATED
+      , tension2controlOut: tension2controlOut
+      , tension2controlIn: tension2controlIn
+
+      , control2tension: control2tension
+      , tensions: control2tension // DEPRECATED
+      , control2tensionOut: control2tensionOut
+      , posttension: control2tensionOut // DEPRECATED
+      , control2tensionIn: control2tensionIn
+      , pretension: control2tensionIn // DEPRECATED
+    };
+});
+
+define('metapolator/models/_BaseModel',[
+
+],
+function()
+{
+    
+    // All models will share some basics
+    function _BaseModel() {
+        
+    }
+    var _p = _BaseModel.prototype;
+    
+    return _BaseModel;
+})
+;
+define('metapolator/models/MOM/_Node',[
+    'metapolator/errors'
+  , '../_BaseModel'
+  , 'metapolator/models/CPS/whitelistProxies'
+], function(
+    errors
+  , Parent
+  , whitelistProxies
+) {
+    
+
+    var MOMError = errors.MOM;
+
+    var _id_counter = 0;
+    function getUniqueID() {
+        return _id_counter++;
+    }
+
+    /**
+     * The MOM is the structure against which we can run the selector queries
+     * of CPS. We must be able to answer the the question "is this element
+     * selected by that selector" for each item of the MOM.
+     *
+     * All Elements of the Metpolator Object Model MOM inherit from _Node.
+     * This means, that a test like `item instanceof _Node` must return true.
+     */
+    function _Node() {
+        Parent.call(this);
+        if(this.constructor.prototype === _p)
+            throw new MOMError('MOM _Node must not be instantiated directly');
+        Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
+
+        this._children = [];
+        this._parent = null;
+        this._index = null;
+        this._id = null;
+        this._classes = {};
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+    }
+    var _p = _Node.prototype = Object.create(Parent.prototype);
+    _p.constructor = _Node;
+
+    _p._cps_whitelist = {
+        parent: 'parent'
+      , children: 'children'
+      , master: 'master'
+      , univers: 'univers'
+      , multivers: 'multivers'
+      , index: 'index'
+      , type: 'type'
+    }
+
+    Object.defineProperty(_p, 'MOMType', {
+        get: function(){return 'MOM '+ this.constructor.name ;}
+    })
+
+    /**
+     * Implement a getter for CPS Type in children of _Node, we need it
+     * for the cps selector engine.
+     *
+     * cpsType should be a simple string, minuses are are ok, don't do
+     * anything fancy. Don't use already taken names.
+     */
+    Object.defineProperty(_p, 'type', {
+        get: function() {
+            // this should be implemented by items inheriting from _Node
+            throw errors.NotImplemented('Implement CPS-Type name!');
+        }
+    })
+
+    Object.defineProperty(_p, 'children', {
+        /**
+         * returns a copy of this._children so we can't mess around
+         * with the list of children via public interfaces.
+         */
+        get: function(){ return this._children.slice(); }
+    })
+
+    Object.defineProperty(_p, 'id', {
+        /**
+         * The Mechanism how id's are verified etc. need to be defined,
+         * probably on a per MOM-Element base. And probably always the
+         * parent is responsible for id checking and setting. At the
+         * moment, I need id's to write the selector engine, and for that,
+         * I don't need propper checked IDs
+         */
+        set: function(id){ this._id = id; }
+      , get: function(){ return this._id; }
+    })
+
+    /***
+     * get the univers element of this node.
+     *
+     * a univers element itself has no univers!
+     */
+    Object.defineProperty(_p, 'univers', {
+        get: function() {
+            if(!this._parent)
+                return null;
+            if(this._parent.MOMType === 'MOM Univers')
+                return this._parent;
+            return this._parent.univers;
+        }
+    })
+
+    /***
+     * get the multivers element of this node.
+     *
+     * a multivers element itself has no multivers!
+     */
+    Object.defineProperty(_p, 'multivers', {
+        get: function() {
+            if(!this._parent)
+                return null;
+            if(this._parent.MOMType === 'MOM Multivers')
+                return this._parent;
+            return this._parent.multivers;
+        }
+    })
+
+    /***
+     * get the master element of this node or null if this node has no master
+     *
+     * neither multivers nor univers have a master
+     */
+    Object.defineProperty(_p, 'master', {
+        get: function() {
+            if(!this._parent)
+                return null;
+            if(this._parent.MOMType === 'MOM Master')
+                return this._parent;
+            return this._parent.master;
+        }
+    })
+
+    Object.defineProperty(_p, 'glyph', {
+        get: function() {
+            return this._parent && this._parent.glyph;
+        }
+    })
+
+    /**
+     * returns a selector for this element, currently it is used for
+     * display puposes, so the additionial information "(no parent) "
+     * is prepended if the item has no parent
+     */
+    Object.defineProperty(_p, 'particulars', {
+        get: function() {
+            return [
+                    this._parent ? this._parent.particulars : '(no parent)'
+                  , ' '
+                  , this.type,
+                  , (this.id ? '#' + this.id : '')
+                  , (this._parent
+                        ? ':i(' + this._parent.find(this) + ')'
+                        : '')
+                ].join('');
+        }
+    })
+
+    _p.setClass = function(name) {
+        this._classes[name] = null;
+    }
+
+    _p.removeClass = function(name) {
+        delete this._classes[name];
+    }
+
+    _p.hasClass = function(name) {
+        return name in this._classes;
+    }
+
+    _p.toString = function() { return ['<', this.MOMType, '>'].join('') };
+
+    _p.isMOMNode = function(item) {
+        return item instanceof _Node;
+    }
+
+    /**
+     *  enhance this list with accepted children Constructors
+     */
+    _p._acceptedChildren = [];
+
+
+    _p.qualifiesAsChild = function(item) {
+        var i=0;
+        if(!this.isMOMNode(item) || item === this)
+            return false;
+
+        for(;i<this._acceptedChildren.length; i++)
+            if(item instanceof this._acceptedChildren[i])
+                return true;
+        return false;
+    }
+
+    /**
+     * Note: this is currently running very often when adding or deleting
+     * children, I wonder if we need to come up with some tricky shortcut
+     * to make the search faster.
+     * On thing I already made is searching from back to front, because
+     * a child node will call parent.find(this) exactly after beeing
+     * added to the parent, to verify that it is indeed entitled to change
+     * it's parent property. In that case searching from back to front is
+     * the faster path.
+     *
+     */
+    _p.find = function(item) {
+        var i=this._children.length-1;
+        for(;i>=0; i--)
+            if(item === this._children[i])
+                return i;
+        return false;
+    }
+
+    Object.defineProperty(_p, 'index', {
+        get: function(){ return this._index;}
+    });
+
+    Object.defineProperty(_p, 'parent', {
+        /**
+         * Use parent for reading only.
+         *
+         * Setting the parent property performs some checks if the new
+         * property is indeed valid. The Parent is authoritative in this
+         * case.
+         *
+         * In short: We made it hard to set the parent property because
+         * we want you to use the 'add' method of the parent.
+         */
+        set: function(parent) {
+            if(parent === null) {
+                if(this._parent === null)
+                    // already done
+                    return;
+                if(this._parent.find(this) !== false)
+                    throw new MOMError('Can\'t unset the parent property '
+                        +'when the parent still has this Node as a child');
+                this._parent = null;
+                this._index = null;
+                return;
+            }
+            else if(this._parent !== null)
+                throw new MOMError([this, 'is still a child of a', this._parent
+                  , 'you can\'t set a new parent Node. Use "newParent.add(child)"'
+                  , 'to move the child to another parent'].join(' '));
+            else if (!this.isMOMNode(parent))
+                throw new MOMError('The parent property must be a MOM Node, '
+                    +'but it is: "' + parent + '" typeof: ' + typeof parent);
+            else if(parent.find(this) === false)
+                throw new MOMError('A MOM Node must already be a child '
+                    + 'of its parent when trying to set its parent property. '
+                    + 'Use "parent.add(child)" instead.');
+            this._parent = parent;
+            this._index = this._parent.find(this);
+        }
+      , get: function(){ return this._parent; }
+    })
+
+    _p.remove = function(item) {
+        if(Object.isFrozen(this._children))
+            throw new MOMError('Removing children is not allowed in this element.');
+        var i = this.find(item);
+        if(i === false)
+            throw new MOMError([this, 'can\'t remove', item ,'because',
+                                'it is not a child.'].join(' '));
+        this._children.splice(i, 1);
+        item.parent = null;
+        return true;
+    }
+
+    _p.add = function(item) {
+        if(Object.isFrozen(this._children))
+            throw new MOMError('Adding children is not allowed in this element.');
+        if(!this.qualifiesAsChild(item))
+            throw new MOMError([this, 'doesn\'t accept', item
+                                        , 'as a child object.'].join(' '));
+        if(item.parent !== null)
+            item.parent.remove(item);
+        this._children.push(item);
+        item.parent = this;
+    }
+
+    _p.query = function(selector) {
+        return this.multivers.query(selector, this);
+    }
+
+    _p.queryAll = function(selector) {
+        return this.multivers.queryAll(selector, this);
+    }
+
+    _p.getComputedStyle = function() {
+        return this.multivers.getComputedStyleFor(this);
+    }
+
+    return _Node;
+})
+;
+define('metapolator/models/MOM/_Contour',[
+    './_Node'
+], function(
+    Parent
 ) {
     
     /**
-     * This controller is needed to organize the destruction of the
-     * doc or the codemirror instance itself if either of these is
-     * cached somewhere else.
-     * If the doc of this editor or the editor is not cahched somewhere
-     * else it is probably unnecessary to use this controller.
+     * All children of a MOM Glyph have to inherit from MOM _Contour.
      */
-    function CodeMirrorController($scope) {
-        this.$scope = $scope;
-        $scope.$on('$destroy', this._destroy.bind(this));
+    function _Contour() {
+        Parent.call(this);
+        if(this.constructor.prototype === _p)
+            throw new MOMError('MOM _Contour must not be instantiated '
+                +'directly');
     }
-    CodeMirrorController.$inject = ['$scope'];
+    var _p = _Contour.prototype = Object.create(Parent.prototype);
+    _p.constructor = _Contour;
+
+    Object.defineProperty(_p, 'glyph', {
+        get: function() {
+            return this._parent;
+        }
+    })
+
+    return _Contour;
+})
+;
+define('metapolator/models/MOM/Glyph',[
+    './_Node'
+  , './_Contour'
+  , 'metapolator/models/CPS/whitelistProxies'
+], function(
+    Parent
+  , _Contour
+  , whitelistProxies
+) {
     
-    var _p = CodeMirrorController.prototype;
+
+    /**
+     * This Element is the container of all contours of a glyph.
+     * It will have some metadata and contain children of type MOM _Contour.
+     * 
+     * Possible candiates for other children would be everything else
+     * found in a UFO-Glyph. But, we can make properties about that stuff,
+     * too. Guidelines would make a good candidate for further children,
+     * because we might actually want to access these via CPS.
+     * 
+     * In the first version we the only child of MOM _Contour is
+     * MOM PenStroke.
+     */
+    function Glyph() {
+        Parent.call(this);
+        this._advanceWidth  = 0;
+        this._advanceHeight = 0;
+        this._ufoData = {};
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+    }
+    var _p = Glyph.prototype = Object.create(Parent.prototype);
+    _p.constructor = Glyph;
+
+    _p._cps_whitelist = {
+        originalAdvanceWidth:  '_advanceWidth'
+      , originalAdvanceHeight: '_advanceHeight'
+    };
+    //inherit from parent
+    (function(source) {
+        for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
+    }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
+
+    
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM Glyph'
+    })
+    
+    Object.defineProperty(_p, 'type', {
+        /* this is used for CPS selectors */
+        value: 'glyph'
+    })
+    
+    _p.setUFOData = function(ufoGlyph) {
+        var i=0, keys = Object.keys(ufoGlyph);
+        for(;i<keys.length;i++)
+            this._ufoData[keys[i]] = ufoGlyph[keys[i]];
+        if( ufoGlyph['width'] ) {
+            this._advanceWidth = ufoGlyph['width'];
+        }
+        if( ufoGlyph['height'] ) {
+            this._advanceHeight = ufoGlyph['height'];
+        }
+    }
+
+    /**
+     * Return value is a copy of the UFO data for the Glyph.
+     *
+     * Should be immutable or a copy, but we would have to make
+     * a deep copy for this, because we don't want the contents to
+     * be changed without us knowing, either.
+     *
+     * We might also invent more interfaces for UFO data for a glyph
+     * in the future.
+     **/
+    _p.getUFOData = function() {
+        var ret = {}, i=0, keys = Object.keys(this._ufoData);
+        for(;i<keys.length;i++) {
+            ret[keys[i]] = this._ufoData[keys[i]];
+        }
+
+        ret['width']  = this._advanceWidth;
+        ret['height'] = this._advanceHeight;
+        return ret;
+    }
+
+    /**
+     * Convert the UFO key to the key you should use for CPS. For example,
+     * convertUFOtoCPSKey('width') returns 'advanceWidth'
+     **/
+    function convertUFOtoCPSKey( ufokey ) {
+        var UFOtoCPSKeyMap = {   'width': 'advanceWidth'
+                               , 'height': 'advanceHeight'
+                             };
+        
+        if(UFOtoCPSKeyMap[ufokey]) 
+            return UFOtoCPSKeyMap[ufokey]; 
+        return ufokey;
+    }
+    Glyph.convertUFOtoCPSKey = convertUFOtoCPSKey;
+    _p._acceptedChildren = [_Contour];
+    
+    return Glyph;
+})
+;
+define('metapolator/timer',[], (function(){
+    var module;
+
+    if(typeof performance !== 'undefined')
+        module = function() {
+            return {
+                now: function(){ return performance.now(); }
+            };
+        };
+    else if(typeof process !== 'undefined')
+        module = function() {
+            return {
+                now: function() {
+                    var time = process.hrtime();
+                    return (time[0] * 1e3 ) + (time[1] * 1e-6);
+                }
+            };
+        };
+    else
+        throw new Error('No timer implementation is available.');
+
+    return module;
+})());
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * This is a translation of AbstractPointPen defined in robofab/pens/pointPen.py
+ * The svn revision of the source file in trunk/Lib/ was 67 from 2008-03-11 10:18:32 +0100
+ * Ther very same pen is to be found in robofab/branches/ufo3k/Lib/ufoLib/pointPen.py
+ * revision 517 2011-12-07 18:17:40 +0100 (Wed, 07 Dec 2011)
+ * 
+ * I even copied the docstrings and comments! (These may still refer to the Python code)
+ * 
+ * 
+ * =========
+ * PointPens
+ * =========
+ * 
+ * Where **SegmentPens** have an intuitive approach to drawing
+ * (if you're familiar with postscript anyway), the **PointPen**
+ * is geared towards accessing all the data in the contours of
+ * the glyph. A PointsPen has a very simple interface, it just
+ * steps through all the points in a call from glyph.drawPoints().
+ * This allows the caller to provide more data for each point.
+ * For instance, whether or not a point is smooth, and its name.
+ */
+
+define('ufojs/tools/pens/AbstractPointPen',['ufojs/main', 'ufojs/errors'], function(main, errors) {
+    
+    var enhance = main.enhance;
+    //shortcuts
+    var NotImplementedError = errors.NotImplemented;
+    
+    /*constructor*/
+    /**
+     * Baseclass for all PointPens.
+     */
+    function AbstractPointPen(){};
+
+    /*inheritance*/
+    //pass
+
+    /*definition*/
+    enhance(AbstractPointPen, {
+        /**
+         * Start a new sub path.
+         */
+        beginPath: function(kwargs/*optional, dict*/)
+        {
+            throw new NotImplementedError(
+                'AbstractPointPen has not implemented'
+                +' beginPath');
+        },
+        /**
+         * End the current sub path.
+         */
+        endPath: function()
+        {
+            throw new NotImplementedError(
+                'AbstractPointPen has not implemented'
+                +' endPath');
+        },
+        /**
+         * Add a point to the current sub path.
+         */
+        addPoint: function(
+            pt,
+            segmentType /* default null */,
+            smooth /* default false */,
+            name /* default null */,
+            kwargs /* default an object, javascript has no **kwargs syntax */
+        ) {
+            segmentType = (segmentType === undefined) ? null : segmentType;
+            smooth = (smooth || false);
+            name = (name === undefined) ? null : name;
+            kwargs = (kwargs || {});//an "options" object
+            throw new NotImplementedError(
+                'AbstractPointPen has not implemented'
+                +' addPoint');
+        },
+        /**
+         * Add a sub glyph.
+         */
+        addComponent: function(baseGlyphName, transformation)
+        {
+            throw new NotImplementedError(
+                'AbstractPointPen has not implemented'
+                +' addComponent');
+        }
+    });
+    return AbstractPointPen;
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * This is a translation of BasePointToSegmentPen defined in robofab/pens/pointPen.py
+ * The svn revision of the source file in trunk/Lib/ was 67 from 2008-03-11 10:18:32 +0100
+ * 
+ * I even copied the docstrings and comments! (These may still refer to the Python code)
+ */
+define(
+    'ufojs/tools/pens/BasePointToSegmentPen',[
+        'ufojs/main',
+        'ufojs/errors',
+        './AbstractPointPen'
+    ],
+    function(
+        main,
+        errors,
+        AbstractPointPen
+) {
+    
+    //shortcuts
+    var enhance = main.enhance,
+        NotImplementedError = errors.NotImplemented,
+        assert = errors.assert;
+    
+    /*constructor*/
     
     /**
-     * informs the parent that there might be some cleanup needed
+     * Base class for retrieving the outline in a segment-oriented
+     * way. The PointPen protocol is simple yet also a little tricky,
+     * so when you need an outline presented as segments but you have
+     * as points, do use this base implementation as it properly takes
+     * care of all the edge cases.
      */
-    _p._emitCodeMirrorDestroy = function(cm) {
-        this.$scope.$emit('codeMirrorDestroy', cm);
+    function BasePointToSegmentPen()
+    {
+        this.currentPath = null;
+    };
+
+    /*inheritance*/
+    BasePointToSegmentPen.prototype = Object.create(AbstractPointPen.prototype)
+    BasePointToSegmentPen.prototype.constructor = BasePointToSegmentPen;
+    
+    /*definition*/
+    enhance(BasePointToSegmentPen, {
+        beginPath: function(kwargs/*optional, object*/)
+        {
+            assert(this.currentPath === null,
+                'currentPath is not null, call endPath');
+            this.currentPath = [];
+            this.currentPath.kwargs = kwargs;
+        },
+        /**
+         * Override this method.
+         * 
+         * It will be called for each non-empty sub path with a list
+         * of segments: the 'segments' argument.
+         * 
+         * The segments list contains tuples of length 2:
+         * (segmentType, points)
+         * 
+         * segmentType is one of "move", "line", "curve" or "qcurve".
+         * "move" may only occur as the first segment, and it signifies
+         * an OPEN path. A CLOSED path does NOT start with a "move", in
+         * fact it will not contain a "move" at ALL.
+         * 
+         * The 'points' field in the 2-tuple is a list of point info
+         * tuples. The list has 1 or more items, a point tuple has
+         * four items:
+         * (point, smooth, name, kwargs)
+         * 'point' is an (x, y) coordinate pair.
+         * 
+         * For a closed path, the initial moveTo point is defined as
+         * the last point of the last segment.
+         * 
+         * The 'points' list of "move" and "line" segments always contains
+         * exactly one point tuple.
+         */
+        _flushContour: function(segments, kwargs/*optional, object*/)
+        {
+            throw new NotImplementedError(
+                'BasePointToSegmentPen has not _flushContour'
+                +' endPath');
+        },
+        endPath: function()
+        {
+            assert(this.currentPath !== null,
+                'currentPath is null, call beginPath');
+            var points = this.currentPath
+              , contour_kwargs = this.currentPath.kwargs
+              ;
+            this.currentPath = null;
+            if(!points.length)
+                return;
+            if(points.length === 1) {
+                // Not much more we can do than output a single move segment.
+                var pt = points[0][0],
+                    //segmentType = points[0][1], not using this
+                    smooth = points[0][2],
+                    name = points[0][3],
+                    kwargs = points[0][4],
+                    segments = [ ['move', [ [pt, smooth, name, kwargs] ] ] ];
+                this._flushContour(segments, contour_kwargs);
+                return;
+            }
+            segments = [];
+            if(points[0][1] == 'move') {
+                // It's an open contour, insert a "move" segment for the
+                // first point and remove that first point from the point list.
+                var pt = points[0][0],
+                    //segmentType = points[0][1],// it's 'move', we just checked
+                    smooth = points[0][2],
+                    name = points[0][3],
+                    kwargs = points[0][4];
+                segments.push(['move', [ [pt, smooth, name, kwargs] ] ]);
+                points.splice(0,1);
+            } else {
+                // It's a closed contour. Locate the first on-curve point, and
+                // rotate the point list so that it _ends_ with an on-curve
+                // point.
+                var firstOnCurve = null;
+                for (var i = 0; i < points.length; i++) {
+                    var segmentType = points[i][1];
+                    if(segmentType !== null) {
+                        firstOnCurve = i;
+                        break;
+                    }
+                }
+                if(firstOnCurve === null) {
+                    // Special case for quadratics: a contour with no on-curve
+                    // points. Add a "None" point. (See also the Pen protocol's
+                    // qCurveTo() method and fontTools.pens.basePen.py.)
+                    points.push([null, 'qcurve', null, null, null]);
+                } else {
+                    //points = [].concat(points.slice(firstOnCurve+1), points.slice(0, firstOnCurve+1))
+                    points = points.concat(points.splice(0, firstOnCurve+1));
+                }
+            }
+            var currentSegment = [];
+            for (var i = 0; i < points.length; i++) {
+                var pt = points[i][0],
+                    segmentType = points[i][1],
+                    smooth = points[i][2],
+                    name = points[i][3],
+                    kwargs = points[i][4];
+                currentSegment.push([pt, smooth, name, kwargs]);
+                if(segmentType === null)
+                    continue;
+                segments.push([segmentType, currentSegment]);
+                currentSegment = [];
+            }
+            this._flushContour(segments, contour_kwargs);
+        },
+        addPoint: function(
+            pt,
+            segmentType /* default null */,
+            smooth /* default false */,
+            name /* default null */,
+            kwargs /* default an object, javascript has no **kwargs syntax */
+        ) {
+            segmentType = (segmentType === undefined) ? null : segmentType;
+            smooth = (smooth || false);
+            name = (name === undefined) ? null : name;
+            kwargs = (kwargs || {});//an "options" object
+            this.currentPath.push([pt, segmentType, smooth, name, kwargs]);
+        }
+    });
+    return BasePointToSegmentPen;
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * This is a translation of PointToSegmentPen defined in robofab/pens/adapterPens.py
+ * The svn revision of the source file in trunk/Lib/ was 67 from 2008-03-11 10:18:32 +0100
+ * 
+ * I even copied the docstrings and comments! (These may still refer to the Python code)
+ */
+ 
+define(
+    'ufojs/tools/pens/PointToSegmentPen',[
+        'ufojs/main',
+        'ufojs/errors',
+        './BasePointToSegmentPen'
+    ],
+    function(
+        main,
+        errors,
+        Parent
+) {
+    
+    var enhance = main.enhance,
+        assert = errors.assert;
+    /*constructor*/
+    /**
+     * Adapter class that converts the PointPen protocol to the
+     * (Segment)Pen protocol.
+     */
+    function PointToSegmentPen(
+        segmentPen,
+        outputImpliedClosingLine /* default: false*/
+    ) {
+        Parent.call(this);
+        this.pen = segmentPen;
+        this.outputImpliedClosingLine = (outputImpliedClosingLine || false);
+    }
+        
+    /*inheritance*/
+    PointToSegmentPen.prototype = Object.create(Parent.prototype)
+    PointToSegmentPen.prototype.constructor = PointToSegmentPen;
+    
+    /*definition*/
+    enhance(PointToSegmentPen, {
+        _flushContour: function(segments)
+        {
+            assert(segments.length >= 1, 'Less than one segment');
+            var pen = this.pen;
+            if( segments[0][0] == "move" ) {
+                // It's an open path.
+                var closed = false,
+                    points = segments[0][1];
+                assert(points.length === 1, 'Points length is not 1');
+                var movePt = points[0][0],
+                    smooth = points[0][1],
+                    name = points[0][2],
+                    kwargs = points[0][3];
+                segments.splice(0, 1);
+            } else {
+                // It's a closed path, do a moveTo to the last
+                // point of the last segment.
+                var closed = true,
+                    segment = segments[segments.length - 1],
+                    segmentType = segment[0],
+                    points = segment[1],
+                    point = points[points.length - 1],
+                    movePt = point[0],
+                    smooth = point[1],
+                    name = point[2],
+                    kwargs = point[3];
+            }
+            if(movePt === null) {
+                // quad special case: a contour with no on-curve points
+                // contains one "qcurve" segment that ends with a point
+                // that's null. We must not output a moveTo() in that case.
+                // pass
+            } else {
+                pen.moveTo(movePt);
+            }
+            var outputImpliedClosingLine = this.outputImpliedClosingLine,
+                nSegments = segments.length;
+            for(var i = 0; i < nSegments; i++) {
+                var segmentType = segments[i][0],
+                    points = [];
+                for(var n = 0; n < segments[i][1].length; n++)
+                    points.push(segments[i][1][n][0]);
+                if(segmentType == 'line') {
+                    assert(points.length === 1, 'Points length is not 1');
+                    var pt = points[0];
+                    if(i + 1 != nSegments
+                    || outputImpliedClosingLine
+                    || !closed)
+                        pen.lineTo(pt);
+                } else if(segmentType == 'curve') {
+                    pen.curveTo.apply(pen, points);
+                } else if(segmentType == 'qcurve') {
+                    pen.qCurveTo.apply(pen, points);
+                } else {
+                    throw new errors.Type('illegal segmentType: '
+                        + segmentType);
+                }
+            }
+            if(closed)
+                pen.closePath();
+            else
+                pen.endPath();
+        },
+        addComponent: function(glyphName, transform)
+        {
+            this.pen.addComponent(glyphName, transform);
+        }
+    });
+    return PointToSegmentPen;
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * The functions decomposeSuperBezierSegment and decomposeQuadraticSegment 
+ * are a translation of the equally named functions defined in
+ * fontTools/pens/basePen.py The svn revision of the source file in
+ * trunk/Lib/ was 498 from 2005-04-10 15:18:42 +0200
+ * 
+ * I even copied the docstrings and comments! (These may still refer to the Python code)
+ * 
+ * //////////////////////////////////////////////
+ * 
+ * straight from fontTools/pens/basePen.py
+ * fontTools.pens.basePen.py -- Tools and base classes to build pen objects.
+ * 
+ * The Pen Protocol
+ * 
+ * A Pen is a kind of object that standardizes the way how to "draw" outlines:
+ * it is a middle man between an outline and a drawing. In other words:
+ * it is an abstraction for drawing outlines, making sure that outline objects
+ * don't need to know the details about how and where they're being drawn, and
+ * that drawings don't need to know the details of how outlines are stored.
+ * 
+ * The most basic pattern is this:
+ * 
+ *     outline.draw(pen)  # 'outline' draws itself onto 'pen'
+ * 
+ * Pens can be used to render outlines to the screen, but also to construct
+ * new outlines. Eg. an outline object can be both a drawable object (it has a
+ * draw() method) as well as a pen itself: you *build* an outline using pen
+ * methods.
+ * 
+ * The AbstractPen class defines the Pen protocol. It implements almost
+ * nothing (only no-op closePath() and endPath() methods), but is useful
+ * for documentation purposes. Subclassing it basically tells the reader:
+ * "this class implements the Pen protocol.". An examples of an AbstractPen
+ * subclass is fontTools.pens.transformPen.TransformPen.
+ * 
+ * The BasePen class is a base implementation useful for pens that actually
+ * draw (for example a pen renders outlines using a native graphics engine).
+ * BasePen contains a lot of base functionality, making it very easy to build
+ * a pen that fully conforms to the pen protocol. Note that if you subclass
+ * BasePen, you _don't_ override moveTo(), lineTo(), etc., but _moveTo(),
+ * _lineTo(), etc. See the BasePen doc string for details. Examples of
+ * BasePen subclasses are fontTools.pens.boundsPen.BoundsPen and
+ * fontTools.pens.cocoaPen.CocoaPen.
+ * 
+ * Coordinates are usually expressed as (x, y) tuples, but generally any
+ * sequence of length 2 will do.
+ */
+define('ufojs/tools/pens/main',['ufojs/main', 'ufojs/errors'], function(main, errors){
+    
+    var assert = errors.assert,
+        range = main.range;
+    
+    /**
+     * Split the SuperBezier described by 'points' into a list of regular
+     * bezier segments. The 'points' argument must be a list with length
+     * 3 or greater, containing [x, y] coordinates. The last point is the
+     * destination on-curve point, the rest of the points are off-curve points.
+     * The start point should not be supplied.
+     * 
+     * This function returns a list of [pt1, pt2, pt3] lists, which each
+     * specify a regular curveto-style bezier segment.
+     */
+    function decomposeSuperBezierSegment(points) {
+        var n = points.length - 1,
+            bezierSegments = [],
+            pt1 = points[0],
+            pt2 = null,
+            pt3 = null,
+            i, j, nDivisions, factor, temp1, temp2, temp;
+        
+        assert(n > 1, 'Expecting at least 3 Points here');
+        
+        for (i in range(2, n+1))
+        {
+            i -= 0;//cast this to int
+            // calculate points in between control points.
+            nDivisions = Math.min(i, 3, n - i + 2);
+            // used to be d = float(nDivisions) in the python source but
+            // in js all numbers are float and there is no integer division
+            // thing like in the older versions of python:
+            //    e.g. 2 / 3 = 0 but 2 / 3.0 = 0.6666666666666666
+            // so I'll use nDivision throughout
+            for (j in range(1, nDivisions))
+            {
+                j -= 0;//cast this to int
+                factor = j / nDivisions;
+                temp1 = points[i-1];
+                temp2 = points[i-2];
+                temp = [
+                    temp2[0] + factor * (temp1[0] - temp2[0]),
+                    temp2[1] + factor * (temp1[1] - temp2[1])
+                ];
+                if (pt2 === null) {
+                    pt2 = temp;
+                } else {
+                    pt3 = [
+                        0.5 * (pt2[0] + temp[0]),
+                        0.5 * (pt2[1] + temp[1])
+                    ];
+                    bezierSegments.push([pt1, pt2, pt3]);
+                    pt1 = temp;
+                    pt2 = null;
+                    pt3 = null;
+                }
+            }
+        }
+        bezierSegments.push([pt1, points[points.length-2], points[points.length-1]]);
+        return bezierSegments;
+    };
+    
+   /**
+    * Split the quadratic curve segment described by 'points' into a list
+    * of "atomic" quadratic segments. The 'points' argument must be a list
+    * with length 2 or greater, containing [x, y] coordinates. The last point
+    * is the destination on-curve point, the rest of the points are off-curve
+    * points. The start point should not be supplied.
+    * 
+    * This function returns a list of [pt1, pt2] lists, which each specify a
+    * plain quadratic bezier segment.
+    */
+    function decomposeQuadraticSegment(points) {
+        var n = points.length - 1,
+            quadSegments = [],
+            i, x, y, nx, ny, impliedPt;
+        assert(n > 0, 'Expecting at least 2 Points here');
+        for (i in range(n - 1))
+        {
+            //the keys of the list are strings, what makes i+1 == '01'
+            i -= 0;//cast this to int
+            x = points[i][0];
+            y = points[i][1];
+            nx = points[i+1][0];
+            ny = points[i+1][1];
+            impliedPt = [0.5 * (x + nx), 0.5 * (y + ny)];
+            quadSegments.push([points[i], impliedPt]);
+        }
+        quadSegments.push( [points[points.length-2], points[points.length-1]] );
+        return quadSegments;
+    };
+    return {
+        decomposeSuperBezierSegment: decomposeSuperBezierSegment,
+        decomposeQuadraticSegment: decomposeQuadraticSegment
+    };
+})
+;
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * This is a translation of AbstractPen defined in fontTools/pens/basePen.py
+ * The svn revision of the source file in trunk/Lib/ was 498 from 2005-04-10 15:18:42 +0200
+ * 
+ * I even copied the docstrings and comments! (These may still refer to the Python code)
+ */
+define('ufojs/tools/pens/AbstractPen',['ufojs/main', 'ufojs/errors'], function(main, errors) {
+    
+    var enhance = main.enhance;
+    //shortcuts
+    var NotImplementedError = errors.NotImplemented;
+    
+    /*constructor*/
+    var AbstractPen = function(){};
+
+    /*inheritance*/
+    //pass
+
+    /*definition*/
+    enhance(AbstractPen, {
+        /**
+         * Begin a new sub path, set the current point to 'pt'. You must
+         * end each sub path with a call to pen.closePath() or pen.endPath().
+         */
+        moveTo: function(pt)
+        {
+            throw new NotImplementedError('AbstractPen has not implemented'
+            +' moveTo');
+        },
+        /**
+         * Draw a straight line from the current point to 'pt'.
+         */
+        lineTo: function(pt)
+        {
+             throw new NotImplementedError('AbstractPen has not implemented'
+            +' lineTo');
+        },
+        /**
+         * Draw a cubic bezier with an arbitrary number of control points.
+         *
+         * The last point specified is on-curve, all others are off-curve
+         * (control) points. If the number of control points is > 2, the
+         * segment is split into multiple bezier segments. This works
+         * like this:
+         *
+         * Let n be the number of control points (which is the number of
+         * arguments to this call minus 1). If n==2, a plain vanilla cubic
+         * bezier is drawn. If n==1, we fall back to a quadratic segment and
+         * if n==0 we draw a straight line. It gets interesting when n>2:
+         * n-1 PostScript-style cubic segments will be drawn as if it were
+         * one curve. See decomposeSuperBezierSegment().
+         *
+         * The conversion algorithm used for n>2 is inspired by NURB
+         * splines, and is conceptually equivalent to the TrueType "implied
+         * points" principle. See also decomposeQuadraticSegment().
+         */
+        curveTo: function(/* *points */)
+        {
+            throw new NotImplementedError('AbstractPen has not implemented'
+            +' curveTo');
+        },
+        /**
+         * Draw a whole string of quadratic curve segments.
+         * 
+         * The last point specified is on-curve, all others are off-curve
+         * points.
+         * 
+         * This method implements TrueType-style curves, breaking up curves
+         * using 'implied points': between each two consequtive off-curve points,
+         * there is one implied point exactly in the middle between them. See
+         * also decomposeQuadraticSegment().
+         * 
+         * The last argument (normally the on-curve point) may be None.
+         * This is to support contours that have NO on-curve points (a rarely
+         * seen feature of TrueType outlines).
+         */
+        qCurveTo: function (/* *points */)
+        {
+            throw new NotImplementedError('AbstractPen has not implemented'
+            +' qCurveTo');
+        },
+        /**
+         * Close the current sub path. You must call either pen.closePath()
+         * or pen.endPath() after each sub path.
+         */
+        closePath: function()
+        {
+            //pass
+        },
+        /**
+         * End the current sub path, but don't close it. You must call
+         * either pen.closePath() or pen.endPath() after each sub path.
+         */
+        endPath: function()
+        {
+            //pass
+        },
+        /**
+         * Add a sub glyph. The 'transformation' argument must be a 6-tuple
+         * containing an affine transformation, or a Transform object from the
+         * fontTools.misc.transform module. More precisely: it should be a
+         * sequence containing 6 numbers.
+         */
+        addComponent: function(glyphName, transformation)
+        {
+            throw new NotImplementedError('AbstractPen has not implemented'
+            +' addComponent');
+        }
+    });
+    return AbstractPen;
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * This is a translation of the contents of fontTools/misc/transform.py
+ * The svn revision of the source file in trunk/Lib/  was 588 from 2011-03-28 12:18:27 +0200 
+ * 
+ * Some cool python features do not work on this thing but I put in some
+ * efforts to mimic the python implementation. The future will show whether
+ * the direction is good
+ *
+ * I even copied the docstrings and comments! (These may still refer to
+ * the Python code)
+ * 
+ * Affine 2D transformation matrix class.
+ * 
+ * The Transform class implements various transformation matrix operations,
+ * both on the matrix itself, as well as on 2D coordinates.
+ * 
+ * This module exports the following symbols:
+ * 
+ *     Transform -- this is the main class
+ *     Identity  -- Transform instance set to the identity transformation
+ *     Offset    -- Convenience function that returns a translating transformation
+ *     Scale     -- Convenience function that returns a scaling transformation
+ * 
+ * Examples: //still in python
+ * 
+ *     >>> t = Transform(2, 0, 0, 3, 0, 0)
+ *     >>> t.transformPoint((100, 100))
+ *     (200, 300)
+ *     >>> t = Scale(2, 3)
+ *     >>> t.transformPoint((100, 100))
+ *     (200, 300)
+ *     >>> t.transformPoint((0, 0))
+ *     (0, 0)
+ *     >>> t = Offset(2, 3)
+ *     >>> t.transformPoint((100, 100))
+ *     (102, 103)
+ *     >>> t.transformPoint((0, 0))
+ *     (2, 3)
+ *     >>> t2 = t.scale(0.5)
+ *     >>> t2.transformPoint((100, 100))
+ *     (52.0, 53.0)
+ *     >>> import math
+ *     >>> t3 = t2.rotate(math.pi / 2)
+ *     >>> t3.transformPoint((0, 0))
+ *     (2.0, 3.0)
+ *     >>> t3.transformPoint((100, 100))
+ *     (-48.0, 53.0)
+ *     >>> t = Identity.scale(0.5).translate(100, 200).skew(0.1, 0.2)
+ *     >>> t.transformPoints([(0, 0), (1, 1), (100, 100)])
+ *     [(50.0, 100.0), (50.550167336042726, 100.60135501775433), (105.01673360427253, 160.13550177543362)]
+ *     >>>
+ */
+
+define(
+    'ufojs/tools/misc/transform',['ufojs/main', 'ufojs/errors'],
+    function(main, errors)
+{
+    
+    /*shortcuts*/
+    var enhance = main.enhance;
+    
+    /*constants*/
+    var EPSILON = 1e-15,
+        ONE_EPSILON = 1 - EPSILON,
+        MINUS_ONE_EPSILON = -1 + EPSILON;
+    
+    /*helpers*/
+    function _normSinCos(v)
+    {
+        if (Math.abs(v) < EPSILON)
+            v = 0;
+        else if (v > ONE_EPSILON)
+            v = 1;
+        else if (v < MINUS_ONE_EPSILON)
+            v = -1;
+        return v
     }
     
-    _p._destroy = function() {
-        // the ui-codemirror directive listens to CodeMirror and calls
-        // _emitCodeMirrorDestroy. We need this to propagate the cm object
-        // which we wouldn't have a refernce to, otherwise.
-        this.$scope.$broadcast('CodeMirror', this._emitCodeMirrorDestroy.bind(this))
+    /*constructor*/
+    /**
+    * 2x2 transformation matrix plus offset, a.k.a. Affine transform.
+    * All transforming methods, eg. rotate(), return a new Transform instance.
+    * 
+    * Examples: //in python still
+    *    >>> t = Transform()
+    *    >>> t
+    *    <Transform [1 0 0 1 0 0]>
+    *    >>> t.scale(2)
+    *    <Transform [2 0 0 2 0 0]>
+    *    >>> t.scale(2.5, 5.5)
+    *    <Transform [2.5 0.0 0.0 5.5 0 0]>
+    *    >>>
+    *    >>> t.scale(2, 3).transformPoint((100, 100))
+    *    (200, 300)
+    */
+    function Transform(transformation /* [xx=1, xy=0, yx=0, yy=1, dx=0, dy=0] */) {
+        //can't change easily after creation
+        var affine = [1, 0, 0, 1, 0, 0];
+        
+        /**
+         * the next two methods are just accessors to the local affine value
+         **/
+        this.__get = function (key)
+        {
+            if(affine[key] === undefined)
+                throw new errors.Key('The key ' + key + 'does not exist in' + this);
+            return affine[key];
+        }
+        this.__affine = function()
+        {
+            //return a copy
+            return affine.slice(0);
+        }
+        
+        
+        
+        if(transformation === undefined)
+            return;
+        for(var i = 0; i < 6; i++) {
+            if(transformation[i] === undefined || transformation[i] === null)
+                continue;
+            affine[i] = transformation[i];
+        }
     }
     
-    return CodeMirrorController;
+    /*definition*/
+    enhance(Transform, {
+        /**
+         * Transform a point.
+         *
+         *  Example:
+         *      >>> t = Transform()
+         *      >>> t = t.scale(2.5, 5.5)
+         *      >>> t.transformPoint((100, 100))
+         *      (250.0, 550.0)
+         */
+        transformPoint: function( pt )
+        {
+            var xx = this[0],
+                xy = this[1],
+                yx = this[2],
+                yy = this[3],
+                dx = this[4],
+                dy = this[5],
+                x = pt[0],
+                y = pt[1];
+            return [xx*x + yx*y + dx, xy*x + yy*y + dy];
+        },
+        /**
+         * Transform a list of points.
+         * 
+         * Example: //in python
+         *      >>> t = Scale(2, 3)
+         *      >>> t.transformPoints([(0, 0), (0, 100), (100, 100), (100, 0)])
+         *      [(0, 0), (0, 300), (200, 300), (200, 0)]
+         *      >>>
+         */
+        transformPoints: function(points)
+        {
+            return points.map(this.transformPoint, this);
+        },
+        /**
+         * Return a new transformation, translated (offset) by x, y.
+         * 
+         * Example:
+         *      >>> t = Transform()
+         *      >>> t.translate(20, 30)
+         *      <Transform [1 0 0 1 20 30]>
+         *      >>>
+         */
+        translate: function(x, y)
+        {
+            x = x || 0;
+            y = y || 0;
+            return this.transform([1, 0, 0, 1, x, y ]);
+        },
+        /**
+         * Return a new transformation, scaled by x, y. The 'y' argument
+         * may be undefined, which implies to use the x value for y as well.
+         * 
+         * Example:
+         *      >>> t = Transform()
+         *      >>> t.scale(5)
+         *      <Transform [5 0 0 5 0 0]>
+         *      >>> t.scale(5, 6)
+         *      <Transform [5 0 0 6 0 0]>
+         *      >>>
+         */
+        scale: function(x, y)
+        {
+            if(x === undefined)
+                x = 1;
+            if(y === undefined || y === null)
+                y = x;
+            return this.transform([x, 0, 0, y, 0, 0]);
+        },
+        /**
+         * Return a new transformation, rotated by 'angle' (radians).
+         * 
+         * Example: //python
+         *      >>> import math
+         *      >>> t = Transform()
+         *      >>> t.rotate(math.pi / 2)
+         *      <Transform [0 1 -1 0 0 0]>
+         *      >>>
+         */
+        rotate: function(angle)
+        {
+            var c = _normSinCos(Math.cos(angle)),
+                s = _normSinCos(Math.sin(angle));
+            return this.transform([c, s, -s, c, 0, 0]);
+        },
+        /**
+         * Return a new transformation, skewed by x and y.
+         * 
+         * Example:
+         *      >>> import math
+         *      >>> t = Transform()
+         *      >>> t.skew(math.pi / 4)
+         *      <Transform [1.0 0.0 1.0 1.0 0 0]>
+         *      >>>
+         */
+        skew: function(x, y)
+        {
+            x = x || 0;
+            y = y || 0;
+            return this.transform([1, Math.tan(y), Math.tan(x), 1, 0, 0]);
+        },
+        /**
+         * Return a new transformation, transformed by another
+         * transformation.
+         * 
+         * Example:
+         *      >>> t = Transform(2, 0, 0, 3, 1, 6)
+         *      >>> t.transform((4, 3, 2, 1, 5, 6))
+         *      <Transform [8 9 4 3 11 24]>
+         *      >>>
+         */
+        transform: function(other)
+        {
+            var xx1 = other[0],
+                xy1 = other[1],
+                yx1 = other[2],
+                yy1 = other[3],
+                dx1 = other[4],
+                dy1 = other[5],
+                xx2 = this[0],
+                xy2 = this[1],
+                yx2 = this[2],
+                yy2 = this[3],
+                dx2 = this[4],
+                dy2 = this[5];
+            return new Transform([
+                xx1*xx2 + xy1*yx2,
+                xx1*xy2 + xy1*yy2,
+                yx1*xx2 + yy1*yx2,
+                yx1*xy2 + yy1*yy2,
+                xx2*dx1 + yx2*dy1 + dx2,
+                xy2*dx1 + yy2*dy1 + dy2
+            ]);
+        },
+        /**
+         * Return a new transformation, which is the other transformation
+         * transformed by self. self.reverseTransform(other) is equivalent to
+         * other.transform(self).
+         * 
+         * Example:
+         *      >>> t = Transform(2, 0, 0, 3, 1, 6)
+         *      >>> t.reverseTransform((4, 3, 2, 1, 5, 6))
+         *      <Transform [8 6 6 3 21 15]>
+         *      >>> Transform(4, 3, 2, 1, 5, 6).transform((2, 0, 0, 3, 1, 6))
+         *      <Transform [8 6 6 3 21 15]>
+         *      >>>
+         */
+        reverseTransform: function(other)
+        {
+            var xx1 = this[0],
+                xy1 = this[1],
+                yx1 = this[2],
+                yy1 = this[3],
+                dx1 = this[4],
+                dy1 = this[5],
+                xx2 = other[0],
+                xy2 = other[1],
+                yx2 = other[2],
+                yy2 = other[3],
+                dx2 = other[4],
+                dy2 = other[5];
+            return new Transform([
+                xx1*xx2 + xy1*yx2,
+                xx1*xy2 + xy1*yy2,
+                yx1*xx2 + yy1*yx2,
+                yx1*xy2 + yy1*yy2,
+                xx2*dx1 + yx2*dy1 + dx2,
+                xy2*dx1 + yy2*dy1 + dy2
+            ]);
+        },
+        /**
+         * Return the inverse transformation.
+         * 
+         * Example:
+         *     >>> t = Identity.translate(2, 3).scale(4, 5)
+         *     >>> t.transformPoint((10, 20))
+         *     (42, 103)
+         *     >>> it = t.inverse()
+         *     >>> it.transformPoint((42, 103))
+         *     (10.0, 20.0)
+         *     >>>
+         */
+        inverse: function()
+        {
+            if( this.cmp(Identity) )
+                return this;
+            var XX = this[0],
+                XY = this[1],
+                YX = this[2],
+                YY = this[3],
+                DX = this[4],
+                DY = this[5],
+                det = XX*YY - YX*XY,
+                xx = YY/det,
+                xy = -XY/det,
+                yx = -YX/det,
+                yy = XX/det,
+                dx = -xx*DX - yx*DY,
+                dy = -xy*DX - yy*DY;
+            return new Transform([xx, xy, yx, yy, dx, dy]);
+        },
+        /**
+         * Return a PostScript representation:
+         *  >>> t = Identity.scale(2, 3).translate(4, 5)
+         *  >>> t.toPS()
+         *  '[2 0 0 3 8 15]'
+         *  >>>
+         */
+        toPS: function()
+        {
+            return ['[', this.__affine().join(' '),']'].join('');
+        },
+        /*compare*/
+        cmp: function(other)
+        {
+            return (
+               other[0] === this[0]
+            && other[1] === this[1]
+            && other[2] === this[2]
+            && other[3] === this[3]
+            && other[4] === this[4]
+            && other[5] === this[5]
+            )
+        },
+        valueOf: function()
+        {
+            return ['<Transform ', this.toPS(), '>'].join('');
+        },
+        toString: function()
+        {
+            return this.__affine().join(' ');
+        },
+        /**
+         * Transform instances also behave like a list of length 6:
+         */
+        get length()
+        {
+            return 6;
+        },
+        /**
+         * Transform instances also behave like sequences and even support
+         * slicing...
+         */
+        slice: function(start, len)
+        {
+            return this.__affine().slice(start, len);
+        },
+        /**
+         * Transform is usable kind of like an array
+         * var t = new Transform();
+         * echo t[0]; //1
+         */
+        get 0()
+        {
+            return this.__get(0);
+        },
+        get 1()
+        {
+            return this.__get(1);
+        },
+        get 2()
+        {
+            return this.__get(2);
+        },
+        get 3()
+        {
+            return this.__get(3);
+        },
+        get 4()
+        {
+            return this.__get(4);
+        },
+        get 5()
+        {
+            return this.__get(5);
+        }
+    });
+    /**
+    * Return the identity transformation offset by x, y.
+    * 
+    * Example:
+    *      >>> offset(2, 3)
+    *      <Transform [2 0 0 3 0 0]>
+    *      >>>
+    */
+    var Offset= function(x, y) {
+        x = x || 0;
+        y = y || 0;
+        return new Transform([1, 0, 0, 1, x, y]);
+    }
+    
+    /**
+     * Return the identity transformation scaled by x, y. The 'y' argument
+     * may be None, which implies to use the x value for y as well.
+     * 
+     * Example:
+     *  >>> Scale(2, 3)
+     *  <Transform [2 0 0 3 0 0]>
+     *  >>>
+     */
+    var Scale = function(x, y) {
+        if(y === undefined || y === null)
+            y = x;
+        return new Transform([x, 0, 0, y, 0, 0]);
+    }
+    
+    var Identity = new Transform();
+    
+    return {
+        Transform: Transform,
+        Identity: Identity,
+        Offset: Offset,
+        Scale: Scale
+    }
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * This is a translation of TransformPen defined in fontTools/pens/transformPen.py
+ * The svn revision of the source file in trunk/Lib/ was 453 from 2003-09-16 12:14:48 +0200
+ * 
+ * I even copied the docstrings and comments! (These may still refer to the Python code)
+ */
+
+define(
+    'ufojs/tools/pens/TransformPen',[
+        'ufojs/main',
+        './AbstractPen',
+        '../misc/transform'
+    ],
+    function(
+        main,
+        AbstractPen,
+        transform
+    )
+{
+    
+    var enhance = main.enhance,
+        Transform = transform.Transform;
+    /**
+     * Pen that transforms all coordinates using a Affine transformation,
+     * and passes them to another pen.
+     */
+     
+    /*constructor*/
+    /**
+     * The 'outPen' argument is another pen object. It will receive the
+     * transformed coordinates. The 'transformation' argument can either
+     * be a six-element Array, or a tools.misc.transform.Transform object.
+     */
+    function TransformPen(outPen, transformation) {
+        if( transformation instanceof Array)
+            transformation = new Transform(transformation);
+        this._transformation = transformation;
+        this._transformPoint = function(pt) {
+            return transformation.transformPoint(pt);
+        }
+        this._outPen = outPen;
+        this._stack = [];
+    };
+
+    /*inheritance*/
+    TransformPen.prototype = new AbstractPen;
+
+    /*definition*/
+    enhance(TransformPen, {
+        moveTo: function(pt)
+        {
+            this._outPen.moveTo(this._transformPoint(pt));
+        },
+        lineTo: function(pt)
+        {
+            this._outPen.lineTo(this._transformPoint(pt));
+        },
+        curveTo: function(/* *points */)
+        {
+            var points = [].slice.call(arguments);//transform arguments to an array
+            this._outPen.curveTo.apply(this._outPen, this._transformPoints(points));
+        },
+        qCurveTo: function (/* *points */)
+        {
+            var points = [].slice.call(arguments);//transform arguments to an array
+            if (points[points.length -1] === null) {
+                points = this._transformPoints(points.slice(0, -1));
+                points.push(null);
+            } else {
+                points = this._transformPoints(points);
+            }
+            this._outPen.qCurveTo.apply(this._outPen, points);
+        },
+        _transformPoints: function(points)
+        {
+            return points.map(this._transformPoint);
+        },
+        closePath: function()
+        {
+            this._outPen.closePath();
+        },
+        addComponent: function(glyphName, transformation)
+        {
+            transformation = this._transformation.transform(transformation);
+            this._outPen.addComponent(glyphName, transformation);
+        }
+    });
+
+    return TransformPen;
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ * 
+ * This is a translation of BasePen defined in fontTools/pens/basePen.py
+ * The svn revision of the source file in trunk/Lib/ was 498 from 2005-04-10 15:18:42  +0200
+ * 
+ * I even copied the docstrings and comments! (These may still refer to the Python code)
+ */
+define(
+    'ufojs/tools/pens/BasePen',[
+        'ufojs/main',
+        'ufojs/errors',
+        './main',
+        './AbstractPen',
+        './TransformPen'
+    ],
+    function(
+        mainmain,
+        errors,
+        main,
+        AbstractPen,
+        TransformPen
+) {
+    
+    var enhance = mainmain.enhance,
+        NotImplementedError = errors.NotImplemented,
+        AssertionError = errors.Assertion,
+        decomposeSuperBezierSegment = main.decomposeSuperBezierSegment,
+        decomposeQuadraticSegment = main.decomposeQuadraticSegment,
+        assert = errors.assert;
+    /**
+     * Base class for drawing pens. You must override _moveTo, _lineTo and
+     * _curveToOne. You may additionally override _closePath, _endPath,
+     * addComponent and/or _qCurveToOne. You should not override any other
+     * methods.
+     */
+    /*constructor*/
+    function BasePen (glyphSet) {
+        this.glyphSet = glyphSet;
+        this.__currentPoint = null;
+    };
+
+    /*inheritance*/
+    BasePen.prototype = Object.create(AbstractPen.prototype);
+
+    /*definition*/
+    enhance(BasePen, {
+        
+        // must override
+        
+        _moveTo: function(pt, kwargs/* optional, object contour attributes*/)
+        {
+            throw new NotImplementedError('implement _moveTo');
+        },
+        _lineTo: function(pt)
+        {
+            throw new NotImplementedError('implement _lineTo');
+        },
+        _curveToOne: function(pt1, pt2, pt3)
+        {
+            throw new NotImplementedError('implement _curveToOne');
+        },
+        
+        // may override
+        
+        _closePath: function()
+        {
+            //pass
+        },
+        _endPath: function()
+        {
+            //pass
+        },
+        /**
+         * This method implements the basic quadratic curve type. The
+         * default implementation delegates the work to the cubic curve
+         * function. Optionally override with a native implementation.
+         */
+        _qCurveToOne: function(pt1, pt2)
+        {
+            var pt0x = this.__currentPoint[0],
+                pt0y = this.__currentPoint[1],
+                pt1x = pt1[0],
+                pt1y = pt1[1],
+                pt2x = pt2[0],
+                pt2y = pt2[1],
+                mid1x = pt0x + 0.66666666666666667 * (pt1x - pt0x),
+                mid1y = pt0y + 0.66666666666666667 * (pt1y - pt0y),
+                mid2x = pt2x + 0.66666666666666667 * (pt1x - pt2x),
+                mid2y = pt2y + 0.66666666666666667 * (pt1y - pt2y);
+            this._curveToOne([mid1x, mid1y], [mid2x, mid2y], pt2)
+        },
+        /**
+         * This default implementation simply transforms the points
+         * of the base glyph and draws it onto self.
+         */
+        addComponent: function(glyphName, transformation, kwargs /*optional, object*/)
+        {
+            var glyph = (typeof this.glyphSet.get === 'function')
+                ? this.glyphSet.get(glyphName)
+                : this.glyphSet[glyphName];
+            if(glyph !== undefined) {
+                var tPen = new TransformPen(this, transformation);
+                // using the synchronous call!
+                // load components before drawing the glyph if this is
+                // not good for your case!
+                // addComponent can't get a asynchronous api because
+                // we would break the pen protocol then
+                glyph.draw(false, tPen);
+            }
+        },
+        
+        // don't override
+        
+        /**
+         * Return the current point. This is not part of the public
+         * interface, yet is useful for subclasses.
+         */
+        _getCurrentPoint: function()
+        {
+            return this.__currentPoint;
+        },
+        closePath: function()
+        {
+            this._closePath();
+            this.__currentPoint = null;
+        },
+        endPath: function()
+        {
+            this._endPath();
+            this.__currentPoint = null;
+        },
+        moveTo: function(pt, kwargs/* optional, object contour attributes*/)
+        {
+            this._moveTo.apply(this, arguments);
+            this.__currentPoint = pt;
+        },
+        lineTo: function(pt)
+        {
+            this._lineTo(pt);
+            this.__currentPoint = pt;
+        },
+        curveTo: function(/* *points */)
+        {
+            var points = [].slice.call(arguments),//transform arguments to an array
+                n = points.length - 1;// 'n' is the number of control points
+            assert(n >= 0, 'curveTo needs at least one point');
+            if (n == 2) {
+                // The common case, we have exactly two BCP's, so this is a standard
+                // cubic bezier. Even though decomposeSuperBezierSegment() handles
+                // this case just fine, we special-case it anyway since it's so
+                // common.
+                this._curveToOne.apply(this, points);
+                this.__currentPoint = points[points.length - 1];
+            } else if (n > 2) {
+                // n is the number of control points; split curve into n-1 cubic
+                // bezier segments. The algorithm used here is inspired by NURB
+                // splines and the TrueType "implied point" principle, and ensures
+                // the smoothest possible connection between two curve segments,
+                // with no disruption in the curvature. It is practical since it
+                // allows one to construct multiple bezier segments with a much
+                // smaller amount of points.
+                var _curveToOne = this._curveToOne,
+                    segments = decomposeSuperBezierSegment(points),
+                    segment, i;
+                for (i in segments) {
+                    segment = segments[i];
+                    //var pt1 = segment[0];
+                    //var pt2 = segment[1];
+                    //var pt3 = segment[2];
+                    _curveToOne.apply(this ,segment);
+                    this.__currentPoint = segment[2];//pt3
+                }
+            } else if (n == 1) {
+                this.qCurveTo.apply(this, points);
+            } else if (n == 0) {
+                this.lineTo(points[0]);
+            } else {
+                throw new AssertionError("curveTo() can't get there from here");
+            }
+        },
+        qCurveTo: function(/* *points */)
+        {
+            var points = [].slice.call(arguments),//transform arguments to an array
+                n = points.length - 1; //'n' is the number of control points
+            assert(n >= 0, 'qCurveTo needs at least one point');
+            if (points[points.length -1] === null) {
+                // Special case for TrueType quadratics: it is possible to
+                // define a contour with NO on-curve points. BasePen supports
+                // this by allowing the final argument (the expected on-curve
+                // point) to be null. We simulate the feature by making the implied
+                // on-curve point between the last and the first off-curve points
+                // explicit.
+                var x = points[points.length -2][0], // last off-curve point x
+                    y = points[points.length -2][1], // last off-curve point y
+                    nx = points[0][0], // first off-curve point x
+                    ny = points[0][1], // first off-curve point y
+                    impliedStartPoint = [ 0.5 * (x + nx), 0.5 * (y + ny) ];
+                this.__currentPoint = impliedStartPoint;
+                this._moveTo(impliedStartPoint);
+                points.splice(-1, 1, impliedStartPoint);//splice syntax is: index, howMany, *elements to insert
+            }
+            if (n > 0) {
+                // Split the string of points into discrete quadratic curve
+                // segments. Between any two consecutive off-curve points
+                // there's an implied on-curve point exactly in the middle.
+                // This is where the segment splits.
+                var _qCurveToOne = this._qCurveToOne,
+                    segments = decomposeQuadraticSegment(points),
+                    segment, i;
+                for (i in segments) {
+                    segment = segments[i];
+                    //var pt1 = segment[0];
+                    //var pt2 = segment[1];
+                    _qCurveToOne.apply(this, segment);
+                    this.__currentPoint = segment[1]; //pt2
+                }
+            } else {
+                this.lineTo(points[0]);
+            }
+        }
+    });
+
+    return BasePen;
+});
+
+/**
+ * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+ * 
+ * You should have received a copy of the MIT License along with this program.
+ * If not, see http://www.opensource.org/licenses/mit-license.php
+ *
+ * This pen draws path data to a SVG path element. It inherts from BasePen.
+ * 
+ * Noteable documents:
+ *    http://www.w3.org/TR/SVG/paths.html#InterfaceSVGPathSegList
+ *    http://www.w3.org/TR/SVG/paths.html#InterfaceSVGPathElement
+ */
+
+define(
+    'ufojs/tools/pens/SVGPen',[
+        'ufojs/main',
+        'ufojs/errors',
+        './BasePen'
+    ],
+    function(
+        main,
+        errors,
+        BasePen
+    )
+{
+    
+    var enhance = main.enhance;
+    
+    /*constructor*/
+    function SVGPen(path, glyphSet) {
+        BasePen.call(this, glyphSet);
+        this.path = path;
+        this.segments = path.pathSegList;
+    };
+    
+    /*inheritance*/
+    SVGPen.prototype = new BasePen;
+
+    /*definition*/
+    enhance(SVGPen, {
+        _commands:
+        {
+            'moveTo': 'createSVGPathSegMovetoAbs',
+            'lineTo': 'createSVGPathSegLinetoAbs',
+            'curveTo': 'createSVGPathSegCurvetoCubicAbs',
+            'closePath': 'createSVGPathSegClosePath'
+        },
+        _addSegment: function(name, args)
+        {
+                //make a real array out of this
+            var args = args ? [].slice.call(args) : [],
+                // make a flat list out of the points, because the
+                // SVG Path Commands work that way
+                points = args.concat.apply([], args),
+                cmd = this._commands[name],
+                path = this.path,
+                segment = path[cmd].apply(path, points);
+            this.segments.appendItem(segment);
+        },
+        _moveTo: function(pt)
+        {
+            this._addSegment('moveTo', arguments);
+        },
+        _lineTo: function(pt)
+        {
+            this._addSegment('lineTo', arguments);
+        },
+        _curveToOne: function(pt1, pt2, pt3)
+        {
+            //notice that we change the order of the points
+            this._addSegment('curveTo', [pt3, pt1, pt2]);
+        },
+        _closePath: function()
+        {
+            this._addSegment('closePath');
+        },
+        /**
+         * Delete all segments from path
+         */
+        clear: function()
+        {
+            this.segments.clear();
+        }
+    });
+    
+    return SVGPen;
+});
+
+define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
+    'metapolator/webAPI/document'
+  , 'metapolator/project/ExportController'
+  , 'ufojs/tools/pens/PointToSegmentPen'
+  , 'ufojs/tools/pens/SVGPen'
+  , 'ufojs/tools/pens/TransformPen'
+  , 'ufojs/main'
+    ], function(
+    document
+  , ExportController
+  , PointToSegmentPen
+  , SVGPen
+  , TransformPen
+  , main
+) {
+    
+    
+    /*global clearTimeout: true*/
+    /*global setTimeout: true*/
+    /*global console:true*/
+
+    var svgns = 'http://www.w3.org/2000/svg'
+        , enhance = main.enhance
+        ;
+
+    function svgPenFactory(layer) {
+        var pathElement = document.createElementNS(svgns, 'path')
+          , svgPen = new SVGPen(pathElement, {})
+          ;
+        // make empty
+        while (layer.firstChild)
+            layer.removeChild(layer.firstChild);
+        layer.appendChild(pathElement);
+
+        return svgPen;
+    }
+    
+    function getSVG(element) {
+        var svg = element[0].getElementsByTagName('svg')[0];
+        if(!svg) {
+            svg = document.createElementNS(svgns, 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('viewBox', '0 0 1000 1000');
+            element.append(svg);
+        }
+        return svg;
+    }
+
+    function getSVGLayer(svg, name) {
+        // Use classnames, because ids are available from the host document
+        // as well, and thus they could create unwanted situations.
+        // Classes are also available from the host document, but they don't
+        // need to be unique.
+        // These classes should be unique within this svg document.
+        var uniqueClass = 'layer-'+name
+          , layer = svg.getElementsByClassName(uniqueClass)[0];
+        if(!layer) {
+            layer = document.createElementNS(svgns, 'g');
+            layer.setAttribute('transform', 'matrix(1, 0, 0, -1, 0, 800)');
+            layer.setAttribute('class', uniqueClass);
+            svg.appendChild(layer);
+        }
+        return layer;
+    }
+
+    function iterateGenerator(gen) {
+        var done = false;
+        try {
+            done = gen.next().done;
+        }
+        catch(error) {
+            if(error.message === "Generator has already finished")
+                done = true;
+            else
+                throw error;
+        }
+        // clear this from the list
+        return done;
+    }
+
+    function RenderController(svg, model, momMaster) {
+        this._jobs = [];
+        this._timeoutId = undefined;
+        this._svg = svg;
+        this._momMaster = momMaster;
+        this._model = model;
+    }
+    var _p = RenderController.prototype;
+
+    _p.get = function(glyphName) {
+        return this._momMaster.findGlyph(glyphName);
+    };
+
+    _p.addLayer = function(glyph, layername, renderer, renderComponents) {
+        var layer = getSVGLayer(this._svg, layername)
+        , componentPath = [glyph.particulars]
+        , svgPen = svgPenFactory(layer)
+        ;
+
+        //
+        // Monkey patch the addComponentHandler onto the svgPen.
+        //
+        if(renderComponents)
+            svgPen.addComponent = this.addComponent.bind(this, renderer, componentPath, layer);
+        else
+            svgPen.addComponent = function(){};
+        this._addJob(renderer, glyph, svgPen);
+    };
+
+    /**
+     * When a component is discovered during the rendering of a glyph
+     * this method is called. We have to lookup the referenced glyph
+     * and perform a render of that glyph with the desired
+     * tranformation. Note that this can be recursive, in that the
+     * referred to glyph may itself have componenets which will need
+     * to be rendered.
+     */
+    _p.addComponent = function(renderer, parentComponents, parentNode, glyphName, transform) {
+        var glyph = this.get(glyphName)
+          , layer = document.createElementNS(svgns, 'g')
+          , svgPen = svgPenFactory(layer)
+          , transformPen = new TransformPen(svgPen, transform)
+          , circularKey, i=0, componentPath
+          ;
+        if(!glyph) {
+            console.warn('Not found: glyph with name "'+ glyphName
+                                                +'" for a component.');
+            return;
+        }
+        // detect recursion here
+        circularKey = glyph.particulars;
+        for(;i<parentComponents.length;i++)
+            if(parentComponents[i] === circularKey) {
+                console.warn('Circular component reference detected in font at "'
+                    + glyphName + '" in: ' + parentComponents.join('/'));
+                return;
+            }
+        componentPath = parentComponents.slice();
+        componentPath.push(glyph.particulars);
+
+        layer.setAttribute('class', 'component');
+        // Keep this here as a reminder: Alternatively to the usage
+        // of TransformPen, we can also apply the transformation
+        // directly on the container, using the svg transform attribute:
+        // layer.setAttribute('transform', 'matrix('+transform.toString()+')');
+        parentNode.appendChild(layer);
+
+        //
+        // Monkey patch the addComponentHandler onto the svgPen.
+        //
+        svgPen.addComponent = this.addComponent.bind(this, renderer, componentPath, layer);
+        this._addJob(renderer, glyph, transformPen);
+    };
+
+    _p._addJob = function(renderer, glyph, segmentPen) {
+        var pen = new PointToSegmentPen(segmentPen)
+          , generator = ExportController.drawGlyphToPointPenGenerator(
+                renderer,
+                this._model,
+                glyph,
+                pen
+            )
+          ;
+        this._jobs.push(generator);
+    };
+
+    _p.abort = function() {
+        if(this._timeoutId)
+            clearTimeout(this._timeoutId);
+        this._jobs = [];
+    };
+
+    _p.run = function() {
+        var layerCtrl = function () {
+            // execute
+            var done = this._jobs.map(iterateGenerator);
+            // remove finished generators from back to front, so the
+            // indexes in `done` stay valid
+            for(var i=done.length-1;i>=0;i--) {
+                if(!done[i]) continue;
+                this._jobs.splice(i, 1);
+            }
+            if(this._jobs.length)
+                this._timeoutId = setTimeout(layerCtrl, 0);
+        }.bind(this);
+        this._timeoutId = setTimeout(layerCtrl, 0);
+    };
+
+    /**
+     *
+     * @param glyph is a MOM glyph object
+     */
+    function render(scope, element, glyph, model) {
+        var svg = getSVG(element)
+          , renderer
+          ;
+        if(!scope.renderer)
+            scope.renderer = new RenderController(svg, model, glyph.parent);
+        renderer = scope.renderer;
+        
+        renderer.abort();
+        renderer.addLayer(glyph, 'outline', {
+            penstroke: ExportController.renderPenstrokeOutline
+          , contour: ExportController.renderContour
+        }, true);
+        renderer.addLayer(glyph, 'centerline', {
+            penstroke: ExportController.renderPenstrokeCenterline
+        }, false);
+        renderer.run();
+    }
+    
+    function redPillGlyphDirective(model) {
+        function link(scope, element, attrs) {
+            render(scope, element, scope.mtkGlyphElement, model);
+            scope.$on('cpsUpdate', render.bind(null, scope, element, scope.mtkGlyphElement, model));
+            element.on('$destroy', function() {
+                clearTimeout(scope.timeoutId);
+            });
+        }
+        return {
+            restrict: 'E'
+          , link: link
+          , scope: { mtkGlyphElement: '=' }
+        };
+    }
+    
+    redPillGlyphDirective.$inject = ['ModelController'];
+    return redPillGlyphDirective;
+});
+
+define('ui/redPill/redPillGlyphs/redPillGlyphs',[
+    'angular'
+  , './redPillGlyphs-controller'
+  , './redPillGlyphs-directive'
+  , './redPillGlyph-directive'
+], function(
+    angular
+  , Controller
+  , directive
+  , redPillGlyphDirective
+) {
+    
+    return angular.module('mtk.redPillGlyphs', [])
+           .controller('RedPillGlyphsController', Controller)
+           .directive('mtkRedPillGlyphs', directive)
+           .directive('mtkRedPillGlyph', redPillGlyphDirective)
+           ;
 })
 ;
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -32448,6842 +35874,6 @@ define('ui/redPill/filesMode/CodeMirrorController',[
   return CodeMirror;
 });
 
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
-
-(function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
-    define('codemirror/mode/css/css',["../../lib/codemirror"], mod);
-  else // Plain browser env
-    mod(CodeMirror);
-})(function(CodeMirror) {
-
-
-CodeMirror.defineMode("css", function(config, parserConfig) {
-  if (!parserConfig.propertyKeywords) parserConfig = CodeMirror.resolveMode("text/css");
-
-  var indentUnit = config.indentUnit,
-      tokenHooks = parserConfig.tokenHooks,
-      mediaTypes = parserConfig.mediaTypes || {},
-      mediaFeatures = parserConfig.mediaFeatures || {},
-      propertyKeywords = parserConfig.propertyKeywords || {},
-      nonStandardPropertyKeywords = parserConfig.nonStandardPropertyKeywords || {},
-      colorKeywords = parserConfig.colorKeywords || {},
-      valueKeywords = parserConfig.valueKeywords || {},
-      fontProperties = parserConfig.fontProperties || {},
-      allowNested = parserConfig.allowNested;
-
-  var type, override;
-  function ret(style, tp) { type = tp; return style; }
-
-  // Tokenizers
-
-  function tokenBase(stream, state) {
-    var ch = stream.next();
-    if (tokenHooks[ch]) {
-      var result = tokenHooks[ch](stream, state);
-      if (result !== false) return result;
-    }
-    if (ch == "@") {
-      stream.eatWhile(/[\w\\\-]/);
-      return ret("def", stream.current());
-    } else if (ch == "=" || (ch == "~" || ch == "|") && stream.eat("=")) {
-      return ret(null, "compare");
-    } else if (ch == "\"" || ch == "'") {
-      state.tokenize = tokenString(ch);
-      return state.tokenize(stream, state);
-    } else if (ch == "#") {
-      stream.eatWhile(/[\w\\\-]/);
-      return ret("atom", "hash");
-    } else if (ch == "!") {
-      stream.match(/^\s*\w*/);
-      return ret("keyword", "important");
-    } else if (/\d/.test(ch) || ch == "." && stream.eat(/\d/)) {
-      stream.eatWhile(/[\w.%]/);
-      return ret("number", "unit");
-    } else if (ch === "-") {
-      if (/[\d.]/.test(stream.peek())) {
-        stream.eatWhile(/[\w.%]/);
-        return ret("number", "unit");
-      } else if (stream.match(/^\w+-/)) {
-        return ret("meta", "meta");
-      }
-    } else if (/[,+>*\/]/.test(ch)) {
-      return ret(null, "select-op");
-    } else if (ch == "." && stream.match(/^-?[_a-z][_a-z0-9-]*/i)) {
-      return ret("qualifier", "qualifier");
-    } else if (/[:;{}\[\]\(\)]/.test(ch)) {
-      return ret(null, ch);
-    } else if (ch == "u" && stream.match("rl(")) {
-      stream.backUp(1);
-      state.tokenize = tokenParenthesized;
-      return ret("property", "word");
-    } else if (/[\w\\\-]/.test(ch)) {
-      stream.eatWhile(/[\w\\\-]/);
-      return ret("property", "word");
-    } else {
-      return ret(null, null);
-    }
-  }
-
-  function tokenString(quote) {
-    return function(stream, state) {
-      var escaped = false, ch;
-      while ((ch = stream.next()) != null) {
-        if (ch == quote && !escaped) {
-          if (quote == ")") stream.backUp(1);
-          break;
-        }
-        escaped = !escaped && ch == "\\";
-      }
-      if (ch == quote || !escaped && quote != ")") state.tokenize = null;
-      return ret("string", "string");
-    };
-  }
-
-  function tokenParenthesized(stream, state) {
-    stream.next(); // Must be '('
-    if (!stream.match(/\s*[\"\')]/, false))
-      state.tokenize = tokenString(")");
-    else
-      state.tokenize = null;
-    return ret(null, "(");
-  }
-
-  // Context management
-
-  function Context(type, indent, prev) {
-    this.type = type;
-    this.indent = indent;
-    this.prev = prev;
-  }
-
-  function pushContext(state, stream, type) {
-    state.context = new Context(type, stream.indentation() + indentUnit, state.context);
-    return type;
-  }
-
-  function popContext(state) {
-    state.context = state.context.prev;
-    return state.context.type;
-  }
-
-  function pass(type, stream, state) {
-    return states[state.context.type](type, stream, state);
-  }
-  function popAndPass(type, stream, state, n) {
-    for (var i = n || 1; i > 0; i--)
-      state.context = state.context.prev;
-    return pass(type, stream, state);
-  }
-
-  // Parser
-
-  function wordAsValue(stream) {
-    var word = stream.current().toLowerCase();
-    if (valueKeywords.hasOwnProperty(word))
-      override = "atom";
-    else if (colorKeywords.hasOwnProperty(word))
-      override = "keyword";
-    else
-      override = "variable";
-  }
-
-  var states = {};
-
-  states.top = function(type, stream, state) {
-    if (type == "{") {
-      return pushContext(state, stream, "block");
-    } else if (type == "}" && state.context.prev) {
-      return popContext(state);
-    } else if (type == "@media") {
-      return pushContext(state, stream, "media");
-    } else if (type == "@font-face") {
-      return "font_face_before";
-    } else if (/^@(-(moz|ms|o|webkit)-)?keyframes$/.test(type)) {
-      return "keyframes";
-    } else if (type && type.charAt(0) == "@") {
-      return pushContext(state, stream, "at");
-    } else if (type == "hash") {
-      override = "builtin";
-    } else if (type == "word") {
-      override = "tag";
-    } else if (type == "variable-definition") {
-      return "maybeprop";
-    } else if (type == "interpolation") {
-      return pushContext(state, stream, "interpolation");
-    } else if (type == ":") {
-      return "pseudo";
-    } else if (allowNested && type == "(") {
-      return pushContext(state, stream, "parens");
-    }
-    return state.context.type;
-  };
-
-  states.block = function(type, stream, state) {
-    if (type == "word") {
-      var word = stream.current().toLowerCase();
-      if (propertyKeywords.hasOwnProperty(word)) {
-        override = "property";
-        return "maybeprop";
-      } else if (nonStandardPropertyKeywords.hasOwnProperty(word)) {
-        override = "string-2";
-        return "maybeprop";
-      } else if (allowNested) {
-        override = stream.match(/^\s*:/, false) ? "property" : "tag";
-        return "block";
-      } else {
-        override += " error";
-        return "maybeprop";
-      }
-    } else if (type == "meta") {
-      return "block";
-    } else if (!allowNested && (type == "hash" || type == "qualifier")) {
-      override = "error";
-      return "block";
-    } else {
-      return states.top(type, stream, state);
-    }
-  };
-
-  states.maybeprop = function(type, stream, state) {
-    if (type == ":") return pushContext(state, stream, "prop");
-    return pass(type, stream, state);
-  };
-
-  states.prop = function(type, stream, state) {
-    if (type == ";") return popContext(state);
-    if (type == "{" && allowNested) return pushContext(state, stream, "propBlock");
-    if (type == "}" || type == "{") return popAndPass(type, stream, state);
-    if (type == "(") return pushContext(state, stream, "parens");
-
-    if (type == "hash" && !/^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/.test(stream.current())) {
-      override += " error";
-    } else if (type == "word") {
-      wordAsValue(stream);
-    } else if (type == "interpolation") {
-      return pushContext(state, stream, "interpolation");
-    }
-    return "prop";
-  };
-
-  states.propBlock = function(type, _stream, state) {
-    if (type == "}") return popContext(state);
-    if (type == "word") { override = "property"; return "maybeprop"; }
-    return state.context.type;
-  };
-
-  states.parens = function(type, stream, state) {
-    if (type == "{" || type == "}") return popAndPass(type, stream, state);
-    if (type == ")") return popContext(state);
-    if (type == "(") return pushContext(state, stream, "parens");
-    if (type == "word") wordAsValue(stream);
-    return "parens";
-  };
-
-  states.pseudo = function(type, stream, state) {
-    if (type == "word") {
-      override = "variable-3";
-      return state.context.type;
-    }
-    return pass(type, stream, state);
-  };
-
-  states.media = function(type, stream, state) {
-    if (type == "(") return pushContext(state, stream, "media_parens");
-    if (type == "}") return popAndPass(type, stream, state);
-    if (type == "{") return popContext(state) && pushContext(state, stream, allowNested ? "block" : "top");
-
-    if (type == "word") {
-      var word = stream.current().toLowerCase();
-      if (word == "only" || word == "not" || word == "and")
-        override = "keyword";
-      else if (mediaTypes.hasOwnProperty(word))
-        override = "attribute";
-      else if (mediaFeatures.hasOwnProperty(word))
-        override = "property";
-      else
-        override = "error";
-    }
-    return state.context.type;
-  };
-
-  states.media_parens = function(type, stream, state) {
-    if (type == ")") return popContext(state);
-    if (type == "{" || type == "}") return popAndPass(type, stream, state, 2);
-    return states.media(type, stream, state);
-  };
-
-  states.font_face_before = function(type, stream, state) {
-    if (type == "{")
-      return pushContext(state, stream, "font_face");
-    return pass(type, stream, state);
-  };
-
-  states.font_face = function(type, stream, state) {
-    if (type == "}") return popContext(state);
-    if (type == "word") {
-      if (!fontProperties.hasOwnProperty(stream.current().toLowerCase()))
-        override = "error";
-      else
-        override = "property";
-      return "maybeprop";
-    }
-    return "font_face";
-  };
-
-  states.keyframes = function(type, stream, state) {
-    if (type == "word") { override = "variable"; return "keyframes"; }
-    if (type == "{") return pushContext(state, stream, "top");
-    return pass(type, stream, state);
-  };
-
-  states.at = function(type, stream, state) {
-    if (type == ";") return popContext(state);
-    if (type == "{" || type == "}") return popAndPass(type, stream, state);
-    if (type == "word") override = "tag";
-    else if (type == "hash") override = "builtin";
-    return "at";
-  };
-
-  states.interpolation = function(type, stream, state) {
-    if (type == "}") return popContext(state);
-    if (type == "{" || type == ";") return popAndPass(type, stream, state);
-    if (type != "variable") override = "error";
-    return "interpolation";
-  };
-
-  return {
-    startState: function(base) {
-      return {tokenize: null,
-              state: "top",
-              context: new Context("top", base || 0, null)};
-    },
-
-    token: function(stream, state) {
-      if (!state.tokenize && stream.eatSpace()) return null;
-      var style = (state.tokenize || tokenBase)(stream, state);
-      if (style && typeof style == "object") {
-        type = style[1];
-        style = style[0];
-      }
-      override = style;
-      state.state = states[state.state](type, stream, state);
-      return override;
-    },
-
-    indent: function(state, textAfter) {
-      var cx = state.context, ch = textAfter && textAfter.charAt(0);
-      var indent = cx.indent;
-      if (cx.type == "prop" && (ch == "}" || ch == ")")) cx = cx.prev;
-      if (cx.prev &&
-          (ch == "}" && (cx.type == "block" || cx.type == "top" || cx.type == "interpolation" || cx.type == "font_face") ||
-           ch == ")" && (cx.type == "parens" || cx.type == "media_parens") ||
-           ch == "{" && (cx.type == "at" || cx.type == "media"))) {
-        indent = cx.indent - indentUnit;
-        cx = cx.prev;
-      }
-      return indent;
-    },
-
-    electricChars: "}",
-    blockCommentStart: "/*",
-    blockCommentEnd: "*/",
-    fold: "brace"
-  };
-});
-
-  function keySet(array) {
-    var keys = {};
-    for (var i = 0; i < array.length; ++i) {
-      keys[array[i]] = true;
-    }
-    return keys;
-  }
-
-  var mediaTypes_ = [
-    "all", "aural", "braille", "handheld", "print", "projection", "screen",
-    "tty", "tv", "embossed"
-  ], mediaTypes = keySet(mediaTypes_);
-
-  var mediaFeatures_ = [
-    "width", "min-width", "max-width", "height", "min-height", "max-height",
-    "device-width", "min-device-width", "max-device-width", "device-height",
-    "min-device-height", "max-device-height", "aspect-ratio",
-    "min-aspect-ratio", "max-aspect-ratio", "device-aspect-ratio",
-    "min-device-aspect-ratio", "max-device-aspect-ratio", "color", "min-color",
-    "max-color", "color-index", "min-color-index", "max-color-index",
-    "monochrome", "min-monochrome", "max-monochrome", "resolution",
-    "min-resolution", "max-resolution", "scan", "grid"
-  ], mediaFeatures = keySet(mediaFeatures_);
-
-  var propertyKeywords_ = [
-    "align-content", "align-items", "align-self", "alignment-adjust",
-    "alignment-baseline", "anchor-point", "animation", "animation-delay",
-    "animation-direction", "animation-duration", "animation-fill-mode",
-    "animation-iteration-count", "animation-name", "animation-play-state",
-    "animation-timing-function", "appearance", "azimuth", "backface-visibility",
-    "background", "background-attachment", "background-clip", "background-color",
-    "background-image", "background-origin", "background-position",
-    "background-repeat", "background-size", "baseline-shift", "binding",
-    "bleed", "bookmark-label", "bookmark-level", "bookmark-state",
-    "bookmark-target", "border", "border-bottom", "border-bottom-color",
-    "border-bottom-left-radius", "border-bottom-right-radius",
-    "border-bottom-style", "border-bottom-width", "border-collapse",
-    "border-color", "border-image", "border-image-outset",
-    "border-image-repeat", "border-image-slice", "border-image-source",
-    "border-image-width", "border-left", "border-left-color",
-    "border-left-style", "border-left-width", "border-radius", "border-right",
-    "border-right-color", "border-right-style", "border-right-width",
-    "border-spacing", "border-style", "border-top", "border-top-color",
-    "border-top-left-radius", "border-top-right-radius", "border-top-style",
-    "border-top-width", "border-width", "bottom", "box-decoration-break",
-    "box-shadow", "box-sizing", "break-after", "break-before", "break-inside",
-    "caption-side", "clear", "clip", "color", "color-profile", "column-count",
-    "column-fill", "column-gap", "column-rule", "column-rule-color",
-    "column-rule-style", "column-rule-width", "column-span", "column-width",
-    "columns", "content", "counter-increment", "counter-reset", "crop", "cue",
-    "cue-after", "cue-before", "cursor", "direction", "display",
-    "dominant-baseline", "drop-initial-after-adjust",
-    "drop-initial-after-align", "drop-initial-before-adjust",
-    "drop-initial-before-align", "drop-initial-size", "drop-initial-value",
-    "elevation", "empty-cells", "fit", "fit-position", "flex", "flex-basis",
-    "flex-direction", "flex-flow", "flex-grow", "flex-shrink", "flex-wrap",
-    "float", "float-offset", "flow-from", "flow-into", "font", "font-feature-settings",
-    "font-family", "font-kerning", "font-language-override", "font-size", "font-size-adjust",
-    "font-stretch", "font-style", "font-synthesis", "font-variant",
-    "font-variant-alternates", "font-variant-caps", "font-variant-east-asian",
-    "font-variant-ligatures", "font-variant-numeric", "font-variant-position",
-    "font-weight", "grid", "grid-area", "grid-auto-columns", "grid-auto-flow",
-    "grid-auto-position", "grid-auto-rows", "grid-column", "grid-column-end",
-    "grid-column-start", "grid-row", "grid-row-end", "grid-row-start",
-    "grid-template", "grid-template-areas", "grid-template-columns",
-    "grid-template-rows", "hanging-punctuation", "height", "hyphens",
-    "icon", "image-orientation", "image-rendering", "image-resolution",
-    "inline-box-align", "justify-content", "left", "letter-spacing",
-    "line-break", "line-height", "line-stacking", "line-stacking-ruby",
-    "line-stacking-shift", "line-stacking-strategy", "list-style",
-    "list-style-image", "list-style-position", "list-style-type", "margin",
-    "margin-bottom", "margin-left", "margin-right", "margin-top",
-    "marker-offset", "marks", "marquee-direction", "marquee-loop",
-    "marquee-play-count", "marquee-speed", "marquee-style", "max-height",
-    "max-width", "min-height", "min-width", "move-to", "nav-down", "nav-index",
-    "nav-left", "nav-right", "nav-up", "object-fit", "object-position",
-    "opacity", "order", "orphans", "outline",
-    "outline-color", "outline-offset", "outline-style", "outline-width",
-    "overflow", "overflow-style", "overflow-wrap", "overflow-x", "overflow-y",
-    "padding", "padding-bottom", "padding-left", "padding-right", "padding-top",
-    "page", "page-break-after", "page-break-before", "page-break-inside",
-    "page-policy", "pause", "pause-after", "pause-before", "perspective",
-    "perspective-origin", "pitch", "pitch-range", "play-during", "position",
-    "presentation-level", "punctuation-trim", "quotes", "region-break-after",
-    "region-break-before", "region-break-inside", "region-fragment",
-    "rendering-intent", "resize", "rest", "rest-after", "rest-before", "richness",
-    "right", "rotation", "rotation-point", "ruby-align", "ruby-overhang",
-    "ruby-position", "ruby-span", "shape-image-threshold", "shape-inside", "shape-margin",
-    "shape-outside", "size", "speak", "speak-as", "speak-header",
-    "speak-numeral", "speak-punctuation", "speech-rate", "stress", "string-set",
-    "tab-size", "table-layout", "target", "target-name", "target-new",
-    "target-position", "text-align", "text-align-last", "text-decoration",
-    "text-decoration-color", "text-decoration-line", "text-decoration-skip",
-    "text-decoration-style", "text-emphasis", "text-emphasis-color",
-    "text-emphasis-position", "text-emphasis-style", "text-height",
-    "text-indent", "text-justify", "text-outline", "text-overflow", "text-shadow",
-    "text-size-adjust", "text-space-collapse", "text-transform", "text-underline-position",
-    "text-wrap", "top", "transform", "transform-origin", "transform-style",
-    "transition", "transition-delay", "transition-duration",
-    "transition-property", "transition-timing-function", "unicode-bidi",
-    "vertical-align", "visibility", "voice-balance", "voice-duration",
-    "voice-family", "voice-pitch", "voice-range", "voice-rate", "voice-stress",
-    "voice-volume", "volume", "white-space", "widows", "width", "word-break",
-    "word-spacing", "word-wrap", "z-index",
-    // SVG-specific
-    "clip-path", "clip-rule", "mask", "enable-background", "filter", "flood-color",
-    "flood-opacity", "lighting-color", "stop-color", "stop-opacity", "pointer-events",
-    "color-interpolation", "color-interpolation-filters",
-    "color-rendering", "fill", "fill-opacity", "fill-rule", "image-rendering",
-    "marker", "marker-end", "marker-mid", "marker-start", "shape-rendering", "stroke",
-    "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin",
-    "stroke-miterlimit", "stroke-opacity", "stroke-width", "text-rendering",
-    "baseline-shift", "dominant-baseline", "glyph-orientation-horizontal",
-    "glyph-orientation-vertical", "text-anchor", "writing-mode"
-  ], propertyKeywords = keySet(propertyKeywords_);
-
-  var nonStandardPropertyKeywords_ = [
-    "scrollbar-arrow-color", "scrollbar-base-color", "scrollbar-dark-shadow-color",
-    "scrollbar-face-color", "scrollbar-highlight-color", "scrollbar-shadow-color",
-    "scrollbar-3d-light-color", "scrollbar-track-color", "shape-inside",
-    "searchfield-cancel-button", "searchfield-decoration", "searchfield-results-button",
-    "searchfield-results-decoration", "zoom"
-  ], nonStandardPropertyKeywords = keySet(nonStandardPropertyKeywords_);
-
-  var colorKeywords_ = [
-    "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige",
-    "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown",
-    "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue",
-    "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod",
-    "darkgray", "darkgreen", "darkkhaki", "darkmagenta", "darkolivegreen",
-    "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen",
-    "darkslateblue", "darkslategray", "darkturquoise", "darkviolet",
-    "deeppink", "deepskyblue", "dimgray", "dodgerblue", "firebrick",
-    "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite",
-    "gold", "goldenrod", "gray", "grey", "green", "greenyellow", "honeydew",
-    "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender",
-    "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral",
-    "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightpink",
-    "lightsalmon", "lightseagreen", "lightskyblue", "lightslategray",
-    "lightsteelblue", "lightyellow", "lime", "limegreen", "linen", "magenta",
-    "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple",
-    "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise",
-    "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin",
-    "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered",
-    "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred",
-    "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue",
-    "purple", "rebeccapurple", "red", "rosybrown", "royalblue", "saddlebrown",
-    "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue",
-    "slateblue", "slategray", "snow", "springgreen", "steelblue", "tan",
-    "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white",
-    "whitesmoke", "yellow", "yellowgreen"
-  ], colorKeywords = keySet(colorKeywords_);
-
-  var valueKeywords_ = [
-    "above", "absolute", "activeborder", "activecaption", "afar",
-    "after-white-space", "ahead", "alias", "all", "all-scroll", "alternate",
-    "always", "amharic", "amharic-abegede", "antialiased", "appworkspace",
-    "arabic-indic", "armenian", "asterisks", "auto", "avoid", "avoid-column", "avoid-page",
-    "avoid-region", "background", "backwards", "baseline", "below", "bidi-override", "binary",
-    "bengali", "blink", "block", "block-axis", "bold", "bolder", "border", "border-box",
-    "both", "bottom", "break", "break-all", "break-word", "button", "button-bevel",
-    "buttonface", "buttonhighlight", "buttonshadow", "buttontext", "cambodian",
-    "capitalize", "caps-lock-indicator", "caption", "captiontext", "caret",
-    "cell", "center", "checkbox", "circle", "cjk-earthly-branch",
-    "cjk-heavenly-stem", "cjk-ideographic", "clear", "clip", "close-quote",
-    "col-resize", "collapse", "column", "compact", "condensed", "contain", "content",
-    "content-box", "context-menu", "continuous", "copy", "cover", "crop",
-    "cross", "crosshair", "currentcolor", "cursive", "dashed", "decimal",
-    "decimal-leading-zero", "default", "default-button", "destination-atop",
-    "destination-in", "destination-out", "destination-over", "devanagari",
-    "disc", "discard", "document", "dot-dash", "dot-dot-dash", "dotted",
-    "double", "down", "e-resize", "ease", "ease-in", "ease-in-out", "ease-out",
-    "element", "ellipse", "ellipsis", "embed", "end", "ethiopic", "ethiopic-abegede",
-    "ethiopic-abegede-am-et", "ethiopic-abegede-gez", "ethiopic-abegede-ti-er",
-    "ethiopic-abegede-ti-et", "ethiopic-halehame-aa-er",
-    "ethiopic-halehame-aa-et", "ethiopic-halehame-am-et",
-    "ethiopic-halehame-gez", "ethiopic-halehame-om-et",
-    "ethiopic-halehame-sid-et", "ethiopic-halehame-so-et",
-    "ethiopic-halehame-ti-er", "ethiopic-halehame-ti-et",
-    "ethiopic-halehame-tig", "ew-resize", "expanded", "extra-condensed",
-    "extra-expanded", "fantasy", "fast", "fill", "fixed", "flat", "footnotes",
-    "forwards", "from", "geometricPrecision", "georgian", "graytext", "groove",
-    "gujarati", "gurmukhi", "hand", "hangul", "hangul-consonant", "hebrew",
-    "help", "hidden", "hide", "higher", "highlight", "highlighttext",
-    "hiragana", "hiragana-iroha", "horizontal", "hsl", "hsla", "icon", "ignore",
-    "inactiveborder", "inactivecaption", "inactivecaptiontext", "infinite",
-    "infobackground", "infotext", "inherit", "initial", "inline", "inline-axis",
-    "inline-block", "inline-table", "inset", "inside", "intrinsic", "invert",
-    "italic", "justify", "kannada", "katakana", "katakana-iroha", "keep-all", "khmer",
-    "landscape", "lao", "large", "larger", "left", "level", "lighter",
-    "line-through", "linear", "lines", "list-item", "listbox", "listitem",
-    "local", "logical", "loud", "lower", "lower-alpha", "lower-armenian",
-    "lower-greek", "lower-hexadecimal", "lower-latin", "lower-norwegian",
-    "lower-roman", "lowercase", "ltr", "malayalam", "match",
-    "media-controls-background", "media-current-time-display",
-    "media-fullscreen-button", "media-mute-button", "media-play-button",
-    "media-return-to-realtime-button", "media-rewind-button",
-    "media-seek-back-button", "media-seek-forward-button", "media-slider",
-    "media-sliderthumb", "media-time-remaining-display", "media-volume-slider",
-    "media-volume-slider-container", "media-volume-sliderthumb", "medium",
-    "menu", "menulist", "menulist-button", "menulist-text",
-    "menulist-textfield", "menutext", "message-box", "middle", "min-intrinsic",
-    "mix", "mongolian", "monospace", "move", "multiple", "myanmar", "n-resize",
-    "narrower", "ne-resize", "nesw-resize", "no-close-quote", "no-drop",
-    "no-open-quote", "no-repeat", "none", "normal", "not-allowed", "nowrap",
-    "ns-resize", "nw-resize", "nwse-resize", "oblique", "octal", "open-quote",
-    "optimizeLegibility", "optimizeSpeed", "oriya", "oromo", "outset",
-    "outside", "outside-shape", "overlay", "overline", "padding", "padding-box",
-    "painted", "page", "paused", "persian", "plus-darker", "plus-lighter", "pointer",
-    "polygon", "portrait", "pre", "pre-line", "pre-wrap", "preserve-3d", "progress", "push-button",
-    "radio", "read-only", "read-write", "read-write-plaintext-only", "rectangle", "region",
-    "relative", "repeat", "repeat-x", "repeat-y", "reset", "reverse", "rgb", "rgba",
-    "ridge", "right", "round", "row-resize", "rtl", "run-in", "running",
-    "s-resize", "sans-serif", "scroll", "scrollbar", "se-resize", "searchfield",
-    "searchfield-cancel-button", "searchfield-decoration",
-    "searchfield-results-button", "searchfield-results-decoration",
-    "semi-condensed", "semi-expanded", "separate", "serif", "show", "sidama",
-    "single", "skip-white-space", "slide", "slider-horizontal",
-    "slider-vertical", "sliderthumb-horizontal", "sliderthumb-vertical", "slow",
-    "small", "small-caps", "small-caption", "smaller", "solid", "somali",
-    "source-atop", "source-in", "source-out", "source-over", "space", "square",
-    "square-button", "start", "static", "status-bar", "stretch", "stroke",
-    "sub", "subpixel-antialiased", "super", "sw-resize", "table",
-    "table-caption", "table-cell", "table-column", "table-column-group",
-    "table-footer-group", "table-header-group", "table-row", "table-row-group",
-    "telugu", "text", "text-bottom", "text-top", "textarea", "textfield", "thai",
-    "thick", "thin", "threeddarkshadow", "threedface", "threedhighlight",
-    "threedlightshadow", "threedshadow", "tibetan", "tigre", "tigrinya-er",
-    "tigrinya-er-abegede", "tigrinya-et", "tigrinya-et-abegede", "to", "top",
-    "transparent", "ultra-condensed", "ultra-expanded", "underline", "up",
-    "upper-alpha", "upper-armenian", "upper-greek", "upper-hexadecimal",
-    "upper-latin", "upper-norwegian", "upper-roman", "uppercase", "urdu", "url",
-    "vertical", "vertical-text", "visible", "visibleFill", "visiblePainted",
-    "visibleStroke", "visual", "w-resize", "wait", "wave", "wider",
-    "window", "windowframe", "windowtext", "x-large", "x-small", "xor",
-    "xx-large", "xx-small"
-  ], valueKeywords = keySet(valueKeywords_);
-
-  var fontProperties_ = [
-    "font-family", "src", "unicode-range", "font-variant", "font-feature-settings",
-    "font-stretch", "font-weight", "font-style"
-  ], fontProperties = keySet(fontProperties_);
-
-  var allWords = mediaTypes_.concat(mediaFeatures_).concat(propertyKeywords_)
-    .concat(nonStandardPropertyKeywords_).concat(colorKeywords_).concat(valueKeywords_);
-  CodeMirror.registerHelper("hintWords", "css", allWords);
-
-  function tokenCComment(stream, state) {
-    var maybeEnd = false, ch;
-    while ((ch = stream.next()) != null) {
-      if (maybeEnd && ch == "/") {
-        state.tokenize = null;
-        break;
-      }
-      maybeEnd = (ch == "*");
-    }
-    return ["comment", "comment"];
-  }
-
-  function tokenSGMLComment(stream, state) {
-    if (stream.skipTo("-->")) {
-      stream.match("-->");
-      state.tokenize = null;
-    } else {
-      stream.skipToEnd();
-    }
-    return ["comment", "comment"];
-  }
-
-  CodeMirror.defineMIME("text/css", {
-    mediaTypes: mediaTypes,
-    mediaFeatures: mediaFeatures,
-    propertyKeywords: propertyKeywords,
-    nonStandardPropertyKeywords: nonStandardPropertyKeywords,
-    colorKeywords: colorKeywords,
-    valueKeywords: valueKeywords,
-    fontProperties: fontProperties,
-    tokenHooks: {
-      "<": function(stream, state) {
-        if (!stream.match("!--")) return false;
-        state.tokenize = tokenSGMLComment;
-        return tokenSGMLComment(stream, state);
-      },
-      "/": function(stream, state) {
-        if (!stream.eat("*")) return false;
-        state.tokenize = tokenCComment;
-        return tokenCComment(stream, state);
-      }
-    },
-    name: "css"
-  });
-
-  CodeMirror.defineMIME("text/x-scss", {
-    mediaTypes: mediaTypes,
-    mediaFeatures: mediaFeatures,
-    propertyKeywords: propertyKeywords,
-    nonStandardPropertyKeywords: nonStandardPropertyKeywords,
-    colorKeywords: colorKeywords,
-    valueKeywords: valueKeywords,
-    fontProperties: fontProperties,
-    allowNested: true,
-    tokenHooks: {
-      "/": function(stream, state) {
-        if (stream.eat("/")) {
-          stream.skipToEnd();
-          return ["comment", "comment"];
-        } else if (stream.eat("*")) {
-          state.tokenize = tokenCComment;
-          return tokenCComment(stream, state);
-        } else {
-          return ["operator", "operator"];
-        }
-      },
-      ":": function(stream) {
-        if (stream.match(/\s*\{/))
-          return [null, "{"];
-        return false;
-      },
-      "$": function(stream) {
-        stream.match(/^[\w-]+/);
-        if (stream.match(/^\s*:/, false))
-          return ["variable-2", "variable-definition"];
-        return ["variable-2", "variable"];
-      },
-      "#": function(stream) {
-        if (!stream.eat("{")) return false;
-        return [null, "interpolation"];
-      }
-    },
-    name: "css",
-    helperType: "scss"
-  });
-
-  CodeMirror.defineMIME("text/x-less", {
-    mediaTypes: mediaTypes,
-    mediaFeatures: mediaFeatures,
-    propertyKeywords: propertyKeywords,
-    nonStandardPropertyKeywords: nonStandardPropertyKeywords,
-    colorKeywords: colorKeywords,
-    valueKeywords: valueKeywords,
-    fontProperties: fontProperties,
-    allowNested: true,
-    tokenHooks: {
-      "/": function(stream, state) {
-        if (stream.eat("/")) {
-          stream.skipToEnd();
-          return ["comment", "comment"];
-        } else if (stream.eat("*")) {
-          state.tokenize = tokenCComment;
-          return tokenCComment(stream, state);
-        } else {
-          return ["operator", "operator"];
-        }
-      },
-      "@": function(stream) {
-        if (stream.match(/^(charset|document|font-face|import|(-(moz|ms|o|webkit)-)?keyframes|media|namespace|page|supports)\b/, false)) return false;
-        stream.eatWhile(/[\w\\\-]/);
-        if (stream.match(/^\s*:/, false))
-          return ["variable-2", "variable-definition"];
-        return ["variable-2", "variable"];
-      },
-      "&": function() {
-        return ["atom", "atom"];
-      }
-    },
-    name: "css",
-    helperType: "less"
-  });
-
-});
-
-
-/**
- * Binds a CodeMirror widget to a <textarea> element.
- */
-angular.module('ui.codemirror', []).constant('uiCodemirrorConfig', {}).directive('uiCodemirror', [
-  'uiCodemirrorConfig',
-  function (uiCodemirrorConfig) {
-    return {
-      restrict: 'EA',
-      require: '?ngModel',
-      priority: 1,
-      compile: function compile() {
-        // Require CodeMirror
-        if (angular.isUndefined(window.CodeMirror)) {
-          throw new Error('ui-codemirror need CodeMirror to work... (o rly?)');
-        }
-        return function postLink(scope, iElement, iAttrs, ngModel) {
-          var options, opts, codeMirror, initialTextValue;
-          initialTextValue = iElement.text();
-          options = uiCodemirrorConfig.codemirror || {};
-          opts = angular.extend({ value: initialTextValue }, options, scope.$eval(iAttrs.uiCodemirror), scope.$eval(iAttrs.uiCodemirrorOpts));
-          if (iElement[0].tagName === 'TEXTAREA') {
-            // Might bug but still ...
-            codeMirror = window.CodeMirror.fromTextArea(iElement[0], opts);
-          } else {
-            iElement.html('');
-            codeMirror = new window.CodeMirror(function (cm_el) {
-              iElement.append(cm_el);
-            }, opts);
-          }
-          if (iAttrs.uiCodemirror || iAttrs.uiCodemirrorOpts) {
-            var codemirrorDefaultsKeys = Object.keys(window.CodeMirror.defaults);
-            scope.$watch(iAttrs.uiCodemirror || iAttrs.uiCodemirrorOpts, function updateOptions(newValues, oldValue) {
-              if (!angular.isObject(newValues)) {
-                return;
-              }
-              codemirrorDefaultsKeys.forEach(function (key) {
-                if (newValues.hasOwnProperty(key)) {
-                  if (oldValue && newValues[key] === oldValue[key]) {
-                    return;
-                  }
-                  codeMirror.setOption(key, newValues[key]);
-                }
-              });
-            }, true);
-          }
-          if (ngModel) {
-            // CodeMirror expects a string, so make sure it gets one.
-            // This does not change the model.
-            ngModel.$formatters.push(function (value) {
-              if (angular.isUndefined(value) || value === null) {
-                return '';
-              } else if (angular.isObject(value) || angular.isArray(value)) {
-                throw new Error('ui-codemirror cannot use an object or an array as a model');
-              }
-              return value;
-            });
-            // Override the ngModelController $render method, which is what gets called when the model is updated.
-            // This takes care of the synchronizing the codeMirror element with the underlying model, in the case that it is changed by something else.
-            ngModel.$render = function () {
-              //Code mirror expects a string so make sure it gets one
-              //Although the formatter have already done this, it can be possible that another formatter returns undefined (for example the required directive)
-              var safeViewValue = ngModel.$viewValue || '';
-              codeMirror.setValue(safeViewValue);
-            };
-            // Keep the ngModel in sync with changes from CodeMirror
-            codeMirror.on('change', function (instance) {
-              var newValue = instance.getValue();
-              if (newValue !== ngModel.$viewValue) {
-                // Changes to the model from a callback need to be wrapped in $apply or angular will not notice them
-                scope.$apply(function () {
-                  ngModel.$setViewValue(newValue);
-                });
-              }
-            });
-          }
-          // Watch ui-refresh and refresh the directive
-          if (iAttrs.uiRefresh) {
-            scope.$watch(iAttrs.uiRefresh, function (newVal, oldVal) {
-              // Skip the initial watch firing
-              if (newVal !== oldVal) {
-                codeMirror.refresh();
-              }
-            });
-          }
-          // Allow access to the CodeMirror instance through a broadcasted event
-          // eg: $broadcast('CodeMirror', function(cm){...});
-          scope.$on('CodeMirror', function (event, callback) {
-            if (angular.isFunction(callback)) {
-              callback(codeMirror);
-            } else {
-              throw new Error('the CodeMirror event requires a callback function');
-            }
-          });
-          // onLoad callback
-          if (angular.isFunction(opts.onLoad)) {
-            opts.onLoad(codeMirror);
-          }
-        };
-      }
-    };
-  }
-]);
-define("ui-codemirror", ["angular","GlobalCodeMirror"], function(){});
-
-define('ui/redPill/filesMode/filesMode',[
-    'angular'
-  , './filesMode-controller'
-  , './filesMode-directive'
-  , './CodeMirrorController'
-  , 'ui-codemirror'
-], function(
-    angular
-  , Controller
-  , directive
-  , CodeMirrorController
-  , ___no_amd_module// ui.codemirror
-) {
-    
-    
-    return angular.module('mtk.filesMode', ['ui.codemirror'])
-           .controller('FilesModeController', Controller)
-           .directive('mtkFilesMode', directive)
-           .controller('CodeMirrorController', CodeMirrorController)
-           ;
-})
-;
-define('ui/redPill/redPillMaster/redPillMaster',[
-    'angular'
-  , './redPillMaster-controller'
-  , './redPillMaster-directive'
-  , '../filesMode/filesMode'
-], function(
-    angular
-  , Controller
-  , directive
-  , filesMode
-) {
-    
-    return angular.module('mtk.redPillMaster', [filesMode.name])
-           .controller('RedPillMasterController', Controller)
-           .directive('mtkRedPillMaster', directive)
-           ;
-})
-;
-define('ui/redPill/redPillGlyphs/redPillGlyphs-controller',[], function() {
-    
-    function RedPillGlyphsController($scope, selectGlyphs, updateCPS) {
-        this.$scope = $scope;
-        this.$scope.name = 'redPillGlyphs';
-        this.$scope.selectGlyphs = selectGlyphs;
-        this.$scope.updateCPS = updateCPS;
-        
-        // a default value
-        this.$scope.selector = 'glyph';
-        
-        this.$scope.glypsize = this.$scope.initialGlypsize = 50;
-    }
-    RedPillGlyphsController.$inject = ['$scope', 'selectGlyphs', 'updateCPS'];
-    var _p = RedPillGlyphsController.prototype;
-    
-    return RedPillGlyphsController;
-})
-;
-
-define('require/text!ui/redPill/redPillGlyphs/redPillGlyphs.tpl',[],function () { return '<label>glyphs selector:\n    <input\n        type="text"\n        ng-model="selector"\n        />\n</label>\n<label>glyph size:\n    <input type="range" min="0.01" max="100" step="0.0001" ng-model="glyphsize"/>\n    {{ glyphsize || initialGlypsize}} %\n</label>\n\n<ol>\n    <li style="width:{{ glyphsize || initialGlypsize}}%"\n        ng-repeat="glyph in selectGlyphs(selector) track by glyph.nodeID">\n        <mtk-red-pill-glyph\n            mtk-glyph-element="glyph">\n            {{ glyph.particulars }}\n            </mtk-red-pill-glyph>\n\n    </li>\n</ol>\n';});
-
-define('ui/redPill/redPillGlyphs/redPillGlyphs-directive',[
-    'require/text!./redPillGlyphs.tpl'
-    ], function(
-    template
-) {
-    
-    function redPillGlyphsDirective() {
-        return {
-            restrict: 'E' // only matches element names
-          , controller: 'RedPillGlyphsController'
-          , replace: false
-          , template: template
-          , scope: {}
-        };
-    }
-    redPillGlyphsDirective.$inject = ['$interval'];
-    return redPillGlyphsDirective;
-})
-;
-// we can define document as a dependency
-// works only in a browser context
-define('metapolator/webAPI/document',[], document)
-;
-define('metapolator/errors',[],function() {
-    
-    //metapolator errors
-    var errors = {}
-
-    /**
-     * save three lines of coding for each error with this factory
-     *
-     * and observe that extending Error is uncool
-     */
-    var makeError = function(name, Constructor, prototype, namespace)
-    {
-        if(prototype === undefined)
-            var prototype = new Error;
-
-        if(Constructor === undefined) {
-            var Constructor = function(message, stack) {
-                if(message !== undefined) {
-                    this.name = name + 'Error';
-                    this.message = message || "(no error message)";
-                }
-
-                if(!stack && typeof Error.captureStackTrace === 'function')
-                    Error.captureStackTrace(this, Constructor);
-                else {
-                    stack = stack || (new Error).stack || '(no stack available)'
-                    this.stack = [this.name+': ', this.message, '\n'
-                                                    , stack].join('');
-                }
-            };
-        };
-        Constructor.prototype = prototype;
-        Constructor.prototype.constructor = Constructor;
-        if(namespace === undefined)
-            namespace = errors;
-        namespace[name] = Constructor;
-    }
-    errors.makeError = makeError;
-    /**
-     * the definitions go here
-     */
-    makeError('Error');
-    makeError('Assertion', undefined , new errors.Error);
-    makeError('CommandLine', undefined , new errors.Error);
-    makeError('Value', undefined , new RangeError);
-    makeError('MOM', undefined , new errors.Error);
-    makeError('NotImplemented', undefined , new errors.Error);
-    makeError('Deprecated', undefined , new errors.Error);
-    makeError('CPS', undefined , new errors.Error);
-    makeError('Key', undefined , new errors.Error);
-    makeError('CPSRegistryKey', undefined , new errors.Key);
-    makeError('CPSKey', undefined , new errors.Key);
-    makeError('CPSRecursion', undefined , new errors.CPS);
-    makeError('CPSFormula', undefined , new errors.CPS);
-    // deprecated, CPSFormula superseeds this
-    makeError('CPSAlgebra', undefined , new errors.CPSFormula);
-    makeError('Project', undefined , new errors.CPS);
-    makeError('PointPen', undefined , new errors.CPS);
-    makeError('CPSParser', undefined , new errors.CPS);
-    makeError('Import', undefined , new errors.CPS);
-    makeError('ImportPenstroke', undefined , new errors.Import);
-
-    /**
-     * if expression is false, throw an Assertion
-     * pass a message to explain yourself
-     **/
-    errors.assert = function(exp, message) {
-        if (!exp) {
-            throw new errors.Assertion(message);
-        }
-    };
-    errors.warn = function(message) {
-        if(typeof console !== 'undefined' && console.warn)
-            console.warn('WARNING: ' + message);
-    };
-
-    return errors;
-});
-
-/*
- * Don't edit this file by hand!
- * This file was generated from a npm-package using gulp. 
- * For more information see gulpfile.js in the project root
- */
-define('complex/Complex',['require','exports','module'],function (require, exports, module) {
-var Complex = function(real, imag){
-	Object.defineProperty(this, 'real', {
-		value: real !== undefined ? real : 0
-		, writable: false
-	})
-	
-	Object.defineProperty(this, 'imag', {
-		value: imag !== undefined ? imag : 0
-		, writable: false
-	})
-};
-
-var prototype = Complex.prototype = {
-	constructor: Complex,
-	fromRect: function(a, b) {
-		return new this.constructor(a, b)
-	},
-
-	fromPolar: function(r, phi){
-		if (typeof r == 'string'){
-			var parts = r.split(' ');
-			r = parts[0];
-			phi = parts[1];
-		}
-		return new this.constructor(
-			r * Math.cos(phi),
-			r * Math.sin(phi)
-		);
-	},
-
-	toPrecision: function(k){
-		return new this.constructor(
-			this.real.toPrecision(k),
-			this.imag.toPrecision(k)
-		);
-	},
-
-	toFixed: function(k){
-		return new this.constructor(
-			this.real.toFixed(k),
-			this.imag.toFixed(k)
-		);
-	},
-
-	magnitude: function(){
-		var a = this.real, b = this.imag;
-		return Math.sqrt(a * a + b * b);
-	},
-
-	angle: function(){
-		return Math.atan2(this.imag, this.real);
-	},
-
-	conjugate: function(){
-		return new this.constructor(this.real, -this.imag);
-	},
-
-	negate: function(){
-		return new this.constructor(-this.real, -this.imag);
-	},
-
-	multiply: function(z){
-		z = this.constructor.from(z);
-		var a = this.real, b = this.imag;
-		return new this.constructor(
-			z.real * a - z.imag * b,
-			b * z.real + z.imag * a
-		);
-	},
-
-	divide: function(z){
-		z = this.constructor.from(z);
-		var divident = (Math.pow(z.real, 2) + Math.pow(z.imag, 2)),
-			a = this.real, b = this.imag;
-		return new this.constructor(
-			(a * z.real + b * z.imag) / divident,
-			(b * z.real - a * z.imag) / divident
-		);
-	},
-
-	add: function(z){
-		z = this.constructor.from(z);
-		return new this.constructor(this.real + z.real, this.imag + z.imag);
-	},
-
-	subtract: function(z){
-		z = this.constructor.from(z);
-		return new this.constructor(this.real - z.real, this.imag - z.imag);
-	},
-
-	pow: function(z){
-		z = this.constructor.from(z);
-		var result = z.multiply(this.clone().log()).exp(); // z^w = e^(w*log(z))
-		return new this.constructor(result.real, result.imag);
-	},
-
-	sqrt: function(){
-		var abs = this.magnitude(),
-			sgn = this.imag < 0 ? -1 : 1;
-		return new this.constructor(
-			Math.sqrt((abs + this.real) / 2),
-			sgn * Math.sqrt((abs - this.real) / 2)
-		);
-	},
-
-	log: function(k){
-		if (!k) k = 0;
-		return new this.constructor(
-			Math.log(this.magnitude()),
-			this.angle() + k * 2 * Math.PI
-		);
-	},
-
-	exp: function(){
-		return this.fromPolar(
-			Math.exp(this.real),
-			this.imag
-		);
-	},
-
-	sin: function(){
-		var a = this.real, b = this.imag;
-		return new this.constructor(
-			Math.sin(a) * cosh(b),
-			Math.cos(a) * sinh(b)
-		);
-	},
-
-	cos: function(){
-		var a = this.real, b = this.imag;
-		return new this.constructor(
-			Math.cos(a) * cosh(b),
-			Math.sin(a) * sinh(b) * -1
-		);
-	},
-
-	tan: function(){
-		var a = this.real, b = this.imag,
-			divident = Math.cos(2 * a) + cosh(2 * b);
-		return new this.constructor(
-			Math.sin(2 * a) / divident,
-			sinh(2 * b) / divident
-		);
-	},
-
-	sinh: function(){
-		var a = this.real, b = this.imag;
-		return new this.constructor(
-			sinh(a) * Math.cos(b),
-			cosh(a) * Math.sin(b)
-		);
-	},
-
-	cosh: function(){
-		var a = this.real, b = this.imag;
-		return new this.constructor(
-			cosh(a) * Math.cos(b),
-			sinh(a) * Math.sin(b)
-		);
-	},
-
-	tanh: function(){
-		var a = this.real, b = this.imag,
-			divident = cosh(2 * a) + Math.cos(2 * b);
-		return new this.constructor(
-			sinh(2 * a) / divident,
-			Math.sin(2 * b) / divident
-		);
-	},
-
-	clone: function(){
-		return new this.constructor(this.real, this.imag);
-	},
-
-	toString: function(polar){
-		if (polar) return this.magnitude() + ' ' + this.angle();
-
-		var ret = '', a = this.real, b = this.imag;
-		if (a) ret += a;
-		if (a && b || b < 0) ret += b < 0 ? '-' : '+';
-		if (b){
-			var absIm = Math.abs(b);
-			if (absIm != 1) ret += absIm;
-			ret += 'i';
-		}
-		return ret || '0';
-	},
-
-	equals: function(z) {
-		z = this.constructor.from(z);
-		return (z.real == this.real && z.imag == this.imag);
-	}
-
-};
-
-var alias = {
-	abs: 'magnitude'
-  , arg: 'angle'
-  , phase: 'angle'
-  , conj: 'conjugate'
-  , '**': 'pow'
-  , mult: 'multiply'
-  , '*':  'multiply'
-  , dev: 'divide'
-  , '/': 'divide'
-  , '+': 'add'
-  , sub: 'subtract'
-  , '-': 'subtract'
-  , '=': 'equals'
-};
-
-for (var a in alias) prototype[a] = prototype[alias[a]];
-
-// factories and constants
-var extend = {
-
-	from: function(real, im) {
-		if (real instanceof Complex) return new Complex(real.real, real.imag);
-		return new Complex(real, im);
-	},
-
-	fromString: function(str) {
-		var match, real, im;
-		if (str == 'i') str = '0+1i';
-		match = str.match(/(\d+)?([\+\-]\d*)[ij]/);
-		if (match) {
-			real = match[1];
-			im = (match[2] == '+' || match[2] == '-')
-				? match[2] + '1'
-				: match[2];
-		}
-		return new Complex(+real, +im);
-	},
-
-	fromPolar: function(r, phi) {
-		return new Complex(1, 1).fromPolar(r, phi);
-	},
-
-	i: new Complex(0, 1),
-
-	one: new Complex(1, 0)
-
-};
-
-for (var e in extend) Complex[e] = extend[e];
-
-var sinh = function(x){
-	return (Math.pow(Math.E, x) - Math.pow(Math.E, -x)) / 2;
-};
-
-var cosh = function(x){
-	return (Math.pow(Math.E, x) + Math.pow(Math.E, -x)) / 2;
-};
-
-module.exports = Complex;
-
-
-});
-
-// Copyright (C) 2011-2012 Software Languages Lab, Vrije Universiteit Brussel
-// This code is dual-licensed under both the Apache License and the MPL
-
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/* Version: MPL 1.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is a shim for the ES-Harmony reflection module
- *
- * The Initial Developer of the Original Code is
- * Tom Van Cutsem, Vrije Universiteit Brussel.
- * Portions created by the Initial Developer are Copyright (C) 2011-2012
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *
- */
-
- // ----------------------------------------------------------------------------
-
- // This file is a polyfill for the upcoming ECMAScript Reflect API,
- // including support for Proxies. See the draft specification at:
- // http://wiki.ecmascript.org/doku.php?id=harmony:reflect_api
- // http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies
-
- // For an implementation of the Handler API, see handlers.js, which implements:
- // http://wiki.ecmascript.org/doku.php?id=harmony:virtual_object_api
-
- // This implementation supersedes the earlier polyfill at:
- // code.google.com/p/es-lab/source/browse/trunk/src/proxies/DirectProxies.js
-
- // This code was tested on tracemonkey / Firefox 12
-//  (and should run fine on older Firefox versions starting with FF4)
- // The code also works correctly on
- //   v8 --harmony_proxies --harmony_weakmaps (v3.6.5.1)
-
- // Language Dependencies:
- //  - ECMAScript 5/strict
- //  - "old" (i.e. non-direct) Harmony Proxies
- //  - Harmony WeakMaps
- // Patches:
- //  - Object.{freeze,seal,preventExtensions}
- //  - Object.{isFrozen,isSealed,isExtensible}
- //  - Object.getPrototypeOf
- //  - Object.prototype.valueOf
- //  - Object.prototype.isPrototypeOf
- //  - Object.prototype.toString
- //  - Object.prototype.hasOwnProperty
- //  - Object.getOwnPropertyDescriptor
- //  - Object.keys
- //  - Function.prototype.toString
- //  - Date.prototype.toString
- //  - Array.isArray
- //  - Proxy
- // Adds new globals:
- //  - Reflect
-
- // Direct proxies can be created via Proxy(target, handler)
-
- // ----------------------------------------------------------------------------
-
-(function(global){ // function-as-module pattern
-
-
-// === Direct Proxies: Invariant Enforcement ===
-
-// Direct proxies build on non-direct proxies by automatically wrapping
-// all user-defined proxy handlers in a Validator handler that checks and
-// enforces ES5 invariants.
-
-// A direct proxy is a proxy for an existing object called the target object.
-
-// A Validator handler is a wrapper for a target proxy handler H.
-// The Validator forwards all operations to H, but additionally
-// performs a number of integrity checks on the results of some traps,
-// to make sure H does not violate the ES5 invariants w.r.t. non-configurable
-// properties and non-extensible, sealed or frozen objects.
-
-// For each property that H exposes as own, non-configurable
-// (e.g. by returning a descriptor from a call to getOwnPropertyDescriptor)
-// the Validator handler defines those properties on the target object.
-// When the proxy becomes non-extensible, also configurable own properties
-// are checked against the target.
-// We will call properties that are defined on the target object
-// "fixed properties".
-
-// We will name fixed non-configurable properties "sealed properties".
-// We will name fixed non-configurable non-writable properties "frozen
-// properties".
-
-// The Validator handler upholds the following invariants w.r.t. non-configurability:
-// - getOwnPropertyDescriptor cannot report sealed properties as non-existent
-// - getOwnPropertyDescriptor cannot report incompatible changes to the
-//   attributes of a sealed property (e.g. reporting a non-configurable
-//   property as configurable, or reporting a non-configurable, non-writable
-//   property as writable)
-// - getPropertyDescriptor cannot report sealed properties as non-existent
-// - getPropertyDescriptor cannot report incompatible changes to the
-//   attributes of a sealed property. It _can_ report incompatible changes
-//   to the attributes of non-own, inherited properties.
-// - defineProperty cannot make incompatible changes to the attributes of
-//   sealed properties
-// - deleteProperty cannot report a successful deletion of a sealed property
-// - hasOwn cannot report a sealed property as non-existent
-// - has cannot report a sealed property as non-existent
-// - get cannot report inconsistent values for frozen data
-//   properties, and must report undefined for sealed accessors with an
-//   undefined getter
-// - set cannot report a successful assignment for frozen data
-//   properties or sealed accessors with an undefined setter.
-// - get{Own}PropertyNames lists all sealed properties of the target.
-// - keys lists all enumerable sealed properties of the target.
-// - enumerate lists all enumerable sealed properties of the target.
-// - if a property of a non-extensible proxy is reported as non-existent,
-//   then it must forever be reported as non-existent. This applies to
-//   own and inherited properties and is enforced in the
-//   deleteProperty, get{Own}PropertyDescriptor, has{Own},
-//   get{Own}PropertyNames, keys and enumerate traps
-
-// Violation of any of these invariants by H will result in TypeError being
-// thrown.
-
-// Additionally, once Object.preventExtensions, Object.seal or Object.freeze
-// is invoked on the proxy, the set of own property names for the proxy is
-// fixed. Any property name that is not fixed is called a 'new' property.
-
-// The Validator upholds the following invariants regarding extensibility:
-// - getOwnPropertyDescriptor cannot report new properties as existent
-//   (it must report them as non-existent by returning undefined)
-// - defineProperty cannot successfully add a new property (it must reject)
-// - getOwnPropertyNames cannot list new properties
-// - hasOwn cannot report true for new properties (it must report false)
-// - keys cannot list new properties
-
-// Invariants currently not enforced:
-// - getOwnPropertyNames lists only own property names
-// - keys lists only enumerable own property names
-// Both traps may list more property names than are actually defined on the
-// target.
-
-// Invariants with regard to inheritance are currently not enforced.
-// - a non-configurable potentially inherited property on a proxy with
-//   non-mutable ancestry cannot be reported as non-existent
-// (An object with non-mutable ancestry is a non-extensible object whose
-// [[Prototype]] is either null or an object with non-mutable ancestry.)
-
-// Changes in Handler API compared to previous harmony:proxies, see:
-// http://wiki.ecmascript.org/doku.php?id=strawman:direct_proxies
-// http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies
-
-// ----------------------------------------------------------------------------
-
-// ---- WeakMap polyfill ----
-
-// TODO: find a proper WeakMap polyfill
-
-// define an empty WeakMap so that at least the Reflect module code
-// will work in the absence of WeakMaps. Proxy emulation depends on
-// actual WeakMaps, so will not work with this little shim.
-if (typeof WeakMap === "undefined") {
-  global.WeakMap = function(){};
-  global.WeakMap.prototype = {
-    get: function(k) { return undefined; },
-    set: function(k,v) { throw new Error("WeakMap not supported"); }
-  };
-}
-
-// ---- Normalization functions for property descriptors ----
-
-function isStandardAttribute(name) {
-  return /^(get|set|value|writable|enumerable|configurable)$/.test(name);
-}
-
-// Adapted from ES5 section 8.10.5
-function toPropertyDescriptor(obj) {
-  if (Object(obj) !== obj) {
-    throw new TypeError("property descriptor should be an Object, given: "+
-                        obj);
-  }
-  var desc = {};
-  if ('enumerable' in obj) { desc.enumerable = !!obj.enumerable; }
-  if ('configurable' in obj) { desc.configurable = !!obj.configurable; }
-  if ('value' in obj) { desc.value = obj.value; }
-  if ('writable' in obj) { desc.writable = !!obj.writable; }
-  if ('get' in obj) {
-    var getter = obj.get;
-    if (getter !== undefined && typeof getter !== "function") {
-      throw new TypeError("property descriptor 'get' attribute must be "+
-                          "callable or undefined, given: "+getter);
-    }
-    desc.get = getter;
-  }
-  if ('set' in obj) {
-    var setter = obj.set;
-    if (setter !== undefined && typeof setter !== "function") {
-      throw new TypeError("property descriptor 'set' attribute must be "+
-                          "callable or undefined, given: "+setter);
-    }
-    desc.set = setter;
-  }
-  if ('get' in desc || 'set' in desc) {
-    if ('value' in desc || 'writable' in desc) {
-      throw new TypeError("property descriptor cannot be both a data and an "+
-                          "accessor descriptor: "+obj);
-    }
-  }
-  return desc;
-}
-
-function isAccessorDescriptor(desc) {
-  if (desc === undefined) return false;
-  return ('get' in desc || 'set' in desc);
-}
-function isDataDescriptor(desc) {
-  if (desc === undefined) return false;
-  return ('value' in desc || 'writable' in desc);
-}
-function isGenericDescriptor(desc) {
-  if (desc === undefined) return false;
-  return !isAccessorDescriptor(desc) && !isDataDescriptor(desc);
-}
-
-function toCompletePropertyDescriptor(desc) {
-  var internalDesc = toPropertyDescriptor(desc);
-  if (isGenericDescriptor(internalDesc) || isDataDescriptor(internalDesc)) {
-    if (!('value' in internalDesc)) { internalDesc.value = undefined; }
-    if (!('writable' in internalDesc)) { internalDesc.writable = false; }
-  } else {
-    if (!('get' in internalDesc)) { internalDesc.get = undefined; }
-    if (!('set' in internalDesc)) { internalDesc.set = undefined; }
-  }
-  if (!('enumerable' in internalDesc)) { internalDesc.enumerable = false; }
-  if (!('configurable' in internalDesc)) { internalDesc.configurable = false; }
-  return internalDesc;
-}
-
-function isEmptyDescriptor(desc) {
-  return !('get' in desc) &&
-         !('set' in desc) &&
-         !('value' in desc) &&
-         !('writable' in desc) &&
-         !('enumerable' in desc) &&
-         !('configurable' in desc);
-}
-
-function isEquivalentDescriptor(desc1, desc2) {
-  return sameValue(desc1.get, desc2.get) &&
-         sameValue(desc1.set, desc2.set) &&
-         sameValue(desc1.value, desc2.value) &&
-         sameValue(desc1.writable, desc2.writable) &&
-         sameValue(desc1.enumerable, desc2.enumerable) &&
-         sameValue(desc1.configurable, desc2.configurable);
-}
-
-// copied from http://wiki.ecmascript.org/doku.php?id=harmony:egal
-function sameValue(x, y) {
-  if (x === y) {
-    // 0 === -0, but they are not identical
-    return x !== 0 || 1 / x === 1 / y;
-  }
-
-  // NaN !== NaN, but they are identical.
-  // NaNs are the only non-reflexive value, i.e., if x !== x,
-  // then x is a NaN.
-  // isNaN is broken: it converts its argument to number, so
-  // isNaN("foo") => true
-  return x !== x && y !== y;
-}
-
-/**
- * Returns a fresh property descriptor that is guaranteed
- * to be complete (i.e. contain all the standard attributes).
- * Additionally, any non-standard enumerable properties of
- * attributes are copied over to the fresh descriptor.
- *
- * If attributes is undefined, returns undefined.
- *
- * See also: http://wiki.ecmascript.org/doku.php?id=harmony:proxies_semantics
- */
-function normalizeAndCompletePropertyDescriptor(attributes) {
-  if (attributes === undefined) { return undefined; }
-  var desc = toCompletePropertyDescriptor(attributes);
-  // Note: no need to call FromPropertyDescriptor(desc), as we represent
-  // "internal" property descriptors as proper Objects from the start
-  for (var name in attributes) {
-    if (!isStandardAttribute(name)) {
-      Object.defineProperty(desc, name,
-        { value: attributes[name],
-          writable: true,
-          enumerable: true,
-          configurable: true });
-    }
-  }
-  return desc;
-}
-
-/**
- * Returns a fresh property descriptor whose standard
- * attributes are guaranteed to be data properties of the right type.
- * Additionally, any non-standard enumerable properties of
- * attributes are copied over to the fresh descriptor.
- *
- * If attributes is undefined, will throw a TypeError.
- *
- * See also: http://wiki.ecmascript.org/doku.php?id=harmony:proxies_semantics
- */
-function normalizePropertyDescriptor(attributes) {
-  var desc = toPropertyDescriptor(attributes);
-  // Note: no need to call FromGenericPropertyDescriptor(desc), as we represent
-  // "internal" property descriptors as proper Objects from the start
-  for (var name in attributes) {
-    if (!isStandardAttribute(name)) {
-      Object.defineProperty(desc, name,
-        { value: attributes[name],
-          writable: true,
-          enumerable: true,
-          configurable: true });
-    }
-  }
-  return desc;
-}
-
-// store a reference to the real ES5 primitives before patching them later
-var prim_preventExtensions =        Object.preventExtensions,
-    prim_seal =                     Object.seal,
-    prim_freeze =                   Object.freeze,
-    prim_isExtensible =             Object.isExtensible,
-    prim_isSealed =                 Object.isSealed,
-    prim_isFrozen =                 Object.isFrozen,
-    prim_getPrototypeOf =           Object.getPrototypeOf,
-    prim_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor,
-    prim_defineProperty =           Object.defineProperty,
-    prim_keys =                     Object.keys,
-    prim_getOwnPropertyNames =      Object.getOwnPropertyNames,
-    prim_isArray =                  Array.isArray,
-    prim_concat =                   Array.prototype.concat,
-    prim_isPrototypeOf =            Object.prototype.isPrototypeOf,
-    prim_hasOwnProperty =           Object.prototype.hasOwnProperty;
-
-// these will point to the patched versions of the respective methods on
-// Object. They are used within this module as the "intrinsic" bindings
-// of these methods (i.e. the "original" bindings as defined in the spec)
-var Object_isFrozen,
-    Object_isSealed,
-    Object_isExtensible,
-    Object_getPrototypeOf,
-    Object_getOwnPropertyNames;
-
-/**
- * A property 'name' is fixed if it is an own property of the target.
- */
-function isFixed(name, target) {
-  return ({}).hasOwnProperty.call(target, name);
-}
-function isSealed(name, target) {
-  var desc = Object.getOwnPropertyDescriptor(target, name);
-  if (desc === undefined) { return false; }
-  return desc.configurable === false;
-}
-function isSealedDesc(desc) {
-  return desc !== undefined && desc.configurable === false;
-}
-
-/**
- * Performs all validation that Object.defineProperty performs,
- * without actually defining the property. Returns a boolean
- * indicating whether validation succeeded.
- *
- * Implementation transliterated from ES5.1 section 8.12.9
- */
-function isCompatibleDescriptor(extensible, current, desc) {
-  if (current === undefined && extensible === false) {
-    return false;
-  }
-  if (current === undefined && extensible === true) {
-    return true;
-  }
-  if (isEmptyDescriptor(desc)) {
-    return true;
-  }
-  if (isEquivalentDescriptor(current, desc)) {
-    return true;
-  }
-  if (current.configurable === false) {
-    if (desc.configurable === true) {
-      return false;
-    }
-    if ('enumerable' in desc && desc.enumerable !== current.enumerable) {
-      return false;
-    }
-  }
-  if (isGenericDescriptor(desc)) {
-    return true;
-  }
-  if (isDataDescriptor(current) !== isDataDescriptor(desc)) {
-    if (current.configurable === false) {
-      return false;
-    }
-    return true;
-  }
-  if (isDataDescriptor(current) && isDataDescriptor(desc)) {
-    if (current.configurable === false) {
-      if (current.writable === false && desc.writable === true) {
-        return false;
-      }
-      if (current.writable === false) {
-        if ('value' in desc && !sameValue(desc.value, current.value)) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-  if (isAccessorDescriptor(current) && isAccessorDescriptor(desc)) {
-    if (current.configurable === false) {
-      if ('set' in desc && !sameValue(desc.set, current.set)) {
-        return false;
-      }
-      if ('get' in desc && !sameValue(desc.get, current.get)) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-// ES6 7.3.11 SetIntegrityLevel
-// level is one of "sealed" or "frozen"
-function setIntegrityLevel(target, level) {
-  var ownProps = Object_getOwnPropertyNames(target);
-  var pendingException = undefined;
-  if (level === "sealed") {
-    var l = +ownProps.length;
-    var k;
-    for (var i = 0; i < l; i++) {
-      k = String(ownProps[i]);
-      try {
-        Object.defineProperty(target, k, { configurable: false });
-      } catch (e) {
-        if (pendingException === undefined) {
-          pendingException = e;
-        }
-      }
-    }
-  } else {
-    // level === "frozen"
-    var l = +ownProps.length;
-    var k;
-    for (var i = 0; i < l; i++) {
-      k = String(ownProps[i]);
-      try {
-        var currentDesc = Object.getOwnPropertyDescriptor(target, k);
-        if (currentDesc !== undefined) {
-          var desc;
-          if (isAccessorDescriptor(currentDesc)) {
-            desc = { configurable: false }
-          } else {
-            desc = { configurable: false, writable: false }
-          }
-          Object.defineProperty(target, k, desc);
-        }        
-      } catch (e) {
-        if (pendingException === undefined) {
-          pendingException = e;
-        }
-      }
-    }
-  }
-  if (pendingException !== undefined) {
-    throw pendingException;
-  }
-  return Reflect.preventExtensions(target);
-}
-
-// ES6 7.3.12 TestIntegrityLevel
-// level is one of "sealed" or "frozen"
-function testIntegrityLevel(target, level) {
-  var isExtensible = Object_isExtensible(target);
-  if (isExtensible) return false;
-  
-  var ownProps = Object_getOwnPropertyNames(target);
-  var pendingException = undefined;
-  var configurable = false;
-  var writable = false;
-  
-  var l = +ownProps.length;
-  var k;
-  var currentDesc;
-  for (var i = 0; i < l; i++) {
-    k = String(ownProps[i]);
-    try {
-      currentDesc = Object.getOwnPropertyDescriptor(target, k);
-      configurable = configurable || currentDesc.configurable;
-      if (isDataDescriptor(currentDesc)) {
-        writable = writable || currentDesc.writable;
-      }
-    } catch (e) {
-      if (pendingException === undefined) {
-        pendingException = e;
-        configurable = true;
-      }
-    }
-  }
-  if (pendingException !== undefined) {
-    throw pendingException;
-  }
-  if (level === "frozen" && writable === true) {
-    return false;
-  }
-  if (configurable === true) {
-    return false;
-  }
-  return true;
-}
-
-// ---- The Validator handler wrapper around user handlers ----
-
-/**
- * @param target the object wrapped by this proxy.
- * As long as the proxy is extensible, only non-configurable properties
- * are checked against the target. Once the proxy becomes non-extensible,
- * invariants w.r.t. non-extensibility are also enforced.
- *
- * @param handler the handler of the direct proxy. The object emulated by
- * this handler is validated against the target object of the direct proxy.
- * Any violations that the handler makes against the invariants
- * of the target will cause a TypeError to be thrown.
- *
- * Both target and handler must be proper Objects at initialization time.
- */
-function Validator(target, handler) {
-  // for non-revokable proxies, these are const references
-  // for revokable proxies, on revocation:
-  // - this.target is set to null
-  // - this.handler is set to a handler that throws on all traps
-  this.target  = target;
-  this.handler = handler;
-}
-
-Validator.prototype = {
-
-  /**
-   * If getTrap returns undefined, the caller should perform the
-   * default forwarding behavior.
-   * If getTrap returns normally otherwise, the return value
-   * will be a callable trap function. When calling the trap function,
-   * the caller is responsible for binding its |this| to |this.handler|.
-   */
-  getTrap: function(trapName) {
-    var trap = this.handler[trapName];
-    if (trap === undefined) {
-      // the trap was not defined,
-      // perform the default forwarding behavior
-      return undefined;
-    }
-
-    if (typeof trap !== "function") {
-      throw new TypeError(trapName + " trap is not callable: "+trap);
-    }
-
-    return trap;
-  },
-
-  // === fundamental traps ===
-
-  /**
-   * If name denotes a fixed property, check:
-   *   - whether targetHandler reports it as existent
-   *   - whether the returned descriptor is compatible with the fixed property
-   * If the proxy is non-extensible, check:
-   *   - whether name is not a new property
-   * Additionally, the returned descriptor is normalized and completed.
-   */
-  getOwnPropertyDescriptor: function(name) {
-    
-
-    var trap = this.getTrap("getOwnPropertyDescriptor");
-    if (trap === undefined) {
-      return Reflect.getOwnPropertyDescriptor(this.target, name);
-    }
-
-    name = String(name);
-    var desc = trap.call(this.handler, this.target, name);
-    desc = normalizeAndCompletePropertyDescriptor(desc);
-
-    var targetDesc = Object.getOwnPropertyDescriptor(this.target, name);
-    var extensible = Object.isExtensible(this.target);
-
-    if (desc === undefined) {
-      if (isSealedDesc(targetDesc)) {
-        throw new TypeError("cannot report non-configurable property '"+name+
-                            "' as non-existent");
-      }
-      if (!extensible && targetDesc !== undefined) {
-          // if handler is allowed to return undefined, we cannot guarantee
-          // that it will not return a descriptor for this property later.
-          // Once a property has been reported as non-existent on a non-extensible
-          // object, it should forever be reported as non-existent
-          throw new TypeError("cannot report existing own property '"+name+
-                              "' as non-existent on a non-extensible object");
-      }
-      return undefined;
-    }
-
-    // at this point, we know (desc !== undefined), i.e.
-    // targetHandler reports 'name' as an existing property
-
-    // Note: we could collapse the following two if-tests into a single
-    // test. Separating out the cases to improve error reporting.
-
-    if (!extensible) {
-      if (targetDesc === undefined) {
-        throw new TypeError("cannot report a new own property '"+
-                            name + "' on a non-extensible object");
-      }
-    }
-
-    if (name !== undefined) {
-      if (!isCompatibleDescriptor(extensible, targetDesc, desc)) {
-        throw new TypeError("cannot report incompatible property descriptor "+
-                            "for property '"+name+"'");
-      }
-    }
-
-    if (desc.configurable === false && !isSealedDesc(targetDesc)) {
-      // if the property is configurable or non-existent on the target,
-      // but is reported as a non-configurable property, it may later be
-      // reported as configurable or non-existent, which violates the
-      // invariant that if the property might change or disappear, the
-      // configurable attribute must be true.
-      throw new TypeError("cannot report a non-configurable descriptor "+
-                          "for configurable or non-existent property '"+name+"'");
-    }
-
-    return desc;
-  },
-
-  /**
-   * In the direct proxies design with refactored prototype climbing,
-   * this trap is deprecated. For proxies-as-prototypes, instead
-   * of calling this trap, the get, set, has or enumerate traps are
-   * called instead.
-   *
-   * In this implementation, we "abuse" getPropertyDescriptor to
-   * support trapping the get or set traps for proxies-as-prototypes.
-   * We do this by returning a getter/setter pair that invokes
-   * the corresponding traps.
-   *
-   * While this hack works for inherited property access, it has some
-   * quirks:
-   *
-   * In Firefox, this trap is only called after a prior invocation
-   * of the 'has' trap has returned true. Hence, expect the following
-   * behavior:
-   * <code>
-   * var child = Object.create(Proxy(target, handler));
-   * child[name] // triggers handler.has(target, name)
-   * // if that returns true, triggers handler.get(target, name, child)
-   * </code>
-   *
-   * On v8, the 'in' operator, when applied to an object that inherits
-   * from a proxy, will call getPropertyDescriptor and walk the proto-chain.
-   * That calls the below getPropertyDescriptor trap on the proxy. The
-   * result of the 'in'-operator is then determined by whether this trap
-   * returns undefined or a property descriptor object. That is why
-   * we first explicitly trigger the 'has' trap to determine whether
-   * the property exists.
-   *
-   * This has the side-effect that when enumerating properties on
-   * an object that inherits from a proxy in v8, only properties
-   * for which 'has' returns true are returned:
-   *
-   * <code>
-   * var child = Object.create(Proxy(target, handler));
-   * for (var prop in child) {
-   *   // only enumerates prop if (prop in child) returns true
-   * }
-   * </code>
-   */
-  getPropertyDescriptor: function(name) {
-    var handler = this;
-
-    if (!handler.has(name)) return undefined;
-
-    return {
-      get: function() {
-        return handler.get(this, name);
-      },
-      set: function(val) {
-        if (handler.set(this, name, val)) {
-          return val;
-        } else {
-          throw new TypeError("failed assignment to "+name);
-        }
-      },
-      enumerable: true,
-      configurable: true
-    };
-  },
-
-  /**
-   * If name denotes a fixed property, check for incompatible changes.
-   * If the proxy is non-extensible, check that new properties are rejected.
-   */
-  defineProperty: function(name, desc) {
-    // TODO(tvcutsem): the current tracemonkey implementation of proxies
-    // auto-completes 'desc', which is not correct. 'desc' should be
-    // normalized, but not completed. Consider:
-    // Object.defineProperty(proxy, 'foo', {enumerable:false})
-    // This trap will receive desc =
-    //  {value:undefined,writable:false,enumerable:false,configurable:false}
-    // This will also set all other attributes to their default value,
-    // which is unexpected and different from [[DefineOwnProperty]].
-    // Bug filed: https://bugzilla.mozilla.org/show_bug.cgi?id=601329
-
-    var trap = this.getTrap("defineProperty");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.defineProperty(this.target, name, desc);
-    }
-
-    name = String(name);
-    desc = normalizePropertyDescriptor(desc);
-    var success = trap.call(this.handler, this.target, name, desc);
-    success = !!success; // coerce to Boolean
-
-    if (success === true) {
-
-      var targetDesc = Object.getOwnPropertyDescriptor(this.target, name);
-      var extensible = Object.isExtensible(this.target);
-
-      // Note: we could collapse the following two if-tests into a single
-      // test. Separating out the cases to improve error reporting.
-
-      if (!extensible) {
-        if (targetDesc === undefined) {
-          throw new TypeError("cannot successfully add a new property '"+
-                              name + "' to a non-extensible object");
-        }
-      }
-
-      if (targetDesc !== undefined) {
-        if (!isCompatibleDescriptor(extensible, targetDesc, desc)) {
-          throw new TypeError("cannot define incompatible property "+
-                              "descriptor for property '"+name+"'");
-        }
-      }
-
-      if (desc.configurable === false && !isSealedDesc(targetDesc)) {
-        // if the property is configurable or non-existent on the target,
-        // but is successfully being redefined as a non-configurable property,
-        // it may later be reported as configurable or non-existent, which violates
-        // the invariant that if the property might change or disappear, the
-        // configurable attribute must be true.
-        throw new TypeError("cannot successfully define a non-configurable "+
-                            "descriptor for configurable or non-existent property '"+
-                            name+"'");
-      }
-
-    }
-
-    return success;
-  },
-
-  /**
-   * On success, check whether the target object is indeed non-extensible.
-   */
-  preventExtensions: function() {
-    var trap = this.getTrap("preventExtensions");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.preventExtensions(this.target);
-    }
-
-    var success = trap.call(this.handler, this.target);
-    success = !!success; // coerce to Boolean
-    if (success) {
-      if (Object_isExtensible(this.target)) {
-        throw new TypeError("can't report extensible object as non-extensible: "+
-                            this.target);
-      }
-    }
-    return success;
-  },
-
-  /**
-   * If name denotes a sealed property, check whether handler rejects.
-   */
-  delete: function(name) {
-    
-    var trap = this.getTrap("deleteProperty");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.deleteProperty(this.target, name);
-    }
-
-    name = String(name);
-    var res = trap.call(this.handler, this.target, name);
-    res = !!res; // coerce to Boolean
-
-    if (res === true) {
-      if (isSealed(name, this.target)) {
-        throw new TypeError("property '"+name+"' is non-configurable "+
-                            "and can't be deleted");
-      }
-    }
-
-    return res;
-  },
-
-  /**
-   * The getOwnPropertyNames trap was replaced by the ownKeys trap,
-   * which now also returns an array (of strings or symbols) and
-   * which performs the same rigorous invariant checks as getOwnPropertyNames
-   */
-  getOwnPropertyNames: function() {
-    throw new TypeError("getOwnPropertyNames trap is deprecated");
-  },
-
-  /**
-   * Checks whether the trap result does not contain any new properties
-   * if the proxy is non-extensible.
-   *
-   * Any own non-configurable properties of the target that are not included
-   * in the trap result give rise to a TypeError. As such, we check whether the
-   * returned result contains at least all sealed properties of the target
-   * object.
-   *
-   * Additionally, the trap result is normalized.
-   * Instead of returning the trap result directly:
-   *  - create and return a fresh Array,
-   *  - of which each element is coerced to a String
-   *
-   * This trap is called a.o. by Reflect.ownKeys, Object.getOwnPropertyNames
-   * and Object.keys (the latter filters out only the enumerable own properties).
-   */
-  ownKeys: function() {
-    var trap = this.getTrap("ownKeys");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.ownKeys(this.target);
-    }
-
-    var trapResult = trap.call(this.handler, this.target);
-
-    // propNames is used as a set of strings
-    var propNames = Object.create(null);
-    var numProps = +trapResult.length;
-    var result = new Array(numProps);
-
-    for (var i = 0; i < numProps; i++) {
-      var s = String(trapResult[i]);
-      if (!Object.isExtensible(this.target) && !isFixed(s, this.target)) {
-        // non-extensible proxies don't tolerate new own property names
-        throw new TypeError("ownKeys trap cannot list a new "+
-                            "property '"+s+"' on a non-extensible object");
-      }
-
-      propNames[s] = true;
-      result[i] = s;
-    }
-
-    var ownProps = Object_getOwnPropertyNames(this.target);
-    var target = this.target;
-    ownProps.forEach(function (ownProp) {
-      if (!propNames[ownProp]) {
-        if (isSealed(ownProp, target)) {
-          throw new TypeError("ownKeys trap failed to include "+
-                              "non-configurable property '"+ownProp+"'");
-        }
-        if (!Object.isExtensible(target) &&
-            isFixed(ownProp, target)) {
-            // if handler is allowed to report ownProp as non-existent,
-            // we cannot guarantee that it will never later report it as
-            // existent. Once a property has been reported as non-existent
-            // on a non-extensible object, it should forever be reported as
-            // non-existent
-            throw new TypeError("ownKeys trap cannot report existing own property '"+
-                                ownProp+"' as non-existent on a non-extensible object");
-        }
-      }
-    });
-
-    return result;
-  },
-
-  /**
-   * Checks whether the trap result is consistent with the state of the
-   * wrapped target.
-   */
-  isExtensible: function() {
-    var trap = this.getTrap("isExtensible");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.isExtensible(this.target);
-    }
-
-    var result = trap.call(this.handler, this.target);
-    result = !!result; // coerce to Boolean
-    var state = Object_isExtensible(this.target);
-    if (result !== state) {
-      if (result) {
-        throw new TypeError("cannot report non-extensible object as extensible: "+
-                             this.target);
-      } else {
-        throw new TypeError("cannot report extensible object as non-extensible: "+
-                             this.target);
-      }
-    }
-    return state;
-  },
-
-  /**
-   * Check whether the trap result corresponds to the target's [[Prototype]]
-   */
-  getPrototypeOf: function() {
-    var trap = this.getTrap("getPrototypeOf");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.getPrototypeOf(this.target);
-    }
-
-    var allegedProto = trap.call(this.handler, this.target);
-
-    if (!Object_isExtensible(this.target)) {
-      var actualProto = Object_getPrototypeOf(this.target);
-      if (!sameValue(allegedProto, actualProto)) {
-        throw new TypeError("prototype value does not match: " + this.target);
-      }
-    }
-
-    return allegedProto;
-  },
-
-  /**
-   * If target is non-extensible and setPrototypeOf trap returns true,
-   * check whether the trap result corresponds to the target's [[Prototype]]
-   */
-  setPrototypeOf: function(newProto) {
-    var trap = this.getTrap("setPrototypeOf");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.setPrototypeOf(this.target, newProto);
-    }
-
-    var success = trap.call(this.handler, this.target, newProto);
-
-    success = !!success;
-    if (success && !Object_isExtensible(this.target)) {
-      var actualProto = Object_getPrototypeOf(this.target);
-      if (!sameValue(newProto, actualProto)) {
-        throw new TypeError("prototype value does not match: " + this.target);
-      }
-    }
-
-    return success;
-  },
-
-  /**
-   * In the direct proxies design with refactored prototype climbing,
-   * this trap is deprecated. For proxies-as-prototypes, for-in will
-   * call the enumerate() trap. If that trap is not defined, the
-   * operation is forwarded to the target, no more fallback on this
-   * fundamental trap.
-   */
-  getPropertyNames: function() {
-    throw new TypeError("getPropertyNames trap is deprecated");
-  },
-
-  // === derived traps ===
-
-  /**
-   * If name denotes a fixed property, check whether the trap returns true.
-   */
-  has: function(name) {
-    var trap = this.getTrap("has");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.has(this.target, name);
-    }
-
-    name = String(name);
-    var res = trap.call(this.handler, this.target, name);
-    res = !!res; // coerce to Boolean
-
-    if (res === false) {
-      if (isSealed(name, this.target)) {
-        throw new TypeError("cannot report existing non-configurable own "+
-                            "property '"+ name + "' as a non-existent "+
-                            "property");
-      }
-      if (!Object.isExtensible(this.target) &&
-          isFixed(name, this.target)) {
-          // if handler is allowed to return false, we cannot guarantee
-          // that it will not return true for this property later.
-          // Once a property has been reported as non-existent on a non-extensible
-          // object, it should forever be reported as non-existent
-          throw new TypeError("cannot report existing own property '"+name+
-                              "' as non-existent on a non-extensible object");
-      }
-    }
-
-    // if res === true, we don't need to check for extensibility
-    // even for a non-extensible proxy that has no own name property,
-    // the property may have been inherited
-
-    return res;
-  },
-
-  /**
-   * If name denotes a fixed non-configurable, non-writable data property,
-   * check its return value against the previously asserted value of the
-   * fixed property.
-   */
-  get: function(receiver, name) {
-
-    // experimental support for invoke() trap on platforms that
-    // support __noSuchMethod__
-    /*
-    if (name === '__noSuchMethod__') {
-      var handler = this;
-      return function(name, args) {
-        return handler.invoke(receiver, name, args);
-      }
-    }
-    */
-
-    var trap = this.getTrap("get");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.get(this.target, name, receiver);
-    }
-
-    name = String(name);
-    var res = trap.call(this.handler, this.target, name, receiver);
-
-    var fixedDesc = Object.getOwnPropertyDescriptor(this.target, name);
-    // check consistency of the returned value
-    if (fixedDesc !== undefined) { // getting an existing property
-      if (isDataDescriptor(fixedDesc) &&
-          fixedDesc.configurable === false &&
-          fixedDesc.writable === false) { // own frozen data property
-        if (!sameValue(res, fixedDesc.value)) {
-          throw new TypeError("cannot report inconsistent value for "+
-                              "non-writable, non-configurable property '"+
-                              name+"'");
-        }
-      } else { // it's an accessor property
-        if (isAccessorDescriptor(fixedDesc) &&
-            fixedDesc.configurable === false &&
-            fixedDesc.get === undefined) {
-          if (res !== undefined) {
-            throw new TypeError("must report undefined for non-configurable "+
-                                "accessor property '"+name+"' without getter");
-          }
-        }
-      }
-    }
-
-    return res;
-  },
-
-  /**
-   * If name denotes a fixed non-configurable, non-writable data property,
-   * check that the trap rejects the assignment.
-   */
-  set: function(receiver, name, val) {
-    var trap = this.getTrap("set");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.set(this.target, name, val, receiver);
-    }
-
-    name = String(name);
-    var res = trap.call(this.handler, this.target, name, val, receiver);
-    res = !!res; // coerce to Boolean
-
-    // if success is reported, check whether property is truly assignable
-    if (res === true) {
-      var fixedDesc = Object.getOwnPropertyDescriptor(this.target, name);
-      if (fixedDesc !== undefined) { // setting an existing property
-        if (isDataDescriptor(fixedDesc) &&
-            fixedDesc.configurable === false &&
-            fixedDesc.writable === false) {
-          if (!sameValue(val, fixedDesc.value)) {
-            throw new TypeError("cannot successfully assign to a "+
-                                "non-writable, non-configurable property '"+
-                                name+"'");
-          }
-        } else {
-          if (isAccessorDescriptor(fixedDesc) &&
-              fixedDesc.configurable === false && // non-configurable
-              fixedDesc.set === undefined) {      // accessor with undefined setter
-            throw new TypeError("setting a property '"+name+"' that has "+
-                                " only a getter");
-          }
-        }
-      }
-    }
-
-    return res;
-  },
-
-  /**
-   * Any own enumerable non-configurable properties of the target that are not
-   * included in the trap result give rise to a TypeError. As such, we check
-   * whether the returned result contains at least all sealed enumerable properties
-   * of the target object.
-   *
-   * The trap should return an iterator.
-   *
-   * We convert the iterator to an array as current implementations expect
-   * enumerate to still return an array of strings.
-   */
-  enumerate: function() {
-    var trap = this.getTrap("enumerate");
-    if (trap === undefined) {
-      // default forwarding behavior
-      var trapResult = Reflect.enumerate(this.target);
-      var result = [];
-      var nxt = trapResult.next();
-      while (!nxt.done) {
-        result.push(String(nxt.value));
-        nxt = trapResult.next();
-      }
-      return result;
-    }
-
-    var trapResult = trap.call(this.handler, this.target);
-    
-    if (trapResult === null ||
-        trapResult === undefined ||
-        trapResult.next === undefined) {
-      throw new TypeError("enumerate trap should return an iterator, got: "+
-                          trapResult);    
-    }
-    
-    // propNames is used as a set of strings
-    var propNames = Object.create(null);
-    
-    // var numProps = +trapResult.length;
-    var result = []; // new Array(numProps);
-    
-    // trapResult is supposed to be an iterator
-    // drain iterator to array as current implementations still expect
-    // enumerate to return an array of strings
-    var nxt = trapResult.next();
-    
-    while (!nxt.done) {
-      var s = String(nxt.value);
-      if (propNames[s]) {
-        throw new TypeError("enumerate trap cannot list a "+
-                            "duplicate property '"+s+"'");
-      }
-      propNames[s] = true;
-      result.push(s);
-      nxt = trapResult.next();
-    }
-    
-    /*for (var i = 0; i < numProps; i++) {
-      var s = String(trapResult[i]);
-      if (propNames[s]) {
-        throw new TypeError("enumerate trap cannot list a "+
-                            "duplicate property '"+s+"'");
-      }
-
-      propNames[s] = true;
-      result[i] = s;
-    } */
-
-    var ownEnumerableProps = Object.keys(this.target);
-    var target = this.target;
-    ownEnumerableProps.forEach(function (ownEnumerableProp) {
-      if (!propNames[ownEnumerableProp]) {
-        if (isSealed(ownEnumerableProp, target)) {
-          throw new TypeError("enumerate trap failed to include "+
-                              "non-configurable enumerable property '"+
-                              ownEnumerableProp+"'");
-        }
-        if (!Object.isExtensible(target) &&
-            isFixed(ownEnumerableProp, target)) {
-            // if handler is allowed not to report ownEnumerableProp as an own
-            // property, we cannot guarantee that it will never report it as
-            // an own property later. Once a property has been reported as
-            // non-existent on a non-extensible object, it should forever be
-            // reported as non-existent
-            throw new TypeError("cannot report existing own property '"+
-                                ownEnumerableProp+"' as non-existent on a "+
-                                "non-extensible object");
-        }
-      }
-    });
-
-    return result;
-  },
-
-  /**
-   * The iterate trap is deprecated by the enumerate trap.
-   */
-  iterate: Validator.prototype.enumerate,
-
-  /**
-   * Any own non-configurable properties of the target that are not included
-   * in the trap result give rise to a TypeError. As such, we check whether the
-   * returned result contains at least all sealed properties of the target
-   * object.
-   *
-   * The trap result is normalized.
-   * The trap result is not returned directly. Instead:
-   *  - create and return a fresh Array,
-   *  - of which each element is coerced to String,
-   *  - which does not contain duplicates
-   *
-   * FIXME: keys trap is deprecated
-   */
-  /*
-  keys: function() {
-    var trap = this.getTrap("keys");
-    if (trap === undefined) {
-      // default forwarding behavior
-      return Reflect.keys(this.target);
-    }
-
-    var trapResult = trap.call(this.handler, this.target);
-
-    // propNames is used as a set of strings
-    var propNames = Object.create(null);
-    var numProps = +trapResult.length;
-    var result = new Array(numProps);
-
-    for (var i = 0; i < numProps; i++) {
-     var s = String(trapResult[i]);
-     if (propNames[s]) {
-       throw new TypeError("keys trap cannot list a "+
-                           "duplicate property '"+s+"'");
-     }
-     if (!Object.isExtensible(this.target) && !isFixed(s, this.target)) {
-       // non-extensible proxies don't tolerate new own property names
-       throw new TypeError("keys trap cannot list a new "+
-                           "property '"+s+"' on a non-extensible object");
-     }
-
-     propNames[s] = true;
-     result[i] = s;
-    }
-
-    var ownEnumerableProps = Object.keys(this.target);
-    var target = this.target;
-    ownEnumerableProps.forEach(function (ownEnumerableProp) {
-      if (!propNames[ownEnumerableProp]) {
-        if (isSealed(ownEnumerableProp, target)) {
-          throw new TypeError("keys trap failed to include "+
-                              "non-configurable enumerable property '"+
-                              ownEnumerableProp+"'");
-        }
-        if (!Object.isExtensible(target) &&
-            isFixed(ownEnumerableProp, target)) {
-            // if handler is allowed not to report ownEnumerableProp as an own
-            // property, we cannot guarantee that it will never report it as
-            // an own property later. Once a property has been reported as
-            // non-existent on a non-extensible object, it should forever be
-            // reported as non-existent
-            throw new TypeError("cannot report existing own property '"+
-                                ownEnumerableProp+"' as non-existent on a "+
-                                "non-extensible object");
-        }
-      }
-    });
-
-    return result;
-  },
-  */
-  
-  /**
-   * New trap that reifies [[Call]].
-   * If the target is a function, then a call to
-   *   proxy(...args)
-   * Triggers this trap
-   */
-  apply: function(target, thisBinding, args) {
-    var trap = this.getTrap("apply");
-    if (trap === undefined) {
-      return Reflect.apply(target, thisBinding, args);
-    }
-
-    if (typeof this.target === "function") {
-      return trap.call(this.handler, target, thisBinding, args);
-    } else {
-      throw new TypeError("apply: "+ target + " is not a function");
-    }
-  },
-
-  /**
-   * New trap that reifies [[Construct]].
-   * If the target is a function, then a call to
-   *   new proxy(...args)
-   * Triggers this trap
-   */
-  construct: function(target, args) {
-    var trap = this.getTrap("construct");
-    if (trap === undefined) {
-      return Reflect.construct(target, args);
-    }
-
-    if (typeof this.target === "function") {
-      return trap.call(this.handler, target, args);
-    } else {
-      throw new TypeError("new: "+ target + " is not a function");
-    }
-  }
-};
-
-// ---- end of the Validator handler wrapper handler ----
-
-// In what follows, a 'direct proxy' is a proxy
-// whose handler is a Validator. Such proxies can be made non-extensible,
-// sealed or frozen without losing the ability to trap.
-
-// maps direct proxies to their Validator handlers
-var directProxies = new WeakMap();
-
-// patch Object.{preventExtensions,seal,freeze} so that
-// they recognize fixable proxies and act accordingly
-Object.preventExtensions = function(subject) {
-  var vhandler = directProxies.get(subject);
-  if (vhandler !== undefined) {
-    if (vhandler.preventExtensions()) {
-      return subject;
-    } else {
-      throw new TypeError("preventExtensions on "+subject+" rejected");
-    }
-  } else {
-    return prim_preventExtensions(subject);
-  }
-};
-Object.seal = function(subject) {
-  return setIntegrityLevel(subject, "sealed");
-};
-Object.freeze = function(subject) {
-  return setIntegrityLevel(subject, "frozen");
-};
-Object.isExtensible = Object_isExtensible = function(subject) {
-  var vHandler = directProxies.get(subject);
-  if (vHandler !== undefined) {
-    return vHandler.isExtensible();
-  } else {
-    return prim_isExtensible(subject);
-  }
-};
-Object.isSealed = Object_isSealed = function(subject) {
-  return testIntegrityLevel(subject, "sealed");
-};
-Object.isFrozen = Object_isFrozen = function(subject) {
-  return testIntegrityLevel(subject, "frozen");
-};
-Object.getPrototypeOf = Object_getPrototypeOf = function(subject) {
-  var vHandler = directProxies.get(subject);
-  if (vHandler !== undefined) {
-    return vHandler.getPrototypeOf();
-  } else {
-    return prim_getPrototypeOf(subject);
-  }
-};
-
-// patch Object.getOwnPropertyDescriptor to directly call
-// the Validator.prototype.getOwnPropertyDescriptor trap
-// This is to circumvent an assertion in the built-in Proxy
-// trapping mechanism of v8, which disallows that trap to
-// return non-configurable property descriptors (as per the
-// old Proxy design)
-Object.getOwnPropertyDescriptor = function(subject, name) {
-  var vhandler = directProxies.get(subject);
-  if (vhandler !== undefined) {
-    return vhandler.getOwnPropertyDescriptor(name);
-  } else {
-    return prim_getOwnPropertyDescriptor(subject, name);
-  }
-};
-
-// patch Object.defineProperty to directly call
-// the Validator.prototype.defineProperty trap
-// This is to circumvent two issues with the built-in
-// trap mechanism:
-// 1) the current tracemonkey implementation of proxies
-// auto-completes 'desc', which is not correct. 'desc' should be
-// normalized, but not completed. Consider:
-// Object.defineProperty(proxy, 'foo', {enumerable:false})
-// This trap will receive desc =
-//  {value:undefined,writable:false,enumerable:false,configurable:false}
-// This will also set all other attributes to their default value,
-// which is unexpected and different from [[DefineOwnProperty]].
-// Bug filed: https://bugzilla.mozilla.org/show_bug.cgi?id=601329
-// 2) the current spidermonkey implementation does not
-// throw an exception when this trap returns 'false', but instead silently
-// ignores the operation (this is regardless of strict-mode)
-// 2a) v8 does throw an exception for this case, but includes the rather
-//     unhelpful error message:
-// 'Proxy handler #<Object> returned false from 'defineProperty' trap'
-Object.defineProperty = function(subject, name, desc) {
-  var vhandler = directProxies.get(subject);
-  if (vhandler !== undefined) {
-    var normalizedDesc = normalizePropertyDescriptor(desc);
-    var success = vhandler.defineProperty(name, normalizedDesc);
-    if (success === false) {
-      throw new TypeError("can't redefine property '"+name+"'");
-    }
-    return success;
-  } else {
-    return prim_defineProperty(subject, name, desc);
-  }
-};
-
-Object.keys = function(subject) {
-  var vHandler = directProxies.get(subject);
-  if (vHandler !== undefined) {
-    var ownKeys = vHandler.ownKeys();
-    var result = [];
-    for (var i = 0; i < ownKeys.length; i++) {
-      var k = String(ownKeys[i]);
-      var desc = Object.getOwnPropertyDescriptor(subject, k);
-      if (desc !== undefined && desc.enumerable === true) {
-        result.push(k);
-      }
-    }
-    return result;
-  } else {
-    return prim_keys(subject);
-  }
-}
-
-Object.getOwnPropertyNames = Object_getOwnPropertyNames = function(subject) {
-  var vHandler = directProxies.get(subject);
-  if (vHandler !== undefined) {
-    return vHandler.ownKeys();
-  } else {
-    return prim_getOwnPropertyNames(subject);
-  }
-}
-
-// returns whether an argument is a reference to an object,
-// which is legal as a WeakMap key.
-function isObject(arg) {
-  var type = typeof arg;
-  return (type === 'object' && arg !== null) || (type === 'function');
-};
-
-// a wrapper for WeakMap.get which returns the undefined value
-// for keys that are not objects (in which case the underlying
-// WeakMap would have thrown a TypeError).
-function safeWeakMapGet(map, key) {
-  return isObject(key) ? map.get(key) : undefined;
-};
-
-// returns a new function of zero arguments that recursively
-// unwraps any proxies specified as the |this|-value.
-// The primitive is assumed to be a zero-argument method
-// that uses its |this|-binding.
-function makeUnwrapping0ArgMethod(primitive) {
-  return function builtin() {
-    var vHandler = safeWeakMapGet(directProxies, this);
-    if (vHandler !== undefined) {
-      return builtin.call(vHandler.target);
-    } else {
-      return primitive.call(this);
-    }
-  }
-};
-
-// returns a new function of 1 arguments that recursively
-// unwraps any proxies specified as the |this|-value.
-// The primitive is assumed to be a 1-argument method
-// that uses its |this|-binding.
-function makeUnwrapping1ArgMethod(primitive) {
-  return function builtin(arg) {
-    var vHandler = safeWeakMapGet(directProxies, this);
-    if (vHandler !== undefined) {
-      return builtin.call(vHandler.target, arg);
-    } else {
-      return primitive.call(this, arg);
-    }
-  }
-};
-
-Object.prototype.valueOf =
-  makeUnwrapping0ArgMethod(Object.prototype.valueOf);
-Object.prototype.toString =
-  makeUnwrapping0ArgMethod(Object.prototype.toString);
-Function.prototype.toString =
-  makeUnwrapping0ArgMethod(Function.prototype.toString);
-Date.prototype.toString =
-  makeUnwrapping0ArgMethod(Date.prototype.toString);
-
-Object.prototype.isPrototypeOf = function builtin(arg) {
-  // bugfix thanks to Bill Mark:
-  // built-in isPrototypeOf does not unwrap proxies used
-  // as arguments. So, we implement the builtin ourselves,
-  // based on the ECMAScript 6 spec. Our encoding will
-  // make sure that if a proxy is used as an argument,
-  // its getPrototypeOf trap will be called.
-  while (true) {
-    var vHandler2 = safeWeakMapGet(directProxies, arg);
-    if (vHandler2 !== undefined) {
-      arg = vHandler2.getPrototypeOf();
-      if (arg === null) {
-        return false;
-      } else if (sameValue(arg, this)) {
-        return true;
-      }
-    } else {
-      return prim_isPrototypeOf.call(this, arg);
-    }
-  }
-};
-
-Array.isArray = function(subject) {
-  var vHandler = safeWeakMapGet(directProxies, subject);
-  if (vHandler !== undefined) {
-    return Array.isArray(vHandler.target);
-  } else {
-    return prim_isArray(subject);
-  }
-};
-
-function isProxyArray(arg) {
-  var vHandler = safeWeakMapGet(directProxies, arg);
-  if (vHandler !== undefined) {
-    return Array.isArray(vHandler.target);
-  }
-  return false;
-}
-
-// Array.prototype.concat internally tests whether one of its
-// arguments is an Array, by checking whether [[Class]] == "Array"
-// As such, it will fail to recognize proxies-for-arrays as arrays.
-// We patch Array.prototype.concat so that it "unwraps" proxies-for-arrays
-// by making a copy. This will trigger the exact same sequence of
-// traps on the proxy-for-array as if we would not have unwrapped it.
-// See <https://github.com/tvcutsem/harmony-reflect/issues/19> for more.
-Array.prototype.concat = function(/*...args*/) {
-  var length;
-  for (var i = 0; i < arguments.length; i++) {
-    if (isProxyArray(arguments[i])) {
-      length = arguments[i].length;
-      arguments[i] = Array.prototype.slice.call(arguments[i], 0, length);
-    }
-  }
-  return prim_concat.apply(this, arguments);
-};
-
-// setPrototypeOf support on platforms that support __proto__
-
-var prim_setPrototypeOf = Object.setPrototypeOf;
-
-// patch and extract original __proto__ setter
-var __proto__setter = (function() {
-  var protoDesc = prim_getOwnPropertyDescriptor(Object.prototype,'__proto__');
-  if (protoDesc === undefined ||
-      typeof protoDesc.set !== "function") {
-    return function() {
-      throw new TypeError("setPrototypeOf not supported on this platform");
-    }
-  }
-
-  // see if we can actually mutate a prototype with the generic setter
-  // (e.g. Chrome v28 doesn't allow setting __proto__ via the generic setter)
-  try {
-    protoDesc.set.call({},{});
-  } catch (e) {
-    return function() {
-      throw new TypeError("setPrototypeOf not supported on this platform");
-    }
-  }
-
-  prim_defineProperty(Object.prototype, '__proto__', {
-    set: function(newProto) {
-      return Object.setPrototypeOf(this, newProto);
-    }
-  });
-
-  return protoDesc.set;
-}());
-
-Object.setPrototypeOf = function(target, newProto) {
-  var handler = directProxies.get(target);
-  if (handler !== undefined) {
-    if (handler.setPrototypeOf(newProto)) {
-      return target;
-    } else {
-      throw new TypeError("proxy rejected prototype mutation");
-    }
-  } else {
-    if (!Object_isExtensible(target)) {
-      throw new TypeError("can't set prototype on non-extensible object: " +
-                          target);
-    }
-    if (prim_setPrototypeOf)
-      return prim_setPrototypeOf(target, newProto);
-
-    if (Object(newProto) !== newProto || newProto === null) {
-      throw new TypeError("Object prototype may only be an Object or null: " +
-                         newProto);
-      // throw new TypeError("prototype must be an object or null")
-    }
-    __proto__setter.call(target, newProto);
-    return target;
-  }
-}
-
-Object.prototype.hasOwnProperty = function(name) {
-  var handler = safeWeakMapGet(directProxies, this);
-  if (handler !== undefined) {
-    var desc = handler.getOwnPropertyDescriptor(name);
-    return desc !== undefined;
-  } else {
-    return prim_hasOwnProperty.call(this, name);
-  }
-}
-
-// ============= Reflection module =============
-// see http://wiki.ecmascript.org/doku.php?id=harmony:reflect_api
-
-var Reflect = global.Reflect = {
-  getOwnPropertyDescriptor: function(target, name) {
-    return Object.getOwnPropertyDescriptor(target, name);
-  },
-  defineProperty: function(target, name, desc) {
-
-    // if target is a proxy, invoke its "defineProperty" trap
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.defineProperty(target, name, desc);
-    }
-
-    // Implementation transliterated from [[DefineOwnProperty]]
-    // see ES5.1 section 8.12.9
-    // this is the _exact same algorithm_ as the isCompatibleDescriptor
-    // algorithm defined above, except that at every place it
-    // returns true, this algorithm actually does define the property.
-    var current = Object.getOwnPropertyDescriptor(target, name);
-    var extensible = Object.isExtensible(target);
-    if (current === undefined && extensible === false) {
-      return false;
-    }
-    if (current === undefined && extensible === true) {
-      Object.defineProperty(target, name, desc); // should never fail
-      return true;
-    }
-    if (isEmptyDescriptor(desc)) {
-      return true;
-    }
-    if (isEquivalentDescriptor(current, desc)) {
-      return true;
-    }
-    if (current.configurable === false) {
-      if (desc.configurable === true) {
-        return false;
-      }
-      if ('enumerable' in desc && desc.enumerable !== current.enumerable) {
-        return false;
-      }
-    }
-    if (isGenericDescriptor(desc)) {
-      // no further validation necessary
-    } else if (isDataDescriptor(current) !== isDataDescriptor(desc)) {
-      if (current.configurable === false) {
-        return false;
-      }
-    } else if (isDataDescriptor(current) && isDataDescriptor(desc)) {
-      if (current.configurable === false) {
-        if (current.writable === false && desc.writable === true) {
-          return false;
-        }
-        if (current.writable === false) {
-          if ('value' in desc && !sameValue(desc.value, current.value)) {
-            return false;
-          }
-        }
-      }
-    } else if (isAccessorDescriptor(current) && isAccessorDescriptor(desc)) {
-      if (current.configurable === false) {
-        if ('set' in desc && !sameValue(desc.set, current.set)) {
-          return false;
-        }
-        if ('get' in desc && !sameValue(desc.get, current.get)) {
-          return false;
-        }
-      }
-    }
-    Object.defineProperty(target, name, desc); // should never fail
-    return true;
-  },
-  deleteProperty: function(target, name) {
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.deleteProperty(target, name);
-    }
-    
-    var desc = Object.getOwnPropertyDescriptor(target, name);
-    if (desc === undefined) {
-      return true;
-    }
-    if (desc.configurable === true) {
-      delete target[name];
-      return true;
-    }
-    return false;    
-  },
-  getPrototypeOf: function(target) {
-    return Object.getPrototypeOf(target);
-  },
-  setPrototypeOf: function(target, newProto) {
-    
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.setPrototypeOf(newProto);
-    }
-    
-    if (Object(newProto) !== newProto || newProto === null) {
-      throw new TypeError("Object prototype may only be an Object or null: " +
-                         newProto);
-    }
-    
-    if (!Object_isExtensible(target)) {
-      return false;
-    }
-    
-    var current = Object.getPrototypeOf(target);
-    if (sameValue(current, newProto)) {
-      return true;
-    }
-    
-    if (prim_setPrototypeOf) {
-      try {
-        prim_setPrototypeOf(target, newProto);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    __proto__setter.call(target, newProto);
-    return true;
-  },
-  preventExtensions: function(target) {
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.preventExtensions();
-    }
-    prim_preventExtensions(target);
-    return true;
-  },
-  isExtensible: function(target) {
-    return Object.isExtensible(target);
-  },
-  has: function(target, name) {
-    return name in target;
-  },
-  get: function(target, name, receiver) {
-    receiver = receiver || target;
-
-    // if target is a proxy, invoke its "get" trap
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.get(receiver, name);
-    }
-
-    var desc = Object.getOwnPropertyDescriptor(target, name);
-    if (desc === undefined) {
-      var proto = Object.getPrototypeOf(target);
-      if (proto === null) {
-        return undefined;
-      }
-      return Reflect.get(proto, name, receiver);
-    }
-    if (isDataDescriptor(desc)) {
-      return desc.value;
-    }
-    var getter = desc.get;
-    if (getter === undefined) {
-      return undefined;
-    }
-    return desc.get.call(receiver);
-  },
-  // Reflect.set implementation based on latest version of [[SetP]] at
-  // http://wiki.ecmascript.org/doku.php?id=harmony:proto_climbing_refactoring
-  set: function(target, name, value, receiver) {
-    receiver = receiver || target;
-
-    // if target is a proxy, invoke its "set" trap
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.set(receiver, name, value);
-    }
-
-    // first, check whether target has a non-writable property
-    // shadowing name on receiver
-    var ownDesc = Object.getOwnPropertyDescriptor(target, name);
-
-    if (ownDesc === undefined) {
-      // name is not defined in target, search target's prototype
-      var proto = Object.getPrototypeOf(target);
-
-      if (proto !== null) {
-        // continue the search in target's prototype
-        return Reflect.set(proto, name, value, receiver);
-      }
-
-      // Rev16 change. Cf. https://bugs.ecmascript.org/show_bug.cgi?id=1549
-      // target was the last prototype, now we know that 'name' is not shadowed
-      // by an existing (accessor or data) property, so we can add the property
-      // to the initial receiver object
-      // (this branch will intentionally fall through to the code below)
-      ownDesc =
-        { value: undefined,
-          writable: true,
-          enumerable: true,
-          configurable: true };
-    }
-
-    // we now know that ownDesc !== undefined
-    if (isAccessorDescriptor(ownDesc)) {
-      var setter = ownDesc.set;
-      if (setter === undefined) return false;
-      setter.call(receiver, value); // assumes Function.prototype.call
-      return true;
-    }
-    // otherwise, isDataDescriptor(ownDesc) must be true
-    if (ownDesc.writable === false) return false;
-    // we found an existing writable data property on the prototype chain.
-    // Now update or add the data property on the receiver, depending on
-    // whether the receiver already defines the property or not.
-    var existingDesc = Object.getOwnPropertyDescriptor(receiver, name);
-    if (existingDesc !== undefined) {
-      var updateDesc =
-        { value: value,
-          // FIXME: it should not be necessary to describe the following
-          // attributes. Added to circumvent a bug in tracemonkey:
-          // https://bugzilla.mozilla.org/show_bug.cgi?id=601329
-          writable:     existingDesc.writable,
-          enumerable:   existingDesc.enumerable,
-          configurable: existingDesc.configurable };
-      Object.defineProperty(receiver, name, updateDesc);
-      return true;
-    } else {
-      if (!Object.isExtensible(receiver)) return false;
-      var newDesc =
-        { value: value,
-          writable: true,
-          enumerable: true,
-          configurable: true };
-      Object.defineProperty(receiver, name, newDesc);
-      return true;
-    }
-  },
-  /*invoke: function(target, name, args, receiver) {
-    receiver = receiver || target;
-
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.invoke(receiver, name, args);
-    }
-
-    var fun = Reflect.get(target, name, receiver);
-    return Function.prototype.apply.call(fun, receiver, args);
-  },*/
-  enumerate: function(target) {
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.enumerate(handler.target);
-    }
-
-    var result = [];
-    for (var name in target) { result.push(name); };
-    var l = +result.length;
-    var idx = 0;
-    return {
-      next: function() {
-        if (idx === l) return { done: true };
-        return { done: false, value: result[idx++] };
-      }
-    };
-  },
-  // imperfect ownKeys implementation: in ES6, should also include
-  // symbol-keyed properties.
-  ownKeys: function(target) {
-    return Object_getOwnPropertyNames(target);
-  },
-  apply: function(target, receiver, args) {
-    // target.apply(receiver, args)
-    return Function.prototype.apply.call(target, receiver, args);
-  },
-  construct: function(target, args) {
-    // return new target(...args);
-
-    // if target is a proxy, invoke its "construct" trap
-    var handler = directProxies.get(target);
-    if (handler !== undefined) {
-      return handler.construct(handler.target, args);
-    }
-
-    var proto = target.prototype;
-    var instance = (Object(proto) === proto) ? Object.create(proto) : {};
-    var result = Function.prototype.apply.call(target, instance, args);
-    return Object(result) === result ? result : instance;
-  }
-};
-
-// feature-test whether the Proxy global exists
-if (typeof Proxy !== "undefined") {
-
-  var primCreate = Proxy.create,
-      primCreateFunction = Proxy.createFunction;
-
-  var revokedHandler = primCreate({
-    get: function() { throw new TypeError("proxy is revoked"); }
-  });
-
-  global.Proxy = function(target, handler) {
-    // check that target is an Object
-    if (Object(target) !== target) {
-      throw new TypeError("Proxy target must be an Object, given "+target);
-    }
-    // check that handler is an Object
-    if (Object(handler) !== handler) {
-      throw new TypeError("Proxy handler must be an Object, given "+handler);
-    }
-
-    var vHandler = new Validator(target, handler);
-    var proxy;
-    if (typeof target === "function") {
-      proxy = primCreateFunction(vHandler,
-        // call trap
-        function() {
-          var args = Array.prototype.slice.call(arguments);
-          return vHandler.apply(target, this, args);
-        },
-        // construct trap
-        function() {
-          var args = Array.prototype.slice.call(arguments);
-          return vHandler.construct(target, args);
-        });
-    } else {
-      proxy = primCreate(vHandler, Object.getPrototypeOf(target));
-    }
-    directProxies.set(proxy, vHandler);
-    return proxy;
-  };
-
-  global.Proxy.revocable = function(target, handler) {
-    var proxy = new Proxy(target, handler);
-    var revoke = function() {
-      var vHandler = directProxies.get(proxy);
-      if (vHandler !== null) {
-        vHandler.target  = null;
-        vHandler.handler = revokedHandler;
-      }
-      return undefined;
-    };
-    return {proxy: proxy, revoke: revoke};
-  }
-
-} else {
-  // Proxy global not defined, so proxies are not supported
-
-  global.Proxy = function(_target, _handler) {
-    throw new Error("proxies not supported on this platform");
-  }
-
-}
-
-// for node.js modules, export every property in the Reflect object
-// as part of the module interface
-if (typeof exports !== 'undefined') {
-  Object.keys(Reflect).forEach(function (key) {
-    exports[key] = Reflect[key];
-  });
-}
-
-}(typeof exports !== 'undefined' ? global : this)); // function-as-module pattern;
-define("es6/Reflect", (function (global) {
-    return function () {
-        var ret, fn;
-        return ret || global.Reflect;
-    };
-}(this)));
-
-// mockup module, Proxy must be global
-// es6/Reflect patches it only
-define('es6/Proxy',['es6/Reflect'], function(_){ return Proxy; });
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- */
- 
-define('ufojs/errors',[],function() {
-    
-    //ufojs errors
-    var errors = {}
-    
-    /**
-     * safe three lines of coding for each error with this factory
-     * 
-     * and observe that extending Error is uncool
-     */
-    var makeError = function(name, Constructor, prototype, namespace)
-    {
-        if(prototype === undefined)
-            var prototype = new Error;
-        
-        if(Constructor === undefined) {
-            var Constructor = function(message, stack) {
-                if(message !== undefined) {
-                    this.name = name;
-                    this.message = message || "(no error message)";
-                    stack = stack || (new Error).stack || '(no stack available)'
-                    this.stack = [name, ' Error: ', this.message, '\n'
-                                                       , stack].join('');
-                }
-            };
-        };
-        Constructor.prototype = prototype;
-        Constructor.prototype.constructor = Constructor;
-        if(namespace === undefined)
-            var namespace = errors
-        namespace[name] = Constructor;
-    }
-    errors.makeError = makeError;
-    /**
-     * here the definitions go
-     */
-    makeError('Error');
-    makeError('NotImplemented', undefined , new errors.Error);
-    makeError('Assertion', undefined , new errors.Error);
-    makeError('Value', undefined , new errors.Error);
-    makeError('Type', undefined , new TypeError);
-    makeError('Dependency', undefined , new errors.Error);
-    makeError('Parser', undefined , new errors.Error);
-    makeError('IO', undefined , new errors.Error);
-    makeError('IONoEntry', undefined, new errors.IO)
-    makeError('NameTranslation', undefined , new errors.Error);
-    makeError('GlifLib', undefined , new errors.Error);
-    makeError('Key', undefined , new TypeError);
-    
-    /**
-     * if expression is false errors.Assertion is thrown
-     * pass a message to explain yourself 
-     **/
-    errors.assert = function(exp, message) {
-        if (!exp) {
-            throw new errors.Assertion(message);
-        }
-    };
-    errors.warn = function(message) {
-        if(typeof console !== 'undefined' && console.log)
-            console.log('WARNING: ' + message);
-    };
-    
-    return errors;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- *
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- *
- */
-
-define('ufojs/main',['./errors'], function(errors) {
-    
-    var ValueError = errors.Value,
-        TypeError = errors.Type;
-
-    /**
-     * enhance helps with class building
-     * FIXME: put description in here
-     */
-    var enhance =  function(constructor, blueprint)
-    {
-        for(var i in blueprint)
-        {
-            //TODO:
-            // use Object.getOwnPropertyDescriptor and Object.defineProperty
-            // instead of __lookup(S/G)etter__ and __define(S/G)etter__
-            // its the future
-            var getter = blueprint.__lookupGetter__(i),
-                setter = blueprint.__lookupSetter__(i);
-            if ( getter || setter ) {
-                if ( getter )
-                    constructor.prototype.__defineGetter__(i, getter);
-                if ( setter )
-                    constructor.prototype.__defineSetter__(i, setter);
-            } else
-                constructor.prototype[i] = blueprint[i];
-        };
-    };
-
-    /**
-     * check whether val is a number and not NaN
-     */
-    function isNumber(n) {
-        return typeof n === 'number' && isFinite(n);
-    };
-
-    /**
-     * check whether val is an integer
-     */
-    function isInt (n) {
-        // n === n NaN will return false
-        // n|0 rounds
-        return typeof n === 'number' && n === n && n === (n|0);
-    }
-
-    /**
-     * check whether val is a float
-     */
-    function isFloat (n) {
-        // n === n NaN will return false
-        // n|0 rounds
-        return typeof n === 'number' && isFinite(n) && n !== (n|0);
-    }
-
-    /**
-     * check whether the string is made out of digits only
-     */
-    var _isDigitsTest = /^[0-9]+$/;
-    function isDigits(str){
-        if( typeof str != 'string') return false;
-        return _isDigitsTest.test(str);
-    }
-    /**
-     * check whether the string is formatted like a propper int
-     */
-    var _isIntStringTest = /^[+-]?[0-9]+$/;
-    function isIntString(str){
-        if( typeof str != 'string') return false;
-        return _isIntStringTest.test(str);
-    }
-
-    /**
-     * check whether the string is formatted like a propper float
-     */
-    var _isFloatStringTest = /^([+-]?(((\d+(\.)?)|(\d*\.\d+))([eE][+-]?\d+)?))$/;
-    function isFloatString(str) {
-        if( typeof str != 'string') return false;
-        return _isFloatStringTest.test(str);
-    }
-
-
-   /**
-    * this is used like the python range method
-    *
-    * examples:
-    * for(var i in range(10)){
-    *     console.log(i)
-    *     //0 1 2 3 4 5 6 7 8 9
-    * }
-    * for(var i in range(10)){
-    *     console.log(i)
-    *     //0 1 2 3 4 5 6 7 8 9
-    * }
-    * for(var i in range(5, 15, 3)) {
-    *     console.log(i)
-    *     //5 8 11 14
-    * }
-    **/
-    var range = function (/*[start], stop, [step]*/)
-    {
-        //here comes alot of input validation
-        //to mimic what python does
-        var start = 0,
-            step = 1,
-            stop, condition;
-        if (arguments.length < 1) {
-            throw new TypeError(
-                'range() expected at least 1 arguments, got 0 '
-                + arguments.length
-            );
-        } else if (arguments.length > 3) {
-            throw new TypeError(
-                'range() expected at most 3 arguments, got '
-                + arguments.length
-            );
-        } else if (arguments.length == 1) {
-            stop = arguments[0];
-        } else if(arguments.length >= 2 ) {
-            start = arguments[0];
-            stop = arguments[1];
-            if(arguments.length == 3)
-                step = arguments[2];
-        }
-        var vals = [ ['start', start], ['stop', stop], ['step', step] ];
-        for (var i in vals) {
-            var val = vals[i];
-            if (!isInt(val[1])) {
-                var type = typeof val[1];
-                if(type === 'number') type = 'float';
-                throw new TypeError(
-                    'range() integer ' + val[0]
-                    + ' argument expected, got ' + type);
-            }
-        }
-        if(step === 0)
-            throw new ValueError('range() step argument must not be zero');
-
-        //now the important stuff
-        if (step > 0)
-            condition = function(i) { return i < stop };
-        else
-            condition = function(i) { return i > stop };
-
-        var list = {};//list is an object because the array prototype might be extended
-        for (var i = start; condition(i); i += step) {
-            //yield i;//oh future looking forward to hearing from you
-            list[i] = i;
-        }
-        return list;
-    }
-
-    /**
-     * Decimal adjustment of a number.
-     *
-     * @param   {String}    type    The type of adjustment: "round" | "ceil" | "floor"
-     * @param   {Number}    value   The number.
-     * @param   {Integer}   exp     The exponent (the 10 logarithm of the adjustment base).
-     * @returns {Number}            The adjusted value.
-     *
-     * Note: to have a precision of 2 decimal places exp should be -2
-     *
-     * This is the implementation of decimal rounding found at mdn:
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#Example%3a_Decimal_rounding
-     */
-    function decimalAdjust(type, value, exp) {
-        // If the exp is undefined or zero...
-        if (typeof exp === 'undefined' || +exp === 0) {
-            return Math[type](value);
-        }
-        value = +value;
-        exp = +exp;
-        // If the value is not a number or the exp is not an integer...
-        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-            return NaN;
-        }
-        // Shift
-        value = value.toString().split('e');
-        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-        // Shift back
-        value = value.toString().split('e');
-        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-    }
-
-    // Decimal round
-    /**
-     * Rounds val.
-     *
-     * Use the 'decimalPlaces' argument to round to a specific decimal
-     * position. To have a precision of 2 decimal places decimalPlaces
-     * should be 2
-     *
-     * Fontforge defines a similar method.
-     * Its good to compare values that potentially have some floating
-     * point rounding errors
-     */
-    function round(value, decimalPlaces) {
-        return decimalAdjust('round', value,
-            typeof decimalPlaces === 'number'
-                ? -decimalPlaces
-                : decimalPlaces
-        );
-    };
-
-    // Decimal floor
-    /**
-     * Rounds val down.
-     *
-     * Use the 'decimalPlaces' argument to round to a specific decimal
-     * position. To have a precision of 2 decimal places decimalPlaces
-     * should be 2
-     */
-    function floor(value, decimalPlaces) {
-        return decimalAdjust('floor', value,
-            typeof decimalPlaces === 'number'
-                ? -decimalPlaces
-                : decimalPlaces
-        );
-    };
-
-    // Decimal ceil
-    /**
-     * Rounds val up.
-     *
-     * Use the 'decimalPlaces' argument to round to a specific decimal
-     * position. To have a precision of 2 decimal places decimalPlaces
-     * should be 2
-     */
-    function ceil(value, decimalPlaces) {
-        return decimalAdjust('ceil', value,
-            typeof decimalPlaces === 'number'
-                ? -decimalPlaces
-                : decimalPlaces
-        );
-    };
-
-    /**
-     * Returns a function that rounds to a decimal precision recursively
-     * all items of type number in all items that are instances of array
-     * and returns the result
-     *
-     * Use the 'decimalPlaces' argument to round to a specific decimal
-     * position. To have a precision of 2 decimal places decimalPlaces
-     * should be 2
-     */
-    var roundRecursiveFunc = function(decimalPlaces) {
-        // the function existing in this closure is important, so the
-        // function can call itself. just saying that we can't return the
-        // function directly
-        var roundRecursive = function(item) {
-            if(item instanceof Array)
-                return item.map(roundRecursive);
-            if(typeof item === 'number')
-                return round(item, decimalPlaces);
-            return item;
-        };
-        return roundRecursive;
-    }
-
-    /**
-     * Rounds to a decimal precision recursively all items of type
-     * number in all items that are instances of array and returns the
-     * result.
-     *
-     * Use the 'decimalPlaces' argument to round to a specific decimal
-     * position. To have a precision of 2 decimal places decimalPlaces
-     * should be 2
-     */
-    var roundRecursive = function(item, decimalPlaces) {
-        var roundRecursive = roundRecursiveFunc(decimalPlaces);
-        return roundRecursive(item);
-    };
-
-
-    /**
-    * parseDate came with the following header. I just tailored it in here.
-    * it returns a timestamp indicating the milliseconds since the Unix Epoch
-    *
-    * Date.parse with progressive enhancement for ISO 8601 <https://github.com/csnover/js-iso8601>
-    * © 2011 Colin Snover <http://zetafleet.com>
-    * Released under MIT license.
-    */
-    var origParse = Date.parse, numericKeys = [ 1, 4, 5, 6, 7, 10, 11 ],
-        parseDate = function (date) {
-        var timestamp, struct, minutesOffset = 0;
-        // ES5 §15.9.4.2 states that the string should attempt to be parsed as a Date Time String Format string
-        // before falling back to any implementation-specific date parsing, so that’s what we do, even if native
-        // implementations could be faster
-        // 1 YYYY 2 MM 3 DD 4 HH 5 mm 6 ss 7 msec 8 Z 9 ± 10 tzHH 11 tzmm
-        if ((struct = /^(\d{4}|[+\-]\d{6})(?:-(\d{2})(?:-(\d{2}))?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:(Z)|([+\-])(\d{2})(?::(\d{2}))?)?)?$/.exec(date))) {
-            // avoid NaN timestamps caused by “undefined” values being passed to Date.UTC
-            for (var i = 0, k; (k = numericKeys[i]); ++i) {
-                struct[k] = +struct[k] || 0;
-            }
-
-            // allow undefined days and months
-            struct[2] = (+struct[2] || 1) - 1;
-            struct[3] = +struct[3] || 1;
-
-            if (struct[8] !== 'Z' && struct[9] !== undefined) {
-                minutesOffset = struct[10] * 60 + struct[11];
-
-                if (struct[9] === '+') {
-                    minutesOffset = 0 - minutesOffset;
-                }
-            }
-
-            timestamp = Date.UTC(struct[1], struct[2], struct[3], struct[4], struct[5] + minutesOffset, struct[6], struct[7]);
-        } else {
-            timestamp = origParse ? origParse(date) : NaN;
-        }
-
-        return timestamp;
-    };
-
-    /**
-     * This is a wrapper around typeof and instanceof
-     * it's there to make me type less and loosely inspired by the python
-     * builtin instanceof.
-     */
-    var isInstance = function(
-        value,
-        types /* function or typeof string or a list of these */
-    ) {
-        if(arguments.length < 2)
-            throw new TypeError(
-                'isInstance() expects 2 arguments, got ' + arguments.length
-            );
-        var types = (types instanceof Array) ? types : [types],
-            typeOfType, i;
-        for(i = 0; i < types.length; i++) {
-            typeOfType = typeof types[i];
-            if( typeOfType === 'function' && value instanceof types[i]
-                || types[i] === 'int' && isInt(value)
-                || types[i] === 'float' && isFloat(value)
-                || types[i] === 'NaN' && value !== value
-                || types[i] === 'null' && value === null
-                || types[i] === 'Infinity' && value === Number.POSITIVE_INFINITY
-                || types[i] === '-Infinity' && value === Number.NEGATIVE_INFINITY
-                // this will test strings like 'number', 'undefined', string
-                || typeOfType === 'string'
-                    && typeof value === types[i]
-                    && value === value /*not true for NaN*/
-            )
-                return true;
-        }
-        return false;
-    };
-
-
-    /**
-     * String.prototype.charCodeAt is broken , so mdn provides fixes.
-     * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String/charCodeAt
-     *
-     * Example 2: Fixing charCodeAt to handle non-Basic-Multilingual-Plane
-     * characters if their presence earlier in the string is unknown
-     *
-     * this version might be used in for loops and the like when it is
-     * unknown whether non-BMP characters exist before the specified index
-     * position.
-     */
-    function fixedCharCodeAt (str, idx) {
-        // ex. fixedCharCodeAt ('\uD800\uDC00', 0); // 65536
-        // ex. fixedCharCodeAt ('\uD800\uDC00', 1); // 65536
-        idx = idx || 0;
-        var code = str.charCodeAt(idx);
-        var hi, low;
-        if (0xD800 <= code && code <= 0xDBFF) { // High surrogate (could change last hex to 0xDB7F to treat high private surrogates as single characters)
-            hi = code;
-            low = str.charCodeAt(idx+1);
-            if (isNaN(low)) {
-                throw 'High surrogate not followed by low surrogate in fixedCharCodeAt()';
-            }
-            return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;
-        }
-        if (0xDC00 <= code && code <= 0xDFFF) { // Low surrogate
-            // We return false to allow loops to skip this iteration since should have already handled high surrogate above in the previous iteration
-            return false;
-            /*hi = str.charCodeAt(idx-1);
-            low = code;
-            return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;*/
-        }
-        return code;
-    }
-
-    // make out of a list of strings an object with those strings as keys
-    // for easy membership testing with the "in" keyword
-    function setLike(list, fill /* default true*/) {
-        if(fill === undefined) fill = true;
-        var setLike = {};
-        for(var i=0; i<list.length; i++)
-            setLike[list[i]] = fill;
-        return setLike;
-    }
-
-
-    return {
-        enhance: enhance,
-        range: range,
-        round: round,
-        roundRecursiveFunc: roundRecursiveFunc,
-        roundRecursive: roundRecursive,
-        isNumber: isNumber,
-        isInt: isInt,
-        isFloat: isFloat,
-        isDigits: isDigits,
-        isIntString: isIntString,
-        isFloatString: isFloatString,
-        parseDate: parseDate,
-        isInstance: isInstance,
-        fixedCharCodeAt: fixedCharCodeAt,
-        setLike: setLike
-    }
-});
-
-define('metapolator/models/CPS/whitelistProxies',[
-    'metapolator/errors'
-  , 'es6/Proxy'
-  , 'ufojs/main'
-], function(
-    errors
-  , proxy
-  , ufoJSUtils
-) {
-    
-
-    var CPSError = errors.CPS
-      , KeyError = errors.Key
-      , isInt = ufoJSUtils.isInt
-      , isIntString = ufoJSUtils.isIntString
-      ;
-
-
-    function _handlerFactory(target, whitelist) {
-        return proxy(target, new this(whitelist));
-    }
-
-    function _get(target, name, receiver) {
-        /* jshint validthis: true */
-        var result = this._validate(target, name);
-        if(!result[0])
-            throw new KeyError(result[1]);
-
-        return target[result[1]];
-    }
-
-    function _set(target, name) {
-        throw new CPSError('Can\'t set "'+name+'". It\'s not allowed '
-                                        +'to set values on this object.');
-    }
-
-    function _has (target, name, receiver) {
-        /* jshint validthis: true */
-        return this._validate(target, name)[0];
-    }
-
-    /**
-     * "whitelist" is an object where the keys are the public names
-     * and the values are the names on the target.
-     * In the most cases key and value will equal. But this is also a
-     * mechanism to create mappings to properties with other names.
-     */
-    function GenericHandler(whitelist) {
-        this._whitelist = whitelist;
-        this.get = _get;
-        this.has = _has;
-        this.set = _set;
-    }
-
-    GenericHandler.prototype._validate = function(target, name) {
-        if(typeof name !== 'string')
-            return [false, 'name must be string but it is: '+ typeof name];
-
-        if(!this._whitelist.hasOwnProperty(name))
-            return [false ,'Name "'+ name +'" is not whitelisted '
-                            + 'for item "'+ target +'" '
-                            + Object.keys(this._whitelist).join(', ')];
-        return [true, this._whitelist[name]];
-
-    };
-
-    function ArrayHandler() {
-        this.get = _get;
-        this.has = _has;
-        this.set = _set;
-    }
-
-    ArrayHandler.prototype._validate = function(target, key) {
-        if(isIntString(key))
-            key = parseInt(key, 10);
-        if(key === 'length')
-            return [true, key];
-        else if(!isInt(key))
-            return [false, 'Key must be "length" or an integer but it is: '
-                                            + key + ' '+ typeof key];
-        else if(key<0 || key>=target.length)
-             throw new KeyError('The index "'+ key +'" is not in the array. '
-                                        + 'Length: ' + target.length);
-        return [true, key];
-    };
-
-    return {
-        generic: _handlerFactory.bind(GenericHandler)
-      , array: _handlerFactory.bind(ArrayHandler)
-    };
-});
-
-define('metapolator/math/Vector',[
-    'complex/Complex'
-  , 'metapolator/models/CPS/whitelistProxies'
-], function(
-    Parent
-  , whitelistProxies
-) {
-    
-
-    /**
-     * Add access with geometry names "x" and "y" and a minimal
-     * array interface with length (== 2), 0, 1;
-     */
-    function Vector(x, y) {
-        Parent.call(this, x, y);
-        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
-    }
-    var _p = Vector.prototype = Object.create(Parent.prototype);
-    _p.constructor = Vector;
-
-    _p._cps_whitelist = {
-        x: 'x'
-      , y: 'y'
-      , length: 'len'
-      , angle: 'rad'
-    }
-
-
-    Vector.fromArray = function(arr) {
-        return new _p.constructor(arr[0], arr[1]);
-    }
-
-    function _getReal() {
-        return this.real;
-    }
-
-    function _getImaginary() {
-        return this.imag;
-    }
-
-    Object.defineProperty(_p, 'x', {get: _getReal})
-    Object.defineProperty(_p, 'y', {get: _getImaginary})
-
-    // array interface
-    Object.defineProperty(_p, 'length', {
-        value: 2
-      , writable: false
-      , enumerable: true
-    })
-    Object.defineProperty(_p, '0', {get: _getReal})
-    Object.defineProperty(_p, '1', {get: _getImaginary})
-
-    _p.valueOf = function() {
-        return Array.prototype.slice.call(this);
-    }
-
-    _p.toString = function() {
-        return '<Vector ' + this.valueOf() +'>';
-    }
-
-    // factories and constants
-    Vector.i = new Vector(0, 1),
-    Vector.one = new Vector(1, 0)
-
-    Vector.from = function(x, y) {
-        // just map to Parent and then convert
-        var complex = Parent.from(x, y);
-        return new Vector(complex.real, complex.imag);
-    },
-
-    Vector.fromPolar = function(r, phi) {
-        return new Vector(1, 1).fromPolar(r, phi);
-    }
-
-
-    // Some getters, so we can use these easily with CPS. At the moment
-    // CPS doesn't provide facilities to call external methods, i.e.
-    // methods that are not defined as operators but properties of the
-    // element at hand. I think this would make more problems than it
-    // would solve, so getters is the way.
-
-    /**
-     * A getter for the "length" of the vector, however "length" is already
-     * used for an array like interface of Vector. So "len" it is, because
-     * its short and often used to abbreviate "length".
-     *
-     * FIXME: we should have proper whitelisting facilities in CPS
-     * to overcome 'accidental' access to properties that weren't meant
-     * to be used in CPS. Also, this could add a re-mapping of names
-     * to getter methods (or getters). This would make the namespace
-     * less crowded and allow a better names for he CPS user!
-     * then: rename this to 'length'
-     */
-    Object.defineProperty(_p, 'len', {
-        get: Parent.prototype.magnitude
-    })
-
-    /**
-     * A getter for the angle of the vector in radians.
-     * FIXME: see the fixme comment in property "len" above, then: rename
-     * this to 'angle'
-     */
-    Object.defineProperty(_p, 'rad', {
-        get: Parent.prototype.angle
-    })
-
-    return Vector;
-})
-;
-define('metapolator/math/hobby',[
-    './Vector'
-], function(
-    Vector
-) {
-    
-
-    /**
-     * All points in this module are expected instances of
-     * metapolator/math/Vector (complex numbers)
-     */
-
-
-
-    function hobby(theta, phi) {
-        var st = Math.sin(theta)
-          , ct = Math.cos(theta)
-          , sp = Math.sin(phi)
-          , cp = Math.cos(phi)
-          ;
-        return (
-        (2 + Math.sqrt(2) * (st-1/16*sp) * (sp-1/16*st) * (ct-cp)) /
-        (3 * (1 + 0.5*(Math.sqrt(5)-1)* ct + 0.5*(3-Math.sqrt(5))*cp))
-        );
-    }
-
-    function normalizeAngle(angle) {
-        var result = angle % (2*Math.PI);
-        if(result < 0)
-            result += (2*Math.PI);
-        return result;
-    }
-
-    /**
-     * Returns two distances from the respective on-curve points to their
-     * control points on the given curve segment.
-     *
-     * dir0 and dir1 are the tangent directions as radians or instances
-     * of Vector.
-     *
-     * alpha and beta are the tension parameters. The tensions values alpha
-     * and beta have no influence on the resulting distance of each other.
-     *
-     * Tensions are bigger the closer they are to their on-curve points.
-     * When using Infinity as a tension the returned magnitude is 0;
-     * When using 0 as a tension the returned magnitude is Infinity.
-     *    When the tension is 0 and z0 equals z1 its resulting
-     *    magnitude is NaN; in this case it is short circuited into
-     *    returning Infinity, which is OK as a behavior; because it obeys
-     *    the rule above, also it's compatible with the reverse operation
-     *    magnitude2tension.
-     */
-    function _tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
-        var diff_z1z0 = z1['-'](z0)
-          , angle_z1z0 = diff_z1z0.angle()
-          , magnitude_z1z0 = diff_z1z0.magnitude()
-            // calculating this using the polar form helps us by not
-            // getting into trouble when z1['-'](z0) is <Vector 0, 0>
-            // because that would cause a division by 0 when calculating
-            // theta and pi using cartesian arithmetic.
-          , theta = normalizeAngle(dir0 - angle_z1z0)
-          , phi = normalizeAngle(angle_z1z0 - dir1)
-          , u, v;
-        
-        if(alpha !== undefined)
-            u = (magnitude_z1z0 === 0 && (alpha === 0 || alpha === Infinity))
-                ? (alpha === 0 ? Infinity : 0)
-                : magnitude_z1z0 * hobby(theta, phi) / alpha
-                ;
-        if(beta !== undefined)
-            v = (magnitude_z1z0 === 0 && (beta === 0 || beta === Infinity))
-                ? (beta === 0 ? Infinity : 0)
-                : magnitude_z1z0 * hobby(phi, theta) / beta
-                ;
-        return [u, v];
-    }
-
-    function tension2magnitude(z0, dir0, alpha, beta, dir1, z1) {
-        var uv = _tension2magnitude(z0, dir0, alpha, beta, dir1, z1);
-        if(uv[0] === undefined) uv[0] = NaN;
-        if(uv[1] === undefined) uv[1] = NaN;
-        return uv;
-    }
-
-    function tension2magnitudeOut(z0, dir0, alpha, dir1, z1) {
-        return _tension2magnitude(z0, dir0, alpha, undefined, dir1, z1)[0];
-    }
-
-    function tension2magnitudeIn(z0, dir0, beta, dir1, z1) {
-        return _tension2magnitude(z0, dir0, undefined, beta, dir1, z1)[1];
-    }
-
-    /**
-     * dir0 and dir1 are radians
-     * alpha, beta are the magnitudes
-     *
-     * Also
-     * [Infinity, Infinity] instead of [NaN, NaN] when the magnitudes are 0
-     * And it can still return a tension for one control when the other
-     * control is 0
-     */
-    function _magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
-        var uv, u, v
-            // 1 is the default tension
-          , _alpha = alpha === 0 || alpha === undefined ? undefined : 1
-          , _beta = beta === 0 || beta === undefined ? undefined : 1
-          ;
-        if(_alpha || _beta)
-            uv = _tension2control(z0, dir0, _alpha, _beta, dir1, z1);
-    
-        if(alpha === 0)
-            u = Infinity;
-        else if (alpha !== undefined)
-            u = uv[0]['-'](z0).magnitude()/alpha;
-    
-        if(beta === 0)
-            v = Infinity;
-        else if (beta !== undefined)
-            v = uv[1]['-'](z1).magnitude()/beta;
-    
-        return[u, v];
-    }
-
-    function magnitude2tension(z0, dir0, alpha, beta, dir1, z1) {
-        var uv = _magnitude2tension(z0, dir0, alpha, beta, dir1, z1);
-        if(uv[0] === undefined) uv[0] = NaN;
-        if(uv[1] === undefined) uv[1] = NaN;
-        return uv;
-    }
-
-    function magnitude2tensionOut(z0, dir0, alpha, dir1, z1) {
-        return _magnitude2tension(z0, dir0, alpha, undefined, dir1, z1)[0];
-    }
-
-    function magnitude2tensionIn(z0, dir0, beta, dir1, z1) {
-        return _magnitude2tension(z0, dir0, undefined, beta, dir1, z1)[1];
-    }
-
-    /**
-     * returns vectors for the absolute positions of the control points
-     * used to be called hobby2cubic
-     */
-    function _tension2control(z0, dir0, alpha, beta, dir1, z1) {
-        var d0, d1, uv, u, v;
-
-        if(dir0 instanceof Vector || dir1 instanceof Vector)
-            console.warn('It is deprecated to use Vectors for dir0 or dir1');
-
-        d0 = (dir0 instanceof Vector) ? dir0.arg() : dir0;
-        d1 = (dir1 instanceof Vector) ? dir1.arg() : dir1;
-
-        uv = _tension2magnitude(z0, d0, alpha, beta, d1, z1);
-        if(uv[0] !== undefined)
-            u = Vector.fromPolar(uv[0], d0)['+'](z0);
-        if(uv[1] !== undefined)
-            v = z1['-'](Vector.fromPolar(uv[1], d1));
-        return [u, v];
-    }
-
-    function tension2control(z0, dir0, alpha, beta, dir1, z1) {
-        var uv = _tension2control(z0, dir0, alpha, beta, dir1, z1);
-        if(uv[0] === undefined) uv[0] = new Vector(NaN, NaN);
-        if(uv[1] === undefined) uv[1] = new Vector(NaN, NaN);
-        return uv;
-    }
-
-    function tension2controlOut (z0, dir0, alpha, dir1, z1) {
-        return tension2control(z0, dir0, alpha, undefined, dir1, z1)[0];
-    }
-
-    function tension2controlIn (z0, dir0, beta, dir1, z1) {
-        return tension2control(z0, dir0, undefined, beta, dir1, z1)[1];
-    }
-
-    /**
-     * If you need both tension values, this version is more efficient
-     * than calling posttension and pretension.
-     */
-    function control2tension(p0, p1, p2, p3) {
-        var diffp0p1 = p1['-'](p0)
-          , diffp3p2 = p3['-'](p2)
-          , dir0 = diffp0p1.angle()
-          , dir1 = diffp3p2.angle()
-          , alpha = diffp0p1.magnitude()
-          , beta = diffp3p2.magnitude()
-          ;
-        return _magnitude2tension(p0, dir0, alpha, beta, dir1, p3);
-    }
-    /**
-     * returns the tension for the first on-curve point.
-     */
-    function control2tensionOut(p0, p1, p2, p3) {
-        var diffp0p1 = p1['-'](p0)
-          , diffp3p2 = p3['-'](p2)
-          , dir0 = diffp0p1.angle()
-          , dir1 = diffp3p2.magnitude()
-          , alpha = diffp0p1.magnitude()
-          ;
-        return magnitude2tensionOut(p1, dir0, alpha, dir1, p3);
-    }
-    /**
-     * returns the tension for the second on-curve point
-     */
-    function control2tensionIn(p0, p1, p2, p3) {
-        var diffp0p1 = p1['-'](p0)
-          , diffp3p2 = p3['-'](p2)
-          , dir0 = diffp0p1.angle()
-          , dir1 = diffp3p2.magnitude()
-          , beta = diffp3p2.magnitude()
-          ;
-        return magnitude2tensionIn(p1, dir0, beta, dir1, p3);
-    }
-
-    return {
-        hobby: hobby
-
-      , tension2magnitude: tension2magnitude
-      , tension2magnitudeOut: tension2magnitudeOut
-      , tension2magnitudeIn: tension2magnitudeIn
-
-      , magnitude2tension: magnitude2tension
-      , magnitude2tensionOut: magnitude2tensionOut
-      , magnitude2tensionIn: magnitude2tensionIn
-
-      , tension2control: tension2control
-      , hobby2cubic: tension2control // DEPRECATED
-      , tension2controlOut: tension2controlOut
-      , tension2controlIn: tension2controlIn
-
-      , control2tension: control2tension
-      , tensions: control2tension // DEPRECATED
-      , control2tensionOut: control2tensionOut
-      , posttension: control2tensionOut // DEPRECATED
-      , control2tensionIn: control2tensionIn
-      , pretension: control2tensionIn // DEPRECATED
-    };
-});
-
-(function(
-  // Reliable reference to the global object (i.e. window in browsers).
-  global,
-
-  // Dummy constructor that we use as the .constructor property for
-  // functions that return Generator objects.
-  GeneratorFunction
-) {
-  var hasOwn = Object.prototype.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-
-  try {
-    // Make a reasonable attempt to provide a Promise polyfill.
-    var Promise = global.Promise || (global.Promise = require("promise"));
-  } catch (ignored) {}
-
-  if (global.regeneratorRuntime) {
-    return;
-  }
-
-  var runtime = global.regeneratorRuntime =
-    typeof exports === "undefined" ? {} : exports;
-
-  function wrap(innerFn, outerFn, self, tryList) {
-    return new Generator(innerFn, outerFn, self || null, tryList || []);
-  }
-  runtime.wrap = wrap;
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  var Gp = Generator.prototype;
-  var GFp = GeneratorFunction.prototype = Object.create(Function.prototype);
-  GFp.constructor = GeneratorFunction;
-  GFp.prototype = Gp;
-  Gp.constructor = GFp;
-
-  runtime.mark = function(genFun) {
-    genFun.__proto__ = GFp;
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  runtime.async = function(innerFn, self, tryList) {
-    return new Promise(function(resolve, reject) {
-      var generator = wrap(innerFn, self, tryList);
-      var callNext = step.bind(generator.next);
-      var callThrow = step.bind(generator.throw);
-
-      function step(arg) {
-        try {
-          var info = this(arg);
-          var value = info.value;
-        } catch (error) {
-          return reject(error);
-        }
-
-        if (info.done) {
-          resolve(value);
-        } else {
-          Promise.resolve(value).then(callNext, callThrow);
-        }
-      }
-
-      callNext();
-    });
-  };
-
-  // Ensure isGeneratorFunction works when Function#name not supported.
-  if (GeneratorFunction.name !== "GeneratorFunction") {
-    GeneratorFunction.name = "GeneratorFunction";
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = genFun && genFun.constructor;
-    return ctor ? GeneratorFunction.name === ctor.name : false;
-  };
-
-  function Generator(innerFn, outerFn, self, tryList) {
-    var generator = outerFn ? Object.create(outerFn.prototype) : this;
-    var context = new Context(tryList);
-    var state = GenStateSuspendedStart;
-
-    function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        throw new Error("Generator has already finished");
-      }
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          try {
-            var info = delegate.iterator[method](arg);
-
-            // Delegate generator ran and handled its own exceptions so
-            // regardless of what the method was, we continue as if it is
-            // "next" with an undefined arg.
-            method = "next";
-            arg = undefined;
-
-          } catch (uncaught) {
-            context.delegate = null;
-
-            // Like returning generator.throw(uncaught), but without the
-            // overhead of an extra function call.
-            method = "throw";
-            arg = uncaught;
-
-            continue;
-          }
-
-          if (info.done) {
-            context[delegate.resultName] = info.value;
-            context.next = delegate.nextLoc;
-          } else {
-            state = GenStateSuspendedYield;
-            return info;
-          }
-
-          context.delegate = null;
-        }
-
-        if (method === "next") {
-          if (state === GenStateSuspendedStart &&
-              typeof arg !== "undefined") {
-            // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-            throw new TypeError(
-              "attempt to send " + JSON.stringify(arg) + " to newborn generator"
-            );
-          }
-
-          if (state === GenStateSuspendedYield) {
-            context.sent = arg;
-          } else {
-            delete context.sent;
-          }
-
-        } else if (method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw arg;
-          }
-
-          if (context.dispatchException(arg)) {
-            // If the dispatched exception was caught by a catch block,
-            // then let that catch block handle the exception normally.
-            method = "next";
-            arg = undefined;
-          }
-
-        } else if (method === "return") {
-          context.abrupt("return", arg);
-        }
-
-        state = GenStateExecuting;
-
-        try {
-          var value = innerFn.call(self, context);
-
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          var info = {
-            value: value,
-            done: context.done
-          };
-
-          if (value === ContinueSentinel) {
-            if (context.delegate && method === "next") {
-              // Deliberately forget the last sent value so that we don't
-              // accidentally pass it on to the delegate.
-              arg = undefined;
-            }
-          } else {
-            return info;
-          }
-
-        } catch (thrown) {
-          state = GenStateCompleted;
-
-          if (method === "next") {
-            context.dispatchException(thrown);
-          } else {
-            arg = thrown;
-          }
-        }
-      }
-    }
-
-    generator.next = invoke.bind(generator, "next");
-    generator.throw = invoke.bind(generator, "throw");
-    generator.return = invoke.bind(generator, "return");
-
-    return generator;
-  }
-
-  Gp[typeof Symbol === "function"
-     && Symbol.iterator
-     || "@@iterator"] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(triple) {
-    var entry = { tryLoc: triple[0] };
-
-    if (1 in triple) {
-      entry.catchLoc = triple[1];
-    }
-
-    if (2 in triple) {
-      entry.finallyLoc = triple[2];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry, i) {
-    var record = entry.completion || {};
-    record.type = i === 0 ? "normal" : "return";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryList.forEach(pushTryEntry, this);
-    this.reset();
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    var iterator = iterable;
-    var Symbol = global.Symbol;
-    if (Symbol && Symbol.iterator in iterable) {
-      iterator = iterable[Symbol.iterator]();
-    } else if (!isNaN(iterable.length)) {
-      var i = -1;
-      iterator = function next() {
-        while (++i < iterable.length) {
-          if (i in iterable) {
-            next.value = iterable[i];
-            next.done = false;
-            return next;
-          }
-        };
-        next.done = true;
-        return next;
-      };
-      iterator.next = iterator;
-    }
-    return iterator;
-  }
-  runtime.values = values;
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function() {
-      this.prev = 0;
-      this.next = 0;
-      this.sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      // Pre-initialize at least 20 temporary variables to enable hidden
-      // class optimizations for simple generators.
-      for (var tempIndex = 0, tempName;
-           hasOwn.call(this, tempName = "t" + tempIndex) || tempIndex < 20;
-           ++tempIndex) {
-        this[tempName] = null;
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-        return !!caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    _findFinallyEntry: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") && (
-              entry.finallyLoc === finallyLoc ||
-              this.prev < entry.finallyLoc)) {
-          return entry;
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      var entry = this._findFinallyEntry();
-      var record = entry ? entry.completion : {};
-
-      record.type = type;
-      record.arg = arg;
-
-      if (entry) {
-        this.next = entry.finallyLoc;
-      } else {
-        this.complete(record);
-      }
-
-      return ContinueSentinel;
-    },
-
-    complete: function(record) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = record.arg;
-        this.next = "end";
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      var entry = this._findFinallyEntry(finallyLoc);
-      return this.complete(entry.completion);
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry, i);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      return ContinueSentinel;
-    }
-  };
-}).apply(this, Function("return [this, function GeneratorFunction(){}]")());
-define('metapolator/project/ExportController',[
-    'metapolator/errors'
-  , 'metapolator/math/hobby'
-  , 'metapolator/math/Vector'
-], function(
-    errors
-  , hobby
-  , Vector
-) {
-    
-
-    function ExportController(master, model, glyphSet, precision) {
-        this._master = master;
-        this._model = model;
-        this._glyphSet = glyphSet;
-        this._precision = precision;
-    }
-    var _p = ExportController.prototype;
-
-    // FIXME: "export" is a future reserved keyword
-    _p.export = function() {
-        var glyphs = this._master.children
-          , glyph
-          , drawFunc
-          ;
-        console.warn('exporting ...');
-        for(var i = 0;i<glyphs.length;i++) {
-            glyph = glyphs[i];
-            console.warn('exporting', glyph.id);
-            drawFunc = this.drawGlyphToPointPen.bind(this, this._model, glyph)
-
-            this._glyphSet.writeGlyph(false, glyph.id, glyph.getUFOData(), drawFunc,
-                                      undefined, {precision: this._precision})
-        }
-        this._glyphSet.writeContents(false);
-    }
-
-    /**
-     * Get control point vectors from (MOM Point) StyleDicts.
-     * try to use hobby splines but fall back to the control point values
-     * of the points if hobbys would fail when there are no good tensions
-     * or directions.
-     *
-     * The terminal parameter is a switch used to draw the penstroke terminals
-     * for the start terminal of the stroke all controls are from the incoming
-     * control points. p0 in in p1
-     * for the end terminal of the stroke all controls are from the outgoing
-     * control points. p0 out out p1
-     * Without terminal beeing set or having a value of "start" or "end"
-     * the default behavior is: p0 out in p1
-     *
-     * See the comment of drawPenstrokeToPointPen for more detail.
-     */
-
-    function getControlsFromStyle(p0, p1, terminal) {
-        return [
-              p0.get(terminal === 'start' ? 'in': 'out')
-            , p1.get(terminal === 'end' ? 'out' :'in')
-        ];
-    }
-
-    /**
-     * The translation from Metapolator Penstrokes to Outlines:
-     *
-     * The example uses a penstroke with 7 points indexed from 0 to 6
-     *
-     *  Penstroke       Outline
-     *
-     *  ending
-     *  terminal
-     *    ___              7___
-     *   | 6 |           8 |   | 6
-     *   | 5 |           9 |   | 5
-     *   | 4 |          10 |   | 4
-     *   | 3 |          11 |   | 3
-     *   | 2 |          12 |   | 2
-     *   |_1_|          13 |___| 1
-     *     0                 14/0
-     *  starting
-     *  terminal
-     *
-     *
-     *
-     * We draw first the right side from 0 to 6,
-     * then the left side from 6 to 0.
-     *
-     * In each iteration only one on-curve point is drawn; in the
-     * following example, that is always the last point of the four-
-     * point tuples. Also, the out and in controls are drawn.
-     * The first point of the tuples is needed to calculate the control
-     * point position when we use hobby splines.
-     *
-     * for i=0;i<n;i++;
-     *      i===0:
-     *          //starting terminal segment:
-     *          on0.left in in on0.right
-     *              => out in 0
-     *      i!==0:
-     *          // segments right side:
-     *          // here i=1
-     *          on0.right out in on1.right
-     *              => out in 1
-     * for i=n-1;i>0;i--;
-     *      i===n-1
-     *          // ending terminal segmnet
-     *          // here i=6
-     *          on6.right out out on6.left
-     *              => out in 7
-     *      i!===n-1
-     *          // segments left side
-     *          // here i=5
-     *          on6.left in out on5.left
-     *              => out in 8
-     */
-     _p._drawPenstrokeOutline = regeneratorRuntime.mark(function callee$1$0(model, pen, penstroke) {
-         var points, point, prePoint, segmentType, terminal, ctrls, vector, i, t$2$0, t$2$1, t$2$2, t$2$3;
-
-         return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
-             while (1) switch (context$2$0.prev = context$2$0.next) {
-             case 0:
-                 points = penstroke.children;
-                 pen.beginPath();
-                 i = 0;
-             case 4:
-                 if (!(i < points.length)) {
-                     context$2$0.next = 26;
-                     break;
-                 }
-
-                 point = model.getComputedStyle(points[i].right);
-
-                 if (!true /* always curve */) {
-                     context$2$0.next = 19;
-                     break;
-                 }
-
-                 segmentType = 'curve';
-                 if(i === 0) {
-                     // this reproduces the starting terminal
-                     prePoint = model.getComputedStyle(points[i].left);
-                     terminal = 'start'
-                 }
-                 else {
-                     terminal = false;
-                     prePoint = model.getComputedStyle(points[i-1].right);
-                 }
-                 ctrls = getControlsFromStyle(prePoint, point, terminal);
-                 t$2$0 = regeneratorRuntime.values(ctrls);
-             case 11:
-                 if ((t$2$1 = t$2$0.next()).done) {
-                     context$2$0.next = 17;
-                     break;
-                 }
-
-                 vector = t$2$1.value;
-                 context$2$0.next = 15;
-                 return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-             case 15:
-                 context$2$0.next = 11;
-                 break;
-             case 17:
-                 context$2$0.next = 21;
-                 break;
-             case 19:
-                 segmentType =  'line';
-                 console.warn('implicit line segment, right side, this should be explicit in CPS');
-             case 21:
-                 context$2$0.next = 23;
-                 return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-             case 23:
-                 i++;
-                 context$2$0.next = 4;
-                 break;
-             case 26:
-                 i=points.length-1;
-             case 27:
-                 if (!(i >= 0)) {
-                     context$2$0.next = 50;
-                     break;
-                 }
-
-                 point = model.getComputedStyle(points[i].left);
-
-                 if (!true/*always curve*/) {
-                     context$2$0.next = 43;
-                     break;
-                 }
-
-                 segmentType = 'curve';
-                 if(i === points.length-1) {
-                     // this reproduces the ending terminal
-                     terminal = 'end';
-                     prePoint = model.getComputedStyle(points[i].right);
-                 }
-                 else {
-                     terminal = false;
-                     // the left side is of the outline is drawn from the
-                     // end to the beginning. This reverses the point order
-                     // for getComputedStyle
-                     prePoint = point;
-                     point = model.getComputedStyle(points[i+1].left);
-                 }
-                 ctrls = getControlsFromStyle(prePoint, point, terminal);
-                 if(!terminal) {
-                     // reverse on curve and of curve points, prePoint
-                     // is no longer needed.
-                     ctrls.reverse();
-                     point = prePoint;
-                 }
-                 t$2$2 = regeneratorRuntime.values(ctrls);
-             case 35:
-                 if ((t$2$3 = t$2$2.next()).done) {
-                     context$2$0.next = 41;
-                     break;
-                 }
-
-                 vector = t$2$3.value;
-                 context$2$0.next = 39;
-                 return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-             case 39:
-                 context$2$0.next = 35;
-                 break;
-             case 41:
-                 context$2$0.next = 45;
-                 break;
-             case 43:
-                 segmentType = 'line';
-                 console.warn('implicit line segment, left side, this should be explicit in CPS');
-             case 45:
-                 context$2$0.next = 47;
-                 return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-             case 47:
-                 i--;
-                 context$2$0.next = 27;
-                 break;
-             case 50:
-                 pen.endPath();
-             case 51:
-             case "end":
-                 return context$2$0.stop();
-             }
-         }, callee$1$0, this);
-     })
-
-    _p._drawPenstrokeCenterline = regeneratorRuntime.mark(function callee$1$1(model, pen, penstroke) {
-        var points, point, prePoint, segmentType, ctrls, vector, i, t$2$0, t$2$1;
-
-        return regeneratorRuntime.wrap(function callee$1$1$(context$2$0) {
-            while (1) switch (context$2$0.prev = context$2$0.next) {
-            case 0:
-                points = penstroke.children;
-                // center line
-                pen.beginPath();
-                i = 0;
-            case 4:
-                if (!(i < points.length)) {
-                    context$2$0.next = 25;
-                    break;
-                }
-
-                point = model.getComputedStyle(points[i].center);
-
-                if (!(i !== 0)) {
-                    context$2$0.next = 19;
-                    break;
-                }
-
-                segmentType = 'curve';
-                prePoint = model.getComputedStyle(points[i-1].center);
-                ctrls = getControlsFromStyle(prePoint, point);
-                t$2$0 = regeneratorRuntime.values(ctrls);
-            case 11:
-                if ((t$2$1 = t$2$0.next()).done) {
-                    context$2$0.next = 17;
-                    break;
-                }
-
-                vector = t$2$1.value;
-                context$2$0.next = 15;
-                return pen.addPoint(vector.valueOf(), undefined, undefined, undefined);
-            case 15:
-                context$2$0.next = 11;
-                break;
-            case 17:
-                context$2$0.next = 20;
-                break;
-            case 19:
-                // this contour is not closed, the first point is a move
-                segmentType = 'move';
-            case 20:
-                context$2$0.next = 22;
-                return pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
-            case 22:
-                i++;
-                context$2$0.next = 4;
-                break;
-            case 25:
-                pen.endPath();
-            case 26:
-            case "end":
-                return context$2$0.stop();
-            }
-        }, callee$1$1, this);
-    })
-
-    _p.drawGlyphToPointPenGenerator = function (model, glyph, /*method*/ pen) {
-        return regeneratorRuntime.mark(function callee$2$0() {
-            var stroke, t$3$0, t$3$1;
-
-            return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
-                while (1) switch (context$3$0.prev = context$3$0.next) {
-                case 0:
-                    t$3$0 = regeneratorRuntime.values(glyph.children);
-                case 1:
-                    if ((t$3$1 = t$3$0.next()).done) {
-                        context$3$0.next = 6;
-                        break;
-                    }
-
-                    stroke = t$3$1.value;
-                    return context$3$0.delegateYield(this._drawPenstrokeOutline(model, pen, stroke), "t0", 4);
-                case 4:
-                    context$3$0.next = 1;
-                    break;
-                case 6:
-                case "end":
-                    return context$3$0.stop();
-                }
-            }, callee$2$0, this);
-        }).call(this);
-    }
-
-    _p.drawGlyphToPointPen = function(model, glyph, /*method,*/ pen) {
-        // method may be tensions/control-points/metafont/native-js
-        // the possibilities are a lot.
-        // I'm starting with tensions/native-js
-        // then I add a tensions/metafont implementation
-        // eventually we should be able to control this via CPS!
-        // The parameter could be set for all levels from univers to
-        // penstroke, this would be a good test of inhertance;
-        // also, it should be possible to render just one penstroke
-        // of a glyph using metafont, for example.
-        // Maybe we can combine all metafont strokes into one job, to
-        // reduce the overhead. The needed parameters would of course
-        // be in every job for metafont.
-        var v;
-
-        for (var t$2$0 = regeneratorRuntime.values(this.drawGlyphToPointPenGenerator(model, glyph, pen)), t$2$1; !(t$2$1 = t$2$0.next()).done; ) {
-            v = t$2$1.value;
-        }
-    }
-
-    return ExportController;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * This is a translation of AbstractPointPen defined in robofab/pens/pointPen.py
- * The svn revision of the source file in trunk/Lib/ was 67 from 2008-03-11 10:18:32 +0100
- * Ther very same pen is to be found in robofab/branches/ufo3k/Lib/ufoLib/pointPen.py
- * revision 517 2011-12-07 18:17:40 +0100 (Wed, 07 Dec 2011)
- * 
- * I even copied the docstrings and comments! (These may still refer to the Python code)
- * 
- * 
- * =========
- * PointPens
- * =========
- * 
- * Where **SegmentPens** have an intuitive approach to drawing
- * (if you're familiar with postscript anyway), the **PointPen**
- * is geared towards accessing all the data in the contours of
- * the glyph. A PointsPen has a very simple interface, it just
- * steps through all the points in a call from glyph.drawPoints().
- * This allows the caller to provide more data for each point.
- * For instance, whether or not a point is smooth, and its name.
- */
-
-define('ufojs/tools/pens/AbstractPointPen',['ufojs/main', 'ufojs/errors'], function(main, errors) {
-    
-    var enhance = main.enhance;
-    //shortcuts
-    var NotImplementedError = errors.NotImplemented;
-    
-    /*constructor*/
-    /**
-     * Baseclass for all PointPens.
-     */
-    function AbstractPointPen(){};
-
-    /*inheritance*/
-    //pass
-
-    /*definition*/
-    enhance(AbstractPointPen, {
-        /**
-         * Start a new sub path.
-         */
-        beginPath: function(kwargs/*optional, dict*/)
-        {
-            throw new NotImplementedError(
-                'AbstractPointPen has not implemented'
-                +' beginPath');
-        },
-        /**
-         * End the current sub path.
-         */
-        endPath: function()
-        {
-            throw new NotImplementedError(
-                'AbstractPointPen has not implemented'
-                +' endPath');
-        },
-        /**
-         * Add a point to the current sub path.
-         */
-        addPoint: function(
-            pt,
-            segmentType /* default null */,
-            smooth /* default false */,
-            name /* default null */,
-            kwargs /* default an object, javascript has no **kwargs syntax */
-        ) {
-            segmentType = (segmentType === undefined) ? null : segmentType;
-            smooth = (smooth || false);
-            name = (name === undefined) ? null : name;
-            kwargs = (kwargs || {});//an "options" object
-            throw new NotImplementedError(
-                'AbstractPointPen has not implemented'
-                +' addPoint');
-        },
-        /**
-         * Add a sub glyph.
-         */
-        addComponent: function(baseGlyphName, transformation)
-        {
-            throw new NotImplementedError(
-                'AbstractPointPen has not implemented'
-                +' addComponent');
-        }
-    });
-    return AbstractPointPen;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * This is a translation of BasePointToSegmentPen defined in robofab/pens/pointPen.py
- * The svn revision of the source file in trunk/Lib/ was 67 from 2008-03-11 10:18:32 +0100
- * 
- * I even copied the docstrings and comments! (These may still refer to the Python code)
- */
-define(
-    'ufojs/tools/pens/BasePointToSegmentPen',[
-        'ufojs/main',
-        'ufojs/errors',
-        './AbstractPointPen'
-    ],
-    function(
-        main,
-        errors,
-        AbstractPointPen
-) {
-    
-    //shortcuts
-    var enhance = main.enhance,
-        NotImplementedError = errors.NotImplemented,
-        assert = errors.assert;
-    
-    /*constructor*/
-    
-    /**
-     * Base class for retrieving the outline in a segment-oriented
-     * way. The PointPen protocol is simple yet also a little tricky,
-     * so when you need an outline presented as segments but you have
-     * as points, do use this base implementation as it properly takes
-     * care of all the edge cases.
-     */
-    function BasePointToSegmentPen()
-    {
-        this.currentPath = null;
-    };
-
-    /*inheritance*/
-    BasePointToSegmentPen.prototype = Object.create(AbstractPointPen.prototype)
-    BasePointToSegmentPen.prototype.constructor = BasePointToSegmentPen;
-    
-    /*definition*/
-    enhance(BasePointToSegmentPen, {
-        beginPath: function(kwargs/*optional, object*/)
-        {
-            assert(this.currentPath === null,
-                'currentPath is not null, call endPath');
-            this.currentPath = [];
-        },
-        /**
-         * Override this method.
-         * 
-         * It will be called for each non-empty sub path with a list
-         * of segments: the 'segments' argument.
-         * 
-         * The segments list contains tuples of length 2:
-         * (segmentType, points)
-         * 
-         * segmentType is one of "move", "line", "curve" or "qcurve".
-         * "move" may only occur as the first segment, and it signifies
-         * an OPEN path. A CLOSED path does NOT start with a "move", in
-         * fact it will not contain a "move" at ALL.
-         * 
-         * The 'points' field in the 2-tuple is a list of point info
-         * tuples. The list has 1 or more items, a point tuple has
-         * four items:
-         * (point, smooth, name, kwargs)
-         * 'point' is an (x, y) coordinate pair.
-         * 
-         * For a closed path, the initial moveTo point is defined as
-         * the last point of the last segment.
-         * 
-         * The 'points' list of "move" and "line" segments always contains
-         * exactly one point tuple.
-         */
-        _flushContour: function(segments)
-        {
-            throw new NotImplementedError(
-                'BasePointToSegmentPen has not _flushContour'
-                +' endPath');
-        },
-        endPath: function()
-        {
-            assert(this.currentPath !== null,
-                'currentPath is null, call beginPath');
-            var points = this.currentPath;
-            this.currentPath = null;
-            if(!points.length)
-                return;
-            if(points.length === 1) {
-                // Not much more we can do than output a single move segment.
-                var pt = points[0][0],
-                    //segmentType = points[0][1], not using this
-                    smooth = points[0][2],
-                    name = points[0][3],
-                    kwargs = points[0][4],
-                    segments = [ ['move', [ [pt, smooth, name, kwargs] ] ] ];
-                this._flushContour(segments);
-                return;
-            }
-            segments = [];
-            if(points[0][1] == 'move') {
-                // It's an open contour, insert a "move" segment for the
-                // first point and remove that first point from the point list.
-                var pt = points[0][0],
-                    //segmentType = points[0][1],// it's 'move', we just checked
-                    smooth = points[0][2],
-                    name = points[0][3],
-                    kwargs = points[0][4];
-                segments.push(['move', [ [pt, smooth, name, kwargs] ] ]);
-                points.splice(0,1);
-            } else {
-                // It's a closed contour. Locate the first on-curve point, and
-                // rotate the point list so that it _ends_ with an on-curve
-                // point.
-                var firstOnCurve = null;
-                for (var i = 0; i < points.length; i++) {
-                    var segmentType = points[i][1];
-                    if(segmentType !== null) {
-                        firstOnCurve = i;
-                        break;
-                    }
-                }
-                if(firstOnCurve === null) {
-                    // Special case for quadratics: a contour with no on-curve
-                    // points. Add a "None" point. (See also the Pen protocol's
-                    // qCurveTo() method and fontTools.pens.basePen.py.)
-                    points.push([null, 'qcurve', null, null, null]);
-                } else {
-                    //points = [].concat(points.slice(firstOnCurve+1), points.slice(0, firstOnCurve+1))
-                    points = points.concat(points.splice(0, firstOnCurve+1));
-                }
-            }
-            var currentSegment = [];
-            for (var i = 0; i < points.length; i++) {
-                var pt = points[i][0],
-                    segmentType = points[i][1],
-                    smooth = points[i][2],
-                    name = points[i][3],
-                    kwargs = points[i][4];
-                currentSegment.push([pt, smooth, name, kwargs]);
-                if(segmentType === null)
-                    continue;
-                segments.push([segmentType, currentSegment]);
-                currentSegment = [];
-            }
-            this._flushContour(segments);
-        },
-        addPoint: function(
-            pt,
-            segmentType /* default null */,
-            smooth /* default false */,
-            name /* default null */,
-            kwargs /* default an object, javascript has no **kwargs syntax */
-        ) {
-            segmentType = (segmentType === undefined) ? null : segmentType;
-            smooth = (smooth || false);
-            name = (name === undefined) ? null : name;
-            kwargs = (kwargs || {});//an "options" object
-            this.currentPath.push([pt, segmentType, smooth, name, kwargs]);
-        }
-    });
-    return BasePointToSegmentPen;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * This is a translation of PointToSegmentPen defined in robofab/pens/adapterPens.py
- * The svn revision of the source file in trunk/Lib/ was 67 from 2008-03-11 10:18:32 +0100
- * 
- * I even copied the docstrings and comments! (These may still refer to the Python code)
- */
- 
-define(
-    'ufojs/tools/pens/PointToSegmentPen',[
-        'ufojs/main',
-        'ufojs/errors',
-        './BasePointToSegmentPen'
-    ],
-    function(
-        main,
-        errors,
-        Parent
-) {
-    
-    var enhance = main.enhance,
-        assert = errors.assert;
-    /*constructor*/
-    /**
-     * Adapter class that converts the PointPen protocol to the
-     * (Segment)Pen protocol.
-     */
-    function PointToSegmentPen(
-        segmentPen,
-        outputImpliedClosingLine /* default: false*/
-    ) {
-        Parent.call(this);
-        this.pen = segmentPen;
-        this.outputImpliedClosingLine = (outputImpliedClosingLine || false);
-    }
-        
-    /*inheritance*/
-    PointToSegmentPen.prototype = Object.create(Parent.prototype)
-    PointToSegmentPen.prototype.constructor = PointToSegmentPen;
-    
-    /*definition*/
-    enhance(PointToSegmentPen, {
-        _flushContour: function(segments)
-        {
-            assert(segments.length >= 1, 'Less than one segment');
-            var pen = this.pen;
-            if( segments[0][0] == "move" ) {
-                // It's an open path.
-                var closed = false,
-                    points = segments[0][1];
-                assert(points.length === 1, 'Points length is not 1');
-                var movePt = points[0][0],
-                    smooth = points[0][1],
-                    name = points[0][2],
-                    kwargs = points[0][3];
-                segments.splice(0, 1);
-            } else {
-                // It's a closed path, do a moveTo to the last
-                // point of the last segment.
-                var closed = true,
-                    segment = segments[segments.length - 1],
-                    segmentType = segment[0],
-                    points = segment[1],
-                    point = points[points.length - 1],
-                    movePt = point[0],
-                    smooth = point[1],
-                    name = point[2],
-                    kwargs = point[3];
-            }
-            if(movePt === null) {
-                // quad special case: a contour with no on-curve points
-                // contains one "qcurve" segment that ends with a point
-                // that's null. We must not output a moveTo() in that case.
-                // pass
-            } else {
-                pen.moveTo(movePt);
-            }
-            var outputImpliedClosingLine = this.outputImpliedClosingLine,
-                nSegments = segments.length;
-            for(var i = 0; i < nSegments; i++) {
-                var segmentType = segments[i][0],
-                    points = [];
-                for(var n = 0; n < segments[i][1].length; n++)
-                    points.push(segments[i][1][n][0]);
-                if(segmentType == 'line') {
-                    assert(points.length === 1, 'Points length is not 1');
-                    var pt = points[0];
-                    if(i + 1 != nSegments
-                    || outputImpliedClosingLine
-                    || !closed)
-                        pen.lineTo(pt);
-                } else if(segmentType == 'curve') {
-                    pen.curveTo.apply(pen, points);
-                } else if(segmentType == 'qcurve') {
-                    pen.qCurveTo.apply(pen, points);
-                } else {
-                    throw new errors.Type('illegal segmentType: '
-                        + segmentType);
-                }
-            }
-            if(closed)
-                pen.closePath();
-            else
-                pen.endPath();
-        },
-        addComponent: function(glyphName, transform)
-        {
-            this.pen.addComponent(glyphName, transform);
-        }
-    });
-    return PointToSegmentPen;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * The functions decomposeSuperBezierSegment and decomposeQuadraticSegment 
- * are a translation of the equally named functions defined in
- * fontTools/pens/basePen.py The svn revision of the source file in
- * trunk/Lib/ was 498 from 2005-04-10 15:18:42 +0200
- * 
- * I even copied the docstrings and comments! (These may still refer to the Python code)
- * 
- * //////////////////////////////////////////////
- * 
- * straight from fontTools/pens/basePen.py
- * fontTools.pens.basePen.py -- Tools and base classes to build pen objects.
- * 
- * The Pen Protocol
- * 
- * A Pen is a kind of object that standardizes the way how to "draw" outlines:
- * it is a middle man between an outline and a drawing. In other words:
- * it is an abstraction for drawing outlines, making sure that outline objects
- * don't need to know the details about how and where they're being drawn, and
- * that drawings don't need to know the details of how outlines are stored.
- * 
- * The most basic pattern is this:
- * 
- *     outline.draw(pen)  # 'outline' draws itself onto 'pen'
- * 
- * Pens can be used to render outlines to the screen, but also to construct
- * new outlines. Eg. an outline object can be both a drawable object (it has a
- * draw() method) as well as a pen itself: you *build* an outline using pen
- * methods.
- * 
- * The AbstractPen class defines the Pen protocol. It implements almost
- * nothing (only no-op closePath() and endPath() methods), but is useful
- * for documentation purposes. Subclassing it basically tells the reader:
- * "this class implements the Pen protocol.". An examples of an AbstractPen
- * subclass is fontTools.pens.transformPen.TransformPen.
- * 
- * The BasePen class is a base implementation useful for pens that actually
- * draw (for example a pen renders outlines using a native graphics engine).
- * BasePen contains a lot of base functionality, making it very easy to build
- * a pen that fully conforms to the pen protocol. Note that if you subclass
- * BasePen, you _don't_ override moveTo(), lineTo(), etc., but _moveTo(),
- * _lineTo(), etc. See the BasePen doc string for details. Examples of
- * BasePen subclasses are fontTools.pens.boundsPen.BoundsPen and
- * fontTools.pens.cocoaPen.CocoaPen.
- * 
- * Coordinates are usually expressed as (x, y) tuples, but generally any
- * sequence of length 2 will do.
- */
-define('ufojs/tools/pens/main',['ufojs/main', 'ufojs/errors'], function(main, errors){
-    
-    var assert = errors.assert,
-        range = main.range;
-    
-    /**
-     * Split the SuperBezier described by 'points' into a list of regular
-     * bezier segments. The 'points' argument must be a list with length
-     * 3 or greater, containing [x, y] coordinates. The last point is the
-     * destination on-curve point, the rest of the points are off-curve points.
-     * The start point should not be supplied.
-     * 
-     * This function returns a list of [pt1, pt2, pt3] lists, which each
-     * specify a regular curveto-style bezier segment.
-     */
-    function decomposeSuperBezierSegment(points) {
-        var n = points.length - 1,
-            bezierSegments = [],
-            pt1 = points[0],
-            pt2 = null,
-            pt3 = null,
-            i, j, nDivisions, factor, temp1, temp2, temp;
-        
-        assert(n > 1, 'Expecting at least 3 Points here');
-        
-        for (i in range(2, n+1))
-        {
-            i -= 0;//cast this to int
-            // calculate points in between control points.
-            nDivisions = Math.min(i, 3, n - i + 2);
-            // used to be d = float(nDivisions) in the python source but
-            // in js all numbers are float and there is no integer division
-            // thing like in the older versions of python:
-            //    e.g. 2 / 3 = 0 but 2 / 3.0 = 0.6666666666666666
-            // so I'll use nDivision throughout
-            for (j in range(1, nDivisions))
-            {
-                j -= 0;//cast this to int
-                factor = j / nDivisions;
-                temp1 = points[i-1];
-                temp2 = points[i-2];
-                temp = [
-                    temp2[0] + factor * (temp1[0] - temp2[0]),
-                    temp2[1] + factor * (temp1[1] - temp2[1])
-                ];
-                if (pt2 === null) {
-                    pt2 = temp;
-                } else {
-                    pt3 = [
-                        0.5 * (pt2[0] + temp[0]),
-                        0.5 * (pt2[1] + temp[1])
-                    ];
-                    bezierSegments.push([pt1, pt2, pt3]);
-                    pt1 = temp;
-                    pt2 = null;
-                    pt3 = null;
-                }
-            }
-        }
-        bezierSegments.push([pt1, points[points.length-2], points[points.length-1]]);
-        return bezierSegments;
-    };
-    
-   /**
-    * Split the quadratic curve segment described by 'points' into a list
-    * of "atomic" quadratic segments. The 'points' argument must be a list
-    * with length 2 or greater, containing [x, y] coordinates. The last point
-    * is the destination on-curve point, the rest of the points are off-curve
-    * points. The start point should not be supplied.
-    * 
-    * This function returns a list of [pt1, pt2] lists, which each specify a
-    * plain quadratic bezier segment.
-    */
-    function decomposeQuadraticSegment(points) {
-        var n = points.length - 1,
-            quadSegments = [],
-            i, x, y, nx, ny, impliedPt;
-        assert(n > 0, 'Expecting at least 2 Points here');
-        for (i in range(n - 1))
-        {
-            //the keys of the list are strings, what makes i+1 == '01'
-            i -= 0;//cast this to int
-            x = points[i][0];
-            y = points[i][1];
-            nx = points[i+1][0];
-            ny = points[i+1][1];
-            impliedPt = [0.5 * (x + nx), 0.5 * (y + ny)];
-            quadSegments.push([points[i], impliedPt]);
-        }
-        quadSegments.push( [points[points.length-2], points[points.length-1]] );
-        return quadSegments;
-    };
-    return {
-        decomposeSuperBezierSegment: decomposeSuperBezierSegment,
-        decomposeQuadraticSegment: decomposeQuadraticSegment
-    };
-})
-;
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * This is a translation of AbstractPen defined in fontTools/pens/basePen.py
- * The svn revision of the source file in trunk/Lib/ was 498 from 2005-04-10 15:18:42 +0200
- * 
- * I even copied the docstrings and comments! (These may still refer to the Python code)
- */
-define('ufojs/tools/pens/AbstractPen',['ufojs/main', 'ufojs/errors'], function(main, errors) {
-    
-    var enhance = main.enhance;
-    //shortcuts
-    var NotImplementedError = errors.NotImplemented;
-    
-    /*constructor*/
-    var AbstractPen = function(){};
-
-    /*inheritance*/
-    //pass
-
-    /*definition*/
-    enhance(AbstractPen, {
-        /**
-         * Begin a new sub path, set the current point to 'pt'. You must
-         * end each sub path with a call to pen.closePath() or pen.endPath().
-         */
-        moveTo: function(pt)
-        {
-            throw new NotImplementedError('AbstractPen has not implemented'
-            +' moveTo');
-        },
-        /**
-         * Draw a straight line from the current point to 'pt'.
-         */
-        lineTo: function(pt)
-        {
-             throw new NotImplementedError('AbstractPen has not implemented'
-            +' lineTo');
-        },
-        /**
-         * Draw a cubic bezier with an arbitrary number of control points.
-         *
-         * The last point specified is on-curve, all others are off-curve
-         * (control) points. If the number of control points is > 2, the
-         * segment is split into multiple bezier segments. This works
-         * like this:
-         *
-         * Let n be the number of control points (which is the number of
-         * arguments to this call minus 1). If n==2, a plain vanilla cubic
-         * bezier is drawn. If n==1, we fall back to a quadratic segment and
-         * if n==0 we draw a straight line. It gets interesting when n>2:
-         * n-1 PostScript-style cubic segments will be drawn as if it were
-         * one curve. See decomposeSuperBezierSegment().
-         *
-         * The conversion algorithm used for n>2 is inspired by NURB
-         * splines, and is conceptually equivalent to the TrueType "implied
-         * points" principle. See also decomposeQuadraticSegment().
-         */
-        curveTo: function(/* *points */)
-        {
-            throw new NotImplementedError('AbstractPen has not implemented'
-            +' curveTo');
-        },
-        /**
-         * Draw a whole string of quadratic curve segments.
-         * 
-         * The last point specified is on-curve, all others are off-curve
-         * points.
-         * 
-         * This method implements TrueType-style curves, breaking up curves
-         * using 'implied points': between each two consequtive off-curve points,
-         * there is one implied point exactly in the middle between them. See
-         * also decomposeQuadraticSegment().
-         * 
-         * The last argument (normally the on-curve point) may be None.
-         * This is to support contours that have NO on-curve points (a rarely
-         * seen feature of TrueType outlines).
-         */
-        qCurveTo: function (/* *points */)
-        {
-            throw new NotImplementedError('AbstractPen has not implemented'
-            +' qCurveTo');
-        },
-        /**
-         * Close the current sub path. You must call either pen.closePath()
-         * or pen.endPath() after each sub path.
-         */
-        closePath: function()
-        {
-            //pass
-        },
-        /**
-         * End the current sub path, but don't close it. You must call
-         * either pen.closePath() or pen.endPath() after each sub path.
-         */
-        endPath: function()
-        {
-            //pass
-        },
-        /**
-         * Add a sub glyph. The 'transformation' argument must be a 6-tuple
-         * containing an affine transformation, or a Transform object from the
-         * fontTools.misc.transform module. More precisely: it should be a
-         * sequence containing 6 numbers.
-         */
-        addComponent: function(glyphName, transformation)
-        {
-            throw new NotImplementedError('AbstractPen has not implemented'
-            +' addComponent');
-        }
-    });
-    return AbstractPen;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * This is a translation of the contents of fontTools/misc/transform.py
- * The svn revision of the source file in trunk/Lib/  was 588 from 2011-03-28 12:18:27 +0200 
- * 
- * Some cool python features do not work on this thing but I put in some
- * efforts to mimic the python implementation. The future will show whether
- * the direction is good
- *
- * I even copied the docstrings and comments! (These may still refer to
- * the Python code)
- * 
- * Affine 2D transformation matrix class.
- * 
- * The Transform class implements various transformation matrix operations,
- * both on the matrix itself, as well as on 2D coordinates.
- * 
- * This module exports the following symbols:
- * 
- *     Transform -- this is the main class
- *     Identity  -- Transform instance set to the identity transformation
- *     Offset    -- Convenience function that returns a translating transformation
- *     Scale     -- Convenience function that returns a scaling transformation
- * 
- * Examples: //still in python
- * 
- *     >>> t = Transform(2, 0, 0, 3, 0, 0)
- *     >>> t.transformPoint((100, 100))
- *     (200, 300)
- *     >>> t = Scale(2, 3)
- *     >>> t.transformPoint((100, 100))
- *     (200, 300)
- *     >>> t.transformPoint((0, 0))
- *     (0, 0)
- *     >>> t = Offset(2, 3)
- *     >>> t.transformPoint((100, 100))
- *     (102, 103)
- *     >>> t.transformPoint((0, 0))
- *     (2, 3)
- *     >>> t2 = t.scale(0.5)
- *     >>> t2.transformPoint((100, 100))
- *     (52.0, 53.0)
- *     >>> import math
- *     >>> t3 = t2.rotate(math.pi / 2)
- *     >>> t3.transformPoint((0, 0))
- *     (2.0, 3.0)
- *     >>> t3.transformPoint((100, 100))
- *     (-48.0, 53.0)
- *     >>> t = Identity.scale(0.5).translate(100, 200).skew(0.1, 0.2)
- *     >>> t.transformPoints([(0, 0), (1, 1), (100, 100)])
- *     [(50.0, 100.0), (50.550167336042726, 100.60135501775433), (105.01673360427253, 160.13550177543362)]
- *     >>>
- */
-
-define(
-    'ufojs/tools/misc/transform',['ufojs/main', 'ufojs/errors'],
-    function(main, errors)
-{
-    
-    /*shortcuts*/
-    var enhance = main.enhance;
-    
-    /*constants*/
-    var EPSILON = 1e-15,
-        ONE_EPSILON = 1 - EPSILON,
-        MINUS_ONE_EPSILON = -1 + EPSILON;
-    
-    /*helpers*/
-    function _normSinCos(v)
-    {
-        if (Math.abs(v) < EPSILON)
-            v = 0;
-        else if (v > ONE_EPSILON)
-            v = 1;
-        else if (v < MINUS_ONE_EPSILON)
-            v = -1;
-        return v
-    }
-    
-    /*constructor*/
-    /**
-    * 2x2 transformation matrix plus offset, a.k.a. Affine transform.
-    * All transforming methods, eg. rotate(), return a new Transform instance.
-    * 
-    * Examples: //in python still
-    *    >>> t = Transform()
-    *    >>> t
-    *    <Transform [1 0 0 1 0 0]>
-    *    >>> t.scale(2)
-    *    <Transform [2 0 0 2 0 0]>
-    *    >>> t.scale(2.5, 5.5)
-    *    <Transform [2.5 0.0 0.0 5.5 0 0]>
-    *    >>>
-    *    >>> t.scale(2, 3).transformPoint((100, 100))
-    *    (200, 300)
-    */
-    function Transform(transformation /* [xx=1, xy=0, yx=0, yy=1, dx=0, dy=0] */) {
-        //can't change easily after creation
-        var affine = [1, 0, 0, 1, 0, 0];
-        
-        /**
-         * the next two methods are just accessors to the local affine value
-         **/
-        this.__get = function (key)
-        {
-            if(affine[key] === undefined)
-                throw new errors.Key('The key ' + key + 'does not exist in' + this);
-            return affine[key];
-        }
-        this.__affine = function()
-        {
-            //return a copy
-            return affine.slice(0);
-        }
-        
-        
-        
-        if(transformation === undefined)
-            return;
-        for(var i = 0; i < 6; i++) {
-            if(transformation[i] === undefined || transformation[i] === null)
-                continue;
-            affine[i] = transformation[i];
-        }
-    }
-    
-    /*definition*/
-    enhance(Transform, {
-        /**
-         * Transform a point.
-         *
-         *  Example:
-         *      >>> t = Transform()
-         *      >>> t = t.scale(2.5, 5.5)
-         *      >>> t.transformPoint((100, 100))
-         *      (250.0, 550.0)
-         */
-        transformPoint: function( pt )
-        {
-            var xx = this[0],
-                xy = this[1],
-                yx = this[2],
-                yy = this[3],
-                dx = this[4],
-                dy = this[5],
-                x = pt[0],
-                y = pt[1];
-            return [xx*x + yx*y + dx, xy*x + yy*y + dy];
-        },
-        /**
-         * Transform a list of points.
-         * 
-         * Example: //in python
-         *      >>> t = Scale(2, 3)
-         *      >>> t.transformPoints([(0, 0), (0, 100), (100, 100), (100, 0)])
-         *      [(0, 0), (0, 300), (200, 300), (200, 0)]
-         *      >>>
-         */
-        transformPoints: function(points)
-        {
-            return points.map(this.transformPoint, this);
-        },
-        /**
-         * Return a new transformation, translated (offset) by x, y.
-         * 
-         * Example:
-         *      >>> t = Transform()
-         *      >>> t.translate(20, 30)
-         *      <Transform [1 0 0 1 20 30]>
-         *      >>>
-         */
-        translate: function(x, y)
-        {
-            x = x || 0;
-            y = y || 0;
-            return this.transform([1, 0, 0, 1, x, y ]);
-        },
-        /**
-         * Return a new transformation, scaled by x, y. The 'y' argument
-         * may be undefined, which implies to use the x value for y as well.
-         * 
-         * Example:
-         *      >>> t = Transform()
-         *      >>> t.scale(5)
-         *      <Transform [5 0 0 5 0 0]>
-         *      >>> t.scale(5, 6)
-         *      <Transform [5 0 0 6 0 0]>
-         *      >>>
-         */
-        scale: function(x, y)
-        {
-            if(x === undefined)
-                x = 1;
-            if(y === undefined || y === null)
-                y = x;
-            return this.transform([x, 0, 0, y, 0, 0]);
-        },
-        /**
-         * Return a new transformation, rotated by 'angle' (radians).
-         * 
-         * Example: //python
-         *      >>> import math
-         *      >>> t = Transform()
-         *      >>> t.rotate(math.pi / 2)
-         *      <Transform [0 1 -1 0 0 0]>
-         *      >>>
-         */
-        rotate: function(angle)
-        {
-            var c = _normSinCos(Math.cos(angle)),
-                s = _normSinCos(Math.sin(angle));
-            return this.transform([c, s, -s, c, 0, 0]);
-        },
-        /**
-         * Return a new transformation, skewed by x and y.
-         * 
-         * Example:
-         *      >>> import math
-         *      >>> t = Transform()
-         *      >>> t.skew(math.pi / 4)
-         *      <Transform [1.0 0.0 1.0 1.0 0 0]>
-         *      >>>
-         */
-        skew: function(x, y)
-        {
-            x = x || 0;
-            y = y || 0;
-            return this.transform([1, Math.tan(y), Math.tan(x), 1, 0, 0]);
-        },
-        /**
-         * Return a new transformation, transformed by another
-         * transformation.
-         * 
-         * Example:
-         *      >>> t = Transform(2, 0, 0, 3, 1, 6)
-         *      >>> t.transform((4, 3, 2, 1, 5, 6))
-         *      <Transform [8 9 4 3 11 24]>
-         *      >>>
-         */
-        transform: function(other)
-        {
-            var xx1 = other[0],
-                xy1 = other[1],
-                yx1 = other[2],
-                yy1 = other[3],
-                dx1 = other[4],
-                dy1 = other[5],
-                xx2 = this[0],
-                xy2 = this[1],
-                yx2 = this[2],
-                yy2 = this[3],
-                dx2 = this[4],
-                dy2 = this[5];
-            return new Transform([
-                xx1*xx2 + xy1*yx2,
-                xx1*xy2 + xy1*yy2,
-                yx1*xx2 + yy1*yx2,
-                yx1*xy2 + yy1*yy2,
-                xx2*dx1 + yx2*dy1 + dx2,
-                xy2*dx1 + yy2*dy1 + dy2
-            ]);
-        },
-        /**
-         * Return a new transformation, which is the other transformation
-         * transformed by self. self.reverseTransform(other) is equivalent to
-         * other.transform(self).
-         * 
-         * Example:
-         *      >>> t = Transform(2, 0, 0, 3, 1, 6)
-         *      >>> t.reverseTransform((4, 3, 2, 1, 5, 6))
-         *      <Transform [8 6 6 3 21 15]>
-         *      >>> Transform(4, 3, 2, 1, 5, 6).transform((2, 0, 0, 3, 1, 6))
-         *      <Transform [8 6 6 3 21 15]>
-         *      >>>
-         */
-        reverseTransform: function(other)
-        {
-            var xx1 = this[0],
-                xy1 = this[1],
-                yx1 = this[2],
-                yy1 = this[3],
-                dx1 = this[4],
-                dy1 = this[5],
-                xx2 = other[0],
-                xy2 = other[1],
-                yx2 = other[2],
-                yy2 = other[3],
-                dx2 = other[4],
-                dy2 = other[5];
-            return new Transform([
-                xx1*xx2 + xy1*yx2,
-                xx1*xy2 + xy1*yy2,
-                yx1*xx2 + yy1*yx2,
-                yx1*xy2 + yy1*yy2,
-                xx2*dx1 + yx2*dy1 + dx2,
-                xy2*dx1 + yy2*dy1 + dy2
-            ]);
-        },
-        /**
-         * Return the inverse transformation.
-         * 
-         * Example:
-         *     >>> t = Identity.translate(2, 3).scale(4, 5)
-         *     >>> t.transformPoint((10, 20))
-         *     (42, 103)
-         *     >>> it = t.inverse()
-         *     >>> it.transformPoint((42, 103))
-         *     (10.0, 20.0)
-         *     >>>
-         */
-        inverse: function()
-        {
-            if( this.cmp(Identity) )
-                return this;
-            var XX = this[0],
-                XY = this[1],
-                YX = this[2],
-                YY = this[3],
-                DX = this[4],
-                DY = this[5],
-                det = XX*YY - YX*XY,
-                xx = YY/det,
-                xy = -XY/det,
-                yx = -YX/det,
-                yy = XX/det,
-                dx = -xx*DX - yx*DY,
-                dy = -xy*DX - yy*DY;
-            return new Transform([xx, xy, yx, yy, dx, dy]);
-        },
-        /**
-         * Return a PostScript representation:
-         *  >>> t = Identity.scale(2, 3).translate(4, 5)
-         *  >>> t.toPS()
-         *  '[2 0 0 3 8 15]'
-         *  >>>
-         */
-        toPS: function()
-        {
-            return ['[', this.__affine().join(' '),']'].join('');
-        },
-        /*compare*/
-        cmp: function(other)
-        {
-            return (
-               other[0] === this[0]
-            && other[1] === this[1]
-            && other[2] === this[2]
-            && other[3] === this[3]
-            && other[4] === this[4]
-            && other[5] === this[5]
-            )
-        },
-        valueOf: function()
-        {
-            return ['<Transform ', this.toPS(), '>'].join('');
-        },
-        toString: function()
-        {
-            return this.__affine().join(' ');
-        },
-        /**
-         * Transform instances also behave like a list of length 6:
-         */
-        get length()
-        {
-            return 6;
-        },
-        /**
-         * Transform instances also behave like sequences and even support
-         * slicing...
-         */
-        slice: function(start, len)
-        {
-            return this.__affine().slice(start, len);
-        },
-        /**
-         * Transform is usable kind of like an array
-         * var t = new Transform();
-         * echo t[0]; //1
-         */
-        get 0()
-        {
-            return this.__get(0);
-        },
-        get 1()
-        {
-            return this.__get(1);
-        },
-        get 2()
-        {
-            return this.__get(2);
-        },
-        get 3()
-        {
-            return this.__get(3);
-        },
-        get 4()
-        {
-            return this.__get(4);
-        },
-        get 5()
-        {
-            return this.__get(5);
-        }
-    });
-    /**
-    * Return the identity transformation offset by x, y.
-    * 
-    * Example:
-    *      >>> offset(2, 3)
-    *      <Transform [2 0 0 3 0 0]>
-    *      >>>
-    */
-    var Offset= function(x, y) {
-        x = x || 0;
-        y = y || 0;
-        return new Transform([1, 0, 0, 1, x, y]);
-    }
-    
-    /**
-     * Return the identity transformation scaled by x, y. The 'y' argument
-     * may be None, which implies to use the x value for y as well.
-     * 
-     * Example:
-     *  >>> Scale(2, 3)
-     *  <Transform [2 0 0 3 0 0]>
-     *  >>>
-     */
-    var Scale = function(x, y) {
-        if(y === undefined || y === null)
-            y = x;
-        return new Transform([x, 0, 0, y, 0, 0]);
-    }
-    
-    var Identity = new Transform();
-    
-    return {
-        Transform: Transform,
-        Identity: Identity,
-        Offset: Offset,
-        Scale: Scale
-    }
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * This is a translation of TransformPen defined in fontTools/pens/transformPen.py
- * The svn revision of the source file in trunk/Lib/ was 453 from 2003-09-16 12:14:48 +0200
- * 
- * I even copied the docstrings and comments! (These may still refer to the Python code)
- */
-
-define(
-    'ufojs/tools/pens/TransformPen',[
-        'ufojs/main',
-        './AbstractPen',
-        '../misc/transform'
-    ],
-    function(
-        main,
-        AbstractPen,
-        transform
-    )
-{
-    
-    var enhance = main.enhance,
-        Transform = transform.Transform;
-    /**
-     * Pen that transforms all coordinates using a Affine transformation,
-     * and passes them to another pen.
-     */
-     
-    /*constructor*/
-    /**
-     * The 'outPen' argument is another pen object. It will receive the
-     * transformed coordinates. The 'transformation' argument can either
-     * be a six-element Array, or a tools.misc.transform.Transform object.
-     */
-    function TransformPen(outPen, transformation) {
-        if( transformation instanceof Array)
-            transformation = new Transform(transformation);
-        this._transformation = transformation;
-        this._transformPoint = function(pt) {
-            return transformation.transformPoint(pt);
-        }
-        this._outPen = outPen;
-        this._stack = [];
-    };
-
-    /*inheritance*/
-    TransformPen.prototype = new AbstractPen;
-
-    /*definition*/
-    enhance(TransformPen, {
-        moveTo: function(pt)
-        {
-            this._outPen.moveTo(this._transformPoint(pt));
-        },
-        lineTo: function(pt)
-        {
-            this._outPen.lineTo(this._transformPoint(pt));
-        },
-        curveTo: function(/* *points */)
-        {
-            var points = [].slice.call(arguments);//transform arguments to an array
-            this._outPen.curveTo.apply(this._outPen, this._transformPoints(points));
-        },
-        qCurveTo: function (/* *points */)
-        {
-            var points = [].slice.call(arguments);//transform arguments to an array
-            if (points[points.length -1] === null) {
-                points = this._transformPoints(points.slice(0, -1));
-                points.push(null);
-            } else {
-                points = this._transformPoints(points);
-            }
-            this._outPen.qCurveTo.apply(this._outPen, points);
-        },
-        _transformPoints: function(points)
-        {
-            return points.map(this._transformPoint);
-        },
-        closePath: function()
-        {
-            this._outPen.closePath();
-        },
-        addComponent: function(glyphName, transformation)
-        {
-            transformation = this._transformation.transform(transformation);
-            this._outPen.addComponent(glyphName, transformation);
-        }
-    });
-
-    return TransformPen;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
- * This is a translation of BasePen defined in fontTools/pens/basePen.py
- * The svn revision of the source file in trunk/Lib/ was 498 from 2005-04-10 15:18:42  +0200
- * 
- * I even copied the docstrings and comments! (These may still refer to the Python code)
- */
-define(
-    'ufojs/tools/pens/BasePen',[
-        'ufojs/main',
-        'ufojs/errors',
-        './main',
-        './AbstractPen',
-        './TransformPen'
-    ],
-    function(
-        mainmain,
-        errors,
-        main,
-        AbstractPen,
-        TransformPen
-) {
-    
-    var enhance = mainmain.enhance,
-        NotImplementedError = errors.NotImplemented,
-        AssertionError = errors.Assertion,
-        decomposeSuperBezierSegment = main.decomposeSuperBezierSegment,
-        decomposeQuadraticSegment = main.decomposeQuadraticSegment,
-        assert = errors.assert;
-    /**
-     * Base class for drawing pens. You must override _moveTo, _lineTo and
-     * _curveToOne. You may additionally override _closePath, _endPath,
-     * addComponent and/or _qCurveToOne. You should not override any other
-     * methods.
-     */
-    /*constructor*/
-    function BasePen (glyphSet) {
-        this.glyphSet = glyphSet;
-        this.__currentPoint = null;
-    };
-
-    /*inheritance*/
-    BasePen.prototype = Object.create(AbstractPen.prototype);
-
-    /*definition*/
-    enhance(BasePen, {
-        
-        // must override
-        
-        _moveTo: function(pt)
-        {
-            throw new NotImplementedError('implement _moveTo');
-        },
-        _lineTo: function(pt)
-        {
-            throw new NotImplementedError('implement _lineTo');
-        },
-        _curveToOne: function(pt1, pt2, pt3)
-        {
-            throw new NotImplementedError('implement _curveToOne');
-        },
-        
-        // may override
-        
-        _closePath: function()
-        {
-            //pass
-        },
-        _endPath: function()
-        {
-            //pass
-        },
-        /**
-         * This method implements the basic quadratic curve type. The
-         * default implementation delegates the work to the cubic curve
-         * function. Optionally override with a native implementation.
-         */
-        _qCurveToOne: function(pt1, pt2)
-        {
-            var pt0x = this.__currentPoint[0],
-                pt0y = this.__currentPoint[1],
-                pt1x = pt1[0],
-                pt1y = pt1[1],
-                pt2x = pt2[0],
-                pt2y = pt2[1],
-                mid1x = pt0x + 0.66666666666666667 * (pt1x - pt0x),
-                mid1y = pt0y + 0.66666666666666667 * (pt1y - pt0y),
-                mid2x = pt2x + 0.66666666666666667 * (pt1x - pt2x),
-                mid2y = pt2y + 0.66666666666666667 * (pt1y - pt2y);
-            this._curveToOne([mid1x, mid1y], [mid2x, mid2y], pt2)
-        },
-        /**
-         * This default implementation simply transforms the points
-         * of the base glyph and draws it onto self.
-         */
-        addComponent: function(glyphName, transformation)
-        {
-            var glyph = (typeof this.glyphSet.get === 'function')
-                ? this.glyphSet.get(glyphName)
-                : this.glyphSet[glyphName];
-            if(glyph !== undefined) {
-                var tPen = new TransformPen(this, transformation);
-                // using the synchronous call!
-                // load components before drawing the glyph if this is
-                // not good for your case!
-                // addComponent can't get a asynchronous api because
-                // we would break the pen protocol then
-                glyph.draw(false, tPen);
-            }
-        },
-        
-        // don't override
-        
-        /**
-         * Return the current point. This is not part of the public
-         * interface, yet is useful for subclasses.
-         */
-        _getCurrentPoint: function()
-        {
-            return this.__currentPoint;
-        },
-        closePath: function()
-        {
-            this._closePath();
-            this.__currentPoint = null;
-        },
-        endPath: function()
-        {
-            this._endPath();
-            this.__currentPoint = null;
-        },
-        moveTo: function(pt)
-        {
-            this._moveTo(pt);
-            this.__currentPoint = pt;
-        },
-        lineTo: function(pt)
-        {
-            this._lineTo(pt);
-            this.__currentPoint = pt;
-        },
-        curveTo: function(/* *points */)
-        {
-            var points = [].slice.call(arguments),//transform arguments to an array
-                n = points.length - 1;// 'n' is the number of control points
-            assert(n >= 0, 'curveTo needs at least one point');
-            if (n == 2) {
-                // The common case, we have exactly two BCP's, so this is a standard
-                // cubic bezier. Even though decomposeSuperBezierSegment() handles
-                // this case just fine, we special-case it anyway since it's so
-                // common.
-                this._curveToOne.apply(this, points);
-                this.__currentPoint = points[points.length - 1];
-            } else if (n > 2) {
-                // n is the number of control points; split curve into n-1 cubic
-                // bezier segments. The algorithm used here is inspired by NURB
-                // splines and the TrueType "implied point" principle, and ensures
-                // the smoothest possible connection between two curve segments,
-                // with no disruption in the curvature. It is practical since it
-                // allows one to construct multiple bezier segments with a much
-                // smaller amount of points.
-                var _curveToOne = this._curveToOne,
-                    segments = decomposeSuperBezierSegment(points),
-                    segment, i;
-                for (i in segments) {
-                    segment = segments[i];
-                    //var pt1 = segment[0];
-                    //var pt2 = segment[1];
-                    //var pt3 = segment[2];
-                    _curveToOne.apply(this ,segment);
-                    this.__currentPoint = segment[2];//pt3
-                }
-            } else if (n == 1) {
-                this.qCurveTo.apply(this, points);
-            } else if (n == 0) {
-                this.lineTo(points[0]);
-            } else {
-                throw new AssertionError("curveTo() can't get there from here");
-            }
-        },
-        qCurveTo: function(/* *points */)
-        {
-            var points = [].slice.call(arguments),//transform arguments to an array
-                n = points.length - 1; //'n' is the number of control points
-            assert(n >= 0, 'qCurveTo needs at least one point');
-            if (points[points.length -1] === null) {
-                // Special case for TrueType quadratics: it is possible to
-                // define a contour with NO on-curve points. BasePen supports
-                // this by allowing the final argument (the expected on-curve
-                // point) to be null. We simulate the feature by making the implied
-                // on-curve point between the last and the first off-curve points
-                // explicit.
-                var x = points[points.length -2][0], // last off-curve point x
-                    y = points[points.length -2][1], // last off-curve point y
-                    nx = points[0][0], // first off-curve point x
-                    ny = points[0][1], // first off-curve point y
-                    impliedStartPoint = [ 0.5 * (x + nx), 0.5 * (y + ny) ];
-                this.__currentPoint = impliedStartPoint;
-                this._moveTo(impliedStartPoint);
-                points.splice(-1, 1, impliedStartPoint);//splice syntax is: index, howMany, *elements to insert
-            }
-            if (n > 0) {
-                // Split the string of points into discrete quadratic curve
-                // segments. Between any two consecutive off-curve points
-                // there's an implied on-curve point exactly in the middle.
-                // This is where the segment splits.
-                var _qCurveToOne = this._qCurveToOne,
-                    segments = decomposeQuadraticSegment(points),
-                    segment, i;
-                for (i in segments) {
-                    segment = segments[i];
-                    //var pt1 = segment[0];
-                    //var pt2 = segment[1];
-                    _qCurveToOne.apply(this, segment);
-                    this.__currentPoint = segment[1]; //pt2
-                }
-            } else {
-                this.lineTo(points[0]);
-            }
-        }
-    });
-
-    return BasePen;
-});
-
-/**
- * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
- * You should have received a copy of the MIT License along with this program.
- * If not, see http://www.opensource.org/licenses/mit-license.php
- *
- * This pen draws path data to a SVG path element. It inherts from BasePen.
- * 
- * Noteable documents:
- *    http://www.w3.org/TR/SVG/paths.html#InterfaceSVGPathSegList
- *    http://www.w3.org/TR/SVG/paths.html#InterfaceSVGPathElement
- */
-
-define(
-    'ufojs/tools/pens/SVGPen',[
-        'ufojs/main',
-        'ufojs/errors',
-        './BasePen'
-    ],
-    function(
-        main,
-        errors,
-        BasePen
-    )
-{
-    
-    var enhance = main.enhance;
-    
-    /*constructor*/
-    function SVGPen(path, glyphSet) {
-        BasePen.call(this, glyphSet);
-        this.path = path;
-        this.segments = path.pathSegList;
-    };
-    
-    /*inheritance*/
-    SVGPen.prototype = new BasePen;
-
-    /*definition*/
-    enhance(SVGPen, {
-        _commands:
-        {
-            'moveTo': 'createSVGPathSegMovetoAbs',
-            'lineTo': 'createSVGPathSegLinetoAbs',
-            'curveTo': 'createSVGPathSegCurvetoCubicAbs',
-            'closePath': 'createSVGPathSegClosePath'
-        },
-        _addSegment: function(name, args)
-        {
-                //make a real array out of this
-            var args = args ? [].slice.call(args) : [],
-                // make a flat list out of the points, because the
-                // SVG Path Commands work that way
-                points = args.concat.apply([], args),
-                cmd = this._commands[name],
-                path = this.path,
-                segment = path[cmd].apply(path, points);
-            this.segments.appendItem(segment);
-        },
-        _moveTo: function(pt)
-        {
-            this._addSegment('moveTo', arguments);
-        },
-        _lineTo: function(pt)
-        {
-            this._addSegment('lineTo', arguments);
-        },
-        _curveToOne: function(pt1, pt2, pt3)
-        {
-            //notice that we change the order of the points
-            this._addSegment('curveTo', [pt3, pt1, pt2]);
-        },
-        _closePath: function()
-        {
-            this._addSegment('closePath');
-        },
-        /**
-         * Delete all segments from path
-         */
-        clear: function()
-        {
-            this.segments.clear();
-        }
-    });
-    
-    return SVGPen;
-});
-
-define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
-    'metapolator/webAPI/document'
-  , 'metapolator/project/ExportController'
-  , 'ufojs/tools/pens/PointToSegmentPen'
-  , 'ufojs/tools/pens/SVGPen'
-    ], function(
-    document
-  , ExportController
-  , PointToSegmentPen
-  , SVGPen
-) {
-    
-    
-    var svgns = 'http://www.w3.org/2000/svg';
-    
-    function svgPenFactory(glyphset) {
-        var svg = document.createElementNS(svgns, 'svg')
-          , pathElement = document.createElementNS(svgns, 'path')
-          , gElement = document.createElementNS(svgns, 'g')
-          , svgPen = new SVGPen(pathElement, glyphset)
-          ;
-        svg.setAttribute('width', '100%');
-        svg.setAttribute('viewBox', '0 0 1000 1000');
-        // A quick way to draw the path as outline instead of filled:
-        //pathElement.setAttribute('stroke', 'black');
-        //pathElement.setAttribute('fill', 'none');
-        gElement.setAttribute('transform', 'matrix(1, 0, 0, -1, 0, 800)');
-        gElement.appendChild(pathElement);
-        svg.appendChild(gElement);
-        return svgPen;
-    }
-    
-    function render(element, glyph, model, interval) {
-        var ep = Object.create(ExportController.prototype)
-          , svgPen = svgPenFactory({})
-          , pointPen = new PointToSegmentPen(svgPen)
-          ;
-        var gen = ep.drawGlyphToPointPenGenerator(model, glyph, pointPen);
-        var promise = interval(function () {
-                var done = false;
-                try {
-                    done = gen.next().done
-                }
-                catch(error) {
-                    if(error.message === "Generator has already finished")
-                        done = true;
-                    else
-                        throw error;
-                }
-            
-                          if (done) {
-                              interval.cancel(promise);
-                              var old = element[0].getElementsByTagName('svg')[0];
-                              if(old)
-                                  old.parentNode.replaceChild(svgPen.path.ownerSVGElement, old);
-                              else
-                                  element.append(svgPen.path.ownerSVGElement);
-                          }
-                      },
-                      20);
-    }
-    
-    function redPillGlyphDirective(model, interval) {
-        function link(scope, element, attrs) {
-            render(element, scope.mtkGlyphElement, model, interval);
-            scope.$on('cpsUpdate', render.bind(null, element, scope.mtkGlyphElement, model, interval))
-        }
-        return {
-            restrict: 'E'
-          , link: link
-          , scope: { mtkGlyphElement: '=' }
-        };
-    }
-    
-    redPillGlyphDirective.$inject = ['ModelController', '$interval'];
-    return redPillGlyphDirective;
-})
-;
-define('ui/redPill/redPillGlyphs/redPillGlyphs',[
-    'angular'
-  , './redPillGlyphs-controller'
-  , './redPillGlyphs-directive'
-  , './redPillGlyph-directive'
-], function(
-    angular
-  , Controller
-  , directive
-  , redPillGlyphDirective
-) {
-    
-    return angular.module('mtk.redPillGlyphs', [])
-           .controller('RedPillGlyphsController', Controller)
-           .directive('mtkRedPillGlyphs', directive)
-           .directive('mtkRedPillGlyph', redPillGlyphDirective)
-           ;
-})
-;
-define('ui/redPill/app',[
-    'angular'
-  , './app-controller'
-  , './app-directive'
-  , './redPillMaster/redPillMaster'
-  , './redPillGlyphs/redPillGlyphs'
-], function(
-    angular
-  , Controller
-  , directive
-  , redPillMaster
-  , redPillGlyphs
-) {
-    
-    return angular.module('mtk.redPill', [redPillMaster.name, redPillGlyphs.name])
-      .controller('AppController', Controller)
-      .directive('redPill', directive)
-      ;
-})
-;
-// we can define window as a dependency
-// works only in a browser context
-define('metapolator/webAPI/window',[], window)
-;
-define('RedPill',[
-    'metapolator/errors'
-  , 'metapolator/webAPI/window'
-  , 'codemirror/lib/codemirror'
-], function(
-    errors
-  , window
-  , CodeMirror
-) {
-    
-    
-    var CPSParserError = errors.CPSParser
-      , CPSError = errors.CPS
-      ;
-    
-    function RedPill(project, angularApp) {
-        this.angularApp = angularApp
-        this.frontend = undefined;
-        this.project = project;
-        this.model = {
-            masters: this.project.masters
-        }
-        this._cache = {
-            codeMirrorDocs: {}
-          , lastSelection: []
-        }
-        
-        // load all masters, because right now it is very confusing
-        // when some masters are missing from the MOM
-        this.project.masters.forEach(this.project.open, this.project);
-        
-        
-        // will be called on angular.bootstrap
-        // see ui/app-controller.js 
-        this.angularApp.constant('registerFrontend',
-                                this._registerFrontend.bind(this))
-        this.angularApp.constant('redPillModel', this.model);
-        this.angularApp.constant('getMasterSources',
-                                this.project.getMasterSources
-                                        .bind(this.project));
-        this.angularApp.constant('getCodeMirrorDoc',
-                                this.getCodeMirrorDoc.bind(this));
-        this.angularApp.constant('returnCodeMirrorDoc',
-                                this.returnCodeMirrorDoc.bind(this));
-        
-        this.angularApp.constant('selectGlyphs',
-                                this.selectGlyphs.bind(this));
-        this.angularApp.constant('ModelController', this.project.controller);
-        
-        this.angularApp.constant('updateCPS', this.digestCodeMirrorChanges.bind(this));
-    }
-    
-    var _p = RedPill.prototype;
-
-    _p._registerFrontend = function(appController) {
-        if(this.frontend !== undefined)
-            throw new Error('Registering more than one AppController is not allowed.'
-                           +' Don\'t use <red-pill> more than once in a template!')
-        this.frontend = appController;
-    }
-    
-    /**
-     * We will throttle the change rate and only update after a
-     * few millisecs of silence, because it's very likely
-     * that this event is fired often, i.e. a linebreak fires
-     * change twice, first for the linebreak then for the auto
-     * indent feature.
-     * A good throttle interval is whatever requestAnimationFrame
-     * does, rather than an arbitrary value with setTimeout.
-     * 
-     * if recordChangesOnly is true the processing of the changes will
-     * not be scheduled. This is currently used, because auto-updating
-     * takes too much time and slows down the ui.
-     */
-    _p._throttledDocChangeHandler = function(source, recordChangesOnly, doc, changeObj) {
-        var data = this._cache.codeMirrorDocs[source];
-        data.changes.push(changeObj);
-        
-        if(recordChangesOnly)
-            return;
-        
-        // reset the timeout
-        if(data.timeout)
-            window.cancelAnimationFrame(data.timeout);
-        data.timeout = window.requestAnimationFrame(
-                            this._processChangedDoc.bind(this, source, true));
-    }
-    
-    /**
-     * Called after a culminating changes in a requestAnimationFrame period.
-     * All doc data is in the cache.
-     */
-    _p._processChangedDoc = function(source, broadcast) {
-        var data = this._cache.codeMirrorDocs[source]
-          , error
-          ;
-        data.timeout = null;
-        data.changes = [];
-        
-        // todo: try catch here. an error will be thrown when the
-        // document content is garbage 
-        try {
-            this.project.updateCPSRule(source, data.doc.getValue());
-        }
-        catch(err){
-            error = err;
-            if(!(error instanceof CPSParserError))
-                throw error;
-        }
-        
-        if(error)
-            console.warn('The document "' + source + '" can\'t be parsed: ', error.message);
-        
-        // if there was no error 
-        // inform the ui that redrawing is needed. CodeMirror doesn't need
-        // any information
-        
-        // automatic updates are very slow at the moment.
-        else if(broadcast){
-            this.frontend.$scope.$broadcast('cpsUpdate');
-        }
-    }
-    
-    _p.getCodeMirrorDoc = function(source) {
-        var doc;
-        if(!this._cache.codeMirrorDocs[source]) {
-            // when we keep this doc around, we can even restore the history
-            // when loading the doc a second time
-            // also, codemirror is smart enough to propagate changes on one
-            // doc to all editor instances that show the doc! However,
-            // this is done by instances of linked doc, and we need to
-            // manage their creation and destruction
-            doc = new CodeMirror.Doc(
-                    // this is the initial fill of the doc. later, the doc
-                    // will be our  single source of truth (the CPS string)
-                    this.project.getCPSRules(source).toString(), 'css');
-            this._cache.codeMirrorDocs[source] = {
-                doc: doc
-              , changeHandler: this._throttledDocChangeHandler.bind(this, source, false)
-              , timeout: null
-              , changes: []
-            };
-            doc.on('change', this._cache.codeMirrorDocs[source].changeHandler);
-        }
-        return this._cache.codeMirrorDocs[source]
-                                    .doc.linkedDoc({sharedHist: true});
-    }
-    
-    _p.digestCodeMirrorChanges = function() {
-        var source;
-        for(source in this._cache.codeMirrorDocs)
-            if(this._cache.codeMirrorDocs[source].changes.length)
-                this._processChangedDoc(source, false);
-        this.frontend.$scope.$broadcast('cpsUpdate');
-    }
-    
-    
-    _p.returnCodeMirrorDoc = function(linked) {
-        // TODO: if all links of a doc are returned AND if the doc is
-        // clean (saved) we might consider purging its cache in
-        // this._cache.codeMirrorDocs to free some memory.
-        // we can get the correct cache
-        linked.iterLinkedDocs(
-            function(doc){ doc.unlinkDoc(linked); }
-        );
-    }
-    
-    _p._selectGlyphs = function(selector) {
-        try {
-            return this.project.controller.queryAll(selector)
-                .filter(function(item){ return item.type === 'glyph'; });
-        }
-        catch(error){
-            if(!(error instanceof CPSError))
-                throw error;
-            console.warn('selector "' + selector + '" did not parse:', error.message);
-        }
-        return false;
-    }
-    
-    _p.selectGlyphs = function(selector) {
-        var result = this._selectGlyphs(selector);
-        if(!result)
-            return this._cache.lastSelection;
-        this._cache.lastSelection = result;
-        return result;
-    }
-    
-    return RedPill;
-})
-;
 define('obtain/Promise',[], function() {
     
     /**
@@ -40002,542 +36592,3643 @@ define('obtain/obtain',['./Promise'], function(Promise) {
     }
 });
 
-/**
- * This describes the API that is expected of all I/O modules.
- * 
- * It makes heavy use of obtainJS.
- * 
- * You can and should use this module as prototype for your implementation
- * (if there is inheritance). We might use that as a base for unit-testing,
- * however ufoJS will use ducktyping and just expect your implementation
- * to work.
- * 
- * All methods raise errors.NotImplemented
- * 
- * This API is by no means fixed! It's still in exploring state, AFAIK
- * there is no good cross plattform solution for I/O. So we move slow and
- * see what we need to do.
- */
-define('ufojs/tools/io/_base',[
+define('metapolator/io/readDirRecursive',[
     'ufojs/errors'
   , 'obtain/obtain'
-
 ], function(
-    errors
+    ufoErrors
   , obtain
 ) {
     
     
-    var NotImplementedError = errors.NotImplemented
-      , Parent = Object
-      ;
-
-    function io() {
-        Parent.call(this);
-    };
-
-    var _p = io.prototype = Object.create(Parent.prototype);
+    /**
+     * when name ends with a slash it is a directory name
+     */
+    function _isDirName(name) {
+        return name.slice(-1) === '/';
+    }
 
     /**
-     * raises IONoEntry when path is not found.
+     * Read an entire directory tree into a flat list of filenames.
+     * 
+     * use this with caution:
+     * It may run long and need a lot of memory for large/deep directories.
+     * Also, the result may not be correct anymore when it's done.
+     * This is why we don't use it as a standard io function.
+     * A better approach for large trees may be an iterator based
+     * implementation.
      */
-    _p.readFile = obtain.factory(
+    var readDirRecursive = obtain.factory(
         {
-            readFile:['path', function(path) {
-                throw new NotImplementedError('readFile');
+            names: ['io', 'path', function(io, path) {
+                return io.readDir(false, path);
+            }]
+          , readDir: ['io', 'names', 'path',
+            function(io, names, path) {
+                var i
+                  , name
+                  , fullPath
+                  , children
+                  , result = []
+                  ;
+                for(i=0;i<names.length;i++) {
+                    name = names[i];
+                    fullPath = [path, name].join(path.slice(-1) === '/' ? '' : '/');
+                    if(_isDirName(name)) {
+                        children = readDirRecursive(false, io, fullPath);
+                        Array.prototype.push.apply(result, children);
+                    }
+                    else
+                        result.push(fullPath);
+                }
+                return result;
             }]
         }
-      , {/* no need for async here */}
-      , ['path']
-      , function(obtain){ return obtain('readFile'); }
-    );
-    
-    /**
-     * raises IONoEntry when points to a non-existent directory
-     */
-    _p.writeFile = obtain.factory(
-        {
-            writeFile:['path', 'data', function(path, data) {
-                throw new NotImplementedError('writeFile');
+      , {
+            names: ['io', 'path', function(io, path) {
+                return io.readDir(true, path);
+            }]
+          , readDir: ['io', 'names', 'path', '_callback',
+            function(io, names, path , callback) {
+                var i
+                  , name
+                  , loaded = 0
+                  , loading
+                  , fullPath
+                  , failed = false
+                  , promise
+                  , result = []
+                  ;
+                function finalize(children) {
+                    if(failed) return;
+                    Array.prototype.push.apply(result, children);
+                    loaded++;
+                    if(loaded === loading)
+                        callback(null, result);
+                }
+                function fail(error) {
+                    failed = true;
+                    callback(error, null);
+                }
+                for(i=0;i<names.length;i++) {
+                    name = names[i];
+                    fullPath = [path, name].join(path.slice(-1) === '/' ? '' : '/');
+                    if(_isDirName(name)) {
+                        loading++;
+                        promise = readDirRecursive(true, io, fullPath)
+                        .then(finalize, fail);
+                    }
+                    else
+                        result.push(fullPath);
+                }
+                if(!loading)
+                    callback(null, result);
             }]
         }
-      , {/* no need for async here */}
-      , ['path', 'data']
-      , function(obtain){ return obtain('writeFile'); }
-    );
-    
-    /**
-     * raises IONoEntry when path is not found.
-     */
-    _p.unlink = obtain.factory(
-        {
-            unlink:['filename', function(filename) {
-                throw new NotImplementedError('unlink');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['filename']
-      , function(obtain){ return obtain('unlink'); }
-    );
-    
-    _p.readBytes = obtain.factory(
-        {
-            readBytes:['path', 'bytes', function(path, bytes) {
-                throw new NotImplementedError('readBytes');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['path', 'bytes']
-      , function(obtain){ return obtain('readBytes'); }
-    );
-    
-    /**
-     * raises IONoEntry when path is not found.
-     */
-    _p.stat = obtain.factory(
-        {
-            stat:['path', function(path) {
-                throw new NotImplementedError('stat');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['path']
-      , function(obtain){ return obtain('stat'); }
-    );
-
-    _p.pathExists = obtain.factory(
-        {
-            pathExists:['path', function(path) {
-                throw new NotImplementedError('pathExists');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['path']
-      , function(obtain){ return obtain('pathExists'); }
-    );
-    
-    /**
-     * raises IONoEntry when path is not found.
-     */
-    _p.getMtime = obtain.factory(
-        {
-            getMtime:['path', function(path) {
-                throw new NotImplementedError('getMtime');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['path']
-      , function(obtain){ return obtain('getMtime'); }
-    );
-    
-    /**
-     * raises IOError if dir can't be created
-     */
-    _p.readDir = obtain.factory(
-        {
-            readDir:['path', function(path) {
-                throw new NotImplementedError('readDir');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['path']
+      , ['io', 'path']
       , function(obtain){ return obtain('readDir'); }
     );
-
-    /**
-     * raises IOError if dir can't be created
-     */
-    _p.mkDir = obtain.factory(
-        {
-            mkDir:['path', function(path) {
-                throw new NotImplementedError('mkDir');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['path']
-      , function(obtain){ return obtain('mkDir'); }
-    );
-    
-    /**
-     * raises IOError if dir can't be deleted
-     */
-    _p.rmDir = obtain.factory(
-        {
-            rmDir:['path', function(path) {
-                throw new NotImplementedError('rmDir');
-            }]
-        }
-      , {/* no need for async here */}
-      , ['path']
-      , function(obtain){ return obtain('rmDir'); }
-    );
-
-    /**
-     * Implemented in terms of other io methods
-     */
-    _p.rmDirRecursive = obtain.factory(
-        {
-            rmDirRecursive:['dir', function(dir) {
-                var objs = this.readDir(false, dir);
-                for(var i = 0; i < objs.length; i++) {
-                    var obj = dir + '/' + objs[i]; // path.join is node-specific
-                    (this.stat(false, obj).isDirectory() ? this.rmDirRecursive : this.unlink)(false, obj);
-                }
-                this.rmDir(false, dir);
-            }]
-        }
-      // For an async implementation, try starting here:
-      // https://gist.github.com/yoavniran/adbbe12ddf7978e070c0
-      , {/* no need for async here */}
-      , ['dir']
-      , function(obtain){ return obtain('rmDirRecursive'); }
-    );
-
-    return io;
+    return readDirRecursive;
 });
 
-/**
- * This is a NodeJS implementation of io/_base.
- */
-define('ufojs/tools/io/staticBrowserREST',[
-    'ufojs/errors'
-  , 'obtain/obtain'
-  , './_base'
+define('ui/redPill/textEditor/textEditor-controller',[
+    'codemirror/lib/codemirror'
+  , 'metapolator/io/readDirRecursive'
 ], function(
-    errors
-  , obtain
-  , Parent
+    CodeMirror
+  , readDirRecursive
+) {
+    
+    function TextEditorController($scope, io) {
+        this.$scope = $scope;
+        this.$scope.name = 'textEditor';
+        this.io = io;
+        
+        this.$scope.buffers = Object.create(null);
+        this.$scope.files = [];
+        
+        // FIXME: go async when this is used somewhere else than the demo
+        // the demo io is InMemory, and as such sync is OK.
+        this.path = 'project/data/com.metapolator/cps';
+        $scope.allFiles = readDirRecursive(false, io, this.path)
+        .map(function(len, name){ return name.slice(len);}.bind(null, this.path.length+1));
+        
+        $scope.$on("codeMirrorDestroy", this._codemirrorDestroyHandler.bind(this));
+        $scope.getEditorOptions = this.getEditorOptions.bind(this);
+    }
+    TextEditorController.$inject = ['$scope', 'io'];
+    var _p = TextEditorController.prototype;
+    
+    _p.getEditorOptions = function(source) {
+        // From the CodeMirror docs:
+        // Note that the options object passed to the constructor will
+        // be mutated when the instance's options are changed, so you
+        // shouldn't share such objects between instances.
+        return {
+            lineWrapping : false
+          , lineNumbers: true
+          //,  readOnly: 'nocursor'
+          // firstLineNumber: 10 // interesting for rules mode
+          , mode: 'css'
+          , onLoad: this._codemirrorLoadedHandler.bind(this, source)
+        };
+    };
+    
+    _p._getCodeMirrorDoc = function(file) {
+        var text, doc
+          , path = this.path + '/' + file
+          , timeout
+          ;
+          
+        var update = function () {
+            this.io.writeFile(false, path, doc.getValue());
+            
+        }.bind(this);
+        function onChange() {
+            // reset the timeout
+            window.cancelAnimationFrame(timeout);
+            timeout = window.requestAnimationFrame(update);
+        }
+        
+        if(!(file in this.$scope.buffers)) {
+            // FIXME: do this async eventually.
+            text = this.io.readFile(false, path);
+            this.$scope.buffers[file] = doc = new CodeMirror.Doc(text, 'css');
+            // TODO: throttle this
+            doc.on('change', onChange);
+            
+        }
+        return this.$scope.buffers[file].linkedDoc({sharedHist: true});
+    };
+    
+    _p._codemirrorLoadedHandler = function(source, cm) {
+        var doc = this._getCodeMirrorDoc(source);
+        cm.swapDoc(doc);
+    };
+    
+    _p._codemirrorDestroyHandler = function(event, cm) {
+        var linked = cm.getDoc();
+        linked.iterLinkedDocs(function(doc){ doc.unlinkDoc(linked);});
+    };
+    
+    return TextEditorController;
+});
+
+
+define('require/text!ui/redPill/textEditor/textEditor.tpl',[],function () { return '<label>select files:\n    <select \n            multiple\n            ng-model="data.files" \n            ng-options="name for name in {{ allFiles }}"\n            ></select>\n</label>\n\n<ol>\n    <li ng-repeat="file in data.files">\n        <span>file: {{ file }}</span>\n        <!--\n            Don\'t use ng-model here. the history of the resulting doc\n            will have ther instertion of the content as first entry.\n            Also the change event will fire immediately. We create the\n            doc in codemirrors on load event.\n        -->\n        <ui-codemirror\n            ui-codemirror-opts="getEditorOptions(file)"\n            ng-controller="CodeMirrorController"\n            ></ui-codemirror>\n    </li>\n</ol>\n';});
+
+define('ui/redPill/textEditor/textEditor-directive',[
+    'require/text!./textEditor.tpl'
+    ], function(
+    template
+) {
+    
+    function textEditorDirective() {
+        return {
+            restrict: 'E' // only matches element names
+          , controller: 'TextEditorController'
+          , replace: false
+          , template: template
+          , scope: {}
+        };
+    }
+    textEditorDirective.$inject = [];
+    return textEditorDirective;
+})
+;
+define('ui/redPill/textEditor/CodeMirrorController',[
+], function(
+) {
+    
+    /**
+     * This controller is needed to organize the destruction of the
+     * doc or the codemirror instance itself if either of these is
+     * cached somewhere else.
+     * If the doc of this editor or the editor is not cached somewhere
+     * else it is probably unnecessary to use this controller.
+     */
+    function CodeMirrorController($scope) {
+        this.$scope = $scope;
+        $scope.$on('$destroy', this._destroy.bind(this));
+    }
+    CodeMirrorController.$inject = ['$scope'];
+    
+    var _p = CodeMirrorController.prototype;
+    
+    /**
+     * informs the parent that there might be some cleanup needed
+     */
+    _p._emitCodeMirrorDestroy = function(cm) {
+        this.$scope.$emit('codeMirrorDestroy', cm);
+    }
+    
+    _p._destroy = function() {
+        // the ui-codemirror directive listens to CodeMirror and calls
+        // _emitCodeMirrorDestroy. We need this to propagate the cm object
+        // which we wouldn't have a refernce to, otherwise.
+        this.$scope.$broadcast('CodeMirror', this._emitCodeMirrorDestroy.bind(this))
+    }
+    
+    return CodeMirrorController;
+})
+;
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define('codemirror/mode/css/css',["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+
+
+CodeMirror.defineMode("css", function(config, parserConfig) {
+  if (!parserConfig.propertyKeywords) parserConfig = CodeMirror.resolveMode("text/css");
+
+  var indentUnit = config.indentUnit,
+      tokenHooks = parserConfig.tokenHooks,
+      mediaTypes = parserConfig.mediaTypes || {},
+      mediaFeatures = parserConfig.mediaFeatures || {},
+      propertyKeywords = parserConfig.propertyKeywords || {},
+      nonStandardPropertyKeywords = parserConfig.nonStandardPropertyKeywords || {},
+      colorKeywords = parserConfig.colorKeywords || {},
+      valueKeywords = parserConfig.valueKeywords || {},
+      fontProperties = parserConfig.fontProperties || {},
+      allowNested = parserConfig.allowNested;
+
+  var type, override;
+  function ret(style, tp) { type = tp; return style; }
+
+  // Tokenizers
+
+  function tokenBase(stream, state) {
+    var ch = stream.next();
+    if (tokenHooks[ch]) {
+      var result = tokenHooks[ch](stream, state);
+      if (result !== false) return result;
+    }
+    if (ch == "@") {
+      stream.eatWhile(/[\w\\\-]/);
+      return ret("def", stream.current());
+    } else if (ch == "=" || (ch == "~" || ch == "|") && stream.eat("=")) {
+      return ret(null, "compare");
+    } else if (ch == "\"" || ch == "'") {
+      state.tokenize = tokenString(ch);
+      return state.tokenize(stream, state);
+    } else if (ch == "#") {
+      stream.eatWhile(/[\w\\\-]/);
+      return ret("atom", "hash");
+    } else if (ch == "!") {
+      stream.match(/^\s*\w*/);
+      return ret("keyword", "important");
+    } else if (/\d/.test(ch) || ch == "." && stream.eat(/\d/)) {
+      stream.eatWhile(/[\w.%]/);
+      return ret("number", "unit");
+    } else if (ch === "-") {
+      if (/[\d.]/.test(stream.peek())) {
+        stream.eatWhile(/[\w.%]/);
+        return ret("number", "unit");
+      } else if (stream.match(/^\w+-/)) {
+        return ret("meta", "meta");
+      }
+    } else if (/[,+>*\/]/.test(ch)) {
+      return ret(null, "select-op");
+    } else if (ch == "." && stream.match(/^-?[_a-z][_a-z0-9-]*/i)) {
+      return ret("qualifier", "qualifier");
+    } else if (/[:;{}\[\]\(\)]/.test(ch)) {
+      return ret(null, ch);
+    } else if (ch == "u" && stream.match("rl(")) {
+      stream.backUp(1);
+      state.tokenize = tokenParenthesized;
+      return ret("property", "word");
+    } else if (/[\w\\\-]/.test(ch)) {
+      stream.eatWhile(/[\w\\\-]/);
+      return ret("property", "word");
+    } else {
+      return ret(null, null);
+    }
+  }
+
+  function tokenString(quote) {
+    return function(stream, state) {
+      var escaped = false, ch;
+      while ((ch = stream.next()) != null) {
+        if (ch == quote && !escaped) {
+          if (quote == ")") stream.backUp(1);
+          break;
+        }
+        escaped = !escaped && ch == "\\";
+      }
+      if (ch == quote || !escaped && quote != ")") state.tokenize = null;
+      return ret("string", "string");
+    };
+  }
+
+  function tokenParenthesized(stream, state) {
+    stream.next(); // Must be '('
+    if (!stream.match(/\s*[\"\')]/, false))
+      state.tokenize = tokenString(")");
+    else
+      state.tokenize = null;
+    return ret(null, "(");
+  }
+
+  // Context management
+
+  function Context(type, indent, prev) {
+    this.type = type;
+    this.indent = indent;
+    this.prev = prev;
+  }
+
+  function pushContext(state, stream, type) {
+    state.context = new Context(type, stream.indentation() + indentUnit, state.context);
+    return type;
+  }
+
+  function popContext(state) {
+    state.context = state.context.prev;
+    return state.context.type;
+  }
+
+  function pass(type, stream, state) {
+    return states[state.context.type](type, stream, state);
+  }
+  function popAndPass(type, stream, state, n) {
+    for (var i = n || 1; i > 0; i--)
+      state.context = state.context.prev;
+    return pass(type, stream, state);
+  }
+
+  // Parser
+
+  function wordAsValue(stream) {
+    var word = stream.current().toLowerCase();
+    if (valueKeywords.hasOwnProperty(word))
+      override = "atom";
+    else if (colorKeywords.hasOwnProperty(word))
+      override = "keyword";
+    else
+      override = "variable";
+  }
+
+  var states = {};
+
+  states.top = function(type, stream, state) {
+    if (type == "{") {
+      return pushContext(state, stream, "block");
+    } else if (type == "}" && state.context.prev) {
+      return popContext(state);
+    } else if (type == "@media") {
+      return pushContext(state, stream, "media");
+    } else if (type == "@font-face") {
+      return "font_face_before";
+    } else if (/^@(-(moz|ms|o|webkit)-)?keyframes$/.test(type)) {
+      return "keyframes";
+    } else if (type && type.charAt(0) == "@") {
+      return pushContext(state, stream, "at");
+    } else if (type == "hash") {
+      override = "builtin";
+    } else if (type == "word") {
+      override = "tag";
+    } else if (type == "variable-definition") {
+      return "maybeprop";
+    } else if (type == "interpolation") {
+      return pushContext(state, stream, "interpolation");
+    } else if (type == ":") {
+      return "pseudo";
+    } else if (allowNested && type == "(") {
+      return pushContext(state, stream, "parens");
+    }
+    return state.context.type;
+  };
+
+  states.block = function(type, stream, state) {
+    if (type == "word") {
+      var word = stream.current().toLowerCase();
+      if (propertyKeywords.hasOwnProperty(word)) {
+        override = "property";
+        return "maybeprop";
+      } else if (nonStandardPropertyKeywords.hasOwnProperty(word)) {
+        override = "string-2";
+        return "maybeprop";
+      } else if (allowNested) {
+        override = stream.match(/^\s*:/, false) ? "property" : "tag";
+        return "block";
+      } else {
+        override += " error";
+        return "maybeprop";
+      }
+    } else if (type == "meta") {
+      return "block";
+    } else if (!allowNested && (type == "hash" || type == "qualifier")) {
+      override = "error";
+      return "block";
+    } else {
+      return states.top(type, stream, state);
+    }
+  };
+
+  states.maybeprop = function(type, stream, state) {
+    if (type == ":") return pushContext(state, stream, "prop");
+    return pass(type, stream, state);
+  };
+
+  states.prop = function(type, stream, state) {
+    if (type == ";") return popContext(state);
+    if (type == "{" && allowNested) return pushContext(state, stream, "propBlock");
+    if (type == "}" || type == "{") return popAndPass(type, stream, state);
+    if (type == "(") return pushContext(state, stream, "parens");
+
+    if (type == "hash" && !/^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/.test(stream.current())) {
+      override += " error";
+    } else if (type == "word") {
+      wordAsValue(stream);
+    } else if (type == "interpolation") {
+      return pushContext(state, stream, "interpolation");
+    }
+    return "prop";
+  };
+
+  states.propBlock = function(type, _stream, state) {
+    if (type == "}") return popContext(state);
+    if (type == "word") { override = "property"; return "maybeprop"; }
+    return state.context.type;
+  };
+
+  states.parens = function(type, stream, state) {
+    if (type == "{" || type == "}") return popAndPass(type, stream, state);
+    if (type == ")") return popContext(state);
+    if (type == "(") return pushContext(state, stream, "parens");
+    if (type == "word") wordAsValue(stream);
+    return "parens";
+  };
+
+  states.pseudo = function(type, stream, state) {
+    if (type == "word") {
+      override = "variable-3";
+      return state.context.type;
+    }
+    return pass(type, stream, state);
+  };
+
+  states.media = function(type, stream, state) {
+    if (type == "(") return pushContext(state, stream, "media_parens");
+    if (type == "}") return popAndPass(type, stream, state);
+    if (type == "{") return popContext(state) && pushContext(state, stream, allowNested ? "block" : "top");
+
+    if (type == "word") {
+      var word = stream.current().toLowerCase();
+      if (word == "only" || word == "not" || word == "and")
+        override = "keyword";
+      else if (mediaTypes.hasOwnProperty(word))
+        override = "attribute";
+      else if (mediaFeatures.hasOwnProperty(word))
+        override = "property";
+      else
+        override = "error";
+    }
+    return state.context.type;
+  };
+
+  states.media_parens = function(type, stream, state) {
+    if (type == ")") return popContext(state);
+    if (type == "{" || type == "}") return popAndPass(type, stream, state, 2);
+    return states.media(type, stream, state);
+  };
+
+  states.font_face_before = function(type, stream, state) {
+    if (type == "{")
+      return pushContext(state, stream, "font_face");
+    return pass(type, stream, state);
+  };
+
+  states.font_face = function(type, stream, state) {
+    if (type == "}") return popContext(state);
+    if (type == "word") {
+      if (!fontProperties.hasOwnProperty(stream.current().toLowerCase()))
+        override = "error";
+      else
+        override = "property";
+      return "maybeprop";
+    }
+    return "font_face";
+  };
+
+  states.keyframes = function(type, stream, state) {
+    if (type == "word") { override = "variable"; return "keyframes"; }
+    if (type == "{") return pushContext(state, stream, "top");
+    return pass(type, stream, state);
+  };
+
+  states.at = function(type, stream, state) {
+    if (type == ";") return popContext(state);
+    if (type == "{" || type == "}") return popAndPass(type, stream, state);
+    if (type == "word") override = "tag";
+    else if (type == "hash") override = "builtin";
+    return "at";
+  };
+
+  states.interpolation = function(type, stream, state) {
+    if (type == "}") return popContext(state);
+    if (type == "{" || type == ";") return popAndPass(type, stream, state);
+    if (type != "variable") override = "error";
+    return "interpolation";
+  };
+
+  return {
+    startState: function(base) {
+      return {tokenize: null,
+              state: "top",
+              context: new Context("top", base || 0, null)};
+    },
+
+    token: function(stream, state) {
+      if (!state.tokenize && stream.eatSpace()) return null;
+      var style = (state.tokenize || tokenBase)(stream, state);
+      if (style && typeof style == "object") {
+        type = style[1];
+        style = style[0];
+      }
+      override = style;
+      state.state = states[state.state](type, stream, state);
+      return override;
+    },
+
+    indent: function(state, textAfter) {
+      var cx = state.context, ch = textAfter && textAfter.charAt(0);
+      var indent = cx.indent;
+      if (cx.type == "prop" && (ch == "}" || ch == ")")) cx = cx.prev;
+      if (cx.prev &&
+          (ch == "}" && (cx.type == "block" || cx.type == "top" || cx.type == "interpolation" || cx.type == "font_face") ||
+           ch == ")" && (cx.type == "parens" || cx.type == "media_parens") ||
+           ch == "{" && (cx.type == "at" || cx.type == "media"))) {
+        indent = cx.indent - indentUnit;
+        cx = cx.prev;
+      }
+      return indent;
+    },
+
+    electricChars: "}",
+    blockCommentStart: "/*",
+    blockCommentEnd: "*/",
+    fold: "brace"
+  };
+});
+
+  function keySet(array) {
+    var keys = {};
+    for (var i = 0; i < array.length; ++i) {
+      keys[array[i]] = true;
+    }
+    return keys;
+  }
+
+  var mediaTypes_ = [
+    "all", "aural", "braille", "handheld", "print", "projection", "screen",
+    "tty", "tv", "embossed"
+  ], mediaTypes = keySet(mediaTypes_);
+
+  var mediaFeatures_ = [
+    "width", "min-width", "max-width", "height", "min-height", "max-height",
+    "device-width", "min-device-width", "max-device-width", "device-height",
+    "min-device-height", "max-device-height", "aspect-ratio",
+    "min-aspect-ratio", "max-aspect-ratio", "device-aspect-ratio",
+    "min-device-aspect-ratio", "max-device-aspect-ratio", "color", "min-color",
+    "max-color", "color-index", "min-color-index", "max-color-index",
+    "monochrome", "min-monochrome", "max-monochrome", "resolution",
+    "min-resolution", "max-resolution", "scan", "grid"
+  ], mediaFeatures = keySet(mediaFeatures_);
+
+  var propertyKeywords_ = [
+    "align-content", "align-items", "align-self", "alignment-adjust",
+    "alignment-baseline", "anchor-point", "animation", "animation-delay",
+    "animation-direction", "animation-duration", "animation-fill-mode",
+    "animation-iteration-count", "animation-name", "animation-play-state",
+    "animation-timing-function", "appearance", "azimuth", "backface-visibility",
+    "background", "background-attachment", "background-clip", "background-color",
+    "background-image", "background-origin", "background-position",
+    "background-repeat", "background-size", "baseline-shift", "binding",
+    "bleed", "bookmark-label", "bookmark-level", "bookmark-state",
+    "bookmark-target", "border", "border-bottom", "border-bottom-color",
+    "border-bottom-left-radius", "border-bottom-right-radius",
+    "border-bottom-style", "border-bottom-width", "border-collapse",
+    "border-color", "border-image", "border-image-outset",
+    "border-image-repeat", "border-image-slice", "border-image-source",
+    "border-image-width", "border-left", "border-left-color",
+    "border-left-style", "border-left-width", "border-radius", "border-right",
+    "border-right-color", "border-right-style", "border-right-width",
+    "border-spacing", "border-style", "border-top", "border-top-color",
+    "border-top-left-radius", "border-top-right-radius", "border-top-style",
+    "border-top-width", "border-width", "bottom", "box-decoration-break",
+    "box-shadow", "box-sizing", "break-after", "break-before", "break-inside",
+    "caption-side", "clear", "clip", "color", "color-profile", "column-count",
+    "column-fill", "column-gap", "column-rule", "column-rule-color",
+    "column-rule-style", "column-rule-width", "column-span", "column-width",
+    "columns", "content", "counter-increment", "counter-reset", "crop", "cue",
+    "cue-after", "cue-before", "cursor", "direction", "display",
+    "dominant-baseline", "drop-initial-after-adjust",
+    "drop-initial-after-align", "drop-initial-before-adjust",
+    "drop-initial-before-align", "drop-initial-size", "drop-initial-value",
+    "elevation", "empty-cells", "fit", "fit-position", "flex", "flex-basis",
+    "flex-direction", "flex-flow", "flex-grow", "flex-shrink", "flex-wrap",
+    "float", "float-offset", "flow-from", "flow-into", "font", "font-feature-settings",
+    "font-family", "font-kerning", "font-language-override", "font-size", "font-size-adjust",
+    "font-stretch", "font-style", "font-synthesis", "font-variant",
+    "font-variant-alternates", "font-variant-caps", "font-variant-east-asian",
+    "font-variant-ligatures", "font-variant-numeric", "font-variant-position",
+    "font-weight", "grid", "grid-area", "grid-auto-columns", "grid-auto-flow",
+    "grid-auto-position", "grid-auto-rows", "grid-column", "grid-column-end",
+    "grid-column-start", "grid-row", "grid-row-end", "grid-row-start",
+    "grid-template", "grid-template-areas", "grid-template-columns",
+    "grid-template-rows", "hanging-punctuation", "height", "hyphens",
+    "icon", "image-orientation", "image-rendering", "image-resolution",
+    "inline-box-align", "justify-content", "left", "letter-spacing",
+    "line-break", "line-height", "line-stacking", "line-stacking-ruby",
+    "line-stacking-shift", "line-stacking-strategy", "list-style",
+    "list-style-image", "list-style-position", "list-style-type", "margin",
+    "margin-bottom", "margin-left", "margin-right", "margin-top",
+    "marker-offset", "marks", "marquee-direction", "marquee-loop",
+    "marquee-play-count", "marquee-speed", "marquee-style", "max-height",
+    "max-width", "min-height", "min-width", "move-to", "nav-down", "nav-index",
+    "nav-left", "nav-right", "nav-up", "object-fit", "object-position",
+    "opacity", "order", "orphans", "outline",
+    "outline-color", "outline-offset", "outline-style", "outline-width",
+    "overflow", "overflow-style", "overflow-wrap", "overflow-x", "overflow-y",
+    "padding", "padding-bottom", "padding-left", "padding-right", "padding-top",
+    "page", "page-break-after", "page-break-before", "page-break-inside",
+    "page-policy", "pause", "pause-after", "pause-before", "perspective",
+    "perspective-origin", "pitch", "pitch-range", "play-during", "position",
+    "presentation-level", "punctuation-trim", "quotes", "region-break-after",
+    "region-break-before", "region-break-inside", "region-fragment",
+    "rendering-intent", "resize", "rest", "rest-after", "rest-before", "richness",
+    "right", "rotation", "rotation-point", "ruby-align", "ruby-overhang",
+    "ruby-position", "ruby-span", "shape-image-threshold", "shape-inside", "shape-margin",
+    "shape-outside", "size", "speak", "speak-as", "speak-header",
+    "speak-numeral", "speak-punctuation", "speech-rate", "stress", "string-set",
+    "tab-size", "table-layout", "target", "target-name", "target-new",
+    "target-position", "text-align", "text-align-last", "text-decoration",
+    "text-decoration-color", "text-decoration-line", "text-decoration-skip",
+    "text-decoration-style", "text-emphasis", "text-emphasis-color",
+    "text-emphasis-position", "text-emphasis-style", "text-height",
+    "text-indent", "text-justify", "text-outline", "text-overflow", "text-shadow",
+    "text-size-adjust", "text-space-collapse", "text-transform", "text-underline-position",
+    "text-wrap", "top", "transform", "transform-origin", "transform-style",
+    "transition", "transition-delay", "transition-duration",
+    "transition-property", "transition-timing-function", "unicode-bidi",
+    "vertical-align", "visibility", "voice-balance", "voice-duration",
+    "voice-family", "voice-pitch", "voice-range", "voice-rate", "voice-stress",
+    "voice-volume", "volume", "white-space", "widows", "width", "word-break",
+    "word-spacing", "word-wrap", "z-index",
+    // SVG-specific
+    "clip-path", "clip-rule", "mask", "enable-background", "filter", "flood-color",
+    "flood-opacity", "lighting-color", "stop-color", "stop-opacity", "pointer-events",
+    "color-interpolation", "color-interpolation-filters",
+    "color-rendering", "fill", "fill-opacity", "fill-rule", "image-rendering",
+    "marker", "marker-end", "marker-mid", "marker-start", "shape-rendering", "stroke",
+    "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin",
+    "stroke-miterlimit", "stroke-opacity", "stroke-width", "text-rendering",
+    "baseline-shift", "dominant-baseline", "glyph-orientation-horizontal",
+    "glyph-orientation-vertical", "text-anchor", "writing-mode"
+  ], propertyKeywords = keySet(propertyKeywords_);
+
+  var nonStandardPropertyKeywords_ = [
+    "scrollbar-arrow-color", "scrollbar-base-color", "scrollbar-dark-shadow-color",
+    "scrollbar-face-color", "scrollbar-highlight-color", "scrollbar-shadow-color",
+    "scrollbar-3d-light-color", "scrollbar-track-color", "shape-inside",
+    "searchfield-cancel-button", "searchfield-decoration", "searchfield-results-button",
+    "searchfield-results-decoration", "zoom"
+  ], nonStandardPropertyKeywords = keySet(nonStandardPropertyKeywords_);
+
+  var colorKeywords_ = [
+    "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige",
+    "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown",
+    "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue",
+    "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod",
+    "darkgray", "darkgreen", "darkkhaki", "darkmagenta", "darkolivegreen",
+    "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen",
+    "darkslateblue", "darkslategray", "darkturquoise", "darkviolet",
+    "deeppink", "deepskyblue", "dimgray", "dodgerblue", "firebrick",
+    "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite",
+    "gold", "goldenrod", "gray", "grey", "green", "greenyellow", "honeydew",
+    "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender",
+    "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral",
+    "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightpink",
+    "lightsalmon", "lightseagreen", "lightskyblue", "lightslategray",
+    "lightsteelblue", "lightyellow", "lime", "limegreen", "linen", "magenta",
+    "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple",
+    "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise",
+    "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin",
+    "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered",
+    "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred",
+    "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue",
+    "purple", "rebeccapurple", "red", "rosybrown", "royalblue", "saddlebrown",
+    "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue",
+    "slateblue", "slategray", "snow", "springgreen", "steelblue", "tan",
+    "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white",
+    "whitesmoke", "yellow", "yellowgreen"
+  ], colorKeywords = keySet(colorKeywords_);
+
+  var valueKeywords_ = [
+    "above", "absolute", "activeborder", "activecaption", "afar",
+    "after-white-space", "ahead", "alias", "all", "all-scroll", "alternate",
+    "always", "amharic", "amharic-abegede", "antialiased", "appworkspace",
+    "arabic-indic", "armenian", "asterisks", "auto", "avoid", "avoid-column", "avoid-page",
+    "avoid-region", "background", "backwards", "baseline", "below", "bidi-override", "binary",
+    "bengali", "blink", "block", "block-axis", "bold", "bolder", "border", "border-box",
+    "both", "bottom", "break", "break-all", "break-word", "button", "button-bevel",
+    "buttonface", "buttonhighlight", "buttonshadow", "buttontext", "cambodian",
+    "capitalize", "caps-lock-indicator", "caption", "captiontext", "caret",
+    "cell", "center", "checkbox", "circle", "cjk-earthly-branch",
+    "cjk-heavenly-stem", "cjk-ideographic", "clear", "clip", "close-quote",
+    "col-resize", "collapse", "column", "compact", "condensed", "contain", "content",
+    "content-box", "context-menu", "continuous", "copy", "cover", "crop",
+    "cross", "crosshair", "currentcolor", "cursive", "dashed", "decimal",
+    "decimal-leading-zero", "default", "default-button", "destination-atop",
+    "destination-in", "destination-out", "destination-over", "devanagari",
+    "disc", "discard", "document", "dot-dash", "dot-dot-dash", "dotted",
+    "double", "down", "e-resize", "ease", "ease-in", "ease-in-out", "ease-out",
+    "element", "ellipse", "ellipsis", "embed", "end", "ethiopic", "ethiopic-abegede",
+    "ethiopic-abegede-am-et", "ethiopic-abegede-gez", "ethiopic-abegede-ti-er",
+    "ethiopic-abegede-ti-et", "ethiopic-halehame-aa-er",
+    "ethiopic-halehame-aa-et", "ethiopic-halehame-am-et",
+    "ethiopic-halehame-gez", "ethiopic-halehame-om-et",
+    "ethiopic-halehame-sid-et", "ethiopic-halehame-so-et",
+    "ethiopic-halehame-ti-er", "ethiopic-halehame-ti-et",
+    "ethiopic-halehame-tig", "ew-resize", "expanded", "extra-condensed",
+    "extra-expanded", "fantasy", "fast", "fill", "fixed", "flat", "footnotes",
+    "forwards", "from", "geometricPrecision", "georgian", "graytext", "groove",
+    "gujarati", "gurmukhi", "hand", "hangul", "hangul-consonant", "hebrew",
+    "help", "hidden", "hide", "higher", "highlight", "highlighttext",
+    "hiragana", "hiragana-iroha", "horizontal", "hsl", "hsla", "icon", "ignore",
+    "inactiveborder", "inactivecaption", "inactivecaptiontext", "infinite",
+    "infobackground", "infotext", "inherit", "initial", "inline", "inline-axis",
+    "inline-block", "inline-table", "inset", "inside", "intrinsic", "invert",
+    "italic", "justify", "kannada", "katakana", "katakana-iroha", "keep-all", "khmer",
+    "landscape", "lao", "large", "larger", "left", "level", "lighter",
+    "line-through", "linear", "lines", "list-item", "listbox", "listitem",
+    "local", "logical", "loud", "lower", "lower-alpha", "lower-armenian",
+    "lower-greek", "lower-hexadecimal", "lower-latin", "lower-norwegian",
+    "lower-roman", "lowercase", "ltr", "malayalam", "match",
+    "media-controls-background", "media-current-time-display",
+    "media-fullscreen-button", "media-mute-button", "media-play-button",
+    "media-return-to-realtime-button", "media-rewind-button",
+    "media-seek-back-button", "media-seek-forward-button", "media-slider",
+    "media-sliderthumb", "media-time-remaining-display", "media-volume-slider",
+    "media-volume-slider-container", "media-volume-sliderthumb", "medium",
+    "menu", "menulist", "menulist-button", "menulist-text",
+    "menulist-textfield", "menutext", "message-box", "middle", "min-intrinsic",
+    "mix", "mongolian", "monospace", "move", "multiple", "myanmar", "n-resize",
+    "narrower", "ne-resize", "nesw-resize", "no-close-quote", "no-drop",
+    "no-open-quote", "no-repeat", "none", "normal", "not-allowed", "nowrap",
+    "ns-resize", "nw-resize", "nwse-resize", "oblique", "octal", "open-quote",
+    "optimizeLegibility", "optimizeSpeed", "oriya", "oromo", "outset",
+    "outside", "outside-shape", "overlay", "overline", "padding", "padding-box",
+    "painted", "page", "paused", "persian", "plus-darker", "plus-lighter", "pointer",
+    "polygon", "portrait", "pre", "pre-line", "pre-wrap", "preserve-3d", "progress", "push-button",
+    "radio", "read-only", "read-write", "read-write-plaintext-only", "rectangle", "region",
+    "relative", "repeat", "repeat-x", "repeat-y", "reset", "reverse", "rgb", "rgba",
+    "ridge", "right", "round", "row-resize", "rtl", "run-in", "running",
+    "s-resize", "sans-serif", "scroll", "scrollbar", "se-resize", "searchfield",
+    "searchfield-cancel-button", "searchfield-decoration",
+    "searchfield-results-button", "searchfield-results-decoration",
+    "semi-condensed", "semi-expanded", "separate", "serif", "show", "sidama",
+    "single", "skip-white-space", "slide", "slider-horizontal",
+    "slider-vertical", "sliderthumb-horizontal", "sliderthumb-vertical", "slow",
+    "small", "small-caps", "small-caption", "smaller", "solid", "somali",
+    "source-atop", "source-in", "source-out", "source-over", "space", "square",
+    "square-button", "start", "static", "status-bar", "stretch", "stroke",
+    "sub", "subpixel-antialiased", "super", "sw-resize", "table",
+    "table-caption", "table-cell", "table-column", "table-column-group",
+    "table-footer-group", "table-header-group", "table-row", "table-row-group",
+    "telugu", "text", "text-bottom", "text-top", "textarea", "textfield", "thai",
+    "thick", "thin", "threeddarkshadow", "threedface", "threedhighlight",
+    "threedlightshadow", "threedshadow", "tibetan", "tigre", "tigrinya-er",
+    "tigrinya-er-abegede", "tigrinya-et", "tigrinya-et-abegede", "to", "top",
+    "transparent", "ultra-condensed", "ultra-expanded", "underline", "up",
+    "upper-alpha", "upper-armenian", "upper-greek", "upper-hexadecimal",
+    "upper-latin", "upper-norwegian", "upper-roman", "uppercase", "urdu", "url",
+    "vertical", "vertical-text", "visible", "visibleFill", "visiblePainted",
+    "visibleStroke", "visual", "w-resize", "wait", "wave", "wider",
+    "window", "windowframe", "windowtext", "x-large", "x-small", "xor",
+    "xx-large", "xx-small"
+  ], valueKeywords = keySet(valueKeywords_);
+
+  var fontProperties_ = [
+    "font-family", "src", "unicode-range", "font-variant", "font-feature-settings",
+    "font-stretch", "font-weight", "font-style"
+  ], fontProperties = keySet(fontProperties_);
+
+  var allWords = mediaTypes_.concat(mediaFeatures_).concat(propertyKeywords_)
+    .concat(nonStandardPropertyKeywords_).concat(colorKeywords_).concat(valueKeywords_);
+  CodeMirror.registerHelper("hintWords", "css", allWords);
+
+  function tokenCComment(stream, state) {
+    var maybeEnd = false, ch;
+    while ((ch = stream.next()) != null) {
+      if (maybeEnd && ch == "/") {
+        state.tokenize = null;
+        break;
+      }
+      maybeEnd = (ch == "*");
+    }
+    return ["comment", "comment"];
+  }
+
+  function tokenSGMLComment(stream, state) {
+    if (stream.skipTo("-->")) {
+      stream.match("-->");
+      state.tokenize = null;
+    } else {
+      stream.skipToEnd();
+    }
+    return ["comment", "comment"];
+  }
+
+  CodeMirror.defineMIME("text/css", {
+    mediaTypes: mediaTypes,
+    mediaFeatures: mediaFeatures,
+    propertyKeywords: propertyKeywords,
+    nonStandardPropertyKeywords: nonStandardPropertyKeywords,
+    colorKeywords: colorKeywords,
+    valueKeywords: valueKeywords,
+    fontProperties: fontProperties,
+    tokenHooks: {
+      "<": function(stream, state) {
+        if (!stream.match("!--")) return false;
+        state.tokenize = tokenSGMLComment;
+        return tokenSGMLComment(stream, state);
+      },
+      "/": function(stream, state) {
+        if (!stream.eat("*")) return false;
+        state.tokenize = tokenCComment;
+        return tokenCComment(stream, state);
+      }
+    },
+    name: "css"
+  });
+
+  CodeMirror.defineMIME("text/x-scss", {
+    mediaTypes: mediaTypes,
+    mediaFeatures: mediaFeatures,
+    propertyKeywords: propertyKeywords,
+    nonStandardPropertyKeywords: nonStandardPropertyKeywords,
+    colorKeywords: colorKeywords,
+    valueKeywords: valueKeywords,
+    fontProperties: fontProperties,
+    allowNested: true,
+    tokenHooks: {
+      "/": function(stream, state) {
+        if (stream.eat("/")) {
+          stream.skipToEnd();
+          return ["comment", "comment"];
+        } else if (stream.eat("*")) {
+          state.tokenize = tokenCComment;
+          return tokenCComment(stream, state);
+        } else {
+          return ["operator", "operator"];
+        }
+      },
+      ":": function(stream) {
+        if (stream.match(/\s*\{/))
+          return [null, "{"];
+        return false;
+      },
+      "$": function(stream) {
+        stream.match(/^[\w-]+/);
+        if (stream.match(/^\s*:/, false))
+          return ["variable-2", "variable-definition"];
+        return ["variable-2", "variable"];
+      },
+      "#": function(stream) {
+        if (!stream.eat("{")) return false;
+        return [null, "interpolation"];
+      }
+    },
+    name: "css",
+    helperType: "scss"
+  });
+
+  CodeMirror.defineMIME("text/x-less", {
+    mediaTypes: mediaTypes,
+    mediaFeatures: mediaFeatures,
+    propertyKeywords: propertyKeywords,
+    nonStandardPropertyKeywords: nonStandardPropertyKeywords,
+    colorKeywords: colorKeywords,
+    valueKeywords: valueKeywords,
+    fontProperties: fontProperties,
+    allowNested: true,
+    tokenHooks: {
+      "/": function(stream, state) {
+        if (stream.eat("/")) {
+          stream.skipToEnd();
+          return ["comment", "comment"];
+        } else if (stream.eat("*")) {
+          state.tokenize = tokenCComment;
+          return tokenCComment(stream, state);
+        } else {
+          return ["operator", "operator"];
+        }
+      },
+      "@": function(stream) {
+        if (stream.match(/^(charset|document|font-face|import|(-(moz|ms|o|webkit)-)?keyframes|media|namespace|page|supports)\b/, false)) return false;
+        stream.eatWhile(/[\w\\\-]/);
+        if (stream.match(/^\s*:/, false))
+          return ["variable-2", "variable-definition"];
+        return ["variable-2", "variable"];
+      },
+      "&": function() {
+        return ["atom", "atom"];
+      }
+    },
+    name: "css",
+    helperType: "less"
+  });
+
+});
+
+// ui code mirror looks for a global CodeMirror object, which is not defined
+// by code mirror when loaded via AMD ... m(
+// this is the test in the file:
+// if (angular.isUndefined(window.CodeMirror))
+define('GlobalCodeMirror', [
+    'codemirror/lib/codemirror'
+  , 'codemirror/mode/css/css'
+    ], function(codemirror) {
+    window.CodeMirror = codemirror;
+    return undefined;
+});
+
+
+
+/**
+ * Binds a CodeMirror widget to a <textarea> element.
+ */
+angular.module('ui.codemirror', []).constant('uiCodemirrorConfig', {}).directive('uiCodemirror', [
+  'uiCodemirrorConfig',
+  function (uiCodemirrorConfig) {
+    return {
+      restrict: 'EA',
+      require: '?ngModel',
+      priority: 1,
+      compile: function compile() {
+        // Require CodeMirror
+        if (angular.isUndefined(window.CodeMirror)) {
+          throw new Error('ui-codemirror need CodeMirror to work... (o rly?)');
+        }
+        return function postLink(scope, iElement, iAttrs, ngModel) {
+          var options, opts, codeMirror, initialTextValue;
+          initialTextValue = iElement.text();
+          options = uiCodemirrorConfig.codemirror || {};
+          opts = angular.extend({ value: initialTextValue }, options, scope.$eval(iAttrs.uiCodemirror), scope.$eval(iAttrs.uiCodemirrorOpts));
+          if (iElement[0].tagName === 'TEXTAREA') {
+            // Might bug but still ...
+            codeMirror = window.CodeMirror.fromTextArea(iElement[0], opts);
+          } else {
+            iElement.html('');
+            codeMirror = new window.CodeMirror(function (cm_el) {
+              iElement.append(cm_el);
+            }, opts);
+          }
+          if (iAttrs.uiCodemirror || iAttrs.uiCodemirrorOpts) {
+            var codemirrorDefaultsKeys = Object.keys(window.CodeMirror.defaults);
+            scope.$watch(iAttrs.uiCodemirror || iAttrs.uiCodemirrorOpts, function updateOptions(newValues, oldValue) {
+              if (!angular.isObject(newValues)) {
+                return;
+              }
+              codemirrorDefaultsKeys.forEach(function (key) {
+                if (newValues.hasOwnProperty(key)) {
+                  if (oldValue && newValues[key] === oldValue[key]) {
+                    return;
+                  }
+                  codeMirror.setOption(key, newValues[key]);
+                }
+              });
+            }, true);
+          }
+          if (ngModel) {
+            // CodeMirror expects a string, so make sure it gets one.
+            // This does not change the model.
+            ngModel.$formatters.push(function (value) {
+              if (angular.isUndefined(value) || value === null) {
+                return '';
+              } else if (angular.isObject(value) || angular.isArray(value)) {
+                throw new Error('ui-codemirror cannot use an object or an array as a model');
+              }
+              return value;
+            });
+            // Override the ngModelController $render method, which is what gets called when the model is updated.
+            // This takes care of the synchronizing the codeMirror element with the underlying model, in the case that it is changed by something else.
+            ngModel.$render = function () {
+              //Code mirror expects a string so make sure it gets one
+              //Although the formatter have already done this, it can be possible that another formatter returns undefined (for example the required directive)
+              var safeViewValue = ngModel.$viewValue || '';
+              codeMirror.setValue(safeViewValue);
+            };
+            // Keep the ngModel in sync with changes from CodeMirror
+            codeMirror.on('change', function (instance) {
+              var newValue = instance.getValue();
+              if (newValue !== ngModel.$viewValue) {
+                // Changes to the model from a callback need to be wrapped in $apply or angular will not notice them
+                scope.$apply(function () {
+                  ngModel.$setViewValue(newValue);
+                });
+              }
+            });
+          }
+          // Watch ui-refresh and refresh the directive
+          if (iAttrs.uiRefresh) {
+            scope.$watch(iAttrs.uiRefresh, function (newVal, oldVal) {
+              // Skip the initial watch firing
+              if (newVal !== oldVal) {
+                codeMirror.refresh();
+              }
+            });
+          }
+          // Allow access to the CodeMirror instance through a broadcasted event
+          // eg: $broadcast('CodeMirror', function(cm){...});
+          scope.$on('CodeMirror', function (event, callback) {
+            if (angular.isFunction(callback)) {
+              callback(codeMirror);
+            } else {
+              throw new Error('the CodeMirror event requires a callback function');
+            }
+          });
+          // onLoad callback
+          if (angular.isFunction(opts.onLoad)) {
+            opts.onLoad(codeMirror);
+          }
+        };
+      }
+    };
+  }
+]);
+define("ui-codemirror", ["angular","GlobalCodeMirror"], function(){});
+
+define('ui/redPill/textEditor/textEditor',[
+    'angular'
+  , './textEditor-controller'
+  , './textEditor-directive'
+  , './CodeMirrorController'
+  , 'ui-codemirror'
+], function(
+    angular
+  , Controller
+  , directive
+  , CodeMirrorController
+  , ___no_amd_module// ui.codemirror
 ) {
     
     
-    if(typeof require.nodeRequire === 'function')
-        return null;
+    return angular.module('mtk.textEditor', ['ui.codemirror'])
+           .controller('TextEditorController', Controller)
+           .directive('mtkTextEditor', directive)
+           .controller('CodeMirrorController', CodeMirrorController)
+           ;
+})
+;
+define('ui/redPill/app',[
+    'angular'
+  , './app-controller'
+  , './app-directive'
+  , './redPillGlyphs/redPillGlyphs'
+  , './textEditor/textEditor'
+], function(
+    angular
+  , Controller
+  , directive
+  , redPillGlyphs
+  , textEditor
+) {
     
-    var IOError = errors.IO
-      , IONoEntry = errors.IONoEntry
+    return angular.module('mtk.redPill', [redPillGlyphs.name, textEditor.name])
+      .controller('AppController', Controller)
+      .directive('redPill', directive)
       ;
+})
+;
+// we can define window as a dependency
+// works only in a browser context
+define('metapolator/webAPI/window',[], window)
+;
+define('RedPill',[
+    'metapolator/errors'
+  , 'metapolator/webAPI/window'
+  , 'codemirror/lib/codemirror'
+], function(
+    errors
+  , window
+) {
+    
+    
+    var CPSParserError = errors.CPSParser
+      , CPSError = errors.CPS
+      ;
+    
+    function RedPill(io, fsEvents, project, angularApp, loadTextEditor) {
+        this.angularApp = angularApp
+        this.frontend = undefined;
+        this.project = project;
+        this.fsEvents = fsEvents;
+        this.loadTextEditor = loadTextEditor;
+        this.model = {
+            masters: this.project.masters
+        }
+        this._cache = {
+            lastSelection: []
+        }
+        
+        // load all masters, because right now it is very confusing
+        // when some masters are missing from the MOM
+        this.project.masters.forEach(this.project.open, this.project);
+        
+        
+        // will be called on angular.bootstrap
+        // see ui/app-controller.js 
+        this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this))
+        this.angularApp.constant('redPillModel', this.model);
+        this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
+        this.angularApp.constant('ModelController', this.project.controller);
+        this.angularApp.constant('io', io);
+        this.angularApp.constant('config', {loadTextEditor: loadTextEditor})
+        
+        this.fsEvents.on('change', this.fileChangeHandler.bind(this));
+    }
+    
+    var _p = RedPill.prototype;
 
-    function Io() {
-        Parent.call(this);
+    _p._registerFrontend = function(appController) {
+        if(this.frontend !== undefined)
+            throw new Error('Registering more than one AppController is not allowed.'
+                           +' Don\'t use <red-pill> more than once in a template!')
+        this.frontend = appController;
+    }
+    
+    _p._selectGlyphs = function(selector) {
+        try {
+            return this.project.controller.queryAll(selector)
+                .filter(function(item){ return item.type === 'glyph'; });
+        }
+        catch(error){
+            if(!(error instanceof CPSError))
+                throw error;
+            console.warn('selector "' + selector + '" did not parse:', error.message);
+        }
+        return false;
+    }
+    
+    _p.selectGlyphs = function(selector) {
+        var result = this._selectGlyphs(selector);
+        if(!result)
+            return this._cache.lastSelection;
+        this._cache.lastSelection = result;
+        return result;
+    }
+    
+    _p.fileChangeHandler = function (path) {
+        var match = path.indexOf(this.project.cpsDir)
+          , sourceName
+          ;
+        if(match !== 0)
+            return;
+        // +1 to remove the leading slash
+        sourceName = path.slice(this.project.cpsDir.length + 1);
+        try {
+            this.project.controller.updateChangedRule(true, sourceName)
+                .then(function() {
+                    this.frontend.$scope.$broadcast('cpsUpdate');
+                }.bind(this), errors.unhandledPromise);
+        }
+        catch(error) {
+            // KeyError will be thrown by RuleController.replaceRule if
+            // sourceName is unknown, which is expected at this point,
+            // because that means that sourceName is unused.
+            if(!(error instanceof errors.Key))
+                throw error;
+        }
+    };
+    
+    return RedPill;
+})
+;
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('path',['require','exports','module'],function (require, exports, module) {var process = process || {};
+(function () {
+  
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+var isWindows = process.platform === 'win32';
+
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length; i >= 0; i--) {
+    var last = parts[i];
+    if (last == '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+
+if (isWindows) {
+
+  // Regex to split a filename into [*, dir, basename, ext]
+  // windows version
+  var splitPathRe = /^(.+(?:[\\\/](?!$)|:)|[\\\/])?((?:.+?)?(\.[^.]*)?)$/;
+
+  // Regex to split a windows path into three parts: [*, device, slash,
+  // tail] windows-only
+  var splitDeviceRe =
+      /^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/][^\\\/]+)?([\\\/])?(.*?)$/;
+
+  // path.resolve([from ...], to)
+  // windows version
+  exports.resolve = function() {
+    var resolvedDevice = '',
+        resolvedTail = '',
+        resolvedAbsolute = false;
+
+    for (var i = arguments.length; i >= -1; i--) {
+      var path = (i >= 0)
+          ? arguments[i]
+          : process.cwd();
+
+      // Skip empty and invalid entries
+      if (typeof path !== 'string' || !path) {
+        continue;
+      }
+
+      var result = splitDeviceRe.exec(path),
+          device = result[1] || '',
+          isUnc = device && device.charAt(1) !== ':',
+          isAbsolute = !!result[2] || isUnc, // UNC paths are always absolute
+          tail = result[3];
+
+      if (device &&
+          resolvedDevice &&
+          device.toLowerCase() !== resolvedDevice.toLowerCase()) {
+        // This path points to another device so it is not applicable
+        continue;
+      }
+
+      if (!resolvedDevice) {
+        resolvedDevice = device;
+      }
+      if (!resolvedAbsolute) {
+        resolvedTail = tail + '\\' + resolvedTail;
+        resolvedAbsolute = isAbsolute;
+      }
+
+      if (resolvedDevice && resolvedAbsolute) {
+        break;
+      }
     }
 
-    var _p = Io.prototype = Object.create(Parent.prototype);
+    if (!resolvedAbsolute && resolvedDevice) {
+      // If we still don't have an absolute path,
+      // prepend the current path for the device found.
 
-    var _errorFromRequest = function(request) {
-        var message = ['Status', request.status, request.statusText].join(' ')
-        if(request.status === 404)
-            return new IONoEntry(message);
-        //just don't use this if request.status == 200 or so is no error
-        return new IOError(message);
+      // TODO
+      // Windows stores the current directories for 'other' drives
+      // as hidden environment variables like =C:=c:\windows (literally)
+      // var deviceCwd = os.getCwdForDrive(resolvedDevice);
+      var deviceCwd = '';
+
+      // If there is no cwd set for the drive, it is at root
+      resolvedTail = deviceCwd + '\\' + resolvedTail;
+      resolvedAbsolute = true;
     }
-    
-    function _path2uri(path) {
-        return path.split('/').map(encodeURIComponent).join('/')
+
+    // Replace slashes (in UNC share name) by backslashes
+    resolvedDevice = resolvedDevice.replace(/\//g, '\\');
+
+    // At this point the path should be resolved to a full absolute path,
+    // but handle relative paths to be safe (might happen when process.cwd()
+    // fails)
+
+    // Normalize the tail path
+
+    function f(p) {
+      return !!p;
     }
-    
-    _p.readFile = obtain.factory(
-        {
-            uri: ['path', _path2uri]
-          , readFile:['uri', function(path) {
-                var request = new XMLHttpRequest();
-                request.open('GET', path, false);
-                request.send(null);
-                
-                if(request.status !== 200)
-                    throw _errorFromRequest(request);
-                
-                return request.responseText;
-            }]
-        }
-      , {
-            readFile:['uri', '_callback', function(path, callback) {
-                var request = new XMLHttpRequest()
-                  , result
-                  , error
-                  ;
-                request.open('GET', path, true);
-                
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4 /*DONE*/)
-                        return;
-                    
-                    if (request.status !== 200)
-                        error = _errorFromRequest(request);
-                    else
-                        result = request.responseText
-                    callback(error, result)
-                }
-                request.send(null);
-            }]
-        }
-      , ['path']
-      , function(obtain){ return obtain('readFile'); }
-    );
-    
-    _p.writeFile = obtain.factory(
-        {
-            uri: ['path', _path2uri]
-          , writeFile:['uri', 'data', function(path, data) {
-                var request = new XMLHttpRequest();
-                request.open('PUT', path, false);
-                request.send(data);
-                if (request.status !== 200  && request.status !== 204)
-                    throw _errorFromRequest(request);
-                return;
-            }]
-        }
-      , {
-            writeFile:['uri', 'data', '_callback',
-            function(path, data, callback) {
-                var request = new XMLHttpRequest()
-                    , result
-                    , error
-                    ;
-                request.open('PUT', path, true);
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4 /*DONE*/)
-                        return;
-                    if (request.status !== 200  && request.status !== 204)
-                        error = _errorFromRequest(request);
-                    callback(error, result);
-                }
-                request.send(data);
-            }]
-        }
-      , ['path', 'data']
-      , function(obtain){ return obtain('writeFile'); }
-    );
-    
-    _p.unlink = obtain.factory(
-        {
-            uri: ['filename', _path2uri]
-          , unlink:['uri', function(filename) {
-                var request = new XMLHttpRequest();
-                request.open('DELETE', filename, false);
-                request.send();
-                if (request.status !== 200 && request.status !== 204)
-                    throw _errorFromRequest(request);
-                return;
-            }]
-        }
-      , {
-            unlink:['uri', '_callback', function(filename, callback) {
-                var request = new XMLHttpRequest()
-                    , result
-                    , error
-                    ;
-                request.open('DELETE', filename, true);
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4 /*DONE*/)
-                        return;
-                    if (request.status !== 200 && request.status !== 204)
-                        error = _errorFromRequest(request);
-                    callback(error, result);
-                }
-                request.send();
-            }]
-        }
-      , ['filename']
-      , function(obtain){ return obtain('unlink'); }
-    );
-    
-    _p.readBytes = obtain.factory(
-        {
-            uri: ['path', _path2uri]
-          , readBytes:['uri', 'bytes', function(path, bytes) {
-                var request = new XMLHttpRequest();
-                request.open('GET', path, false);
-                // so there is no conversion by the browser
-                request.overrideMimeType('text\/plain; charset=x-user-defined');
-                request.send(null);
-                
-                if(request.status !== 200)
-                    throw _errorFromRequest(request);
-                var chunk = request.response.slice(0, bytes),
-                    newChunk = new Uint8Array(bytes);
-                // throw away high-order bytes (F7)
-                for(var i=0; i<chunk.length; i++)
-                    newChunk[i] = chunk.charCodeAt(i);
-                return String.fromCharCode.apply(null, newChunk);
-            }]
-        }
-      , {
-            readBytes:['uri', 'bytes', '_callback',
-            function(path, bytes, callback) {
-                var request = new XMLHttpRequest()
-                  , result
-                  , error
-                  ;
-                request.open('GET', path, true);
-                request.responseType = 'arraybuffer';
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4 /*DONE*/)
-                        return;
-                    
-                    if (request.status !== 200)
-                        error = _errorFromRequest(request);
-                    else {
-                        var  newChunk =  new Uint8Array(request.response, 0, bytes);
-                        result = String.fromCharCode.apply(null, newChunk);
-                    }
-                    callback(error, result);
-                }
-                request.send(null);
-            }]
-        }
-      , ['path', 'bytes']
-      , function(obtain){ return obtain('readBytes'); }
-    );
 
-    // FIXME: the distinction between dir and file should be more
-    // robust :-/
-    // one problem for example is the io pathExists methods,
-    // which should work for files and directories regardless,
-    // but to work for directories it shoud attach a slash (so the REST
-    // server) can easily know what is meant
-    // PROPOSED FIX: the io api needs a split into: dirExists and fileExists
-    // so we could create a clear distinction and append the indicating
-    // slash. path exists would be removed
-    _p.pathExists = obtain.factory(
-        {
-            uri: ['path', _path2uri]
-          , pathExists:['uri', function(path) {
-                var request = new XMLHttpRequest();
-                request.open('HEAD', path, false);
-                request.send(null);
-                return request.status === 200;
-            }]
-        }
-      , {
-            pathExists:['uri', '_callback', function(path, callback) {
-                var request = new XMLHttpRequest();
-                request.open('HEAD', path, true);
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4) return;
-                    callback(undefined, request.status === 200);
-                }
-                request.send(null);
-            }]
-        }
-      , ['path']
-      , function(obtain){ return obtain('pathExists'); }
-    );
-    
-    _p.getMtime = obtain.factory(
-        {
-            uri: ['path', _path2uri]
-          , getMtime:['uri', function(path) {
-                var request = new XMLHttpRequest();
-                request.open('HEAD', path, false);
-                request.send(null);
-                if(request.status !== 200)
-                    throw _errorFromRequest(request);
-                return new Date(request.getResponseHeader('Last-Modified'));
-            }]
-        }
-      , {
-            getMtime:['uri', '_callback', function(path, callback) {
-                var request = new XMLHttpRequest()
-                  , result
-                  , error
-                  ;
-                request.open('HEAD', path, true);
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4  /*DONE*/)
-                        return;
-                    
-                    if (request.status !== 200)
-                        error = _errorFromRequest(request);
-                    else
-                        result = new Date(request.getResponseHeader('Last-Modified'));
-                    callback(error, result);
-                }
-                request.send(null);
-            }]
-        }
-      , ['path']
-      , function(obtain){ return obtain('getMtime'); }
-    );
-    
-    _p.mkDir = obtain.factory({
-            uri: ['path', _path2uri]
-          , dirName: ['uri', function(uri) {
-                // the endpoint will only create a directory if uri ends width
-                // a slash
-                return uri + (uri.slice(-1) !== '/' ? '/' : '');
-            }]
-          , mkDir:['dirName', function(path) {
-                var request = new XMLHttpRequest();
-                request.open('PUT', path, false);
-                request.send();
-                if (request.status !== 200 && request.status !== 201
-                        && request.status !== 204)
-                    throw _errorFromRequest(request);
-                return;
-            }]
-        }
-      , {
-            mkDir:['dirName', '_callback', function(path, callback) {
-                var request = new XMLHttpRequest()
-                    , result
-                    , error
-                    ;
-                request.open('PUT', path, true);
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4 /*DONE*/)
-                        return;
-                    
-                    if (request.status !== 200 && request.status !== 201
-                            && request.status !== 204)
-                        error = _errorFromRequest(request);
-                    callback(error, result);
-                }
-                request.send();
-            }]
-        }
-      , ['path']
-      , function(obtain){ return obtain('mkDir'); }
-    );
-    
-    _p.rmDir = obtain.factory({
-            uri: ['path', _path2uri]
-          , dirName: ['uri', function(uri) {
-                // the endpoint will only remove a directory if uri ends width
-                // a slash
-                return uri + (uri.slice(-1) !== '/' ? '/' : '');
-            }]
-          , rmDir:['dirName', function(path) {
-                var request = new XMLHttpRequest();
-                request.open('DELETE', path, false);
-                request.send();
-                if (request.status !== 200 && request.status !== 204)
-                    throw _errorFromRequest(request);
-                return;
-            }]
-        }
-      , {
-            rmDir:['dirName', '_callback', function(path, callback) {
-                var request = new XMLHttpRequest()
-                    , result
-                    , error
-                    ;
-                request.open('DELETE', path, true);
-                request.onreadystatechange = function (aEvt) {
-                    if (request.readyState != 4 /*DONE*/)
-                        return;
+    resolvedTail = normalizeArray(resolvedTail.split(/[\\\/]+/).filter(f),
+                                  !resolvedAbsolute).join('\\');
 
-                    if (request.status !== 200 && request.status !== 204)
-                        error = _errorFromRequest(request);
-                    callback(error, result);
-                }
-                request.send();
-            }]
+    return (resolvedDevice + (resolvedAbsolute ? '\\' : '') + resolvedTail) ||
+           '.';
+  };
+
+  // windows version
+  exports.normalize = function(path) {
+    var result = splitDeviceRe.exec(path),
+        device = result[1] || '',
+        isUnc = device && device.charAt(1) !== ':',
+        isAbsolute = !!result[2] || isUnc, // UNC paths are always absolute
+        tail = result[3],
+        trailingSlash = /[\\\/]$/.test(tail);
+
+    // Normalize the tail path
+    tail = normalizeArray(tail.split(/[\\\/]+/).filter(function(p) {
+      return !!p;
+    }), !isAbsolute).join('\\');
+
+    if (!tail && !isAbsolute) {
+      tail = '.';
+    }
+    if (tail && trailingSlash) {
+      tail += '\\';
+    }
+
+    return device + (isAbsolute ? '\\' : '') + tail;
+  };
+
+  // windows version
+  exports.join = function() {
+    function f(p) {
+      return p && typeof p === 'string';
+    }
+
+    var paths = Array.prototype.slice.call(arguments, 0).filter(f);
+    var joined = paths.join('\\');
+
+    // Make sure that the joined path doesn't start with two slashes
+    // - it will be mistaken for an unc path by normalize() -
+    // unless the paths[0] also starts with two slashes
+    if (/^[\\\/]{2}/.test(joined) && !/^[\\\/]{2}/.test(paths[0])) {
+      joined = joined.slice(1);
+    }
+
+    return exports.normalize(joined);
+  };
+
+
+} else /* posix */ {
+
+  // Regex to split a filename into [*, dir, basename, ext]
+  // posix version
+  var splitPathRe = /^(.+\/(?!$)|\/)?((?:.+?)?(\.[^.]*)?)$/;
+
+  // path.resolve([from ...], to)
+  // posix version
+  exports.resolve = function() {
+    var resolvedPath = '',
+        resolvedAbsolute = false;
+
+    for (var i = arguments.length; i >= -1 && !resolvedAbsolute; i--) {
+      var path = (i >= 0)
+          ? arguments[i]
+          : process.cwd();
+
+      // Skip empty and invalid entries
+      if (typeof path !== 'string' || !path) {
+        continue;
+      }
+
+      resolvedPath = path + '/' + resolvedPath;
+      resolvedAbsolute = path.charAt(0) === '/';
+    }
+
+    // At this point the path should be resolved to a full absolute path, but
+    // handle relative paths to be safe (might happen when process.cwd() fails)
+
+    // Normalize the path
+    resolvedPath = normalizeArray(resolvedPath.split('/').filter(function(p) {
+      return !!p;
+    }), !resolvedAbsolute).join('/');
+
+    return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+  };
+
+  // path.normalize(path)
+  // posix version
+  exports.normalize = function(path) {
+    var isAbsolute = path.charAt(0) === '/',
+        trailingSlash = path.slice(-1) === '/';
+
+    // Normalize the path
+    path = normalizeArray(path.split('/').filter(function(p) {
+      return !!p;
+    }), !isAbsolute).join('/');
+
+    if (!path && !isAbsolute) {
+      path = '.';
+    }
+    if (path && trailingSlash) {
+      path += '/';
+    }
+
+    return (isAbsolute ? '/' : '') + path;
+  };
+
+
+  // posix version
+  exports.join = function() {
+    var paths = Array.prototype.slice.call(arguments, 0);
+    return exports.normalize(paths.filter(function(p, index) {
+      return p && typeof p === 'string';
+    }).join('/'));
+  };
+}
+
+
+exports.dirname = function(path) {
+  var dir = splitPathRe.exec(path)[1] || '';
+  if (!dir) {
+    // No dirname
+    return '.';
+  } else if (dir.length === 1 ||
+      (isWindows && dir.length <= 3 && dir.charAt(1) === ':')) {
+    // It is just a slash or a drive letter with a slash
+    return dir;
+  } else {
+    // It is a full dirname, strip trailing slash
+    return dir.substring(0, dir.length - 1);
+  }
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPathRe.exec(path)[2] || '';
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPathRe.exec(path)[3] || '';
+};
+
+
+exports.exists = function(path, callback) {
+  process.binding('fs').stat(path, function(err, stats) {
+    if (callback) callback(err ? false : true);
+  });
+};
+
+
+exports.existsSync = function(path) {
+  try {
+    process.binding('fs').stat(path);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+}());
+
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util/isBufferBrowser',['require','exports','module'],function (require, exports, module) {module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('inherits',['require','exports','module'],function (require, exports, module) {if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util/util',['require','exports','module','./isBufferBrowser','inherits'],function (require, exports, module) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
         }
-      , ['path']
-      , function(obtain){ return obtain('rmDir'); }
-    );
-    
-    return new Io(); // Single instance of static type
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./isBufferBrowser');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/level',['require','exports','module','util/util'],function (require, exports, module) {var util = require("util/util");
+
+/**
+ * This class represents a logging level.
+ * @name Level
+ * @param {object} [options] If provided, then both "name", and "value" fields must be given, otherwise it uses default values.
+ * @param {String} [options.name="INFO"] Logging level name
+ * @param {int} [options.value=4] Logging level value
+ * @returns {Level}
+ * @constructor
+ */
+var Level = function(options) {
+  var self = this;
+  (self.super_ = Level.super_).call(self);
+
+  var options = options || {};
+
+  if (options.name == undefined || options.value === undefined) {
+    self._name = "INFO";
+    self._value = 4;
+    return self;
+  }
+
+  self._name = options.name;
+  self._value = options.value;
+
+  return self;
+};
+
+util.inherits(Level, Object);
+
+/**
+ * OFF is a special level that can be used to turn off logging.
+ * @constant
+ */
+Level.OFF = new Level({"name": "OFF", "value": 7});
+Level.prototype.OFF = Level.OFF;
+
+/**
+ * SEVERE is a message level indicating a serious failure.
+ * @constant
+ */
+Level.SEVERE = new Level({"name": "SEVERE", "value": 6});
+Level.prototype.SEVERE = Level.SEVERE;
+
+/**
+ * WARNING is a message level indicating a potential problem.
+ * @constant
+ */
+Level.WARNING = new Level({"name":"WARNING", "value": 5});
+Level.prototype.WARNING = Level.WARNING;
+
+/**
+ * INFO is a message level for informational messages.
+ * @constant
+ */
+Level.INFO =  new Level({"name": "INFO", "value": 4});
+Level.prototype.INFO = Level.INFO;
+
+/**
+ * CONFIG is a message level for static configuration messages.
+ * @constant
+ */
+Level.CONFIG = new Level({"name": "CONFIG", "value": 3});
+Level.prototype.CONFIG = Level.CONFIG;
+
+/**
+ * FINER indicates a fairly detailed tracing message.
+ * @constant
+ */
+Level.FINE = new Level({"name": "FINE", "value": 2});
+Level.prototype.FINE = Level.FINE;
+
+/**
+ * FINE is a message level providing tracing information.
+ * @constant
+ */
+Level.FINER = new Level({"name": "FINER", "value": 1});
+Level.prototype.FINER = Level.FINER;
+
+/**
+ * FINEST indicates a highly detailed tracing message.
+ * @constant
+ */
+Level.FINEST = new Level({"name": "FINEST", "value": 0});
+Level.prototype.FINEST = Level.FINEST;
+
+/**
+ * ALL indicates that all messages should be logged.
+ * @constant
+ */
+Level.ALL = new Level({"name":"ALL", "value": 0});
+Level.prototype.ALL = Level.ALL;
+
+
+
+/**
+ * This function returns the integer value associated with the level
+ * @returns {Number}
+ */
+Level.prototype.intValue = function() {
+  return this._value;
+};
+
+
+/**
+ * This function returns the string name associated with the level
+ * @returns {String}
+ */
+Level.prototype.getName = function() {
+  return this._name;
+};
+
+/**
+ * This function checks if the name, and int value of this {@link Level} object matches
+ * the name and value of the given [level]{@link Level} object.
+ * @param {Level} level The {@link Level} object to compare against
+ * @returns {boolean}
+ * {@linkcode true} if equal
+ * {@linkcode false} if not equal
+ */
+Level.prototype.equals = function(level) {
+  if (!(level instanceof  Level)) {
+    return false;
+  }
+  return (this.intValue() == level.intValue());
+};
+
+
+
+/**
+ * This function compares the int value of this {@link Level} object against the
+ * the int value of the given [level]{@link Level} object.
+ * @param {Level} level The {@link Level} object to compare against
+ * @returns {number | undefined}
+ * {@linkcode <0} If this {@link Level} object's int value is less <br />
+ * {@linkcode =0} If this {@link Level} object's int value is the same <br />
+ * {@linkcode >0} If this {@link Level} object's int value is greater <br />
+ * {@linkcode undefined} if the argument is not of {@link Level} type
+ */
+Level.prototype.compare = function(level) {
+  if (!(level instanceof Level)) {
+    return undefined;
+  }
+
+  var intA = this.intValue();
+  var intB = level.intValue();
+
+  if (intA == intB) {
+    return 0;
+  }
+
+  if (intA > intB) {
+    return 1;
+  }
+
+  if (intA <  intB) {
+    return -1;
+  }
+};
+
+Level.prototype.toString = function() {
+  return this.getName();
+};
+
+
+Level.isValid =  function(level) {
+  if (!level || !(level instanceof Level)) {
+    return false;
+  }
+  return typeof (level instanceof Level) &&
+      (level.intValue() >= Level.ALL.intValue() || level <= Level.OFF.intValue());
+};
+
+
+Level.prototype.isValid = function() {
+  return Level.isValid(this);
+};
+
+module.exports = Level;
+
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/logrecord',['require','exports','module','./level','util/util'],function (require, exports, module) {
+
+
+var Level = require("./level");
+var util = require("util/util");
+
+/**
+ * This class is equivalent to java.util.logging.LogRecord
+ * @name LogRecord
+ * @param {object} [options] Options used to initialize this {@link LogRecord}
+ * @param {Level} [options.level=Level.INFO] logging {@link Level}
+ * @param {string} [options.message=null] message string
+ * @param {number} [options.millis=new Date().getTime()] time in milliseconds
+ * @param {string} [options.loggerName=null] logger name
+ * @param {Array} [options.parameters=null] {@link Array} of parameters
+ * @param {Error} [options.thrown=null] {@link Error} object
+ * @param {string} [options.sourceMethodName=null] source method name
+ * @param {string} [options.sourceFileName=null] source file name
+ * @constructor
+ *
+ */
+var LogRecord = function(options) {
+  var self = this;
+  (self.super_ = LogRecord.super_).call(self);
+
+  options = options || {};
+
+  self._sourceStack = options._sourceStack || null;
+
+  self._level = options.level || Level.INFO;
+  self._message = options.message || null;
+  self._millis = options.millis || (new Date()).getTime();
+  self._loggerName = options.loggerName || null;
+  self._parameters = options.parameters || null;
+  self._thrown = options.thrown || null;
+  self._sourceMethodName = options._sourceMethodName || null;
+  self._sourceFileName = options._sourceFileName || null;
+
+  return self;
+};
+
+util.inherits(LogRecord, Object);
+
+
+
+/**
+ * Sets the logging {@link Level} associated with this {@link LogRecord}
+ * @param {Level} level Logging level
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setLevel = function(level) {
+  this._level = level;
+  return this;
+};
+
+/**
+ * Retrieves the logging {@link Level} associated with this {@link LogRecord}
+ * @returns {Level}
+ */
+LogRecord.prototype.getLevel = function() {
+  return this._level;
+};
+
+/**
+ * Sets the message associated with this {@link LogRecord}
+ * @param {string} message Message string
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setMessage = function(message) {
+  this._message = message;
+  return this;
+};
+
+/**
+ * Retrieves the message associated with this {@link LogRecord}
+ * @returns {string}
+ */
+LogRecord.prototype.getMessage = function() {
+  return this._message;
+};
+
+/**
+ * Sets the time (in milliseconds) associated with this {@link LogRecord}
+ * @param {number} millis Time in milliseconds
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setMillis = function(millis) {
+  this._millis = millis;
+};
+
+/**
+ * Retrieves the time (in milliseconds) associated with this {@link LogRecord}
+ * @returns {number}
+ */
+LogRecord.prototype.getMillis = function() {
+  return this._millis;
+};
+
+/**
+ * Sets the logger name associated with this {@link LogRecord}
+ * @param {string} loggerName Logger name
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setLoggerName = function(loggerName) {
+  this._loggerName = loggerName;
+  return this;
+};
+
+/**
+ * Retrieves the logger name associated with this {@link LogRecord}
+ * @returns {String}
+ */
+LogRecord.prototype.getLoggerName = function() {
+  return this._loggerName;
+};
+
+/**
+ * Sets the parameters array associated with this {@link LogRecord}
+ * @param {Array} parameters Array of parameters
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setParameters = function(parameters) {
+  this._parameters = parameters;
+  return this;
+};
+
+/**
+ * Retrieves the parameters array associated with this {@link LogRecord}
+ * @returns {Array}
+ */
+LogRecord.prototype.getParameters = function() {
+  return this._parameters;
+};
+
+/**
+ * Sets the thrown {@link Error} associated with this {@link LogRecord}
+ * @param {Error} thrown Error object
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setThrown = function(thrown) {
+  if (!util.isError(thrown)) {
+    return this;
+  }
+
+  this._thrown = thrown;
+
+  return this;
+};
+
+/**
+ * Retrieves the thrown {@link Error} associated with this {@link LogRecord}
+ * @returns {Error}
+ */
+LogRecord.prototype.getThrown = function() {
+  return this._thrown;
+};
+
+/**
+ * Sets the source method name associated with this {@link LogRecord}
+ * @param {string} methodName Method name
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setSourceMethodName = function(methodName) {
+  this._sourceMethodName = methodName;
+  return this;
+};
+
+/**
+ * Retrieves the source method name associated with this {@link LogRecord}
+ * @returns {string}
+ */
+LogRecord.prototype.getSourceMethodName = function() {
+  return this._sourceMethodName;
+};
+
+/**
+ * Sets the source file name associated with this {@link LogRecord}
+ * @param {string} fileName File name
+ * @returns {LogRecord}
+ */
+LogRecord.prototype.setSourceFileName = function(fileName) {
+  this._sourceFileName = fileName
+  return this;
+};
+
+/**
+ * Retrieves the source file name associated with this {@link LogRecord}
+ * @return {String}
+ */
+LogRecord.prototype.getSourceFileName = function() {
+  return this._sourceFileName;
+};
+
+
+
+LogRecord.prototype.setSourceStackFrame = function(sourceStack) {
+  this._sourceStack = sourceStack
+};
+
+
+LogRecord.prototype.getSourceStackFrame = function() {
+  return this._sourceStack;
+};
+
+module.exports = LogRecord;
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/handler',['require','exports','module','./level','./logrecord','util/util'],function (require, exports, module) {
+
+var Level = require("./level");
+var LogRecord = require("./logrecord");
+
+var util = require("util/util");
+
+/**
+ * This class is equivalent to java.util.logging.Handler.
+ *
+ * It stores all the pushed {@link LogRecord} objects in memory, until flushed.
+ *
+ * @name Handler
+ * @returns {Handler}
+ * @constructor
+ */
+var Handler = function() {
+  var self = this;
+  (self.super_ = Handler.super_).call(self);
+  self._level = Level.FINEST;
+  self._formatter = undefined;
+  self._logRecords = [];
+  return self;
+};
+
+
+util.inherits(Handler, Object);
+/**
+ * Sets the logging {@link Level} for this {@link Handler}
+ * @param {Level} level Logging level
+ * @returns {Handler}
+ */
+Handler.prototype.setLevel = function(level) {
+  if (!Level.isValid(level)) {
+    return this;
+  }
+  this._level = level;
+  return this;
+};
+
+/**
+ * Retrieves the logging {@link Level} for this {@link Handler}
+ * @returns {Level}
+ */
+Handler.prototype.getLevel = function() {
+  return this._level;
+};
+
+/**
+ * Checks if the specified {@link LogRecord} object can be logged given the current logging {@link Level} of this {@link Handler}
+ * @param {LogRecord} logRecord {@link LogRecord} to be checked
+ * @returns {boolean}
+ * {@Linkcode true} if the {@link LogRecord} can be logged <br />
+ * {@linkcode false} if the {@link LogRecord} cannot be logged
+ */
+Handler.prototype.isLoggable = function(logRecord) {
+  if (!logRecord || !(logRecord instanceof  LogRecord)) {
+    return false;
+  }
+
+  var level = logRecord.getLevel();
+
+  return Level.isValid(level) && level >= this.getLevel();
+};
+
+/**
+ * This function stores the given {@link LogRecord} object internally in memory. <br />
+ * <br />
+ * Note that this function will not print the record. If you want to actually do something useful
+ * with the {@link LogRecord} object, you must extend this class, and override this method. <br />
+ * <br />
+ * {@link ConsoleHandler} is an example of a class that extends this class.
+ *
+ * @param {LogRecord} logRecord {@link LogRecord} to be published
+ * @returns {Handler}
+ */
+Handler.prototype.publish = function(logRecord) {
+  if (!this.isLoggable(logRecord)) {
+    return this;
+  }
+  //default-handler, store records in memory
+  this._logRecords.push(logRecord);
+  return this;
+};
+
+/**
+ * This function clears the internal array of log records.
+ * @returns {Handler}
+ *
+ */
+Handler.prototype.flush = function() {
+  this._logRecords = [];
+  return this;
+};
+
+/**
+ * This function sets the {@link Formatter} to use for this {@link LogRecord} {@link Handler}
+ * @param {Formatter} formatter The {@link Formatter} object
+ * @returns {Handler}
+ */
+Handler.prototype.setFormatter = function(formatter) {
+  this._formatter = formatter;
+  return this;
+};
+
+/**
+ * This function retrieves the {@link Formatter} for this {@link LogRecord} {@link Handler}
+ * @returns {Formatter}
+ */
+Handler.prototype.getFormatter = function() {
+  return this._formatter;
+};
+
+
+module.exports = Handler;
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/logger',['require','exports','module','path','util/util','./level','./handler','./logrecord'],function (require, exports, module) {
+
+
+var path = require("path");
+var util = require("util/util");
+var Level = require("./level");
+var Handler = require("./handler");
+var LogRecord = require("./logrecord");
+
+/**
+ * This class is the equivalent of java.util.logging.Logger
+ * @name Logger
+ * @param {object} [options]
+ * @param {String} [options.name=null] Name to describe this logger
+ * @param {Level} [options.level=Level.SEVERE] Default logging level
+ *
+ * @returns {Logger}
+ * @constructor
+ */
+var Logger = function(options) {
+  var self = this;
+  (self.super_ = Logger.super_).call(self);
+
+  var options = options || {};
+  this._level = (Level.isValid(options.level))? options.level: Level.SEVERE;
+  this._name = options.name;
+
+  this._handlers = [];
+  return this;
+};
+
+util.inherits(Logger, Object);
+
+var fillStackInfo = function(/** LogRecord */ record) {
+  var orig = Error.prepareStackTrace;
+  try {
+    var err = new Error();
+    var caller;
+
+    Error.prepareStackTrace = function (err, stack) {
+      return stack;
+    };
+
+    var parentFrame = err.stack.shift();
+    var current = parentFrame.getFileName();
+    while (err.stack.length) {
+      var currentFrame = err.stack.shift();
+      caller = currentFrame.getFileName();
+      if(current!==caller) {
+        var info = currentFrame.toString();
+        record.setSourceFileName(currentFrame.getFileName());
+        record.setSourceMethodName(currentFrame.getMethodName());
+        record.setSourceStackFrame(currentFrame);
+        return info;
+      }
+    }
+  } catch (err) {}
+  finally {
+    Error.prepareStackTrace = orig;
+  }
+  return undefined;
+};
+
+
+/**
+ * Sets the logging {@link Level} for this {@link Logger}
+ * @param {Level} level Logging level
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.setLevel = function(level) {
+  if (!Level.isValid(level)) {
+    return this;
+  }
+
+  this._level = level;
+  return this;
+};
+
+/**
+ * Retrieves the logging {@link Level} for this {@link Logger}
+ * @returns {Level} Logging level
+ */
+Logger.prototype.getLevel = function() {
+  return this._level;
+};
+
+/**
+ * Set the name of the logger
+ * @param {string} name Logger name
+ * @returns {Logger}
+ */
+Logger.prototype.setName = function(name) {
+  if (!name || typeof "name" !== "string") {
+    return this;
+  }
+
+  this._name = name;
+  return this;
+};
+
+/**
+ * Retrieves the name of the logger
+ * @returns {string} Logger name
+ */
+Logger.prototype.getName = function() {
+  return this._name;
+};
+
+/**
+ * Adds a handler to the the logger
+ * @param {Handler} handler The {@link Handler} to add
+ * @returns {Logger}
+ */
+Logger.prototype.addHandler = function(handler) {
+  if (!handler || !(handler instanceof  Handler)) {
+    return this;
+  }
+  this._handlers.push(handler);
+  return this;
+};
+
+/**
+ * Removes the specified handler from the logger
+ * @param {Handler} handler The {@link Handler} to remove
+ * @returns {Logger}
+ */
+Logger.prototype.removeHandler = function(handler) {
+  if (!handler || !(handler instanceof  Handler)) {
+    return this;
+  }
+
+  var index = this._handlers.indexOf(handler);
+  if (index < 0) {
+    return this;
+  }
+
+  this._handlers.splice(index,1);
+  return this;
+};
+
+/**
+ * Retrieves the {@link Handler}s associated with the {@link Logger}
+ * @returns {Array}
+ */
+Logger.prototype.getHandlers =  function() {
+  return  this._handlers;
+};
+
+
+/**
+ * Logs the given {@linkcode message} at the specified {@linkcode level}
+ * @param {Level} level Logging level
+ * @param {string} message Message to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.log = function() {};
+/**
+ * Logs the given {@linkcode message}, and error at the specified {@linkcode level}
+ * @param {Level} level Logging level
+ * @param {string} message Message to log
+ * @param {Error} error Error object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.log = function() {};
+/**
+ * Logs the formatted message ({@linkcode format}), with the given {@linkcode params}
+ * array as input to the {@linkcode format}, at the specified {@linkcode level}
+ * @param {Level} level Logging level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ *
+ * @returns {Logger}
+ */
+/**
+ * Logs the given {@linkcode object}, at the specified {@linkcode level}
+ * @param {Level} level Logging level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.log = function() {};
+Logger.prototype.log = function() {};
+/**
+ * Logs the formatted message ({@linkcode format}), with the given variable {@linkcode params}
+ * as input to the {@linkcode format}, at the specified {@linkcode level}
+ * @param {Level} level Logging level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.log = function() {
+
+  var args = Array.prototype.splice.call(arguments,0);
+
+  if (args.length < 2) {
+    return this;
+  }
+
+  var level = args.shift();
+  var message = args.shift();
+  var thrown;
+  var parameters = [];
+
+  if (util.isError(message) && args.length == 0) {
+    thrown = message;
+    message = "";
+  }
+
+  else if (args.length == 1 && util.isError(args[0])) {
+    thrown = args[0];
+  }
+  else if (args.length == 1 && args[0] instanceof Array) {
+    parameters = args[0];
+  }
+  else {
+    parameters = args;
+  }
+
+
+  if (!Level.isValid(level) || message === undefined) {
+    return this;
+  }
+
+  var handlers = this.getHandlers();
+
+  if (level < this.getLevel()) {
+    return this;
+  }
+
+  var logRecord = new LogRecord();
+  logRecord.setLevel(level);
+  logRecord.setLoggerName(this.getName());
+  logRecord.setMessage(message);
+  logRecord.setMillis(new Date().getTime());
+  logRecord.setParameters(parameters);
+  logRecord.setThrown(thrown);
+  fillStackInfo(logRecord);
+
+  handlers.forEach(function(handler) {
+    handler.publish(logRecord);
+  });
+
+  return this;
+};
+
+
+Logger.prototype._log = function(level, args) {
+  args = Array.prototype.splice.call(args, 0);
+  args.unshift(level);
+  this.log.apply(this, args);
+  return this;
+};
+
+
+/**
+ * Logs the given message, at {@linkCode Level.SEVERE} level
+ * @param {string} message Message to log
+ * @returns {Logger}
+ */
+Logger.prototype.severe =  function() {};
+/**
+ * Logs the given formatted message ({@linkcode format}) using the variable {@linkcode params} as input,
+ * at {@linkCode Level.SEVERE} level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ * @returns {Logger}
+ */
+Logger.prototype.severe =  function() {};
+/**
+ * Logs the given {@linkcode object}, at {@linkCode Level.SEVERE} level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.severe = function() {};
+/**
+ * Logs the given message, and error at {@linkCode Level.SEVERE} level
+ * @param {string} message Message to log
+ * @param {Error} error Error object to log
+ * @returns {Logger}
+ */
+Logger.prototype.severe =  function() {
+  return this._log(Level.SEVERE, arguments);
+};
+
+/**
+ * Logs the given message, at {@linkCode Level.WARNING} level
+ * @param {string} message Message to log
+ * @returns {Logger}
+ */
+Logger.prototype.warning =  function() {};
+/**
+ * Logs the given formatted message ({@linkcode format}) using the variable {@linkcode params} as input,
+ * at {@linkCode Level.WARNING} level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ * @returns {Logger}
+ */
+Logger.prototype.warning =  function() {};
+/**
+ * Logs the given {@linkcode object}, at {@linkCode Level.WARNING} level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.warning =  function() {};
+
+/**
+ * Logs the given message, and error at {@linkCode Level.WARNING} level
+ * @param {string} message Message to log
+ * @param {Error} error Error object to log
+ * @returns {Logger}
+ */
+Logger.prototype.warning =  function() {
+  return this._log(Level.WARNING, arguments);
+};
+
+/**
+ * Logs the given message, at {@linkCode Level.CONFIG} level
+ * @param {string} message Message to log
+ * @returns {Logger}
+ */
+Logger.prototype.config =  function() {};
+/**
+ * Logs the given formatted message ({@linkcode format}) using the variable {@linkcode params} as input,
+ * at {@link Level.CONFIG} level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ * @returns {Logger}
+ */
+Logger.prototype.config =  function() {};
+/**
+ * Logs the given {@linkcode object}, at {@linkCode Level.CONFIG} level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.config =  function() {};
+/**
+ * Logs the given message, and error at {@linkCode Level.CONFIG} level
+ * @param {string} message Message to log
+ * @param {Error} error Error object to log
+ * @returns {Logger}
+ */
+Logger.prototype.config =  function() {
+  return this._log(Level.CONFIG, arguments);
+};
+
+/**
+ * Logs the given message, at {@linkCode Level.INFO} level
+ * @param {string} message Message to log
+ * @returns {Logger}
+ */
+Logger.prototype.info =  function() {}
+/**
+ * Logs the given formatted message ({@linkcode format}) using the variable {@linkcode params} as input,
+ * at {@linkCode Level.INFO} level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ * @returns {Logger}
+ */
+Logger.prototype.info =  function() {}
+/**
+ * Logs the given {@linkcode object}, at {@linkCode Level.INFO} level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.info =  function() {};
+/**
+ * Logs the given message, and error at {@linkCode Level.INFO} level
+ * @param {string} message Message to log
+ * @param {Error} error Error object to log
+ * @returns {Logger}
+ */
+Logger.prototype.info =  function() {
+  return this._log(Level.INFO, arguments);
+};
+
+/**
+ * Logs the given message, at {@linkCode Level.FINE} level
+ * @param {string} message Message to log
+ * @returns {Logger}
+ */
+Logger.prototype.fine =  function() {}
+/**
+ * Logs the given formatted message ({@linkcode format}) using the variable {@linkcode params} as input,
+ * at {@linkCode Level.FINE} level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ * @returns {Logger}
+ */
+Logger.prototype.fine =  function() {}
+/**
+ * Logs the given {@linkcode object}, at {@linkCode Level.FINE} level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.fine =  function() {};
+/**
+ * Logs the given message, and error at {@linkCode Level.FINE} level
+ * @param {string} message Message to log
+ * @param {Error} error Error object to log
+ * @returns {Logger}
+ */
+Logger.prototype.fine =  function() {
+  return this._log(Level.FINE, arguments);
+};
+
+/**
+ * Logs the given message, at {@linkCode Level.FINER} level
+ * @param {string} message Message to log
+ * @returns {Logger}
+ */
+Logger.prototype.finer =  function() {}
+/**
+ * Logs the given formatted message ({@linkcode format}) using the variable {@linkcode params} as input,
+ * at {@linkCode Level.FINER} level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ * @returns {Logger}
+ */
+Logger.prototype.finer =  function() {}
+/**
+ * Logs the given {@linkcode object}, at {@linkCode Level.FINER} level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.finer =  function() {};
+/**
+ * Logs the given message, and error at {@linkCode Level.FINER} level
+ * @param {string} message Message to log
+ * @param {Error} error Error object to log
+ * @returns {Logger}
+ */
+Logger.prototype.finer =  function() {
+  return this._log(Level.FINER, arguments);
+};
+
+
+
+/**
+ * Logs the given message, at {@linkCode Level.FINEST} level
+ * @param {string} message Message to log
+ * @returns {Logger}
+ */
+Logger.prototype.finest = function() {};
+/**
+ * Logs the given formatted message ({@linkcode format}) using the variable {@linkcode params} as input,
+ * at {@link Level.FINEST} level
+ * @param {string} format Format to use for the message
+ * @param {...*} params Variable number of parameters as input to the {@linkcode format}
+ * @returns {Logger}
+ */
+Logger.prototype.finest = function() {};
+/**
+ * Logs the given {@linkcode object}, at {@linkCode Level.FINEST} level
+ * @param {object} object Object to log
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.finest =  function() {};
+/**
+ * Logs the given message, and error at {@linkCode Level.FINEST} level
+ * @param {string} message
+ * @param {Error} error Error object to log
+ * @returns {Logger}
+ */
+Logger.prototype.finest =  function() {
+  return this._log(Level.FINEST, arguments);
+};
+
+module.exports = Logger;
+
+
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/formatter',['require','exports','module','util/util','./logrecord','./level','path'],function (require, exports, module) {
+
+var util = require("util/util");
+var LogRecord = require("./logrecord");
+var Level = require("./level");
+var path = require("path");
+
+
+/**
+ * This class us equivalent to java.util.logging.Formatter. <br />
+ * <br />
+ * It provides support for formatting LogRecord objects.
+ *
+ * @name Formatter
+ * @constructor
+ */
+var Formatter = function() {
+  var self = this;
+  (self.super_ = Formatter.super_).call(self);
+  return self;
+};
+
+util.inherits(Formatter, Object);
+
+
+/**
+ * This function formats a {@link LogRecord} object as follows:<br />
+ * <br />
+ * <pre>
+ * {datetime} - [{logger-name}] [{level}] [{stack-location}] - {formatted-params}
+ * </pre>
+ * <br />
+ * Internally it makes use of Node.js [util.format]{@link http://nodejs.org/api/util.html#util_util_format_format} to create the {formatted-params} section.
+ *
+ * @param  {LogRecord} logRecord Record to be formatted
+ */
+Formatter.prototype.formatMessage = function(logRecord) {
+  if (!logRecord || !(logRecord instanceof  LogRecord)) {
+    return;
+  }
+
+
+  var message = logRecord.getMessage() || "";
+
+  //log errors as strings
+  if (util.isError(message)) {
+    message =  message.message || message.toString();
+  }
+
+  //for the message to be a string
+  if (typeof message !== "string") {
+    message = "\n" + JSON.stringify(message, null, 2);
+  }
+
+  var millis = logRecord.getMillis();
+  var date = new Date();
+  if (millis && (typeof  millis === "number")){
+    date.setTime(millis);
+  }
+
+  var level = logRecord.getLevel();
+  var levelName = (level)? level.getName():undefined;
+  var loggerName = logRecord.getLoggerName();
+
+
+  var prefix =  date.toISOString() + " - [" + levelName + "] ";
+  if (levelName && typeof loggerName == "string") {
+    prefix = prefix +   "[" + loggerName + "] ";
+  }
+
+  var stack =  logRecord.getSourceStackFrame();
+  if (stack) {
+    var actualFile = stack.getFileName();
+    var baseFile = path.basename(actualFile);
+    var info = stack.toString();
+    info = info.replace(actualFile, baseFile);
+    prefix = prefix + "[" + info + "] ";
+  }
+
+  var parameters = logRecord.getParameters();
+  if (parameters &&  parameters instanceof Array) {
+    parameters.unshift(message);
+    message = util.format.apply(this, parameters);
+    parameters.shift();
+  }
+
+  message = prefix + message;
+
+  var thrown = logRecord.getThrown();
+  if (thrown && util.isError(thrown)) {
+
+    if (thrown.message) {
+      message += thrown.message;
+    }
+
+    if (thrown.stack) {
+      message += "\n" + thrown .stack;
+    }
+  }
+
+  return message;
+};
+
+module.exports = Formatter;
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/consolehandler',['require','exports','module','./level','./handler','./formatter','util/util'],function (require, exports, module) {
+
+var Level = require("./level");
+var Handler = require("./handler");
+var Formatter = require("./formatter");
+
+var util = require("util/util");
+
+/**
+ * This class is equivalent to java.util.logging.ConsoleHandler. <br />
+ * <br />
+ * The published {@link LogRecord} objects are printed using Node.js [console.log]{@link http://nodejs.org/api/stdio.html#stdio_console_log_data} function.
+ * <br />
+ * Internally, the {@link ConsoleHandler} uses the {@link Formatter} class to generate the string.
+ *
+ * @name ConsoleHandler
+ * @returns {ConsoleHandler}
+ * @constructor
+ * @extends Handler
+ */
+var ConsoleHandler =  function() {
+  var self = this;
+  (self.super_ = ConsoleHandler.super_).call(self);
+  this._defaultFormatter = new Formatter();
+  return this;
+};
+
+util.inherits(ConsoleHandler, Handler);
+
+
+ConsoleHandler.prototype.getDefaultFormatter = function() {
+  return this._defaultFormatter;
+};
+
+/**
+ * Prints a formatted log record to the console using  console.log.
+ *
+ * @param {LogRecord} logRecord {@link LogRecord} to be published
+ */
+ConsoleHandler.prototype.publish = function(logRecord) {
+  if (!this.isLoggable(logRecord)) {
+    return;
+  }
+
+  var formatter = this.getFormatter();
+  if (!formatter || !(formatter instanceof Formatter)) {
+    formatter = this.getDefaultFormatter();
+  }
+
+  var message = formatter.formatMessage(logRecord);
+  if (!message || typeof message !== "string") {
+    return;
+  }
+
+  console.log(message);
+};
+
+
+module.exports = ConsoleHandler;
+
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/consolelogger',['require','exports','module','./logger','./consolehandler','./level','util/util'],function (require, exports, module) {
+
+
+var Logger = require("./logger");
+var ConsoleHandler = require("./consolehandler");
+var Level = require("./level");
+var util = require("util/util");
+
+/**
+ * This is a sample class that makes use of the of both {@link ConsoleHandler}, and {@link Logger}
+ * to create a logger that prints messages to the console.
+ *
+ * @name ConsoleLogger
+ * @param  {object} [options] Optional arguments to build the logger. See the parent class [constructor]{@link Logger} for more details.
+ * @returns {ConsoleLogger}
+ * @constructor
+ * @extends Logger
+ */
+var ConsoleLogger = function(options) {
+  var self = this;
+  (self.super_ = ConsoleLogger.super_).call(self, options);
+
+  var handler = new ConsoleHandler();
+  handler.setLevel(Level.FINEST);
+  self.addHandler(handler);
+  self.setLevel(Level.SEVERE);
+  return this;
+};
+
+util.inherits(ConsoleLogger, Logger);
+
+
+module.exports = ConsoleLogger;
+});
+
+/*
+ * Don't edit this file by hand!
+ * This file was generated from a npm-package using gulp. 
+ * For more information see gulpfile.js in the project root
+ */
+define('util-logging/util-logging',['require','exports','module','./logger','./level','./consolehandler','./consolelogger','./handler','./logrecord','./formatter'],function (require, exports, module) {
+
+/**
+ * This module exports all the classes that make up the util-logging package.
+ * @module util-logging
+ * @exports LogRecord
+ * @exports Logger
+ */
+module.exports = {
+  /**
+   * {@link Logger} class
+   */
+  "Logger" :  require("./logger"),
+  /**
+   * {@link Level} class
+   */
+  "Level" : require("./level"),
+  /**
+   * {@link ConsoleHandler} class
+   */
+  "ConsoleHandler" : require("./consolehandler"),
+  /**
+   * {@link ConsoleLogger} class
+   */
+  "ConsoleLogger" : require("./consolelogger"),
+  /**
+   * {@link Handler} class
+   */
+  "Handler" :  require("./handler"),
+  /**
+   * {@link LogRecord} class
+   */
+  "LogRecord" : require("./logrecord"),
+  /**
+   * @{link Formatter} class
+   */
+  "Formatter": require("./formatter")
+}
+
+});
+
+define('logging/callbackhandler',['require','exports','module','util-logging/level','util-logging/handler','util-logging/formatter','util/util'],function (require, exports, module) {
+
+
+var Level = require("util-logging/level");
+var Handler = require("util-logging/handler");
+var Formatter = require("util-logging/formatter");
+
+var util = require("util/util");
+
+/**
+ * The published {@link LogRecord} objects are fed to a callback
+ *
+ * Internally, the {@link CallbackHandler} uses the {@link Formatter} class to generate the string.
+ *
+ * @name CallbackHandler
+ * @param cb callback to pass each formatted log entry to
+ * @returns {CallbackHandler}
+ * @constructor
+ * @extends Handler
+ */
+var CallbackHandler = function(cb) {
+  var self = this;
+  (self.super_ = CallbackHandler.super_).call(self);
+  self._defaultFormatter = new Formatter();
+  self._callback = cb;
+  return self;
+};
+
+util.inherits(CallbackHandler, Handler);
+
+
+CallbackHandler.prototype.getDefaultFormatter = function() {
+  return this._defaultFormatter;
+};
+
+/**
+ * Logs formatted log record to a file.
+ *
+ * @param {LogRecord} logRecord {@link LogRecord} to be published
+ */
+CallbackHandler.prototype.publish = function(logRecord) {
+  if (!this.isLoggable(logRecord)) {
+    return;
+  }
+
+  var formatter = this.getFormatter();
+  if (!formatter || !(formatter instanceof Formatter)) {
+    formatter = this.getDefaultFormatter();
+  }
+
+  var message = formatter.formatMessage(logRecord);
+  if (!message || typeof message !== "string") {
+    return;
+  }
+
+  this._callback(message);
+};
+
+
+module.exports = CallbackHandler;
+});
+
+/* js-yaml 3.2.0 https://github.com/nodeca/js-yaml */
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define('yaml',[],e);else{var t;"undefined"!=typeof window?t=window:"undefined"!=typeof global?t=global:"undefined"!=typeof self&&(t=self),t.jsyaml=e()}}(function(){return function e(t,n,i){function r(a,s){if(!n[a]){if(!t[a]){var c="function"==typeof require&&require;if(!s&&c)return c(a,!0);if(o)return o(a,!0);throw new Error("Cannot find module '"+a+"'")}var u=n[a]={exports:{}};t[a][0].call(u.exports,function(e){var n=t[a][1][e];return r(n?n:e)},u,u.exports,e,t,n,i)}return n[a].exports}for(var o="function"==typeof require&&require,a=0;a<i.length;a++)r(i[a]);return r}({1:[function(e,t){var n=e("./lib/js-yaml.js");t.exports=n},{"./lib/js-yaml.js":2}],2:[function(e,t){function n(e){return function(){throw new Error("Function "+e+" is deprecated and cannot be used.")}}var i=e("./js-yaml/loader"),r=e("./js-yaml/dumper");t.exports.Type=e("./js-yaml/type"),t.exports.Schema=e("./js-yaml/schema"),t.exports.FAILSAFE_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.JSON_SCHEMA=e("./js-yaml/schema/json"),t.exports.CORE_SCHEMA=e("./js-yaml/schema/core"),t.exports.DEFAULT_SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_FULL_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.load=i.load,t.exports.loadAll=i.loadAll,t.exports.safeLoad=i.safeLoad,t.exports.safeLoadAll=i.safeLoadAll,t.exports.dump=r.dump,t.exports.safeDump=r.safeDump,t.exports.YAMLException=e("./js-yaml/exception"),t.exports.MINIMAL_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.scan=n("scan"),t.exports.parse=n("parse"),t.exports.compose=n("compose"),t.exports.addConstructor=n("addConstructor")},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(e,t){function n(e){return void 0===e||null===e}function i(e){return"object"==typeof e&&null!==e}function r(e){return Array.isArray(e)?e:n(e)?[]:[e]}function o(e,t){var n,i,r,o;if(t)for(o=Object.keys(t),n=0,i=o.length;i>n;n+=1)r=o[n],e[r]=t[r];return e}function a(e,t){var n,i="";for(n=0;t>n;n+=1)i+=e;return i}function s(e){return 0===e&&Number.NEGATIVE_INFINITY===1/e}t.exports.isNothing=n,t.exports.isObject=i,t.exports.toArray=r,t.exports.repeat=a,t.exports.isNegativeZero=s,t.exports.extend=o},{}],4:[function(e,t){function n(e,t){var n,i,r,o,a,s,c;if(null===t)return{};for(n={},i=Object.keys(t),r=0,o=i.length;o>r;r+=1)a=i[r],s=String(t[a]),"!!"===a.slice(0,2)&&(a="tag:yaml.org,2002:"+a.slice(2)),c=e.compiledTypeMap[a],c&&b.call(c.styleAliases,s)&&(s=c.styleAliases[s]),n[a]=s;return n}function i(e){var t,n,i;if(t=e.toString(16).toUpperCase(),255>=e)n="x",i=2;else if(65535>=e)n="u",i=4;else{if(!(4294967295>=e))throw new y("code point within a string may not be greater than 0xFFFFFFFF");n="U",i=8}return"\\"+n+g.repeat("0",i-t.length)+t}function r(e){this.schema=e.schema||x,this.indent=Math.max(1,e.indent||2),this.skipInvalid=e.skipInvalid||!1,this.flowLevel=g.isNothing(e.flowLevel)?-1:e.flowLevel,this.styleMap=n(this.schema,e.styles||null),this.implicitTypes=this.schema.compiledImplicit,this.explicitTypes=this.schema.compiledExplicit,this.tag=null,this.result=""}function o(e,t){return"\n"+g.repeat(" ",e.indent*t)}function a(e,t){var n,i,r;for(n=0,i=e.implicitTypes.length;i>n;n+=1)if(r=e.implicitTypes[n],r.resolve(t))return!0;return!1}function s(e,t){var n,r,o,s,c,u;for(e.dump="",n=!1,r=0,u=t.charCodeAt(0)||0,-1!==V.indexOf(t)?n=!0:0===t.length?n=!0:j===u||j===t.charCodeAt(t.length-1)?n=!0:(_===u||q===u)&&(n=!0),o=0,s=t.length;s>o;o+=1)c=t.charCodeAt(o),n||(w===c||C===c||k===c||L===c||D===c||P===c||H===c||B===c||E===c||F===c||T===c||I===c||$===c||Y===c||N===c||S===c||O===c||U===c||M===c||R===c)&&(n=!0),(G[c]||!(c>=32&&126>=c||133===c||c>=160&&55295>=c||c>=57344&&65533>=c||c>=65536&&1114111>=c))&&(e.dump+=t.slice(r,o),e.dump+=G[c]||i(c),r=o+1,n=!0);o>r&&(e.dump+=t.slice(r,o)),!n&&a(e,e.dump)&&(n=!0),n&&(e.dump='"'+e.dump+'"')}function c(e,t,n){var i,r,o="",a=e.tag;for(i=0,r=n.length;r>i;i+=1)d(e,t,n[i],!1,!1)&&(0!==i&&(o+=", "),o+=e.dump);e.tag=a,e.dump="["+o+"]"}function u(e,t,n,i){var r,a,s="",c=e.tag;for(r=0,a=n.length;a>r;r+=1)d(e,t+1,n[r],!0,!0)&&(i&&0===r||(s+=o(e,t)),s+="- "+e.dump);e.tag=c,e.dump=s||"[]"}function l(e,t,n){var i,r,o,a,s,c="",u=e.tag,l=Object.keys(n);for(i=0,r=l.length;r>i;i+=1)s="",0!==i&&(s+=", "),o=l[i],a=n[o],d(e,t,o,!1,!1)&&(e.dump.length>1024&&(s+="? "),s+=e.dump+": ",d(e,t,a,!1,!1)&&(s+=e.dump,c+=s));e.tag=u,e.dump="{"+c+"}"}function p(e,t,n,i){var r,a,s,c,u,l,p="",f=e.tag,h=Object.keys(n);for(r=0,a=h.length;a>r;r+=1)l="",i&&0===r||(l+=o(e,t)),s=h[r],c=n[s],d(e,t+1,s,!0,!0)&&(u=null!==e.tag&&"?"!==e.tag||e.dump&&e.dump.length>1024,u&&(l+=e.dump&&C===e.dump.charCodeAt(0)?"?":"? "),l+=e.dump,u&&(l+=o(e,t)),d(e,t+1,c,!0,u)&&(l+=e.dump&&C===e.dump.charCodeAt(0)?":":": ",l+=e.dump,p+=l));e.tag=f,e.dump=p||"{}"}function f(e,t,n){var i,r,o,a,s,c;for(r=n?e.explicitTypes:e.implicitTypes,o=0,a=r.length;a>o;o+=1)if(s=r[o],(s.instanceOf||s.predicate)&&(!s.instanceOf||"object"==typeof t&&t instanceof s.instanceOf)&&(!s.predicate||s.predicate(t))){if(e.tag=n?s.tag:"?",s.represent){if(c=e.styleMap[s.tag]||s.defaultStyle,"[object Function]"===A.call(s.represent))i=s.represent(t,c);else{if(!b.call(s.represent,c))throw new y("!<"+s.tag+'> tag resolver accepts not "'+c+'" style');i=s.represent[c](t,c)}e.dump=i}return!0}return!1}function d(e,t,n,i,r){e.tag=null,e.dump=n,f(e,n,!1)||f(e,n,!0);var o=A.call(e.dump);if(i&&(i=0>e.flowLevel||e.flowLevel>t),(null!==e.tag&&"?"!==e.tag||2!==e.indent&&t>0)&&(r=!1),"[object Object]"===o)i&&0!==Object.keys(e.dump).length?p(e,t,e.dump,r):l(e,t,e.dump);else if("[object Array]"===o)i&&0!==e.dump.length?u(e,t,e.dump,r):c(e,t,e.dump);else{if("[object String]"!==o){if(e.skipInvalid)return!1;throw new y("unacceptabe kind of an object to dump "+o)}"?"!==e.tag&&s(e,e.dump)}return null!==e.tag&&"?"!==e.tag&&(e.dump="!<"+e.tag+"> "+e.dump),!0}function h(e,t){t=t||{};var n=new r(t);return d(n,0,e,!0,!0)?n.dump+"\n":""}function m(e,t){return h(e,g.extend({schema:v},t))}var g=e("./common"),y=e("./exception"),x=e("./schema/default_full"),v=e("./schema/default_safe"),A=Object.prototype.toString,b=Object.prototype.hasOwnProperty,w=9,C=10,k=13,j=32,I=33,S=34,E=35,O=37,F=38,N=39,T=42,L=44,_=45,M=58,Y=62,q=63,U=64,D=91,P=93,R=96,H=123,$=124,B=125,G={};G[0]="\\0",G[7]="\\a",G[8]="\\b",G[9]="\\t",G[10]="\\n",G[11]="\\v",G[12]="\\f",G[13]="\\r",G[27]="\\e",G[34]='\\"',G[92]="\\\\",G[133]="\\N",G[160]="\\_",G[8232]="\\L",G[8233]="\\P";var V=["y","Y","yes","Yes","YES","on","On","ON","n","N","no","No","NO","off","Off","OFF"];t.exports.dump=h,t.exports.safeDump=m},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(e,t){function n(e,t){this.name="YAMLException",this.reason=e,this.mark=t,this.message=this.toString(!1)}n.prototype.toString=function(e){var t;return t="JS-YAML: "+(this.reason||"(unknown reason)"),!e&&this.mark&&(t+=" "+this.mark.toString()),t},t.exports=n},{}],6:[function(e,t){function n(e){return 10===e||13===e}function i(e){return 9===e||32===e}function r(e){return 9===e||32===e||10===e||13===e}function o(e){return 44===e||91===e||93===e||123===e||125===e}function a(e){var t;return e>=48&&57>=e?e-48:(t=32|e,t>=97&&102>=t?t-97+10:-1)}function s(e){return 120===e?2:117===e?4:85===e?8:0}function c(e){return e>=48&&57>=e?e-48:-1}function u(e){return 48===e?"\x00":97===e?"":98===e?"\b":116===e?"	":9===e?"	":110===e?"\n":118===e?"":102===e?"\f":114===e?"\r":101===e?"":32===e?" ":34===e?'"':47===e?"/":92===e?"\\":78===e?"":95===e?" ":76===e?"\u2028":80===e?"\u2029":""}function l(e,t){this.input=e,this.filename=t.filename||null,this.schema=t.schema||H,this.onWarning=t.onWarning||null,this.legacy=t.legacy||!1,this.implicitTypes=this.schema.compiledImplicit,this.typeMap=this.schema.compiledTypeMap,this.length=e.length,this.position=0,this.line=0,this.lineStart=0,this.lineIndent=0,this.documents=[]}function p(e,t){return new D(t,new P(e.filename,e.input,e.position,e.line,e.position-e.lineStart))}function f(e,t){throw p(e,t)}function d(e,t){var n=p(e,t);if(!e.onWarning)throw n;e.onWarning.call(null,n)}function h(e,t,n,i){var r,o,a,s;if(n>t){if(s=e.input.slice(t,n),i)for(r=0,o=s.length;o>r;r+=1)a=s.charCodeAt(r),9===a||a>=32&&1114111>=a||f(e,"expected valid JSON character");e.result+=s}}function m(e,t,n){var i,r,o,a;for(U.isObject(n)||f(e,"cannot merge mappings; the provided source object is unacceptable"),i=Object.keys(n),o=0,a=i.length;a>o;o+=1)r=i[o],$.call(t,r)||(t[r]=n[r])}function g(e,t,n,i,r){var o,a;if(i=String(i),null===t&&(t={}),"tag:yaml.org,2002:merge"===n)if(Array.isArray(r))for(o=0,a=r.length;a>o;o+=1)m(e,t,r[o]);else m(e,t,r);else t[i]=r;return t}function y(e){var t;t=e.input.charCodeAt(e.position),10===t?e.position++:13===t?(e.position++,10===e.input.charCodeAt(e.position)&&e.position++):f(e,"a line break is expected"),e.line+=1,e.lineStart=e.position}function x(e,t,r){for(var o=0,a=e.input.charCodeAt(e.position);0!==a;){for(;i(a);)a=e.input.charCodeAt(++e.position);if(t&&35===a)do a=e.input.charCodeAt(++e.position);while(10!==a&&13!==a&&0!==a);if(!n(a))break;for(y(e),a=e.input.charCodeAt(e.position),o++,e.lineIndent=0;32===a;)e.lineIndent++,a=e.input.charCodeAt(++e.position);e.lineIndent<r&&d(e,"deficient indentation")}return o}function v(e){var t,n=e.position;return t=e.input.charCodeAt(n),45!==t&&46!==t||e.input.charCodeAt(n+1)!==t||e.input.charCodeAt(n+2)!==t||(n+=3,t=e.input.charCodeAt(n),0!==t&&!r(t))?!1:!0}function A(e,t){1===t?e.result+=" ":t>1&&(e.result+=U.repeat("\n",t-1))}function b(e,t,a){var s,c,u,l,p,f,d,m,g,y=e.kind,b=e.result;if(g=e.input.charCodeAt(e.position),r(g)||o(g)||35===g||38===g||42===g||33===g||124===g||62===g||39===g||34===g||37===g||64===g||96===g)return!1;if((63===g||45===g)&&(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c)))return!1;for(e.kind="scalar",e.result="",u=l=e.position,p=!1;0!==g;){if(58===g){if(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c))break}else if(35===g){if(s=e.input.charCodeAt(e.position-1),r(s))break}else{if(e.position===e.lineStart&&v(e)||a&&o(g))break;if(n(g)){if(f=e.line,d=e.lineStart,m=e.lineIndent,x(e,!1,-1),e.lineIndent>=t){p=!0,g=e.input.charCodeAt(e.position);continue}e.position=l,e.line=f,e.lineStart=d,e.lineIndent=m;break}}p&&(h(e,u,l,!1),A(e,e.line-f),u=l=e.position,p=!1),i(g)||(l=e.position+1),g=e.input.charCodeAt(++e.position)}return h(e,u,l,!1),e.result?!0:(e.kind=y,e.result=b,!1)}function w(e,t){var i,r,o;if(i=e.input.charCodeAt(e.position),39!==i)return!1;for(e.kind="scalar",e.result="",e.position++,r=o=e.position;0!==(i=e.input.charCodeAt(e.position));)if(39===i){if(h(e,r,e.position,!0),i=e.input.charCodeAt(++e.position),39!==i)return!0;r=o=e.position,e.position++}else n(i)?(h(e,r,o,!0),A(e,x(e,!1,t)),r=o=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a single quoted scalar"):(e.position++,o=e.position);f(e,"unexpected end of the stream within a single quoted scalar")}function C(e,t){var i,r,o,c,u,l;if(l=e.input.charCodeAt(e.position),34!==l)return!1;for(e.kind="scalar",e.result="",e.position++,i=r=e.position;0!==(l=e.input.charCodeAt(e.position));){if(34===l)return h(e,i,e.position,!0),e.position++,!0;if(92===l){if(h(e,i,e.position,!0),l=e.input.charCodeAt(++e.position),n(l))x(e,!1,t);else if(256>l&&nt[l])e.result+=it[l],e.position++;else if((u=s(l))>0){for(o=u,c=0;o>0;o--)l=e.input.charCodeAt(++e.position),(u=a(l))>=0?c=(c<<4)+u:f(e,"expected hexadecimal character");e.result+=String.fromCharCode(c),e.position++}else f(e,"unknown escape sequence");i=r=e.position}else n(l)?(h(e,i,r,!0),A(e,x(e,!1,t)),i=r=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a double quoted scalar"):(e.position++,r=e.position)}f(e,"unexpected end of the stream within a double quoted scalar")}function k(e,t){var n,i,o,a,s,c,u,l,p,d,h,m=!0,y=e.tag;if(h=e.input.charCodeAt(e.position),91===h)a=93,u=!1,i=[];else{if(123!==h)return!1;a=125,u=!0,i={}}for(null!==e.anchor&&(e.anchorMap[e.anchor]=i),h=e.input.charCodeAt(++e.position);0!==h;){if(x(e,!0,t),h=e.input.charCodeAt(e.position),h===a)return e.position++,e.tag=y,e.kind=u?"mapping":"sequence",e.result=i,!0;m||f(e,"missed comma between flow collection entries"),p=l=d=null,s=c=!1,63===h&&(o=e.input.charCodeAt(e.position+1),r(o)&&(s=c=!0,e.position++,x(e,!0,t))),n=e.line,N(e,t,B,!1,!0),p=e.tag,l=e.result,x(e,!0,t),h=e.input.charCodeAt(e.position),!c&&e.line!==n||58!==h||(s=!0,h=e.input.charCodeAt(++e.position),x(e,!0,t),N(e,t,B,!1,!0),d=e.result),u?g(e,i,p,l,d):i.push(s?g(e,null,p,l,d):l),x(e,!0,t),h=e.input.charCodeAt(e.position),44===h?(m=!0,h=e.input.charCodeAt(++e.position)):m=!1}f(e,"unexpected end of the stream within a flow collection")}function j(e,t){var r,o,a,s,u=Z,l=!1,p=t,d=0,m=!1;if(s=e.input.charCodeAt(e.position),124===s)o=!1;else{if(62!==s)return!1;o=!0}for(e.kind="scalar",e.result="";0!==s;)if(s=e.input.charCodeAt(++e.position),43===s||45===s)Z===u?u=43===s?z:J:f(e,"repeat of a chomping mode identifier");else{if(!((a=c(s))>=0))break;0===a?f(e,"bad explicit indentation width of a block scalar; it cannot be less than one"):l?f(e,"repeat of an indentation width identifier"):(p=t+a-1,l=!0)}if(i(s)){do s=e.input.charCodeAt(++e.position);while(i(s));if(35===s)do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s)}for(;0!==s;){for(y(e),e.lineIndent=0,s=e.input.charCodeAt(e.position);(!l||e.lineIndent<p)&&32===s;)e.lineIndent++,s=e.input.charCodeAt(++e.position);if(!l&&e.lineIndent>p&&(p=e.lineIndent),n(s))d++;else{if(e.lineIndent<p){u===z?e.result+=U.repeat("\n",d):u===Z&&l&&(e.result+="\n");break}o?i(s)?(m=!0,e.result+=U.repeat("\n",d+1)):m?(m=!1,e.result+=U.repeat("\n",d+1)):0===d?l&&(e.result+=" "):e.result+=U.repeat("\n",d):e.result+=l?U.repeat("\n",d+1):U.repeat("\n",d),l=!0,d=0,r=e.position;do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s);h(e,r,e.position,!1),s=e.input.charCodeAt(e.position)}}return!0}function I(e,t){var n,i,o,a=e.tag,s=[],c=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=s),o=e.input.charCodeAt(e.position);0!==o&&45===o&&(i=e.input.charCodeAt(e.position+1),r(i));)if(c=!0,e.position++,x(e,!0,-1)&&e.lineIndent<=t)s.push(null),o=e.input.charCodeAt(e.position);else if(n=e.line,N(e,t,V,!1,!0),s.push(e.result),x(e,!0,-1),o=e.input.charCodeAt(e.position),(e.line===n||e.lineIndent>t)&&0!==o)f(e,"bad indentation of a sequence entry");else if(e.lineIndent<t)break;return c?(e.tag=a,e.kind="sequence",e.result=s,!0):!1}function S(e,t,n){var o,a,s,c,u=e.tag,l={},p=null,d=null,h=null,m=!1,y=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=l),c=e.input.charCodeAt(e.position);0!==c;){if(o=e.input.charCodeAt(e.position+1),s=e.line,63!==c&&58!==c||!r(o)){if(!N(e,n,G,!1,!0))break;if(e.line===s){for(c=e.input.charCodeAt(e.position);i(c);)c=e.input.charCodeAt(++e.position);if(58===c)c=e.input.charCodeAt(++e.position),r(c)||f(e,"a whitespace character is expected after the key-value separator within a block mapping"),m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!1,a=!1,p=e.tag,d=e.result;else{if(!y)return e.tag=u,!0;f(e,"can not read an implicit mapping pair; a colon is missed")}}else{if(!y)return e.tag=u,!0;f(e,"can not read a block mapping entry; a multiline key may not be an implicit key")}}else 63===c?(m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!0,a=!0):m?(m=!1,a=!0):f(e,"incomplete explicit mapping pair; a key node is missed"),e.position+=1,c=o;if((e.line===s||e.lineIndent>t)&&(N(e,t,W,!0,a)&&(m?d=e.result:h=e.result),m||(g(e,l,p,d,h),p=d=h=null),x(e,!0,-1),c=e.input.charCodeAt(e.position)),e.lineIndent>t&&0!==c)f(e,"bad indentation of a mapping entry");else if(e.lineIndent<t)break}return m&&g(e,l,p,d,null),y&&(e.tag=u,e.kind="mapping",e.result=l),y}function E(e){var t,n,i,o,a=!1,s=!1;if(o=e.input.charCodeAt(e.position),33!==o)return!1;if(null!==e.tag&&f(e,"duplication of a tag property"),o=e.input.charCodeAt(++e.position),60===o?(a=!0,o=e.input.charCodeAt(++e.position)):33===o?(s=!0,n="!!",o=e.input.charCodeAt(++e.position)):n="!",t=e.position,a){do o=e.input.charCodeAt(++e.position);while(0!==o&&62!==o);e.position<e.length?(i=e.input.slice(t,e.position),o=e.input.charCodeAt(++e.position)):f(e,"unexpected end of the stream within a verbatim tag")}else{for(;0!==o&&!r(o);)33===o&&(s?f(e,"tag suffix cannot contain exclamation marks"):(n=e.input.slice(t-1,e.position+1),et.test(n)||f(e,"named tag handle cannot contain such characters"),s=!0,t=e.position+1)),o=e.input.charCodeAt(++e.position);i=e.input.slice(t,e.position),X.test(i)&&f(e,"tag suffix cannot contain flow indicator characters")}return i&&!tt.test(i)&&f(e,"tag name cannot contain such characters: "+i),a?e.tag=i:$.call(e.tagMap,n)?e.tag=e.tagMap[n]+i:"!"===n?e.tag="!"+i:"!!"===n?e.tag="tag:yaml.org,2002:"+i:f(e,'undeclared tag handle "'+n+'"'),!0}function O(e){var t,n;if(n=e.input.charCodeAt(e.position),38!==n)return!1;for(null!==e.anchor&&f(e,"duplication of an anchor property"),n=e.input.charCodeAt(++e.position),t=e.position;0!==n&&!r(n)&&!o(n);)n=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an anchor node must contain at least one character"),e.anchor=e.input.slice(t,e.position),!0}function F(e){{var t,n,i;e.length,e.input}if(i=e.input.charCodeAt(e.position),42!==i)return!1;for(i=e.input.charCodeAt(++e.position),t=e.position;0!==i&&!r(i)&&!o(i);)i=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an alias node must contain at least one character"),n=e.input.slice(t,e.position),e.anchorMap.hasOwnProperty(n)||f(e,'unidentified alias "'+n+'"'),e.result=e.anchorMap[n],x(e,!0,-1),!0}function N(e,t,n,i,r){var o,a,s,c,u,l,p,h,m=!1,g=!0,y=!1;if(e.tag=null,e.anchor=null,e.kind=null,e.result=null,o=a=s=W===n||V===n,i&&x(e,!0,-1))if(m=!0,e.lineIndent===t)g=!1;else{if(!(e.lineIndent>t))return!1;g=!0}if(g)for(;E(e)||O(e);)if(x(e,!0,-1))if(m=!0,e.lineIndent>t)g=!0,s=o;else{if(e.lineIndent!==t)return!0;g=!1,s=o}else s=!1;if(s&&(s=m||r),(g||W===n)&&(p=B===n||G===n?t:t+1,h=e.position-e.lineStart,g?s&&(I(e,h)||S(e,h,p))||k(e,p)?y=!0:(a&&j(e,p)||w(e,p)||C(e,p)?y=!0:F(e)?(y=!0,(null!==e.tag||null!==e.anchor)&&f(e,"alias node should not have any properties")):b(e,p,B===n)&&(y=!0,null===e.tag&&(e.tag="?")),null!==e.anchor&&(e.anchorMap[e.anchor]=e.result)):y=s&&I(e,h)),null!==e.tag&&"!"!==e.tag)if("?"===e.tag){for(c=0,u=e.implicitTypes.length;u>c;c+=1)if(l=e.implicitTypes[c],l.resolve(e.result)){e.result=l.construct(e.result),e.tag=l.tag;break}}else $.call(e.typeMap,e.tag)?(l=e.typeMap[e.tag],null!==e.result&&l.kind!==e.kind&&f(e,"unacceptable node kind for !<"+e.tag+'> tag; it should be "'+l.kind+'", not "'+e.kind+'"'),l.resolve(e.result)?e.result=l.construct(e.result):f(e,"cannot resolve a node with !<"+e.tag+"> explicit tag")):d(e,"unknown tag !<"+e.tag+">");return null!==e.tag||null!==e.anchor||y}function T(e){var t,o,a,s,c=e.position,u=!1;for(e.version=null,e.checkLineBreaks=e.legacy,e.tagMap={},e.anchorMap={};0!==(s=e.input.charCodeAt(e.position))&&(x(e,!0,-1),s=e.input.charCodeAt(e.position),!(e.lineIndent>0||37!==s));){for(u=!0,s=e.input.charCodeAt(++e.position),t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);for(o=e.input.slice(t,e.position),a=[],o.length<1&&f(e,"directive name must not be less than one character in length");0!==s;){for(;i(s);)s=e.input.charCodeAt(++e.position);if(35===s){do s=e.input.charCodeAt(++e.position);while(0!==s&&!n(s));break}if(n(s))break;for(t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);a.push(e.input.slice(t,e.position))}0!==s&&y(e),$.call(ot,o)?ot[o](e,o,a):d(e,'unknown document directive "'+o+'"')}return x(e,!0,-1),0===e.lineIndent&&45===e.input.charCodeAt(e.position)&&45===e.input.charCodeAt(e.position+1)&&45===e.input.charCodeAt(e.position+2)?(e.position+=3,x(e,!0,-1)):u&&f(e,"directives end mark is expected"),N(e,e.lineIndent-1,W,!1,!0),x(e,!0,-1),e.checkLineBreaks&&Q.test(e.input.slice(c,e.position))&&d(e,"non-ASCII line breaks are interpreted as content"),e.documents.push(e.result),e.position===e.lineStart&&v(e)?void(46===e.input.charCodeAt(e.position)&&(e.position+=3,x(e,!0,-1))):void(e.position<e.length-1&&f(e,"end of the stream or a document separator is expected"))}function L(e,t){e=String(e),t=t||{},0!==e.length&&10!==e.charCodeAt(e.length-1)&&13!==e.charCodeAt(e.length-1)&&(e+="\n");var n=new l(e,t);for(K.test(n.input)&&f(n,"the stream contains non-printable characters"),n.input+="\x00";32===n.input.charCodeAt(n.position);)n.lineIndent+=1;for(;n.position<n.length-1;)T(n);return n.documents}function _(e,t,n){var i,r,o=L(e,n);for(i=0,r=o.length;r>i;i+=1)t(o[i])}function M(e,t){var n=L(e,t);if(0===n.length)return void 0;if(1===n.length)return n[0];throw new D("expected a single document in the stream, but found more")}function Y(e,t,n){_(e,t,U.extend({schema:R},n))}function q(e,t){return M(e,U.extend({schema:R},t))}for(var U=e("./common"),D=e("./exception"),P=e("./mark"),R=e("./schema/default_safe"),H=e("./schema/default_full"),$=Object.prototype.hasOwnProperty,B=1,G=2,V=3,W=4,Z=1,J=2,z=3,K=/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uD800-\uDFFF\uFFFE\uFFFF]/,Q=/[\x85\u2028\u2029]/,X=/[,\[\]\{\}]/,et=/^(?:!|!!|![a-z\-]+!)$/i,tt=/^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i,nt=new Array(256),it=new Array(256),rt=0;256>rt;rt++)nt[rt]=u(rt)?1:0,it[rt]=u(rt);var ot={YAML:function(e,t,n){var i,r,o;null!==e.version&&f(e,"duplication of %YAML directive"),1!==n.length&&f(e,"YAML directive accepts exactly one argument"),i=/^([0-9]+)\.([0-9]+)$/.exec(n[0]),null===i&&f(e,"ill-formed argument of the YAML directive"),r=parseInt(i[1],10),o=parseInt(i[2],10),1!==r&&f(e,"unacceptable YAML version of the document"),e.version=n[0],e.checkLineBreaks=2>o,1!==o&&2!==o&&d(e,"unsupported YAML version of the document")},TAG:function(e,t,n){var i,r;2!==n.length&&f(e,"TAG directive accepts exactly two arguments"),i=n[0],r=n[1],et.test(i)||f(e,"ill-formed tag handle (first argument) of the TAG directive"),$.call(e.tagMap,i)&&f(e,'there is a previously declared suffix for "'+i+'" tag handle'),tt.test(r)||f(e,"ill-formed tag prefix (second argument) of the TAG directive"),e.tagMap[i]=r}};t.exports.loadAll=_,t.exports.load=M,t.exports.safeLoadAll=Y,t.exports.safeLoad=q},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(e,t){function n(e,t,n,i,r){this.name=e,this.buffer=t,this.position=n,this.line=i,this.column=r}var i=e("./common");n.prototype.getSnippet=function(e,t){var n,r,o,a,s;if(!this.buffer)return null;for(e=e||4,t=t||75,n="",r=this.position;r>0&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(r-1));)if(r-=1,this.position-r>t/2-1){n=" ... ",r+=5;break}for(o="",a=this.position;a<this.buffer.length&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(a));)if(a+=1,a-this.position>t/2-1){o=" ... ",a-=5;break}return s=this.buffer.slice(r,a),i.repeat(" ",e)+n+s+o+"\n"+i.repeat(" ",e+this.position-r+n.length)+"^"},n.prototype.toString=function(e){var t,n="";return this.name&&(n+='in "'+this.name+'" '),n+="at line "+(this.line+1)+", column "+(this.column+1),e||(t=this.getSnippet(),t&&(n+=":\n"+t)),n},t.exports=n},{"./common":3}],8:[function(e,t){function n(e,t,i){var r=[];return e.include.forEach(function(e){i=n(e,t,i)}),e[t].forEach(function(e){i.forEach(function(t,n){t.tag===e.tag&&r.push(n)}),i.push(e)}),i.filter(function(e,t){return-1===r.indexOf(t)})}function i(){function e(e){i[e.tag]=e}var t,n,i={};for(t=0,n=arguments.length;n>t;t+=1)arguments[t].forEach(e);return i}function r(e){this.include=e.include||[],this.implicit=e.implicit||[],this.explicit=e.explicit||[],this.implicit.forEach(function(e){if(e.loadKind&&"scalar"!==e.loadKind)throw new a("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.")}),this.compiledImplicit=n(this,"implicit",[]),this.compiledExplicit=n(this,"explicit",[]),this.compiledTypeMap=i(this.compiledImplicit,this.compiledExplicit)}var o=e("./common"),a=e("./exception"),s=e("./type");r.DEFAULT=null,r.create=function(){var e,t;switch(arguments.length){case 1:e=r.DEFAULT,t=arguments[0];break;case 2:e=arguments[0],t=arguments[1];break;default:throw new a("Wrong number of arguments for Schema.create function")}if(e=o.toArray(e),t=o.toArray(t),!e.every(function(e){return e instanceof r}))throw new a("Specified list of super schemas (or a single Schema object) contains a non-Schema object.");if(!t.every(function(e){return e instanceof s}))throw new a("Specified list of YAML types (or a single Type object) contains a non-Type object.");return new r({include:e,explicit:t})},t.exports=r},{"./common":3,"./exception":5,"./type":14}],9:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./json")]})},{"../schema":8,"./json":13}],10:[function(e,t){var n=e("../schema");t.exports=n.DEFAULT=new n({include:[e("./default_safe")],explicit:[e("../type/js/undefined"),e("../type/js/regexp"),e("../type/js/function")]})},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./core")],implicit:[e("../type/timestamp"),e("../type/merge")],explicit:[e("../type/binary"),e("../type/omap"),e("../type/pairs"),e("../type/set")]})},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(e,t){var n=e("../schema");t.exports=new n({explicit:[e("../type/str"),e("../type/seq"),e("../type/map")]})},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./failsafe")],implicit:[e("../type/null"),e("../type/bool"),e("../type/int"),e("../type/float")]})},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(e,t){function n(e){var t={};return null!==e&&Object.keys(e).forEach(function(n){e[n].forEach(function(e){t[String(e)]=n})}),t}function i(e,t){if(t=t||{},Object.keys(t).forEach(function(t){if(-1===o.indexOf(t))throw new r('Unknown option "'+t+'" is met in definition of "'+e+'" YAML type.')}),this.tag=e,this.kind=t.kind||null,this.resolve=t.resolve||function(){return!0},this.construct=t.construct||function(e){return e},this.instanceOf=t.instanceOf||null,this.predicate=t.predicate||null,this.represent=t.represent||null,this.defaultStyle=t.defaultStyle||null,this.styleAliases=n(t.styleAliases||null),-1===a.indexOf(this.kind))throw new r('Unknown kind "'+this.kind+'" is specified for "'+e+'" YAML type.')}var r=e("./exception"),o=["kind","resolve","construct","instanceOf","predicate","represent","defaultStyle","styleAliases"],a=["scalar","sequence","mapping"];t.exports=i},{"./exception":5}],15:[function(e,t){function n(e){var t,n,i=0,r=e.length;for(n=0,i=0;r>i;i+=1)if(t=e.charCodeAt(i),10!==t&&13!==t){if(-1===u[127&t])return!1;n+=6,n>=8&&(n-=8)}return n?!1:!0}function i(e){var t,n,i,r,o=0,s=e.length,l=[];for(i=0,r=0,o=0;s>o;o+=1)n=e.charCodeAt(o),t=u[127&n],10!==n&&13!==n&&(r=r<<6|t,i+=6,i>=8&&(i-=8,c!==e.charAt(o)&&l.push(r>>i&255),r&=(1<<i)-1));return a?new a(l):l}function r(e){var t,n,i,r="";for(t=0,n=e.length-2;n>t;t+=3)r+=l[e[t+0]>>2],r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[((15&e[t+1])<<2)+(e[t+2]>>6)],r+=l[63&e[t+2]];return i=e.length%3,0!==i&&(t=e.length-i,r+=l[e[t+0]>>2],2===i?(r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[(15&e[t+1])<<2],r+=c):(r+=l[(3&e[t+0])<<4],r+=c+c)),r}function o(e){return a&&a.isBuffer(e)}var a=e("buffer").Buffer,s=e("../type"),c="=",u=[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,0,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1],l="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");t.exports=new s("tag:yaml.org,2002:binary",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../type":14,buffer:31}],16:[function(e,t){function n(e){var t=e.length;return 4===t&&("true"===e||"True"===e||"TRUE"===e)||5===t&&("false"===e||"False"===e||"FALSE"===e)}function i(e){return"true"===e||"True"===e||"TRUE"===e}function r(e){return"[object Boolean]"===Object.prototype.toString.call(e)}var o=e("../type");t.exports=new o("tag:yaml.org,2002:bool",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{lowercase:function(e){return e?"true":"false"},uppercase:function(e){return e?"TRUE":"FALSE"},camelcase:function(e){return e?"True":"False"}},defaultStyle:"lowercase"})},{"../type":14}],17:[function(e,t){function n(e){return c.test(e)?!0:!1}function i(e){var t,n,i,r;return t=e.replace(/_/g,"").toLowerCase(),n="-"===t[0]?-1:1,r=[],0<="+-".indexOf(t[0])&&(t=t.slice(1)),".inf"===t?1===n?Number.POSITIVE_INFINITY:Number.NEGATIVE_INFINITY:".nan"===t?0/0:0<=t.indexOf(":")?(t.split(":").forEach(function(e){r.unshift(parseFloat(e,10))}),t=0,i=1,r.forEach(function(e){t+=e*i,i*=60}),n*t):n*parseFloat(t,10)}function r(e,t){if(isNaN(e))switch(t){case"lowercase":return".nan";case"uppercase":return".NAN";case"camelcase":return".NaN"}else if(Number.POSITIVE_INFINITY===e)switch(t){case"lowercase":return".inf";case"uppercase":return".INF";case"camelcase":return".Inf"}else{if(Number.NEGATIVE_INFINITY!==e)return a.isNegativeZero(e)?"-0.0":e.toString(10);switch(t){case"lowercase":return"-.inf";case"uppercase":return"-.INF";case"camelcase":return"-.Inf"}}}function o(e){return"[object Number]"===Object.prototype.toString.call(e)&&(0!==e%1||a.isNegativeZero(e))}var a=e("../common"),s=e("../type"),c=new RegExp("^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?|\\.[0-9_]+(?:[eE][-+][0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");t.exports=new s("tag:yaml.org,2002:float",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r,defaultStyle:"lowercase"})},{"../common":3,"../type":14}],18:[function(e,t){function n(e){return e>=48&&57>=e||e>=65&&70>=e||e>=97&&102>=e}function i(e){return e>=48&&55>=e}function r(e){return e>=48&&57>=e}function o(e){var t,o=e.length,a=0,s=!1;if(!o)return!1;if(t=e[a],("-"===t||"+"===t)&&(t=e[++a]),"0"===t){if(a+1===o)return!0;if(t=e[++a],"b"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if("0"!==t&&"1"!==t)return!1;s=!0}return s}if("x"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if(!n(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(!i(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(":"===t)break;if(!r(e.charCodeAt(a)))return!1;s=!0}return s?":"!==t?!0:/^(:[0-5]?[0-9])+$/.test(e.slice(a)):!1}function a(e){var t,n,i=e,r=1,o=[];return-1!==i.indexOf("_")&&(i=i.replace(/_/g,"")),t=i[0],("-"===t||"+"===t)&&("-"===t&&(r=-1),i=i.slice(1),t=i[0]),"0"===i?0:"0"===t?"b"===i[1]?r*parseInt(i.slice(2),2):"x"===i[1]?r*parseInt(i,16):r*parseInt(i,8):-1!==i.indexOf(":")?(i.split(":").forEach(function(e){o.unshift(parseInt(e,10))}),i=0,n=1,o.forEach(function(e){i+=e*n,n*=60}),r*i):r*parseInt(i,10)}function s(e){return"[object Number]"===Object.prototype.toString.call(e)&&0===e%1&&!c.isNegativeZero(e)}var c=e("../common"),u=e("../type");t.exports=new u("tag:yaml.org,2002:int",{kind:"scalar",resolve:o,construct:a,predicate:s,represent:{binary:function(e){return"0b"+e.toString(2)
+},octal:function(e){return"0"+e.toString(8)},decimal:function(e){return e.toString(10)},hexadecimal:function(e){return"0x"+e.toString(16).toUpperCase()}},defaultStyle:"decimal",styleAliases:{binary:[2,"bin"],octal:[8,"oct"],decimal:[10,"dec"],hexadecimal:[16,"hex"]}})},{"../common":3,"../type":14}],19:[function(e,t){function n(e){try{var t="("+e+")",n=a.parse(t,{range:!0});return"Program"!==n.type||1!==n.body.length||"ExpressionStatement"!==n.body[0].type||"FunctionExpression"!==n.body[0].expression.type?!1:!0}catch(i){return!1}}function i(e){var t,n="("+e+")",i=a.parse(n,{range:!0}),r=[];if("Program"!==i.type||1!==i.body.length||"ExpressionStatement"!==i.body[0].type||"FunctionExpression"!==i.body[0].expression.type)throw new Error("Failed to resolve function");return i.body[0].expression.params.forEach(function(e){r.push(e.name)}),t=i.body[0].expression.body.range,new Function(r,n.slice(t[0]+1,t[1]-1))}function r(e){return e.toString()}function o(e){return"[object Function]"===Object.prototype.toString.call(e)}var a;try{a=e("esprima")}catch(s){"undefined"!=typeof window&&(a=window.esprima)}var c=e("../../type");t.exports=new c("tag:yaml.org,2002:js/function",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14,esprima:"Lkr711"}],20:[function(e,t){function n(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";if("/"===t[0]){if(n&&(i=n[1]),i.length>3)return!1;if("/"!==t[t.length-i.length-1])return!1;t=t.slice(1,t.length-i.length-1)}try{{new RegExp(t,i)}return!0}catch(r){return!1}}function i(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";return"/"===t[0]&&(n&&(i=n[1]),t=t.slice(1,t.length-i.length-1)),new RegExp(t,i)}function r(e){var t="/"+e.source+"/";return e.global&&(t+="g"),e.multiline&&(t+="m"),e.ignoreCase&&(t+="i"),t}function o(e){return"[object RegExp]"===Object.prototype.toString.call(e)}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/regexp",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],21:[function(e,t){function n(){return!0}function i(){return void 0}function r(){return""}function o(e){return"undefined"==typeof e}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/undefined",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],22:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:map",{kind:"mapping"})},{"../type":14}],23:[function(e,t){function n(e){return"<<"===e}var i=e("../type");t.exports=new i("tag:yaml.org,2002:merge",{kind:"scalar",resolve:n})},{"../type":14}],24:[function(e,t){function n(e){var t=e.length;return 1===t&&"~"===e||4===t&&("null"===e||"Null"===e||"NULL"===e)}function i(){return null}function r(e){return null===e}var o=e("../type");t.exports=new o("tag:yaml.org,2002:null",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{canonical:function(){return"~"},lowercase:function(){return"null"},uppercase:function(){return"NULL"},camelcase:function(){return"Null"}},defaultStyle:"lowercase"})},{"../type":14}],25:[function(e,t){function n(e){var t,n,i,a,s,c=[],u=e;for(t=0,n=u.length;n>t;t+=1){if(i=u[t],s=!1,"[object Object]"!==o.call(i))return!1;for(a in i)if(r.call(i,a)){if(s)return!1;s=!0}if(!s)return!1;if(-1!==c.indexOf(a))return!1;c.push(a)}return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty,o=Object.prototype.toString;t.exports=new i("tag:yaml.org,2002:omap",{kind:"sequence",resolve:n})},{"../type":14}],26:[function(e,t){function n(e){var t,n,i,r,a,s=e;for(a=new Array(s.length),t=0,n=s.length;n>t;t+=1){if(i=s[t],"[object Object]"!==o.call(i))return!1;if(r=Object.keys(i),1!==r.length)return!1;a[t]=[r[0],i[r[0]]]}return!0}function i(e){var t,n,i,r,o,a=e;for(o=new Array(a.length),t=0,n=a.length;n>t;t+=1)i=a[t],r=Object.keys(i),o[t]=[r[0],i[r[0]]];return o}var r=e("../type"),o=Object.prototype.toString;t.exports=new r("tag:yaml.org,2002:pairs",{kind:"sequence",resolve:n,construct:i})},{"../type":14}],27:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:seq",{kind:"sequence"})},{"../type":14}],28:[function(e,t){function n(e){var t,n=e;for(t in n)if(r.call(n,t)&&null!==n[t])return!1;return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty;t.exports=new i("tag:yaml.org,2002:set",{kind:"mapping",resolve:n})},{"../type":14}],29:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:str",{kind:"scalar"})},{"../type":14}],30:[function(e,t){function n(e){var t;return t=a.exec(e),null===t?!1:!0}function i(e){var t,n,i,r,o,s,c,u,l,p,f=0,d=null;if(t=a.exec(e),null===t)throw new Error("Date resolve error");if(n=+t[1],i=+t[2]-1,r=+t[3],!t[4])return new Date(Date.UTC(n,i,r));if(o=+t[4],s=+t[5],c=+t[6],t[7]){for(f=t[7].slice(0,3);f.length<3;)f+="0";f=+f}return t[9]&&(u=+t[10],l=+(t[11]||0),d=6e4*(60*u+l),"-"===t[9]&&(d=-d)),p=new Date(Date.UTC(n,i,r,o,s,c,f)),d&&p.setTime(p.getTime()-d),p}function r(e){return e.toISOString()}var o=e("../type"),a=new RegExp("^([0-9][0-9][0-9][0-9])-([0-9][0-9]?)-([0-9][0-9]?)(?:(?:[Tt]|[ \\t]+)([0-9][0-9]?):([0-9][0-9]):([0-9][0-9])(?:\\.([0-9]*))?(?:[ \\t]*(Z|([-+])([0-9][0-9]?)(?::([0-9][0-9]))?))?)?$");t.exports=new o("tag:yaml.org,2002:timestamp",{kind:"scalar",resolve:n,construct:i,instanceOf:Date,represent:r})},{"../type":14}],31:[function(){},{}]},{},[1])(1)});
+define('logging/yamlformatter',['require','exports','module','util/util','util-logging/formatter','util-logging/logrecord','yaml'],function (require, exports, module) {
+
+
+var util = require("util/util");
+var Formatter = require("util-logging/formatter");
+var LogRecord = require("util-logging/logrecord");
+var yaml = require("yaml");
+
+
+/**
+ * This class formats LogRecord objects as YAML.
+ *
+ * @name YAMLFormatter
+ * @constructor
+ */
+var YAMLFormatter = function() {
+  var self = this;
+  (self.super_ = Formatter.super_).call(self);
+  return self;
+};
+
+util.inherits(YAMLFormatter, Formatter);
+
+
+/**
+ * This function formats a {@link LogRecord} object in YAML as follows:
+ * 
+ * time: {datetime} 
+ * message: {message}
+ * [logger-name]: {string}
+ * [level]: {level}
+ * [parameters]: {parameters} (if more than 0)
+ *
+ * Each entry is returned as an array of length 1, which can be appended to
+ * a log file (see FileLogger) as part of an "infinite" array.
+ * 
+ * @param {LogRecord} logRecord Record to be formatted
+ */
+YAMLFormatter.prototype.formatMessage = function(logRecord) {
+  if (!logRecord || !(logRecord instanceof LogRecord))
+    return {};
+
+  var record = {}
+  record.message = logRecord.getMessage() || "";
+
+  //log errors as strings
+  if (util.isError(record.message))
+    record.message = record.message.message || record.message.toString();
+
+  var date = new Date();
+  var millis = logRecord.getMillis();
+  if (millis && (typeof millis === "number"))
+    date.setTime(millis);
+  record.date = date;
+
+  var loggerName = logRecord.getLoggerName();
+  if (loggerName && typeof loggerName == "string")
+    record.name = loggerName;
+
+  var level = logRecord.getLevel();
+  if (level)
+    record.level = {name: level.getName(), value: level.intValue()};
+
+  var parameters = logRecord.getParameters();
+  if (parameters && parameters instanceof Array && parameters.length > 0)
+    record.parameters = parameters;
+
+  // FIXME: dumping [stack-location]: {stack-location} makes YAML dumper recurse
+  // var stack = logRecord.getSourceStackFrame();
+  // if (stack)
+  //   record.stack = stack;
+
+  var thrown = logRecord.getThrown();
+  if (thrown && util.isError(thrown))
+    record.thrown = {message: thrown.message, stack: thrown.stack};
+  
+  return yaml.safeDump([record]);
+};
+
+module.exports = YAMLFormatter;
+});
+
+// Monkey-patches
+
+define('logging/logger-patch',['require','exports','module','util-logging/logger','util-logging/logrecord','util-logging/level'],function (require, exports, module) {
+
+
+var Logger = require("util-logging/logger");
+
+/**
+ * Re-log the given {@link LogRecord} (with the original time stamp)
+ * @param {LogRecord} record LogRecord to relog
+ *
+ * Used to reload a saved log.
+ *
+ * @returns {Logger}
+ */
+Logger.prototype.relog = function(record) {
+  this.getHandlers().forEach(function(handler) {
+    if (record.getLevel() >= this.getLevel())
+      handler.publish(record);
+  }, this);
+  return this;
+};
+
+var LogRecord = require("util-logging/logrecord");
+var Level = require("util-logging/level");
+
+LogRecord.prototype.fromObject = function (obj) {
+  obj.level = new Level(obj.level);
+  obj.millis = Date.parse(obj.date);
+  return new LogRecord(obj);
+}
+
+Level.DEBUG = new Level({name: "DEBUG", value: 3});
+
+Logger.prototype.debug = function() {
+  return this._log(Level.DEBUG, arguments);
+};
+
 });
 
 /**
@@ -40571,6 +40262,25 @@ define('ufojs/xml/main',[
       , xml, implementation
       , Node
       ;
+    
+    // from https://developer.mozilla.org/en-US/docs/Using_XPath
+    // Evaluate an XPath expression aExpression against a given DOM node
+    // or Document object (aNode), returning the results as an array
+    function evaluateXPath(aNode, aExpr) {
+        var xpe = new xml.XPathEvaluator()
+          , nsResolver = xpe.createNSResolver(
+                aNode.ownerDocument == null
+                    ? aNode.documentElement
+                    : aNode.ownerDocument.documentElement
+            )
+          , result = xpe.evaluate(aExpr, aNode, nsResolver, 0, null)
+          , found = []
+          , res
+          ;
+        while (res = result.iterateNext())
+            found.push(res);
+        return found;
+    }
     
     if(typeof DOMParser !== 'undefined') {
         
@@ -40624,7 +40334,8 @@ define('ufojs/xml/main',[
             },
             toString: function(doc) {
                 return (new Serializer()).serializeToString(doc)
-            }
+            },
+            evaluateXPath: evaluateXPath
         }
         
         //TODO: implement more of the parser interfaces if needed
@@ -40744,7 +40455,8 @@ define('ufojs/xml/main',[
             },
             toString: function(doc) {
                 return (new xml.Serializer()).serializeToString(doc);
-            }
+            },
+            evaluateXPath: evaluateXPath
         };
         //FIXME: How would we get the doctype for our document?
         Parser.prototype.parseFromString = function(string, mimeType) {
@@ -41060,13 +40772,10 @@ define('ufojs/plistLib/main',[
             if(root.nodeName !== 'plist')
                 throw new TypeError('The documentElement is expected to be '
                     + '"plist", but it is "' + root.nodeName + '"');
-            // <!ELEMENT plist %plistObject;> from the plist DTD means
-            // there is only on child element of plist which is an member
-            // of plistObject is that correct. If yes, we start with
-            // .firstElementChild (.children[0] is synonym to .firstElementChild
-            // but supported by jsdom, the DOM implementation uses for
-            // environments without native DOM.
-            // chromium/google chrome has no children list :-/
+            // A plist has exactly one child element.
+            // .children[0] is a synonym for .firstElementChild supported by
+            // jsdom, used for environments without native DOM.
+            // Chromium/Google Chrome has no children list :-/
             if(!root.firstElementChild && !root.children.length)
                 return null;
             return plistLib.readPlistElement(root.firstElementChild || root.children[0]);
@@ -41326,385 +41035,6 @@ define('ufojs/plistLib/main',[
     return plistLib;
 });
 
-define('metapolator/models/_BaseModel',[
-
-],
-function()
-{
-    
-    // All models will share some basics
-    function _BaseModel() {
-        
-    }
-    var _p = _BaseModel.prototype;
-    
-    return _BaseModel;
-})
-;
-define('metapolator/models/MOM/_Node',[
-    'metapolator/errors'
-  , '../_BaseModel'
-  , 'metapolator/models/CPS/whitelistProxies'
-], function(
-    errors
-  , Parent
-  , whitelistProxies
-) {
-    
-
-    var MOMError = errors.MOM;
-
-    var _id_counter = 0;
-    function getUniqueID() {
-        return _id_counter++;
-    }
-
-    /**
-     * The MOM is the structure against which we can run the selector queries
-     * of CPS. We must be able to answer the the question "is this element
-     * selected by that selector" for each item of the MOM.
-     *
-     * All Elements of the Metpolator Object Model MOM inherit from _Node.
-     * This means, that a test like `item instanceof _Node` must return true.
-     */
-    function _Node() {
-        Parent.call(this);
-        if(this.constructor.prototype === _p)
-            throw new MOMError('MOM _Node must not be instantiated directly');
-        Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
-
-        this._children = [];
-        this._parent = null;
-        this._id = null;
-        this._classes = {};
-        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
-    }
-    var _p = _Node.prototype = Object.create(Parent.prototype);
-    _p.constructor = _Node;
-
-    _p._cps_whitelist = {
-        parent: 'parent'
-      , children: 'children'
-      , master: 'master'
-      , univers: 'univers'
-      , multivers: 'multivers'
-      , index: 'index'
-      , type: 'type'
-    }
-
-    Object.defineProperty(_p, 'MOMType', {
-        get: function(){return 'MOM '+ this.constructor.name ;}
-    })
-
-    /**
-     * Implement a getter for CPS Type in children of _Node, we need it
-     * for the cps selector engine.
-     *
-     * cpsType should be a simple string, minuses are are ok, don't do
-     * anything fancy. Don't use already taken names.
-     */
-    Object.defineProperty(_p, 'type', {
-        get: function() {
-            // this should be implemented by items inheriting from _Node
-            throw errors.NotImplemented('Implement CPS-Type name!');
-        }
-    })
-
-    Object.defineProperty(_p, 'children', {
-        /**
-         * returns a copy of this._children so we can't mess around
-         * with the list of children via public interfaces.
-         */
-        get: function(){ return this._children.slice(); }
-    })
-
-    Object.defineProperty(_p, 'id', {
-        /**
-         * The Mechanism how id's are verified etc. need to be defined,
-         * probably on a per MOM-Element base. And probably always the
-         * parent is responsible for id checking and setting. At the
-         * moment, I need id's to write the selector engine, and for that,
-         * I don't need propper checked IDs
-         */
-        set: function(id){ this._id = id; }
-      , get: function(){ return this._id; }
-    })
-
-    /***
-     * get the univers element of this node.
-     *
-     * a univers element itself has no univers!
-     */
-    Object.defineProperty(_p, 'univers', {
-        get: function() {
-            if(!this.parent)
-                return null;
-            if(this.parent.MOMType === 'MOM Univers')
-                return this.parent;
-            return this.parent.univers;
-        }
-    })
-
-    /***
-     * get the multivers element of this node.
-     *
-     * a multivers element itself has no multivers!
-     */
-    Object.defineProperty(_p, 'multivers', {
-        get: function() {
-            if(!this.parent)
-                return null;
-            if(this.parent.MOMType === 'MOM Multivers')
-                return this.parent;
-            return this.parent.multivers;
-        }
-    })
-
-    /***
-     * get the master element of this node or null if this node has no master
-     *
-     * neither multivers nor univers have a master
-     */
-    Object.defineProperty(_p, 'master', {
-        get: function() {
-            if(!this.parent)
-                return null;
-            if(this.parent.MOMType === 'MOM Master')
-                return this.parent;
-            return this.parent.master;
-        }
-    })
-
-    /**
-     * returns a selector for this element, currently it is used for
-     * display puposes, so the additionial information "(no parent) "
-     * is prepended if the item has no parent
-     */
-    Object.defineProperty(_p, 'particulars', {
-        get: function() {
-            return [
-                    this.parent ? this.parent.particulars : '(no parent)'
-                  , ' '
-                  , this.type,
-                  , (this.id ? '#' + this.id : '')
-                  , (this.parent
-                        ? ':i(' + this.parent.find(this) + ')'
-                        : '')
-                ].join('');
-        }
-    })
-
-    _p.setClass = function(name) {
-        this._classes[name] = null;
-    }
-
-    _p.removeClass = function(name) {
-        delete this._classes[name];
-    }
-
-    _p.hasClass = function(name) {
-        return name in this._classes;
-    }
-
-    _p.toString = function() { return ['<', this.MOMType, '>'].join('') };
-
-    _p.isMOMNode = function(item) {
-        return item instanceof _Node;
-    }
-
-    /**
-     *  enhance this list with accepted children Constructors
-     */
-    _p._acceptedChildren = [];
-
-
-    _p.qualifiesAsChild = function(item) {
-        var i=0;
-        if(!this.isMOMNode(item) || item === this)
-            return false;
-
-        for(;i<this._acceptedChildren.length; i++)
-            if(item instanceof this._acceptedChildren[i])
-                return true;
-        return false;
-    }
-
-    /**
-     * Note: this is currently running very often when adding or deleting
-     * children, I wonder if we need to come up with some tricky shortcut
-     * to make the search faster.
-     * On thing I already made is searching from back to front, because
-     * a child node will call parent.find(this) exactly after beeing
-     * added to the parent, to verify that it is indeed entitled to change
-     * it's parent property. In that case searching from back to front is
-     * the faster path.
-     *
-     */
-    _p.find = function(item) {
-        var i=this._children.length-1;
-        for(;i>=0; i--)
-            if(item === this._children[i])
-                return i;
-        return false;
-    }
-
-    Object.defineProperty(_p, 'index', {
-        get: function(){ return this.parent.find(this);}
-    });
-
-    Object.defineProperty(_p, 'parent', {
-        /**
-         * Use parent for reading only.
-         *
-         * Setting the parent property performs some checks if the new
-         * property is indeed valid. The Parent is authoritative in this
-         * case.
-         *
-         * In short: We made it hard to set the parent property because
-         * we want you to use the 'add' method of the parent.
-         */
-        set: function(parent) {
-            if(parent === null) {
-                if(this._parent === null)
-                    // already done
-                    return;
-                if(this._parent.find(this) !== false)
-                    throw new MOMError('Can\'t unset the parent property '
-                        +'when the parent still has this Node as a child');
-                this._parent = null;
-                return;
-            }
-            else if(this._parent !== null)
-                throw new MOMError([this, 'is still a child of a', this._parent
-                  , 'you can\'t set a new parent Node. Use "newParent.add(child)"'
-                  , 'to move the child to another parent'].join(' '));
-            else if (!this.isMOMNode(parent))
-                throw new MOMError('The parent property must be a MOM Node, '
-                    +'but it is: "' + parent + '" typeof: ' + typeof parent);
-            else if(parent.find(this) === false)
-                throw new MOMError('A MOM Node must already be a child '
-                    + 'of its parent when trying to set its parent property. '
-                    + 'Use "parent.add(child)" instead.');
-            this._parent = parent;
-        }
-      , get: function(){ return this._parent; }
-    })
-
-    _p.remove = function(item) {
-        if(Object.isFrozen(this._children))
-            throw new MOMError('Removing children is not allowed in this element.');
-        var i = this.find(item);
-        if(i === false)
-            throw new MOMError([this, 'can\'t remove', item ,'because',
-                                'it is not a child.'].join(' '));
-        this._children.splice(i, 1);
-        item.parent = null;
-        return true;
-    }
-
-    _p.add = function(item) {
-        if(Object.isFrozen(this._children))
-            throw new MOMError('Adding children is not allowed in this element.');
-        if(!this.qualifiesAsChild(item))
-            throw new MOMError([this, 'doesn\'t accept', item
-                                        , 'as a child object.'].join(' '));
-        if(item.parent !== null)
-            item.parent.remove(item);
-        this._children.push(item);
-        item.parent = this;
-    }
-
-    _p.query = function(selector) {
-        return this.multivers.query(selector, this);
-    }
-
-    _p.queryAll = function(selector) {
-        return this.multivers.queryAll(selector, this);
-    }
-
-    _p.getComputedStyle = function() {
-        return this.multivers.getComputedStyleFor(this);
-    }
-
-    return _Node;
-})
-;
-define('metapolator/models/MOM/_Contour',[
-    './_Node'
-], function(
-    Parent
-) {
-    
-    /**
-     * All children of a MOM Glyph have to inherit from MOM _Contour.
-     */
-    function _Contour() {
-        Parent.call(this);
-        if(this.constructor.prototype === _p)
-            throw new MOMError('MOM _Contour must not be instantiated '
-                +'directly');
-    }
-    var _p = _Contour.prototype = Object.create(Parent.prototype);
-    _p.constructor = _Contour;
-    
-    return _Contour;
-})
-;
-define('metapolator/models/MOM/Glyph',[
-    './_Node'
-  , './_Contour'
-], function(
-    Parent
-  , _Contour
-) {
-    
-    /**
-     * This Element is the container of all contours of a glyph.
-     * It will have some metadata and contain children of type MOM _Contour.
-     * 
-     * Possible candiates for other children would be everything else
-     * found in a UFO-Glyph. But, we can make properties about that stuff,
-     * too. Guidelines would make a good candidate for further children,
-     * because we might actually want to access these via CPS.
-     * 
-     * In the first version we the only child of MOM _Contour is
-     * MOM PenStroke.
-     */
-    function Glyph() {
-        Parent.call(this);
-        this._ufoData = {};
-    }
-    var _p = Glyph.prototype = Object.create(Parent.prototype);
-    _p.constructor = Glyph;
-    
-    Object.defineProperty(_p, 'MOMType', {
-        value: 'MOM Glyph'
-    })
-    
-    Object.defineProperty(_p, 'type', {
-        /* this is used for CPS selectors */
-        value: 'glyph'
-    })
-    
-    _p.setUFOData = function(ufoGlyph) {
-        var i=0, keys = Object.keys(ufoGlyph);
-        for(;i<keys.length;i++)
-            this._ufoData[keys[i]] = ufoGlyph[keys[i]];
-    }
-    _p.getUFOData = function() {
-        // Should be immutable or a copy, but we would have to make
-        // a deep copy for this, because we don't want the contents to
-        // be changed without us knowing, either.
-        // Instead, we are going to invent more interfaces for UFO data
-        // for a glyph in the future.
-        return this._ufoData;
-    }
-    
-    _p._acceptedChildren = [_Contour];
-    
-    return Glyph;
-})
-;
 define('metapolator/models/MOM/Master',[
     './_Node'
   , './Glyph'
@@ -41731,6 +41061,23 @@ define('metapolator/models/MOM/Master',[
         /* this is used for CPS selectors*/
         value: 'master'
     })
+
+    /**
+     * TODO: make indexed lookup for _Node.id
+     */
+    _p.findGlyph = function( glyphName ) {
+        var col = this.children
+        , i = 0
+        , glyph
+        ;
+        for( i=0; i<col.length; i++ ) {
+            glyph = col[i];
+            if( glyph.id == glyphName ) {
+                return glyph;
+            }
+        }
+        return null;
+    }
     
      /**
      * As long as there is just one univers, we don't need to display
@@ -41739,12 +41086,12 @@ define('metapolator/models/MOM/Master',[
     Object.defineProperty(_p, 'particulars', {
         get: function() {
             return [
-                    this.parent ? '' : '(no parent)'
+                    this._parent ? '' : '(no parent)'
                   , ' '
                   , this.type,
                   , (this.id ? '#' + this.id : '')
-                  , (this.parent
-                        ? ':i(' + this.parent.find(this) + ')'
+                  , (this._parent
+                        ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }
@@ -41753,6 +41100,30 @@ define('metapolator/models/MOM/Master',[
     _p._acceptedChildren = [Glyph];
     
     return Master;
+})
+;
+define('metapolator/models/MOM/PointData',[
+    'metapolator/models/CPS/whitelistProxies'
+], function(
+    whitelistProxies
+) {
+    
+
+    /**
+     * Used to set the skeleton point coordinates to MOM Point and OutlinePoint
+     * elements.
+     */
+    function PointData(obj) {
+        for(var k in obj) this[k] = obj[k];
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+    };
+    PointData.prototype._cps_whitelist = {
+        on: 'on'
+      , in: 'in'
+      , out: 'out'
+    };
+
+    return PointData;
 })
 ;
 define('metapolator/models/MOM/_PenStrokePointChild',[
@@ -41847,6 +41218,7 @@ define('metapolator/models/MOM/PenStrokePointRight',[
 ;
 define('metapolator/models/MOM/PenStrokePoint',[
     './_Node'
+  , './PointData'
   , './_PenStrokePointChild'
   , './PenStrokePointLeft'
   , './PenStrokePointCenter'
@@ -41854,6 +41226,7 @@ define('metapolator/models/MOM/PenStrokePoint',[
   , 'metapolator/models/CPS/whitelistProxies'
 ], function(
     Parent
+  , PointData
   , _PenStrokePointChild
   , PenStrokePointLeft
   , PenStrokePointCenter
@@ -41871,7 +41244,7 @@ define('metapolator/models/MOM/PenStrokePoint',[
      * It has three children, in order: left, center, right
      * It doesn't accept add or removal of children.
      *
-     * skeleton is expected to be a structure with three readable keys:
+     * pointData is expected to be a PointData instance with three readable keys:
      * {
      *      in: Vector || undefined
      *    , on: Vector // must be set
@@ -41880,9 +41253,11 @@ define('metapolator/models/MOM/PenStrokePoint',[
      * These are the absolute coordinates of the skeleton.
      *
      */
-    function PenStrokePoint(skeleton) {
+    function PenStrokePoint(pointData) {
         Parent.call(this);
-        this._skeleton = skeleton;
+        if(!(pointData) instanceof PointData)
+            throw new TypeError('Expected an instance of PointData.');
+        this._skeleton = pointData;
 
         this.add(new PenStrokePointLeft());  // 0
         this.add(new PenStrokePointCenter());// 1
@@ -41891,16 +41266,6 @@ define('metapolator/models/MOM/PenStrokePoint',[
     }
     var _p = PenStrokePoint.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePoint;
-
-    PenStrokePoint.SkeletonDataConstructor = function(obj) {
-        for(var k in obj) this[k] = obj[k];
-        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
-    };
-    PenStrokePoint.SkeletonDataConstructor.prototype._cps_whitelist = {
-        on: 'on'
-      , in: 'in'
-      , out: 'out'
-    };
 
     //inherit from parent
     _p._cps_whitelist = {
@@ -41990,25 +41355,196 @@ define('metapolator/models/MOM/PenStroke',[
 })
 
 ;
+define('metapolator/models/MOM/ContourPoint',[
+    './_Node'
+  , './PointData'
+  , 'metapolator/models/CPS/whitelistProxies'
+], function(
+    Parent
+  , PointData
+  , whitelistProxies
+) {
+    
+    /**
+     * This Element represents a point of a of a MoM Contour (outline).
+     * Its properties are the absolute coordinates of an on-curve point
+     * of the outline of a contour.
+     *
+     * It doesn't accept add or removal of children.
+     *
+     * pointData is expected to be a PointData instance with three readable keys:
+     * {
+     *      in: Vector // must be set
+     *    , on: Vector // must be set
+     *    , out: Vector // must be set
+     * }
+     *
+     * These are the absolute coordinates of the skeleton.
+     *
+     */
+    function ContourPoint(pointData) {
+        Parent.call(this);
+        if(!(pointData) instanceof PointData)
+            throw new TypeError('Expected an instance of PointData.');
+        this._skeleton = pointData;
+        Object.freeze(this._children);
+    }
+    var _p = ContourPoint.prototype = Object.create(Parent.prototype);
+    _p.constructor = ContourPoint;
+
+    //inherit from parent
+    _p._cps_whitelist = {
+        skeleton: 'skeleton'
+    };
+    //inherit from parent
+    (function(source) {
+        for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
+    }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
+
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM ContourPoint'
+    });
+
+    Object.defineProperty(_p, 'type', {
+        /* this is used for CPS selectors */
+        value: 'p'
+    });
+
+    /**
+     * This is the Original data from the glif-file
+     * I thought about calling it origin, maybe.
+     */
+    Object.defineProperty(_p, 'skeleton', {
+        get: function() {
+            return this._skeleton;
+        }
+    });
+
+    _p._acceptedChildren = [];
+
+    return ContourPoint;
+});
+
+define('metapolator/models/MOM/Contour',[
+    './_Contour'
+  , './ContourPoint'
+], function(
+    Parent
+  , ContourPoint
+) {
+    
+    /**
+     * This Element is the container of all points of a outline contour.
+     * It may have some metadata (like an identifier) and contain children
+     * of type MOM ContourPoint.
+     */
+    function Contour() {
+        Parent.call(this);
+    }
+    var _p = Contour.prototype = Object.create(Parent.prototype);
+    _p.constructor = Contour;
+
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM Contour'
+    })
+
+    Object.defineProperty(_p, 'type', {
+        /* this is used for CPS selectors*/
+        value: 'contour'
+    })
+
+    _p._acceptedChildren = [ContourPoint];
+
+    return Contour;
+})
+
+;
+define('metapolator/models/MOM/Component',[
+    './_Contour'
+  , 'metapolator/models/CPS/whitelistProxies'
+], function(
+    Parent
+  , whitelistProxies
+) {
+    
+    /**
+     * This is a UFO component reference.
+     */
+    function Component( baseGlyphName, transformation ) {
+        Parent.call(this);
+        this._baseGlyphName  = baseGlyphName;
+        this._transformation = transformation;
+        Object.freeze(this._children);
+        this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+    }
+    var _p = Component.prototype = Object.create(Parent.prototype);
+    _p.constructor = Component;
+
+    _p._cps_whitelist = {
+        baseGlyphName:           '_baseGlyphName'
+      , originalTransformation:  '_transformation'
+    };
+    //inherit from parent
+    (function(source) {
+        for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
+    }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
+
+    Object.defineProperty(_p, 'baseGlyphName', {
+        get: function() {
+            return this._baseGlyphName;
+        }
+    });
+    Object.defineProperty(_p, 'transformation', {
+        get: function() {
+            return this._transformation;
+        }
+    });
+
+    Object.defineProperty(_p, 'MOMType', {
+        value: 'MOM Component'
+    })
+    
+    Object.defineProperty(_p, 'type', {
+        /* this is used for CPS selectors*/
+        value: 'component'
+    })
+    
+    _p._acceptedChildren = [];
+    
+    return Component;
+})
+
+;
 define('metapolator/project/MOMPointPen',[
     'metapolator/errors'
   , 'ufojs/main'
   , 'ufojs/tools/pens/AbstractPointPen'
   , 'metapolator/models/MOM/PenStroke'
   , 'metapolator/models/MOM/PenStrokePoint'
+  , 'metapolator/models/MOM/Contour'
+  , 'metapolator/models/MOM/ContourPoint'
   , 'metapolator/math/Vector'
+  , 'metapolator/models/MOM/Component'
+  , 'metapolator/models/MOM/PointData'
+  , 'ufojs/tools/misc/transform'
 ], function(
     errors
   , ufoJSUtils
   , Parent
   , PenStroke
   , PenStrokePoint
+  , Contour
+  , ContourPoint
   , Vector
+  , Component
+  , PointData
+  , transform
 ) {
     
 
     var PointPenError = errors.PointPen
       , isNumber = ufoJSUtils.isNumber
+      , Transformation = transform.Transform
       ;
 
 
@@ -42024,7 +41560,6 @@ define('metapolator/project/MOMPointPen',[
         Parent.call(this);
         this._glyph = glyph;
         this._contour = null;
-        this._lastPointData = undefined;
         this._prevOffCurveCount = 0;
         this._prevPointTypes = [];
     }
@@ -42032,23 +41567,39 @@ define('metapolator/project/MOMPointPen',[
     var _p = MOMPointPen.prototype = Object.create(Parent.prototype);
     _p.constructor = MOMPointPen;
 
-    /**
-     * Start a new sub path.
-     */
-    _p.beginPath =  function(kwargs/*optional, dict*/) {
-        kwargs = kwargs || {}
+    _p.beginPath = function(kwargs/*optional, dict*/) {
+        kwargs = kwargs || {};
         if(this._contour)
-            throw new PointPenError('Called beginPath but there is an open. '
-                    +' path. Call endPath first.')
-        this._contour = new PenStroke();
+            throw new PointPenError('Called beginPath but there is an open '
+                    + 'path. Call endPath first.');
+        this._contour = [];
+        this._contour.element = this._makeContour(kwargs);
+
+        this._prevOffCurveCount = 0;
+        this._prevPointTypes = [];
+    };
+
+    var contourIndicator = 'C:';
+    _p._isContourPath = function(identifier) {
+        if(!identifier) return false;
+        return identifier
+            ? (identifier.slice(0, contourIndicator.length) === contourIndicator)
+            : false// no identifier => penstroke
+            ;
+    };
+
+    _p._makeContour =  function(kwargs) {
+        var isContour = this._isContourPath(kwargs.identifier)
+          , element = isContour ? new Contour() : new PenStroke()
+          ;
         if(kwargs.identifier !== undefined)
             // MOM will have to check validity and uniqueness
-            this._contour.id = kwargs.identifier;
-        this._prevOffCurveCount = 0;
-        this._prevPointTypes = []
-        this._lastVector = undefined;
-        this._lastPointData = undefined;
-    }
+            element.id = (isContour)
+                 ? kwargs.identifier.slice(contourIndicator.length)
+                 : kwargs.identifier
+                 ;
+        return element;
+    };
 
     /**
      * End the current sub path.
@@ -42062,15 +41613,40 @@ define('metapolator/project/MOMPointPen',[
                         && this._prevPointTypes.slice(-1)[0] == 'offcurve')
             throw new PointPenError('open contour has loose offcurve point');
         // seal the last point data element, it is complete
-        this._sealLastPoint();
-        this._glyph.add(this._contour);
-        this._contour = null;
-    }
 
-    _p._sealLastPoint = function() {
-        if(this._lastPointData)
-            Object.seal(this._lastPointData);
-    }
+
+        if(this._contour.element instanceof Contour) {
+            // rotate, so that the list is like so: [in, on, out, in, on, out, ...]
+            // the first on point must stay the first on point:
+            // [in, on, ...] nothing to do
+            // [on, ..., out, in] pop in and unshift it to the start
+            // [out, in, on, ...] shift out and push it to the end
+            // it's enough to find the first on point:
+            if(this._contour[0][0] instanceof ContourPoint)
+                this._contour.unshift(this._contour.pop());
+            else if((this._contour[2][0] instanceof ContourPoint))
+                this._contour.push(this._contour.shift());
+        }
+
+        var i, pointData;
+        for(i=0;i<this._contour.length;i++) {
+            if(this._contour[i][0] === undefined)
+                // the first item of off-curve points is undefined
+                continue;
+            pointData =  this._contour[i][1];
+            if(i>0)
+                // the moveTo at the beginning of a penstroke has no
+                // incoming control-point
+                pointData['in'] = this._contour[i-1][1];
+            if(this._contour[i+1])
+                pointData.out = this._contour[i+1][1];
+            Object.seal(pointData);
+            this._contour.element.add(this._contour[i][0]);
+        }
+
+        this._glyph.add(this._contour.element);
+        this._contour = null;
+    };
 
     /**
      * Add a point to the current sub path.
@@ -42086,28 +41662,35 @@ define('metapolator/project/MOMPointPen',[
         smooth = !!smooth;
         name = (name === undefined) ? null : name;
         kwargs = (kwargs || {});//an "options" object
-        var vector, point, lastVector;
+        var vector, point, pointData, lastVector;
 
         if(!this._contour)
             throw new PointPenError('Called addPoint but there is no open. '
-                    +' path. Call beginPath first.')
+                    +' path. Call beginPath first.');
             // coordinates
         if(pt === undefined)
             throw new PointPenError('Missing point argument');
         if(pt.filter(isNumber).length < 2)
-            throw new PointPenError('coordinates must be int or float')
+            throw new PointPenError('coordinates must be int or float');
 
         vector = Vector.fromArray(pt.map(parseFloat));
-        lastVector = this._lastVector;
-        this._lastVector = vector;
 
         // segment type
-        if(segmentType !== 'move' && this._prevPointTypes.length === 0)
-            throw new PointPenError('MOMPointPen expects only open contours. '
+        if(this._contour.element instanceof PenStroke
+                    && segmentType !== 'move'
+                    && this._prevPointTypes.length === 0)
+            throw new PointPenError('MOMPointPen expects only open contours '
+                        + 'for PenStroke elements. '
                         + 'This are contours that begin with a "move" point. '
                         + 'This contour begins with "'+segmentType+'"');
         else if (segmentType === 'offcurve')
             segmentType = null;
+        else if(this._contour.element instanceof Contour
+                    && segmentType !== 'curve'
+                    && segmentType !== null)
+            throw new PointPenError('MOMPointPen expects only the segment '
+                        + 'type "curve" for on-curve points of Contour elements. '
+                        + 'This point is a "'+segmentType+'"');
         else if(segmentType === 'move' && this._prevPointTypes.length)
             throw new PointPenError('move occurs after a point has '
                                     +'already been added to the contour.');
@@ -42123,45 +41706,42 @@ define('metapolator/project/MOMPointPen',[
         if (segmentType === null) {
             // off curve
             this._prevOffCurveCount += 1;
-            if(this._prevOffCurveCount === 1)
-                this._lastPointData.out = vector
+            this._contour.push([undefined, vector]);
             return;
         }
         // If we get here, this is an on-curve point.
-        // Metapolator points are all on-curve points.
-        // Seal the last point data element, it is complete.
-        this._sealLastPoint();
-
-        this._lastPointData = new PenStrokePoint.SkeletonDataConstructor({
-            in: this._prevOffCurveCount === 2
-                ? lastVector
-                : undefined
+        this._prevOffCurveCount = 0;
+        pointData = new PointData({
+            'in': undefined
           , on: vector
           , out: undefined
         });
-        this._prevOffCurveCount = 0;
-        point = new PenStrokePoint(this._lastPointData)
-
+        point = this._contour.element instanceof Contour
+                    ? new ContourPoint(pointData)
+                    : new PenStrokePoint(pointData)
+                    ;
         // we translate names into classes, because they dont have to be
         // unique
         if (name !== null)
             (name.match(/\S+/g) || [])
                     .filter(function(item){ return !!item.length;})
-                    .forEach(point.setClass, point)
-
+                    .forEach(point.setClass, point);
         if(kwargs.identifier !== undefined)
             // MOM will have to check validity and uniqueness
             point.id = kwargs.identifier;
-        this._contour.add(point);
-    }
+        this._contour.push([point, pointData]);
+    };
 
     /**
      * Add a sub glyph.
      */
     _p.addComponent = function(baseGlyphName, transformation) {
-        //TODO: we will have to implement this!
-        errors.warn('MOMPointPen skipping a component:' + baseGlyphName)
-    }
+        var transMatrix, component;
+
+        transMatrix = new Transformation( transformation );
+        component = new Component( baseGlyphName, transMatrix );
+        this._glyph.add(component);
+    };
 
     return MOMPointPen;
 });
@@ -42179,13 +41759,12 @@ define('metapolator/project/ProjectMaster',[
 ) {
     
 
-    function ProjectMaster(io, project, glyphSetDir, cpsChain) {
-
+    function ProjectMaster(io, project, name, glyphSetDir, cpsFile) {
         this._io = io;
         this._project = project;
+        this._name = name;
         this._glyphSetDir = glyphSetDir;
-        this._cpsChain = cpsChain.slice();
-
+        this._cpsFile = cpsFile;
         this._glyphSet = undefined;
     }
 
@@ -42203,15 +41782,6 @@ define('metapolator/project/ProjectMaster',[
 
     _p.saveCPS = function(filename, cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'+filename, cps);
-    };
-
-    _p.loadCPS = function() {
-        var i = 0
-          , rules = []
-          ;
-        for(;i<this._cpsChain.length;i++)
-            rules.push(this._project.getCPSRules(this._cpsChain[i]));
-        return rules;
     };
 
     _p.deleteCPS = function(filename) {
@@ -42403,6 +41973,593 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/_ValueToken',[
     };
 
     return _ValueToken;
+});
+
+define('metapolator/models/CPS/dataTypes/formulae/parsing/NameToken',[
+    'metapolator/errors'
+  , './_ValueToken'
+], function(
+    errors
+  , Parent
+) {
+    
+
+    function NameToken(literal) {
+        Parent.call(this, literal, 0, 0);
+    }
+
+    /**
+     * Literal is a string representing a name/key.
+     * Value is looked up using the get method of the StyleDict of the
+     * host element or in the context of another host element value may
+     * be looked up differntly.
+     */
+    var _p = NameToken.prototype = Object.create(Parent.prototype);
+    _p.constructor = NameToken;
+
+    _p.getValue = function() {
+        return this.literal;
+    };
+
+    return NameToken;
+});
+
+define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
+     'metapolator/errors'
+   , './_Token'
+   , './NameToken'
+   , 'ufojs/main'
+], function(
+    errors
+  , Parent
+  , NameToken
+  , ufoJSUtils
+) {
+    
+
+    var CPSFormulaError = errors.CPSFormula
+      , ValueError = errors.Value
+      , isInstance = ufoJSUtils.isInstance
+      , stringify = JSON.stringify
+      ;
+
+    /**
+     * literal:     string, the name of the operator, like: + - Vector etc.
+     *              there are some operator literals that are expected by
+     *              Parser.tokenize
+     *
+     * splitting:   defines an operator as splitting, which instructs the
+     *              tokenizer to end parsing of the token when it appears.
+     *              if an operator is not splitting, it must be followed by
+     *              a splitting token. None splitting tokens can be part of
+     *              Names
+     *
+     * precedence: the precedence is used to implement the order of operations.
+     *             precedence can be a finite Number and -Infinity for lowest
+     *             precedence +Infinity for highest precedence
+     *
+     * preConsumes,
+     * preConsumes: How many tokens this operator consumes
+     *              before or after its appearance. This allows the creation
+     *              of infix operators.
+     *              Infinity is allowed as a value, this makes the creation
+     *              of i.e. list constructing operators possible. A Infinity
+     *              value will consumes the amount of Items that are corruently
+     *              in the stack.
+     *
+     * methods:     See this._setMethods for a description of the methods argument.
+     */
+    function OperatorToken(literal, splitting, precedence, preConsumes
+                                             , postConsumes, methods) {
+        Parent.call(this, literal, preConsumes, postConsumes);
+        this._splitting = !!splitting;
+        if(typeof precedence !== 'number')
+            throw new CPSFormulaError('Precedence must be a number, but is "'
+                                + precedence +'" typeof: '+ typeof precedence);
+        this._precedence = precedence;
+        this._methods = [];
+        this._setMethods(methods);
+
+        // need these for access from the compiled functions
+        this.CPSFormulaError = CPSFormulaError;
+        this.NameToken = NameToken;
+
+        // NOTE: List has a variable argument length, so may others too!
+        // The stack compiler will take care of that, but we'll have to
+        // wait with compiling
+        if(isFinite(this.preConsumes) && isFinite(this.postConsumes))
+            this.execute = this.compile();
+    }
+
+    var _p = OperatorToken.prototype = Object.create(Parent.prototype);
+    _p.constructor = OperatorToken;
+
+
+    Object.defineProperty(_p, 'precedence', {
+        get: function(){ return this._precedence; }
+    });
+
+    Object.defineProperty(_p, 'splitting', {
+        get: function(){ return this._splitting; }
+    });
+
+    /**
+     * Methods could be just a function, in which case it would be the
+     * single match all implementation for this operator, NameTokens as
+     * arguments will be resolved upon invocation.
+     *
+     * Also, it may be an array of arrays like this:
+     *   [
+     *        [typename/constructor, [ typename/constructor ...] , method]
+     *      , [typename/constructor, [ typename/constructor ...] , method]
+     *      , function(){} // optional, match all
+     *   ]
+     *
+     * The first method that matches the actual types of arguments will
+     * be used, so an early match all function will shadow later ones.
+     *
+     * typename/constructor can be everything that is useful with ufoJS/main.isInstance
+     * However, the compiled version does not use ufoJS/main.isInstance!
+     * That may lead to problems when ufoJS/main.isInstance changes but not
+     * the compiling code in here!
+     * Usually all Operators will be compiled. Interpreting is still here
+     * for legacy reasons, also, the algorithm is easier to read.
+     *
+     * typename/constructor can have special values:
+     *
+     * - The string: "*getAPI*", only as very first element:
+     *        this does two things:
+     *            * it injects the getAPI function as first argument of method
+     *            * it doesn't resolve NameToken arguments using getAPI(nameToken.getValue())
+     *              so, specifiying *getAPI* means method will handle
+     *              NameTokens by itself.
+     *        In turn, this means NameToken can be used as a typename/constructor
+     *        but it will only ever appear as argument when *getAPI* is requested,
+     *        otherwise it will be resolved before invocation.
+     *        IMPORTANT: All *getAPI* methods must be defined before the ones without
+     *        *getAPI*.
+     * - The string "*anything*" which matches anything
+     *
+     * ufoJS/main.isInstance takes:
+     *  - functions which will be checked using "instanceof" or a string
+     *  - strings can be everything where typeof actually works, like:
+     *                  "number", "string", "undefined", "object"
+     *  - strings can be: "int" "float" "NaN" "null" "Infinity" "-Infinity"
+     *  - arrays of the above
+     */
+    _p._setMethods = function(methods) {
+        if(typeof methods === 'function')
+            this._setMethod(methods);
+        else if(methods instanceof Array)
+            methods.map(this._setMethod, this);
+    };
+    /**
+     * see _setMethods for an argument description
+     */
+    _p._setMethod = function(description) {
+        var expectedLength;
+        if(typeof description === 'function') {
+            this._methods.push(description);
+            return;
+        }
+        else if(!(description instanceof Array))
+            throw new ValueError('An operator definition should be either '
+                + 'a function or an array, see OperatorToken');
+
+        // It is an array
+
+        expectedLength = this.consumes + (
+                                description[0] !== '*getAPI*' ? 1 : 2);
+
+        if(description.length !== expectedLength)
+            throw new ValueError(this.literal + ': An operator definition array must define '
+                + 'the types for all items it consumes plus the method to '
+                + 'that is the operator code in the end.'
+                + 'This operator should have ' + expectedLength +' '
+                + 'items in a definition, but ' + description.length
+                + ' was found: ' + description
+            );
+        else if(typeof description[description.length-1] !== 'function')
+            throw new ValueError('The last item of an operator definition '
+                + 'must be a type of "function" but this is a "'
+                + (typeof description[description.length-1])+'"');
+        else if(this._methods.length // this is not the first
+                    && description[0] === '*getAPI*' // this is boxed
+                    && this._methods[this._methods.length-1][0] !== '*getAPI*')// the previous is unboxed
+            throw new ValueError('The previous operator uses "unboxed" NameTokens '
+                + 'but this one unboxes itself. (*getAPI* is the  first argument) '
+                + 'This is illegal. Operators that unbox themselves  must be '
+                + 'defined before operators that expect unboxed values.\n'
+                + 'This is because automatic unboxing could cause '
+                + 'unpredictable behavior (like a hit where no hit should be) '
+                + 'and also errors for not found names. Also, automatic '
+                + 'unboxing for a value that doesn\'t need it is bad for '
+                + 'performance.'
+            );
+        // accept it
+        // description is an array that suits our expectations
+        this._methods.push(description);
+    };
+
+    // helper for compile
+    function _makeArgNames(length, _prefix, _postfix) {
+        var result = [], i, prefix = _prefix || '', postfix = _postfix || '';
+        for(i=0;i<length;i++) result.push(prefix + i + postfix);
+        return result;
+    }
+
+    // helper for compile
+    function _makeLocalBoxedNames(body, methods, consumes) {
+        var i, l, isBoxed
+          , usersOfBoxed = 0
+          , args = _makeArgNames(consumes, 'args[', ']')
+          , boxedNames
+          ;
+        for(i=0, l=methods.length;i<l; i++) {
+            isBoxed = methods[i][0] === '*getAPI*';
+            // The first unboxed user uses the boxed values for unboxing
+            // and thus makes also an access to the unboxed values.
+            usersOfBoxed += 1;
+            // After the first unboxed user, boxed will not be used anymore.
+            if(!isBoxed) break;
+        }
+        if(usersOfBoxed < 2)
+            // We don't declare the vars if less than 2 accesses to boxed NameTokens
+            // are done. This assumes that declaring locally and two subsequent
+            // accesses are cheaper than always accessing the args array;
+            return args;
+        boxedNames = _makeArgNames(consumes, 'aN');
+        for(i=0,l=consumes;i<l;i++)
+            body.push('var ' , boxedNames[i] ,' = ', args[i], ';\n');
+        return boxedNames;
+    }
+
+    // helper for compile
+    function _makeLocalUnboxedNames(body, consumes, boxedNames) {
+        var i, arg, unboxedNames = _makeArgNames(consumes, 'aV');
+        for(i=0;i<consumes;i++) {
+            arg = boxedNames[i];
+            body.push('var ' , unboxedNames[i] , ' = ' , arg , ' instanceof NameToken '
+                    , '? getAPI(' , arg , '.getValue()) '
+                    , ': ' , arg , ';\n');
+        }
+        return unboxedNames;
+    }
+
+    // helper for compile
+    function _makeTypeTest(arg, typeAdress, typeVal, ctors) {
+        var typeTest = []
+          , typeOfType = typeof typeVal
+          , ctorCache
+          , ctorName
+          ;
+        if(typeOfType === 'function') {
+            ctorCache = ctors.cache;
+            ctorName = ctorCache.get(typeVal);
+            if(!ctorName) {
+                ctorName = 'c' + (ctors.i++);
+                ctors.init.push('var ', ctorName, ' = ', typeAdress,';\n');
+                ctorCache.set(typeVal, ctorName);
+            }
+            typeTest.push( arg, ' instanceof ', ctorName);
+        }
+        else if (typeOfType === 'string') {
+            switch(typeVal) {
+                case 'int':
+                    typeTest.push('typeof ', arg,' === "number" && '
+                            , arg, ' === (',arg,'|0)');
+                    break;
+                case 'float':
+                    typeTest.push('typeof ', arg,' === "number" && '
+                            , 'isFinite(', arg, ') && '
+                            , arg, ' !== (',arg,'|0)');
+                    break;
+                case 'number':
+                    typeTest.push('typeof ', arg,' === "number" && '
+                            , arg, ' === ', arg);
+                    break;
+                case 'NaN':
+                    typeTest.push(arg, ' !== ', arg);
+                    break;
+                case 'null':
+                    typeTest.push(arg, ' === null');
+                    break;
+                case 'Infinity':
+                    typeTest.push(arg, ' === Number.POSITIVE_INFINITY');
+                    break;
+                case '-Infinity':
+                    typeTest.push(arg, ' === Number.NEGATIVE_INFINITY');
+                    break;
+                default:
+                    typeTest.push('typeof ',arg ,' === ', stringify(typeVal));
+                    break;
+            }
+        }
+        else
+            throw new ValueError('Unkown type for a value-type: ' + typeOfType);
+
+        return typeTest.join('');
+    }
+
+    // helper for compile
+    function _makeTypeTests(body, typeTests, ctors, name, type, adress) {
+        var i
+          , l = type instanceof Array ? type.length : 1
+          , typeAdress
+          , typeVal
+          , test
+          ;
+        for(i=0;i<l;i++) {
+            if(i) body.push(' || ');
+            if(type instanceof Array) {
+                typeAdress = adress + '[' + i + ']';
+                typeVal = type[i];
+            }
+            else {
+                typeAdress = adress;
+                typeVal = type;
+            }
+            test = _makeTypeTest(name, typeAdress, typeVal, ctors);
+            // Caching the results of identical tests
+            // without _cacheTypeTest this would be just: body.push(test);
+            _cacheTypeTest(body, typeTests, test);
+        }
+    }
+
+    // helper for compile
+    function _cacheTypeTest(body, typeTests, typeTest) {
+        var typeData = typeTests[typeTest];
+        if(!typeData) {
+            // Rember the body index (bi) for later replacement
+            typeTests[typeTest] = {bi: body.length, varName: null};
+            body.push(typeTest);
+            return;
+        }
+        // We had this test once! Prepare to save its result when it's
+        // executed the first time.
+        if(!typeData.varName) {
+            typeData.varName = 'tt' + typeTests.__length;
+            typeTests.__length++;
+
+            // Initialize the name in the prelude of the function.
+            // We can't  do this inline.
+            typeTests.__init.push('var ' + typeData.varName + ';\n');
+
+            // The first occurance of the test is replaced to store
+            // its result in a name.
+            body[typeData.bi] = typeData.varName + ' = (' + typeTest + ')';
+
+        }
+        // The current test tries to use the cached version if it was already
+        // executed. Otherwise it falls back to initializie the var itself.
+        body.push('(', typeData.varName, ' || (', typeData.varName ,' === false ? false'
+                ,' : ',typeData.varName ,' = (',typeTest,')))');
+    }
+
+    /**
+     * compile the Operator description to native JavaScript.
+     */
+    _p.compile = function () {
+        /*jshint evil:true*/
+        var body = ['\n']
+          , i, j, k, l, ll, description, methodName
+          , names, args, type, typeVarsIndex, ctorIndex, isBoxed
+          , hasMatchAll = false
+          , unboxedNameTokens = false
+          , typeTests = {
+                __length: 0
+              , __init: []
+            }
+          , ctors = {
+                i: 0
+              , cache: new Map()
+              , init: []
+            }
+          ;
+        body.push(
+            '//', this.literal, '\n',
+            'var NameToken = this.NameToken\n'
+          , '  , methods = this._methods\n'
+          , '  ;\n'
+        );
+        names = _makeLocalBoxedNames(body, this._methods, this.consumes);
+        args = 'getAPI' + (this.consumes ? ', ' + names.join(', ') : '');
+
+        // a placeholder
+        typeVarsIndex = body.length;
+        body.push('');
+
+        for(i=0, l=this._methods.length;i<l; i++) {
+            description = this._methods[i];
+            methodName = 'm' + i;
+            body.push('var ',methodName,' = methods[', i ,'];\n');
+
+            isBoxed = description[0] === '*getAPI*';
+            if(unboxedNameTokens && isBoxed)
+                // This is a problem in the design of the operator
+                // see the lengthy error message in p._setMethod
+                throw new ValueError('Found a *getAPI* after names where already unboxed!');
+            else if(!unboxedNameTokens && !isBoxed) {
+                //unbox NameTokens
+                unboxedNameTokens = true;
+                names = _makeLocalUnboxedNames(body, this.consumes, names);
+                args = names.join(', ');
+            }
+
+            if(typeof description === 'function') {
+                // That's it! This is a match-all method, no further
+                // evaluation is needed.
+                hasMatchAll = true;
+                body.push('return ',methodName,'(', args, ');');
+                break;
+            }
+
+            // a placeholder
+            ctorIndex = body.length;
+            body.push('');
+
+            body.push('if(true');
+            // k: start at 1 if the first item is *getAPI*
+            for(j=0, k=isBoxed?1:0,ll=this.consumes;j<ll;k++,j++) {
+                type = description[k];
+                // always true
+                if(type === '*anything*') continue;
+                body.push(' && (');
+                _makeTypeTests(body, typeTests, ctors, names[j], type,  methodName + '[' + k +']');
+                body.push(')');
+            }
+            body.push(
+                ')\n    '
+              , 'return ' ,methodName,'[', description.length-1, '](', args, ');\n'
+            );
+
+            // write the constructor references
+            body[ctorIndex] = ctors.init.join('');
+            ctors.init = [];
+        }
+        // write the type test result var names
+        if(typeTests.__init.length)
+            body[typeVarsIndex] = typeTests.__init.join('');
+
+        if(!hasMatchAll)
+            // raise if we are still here
+            body.push(
+                'throw new this.CPSFormulaError('
+              , stringify('Can\'t find an implementation for the operator '
+                    + stringify(this.literal)
+                    + ' that matches the given combination of argument types:\n')
+              , '\n    '
+              , ' + args.map(function(item){\n    '
+              , 'return "\\"" + item + "\\" (typeof: " + (typeof item) + ")";}'
+              , ').join(", ")'
+              , '\n    );'
+            );
+        return new Function('getAPI', 'args', body.join(''));
+    };
+
+    /**
+     * Return the index in this._methods of the first matching operator
+     * implementation for the given arguments or -1.
+     */
+    _p._findMethod = function(getAPI, argsObj) {
+        var index=0, length=this._methods.length, j, k, type, value, args;
+
+        for(;index<length; index++) {
+            // the routine can request as first argument getAPI
+            // this however changes how NameToken is processed
+            // without *getAPI* the lookup is made for the operator
+            // with *getAPI* the operator itself is in charge to
+            // look up the names. The latter can happen anywhere, not
+            // just with the getAPI.
+
+            // convert from TokenType (container) to the JavaScript Value
+            // equivalents, before running the following methods
+            if(this._methods[index][0] !== '*getAPI*') {
+                j = 0;
+                args = argsObj.unboxedNameTokens;
+            }
+            else {
+                j = 1;
+                args = argsObj.original;
+            }
+
+            if(typeof this._methods[index] === 'function')
+                // match all
+                return index;
+
+            for(k = 0;k<args.length;j++, k++) {
+                type = this._methods[index][j];
+                if(type !== "*anything*" && !isInstance(args[k], type))
+                    break;
+            }
+            if(k === args.length)
+                // no element broke the loop, thus all where matches;
+                return index;
+        }
+        return -1;
+    };
+
+    /**
+     * This method interpretes the the Operator description.
+     *
+     * However, usually the Operator will compile itself into
+     * native JavaScript upon initializaiton and override this
+     * implementation
+     */
+    _p.execute = function(getAPI , _args) {
+        var argsObj = new Internal_Arguments(_args, getAPI)
+          , index
+          , args
+          , result
+          , operator
+          ;
+        index = this._findMethod(getAPI ,argsObj);
+        if(index === -1) {
+            throw new CPSFormulaError('Can\'t find an implementation for the '
+                + 'operator "'+this.literal+'" that matches the given '
+                + 'combination of argument types: '
+                + argsObj.original.map(function(item){
+                        return 'type "' + (typeof item)
+                                            + '" string "' + item +'"';})
+                    .join(', ')
+            );
+        }
+        if(typeof this._methods[index] === 'function') {
+            operator = this._methods[index];
+            args = argsObj.unboxedNameTokens;
+        }
+        else {
+            operator = this._methods[index].slice(-1).pop();
+            if(this._methods[index][0] === '*getAPI*') {
+                args = argsObj.original;
+                args.unshift(getAPI);
+            }
+            else
+                args = argsObj.unboxedNameTokens;
+        }
+        result = operator.apply(this, args);
+
+        // check for NaN and sorts of??
+        return result;
+
+    };
+
+    /**
+     * Implementation specific Object to create different versions of the
+     * arguments array for further processing. This is in place to make
+     * the creation of these different versions a) lazy and  b) cached.
+     * This object never leaves the OperatorToken internals, so it doesn't
+     * need its own module.
+     *
+     * The two versions of the arguments array are available at the
+     * property getters:
+     *   - unboxedNameTokens:
+     *   - original
+     * within unboxedNameTokens NameTokens are converted to the value
+     * returned by getAPI(token.getValue())
+     */
+    function Internal_Arguments(args, getAPI) {
+        this.original = args;
+        this._getAPI = getAPI;
+        this._unboxedNameTokens = null;
+    }
+
+    Object.defineProperty(Internal_Arguments.prototype, 'unboxedNameTokens', {
+        get: function(){
+            if(!this._unboxedNameTokens)
+                this._unboxedNameTokens = this.original.map(_unbox, this);
+            return this._unboxedNameTokens;
+        }
+    });
+
+    function _unbox (token) {
+         /*jshint validthis:true */
+        if(token instanceof NameToken)
+            return this._getAPI(token.getValue());
+        return token;
+    }
+
+    return OperatorToken;
 });
 
 define('metapolator/models/CPS/dataTypes/formulae/parsing/NumberToken',[
@@ -44990,9 +45147,6 @@ define('metapolator/models/CPS/elements/Rule',[
         Parent.call(this, source, lineNo);
         this._selectorList = selectorList;
         this._parameters = parameterDict;
-        
-        this._nameSpaces = [];
-        this._nameSpaceCache = undefined;
     }
     
     var _p = Rule.prototype = Object.create(Parent.prototype)
@@ -45003,40 +45157,25 @@ define('metapolator/models/CPS/elements/Rule',[
     }
     
     /**
-     * If there is no item in this._nameSpaces the result of
-     * this method equals this._selectorList.
+     * If no namespaces are provided, the result of this method equals
+     * this._selectorList.
      */
-    _p._getNameSpacedSelectorList = function() {
+    _p.getSelectorList = function(namespaces) {
         var selectorList = this._selectorList
-          , i = 0
+          , i, l
           ;
-        // having [a, b, c] and [d, e, f]
-        // we get back [ad, ae, af, bd, be, bf, cd, ce, cf]
-        // this._nameSpaces[i] must be on the left hand!
-        for(;i<this._nameSpaces.length;i++)
-            selectorList = this._nameSpaces[i].multiply(selectorList);
+        // Multiply the selectorList on the left by each namespace in turn
+        if (namespaces !== undefined) {
+            for(i=0, l=namespaces.length;i<l;i++)
+                if(namespaces[i] !== null)
+                    selectorList = namespaces[i].multiply(selectorList);
+        }
         return selectorList;
     }
-    
-    Object.defineProperty(_p, 'selectorList', {
-        get: function() {
-            if(!this._nameSpaceCache)
-                this._nameSpaceCache = this._getNameSpacedSelectorList();
-            return this._nameSpaceCache;
-        }
-    })
     
     Object.defineProperty(_p, 'parameters', {
         get: function(){ return this._parameters; }
     })
-    
-    _p.addNamespace = function(selectorList) {
-        // kill the old cache if there is any
-        this._nameSpaceCache = undefined;
-        // namespaces are added bottom first, so that the topmost applying
-        // namespace is added last.
-        this._nameSpaces.push(selectorList);
-    }
     
     return Rule;
 })
@@ -45097,21 +45236,20 @@ define('metapolator/models/CPS/elements/_Name',[
      */
     function _Name(name, comments ,source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._name = name;
         this._comments = comments;
+        Object.defineProperty(this, 'name', {
+            value: name
+          , enumerable: true
+        });
     }
     var _p = _Name.prototype = Object.create(Parent.prototype)
     _p.constructor = _Name;
-    
-    Object.defineProperty(_p, 'name', {
-        get: function(){ return this._name; }
-    })
-    
+
     /**
      * Prints all comments after the name.
      */
     _p.toString = function() {
-        return [this._name,
+        return [this.name,
                 this._comments.length ? ' ': '',
                 this._comments.join('\n')].join('');
     }
@@ -45202,19 +45340,23 @@ define('metapolator/models/CPS/elements/SelectorList',[
     function SelectorList(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
         this._selectors = [];
+        this._value = [];
+        this._multiplyCache = new WeakMap();
         if(selectors.length)
             Array.prototype.push.apply(this._selectors, selectors);
         
         // Maybe we'll need to determine the following on demand, not on init??
-        var i=0, count=0;
-        for(;i<this._selectors.length;i++) {
-            if(this._selectors[i].invalid) {
+        var i, l, selector, count=0;
+        for(i=0,l=this._selectors.length;i<l;i++) {
+            selector = this._selectors[i];
+            if(selector.invalid) {
                 this._invalid = true;
-                this._message = this._selectors[i].message;
+                this._message = selector.message;
                 break;
             }
-            if(!this._selectors[i].selects)
+            if(!selector.selects)
                 continue;
+            this._value.push(selector)
             count +=1;
         }
         if(!count) {
@@ -45233,15 +45375,13 @@ define('metapolator/models/CPS/elements/SelectorList',[
      * The ComplexSelectors are combined using the descendant combinator.
      */
     SelectorList.multiply = function(a, b) {
-        var x=0
-          , y
-          , selectorsA = a.selectors
-          , selectorsB = b.selectors
+        var x, y, l, ll
+          , selectorsA = a._selectors
+          , selectorsB = b._selectors
           , result = []
           ;
-        for(;x<selectorsA.length;x++) {
-            y=0;
-            for(;y<selectorsB.length;y++)
+        for(x=0,l=selectorsA.length;x<l;x++) {
+            for(y=0, ll=selectorsB.length;y<ll;y++)
                 result.push(selectorsA[x].add(selectorsB[y]));
         }
         return new SelectorList(result);
@@ -45281,11 +45421,16 @@ define('metapolator/models/CPS/elements/SelectorList',[
         get: function(){ return this._message;}
     });
     Object.defineProperty(_p, 'value', {
-        get: function(){ return this._selectors.filter(_filterSelecting); }
+        get: function(){ return this._value.slice(); }
     });
     
     _p.multiply = function(selectorList) {
-        return this.constructor.multiply(this, selectorList);
+        var r = this._multiplyCache.get(selectorList);
+        if(!r) {
+            r = this.constructor.multiply(this, selectorList);
+            this._multiplyCache.set(selectorList, r);
+        }
+        return r;
     }
     
     /**
@@ -45322,6 +45467,8 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
      */
     function ParameterCollection(items, source, lineNo) {
         Parent.call(this, items, source, lineNo);
+        this._name = null;
+        this._selectorList = null;
         if(!this._allowNamespace) {
             // lock this.name and this.selectorList
             this.name = undefined;
@@ -45330,6 +45477,12 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
     }
     var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterCollection;
+
+    _p.reset = function(/* same as constructor ! */) {
+        // reset all 'own' properties
+        Object.keys(this).forEach(function(key){ delete this[key];}, this);
+        this.constructor.apply(this, Array.prototype.slice.call(arguments));
+    }
 
     _p.toString = function() {
         var result;
@@ -45346,7 +45499,7 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
             return (this._name ? this._name.name : null);
         }
       , set: function(name) {
-            if('_name' in this)
+            if(this._name !== null)
                 throw new CPSError('Name is already set');
             if(name === undefined) {
                 this._name = undefined;
@@ -45362,18 +45515,10 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
         }
     })
 
-
-    function _ruleAddNamespace(rule) {
-        rule.addNamespace(this._selectorList);
-    }
     Object.defineProperty(_p, 'selectorList', {
         enumerable: true
-        /**
-         * Add the selectorList of this namespace to all children
-         * and children's children's rules
-         */
       , set: function(selectorList) {
-            if('_selectorList' in this)
+            if(this._selectorList !== null)
                 throw new CPSError('selectorList is already set');
             if(selectorList === undefined) {
                 this._selectorList = undefined;
@@ -45386,10 +45531,6 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
                         ? selectorList.constructor.name
                         : selectorList.constructor));
             this._selectorList = selectorList;
-
-            this.rules.forEach(_ruleAddNamespace, this);
-            this.dictionaryRules.forEach(_ruleAddNamespace, this);
-
         }
       , get: function() {
             return this._selectorList || null;
@@ -45415,60 +45556,68 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
                         .bind(null, ParameterCollection, 'namespace'));
     }
 
-    /**
-     * This returns only rules that are direct children of this collection
-     */
-    function _filterRules(item) {
-        return item instanceof Rule;
+    function _addNamespacedRuleGetter(propertyName, baseType, baseName
+                                                    , baseConstructor) {
+        Object.defineProperty(_p, propertyName, {
+            get: function() {
+                var i=0
+                  , namespacedRules = []
+                  , namespace = this.selectorList
+                  , childRules
+                  , addNamespace = _addNamespace.bind(null, namespace)
+                  ;
+                for(;i<this._items.length;i++) {
+                    if(_filterCollections(baseType, baseName, this._items[i]))
+                        childRules = baseConstructor(namespace, this._items[i]);
+                    else if(this._items[i] instanceof ParameterCollection) {
+                        childRules = this._items[i][propertyName];
+                        if (namespace)
+                            childRules.forEach(addNamespace);
+                    }
+                    else
+                        continue;
+                    Array.prototype.push.apply(namespacedRules, childRules)
+                }
+                return namespacedRules;
+            }
+        });
     }
-    Object.defineProperty(_p, 'ownRules', {
-        get: function(){ return this._items.filter(_filterRules); }
-    })
+
+    function _addNamespace(namespace, namespacedRule) {
+        namespacedRule[0].push(namespace);
+    }
+
+    function _createNamespacedRule(namespace, rule) {
+        return [ (namespace ? [namespace] : []), rule];
+    }
 
     /**
      * this returns all rules that are direct children of this collection
      * AND all rules of ParameterCollection instances that are
      * direct children of this collection
      */
-    Object.defineProperty(_p, 'rules', {
-        get: function() {
-            var i=0
-              , rules = []
-              ;
-            for(;i<this._items.length;i++) {
-                if(_filterRules(this._items[i]))
-                    rules.push(this._items[i]);
-                else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(rules, this._items[i].rules);
-            }
-            return rules;
+    _addNamespacedRuleGetter('rules', Rule, undefined,
+        function(namespace, rule) {
+            return [_createNamespacedRule(namespace, rule)];
         }
-    })
+    );
 
     /**
      * this returns all rules of dictionaries that are direct children of
-     * this collection AND all rules of dictionaroies that are children of
+     * this collection AND all rules of dictionaries that are children of
      * ParameterCollection instances that are direct children of this collection
      */
-    Object.defineProperty(_p, 'dictionaryRules', {
-        get: function() {
-            var i=0
-              , rules = []
-              , dictionaries
-              ;
-            for(;i<this._items.length;i++) {
-                if(_filterCollections(AtRuleCollection, 'dictionary', this._items[i]))
-                    Array.prototype.push.apply(rules, this._items[i].rules);
-                else if(this._items[i] instanceof ParameterCollection)
-                    Array.prototype.push.apply(rules, this._items[i].dictionaryRules);
-            }
-            return rules;
+    _addNamespacedRuleGetter('dictionaryRules', AtRuleCollection, 'dictionary',
+        // N.B. Here we invoke AtRuleCollection.rules, not ParameterCollection.rules
+        // AtRuleCollection.rules returns [Rule, Rule, Rule, ... ]
+        function(namespace, collection) {
+            return collection.rules.map(_createNamespacedRule.bind(null, namespace))
         }
-    })
+    );
 
     return ParameterCollection;
-})
-;
+});
+
 define('metapolator/models/CPS/parsing/engine',[
     'metapolator/errors'
   , './Source'
@@ -45549,9 +45698,9 @@ define('metapolator/models/CPS/parsing/engine',[
      * don't want this side effect.
      */
     function parserEngine(defaultNodeConstructors, factorySwitches, ast
-                                    , sourceName, parameterRegistry) {
+                                    , sourceName, ruleController) {
         if(sourceName === undefined)
-            sourceName = '(unkown source)';
+            sourceName = '(unknown source)';
         var source = new Source(sourceName)
           , stack = []
           , lineNo = 1
@@ -45592,10 +45741,9 @@ define('metapolator/models/CPS/parsing/engine',[
                 // ASCENDING
                 // All children are already initialized.
                 if(node.makeInstance)
-                    node.instance = nodeConstructors[node.type]
-                        .call(nodeConstructors, node, source, parameterRegistry);
-                                        
-                //switch back nodeConstructors if this element switched em
+                    node.instance = nodeConstructors[node.type](node, source, ruleController);
+
+                //switch back nodeConstructors if this element switched it
                 if(frame[2])
                     nodeConstructors = frame[2];
                 continue;
@@ -45901,7 +46049,8 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
         this._invalid = false;
         this._alien = false;
         this._message = undefined;
-        
+        this._specificity = null;
+
         var i = 0
           , item
           ;
@@ -45955,7 +46104,7 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
     ComplexSelector.add = function(a, b) {
         var value = a.value;
         value.push(new Combinator(' ', a.source, a.lineNo));
-        Array.prototype.push.apply(value, b.value);
+        Array.prototype.push.apply(value, b._value);
         return new ComplexSelector(value, a.source, a.lineNo);
     }
     
@@ -45995,7 +46144,7 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
         get: function() {
             var a, b, c, i=0, specificity;
             a = b = c = 0;
-            if(this._specificity === undefined) {
+            if(!this._specificity) {
                 for(;i<this._value.length;i++) {
                     if(this._value[i] instanceof Combinator)
                         continue;
@@ -46045,7 +46194,8 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
         this._alien = false;
         this._message = undefined;
         this._value = undefined;
-        
+        this._specificity = null;
+
         if(!(type in this._supportedTypes)) {
             this._alien = true;
             this._message = 'Type of SimpleSelector is unsupported:' + type;
@@ -46060,9 +46210,10 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
         this._name = name;
         
         if(this._type === 'pseudo-class' && this._name === 'i') {
-            if(value === undefined || value !== value) {
+            if(value === undefined || value !== value || typeof value !== 'number') {
                 this._invalid = true;
-                this._message = 'No valid value for pseudoclass "i": ' + value;
+                this._message = 'No valid value for pseudoclass "i": ('
+                                            + typeof value +') '  + value;
                 return;
             }
             this._value = value;
@@ -46121,23 +46272,27 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
     });
     Object.defineProperty(_p, 'specificity', {
         get: function() {
-            var a, b, c;
-            a = b = c = 0;
-            switch(this._type) {
-                case 'id':
-                    a = 1;
-                    break;
-                case 'class':
-                case 'attribute': // unsupported at the moment
-                case 'pseudo-class':
-                    b = 1;
-                    break;
-                case 'type':
-                case 'pseudo-element':
-                    c = 1;
-                    break;
+            var s = this._specificity;
+            if(!s) {
+                var a, b, c;
+                a = b = c = 0;
+                switch(this._type) {
+                    case 'id':
+                        a = 1;
+                        break;
+                    case 'class':
+                    case 'attribute': // unsupported at the moment
+                    case 'pseudo-class':
+                        b = 1;
+                        break;
+                    case 'type':
+                    case 'pseudo-element':
+                        c = 1;
+                        break;
+                }
+                this._specificity = s = [a, b, c];
             }
-            return [a, b, c];
+            return s;
         }
     });
     
@@ -46156,20 +46311,21 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
   , SimpleSelector
 ) {
     
-    
-    var CPSError = errors.CPS
+
+    var CPSError = errors.CPS;
+
     /**
-     * A CompoundSelector is a chain of one or more compound selectors
-     * 
+     * A CompoundSelector is a chain of one or more `SimpleSelector`s
+     *
      * a compound selector is invalid if
      *      - it has more than one of universal or type selector
      *      - a universal or type selector occurs at a later than
      *        the first position
      *      - if it is empty
-     * 
+     *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     * 
+     *
      *  reasons for invalid selectors:
      *
      * A selector may be alien, which means we ignore it, because we don't
@@ -46217,19 +46373,40 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
                 break;
             }
         }
+
+        this._normalizedValue = undefined;
+        this._normalizedName = undefined;
+        this.compiled = false;
+        this.matches = matchesPlaceholder;
     }
-    
-    var _p = CompoundSelector.prototype = Object.create(Parent.prototype)
+
+    function matchesPlaceholder(element, selectorEngine) {
+        /*jshint validthis: true */
+        if(selectorEngine) {
+            this.compile(selectorEngine);
+            return this.matches(element);
+        }
+        throw new CPSError('Not yet compiled, use the `compile` method '
+                        + 'or supply an instance of SelectorEngine to '
+                        + 'this method as a second argument');
+    }
+
+    var _p = CompoundSelector.prototype = Object.create(Parent.prototype);
     _p.constructor = CompoundSelector;
-    
+
     _p.toString = function() {
         // don't serialize the first item if it's marked as implicit
         return (this._value[0] && this._value[0].___implicit
                     ? this._value.slice(1)
                     : this._value
-            ).join('')
-    }
-    
+            ).join('');
+    };
+
+    _p.compile = function(selectorEngine) {
+        this.matches = selectorEngine.compileCompoundSelector(this);
+        this.compiled = true;
+    };
+
     Object.defineProperty(_p, 'selects', {
         get: function(){ return !this._invalid && !this._alien; }
     });
@@ -46248,6 +46425,36 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
             // if value is falsy, return its falsy value (probably undefiend)
             return this._value && this._value.slice();}
     });
+    // a element type name or *
+    Object.defineProperty(_p, 'type', {
+        get: function() {
+            return this._value[0].name;
+        }
+    });
+
+    /**
+     *  sort by type, then by name if type equals.
+     */
+    function normalize(a, b) {
+        var order = {'type':0, 'universal':0, 'id':1, 'pseudo-class':2, 'class':3}
+          , val = order[b.type] - order[a.type]
+          ;
+        return val || (a.name < b.name) ? -1 : (a.name > b.name ? 1 : 0);
+    }
+
+    Object.defineProperty(_p, 'normalizedValue', {
+        get: function() {
+            if(!this._normalizedValue)
+                this._normalizedValue = this.value.sort(normalize);
+            return this._normalizedValue.slice();
+        }
+    });
+    Object.defineProperty(_p, 'normalizedName', {
+        get: function() {
+            return this._normalizedName || (this._normalizedName = this.normalizedValue.join(''));
+        }
+    });
+
     Object.defineProperty(_p, 'specificity', {
         get: function() {
             var a, b, c, i=0, specificity;
@@ -46260,11 +46467,11 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
             }
             return [a, b, c];
         }
-    })
-    
+    });
+
     return CompoundSelector;
-})
-;
+});
+
 define('metapolator/models/CPS/parsing/selectorFactories',[
     'metapolator/errors'
   , './baseFactories'
@@ -46381,7 +46588,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
          * 
          * creates a ComplexSelector
          */
-      , 'simpleselector': function(node, source) {
+      , 'simpleselector': function(node, source, ruleController) {
             var elements = node.children
                     .map(function(item){return item.instance;})
               , invalid = false
@@ -46448,7 +46655,8 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                     continue;
                 // replace directly
                 value[i] = compoundSelectorFactory(value[i],
-                                value[i][0]._source, value[i][0]._lineNo)
+                                value[i][0]._source, value[i][0]._lineNo
+                              , ruleController && ruleController.selectorEngine)
             }
             return new ComplexSelector(value, source, node.lineNo);
         }
@@ -46474,11 +46682,16 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
           Object.defineProperty(selector, '___implicit', {value: true});
         return selector;
     }
-    
-    function compoundSelectorFactory(elements, source, lineNo) {
+
+    /**
+     * selectorEngine is optional if not present the selector will be compiled
+     * lazily when used first.
+     */
+    function compoundSelectorFactory(elements, source, lineNo, selectorEngine) {
         var i = 0
           , selectors = []
-        ;
+          , cs
+          ;
         for(;i<elements.length;i++) {
             if(!(elements[i] instanceof GenericCPSNode))
                 throw new CPSError(['Unknown type for a simple selector:'
@@ -46487,7 +46700,11 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                                   );
             selectors.push(simpleSelectorFactory(elements[i]));
         }
-        return new CompoundSelector(selectors, source, lineNo);
+        cs = new CompoundSelector(selectors, source, lineNo);
+        // compiling now moves the load to the parsing process
+        if(selectorEngine)
+            cs.compile(selectorEngine);
+        return cs;
     }
     
     
@@ -46523,7 +46740,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                 name = element._ast[1][1][1];
         }
         if(typeof name !== 'string' && name !== undefined)
-            throw new CPSError('Can\'t find a name for SimpleSelector (' 
+            throw new CPSError('Can\'t find a name for SimpleSelector ('
                             + element + ')')
         return name;
     }
@@ -46586,27 +46803,28 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
     
     var CPSError = errors.CPS
       , CPSParserError = errors.CPSParser;;
-    
-    function selectorListFromString(string, sourceName) {
+
+    function selectorListFromString(string, sourceName, selectorEngine) {
         try {
             var ast = gonzales.srcToCSSP(string + '{}');
         } catch(error) {
             throw new CPSParserError('Error parsing "' + string + '" as a selector. '
                 + 'Message: ' + error.message);
         }
-        return selectorListFromAST(ast, sourceName)
+        return selectorListFromAST(ast, sourceName, selectorEngine)
     }
-    
-    function selectorListFromAST(ast, sourceName) {
+
+    function selectorListFromAST(ast, sourceName, selectorEngine) {
         var rules
           , selectorList
           , i=0
           ;
         rules = parserEngine(selectorFactories, [], ast
-                                    , sourceName || 'selector parser');
+                                    , sourceName || 'selector parser'
+                                    , {selectorEngine: selectorEngine});
         rules = rules.items;
         // search the first instance of SelectorList
-        // and verify that nothing else was submited.
+        // and verify that nothing else was submitted.
         for(;i<rules.length;i++) {
             if(rules[i] instanceof Comment)
                 // accept comments
@@ -46621,7 +46839,7 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
             else if(rules[i].paramters)
                 throw new CPSParserError('Found parameters where there should '
                             + 'be only a SelectorList: ' + rules[i].paramters);
-            selectorList = rules[i].selectorList;
+            selectorList = rules[i].getSelectorList();
             // don't break! we want to validate the rules, if there is
             // awkward stuff in it it's better to complain, because it
             // might be a programming error.
@@ -46659,10 +46877,13 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/SelectorToken',[
      * FIXME: value should maybe rather be the result of query(this.selectorList)
      *
      * Raises a CPSParserError if literal can't be parsed into a selector
+     *
+     * selectorEngine is optional, it will cause a selector to be compiled
+     * immediately, contrary to beeing compiled when first used.
      */
-    function SelectorToken(literal) {
+    function SelectorToken(literal, selectorEngine) {
         Parent.call(this, literal, 0, 0);
-        this._value = parseSelectorList.fromString(this.literal);
+        this._value = parseSelectorList.fromString(this.literal, undefined, selectorEngine);
     }
 
     var _p = SelectorToken.prototype = Object.create(Parent.prototype);
@@ -46675,350 +46896,36 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/SelectorToken',[
     return SelectorToken;
 });
 
-define('metapolator/models/CPS/dataTypes/formulae/parsing/NameToken',[
+define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
     'metapolator/errors'
   , './_ValueToken'
+  , './NumberToken'
+  , './StringToken'
+  , './SelectorToken'
 ], function(
     errors
-  , Parent
-) {
-    
-
-    function NameToken(literal) {
-        Parent.call(this, literal, 0, 0);
-    }
-
-    /**
-     * Literal is a string representing a name/key.
-     * Value is looked up using the get method of the StyleDict of the
-     * host element or in the context of another host element value may
-     * be looked up differntly.
-     */
-    var _p = NameToken.prototype = Object.create(Parent.prototype);
-    _p.constructor = NameToken;
-
-    _p.getValue = function() {
-        return this.literal;
-    };
-
-    return NameToken;
-});
-
-define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
-     'metapolator/errors'
-   , './_Token'
-   , './NumberToken'
-   , './StringToken'
-   , './SelectorToken'
-   , './NameToken'
-   , 'ufojs/main'
-], function(
-    errors
-  , Parent
+  , _ValueToken
   , NumberToken
   , StringToken
   , SelectorToken
-  , NameToken
-  , ufoJSUtils
 ) {
     
 
     var CPSFormulaError = errors.CPSFormula
-      , ValueError = errors.Value
-      , isInstance = ufoJSUtils.isInstance
+      , stackCache = Object.create(null)
       ;
 
-    /**
-     * literal:     string, the name of the operator, like: + - Vector etc.
-     *              there are some operator literals that are expected by
-     *              Parser.tokenize
-     *
-     * splitting:   defines an operator as splitting, which instructs the
-     *              tokenizer to end parsing of the token when it appears.
-     *              if an operator is not splitting, it must be followed by
-     *              a splitting token. None splitting tokens can be part of
-     *              Names
-     *
-     * precedence: the precedence is used to implement the order of operations.
-     *             precedence can be a finite Number and -Infinity for lowest
-     *             precedence +Infinity for highest precedence
-     *
-     * preConsumes,
-     * preConsumes: How many tokens this operator consumes
-     *              before or after its appearance. This allows the creation
-     *              of infix operators.
-     *              Infinity is allowed as a value, this makes the creation
-     *              of i.e. list constructing operators possible. A Infinity
-     *              value will consumes the amount of Items that are corruently
-     *              in the stack.
-     *
-     * methods:     See this._setMethods for a description of the methods argument.
-     */
-    function OperatorToken(literal, splitting, precedence, preConsumes
-                                                , postConsumes, methods) {
-        Parent.call(this, literal, preConsumes, postConsumes);
-        this._splitting = !!splitting;
-        if(typeof precedence !== 'number')
-            throw new CPSFormulaError('Precedence must be a number, but is "'
-                                + precedence +'" typeof: '+ typeof precedence);
-        this._precedence = precedence;
-        this._methods = [];
-        this._setMethods(methods);
-    }
-
-    var _p = OperatorToken.prototype = Object.create(Parent.prototype);
-    _p.constructor = OperatorToken;
-
-
-    Object.defineProperty(_p, 'precedence', {
-        get: function(){ return this._precedence; }
-    });
-
-    Object.defineProperty(_p, 'splitting', {
-        get: function(){ return this._splitting; }
-    });
-
-    /**
-     * Methods could be just a function, in which case it would be the
-     * single match all implementation for this operator, NameTokens as
-     * arguments will be resolved upon invocation.
-     *
-     * Also, it may be an array of arrays like this:
-     *   [
-     *        [typename/constructor, [ typename/constructor ...] , method]
-     *      , [typename/constructor, [ typename/constructor ...] , method]
-     *      , function(){} // optional, match all
-     *   ]
-     *
-     * The first method that matches the actual types of arguments will
-     * be used, so an early match all function will shadow later ones.
-     *
-     * typename/constructor can be everything that is useful with ufoJS/main.isInstance
-     *
-     * Also, typename/constructor can have special values:
-     *
-     * - The string: "*getAPI*", only as very first element:
-     *        this does two things:
-     *            * it injects the getAPI function as first argument of method
-     *            * it doesn't resolve NameToken arguments using getAPI(nameToken.getValue())
-     *              so, specifiying *getAPI* means method will handle
-     *              NameTokens by itself.
-     *        In turn, this means NameToken can be used as a typename/constructor
-     *        but it will only ever appear as argument when *getAPI* is requested,
-     *        otherwise it will be resolved before invocation.
-     * - The string "*anything*" which matches anything
-     *
-     * ufoJS/main.isInstance takes:
-     *  - functions which would be checked using "instanceof" or a string
-     *  - strings can be: int float NaN null Infinity -Infinity
-     *  - strings can be also everything where typeof actually works, like:
-     *                  number, string, undefined, object
-     *  - arrays of the above
-     */
-    _p._setMethods = function(methods) {
-        if(typeof methods === 'function')
-            this._setMethod(methods);
-        else if(methods instanceof Array)
-            methods.map(this._setMethod, this);
-    };
-    /**
-     * see _setMethods for an argument description
-     */
-    _p._setMethod = function(description) {
-        var expectedLength;
-        if(typeof description === 'function') {
-            this._methods.push(description);
-            return;
-        }
-        else if(!(description instanceof Array))
-            throw new ValueError('An operator definition should be either '
-                + 'a function or an array, see OperatorToken');
-
-        // It is an array
-
-        expectedLength = this.consumes + (
-                                description[0] !== '*getAPI*' ? 1 : 2);
-
-        if(description.length !== expectedLength)
-            throw new ValueError(this.literal + ': An operator definition array must define '
-                + 'the types for all items it consumes plus the method to '
-                + 'that is the operator code in the end.'
-                + 'This operator should have ' + expectedLength +' '
-                + 'items in a definition, but ' + description.length
-                + ' was found: ' + description
-            );
-        else if(typeof description[description.length-1] !== 'function')
-            throw new ValueError('The last item of an operator definition '
-                + 'must be a type of "function" but this is a "'
-                + (typeof description[description.length-1])+'"');
-        // accept it
-        // description is an array that suits our expectations
-        this._methods.push(description);
-    };
-
-    /**
-     * Return the index in this._methods of the first matching operator
-     * implementation for the given arguments or -1.
-     */
-    _p._findMethod = function(getAPI, argsObj) {
-        var index=0, j, k, type, value, args;
-
-
-        for(;index<this._methods.length; index++) {
-            // the routine can request as first argument getAPI
-            // this however changes how NameToken is processed
-            // without *getAPI* the lookup is made for the operator
-            // with *getAPI* the operator itself is in charge to
-            // look up the names. The latter can happen anywhere, not
-            // just with the getAPI.
-
-            // convert from TokenType (container) to the JavaScript Value
-            // equivalents, before running the following methods
-            if(this._methods[index][0] !== '*getAPI*'){
-                j = 0;
-                args = argsObj.convertedNameTokens;
-            }
-            else {
-                j = 1;
-                args = argsObj.keptNameTokens;
-            }
-
-            k = 0;
-
-            if(typeof this._methods[index] === 'function')
-                // match all
-                return index;
-
-            for(;k<args.length;j++, k++) {
-                type = this._methods[index][j];
-                if(type !== "*anything*" && !isInstance(args[k], type))
-                    break;
-            }
-            if(k === args.length)
-                // no element broke the loop, thus all where matches;
-                return index;
-        }
-        return -1;
-    };
-
-    _p.execute = function(getAPI /*, arguments */) {
-        var argsObj = new Internal_Arguments(Array.prototype.slice.call(arguments, 1), getAPI)
-          , index
-          , args
-          , result
-          , operator
-          ;
-        index = this._findMethod(getAPI ,argsObj);
-        if(index === -1) {
-            throw new CPSFormulaError('Can\'t find an implementation for the '
-                + 'operator "'+this.literal+'" that matches the given '
-                + 'combination of argument types: '
-                + argsObj.pure.map(function(item){
-                        return 'type "' + (typeof item)
-                                            + '" string "' + item +'"';})
-                    .join(', ')
-            );
-        }
-        if(typeof this._methods[index] === 'function') {
-            operator = this._methods[index];
-            args = argsObj.convertedNameTokens;
-        }
-        else {
-            operator = this._methods[index].slice(-1).pop();
-            if(this._methods[index][0] === '*getAPI*') {
-                args = argsObj.keptNameTokens;
-                args.unshift(getAPI);
-            }
-            else
-                args = argsObj.convertedNameTokens;
-        }
-        result = operator.apply(this, args);
-
-        // check for NaN and sorts of??
-        return result;
-
-    };
-
-    /**
-     * Implementation specific Object to create different versions of the
-     * arguments array for further processing. This is in place to make
-     * the creation of these different versions a) lazy and  b) cached.
-     * This object never leaves the OperatorToken internals, so it doesn't
-     * need its own module.
-     *
-     * The two versions of the arguments array are available at the
-     * property getters:
-     *   - convertedNameTokens:
-     *   - keptNameTokens
-     * In both cases, Tokens of the type NumberToken, StringToken, SelectorToken
-     * are converted to their value (using their getValue method)
-     * within convertedNameTokens NameTokens are converted to the value
-     * returned by getAPI(token.getValue())
-     */
-    function Internal_Arguments(args, getAPI) {
-        this.pure = args;
-        this._getAPI = getAPI;
-        this._keptNameTokens = null;
-        this._convertedNameTokens = null;
-    }
-
-    Object.defineProperty(Internal_Arguments.prototype, 'convertedNameTokens', {
-        get: function(){
-            if(!this._convertedNameTokens)
-                this._convertedNameTokens = this.pure
-                        .map(this._convertTokenToValue.bind(this, true));
-            return this._convertedNameTokens;
-        }
-    });
-
-    Object.defineProperty(Internal_Arguments.prototype, 'keptNameTokens', {
-        get: function(){
-            if(!this._keptNameTokens)
-                this._keptNameTokens = this.pure
-                        .map(this._convertTokenToValue.bind(this, false));
-            return this._keptNameTokens;
-        }
-    });
-
-    Internal_Arguments.prototype._convertTokenToValue  = function(convertNameTokens, token) {
-        // types that need conversion:
-        if(token instanceof NumberToken || token instanceof StringToken
-                || token instanceof SelectorToken)
-            return token.getValue();
-
-        // in some cases it is important that we unpack//resolve NameToken
-        // namely when they refer to a value of the host (that can be obtained)
-        // via getAPI.
-        // this is a good place to do, but we need to know if this operator
-        // is going to handle name tokens itself or not.
-        // The presence of *getAPI* as first argumnt  which indicates
-        // that the operator implementation is aware of such things like
-        // names.
-        if(convertNameTokens && token instanceof NameToken)
-            return this._getAPI(token.getValue());
-        return token;
-    };
-
-    return OperatorToken;
-});
-
-define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
-    'metapolator/errors'
-  , './_ValueToken'
-
-], function(
-    errors
-  , _ValueToken
-) {
-    
-
-    var CPSFormulaError = errors.CPSFormula;
 
     function Stack(postfixStack, finalizeMethod) {
         // raises CPSFormulaError
         this._check(postfixStack);
-        this._stack = postfixStack;
         this._finalizeMethod = finalizeMethod;
+        var sig;
+        this._signature = sig = this._makeSignature(postfixStack);
+        this._stack = this._unwrap(postfixStack);
+
+        this.execute = stackCache[sig] || (stackCache[sig] = this._compile(postfixStack));
+        // this.execute = this._compile();
     }
 
     var _p = Stack.prototype;
@@ -47029,6 +46936,37 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
     Object.defineProperty(_p, 'items', {
         get: function(){ return this._stack.slice(); }
     });
+
+    _p._unwrap = function(stack) {
+        var result = [], i,l, token;
+        for(i=0,l=stack.length;i<l;i++) {
+            token = stack[i];
+            result.push((token instanceof NumberToken || token instanceof StringToken
+                                                      || token instanceof SelectorToken
+                ? token.getValue()
+                : token
+                ));
+        }
+        return result;
+    };
+
+    _p._makeSignature = function (stack) {
+        var i,l, result = [], c=0;
+        for(i=0,l=stack.length;i<l;i++) {
+            if(stack[i] instanceof _ValueToken)
+                c++;
+            else {
+                if(c) {
+                    result.push('c', c);
+                    c = 0;
+                }
+                result.push('e', stack[i].consumes);
+            }
+        }
+        if(c) result.push('c', c);
+        if(this._finalizeMethod) result.push('f');
+        return result.join('');
+    };
 
     _p._makeDebugMessageStackDetails = function(stack){
         var commands = stack.slice()
@@ -47043,7 +46981,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
             }
         }
         return stck.join(' | ');
-    }
+    };
 
     _p._check = function(stack) {
         var i=0, stackLen = 0;
@@ -47069,6 +47007,38 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
                         + this._makeDebugMessageStackDetails(stack));
     };
 
+    _p._compile = function(_stack) {
+        var i, l
+          , args
+          , stack = []
+          , resultCounter = 0
+          , resultName = 'commands[0]'
+          , body = [
+               ''
+              , 'var commands = this._stack;'
+          ];
+        for(i=0,l=this._stack.length;i<l;i++) {
+            if(_stack[i] instanceof _ValueToken)
+                stack.push('commands[' + i +']');
+            else {
+                args = [];
+                Array.prototype.push.apply(args
+                                , stack.splice(-_stack[i].consumes));
+                resultName = 'r'+ (resultCounter++);
+                body.push('var '+resultName+' = commands['+ i +'].execute(getAPI, ['+ args.join(',') +']);');
+                stack.push(resultName);
+            }
+        }
+        // return the last result
+        if(this._finalizeMethod)
+            body.push('return this._finalizeMethod(' + resultName + ', getAPI);');
+        else
+            body.push('return '+ resultName + ';');
+        return new Function('getAPI', body.slice(1).join('\n'));
+    };
+
+    // This is replaced with a compiled version on initialisation.
+    // It remains here because the algorithm is more obvious.
     _p.execute = function(getAPI) {
         var commands = this._stack.slice()
           , stack = []
@@ -47478,8 +47448,12 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
      * - brackets: one of these four at a time ( ) [ ]
      * - operators
      * - names
+     *
+     *
+     * selectorEngine is optional, it will cause a selector to be compiled
+     * immediately, contrary to beeing compiled when first used.
      */
-    _p.tokenize = function(string) {
+    _p.tokenize = function(string, selectorEngine) {
         var i=0, j, tokenEnd
           , tokens = []
           , reResult
@@ -47521,7 +47495,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
                     throw new CPSFormulaError('A closing double quote is '
                         +' missing for an opening selector literal S" ...in: '
                         + string.substr(i));
-                tokens.push(new SelectorToken(string.substring(i+2, tokenEnd)));
+                tokens.push(new SelectorToken(string.substring(i+2, tokenEnd), selectorEngine));
                 i = tokenEnd+1;
                 splitExpected = false; // a splitting token was found
                 continue;
@@ -47798,8 +47772,12 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
         return _flatten(tokens);
     };
 
-    _p.parse = function(string) {
-        var tokens = this.tokenize(string);
+    /**
+     * selectorEngine is optional, it will cause a selector to be compiled
+     * immediately, contrary to beeing compiled when first used.
+     */
+    _p.parse = function(string, selectorEngine) {
+        var tokens = this.tokenize(string, selectorEngine);
         tokens = this.infixToPostfix(tokens);
         return new Stack(tokens, this._finalizeMethod);
     };
@@ -47873,6 +47851,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
   , 'metapolator/math/hobby'
+  , 'metapolator/math/utils'
 ], function(
     errors
   , Parser
@@ -47888,6 +47867,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
   , transform
   , Vector
   , hobby
+  , mathUtils
 ) {
     
 
@@ -47932,7 +47912,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
          * of item and the details of the implementation
          */
       , new Operator('__get__', false, Infinity, 1, 1, [
-            ['*getAPI*', NameToken, 'String', function(getApi, name, key) {
+            ['*getAPI*', NameToken, 'string', function(getApi, name, key) {
                 var item = getApi(name.getValue());
                 return cpsGetters.generic(item, key);
             }]
@@ -48058,6 +48038,12 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
           , [Vector, Vector, function(a, b){ return a['**'](b);}]
           , [Vector, 'number', function(a, b){ return a['**'](b);}]
         ])
+      , new Operator('min', true, 40, 0, 2, [
+            ['number' , 'number', function(a, b){ return Math.min(a, b); }]
+        ])
+      , new Operator('max', true, 40, 0, 2, [
+            ['number' , 'number', function(a, b){ return Math.max(a, b); }]
+      ])
         /**
          * vector constructor operator
          * Creates a vector from Cartesian coordinates
@@ -48142,6 +48128,14 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
             }]
         ])
         /**
+         * Normalize `angle` given in radians between 0 and 2*PI
+         */
+      , new Operator('normalizeAngle', false, 50, 0, 1, [
+            ['number', function(a) {
+                return mathUtils.normalizeAngle(a);
+            }]
+        ])
+        /**
          * Print information about the input value to console.log
          * and return the value again.
          * This doesn't change the result of the calculation.
@@ -48197,10 +48191,8 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
     engine.setFinalizeMethod(function(result, getAPI) {
         if(result instanceof NameToken)
             return getAPI(result.getValue());
-        else if(result instanceof SelectorToken)
-            return getAPI('this').multivers.query(result.getValue());
-        else if(result instanceof StringToken || result instanceof NumberToken)
-            return result.getValue();
+        else if(result instanceof SelectorList)
+            return getAPI('this').multivers.query(result);
         else if(result instanceof _Token)
             // maybe one day we allow stuff like operators as first class
             // values, but not now.
@@ -48350,14 +48342,60 @@ define('metapolator/models/CPS/dataTypes/CPSVector',[
     return CPSVector;
 });
 
+define('metapolator/models/CPS/dataTypes/CPSTransformation',[
+    'metapolator/errors'
+  , './_FormulaeValue'
+  , './SharedFormulaeFactory'
+  , 'ufojs/tools/misc/transform'
+], function(
+    errors
+  , Parent
+  , SharedFormulaeFactory
+  , transform
+) {
+    
+
+    var ValueError = errors.Value
+    , Transformation = transform.Transform
+    ;
+
+    function CPSTransformation(getAPI, stack) {
+        Parent.call(this, getAPI, stack);
+    }
+
+    var _p = CPSTransformation.prototype = Object.create(Parent.prototype);
+    _p.constructor = CPSTransformation;
+    CPSTransformation.factory = new SharedFormulaeFactory(CPSTransformation);
+
+    _p.getValue = function() {
+        var result = this._stack.execute(this._getAPI);
+        //result MUST be a ufoJS Transform
+        if(!(result instanceof Transformation))
+            throw new ValueError('The formula of this CPSTransformation '
+                            + 'didn\'t resolve to a ufoJS Transform: "'+ result
+                            + '" typeof ' +  typeof result + "  json:" + JSON.stringify(result));
+        return result;
+    };
+
+    _p.toString = function() {
+        return '<' + this.constructor.name
+             + ' v: ' + this.value.valueOf()
+             + ' with stack' + this._stack + '>';
+    };
+
+    return CPSTransformation;
+});
+
 define('metapolator/models/CPS/Registry',[
     'metapolator/errors'
   , './dataTypes/CPSReal'
   , './dataTypes/CPSVector'
+  , './dataTypes/CPSTransformation'
 ], function(
     errors
   , CPSReal
   , CPSVector
+  , CPSTransformation
 ) {
     
     /**
@@ -48377,6 +48415,7 @@ define('metapolator/models/CPS/Registry',[
             // thus the idea of factories.
             real: CPSReal.factory
           , vector: CPSVector.factory
+          , transformation: CPSTransformation.factory
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
@@ -48500,6 +48539,20 @@ define('metapolator/project/parameters/registry',[
                                                 + 'outgoing Control Point.'
     });
 
+    parameterRegistry.register('transformation', {
+                type: 'transformation'
+              , description: 'Affine 2D transformation matrix.'
+    });
+
+    parameterRegistry.register('advanceWidth', {
+                type: 'real'
+              , description: 'The advance width of a glyph.'
+    });
+    parameterRegistry.register('advanceHeight', {
+                type: 'real'
+              , description: 'The advance height of a glyph.'
+    });
+
     return parameterRegistry;
 });
 
@@ -48569,10 +48622,11 @@ define('metapolator/models/CPS/elements/ParameterDict',[
      
     function ParameterDict(items, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._items = [];
-        if(items.length)
-            this.push.apply(this, items);
+        this._items = items.slice();
+        this._dict = undefined;
+        this._keys = undefined;
     }
+    
     var _p = ParameterDict.prototype = Object.create(Parent.prototype)
     _p.constructor = ParameterDict;
     
@@ -48586,53 +48640,73 @@ define('metapolator/models/CPS/elements/ParameterDict',[
         prepared.unshift('{');
         prepared.push('}');
         return prepared.join('\n');
-    }
-    
-    
+    };
+
+
     function _filterParameters(item) {
         return (item instanceof Parameter && !item.invalid);
     }
     
     Object.defineProperty(_p, 'items', {
         get: function() {
-            return this._items.filter(_filterParameters);
+            var _items = this._items, items = [], i, l, item;
+            for(i=0,l=this._items.length;i<l;i++)
+                if(_filterParameters(item = _items[i]))
+                    items.push(item);
+            return items;
         }
-    })
-    
+    });
+
     _p._getAllItems = function() {
         return this._items.slice();
-    }
-    
+    };
+
+    // FIXME: maybe this should be deprecated, it's expensive
+    // also, this.items could be cached, maybe
     Object.defineProperty(_p, 'length', {
         get: function(){ return this.items.length; }
-    })
-    
-    _p.keys = function() {
-        var items = this.items
-          , i = 0
-          , keys = {}
-          , key
+    });
+
+    _p._buildIndex = function() {
+        var items = this._items
+          , item
+          , i=items.length-1
+          , key, dict, keys
           ;
-        for(;i<this.items.length;i++) {
-            key = items[i].name;
-            keys[key] = null;// we throw the value away again
-        }
-        return Object.keys(keys);
-    }
-    
-    _p.get = function(key) {
-        var items = this.items
-          , i = items.length-1
-          , value
-          ;
+        this._dict = dict = Object.create(null);
+        this._keys = keys = [];
         // searching backwards, because the last item with key === name has
         // the highest precedence
         for(;i>=0;i--) {
-            if(key === items[i].name)
-                return items[i].value;
+            if(!_filterParameters(item = items[i]))
+                continue;
+            key = item.name;
+            if(!(key in dict)) {
+                dict[key] = item.value;
+                keys.push(key);
+            }
         }
-        throw new errors.Key('Key "'+key+'" not in ParameterDict')
-    }
+    };
+
+    _p.keys = function() {
+        if(!this._keys)
+            this._buildIndex();
+        return this._keys;
+    };
+
+    _p.get = function(key) {
+        if(!this._dict)
+            this._buildIndex();
+        if(!(key in this._dict))
+            throw new errors.Key('Key "'+key+'" not in ParameterDict');
+        return this._dict[key];
+    };
+
+    _p.has = function(key) {
+        if(!this._dict)
+            this._buildIndex();
+        return key in this._dict;
+    };
     
     _p.find = function(key) {
         var items = this.items
@@ -48644,25 +48718,15 @@ define('metapolator/models/CPS/elements/ParameterDict',[
                 indexes.push(i);
         }
         return indexes;
-    }
-    
+    };
+
     _p.itemValue = function(index) {
         return this._items[index].value;
-    }
-    
-    
-    
-    /**
-     * Add items
-     */
-    _p.push = function(item /*, ... items */) {
-        var items = Array.prototype.slice.call(arguments)
-        return this._items.push.apply(this._items, items);
-    }
-    
+    };
+
     return ParameterDict;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/ParameterName',[
     './_Name'
 ], function(
@@ -48704,6 +48768,7 @@ define('metapolator/models/CPS/elements/ParameterValue',[
         this._value = value;
         this._comments = comments;
         this._factory = undefined;
+        this.factory = undefined;
         this._invalid = undefined;
     }
     var _p = ParameterValue.prototype = Object.create(Parent.prototype)
@@ -48732,6 +48797,10 @@ define('metapolator/models/CPS/elements/ParameterValue',[
             throw new errors.CPS('Factory must be a function but is: '
                                 + typeof factory);
         this._factory = factory;
+        Object.defineProperty(this, 'factory', {
+            enumerable: true
+          , value: factory
+        })
     }
 
     _p.initializeTypeFactory = function(name, typeDefinition) {
@@ -48745,19 +48814,8 @@ define('metapolator/models/CPS/elements/ParameterValue',[
 
         if(this._factory === undefined && this._invalid === undefined)
             throw new errors.CPS('TypeDefinition for ' + name
-                            + 'did not initialize this ParameterValue');
+                            + ' did not initialize this ParameterValue');
     }
-
-    Object.defineProperty(_p, 'factory', {
-        get: function() {
-            if(this._invalid)
-                throw new errors.CPS('Can\'t return factory: value was '
-                    + 'marked as invalid: ' + this._message);
-            if(this._factory === undefined)
-                throw new errors.CPS('No Factory is set!');
-            return this._factory;
-        }
-    })
 
     Object.defineProperty(_p, 'invalid', {
         get: function(){ return this._invalid;}
@@ -48853,6 +48911,27 @@ define('metapolator/project/parameters/outputConverter',[
             //    , outIntrinsic: 'Vector 0 0'
             //    , inDirIntrinsic: '0'
             //    , outDirIntrinsic: '0'
+              })
+          , source
+      )
+      , new Rule(
+            parseSelectorList.fromString('component', source.name)
+          , parameterDictFromObject({
+              transformation: 'originalTransformation'
+              })
+          , source
+      )
+      , new Rule(
+            parseSelectorList.fromString('contour>p', source.name)
+            // FIXME: draw with tensions!
+          , parameterDictFromObject({
+                  on: 'skeleton:on'
+                , 'in': 'skeleton:in'
+                , out: 'skeleton:out'
+                // the dirs are defined by the importer if this calculations
+                // would not produce a good result
+                , inDir: '(on - in):angle'
+                , outDir: '(out - on):angle'
               })
           , source
       )
@@ -48978,7 +49057,7 @@ define('metapolator/models/MOM/Univers',[
     return Univers;
 })
 ;
-define('metapolator/models/CPS/selectorEngine',[
+define('metapolator/models/CPS/SelectorEngine',[
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
   , './elements/Rule'
@@ -48998,78 +49077,16 @@ define('metapolator/models/CPS/selectorEngine',[
     
     var CPSError = errors.CPS
       , selectorListFromString = parseSelectorList.fromString
+      , stringify = JSON.stringify
       ;
-    
+
     // start selector engine
-    
-    /**
-     * this is a subroutine of simpleSelectorMatches
-     */
-    function _pseudoClassSelectorMatches(simpleSelector, element, scopeElement) {
-        switch(simpleSelector.name) {
-            case 'root':
-                return element.type === 'univers';
-            case 'i':
-                if(!element.parent)
-                    return false;
-                return (simpleSelector.value < 0
-                    // negative serch index
-                    ? element.parent.children.length + simpleSelector.value === element.index
-                    // positive serch index
-                    : simpleSelector.value === element.index);
-        }
+    function SelectorEngine() {
+        this._compoundSelectorCache = Object.create(null);
     }
-    
-    /**
-     * A simple selector is either a type selector, universal selector,
-     * class selector, ID selector or pseudo-class. 
-     * 
-     * This method returns true if all of its arguments are simple selectors
-     * and match this node. If one argument is no simple selector
-     * this method raises a CPSError.
-     */
-    function simpleSelectorMatches(simpleSelector, element, scopeElement) {
-        if(!(simpleSelector instanceof SimpleSelector))
-            throw new CPSError('simpleSelector is not of type '
-                                         + 'SimpleSelector');
-        // no pseudoclass/pseudoelement checks at the moment
-        return ( simpleSelector.type === 'universal'
-              || simpleSelector.type === 'type' && element.type === simpleSelector.name
-              || simpleSelector.type === 'id' && element.id === simpleSelector.name
-              || simpleSelector.type === 'class' && element.hasClass(simpleSelector.name)
-              || simpleSelector.type === 'pseudo-class'
-                    && _pseudoClassSelectorMatches(simpleSelector, element, scopeElement)
-              || false
-              );
-    }
-    
-    /**
-     * A compound selector is a chain (list) of simple selectors that
-     * are not separated by a combinator.
-     * 
-     * It always begins with a type selector or a (possibly implied)
-     * universal selector. No other type selector or universal
-     * selector is allowed in the sequence.
-     * 
-     * If one item of the  simple selectors list is no simple selector
-     * this method raises a CPSError.
-     */
-    function compoundSelectorMatches(compoundSelector, element, scopeElement) {
-        if(!(compoundSelector instanceof CompoundSelector))
-            throw new CPSError('compoundSelector is not of type '
-                                         + 'CompoundSelector');
-        var simpleSelectors = compoundSelector.value
-          , i = 0
-          ;
-        for(;i<simpleSelectors.length;i++)
-            if(!simpleSelectorMatches(simpleSelectors[i], element, scopeElement))
-                return false;
-        return true;
-    }
-    
-    // evil cache. don't do this without thinking through
-    var _complexSelectorMatchesCache = Object.create(null);
-    function complexSelectorMatches(complexSelector, element, scopeElement) {
+    var _p = SelectorEngine.prototype;
+
+    _p._complexSelectorMatches = function(complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
                                          + 'ComplexSelector');
@@ -49077,38 +49094,48 @@ define('metapolator/models/CPS/selectorEngine',[
           , compoundSelector
           , combinator
           , combinatorType
-          
-          , hash = complexSelector+''
-          , cache
-          , cacheKey = [(scopeElement ? scopeElement.nodeID : '') ,element.nodeID].join('|')
           ;
-        if(!(hash in _complexSelectorMatchesCache))
-            _complexSelectorMatchesCache[hash] = cache = Object.create(null);
-        else 
-            cache = _complexSelectorMatchesCache[hash];
-        
-        if(cacheKey in cache)
-            return cache[cacheKey];
-        
         // first round: fake a child combinator, so we don't go on
         // if the first selector doesn't match
-        combinatorType = 'child'
+        combinatorType = 'child';
         // this is a compound selector
+
+        // a shortcut, in the best case this should be generated from
+        // structure information of the MOM.
+        var length = compoundSelectors.value
+          , precheckElem
+          , matches
+          , type
+          ;
+        for(var i=0; i<length; i+=2) {
+            compoundSelector = compoundSelectors[i];
+            type = compoundSelector.type;
+            if(type === 'master')
+                precheckElem = element.master;
+            else if(type === 'glyph')
+                precheckElem = element.glyph;
+            else
+                continue;
+            if(precheckElem && !compoundSelector.matches(precheckElem, this))
+                return false;
+        }
+        // end of shortcut
+
         compoundSelector = compoundSelectors.pop();
-        
+
         while(element) {
-            if(compoundSelectorMatches(compoundSelector, element, scopeElement)) {
+            if(compoundSelector.matches(element, this)) {
                 //  we got a hit
                 combinator = compoundSelectors.pop();
                 if(combinator === undefined) {
                     // that's it all compoundSelectors are consumed
-                    return cache[cacheKey] = true;
+                    return true;
                 }
                 // there are selectors left, prepare the next round
                 // combinatorType is 'child' or 'descendant'
                 combinatorType = combinator.type;
                 compoundSelector = compoundSelectors.pop();
-                
+
                 element = (scopeElement && scopeElement === element)
                         // do not search above scopeElement
                         ? undefined
@@ -49126,286 +49153,350 @@ define('metapolator/models/CPS/selectorEngine',[
                 throw new CPSError('Combinator type "'+combinatorType
                                                     +'" is unsuported');
         }
-        return cache[cacheKey] = false;
+        return false;
+    };
+
+    function _compileCompoundSelector(compoundSelector) {
+        /*jshint evil:true*/
+        var simpleSelectors = compoundSelector.normalizedValue
+          , simpleSelector
+          , body = ['', 'return (true']
+          , tests = []
+          , i,l
+          , val
+          , varname
+          , name
+          ;
+        for(i=0, l=simpleSelectors.length;i<l;i++) {
+            simpleSelector = simpleSelectors[i];
+            name = simpleSelector.name;
+            switch(simpleSelector.type) {
+                case 'type':
+                    body.push(' && (element.type === ', stringify(name), ')');
+                    break;
+                case 'id':
+                    body.push(' && (element.id === ', stringify(name), ')');
+                    break;
+                case 'class':
+                    body.push(' && (element.hasClass(', stringify(name), '))');
+                    break;
+                case 'pseudo-class':
+                    if(name === 'i') {
+                        // must have a parent for this
+                        body.push(' && (!!element.parent)');
+                        val = simpleSelector.value;
+                        if(val < 0)
+                            body.push(' && (element.parent.children.length + ', val, ' === element.index)');
+                        else
+                            body.push(' && (', val, ' === element.index)');
+                    }
+                    else
+                        // we know only :i right now
+                        body.push('&& false');
+                    break;
+                case 'universal':
+                    // this is always true
+                    break;
+                default:
+                    throw new CPSError('simpleSelector.type "'+ simpleSelector.type +'" is not implemented.');
+            }
+        }
+        body.push(');')
+        return new Function(['element'], body.join(''));
     }
-    
+
+    /**
+     * A compound selector is a chain (list) of simple selectors that
+     * are not separated by a combinator.
+     *
+     * It always begins with a type selector or a (possibly implied)
+     * universal selector. No other type selector or universal
+     * selector is allowed in the sequence.
+     *
+     * If one item of the  simple selectors list is no simple selector
+     * this method raises a CPSError.
+     */
+    _p.compileCompoundSelector = function(compoundSelector) {
+        var key = compoundSelector.normalizedName
+          , _compoundSelectorCache = this._compoundSelectorCache
+          ;
+        if(!(key in _compoundSelectorCache))
+            _compoundSelectorCache[key] = _compileCompoundSelector(compoundSelector);
+        return _compoundSelectorCache[key];
+    };
+
+
     /**
      * A (complex) selector's specificity is calculated as follows:
      *     count the number of ID selectors in the selector (= a)
      *     count the number of class selectors, attributes selectors, and pseudo-classes in the selector (= b)
      *     count the number of type selectors and pseudo-elements in the selector (= c)
-     *     ignore the universal selector 
-     * 
+     *     ignore the universal selector
+     *
      * Specificities are compared by comparing the three components in
      * order: the specificity with a larger A value is more specific;
      * if the two A values are tied, then the specificity with a larger
      * B value is more specific; if the two B values are also tied, then
      * the specificity with a larger c value is more specific;
      * if all the values are tied, the two specifities are equal.
-     * 
+     *
      * Array.prototype.sort: "The sort is not necessarily stable."
      * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
      * https://en.wikipedia.org/wiki/Sorting_algorithm#Stability
-     * 
+     *
      * To ensure stability it is possible to introduce more than the above
-     * mentioned three elements of specificity. 
+     * mentioned three elements of specificity.
      */
     function compareSpecificity(sA, sB) {
-        var i=0;
-
-        for(;i<sA.length && i<sB.length;i++) {
+        for(var i=0, len = Math.min(sA.length, sB.length);i<len;i++) {
             if(sA[i] !== sB[i])
                 // id return value is < 0 selectorA will get a lower index
                 // id return value is > 0 selectorB will get a lower index
                 return sB[i]-sA[i];
         }
         return 0;
-        
     }
-    function _compareSpecificity (itemA, itemB) {
+    function compareSelectorSpecificity (itemA, itemB) {
+        return compareSpecificity(itemA.specificity, itemB.specificity);
+    }
+    // export static functions
+    SelectorEngine.compareSpecificity = compareSpecificity;
+    SelectorEngine.compareSelectorSpecificity = compareSelectorSpecificity;
+
+    function _rulesCompareSpecificity (itemA, itemB) {
         return compareSpecificity(itemA[0], itemB[0]);
     }
-    
+
     /**
      * Returns a list of all of the rules currently applying to the element,
      * sorted from most specific to least.
-     * 
-     * TODO: when there are more sources than one ParameterCollection,
-     * we should be able to perform this action for all the collections.
-     * therefore, it would be wise to move the selector engine methods to
-     * another module. 
-     * The signature of this method could be:
-     *      function(target, parameterCollection[, ... parameterCollection])
-     * with this approach we could keep the information of the specificity.
-     * In other words, the order of the parameterCollection matters!
-     * 
-     * TODO: We should maybe add a last item with the default parameters
-     * of the element. That Item would probably define which properties
-     * are available for the Element, too ???
+     *
+     * the complexSelectors in namespacedRules[n][0] should be sorted, so that the
+     * first complexSelector in namespacedRule has the highest specificity
      */
-    function getMatchingRules(rules, element) {
-        var i=0, j
-          , matchingRules = []
-          , rule
+    _p.getMatchingRules = function(namespacedRules, element) {
+        var matchingRules = []
+          , namespacedRule
           , complexSelectors
-          , compoundSelectors
-          , compoundSelector
-          , combinator
-          , selects
-          , matchingSelectors
           , specificity
+          , i, j, length, lengthCS
           ;
-        for(;i<rules.length;i++) {
-            if(!(rules[i] instanceof Rule))
-                throw new CPSError('Item at index ' + i + ' is not of type '
-                                         + 'CPS Rule');
-            rule = rules[i];
-            matchingSelectors = []
-            // the complexSelectors are all selecting when obtained via
-            // the value property of SelectorList
-            complexSelectors = rule.selectorList.value;
-            for(j=0;j<complexSelectors.length; j++) {
-                if(complexSelectorMatches(complexSelectors[j], element))
-                    // got a match
-                    matchingSelectors.push([complexSelectors[j].specificity
-                                           , complexSelectors[j]]);
-            }
-            if(matchingSelectors.length > 1)
-                // we only use the matching selector with the higest
-                // specificity. This sorts it at position 0
-                matchingSelectors.sort(_compareSpecificity);
-            if(matchingSelectors.length) {
-                // augment the specifity with the index number, so we can
-                // make sure, that the order of rules with otherwise
-                // equal specifity is not mixed up. The later rules
-                // are more specific/overide the previous one, so it
-                // is a good match for the sorting function that we use
-                // anyways
-                specificity = matchingSelectors[0][0];
-                specificity.push(i);
-                matchingRules.push([specificity, rule]);
+        for(i=0, length = namespacedRules.length;i<length;i++) {
+            namespacedRule = namespacedRules[i];
+            complexSelectors = namespacedRule[0];
+            for(j=0, lengthCS = complexSelectors.length;j<lengthCS;j++) {
+                if(this._complexSelectorMatches(complexSelectors[j], element)) {
+                    // got a match with the most specific selector
+                    // augment the specifity with the index number, so we can
+                    // make sure, that the order of rules with otherwise
+                    // equal specifity is not mixed up. The later rules
+                    // are more specific/overide the previous one, so it
+                    // is a good match for the sorting function that we use
+                    // anyways
+                    specificity = complexSelectors[j].specificity.slice();
+                    specificity.push(i);
+                    matchingRules.push([specificity, namespacedRule[1]]);
+                    break;
+                }
             }
         }
-        matchingRules.sort(_compareSpecificity);
-        return matchingRules.map(function(item){return item[1]});
-    }
-    
-    function _filterElementChildren(element, filter) {
-        var i = 0
-          , children = element.children
-          , result = []
-          ;
-        for(;i<children.length;i++) {
-            if(filter(children[i]))
-                result.push(children[i]);
-        }
-        return result;
-    }
-    function _filterElementDescendants(element, filter) {
-        var i = 0
-          , children = element.children.slice().reverse()
-          , child
-          , result = []
-          ;
-        while(child = children.pop()) {
-            if(filter(child))
-                result.push(child);
-            // add all children of this child
-            // and reverse to keep the a clean depth first traversal order
-            Array.prototype.push.apply(children, child.children.reverse());
-        }
-        return result;
-    }
-    
-    var _queryCache = Object.create(null);
-    /**
-     * scope is an array of zero or more elements, we will search only
-     * within the scope elements
-     */
-    function queryComplexSelector(scope, complexSelector) {
-        if(!(scope instanceof Array))
-            throw new CPSError('scope must be an Array');
-        if(!(complexSelector instanceof ComplexSelector))
-            throw new CPSError('complexSelector is not of type '
-                                         + 'ComplexSelector');
-        var compoundSelectors = complexSelector.value
-          , compoundSelector
-          , combinator
-          , matches = []
-          , currentScope
-          // this filter depends on the fact that compoundSelector and
-          // currentScope will change in this closure during the loops below
-          , filter = function(element) {
-                return compoundSelectorMatches(compoundSelector
-                                             , element
-                                             , currentScope);
-            }
-          , filterMethod
+        matchingRules.sort(_rulesCompareSpecificity);
+        return matchingRules.map(function(item){return item[1];});
+    };
 
-          , hash = complexSelector+''
-          , cache
-          , cacheKey = scope.map(function(item){ return item.nodeId + '!!'+item; }).join('|')
+    function _combinateAll(type, element, complexSelectorArray, seen, selectorEngine) {
+        var compoundSelector = complexSelectorArray[0]
+          , stack = []
+          , frame
+          , combinator = null
+          , nextComplexSelectorArray
+          , result
+          , results = []
+          , child
+          , descendant = type === 'descendant'
+          , i,l
           ;
-        if(!(hash in _queryCache))
-            _queryCache[hash] = cache = Object.create(null);
-        else
-            cache =_queryCache[hash];
-        
-        if(cacheKey in cache) {
-            return cache[cacheKey];
-        }
-        
-        // first round is descendants
-        filterMethod = _filterElementDescendants;
-        while(true) {
-            compoundSelector = compoundSelectors.shift();
-            // Here is a lot of room for optimization! I only made a very
-            // general bruteforce approach, so we visit a big amount of
-            // nodes!
-            // One way to optimize would be to take the MOM structure
-            // into account. I.e.: it's impossible to select this:
-            //      point outline master
-            // But on the other hand, we should rather optimize
-            // meaningful queries, because these are the ones we are
-            // most likely to encounter. Asking every node if its type
-            // is 'univers' is however no good idea, with the knowledge
-            // that there is only one 'univers', the root of the tree.
-            matches = []
-            while(currentScope = scope.pop())
-                // get ALL elements inside of currentScope
-                // and ask if the compound selector matches ...
-                Array.prototype.push.apply(matches, filterMethod(currentScope, filter));
-            scope = matches;
-            
-            combinator = compoundSelectors.shift();
-            if(combinator === undefined)
-                //that's it
-                break;
-            
-            switch(combinator.type) {
-                case 'descendant':
-                    filterMethod = _filterElementDescendants;
-                    break;
-                case 'child':
-                    filterMethod = _filterElementChildren;
-                    break;
-                default:
-                    throw new CPSError('Combinator type "'+combinator.type
-                                                    +'" is unsuported');
+        if(!descendant && type !== 'child')
+            throw new CPSError('Combinator type "' + type +'" is unsuported');
+        //initial frame setup
+        frame = [element.children, 0, 0]
+        frame[2] = frame[0].length;
+        do {
+            i=frame[1];
+            l=frame[2];
+            while(i<l) {
+                child = frame[0][i];
+                i++;
+                if(compoundSelector.matches(child, selectorEngine)) {
+                    // it matches
+                    if(combinator === null) // do this lazy and only once
+                        combinator = complexSelectorArray[1];
+                    if(!combinator) {
+                        // no more selectors. we got a hit
+                        if(!(child.nodeID in seen)) {
+                            results.push(child);
+                            seen[child.nodeID] = null;
+                        }
+                        continue;
+                    }
+                    if(!nextComplexSelectorArray) // do this lazy and only once
+                        nextComplexSelectorArray = complexSelectorArray.slice(2);
+                    result = _combinateAll(combinator.type, child, nextComplexSelectorArray, seen, selectorEngine);
+                    if(result.length)
+                        Array.prototype.push.apply(results, result);
+                }
+                if(!descendant) continue;
+                if(i<l) {
+                    // save this frame
+                    frame[1]=i;
+                    frame[2]=l;
+                    stack.push(frame);
+                }
+                // setup the next frame
+                frame = [child.children, 0, 0];
+                frame[2] = frame[0].length;
+                i=frame[1];
+                l=frame[2];
             }
-        }
-        cache[cacheKey] = matches;
-        return matches;
+        } while((frame = stack.pop()));
+        return results;
     }
-    
+
+    /**
+     * return only the first hit in depth first order
+     * complexSelectorArray is an array of the form compoundSelectors
+     * separated by combinator.
+     * [compoundSelector, combinator, compoundSelector, combinator, compoundSelector]
+     * min length is 1. length has to be odd always
+     */
+    function _combinateFirst(type, element, complexSelectorArray, selectorEngine) {
+        var compoundSelector = complexSelectorArray[0]
+          , stack = []
+          , frame
+          , combinator = null
+          , nextComplexSelectorArray
+          , result
+          , child
+          , descendant = type === 'descendant'
+          , i,l
+          ;
+        if(!descendant && type !== 'child')
+            throw new CPSError('Combinator type "' + type +'" is unsuported');
+        //initial frame setup
+        frame = [element.children, 0, 0]
+        frame[2] = frame[0].length;
+        do {
+            i=frame[1];
+            l=frame[2];
+            while(i<l) {
+                child = frame[0][i];
+                i++;
+                if(compoundSelector.matches(child, selectorEngine)) {
+                    // it matches
+                    if(combinator === null) // do this lazy and only once
+                        combinator = complexSelectorArray[1];
+                    if(!combinator)
+                        // no more selectors. we got a hit
+                        return child;
+                    if(!nextComplexSelectorArray) // do this lazy and only once
+                        nextComplexSelectorArray = complexSelectorArray.slice(2);
+                    result = _combinateFirst(combinator.type, child, nextComplexSelectorArray, selectorEngine);
+                    if(result)
+                        return result;
+                }
+                if(!descendant) continue;
+                if(i<l) {
+                    // save this frame
+                    frame[1]=i;
+                    frame[2]=l;
+                    stack.push(frame);
+                }
+                // setup the next frame
+                frame = [child.children, 0, 0];
+                frame[2] = frame[0].length;
+                i=frame[1];
+                l=frame[2];
+            }
+        } while((frame = stack.pop()));
+        // nothing found
+        return null;
+    }
+
     /**
      * selector may be a string or a SelectorList
      * Returns a set of elements in scope matching at least one of
      * the selectors in selector.
-     * 
+     *
      * scope is an array of zero or more elements, we will search only
      * within the scope elements
      */
-    function queryAll(scope, selector) {
+    _p.queryAll = function(scope, _selector) {
         var complexSelectors
-          , i=0
-          , k
-          , seen = {}
+          , complexSelectorArray
+          , i,l, k, ll, j
+          , seen = Object.create(null)
           , result = []
-          , matches
+          , matches, node
+          , selector
           ;
-        if(typeof selector === 'string')
-            selector = selectorListFromString(selector);
-        if(!(selector instanceof SelectorList))
+        if(typeof _selector === 'string')
+            selector = selectorListFromString(_selector, undefined, this);
+        else if(_selector instanceof SelectorList)
+            selector = _selector;
+        else
              throw new CPSError('SelectorList expected, but got a '
-                    + selector + ' typeof: '+ typeof selector);
+                            + _selector + ' typeof: '+ typeof _selector);
+        if(!(scope instanceof Array))
+            throw new CPSError('scope must be an Array');
         complexSelectors = selector.value;
-        for(;i<complexSelectors.length;i++) {
-            matches = queryComplexSelector(scope.slice(), complexSelectors[i]);
-            k = 0;
-            for(;k<matches.length;k++) {
-                if(matches[k].nodeID in seen)
-                    continue;
-                seen[matches[k].nodeId] = null;
-                result.push(matches[k]);
+        for(i=0,l=complexSelectors.length;i<l;i++) {
+            complexSelectorArray = complexSelectors[i].value;
+            for(k=0,ll=scope.length;k<ll;k++) {
+                matches = _combinateAll('descendant', scope[k], complexSelectorArray, seen, this);
+                Array.prototype.push.apply(result, matches);
             }
         }
         return result;
-    }
-    
+    };
+
     /**
      * Returns the first element within the scope that matches.
-     * 
+     *
      * Matching only one element could be better optimized, especially
      * further down: queryComplexSelector, doesn't know anything about
      * selecting only one element.
      */
-    function query(scope, selector) {
+    _p.query = function(scope, _selector) {
         var complexSelectors
-          , i=0
-          , matches
+          , complexSelectorArray
+          , i,l, k, ll
+          , match
+          , selector
           ;
-        if(typeof selector === 'string')
-            selector = selectorListFromString(selector);
-        if(!(selector instanceof SelectorList))
+        if(typeof _selector === 'string')
+            selector = selectorListFromString(_selector, undefined, this);
+        else if(_selector instanceof SelectorList)
+            selector = _selector;
+        else
              throw new CPSError('SelectorList expected, but got a '
-                    + selector + ' typeof: '+ typeof selector);
+                            + _selector + ' typeof: '+ typeof _selector);
+        if(!(scope instanceof Array))
+            throw new CPSError('scope must be an Array');
+
         complexSelectors = selector.value;
-        for(;i<complexSelectors.length;i++) {
-            matches = queryComplexSelector(scope.slice(), complexSelectors[i]);
-            if(matches.length)
-                return matches[0];
+        for(i=0,l=complexSelectors.length;i<l;i++) {
+            complexSelectorArray = complexSelectors[i].value;
+            for(k=0,ll=scope.length;k<ll;k++) {
+                match = _combinateFirst('descendant', scope[k], complexSelectorArray, this);
+                if(match) return match;
+            }
         }
         return null;
-    }
-    
-    return {
-        getMatchingRules: getMatchingRules
-      , query: query
-      , queryAll: queryAll
     };
-})
-;
+
+    return SelectorEngine;
+});
+
 define('metapolator/models/MOM/Multivers',[
     './_Node'
   , './Univers'
@@ -49458,12 +49549,158 @@ define('metapolator/models/MOM/Multivers',[
     return Multivers;
 })
 ;
-define('metapolator/models/CPS/StyleDict',[
+define('metapolator/models/CPS/_CPSDict',[
     'metapolator/errors'
-  , './cpsGetters'
 ], function(
     errors
+) {
+    
+
+    var NotImplementedError = errors.NotImplemented;
+
+    /**
+     * Common methods shared between ReferenceDict and StyleDict
+     */
+    function _CPSDict(controller, rules, element) {
+        /*jshint validthis:true */
+        this._rules = rules;
+        this._element = element;
+        this._controller = controller;
+        this._dict = null;
+    }
+
+    var _p = _CPSDict.prototype;
+    _p.constructor = _CPSDict;
+
+    _p._buildIndex = function() {
+        var i=0,l=this._rules.length, j, ll, keys, key;
+        this._dict = Object.create(null);
+        for(;i<l;i++) {
+            keys = this._rules[i].parameters.keys();
+            for(j=0, ll=keys.length; j<ll; j++) {
+                key = keys[j];
+                if(!(key in this._dict))
+                    this._dict[key] = this._rules[i].parameters.get(key);
+            }
+        }
+    };
+
+    _p.get = function(name) {
+        throw new NotImplementedError('The `get` method is missing in this '
+                                        +'implementation of _CPSDict');
+    };
+
+    return _CPSDict;
+});
+
+define('metapolator/memoize',['metapolator/errors'], function(errors) {
+    
+
+    // _cache is a state variable of this module. It's a single WeakMap
+    // to manage all caches on a per-instance basis.
+    var  _cache = new WeakMap();
+
+    /**
+     * Set up a cache for a method of an instance. The cache is bound to
+     * the instance that is used to call the method.
+     *
+     * namespace: A string to avoid conflicts between caches
+     *            on the same instance.
+     *
+     * func: The function whose results are being cached.
+     *
+     * keyFunc: function or undefined; is called with all the arguments
+     *          that are applied to "func" and returns a unique key for the
+     *          combination of arguments. If func is undefined, the default
+     *          behavior is: listOfArguments.join(',')
+     *
+     * Example:
+     * // query will be cached on a per instance base.
+     * Constructor = function(){}
+     * Constructor.prototype.query = memoize('query', function(queryArg){...});
+     * Constructor.prototype.search = memoize('search', function(searchArg){...});
+     * Constructor.prototype.prune = memoize.prune;
+     *
+     * var instance = new Constructor();
+     * instance.query('something');
+     * instance.search('topic');
+     *
+     * // delete only the caches for the namespace 'search'
+     * instance.prune('search');
+     * // delete all caches for instance
+     * instance.prune();
+     * // if you delete all references to instance the cache will be gone to
+     * delete instance;
+     *
+     */
+    function memoize(namespace, func, keyFunc) {
+        errors.assert(namespace !== undefined, 'Please set a namespace.');
+        function cached() {
+            /*jshint validthis:true */
+            var instanceCache
+              , namespaceCache
+              , args = Array.prototype.slice.call(arguments)
+              , key = keyFunc
+                    ? keyFunc.apply(this, args)
+                    : args.join(',')
+              ;
+            instanceCache = _cache.get(this);
+            if(instanceCache === undefined) {
+                instanceCache = Object.create(null);
+                _cache.set(this, instanceCache);
+            }
+
+            namespaceCache = instanceCache[namespace];
+            if(namespaceCache === undefined)
+                namespaceCache = instanceCache[namespace] = Object.create(null);
+
+            if(!(key in namespaceCache))
+                namespaceCache[key] = func.apply(this, args);
+            return namespaceCache[key];
+        }
+        return cached;
+    }
+
+    /**
+     * Delete all cache entries for the cache at "namespace"
+     * If "namespace" is `undefined` all caches for the instance are deleted.
+     *
+     * Call this method so that its "this" refers to the instance that
+     * is associated with the cache:
+     *     SO: memoize.prune.call(instance, 'queries');
+     *  OR SO: instance.prune = memoize.prune;
+     *         instance.prune('queries');
+     *  OR SO: Constructor.prototype.prune = memoize.prune;
+     *         instance = new Constructor();
+     *         instance.prune('queries');
+     */
+    function prune(namespace) {
+        /*jshint validthis:true */
+        var cache;
+        errors.assert(this !== memoize, 'You have to call this method '
+                                    + 'from an apropriate host. Currently '
+                                    + '"this" is the memoize module.');
+        if(namespace === undefined)
+            return _cache['delete'](this);
+        cache = _cache.get(this);
+        if(cache)
+            delete cache[namespace];
+    }
+    memoize.prune = prune;
+
+    return memoize;
+});
+
+define('metapolator/models/CPS/StyleDict',[
+    'metapolator/errors'
+  , './_CPSDict'
+  , './cpsGetters'
+  , 'metapolator/memoize'
+], function(
+    errors
+  , Parent
   , cpsGetters
+  , memoize
 ) {
     
 
@@ -49476,60 +49713,48 @@ define('metapolator/models/CPS/StyleDict',[
      * StyleDict is an interface to a List of CPS.Rule elements.
      */
     function StyleDict(controller, rules, element) {
-        this._rules = rules;
-        this._element = element;
-        this._controller = controller;
-        this.getAPI = this.get.bind(this);
+        Parent.apply(this, arguments);
+
+        // FIXME: can we measure if bind or self plus closure is faster
+        // this.get.bind(this);
+        var self = this;
+        this.getAPI = function(name){ return self.get(name);}
+
         this._getting = {};
+
         this._cache = Object.create(null);
     }
 
-    var _p = StyleDict.prototype;
+    var _p = StyleDict.prototype = Object.create(Parent.prototype);
     _p.constructor = StyleDict;
 
     /**
      * Get a cps ParameterValue from the _rules
      * This is needed to construct the instance of the Parameter Type.
-     *
-     * Raises KeyError if name is not in this._controller.parameterRegistry.
+     * Returns Null if the name is not defined.
      */
     _p._getCPSParameterValue = function(name) {
-        var i=0, value;
-        if(!this._controller.parameterRegistry.exists(name))
-            throw new KeyError('No such parameter "'+ name +'" '
-                +'has been registered.');
-        for(;i<this._rules.length;i++) {
-            try {
-                value = this._rules[i].parameters.get(name);
-            }
-            catch(error) {
-                if(!(error instanceof KeyError))
-                    throw error;
-                // pass, the name is not in the rule
-                continue;
-            }
-            if(!value.invalid)
-                return value;
-        }
-        return null;
+        if(!this._dict) this._buildIndex();
+        return (name in this._dict) ? this._dict[name] : null;
     };
 
     /**
-     * Returns a new ParameterValue instance
-     * Raises KeyError if name is not registered in the parameterRegistry
-     * of the controller.
-     * Raises CPSKeyError if there is no entry for name in CPS.
-     * The CPSKeyError may be used to create a cascading system
-     * of StyleDict interfaces.
-     *
+     * Return a new instance of ParameterValue or null if the name is not defined.
      */
     _p._getParameter = function(name) {
         var cpsParameterValue = this._getCPSParameterValue(name);
         if(cpsParameterValue === null)
-            throw new CPSKeyError(name + ' not found for ' + this._element.particulars);
+            return null;
         return cpsParameterValue.factory(name, this._element, this.getAPI);
     };
 
+    _p.__get = function(name, errors) {
+        var param = this._getParameter(name);
+        if(param)
+           return param.getValue();
+        errors.push(name + ' not found for ' + this._element.particulars);
+        return cpsGetters.whitelist(this._element, name);
+    }
     /**
      * Look up a parameter in this._element according to the following
      * rules:
@@ -49538,20 +49763,20 @@ define('metapolator/models/CPS/StyleDict',[
      * (this._element). We check "this" first so it can't be overridden by
      * a @dictionary rule.
      *
-     * 2. If `name' is a registered parameter name, look it up. If this
-     * fails, throw CPSKeyError.
+     * 2. If `name' is defiened in CPS its value is returned.
      *
-     * 3. Look up `name' in the @dictionary rules for this element.
+     * 3. If name is available/whitelisted at this._element, return that value.
      *
-     * 4. Look up `name' in the element itself. If this fails, throw
-     * KeyError.
+     * 4. throw KeyError.
      *
      * If `name' is a registered parameter type, the return value's type is
-     * the parameter type; otherwise, the return value may be anything that
-     * is accessible or constructable from CPS formulae, or a white-listed
-     * value on any reachable element.
+     * the parameter type or an error will be thrown;
+     * Otherwise, the return value may be anything that is accessible
+     * or constructable from CPS formulae, or a white-listed value on
+     * any reachable element.
      */
     _p._get = function(name) {
+        var errors = [];
         if(name === 'this')
             return this._element;
 
@@ -49562,31 +49787,25 @@ define('metapolator/models/CPS/StyleDict',[
                             + this._element.particulars);
         this._getting[name] = true;
         try {
-            if(this._controller.parameterRegistry.exists(name))
-                // Will throw CPSKeyError if not found.
-                return this._getParameter(name).getValue();
-
-            try {
-                return this._controller
-                       .getReferenceDictionary(this._element)
-                       .get(name);
-            }
-            catch(error) {
-                if(!(error instanceof KeyError))
-                    throw error;
-            }
-            // Will throw KeyError if not found
-            return cpsGetters.whitelist(this._element, name);
+            return this.__get(name, errors);
+        }
+        catch(error) {
+            if(!(error instanceof KeyError))
+                throw error;
+            errors.push(error.message);
+            throw new KeyError(errors.join('\n----\n'));
         }
         finally {
             delete this._getting[name];
         }
-    }
-    
+    };
+    // FIXME: memoize seems to be slower, can we fix it?
+    //_p.get = memoize('get', _p._get);
     _p.get = function(name) {
-        if(!(name in this._cache))
-            this._cache[name] = this._get(name);
-        return this._cache[name];
+        var val = this._cache[name];
+        if(val === undefined)
+            this._cache[name] = val = this._get(name);
+        return val;
     }
 
     return StyleDict;
@@ -49594,8 +49813,10 @@ define('metapolator/models/CPS/StyleDict',[
 
 define('metapolator/models/CPS/ReferenceDict',[
     'metapolator/errors'
+  , './_CPSDict'
 ], function(
     errors
+  , Parent
 ) {
     
 
@@ -49609,33 +49830,33 @@ define('metapolator/models/CPS/ReferenceDict',[
      * metapolator/models/Controller.
      */
     function ReferenceDict(controller, rules, element) {
-        this._rules = rules;
-        this._element = element;
-        this._controller = controller;
+        Parent.apply(this, arguments);
     }
 
-    var _p = ReferenceDict.prototype;
+    var _p = ReferenceDict.prototype = Object.create(Parent.prototype);
     _p.constructor = ReferenceDict;
+
+    _p._buildIndex = function() {
+        var i=0, j, keys, key;
+        this._dict = Object.create(null);
+        for(;i<this._rules.length;i++) {
+            keys = this._rules[i].parameters.keys();
+            for(j=0; j<keys.length; j++) {
+                key = keys[j];
+                if(!(key in this._dict))
+                    this._dict[key] = this._rules[i].parameters.get(key);
+            }
+        }
+    };
 
     /**
      * Get a CPS @dictionary ParameterValue from the _rules for name;
      * Raises KeyError if name was not found.
      */
     _p._getCPSParameterValue = function(name) {
-        var i=0, value;
-        for(;i<this._rules.length;i++) {
-            try {
-                value = this._rules[i].parameters.get(name);
-            }
-            catch(error) {
-                if(!(error instanceof KeyError))
-                    throw error;
-                // pass, the name is not in the rule
-                continue;
-            }
-            if(!value.invalid)
-                return value;
-        }
+        if(!this._dict) this._buildIndex();
+        if(name in this._dict)
+            return this._dict[name];
         throw new KeyError('Not found CPS @dictionary reference "'+ name+'" for: '
             + this._element.particulars);
     };
@@ -49645,8 +49866,6 @@ define('metapolator/models/CPS/ReferenceDict',[
      */
     _p._getParameter = function(name) {
         var cpsParameterValue = this._getCPSParameterValue(name);
-        if(cpsParameterValue === null)
-            throw new CPSKeyError(name);
         return cpsParameterValue.factory(
             name, this._element,
             this._controller.getComputedStyle(this._element).getAPI
@@ -49655,12 +49874,6 @@ define('metapolator/models/CPS/ReferenceDict',[
 
     /**
      * Returns the the value of an @dictionary parameter or raises KeyError
-     *
-     * This caches the result of this._getParameter which might become
-     * problematic, because we'll have to invalidate the cached values.
-     * If that proves to be hard, we should maybe skip the caching first
-     * and see later how to make cache invalidation possible.
-     * Styledict has a similar situation in its getParameter method.
      */
     _p.get = function(name) {
         return this._getParameter(name).getValue();
@@ -49669,211 +49882,907 @@ define('metapolator/models/CPS/ReferenceDict',[
     return ReferenceDict;
 });
 
-define('metapolator/models/Controller',[
+define('metapolator/models/CPS/parsing/curry',[  
+
+], function (
+
+) {
+    
+    /**
+     * similar to function.prototype.bind, but it doesn't set
+     * the value of 'this'
+     * 
+     */
+    function curry(func/* args */) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return function() {
+           return func.apply(this, args.concat(
+                        Array.prototype.slice.call(arguments)));
+        }
+    }
+    return curry;
+})
+;
+define('metapolator/models/CPS/elements/AtNamespaceCollection',[
     'metapolator/errors'
-  , 'metapolator/models/CPS/selectorEngine'
-  , 'metapolator/models/MOM/Multivers'
-  , 'metapolator/models/MOM/Univers'
-  , 'metapolator/models/CPS/StyleDict'
-  , 'metapolator/models/CPS/ReferenceDict'
+  , './ParameterCollection'
 ], function(
     errors
-  , selectorEngine
+  , Parent
+) {
+    
+    var CPSError = errors.CPS
+      ;
+    /**
+     * A list of Rule, AtRuleCollection, ParameterCollection, and
+     * Comment Elements
+     */
+    function AtNamespaceCollection(name, selectorList, items, source, lineNo) {
+        // The _allowNamespace property of this prototype tells the Parent
+        // constructor to not look up this.name and this.selectorList
+        Parent.call(this, items, source, lineNo);
+        if(name)
+            this.name = name;
+        if(selectorList)
+            this.selectorList = selectorList;
+    }
+
+    var _p = AtNamespaceCollection.prototype = Object.create(Parent.prototype);
+    _p.constructor = AtNamespaceCollection;
+
+    _p._allowNamespace = true;
+
+    return AtNamespaceCollection;
+})
+;
+define('metapolator/models/CPS/dataTypes/CPSDictionaryEntry',[
+    'metapolator/errors'
+  , './_FormulaeValue'
+  , './SharedFormulaeFactory'
+], function(
+    errors
+  , Parent
+  , SharedFormulaeFactory
+) {
+    
+
+    var ValueError = errors.Value;
+
+    function CPSDictionaryEntry(getAPI, stack) {
+        Parent.call(this, getAPI, stack);
+    }
+
+    var _p = CPSDictionaryEntry.prototype = Object.create(Parent.prototype);
+    _p.constructor = CPSDictionaryEntry;
+    CPSDictionaryEntry.factory = new SharedFormulaeFactory(CPSDictionaryEntry);
+
+    _p.getValue = function() {
+        return this._stack.execute(this._getAPI);
+    };
+
+    _p.toString = function() {
+        return '<' + this.constructor.name
+             + ' v: ' + this.value.valueOf()
+             + ' with stack' + this._stack + '>';
+    };
+
+    return CPSDictionaryEntry;
+});
+
+define('metapolator/models/CPS/parsing/parameterFactories',[
+    'metapolator/errors'
+  , './curry'
+  , './selectorFactories'
+  , 'metapolator/models/CPS/elements/ParameterDict'
+  , 'metapolator/models/CPS/elements/Parameter'
+  , 'metapolator/models/CPS/elements/ParameterName'
+  , 'metapolator/models/CPS/elements/ParameterValue'
+  , 'metapolator/models/CPS/elements/AtRuleName'
+  , 'metapolator/models/CPS/elements/AtNamespaceCollection'
+  , 'metapolator/models/CPS/elements/SelectorList'
+  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
+  , 'gonzales/gonzales'
+  , './parseSelectorList'
+], function (
+    errors
+  , curry
+  , selectorFactories
+  , ParameterDict
+  , Parameter
+  , ParameterName
+  , ParameterValue
+  , AtRuleName
+  , AtNamespaceCollection
+  , SelectorList
+  , CPSDictionaryEntry
+  , gonzales
+  , parseSelectorList
+) {
+    
+    var CPSError = errors.CPS;
+
+    /**
+     * Constructors OR factory functions
+     * this can be both because JavaScript allows to call a factory function
+     * using the new operator like in `new myfactory()`. The factory must
+     * return a new object in this case.
+     *
+     * all constructors take the following arguments: (node, source)
+     * @node: object as created by parserEngine._makeNode and augmented by
+     * parserEngine
+     * @source: instance of parameters/Source
+     *
+     * We'll use mostly factories, because the "node" we use as argument
+     * is not exactly a nice interface. However, it's called _nodeConstructors
+     * because that implies that these functions are being called using
+     * the `new` keyword.
+     *
+     * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
+     */
+
+    function genericNameFactory (Constructor, node, source) {
+        var comments = node.children
+                .filter(function(item) {
+                    return (item.type === 'comment');
+                }).
+                map(function(item){
+                    return item.instance;
+                }
+            )
+          , name
+          ;
+
+        if(node.children[0].type !== '__GenericAST__'
+                && node.children[0].instance.type !== 'ident')
+            throw new CPSError(['The first child of "'+node.type+'" is '
+                , 'expected to be an __GenericAST__ of type "ident", '
+                , 'but got "', node.children[0].type, '" '
+                , 'type: "', (node.children[0].instance
+                        ? node.children[0].instance.type
+                        : '<no instance>'), '" '
+                ,'in a '+node.type+' from: ', source, 'line: '
+                , node.lineNo
+                ,'.'].join(''), (new Error).stack)
+        name = node.children[0].data;
+        return new Constructor(name, comments ,source, node.lineNo)
+    }
+
+    // inherit from selectorFactories
+    var parameterFactories = Object.create(selectorFactories);
+
+    (function(factories){
+        var k;
+        for(k in factories) parameterFactories[k] = factories[k];
+    })({
+        /**
+         * block:
+         *
+         * A list of
+         * "declaration"
+         * "decldelim" (semicolon)
+         * "s" (whitespace)
+         * and "comment".
+         *
+         * IMPORTANT: "filter" can occur, which is a like "declaration"
+         * but has a special name. This was a rather random pick, I suppose.
+         * We can use "filter" AS "declaration", if we need it, OR just let
+         * it be a __GenericAST__. Filter has, instead of a "value" a "filterv"
+         * This is a bugging inconsequence in gonzales. But we can shield
+         * it from higher levels.
+         *
+         * We rename "declaration" as "Parameter"
+         *
+         * We throw away "decldelim" and "s", we keep "declaration",
+         * "comment" and __GenericAST__ (which will be produced by from
+         * unkown "declaration"s/properties)
+         *
+         * From the docs: Part of the style in the braces.
+         */
+        'block': function(node, source) {
+            var i=0
+              , items = []
+              , whitelist = {
+                    'comment': null,
+                    'declaration': null
+                }
+              , astBlacklist = {
+                    'decldelim': null,
+                    's': null
+                }
+              , children = ('children' in node)
+                            ? node.children
+                            : []
+              ;
+            for(;i<children.length; i++)
+                if(children[i].type in whitelist
+                        || (children[i].type === '__GenericAST__'
+                            && !(children[i].instance.type in astBlacklist)
+                        )
+                )
+                    items.push(children[i].instance);
+            return new ParameterDict(items, source, node.lineNo);
+        }
+
+        /**
+         * declaration // Parameter:
+         *
+         * Key value pair of "property" and "value"
+         * We rename "declaration" to "Parameter" and "property" to "ParameterName"
+         *
+         * We convert unkown "declaration"s into __GenericAST__
+         * objects. But for performance reasons, this decision is made in
+         * _makeNode.
+         */
+      , 'declaration': function (node, source, ruleController) {
+            var name, value, typeDefinition;
+
+            if(node.children[0].type !== 'property')
+                throw new CPSError('The first child of "declaration" is '
+                + 'expected to be a "property", but got "' + node.children[0].type +'" '
+                +'" in a declaration from: ' + source + 'line: '
+                + node.lineNo
+                +'.', (new Error).stack)
+
+            if(node.children[1].type !== 'value')
+                throw new CPSError('The second child of "declaration" is '
+                + 'expected to be a "value", but got "' + node.children[1].type +'" '
+                +'" in a declaration from: ' + source + 'line: '
+                + node.lineNo
+                +'.', (new Error).stack)
+
+            name = node.children[0].instance;
+            value = node.children[1].instance;
+            // selectorListFromString uses the parser but doesn't need
+            // initialized parameters
+            if(ruleController) {
+                try {
+                    typeDefinition = ruleController.parameterRegistry.getTypeDefinition(name.name);
+                }
+                catch(error) {
+                    if(!(error instanceof errors.CPSRegistryKey))
+                        throw error;
+                    // initialize the generic datatype
+                    typeDefinition = CPSDictionaryEntry.factory;
+                }
+                value.initializeTypeFactory(name.name, typeDefinition);
+            }
+            return new Parameter(name, value, source, node.lineNo);
+        }
+        /**
+         * property // ParameterName
+         *
+         * The name of a property.
+         *
+         * It has as first child an ident, which value is the actual name:
+         *          ["ident", "margin"]
+         * But it also can have subsequent "s" (whitespace) and "comment"
+         * nodes:
+         */
+         // any{ background-color /*property comment*/: #fff;\n\ }
+        /**
+         * yields in:
+         * ['property',
+         *    ['ident', 'background-color'],
+         *    ['s', ' '],
+         *    ['comment', 'property comment']
+         * ]
+         *
+         * The whitespace is going to be removed.
+         *
+         * I would try to keep the comments here, however, this is a low
+         * priority, because comments are not often used at this position.
+         *
+         * When printing, all comments go between the name and the colon.
+         */
+      , 'property': curry(genericNameFactory, ParameterName)
+        /**
+         * value:
+         *
+         * The value of a property.
+         *
+         * It's a list of a lot of different nodes. Besides all things
+         * meaningful for the value, Comments can go in here, too.
+         * I propose to keep the comments, but print them at the beginning
+         * of the value, followed by the value itself. Because we won't be
+         * able to restore the correct place in most cases anyways.
+         */
+      , 'value': function(node, source) {
+            var comments = []
+              , value = []
+              , i=0
+              , children = ('children' in node)
+                                ? node.children
+                                : []
+              ;
+            for(;i<children.length;i++)
+                if(children[i].type === 'comment')
+                    comments.push(children[i].instance);
+                else
+                    value.push(children[i].instance);
+            return new ParameterValue(value, comments ,source, node.lineNo)
+        }
+      // tinker on @namespace
+      , 'atruler': function(node, source) {
+            var name
+              , collection
+              , selectorList
+              , i=0
+              ;
+            for(;i<node.children.length; i++)
+                if(name && collection && selectorList)
+                    break;
+                else if(!collection
+                        && node.children[i].instance instanceof AtNamespaceCollection)
+                    collection = node.children[i].instance;
+                else if(!name && node.children[i].instance instanceof AtRuleName)
+                    name = node.children[i].instance;
+                else if(!selectorList && node.children[i].instance instanceof SelectorList)
+                    selectorList = node.children[i].instance
+            if ( !name
+                    // we only know @namespace here!
+                    || name.name !== 'namespace'
+                    || !collection)
+                return this['__GenericAST__'](node, source);
+            // may be undefined
+            collection.selectorList = selectorList;
+            collection.name = name;
+            return collection;
+        }
+      , 'atkeyword': curry(genericNameFactory, AtRuleName)
+      , 'atrulerq': function(node, source, ruleController) {
+            var i=0
+              , braces
+              , selectorString
+              , selectorList
+              ;
+
+            // find 'braces'
+            for(var i=1;i<node.rawData.length;i++)
+                if(node.rawData[i][0] && node.rawData[i][0] === 'braces') {
+                    braces = node.rawData[i];
+                    break;
+                }
+            if(!braces)
+                return this['__GenericAST__'](node, source);
+
+            // we need the quotes only to not break the gonzales parsing
+            // in selectorsString, no qotes are necessary. So we simply
+            // throw them away at this point, without checking semantics
+            // gonzales will fail with non matching quotes anyways
+            selectorString = gonzales.csspToSrc(braces)
+                // remove the braces
+                .slice(1,-1)
+                // remove quotes
+                .replace(/(\'|\")/gm, '')
+                .split(',')
+                // remove surrounding whitespace
+                .map(function(item){return item.trim();})
+                // remove empty entries
+                .filter(function(item){return !!item.length;})
+                // create a 'normalized' selectorString
+                .join(', ')
+
+            try {
+                return parseSelectorList.fromString(selectorString, undefined
+                        , ruleController && ruleController.selectorEngine);
+            }
+            catch(error) {
+                if(!(error instanceof CPSError))
+                    throw error;
+            }
+
+            // don't return anything particular
+            return this['__GenericAST__'](node, source);
+        }
+        /***
+         * return an AtNamespaceCollection
+         * NOTE: at this moment we don't know whether or not this
+         * is the collection of AtNamespace or something made up!
+         * the aim is to eventually replace AtNamespaceCollection
+         * with an enhanced version of ParameterCollection.
+         */
+      , 'atrulers': function(node, source) {
+            var items = []
+              , i=0
+              ;
+            if(!node.children)
+                return this['__GenericAST__'](node, source);
+            for(;i<node.children.length;i++) {
+                if(node.children[i].type === '__GenericAST__'
+                                && node.children[i].instance.type === 's')
+                    continue;
+                items.push(node.children[i].instance)
+            }
+            // name, selectorList
+            return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);
+        }
+    })
+
+    return {
+        factories: parameterFactories
+      , genericNameFactory: genericNameFactory
+    }
+})
+;
+define('metapolator/models/CPS/parsing/atDictionaryFactories',[
+    'metapolator/errors'
+  , './curry'
+  , './parameterFactories'
+  , 'metapolator/models/CPS/elements/Parameter'
+  , 'metapolator/models/CPS/elements/AtRuleCollection'
+  , 'metapolator/models/CPS/elements/ParameterCollection'
+  , 'metapolator/models/CPS/elements/AtRuleName'
+  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
+
+], function (
+    errors
+  , curry
+  , parameterFactories
+  , Parameter
+  , AtRuleCollection
+  , ParameterCollection
+  , AtRuleName
+  , CPSDictionaryEntry
+) {
+    
+    var CPSError = errors.CPS
+      , genericNameFactory = parameterFactories.genericNameFactory
+      ;
+
+
+    /**
+     * Constructors OR factory functions
+     * this can be both because JavaScript allows to call a factory function
+     * using the new operator like in `new myfactory()`. The factory must
+     * return a new object in this case.
+     *
+     * all constructors take the following arguments: (node, source)
+     * @node: object as created by parserEngine._makeNode and augmented by
+     * parserEngine
+     * @source: instance of parameters/Source
+     *
+     * We'll use mostly factories, because the "node" we use as argument
+     * is not exactly a nice interface. However, it's called _nodeConstructors
+     * because that implies that these functions are beeing called using
+     * the `new` keyword.
+     *
+     * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
+     */
+
+    /**
+     * override constructors for the purpose of @dictionary.
+     * This means for all children of @dictionary we can define other rules.
+     * If we don't do so, the regular rules apply. JavaScript Prototype
+     * Inheritance.
+     *
+     * like a module pattern, to not pollute the namespace with
+     * temporary variables
+     */
+    var atDictionaryFactories = Object.create(parameterFactories.factories)
+      , atDictionaryParsingSwitch
+      , _atDictionaryDeprecationWarning
+      ;
+    (function(factories) {
+            var k;
+            for(k in factories) atDictionaryFactories[k] = factories[k];
+    })({
+        /**
+         * Augments the AtRuleCollection created by atrulers with a name.
+         */
+        'atruler': function(node, source) {
+            // this is an @dictionary root node
+            var i = 0
+              , collection
+              , name
+              ;
+            // FIXME: remove all this ASAP, it will make the codebase
+            // much smaller!
+
+            if(!_atDictionaryDeprecationWarning) {
+                _atDictionaryDeprecationWarning = true;
+                console.warn("@dictionary is deprecated!\n"
+                    , 'Remove all occurences of "@dictionary {" and it\'s'
+                    , 'closing "}" and you should be good to go.\nThe contents of '
+                    , '@dictionary will continue to work as normal parameters.'
+                );
+            }
+            for(;i<node.children.length; i++)
+                if(name && collection)
+                    break;
+                else if(!collection
+                        && node.children[i].instance instanceof ParameterCollection)
+                    collection = node.children[i].instance;
+                else if(!name && node.children[i].instance instanceof AtRuleName)
+                    name = node.children[i].instance;
+            if(!collection || !name)
+                return this['__GenericAST__'](node, source);
+            //collection.name = name;
+            return collection;
+        }
+      , 'atkeyword': curry(genericNameFactory, AtRuleName)
+      , 'atrulers': function(node, source) {
+            var items = []
+              , i=0
+              ;
+            for(;i<node.children.length;i++) {
+                if(node.children[i].type === '__GenericAST__'
+                                && node.children[i].instance.type === 's')
+                    continue;
+                items.push(node.children[i].instance)
+            }
+            //return new AtRuleCollection(undefined, items, source, node.lineNo);
+            // We are NOT creating AtRuleCollections anymore!
+            return new ParameterCollection(items, source, node.lineNo);
+        }
+      , 'declaration': function(node, source) {
+            // this is an @dictionary declaration
+            var name, value, typeDefinition;
+
+            if(node.children[0].type !== 'property')
+                throw new CPSError('The first child of "declaration" is '
+                + 'expected to be a "property", but got "' + node.children[0].type +'" '
+                +'" in a declaration from: ' + source + 'line: '
+                + node.lineNo
+                +'.', (new Error).stack)
+
+            if(node.children[1].type !== 'value')
+                throw new CPSError('The second child of "declaration" is '
+                + 'expected to be a "value", but got "' + node.children[1].type +'" '
+                +'" in a declaration from: ' + source + 'line: '
+                + node.lineNo
+                +'.', (new Error).stack)
+            name = node.children[0].instance;
+            value = node.children[1].instance;
+            value.initializeTypeFactory(name.name, CPSDictionaryEntry.factory);
+            return new Parameter(name, value, source, node.lineNo);
+        }
+    });
+
+    function test_switchToAtDictionary(data) {
+        return (data[0] === 'atruler'
+              && data[1] && data[1][0] === 'atkeyword'
+              && data[1][1] && data[1][1][0] === 'ident'
+              && data[1][1][1] === 'dictionary'
+        );
+    }
+
+    atDictionaryParsingSwitch = [test_switchToAtDictionary, atDictionaryFactories];
+
+    return {
+        factories: atDictionaryFactories
+      , atDictionaryParsingSwitch: atDictionaryParsingSwitch
+    };
+})
+;
+define('metapolator/models/CPS/elements/AtImportCollection',[
+    'metapolator/errors'
+  , './ParameterCollection'
+  , 'es6/Proxy'
+], function(
+    errors
+  , Parent
+  , Proxy
+) {
+    
+    var CPSError = errors.CPS;
+    /**
+     * Essentially a proxy for the parameterCollection argument. But
+     * we can define new properties or override existing ones. And we have
+     * a new type.
+     *
+     * Even though the Constructor returns not it's own `this` value,
+     * instead a Proxy of it, we can still test its type:
+     *         instanceof ParameterCollection === true
+     *         instanceof AtImportCollection === true
+     *
+     * The serialization results in an @import Rule, not in the actual
+     * cps that the parameterCollection would produce, but we can still
+     * use it as if it was the parameterCollection directly.
+     *
+     * ResourceName: the resource name of the @import rule
+     * in `@import "bold.cps";` "bold.cps" is the resourceName
+     *
+     * parameterCollection: the instance of the ParameterCollection that
+     * is loaded for resourceName.
+     */
+    function AtImportCollection(resourceName, parameterCollection) {
+        this._resourceName = resourceName;
+        var proxy = new Proxy(this, new ProxyHandler(parameterCollection));
+        return proxy;
+    }
+    var _p = AtImportCollection.prototype = Object.create(Parent.prototype);
+    AtImportCollection.prototype.constructor = AtImportCollection;
+
+    function ProxyHandler(reference) {
+        this._reference = reference;
+        this.get = _get;
+    }
+
+    function _get(target, name, receiver) {
+        if(_p.hasOwnProperty(name) || target.hasOwnProperty(name))
+            return target[name];
+        return this._reference[name];
+    }
+
+    _p.toString = function() {
+        return '@import "' + this.resourceName + '";';
+    };
+
+    Object.defineProperty(_p, 'resourceName', {
+        get: function(){ return this._resourceName; }
+      , enumerable: true
+    });
+
+    return AtImportCollection;
+});
+
+define('metapolator/models/CPS/parsing/atImportFactories',[
+    'metapolator/errors'
+  , './curry'
+  , './parameterFactories'
+  , 'metapolator/models/CPS/elements/AtImportCollection'
+  , 'metapolator/models/CPS/elements/AtRuleName'
+  , 'metapolator/models/CPS/elements/GenericCPSNode'
+], function (
+    errors
+  , curry
+  , parameterFactories
+  , AtImportCollection
+  , AtRuleName
+  , GenericCPSNode
+) {
+    
+    var CPSError = errors.CPS
+      , genericNameFactory = parameterFactories.genericNameFactory
+      ;
+
+    /**
+     * override constructors for the purpose of @import.
+     * This means for all children of @import we can define other rules.
+     * If we don't do so, the regular rules apply. JavaScript Prototype
+     * Inheritance.
+     *
+     * like a module pattern, to not pollute the namespace with
+     * temporary variables
+     */
+    var atImportFactories = Object.create(parameterFactories.factories)
+      , atImportParsingSwitch
+      ;
+    (function(factories) {
+            var k;
+            for(k in factories) atImportFactories[k] = factories[k];
+    })({
+        /**
+         * Find the name of the resource to load and return a ParameterCollection
+         */
+        'atrules': function(node, source, ruleController) {
+            var args, resource, parameterCollection;
+            // filter all whitespace
+            args = node.children.slice(1).filter(function(child) {
+                if(child.instance instanceof GenericCPSNode && child.instance.type === 's')
+                    return false;
+                return true;
+            });
+
+            // accept only one argument which must be a string
+            if(args.length !== 1
+                || !(args[0].instance instanceof GenericCPSNode
+                                    && args[0].instance.type === 'string'))
+                return this['__GenericAST__'](node, source);
+            resource = args[0].data.slice(1,-1);
+
+            parameterCollection = ruleController.getRule(false, resource)
+            return new AtImportCollection(resource, parameterCollection);
+        }
+      , 'atkeyword': curry(genericNameFactory, AtRuleName)
+    });
+
+    function test_switchToAtImport(data) {
+        return (data[0] === 'atrules'
+              && data[1] && data[1][0] === 'atkeyword'
+              && data[1][1] && data[1][1][0] === 'ident'
+              && data[1][1][1] === 'import'
+        );
+    }
+
+    atImportParsingSwitch = [test_switchToAtImport, atImportFactories];
+
+    return {
+        factories: atImportFactories
+      , atImportParsingSwitch: atImportParsingSwitch
+    };
+});
+
+define('metapolator/models/CPS/parsing/parseRules',[
+    'metapolator/errors'
+  , 'gonzales/gonzales'
+  , './curry'
+  , './engine'
+  , './parameterFactories'
+  , './atDictionaryFactories'
+  , './atImportFactories'
+], function (
+    errors
+  , gonzales
+  , curry
+  , parserEngine
+  , parameterFactoriesModule
+  , atDictionaryFactories
+  , atImportFactories
+) {
+    
+    var CPSError = errors.CPS
+      , CPSParserError = errors.CPSParser
+      , parameterFactories = parameterFactoriesModule.factories
+      , module = {
+          parser: gonzales.srcToCSSP
+      }
+      ;
+
+    var factorySwitches = [
+            atDictionaryFactories.atDictionaryParsingSwitch,
+            atImportFactories.atImportParsingSwitch
+        ]
+      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
+      ;
+    /**
+     * Create a ParameterCollection from a CSS string
+     */
+    function rulesFromString(css, sourceName, ruleController) {
+        var ast;
+        try {
+            ast = module.parser(css);
+        }
+        catch (error) {
+            // gonzales throws a pure JavaScript Error, but we want more
+            // certainty in the rest of our application
+            throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
+        }
+
+        return module.fromAST(ast, sourceName, ruleController)
+    }
+
+    module.fromString = rulesFromString;
+    module.fromAST = rulesFromAST;
+
+    return module;
+})
+;
+define('metapolator/models/Controller',[
+    'metapolator/errors'
+  , 'metapolator/models/CPS/SelectorEngine'
+  , 'metapolator/models/MOM/Multivers'
+  , 'metapolator/models/MOM/Univers'
+  , 'metapolator/models/CPS/elements/Rule'
+  , 'metapolator/models/CPS/StyleDict'
+  , 'metapolator/models/CPS/ReferenceDict'
+  , 'metapolator/models/CPS/parsing/parseRules'
+  , 'obtain/obtain'
+], function(
+    errors
+  , SelectorEngine
   , Multivers
   , Univers
+  , Rule
   , StyleDict
   , ReferenceDict
+  , parseRules
+  , obtain
 ) {
     
     var CPSError = errors.CPS
       , KeyError = errors.Key
       ;
-    
-    function Controller(parameterRegistry) {
-        this._parameterRegistry = parameterRegistry;
-        this._sources = [];
-        this._sourceIndex = {};
-        // source names of the masters
+
+    function Controller(ruleController) {
+        this._ruleController = ruleController;
+        this.parameterRegistry = ruleController.parameterRegistry;
+        // rule names of the masters
         this._masters = {};
-        
+
+        this._selectorEngine = new SelectorEngine();
         this._MOM = new Multivers(this);
         this._univers = new Univers();
         this._MOM.add(this._univers);
-        
+
         this._caches = undefined;
         this._resetCaches();
     }
-    
+
     var _p = Controller.prototype;
-    
+
     /**
      * StyleDict constructor, can be changed by inheritance or
      * monkey patched on instances
      */
     _p.StyleDict = StyleDict;
     _p.ReferenceDict = ReferenceDict;
-    
-    
-    _p._rebuildSourceIndex = function() {
-        this._sourceIndex = {};
-        var i=0
-          , name
-          ;
-        for(;i<this._sources.length;i++) {
-            name = this._sources[i].source.name;
-            this._sourceIndex[name] = i;
-        }
-    }
-    
+
     /**
-     * todo: check if deleting only parts of the cache is possible
+     * TODO: see if it's possible to invalidate only parts of the cache:
      * when only one master is affected by a change, it is overkill
      * to delete all the other items as well.
      */
     _p._resetCaches = function() {
         this._caches = {
-            styleDicts: {}
-          , referenceDicts: {}
-          , rules: {}
-          , dictionaries: {}
+            styleDicts: Object.create(null)
+          , referenceDicts: Object.create(null)
+          , rules: Object.create(null)
         }
     };
-    
-    _p.addSource = function(parameterSource) {
-        var ownSource
-          , name = parameterSource.source.name
-          ;
-        try {
-            ownSource = this.getSource(name);
-        }
-        catch(error){
-            if(!(error instanceof KeyError))
-                throw error;
-        }
-        if(!ownSource)
-            // we don't have a source named like that yet
-            this._sourceIndex[name] = this._sources.push(parameterSource) - 1;
-        else if(ownSource !== parameterSource)
-            throw new KeyError('A parameterSource object with the same '
-                + 'name  "'+name+'" exists already. Use replaceSource to '
-                +'change a source objcet?');
-        // else: pass, we aleady have that source
-        return;
-    }
-    
-    _p.addSources = function(sources) {
-        sources.map(this.addSource, this);
-    }
-    
-    Object.defineProperty(_p, 'sources', {
-        get: function() {
-            return Object.keys(this._sourceIndex)
-        }
-    })
-    
-    _p.usesSource = function(source) {
-        return source in this._sourceIndex;
-    }
-    
-    _p.replaceSource = function(collection) {
-        var source = collection.source.name
-          , index = this._sourceIndex[source]
-          ;
-        if(index === undefined)
-            throw new KeyError('Can\'t replace source "'+ source
-                                +'" because it\'s not in this controller');
-        this._sources[index] = collection;
-        this._resetCaches();
-    }
-    
-    _p.getSource = function(source) {
-        var index = this._sourceIndex[source];
-        if(index === undefined)
-            throw new KeyError(['The Source with name "', source ,'" was '
-                    , 'not found in: ',this.sources.join(', ')].join(''));
-        return this._sources[index];
-    }
-    
-    _p.getSourceStringByName = function(source) {
-        return this.getSource(source).toString();
-    }
-    
-    _p.addMaster = function(master, sources) {
-        var i=0, sourceSet = {};
-        
-        this.addSources(sources);
-        for(;i<sources.length;i++)
-            sourceSet[sources[i].source.name] = null;
-        this._masters[master.id] = sourceSet;
+
+    _p.updateChangedRule = function(async, sourceName) {
+        var promise = this._ruleController.reloadRule(async, sourceName);
+        return (async
+                    ? promise.then(this._resetCaches.bind(this))
+                    : this._resetCaches()
+               );
+    };
+
+    _p.addMaster = function(master, sourceName) {
+        this._masters[master.id] = sourceName;
         this._univers.add(master);
     }
-    
+
     _p.hasMaster = function (master) {
         return master in this._masters;
     }
-    
-    _p.getMasterSources = function (master) {
+
+    _p._getMasterRule = function (master) {
         if(!(master in this._masters))
             throw new KeyError('Master "'+ master +'" not found in '
                                 + Object.keys(this._masters).join(', '));
-        return Object.keys(this._masters[master]);
+        return this._masters[master];
     }
-    
-    
-    /**
-     * getComputedStyle returns the matching rules in the correct
-     * order by specificity, so all rules should be included. The 
-     * order of the rules is important, too, and used as last weighting
-     * information, if all other specificity numbers equal.
-     */
-    _p._getMergedRules = function(master) {
-        return Array.prototype.concat.apply([]
-                    , this.getMasterSources(master)
-                            .map(this.getSource, this)
-                            .map(function(item){return item.rules;}));
-    }
-    _p.getMergedRules = function(master) {
-        if(!this._caches.rules[master])
-            this._caches.rules[master] = this._getMergedRules(master);
-        return this._caches.rules[master];
-    }
-    
-    /**
-     * get all @dictionary rules for master
-     */
-    _p._getMergedDictionaries = function(master) {
-        return Array.prototype.concat.apply([]
-                    , this.getMasterSources(master)
-                            .map(this.getSource, this)
-                            .map(function(item){return item.dictionaryRules; }));
-    }
-    _p.getMergedDictionaries = function(master) {
-        if(!this._caches.dictionaries[master])
-            this._caches.dictionaries[master] = this._getMergedDictionaries(master);
-        return this._caches.dictionaries[master];
-    }
-    
-    Object.defineProperty(_p, 'parameterRegistry', {
-        get: function() {
-            return this._parameterRegistry;
+
+    _p.__getRules = function(masterName, property) {
+        var ruleName = this._getMasterRule(masterName)
+          , parameterCollection = this._ruleController.getRule(false, ruleName)
+          , namespacedRules = parameterCollection[property]
+          , i = 0
+          , len = namespacedRules.length
+          , namespacedRule
+          , complexSelectors
+          , sortFunc = SelectorEngine.compareSelectorSpecificity
+          ;
+
+        for(;i<len;i++) {
+            namespacedRule = namespacedRules[i];
+            // this is expensive
+            complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
+            complexSelectors.sort(sortFunc);
+            namespacedRules[i][0] = complexSelectors;
         }
-    })
-    
+        return namespacedRules;
+    };
+
+    _p._getRules = function(masterName, property) {
+        // FIXME: with this cache key the parameterCollection has to be
+        // created twice, once for rules and once fo dictionaryRules
+        // HOWEVER! the parameterCollection is cached in the rule controller
+        var key = [masterName, property].join(',')
+          , result = this._caches.rules[key];
+          ;
+        if(!result)
+            result = this._caches.rules[key] = this.__getRules(masterName, property);
+        return result;
+    };
     /**
     * returns a single StyleDict to read the final cascaded, computed
     * style for that element.
-    * 
+    *
     * Note: this interface element could be based on the result of
     * rulesForElement and just search that rules up to the end
     */
     _p._getComputedStyle = function(element) {
         var masterRules = element.master
-                ? this.getMergedRules(element.master.id)
+                ? this._getRules(element.master.id, 'rules')
                 : []
-          , rules = selectorEngine.getMatchingRules(masterRules, element);
+          , rules = this._selectorEngine.getMatchingRules(masterRules, element)
+          ;
         return new this.StyleDict(this, rules, element);
     }
-    
+
     _p.getComputedStyle = function(element) {
         if(element.multivers !== this._MOM)
             throw new CPSError('getComputedStyle with an element that is not '
@@ -49882,15 +50791,16 @@ define('metapolator/models/Controller',[
             this._caches.styleDicts[element.nodeID] = this._getComputedStyle(element);
         return this._caches.styleDicts[element.nodeID];
     }
-    
+
     _p._getReferenceDictionary = function(element) {
+        throw new errors.Deprecated('@dictionary should not get intialized anymore!');
         var masterRules = element.master
-                ? this.getMergedDictionaries(element.master.id)
+                ? this._getRules(element.master.id, 'dictionaryRules')
                 : []
-        var rules = selectorEngine.getMatchingRules(masterRules, element);
+        var rules = this._selectorEngine.getMatchingRules(masterRules, element);
         return new this.ReferenceDict(this, rules, element);
     }
-    
+
     /**
      * A reference dictionary is the interface to the values referenced
      * by the @dictionary CPS rules
@@ -49899,16 +50809,13 @@ define('metapolator/models/Controller',[
         if(element.multivers !== this._MOM)
             throw new CPSError('getReferenceDictionary with an element that is not '
                 + 'part of the multivers is not supported' + element);
-        
         if(!this._caches.referenceDicts[element.nodeID])
             this._caches.referenceDicts[element.nodeID] = this._getReferenceDictionary(element);
         return this._caches.referenceDicts[element.nodeID];
-    }
-    
-    _p.queryAll = function(selector, scope) {
-        var i=0
-          , result
-          ;
+    };
+
+    _p._checkScope = function(scope) {
+        var i=0;
         if(scope) {
             if(!(scope instanceof Array))
                 scope = [scope];
@@ -49920,34 +50827,158 @@ define('metapolator/models/Controller',[
         }
         else
             scope = [this._MOM];
-        result = selectorEngine.queryAll(scope, selector);
+        return scope;
+    }
+
+    _p.queryAll = function(selector, scope) {
+        var result = this._selectorEngine.queryAll(this._checkScope(scope), selector);
         // monkey patching the returned array.
         // it may become useful to invent an analogue to Web API NodeList
-        result.query = selectorEngine.queryAll.bind(selectorEngine, result);
+        result.query = this._selectorEngine.queryAll.bind(this._selectorEngine, result);
         return result;
     }
-    
+
     _p.query = function(selector, scope) {
-        var i=0
-          , result
-          ;
-        if(scope) {
-            if(!(scope instanceof Array))
-                scope = [scope];
-            for(;i<scope.length;i++)
-                if(scope[i].multivers !== this._MOM)
-                    throw new CPSError('Query with a scope that is not '
-                        +'part of the multivers is not supported: '
-                        + scope[i].pariculars);
-        }
-        else
-            scope = [this._MOM];
-        return selectorEngine.query(scope, selector);
+        return this._selectorEngine.query(this._checkScope(scope), selector);
     }
-    
+
     return Controller;
 })
 ;
+define('metapolator/models/CPS/RuleController',[
+    'metapolator/errors'
+  , 'metapolator/models/CPS/parsing/parseRules'
+  , 'obtain/obtain'
+], function(
+    errors
+  , parseRules
+  , obtain
+) {
+    
+    var KeyError = errors.Key
+      , CPSRecursionError = errors.CPSRecursion
+      ;
+
+    // FIXME: note that we have a race condition in here:
+    //        One request with an older result can respond after
+    //        a newer result was cached, the most obvious example
+    //        is:
+    //              ruleController.getRule(true, name)
+    //              ruleController.getRule(false, name)
+    //
+    //        The second call will write the cache before the first call.
+    //        This problem exists with all asynchronous requests, of
+    //        course, but in this case it is more probable.
+    //        See the implementation of `getRule` (the `rule` getter)
+    //        for an attempt to improve the situation, and a further comment.
+
+    function RuleController(io, parameterRegistry, cpsDir, selectorEngine) {
+        this._io = io;
+        this._cpsDir = cpsDir;
+        this._commissionIdCounter = 0;
+        this._rules = Object.create(null);
+        Object.defineProperty(this, 'parameterRegistry', {
+            value: parameterRegistry
+          , enumarable: true
+          , writable: false
+        });
+        Object.defineProperty(this, 'selectorEngine', {
+            value: selectorEngine
+          , enumarable: true
+          , writable: false
+        });
+    }
+
+    var _p = RuleController.prototype;
+
+    _p._isCached = function(sourceName) {
+        return (sourceName in this._rules) && this._rules[sourceName].cached;
+    };
+
+    _p._set = function(sourceName, rule, commissionId) {
+        var record;
+        if(!(sourceName in this._rules))
+            record = this._rules[sourceName] = {parameterCollection: rule};
+        else {
+            record = this._rules[sourceName];
+            record.parameterCollection.reset(rule.items, rule.source, rule.lineNo);
+        }
+        record.commissionId = commissionId;
+        record.cached = true;
+    };
+
+    _p._readFile = function(async, fileName) {
+                            return this._io.readFile(async, fileName); };
+
+    _p._getRule = obtain.factory(
+        {
+            fileName: ['importing', 'sourceName', function(importing, sourceName) {
+                if(sourceName in importing)
+                throw new CPSRecursionError(sourceName + ' @imports itself: '
+                                    + Object.keys(importing).join(' » '));
+                importing[sourceName] = true;
+                return [this._cpsDir, sourceName].join('/');}]
+          , cps: [false, 'fileName', 'commissionId', _p._readFile]
+          , api: ['importing', function(importing) {
+                // return the api needed by parseRules.fromString
+                // but create a version of `_getRule` that is aware of the
+                // @import history `importing`
+                var api = {
+                    parameterRegistry: this.parameterRegistry
+                  , selectorEngine: this.selectorEngine
+                  , getRule: function ruleControllerGetRuleAPI(async, sourceName) {
+                                return this._getRule(async, importing, sourceName);
+                             }.bind(this)
+                };
+                return api;
+            }]
+          , rule: ['cps', 'sourceName', 'commissionId', 'importing', 'api',
+                function(cps, sourceName, commissionId, importing, api) {
+                    if(!this._isCached(sourceName)
+                            // There is a current cache but it was commissioned
+                            // before this request, and finished loading before it.
+                            // FIXME: a maybe better alternative would be
+                            //        to fail here!
+                            || this._isCached(sourceName) && commissionId >= this._rules[sourceName].commissionId)
+                    {
+                        var rule = parseRules.fromString(cps, sourceName, api);
+                        this._set(sourceName, rule, commissionId);
+                    }
+                    delete importing[sourceName];
+                    return this._rules[sourceName].parameterCollection;
+                }]
+          , isCached: ['sourceName', _p._isCached]
+          , commissionId:[function(){ return this._commissionIdCounter++;}]
+        }
+      , {cps: [true, 'fileName', 'commissionId', _p._readFile]}
+      , [ 'importing', 'sourceName']
+      , function job(obtain, importing, sourceName) {
+            if(!obtain('isCached'))
+                return obtain('rule');
+            return this._rules[sourceName].parameterCollection;
+        }
+    );
+
+    _p.getRule = function(async, sourceName) {
+        // initial recursion detection stack
+        var importing = Object.create(null);
+        return this._getRule(async, importing, sourceName);
+    };
+
+    /**
+     * Reload an existing CPS rule
+     */
+    _p.reloadRule = function(async, sourceName) {
+        if(!(sourceName in this._rules))
+            throw new KeyError('Can\'t reload rule "'+ sourceName
+                                +'" because it\'s not in this controller');
+        // mark as uncached
+        this._rules[sourceName].cached = false;
+        return this.getRule(async, sourceName);
+    };
+    return RuleController;
+});
+
 /**
  * Copyright (c) 2012, Lasse Fister lasse@graphicore.de, http://graphicore.de
  * 
@@ -52831,26 +53862,11 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
         
         // throws GlifLibError
         this._checkAttributesWhitelist(contour, contourAttributesFormat2);
-        
         if (contour.hasAttribute('identifier')) {
             identifier = contour.getAttribute('identifier');
-             this._processIdentifier(identifier, identifiers);
+            this._processIdentifier(identifier, identifiers);
         }
-        try {
-            pen.beginPath({identifier:identifier});
-        // HELP: where is this error supposed to be risen. I can't find a pen that does so.
-        }
-        catch(e) {
-            // FIXME: if there is a pen that is supposed to rise this error
-            // in Javascript that has to happen explicitly.
-            // TypeError would be still ok to expect
-            if(!(e instanceof TypeError))
-                throw e;
-            pen.beginPath();
-            errors.warn('DEPRECATED: The beginPath method needs an '
-                + 'identifier kwarg. The contour\'s identifier value '
-                + 'has been discarded.');
-        }
+        pen.beginPath({identifier:identifier});
         
         if (contour.children.length) {
             children = this._validateAndMassagePointStructures(
@@ -52873,34 +53889,13 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
                 identifier = attrs.identifier;
                 this._processIdentifier(identifier, identifiers);
             }
-            
-            try {
-                pen.addPoint(
+            pen.addPoint(
                     [attrs.x, attrs.y],
                     attrs.segmentType,
                     attrs.smooth,
                     attrs.name,
                     {identifier: attrs.identifier}
-                );
-            }
-            // HELP: where is this error supposed to be risen. I can't
-            // find a pen that does so.
-            catch(e) {
-                // FIXME: if there is a pen that is supposed to raise this error
-                // in Javascript that has to happen explicitly.
-                // TypeError would be still ok to expect
-                if(!(e instanceof TypeError))
-                    throw e;
-                pen.addPoint(
-                    [attrs.x, attrs.y],
-                    attrs.segmentType,
-                    attrs.smooth,
-                    attrs.name
-                );
-                errors.warn('DEPRECATED: The addPoint method needs an '
-                    + 'identifier kwarg. The point\'s identifier value has '
-                    + 'been discarded.');
-            }
+            );
         }
     }
     
@@ -53319,7 +54314,7 @@ define(
                         + 'be int or float');
 
                 trans = precision !== false
-                    ? round(transformation[i], precision)
+                    ? main.round(transformation[i], precision)
                     : transformation[i];
                 if(trans !== defaultVal)
                    component.setAttribute(attr, trans);
@@ -53747,27 +54742,8 @@ define(
         xml
 ) {
     
-    // FIXME: put this into a module of ufojs/xml/
-    // from https://developer.mozilla.org/en-US/docs/Using_XPath
-    // Evaluate an XPath expression aExpression against a given DOM node
-    // or Document object (aNode), returning the results as an array
-    // thanks wanderingstan at morethanwarm dot mail dot com for the
-    // initial work.
-    function evaluateXPath(aNode, aExpr) {
-        var xpe = new xml.XPathEvaluator()
-          , nsResolver = xpe.createNSResolver(
-                aNode.ownerDocument == null
-                    ? aNode.documentElement
-                    : aNode.ownerDocument.documentElement
-            )
-          , result = xpe.evaluate(aExpr, aNode, nsResolver, 0, null)
-          , found = []
-          , res
-          ;
-        while (res = result.iterateNext())
-            found.push(res);
-        return found;
-    }
+    
+    var evaluateXPath = xml.evaluateXPath;
     
     function _getAttributeValue(attribute) {
         return attribute.value;
@@ -53831,10 +54807,10 @@ define(
  *
  * This is a port of glifLib.Glyph defined in robofab/branches/ufo3k/Lib/ufoLib/gliflib.py
  *
- * Modifications where done in order to use DOM Methods with the glifs.
- * Because there is no native Sax-Parser in the Browser. Thus we really
- * parse the glifs completely, not just partly on some operations as the
- * Python implementation does.
+ * Modifications were made in order to use DOM Methods with the glifs.
+ * Because there is no native SAX parser in the Browser, we parse the glifs
+ * completely, not just partly on some operations as the Python
+ * implementation does.
  *
  * added a method:
  *     getGLIFDocumnet
@@ -54059,7 +55035,7 @@ define(
             init: ['instance', function(instance) {
                                     // returns a promise
                                     return instance.rebuildContents(true);}]
-      , }
+        }
       , ['io', 'dirName', 'glyphNameToFileNameFunc', 'ufoFormatVersion','options']
       , function(obtain) {
             obtain('init');
@@ -54701,12 +55677,12 @@ define(
 
     // dict-like support …
     // there is no magic happening like in python, but we do something
-    // in the same mind hen possible.
+    // in the same mind when possible.
 
     /**
      * def keys(self):
      *  return self.contents.keys()
-     * u.se:
+     * use:
      *
      * for(var k in glyphSet.contents);
      *
@@ -54720,7 +55696,7 @@ define(
     }
 
     /**
-     * the sane as:
+     * the same as:
      *     glyphName in this.contents
      */
     _p.has_key = function(glyphName) {
@@ -54747,7 +55723,7 @@ define(
     // })
     /**
      * this is magic, too
-     * Notice that the glyphClass is initalzied here.
+     * Notice that the glyphClass is initialized here.
      */
     _p.get = function(glyphName) {
         if(!(glyphName in this.contents))
@@ -54911,12 +55887,14 @@ define('metapolator/project/import/SegmentPen',[
             : val;
     }
     
-    _p._newContour = function() {
+    _p._newContour = function(kwargs) {
         errors.assert(this._currentContour === null,
                                 'this._currentContour should be null')
         this._currentContour = {
             commands: []
+          , type: 'contour'
           , closed: undefined
+          , kwargs: kwargs
         }
     }
     
@@ -54947,8 +55925,8 @@ define('metapolator/project/import/SegmentPen',[
         return contours;
     }
     
-    _p._moveTo = function(pt) {
-        this._newContour();
+    _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
+        this._newContour(kwargs);
         pt = this._pointFactory(pt);
         this._currentContour.commands.push(['moveTo', pt]);
     }
@@ -54966,7 +55944,18 @@ define('metapolator/project/import/SegmentPen',[
         pt3 = this._pointFactory(pt3);
         this._currentContour.commands.push(['curveTo', pt1, pt2, pt3]);
     }
-    
+
+    _p.addComponent = function(glyphName, transformation, kwargs)
+    {
+        var component = {
+            type:             'component'
+            , transformation: transformation
+            , glyphName:      glyphName
+            , kwargs:         kwargs
+        };
+        this.contours.push(component);
+    }
+
     return SegmentPen;
 });
 
@@ -55008,7 +55997,7 @@ define(
 
     /*definition*/
     enhance(ImportOutlinePen, {
-        _flushContour: function(segments)
+        _flushContour: function(segments, contour_kwargs)
         {
             assert(segments.length >= 1, 'Less than one segment');
             var pen = this.pen;
@@ -55041,7 +56030,7 @@ define(
                 // that's null. We must not output a moveTo() in that case.
                 // pass
             } else {
-                pen.moveTo(new Point(movePt, smooth, name, kwargs));
+                pen.moveTo(new Point(movePt, smooth, name, kwargs), contour_kwargs);
             }
             var outputImpliedClosingLine = this.outputImpliedClosingLine,
                 nSegments = segments.length;
@@ -55153,11 +56142,46 @@ define('metapolator/project/import/tools',[
         return result;
     }
     
+    /**
+     * see the docstring of StrokeContoue._findNextDirection
+     */
+    function getDirection(point, firstRound, lastRound, testDirection,
+                                                        test, control) {
+        var testPointKeys, testPointKey, testPoint, offset;
+
+        if(!firstRound || !lastRound)
+            testPointKeys = testDirection === 1
+                ? {out:true, on:true, 'in':true}
+                : {'in':true, on:true, out:true}
+                ;
+        else if(firstRound)
+            testPointKeys = testDirection === 1
+                ? {out: true}
+                : {'in': true}
+                ;
+        else // lastRound == true
+            testPointKeys = testDirection === 1
+                ? {'in': true}
+                : {out: true}
+                ;
+        for(testPointKey in testPointKeys) {
+            testPoint = test[testPointKey];
+            offset = control === 'out'
+                ? testPoint['-'](point.on)// point.out['-'](point.on)
+                : point.on['-'](testPoint)// point.on['-'](point['in']);
+                ;
+            if(offset.magnitude())
+                return offset.angle();
+        }
+        return false;
+    }
+
     return {
         line2curve: line2curve
       , getCenter: getCenter
       , getCenterPoint: getCenterPoint
       , getCenterSegment: getCenterSegment
+      , getDirection: getDirection
     }
 })
 ;
@@ -55175,6 +56199,7 @@ define('metapolator/project/import/StrokeContour',[
       , ImportPenstroke = errors.ImportPenstroke
       , line2curve = tools.line2curve
       , getCenterPoint = tools.getCenterPoint
+      , getDirection = tools.getDirection
       ;
 
     /**
@@ -55418,39 +56443,6 @@ define('metapolator/project/import/StrokeContour',[
     }
 
     /**
-     * see the docstring of _findNextDirection
-     */
-    function _getDirection(point, firstRound, lastRound, testDirection,
-                                                        test, control) {
-        var testPointKeys, testPointKey, testPoint, offset;
-
-        if(!firstRound || !lastRound)
-            testPointKeys = testDirection === 1
-                ? {out:true, on:true, 'in':true}
-                : {'in':true, on:true, out:true}
-                ;
-        else if(firstRound)
-            testPointKeys = testDirection === 1
-                ? {out: true}
-                : {'in': true}
-                ;
-        else // lastRound == true
-            testPointKeys = testDirection === 1
-                ? {'in': true}
-                : {out: true}
-                ;
-        for(testPointKey in testPointKeys) {
-            testPoint = test[testPointKey];
-            offset = control === 'out'
-                ? testPoint['-'](point.on)// point.out['-'](point.on)
-                : point.on['-'](testPoint)// point.on['-'](point['in']);
-                ;
-            if(offset.magnitude())
-                return offset.angle();
-        }
-        return false;
-    }
-    /**
      * Find directions for any control point even when the naive approach
      * has no direction, because the distance of the offset to the on
      * curve point is 0.
@@ -55499,7 +56491,7 @@ define('metapolator/project/import/StrokeContour',[
 
         while(true) {
             lastRound = i === pointIndex && !firstRound;
-            result = _getDirection(point, firstRound, lastRound,
+            result = getDirection(point, firstRound, lastRound,
                             increment, stroke[i][countourKey], control);
             firstRound = false;
             if(result !== false || lastRound)
@@ -55664,44 +56656,135 @@ define('metapolator/project/import/StrokeContour',[
     return StrokeContour;
 });
 
-define('metapolator/models/CPS/elements/AtNamespaceCollection',[
+define('metapolator/project/import/contourFromContour',[
     'metapolator/errors'
-  , './ParameterCollection'
+  , './tools'
 ], function(
     errors
-  , Parent
+  , tools
 ) {
     
-    var CPSError = errors.CPS
+    var AssertionError = errors.Assertion
+      , ImportContourError = errors.ImportContour
+      , line2curve = tools.line2curve
+      , getDirection = tools.getDirection
       ;
-    /**
-     * A list of Rule, AtRuleCollection, ParameterCollection, and
-     * Comment Elements
-     */
-    function AtNamespaceCollection(name, selectorList, items, source, lineNo) {
-        // The _allowNamespace property of this prototype tells the Parent
-        // constructor to not look up this.name and this.selectorList
-        Parent.call(this, items, source, lineNo);
-        if(name)
-            this.name = name;
-        if(selectorList)
-            this.selectorList = selectorList;
+
+    /* Convert all lineTo to curveTo */
+    function _all2CurveTo(contour) {
+        var i, result = [], previousSegment, segment;
+
+        previousSegment = contour.length - 1;
+        for(i=0;i<contour.length;i++) {
+
+            if(contour[i].length === 4)
+                // [command, point, point, point]
+                segment = contour[i];
+            else if(contour[i].length === 2) {
+                // [command, point]
+                segment = line2curve (
+                      // previous on-curve point
+                      contour[previousSegment].slice(-1).pop()
+                    , contour[i][1]
+                );
+            }
+            else
+                // This means that probably  the code that created
+                // the contour argument for is faulty and must be repaired.
+                throw new AssertionError('A segment is expected to '
+                        + ' have 3 items at this stage, but this has '
+                        + contour[i].length + ' items. '
+                        + 'Segment: ' + contour[i].join(', '));
+            segment.shift(); // remove the segmentType
+            result.push(segment);
+            previousSegment = i;
+        }
+        return result;
     }
 
-    var _p = AtNamespaceCollection.prototype = Object.create(Parent.prototype);
-    _p.constructor = AtNamespaceCollection;
+    function _getMetapolatorPoint(item, i, contour) {
+        var outIndex = i === contour.length-1
+            ? 0
+            : i+1
+            ;
+        return {
+            'in': item[1]
+          , on: item[2]
+          , out: contour[outIndex][0]
+          , wasLine: !!item.wasLine
+        };
+    }
 
-    _p._allowNamespace = true;
+    /**
+     * This is a trimmed copy of the equivalent function in StrokeContour.
+     * The purpose is to fined a fallback direction, if the contour did
+     * not come with something useful
+     * See the other docstring for more info.
+     *
+     */
+    function _findNextDirection(contour, pointIndex, point, control) {
+        var normalIncrement = control === 'out' ? 1 : -1
+          , increment = normalIncrement
+          , i = pointIndex
+          , firstRound = true
+          , lastRound
+          , result
+          ;
 
-    return AtNamespaceCollection;
-})
-;
+        while(true) {
+            lastRound = i === pointIndex && !firstRound;
+            result = getDirection(point, firstRound, lastRound,
+                            increment, contour[i], control);
+            firstRound = false;
+            if(result !== false || lastRound)
+                return result;
+
+            // iterate
+            if(increment === 1 && i === contour.length-1)
+                i = 0;
+            else if (increment === -1 && i === 0)
+                i = contour.length-1;
+            else
+                i += increment;
+        }
+    }
+
+    function _setPolarControls(point, index, contour) {
+        var outVector, inVector, dir;
+        outVector = point.out['-'](point.on);
+        point.outLength = outVector.magnitude();
+        dir = _findNextDirection(contour, index, point, 'out');
+        if(dir === false)
+            throw new ImportContourError('Can\'t find an outgoing direction '
+                                        + 'for point at contour['+index+'].');
+        point.outDir = dir;
+        inVector = point.on['-'](point['in']);
+        point.inLenght = inVector.magnitude();
+        dir = _findNextDirection(contour, index, point, 'in');
+        if(dir === false)
+            throw new ImportContourError('can\'t find an incoming direction '
+                                        +'for point at contour['+index+'].');
+        point.inDir = dir;
+        return point;
+    }
+
+    function contourFromContour(contour) {
+        return _all2CurveTo(contour)
+               .map(_getMetapolatorPoint)
+               .map(_setPolarControls)
+               ;
+    }
+
+    return contourFromContour;
+});
+
 define('metapolator/project/ImportController',[
     'metapolator/errors'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './import/SegmentPen'
   , './import/ImportOutlinePen'
   , './import/StrokeContour'
+  , './import/contourFromContour'
 
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
@@ -55714,6 +56797,7 @@ define('metapolator/project/ImportController',[
   , 'metapolator/math/Vector'
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , 'ufojs/errors'
 
 ], function(
     errors
@@ -55721,6 +56805,7 @@ define('metapolator/project/ImportController',[
   , SegmentPen
   , ImportOutlinePen
   , StrokeContour
+  , contourFromContour
 
   , ParameterCollection
   , AtNamespaceCollection
@@ -55733,46 +56818,84 @@ define('metapolator/project/ImportController',[
   , Vector
 
   , parseSelectorList
+  , ufojsErrors
 ) {
     
     // jshint option
     /*global console:true*/
-    function ImportController(project, masterName, sourceUFODir) {
+
+    var GlifLibError = ufojsErrors.GlifLib;
+
+    function ImportController(log, project, masterName, sourceUFODir) {
         this._project = project;
+        this._log = log;
         this._masterName = masterName;
 
         if(this._project.hasMaster(masterName))
             this._master = this._project.getMaster(masterName);
         else
             this._master = this._project.createMaster(masterName,
-                                                      [this._project.cpsOutputConverterFile, this._project.cpsGlobalFile, masterName + '.cps'],
+                                                      masterName + '.cps',
                                                       'skeleton.' + masterName);
-
-        // open the source ufo glyphs layer of an UFOv2
-        this._sourceGlyphSet  = this._project.getNewGlyphSet(
-                false, [sourceUFODir, 'glyphs'].join('/'), undefined, 2);
+        this._sourceUFODir = sourceUFODir;
+        this._sourceGlyphSet = undefined;
     }
     var _p = ImportController.prototype;
+
+    /**
+     * NOTE: This performs synchronous IO via this._project.getGlyphSet
+     */
+    _p._getSourceGlyphSet = function() {
+        var options;
+        if(!this._sourceGlyphSet) {
+            // tell us about errors instead of throwing it away
+            options = {
+                readErrorCallback: function( projectMaster, metadata ) {
+                    this._log.warning("ImportController: Got an error loading glyph '"
+                                    + metadata.glyphName + "' reason:" + metadata.message );
+                    // try to continue
+                    return true;
+                }.bind( null, this._master )
+            };
+            this._sourceGlyphSet = this._project.getGlyphSet(
+                        false, this._sourceUFODir, undefined, options);
+        }
+        return this._sourceGlyphSet;
+    }
 
     _p['import'] = function(glyphs) {
         var missing, i=0
           , rules = []
           , cps
+          , sourceGlyphSet = this._getSourceGlyphSet(false)
           ;
 
         if(!glyphs)
-            glyphs = this._sourceGlyphSet.keys();
+            glyphs = sourceGlyphSet.keys();
         else {
             missing = glyphs.filter(function(name) {
-                        return !this._sourceGlyphSet.has_key(name);}, this);
+                        return !sourceGlyphSet.has_key(name);}, this);
             if(missing.length)
                 throw new errors.Key('Some glyphs requested for import '
                                     +'are missing in the source GlyphSet: '
                                     +missing.join(', '));
         }
         console.warn('importing ...');
-        for(;i<glyphs.length;i++)
-            Array.prototype.push.apply(rules, this.importGlyph(glyphs[i]));
+        for(;i<glyphs.length;i++) {
+            var glyphName = glyphs[i];
+            try {
+                var g = this.importGlyph(glyphName);
+                Array.prototype.push.apply(rules, g);
+            }
+            catch(error) {
+                if(error instanceof GlifLibError) {
+                    // we have already recorded this in the error
+                    // callback function
+                } else {
+                    throw error;
+                }
+            }
+        }
 
         this._master.glyphSet.writeContents(false);
 
@@ -55783,11 +56906,12 @@ define('metapolator/project/ImportController',[
         // it is possible to import changed glyphs into an existing CPS
         // files, changing only the new glyphs and keeping the old ones. But
         // that ain't gonna be easy.
-        this._master.saveCPS(this._masterName + '.cps', cps);
+        this._master.saveCPS(this._masterName + '.cps', '@import "' + this._project.cpsOutputConverterFile + '";\n@import "' + this._project.cpsGlobalFile + '";\n\n' + cps);
     };
 
     _p._readGlyphFromSource = function(glyphName) {
-        var glyph = this._sourceGlyphSet.get(glyphName)
+        var sourceGlyphSet = this._getSourceGlyphSet(false)
+          , glyph = sourceGlyphSet.get(glyphName)
           , segmentPen = new SegmentPen()
           , pen = new ImportOutlinePen(segmentPen, true)
           ;
@@ -55801,44 +56925,84 @@ define('metapolator/project/ImportController',[
         var sourceGlyph = this._readGlyphFromSource(glyphName)
           , targetGlyph
           , contours = []
+          , item
           , i=0
             // the index at which the contour will be addressable in CPS
-          , penStrokeIndex = 0
+          , parentIndex = 0
           , rules = []
+          , id
+          // If the identifier starts with C: (for *C*ontour)
+          , contourIndicator = 'C:'
           ;
         for(;i<sourceGlyph.contours.length;i++) {
-            if(!sourceGlyph.contours[i].closed) {
+            item = sourceGlyph.contours[i];
+
+            // component
+            if(item.type == 'component' ) {
+                contours.push(item);
+                parentIndex += 1;
+                continue;
+            }
+
+            if(!item.closed) {
                 console.warn('    skipping contour '+ i +' because it is open.');
                 continue;
             }
-            if(sourceGlyph.contours[i].commands.length < 5) {
+
+            // import as contour
+            id = undefined;
+            try {
+                id = item.kwargs.identifier;
+            }
+            catch(error) {
+                //TypeError: Cannot read property 'identifier' of undefined
+                if(!(error instanceof TypeError))
+                    throw error;
+            }
+            if(id && id.slice(0, contourIndicator.length) === contourIndicator) {
+                Vector.prototype._cps_whitelist.inspect = 'inspect';
+                console.warn('importing contour '+ i + ' as contour');
+                var contourData = contourFromContour(item.commands);
+                contours.push({
+                      type:'contour'
+                    , data: contourData
+                    , kwargs: item.kwargs
+                });
+                rules.push(makeCPSContourRule(contourData, parentIndex));
+                parentIndex += 1;
+                continue;
+            }
+
+            // import as penstroke if possible
+            if(item.commands.length < 5) {
                 console.warn('    skipping contour '+ i +' because it has less '
                                             +'than 4 on-curve points.');
                 continue;
             }
-            if(sourceGlyph.contours[i].commands.length % 2 === 0) {
+            if(item.commands.length % 2 === 0) {
                  console.warn('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
             }
-            console.warn('    importing contour '+ i);
+            console.warn('importing contour '+ i + ' as penstroke');
              // the z points of this stroke can go directly to the skeleton glyph
-            var penStrokeData = new StrokeContour(
-                        sourceGlyph.contours[i].commands).getPenStroke();
-
+            var penStrokeData = new StrokeContour(item.commands).getPenStroke();
             // this goes into the glyph/skeleton
-            contours.push(penStrokeData);
+            contours.push({
+                  type:'penstroke'
+                , data:penStrokeData
+                , kwargs: item.kwargs
+            });
 
             // this goes into the glyph
-            // returns an atNamespaceRule(penstroke:i({penStrokeIndex})){ points ... }
-            rules.push(makeCPSPenStrokeRule(penStrokeData, penStrokeIndex));
-
-            penStrokeIndex += 1;
+            // returns an atNamespaceRule(penstroke:i({parentIndex})){ points ... }
+            rules.push(makeCPSPenStrokeRule(penStrokeData, parentIndex));
+            parentIndex += 1;
         }
 
         this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph.data,
             // draw the outline to the new glif
-            drawPenStroke.bind(null, contours)
+            draw.bind(null, contours)
         );
 
         return [new AtNamespaceCollection(
@@ -55848,34 +57012,53 @@ define('metapolator/project/ImportController',[
                 ];
     };
 
-    function drawPenStroke(contours, pen) {
-        var i=0, j, segmentType, point;
+    function draw(contours, pen) {
+        var i=0, j, segmentType, point, item, command;
 
         for(;i<contours.length;i++) {
-            pen.beginPath();
-            // draw just the skeleton
-            for(j=0;j<contours[i].length;j++) {
-                if(j===0)
-                    // this is a non closed path
-                    segmentType = 'move';
-                else {
-                    segmentType = 'curve';
-
-                    point = contours[i][j-1].z.out;
-                    pen.addPoint(point.valueOf(), undefined
-                                                , undefined, point.name);
-
-                    point = contours[i][j].z['in'];
-                    pen.addPoint(point.valueOf(), undefined
-                                                , undefined, point.name);
-                }
-                // we don't have line segments on skeletons
-                //    segmentType = 'line';
-                point = contours[i][j].z.on;
-                pen.addPoint(point.valueOf(), segmentType
-                                                , undefined, point.name);
+            item = contours[i];
+            if( item.type == 'component' ) {
+                pen.addComponent( item.glyphName, item.transformation, item.kwargs );
             }
-            pen.endPath();
+            else if(item.type == 'contour') {
+                // everything is a curve, so this is easy
+                pen.beginPath(item.kwargs);
+                for(j=0;j<item.data.length;j++) {
+                    point = item.data[j]['in'];
+                    pen.addPoint(point.valueOf(), undefined, undefined, point.name);
+                    point = item.data[j]['on'];
+                    pen.addPoint(point.valueOf(), 'curve', undefined, point.name);
+                    point = item.data[j]['out'];
+                    pen.addPoint(point.valueOf(), undefined, undefined, point.name);
+                }
+                pen.endPath();
+            }
+            else { // item.type === 'penstroke'
+                pen.beginPath(item.kwargs);
+                // draw just the centerline
+                for(j=0;j<item.data.length;j++) {
+                    if(j===0)
+                        // this is a non closed path
+                        segmentType = 'move';
+                    else {
+                        segmentType = 'curve';
+
+                        point = item.data[j-1].z.out;
+                        pen.addPoint(point.valueOf(), undefined
+                                     , undefined, point.name);
+
+                        point = item.data[j].z['in'];
+                        pen.addPoint(point.valueOf(), undefined
+                                     , undefined, point.name);
+                    }
+                    // we don't have line segments on skeletons
+                    //    segmentType = 'line';
+                    point = item.data[j].z.on;
+                    pen.addPoint(point.valueOf(), segmentType
+                                 , undefined, point.name);
+                }
+                pen.endPath();
+            }
         }
     }
 
@@ -56022,592 +57205,56 @@ define('metapolator/project/ImportController',[
         return new AtNamespaceCollection(name, selectorList, items);
     }
 
+    function makeCPSContourPointRules(point, index, length) {
+        var rules = []
+          , dict={}
+          , selectorList
+          , rightOnIntrinsic
+          ;
+        // there's not much to import for `p` (for *p*oint)
+        selectorList = parseSelectorList.fromString('p:i('+index+')');
+        // In cases where the general rules:
+        //     inDir: (on - in):angle;
+        //     outDir: (out - on):angle;
+        // produce worse results
+        if(point.inLenght === 0) {
+            dict.inDir = point.inDir;
+            dict['in'] = 'on';
+        }
+        if(point.outLenght === 0) {
+            dict.outDir = point.outDir;
+            dict.out = 'on';
+        }
+        if(Object.keys(dict).length)
+            rules.push(
+                new Rule(selectorList, parameterDictFromObject(dict)));
+        return rules;
+    }
+
+    function makeCPSContourRule(contourData, index) {
+        var name = new AtRuleName('namespace', [])
+          , selectorList = parseSelectorList.fromString('contour:i('+index+')')
+          , i = 0
+          , items = []
+          ;
+        for(;i<contourData.length;i++)
+            Array.prototype.push.apply(
+                items, makeCPSContourPointRules(contourData[i], i));
+
+
+        return new AtNamespaceCollection(name, selectorList, items);
+    }
+
     return ImportController;
 });
 
 
-/* js-yaml 3.2.0 https://github.com/nodeca/js-yaml */
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define('yaml',[],e);else{var t;"undefined"!=typeof window?t=window:"undefined"!=typeof global?t=global:"undefined"!=typeof self&&(t=self),t.jsyaml=e()}}(function(){return function e(t,n,i){function r(a,s){if(!n[a]){if(!t[a]){var c="function"==typeof require&&require;if(!s&&c)return c(a,!0);if(o)return o(a,!0);throw new Error("Cannot find module '"+a+"'")}var u=n[a]={exports:{}};t[a][0].call(u.exports,function(e){var n=t[a][1][e];return r(n?n:e)},u,u.exports,e,t,n,i)}return n[a].exports}for(var o="function"==typeof require&&require,a=0;a<i.length;a++)r(i[a]);return r}({1:[function(e,t){var n=e("./lib/js-yaml.js");t.exports=n},{"./lib/js-yaml.js":2}],2:[function(e,t){function n(e){return function(){throw new Error("Function "+e+" is deprecated and cannot be used.")}}var i=e("./js-yaml/loader"),r=e("./js-yaml/dumper");t.exports.Type=e("./js-yaml/type"),t.exports.Schema=e("./js-yaml/schema"),t.exports.FAILSAFE_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.JSON_SCHEMA=e("./js-yaml/schema/json"),t.exports.CORE_SCHEMA=e("./js-yaml/schema/core"),t.exports.DEFAULT_SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_FULL_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.load=i.load,t.exports.loadAll=i.loadAll,t.exports.safeLoad=i.safeLoad,t.exports.safeLoadAll=i.safeLoadAll,t.exports.dump=r.dump,t.exports.safeDump=r.safeDump,t.exports.YAMLException=e("./js-yaml/exception"),t.exports.MINIMAL_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.scan=n("scan"),t.exports.parse=n("parse"),t.exports.compose=n("compose"),t.exports.addConstructor=n("addConstructor")},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(e,t){function n(e){return void 0===e||null===e}function i(e){return"object"==typeof e&&null!==e}function r(e){return Array.isArray(e)?e:n(e)?[]:[e]}function o(e,t){var n,i,r,o;if(t)for(o=Object.keys(t),n=0,i=o.length;i>n;n+=1)r=o[n],e[r]=t[r];return e}function a(e,t){var n,i="";for(n=0;t>n;n+=1)i+=e;return i}function s(e){return 0===e&&Number.NEGATIVE_INFINITY===1/e}t.exports.isNothing=n,t.exports.isObject=i,t.exports.toArray=r,t.exports.repeat=a,t.exports.isNegativeZero=s,t.exports.extend=o},{}],4:[function(e,t){function n(e,t){var n,i,r,o,a,s,c;if(null===t)return{};for(n={},i=Object.keys(t),r=0,o=i.length;o>r;r+=1)a=i[r],s=String(t[a]),"!!"===a.slice(0,2)&&(a="tag:yaml.org,2002:"+a.slice(2)),c=e.compiledTypeMap[a],c&&b.call(c.styleAliases,s)&&(s=c.styleAliases[s]),n[a]=s;return n}function i(e){var t,n,i;if(t=e.toString(16).toUpperCase(),255>=e)n="x",i=2;else if(65535>=e)n="u",i=4;else{if(!(4294967295>=e))throw new y("code point within a string may not be greater than 0xFFFFFFFF");n="U",i=8}return"\\"+n+g.repeat("0",i-t.length)+t}function r(e){this.schema=e.schema||x,this.indent=Math.max(1,e.indent||2),this.skipInvalid=e.skipInvalid||!1,this.flowLevel=g.isNothing(e.flowLevel)?-1:e.flowLevel,this.styleMap=n(this.schema,e.styles||null),this.implicitTypes=this.schema.compiledImplicit,this.explicitTypes=this.schema.compiledExplicit,this.tag=null,this.result=""}function o(e,t){return"\n"+g.repeat(" ",e.indent*t)}function a(e,t){var n,i,r;for(n=0,i=e.implicitTypes.length;i>n;n+=1)if(r=e.implicitTypes[n],r.resolve(t))return!0;return!1}function s(e,t){var n,r,o,s,c,u;for(e.dump="",n=!1,r=0,u=t.charCodeAt(0)||0,-1!==V.indexOf(t)?n=!0:0===t.length?n=!0:j===u||j===t.charCodeAt(t.length-1)?n=!0:(_===u||q===u)&&(n=!0),o=0,s=t.length;s>o;o+=1)c=t.charCodeAt(o),n||(w===c||C===c||k===c||L===c||D===c||P===c||H===c||B===c||E===c||F===c||T===c||I===c||$===c||Y===c||N===c||S===c||O===c||U===c||M===c||R===c)&&(n=!0),(G[c]||!(c>=32&&126>=c||133===c||c>=160&&55295>=c||c>=57344&&65533>=c||c>=65536&&1114111>=c))&&(e.dump+=t.slice(r,o),e.dump+=G[c]||i(c),r=o+1,n=!0);o>r&&(e.dump+=t.slice(r,o)),!n&&a(e,e.dump)&&(n=!0),n&&(e.dump='"'+e.dump+'"')}function c(e,t,n){var i,r,o="",a=e.tag;for(i=0,r=n.length;r>i;i+=1)d(e,t,n[i],!1,!1)&&(0!==i&&(o+=", "),o+=e.dump);e.tag=a,e.dump="["+o+"]"}function u(e,t,n,i){var r,a,s="",c=e.tag;for(r=0,a=n.length;a>r;r+=1)d(e,t+1,n[r],!0,!0)&&(i&&0===r||(s+=o(e,t)),s+="- "+e.dump);e.tag=c,e.dump=s||"[]"}function l(e,t,n){var i,r,o,a,s,c="",u=e.tag,l=Object.keys(n);for(i=0,r=l.length;r>i;i+=1)s="",0!==i&&(s+=", "),o=l[i],a=n[o],d(e,t,o,!1,!1)&&(e.dump.length>1024&&(s+="? "),s+=e.dump+": ",d(e,t,a,!1,!1)&&(s+=e.dump,c+=s));e.tag=u,e.dump="{"+c+"}"}function p(e,t,n,i){var r,a,s,c,u,l,p="",f=e.tag,h=Object.keys(n);for(r=0,a=h.length;a>r;r+=1)l="",i&&0===r||(l+=o(e,t)),s=h[r],c=n[s],d(e,t+1,s,!0,!0)&&(u=null!==e.tag&&"?"!==e.tag||e.dump&&e.dump.length>1024,u&&(l+=e.dump&&C===e.dump.charCodeAt(0)?"?":"? "),l+=e.dump,u&&(l+=o(e,t)),d(e,t+1,c,!0,u)&&(l+=e.dump&&C===e.dump.charCodeAt(0)?":":": ",l+=e.dump,p+=l));e.tag=f,e.dump=p||"{}"}function f(e,t,n){var i,r,o,a,s,c;for(r=n?e.explicitTypes:e.implicitTypes,o=0,a=r.length;a>o;o+=1)if(s=r[o],(s.instanceOf||s.predicate)&&(!s.instanceOf||"object"==typeof t&&t instanceof s.instanceOf)&&(!s.predicate||s.predicate(t))){if(e.tag=n?s.tag:"?",s.represent){if(c=e.styleMap[s.tag]||s.defaultStyle,"[object Function]"===A.call(s.represent))i=s.represent(t,c);else{if(!b.call(s.represent,c))throw new y("!<"+s.tag+'> tag resolver accepts not "'+c+'" style');i=s.represent[c](t,c)}e.dump=i}return!0}return!1}function d(e,t,n,i,r){e.tag=null,e.dump=n,f(e,n,!1)||f(e,n,!0);var o=A.call(e.dump);if(i&&(i=0>e.flowLevel||e.flowLevel>t),(null!==e.tag&&"?"!==e.tag||2!==e.indent&&t>0)&&(r=!1),"[object Object]"===o)i&&0!==Object.keys(e.dump).length?p(e,t,e.dump,r):l(e,t,e.dump);else if("[object Array]"===o)i&&0!==e.dump.length?u(e,t,e.dump,r):c(e,t,e.dump);else{if("[object String]"!==o){if(e.skipInvalid)return!1;throw new y("unacceptabe kind of an object to dump "+o)}"?"!==e.tag&&s(e,e.dump)}return null!==e.tag&&"?"!==e.tag&&(e.dump="!<"+e.tag+"> "+e.dump),!0}function h(e,t){t=t||{};var n=new r(t);return d(n,0,e,!0,!0)?n.dump+"\n":""}function m(e,t){return h(e,g.extend({schema:v},t))}var g=e("./common"),y=e("./exception"),x=e("./schema/default_full"),v=e("./schema/default_safe"),A=Object.prototype.toString,b=Object.prototype.hasOwnProperty,w=9,C=10,k=13,j=32,I=33,S=34,E=35,O=37,F=38,N=39,T=42,L=44,_=45,M=58,Y=62,q=63,U=64,D=91,P=93,R=96,H=123,$=124,B=125,G={};G[0]="\\0",G[7]="\\a",G[8]="\\b",G[9]="\\t",G[10]="\\n",G[11]="\\v",G[12]="\\f",G[13]="\\r",G[27]="\\e",G[34]='\\"',G[92]="\\\\",G[133]="\\N",G[160]="\\_",G[8232]="\\L",G[8233]="\\P";var V=["y","Y","yes","Yes","YES","on","On","ON","n","N","no","No","NO","off","Off","OFF"];t.exports.dump=h,t.exports.safeDump=m},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(e,t){function n(e,t){this.name="YAMLException",this.reason=e,this.mark=t,this.message=this.toString(!1)}n.prototype.toString=function(e){var t;return t="JS-YAML: "+(this.reason||"(unknown reason)"),!e&&this.mark&&(t+=" "+this.mark.toString()),t},t.exports=n},{}],6:[function(e,t){function n(e){return 10===e||13===e}function i(e){return 9===e||32===e}function r(e){return 9===e||32===e||10===e||13===e}function o(e){return 44===e||91===e||93===e||123===e||125===e}function a(e){var t;return e>=48&&57>=e?e-48:(t=32|e,t>=97&&102>=t?t-97+10:-1)}function s(e){return 120===e?2:117===e?4:85===e?8:0}function c(e){return e>=48&&57>=e?e-48:-1}function u(e){return 48===e?"\x00":97===e?"":98===e?"\b":116===e?"	":9===e?"	":110===e?"\n":118===e?"":102===e?"\f":114===e?"\r":101===e?"":32===e?" ":34===e?'"':47===e?"/":92===e?"\\":78===e?"":95===e?" ":76===e?"\u2028":80===e?"\u2029":""}function l(e,t){this.input=e,this.filename=t.filename||null,this.schema=t.schema||H,this.onWarning=t.onWarning||null,this.legacy=t.legacy||!1,this.implicitTypes=this.schema.compiledImplicit,this.typeMap=this.schema.compiledTypeMap,this.length=e.length,this.position=0,this.line=0,this.lineStart=0,this.lineIndent=0,this.documents=[]}function p(e,t){return new D(t,new P(e.filename,e.input,e.position,e.line,e.position-e.lineStart))}function f(e,t){throw p(e,t)}function d(e,t){var n=p(e,t);if(!e.onWarning)throw n;e.onWarning.call(null,n)}function h(e,t,n,i){var r,o,a,s;if(n>t){if(s=e.input.slice(t,n),i)for(r=0,o=s.length;o>r;r+=1)a=s.charCodeAt(r),9===a||a>=32&&1114111>=a||f(e,"expected valid JSON character");e.result+=s}}function m(e,t,n){var i,r,o,a;for(U.isObject(n)||f(e,"cannot merge mappings; the provided source object is unacceptable"),i=Object.keys(n),o=0,a=i.length;a>o;o+=1)r=i[o],$.call(t,r)||(t[r]=n[r])}function g(e,t,n,i,r){var o,a;if(i=String(i),null===t&&(t={}),"tag:yaml.org,2002:merge"===n)if(Array.isArray(r))for(o=0,a=r.length;a>o;o+=1)m(e,t,r[o]);else m(e,t,r);else t[i]=r;return t}function y(e){var t;t=e.input.charCodeAt(e.position),10===t?e.position++:13===t?(e.position++,10===e.input.charCodeAt(e.position)&&e.position++):f(e,"a line break is expected"),e.line+=1,e.lineStart=e.position}function x(e,t,r){for(var o=0,a=e.input.charCodeAt(e.position);0!==a;){for(;i(a);)a=e.input.charCodeAt(++e.position);if(t&&35===a)do a=e.input.charCodeAt(++e.position);while(10!==a&&13!==a&&0!==a);if(!n(a))break;for(y(e),a=e.input.charCodeAt(e.position),o++,e.lineIndent=0;32===a;)e.lineIndent++,a=e.input.charCodeAt(++e.position);e.lineIndent<r&&d(e,"deficient indentation")}return o}function v(e){var t,n=e.position;return t=e.input.charCodeAt(n),45!==t&&46!==t||e.input.charCodeAt(n+1)!==t||e.input.charCodeAt(n+2)!==t||(n+=3,t=e.input.charCodeAt(n),0!==t&&!r(t))?!1:!0}function A(e,t){1===t?e.result+=" ":t>1&&(e.result+=U.repeat("\n",t-1))}function b(e,t,a){var s,c,u,l,p,f,d,m,g,y=e.kind,b=e.result;if(g=e.input.charCodeAt(e.position),r(g)||o(g)||35===g||38===g||42===g||33===g||124===g||62===g||39===g||34===g||37===g||64===g||96===g)return!1;if((63===g||45===g)&&(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c)))return!1;for(e.kind="scalar",e.result="",u=l=e.position,p=!1;0!==g;){if(58===g){if(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c))break}else if(35===g){if(s=e.input.charCodeAt(e.position-1),r(s))break}else{if(e.position===e.lineStart&&v(e)||a&&o(g))break;if(n(g)){if(f=e.line,d=e.lineStart,m=e.lineIndent,x(e,!1,-1),e.lineIndent>=t){p=!0,g=e.input.charCodeAt(e.position);continue}e.position=l,e.line=f,e.lineStart=d,e.lineIndent=m;break}}p&&(h(e,u,l,!1),A(e,e.line-f),u=l=e.position,p=!1),i(g)||(l=e.position+1),g=e.input.charCodeAt(++e.position)}return h(e,u,l,!1),e.result?!0:(e.kind=y,e.result=b,!1)}function w(e,t){var i,r,o;if(i=e.input.charCodeAt(e.position),39!==i)return!1;for(e.kind="scalar",e.result="",e.position++,r=o=e.position;0!==(i=e.input.charCodeAt(e.position));)if(39===i){if(h(e,r,e.position,!0),i=e.input.charCodeAt(++e.position),39!==i)return!0;r=o=e.position,e.position++}else n(i)?(h(e,r,o,!0),A(e,x(e,!1,t)),r=o=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a single quoted scalar"):(e.position++,o=e.position);f(e,"unexpected end of the stream within a single quoted scalar")}function C(e,t){var i,r,o,c,u,l;if(l=e.input.charCodeAt(e.position),34!==l)return!1;for(e.kind="scalar",e.result="",e.position++,i=r=e.position;0!==(l=e.input.charCodeAt(e.position));){if(34===l)return h(e,i,e.position,!0),e.position++,!0;if(92===l){if(h(e,i,e.position,!0),l=e.input.charCodeAt(++e.position),n(l))x(e,!1,t);else if(256>l&&nt[l])e.result+=it[l],e.position++;else if((u=s(l))>0){for(o=u,c=0;o>0;o--)l=e.input.charCodeAt(++e.position),(u=a(l))>=0?c=(c<<4)+u:f(e,"expected hexadecimal character");e.result+=String.fromCharCode(c),e.position++}else f(e,"unknown escape sequence");i=r=e.position}else n(l)?(h(e,i,r,!0),A(e,x(e,!1,t)),i=r=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a double quoted scalar"):(e.position++,r=e.position)}f(e,"unexpected end of the stream within a double quoted scalar")}function k(e,t){var n,i,o,a,s,c,u,l,p,d,h,m=!0,y=e.tag;if(h=e.input.charCodeAt(e.position),91===h)a=93,u=!1,i=[];else{if(123!==h)return!1;a=125,u=!0,i={}}for(null!==e.anchor&&(e.anchorMap[e.anchor]=i),h=e.input.charCodeAt(++e.position);0!==h;){if(x(e,!0,t),h=e.input.charCodeAt(e.position),h===a)return e.position++,e.tag=y,e.kind=u?"mapping":"sequence",e.result=i,!0;m||f(e,"missed comma between flow collection entries"),p=l=d=null,s=c=!1,63===h&&(o=e.input.charCodeAt(e.position+1),r(o)&&(s=c=!0,e.position++,x(e,!0,t))),n=e.line,N(e,t,B,!1,!0),p=e.tag,l=e.result,x(e,!0,t),h=e.input.charCodeAt(e.position),!c&&e.line!==n||58!==h||(s=!0,h=e.input.charCodeAt(++e.position),x(e,!0,t),N(e,t,B,!1,!0),d=e.result),u?g(e,i,p,l,d):i.push(s?g(e,null,p,l,d):l),x(e,!0,t),h=e.input.charCodeAt(e.position),44===h?(m=!0,h=e.input.charCodeAt(++e.position)):m=!1}f(e,"unexpected end of the stream within a flow collection")}function j(e,t){var r,o,a,s,u=Z,l=!1,p=t,d=0,m=!1;if(s=e.input.charCodeAt(e.position),124===s)o=!1;else{if(62!==s)return!1;o=!0}for(e.kind="scalar",e.result="";0!==s;)if(s=e.input.charCodeAt(++e.position),43===s||45===s)Z===u?u=43===s?z:J:f(e,"repeat of a chomping mode identifier");else{if(!((a=c(s))>=0))break;0===a?f(e,"bad explicit indentation width of a block scalar; it cannot be less than one"):l?f(e,"repeat of an indentation width identifier"):(p=t+a-1,l=!0)}if(i(s)){do s=e.input.charCodeAt(++e.position);while(i(s));if(35===s)do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s)}for(;0!==s;){for(y(e),e.lineIndent=0,s=e.input.charCodeAt(e.position);(!l||e.lineIndent<p)&&32===s;)e.lineIndent++,s=e.input.charCodeAt(++e.position);if(!l&&e.lineIndent>p&&(p=e.lineIndent),n(s))d++;else{if(e.lineIndent<p){u===z?e.result+=U.repeat("\n",d):u===Z&&l&&(e.result+="\n");break}o?i(s)?(m=!0,e.result+=U.repeat("\n",d+1)):m?(m=!1,e.result+=U.repeat("\n",d+1)):0===d?l&&(e.result+=" "):e.result+=U.repeat("\n",d):e.result+=l?U.repeat("\n",d+1):U.repeat("\n",d),l=!0,d=0,r=e.position;do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s);h(e,r,e.position,!1),s=e.input.charCodeAt(e.position)}}return!0}function I(e,t){var n,i,o,a=e.tag,s=[],c=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=s),o=e.input.charCodeAt(e.position);0!==o&&45===o&&(i=e.input.charCodeAt(e.position+1),r(i));)if(c=!0,e.position++,x(e,!0,-1)&&e.lineIndent<=t)s.push(null),o=e.input.charCodeAt(e.position);else if(n=e.line,N(e,t,V,!1,!0),s.push(e.result),x(e,!0,-1),o=e.input.charCodeAt(e.position),(e.line===n||e.lineIndent>t)&&0!==o)f(e,"bad indentation of a sequence entry");else if(e.lineIndent<t)break;return c?(e.tag=a,e.kind="sequence",e.result=s,!0):!1}function S(e,t,n){var o,a,s,c,u=e.tag,l={},p=null,d=null,h=null,m=!1,y=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=l),c=e.input.charCodeAt(e.position);0!==c;){if(o=e.input.charCodeAt(e.position+1),s=e.line,63!==c&&58!==c||!r(o)){if(!N(e,n,G,!1,!0))break;if(e.line===s){for(c=e.input.charCodeAt(e.position);i(c);)c=e.input.charCodeAt(++e.position);if(58===c)c=e.input.charCodeAt(++e.position),r(c)||f(e,"a whitespace character is expected after the key-value separator within a block mapping"),m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!1,a=!1,p=e.tag,d=e.result;else{if(!y)return e.tag=u,!0;f(e,"can not read an implicit mapping pair; a colon is missed")}}else{if(!y)return e.tag=u,!0;f(e,"can not read a block mapping entry; a multiline key may not be an implicit key")}}else 63===c?(m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!0,a=!0):m?(m=!1,a=!0):f(e,"incomplete explicit mapping pair; a key node is missed"),e.position+=1,c=o;if((e.line===s||e.lineIndent>t)&&(N(e,t,W,!0,a)&&(m?d=e.result:h=e.result),m||(g(e,l,p,d,h),p=d=h=null),x(e,!0,-1),c=e.input.charCodeAt(e.position)),e.lineIndent>t&&0!==c)f(e,"bad indentation of a mapping entry");else if(e.lineIndent<t)break}return m&&g(e,l,p,d,null),y&&(e.tag=u,e.kind="mapping",e.result=l),y}function E(e){var t,n,i,o,a=!1,s=!1;if(o=e.input.charCodeAt(e.position),33!==o)return!1;if(null!==e.tag&&f(e,"duplication of a tag property"),o=e.input.charCodeAt(++e.position),60===o?(a=!0,o=e.input.charCodeAt(++e.position)):33===o?(s=!0,n="!!",o=e.input.charCodeAt(++e.position)):n="!",t=e.position,a){do o=e.input.charCodeAt(++e.position);while(0!==o&&62!==o);e.position<e.length?(i=e.input.slice(t,e.position),o=e.input.charCodeAt(++e.position)):f(e,"unexpected end of the stream within a verbatim tag")}else{for(;0!==o&&!r(o);)33===o&&(s?f(e,"tag suffix cannot contain exclamation marks"):(n=e.input.slice(t-1,e.position+1),et.test(n)||f(e,"named tag handle cannot contain such characters"),s=!0,t=e.position+1)),o=e.input.charCodeAt(++e.position);i=e.input.slice(t,e.position),X.test(i)&&f(e,"tag suffix cannot contain flow indicator characters")}return i&&!tt.test(i)&&f(e,"tag name cannot contain such characters: "+i),a?e.tag=i:$.call(e.tagMap,n)?e.tag=e.tagMap[n]+i:"!"===n?e.tag="!"+i:"!!"===n?e.tag="tag:yaml.org,2002:"+i:f(e,'undeclared tag handle "'+n+'"'),!0}function O(e){var t,n;if(n=e.input.charCodeAt(e.position),38!==n)return!1;for(null!==e.anchor&&f(e,"duplication of an anchor property"),n=e.input.charCodeAt(++e.position),t=e.position;0!==n&&!r(n)&&!o(n);)n=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an anchor node must contain at least one character"),e.anchor=e.input.slice(t,e.position),!0}function F(e){{var t,n,i;e.length,e.input}if(i=e.input.charCodeAt(e.position),42!==i)return!1;for(i=e.input.charCodeAt(++e.position),t=e.position;0!==i&&!r(i)&&!o(i);)i=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an alias node must contain at least one character"),n=e.input.slice(t,e.position),e.anchorMap.hasOwnProperty(n)||f(e,'unidentified alias "'+n+'"'),e.result=e.anchorMap[n],x(e,!0,-1),!0}function N(e,t,n,i,r){var o,a,s,c,u,l,p,h,m=!1,g=!0,y=!1;if(e.tag=null,e.anchor=null,e.kind=null,e.result=null,o=a=s=W===n||V===n,i&&x(e,!0,-1))if(m=!0,e.lineIndent===t)g=!1;else{if(!(e.lineIndent>t))return!1;g=!0}if(g)for(;E(e)||O(e);)if(x(e,!0,-1))if(m=!0,e.lineIndent>t)g=!0,s=o;else{if(e.lineIndent!==t)return!0;g=!1,s=o}else s=!1;if(s&&(s=m||r),(g||W===n)&&(p=B===n||G===n?t:t+1,h=e.position-e.lineStart,g?s&&(I(e,h)||S(e,h,p))||k(e,p)?y=!0:(a&&j(e,p)||w(e,p)||C(e,p)?y=!0:F(e)?(y=!0,(null!==e.tag||null!==e.anchor)&&f(e,"alias node should not have any properties")):b(e,p,B===n)&&(y=!0,null===e.tag&&(e.tag="?")),null!==e.anchor&&(e.anchorMap[e.anchor]=e.result)):y=s&&I(e,h)),null!==e.tag&&"!"!==e.tag)if("?"===e.tag){for(c=0,u=e.implicitTypes.length;u>c;c+=1)if(l=e.implicitTypes[c],l.resolve(e.result)){e.result=l.construct(e.result),e.tag=l.tag;break}}else $.call(e.typeMap,e.tag)?(l=e.typeMap[e.tag],null!==e.result&&l.kind!==e.kind&&f(e,"unacceptable node kind for !<"+e.tag+'> tag; it should be "'+l.kind+'", not "'+e.kind+'"'),l.resolve(e.result)?e.result=l.construct(e.result):f(e,"cannot resolve a node with !<"+e.tag+"> explicit tag")):d(e,"unknown tag !<"+e.tag+">");return null!==e.tag||null!==e.anchor||y}function T(e){var t,o,a,s,c=e.position,u=!1;for(e.version=null,e.checkLineBreaks=e.legacy,e.tagMap={},e.anchorMap={};0!==(s=e.input.charCodeAt(e.position))&&(x(e,!0,-1),s=e.input.charCodeAt(e.position),!(e.lineIndent>0||37!==s));){for(u=!0,s=e.input.charCodeAt(++e.position),t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);for(o=e.input.slice(t,e.position),a=[],o.length<1&&f(e,"directive name must not be less than one character in length");0!==s;){for(;i(s);)s=e.input.charCodeAt(++e.position);if(35===s){do s=e.input.charCodeAt(++e.position);while(0!==s&&!n(s));break}if(n(s))break;for(t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);a.push(e.input.slice(t,e.position))}0!==s&&y(e),$.call(ot,o)?ot[o](e,o,a):d(e,'unknown document directive "'+o+'"')}return x(e,!0,-1),0===e.lineIndent&&45===e.input.charCodeAt(e.position)&&45===e.input.charCodeAt(e.position+1)&&45===e.input.charCodeAt(e.position+2)?(e.position+=3,x(e,!0,-1)):u&&f(e,"directives end mark is expected"),N(e,e.lineIndent-1,W,!1,!0),x(e,!0,-1),e.checkLineBreaks&&Q.test(e.input.slice(c,e.position))&&d(e,"non-ASCII line breaks are interpreted as content"),e.documents.push(e.result),e.position===e.lineStart&&v(e)?void(46===e.input.charCodeAt(e.position)&&(e.position+=3,x(e,!0,-1))):void(e.position<e.length-1&&f(e,"end of the stream or a document separator is expected"))}function L(e,t){e=String(e),t=t||{},0!==e.length&&10!==e.charCodeAt(e.length-1)&&13!==e.charCodeAt(e.length-1)&&(e+="\n");var n=new l(e,t);for(K.test(n.input)&&f(n,"the stream contains non-printable characters"),n.input+="\x00";32===n.input.charCodeAt(n.position);)n.lineIndent+=1;for(;n.position<n.length-1;)T(n);return n.documents}function _(e,t,n){var i,r,o=L(e,n);for(i=0,r=o.length;r>i;i+=1)t(o[i])}function M(e,t){var n=L(e,t);if(0===n.length)return void 0;if(1===n.length)return n[0];throw new D("expected a single document in the stream, but found more")}function Y(e,t,n){_(e,t,U.extend({schema:R},n))}function q(e,t){return M(e,U.extend({schema:R},t))}for(var U=e("./common"),D=e("./exception"),P=e("./mark"),R=e("./schema/default_safe"),H=e("./schema/default_full"),$=Object.prototype.hasOwnProperty,B=1,G=2,V=3,W=4,Z=1,J=2,z=3,K=/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uD800-\uDFFF\uFFFE\uFFFF]/,Q=/[\x85\u2028\u2029]/,X=/[,\[\]\{\}]/,et=/^(?:!|!!|![a-z\-]+!)$/i,tt=/^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i,nt=new Array(256),it=new Array(256),rt=0;256>rt;rt++)nt[rt]=u(rt)?1:0,it[rt]=u(rt);var ot={YAML:function(e,t,n){var i,r,o;null!==e.version&&f(e,"duplication of %YAML directive"),1!==n.length&&f(e,"YAML directive accepts exactly one argument"),i=/^([0-9]+)\.([0-9]+)$/.exec(n[0]),null===i&&f(e,"ill-formed argument of the YAML directive"),r=parseInt(i[1],10),o=parseInt(i[2],10),1!==r&&f(e,"unacceptable YAML version of the document"),e.version=n[0],e.checkLineBreaks=2>o,1!==o&&2!==o&&d(e,"unsupported YAML version of the document")},TAG:function(e,t,n){var i,r;2!==n.length&&f(e,"TAG directive accepts exactly two arguments"),i=n[0],r=n[1],et.test(i)||f(e,"ill-formed tag handle (first argument) of the TAG directive"),$.call(e.tagMap,i)&&f(e,'there is a previously declared suffix for "'+i+'" tag handle'),tt.test(r)||f(e,"ill-formed tag prefix (second argument) of the TAG directive"),e.tagMap[i]=r}};t.exports.loadAll=_,t.exports.load=M,t.exports.safeLoadAll=Y,t.exports.safeLoad=q},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(e,t){function n(e,t,n,i,r){this.name=e,this.buffer=t,this.position=n,this.line=i,this.column=r}var i=e("./common");n.prototype.getSnippet=function(e,t){var n,r,o,a,s;if(!this.buffer)return null;for(e=e||4,t=t||75,n="",r=this.position;r>0&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(r-1));)if(r-=1,this.position-r>t/2-1){n=" ... ",r+=5;break}for(o="",a=this.position;a<this.buffer.length&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(a));)if(a+=1,a-this.position>t/2-1){o=" ... ",a-=5;break}return s=this.buffer.slice(r,a),i.repeat(" ",e)+n+s+o+"\n"+i.repeat(" ",e+this.position-r+n.length)+"^"},n.prototype.toString=function(e){var t,n="";return this.name&&(n+='in "'+this.name+'" '),n+="at line "+(this.line+1)+", column "+(this.column+1),e||(t=this.getSnippet(),t&&(n+=":\n"+t)),n},t.exports=n},{"./common":3}],8:[function(e,t){function n(e,t,i){var r=[];return e.include.forEach(function(e){i=n(e,t,i)}),e[t].forEach(function(e){i.forEach(function(t,n){t.tag===e.tag&&r.push(n)}),i.push(e)}),i.filter(function(e,t){return-1===r.indexOf(t)})}function i(){function e(e){i[e.tag]=e}var t,n,i={};for(t=0,n=arguments.length;n>t;t+=1)arguments[t].forEach(e);return i}function r(e){this.include=e.include||[],this.implicit=e.implicit||[],this.explicit=e.explicit||[],this.implicit.forEach(function(e){if(e.loadKind&&"scalar"!==e.loadKind)throw new a("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.")}),this.compiledImplicit=n(this,"implicit",[]),this.compiledExplicit=n(this,"explicit",[]),this.compiledTypeMap=i(this.compiledImplicit,this.compiledExplicit)}var o=e("./common"),a=e("./exception"),s=e("./type");r.DEFAULT=null,r.create=function(){var e,t;switch(arguments.length){case 1:e=r.DEFAULT,t=arguments[0];break;case 2:e=arguments[0],t=arguments[1];break;default:throw new a("Wrong number of arguments for Schema.create function")}if(e=o.toArray(e),t=o.toArray(t),!e.every(function(e){return e instanceof r}))throw new a("Specified list of super schemas (or a single Schema object) contains a non-Schema object.");if(!t.every(function(e){return e instanceof s}))throw new a("Specified list of YAML types (or a single Type object) contains a non-Type object.");return new r({include:e,explicit:t})},t.exports=r},{"./common":3,"./exception":5,"./type":14}],9:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./json")]})},{"../schema":8,"./json":13}],10:[function(e,t){var n=e("../schema");t.exports=n.DEFAULT=new n({include:[e("./default_safe")],explicit:[e("../type/js/undefined"),e("../type/js/regexp"),e("../type/js/function")]})},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./core")],implicit:[e("../type/timestamp"),e("../type/merge")],explicit:[e("../type/binary"),e("../type/omap"),e("../type/pairs"),e("../type/set")]})},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(e,t){var n=e("../schema");t.exports=new n({explicit:[e("../type/str"),e("../type/seq"),e("../type/map")]})},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./failsafe")],implicit:[e("../type/null"),e("../type/bool"),e("../type/int"),e("../type/float")]})},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(e,t){function n(e){var t={};return null!==e&&Object.keys(e).forEach(function(n){e[n].forEach(function(e){t[String(e)]=n})}),t}function i(e,t){if(t=t||{},Object.keys(t).forEach(function(t){if(-1===o.indexOf(t))throw new r('Unknown option "'+t+'" is met in definition of "'+e+'" YAML type.')}),this.tag=e,this.kind=t.kind||null,this.resolve=t.resolve||function(){return!0},this.construct=t.construct||function(e){return e},this.instanceOf=t.instanceOf||null,this.predicate=t.predicate||null,this.represent=t.represent||null,this.defaultStyle=t.defaultStyle||null,this.styleAliases=n(t.styleAliases||null),-1===a.indexOf(this.kind))throw new r('Unknown kind "'+this.kind+'" is specified for "'+e+'" YAML type.')}var r=e("./exception"),o=["kind","resolve","construct","instanceOf","predicate","represent","defaultStyle","styleAliases"],a=["scalar","sequence","mapping"];t.exports=i},{"./exception":5}],15:[function(e,t){function n(e){var t,n,i=0,r=e.length;for(n=0,i=0;r>i;i+=1)if(t=e.charCodeAt(i),10!==t&&13!==t){if(-1===u[127&t])return!1;n+=6,n>=8&&(n-=8)}return n?!1:!0}function i(e){var t,n,i,r,o=0,s=e.length,l=[];for(i=0,r=0,o=0;s>o;o+=1)n=e.charCodeAt(o),t=u[127&n],10!==n&&13!==n&&(r=r<<6|t,i+=6,i>=8&&(i-=8,c!==e.charAt(o)&&l.push(r>>i&255),r&=(1<<i)-1));return a?new a(l):l}function r(e){var t,n,i,r="";for(t=0,n=e.length-2;n>t;t+=3)r+=l[e[t+0]>>2],r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[((15&e[t+1])<<2)+(e[t+2]>>6)],r+=l[63&e[t+2]];return i=e.length%3,0!==i&&(t=e.length-i,r+=l[e[t+0]>>2],2===i?(r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[(15&e[t+1])<<2],r+=c):(r+=l[(3&e[t+0])<<4],r+=c+c)),r}function o(e){return a&&a.isBuffer(e)}var a=e("buffer").Buffer,s=e("../type"),c="=",u=[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,0,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1],l="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");t.exports=new s("tag:yaml.org,2002:binary",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../type":14,buffer:31}],16:[function(e,t){function n(e){var t=e.length;return 4===t&&("true"===e||"True"===e||"TRUE"===e)||5===t&&("false"===e||"False"===e||"FALSE"===e)}function i(e){return"true"===e||"True"===e||"TRUE"===e}function r(e){return"[object Boolean]"===Object.prototype.toString.call(e)}var o=e("../type");t.exports=new o("tag:yaml.org,2002:bool",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{lowercase:function(e){return e?"true":"false"},uppercase:function(e){return e?"TRUE":"FALSE"},camelcase:function(e){return e?"True":"False"}},defaultStyle:"lowercase"})},{"../type":14}],17:[function(e,t){function n(e){return c.test(e)?!0:!1}function i(e){var t,n,i,r;return t=e.replace(/_/g,"").toLowerCase(),n="-"===t[0]?-1:1,r=[],0<="+-".indexOf(t[0])&&(t=t.slice(1)),".inf"===t?1===n?Number.POSITIVE_INFINITY:Number.NEGATIVE_INFINITY:".nan"===t?0/0:0<=t.indexOf(":")?(t.split(":").forEach(function(e){r.unshift(parseFloat(e,10))}),t=0,i=1,r.forEach(function(e){t+=e*i,i*=60}),n*t):n*parseFloat(t,10)}function r(e,t){if(isNaN(e))switch(t){case"lowercase":return".nan";case"uppercase":return".NAN";case"camelcase":return".NaN"}else if(Number.POSITIVE_INFINITY===e)switch(t){case"lowercase":return".inf";case"uppercase":return".INF";case"camelcase":return".Inf"}else{if(Number.NEGATIVE_INFINITY!==e)return a.isNegativeZero(e)?"-0.0":e.toString(10);switch(t){case"lowercase":return"-.inf";case"uppercase":return"-.INF";case"camelcase":return"-.Inf"}}}function o(e){return"[object Number]"===Object.prototype.toString.call(e)&&(0!==e%1||a.isNegativeZero(e))}var a=e("../common"),s=e("../type"),c=new RegExp("^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?|\\.[0-9_]+(?:[eE][-+][0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");t.exports=new s("tag:yaml.org,2002:float",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r,defaultStyle:"lowercase"})},{"../common":3,"../type":14}],18:[function(e,t){function n(e){return e>=48&&57>=e||e>=65&&70>=e||e>=97&&102>=e}function i(e){return e>=48&&55>=e}function r(e){return e>=48&&57>=e}function o(e){var t,o=e.length,a=0,s=!1;if(!o)return!1;if(t=e[a],("-"===t||"+"===t)&&(t=e[++a]),"0"===t){if(a+1===o)return!0;if(t=e[++a],"b"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if("0"!==t&&"1"!==t)return!1;s=!0}return s}if("x"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if(!n(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(!i(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(":"===t)break;if(!r(e.charCodeAt(a)))return!1;s=!0}return s?":"!==t?!0:/^(:[0-5]?[0-9])+$/.test(e.slice(a)):!1}function a(e){var t,n,i=e,r=1,o=[];return-1!==i.indexOf("_")&&(i=i.replace(/_/g,"")),t=i[0],("-"===t||"+"===t)&&("-"===t&&(r=-1),i=i.slice(1),t=i[0]),"0"===i?0:"0"===t?"b"===i[1]?r*parseInt(i.slice(2),2):"x"===i[1]?r*parseInt(i,16):r*parseInt(i,8):-1!==i.indexOf(":")?(i.split(":").forEach(function(e){o.unshift(parseInt(e,10))}),i=0,n=1,o.forEach(function(e){i+=e*n,n*=60}),r*i):r*parseInt(i,10)}function s(e){return"[object Number]"===Object.prototype.toString.call(e)&&0===e%1&&!c.isNegativeZero(e)}var c=e("../common"),u=e("../type");t.exports=new u("tag:yaml.org,2002:int",{kind:"scalar",resolve:o,construct:a,predicate:s,represent:{binary:function(e){return"0b"+e.toString(2)
-},octal:function(e){return"0"+e.toString(8)},decimal:function(e){return e.toString(10)},hexadecimal:function(e){return"0x"+e.toString(16).toUpperCase()}},defaultStyle:"decimal",styleAliases:{binary:[2,"bin"],octal:[8,"oct"],decimal:[10,"dec"],hexadecimal:[16,"hex"]}})},{"../common":3,"../type":14}],19:[function(e,t){function n(e){try{var t="("+e+")",n=a.parse(t,{range:!0});return"Program"!==n.type||1!==n.body.length||"ExpressionStatement"!==n.body[0].type||"FunctionExpression"!==n.body[0].expression.type?!1:!0}catch(i){return!1}}function i(e){var t,n="("+e+")",i=a.parse(n,{range:!0}),r=[];if("Program"!==i.type||1!==i.body.length||"ExpressionStatement"!==i.body[0].type||"FunctionExpression"!==i.body[0].expression.type)throw new Error("Failed to resolve function");return i.body[0].expression.params.forEach(function(e){r.push(e.name)}),t=i.body[0].expression.body.range,new Function(r,n.slice(t[0]+1,t[1]-1))}function r(e){return e.toString()}function o(e){return"[object Function]"===Object.prototype.toString.call(e)}var a;try{a=e("esprima")}catch(s){"undefined"!=typeof window&&(a=window.esprima)}var c=e("../../type");t.exports=new c("tag:yaml.org,2002:js/function",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14,esprima:"Lkr711"}],20:[function(e,t){function n(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";if("/"===t[0]){if(n&&(i=n[1]),i.length>3)return!1;if("/"!==t[t.length-i.length-1])return!1;t=t.slice(1,t.length-i.length-1)}try{{new RegExp(t,i)}return!0}catch(r){return!1}}function i(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";return"/"===t[0]&&(n&&(i=n[1]),t=t.slice(1,t.length-i.length-1)),new RegExp(t,i)}function r(e){var t="/"+e.source+"/";return e.global&&(t+="g"),e.multiline&&(t+="m"),e.ignoreCase&&(t+="i"),t}function o(e){return"[object RegExp]"===Object.prototype.toString.call(e)}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/regexp",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],21:[function(e,t){function n(){return!0}function i(){return void 0}function r(){return""}function o(e){return"undefined"==typeof e}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/undefined",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],22:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:map",{kind:"mapping"})},{"../type":14}],23:[function(e,t){function n(e){return"<<"===e}var i=e("../type");t.exports=new i("tag:yaml.org,2002:merge",{kind:"scalar",resolve:n})},{"../type":14}],24:[function(e,t){function n(e){var t=e.length;return 1===t&&"~"===e||4===t&&("null"===e||"Null"===e||"NULL"===e)}function i(){return null}function r(e){return null===e}var o=e("../type");t.exports=new o("tag:yaml.org,2002:null",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{canonical:function(){return"~"},lowercase:function(){return"null"},uppercase:function(){return"NULL"},camelcase:function(){return"Null"}},defaultStyle:"lowercase"})},{"../type":14}],25:[function(e,t){function n(e){var t,n,i,a,s,c=[],u=e;for(t=0,n=u.length;n>t;t+=1){if(i=u[t],s=!1,"[object Object]"!==o.call(i))return!1;for(a in i)if(r.call(i,a)){if(s)return!1;s=!0}if(!s)return!1;if(-1!==c.indexOf(a))return!1;c.push(a)}return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty,o=Object.prototype.toString;t.exports=new i("tag:yaml.org,2002:omap",{kind:"sequence",resolve:n})},{"../type":14}],26:[function(e,t){function n(e){var t,n,i,r,a,s=e;for(a=new Array(s.length),t=0,n=s.length;n>t;t+=1){if(i=s[t],"[object Object]"!==o.call(i))return!1;if(r=Object.keys(i),1!==r.length)return!1;a[t]=[r[0],i[r[0]]]}return!0}function i(e){var t,n,i,r,o,a=e;for(o=new Array(a.length),t=0,n=a.length;n>t;t+=1)i=a[t],r=Object.keys(i),o[t]=[r[0],i[r[0]]];return o}var r=e("../type"),o=Object.prototype.toString;t.exports=new r("tag:yaml.org,2002:pairs",{kind:"sequence",resolve:n,construct:i})},{"../type":14}],27:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:seq",{kind:"sequence"})},{"../type":14}],28:[function(e,t){function n(e){var t,n=e;for(t in n)if(r.call(n,t)&&null!==n[t])return!1;return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty;t.exports=new i("tag:yaml.org,2002:set",{kind:"mapping",resolve:n})},{"../type":14}],29:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:str",{kind:"scalar"})},{"../type":14}],30:[function(e,t){function n(e){var t;return t=a.exec(e),null===t?!1:!0}function i(e){var t,n,i,r,o,s,c,u,l,p,f=0,d=null;if(t=a.exec(e),null===t)throw new Error("Date resolve error");if(n=+t[1],i=+t[2]-1,r=+t[3],!t[4])return new Date(Date.UTC(n,i,r));if(o=+t[4],s=+t[5],c=+t[6],t[7]){for(f=t[7].slice(0,3);f.length<3;)f+="0";f=+f}return t[9]&&(u=+t[10],l=+(t[11]||0),d=6e4*(60*u+l),"-"===t[9]&&(d=-d)),p=new Date(Date.UTC(n,i,r,o,s,c,f)),d&&p.setTime(p.getTime()-d),p}function r(e){return e.toISOString()}var o=e("../type"),a=new RegExp("^([0-9][0-9][0-9][0-9])-([0-9][0-9]?)-([0-9][0-9]?)(?:(?:[Tt]|[ \\t]+)([0-9][0-9]?):([0-9][0-9]):([0-9][0-9])(?:\\.([0-9]*))?(?:[ \\t]*(Z|([-+])([0-9][0-9]?)(?::([0-9][0-9]))?))?)?$");t.exports=new o("tag:yaml.org,2002:timestamp",{kind:"scalar",resolve:n,construct:i,instanceOf:Date,represent:r})},{"../type":14}],31:[function(){},{}]},{},[1])(1)});
-define('metapolator/models/CPS/parsing/curry',[  
-
-], function (
-
-) {
-    
-    /**
-     * similar to function.prototype.bind, but it doesn't set
-     * the value of 'this'
-     * 
-     */
-    function curry(func/* args */) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        return function() {
-           return func.apply(this, args.concat(
-                        Array.prototype.slice.call(arguments)));
-        }
-    }
-    return curry;
-})
-;
-define('metapolator/models/CPS/parsing/parameterFactories',[
-    'metapolator/errors'
-  , './curry'
-  , './selectorFactories'
-  , 'metapolator/models/CPS/elements/ParameterDict'
-  , 'metapolator/models/CPS/elements/Parameter'
-  , 'metapolator/models/CPS/elements/ParameterName'
-  , 'metapolator/models/CPS/elements/ParameterValue'
-  , 'metapolator/models/CPS/elements/AtRuleName'
-  , 'metapolator/models/CPS/elements/AtNamespaceCollection'
-  , 'metapolator/models/CPS/elements/SelectorList'
-  , 'gonzales/gonzales'
-  , './parseSelectorList'
-], function (
-    errors
-  , curry
-  , selectorFactories
-  , ParameterDict
-  , Parameter
-  , ParameterName
-  , ParameterValue
-  , AtRuleName
-  , AtNamespaceCollection
-  , SelectorList
-  , gonzales
-  , parseSelectorList
-) {
-    
-    var CPSError = errors.CPS;
-
-    /**
-     * Constructors OR factory functions
-     * this can be both because JavaScript allows to call a factory function
-     * using the new operator like in `new myfactory()`. The factory must
-     * return a new object in this case.
-     *
-     * all constructors take the following arguments: (node, source)
-     * @node: object as created by parserEngine._makeNode and augmented by
-     * parserEngine
-     * @source: instance of parameters/Source
-     *
-     * We'll use mostly factories, because the "node" we use as argument
-     * is not exactly a nice interface. However, it's called _nodeConstructors
-     * because that implies that these functions are being called using
-     * the `new` keyword.
-     *
-     * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
-     */
-
-    function genericNameFactory (Constructor, node, source) {
-        var comments = node.children
-                .filter(function(item) {
-                    return (item.type === 'comment');
-                }).
-                map(function(item){
-                    return item.instance;
-                }
-            )
-          , name
-          ;
-
-        if(node.children[0].type !== '__GenericAST__'
-                && node.children[0].instance.type !== 'ident')
-            throw new CPSError(['The first child of "'+node.type+'" is '
-                , 'expected to be an __GenericAST__ of type "ident", '
-                , 'but got "', node.children[0].type, '" '
-                , 'type: "', (node.children[0].instance
-                        ? node.children[0].instance.type
-                        : '<no instance>'), '" '
-                ,'in a '+node.type+' from: ', source, 'line: '
-                , node.lineNo
-                ,'.'].join(''), (new Error).stack)
-        name = node.children[0].data;
-        return new Constructor(name, comments ,source, node.lineNo)
-    }
-
-    // inherit from selectorFactories
-    var parameterFactories = Object.create(selectorFactories);
-
-    (function(factories){
-        var k;
-        for(k in factories) parameterFactories[k] = factories[k];
-    })({
-        /**
-         * block:
-         *
-         * A list of
-         * "declaration"
-         * "decldelim" (semicolon)
-         * "s" (whitespace)
-         * and "comment".
-         *
-         * IMPORTANT: "filter" can occur, which is a like "declaration"
-         * but has a special name. This was a rather random pick, I suppose.
-         * We can use "filter" AS "declaration", if we need it, OR just let
-         * it be a __GenericAST__. Filter has, instead of a "value" a "filterv"
-         * This is a bugging inconsequence in gonzales. But we can shield
-         * it from higher levels.
-         *
-         * We rename "declaration" as "Parameter"
-         *
-         * We throw away "decldelim" and "s", we keep "declaration",
-         * "comment" and __GenericAST__ (which will be produced by from
-         * unkown "declaration"s/properties)
-         *
-         * From the docs: Part of the style in the braces.
-         */
-        'block': function(node, source) {
-            var i=0
-              , parameterDict = new ParameterDict([], source, node.lineNo)
-              , whitelist = {
-                    'comment': null,
-                    'declaration': null
-                }
-              , astBlacklist = {
-                    'decldelim': null,
-                    's': null
-                }
-              , children = ('children' in node)
-                            ? node.children
-                            : []
-              ;
-            for(;i<children.length; i++) {
-                if(children[i].type in whitelist
-                        || (children[i].type === '__GenericAST__'
-                            && !(children[i].instance.type in astBlacklist)
-                        )
-                ) {
-                    parameterDict.push(children[i].instance);
-                }
-            }
-            return parameterDict;
-        }
-
-        /**
-         * declaration // Parameter:
-         *
-         * Key value pair of "property" and "value"
-         * We rename "declaration" to "Parameter" and "property" to "ParameterName"
-         *
-         * We convert unkown "declaration"s into __GenericAST__
-         * objects. But for performance reasons, this decision is made in
-         * _makeNode.
-         */
-      , 'declaration': function (node, source, parameterRegistry) {
-            var name, value, typeDefinition;
-
-            if(node.children[0].type !== 'property')
-                throw new CPSError('The first child of "declaration" is '
-                + 'expected to be a "property", but got "' + node.children[0].type +'" '
-                +'" in a declaration from: ' + source + 'line: '
-                + node.lineNo
-                +'.', (new Error).stack)
-
-            if(node.children[1].type !== 'value')
-                throw new CPSError('The second child of "declaration" is '
-                + 'expected to be a "value", but got "' + node.children[1].type +'" '
-                +'" in a declaration from: ' + source + 'line: '
-                + node.lineNo
-                +'.', (new Error).stack)
-
-            name = node.children[0].instance;
-            value = node.children[1].instance;
-            // selectorListFromString uses the parser but doesn't need
-            // initialized parameters
-            if(parameterRegistry) {
-                try {
-                    typeDefinition = parameterRegistry.getTypeDefinition(name.name);
-                }
-                catch(error) {
-                    if(!(error instanceof errors.CPSRegistryKey))
-                        throw error;
-                    // key error means the value is unknown to us
-                    return new this['__GenericAST__'](node, source);
-                }
-                value.initializeTypeFactory(name.name, typeDefinition);
-            }
-            return new Parameter(name, value, source, node.lineNo);
-        }
-        /**
-         * property // ParameterName
-         *
-         * The name of a property.
-         *
-         * It has as first child an ident, which value is the actual name:
-         *          ["ident", "margin"]
-         * But it also can have subsequent "s" (whitespace) and "comment"
-         * nodes:
-         */
-         // any{ background-color /*property comment*/: #fff;\n\ }
-        /**
-         * yields in:
-         * ['property',
-         *    ['ident', 'background-color'],
-         *    ['s', ' '],
-         *    ['comment', 'property comment']
-         * ]
-         *
-         * The whitespace is going to be removed.
-         *
-         * I would try to keep the comments here, however, this is a low
-         * priority, because comments are not often used at this position.
-         *
-         * When printing, all comments go between the name and the colon.
-         */
-      , 'property': curry(genericNameFactory, ParameterName)
-        /**
-         * value:
-         *
-         * The value of a property.
-         *
-         * It's a list of a lot of different nodes. Besides all things
-         * meaningful for the value, Comments can go in here, too.
-         * I propose to keep the comments, but print them at the beginning
-         * of the value, followed by the value itself. Because we won't be
-         * able to restore the correct place in most cases anyways.
-         */
-      , 'value': function(node, source) {
-            var comments = []
-              , value = []
-              , i=0
-              , children = ('children' in node)
-                                ? node.children
-                                : []
-              ;
-            for(;i<children.length;i++)
-                if(children[i].type === 'comment')
-                    comments.push(children[i].instance);
-                else
-                    value.push(children[i].instance);
-            return new ParameterValue(value, comments ,source, node.lineNo)
-        }
-      // tinker on @namespace
-      , 'atruler': function(node, source) {
-            var name
-              , collection
-              , selectorList
-              , i=0
-              ;
-            for(;i<node.children.length; i++)
-                if(name && collection && selectorList)
-                    break;
-                else if(!collection
-                        && node.children[i].instance instanceof AtNamespaceCollection)
-                    collection = node.children[i].instance;
-                else if(!name && node.children[i].instance instanceof AtRuleName)
-                    name = node.children[i].instance;
-                else if(!selectorList && node.children[i].instance instanceof SelectorList)
-                    selectorList = node.children[i].instance
-            if ( !name
-                    // we only know @namespace here!
-                    || name.name !== 'namespace'
-                    || !collection)
-                return this['__GenericAST__'](node, source);
-            // may be undefined
-            collection.selectorList = selectorList;
-            collection.name = name;
-            return collection;
-        }
-      , 'atkeyword': curry(genericNameFactory, AtRuleName)
-      , 'atrulerq': function(node, source) {
-            var i=0
-              , braces
-              , selectorString
-              , selectorList
-              ;
-
-            // find 'braces'
-            for(var i=1;i<node.rawData.length;i++)
-                if(node.rawData[i][0] && node.rawData[i][0] === 'braces') {
-                    braces = node.rawData[i];
-                    break;
-                }
-            if(!braces)
-                return this['__GenericAST__'](node, source);
-
-            // we need the quotes only to not break the gonzales parsing
-            // in selectorsString, no qotes are necessary. So we simply
-            // throw them away at this point, without checking semantics
-            // gonzales will fail with non matching quotes anyways
-            selectorString = gonzales.csspToSrc(braces)
-                // remove the braces
-                .slice(1,-1)
-                // remove quotes
-                .replace(/(\'|\")/gm, '')
-                .split(',')
-                // remove surrounding whitespace
-                .map(function(item){return item.trim();})
-                // remove empty entries
-                .filter(function(item){return !!item.length;})
-                // create a 'normalized' selectorString
-                .join(', ')
-
-            try {
-                return parseSelectorList.fromString(selectorString);
-            }
-            catch(error) {
-                if(!(error instanceof CPSError))
-                    throw error;
-            }
-
-            // don't return anything particular
-            return this['__GenericAST__'](node, source);
-        }
-        /***
-         * return an AtNamespaceCollection
-         * NOTE: at this moment we don't know whether or not this
-         * is the collection of AtNamespace or something made up!
-         * the aim is to eventually replace AtNamespaceCollection
-         * with an enhanced version of ParameterCollection.
-         */
-      , 'atrulers': function(node, source) {
-            var items = []
-              , i=0
-              ;
-            if(!node.children)
-                return this['__GenericAST__'](node, source);
-            for(;i<node.children.length;i++) {
-                if(node.children[i].type === '__GenericAST__'
-                                && node.children[i].instance.type === 's')
-                    continue;
-                items.push(node.children[i].instance)
-            }
-            // name, selectorList
-            return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);
-        }
-
-
-
-
-    })
-
-    return {
-        factories: parameterFactories
-      , genericNameFactory: genericNameFactory
-    }
-})
-;
-define('metapolator/models/CPS/dataTypes/CPSDictionaryEntry',[
-    'metapolator/errors'
-  , './_FormulaeValue'
-  , './SharedFormulaeFactory'
-], function(
-    errors
-  , Parent
-  , SharedFormulaeFactory
-) {
-    
-
-    var ValueError = errors.Value;
-
-    function CPSDictionaryEntry(getAPI, stack) {
-        Parent.call(this, getAPI, stack);
-    }
-
-    var _p = CPSDictionaryEntry.prototype = Object.create(Parent.prototype);
-    _p.constructor = CPSDictionaryEntry;
-    CPSDictionaryEntry.factory = new SharedFormulaeFactory(CPSDictionaryEntry);
-
-    _p.getValue = function() {
-        return this._stack.execute(this._getAPI);
-    };
-
-    _p.toString = function() {
-        return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
-    };
-
-    return CPSDictionaryEntry;
-});
-
-define('metapolator/models/CPS/parsing/atDictionaryFactories',[
-    'metapolator/errors'
-  , './curry'
-  , './parameterFactories'
-  , 'metapolator/models/CPS/elements/Parameter'
-  , 'metapolator/models/CPS/elements/AtRuleCollection'
-  , 'metapolator/models/CPS/elements/AtRuleName'
-  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
-
-], function (
-    errors
-  , curry
-  , parameterFactories
-  , Parameter
-  , AtRuleCollection
-  , AtRuleName
-  , CPSDictionaryEntry
-) {
-    
-    var CPSError = errors.CPS
-      , genericNameFactory = parameterFactories.genericNameFactory
-      ;
-
-
-    /**
-     * Constructors OR factory functions
-     * this can be both because JavaScript allows to call a factory function
-     * using the new operator like in `new myfactory()`. The factory must
-     * return a new object in this case.
-     *
-     * all constructors take the following arguments: (node, source)
-     * @node: object as created by parserEngine._makeNode and augmented by
-     * parserEngine
-     * @source: instance of parameters/Source
-     *
-     * We'll use mostly factories, because the "node" we use as argument
-     * is not exactly a nice interface. However, its called _nodeConstructors
-     * because that implies that these functions are beeing called using
-     * the `new` keyword.
-     *
-     * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
-     */
-
-    /**
-     * override constructors for the purpose of @dictionary.
-     * This means for all children of @dictionary we can define other rules.
-     * If we don't do so, the regular rules apply. JavaScript Prototype
-     * Inheritance.
-     *
-     * like a module pattern, to not pollute the namespace with
-     * temporary variables
-     */
-    var atDictionaryFactories = Object.create(parameterFactories.factories)
-      , atDictionaryParsingSwitch
-      ;
-    (function(factories) {
-            var k;
-            for(k in factories) atDictionaryFactories[k] = factories[k];
-    })({
-        /**
-         * Augments the AtRuleCollection created by atrulers with a name.
-         */
-        'atruler': function(node, source) {
-            // this is an @dictionary root node
-            var i = 0
-              , collection
-              , name
-              ;
-            for(;i<node.children.length; i++)
-                if(name && collection)
-                    break;
-                else if(!collection
-                        && node.children[i].instance instanceof AtRuleCollection)
-                    collection = node.children[i].instance;
-                else if(!name && node.children[i].instance instanceof AtRuleName)
-                    name = node.children[i].instance;
-            if(!collection || !name)
-                return this['__GenericAST__'](node, source);
-            collection.name = name;
-            return collection;
-        }
-      , 'atkeyword': curry(genericNameFactory, AtRuleName)
-      , 'atrulers': function(node, source) {
-            var items = []
-              , i=0
-              ;
-            for(;i<node.children.length;i++) {
-                if(node.children[i].type === '__GenericAST__'
-                                && node.children[i].instance.type === 's')
-                    continue;
-                items.push(node.children[i].instance)
-            }
-
-            return new AtRuleCollection(undefined, items, source, node.lineNo);
-        }
-      , 'declaration': function(node, source) {
-            // this is an @dictionary declaration
-            var name, value, typeDefinition;
-
-            if(node.children[0].type !== 'property')
-                throw new CPSError('The first child of "declaration" is '
-                + 'expected to be a "property", but got "' + node.children[0].type +'" '
-                +'" in a declaration from: ' + source + 'line: '
-                + node.lineNo
-                +'.', (new Error).stack)
-
-            if(node.children[1].type !== 'value')
-                throw new CPSError('The second child of "declaration" is '
-                + 'expected to be a "value", but got "' + node.children[1].type +'" '
-                +'" in a declaration from: ' + source + 'line: '
-                + node.lineNo
-                +'.', (new Error).stack)
-            name = node.children[0].instance;
-            value = node.children[1].instance;
-            value.initializeTypeFactory(name.name, CPSDictionaryEntry.factory);
-            return new Parameter(name, value, source, node.lineNo);
-        }
-    });
-
-    function test_switchToAtDictionary(data) {
-        return (data[0] === 'atruler'
-              && data[1] && data[1][0] === 'atkeyword'
-              && data[1][1] && data[1][1][0] === 'ident'
-              && data[1][1][1] === 'dictionary'
-        );
-    }
-
-    atDictionaryParsingSwitch = [test_switchToAtDictionary, atDictionaryFactories];
-
-    return {
-        factories: atDictionaryFactories
-      , atDictionaryParsingSwitch: atDictionaryParsingSwitch
-    };
-})
-;
-define('metapolator/models/CPS/parsing/parseRules',[
-    'metapolator/errors'
-  , 'gonzales/gonzales'
-  , './curry'
-  , './engine'
-  , './parameterFactories'
-  , './atDictionaryFactories'
-], function (
-    errors
-  , gonzales
-  , curry
-  , parserEngine
-  , parameterFactoriesModule
-  , atDictionaryFactories
-) {
-    
-    var CPSError = errors.CPS
-      , CPSParserError = errors.CPSParser
-      , parameterFactories = parameterFactoriesModule.factories
-      ;
-    
-    var factorySwitches = [
-            atDictionaryFactories.atDictionaryParsingSwitch
-        ]
-      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
-      ;
-    /**
-     * Create a ParameterCollection from a CSS string
-     */
-    function rulesFromString(css, sourceName, parameterRegistry) {
-        var ast;
-        try {
-            ast = gonzales.srcToCSSP(css);
-        }
-        catch (error) {
-            // gonzales throws a pure JavaScript Error, but we want more
-            // certainty in the rest of our application
-            throw new CPSParserError(error.message, error.stack);
-        }
-        
-        return rulesFromAST(ast, sourceName, parameterRegistry)
-    }
-     
-    return {
-        fromString: rulesFromString
-      , fromAST: rulesFromAST
-    }
-})
-;
 define('metapolator/project/MetapolatorProject',[
     'metapolator/errors'
+  , 'util-logging/util-logging'
+  , 'logging/callbackhandler'
+  , 'logging/yamlformatter'
+  , 'logging/logger-patch'
   , 'ufojs/errors'
   , 'obtain/obtain'
   , 'ufojs/plistLib/main'
@@ -56617,13 +57264,17 @@ define('metapolator/project/MetapolatorProject',[
   , './parameters/outputConverter'
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/Controller'
+  , 'metapolator/models/CPS/RuleController'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
   , './ExportController'
   , 'yaml'
-  , 'metapolator/models/CPS/parsing/parseRules'
 ], function(
     errors
+  , log
+  , CallbackHandler
+  , YAMLFormatter
+  , LoggerRelog
   , ufoErrors
   , obtain
   , plistLib
@@ -56633,27 +57284,23 @@ define('metapolator/project/MetapolatorProject',[
   , defaultParameters
   , Univers
   , ModelController
+  , RuleController
   , GlyphSet
   , ImportController
   , ExportController
   , yaml
-  , parseRules
 ) {
     
 
         // FIXME: make this available for browsers too
+    // Specify formatVersion as an int, as required by
+    // unifiedfontobject.org, otherwise it becomes a 'real' in the plist.
     var metainfoV3 = {
             creator: 'org.ufojs.lib'
-            // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobject.org
-            // says this is an int
           , formatVersion: new IntObject(3)
         }
       , metainfoV2 = {
             creator: 'org.ufojs.lib'
-            // otherwise this ends as 'real' in the plist, I don't know
-            // how strict robofab is on this, but unifiedfontobject.org
-            // says this is an int
           , formatVersion: new IntObject(2)
         }
       , // fontforge requires a fontinfo.plist that defines unitsPerEm
@@ -56663,38 +57310,26 @@ define('metapolator/project/MetapolatorProject',[
       , IONoEntryError = ufoErrors.IONoEntry
       ;
     
-    function MetapolatorProject(io, dirName) {
+    function MetapolatorProject(io, baseDir) {
         this._io = io;
         this._data = {
             masters: {}
         };
         this._cache = {
             masters: {}
-          , rules: {}
           , glyphClasses:{}
         };
         
-        this._controller = new ModelController(parameterRegistry);
-        
-        // here is a way to define a directory offset
-        // this is used with _p.init after the dir was created for example
-        this.dirName = dirName || '.';
+        this.baseDir = baseDir || '.';
+        this._controller = new ModelController(new RuleController(io, parameterRegistry, this.cpsDir));
+        this._log = new log.Logger().setLevel(log.Level.INFO);
+        this._log.addHandler(new log.Handler());
     }
-    
-    MetapolatorProject.init = function(io, name) {
-        var project = new MetapolatorProject(io)
-          , dirName = name
-          ;
-        // create dirName
-        if(io.pathExists(false, dirName+'/'))
-            throw new ProjectError('Dir exists already: '+ dirName);
-        project.init(dirName);
-    };
     
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
     Object.defineProperty(_p, 'dataDir', {
-        get: function(){ return this.dirName + '/data/com.metapolator';}
+        get: function(){ return this.baseDir + '/data/com.metapolator';}
     });
     
     Object.defineProperty(_p, 'projectFile', {
@@ -56714,35 +57349,119 @@ define('metapolator/project/MetapolatorProject',[
     });
     
     Object.defineProperty(_p, 'layerContentsFile', {
-        get: function(){ return this.dirName+'/layercontents.plist'; }
+        get: function(){ return this.baseDir+'/layercontents.plist'; }
     });
     
     Object.defineProperty(_p, 'groupsFileName', {
         value: 'groups.plist'
     });
+    Object.defineProperty(_p, 'fontinfoFileName', {
+        value: 'fontinfo.plist'
+    });
+
 
     Object.defineProperty(_p, 'groupsFile', {
-        get: function(){ return this.dirName+'/' + this.groupsFileName; }
+        get: function(){ return this.baseDir+'/' + this.groupsFileName; }
+    });
+    Object.defineProperty(_p, 'fontinfoFile', {
+        get: function(){ return this.baseDir+'/' + this.fontinfoFileName; }
     });
     
-    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion) {
+    Object.defineProperty(_p, 'logFile', {
+        get: function(){ return this.dataDir + '/log.yaml';}
+    });
+
+    _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, options) {
         return GlyphSet.factory(
-                    async, this._io, dirName, glyphNameFunc, UFOVersion);
-    }
-    
-    _p.init = function(dirName) {
-        // everything synchronously right now
-        this.dirName = dirName;
+                    async, this._io, dirName, glyphNameFunc, UFOVersion, options);
+    };
+
+    _p._readPlist = obtain.factory(
+        {
+            'path': ['ufoDir', 'fileName',
+                function(ufoDir, fileName){ return [ufoDir, fileName].join('/'); }]
+          , 'data': ['contents', plistLib.readPlistFromString.bind(plistLib)]
+          , 'contents': ['path',
+                function(path){ return this._io.readFile(false, path);}]
+        }
+      , {
+            'contents': ['path',
+                function(path){ return this._io.readFile(true, path);}]
+        }
+      , ['ufoDir', 'fileName']
+      , function(obtain){ return obtain('data'); }
+    );
+
+    _p._readUFOFormatVersion = obtain.factory(
+        {
+            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+          , 'formatVersion': ['metainfo', function(data){return data.formatVersion;}]
+        }
+      , {
+            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+        }
+      , ['ufoDir']
+      , function(obtain){ return obtain('formatVersion'); }
+    );
+
+    /**
+     * Initialize a GlyphSet for the UFO at `ufoDir`. Read the
+     * ufo format version before, to load the glyphset the right way.
+     *
+     * If the ufo version is 3 `layername` can be given as argument,
+     * it defaults to the ufo v3 default "public.default"
+     *
+     * FIXME: Once ufoJS finished porting ufoLib/UFOReader, this functionality
+     * will large be located there.
+     */
+    _p.getGlyphSet = obtain.factory(
+        {
+            'UFOVersion': [false, 'ufoDir', _p._readUFOFormatVersion]
+          , 'dirName': ['ufoDir', 'layer', function(ufoDir, layer) {
+                                    return [ufoDir, layer].join('/');}]
+          , 'layer': ['UFOVersion', 'ufoDir', 'layerName',
+            function(UFOVersion, ufoDir, layerName) {
+                var layerContents;
+                if(UFOVersion < 3)
+                    return 'glyphs';
+                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist');
+                return _getLayerDir(layerContents, layerName || 'public.default');
+            }]
+          , 'GlyphSet': [false, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
+        }
+      , {
+            'UFOVersion': [true, 'ufoDir', _p._readUFOFormatVersion]
+          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback',
+            function(UFOVersion, ufoDir, layerName, callback, errback) {
+                if(UFOVersion < 3) {
+                    setTimeout(callback.bind('glyphs'));
+                    return;
+                }
+                this._readPlist(true, ufoDir, 'layercontents.plist')
+                .then(function(layerContents) {
+                    callback(_getLayerDir(layerContents, layerName || 'public.default'));
+                })
+                .then(undefined, errback);
+            }]
+          , 'GlyphSet': [true, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
+        }
+      , ['ufoDir', 'glyphNameFunc'/*optional*/, 'options'/*optional*/
+                    , 'layerName'/*optional default: 'public.default'*/]
+      , function(obtain) {return obtain('GlyphSet');}
+    );
+
+    _p.init = function() {
+        // FIXME: all I/O is synchronous for now
+
+        this._io.mkDir(false, this.baseDir);
         
-        this._io.mkDir(false, this.dirName);
-        
-        // create dirName/metainfo.plist
-        this._io.writeFile(false, this.dirName+'/metainfo.plist'
+        // create baseDir/metainfo.plist
+        this._io.writeFile(false, this.baseDir+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV3));
         
-        // create dir dirName/data
-        this._io.mkDir(false, this.dirName+'/data');
-        // create dir dirName/data/com.metaploator
+        // create dir baseDir/data
+        this._io.mkDir(false, this.baseDir+'/data');
+        // create dir baseDir/data/com.metapolator
         this._io.mkDir(false, this.dataDir);
         
         // project file:
@@ -56758,7 +57477,7 @@ define('metapolator/project/MetapolatorProject',[
         
         // the glyphs dir must be there to make the UFO valid, but we don't
         // use it currently :-(
-        // create dir dirName/glyphs
+        // create dir baseDir/glyphs
         this._createGlyphLayer('public.default', 'glyphs');
         
         // create default CPS output stage
@@ -56775,13 +57494,42 @@ define('metapolator/project/MetapolatorProject',[
     _p.load = function() {
         // the files created in _p.init need to exist
         // however, we try to load only
-        // this.dirName+'/data/com.metapolator/project.yaml' as an indicator
-        // console.warn('loading', this.projectFile);
-        var dataString = this._io.readFile(false, this.projectFile);
-        // console.warn('loaded', dataString);
+        // this.baseDir+'/data/com.metapolator/project.yaml' as an indicator
+        this._log.debug('loading ' + this.projectFile);
+        var dataString = this._io.readFile(false, this.projectFile)
+          , fh
+          ;
+        this._log.debug('loaded ' + dataString);
         this._data = yaml.safeLoad(dataString);
+
+        // Add ConsoleHandler for debugging (also replays existing entries)
+        this._log.addHandler(new log.ConsoleHandler());
         
-        
+        // Reload any saved log entries before adding CallbackHandler for new entries
+        var logText, logRecords;
+        try {
+            logText = this._io.readFile(false, this.logFile);
+        }
+        catch (error) { // Ignore file not found
+            if(!(error instanceof IONoEntryError))
+                throw error;
+        }
+        try {
+            logRecords = yaml.safeLoad(logText || "");
+        }
+        catch(e) { // Translate YAML errors
+            throw new ProjectError('Invalid log file ' + e);
+        }
+        if(logRecords) {
+            logRecords.forEach(function (obj) {
+                this._log.relog(log.LogRecord.prototype.fromObject(obj));
+            }, this);
+        }
+
+        // Add CallbackHandler to log to add new entries to the log file
+        fh = new CallbackHandler(this._io.appendFile.bind(this._io, true, this.logFile));
+        fh.setFormatter(new YAMLFormatter());
+        this._log.addHandler(fh);
     }
     
     /**
@@ -56808,7 +57556,7 @@ define('metapolator/project/MetapolatorProject',[
         if(layerDirName === undefined)
             layerDirName = 'glyphs.' + name;
         
-        var layerDir = [this.dirName,'/',layerDirName].join('');
+        var layerDir = [this.baseDir,'/',layerDirName].join('');
         
         // read layercontents.plist
         var layercontents = plistLib.readPlistFromString(
@@ -56820,11 +57568,6 @@ define('metapolator/project/MetapolatorProject',[
                 throw new ProjectError('A glyph layer with name "'+name
                                                 +'" already exists.');
         
-        // see if there is a directory with the name layerDir already
-        if(this._io.pathExists(false, layerDir+'/'))
-            throw new ProjectError('Can\'t create glyph layer. A directory '
-                                    +'with name "' + layerDir
-                                    +'" already exists.');
         // create new layer dir
         this._io.mkDir(false, layerDir);
         
@@ -56866,11 +57609,6 @@ define('metapolator/project/MetapolatorProject',[
             throw new ProjectError('No such glyph layer "'+name+'".');
         layercontents.splice(layerIndex, 1);
 
-        // Check there is a directory with the name layerDir
-        if(!this._io.pathExists(false, layerDir+'/'))
-            throw new ProjectError('No glyph layer directory "' + layerDir
-                                    +'".');
-
         // Update layercontents
         this._io.writeFile(false, this.layerContentsFile,
                            plistLib.createPlistString(layercontents));
@@ -56880,22 +57618,28 @@ define('metapolator/project/MetapolatorProject',[
     }
     
     /**
-     * Returns the path needed to instantiate a GlyphSet
+     * lookup a name in a laycontents list as defined for layercontents.plist
+     */
+    function _getLayerDir(layercontents, name) {
+        var layerDir;
+        for(var i=0;i<layercontents.length;i++)
+            if(layercontents[i][0] === name) {
+                layerDir = layercontents[i][1];
+                break;
+            }
+        if(!layerDir)
+            throw new KeyError('Layer named "' + name + '" not found.');
+        return layerDir;
+    }
+    /**
+     * Returns the path needed to instantiate a GlyphSet for this project
      */
     _p._getLayerDir = function(name) {
         // read layercontents.plist
         var layercontents = plistLib.readPlistFromString(
                 this._io.readFile(false, this.layerContentsFile))
-          , layerDir
+          , layerDir = [this.baseDir, _getLayerDir(layercontents, name)].join('/')
           ;
-        
-        for(var i=0;i<layercontents.length;i++)
-            if(layercontents[i][0] === name) {
-                layerDir = [this.dirName,'/',layercontents[i][1]].join('');
-                break;
-            }
-        if(!layerDir)
-            throw new KeyError('Layer named "' + name + '" not found.');
         if(!this._io.pathExists(false, layerDir + '/'))
             throw new KeyError('Layer directory "' + layerDir
                                 + '" does not exist, but is mentioned in '
@@ -56904,7 +57648,7 @@ define('metapolator/project/MetapolatorProject',[
     }
     
     /**
-     * Create a master entry for this masterName, with the given cpsChain
+     * Create a master entry for this masterName, with the given cpsFile
      * and skeleton.
      *
      * Also creates an entry in layercontents.plist: `skeleton`,
@@ -56914,13 +57658,12 @@ define('metapolator/project/MetapolatorProject',[
      * it before attempting to use the font.
      * 
      */
-    _p.createMaster = function(masterName, cpsChain, skeleton) {
+    _p.createMaster = function(masterName, cpsFile, skeleton) {
         // get the name for this master from the CLI
         if(this.hasMaster(masterName))
             throw new ProjectError('Master "'+masterName+'" already exists.');
-        var master = {};
+        var master = {cpsFile: cpsFile};
         this._data.masters[masterName] = master;
-        master.cpsChain = cpsChain;
         
         // create a skeleton layer for this master
         master.skeleton = skeleton;
@@ -56949,7 +57692,7 @@ define('metapolator/project/MetapolatorProject',[
         this.getMaster(masterName).deleteCPS(masterName + '.cps');
 
         // Remove skeleton layer for this master
-        if (master.skeleton ===  + 'skeleton.' + masterName)
+        if (master.skeleton === 'skeleton.' + masterName)
             this._deleteGlyphLayer(master.skeleton);
 
         // Remove project entry
@@ -56966,7 +57709,7 @@ define('metapolator/project/MetapolatorProject',[
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
-        return new ProjectMaster(this._io, this, glyphSetDir, master.cpsChain);
+        return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsFile);
     }
     
     _p.getMaster = function(masterName) {
@@ -56977,98 +57720,63 @@ define('metapolator/project/MetapolatorProject',[
         }
         return this._cache.masters[masterName];
     }
-    
-    
-    _p._getCPSRules = function getCPSRule(sourceName) {
-        var fileName = [this.cpsDir, sourceName].join('/')
-          , cpsString = this._io.readFile(false, fileName)
-          ;
-        return parseRules.fromString(cpsString, sourceName, parameterRegistry);
-    }
-    
-    _p.getCPSRules = function(sourceName) {
-        if(!this._cache.rules[sourceName])
-            this._cache.rules[sourceName] = this._getCPSRules(sourceName);
-        return this._cache.rules[sourceName];
-    }
-    
-    /**
-     * parse the doc content
-     * if it parses, replace the old cps rule with the new cps rule
-     * inform all *consumers* of these rules that there was an update
-     * this might involve pruning some caches of ModelControllers.
-     * 
-     * If this doesn't parse, a CPSParserError is thrown
-     */
-    _p.updateCPSRule = function(sourceName, cpsString) {
-        var source = parseRules.fromString(cpsString, sourceName, parameterRegistry);
-        // if we are still here parsing was a success
-        this._cache.rules[sourceName] = source;
-        this._controller.replaceSource(source);
-    }
-    
+
     _p.open = function(masterName) {
-        if(!this._controller.hasMaster(master)) {
-            // console.warn('open', masterName)
+        if(!this._controller.hasMaster(masterName)) {
+            // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
-            , parameterCollections = master.loadCPS()
             , momMaster = master.loadMOM()
             ;
             momMaster.id = masterName;
-            this._controller.addMaster(momMaster, parameterCollections);
+            this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
     }
     
-    _p.getMasterSources = function(master) {
-        if(!this._controller.hasMaster(master))
-            this.open(master);
-        return this._controller.getMasterSources(master);
-    }
-    
     _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController(
-                                        this, masterName, sourceUFODir);
+        var importer = new ImportController( this._log, this, 
+                                             masterName, sourceUFODir);
         importer.import(glyphs);
     
-        this._importGroupsFile(sourceUFODir, true);
+        this._importGroupsFile(sourceUFODir, false);
+        this._importFontInfoFile(sourceUFODir, false);
     };
 
     /**
-     * If there is no groups.plist in the project but the import
+     * If there is no 'targetFile' in the project but the import
      * has one, we do the import.
-     * If there is a groups.plist in the project and overide is true
+     *
+     * If there is a 'targetFile' in the project and overide is true
      * we overide by doing the import.
      * Otherwise, we skip importing the file.
      *
      * This rule may get changed in the future, but having the first
-     * possible groupd file also imported into the project is better
-     * than not having it to happen.
+     * possible file also imported into the project is better than not
+     * having it to happen.
+     *
      * Also, ufoJS can't validate this file at the moment
      * however, we can try to parse it with plistlib and see if it works.
      */
-    _p._importGroupsFile = function(sourceUFODir, override) {
-        var filename = this.groupsFileName
-          , sourceFile = [sourceUFODir, filename].join('/')
-          , targetFile = this.groupsFile
+    _p._importPListFile = function(sourceUFODir, override, filename, targetFile ) {
+        var sourceFile = [sourceUFODir, filename].join('/')
           , targetExists
           , content
           ;
 
         targetExists = this._io.pathExists(false, targetFile);
         if(targetExists && !override) {
-            console.warn(filename + ' exists in the project, skipping import.');
+            this._log.warning(filename + ' exists in the project, skipping import.');
             return;
         }
 
         if(!this._io.pathExists(false, sourceFile)) {
-            console.warn('No ' + filename + ' found for import.');
+            this._log.warning('No ' + filename + ' found for import.');
             return;
         }
 
-        console.warn('Importing '+filename+' into the project.');
+        this._log.warning('Importing '+filename+' into the project.');
         if(targetExists)
-            console.warn('The existing '+filename+' will be overridden.');
+            this._log.warning('The existing '+filename+' will be overridden.');
 
         content = this._io.readFile(false, sourceFile);
         try {
@@ -57078,11 +57786,34 @@ define('metapolator/project/MetapolatorProject',[
             plistLib.readPlistFromString(content);
         }
         catch(error) {
-            console.warn('Import of '+filename+' failed when trying to '
+            this._log.warning('Import of '+filename+' failed when trying to '
                                     +'parse it as a plist:\n'+ error);
         }
         this._io.writeFile(false, targetFile, content);
-        console.warn('Import of '+filename+' OK.\n');
+        this._log.warning('Import of '+filename+' OK.\n');
+    };
+
+
+    /**
+     * Only imports groups.plist if we don't have one already and
+     * !override.
+     *
+     * @see _importPListFile
+     */
+    _p._importGroupsFile = function(sourceUFODir, override) {
+        this._importPListFile( sourceUFODir, override, 
+                               this.groupsFileName, this.groupsFile );
+    };
+
+    /**
+     * Only imports fontinfo.plist if we don't have one already and
+     * !override.
+     *
+     * @see _importPListFile
+     */
+    _p._importFontInfoFile = function(sourceUFODir, override) {
+        this._importPListFile( sourceUFODir, override, 
+                               this.fontinfoFileName, this.fontinfoFile );
     };
     
     _p.exportInstance = function(masterName, instanceName, precision) {
@@ -57095,10 +57826,6 @@ define('metapolator/project/MetapolatorProject',[
           ;
         
         // create a bare ufoV2 directory
-        if(this._io.pathExists(false, dirName +'/'))
-             throw new ProjectError('Can\'t create instance. A directory '
-                                    +'with name "' + dirName
-                                    +'" already exists.');
         this._io.mkDir(false, dirName);
         
         // create dirName/metainfo.plist
@@ -57131,7 +57858,7 @@ define('metapolator/project/MetapolatorProject',[
         catch(error) {
             if(error instanceof IONoEntryError) {
                 // this is legal, we simply have no groups file
-                console.warn('No groups.plist file found, thus no glyph classes are defined.');
+                this._log.warning('No groups.plist file found, thus no glyph classes are defined.');
                 return result;
             }
             throw error;
@@ -57159,6 +57886,1076 @@ define('metapolator/project/MetapolatorProject',[
     return MetapolatorProject;
 });
 
+/**
+ * This describes the API that is expected of all I/O modules.
+ * 
+ * It makes heavy use of obtainJS.
+ * 
+ * You can and should use this module as prototype for your implementation
+ * (if there is inheritance). We might use that as a base for unit-testing,
+ * however ufoJS will use ducktyping and just expect your implementation
+ * to work.
+ * 
+ * All methods raise errors.NotImplemented
+ * 
+ * This API is by no means fixed! It's still in exploring state, AFAIK
+ * there is no good cross plattform solution for I/O. So we move slow and
+ * see what we need to do.
+ */
+define('ufojs/tools/io/_base',[
+    'ufojs/errors'
+  , 'obtain/obtain'
+
+], function(
+    errors
+  , obtain
+) {
+    
+    
+    var NotImplementedError = errors.NotImplemented
+      , Parent = Object
+      ;
+
+    function io() {
+        /*jshint validthis:true */
+        Parent.call(this);
+    }
+
+    var _p = io.prototype = Object.create(Parent.prototype);
+
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.readFile = obtain.factory(
+        {
+            readFile:['path', function(path) {
+                throw new NotImplementedError('readFile');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('readFile'); }
+    );
+    
+    /**
+     * raises IONoEntry when points to a non-existent directory
+     */
+    _p.writeFile = obtain.factory(
+        {
+            writeFile:['path', 'data', function(path, data) {
+                throw new NotImplementedError('writeFile');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path', 'data']
+      , function(obtain){ return obtain('writeFile'); }
+    );
+    
+    /**
+     * raises IONoEntry when points to a non-existent directory
+     */
+    _p.appendFile = obtain.factory(
+        {
+            appendFile:['path', 'data', function(path, data) {
+                throw new NotImplementedError('appendFile');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path', 'data']
+      , function(obtain){ return obtain('appendFile'); }
+    );
+
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.unlink = obtain.factory(
+        {
+            unlink:['filename', function(filename) {
+                throw new NotImplementedError('unlink');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['filename']
+      , function(obtain){ return obtain('unlink'); }
+    );
+    
+    _p.readBytes = obtain.factory(
+        {
+            readBytes:['path', 'bytes', function(path, bytes) {
+                throw new NotImplementedError('readBytes');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path', 'bytes']
+      , function(obtain){ return obtain('readBytes'); }
+    );
+    
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.stat = obtain.factory(
+        {
+            stat:['path', function(path) {
+                throw new NotImplementedError('stat');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('stat'); }
+    );
+
+    /**
+     * Don't use this method to check whether something exists before doing
+     * an operation on it, that only creates a race condition.
+     */
+    _p.pathExists = obtain.factory(
+        {
+            pathExists:['path', function(path) {
+                throw new NotImplementedError('pathExists');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('pathExists'); }
+    );
+    
+    /**
+     * raises IONoEntry when path is not found.
+     */
+    _p.getMtime = obtain.factory(
+        {
+            getMtime:['path', function(path) {
+                throw new NotImplementedError('getMtime');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('getMtime'); }
+    );
+    
+    /**
+     * Returns a list of file-names and directory-names.
+     * Directory-names must end with a slash, while file-names must not.
+     *
+     * Raises IOError if dir doesn't exist
+     */
+    _p.readDir = obtain.factory(
+        {
+            readDir:['path', function(path) {
+                throw new NotImplementedError('readDir');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('readDir'); }
+    );
+
+    /**
+     * raises IOError if dir can't be created, or already exists
+     */
+    _p.mkDir = obtain.factory(
+        {
+            mkDir:['path', function(path) {
+                throw new NotImplementedError('mkDir');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('mkDir'); }
+    );
+
+    /**
+     * raises IOError if dir can't be created.
+     *
+     * Note that you can't rely on the directory actually existing after a
+     * successful call: it may have been removed by the time you try to use
+     * it.
+     */
+    _p.ensureDir = obtain.factory(
+        {
+            ensureDir:['path', function(path) {
+                throw new NotImplementedError('ensureDir');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('ensureDir'); }
+    );
+
+    /**
+     * raises IOError if dir can't be deleted
+     */
+    _p.rmDir = obtain.factory(
+        {
+            rmDir:['path', function(path) {
+                throw new NotImplementedError('rmDir');
+            }]
+        }
+      , {/* no need for async here */}
+      , ['path']
+      , function(obtain){ return obtain('rmDir'); }
+    );
+
+    /**
+     * Implemented in terms of other io methods
+     */
+    _p.rmDirRecursive = obtain.factory(
+        {
+            rmDirRecursive:['dir', function(dir) {
+                var objs = this.readDir(false, dir);
+                for(var i = 0; i < objs.length; i++) {
+                    var obj = dir + '/' + objs[i]; // path.join is node-specific
+                    (this.stat(false, obj).isDirectory() ? this.rmDirRecursive : this.unlink)(false, obj);
+                }
+                this.rmDir(false, dir);
+            }]
+        }
+      // For an async implementation, try starting here:
+      // https://gist.github.com/yoavniran/adbbe12ddf7978e070c0
+      , {/* no need for async here */}
+      , ['dir']
+      , function(obtain){ return obtain('rmDirRecursive'); }
+    );
+
+    /**
+     * when name ends with a slash it is a directory name
+     */
+    function _isDirName(name) {
+        return name.slice(-1) === '/';
+    }
+
+    _p.copyRecursive = obtain.factory(
+        {
+            names: ['sourcePath', function(path) {
+                return this.readDir(false, path);
+            }]
+          , copyDir: ['names', 'targetIO', 'targetPath', 'sourcePath',
+            function(names, targetIO, targetPath, sourcePath) {
+                var i
+                  , name
+                  , fullTargetPath
+                  , fullSourcePath
+                  , data
+                  ;
+                for(i=0;i<names.length;i++) {
+                    name = names[i];
+                    fullTargetPath = [targetPath, name].join('/');
+                    fullSourcePath = [sourcePath, name].join('/');
+                    // FIXME: alternatively readFile(); should fail with
+                    // IOIsDir if we don't use trailing slashes for directory
+                    // names in readDir
+                    if(_isDirName(name)) {
+                        targetIO.mkDir(false, fullTargetPath);
+                        this.copyRecursive(false, fullSourcePath.slice(0, -1)
+                                           , targetIO, fullTargetPath.slice(0, -1));
+                    }
+                    else {
+                        data = this.readFile(false, fullSourcePath);
+                        targetIO.writeFile(false, fullTargetPath, data);
+                    }
+                }
+                return true;
+            }]
+        }
+      , {
+            names: ['sourcePath', function(path) {
+                return this.readDir(true, path);
+            }]
+          , copyDir: ['names', 'targetIO', 'targetPath', 'sourcePath' , '_callback',
+            function(names, targetIO, targetPath, sourcePath , callback) {
+                var i
+                  , name
+                  , loaded = 0
+                  , fullTargetPath
+                  , fullSourcePath
+                  , failed = false
+                  , promise
+                  ;
+                function finalize() {
+                    if(failed) return;
+                    loaded++;
+                    if(loaded === names.length)
+                        callback(null, true);
+                }
+                function fail(error) {
+                    failed = true;
+                    callback(error, null);
+                }
+                for(i=0;i<names.length;i++) {
+                    name = names[i];
+                    fullTargetPath = [targetPath, name].join('/');
+                    fullSourcePath = [sourcePath, name].join('/');
+                    if(_isDirName(name))
+                        promise = targetIO.mkDir(true, fullTargetPath)
+                        .then(this.copyRecursive.bind(this, true
+                            , fullSourcePath.slice(0, -1)
+                            , targetIO, fullTargetPath.slice(0, -1)));
+                    else
+                        promise = this.readFile(true, fullSourcePath)
+                        .then(targetIO.writeFile.bind(targetIO, true
+                                , fullTargetPath /*data is inserted by the promise*/));
+                    promise.then(finalize, fail);
+                }
+            }]
+        }
+      , ['sourcePath', 'targetIO', 'targetPath']
+      , function(obtain){return obtain('copyDir');}
+    );
+
+    return io;
+});
+
+/**
+ * This is a REST implementation of io/_base.
+ */
+define('ufojs/tools/io/staticBrowserREST',[
+    'ufojs/errors'
+  , 'obtain/obtain'
+  , './_base'
+], function(
+    errors
+  , obtain
+  , Parent
+) {
+    
+    /*global XMLHttpRequest: true*/
+    /*global ArrayBuffer: true*/
+    /*global Uint8Array: true*/
+    
+    var IOError = errors.IO
+      , IONoEntry = errors.IONoEntry
+      , IOEntryExists = errors.IOEntryExists
+      ;
+
+    function Io() {
+        Parent.call(this);
+    }
+
+    var _p = Io.prototype = Object.create(Parent.prototype);
+
+
+    // Utility functions to build the file methods
+       
+    var _errorMessageFromRequest = function(request) {
+        return ['Status', request.status, request.statusText].join(' ');
+    };
+
+    // Don't use this method for non-error statuses!
+    var _errorFromRequest = function(request) {
+        var message = _errorMessageFromRequest(request);
+        var err;
+        if(request.status === 404)
+            err = new IONoEntry(message);
+        else
+            err = new IOError(message);
+        err.request = request;
+        return err;
+    };
+    
+    var _path2uri = function(path) {
+        return path.split('/').map(encodeURIComponent).join('/');
+    };
+
+    // We signal a directory to the REST endpoint by adding a / suffix
+    var _dirify = function (f) {
+        function decorate (path){return path + (path.slice(-1) !== '/' ? '/' : '');}
+        return function (async, path /*, data? ... */) {
+            var args = Array.prototype.slice.call(arguments);
+            // decorate path
+            args[1] = decorate(args[1]);
+            return f.apply(this, args);
+        };
+    };
+
+    // Perform a synchronous or asynchronous request
+    // FIXME: once ES6 arrives, use separate resolve/reject handlers
+    // instead of resultFilter
+    var _obtainRequestFactory = function (method, responseType, okStatus
+                                    , resultFilter, resultFilterArgs) {
+        var dataArg = (method in {'PUT': true, 'POST': true}) ? 'data': undefined
+          , api = ['path']
+          ;
+        resultFilter = resultFilter || function (err, request) { return [err, !!err]; };
+        okStatus = okStatus || {200: true};
+        if(dataArg)
+            api.push(dataArg);
+        resultFilterArgs = resultFilterArgs || [];
+        Array.prototype.push.apply(api, resultFilterArgs);
+
+        // return the send request (with response available)
+        // do it async if callback is present, otherwise return directly
+        function doRequest(path, data, callback) {
+            var request = new XMLHttpRequest();
+            request.open(method, _path2uri(path), !!callback);
+            if(callback) {
+                // Firefox: Use of XMLHttpRequest's responseType attribute
+                // is no longer supported in the synchronous mode in window
+                // context
+                request.responseType = responseType;
+                request.onreadystatechange = function (aEvt) {
+                    if (request.readyState != 4 /*DONE*/)
+                        return;
+                    callback(null, request);
+                };
+            }
+            else {
+                // because setting response type is not possible in sync mode
+                // we have to add a workaround by hand:
+                if(responseType === 'arraybuffer')
+                    // so there is no conversion by the browser
+                    request.overrideMimeType('text/plain; charset=x-user-defined');
+            }
+            request.send(data);
+            if(!callback)
+                return request;
+        }
+
+        function job(obtain/*, [api ...] */) {
+            var request = obtain('request')
+                , error
+                , result
+                , callFilterArgs
+                ;
+            if(!(request.status in okStatus))
+                error = _errorFromRequest(request);
+            callFilterArgs = [error, request];
+            Array.prototype.push.apply(callFilterArgs,
+                // extract the resultFilterArgs from this method's arguments
+                Array.prototype.slice.call(arguments, -resultFilterArgs.length));
+            result = resultFilter.apply(null, callFilterArgs);
+            if(result[0])
+                throw result[0];
+            return result[1];
+        }
+
+        return obtain.factory(
+            {request: ['path', dataArg, doRequest]}
+          , {request: ['path', dataArg, '_callback', doRequest]}
+          , api
+          , job
+        );
+    };
+
+    // The file methods
+    _p.readFile = _obtainRequestFactory('GET', undefined, undefined, function(error, request) {
+        var result = !error ? request.responseText : undefined;
+        return [error, result];
+    });
+
+    _p.writeFile = _obtainRequestFactory('PUT', undefined, {200: true, 204: true});
+
+    // We don't read the LOCATION headers of the response, as the expected
+    // behavior of the server is to create or to append to the effective
+    // request URI.
+    _p.appendFile = _obtainRequestFactory('POST', undefined, undefined);
+
+    _p.unlink = _obtainRequestFactory('DELETE', undefined, {200: true, 204: true});
+
+    // takes as a seccond argument "bytes" which is the amount of bytes to read!
+    _p.readBytes = _obtainRequestFactory('GET', 'arraybuffer', undefined, function (error, request, bytes) {
+        var result, chunk, rawChunk;
+        if(error){}// pass
+        // synchronous requests can't set request.responseType = 'arraybuffer'
+        else if(request.response instanceof ArrayBuffer)
+            chunk = new Uint8Array(request.response, 0, bytes);
+        else {
+            rawChunk = request.response.slice(0, bytes),
+            chunk = new Uint8Array(bytes);
+            // throw away high-order bytes (F7)
+            for(var i=0; i<rawChunk.length; i++)
+                chunk[i] = rawChunk.charCodeAt(i);
+        }
+        if(!error)
+            result = String.fromCharCode.apply(null, chunk);
+        return [error, result];
+    }, ['bytes']);
+
+    _p.fileExists = _obtainRequestFactory('HEAD', undefined, undefined, function (error, request) {
+        return [(error instanceof IONoEntry) ? null : error, !(error instanceof IONoEntry)];
+    });
+    _p.dirExists = _dirify(_p.fileExists);
+    _p.pathExists = _p.fileExists; // DEPRECATED: use dirExists or fileExists
+
+    _p.getMtime = _obtainRequestFactory('HEAD', undefined, undefined, function (error, request) {
+        var result = !error ? new Date(request.getResponseHeader('Last-Modified')) : undefined;
+        return [error, result];
+    });
+
+    _p.readDir = _dirify(_obtainRequestFactory('GET', undefined, undefined, function (error, request) {
+        var result = !error ? request.responseText.split('\n').filter(function(line){return !!line;}) : undefined;
+        return [error, result];
+    }));
+
+    _p.mkDir = _dirify(_obtainRequestFactory('PUT', undefined, {200: true, 201: true, 204: true}, function (error, result) {
+        if (result.status == 405)
+            error = new IOEntryExists(_errorMessageFromRequest(result));
+        return [error, !!error];
+    }));
+
+    _p.ensureDir = _dirify(_obtainRequestFactory('PUT', undefined, {200: true, 201: true, 204: true, 405: true}));
+
+    _p.rmDir = _dirify(_p.unlink);
+
+    return new Io(); // Single instance of static type
+});
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define('EventEmitter',[], function () {
+      return (root.returnExportsGlobal = factory());
+    });
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like enviroments that support module.exports,
+    // like Node.
+    module.exports = factory();
+  } else {
+    root['EventEmitter'] = factory();
+  }
+}(this, function () {
+
+/*!
+ * event-emitter.js
+ * 
+ * Copyright (c) 2014
+ */
+var eventEmitter;
+eventEmitter = function () {
+  /* -----------------------------------------------------------------------------
+   * scope
+   * ---------------------------------------------------------------------------*/
+  var root = this;
+  /* -----------------------------------------------------------------------------
+   * EventEmitter
+   * ---------------------------------------------------------------------------*/
+  /**
+   * Lightweight EventEmitter Class.
+   *
+   * @example
+   * var emitter = new EventEmitter(settings);
+   *
+   * @public
+   * @constructor
+   */
+  var EventEmitter = function () {
+    this.events = {};
+  };
+  /**
+   * Add event listener and handler to emitter isntance.
+   *
+   * @example
+   * emitter.on('event', this.doSomething, this);
+   *
+   * @public
+   *
+   * @param {string} name - Name of event to listen for.
+   * @param {function} handler - Function to call when event is triggered.
+   * @param {object} context - Context in which to execute handler. 
+   *
+   * @returns emitter instance (allows chaining).
+   */
+  EventEmitter.prototype.on = function (name, handler, context) {
+    (this.events[name] = this.events[name] || []).unshift({
+      fn: handler,
+      context: context || root
+    });
+    return this;
+  };
+  /**
+   * Remove event lister from instance. If no arguments are passed,
+   * all events will be remove from the instance. If only name is
+   * passed, all handlers will be remove from the specified event.
+   * If name and handler are passed, only the handler will be
+   * removed from the specified event.
+   *
+   * @example
+   * emitter.off('event');
+   * // removes all handlers from `event`
+   *
+   * @public
+   *
+   * @param {string} name - Name of event to remove listener from.
+   * @param {function} handler - Function handler to remove from event.
+   *
+   * @returns emitter instance (allows chaining).
+   */
+  EventEmitter.prototype.off = function (name, handler) {
+    // Remove all events
+    if (!name) {
+      this.events = {};
+    } else if (!handler) {
+      delete this.events[name];
+    } else {
+      this._loopSubscribers(name, function (subscribers, i) {
+        if (subscribers[i] === handler) {
+          subscribers.splice(i, 1);
+        }
+      });
+    }
+    return this;
+  };
+  /**
+   * Calls handler for all event subscribers.
+   *
+   * @example
+   * emitter.trigger('event');
+   * // removes all handlers from `event`
+   *
+   * @public
+   *
+   * @param {string} name - Name of event to remove listener from.
+   *
+   * @returns emitter instance (allows chaining).
+   */
+  EventEmitter.prototype.trigger = function (name) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    this._loopSubscribers(name, function (subscribers, i) {
+      var handler = subscribers[i];
+      handler.fn.apply(handler.context, args);
+    });
+    return this;
+  };
+  /**
+   * Helper method to call specified fn for each event
+   * subscriber.
+   *
+   * @private
+   *
+   * @param {string} name - Name of event to remove listener from.
+   * @param {function} fn - Name of event to remove listener from.
+   */
+  EventEmitter.prototype._loopSubscribers = function (name, fn) {
+    var subscribers = this.events[name] || [], l = subscribers.length;
+    while (l--) {
+      fn(subscribers, l);
+    }
+  };
+  /* -----------------------------------------------------------------------------
+   * export
+   * ---------------------------------------------------------------------------*/
+  return EventEmitter;
+}();
+
+return eventEmitter;
+
+
+}));
+define('metapolator/io/InMemory',[
+    'ufojs/errors'
+  , 'ufojs/tools/io/_base'
+  , 'obtain/obtain'
+  , 'path'
+  , 'EventEmitter'
+], function(
+    errors
+  , Parent
+  , obtain
+  , path
+  , EventEmitter
+) {
+    
+
+    /*global process: true*/
+    /*global setTimeout: true*/
+
+    var NotImplementedError = errors.NotImplemented
+      , IOError = errors.IO
+      , IONotDirError = errors.IONotDir // node error: ENOTDIR
+      , IOIsDirError = errors.IOIsDir // node error: EISDIR
+      , IONoEntryError = errors.IONoEntry // node error: ENOENT
+      , IOEntryExistsError = errors.IOEntryExists // node error: EEXIST
+      , IONotEmptyError = errors.IONotEmpty // ENOTEMPTY
+      , assert = errors.assert
+      , Argument = obtain.Argument
+      ;
+    /*** lower level ***/
+
+    var next = (typeof process !== 'undefined' && typeof process.nextTick === 'function')
+            ?   process.nextTick.bind(process)
+            :   function(cb){ setTimeout(cb, 0); }
+            ;
+
+    function Path(pathStr) {
+        var _path;
+        this.normalPath = path.normalize(pathStr);
+        this.rawPath = pathStr;
+        if(this.normalPath[0] === '/')
+            this.normalPath = this.normalPath.slice(1);
+
+        if(this.normalPath.slice(-1) === '/')
+            this.normalPath = this.normalPath.slice(0,-1);
+
+        this.basename = path.basename(this.normalPath);
+
+        // if(this.basename = '' && this.normalPath '')
+        _path = (this.normalPath !== "")
+                    ? path.dirname(this.normalPath).split('/')
+                    : []
+                    ;
+        if(this.basename !== '')
+            _path.push(this.basename);
+
+        if(_path[0] === '.')
+            _path.shift();
+        if(_path[0] === '..')
+            throw new TypeError('Path "' + this.normalPath +'" is above root.');
+        if(_path.length === 1 && _path[0] === 1)
+            _path = [];
+        Object.defineProperty(this, 'path'
+                        , {get: Array.prototype.slice.bind(_path)});
+        Object.defineProperty(this, 'directory'
+                        , {get: Array.prototype.slice.bind(_path, 0, -1)});
+        Object.seal(this);
+    }
+    Path.factory = function(pathString){ return new Path(pathString); };
+
+    function Node (mtime) {
+        this.modified(undefined, mtime);
+    }
+    Node.prototype = Object.create(null);
+
+    Node.prototype.modified = function(event, mtime) {
+        this.mtime = mtime || new Date();
+        this._parent = undefined;
+    };
+    Node.prototype.setParent = function(parent) {
+        assert(!this._parent, 'Node has a parent.');
+        assert(parent instanceof Directory, '"parent" must be a Directory');
+        assert(parent.isChild(this), 'This is not child of "parent".');
+        this._parent = parent;
+    };
+    Node.prototype.unsetParent = function() {
+        if(!this._parent) return;
+        assert(!this._parent.isChild(this), 'This is still a child of "parent".');
+        this._parent = undefined;
+    };
+    Node.prototype.hasParent = function() {
+        return !!this._parent;
+    };
+
+    function File(content, mtime) {
+        Node.call(this, mtime);
+        this._content = content || "";
+    }
+    File.prototype = Object.create(Node.prototype);
+
+    Object.defineProperty(File.prototype, 'content', {
+        set: function(content) {
+            this._content = content;
+            this.modified();
+        }
+      , get: function() {
+            return this._content;
+        }
+    });
+
+    function Directory(mtime) {
+        Node.call(this, mtime);
+        this._content = Object.create(null);
+        this._index = new Map();
+    }
+    Directory.prototype = Object.create(Node.prototype);
+
+    Directory.prototype.lookup = function (/* names */) {
+        var names = Array.prototype.slice.call(arguments, 1)
+          , name = arguments[0]
+          , item
+          , relatives = {'.': this, '..': this._parent}
+          ;
+        if(arguments.length === 0)
+            return this;
+
+        if(typeof name !== 'string' || name === '')
+            throw new TypeError('A name must be a none empty string, '
+                                                +'but it is: "'+name+'"');
+
+        if(relatives.hasOwnProperty(name))
+            item = relatives[name];
+        else if(name in this._content)
+            item = this._content[name];
+        // If relatives this._parent is not set, item is also undefined.
+        // Thus, this MUST NOT be an `else` clause.
+        if(!item)
+            throw new IONoEntryError(name);
+
+        if(item instanceof Directory)
+            return item.lookup.apply(item, names);
+
+        if (names.length)
+            throw new IONotDirError(name);
+
+        return item;
+    };
+
+    Directory.prototype.getItem = function(type, names) {
+        var item = this.lookup.apply(this, names);
+        if(type === Directory && !(item instanceof Directory))
+            throw new IONotDirError('"' +names.join('/') + '" is not a directory');
+        else if(type === File && (item instanceof Directory))
+            throw new IOIsDirError('"' +names.join('/') + '" is not a file');
+        else if(type && !(item instanceof type))
+            throw new IOError('"' +names.join('/') + '" is not a type of: ' + type);
+        return item;
+    };
+
+    Directory.prototype.isChild = function(item) {
+        return this._index.has(item);
+    };
+
+    Directory.prototype.setItem = function(name, item) {
+        var target;
+        if(!(item instanceof Node))
+            throw new TypeError('"item" must be an Node');
+
+        target = this._content[name];
+        if(target instanceof Directory){
+            if(item instanceof File)
+                throw new IOIsDirError('"'+name+'" is a directory');
+            throw new IOEntryExistsError('directory "'+name+'" exists');
+        }
+        else if (target instanceof File && item instanceof Directory)
+            throw new IOEntryExistsError('file "'+name+'" exists');
+        else if(item.hasParent())
+            throw new IOError('item "'+name+'" has a parent already');
+        else if(item === this)
+            throw new IOError('item is this directory');
+
+        this._content[name] = item;
+        this._index.set(item, name);
+        item.setParent(this);
+        this.modified();
+    };
+
+    Directory.prototype.isEmpty = function() {
+        // this._index.size is not yet supported in in Node v0.10.25 with --harmony
+        for(var k in this._content) return false;
+        return true;
+    };
+
+    Directory.prototype.removeItem = function(type, name) {
+        var item = this.getItem(type, [name]);
+        if(item instanceof Directory && !item.isEmpty())
+            throw new IONotEmptyError(' "'+ name +'" directory is not empty');
+
+        if(!this.isChild(item))
+            throw new IOError(' "'+ name +'" is not a child.');
+        delete this._content[name];
+        this._index['delete'](item);
+        item.unsetParent(this);
+        this.modified();
+    };
+
+    Object.defineProperty(Directory.prototype, 'entries', {
+        get: function() {
+            var k, results = [];
+             for(k in this._content)
+                 results.push(this._content[k] instanceof Directory ? k+'/' : k);
+            return results;
+        }
+    });
+
+    /*** higher level ***/
+    function InMemory() {
+        Parent.call(this);
+        this._root = new Directory();
+        this._events = new EventEmitter();
+    }
+
+    var _p = InMemory.prototype = Object.create(Parent.prototype);
+
+    _p.on = function() {
+        this._events.on.apply(this._events, arguments);
+    };
+    _p.off = function() {
+        this._events.off.apply(this._events, arguments);
+    };
+
+    _p._emit = function(name, data /* , more, data, ... */) {
+        // don't do this synchronously. So anyone can finish their current business
+        var args = [this._events], func;
+        Array.prototype.push.apply(args, arguments);
+        func = Function.prototype.bind.apply(this._events.trigger, args);
+        next(func);
+    };
+
+    _p._trigger = function(name, path) {
+        this._emit(name, path);
+        this._emit('all', Object.freeze({event: name, path: path}));
+    };
+
+    _p._getItem = function(path, type, property) {
+        var item = this._root.getItem(type || Node, path.path);
+        return (property === undefined ? item : item[property]);
+    };
+
+    _p._writeFile = function(path, content, append) {
+        var dir = this._root.getItem(Directory, path.directory)
+          , file;
+        try {
+            file = dir.getItem(File, [path.basename]);
+            if(append)
+                file.content += content;
+            else
+                file.content = content;
+            this._trigger('change', path.normalPath);
+        }
+        catch(error) {
+            if(!(error instanceof IONoEntryError))
+                throw error;
+            file = new File(content);
+            dir.setItem(path.basename, new File(content));
+            this._trigger('add', path.normalPath);
+        }
+    };
+
+    _p._delete = function(path, type) {
+        var dir = this._root.getItem(Directory, path.directory);
+        dir.removeItem(type, path.basename);
+        this._trigger('unlink' + (type === Directory ? 'Dir' : ''), path.normalPath);
+    };
+
+    _p._pathExists = function(path) {
+        try {
+            return !!this._getItem(path);
+        }
+        catch(error) {
+            if(!(error instanceof IONoEntryError))
+                throw error;
+        }
+        return false;
+    };
+    _p._mkDir = function(path) {
+        var dir = this._root.getItem(Directory, path.directory);
+        dir.setItem(path.basename, new Directory());
+        this._trigger('addDir', path.normalPath);
+    };
+
+    function _obtainRequestFactory(extraAPI, request) {
+        var api = ['pathString'];
+        if(extraAPI)
+            Array.prototype.push.apply(api,
+                        extraAPI instanceof Array ? extraAPI : [extraAPI]);
+        return obtain.factory(
+            {
+                path: ['pathString', Path.factory]
+              , request: request
+            }
+          , {}
+          , api
+          , function(obtain){ return obtain('request'); }
+        );
+    }
+
+    _p.readFile = _obtainRequestFactory(undefined, ['path', File, new Argument('content'), _p._getItem]);
+    _p.getMtime = _obtainRequestFactory(undefined, ['path', undefined, new Argument('mtime'), _p._getItem]);
+    _p.readDir = _obtainRequestFactory(undefined, ['path', Directory, new Argument('entries'), _p._getItem]);
+    _p.pathExists = _obtainRequestFactory(undefined, ['path', _p._pathExists]);
+
+    _p.writeFile = _obtainRequestFactory('data', ['path', 'data', false, _p._writeFile]);
+    _p.appendFile = _obtainRequestFactory('data', ['path', 'data', true, _p._writeFile]);
+    _p.unlink = _obtainRequestFactory(undefined, ['path', File, _p._delete]);
+    _p.rmDir = _obtainRequestFactory(undefined, ['path', Directory, _p._delete]);
+    // `readBytes` is not implemented
+    _p.mkDir = _obtainRequestFactory(undefined, ['path', _p._mkDir]);
+    _p.ensureDir = _obtainRequestFactory(undefined, ['path', function(path) {
+        try {
+            return this._mkDir(path);
+        }
+        catch(error) {
+            if(!(error instanceof IOEntryExistsError))
+                throw error;
+            return 0;
+        }
+    }]);
+
+    return InMemory;
+});
+
+if(window.demoMode) {
+    define('setup', [
+        'ufojs/tools/io/staticBrowserREST'
+      , 'metapolator/io/InMemory'
+    ], function(
+        ioREST
+      , InMemory
+    ) {
+        // InMemory is its own event emitter
+        var fsEvents, io;
+        io = fsEvents = new InMemory();
+        io.mkDir(false, 'project');
+        return {
+            io: io
+          , fsEvents: fsEvents
+            // fill the InMemory io module with the contents from disk
+          , promise: ioREST.copyRecursive(false, 'project', io, 'project') && false
+          , loadTextEditor: true
+        };
+    });
+}
+else {
+    define('setup', [
+        'ufojs/tools/io/staticBrowserREST'
+      , 'socketio'
+    ], function(
+        io
+      , socketio
+    ) {
+        return {
+            io: io
+          , fsEvents: socketio.connect('/fsEvents/project')
+          , promise: false
+          // NOTE: using `loadTextEditor:true` in this io context works
+          // despite of the missing CodeMirror buffer update on file change
+          // events. But, if nobody else is modifying the files, i.e a normal
+          // desktop text editor, codemirror can edit the files on disk without
+          // any problems.
+          , loadTextEditor: false
+        };
+    });
+}
+require([
+    'webAPI/document'
+  , 'require/domReady'
+  , 'angular'
+  , 'ui/redPill/app'
+  , 'RedPill'
+  , 'metapolator/project/MetapolatorProject'
+  , 'setup'
+],
+function (
+    document
+  , domReady
+  , angular
+  , angularApp
+  , RedPill
+  , MetapolatorProject
+  , setup
+) {
+    
+    document.body.classList.add('dependencies-ready');
+    function main() {
+        var io = setup.io
+          , fsEvents = setup.fsEvents
+          , project = new MetapolatorProject(io, 'project')
+          ;
+        project.load();
+        new RedPill(io, fsEvents, project, angularApp, setup.loadTextEditor);
+        // this should be the last thing here, because domReady will execute
+        // immediately if the DOM is already ready.
+        domReady(function() {
+            angular.bootstrap(document, [angularApp.name]);
+        });
+    }
+
+    if(setup.promise)
+        setup.promise.then(main);
+    else
+        main();
+});
+
+define("redPillMain", function(){});
+
 requirejs.config({
     baseUrl: 'lib'
   , paths: {
@@ -57167,6 +58964,10 @@ requirejs.config({
       , 'metapolator': './'
       , 'gonzales': 'npm_converted/gonzales/lib'
       , 'complex':  'npm_converted/immutable-complex/lib'
+      , 'util-logging': 'npm_converted/util-logging/lib'
+      , 'util': 'npm_converted/util'
+      , 'path': 'npm_converted/path/path'
+      , 'inherits': 'npm_converted/inherits/inherits'
       , 'angular': 'bower_components/angular/angular'
       , 'obtain': 'obtainJS/lib'
       , 'ufojs': 'ufoJS/lib'
@@ -57175,7 +58976,19 @@ requirejs.config({
       , 'codemirror': 'bower_components/codemirror'
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
+      , 'socketio': '../socket.io/socket.io'
+      , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
     }
+  // exclude on build
+  , excludeShallow: [
+        // the optimizer can't read es6 generators
+        // NOTE: for dependency tracing the genereated es5 version is used
+        // by the optimizer. The feature detection below then swaps the path
+        // used to load ExportController when the browser executes this.
+        'metapolator/project/ExportController'
+        // see the es6/Proxy module, we load this only when needed
+      , 'es6/Reflect'
+    ]
   , shim: {
         angular: {
             exports: 'angular'
@@ -57191,51 +59004,23 @@ requirejs.config({
       , 'ui-codemirror': {
             deps: ['angular', 'GlobalCodeMirror']
         }
+      , 'socketio': {
+            exports: 'io'
+        }
     }
 });
 
-
-// ui code mirror searches a global CodeMirror object, which is not defined
-// by code mirror when loaded via AMD ... m(
-// this is the test in the file:
-// if (angular.isUndefined(window.CodeMirror))
-define('GlobalCodeMirror', [
-    'codemirror/lib/codemirror'
-  , 'codemirror/mode/css/css'
-    ], function(codemirror) {
-    window.CodeMirror = codemirror;
-    return undefined;
-});
-
-require([
-    'webAPI/document'
-  , 'require/domReady'
-  , 'angular'
-  , 'ui/redPill/app'
-  , 'RedPill'
-  , 'ufojs/tools/io/staticBrowserREST'
-  , 'metapolator/project/MetapolatorProject'
-], function (
-    document
-  , domReady
-  , angular
-  , angularApp
-  , RedPill
-  , io
-  , MetapolatorProject
-) {
-    
-
-
-    var project = new MetapolatorProject(io, 'project');
-    project.load();
-    new RedPill(project, angularApp);
-    // this should be the last thing here, because domReady will execute
-    // immediately if dom is already ready.
-    domReady(function() {
-        angular.bootstrap(document, [angularApp.name]);
-    });
-});
-
-define("redPillMain", function(){});
+// feature detection for generators
+try {
+    eval("(function *(){})()");
+    requirejs.config({
+    paths: {
+        'metapolator/project/ExportController': 'project/ExportController.es6'
+    }});
+} catch(err) {
+    console,log(err);
+    console.info("No generators, falling back.");
+}
+;
+define("browserConfig", function(){});
 

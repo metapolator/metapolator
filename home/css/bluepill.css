@@ -1,0 +1,487 @@
+      @font-face {
+        font-family: 'glyphs';
+        src: url('../fonts/glyphs.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+    
+    
+    #temp-output {
+        position: absolute;
+        left: 10px;
+        bottom: 50px;
+    }
+
+    
+    .sequence-ul {
+        display: block;
+        list-style-type: none;
+    }
+    
+        .sequence-li {
+            display: block;
+        }
+          
+            .sequence-name {
+                display: inline-block;
+                padding: 4px;
+                background: #fff;
+                color: #000;
+            }
+        
+            .master-ul {
+                display: block;
+                list-style-type: none;
+                margin: 0 0 20px 0;
+                padding: 0;
+                width: 100%;
+                background: #fff;
+                min-height: 20px;
+                border-bottom: 1px solid #ffa392;
+            }
+    
+                .master-ul .master-li {
+                    display: block;
+                    border-top: 1px solid #ffa392;
+                    height: 28px;
+                }
+                
+                    .master-ul .master-li:hover {
+                        cursor: pointer;
+                    }
+                        
+                    .master-ul .master-li span {
+                        display: inline-block;
+                    }
+                            
+                        .master-ul .master-li .selectable-diamond {
+                            float: left;
+                            height: 27px;
+                            width: 28px;
+                            background-image: url('../img/diamonds/diamond-full.png');
+                        }   
+                        
+                            .master-ul .master-li:first-child .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond-top.png');
+                            }
+                            
+                            .master-ul .master-li:last-child .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond-bottom.png');
+                            }
+                            
+                            .master-ul .master-li:only-child .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond-sole.png');
+                            }
+                            
+                        /* while dragging */
+                        .ui-sortable-helper {
+                            background: #fff;
+                            box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+                        }
+                        
+                            .ui-sortable-helper .selectable-diamond {
+                                background-image: url('../img/diamonds/diamond.png')!important;
+                            }
+                
+                        .selectable-ag {
+                            float: left;
+                            text-align: center;
+                            width: 40px;
+                            height: 27px;
+                            padding: 4px;
+                        }
+                            
+                            .master-ul .master-li .ui-selected {
+                                background: #f85c37;
+                            }
+                    
+                        .master-ul .master-li .selectable-name {
+                            float: left;
+                            width: calc(100% - 68px);
+                            padding: 4px 8px;
+                            height: 27px;
+                            white-space: nowrap;
+                        }
+    
+
+                
+
+/
+    
+/************ design space ****************/
+
+
+    #design-space-panel {
+        float: left;
+        width: 700px;
+        margin: 0 auto;
+        height: 100%;
+    }
+
+    #design-space-tabs {
+        list-style: none;
+        overflow: auto;
+        margin: 0;
+        padding: 0;
+        height: 39px;
+    }
+
+    #design-space-tabs li {
+        float: left;
+        padding: 6px 10px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        margin-right: 4px;
+        cursor: pointer;
+        background: #fff;
+    }
+
+    #design-space-tabs li.selected {
+        background: #f85c37;
+        color: #fff;
+    }
+
+    #design-space-tabs li div {
+        float: left;
+    }
+
+    #design-space-tabs li img {
+        height: 12px;
+        width: 12px;
+        margin-right: 4px;
+    }
+    
+    designspace {
+        height: 100%;
+    }
+
+    .design-space {
+        height: calc(100% - 32px);
+        background: #fff;
+    }
+
+    .unconfigured {
+        background: #aaa;
+    }
+
+    .choose-space-type {
+        width: 50%;
+        float: left;
+        text-align: center;
+        padding-top: 5%;
+    }
+
+    .choose-space-type-button {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .choose-space-type-button:hover {
+        color: #f85c37;
+    }
+
+    .drop-area {
+        height: 100%;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+    
+        .drag-over {
+            border: 1px dashed #000;
+        }
+    
+    
+            control, explore {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            
+            control svg, explore svg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                top: 0;
+            }
+
+                
+                li:first-child .slider-label-first {
+                    display: none;
+                }
+                
+                li:first-child .slider-label-last {
+                    left: 50%;
+                }
+                
+                    .slider-label {
+                        border: none;
+                        background: transparent;
+                    }
+
+                .slider-label-first {
+                    left: 0;
+                    top: 10px;
+                }
+                
+                .slider-label-last {
+                    text-align: right;
+                    right: 0;
+                }
+                
+                .slider-label-middle {
+                    position: absolute;
+                    text-align: center;
+                    right: 0;
+                    top: 10px;
+                    width: 100%;
+                    font-size: 16px;
+                }
+                
+        .li-explore {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #000;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+            .explore-name {
+                position: absolute;
+                z-index: 10;
+                color: #fff;
+                left: 6px;
+                top: 4px;
+                text-align: center;
+                font-size: 12px;
+            }
+            
+            .explore-name-full {
+                position: absolute;
+                z-index: 10;
+                left: 24px;
+                top: 0px;
+                background: #ddd;
+                color: #333;
+                padding: 4px 8px;
+                font-size: 12px;
+                opacity: 0;
+                transition: all 1s ease;
+            }
+            
+            .show-name-full .explore-name-full {
+                opacity: 1;
+            }   
+            
+            
+            
+            
+/************ sliders ***************/
+        
+ 
+    .slider-container {
+        
+    }      
+      
+        .slider-axis {
+            stroke: #000;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 3px;
+            cursor: pointer;
+            fill: #000;
+        } 
+             
+        .slider-label {
+            font-size: 9px;
+            cursor: default;
+        }
+    
+            .label-right-inactive {
+                fill: #aaa;
+                font-style: italic;
+            }
+            
+            .slider-label-output {
+                fill: #f85c37;
+            }
+            
+            .slider-input-container {
+                position: absolute;
+                z-index: 1000;
+                left: 120px; 
+                color: #f85c37;
+                font-size: 9px;
+            }
+            
+                .slider-input-output {
+                    width: 30px;
+                    border: 0;
+                    color: #f85c37;
+                    text-align: right;
+                    font-size: 9px;
+                }
+    
+        .triangle-button {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+    
+        .slider-button {
+            font-family: "glyphs";
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+            .slider-button.slider-remove-master {
+                fill: #f00;
+            }
+        
+            .slider-label-right-container:hover .slider-button {
+                opacity: 1;
+            }
+            
+        .left-label-select {
+            position: absolute;
+            left: 10px;
+            top: 100px;
+            z-index: 1000;
+            font-size: 9px;
+        }
+
+
+
+/**************** masters ************************/
+
+
+    masters ul {
+        list-style: none;     
+        margin: 0;
+        padding: 0;
+    }
+
+        .sequence-name {
+            margin-left: 24px;
+            padding: 4px 10px;
+            width: 50%;
+            color: #ddd;
+            cursor: pointer;
+            background: #fff;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border: 1px solid #ddd;
+            border-bottom: 0px;
+        }
+        
+            .sequence-name.selected {
+               background: #f85c37; 
+               color: #fff;
+            }
+
+        .sequence {
+            border-top: 1px solid #ffa392;
+            width: 100%;
+            background: #ddd; 
+            margin-bottom: 10px;
+        }
+
+            .master {
+                width: 100%;
+                height: 28px;
+                background: #fff;
+                border-bottom: 1px solid #ffa392;
+            }
+        
+                .diamond {
+                    float: left;
+                    width: 24px;
+                    height: 28px;
+                    position: relative;
+                    cursor: pointer;
+                }
+                    
+                .diamond-fix {
+                    width: 100%;
+                    height: 100%;
+                }
+                
+                    .start .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-top.png');
+                    }
+                    
+                    .middle .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-full.png');
+                    }
+                    
+                    .end .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-bottom.png');
+                    }
+                    
+                    .solo .diamond-fix {
+                        background-image: url('../img/diamonds/diamond-sole.png');
+                    }
+            
+                .diamond-clone, .diamonddrag:hover {
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 6px;
+                    border: 3px solid #0ff;
+                    background: #000;
+                    z-index: 11;
+                    left: 14px;
+                    top: 14px;
+                    cursor: pointer;
+                }
+
+                    
+                /* while dragging */
+                .ui-sortable-helper {
+                    background: #fff;
+                    box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+                }
+                
+                    .ui-sortable-helper > .diamond > .diamond-fix {
+                        background-image: url('../img/diamonds/diamond.png')!important;
+                    }
+                
+        .selectable-ag {
+            float: left;
+            text-align: center;
+            width: 32px;
+            height: 100%;
+            padding: 2px;
+            background: #fff;
+            cursor: pointer;
+        }
+        
+            .selectable-ag.selected {
+                background: #f85c37;
+            }
+            
+        .master-name {
+            float: left;
+            width: calc(100% - 56px);
+            height: 100%;
+            padding: 2px 10px;
+            cursor: move;
+            background: #fff;
+        }
+        
+          .master-name.selected {
+                background: #f85c37;
+            }
+            
+
+
+

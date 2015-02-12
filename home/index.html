@@ -15,20 +15,27 @@
         <script src="https://code.angularjs.org/1.2.12/angular-sanitize.min.js"></script>
         <script src='js/app.js' type='text/javascript'></script>
         <script src='js/factory.js' type='text/javascript'></script>
-        <script src='js/controllers/mainController.js' type='text/javascript'></script>
-
+        <script src='js/templates.js' type='text/javascript'></script>
+        <script src='js/controllers/mastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/designspaceController.js' type='text/javascript'></script>
+        <script src='js/directives.js' type='text/javascript'></script>
+        <script src='js/sortable.js' type='text/javascript'></script>
 
         <!-- CSS -->
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/alice.css">
+        <link rel="stylesheet" type="text/css" href="css/bluepill.css">
 
         <!-- fonts -->
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css'>
+        
+        <!-- d3 JS -->
+        <script src="js/d3-v3-min.js" charset="utf-8"></script>
         
         <script src='js/scrolls.js' type='text/javascript'></script>
     </head>
 
-    <body>
+    <body ng-app="Metapolator">
         <div id="menu">
             <div id="logo"><img src="img/mp-logo.svg"></div>
             <div id="buttons">
@@ -37,6 +44,9 @@
                     <li><a href="#" data-scroll="redpill">Red Pill</a></li>
                     <li><a href="#" data-scroll="bluepill">Blue Pill</a></li>
                     <li><a href="#" data-scroll="pendrawing">Pen drawing</a></li>
+                    <li><a href="#" data-scroll="installation">Installation</a></li>
+                    <li><a href="#" data-scroll="fonts">Fonts</a></li>
+                    <li><a href="#" data-scroll="screenshots">Screenshots</a></li>
                     <li><a href="#" data-scroll="followus">Follow us!</a></li>
                 </ul>
             </div>
@@ -47,7 +57,7 @@
            
             <section data-anchor="introduction" class="red">
                 <h1>Introduction</h1>
-                <div class="bullets">•••</div>
+                <div class="bullets"></div>
                 <div class="content intro-content">
                     “Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.<br><br>
                     With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency. They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.<br><br>
@@ -114,17 +124,35 @@
                      As Peter's design took shape, we joked that this was like the Matrix, a &#8220;Red Pill&#8221; that reveals the true underlying reality, while Peter's slick UI was a &#8220;Blue Pill.&#8221;
                      These names have stuck as codenames, and you can now play around with demos of the two:
                      </p>
-                     <a href="http://metapolator.com/red-pill-demo">Red Pill</a> ••• <a href="http://metapolator.com/slider">Blue Pill</a>
                      <p>
+                     <a href="http://metapolator.com/red-pill-demo">Red Pill</a>
+                     </p>
                      <br><br>
+                </div>
+                <br><br>
+                <div class="bullets"></div>
+            </section>  
+
+            <section data-anchor="bluepill" class="grey">
+                <h1>Blue Pill</h1>
+                <div class="bullets"></div>
+                <div class="content" id="blue-pill-content">
+                    This is a snapshot of the Blue Pill status:<br><br><br>
+                    <div class="bluepill-left">
+                        <masters ng-controller="mastersController" ng-mouseup="mouseclick = false"></masters>
+                    </div>
+                    <div class="bluepill-right">
+                        <designspace ng-controller="designspaceController"></designspace>
+                    </div>
                     
                 </div>
-                <div class="pen-icon"><img src="img/pen-white.png"></div>
+                <br><br>Check the <a href="http://metapolator.com/slider/" target="_blank">progress of the blue pill</a>.
+                <div class="bullets"></div>
             </section>  
             
             <section data-anchor="pendrawing">
                 <h1>Pen Drawing</h1>
-                <div class="bullets">•••</div>
+                <div class="bullets"></div>
                 <div class="content">
                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. 
                     <div id="pen-drawing-container">
@@ -135,20 +163,56 @@
                 </div>
             </section>
             
-            <section data-anchor="followus" class="red">
+            <section data-anchor="installation" class="red">
+                <h1>Installation</h1>
+                <div class="bullets"></div>
+                <div class="content">
+                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
+
+                </div>
+                <div class="bullets"></div>
+            </section>
+            
+            <section data-anchor="fonts">
+                <h1>Fonts designed for and with Metapolator</h1>
+                <div class="bullets"></div>
+                <div class="content">
+                    <b>Pre-Metapolating</b><br>Fonts can be prepared for optimal processing with Metapolator. Each glyph be broken up into its individual strokes, and each stroke should have an equal amount of paired points. 
+                    <br><br>
+                    <img src="img/Latin.svg"><br><br>
+                    <b>New Families</b><br>Work Sans, Sean Sans and Breite are being developed as the first true Metapolator font families. 
+                    <br><br>
+                    <img src="img/Font.svg">
+                    <div class="bullets black"></div>
+                </div>
+            </section>
+            
+
+            
+            <section data-anchor="screenshots" class="red">
+                <h1>Screenshots</h1>
+                <div class="bullets"></div>
+                <div class="content">
+                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
+
+                </div>
+                <div class="bullets"></div>
+            </section>
+            
+            <section data-anchor="followus">
                 <h1>Follow us!</h1>
-                <div class="bullets">•••</div>
+                <div class="bullets"></div>
                 <div class="content">
                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
                      <div class="pen-icon"><img src="img/pen-white.png"></div>
-                     <div class="bullets black">•••</div>
+                     <div class="bullets black"></div>
                      <div class="content-center content-follow">
                          <img src="img/google-plus.png" width="48"><br>
                          Follow the project on <a href="https://plus.google.com/communities/110027004108709154749" target="_blank">Google Plus</a><br><br>                         
                          <img src="img/github.svg" width="48"><br>
                          Contribute at <a href="https://github.com/metapolator/" target="_blank">Github</a>
                     </div>
-                    <div class="bullets black">•••</div>
+                    <div class="bullets black"></div>
                 </div>
             </section>
         </div>
