@@ -34,7 +34,7 @@ app.factory("sharedScope", function($rootScope) {
             }]
         }],
         adjustmentMasters : [],
-        designSpaces : [{"name":"Space 1","type":"Control","masters":[{"master":{"fontFamily":"Roboto","name":"Roboto Light","weight":"100","display":true,"edit":true},"value":0.582},{"master":{"fontFamily":"Roboto","name":"Roboto Bold","weight":"700","display":true,"edit":false},"value":0.418}],"axes":[{"value":41.75}],"triangle":false,"mainMaster":"0"}, {"name":"Space 2","type":"Explore","masters":[{"master":{"fontFamily":"Roboto","name":"Roboto Light","weight":"100","display":true,"edit":true},"coordinates":[193.5,187.2833251953125]},{"master":{"fontFamily":"Roboto","name":"Roboto Bold","weight":"700","display":true,"edit":false},"coordinates":[317.5,184.2833251953125]},{"master":{"fontFamily":"Roboto","name":"Roboto Bold","weight":"700","display":true,"edit":false},"coordinates":[319.5,315.2833251953125]},{"master":{"fontFamily":"Roboto","name":"Roboto Regular","weight":"400","display":false,"edit":true},"coordinates":[199.5,311.2833251953125]}],"axes":[],"triangle":false,"mainMaster":"0"}],
+        designSpaces : [{"name":"Space 1","type":"x","masters":[],"axes":[],"triangle":false,"mainMaster":"0"}],
         currentDesignSpace : 0
     }
     return scope;
