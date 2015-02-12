@@ -64,23 +64,75 @@
                     With Metapolator, typographers gain the possibility to change existing fonts — or even create new ones — to their needs.<br><br>
                     Metapolator is extensible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.” 
                 </div>
-                    <div class="subscript"><a href="https://github.com/metapolator/metapolator/wiki/interaction-design#the-product-phase" target="_blank">Product Vision</a> compiled by Peter Sikking, UI Architect</div>
+                    <div class="subscript"><a href="https://github.com/metapolator/metapolator/wiki/interaction-design#the-product-phase" target="_blank">Product Vision</a> by Peter Sikking, UI Architect</div>
                     <div class="pen-icon"><img src="img/pen-white.png"></div>
             </section>
             
 
             
             <section data-anchor="redpill">
-                <h1>Red Pill</h1>
-                <div class="bullets"></div>
+                <h1>Project History</h1>
+                <div class="bullets">•••</div>
                 <div class="content">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
-                    <br>
-                    Check out the <a href="http://metapolator.com/red-pill-demo/" target="_blank">Red Pill Demo</a>.
+                     <p>
+                     The Metapolator project is a free, libre, open source project that is developed by a community of designers and developers. 
+                     It began in the March 2013 when Simon Egli (a graphic and type designer from Switzerland) and Dave Crossland (a software freedom activist working to free typography) met in New York City to discuss the <a href="http://metaflop.com" title="Metaflop">Metaflop</a> project that Simon was involved in. Metaflop is web-based graphical user interface to the <a href="http://en.wikipedia.org/wiki/Metafont" title="Metafont">Metafont</a> parametric font programming language, allowing non-programmers to adjust the parameters of a metafont intuitively. 
+                     </p>
+                     <p>
+                     Simon proposed that the Bezier contours typically drawn by type designers, and stored in the <a href="http://unifiedfontobject.org/versions/ufo2/glif.html">UFO GLIF</a> XML format, could be converted into a Metafont <i>stroke</i> element, if they simply have an even number of points. 
+                     Dave wondered if this could become a powerful new way to develop typeface families. 
+                     It would combine the parametric power of Metafont with a graphical interface to glyph drawing, and overcome the inherent limitation of inputting text for outputting graphics that has prevented Metafont from being truly useful for type designers.
+                     </p>
+                     <p>
+                     Simon returned home to Switzerland and founded the Metapolator project to pursue this dream. 
+                     He began a PHP codebase and posted some <a href="http://metapolator.tumblr.com/" title="Metapolator prototypes">experimental results on Tumblr</a>. 
+                     Dave and Simon attended the <a href="http://libregraphicsmeeting.org/2013">Libre Graphics Meeting 2013</a> in Madrid in April, and met again in Switzerland to begin a new prototype, <a href="https://github.com/metapolator/mfg-2013">mfg</a>.
+                     This used a Python web server to connect <a href="http://robofab.com/">Robofab</a>, <a href="http://en.wikipedia.org/wiki/MetaPost">Metapost</a>, <a href="http://www.ctan.org/pkg/mf2pt1">mf2pt1</a>, <a href="http://fontforge.github.io">FontForge</a>, and <a href="http://paperjs.org/">paper.js</a>.
+                     Over the following year, the project grew to include new contributors, including Vitaly Volkhov (a Python developer in Ukraine) Wei Huang (a graphic and type designer in Norway) and Nicolas Pauly (a graphic and type designer in Lyon.) 
+                     With a working prototype in hand, Google Fonts project commissioned Simon to develop a new Sans Serif family, Sean Sans.
+                     </p>
+                     <p>
+                     In April 2014 Simon presented this prototype at the <a href="http://www.metapolator.com/pre.html" title="Metapolator at Libre Graphics Meeting 2014">Libre Graphics Meeting 2014</a> in Leipzig, which was attended by Lasse Fister (a designer-developer in Nuremburg) and Peter Sikking (a user experience architect in Berlin.)
+                     Lasse had developed the <a href="http://lib.ufojs.org/" title="ufo.js">ufo.js</a> library, for working with UFO fonts entirely in the browser.
+                     He proposed an entirely new approach to Metapolator that would leverage his ufo.js and a native JavaScript implementation of the Hobby Spline to completely move away from Metafont itself.
+                     In its place, Lasse proposed <a href="https://github.com/metapolator/metapolator/wiki/cascading-properties-sheets" title="Cascading Properties Sheets">Cascading Properties Sheets</a>, which uses the familiar syntax of CSS to describe font properties and parametric formula.
+                     At the same time Peter proposed a completely new graphical interface that would be designed from the ground up using his User Experience Architecture process.
+                     </p>
+                     <p>
+                     The Google Fonts project commissioned font families from Simon, Wei, Nicolas and Lasse, and gave financial support to Peter as well as Reuben Thomas and Ben Martin, software developers who had contributed to FontForge and assisted the software development led by Lasse. 
+                     These core developers of the &#8220;Neue Metapolator&#8221; met at the <a href="http://web.archive.org/web/20140723144305/http://automatic-type-design.anrt-nancy.fr/index_en.php">automatic type design</a> conference at the Atelier National de Recherche Typographique in May in Nancy, France.</p>
+                     <p>                      
+                     Development continued over the summer of 2013, posting work in progress and discussions on the <a href="https://plus.google.com/communities/110027004108709154749" title="Metapolator G+ community">Metapolator community on Google Plus</a>.
+                     The community grew to include contributions from Coen van der Kamp and Jeroen Breen on the front-end development of the UI that Peter designs.
+                     Lasse is developing the core CPS engine, Simon continues to develop the Sean family, and Jeroen is implementing the UI in close collaboration with Peter.
+                     </p>
+                     <p>
+                     We will present the latest prototype at the <a href="http://libregraphicsmeeting.org">Libre Graphics Meeting 2015</a>.
+                     </p>
+                     <br><br>
+                    
                 </div>
                 <div class="pen-icon"><img src="img/pen-red.png"></div>
             </section>  
             
+            <section data-anchor="bluepill" class="red">
+                <h1>Red Pill &amp; Blue Pill</h1>
+                <div class="bullets">•••</div>
+                <div class="content">
+                     <p>
+                     Lasse developed a modest UI for his own use and development, that allows you to edit CPS in a browser and see the results.
+                     As Peter's design took shape, we joked that this was like the Matrix, a &#8220;Red Pill&#8221; that reveals the true underlying reality, while Peter's slick UI was a &#8220;Blue Pill.&#8221;
+                     These names have stuck as codenames, and you can now play around with demos of the two:
+                     </p>
+                     <p>
+                     <a href="http://metapolator.com/red-pill-demo">Red Pill</a>
+                     </p>
+                     <br><br>
+                </div>
+                <br><br>
+                <div class="bullets"></div>
+            </section>  
+
             <section data-anchor="bluepill" class="grey">
                 <h1>Blue Pill</h1>
                 <div class="bullets"></div>
