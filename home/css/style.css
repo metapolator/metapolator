@@ -116,10 +116,26 @@
         padding: 60px;
     }
     
+        section a {
+            color: #000;
+        }
+        
+            section a:hover {
+                color: #f85c37;
+            }
+    
     section.red {
         background: #f85c37;
         color: #fff;
     }
+    
+        section.red a {
+            color: #fff;
+        }
+    
+            section.red a:hover {
+                color: #000;
+            }
     
     
     /* intro */
