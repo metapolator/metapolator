@@ -1,2 +1,1 @@
-var app = angular.module('metapolator', ['']);
-
+var app = angular.module('Metapolator', ['ui.sortable']);

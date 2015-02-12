@@ -15,20 +15,27 @@
         <script src="https://code.angularjs.org/1.2.12/angular-sanitize.min.js"></script>
         <script src='js/app.js' type='text/javascript'></script>
         <script src='js/factory.js' type='text/javascript'></script>
-        <script src='js/controllers/mainController.js' type='text/javascript'></script>
-
+        <script src='js/templates.js' type='text/javascript'></script>
+        <script src='js/controllers/mastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/designspaceController.js' type='text/javascript'></script>
+        <script src='js/directives.js' type='text/javascript'></script>
+        <script src='js/sortable.js' type='text/javascript'></script>
 
         <!-- CSS -->
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/alice.css">
+        <link rel="stylesheet" type="text/css" href="css/bluepill.css">
 
         <!-- fonts -->
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css'>
+        
+        <!-- d3 JS -->
+        <script src="js/d3-v3-min.js" charset="utf-8"></script>
         
         <script src='js/scrolls.js' type='text/javascript'></script>
     </head>
 
-    <body>
+    <body ng-app="Metapolator">
         <div id="menu">
             <div id="logo"><img src="img/mp-logo.svg"></div>
             <div id="buttons">
@@ -74,14 +81,21 @@
                 <div class="pen-icon"><img src="img/pen-red.png"></div>
             </section>  
             
-            <section data-anchor="bluepill" class="red">
+            <section data-anchor="bluepill" class="grey">
                 <h1>Blue Pill</h1>
                 <div class="bullets"></div>
-                <div class="content">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
+                <div class="content" id="blue-pill-content">
+                    This is a snapshot of the Blue Pill status:<br><br><br>
+                    <div class="bluepill-left">
+                        <masters ng-controller="mastersController" ng-mouseup="mouseclick = false"></masters>
+                    </div>
+                    <div class="bluepill-right">
+                        <designspace ng-controller="designspaceController"></designspace>
+                    </div>
                     
                 </div>
-                <div class="pen-icon"><img src="img/pen-white.png"></div>
+                <br><br>Check the <a href="http://metapolator.com/slider/" target="_blank">progress of the blue pill</a>.
+                <div class="bullets"></div>
             </section>  
             
             <section data-anchor="pendrawing">
