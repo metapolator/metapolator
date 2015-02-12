@@ -41,9 +41,9 @@
             <div id="buttons">
                 <ul>
                     <li><a href="#" data-scroll="introduction">Introduction</a></li>
-                    <li><a href="#" data-scroll="redpill">Red Pill</a></li>
+                    <li><a href="#" data-scroll="projecthistory">Project History</a></li>
                     <li><a href="#" data-scroll="bluepill">Blue Pill</a></li>
-                    <li><a href="#" data-scroll="pendrawing">Pen drawing</a></li>
+                    <li><a href="#" data-scroll="drawing">Drawing</a></li>
                     <li><a href="#" data-scroll="installation">Installation</a></li>
                     <li><a href="#" data-scroll="fonts">Fonts</a></li>
                     <li><a href="#" data-scroll="screenshots">Screenshots</a></li>
@@ -69,7 +69,7 @@
             
 
             
-            <section data-anchor="redpill">
+            <section data-anchor="projecthistory">
                 <h1>Project History</h1>
                 <div class="bullets"></div>
                 <div class="content">
@@ -124,7 +124,7 @@
                      These names have stuck as codenames, and you can now play around with demos of the two:
                      </p>
                      <p>
-                     <a href="http://metapolator.com/red-pill-demo">Red Pill</a>
+                     Check out the <a href="http://metapolator.com/red-pill-demo" target="_blank">full red pill interface (in a new window)</a>.
                      </p>
                      <br><br>
                 </div>
@@ -136,7 +136,8 @@
                 <h1>Blue Pill</h1>
                 <div class="bullets"></div>
                 <div class="content" id="blue-pill-content">
-                    This is a snapshot of the Blue Pill status:<br><br><br>
+                    The Blue Pill offers a way to interactively metapolate.
+                    You can explore and control a design space:<br><br><br>
                     <div class="bluepill-left">
                         <masters ng-controller="mastersController" ng-mouseup="mouseclick = false"></masters>
                     </div>
@@ -145,15 +146,21 @@
                     </div>
                     
                 </div>
-                <br><br>Check the <a href="http://metapolator.com/slider/" target="_blank">progress of the blue pill</a>.
+                <br><br>
+                <br><br>
+                Check out the <a href="http://metapolator.com/slider/" target="_blank">full blue pill interface (in a new window)</a>.
                 <div class="bullets"></div>
             </section>  
             
-            <section data-anchor="pendrawing">
-                <h1>Pen Drawing</h1>
+            <section data-anchor="strokes">
+                <h1>Drawing With Strokes</h1>
                 <div class="bullets"></div>
                 <div class="content">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. 
+                    The core of Metapolator is the stroke element, re-implemented from Metafont. 
+                    This uses the Hobby Spline to control a stroke, that is defined by points along a skeleton path.
+                    Each stroke point has a left point and a right point set at an angle and a distance from that parent point.
+                    The parent has a direction angle itself, and a tension value that defines the curvature of the stroke.
+                    Here is a simple interactive demonstration to play with drawing the Metapolator way:
                     <div id="pen-drawing-container">
                         <canvas class="float-element-1" id="pencanvas" width="400" height="400"></canvas>
                         <iframe class="float-element-2" width="400" height="400" src="https://www.youtube.com/embed/LlvO4n6vd-U" frameborder="0" allowfullscreen></iframe>
@@ -165,7 +172,7 @@
                 <h1>Installation</h1>
                 <div class="bullets"></div>
                 <div class="content">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
+                    Check out the <a href="https://github.com/metapolator/metapolator/wiki/installation">Metapolator Wiki Installation</a> page for all the details!<br><br>
 
                 </div>
                 <div class="bullets"></div>
@@ -191,19 +198,21 @@
                 <h1>Screenshots</h1>
                 <div class="bullets"></div>
                 <div class="content">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
-
+                     <img src="https://lh4.googleusercontent.com/-tyzo7UC1vP8/VMtMTB_4m0I/AAAAAAAAP5s/Q7rgl3qI9jQ/w1012-h698/postedit.mov" width="300px"><br><br>
+                     <p>
+                     <a href="https://plus.google.com/+DaveCrossland/posts/dahVFykbWSM">Video introduction to Lasse's workflow</a> (2015-01-28, 2 hours)
+                     </p>
+                     <p>
+                     <a href="https://plus.google.com/+DaveCrossland/posts/dpMQUJtQ9Tf">Video introduction to Simon's workflow</a> (2015-01-27, 30 mins)
+                     </p>
                 </div>
                 <div class="bullets"></div>
             </section>
             
             <section data-anchor="followus">
                 <h1>Follow us!</h1>
-                <div class="bullets"></div>
+                <div class="bullets black"></div>
                 <div class="content">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet arcu et nulla scelerisque, vitae venenatis lacus pharetra. Sed quis pulvinar lorem, eget feugiat ipsum. Vivamus sit amet congue velit, sit amet dignissim odio. Vivamus tincidunt fermentum diam non tincidunt. Quisque accumsan nec orci ac ornare. Duis turpis lorem, malesuada sed posuere non, commodo feugiat risus. <br><br>
-                     <div class="pen-icon"><img src="img/pen-white.png"></div>
-                     <div class="bullets black"></div>
                      <div class="content-center content-follow">
                          <img src="img/google-plus.png" width="48"><br>
                          Follow the project on <a href="https://plus.google.com/communities/110027004108709154749" target="_blank">Google Plus</a><br><br>                         
