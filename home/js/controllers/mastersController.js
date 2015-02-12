@@ -280,7 +280,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                     } else if ($scope.data.designSpaces[$scope.data.currentDesignSpace].type == "Explore") {
                         // get relative mouse position of where dropped
                         var mouseX = e.clientX - Math.round($(".drop-area").offset().left) - 10;
-                        var mouseY = e.clientY - Math.round($(".drop-area").offset().top) - 10;
+                        var mouseY = $(window).scrollTop() + e.clientY - Math.round($(".drop-area").offset().top) - 10;
                         $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push({
                             master : master,
                             coordinates : [mouseX, mouseY]
