@@ -20,7 +20,7 @@
         font-family: "alice";
         font-size: 18px;
         line-height: 27px;
-        background: #d7d2c8;
+        background: #fff;
         padding: 0;
         margin: 0;
     } 
@@ -67,7 +67,7 @@
             width: 960px;
             margin: 40px auto 300px auto;
             background: #fff;
-            box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
 
 
