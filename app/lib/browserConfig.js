@@ -21,7 +21,7 @@ requirejs.config({
       , 'socketio': '../socket.io/socket.io'
       , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
     }
-  // exclude on build 
+  // exclude on build
   , excludeShallow: [
         // the optimizer can't read es6 generators
         // NOTE: for dependency tracing the genereated es5 version is used
@@ -63,15 +63,3 @@ try {
     console,log(err);
     console.info("No generators, falling back.");
 }
-
-// ui code mirror looks for a global CodeMirror object, which is not defined
-// by code mirror when loaded via AMD ... m(
-// this is the test in the file:
-// if (angular.isUndefined(window.CodeMirror))
-define('GlobalCodeMirror', [
-    'codemirror/lib/codemirror'
-  , 'codemirror/mode/css/css'
-    ], function(codemirror) {
-    window.CodeMirror = codemirror;
-    return undefined;
-});

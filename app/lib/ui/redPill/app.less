@@ -16,6 +16,30 @@ body {
     padding: 0 3em;
 }
 
+.compatibility-info {
+    background: orange;
+    color: white;
+    border: .5em solid red;
+    padding: 1em;
+}
+.compatibility-info pre {
+    background: black;
+    padding: .5em;
+}
+
+
+body.dependencies-ready .compatibility-info{
+    display: none;
+}
+
+
+red-pill {
+    display: none;
+}
+body.dependencies-ready red-pill{
+    display: block;
+}
+
 red-pill label {
     display: block;
 }
@@ -25,7 +49,6 @@ red-pill label select {
 }
 
 red-pill {
-    display: block;
     color: black;
     border: @app-border;
     padding: @app-gap;
@@ -47,6 +70,10 @@ mtk-red-pill-glyphs label{
     vertical-align: bottom;
 }
 
+mtk-red-pill-glyphs label:first-child{
+    margin-left: @app-gap;
+}
+
 mtk-red-pill-glyphs > label > * {
     vertical-align: middle;
 }
@@ -58,7 +85,7 @@ mtk-red-pill-glyph {
     margin-bottom: @app-gap;
     overflow: auto;
     background: white;
-    
+
     svg g.layer-centerline {
         fill: none;
         stroke: lime;
@@ -91,11 +118,11 @@ mtk-red-pill-glyphs li {
 
 red-pill .children {
     white-space: nowrap;
-    
+
     mtk-text-editor{
         width: 450px;
     }
-    
+
     mtk-red-pill-glyphs,
     mtk-text-editor {
         display: inline-block;
