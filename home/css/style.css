@@ -1,0 +1,186 @@
+      
+    * {
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;  
+    }
+    
+    button {
+        cursor: pointer;
+    }
+
+    
+    
+    
+    
+/*************** frame *************/
+ 
+ 
+    body {
+        font-family: "alice";
+        font-size: 18px;
+        line-height: 27px;
+        background: #d7d2c8;
+        padding: 0;
+        margin: 0;
+    } 
+ 
+        #menu {
+            position: fixed;
+            left: calc(50% - 630px);
+            top: 20px;
+            width: 150px;
+            padding: 20px;
+        }
+        
+            #menu #logo {
+                text-align: right;
+            }
+        
+            #menu #buttons ul {
+                list-style: none;
+                margin: 20px 0 0 0 ;
+                padding: 0;
+            }
+            
+                #menu #buttons ul li {
+                    float: right;
+                }
+            
+                    #buttons ul li a {
+                        width: 100%;
+                        font-weight: 300;
+                        font-size: 16px;
+                        text-decoration: none;
+                        color: #555;
+                        text-align: right;
+                        padding: 4px;
+                    }
+                    
+                        #buttons a:hover, #buttons .active {
+                            color: #fff;
+                            background: #f85c37;
+                        }    
+        
+        #pagewrap {
+            position: relative;
+            width: 960px;
+            margin: 40px auto 300px auto;
+            background: #fff;
+            box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+        }
+
+
+
+/*************** content *************/
+
+    h1 {
+        font-weight: 100;
+        font-size: 54px;
+        text-align: center;
+    }
+    
+    .pen-icon {
+        width: 100%;
+        display: block;
+        margin-top: 100px;
+    }
+    
+        .pen-icon img {
+            margin: 0 auto;
+            width: 49px;
+            height: auto;
+            display: block;
+        }
+    
+    .bullets {
+        text-align: center;
+        margin: 60px 0;
+        font-size: 32px;
+    }
+    
+        .bullets.black {
+            color: #000;
+        }
+    
+    .content-center {
+        text-align: center;
+    }
+    
+    section {
+        padding: 60px;
+    }
+    
+    section.red {
+        background: #f85c37;
+        color: #fff;
+    }
+    
+    
+    /* intro */
+   
+    .intro-content {
+        font-size: 27px;
+        line-height: 38px;
+    }
+    
+    .subscript {
+        padding: 10px;
+        background: #f85c37;
+        color: #fff; 
+        font-size: 14px;
+        margin-top: 60px;
+        display: inline-block;
+    }
+    
+    section.red .subscript {
+        background: #fff;
+        color: #f85c37;
+    }
+    
+        .subscript a {
+            color: #000;
+            text-decoration: none;
+        }
+        
+            .subscript a:hover {
+                text-decoration: underline;
+            }
+
+    
+/* pen drawing */
+
+    #pen-drawing-container {
+        overflow: auto;
+        padding-top: 80px;
+    }
+    
+        .float-element-1 {
+            float: left;
+            display: inline-block;
+            margin-right: 18px;
+            border: 1px solid #f85c37;
+        }
+        
+        .float-element-2 {
+            float: left;
+            display: inline-block;
+            margin-left: 18px;
+            border: 1px solid #f85c37;
+        }
+        
+
+    
+/* follow us */
+    
+    .content-follow {
+        color: #000;
+    }
+    
+        .content-follow a {
+            color: #000;
+        }
+        
+            .content-follow a:hover {
+                color: #fff;
+            }
