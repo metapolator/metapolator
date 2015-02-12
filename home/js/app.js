@@ -1,2 +1,2 @@
-var app = angular.module('commenting', ['ngSanitize']);
+var app = angular.module('metapolator', ['']);
 

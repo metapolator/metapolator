@@ -1,4 +1,4 @@
-app.controller('commentController', function($scope, $http, sharedScope) { 
+app.controller('mainController', function($scope, $http, sharedScope) { 
     $scope.data = sharedScope.data;
     
 
