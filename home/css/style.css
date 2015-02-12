@@ -59,7 +59,7 @@
                     
                         #buttons a:hover, #buttons .active {
                             color: #fff;
-                            background: #f85c37;
+                            background: #ED1C24;
                         }    
         
         #pagewrap {
@@ -121,11 +121,11 @@
         }
         
             section a:hover {
-                color: #f85c37;
+                color: #ED1C24;
             }
     
     section.red {
-        background: #f85c37;
+        background: #ED1C24;
         color: #fff;
     }
     
@@ -151,7 +151,7 @@
     
     .subscript {
         padding: 10px;
-        background: #f85c37;
+        background: #ED1C24;
         color: #fff; 
         font-size: 14px;
         margin-top: 60px;
@@ -160,7 +160,7 @@
     
     section.red .subscript {
         background: #fff;
-        color: #f85c37;
+        color: #ED1C24;
     }
     
         .subscript a {
@@ -212,14 +212,14 @@
             float: left;
             display: inline-block;
             margin-right: 18px;
-            border: 1px solid #f85c37;
+            border: 1px solid #ED1C24;
         }
         
         .float-element-2 {
             float: left;
             display: inline-block;
             margin-left: 18px;
-            border: 1px solid #f85c37;
+            border: 1px solid #ED1C24;
         }
         
 
