@@ -1,6 +1,7 @@
-app.controller("mastersController", function($scope, sharedScope) {'use strict';
+app.controller("mastersController", function($scope, sharedScope) {
+    'use strict';
     $scope.data = sharedScope.data;
-    
+
     $scope.mouseclick = false;
     $scope.mouseDown = false;
     $scope.commandDown = false;
@@ -163,21 +164,18 @@ app.controller("mastersController", function($scope, sharedScope) {'use strict';
             }
         }
     }
-    
-    
-    
     // selection column
-    
-    $scope.allMastersSelected = function (thisSequence) {
+
+    $scope.allMastersSelected = function(thisSequence) {
         var i = 0;
         var hit = 0;
         angular.forEach(thisSequence.masters, function(master) {
             if (master.edit == true) {
-                hit ++;
+                hit++;
             }
             i++;
         });
-        if (hit == i && i!= 0) {
+        if (hit == i && i != 0) {
             return true;
         }
     }
@@ -197,8 +195,8 @@ app.controller("mastersController", function($scope, sharedScope) {'use strict';
             thisMaster.edit = true;
         }
     }
-       
-    $scope.selectSequenceForEdit = function (thisSequence) {
+
+    $scope.selectSequenceForEdit = function(thisSequence) {
         $scope.deselectAll();
         angular.forEach(thisSequence.masters, function(master) {
             master.edit = true;
@@ -238,40 +236,36 @@ app.controller("mastersController", function($scope, sharedScope) {'use strict';
             }
         }
     }
-    
+
     $scope.deselectAll = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 master.edit = false;
             });
-        });  
+        });
     }
-    
-    
-    
 
     $scope.sortableOptionsSequences = {
         helper : 'clone',
         handle : '.sequence-name'
     };
-    
-    
+
     $scope.sortableOptionsMasters = {
         cancel : '.no-drag, .drop-area, .diamond, .sequence-name',
         helper : 'clone',
         connectWith : '.drop-area, .sequence',
-        sort: function(e, ui){ 
+        sort : function(e, ui) {
             if (IsOverDropArea(ui)) {
                 $(".drop-area").addClass("drag-over");
             } else {
-               $(".drop-area").removeClass("drag-over"); 
+                $(".drop-area").removeClass("drag-over");
             }
         },
         update : function(e, ui) {
         },
         stop : function(e, ui) {
             // push master to design space when dropped on drop-area
-             if (IsOverDropArea(ui)) {
+            if (IsOverDropArea(ui)) {
                 // check which master is dropped
                 var sequenceIndex = ui.item.parent().parent().index();
                 var masterIndex = ui.item.index();
@@ -280,19 +274,10 @@ app.controller("mastersController", function($scope, sharedScope) {'use strict';
                 if ($scope.data.designSpaces[$scope.data.currentDesignSpace].masters.indexOf(master) > -1) {
                     alert("master already in this Design Space");
                 } else {
-                    
+
                     if ($scope.data.designSpaces[$scope.data.currentDesignSpace].type == "Control") {
-                        $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push(master);
-                        if ($scope.data.designSpaces[$scope.data.currentDesignSpace].masters.length > 1) {
-                            $scope.data.designSpaces[$scope.data.currentDesignSpace].axes.push({
-                                m1: $scope.data.designSpaces[$scope.data.currentDesignSpace].axes.length,
-                                m2: ($scope.data.designSpaces[$scope.data.currentDesignSpace].axes.length + 1),
-                                value: 50
-                            });
-                        }
-                    }
-                    
-                    else if ($scope.data.designSpaces[$scope.data.currentDesignSpace].type == "Explore") {
+                        addNewMaster(master);
+                    } else if ($scope.data.designSpaces[$scope.data.currentDesignSpace].type == "Explore") {
                         // get relative mouse position of where dropped
                         var mouseX = e.clientX - Math.round($(".drop-area").offset().left) - 10;
                         var mouseY = e.clientY - Math.round($(".drop-area").offset().top) - 10;
@@ -302,32 +287,47 @@ app.controller("mastersController", function($scope, sharedScope) {'use strict';
                         });
                     }
                     $scope.$apply();
-                    $(".drop-area").removeClass("drag-over"); 
+                    $(".drop-area").removeClass("drag-over");
                 }
             } else {
-               $(".drop-area").removeClass("drag-over"); 
+                $(".drop-area").removeClass("drag-over");
             }
         }
     };
-    
-    function IsOverDropArea (ui) {
+
+    function addNewMaster(master) {
+        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var masterSet = designspace.masters;
+        $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push({
+            master : master,
+            value : null
+        });
+        if (masterSet.length > 1) {
+            $scope.data.designSpaces[$scope.data.currentDesignSpace].axes.push({
+                value : 50
+            });
+        }
+    }
+
+    function IsOverDropArea(ui) {
         var dropLeft = $(".drop-area").offset().left;
         var dropRight = $(".drop-area").offset().left + $(".drop-area").outerWidth();
         var dropTop = $(".drop-area").offset().top;
         var dropBottom = $(".drop-area").offset().top + $(".drop-area").outerHeight();
-        
+
         var thisLeft = ui.offset.left;
         var thisRight = ui.offset.left + ui.item.outerWidth();
         var thisTop = ui.offset.top;
         var thisBottom = ui.offset.top + ui.item.outerHeight();
-        
-        var marginHor = ui.item.outerWidth()/2;
-        var marginVer = ui.item.outerHeight()/2;
-        
+
+        var marginHor = ui.item.outerWidth() / 2;
+        var marginVer = ui.item.outerHeight() / 2;
+
         if (dropLeft < (thisLeft + marginHor) && dropRight > (thisRight - marginHor) && dropTop < (thisTop + marginVer) && dropBottom > (thisBottom - marginVer)) {
             return true;
         } else {
             return false;
         }
     }
+
 });

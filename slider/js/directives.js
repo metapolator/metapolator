@@ -17,25 +17,43 @@ function($document) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var svg = d3.select(element[0]).append('svg');
+            var paddingLeft = 50;
+            var paddingTop = 30;
+            var axisWidth = 200;
+            var paddingLabel = 25;
+            var axisDistance = 50;
+            var axisTab = 10;
+            var axisTabLeft = 60;
+            var indentRight = 20;
+            var indentLeft = 40;
+            var dragActive = false;
+
             // watch for data changes and re-render
-            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].masters[0], data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
+            }, true);
+            scope.$watch('data.designSpaces[data.currentDesignSpace].axes', function(newVal) {
+                if (!dragActive) {
+                    return scope.render();
+                }
             }, true);
 
             // (RE-)RENDER
             scope.render = function() {
                 var data = scope.data.designSpaces[scope.data.currentDesignSpace];
+
                 // remove all previous items before render
                 svg.selectAll('*').remove();
 
                 // 1 master in Design Space
-                if (data.axes.length == 0 && data.masters.length == 1) {
-                    // create slider
-                    svg.append('circle').attr('class', 'slider-handle').attr('r', 8).attr('fill', '#000').attr('cx', 110).attr('cy', 20);
+                if (data.masters.length == 1) {
+                    // create axes
+                    svg.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
                     // create  label
-                    svg.append('text').attr('class', 'label-left').attr('x', 10).attr('y', 38).text(function() {
-                        return data.masters[0].name;
+                    svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(function() {
+                        return data.masters[0].master.name;
                     });
+                    svg.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingTop + paddingLabel).text("Just one more...");
                 }
 
                 // Triangle view
@@ -50,7 +68,9 @@ function($document) {
                     //drag behaviour
                     var drag = d3.behavior.drag().on('dragstart', function() {
                         d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
+                        dragActive = true;
                     }).on('drag', function() {
+                        
                         d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y);
                         var lengthA = getDistance(d3.event.x, 183, d3.event.y, 10) + 1;
                         var lengthB = getDistance(d3.event.x, 183, d3.event.y, 210) + 1;
@@ -61,6 +81,7 @@ function($document) {
                         data.axes[1].value = ratioBtoC;
                         scope.$apply();
                     }).on('dragend', function() {
+                        dragActive = false;
                         d3.select(this).attr('stroke', 'none');
                     });
 
@@ -76,55 +97,96 @@ function($document) {
                 }
 
                 // All other cases
-                else {
+                else if (data.masters.length > 0) {
                     // create drag events
-                    var containment = d3.scale.linear().domain([1, 100]).range([0, 200]).clamp(true);
                     var drag = d3.behavior.drag().on('dragstart', function() {
-                        // dragstart
+                        dragActive = true;
                         d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
                     }).on('drag', function() {
-                        d3.select(this).attr('cx', d3.event.x);
+                        d3.select(this).attr('cx', limitX(d3.event.x));
                         // update scope and redraw ellipses
                         var thisIndex = d3.select(this).attr('index');
-                        data.axes[thisIndex].value = ((d3.event.x - 10) / 2);
+                        var thisValue = (limitX(d3.event.x) - indentLeft) / (axisWidth / 100);
+                        data.axes[thisIndex].value = thisValue;
+                        //d3.select("#output-label-" + thisIndex).text(thisValue.toFixed(1) + "%");
+                        // get ratios
+                        scope.getMetapolationRatios(data);
                         scope.$apply();
                     }).on('dragend', function() {
-                        // dragstop
+                        dragActive = false;
                         d3.select(this).attr('stroke', 'none');
                     });
 
-                    // create axes
-                    svg.selectAll('line').data(data.axes).enter().append('line').attr('class', 'slider-axis').attr('x1', '10').attr('x2', '210').attr('y1', function(d, i) {
-                        return i * 50 + 20;
-                    }).attr('y2', function(d, i) {
-                        return i * 50 + 20;
-                    });
+                    function limitX(x) {
+                        if (x < indentLeft) {
+                            x = indentLeft;
+                        }
+                        if (x > (axisWidth + indentLeft)) {
+                            x = axisWidth + indentLeft;
+                        }
+                        return x;
+                    }
 
-                    // create slider handles
-                    svg.selectAll('circle').data(data.axes).enter().append('circle').attr('class', 'slider-handle').attr('r', 8).attr('fill', '#000').attr('cx', function(d) {
-                        return d.value * 2 + 10;
-                    }).attr('cy', function(d, i) {
-                        return i * 50 + 20;
-                    }).attr('index', function(d, i) {
+                    // create slider containers
+                    var axes = svg.selectAll('g').data(data.axes).enter().append('g').attr('transform', function(d, i) {
+                        var x = paddingLeft - indentLeft;
+                        var y = i * axisDistance + paddingTop;
+                        return "translate(" + x + "," + y + ")";
+                    }).attr('class', 'slider-container');
+
+                    // append axis itself
+                    axes.append('path').attr('d', function(d, i) {
+                        // prevent last axis from having the vertical offset
+                        if (i != (data.axes.length - 1)) {
+                            var offset = 1;
+                        } else {
+                            var offset = 0;
+                        }
+                        return 'M' + indentLeft + ' ' + (axisTab + offset * axisTabLeft) + ' L' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0 L' + (indentLeft + axisWidth) + ' ' + axisTab;
+                    }).attr('class', 'slider-axis');
+
+                    // append slider handles
+                    axes.append('circle').attr('r', 8).attr('cx', function(d) {
+                        return d.value * (axisWidth / 100) + indentLeft;
+                    }).attr('cy', '0').attr('index', function(d, i) {
                         return i;
-                    }).call(drag);
+                    }).attr('class', 'slider-handle').call(drag);
+
+                    // create output label
+                    /*
+                    axes.append('text').attr('x', (indent + (0.5 * axisWidth))).attr('y', paddingLabel).text(function(d, i) {
+                    return data.axes[i].value.toFixed(1) + '%';
+                    }).attr("id", function(d, i) {
+                    return "output-label-" + i;
+                    }).attr('class', 'slider-label-output slider-label');
+                    */
 
                     // create left label
-                    svg.selectAll('text.label-left').data(data.axes).enter().append('text').attr('class', 'label-left').attr('x', 10).attr('y', function(d, i) {
-                        return i * 50 + 38;
-                    }).text(function(d) {
-                        return data.masters[d.m1].name;
-                    });
+                    if (data.masters.length < 3) {
+                        svg.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(data.masters[0].master.name).attr('class', 'slider-label-left slider-label');
+                    }
 
                     // create rigth label
-                    svg.selectAll('text.label-right').data(data.axes).enter().append('text').attr('class', 'label-right').attr('x', 210).attr('y', function(d, i) {
-                        return i * 50 + 38;
-                    }).text(function(d) {
-                        return data.masters[d.m2].name;
+                    var rightlabels = axes.append('g').attr('transform', function(d, i) {
+                        var x = indentLeft + axisWidth - indentRight;
+                        var y = paddingLabel;
+                        return "translate(" + x + "," + y + ")";
+                    }).attr('class', 'slider-label-right-container');
+
+                    rightlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
+
+                    rightlabels.append('text').text(function(d, i) {
+                        return data.masters[i + 1].master.name;
+                    }).attr('class', 'slider-label-right slider-label');
+
+                    rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
+                        return i;
+                    }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
+                        scope.removeMaster(i + 1)
                     });
 
+                    scope.getMetapolationRatios(data);
                 }
-
             }
         }
     }
@@ -159,7 +221,7 @@ function($document) {
                 }).on('drag', function() {
                     d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y);
                     var thisIndex = d3.select(this).attr('index');
-                    d3.select('#label-' + thisIndex).attr('x', d3.event.x).attr('y', d3.event.y);
+                    d3.select('#label-' + thisIndex).attr('x', d3.event.x).attr('y', d3.event.y + 25);
                     //select corresponding label
                     // update scope and redraw ellipses
                     data.masters[thisIndex].coordinates = [d3.event.x, d3.event.y];
@@ -186,7 +248,7 @@ function($document) {
                 layer1.selectAll('text').data(data.masters).enter().append('text').attr('x', function(d) {
                     return d.coordinates[0];
                 }).attr('y', function(d) {
-                    return d.coordinates[1];
+                    return d.coordinates[1] + 25;
                 }).text(function(d) {
                     return d.master.name;
                 }).attr("font-size", "10px").attr("text-anchor", "middle").attr("font-size", "8px").attr("fill", "#fff").attr("id", function(d, i) {
@@ -196,7 +258,7 @@ function($document) {
             drawEllipses = function(data) {
                 layer2.selectAll('ellipse').remove();
                 layer2.selectAll('circle').remove();
-                
+
                 // get nr of masters
                 var dataLength = data.masters.length;
                 // color range for fields
@@ -207,16 +269,16 @@ function($document) {
                     var c = Math.sqrt(Math.pow((a1 - a2), 2) + Math.pow((b1 - b2), 2));
                     return c;
                 }
-                
+
                 // only one master: big circle
                 if (data.masters.length == 1) {
                     layer2.selectAll('circle').data(data.masters).enter().append('circle').attr('r', 100).attr('fill', '#f00').attr('cx', function(d) {
                         return d.coordinates[0];
                     }).attr('cy', function(d) {
                         return d.coordinates[1];
-                    }).style("opacity", 0.3); 
+                    }).style("opacity", 0.3);
                 }
-                
+
                 // two masters: two circles
                 else if (data.masters.length == 2) {
                     var distanceTwo = getDistance(data.masters[0].coordinates[0], data.masters[1].coordinates[0], data.masters[0].coordinates[1], data.masters[1].coordinates[1]);
@@ -226,7 +288,7 @@ function($document) {
                         return d.coordinates[0];
                     }).attr('cy', function(d) {
                         return d.coordinates[1];
-                    }).style("opacity", 0.3); 
+                    }).style("opacity", 0.3);
                 }
 
                 // all other cases

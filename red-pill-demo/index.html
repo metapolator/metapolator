@@ -28,9 +28,18 @@
     <!-- production -->
     <link rel="stylesheet" type="text/css" href="main.css" />
     <script src="main.js"></script>
+    <script>
+    function checkFirefox() {
+      if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        alert("This demo works out of the box with the latest version of Firefox\n\nIt can take a minute or two to load, please be patient");
+      } else {
+        alert("This demo only works out of the box with the latest version of Firefox\n\nIt can run with Chrome if you start it with \n\nchrome --js-flags=\"--harmony --harmony_proxies\"");
+      }
+    }
+    </script>
     <!-- end of production -->
   </head>
-  <body>
+  <body onload="checkFirefox()">
     <h1>Metapolator Neue</h1>
     <h3>The Red Pill Interface</h3>
     <red-pill></red-pill>

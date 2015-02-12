@@ -29,9 +29,8 @@
     </ul>
 </div>
 
-<ul ui-sortable="sortableOptionsSequences" ng-model="data.sequences">
+<ul>
     <li ng-repeat="sequence in data.sequences">
-        <div class="sequence-name" ng-click="selectSequenceForEdit(sequence)" ng-class="{selected: allMastersSelected(sequence)}">{{sequence.name}}</div>
         <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="sequence">
             
             <li ng-repeat="master in sequence.masters" class="master" ng-class="{selected: master.edit}">

@@ -1,13 +1,9 @@
 <div class="inspector-header">
-    <arrow class="open"></arrow>
     <span>{{data.projectName}}</span>
 </div>
-<div class="inspector-branche" style="display: block" ng-repeat="sequence in data.sequences">
-    <div class="inspector-header">
-        <arrow></arrow>
-        <span>{{sequence.name}}</span>
-    </div>
-    <div class="inspector-branche" ng-repeat="master in sequence.masters">
+<div ng-repeat="sequence in data.sequences">
+
+    <div class="inspector-branche" style="display: block"  ng-repeat="master in sequence.masters">
         <div class="inspector-header">
             <arrow ng-if="master.edit"></arrow>
             <span ng-class="{'inspector-inactive' : !master.edit}">{{master.name}}</span>

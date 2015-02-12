@@ -1,3 +1,10 @@
+    @font-face {
+        font-family: 'glyphs';
+        src: url('../fonts/glyphs.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
 	html {
 		height: 100%;
 		width: 100%;
@@ -21,6 +28,14 @@
 	.standard-padding {
 		padding: 16px;
 	}
+	
+    #temp-output {
+        position: absolute;
+        left: 70%;
+        top: 100px;
+        width: 30%;
+        padding: 20px;
+    }
 	
 	
 /***********************************/
@@ -672,31 +687,7 @@
                 left: 0;
                 top: 0;
             }
-                    
-                .slider-axis {
-                    stroke: #000;
-                    stroke-width: 2;
-                }
-                
-    
-                .slider-handle {
-                    position: absolute;
-                    top: 3px;
-                    cursor: pointer;
-                }
-                    
-                .slider-label {
-                    font-size: 12px;
-                }
-                
-                .triangle-button {
-                    position: absolute;
-                    bottom: 10px;
-                    left: 10px;
-                    cursor: pointer;
-                }
-                
-                
+
                 
                 li:first-child .slider-label-first {
                     display: none;
@@ -765,7 +756,89 @@
             .show-name-full .explore-name-full {
                 opacity: 1;
             }	
+            
+            
+            
+            
+/************ sliders ***************/
+        
+ 
+    .slider-container {
+        
+    }      
+      
+        .slider-axis {
+            stroke: #000;
+            stroke-width: 2;
+            fill: none;
+        }
 
+        .slider-handle {
+            position: absolute;
+            top: 3px;
+            cursor: pointer;
+            fill: #000;
+        } 
+             
+        .slider-label {
+            font-size: 9px;
+            cursor: default;
+        }
+    
+            .label-right-inactive {
+                fill: #aaa;
+                font-style: italic;
+            }
+            
+            .slider-label-output {
+                fill: #f85c37;
+            }
+            
+            .slider-input-container {
+                position: absolute;
+                z-index: 1000;
+                left: 120px; 
+                color: #f85c37;
+                font-size: 9px;
+            }
+            
+                .slider-input-output {
+                    width: 30px;
+                    border: 0;
+                    color: #f85c37;
+                    text-align: right;
+                    font-size: 9px;
+                }
+    
+        .triangle-button {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+    
+        .slider-button {
+            font-family: "glyphs";
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+            .slider-button.slider-remove-master {
+                fill: #f00;
+            }
+        
+            .slider-label-right-container:hover .slider-button {
+                opacity: 1;
+            }
+            
+        .left-label-select {
+            position: absolute;
+            left: 10px;
+            top: 100px;
+            z-index: 1000;
+            font-size: 9px;
+        }
 
 
 
