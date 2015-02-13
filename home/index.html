@@ -43,8 +43,8 @@
                     <li><a href="#introduction" data-scroll="introduction">Introduction</a></li>
                     <li><a href="#strokes" data-scroll="strokes">The Stroke</a></li>
                     <li><a href="#fonts" data-scroll="fonts">Our Fonts</a></li>
-                    <li><a href="#demos" data-scroll="demos">Demos</a></li>
                     <li><a href="#screenshots" data-scroll="screenshots">Screenshots</a></li>
+                    <li><a href="#demos" data-scroll="demos">Technology Preview</a></li>
                     <li><a href="#history" data-scroll="history">Project History</a></li>
                     <li><a href="#social" data-scroll="social">Social Media</a></li>
                 </ul>
@@ -104,41 +104,6 @@
                 </div>
             </section>
 
-            <section data-anchor="demos" class="grey">
-                <h1>Red Pill</h1>
-                <div class="bullets"></div>
-                <div class="content">
-                     <p>
-                     Lasse developed a modest UI for his own use and development, that allows you to edit CPS in a browser and see the results.
-                     As Peter's design took shape, we joked that this was like the Matrix, a &#8220;Red Pill&#8221; that reveals the true underlying reality, while Peter's slick UI was a &#8220;Blue Pill.&#8221;
-                     These names have stuck as codenames, and you can now play around with demos of the two:
-                     </p>
-                     <p>
-                     Check out the <a href="http://metapolator.com/red-pill-demo" target="_blank">full red pill interface (in a new window)</a>.
-                     </p>
-                     <br><br>
-                </div>
-                <br><br>
-
-                <h1>Blue Pill</h1>
-                <div class="bullets"></div>
-                <div class="content" id="blue-pill-content">
-                    The Blue Pill offers a way to interactively metapolate.
-                    You can explore and control a design space:<br><br><br>
-                    <div class="bluepill-left">
-                        <masters ng-controller="mastersController" ng-mouseup="mouseclick = false"></masters>
-                    </div>
-                    <div class="bluepill-right">
-                        <designspace ng-controller="designspaceController"></designspace>
-                    </div>
-                    
-                </div>
-                <br><br>
-                <br><br>
-                Check out the <a href="http://metapolator.com/slider/" target="_blank">full blue pill interface (in a new window)</a>.
-                <div class="bullets"></div>
-            </section>  
-
             <section data-anchor="screenshots" class="red">
                 <h1>Screenshots</h1>
                 <div class="bullets"></div>
@@ -155,6 +120,26 @@
                 </div>
                 <div class="bullets"></div>
             </section>
+
+            <section data-anchor="demos" class="grey">
+                <h1>Technology Preview</h1>
+                <div class="bullets"></div>
+                <div class="content" id="blue-pill-content">
+                    <br><br>
+                    <a href="http://metapolator.com/slider/" target="_blank">Open full user interface</a> (in a new window)
+                    <br><br>
+                    <a href="http://metapolator.com/red-pill-demo" target="_blank">Open developer interface</a> (in a new window)
+                    <br><br>
+                    The Blue Pill offers a way to interactively metapolate.
+                    You can explore and control a design space:<br><br><br>
+                    <div class="bluepill-left">
+                        <masters ng-controller="mastersController" ng-mouseup="mouseclick = false"></masters>
+                    </div>
+                    <div class="bluepill-right">
+                        <designspace ng-controller="designspaceController"></designspace>
+                    </div>
+                </div>
+            </section>  
 
             <section data-anchor="history">
                 <h1>Project History</h1>
