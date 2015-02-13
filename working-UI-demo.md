@@ -26,7 +26,19 @@ When not:
 * Close
 
 ## parameters panel
-Stick to minipolator, i.e. offer only weight and width controls. These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs. We can make a nice interim design for this panel, something very simple with a hint of things to come.
+Her is the list of parameters we support:
+
+* Width
+* Height
+* Slant
+* Tension (modifies in & out)
+* Weight
+* horizontal metrics _(all measured to skeleton)_
+  * spacing _(total space surrounding this glyph, = front + back)_
+  * sidebearings _(value pair, e.g. “40|30”, = front|back, **not** left|right)_
+* X-height _(tricky, works only for latin and needs preparation in the incoming ufo)_
+
+These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs. We can make a nice interim design for this panel, something very simple with a hint of things to come.
 
 **local menu**: none
 
