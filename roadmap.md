@@ -76,4 +76,23 @@ Responding to user feedback: We should spend some time not adding major new feat
 
 Plan 2015: We should prepare a Kickstarter (description, video, rewards, stretch goals) and plan a pre-KS campaign, and pick 1 major feature to work on next (Real Time Multi User Mode?) as the focus of the kickstarter.
 
-Kickstarter: Run the Kickstarter, add the 1 major feature, so users are amazed.
+### Funding
+
+Run a Kickstarter to add a major feature
+
+### Spin offs
+
+From a [G+ discussion](https://plus.google.com/+DaveCrossland/posts/8qwAjheutTn):
+
+One thing we could also do is to produce some spin-off projects. We have code there that can be useful for more general cases, for example:
+
+- the IO API and modules of ufoJS
+- the Model (CPS plus MOM)
+
+About the Model, it would be possible to release a package that let's a user (developer) define his own custom Node Types, then he can use CPS to apply values to that. It's even possible to implement other languages/types for the values, so developers wouldn't be bound to our rather geometry-heavy formulae language.
+
+You make a tree-data-model and get a package that can query the tree and assign values to it's elements like you know it from CSS (and more).
+
+Lasse has already two concrete ideas where I'd like to use that.
+
+Creating more users for those individual parts of Metapolator and thus more interest/contributors/maybe sponsoring, is like having a bigger surface, as a metaphor. Each contribution to the IO module would also be a contribution to Metapolator, people without interest in fonts making at all could become attracted by some of our sub-projects and advance Metapolator just by that.﻿
