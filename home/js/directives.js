@@ -70,7 +70,7 @@ function($document) {
                         d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
                         dragActive = true;
                     }).on('drag', function() {
-                        
+
                         d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y);
                         var lengthA = getDistance(d3.event.x, 183, d3.event.y, 10) + 1;
                         var lengthB = getDistance(d3.event.x, 183, d3.event.y, 210) + 1;
@@ -352,6 +352,105 @@ function($document) {
                     }).style("opacity", 0.3);
                 }
             }
+        }
+    }
+}]);
+
+app.directive('glyphslider', ['$document',
+function($document) {
+    return {
+        restrict : 'E',
+        link : function(scope, element, attrs, ctrl) {
+            var svg = d3.select(element[0]).append('svg');
+            var paddingLeft = 50;
+            var paddingTop = 30;
+            var axisWidth = 200;
+            var paddingLabel = 25;
+            var axisDistance = 50;
+            var axisTab = 10;
+            var axisTabLeft = 60;
+            var indentRight = 30;
+            var indentLeft = 40;
+
+            var data = {
+                axes : [{value: 50}],
+                masters : [{master : {name: "Roboto Slab Light"}}, {master : {name: "Roboto Slab Bold"}}]
+            };
+
+            // create drag events
+            var drag = d3.behavior.drag().on('dragstart', function() {
+                d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
+            }).on('drag', function() {
+                d3.select(this).attr('cx', limitX(d3.event.x));
+                // update scope and redraw ellipses
+                var thisIndex = d3.select(this).attr('index');
+                var thisValue = (limitX(d3.event.x) - indentLeft) / (axisWidth / 100) / 100;
+                scope.setMetap(thisValue);
+                scope.$apply();
+            }).on('dragend', function() {
+                d3.select(this).attr('stroke', 'none');
+            });
+
+            function limitX(x) {
+                if (x < indentLeft) {
+                    x = indentLeft;
+                }
+                if (x > (axisWidth + indentLeft)) {
+                    x = axisWidth + indentLeft;
+                }
+                return x;
+            }
+
+            // create slider containers
+            var axes = svg.selectAll('g').data(data.axes).enter().append('g').attr('transform', function(d, i) {
+                var x = paddingLeft - indentLeft;
+                var y = i * axisDistance + paddingTop;
+                return "translate(" + x + "," + y + ")";
+            }).attr('class', 'slider-container');
+
+            // append axis itself
+            axes.append('path').attr('d', function(d, i) {
+                // prevent last axis from having the vertical offset
+                if (i != (data.axes.length - 1)) {
+                    var offset = 1;
+                } else {
+                    var offset = 0;
+                }
+                return 'M' + indentLeft + ' ' + (axisTab + offset * axisTabLeft) + ' L' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0 L' + (indentLeft + axisWidth) + ' ' + axisTab;
+            }).attr('class', 'slider-axis');
+
+            // append slider handles
+            axes.append('circle').attr('r', 8).attr('cx', function(d) {
+                return d.value * (axisWidth / 100) + indentLeft;
+            }).attr('cy', '0').attr('index', function(d, i) {
+                return i;
+            }).attr('class', 'slider-handle').call(drag);
+
+            // create left label
+            if (data.masters.length < 3) {
+                svg.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(data.masters[0].master.name).attr('class', 'slider-label-left slider-label');
+            }
+
+            // create rigth label
+            var rightlabels = axes.append('g').attr('transform', function(d, i) {
+                var x = indentLeft + axisWidth - indentRight;
+                var y = paddingLabel;
+                return "translate(" + x + "," + y + ")";
+            }).attr('class', 'slider-label-right-container');
+
+
+            rightlabels.append('text').text(function(d, i) {
+                return data.masters[i + 1].master.name;
+            }).attr('class', 'slider-label-right slider-label');
+
+            rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
+                return i;
+            }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
+                scope.removeMaster(i + 1)
+            });
+
+            //scope.getMetapolationRatios(data);
+
         }
     }
 }]);
