@@ -74,6 +74,8 @@ Updating is done in reading direction—
 
 _The resulting effect after a parameter change is the appearance of an ‘updating’ highlight under all relevant glyphs—showing the amount of work to be done—followed by the steady disappearance of these highlights—showing the progress of the work and confirming which ones are up to date—–ending with the removal of the last ‘updating’ highlight._
 
+**note**: the backend can sometimes be forced to perform a big recalc (e.g. cache invalidation). the expected update time is then meaningless, and certain to be exceeded, so then update indication is to be used for sure.
+
 **local menu**: none
 
 ## masters column
@@ -139,7 +141,7 @@ The **local menu** is placed on the active tab, and contains these items:
 * Delete…
 
 ## specimen panel (metapolation)
-even more pain with doing this in real-time. Same, or even tougher, limits (re: parameter specimen) on how few glyphs we can show changing (surrounded by static masters and instances, again).
+See the parameter specimen above for update highlighting. The recalc rate is different than that for parameter updates but supposed to be faster.
 
 **local menu**: none
 
