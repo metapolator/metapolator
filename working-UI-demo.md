@@ -145,3 +145,15 @@ Completely forgetaboutit. This is not easily dealt with. Simon and I will come u
 
 ## miscellaneous
 An important but invisible category of interaction that we can forget about for the working UI demo is copy & paste (e.g. of masters, instances), and undo. That is a tough portion of development work.﻿
+
+## this space is intentionally left blank
+
+Here is a quick panorama of the working UI demo (**warning**: incorrect in some panel details—_but hey, it was quick_):
+
+![](http://mmiworks.net/metapolator/greenacres.png)
+
+notice the _very_ green areas; they are blank in the working UI demo, there is no app content scheduled for them.
+
+This creates an opportunity for communicating the future of Metapolator, and the fact that we need support to be able to realise that future. Since these are just website frames, the green panels can be updated at any given moment, evolving as the project evolves. No need to get in a funk right now to determine the perfect content.
+
+**note:** especially the big green panel on the right is promising; just where users are getting their results out (ufos), there is a lot of space to communicate.
