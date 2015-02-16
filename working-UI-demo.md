@@ -52,6 +52,28 @@ The procedure to update the specimen is dependant on bot the number of glyphs th
 
 From the number of visible glyphs that have a parameter changed and recalc rate, **expected update time** can be calculated (visible glyphs changed / recalc rate).
 
+**rule**: if the expected update time is less than 1 second, then _just do it_; calculate the glyphs and update the display.
+
+#### expected update time is greater than 1 second
+A progress indication needs to be shown. We will put it inline with the glyphs, instead of putting a progress bar in front of them. The selection indicators (shown here in blue)—
+
+![](http://mmiworks.net/metapolator/selectunder.png)
+
+are repurposed for this (example color: red):
+
+![](http://mmiworks.net/metapolator/updateunder.png).
+
+The same staying-out-of-the-way factor of the selection highlight is used for the update.
+
+Every glyph that still needs to be updated is highlighted with the update color. _in practice this means that when there is a selection, the highlight changes from ‘selected’ to ‘updating’. When a whole master is having a parameter change, all its glyphs receive the ‘updating’ highlight (**note*** common sense rule #1 above about the work it takes to update a whole master…)._
+
+Updating is done in reading direction—
+* when a glyph is recalculated, all its visible instances are updated;
+* as soon as a glyph instance is updated, its ‘updating’ highlight is removed, revealing either the selection highlight, or the specimen background;
+* then go to the next glyph to be updated.
+
+_The resulting effect after a parameter change is the appearance of an ‘updating’ highlight under all relevant glyphs—showing the amount of work to be done—followed by the steady disappearance of these highlights—showing the progress of the work and confirming which ones are up to date—–ending with the removal of the last ‘updating’ highlight._
+
 **local menu**: none
 
 ## masters column
