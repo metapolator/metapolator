@@ -43,9 +43,14 @@ These work on the selections that can be made in the specimen, i.e. (multiple) m
 **local menu**: none
 
 ## specimen + glyph editor panel
-Forget about any direct-manipulation (i.e. with the mouse) parameter editing, or of making selections on sub-glyph (e.g. stroke, point) level. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master).
+Forget about any direct-manipulation (i.e. with the mouse) parameter editing, or about making selections on sub-glyph (e.g. stroke, point) level. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master).
 
-Our pain is changing glyphs in real-time, maybe we can show only 2, 3, or 5 glyphs that get their weight or width changed. These can still be mixed with other glyphs that are static (because they belong to another master, or are not part of the selection). The filter of the specimen needs to be re-jigged to show only those few chars that we can handle.
+### updating the specimen after a parameter change
+**common sense rule #1**: glyphs that are not visible, or have not been changed, do not need to be recalculated.
+
+The procedure to update the specimen is dependant on bot the number of glyphs that have to be updated and the rate at which glyphs can be recalculated, the latter is of course dependant on the machine that Metapolator runs on. **rule**: this rate needs to be determined at runtime. For instance this can be done with a dummy operation after loading the ufo. The rate is called **recalc rate**.
+
+From the number of visible glyphs that have a parameter changed and recalc rate, **expected update time** can be calculated (visible glyphs changed / recalc rate).
 
 **local menu**: none
 
