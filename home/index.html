@@ -54,6 +54,12 @@
         <!-- end of menu -->
         
         <div id="pagewrap">
+	    <section data-anchor="frontmatter" ng-controller="glyphController" style="padding-bottom: 0;">
+	        <!-- in './js/controllers/glyphController.js' -->
+                <h1 id="glyph" style="margin-top: 0; margin-bottom: 0;" title="Metorpolating logo">Metapolator</h1>
+                <!-- in ./js/directives.js -->
+                <glyphslider title="Slide me!"></glyphslider>
+            </section>
            
             <section data-anchor="introduction" class="red">
                 <h1>Introduction</h1>
@@ -141,10 +147,6 @@
                     </div>
                     <br><br>
                     <br><br>
-                    <div ng-controller="glyphController">
-                        <div id="glyph"></div>
-                        <glyphslider></glyphslider>
-                    </div>
                 </div>
                 <div class="bullets"></div>
             </section>  
