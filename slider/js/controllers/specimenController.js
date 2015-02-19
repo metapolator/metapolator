@@ -17,12 +17,15 @@ function($scope, $sce, sharedScope) {
         name : "pangram 3",
         text : "Quick wafting zephyrs vex bold Jim."
     }, {
+        name : "paragraph 1",
+        text : "Lorem ipsum dolor sit amet.Sed consectetur enim posuere.Etiam nec metus non velit posuere finibus a cursus magna."
+    }, {
         name : "glyph range",
         text : ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
     }];
     $scope.selectedSpecimen = $scope.specimen[0];
     $scope.fontSize = 80;
-    $scope.fontbys = ["word", "glyph"];
+    $scope.fontbys = ["word", "glyph", "paragraph"];
     $scope.filterOptions = {
         filter : "",
         strict : 1,

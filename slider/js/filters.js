@@ -43,29 +43,29 @@ app.filter('specimenFilter', function() {
             }
         }
         
-        // break for fontby
-        if (options.selectedFontby == "glyph") {
-            var fontby = newText.split("");
-        }
-        else if (options.selectedFontby == "word") {
-            var fontby = newText.split(" ");
-        }
-        
-        
+       
 
         var filtered = [];
         var masterIndex = 0;
         
         for (var i = 0; i < newText.length; i++) {
             var glyph = newText[i];
+            
+            // adding linebreak property for paragraphs
+            var linebreak = false;
+            if (glyph == "") {
+                linebreak = true;
+                glyph = " ";
+            }
             var master = masterArray[masterIndex];
             var thisElement = {
                 "glyph": glyph, 
-                "master": master
+                "master": master,
+                "linebreak" : linebreak
             };
             filtered.push(thisElement);
             // looping the master array. ++ every time when fontby is glyph, ++ only at a space when fontby is word
-            if ((options.selectedFontby == "glyph" && glyph != " ") || (options.selectedFontby == "word" && glyph == " ")) {
+            if ((options.selectedFontby == "glyph" && newText[i] != " ") || (options.selectedFontby == "word" && newText[i] == " ") || (options.selectedFontby == "paragraph" && newText[i] == "")) {
                 masterIndex++;
             }
             if (masterIndex == masterArray.length) {
