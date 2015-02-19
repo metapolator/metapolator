@@ -37,12 +37,16 @@
 <script type='text/javascript'>
     $(function() {
         var paper = $("#size-slider-line");
+        var current;
 
         $("#size-slider").draggable({
             helper : 'clone',
             revert : true,
             revertDuration : 150,
             appendTo : 'body',
+            start : function(e, ui){
+                current = parseInt($("#size-nr").val());
+            },
             drag : function(e, ui) {
                 dragx = parseInt(ui.helper.css("left"));
                 dragy = parseInt(ui.helper.css("top"));
@@ -92,9 +96,9 @@
                 $(paper).html(line);
 
                 // check if position is in active area
-                if ((xPosition > 0 && yPosition > 0) || xPosition < 0 && yPosition < 0) {
-                    var current = parseInt($("#size-nr").val());
-                    growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)) / 30);
+                if ((xPosition >= 0 && yPosition >= 0) || xPosition <= 0 && yPosition <= 0) {
+                    
+                    growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)));
                     if (yPosition < 0) {
                         growth *= -1;
                     }
