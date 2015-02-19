@@ -588,6 +588,7 @@
 
     #specimen-content ul {
         padding: 0;
+        margin: 0;
     }
     
         #specimen-content ul li {
@@ -608,9 +609,6 @@
             
             #specimen-content ul li.glyph-linebreak {
                 display: block;
-                width: 100%;
-                clear: both;
-                white-space: normal;
             }
 	
 	

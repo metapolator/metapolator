@@ -18,7 +18,7 @@ function($scope, $sce, sharedScope) {
         text : "Quick wafting zephyrs vex bold Jim."
     }, {
         name : "paragraph 1",
-        text : "Lorem ipsum dolor sit amet.Sed consectetur enim posuere.Etiam nec metus non velit posuere finibus a cursus magna."
+        text : "Duis tincidunt nisi id nibh feugiat mattis. Integer augue elit, eleifend eget lorem finibus, placerat scelerisque eros. Curabitur et tortor sapien. Mauris pulvinar efficitur velit. <br>Duis consequat placerat nisl condimentum ullamcorper. Aenean placerat, sapien non egestas sagittis, purus ex pharetra velit, vitae tincidunt lectus tortor vel mi. Praesent sollicitudin maximus orci, quis egestas sapien auctor vel. Aliquam erat volutpat. Interdum et malesuada fames ac ante ipsum primis in faucibus. <br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis, purus a posuere iaculis, felis tortor mattis leo, vitae ullamcorper sem ligula in metus. Suspendisse ac tincidunt eros. Sed ac ornare elit. Integer ut lorem sed justo tempor vehicula. Phasellus facilisis justo quis felis faucibus ultrices. Integer pulvinar orci vitae leo accumsan, sit amet tincidunt ligula dapibus. Vestibulum in ligula turpis. "
     }, {
         name : "glyph range",
         text : ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]

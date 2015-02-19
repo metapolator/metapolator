@@ -53,8 +53,9 @@ app.filter('specimenFilter', function() {
             
             // adding linebreak property for paragraphs
             var linebreak = false;
-            if (glyph == "") {
+            if (glyph == "<" && newText[i + 1] == "b" && newText[i + 2] == "r") {
                 linebreak = true;
+                i += 3;
                 glyph = " ";
             }
             var master = masterArray[masterIndex];
@@ -65,7 +66,7 @@ app.filter('specimenFilter', function() {
             };
             filtered.push(thisElement);
             // looping the master array. ++ every time when fontby is glyph, ++ only at a space when fontby is word
-            if ((options.selectedFontby == "glyph" && newText[i] != " ") || (options.selectedFontby == "word" && newText[i] == " ") || (options.selectedFontby == "paragraph" && newText[i] == "")) {
+            if ((options.selectedFontby == "glyph" && newText[i] != " ") || (options.selectedFontby == "word" && newText[i] == " ") || (options.selectedFontby == "paragraph" && linebreak)) {
                 masterIndex++;
             }
             if (masterIndex == masterArray.length) {
