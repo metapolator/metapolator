@@ -22,9 +22,17 @@ At the top of the panel itself we find the setup line. From left (R–to–L loc
   * the **diamond control** next to the pt-size number is a special one—gleaned from other creative-master interfaces (music)—because the the size range is quite large, 6pt to many hundreds (close to a thousand?) and we do not have all the space in the world for a control;
   * this control is a relative one, it in/decreases; users grab the diamond and pull it away (it is attached ‘by wire’ to its centre point) to make a change in the following fashion _(showing the diamond twice here, for educational purposes)_:<br/>
 ![](http://mmiworks.net/metapolator/tunebywire.png)<br/>
-(for R–to–L locales, right and left have to be flipped); we see there is plenty of bail-out area, to make no change;
-  * the amount of in/decrease is simply the sum of the x and y offsets the diamond makes; normal increase/decrease 1 point per (effective) input pixel ‘pulled’, with shift 10 points; the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
+_(for R–to–L locales, right and left have to be flipped)_
+  * we see there is plenty of bail-out area (the two blue quadrants), to make no change; when the diamond is pulled over this area, the pt-size displayed is the one that was in use before this interaction started;
+  * the amount of in/decrease is simply the sum of the absolute x and y offsets the diamond makes as measured from the centre point; normal increase/decrease 1 point per (effective) input pixel ‘pulled’, with shift 10 points; the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
   * when users release the diamond, it returns to its resting position and the change is permanent.
+  * an example:
+    1. starting situation: not dragging; display size is 100pt;
+    * started dragging, control offset (h, v) = (10, 20)—going north-east; display size is 130pt;
+    * adjusting the dragging (user wants to reduce the increase), control offset = (5, 15); display size is 120pt;
+    * user wants no change at all, control offset = (-8, 15)—going north-west; display size is 100pt;
+    * decreasing, control offset = (-10, -20)—going south-west; display size is 70pt;
+    * mouse up, release the control; display size is the last one shown: 70pt;
 * the **filter box** is where users type characters to filter the specimen;
   * when the specimen contains real-life words, the Strict control—a discrete, 3-position slider—is displayed next to it—
     * the setting furthest from the word ‘Strict’ is the least strict one; when a word contains at least one character that is in the filter box, it is displayed;
@@ -88,11 +96,13 @@ Here we see the specimen in the Parameters view, with the glyph select mechanism
 
 ![](http://mmiworks.net/metapolator/paraspeciselected.png)
 
-The selection mechanism is based on the icon grid model that is used in file browsers (i.e. not a text selection model). The glyph boxes act as ‘icons’, in a way. For diacritics and other compound glyphs (e.g. via opentype features) the parts that make up the glyph have their own separate box (which may not always be a rectangle, then).
+The selection mechanism is based on the icon grid model (i.e. not a text selection model) that is used in file browsers, specifically the Finder on OS-X. The glyph boxes act as ‘icons’, in a way. For diacritics and other compound glyphs (e.g. via opentype features) the parts that make up the glyph have their own separate box (which may not always be a rectangle, then).
 
-* all of the icon grid model model selection interactions work: click to select, click in whitespace to select none, rubber banding of several boxes to select multiple, shift and cmd/ctrl to grow and reduce selections, pointer mouse cursor (not the text edit one) etc.
+* all of the icon grid model model selection interactions work: click to select, click in whitespace to select none, rubber-banding of several boxes to select multiple, shift and cmd/ctrl to grow and reduce selections, pointer mouse cursor (not the text edit one) etc.
+  * Shift and Command/Ctrl (it is ctrl on windows and linux machines) do exactly the same thing: allowing multiple select by allowing by click to toggle the select state of glyph (in our case).
+  *  rubber-banding: all glyph boxes that overlap (even with just a single pixel) within the dragged marquee are to be selected (the mouse-down deselects the previous selection); when Shift or Command/Ctrl is held before the mouse-down, the marquee toggles the select state of the overlapping glyph boxes (i.e. unselected -> selected and selected -> unselected); the moment of mouse-down is all that matters for ‘is Shift or Command/Ctrl down?’
 * **rule**: the selection highlight is noticeable out of the corner of users’ eyes, but also completely out of the way of the ‘black on white’ of the selected glyphs (because user have to evaluate that while editing these glyphs); above it is done by a 4px blue rule right under the glyph containing box;
-* a selection is for that glyph, for that (adjustment) master (see: the italic ‘e’ above); **rule** when a glyph is selected, every instance of that glyph is highlighted in the specimen (see: the italic ‘a’ above).
+* a selection is for that glyph, for that (adjustment) master (see: the italic ‘e’ above); **rule** when a glyph is selected, **every instance** of that glyph is highlighted in the specimen (see: the italic ‘a’ above).
 
 The selected glyph(s) is now the parameter edit context and this is reflected in the parameters panel.
 
