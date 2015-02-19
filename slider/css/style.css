@@ -585,6 +585,26 @@
        border: 1px solid #ddd;
    }
 
+
+    #specimen-content ul {
+        padding: 0;
+    }
+    
+        #specimen-content ul li {
+            list-style: none;
+            display: inline-block;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+        }
+        
+        #specimen-content ul li.selected-glyph {
+            border-bottom: 3px solid #f85c37;
+        }
+        
+            #specimen-content ul li .spec-glyph-box {
+                display: inline-block;
+                white-space: pre;
+            }
 	
 	
 	
@@ -980,7 +1000,7 @@
     
         .inspector-branche {
             margin-left: 16px;
-            display: none;
+            display: block;
         }
         
         .inspector-header {

@@ -3,9 +3,9 @@ app.directive('arrow', function($document) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             element.bind('click', function(e) {
-                var childBranche = element.parent().parent().find("> .inspector-branche")
-                childBranche.toggle();
-                element.toggleClass("open");
+                //var childBranche = element.parent().parent().find("> .inspector-branche")
+                //childBranche.toggle();
+                //element.toggleClass("open");
             });
         }
     }

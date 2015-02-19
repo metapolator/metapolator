@@ -6,19 +6,23 @@
         <div id="size-slider-container" class="specimen-tool">
             <div id="size-slider"></div>
         </div>
-        <input type="text" id="filter" ng-model="filter" size="5" class="specimen-tool">
-        <input type="radio" ng-model="strict" value="3" class="specimen-tool">
-        <input type="radio" ng-model="strict" value="2" class="specimen-tool">
-        <input type="radio" ng-model="strict" value="1" class="specimen-tool">
+        <input type="text" id="filter" ng-model="filterOptions.filter" size="5" class="specimen-tool">
+        <input type="radio" ng-model="filterOptions.strict" value="3" class="specimen-tool">
+        <input type="radio" ng-model="filterOptions.strict" value="2" class="specimen-tool">
+        <input type="radio" ng-model="filterOptions.strict" value="1" class="specimen-tool">
         <div id="font-by">
-            font by <select ng-model="selectedFontby" ng-options="fontby for fontby in fontbys"></select>
+            font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
         </div>
     </div>
 </div>
 
 <!-- standard view -->
 <div id="specimen-content">
-    <div ng-bind-html="filteredText()" ng-if="selectedSpecimen.name != 'glyph range'" style="font-size: {{fontSize}}px; line-height: {{fontSize}}px;"></div>
+    <ul ng-if="selectedSpecimen.name != 'glyph range'">
+        <li ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name)}" ng-click="toggleGlyph(thisglyph.glyph, thisglyph.master.name)" ng-repeat="thisglyph in filteredGlyphs=(selectedSpecimen.text | specimenFilter:filterOptions:data.sequences) track by $index" ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
+            <div class="spec-glyph-box" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
+        </li>
+    </ul>
     
     <!-- glyph range -->
     <div ng-if="selectedSpecimen.name == 'glyph range'">
