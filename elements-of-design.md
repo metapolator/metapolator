@@ -1,7 +1,9 @@
 ## _note:_ this is not a specification
 This page lists the **first, rough** building blocks of the design. With that the Metapolator project is **out of the dark** and the [interaction design goals](https://github.com/metapolator/metapolator/wiki/interaction-design-goals) **start to be realised**. But this is not a complete solution; details are lacking; drawings are illustrations, not building plans; and the interaction is not _exactly_ specified. That is for a later phase in the project.
 
-So enjoy the fact that you can watch interaction being created ‘out of nothing’ and that you can plan with what you see here. Thanks for your patience where it comes to the last detail. _—ps_
+So enjoy the fact that you can watch interaction being created ‘out of nothing’ and that you can plan with what you see here. Thanks for your patience where it comes to the last detail.
+
+The [working UI demo](https://github.com/metapolator/metapolator/wiki/working-UI-demo) page offers details about how these building blocks can be simplified and prioritised for implementation.
 
 ## 960px comps
 Designing for the (effective) minimum viewport size of 960px wide, 700px high is tough, but we want this to work on 1024x768 laptops. Here are the **wireframes** for the three views we have structured the UI around—
