@@ -19,7 +19,7 @@
 <!-- standard view -->
 <div id="specimen-content">
     <ul ng-if="selectedSpecimen.name != 'glyph range'">
-        <li ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name)}" ng-click="toggleGlyph(thisglyph.glyph, thisglyph.master.name)" ng-repeat="thisglyph in filteredGlyphs=(selectedSpecimen.text | specimenFilter:filterOptions:data.sequences) track by $index" ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
+        <li ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name)}" ng-click="toggleGlyph(thisglyph.glyph, thisglyph.master.name)" ng-repeat="thisglyph in filteredGlyphs track by $index" ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
             <div class="spec-glyph-box" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
         </li>
     </ul>

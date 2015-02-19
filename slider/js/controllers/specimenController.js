@@ -56,5 +56,9 @@ function($scope, $sce, sharedScope) {
         }
         return edit;
     };
+    
+    $scope.$watch("selectedSpecimen.text | specimenFilter:filterOptions:data.sequences", function(newVal) {
+        $scope.filteredGlyphs = newVal;
+    }, true);
 
 }]); 

@@ -1,7 +1,5 @@
 app.filter('specimenFilter', function() {
     return function(string, options, sequences) {
-        
-        
         var strict = options.strict;
         var required = strict;
         var output = "";
