@@ -1,4 +1,4 @@
-This page contains the design deltas for the working UI demo of February–March 2015, as compared to the contemporary overall interaction design. The working UI demo is an MVP (minimal viable product), meant to wrap up the current project phase, and to enable the next phase.
+This page contains the design deltas for the working UI demo of February–March 2015, as compared to the [contemporary overall interaction design](https://github.com/metapolator/metapolator/wiki/elements-of-design). The working UI demo is an MVP (minimal viable product), meant to wrap up the current project phase, and to enable the next phase.
 
 Naturally this will stick closely to what has been achieved up to now and what will be done for minipolator. Some of the choices that have to be made will hurt, but it will enable us to make something that can be useful to font designers.
 
