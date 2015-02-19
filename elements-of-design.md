@@ -3,7 +3,7 @@ This page lists the **first, rough** building blocks of the design. With that th
 
 So enjoy the fact that you can watch interaction being created ‘out of nothing’ and that you can plan with what you see here. Thanks for your patience where it comes to the last detail.
 
-The [working UI demo](https://github.com/metapolator/metapolator/wiki/working-UI-demo) page offers details about how these building blocks can be simplified and prioritised for implementation.
+The [working UI demo](https://github.com/metapolator/metapolator/wiki/working-UI-demo) page offers details about how these building blocks can be simplified and prioritised for [implementation](http://metapolator.com/slider/).
 
 ## 960px comps
 Designing for the (effective) minimum viewport size of 960px wide, 700px high is tough, but we want this to work on 1024x768 laptops. Here are the **wireframes** for the three views we have structured the UI around—
