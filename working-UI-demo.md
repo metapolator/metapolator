@@ -63,7 +63,7 @@ are repurposed for this (example color: red):
 
 ![](http://mmiworks.net/metapolator/updateunder.png).
 
-The same staying-out-of-the-way factor of the selection highlight is used for the update.
+The same staying-out-of-the-way factor of the selection highlight is used for the update. Specifically, it is exactly the same linen just with a different color.
 
 Every glyph that still needs to be updated is highlighted with the update color. _in practice this means that when there is a selection, the highlight changes from ‘selected’ to ‘updating’. When a whole master is having a parameter change, all its glyphs receive the ‘updating’ highlight (**note*** common sense rule #1 above about the work it takes to update a whole master…)._
 
@@ -75,6 +75,20 @@ Updating is done in reading direction—
 _The resulting effect after a parameter change is the appearance of an ‘updating’ highlight under all relevant glyphs—showing the amount of work to be done—followed by the steady disappearance of these highlights—showing the progress of the work and confirming which ones are up to date—–ending with the removal of the last ‘updating’ highlight._
 
 **note**: the backend can sometimes be forced to perform a big recalc (e.g. cache invalidation). the expected update time is then meaningless, and certain to be exceeded, so then update indication is to be used for sure.
+
+#### there is invisible and there is _invisible_
+Jeroen Breen points out that there can be glyphs that appear on the canvas (thus visible) but are scrolled completely out of view (thus, not visible).
+
+In principle—
+
+* the fact that a glyph is not within the viewport should give us an apparent speed benefit;
+* when the view is scrolled the glyphs that become visible should be up-to-date.
+
+it looks to me that that best strategy is to—
+
+* update all the glyphs in the specimen, when a parameter or metapolation is changed for them, **but**
+  * **priority 1:** update what is inside the viewport first, in reading direction;
+  * **priority 2:** update what is outside the viewport, in reading direction.
 
 **local menu**: none
 
