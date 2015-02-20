@@ -27,7 +27,7 @@
  
         #menu {
             position: fixed;
-            left: calc(50% - 650px);
+            left: calc(50% - 565px);
             top: 20px;
             width: 170px;
             padding: 20px;
@@ -64,11 +64,16 @@
         
         #pagewrap {
             position: relative;
-            width: 960px;
+            width: 1130px;
             margin: 40px auto 300px auto;
-            background: #fff;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+
         }
+        
+            #subwrapper {
+                margin-left: 170px;
+                background: #fff;
+                box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            }
 
 
 
@@ -81,10 +86,15 @@
         text-align: center;
     }
     
+    #glyphslider {
+        width: 100%;
+    }
+    
     .pen-icon {
         width: 100%;
         display: block;
         margin-top: 100px;
+        width: 300px;
     }
     
         .pen-icon img {
@@ -237,3 +247,88 @@
             .content-follow a:hover {
                 color: #fff;
             }
+            
+            
+#glyphslider .wrapper {
+    -ms-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0; 
+}
+
+
+/********* MEDIA **********/
+
+
+@media (max-width: 1130px) {
+    
+    #pagewrap {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    #glyphslider .wrapper {
+        -ms-transform: scale(0.8);
+        -webkit-transform: scale(0.8);
+        transform: scale(0.8);
+    }
+    
+    #menu {
+        left: 0;
+    }
+    
+    .float-element-1, .float-element-2 {
+        float: none;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+        
+    section img {
+        max-width: 100%;
+    }
+
+}
+
+@media (max-width: 960px) {
+    
+    #glyphslider .wrapper {
+        -ms-transform: scale(0.6);
+        -webkit-transform: scale(0.6);
+        transform: scale(0.6);
+    }
+
+}
+
+@media (max-width: 768px) {
+    
+    #glyphslider {
+        padding-top: 0px;
+        padding-left: 170px;
+    }
+    
+        #glyphslider .wrapper {
+            -ms-transform: scale(0.4);
+            -webkit-transform: scale(0.4);
+            transform: scale(0.4);
+        }
+    
+    #home-section {
+        padding-top: 40px;
+    }
+    
+    #menu {
+        position: absolute;
+        z-index: 10;
+    }
+    
+    #pagewrap {
+        margin-top: 0px;
+        margin-bottom: 0;
+    }
+    
+    #subwrapper {
+        margin-left: 0;
+        box-shadow: none;
+    }
+
+}
