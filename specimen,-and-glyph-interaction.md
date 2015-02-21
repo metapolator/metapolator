@@ -24,7 +24,7 @@ At the top of the panel itself we find the setup line. From left (R–to–L loc
 ![](http://mmiworks.net/metapolator/tunebywire.png)<br/>
 _(for R–to–L locales, right and left have to be flipped)_
   * we see there is plenty of bail-out area (the two blue quadrants), to make no change; when the diamond is pulled over this area, the pt-size displayed is the one that was in use before this interaction started;
-  * the amount of in/decrease is simply the sum of the absolute x and y offsets the diamond makes as measured from the centre point; normal increase/decrease 1 point per (effective) input pixel ‘pulled’, with shift 10 points; the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
+  * the amount of in/decrease is simply the absolute distance (Pythagorus of x and y offsets) the diamond is pulled from the centre point; normal increase/decrease 1 point per (effective) input pixel ‘pulled’, with shift 10 points; the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
   * when users release the diamond, it returns to its resting position and the change is permanent.
   * an example:
     1. starting situation: not dragging; display size is 100pt;
