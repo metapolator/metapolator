@@ -69,9 +69,13 @@
                     <h1>Introduction</h1>
                     <div class="bullets"></div>
                     <div class="content intro-content">
-                        “Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.<br><br>
-                        With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency. They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.<br><br>
-                        With Metapolator, typographers gain the possibility to change existing fonts — or even create new ones — to their needs.<br><br>
+                        “Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.
+                        <br><br>
+                        With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency. 
+                        They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.
+                        <br><br>
+                        With Metapolator, typographers gain the possibility to change existing fonts — or even create new ones — to their needs.
+                        <br><br>
                         Metapolator is extensible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.” 
                     </div>
                         <div class="subscript"><a href="https://github.com/metapolator/metapolator/wiki/interaction-design#the-product-phase" target="_blank">Product Vision</a> by Peter Sikking, UI Architect</div>
@@ -81,7 +85,7 @@
                     <a name="strokes"></a>
                     <h1>Drawing The Metapolator Way</h1>
                     <div class="bullets"></div>
-                    <div class="content">                    
+                    <div class="content">
                         The core of Metapolator is the stroke element, re-implemented from Metafont. 
                         This uses the Hobby Spline to control a stroke, that is defined by points along a skeleton path.
                         Each stroke point has a left point and a right point set at an angle and a distance from that parent point.
@@ -101,9 +105,12 @@
                     <div class="bullets"></div>
                     <div class="content">
                         <b>Existing Fonts</b><br>
-                        Fonts can be drawn with existing traditional font editors and imported into Metapolator.
-                        For this to work well, each glyph should be broken up into its individual strokes, and each stroke should have an equal amount of paired points. 
-                        Metapolator will convert these into strokes.
+                        Fonts can be drawn with existing traditional font editors and loaded into Metapolator using the UFO format.
+                        Metapolator can interpolate them in a typical way, with unlimited masters and axes.
+                        <br><br>
+                        It can also import fonts that are drawn the Metapolator way, with glyphs drawn as separate and overlapping contours that mimic strokes with pairs of points along each edge. 
+                        Glyphs are often drawn this way already, as it helps when drawing shapes resembling strokes of pens.
+                        When imported, these original drawn outlines are converted into strokes.
                         <br><br>
                         <img src="img/Latin.svg"><br><br>
                         <br><br>
@@ -125,12 +132,9 @@
                          <a href="https://plus.google.com/100858309774292261525/posts/CTx8bUqo6ES"><img src="img/simon-workflow.gif" width="400px"></a>
                          <a href="https://plus.google.com/+DaveCrossland/posts/dahVFykbWSM" ><img src="img/red-pill.png" width="400px"></a>
                          <br><br>
-                         <p>
                          <a href="https://plus.google.com/+DaveCrossland/posts/dahVFykbWSM">Video introduction to Lasse's workflow</a> (2015-01-28, 2 hours)
-                         </p>
-                         <p>
+                         <br><br>
                          <a href="https://plus.google.com/+DaveCrossland/posts/dpMQUJtQ9Tf">Video introduction to Simon's workflow</a> (2015-01-27, 30 mins)
-                         </p>
                     </div>
                     <div class="bullets"></div>
                 </section>
@@ -140,12 +144,10 @@
                     <h1>Technology Preview</h1>
                     <div class="bullets"></div>
                     <div class="content" id="blue-pill-content">
-                        <br><br>
                         <a href="http://metapolator.com/slider/" target="_blank">Open full user interface</a> (in a new window)
                         <br><br>
                         <a href="http://metapolator.com/red-pill-demo" target="_blank">Open developer interface</a> (in a new window)
                         <br><br>
-                        The Blue Pill offers a way to interactively metapolate.
                         You can explore and control a design space:<br><br><br>
                         <div class="bluepill-left">
                             <masters ng-controller="mastersController" ng-mouseup="mouseclick = false"></masters>
@@ -166,7 +168,8 @@
                     <div class="content">
                          <p>
                          The Metapolator project is a free, libre, open source project that is developed by a community of designers and developers. 
-                         It began in the March 2013 when Simon Egli (a graphic and type designer from Switzerland) and Dave Crossland (a software freedom activist working to free typography) met in New York City to discuss the <a href="http://metaflop.com" title="Metaflop">Metaflop</a> project that Simon was involved in. Metaflop is web-based graphical user interface to the <a href="http://en.wikipedia.org/wiki/Metafont" title="Metafont">Metafont</a> parametric font programming language, allowing non-programmers to adjust the parameters of a metafont intuitively. 
+                         It began in the March 2013 when Simon Egli (a graphic and type designer from Switzerland) and Dave Crossland (a software freedom activist working to free typography) met in New York City to discuss the <a href="http://metaflop.com" title="Metaflop">Metaflop</a> project that Simon was involved in. 
+                         Metaflop is web-based graphical user interface to the <a href="http://en.wikipedia.org/wiki/Metafont" title="Metafont">Metafont</a> parametric font programming language, allowing non-programmers to adjust the parameters of a metafont intuitively. 
                          </p>
                          <p>
                          Simon proposed that the Bezier contours typically drawn by type designers, and stored in the <a href="http://unifiedfontobject.org/versions/ufo2/glif.html">UFO GLIF</a> XML format, could be converted into a Metafont <i>stroke</i> element, if they simply have an even number of points. 
