@@ -28,10 +28,10 @@ This project is licensed under the [GNU General Public License v3.0](http://www.
 
 #### Thanks
 
-Core Development Team: Lasse Fister (DE), Reuben Thomas (UK), Dr Ben Martin (AU)
+Thanks to the developers, especailly Simon Egli for founding the project, Lasse Fister (@graphicore) for technical leadership, Peter Sikking (NL) for Interaction Architecture, and all current and past past contributors. 
+See https://github.com/metapolator/metapolator/blob/master/CONTRIBUTORS for a complete list.
 
-Interaction Design: Peter Sikking (NL), Simon Egli (CH), Nicolas Pauly (FR), Wei Huang (AU), Dave Crossland (UK)
+Thanks to [metaflop](http://www.metaflop.com) for inspiration and [prototypo](http://www.prototypo.io) for exploring this territory in another direction with the same ideals!
 
-Past Contributors: Walter Egli (CH), Vitaly Volkov (UA), Alex Troush (UA)
-
-Thanks to [metaflop](http://www.metaflop.com) for inspiration and Simon Egli for initiating this project!
+Thanks to Google for supporting this project with code contributions. 
+However, Metapolator is not an official Google project, and Google provides no support for it.
