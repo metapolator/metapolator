@@ -4,5 +4,5 @@ After your contribution is included, you will be listed in the CONTRIBUTORS and/
 CONTRIBUTORS is the official list of people who can contribute (and typically have contributed) code to this repository, while the AUTHORS file lists the copyright holders.
 
 The contribution guide of nodejs covers most aspects of what we do pretty well: <http://nodejs.org/documentation/contributing/>
-There[typical](http://producingoss.com) libre way. 
 
+There's also a textbook guide to collaborative libre licensed projects at <http://producingoss.com>
