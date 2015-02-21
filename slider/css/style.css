@@ -496,21 +496,21 @@
         background: #fff;
         width: 800px;
         margin: 0 auto;
-        padding: 40px;
-        height: calc(100% - 50px);
-        overflow-x: hidden;
-        overflow-y: auto;
+        height: 100%;
     }
     
         #specimen-toolbar {
             overflow: auto;
-            padding-bottom: 12px;
+            height: 54px;
+            padding: 16px;
             border-bottom: 1px solid #ddd;
             z-index: 1000;
         }
         
         #specimen-content {
-            overflow: hidden;
+            height: calc(100% - 54px);
+            overflow-y: auto;
+            padding: 16px;
         }
         
            .specimen-tool {
@@ -518,46 +518,14 @@
                margin-right: 8px;
            }
         
-            #size-slider-container {
-                position: relative;
+            size-rope {
+                float: left;
+                margin-right: 8px;
+                margin-top: 2px;
                 width: 16px;
                 height: 16px;
-                background: #ddd;
-                border-radius: 8px;
             }
-        
-                #size-slider, .ui-draggable-dragging {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    z-index: 10;
-                    width: 16px;
-                    height: 16px;
-                    background: #f85c37;
-                    border-radius: 8px;
-                }
-                
-                   #size-slider:hover, .ui-draggable-dragging:hover {
-                       cursor: pointer;
-                   }
-                
-                   .ui-draggable-dragging {
-                       background: #f85c37;
-                       box-shadow: 2px 2px 3px rgba(0,0,0,0.5);
-                   }
-                
-    #size-slider-line {
-        position: absolute;
-        top: 0;
-        left: 0;
-    }  
     
-        #size-slider-line svg {
-            position: absolute;
-            left; 0;
-            top: 0;
-        }       
-       
        
    #font-by {
     float: right;
@@ -594,12 +562,13 @@
         #specimen-content ul li {
             list-style: none;
             display: inline-block;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            margin-bottom: -4px;
+            cursor: default;
         }
         
         #specimen-content ul li.selected-glyph {
-            border-bottom: 3px solid #f85c37;
+            border-bottom: 4px solid #00f;
         }
         
             #specimen-content ul li .spec-glyph-box {

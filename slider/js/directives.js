@@ -1,3 +1,69 @@
+app.directive('sizeRope', ['$document',
+function($document) {
+    return {
+        restrict : 'E',
+        link : function(scope, element, attrs, ctrl) {
+            var templayer = '<div id="templayer" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 10000;"></div>';
+            var svg = d3.select(element[0]).append('svg').attr('width', '16px').attr('height','16px');
+            var svgT;
+            var gT;
+            var lineT;
+            var diamondT;
+            var screenX;
+            var screenY;
+            var fontsize;
+            var diamondSize = 8;
+
+            //drag behaviour
+            var drag = d3.behavior.drag().on('dragstart', function() {
+                fontsize = scope.fontSize;
+                // create a temp layer
+                $(document.body).append(templayer);
+                svgT = d3.select("#templayer").append('svg').attr('width', '100%').attr('height','100%');
+                screenX = $(element[0]).offset().left;
+                screenY = $(element[0]).offset().top;
+                gT = svgT.append('g');
+                diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
+             
+            }).on('drag', function() {
+                var x = d3.event.x - diamondSize;
+                var y = d3.event.y - diamondSize;
+                var originX = screenX + diamondSize;
+                var originY = screenY + diamondSize;
+                diamondT.attr('transform', 'translate(' + x + ',' + y + ')');
+                gT.selectAll('*').remove();
+                lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#000').style('stroke-width', '2');
+                scope.fontSize = getSize(fontsize, screenX, screenY, x, -y);
+                scope.$apply();   
+            }).on('dragend', function() {
+                $("#templayer").remove();
+            });
+
+            // create static diamond
+            var diamond = svg.append('g').call(drag);
+            diamond.append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
+
+            // calculate size increase
+            function getSize(current, originX, originY, xPosition, yPosition){                
+                if ((xPosition >= 0 && yPosition >= 0) || xPosition <= 0 && yPosition <= 0) {
+                    var growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)));
+                    if (yPosition < 0) {
+                        growth *= -1;
+                    }
+                    var newSize = current + growth;
+                    if (newSize < 10) {
+                        newSize = 10;
+                    }
+                    
+                } else {
+                    var newSize = current;
+                }
+                return newSize;
+            }
+        }
+    };
+}]);
+
 app.directive('arrow', function($document) {
     return {
         restrict : 'E',
@@ -8,7 +74,7 @@ app.directive('arrow', function($document) {
                 //element.toggleClass("open");
             });
         }
-    }
+    };
 });
 
 app.directive('control', ['$document',
@@ -70,7 +136,7 @@ function($document) {
                         d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
                         dragActive = true;
                     }).on('drag', function() {
-                        
+
                         d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y);
                         var lengthA = getDistance(d3.event.x, 183, d3.event.y, 10) + 1;
                         var lengthB = getDistance(d3.event.x, 183, d3.event.y, 210) + 1;
@@ -182,14 +248,14 @@ function($document) {
                     rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
                         return i;
                     }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
-                        scope.removeMaster(i + 1)
+                        scope.removeMaster(i + 1);
                     });
 
                     scope.getMetapolationRatios(data);
                 }
             }
         }
-    }
+    };
 }]);
 
 app.directive('explore', ['$document',
@@ -254,7 +320,7 @@ function($document) {
                 }).attr("font-size", "10px").attr("text-anchor", "middle").attr("font-size", "8px").attr("fill", "#fff").attr("id", function(d, i) {
                     return "label-" + i;
                 }).attr("class", "unselectable");
-            }
+            };
             drawEllipses = function(data) {
                 layer2.selectAll('ellipse').remove();
                 layer2.selectAll('circle').remove();
@@ -310,7 +376,7 @@ function($document) {
                             }
                         }
                         distanceArray.sort(function(a, b) {
-                            return a[1] - b[1]
+                            return a[1] - b[1];
                         });
                         // find closest and second closest
                         var closest = distanceArray[0][0];
@@ -348,11 +414,11 @@ function($document) {
                     }).attr('cy', function(d) {
                         return d.coordinates[1];
                     }).attr("transform", function(d, i) {
-                        return "rotate(" + ellipses[i][2] + ", " + d.coordinates[0] + ", " + d.coordinates[1] + ")"
+                        return "rotate(" + ellipses[i][2] + ", " + d.coordinates[0] + ", " + d.coordinates[1] + ")";
                     }).style("opacity", 0.3);
                 }
-            }
+            };
         }
-    }
+    };
 }]);
 
