@@ -16,7 +16,7 @@ function($document) {
 
             //drag behaviour
             var drag = d3.behavior.drag().on('dragstart', function() {
-                fontsize = scope.fontSize;
+                fontsize = parseInt(scope.fontSize);
                 // create a temp layer
                 $(document.body).append(templayer);
                 svgT = d3.select("#templayer").append('svg').attr('width', '100%').attr('height','100%');
