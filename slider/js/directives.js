@@ -1,5 +1,83 @@
-app.directive('sizeRope', ['$document',
-function($document) {
+app.directive('rubberband', function($document) {
+    return {
+        restrict : 'A',
+        link : function(scope, element, attrs, ctrl) {
+                var startX, startY, divX1, divX2, divY1, divY2;
+                var myclick = false;
+                var mymove = false;
+                
+                element.bind('mousedown', function(event) {
+                    myclick = true;
+                    startX = event.pageX;
+                    startY = event.pageY;
+                    var templayer = '<div id="templayer-rubberband" class="rubberband" style="position: fixed; z-index: 10000;"></div>';
+                    element.append(templayer);
+                });
+                element.bind('mousemove', function(event) {
+                    if (myclick) {
+                        mymove = true;
+                    
+                        dragPhase = 1;
+                        var x = event.pageX;
+                        var y = event.pageY;
+                        if (x < startX) {
+                            divX1 = x;
+                            divX2 = startX;
+                        } else {
+                            divX1 = startX;
+                            divX2= x;
+                        }
+                        if (y < startY) {
+                            divY1 = y;
+                            divY2 = startY;
+                        } else {
+                            divY1 = startY;
+                            divY2 = y;
+                        }
+                        $("#templayer-rubberband").css({
+                            'left': divX1 + 'px',
+                            'top' : divY1 + 'px',
+                            'width': (divX2 - divX1) + 'px',
+                            'height': (divY2 - divY1) + 'px'
+                        });
+                    }
+                });
+                element.bind('mouseup', function(event) {
+                    if (mymove) {
+                        var selected = [];
+                        $("#panel-2 .spec-glyph-box").each(function(){
+                            if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
+                                selected.push({
+                                    "sequence": $(this).attr("sequence"),
+                                    "master": $(this).attr("master"),
+                                    "glyph": $(this).attr("glyph")
+                                });
+                            }   
+                        });
+                        scope.selectSet(selected);
+                        scope.$apply();
+                        $("#templayer-rubberband").remove();
+                    }
+                    myclick = false;
+                    mymove = false;
+                });
+                
+                function isThisInBox (glyph, x1, x2, y1, y2) {
+                    var myx1 = $(glyph).offset().left;
+                    var myx2 = $(glyph).offset().left + $(glyph).outerWidth();
+                    var myy1 = $(glyph).offset().top;
+                    var myy2 = $(glyph).offset().top + $(glyph).outerHeight();
+                    if (((x1 < myx1 && x2 > myx1) || (x1 < myx2 && x2 > myx2) || (x1 > myx1 && x2 < myx2)) && ((y1 < myy1 && y2 > myy1) || (y1 < myy2 && y2 > myy2)|| (y1 > myy1 && y2 < myy2))) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+        }
+    };
+});
+
+app.directive('sizeRope', function($document) {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
@@ -62,7 +140,7 @@ function($document) {
             }
         }
     };
-}]);
+});
 
 app.directive('arrow', function($document) {
     return {

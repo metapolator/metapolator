@@ -33,17 +33,54 @@ function($scope, $sce, sharedScope) {
     };
 
     // setting the edit mode of glyphs
-    $scope.toggleGlyph = function(glyph, master) {
+    $scope.selectGlyph = function(glyph, sequenceId, masterId) {
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
-                    if ($scope.data.sequences[j].masters[k].glyphs[l].value == glyph && $scope.data.sequences[j].masters[k].name == master) {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = !$scope.data.sequences[j].masters[k].glyphs[l].edit;
+                    if ($scope.data.sequences[j].masters[k].glyphs[l].value == glyph && sequenceId == j && masterId == k) {
+                        $scope.data.sequences[j].masters[k].glyphs[l].edit = true;
+                    } else {
+                        $scope.data.sequences[j].masters[k].glyphs[l].edit = false;
                     }
                 }
             }
         }
     };
+    
+    $scope.selectGlyphDirect = function(glyph) {
+        for (var j = 0; j < $scope.data.sequences.length; j++) {
+            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
+                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
+                    if ($scope.data.sequences[j].masters[k].glyphs[l] == glyph) {
+                        $scope.data.sequences[j].masters[k].glyphs[l].edit = true;
+                    } else {
+                        $scope.data.sequences[j].masters[k].glyphs[l].edit = false;
+                    }
+                }
+            }
+        }
+    };
+    
+    $scope.selectSet = function(set){
+        for (var j = 0; j < $scope.data.sequences.length; j++) {
+            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
+                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
+                    var isinset = false;
+                    for (var m = 0; m < set.length; m++){
+                        if ($scope.data.sequences[j].masters[k].glyphs[l].value == set[m].glyph && j == set[m].sequence && k == set[m].master) {
+                            isinset = true;
+                        }
+                    }
+                    if (isinset) {
+                       $scope.data.sequences[j].masters[k].glyphs[l].edit = true;
+                    } else {
+                        $scope.data.sequences[j].masters[k].glyphs[l].edit = false;
+                    }
+                }
+            }
+        } 
+    };
+    
 
     // find out if the glyph edit is true
     $scope.askIfEditGlyph = function(glyph, master) {
@@ -60,7 +97,7 @@ function($scope, $sce, sharedScope) {
         return edit;
     };
     
-    $scope.$watch("selectedSpecimen.text | specimenFilter:filterOptions:data.sequences", function(newVal) {
+    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences", function(newVal) {
         $scope.filteredGlyphs = newVal;
     }, true);
 

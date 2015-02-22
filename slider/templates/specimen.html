@@ -14,21 +14,24 @@
     </div>
 </div>
 
-<!-- standard view -->
-<div id="specimen-content">
-    <ul ng-if="selectedSpecimen.name != 'glyph range'"  ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
-        <li ng-repeat="thisglyph in filteredGlyphs track by $index" ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name), 'glyph-linebreak': thisglyph.linebreak}" ng-click="toggleGlyph(thisglyph.glyph, thisglyph.master.name)">
-            <div class="spec-glyph-box" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
-        </li>
-    </ul>
+
+<div id="specimen-content" rubberband>
+    
+    <!-- standard view -->
+    <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
+        <ul ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
+            <li ng-repeat="thisglyph in filteredGlyphs track by $index" ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name), 'glyph-linebreak': thisglyph.linebreak}" ng-click="selectGlyph(thisglyph.glyph, thisglyph.master.sequenceId, thisglyph.master.masterId)">
+                <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
+            </li>
+        </ul>
+    </div>
     
     <!-- glyph range -->
-    <div ng-if="selectedSpecimen.name == 'glyph range'">
+    <div id="glyph-range" ng-if="selectedSpecimen.name == 'glyph range'">
         <div ng-repeat="sequence in data.sequences">
-            <ul ui-sortable="sortableOptions" ng-model="selectedSpecimen.text" ng-repeat="master in sequence.masters | filter:master.edit" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
-                <li ng-repeat="glyph in selectedSpecimen.text track by $index" class="glyph-box">
-                    {{glyph}}
-                </li>
+            <ul class="glyph-range-master" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
+                <li ng-click="selectGlyphDirect(glyph)" ng-class="{'selected-glyph':glyph.edit}" ng-repeat="glyph in master.glyphs track by $index" class="glyph-box no-rubberband">{{glyph.value}}</li>
+            </ul>
         </div>
     </div>
 </div>
