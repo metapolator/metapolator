@@ -21,7 +21,7 @@
     <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
         <ul ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
             <li ng-repeat="thisglyph in filteredGlyphs track by $index" ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name), 'glyph-linebreak': thisglyph.linebreak}" ng-click="selectGlyph(thisglyph.glyph, thisglyph.master.sequenceId, thisglyph.master.masterId)">
-                <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
+                <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box catchme unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
             </li>
         </ul>
     </div>
@@ -30,7 +30,7 @@
     <div id="glyph-range" ng-if="selectedSpecimen.name == 'glyph range'">
         <div ng-repeat="sequence in data.sequences">
             <ul class="glyph-range-master" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
-                <li ng-click="selectGlyphDirect(glyph)" ng-class="{'selected-glyph':glyph.edit}" ng-repeat="glyph in master.glyphs track by $index" class="glyph-box no-rubberband">{{glyph.value}}</li>
+                <li sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" ng-click="selectGlyphDirect(glyph)" ng-class="{'selected-glyph':glyph.edit}" ng-repeat="glyph in master.glyphs track by $index" class="glyph-box no-rubberband catchme unselectable">{{glyph.value}}</li>
             </ul>
         </div>
     </div>
