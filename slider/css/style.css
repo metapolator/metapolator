@@ -600,16 +600,6 @@
         -ms-user-select: none;
         user-select: none;
     }
-    
-	/* for testing purpose
-    .normal-click {
-        background: red;
-    }
-    
-    .ctrl-click {
-        background: green;
-    }
-    */
            
     .rubberband {
         background: rgba(0, 0, 0, 0.1);

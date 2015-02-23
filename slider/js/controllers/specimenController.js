@@ -47,14 +47,12 @@ function($scope, $sce, sharedScope) {
         }
     };
     
-    $scope.selectGlyphDirect = function(glyph) {
+    $scope.toggleGlyph = function(sequenceId, masterId, glyph) {
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
-                    if ($scope.data.sequences[j].masters[k].glyphs[l] == glyph) {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = true;
-                    } else {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = false;
+                    if ($scope.data.sequences[j].masters[k].glyphs[l].value == glyph && sequenceId == j && masterId == k) {
+                        $scope.data.sequences[j].masters[k].glyphs[l].edit = !$scope.data.sequences[j].masters[k].glyphs[l].edit;
                     }
                 }
             }

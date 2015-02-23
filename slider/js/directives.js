@@ -3,65 +3,17 @@ app.directive('specGlyphBox', function($document) {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {           
             element.bind('click', function(event) {
-                var startAndEnd = false;
+                var sequence = $(element).attr("sequence");
+                var master = $(element).attr("master");
+                var glyph = $(element).attr("glyph");
                 if (event.shiftKey || event.ctrlKey || event.metaKey) {
                     // control click
-                    // register firstclick, so the first ctrl click can count as a normal click
-                    var firstclick = false;
-                    $(".spec-glyph-box").each(function(){
-                        if ($(this).hasClass("normal-click")) {
-                            firstclick = true;
-                        }
-                        $(this).removeClass("ctrl-click"); 
-                    }); 
-                    if (firstclick) {
-                        $(element).addClass("ctrl-click");
-                        startAndEnd = true;
-                    } else {
-                        $(element).addClass("normal-click");
-                    }
-                    // making the set from normal click to ctrl click
-                    if (startAndEnd) {
-                        var selected = [];
-                        var phase = 0;
-                        $(".spec-glyph-box").each(function(){
-    
-                            if($(this).hasClass("normal-click") || $(this).hasClass("ctrl-click")) {
-                                if (phase == 0) {
-                                    phase = 1;
-                                } else {
-                                    phase = 2;
-                                    selected.push({
-                                        "sequence": $(this).attr("sequence"),
-                                        "master": $(this).attr("master"),
-                                        "glyph": $(this).attr("glyph")
-                                    });
-                                }
-                            }
-                            if (phase == 1) {
-                                selected.push({
-                                    "sequence": $(this).attr("sequence"),
-                                    "master": $(this).attr("master"),
-                                    "glyph": $(this).attr("glyph")
-                                });
-                            }  
-    
-                        });
-                        scope.selectSet(selected);
-                        scope.$apply();
-                    }
+                    scope.toggleGlyph(sequence, master, glyph);
+                    scope.$apply();
                 } else {
                     // normal click
-                    var sequence = $(element).attr("sequence");
-                    var master = $(element).attr("master");
-                    var glyph = $(element).attr("glyph");
                     scope.selectGlyph(sequence, master, glyph);
                     scope.$apply();
-                    $(".spec-glyph-box").each(function(){
-                        $(this).removeClass("normal-click"); 
-                        $(this).removeClass("ctrl-click");
-                    });  
-                    $(element).addClass("normal-click");
                 }
             });
         }
@@ -78,8 +30,10 @@ app.directive('rubberband', function($document) {
             
             element.bind('mousedown', function(event) {
                 if (!$(event.target).hasClass("no-rubberband")) {
-                    scope.deselectAll();
-                    scope.$apply();
+                    if (!event.shiftKey && !event.ctrlKey && !event.metaKey) {
+                        scope.deselectAll();
+                        scope.$apply();
+                    }
                     myclick = true;
                     startX = event.pageX;
                     startY = event.pageY;
