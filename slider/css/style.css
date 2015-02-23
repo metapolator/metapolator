@@ -550,58 +550,66 @@
         padding: 0;
         margin: 0;
     }
-            #specimen-content ul li {
-                list-style: none;
+    
+    #specimen-content ul.glyph-range-master {
+        margin-bottom: 40px;
+    }
+    
+        #specimen-content ul li {
+            list-style: none;
+            display: inline-block;
+            cursor: default;
+        }
+        
+        #specimen-content ul li.spec-glyph-box-range {
+            border: 1px solid #ddd;
+            margin: 4px;
+        }
+              
+            #specimen-content ul li div.spec-glyph-box {              
                 display: inline-block;
-                cursor: default;
+                white-space: pre;
+                border-bottom: 4px solid transparent;
             }
             
-                #specimen-content ul li .spec-glyph-box {
-                    display: inline-block;
-                    white-space: pre;
-                    border-bottom: 4px solid transparent;
+             #specimen-content ul li.spec-glyph-box-range div.spec-glyph-box {
+                 width: 115px;
+                 height: 140px;
+                 font-size: 60px;
+                 text-align: center;
+                 padding: 30px;
+             }
+                
+                #specimen-content ul li.selected-glyph .spec-glyph-box {
+                    border-bottom: 4px solid #00f!important;
                 }
-                
-                    #specimen-content ul li.selected-glyph .spec-glyph-box {
-                        border-bottom: 4px solid #00f!important;
-                    }
+                        
+                #specimen-content ul li .temp-selected-glyph {
+                    border-bottom: 4px solid #00f!important;   
+                }
                     
-                    #specimen-content ul li .temp-selected-glyph {
-                        border-bottom: 4px solid #00f!important;   
-                    }
-                
                 #specimen-content ul li.glyph-linebreak {
                     display: block;
                 }
                 
-                    .unselectable {                
-                        -webkit-touch-callout: none;
-                        -webkit-user-select: none;
-                        -khtml-user-select: none;
-                        -moz-user-select: none;
-                        -ms-user-select: none;
-                        user-select: none;
-                    }
-	
-    #glyph-range {
+    .unselectable {                
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
-     
-        #specimen-content ul.glyph-range-master {
-            margin-bottom: 40px;
-        }
-   
-           #specimen-content ul li.glyph-box {
-               display: inline-block;
-               background: #fff;
-               width: 115px;
-               height: 140px;
-               font-size: 60px;
-               text-align: center;
-               padding: 30px;
-               border: 1px solid #ddd;
-               margin: 4px;
-               white-space: pre;
-           }
+    
+	/* for testing purpose
+    .normal-click {
+        background: red;
+    }
+    
+    .ctrl-click {
+        background: green;
+    }
+    */
            
     .rubberband {
         background: rgba(0, 0, 0, 0.1);

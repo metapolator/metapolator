@@ -21,7 +21,7 @@
     <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
         <ul ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
             <li ng-repeat="thisglyph in filteredGlyphs track by $index" ng-style="{'margin-bottom': (fontSize / 5) + 'px'}" ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name), 'glyph-linebreak': thisglyph.linebreak}">
-                <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box catchme unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}" ng-click="selectGlyph(thisglyph.glyph, thisglyph.master.sequenceId, thisglyph.master.masterId)">{{thisglyph.glyph}}</div>
+                <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box catchme unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
             </li>
         </ul>
     </div>
@@ -30,7 +30,9 @@
     <div id="glyph-range" ng-if="selectedSpecimen.name == 'glyph range'">
         <div ng-repeat="sequence in data.sequences">
             <ul class="glyph-range-master" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
-                <li sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" ng-click="selectGlyphDirect(glyph)" ng-class="{'selected-glyph':glyph.edit}" ng-repeat="glyph in master.glyphs track by $index" class="glyph-box no-rubberband catchme unselectable">{{glyph.value}}</li>
+                <li ng-class="{'selected-glyph':glyph.edit}" ng-repeat="glyph in master.glyphs track by $index" class="no-rubberband spec-glyph-box-range">
+                    <div sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" class="spec-glyph-box catchme unselectable no-rubberband">{{glyph.value}}</div>
+                </li>
             </ul>
         </div>
     </div>
