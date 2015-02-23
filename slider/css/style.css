@@ -567,7 +567,7 @@
                     }
                     
                     #specimen-content ul li .temp-selected-glyph {
-                        background: #ddd;    
+                        border-bottom: 4px solid #00f!important;   
                     }
                 
                 #specimen-content ul li.glyph-linebreak {
