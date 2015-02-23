@@ -42,6 +42,13 @@ app.directive('rubberband', function($document) {
                         'width': (divX2 - divX1) + 'px',
                         'height': (divY2 - divY1) + 'px'
                     });
+                    $("#panel-2 .catchme").each(function(){
+                        if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
+                            $(this).addClass("temp-selected-glyph");
+                        } else {
+                            $(this).removeClass("temp-selected-glyph");
+                        } 
+                    });
                 }
             });
             element.bind('mouseup', function(event) {
@@ -52,6 +59,7 @@ app.directive('rubberband', function($document) {
                 if (mymove) {
                     var selected = [];
                     $("#panel-2 .catchme").each(function(){
+                        $(this).removeClass("temp-selected-glyph");
                         if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
                             selected.push({
                                 "sequence": $(this).attr("sequence"),
@@ -110,6 +118,7 @@ app.directive('sizeRope', function($document) {
                 diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
              
             }).on('drag', function() {
+                diamondfill.style('fill', '#fff');
                 var x = d3.event.x - diamondSize;
                 var y = d3.event.y - diamondSize;
                 var originX = screenX + diamondSize;
@@ -120,12 +129,13 @@ app.directive('sizeRope', function($document) {
                 scope.fontSize = getSize(fontsize, screenX, screenY, x, -y);
                 scope.$apply();   
             }).on('dragend', function() {
+                diamondfill.style('fill', '#F85C37');
                 $("#templayer").remove();
             });
 
             // create static diamond
             var diamond = svg.append('g').call(drag);
-            diamond.append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
+            var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
 
             // calculate size increase
             function getSize(current, originX, originY, xPosition, yPosition){                

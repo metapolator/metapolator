@@ -20,8 +20,8 @@
     <!-- standard view -->
     <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
         <ul ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
-            <li ng-repeat="thisglyph in filteredGlyphs track by $index" ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name), 'glyph-linebreak': thisglyph.linebreak}" ng-click="selectGlyph(thisglyph.glyph, thisglyph.master.sequenceId, thisglyph.master.masterId)">
-                <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box catchme unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
+            <li ng-repeat="thisglyph in filteredGlyphs track by $index" ng-style="{'margin-bottom': (fontSize / 3) + 'px'}" ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name), 'glyph-linebreak': thisglyph.linebreak}">
+                <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box catchme unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}" ng-click="selectGlyph(thisglyph.glyph, thisglyph.master.sequenceId, thisglyph.master.masterId)">{{thisglyph.glyph}}</div>
             </li>
         </ul>
     </div>

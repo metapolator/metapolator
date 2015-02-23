@@ -517,10 +517,17 @@
                float: left;
                margin-right: 8px;
            }
+           
+           #size-nr {
+               font-size: 12px;
+               font-family: "Lato";
+               width: 38px;
+               margin-right: 3px;
+           }
         
             size-rope {
                 float: left;
-                margin-right: 8px;
+                margin-right: 12px;
                 margin-top: 2px;
                 width: 16px;
                 height: 16px;
@@ -543,23 +550,26 @@
         padding: 0;
         margin: 0;
     }
-    
             #specimen-content ul li {
                 list-style: none;
                 display: inline-block;
-                border-bottom: 4px solid transparent;
-                margin-bottom: -4px;
+                border: 1px solid #aaa;
                 cursor: default;
-            }
-            
-            #specimen-content ul li.selected-glyph {
-                border-bottom: 4px solid #00f!important;
             }
             
                 #specimen-content ul li .spec-glyph-box {
                     display: inline-block;
                     white-space: pre;
+                    border-bottom: 4px solid transparent;
                 }
+                
+                    #specimen-content ul li.selected-glyph .spec-glyph-box {
+                        border-bottom: 4px solid #00f!important;
+                    }
+                    
+                    #specimen-content ul li .temp-selected-glyph {
+                        background: #ddd;    
+                    }
                 
                 #specimen-content ul li.glyph-linebreak {
                     display: block;

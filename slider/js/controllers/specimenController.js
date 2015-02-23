@@ -82,6 +82,7 @@ function($scope, $sce, sharedScope) {
     };
     
     $scope.deselectAll = function(){
+        console.log("!");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
