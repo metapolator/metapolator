@@ -68,15 +68,32 @@ app.directive('rubberband', function($document) {
                         'height': (divY2 - divY1) + 'px'
                     });
                     $("#panel-2 .catchme").each(function(){
-                        if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
-                            $(this).addClass("temp-selected-glyph");
+                        if (event.shiftKey || event.ctrlKey || event.metaKey) {
+                            if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
+                                if ($(this).parent().hasClass("selected-glyph")) {
+                                    $(this).addClass("temp-unselected-glyph");
+                                } else {
+                                    $(this).addClass("temp-selected-glyph");
+                                }
+                                
+                            } else {
+                                $(this).removeClass("temp-selected-glyph");
+                            }
                         } else {
-                            $(this).removeClass("temp-selected-glyph");
-                        } 
+                            if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
+                                $(this).addClass("temp-selected-glyph");
+                            } else {
+                                $(this).removeClass("temp-selected-glyph");
+                            } 
+                            
+                        }
                     });
                 }
             });
             element.bind('mouseup', function(event) {
+                $("#panel-2 .catchme").each(function(){
+                    $(this).removeClass("temp-unselected-glyph");
+                });
                 if (!$(event.target).hasClass("spec-glyph-box")) {
                     scope.deselectAll();
                     scope.$apply();
@@ -93,9 +110,13 @@ app.directive('rubberband', function($document) {
                             });
                         }   
                     });
-                    scope.selectSet(selected);
-                    scope.$apply();
-                    
+                    if (event.shiftKey || event.ctrlKey || event.metaKey) {
+                        scope.toggleSet(selected);
+                        scope.$apply();
+                    } else {
+                        scope.selectSet(selected);
+                        scope.$apply();
+                    }
                 }
                 $("#templayer-rubberband").remove();
                 myclick = false;

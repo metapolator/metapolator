@@ -523,6 +523,7 @@
                font-family: "Lato";
                width: 38px;
                margin-right: 3px;
+               text-align: right;
            }
         
             size-rope {
@@ -582,6 +583,10 @@
                 
                 #specimen-content ul li.selected-glyph .spec-glyph-box {
                     border-bottom: 4px solid #00f!important;
+                }
+                
+                body #specimen-content ul li.selected-glyph .temp-unselected-glyph {
+                    border-bottom: 4px solid transparent!important;
                 }
                         
                 #specimen-content ul li .temp-selected-glyph {

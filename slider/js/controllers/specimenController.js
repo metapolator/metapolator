@@ -79,6 +79,24 @@ function($scope, $sce, sharedScope) {
         } 
     };
     
+    $scope.toggleSet = function(set){
+        for (var j = 0; j < $scope.data.sequences.length; j++) {
+            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
+                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
+                    var isinset = false;
+                    for (var m = 0; m < set.length; m++){
+                        if ($scope.data.sequences[j].masters[k].glyphs[l].value == set[m].glyph && j == set[m].sequence && k == set[m].master) {
+                            isinset = true;
+                        }
+                    }
+                    if (isinset) {
+                       $scope.data.sequences[j].masters[k].glyphs[l].edit = !$scope.data.sequences[j].masters[k].glyphs[l].edit;
+                    }
+                }
+            }
+        } 
+    };
+    
     $scope.deselectAll = function(){
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
