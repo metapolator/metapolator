@@ -4,7 +4,7 @@
     <div id="standard-view-tools" >
         <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
         <size-rope></size-rope>      
-        <input type="text" id="filter" ng-model="filterOptions.filter" size="5" class="specimen-tool">
+        <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
         <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
         <button ng-click="border = !border">toggle border</button>
         <button ng-click="width = !width">toggle width</button>
