@@ -31,6 +31,7 @@
             top: 20px;
             width: 170px;
             padding: 20px;
+            z-index: 1000;
         }
         
             #menu #logo {
