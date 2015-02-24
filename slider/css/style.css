@@ -563,8 +563,15 @@
         }
         
         #specimen-content ul li.spec-glyph-box-range {
+            
+        }
+        
+        .test-border {
             border: 1px solid #ddd;
-            margin: 4px;
+        }
+        
+        .test-width {
+            width: auto!important;
         }
               
             #specimen-content ul li div.spec-glyph-box {              
@@ -574,11 +581,7 @@
             }
             
              #specimen-content ul li.spec-glyph-box-range div.spec-glyph-box {
-                 width: 115px;
-                 height: 140px;
-                 font-size: 60px;
                  text-align: center;
-                 padding: 30px;
              }
                 
                 #specimen-content ul li.selected-glyph .spec-glyph-box {

@@ -1,17 +1,22 @@
 
 <div id="specimen-toolbar">
     <select ng-model="selectedSpecimen" ng-options="specim.name for specim in specimen" class="specimen-tool"></select>
-    <div id="standard-view-tools" ng-show="selectedSpecimen.name != 'glyph range'" ng-hide="selectedSpecimen.name == 'glyph range'">
+    <div id="standard-view-tools" >
         <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
         <size-rope></size-rope>      
         <input type="text" id="filter" ng-model="filterOptions.filter" size="5" class="specimen-tool">
-        <input type="radio" ng-model="filterOptions.strict" value="3" class="specimen-tool">
-        <input type="radio" ng-model="filterOptions.strict" value="2" class="specimen-tool">
-        <input type="radio" ng-model="filterOptions.strict" value="1" class="specimen-tool">     
+        <span ng-if="selectedSpecimen.name != 'glyph range'">
+            <input type="radio" ng-model="filterOptions.strict" value="3" class="specimen-tool">
+            <input type="radio" ng-model="filterOptions.strict" value="2" class="specimen-tool">
+            <input type="radio" ng-model="filterOptions.strict" value="1" class="specimen-tool">    
+        </span> 
+        <button ng-click="border = !border">toggle border</button>
+        <button ng-click="width = !width">toggle width</button>
         <div id="font-by">
             font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
         </div>
     </div>
+   
 </div>
 
 
@@ -28,9 +33,9 @@
     <!-- glyph range -->
     <div id="glyph-range" ng-if="selectedSpecimen.name == 'glyph range'">
         <div ng-repeat="sequence in data.sequences">
-            <ul class="glyph-range-master" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display" class="glyph-range" style="font-family:'{{master.fontFamily}}'; font-weight: {{master.weight}};">
-                <li ng-class="{'selected-glyph':glyph.edit}" ng-repeat="glyph in master.glyphs track by $index" class="no-rubberband spec-glyph-box-range">
-                    <div sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" class="spec-glyph-box catchme unselectable no-rubberband">{{glyph.value}}</div>
+            <ul class="glyph-range-master" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display" class="glyph-range" ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px', 'font-family':master.fontFamily, 'font-weight': master.weight}">
+                <li ng-class="{'selected-glyph':glyph.edit, 'test-border': border}" ng-style="{'margin': (fontSize / 6) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range">
+                    <div ng-style="{'width': (fontSize * 1.2) + 'px'}" ng-class="{'test-width': width}" sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" class="spec-glyph-box catchme unselectable no-rubberband">{{glyph.value}}</div>
                 </li>
             </ul>
         </div>

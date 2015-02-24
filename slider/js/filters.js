@@ -1,3 +1,20 @@
+app.filter('rangeFilter', function() {
+    return function(specimen, filter) {
+        var filtered = [];
+        for (var i = 0; i < specimen.length; i++) {
+            var thisGlyph = specimen[i];
+            if (filter.length == 0) {
+                filtered.push(thisGlyph);
+            } else {
+                if(filter.indexOf(thisGlyph.value) > -1) {
+                    filtered.push(thisGlyph);
+                } 
+            }
+        }
+        return filtered;
+    };
+}); 
+
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences) {
         if (specimen.name != "glyph range") {
