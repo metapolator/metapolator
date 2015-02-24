@@ -5,14 +5,10 @@
         <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
         <size-rope></size-rope>      
         <input type="text" id="filter" ng-model="filterOptions.filter" size="5" class="specimen-tool">
-        <span ng-if="selectedSpecimen.name != 'glyph range'">
-            <input type="radio" ng-model="filterOptions.strict" value="3" class="specimen-tool">
-            <input type="radio" ng-model="filterOptions.strict" value="2" class="specimen-tool">
-            <input type="radio" ng-model="filterOptions.strict" value="1" class="specimen-tool">    
-        </span> 
+        <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
         <button ng-click="border = !border">toggle border</button>
         <button ng-click="width = !width">toggle width</button>
-        <div id="font-by">
+        <div id="font-by" ng-if="selectedSpecimen.name != 'glyph range'">
             font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
         </div>
     </div>

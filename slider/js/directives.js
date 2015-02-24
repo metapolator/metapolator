@@ -1,3 +1,62 @@
+app.directive('strict', function($document) {
+    return {
+        restrict : 'E',
+        link : function(scope, element, attrs, ctrl) {           
+            var svg = d3.select(element[0]).append('svg').attr('width', '90px').attr('height','20px');
+            var strict = scope.filterOptions.strict;
+            var x;
+
+            //drag behaviour
+            var drag = d3.behavior.drag().on('dragstart', function() {
+
+            }).on('drag', function() {
+                x = d3.event.x;
+                d3.select(this).attr('cx', limitX(x));
+                  
+            }).on('dragend', function() {
+                d3.select(this).attr('cx', positionX(x).x);
+                scope.filterOptions.strict = positionX(x).strict;
+                scope.$apply(); 
+            });
+            
+            function limitX(x) {
+                if (x < 10) {
+                    x = 10;
+                } else if (x > 50){
+                    x = 50;
+                }
+                return x;
+            }
+            
+            function positionX(x) {
+                var strict;
+                if (x < 20) {
+                    x = 10;
+                    strict = 1;
+                } else if (x > 19 && x < 40) {
+                    x = 30;
+                    strict = 2;
+                } else {
+                    x = 50;
+                    strict = 3;
+                }
+                return {
+                    "x": x,
+                    "strict": strict
+                };
+            }
+
+            // create line and slider
+            var line = svg.append('line').attr('x1', 10).attr('y1', 10).attr('x2', 50).attr('y2',10).style('stroke', '#000').style('stroke-width','2');
+            svg.append('circle').attr('r', 3).attr('cx', 10).attr('cy', 10).style('fill', '#000');
+            svg.append('circle').attr('r', 3).attr('cx', 30).attr('cy', 10).style('fill', '#000');
+            svg.append('circle').attr('r', 3).attr('cx', 50).attr('cy', 10).style('fill', '#000');
+            svg.append('text').attr('class', 'slider-label').attr('x', 62).attr('y', 13).text('strict');
+            var slider = svg.append('circle').attr('r', 8).attr('cx', (strict * 20 - 10)).attr('cy', 10).style('fill', '#000').call(drag);
+        }
+    };
+});
+
 app.directive('specGlyphBox', function($document) {
     return {
         restrict : 'C',
