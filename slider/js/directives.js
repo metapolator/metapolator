@@ -159,7 +159,7 @@ app.directive('rubberband', function($document) {
                 }
                 if (mymove) {
                     var selected = [];
-                    $("#panel-2 .catchme").each(function(){
+                    $("#" + element.context.id + " .catchme").each(function(){
                         $(this).removeClass("temp-selected-glyph");
                         if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
                             selected.push({
