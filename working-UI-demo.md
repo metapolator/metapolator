@@ -93,7 +93,14 @@ it looks to me that that best strategy is to—
 **local menu**: none
 
 ## masters column
-Stand-alone masters only; forget about master sequences and adjustment master (sequences). This saves us from a lot of exponential complexity, especially in the design spaces panel. Simon and I will come up with a (picture) glimpse of things to come for the adjustment master list. It should be possible in this working UI demo to load one ufo and create a total of 5 masters out of it (width and height variations).
+Stand-alone masters only; forget about master sequences and adjustment master (sequences). This saves us from a lot of exponential complexity, especially in the design spaces panel. There are also no clones. This means:
+
+* no adjustment master panel at all;
+* no interaction nor indications in the sequence column (first one); it can be left out or sit there as a dead column;
+* no sequence title item;
+* no Clone button.
+
+Simon and I will come up with a (picture) glimpse of things to come for the adjustment master list.
 
 ### local menu
 The local menu is as follows:
@@ -160,7 +167,11 @@ See the parameter specimen above for update highlighting. The recalc rate is dif
 **local menu**: none
 
 ## instances column
-Stand-alone instances only; This saves the complication of family handling, also in the design spaces. Working with 8 instances should not be a problem.
+Stand-alone instances only; This saves the complication of family handling, also in the design spaces. This means:
+
+* no interaction nor indications in the family column (first one); it can be left out or sit there as a dead column;
+* no family title item;
+* no Create family of instances button.
 
 ### local menu
 The local menu is as follows:
