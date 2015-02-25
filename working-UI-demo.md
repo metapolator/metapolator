@@ -204,9 +204,9 @@ This creates an opportunity for communicating the future of Metapolator, and the
 ## the _what’s next_ list
 The list below, regularly updated by Peter, in consensus with both Jeroen and Dave, lists the upcoming implementation tasks for the working UI demo:
 
-1. finish the local menus _(both mouse click-move-click and mouse down-drag-release modes)_
-* finish generic list interaction _(e.g buttons on the bottom, line and column interaction)_
+1. finish generic list interaction _(e.g buttons on the bottom, line and column interaction)_
 * based on the above, make master and instance list work _(especially the wiring to other panels)_
 * parameter panel _(needs design)_
 * font export column, export duration estimate and progress indication _(needs design)_
+* finish the local menus _(both mouse click-move-click and mouse down-drag-release modes)_
 * … _(updated as we progress)_
