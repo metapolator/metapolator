@@ -2,15 +2,15 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Masters <span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
         <li>
-            <a href="#">Import ufo...</a>
+            <a href="#" ng-click="importUfo();">Import ufo...</a>
         </li>
         <li class="divider"></li>
         <li>
-            <a href="#">Duplicate</a>
+            <a href="#" ng-click="duplicateMaster();">Duplicate</a>
         </li>
         <li class="divider"></li>
         <li>
-            <a href="#">Delete...</a>
+            <a href="#" ng-click="deleteMaster();">Delete...</a>
         </li>
     </ul>
 </div>
@@ -33,13 +33,14 @@
 </ul>
 
 
-<!--
-<ul ui-sortable="sortableOptions" ng-model="data.sequence.masters" class="master-ul" ng-repeat="sequence in data.sequences">
-    {{sequence.name}}
-    <li ng-repeat="master in sequence.masters" class="master-li">
-        <span class="selectable-diamond"></span>
-        <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'ui-selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
-        <span class="selectable-name" ng-click="master.edit = !master.edit" ng-class="{'ui-selected': master.edit}" >{{master.name}}</span>
-    </li>
-</ul>
--->
+<div id="masters-tools">
+    <div id="import-ufo" ng-click="importUfo();" class="master-tool">
+        <img src="img/importUfo.png">
+    </div>
+    <div id="duplicate-master" ng-click="duplicateMaster();" class="master-tool">
+        <img src="img/duplicateMaster.png">
+    </div>
+    <div id="delete-master" ng-click="deleteMaster();" class="master-tool">
+        <img src="img/deleteMaster.png">
+    </div>
+</div>

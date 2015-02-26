@@ -870,11 +870,36 @@
 /**************** masters ************************/
 
 
-    masters ul {
-        list-style: none;     
-        margin: 0;
-        padding: 0;
+    masters {
+        position: relative;
+        height: 100%;
+        display: block;
     }
+
+        masters ul {
+            list-style: none;     
+            margin: 0;
+            padding: 0;
+        }
+
+            
+        #masters-tools {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid #000;
+        }
+        
+            .master-tool {
+                float: left;
+                width: 33px;
+                height: 32px;
+                display: inline-block;
+                cursor: pointer;
+                text-align: center;
+                border-right: 1px solid #000;
+            }
 
         .sequence-name {
             margin-left: 24px;
