@@ -211,10 +211,24 @@ app.directive('sizeRope', function($document) {
             var screenY;
             var fontsize;
             var diamondSize = 8;
+            var fontsize = parseInt(scope.fontSize);
+            var factor = getFactor (fontsize);
+            
+            function getFactor (size) {
+                console.log(size);
+                if (size > 100) {
+                    var factor = 1;
+                } else {
+                    var factor = size / 100;
+                }  
+                
+                return factor;
+            }
 
             //drag behaviour
             var drag = d3.behavior.drag().on('dragstart', function() {
                 fontsize = parseInt(scope.fontSize);
+                
                 // create a temp layer
                 $(document.body).append(templayer);
                 svgT = d3.select("#templayer").append('svg').attr('width', '100%').attr('height','100%');
@@ -233,6 +247,7 @@ app.directive('sizeRope', function($document) {
                 gT.selectAll('*').remove();
                 lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#000').style('stroke-width', '2');
                 scope.fontSize = getSize(fontsize, screenX, screenY, x, -y);
+                
                 scope.$apply();   
             }).on('dragend', function() {
                 diamondfill.style('fill', '#F85C37');
@@ -245,12 +260,6 @@ app.directive('sizeRope', function($document) {
 
             // calculate size increase
             function getSize(current, originX, originY, xPosition, yPosition) {    
-                if (current > 100) {
-                    var factor = 1;
-                } else {
-                    var factor = current / 100;
-                }
-                            
                 if ((xPosition >= 0 && yPosition >= 0) || xPosition <= 0 && yPosition <= 0) {
                     var growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)) * factor);
                     if (yPosition < 0) {
@@ -260,10 +269,10 @@ app.directive('sizeRope', function($document) {
                     if (newSize < 10) {
                         newSize = 10;
                     }
-                    
                 } else {
                     var newSize = current;
                 }
+                factor = getFactor (newSize);
                 return newSize;
             }
         }

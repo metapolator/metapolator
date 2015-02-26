@@ -6,8 +6,6 @@
         <size-rope></size-rope>      
         <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
         <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
-        <button ng-click="border = !border">toggle border</button>
-        <button ng-click="width = !width">toggle width</button>
         <div id="font-by" ng-if="selectedSpecimen.name != 'glyph range'">
             font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
         </div>
@@ -30,8 +28,8 @@
     <div id="glyph-range" ng-if="selectedSpecimen.name == 'glyph range'">
         <div ng-repeat="sequence in data.sequences">
             <ul class="glyph-range-master" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display" class="glyph-range" ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px', 'font-family':master.fontFamily, 'font-weight': master.weight}">
-                <li ng-class="{'selected-glyph':glyph.edit, 'test-border': border}" ng-style="{'margin': (fontSize / 6) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range">
-                    <div ng-style="{'width': (fontSize * 1.2) + 'px'}" ng-class="{'test-width': width}" sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" class="spec-glyph-box catchme unselectable no-rubberband">{{glyph.value}}</div>
+                <li ng-class="{'selected-glyph':glyph.edit}" ng-style="{'margin': (fontSize / 6) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range">
+                    <div ng-class="{'test-width': width}" sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" class="spec-glyph-box catchme unselectable no-rubberband">{{glyph.value}}</div>
                 </li>
             </ul>
         </div>

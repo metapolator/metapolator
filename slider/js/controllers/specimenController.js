@@ -32,9 +32,6 @@ function($scope, $sce, sharedScope) {
         strict : 1,
         selectedFontby : $scope.fontbys[0]
     };
-    
-    $scope.border = true; //for testing purpose
-    $scope.width = true; //for testing purpose
 
     // setting the edit mode of glyphs
     $scope.selectGlyph = function(sequenceId, masterId, glyph) {

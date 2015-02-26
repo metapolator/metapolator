@@ -565,15 +565,7 @@
         #specimen-content ul li.spec-glyph-box-range {
             
         }
-        
-        .test-border {
-            border: 1px solid #ddd;
-        }
-        
-        .test-width {
-            width: auto!important;
-        }
-              
+                     
             #specimen-content ul li div.spec-glyph-box {              
                 display: inline-block;
                 white-space: pre;
