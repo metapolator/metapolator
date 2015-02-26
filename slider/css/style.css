@@ -249,7 +249,7 @@
 
 /***************** divider ******************/
 
-
+/*
     .divider {
         position: absolute;
         height: calc(100% - 50px);
@@ -307,7 +307,7 @@
             cursor: ns-resize;
         }
 
-
+*/
     
 
 			
@@ -350,7 +350,7 @@
 				margin-top: 16px;
 				border-radius: 0;
 				border: 0;
-				box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+				box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 			}
 			
 	
@@ -1050,3 +1050,40 @@
             background: #f85c37;
             color: #fff;
         }
+
+
+/***************** instances ******************/
+
+
+    instances {
+        position: relative;
+        height: 100%;
+        display: block;
+    }
+
+        instances ul {
+            padding: 0;
+            margin: 0;
+        }
+    
+            instances ul li {
+                list-style: none;
+            }
+            
+        #instances-tools {
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid #000;
+        }
+        
+            .instance-tool {
+                float: left;
+                width: 33px;
+                height: 32px;
+                display: inline-block;
+                cursor: pointer;
+                text-align: center;
+                border-right: 1px solid #000;
+            }

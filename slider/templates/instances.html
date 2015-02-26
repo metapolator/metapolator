@@ -3,31 +3,45 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
         <li>
-            <a href="#">New</a>
+            <a href="#" ng-click="addInstance();">New</a>
+        </li>
+        <li>
+            <a href="#" ng-click="duplicateInstance();">Duplicate</a>
         </li>
         <li class="divider"></li>
         <li>
-            <a href="#">Promote To Master</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-            <a href="#">Quick Export...</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-            <a href="#">Delete...</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-            <a href="#">Create String</a>
-        </li>
-        <li>
-            <a href="#">Delete String...</a>
+            <a href="#" ng-click="deleteInstance();">Delete...</a>
         </li>
     </ul>
 </div>
 <!-- end of menu -->
 
+
+<ul ui-sortable="sortableOptionsMasters" ng-model="data.instances" class="sequence">
+    <li ng-repeat="instance in data.instances" class="master" ng-class="{selected: instance.edit}">
+        <span class="diamond" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}">
+            <div class="diamond-fix" ng-class="{diamonddrag: !$middle}"></div>
+        </span>
+        <span class="selectable-ag" ng-click="instance.display = !instance.display" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};">Ag</span>
+        <span class="master-name" ng-click="selectInstancesForEdit(instance, $parent.$index, $index)" ng-class="{'selected': instance.edit}">
+            {{instance.name}}
+        </span>
+    </li>
+</ul>
+
+<div id="instances-tools">
+    <div id="add-instance" ng-click="addInstance();" class="instance-tool">
+        <img src="img/addInstance.png">
+    </div>
+    <div id="add-instance" ng-click="duplicateInstance();" class="instance-tool">
+        <img src="img/duplicateInstance.png">
+    </div>
+    <div id="add-instance" ng-click="deleteInstance();" class="instance-tool">
+        <img src="img/deleteInstance.png">
+    </div>
+</div>
+
+<!--
 <ul ui-selectable>
     <li value="3" ng-repeat="instance in instances" class="ui-selectee">
         <div class="handle"></div>
@@ -36,3 +50,5 @@
         <span class="selectable-name">{{instance.fontFamily}} {{instance.name}} {{instance.weight}}</span>
     </li>
 </ul>
+
+-->

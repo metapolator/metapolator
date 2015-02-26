@@ -37,18 +37,18 @@ app.controller("mastersController", function($scope, sharedScope) {
         angular.forEach($scope.masters, function(master, key) {
             $scope.mastersSeqCache[key] = master.seq;
         });
-    }
+    };
 
     $scope.whileDrag = function(thisMaster, nr) {
         if ($scope.mouseclick) {
             $scope.lastDiamond = nr;
             $scope.makeSequence();
         }
-    }
+    };
 
     $scope.makeSequence = function() {
         var start = $scope.startDiamond;
-        var last = $scope.lastDiamond
+        var last = $scope.lastDiamond;
         var cache = $scope.mastersSeqCache;
         var masters = $scope.masters;
 
@@ -163,7 +163,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             }
         }
-    }
+    };
     // selection column
 
     $scope.allMastersSelected = function(thisSequence) {
@@ -178,10 +178,11 @@ app.controller("mastersController", function($scope, sharedScope) {
         if (hit == i && i != 0) {
             return true;
         }
-    }
+    };
 
     $scope.selectionStart = [0, 0];
     $scope.selectionEnd = [];
+    
     $scope.selectMastersForEdit = function(thisMaster, sIndex, mIndex) {
         if ($scope.commandDown || $scope.controlDown) {// toggle on ctrl click
             thisMaster.edit = !thisMaster.edit;
@@ -194,14 +195,14 @@ app.controller("mastersController", function($scope, sharedScope) {
             $scope.deselectAll();
             thisMaster.edit = true;
         }
-    }
+    };
 
     $scope.selectSequenceForEdit = function(thisSequence) {
         $scope.deselectAll();
         angular.forEach(thisSequence.masters, function(master) {
             master.edit = true;
         });
-    }
+    };
 
     $scope.selectSet = function() {
         var countStart = [];
@@ -235,7 +236,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             }
         }
-    }
+    };
 
     $scope.deselectAll = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
@@ -243,7 +244,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 master.edit = false;
             });
         });
-    }
+    };
 
     $scope.sortableOptionsSequences = {
         helper : 'clone',
