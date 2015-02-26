@@ -18,7 +18,18 @@ app.filter('rangeFilter', function() {
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences) {
         if (specimen.name != "glyph range") {
+            // count fonts visible
+            var nrOfFonts = 0;
+            for (var i = 0; i < sequences.length; i++) {
+                for (var j = 0; j < sequences[i].masters.length; j++) {
+                    var thisFont = sequences[i].masters[j];
+                    if (thisFont.display == true) {
+                        nrOfFonts++;
+                    }
+                }
+            }
             var string = specimen.text;
+            
             var strict = options.strict;
             var required = strict;
             var output = "";
@@ -26,12 +37,13 @@ app.filter('specimenFilter', function() {
             var text = string.split(" ");
             var filter = options.filter;
 
-            if (strict == 3) {
-                newText = filter;
+            // if nothing if filter, then we use the string 1:1
+            if (filter.length == 0) {
+                newText = string;
             } else {
-
-                if (filter.length == 0) {
-                    newText = string;
+                if (strict == 3) {
+                    // if strict is 3, we use the filter 1:1
+                    newText = filter;
                 } else {
                     text.forEach(function(word) {
                         var hits = 0;
@@ -70,32 +82,42 @@ app.filter('specimenFilter', function() {
             }
 
             var filtered = [];
-            var masterIndex = 0;
+            
 
-            for (var i = 0; i < newText.length; i++) {
-                var glyph = newText[i];
-
-                // adding linebreak property for paragraphs
-                var linebreak = false;
-                if (glyph == "<" && newText[i + 1] == "b" && newText[i + 2] == "r") {
-                    linebreak = true;
-                    i += 3;
-                    glyph = " ";
+            // repeat proces for nr of fonts
+            for (var q = 0; q < nrOfFonts; q++){
+                var masterIndex = q;
+                for (var i = 0; i < newText.length; i++) {
+                    var glyph = newText[i];
+    
+                    // adding linebreak property for paragraphs
+                    var linebreak = false;
+                    if (glyph == "<" && newText[i + 1] == "b" && newText[i + 2] == "r") {
+                        linebreak = true;
+                        i += 3;
+                        glyph = " ";
+                    }
+                    var master = masterArray[masterIndex];
+                    var thisElement = {
+                        "glyph" : glyph,
+                        "master" : master,
+                        "linebreak" : linebreak
+                    };
+                    filtered.push(thisElement);
+                    // looping the master array. ++ every time when fontby is glyph, ++ only at a space when fontby is word
+                    if ((options.selectedFontby == "glyph" && newText[i] != " ") || (options.selectedFontby == "word" && newText[i] == " ") || (options.selectedFontby == "paragraph" && linebreak)) {
+                        masterIndex++;
+                    }
+                    if (masterIndex == masterArray.length) {
+                        masterIndex = 0;
+                    }
                 }
-                var master = masterArray[masterIndex];
-                var thisElement = {
-                    "glyph" : glyph,
+                // give a linebreak after repeating specimen
+                filtered.push({
+                    "glyph": " ",
                     "master" : master,
-                    "linebreak" : linebreak
-                };
-                filtered.push(thisElement);
-                // looping the master array. ++ every time when fontby is glyph, ++ only at a space when fontby is word
-                if ((options.selectedFontby == "glyph" && newText[i] != " ") || (options.selectedFontby == "word" && newText[i] == " ") || (options.selectedFontby == "paragraph" && linebreak)) {
-                    masterIndex++;
-                }
-                if (masterIndex == masterArray.length) {
-                    masterIndex = 0;
-                }
+                    "linebreak": true
+                });
             }
 
             return filtered;

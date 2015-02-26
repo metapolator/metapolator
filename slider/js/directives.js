@@ -244,9 +244,15 @@ app.directive('sizeRope', function($document) {
             var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
 
             // calculate size increase
-            function getSize(current, originX, originY, xPosition, yPosition){                
+            function getSize(current, originX, originY, xPosition, yPosition) {    
+                if (current > 100) {
+                    var factor = 1;
+                } else {
+                    var factor = current / 100;
+                }
+                            
                 if ((xPosition >= 0 && yPosition >= 0) || xPosition <= 0 && yPosition <= 0) {
-                    var growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)));
+                    var growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)) * factor);
                     if (yPosition < 0) {
                         growth *= -1;
                     }
