@@ -13,7 +13,7 @@ The **local menu** is empty, _and hence it is not an active popup menu item_ (no
 
 The all-important Print function for specimens is advertised through its own like item.
 
-At the top of the panel itself we find the setup line. From left (R–to–L locales: from right):
+At the top of the panel itself, we find the setup line. From left (R–to–L locales: from right):
 
 * **specimen type**; click link to get a list and pick another;
   * specimens are an extendable system (presumably web-tech based); we can expect every script extension to also supply some specimens.
@@ -24,26 +24,19 @@ At the top of the panel itself we find the setup line. From left (R–to–L loc
 ![](http://mmiworks.net/metapolator/tunebywire.png)<br/>
 _(for R–to–L locales, right and left have to be flipped)_
   * we see there is plenty of bail-out area (the two blue quadrants), to make no change; when the diamond is pulled over this area, the pt-size displayed is the one that was in use before this interaction started;
-  * the amount of in/decrease is simply the absolute distance (Pythagorus of x and y offsets) the diamond is pulled from the centre point; normal increase/decrease 1 point per (effective) input pixel ‘pulled’, with shift 10 points; the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
+  * while the diamond is moved around, constantly (every event) the amount of in/decrease calculated by taking the distance (Pythagorus of x and y deltas) the diamond is moved—divided by the input scaling (derived from the instantaneous point size at that moment; at pt size >= 100 it is 1, < 100 it is 100/pt size); the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
   * when users release the diamond, it returns to its resting position and the change is permanent.
-  * an example:
-    1. starting situation: not dragging; display size is 100pt;
-    * started dragging, control offset (h, v) = (10, 20)—going north-east; display size is 130pt;
-    * adjusting the dragging (user wants to reduce the increase), control offset = (5, 15); display size is 120pt;
-    * user wants no change at all, control offset = (-8, 15)—going north-west; display size is 100pt;
-    * decreasing, control offset = (-10, -20)—going south-west; display size is 70pt;
-    * mouse up, release the control; display size is the last one shown: 70pt;
 * the **filter box** is where users type characters to filter the specimen;
   * when the specimen contains real-life words, the Strict control—a discrete, 3-position slider—is displayed next to it—
     * the setting furthest from the word ‘Strict’ is the least strict one; when a word contains at least one character that is in the filter box, it is displayed;
-    * the middle setting is semi-strict; only when a word contains a few characters that are in the filter box, it is displayed; how much a few is depends on the word length and how many characters there are in the filter box;
+    * the middle setting is semi-strict; only when a word contains 2 of the characters that are in the filter box, it is displayed; if one character is in the filter box, it works as the setting above;
     * the setting closest to the word ‘Strict’ is, well, strict; _in practice it is much more practical to generate specimen straight out of the characters in the filter box, than to do filtering of real specimens_.
   * when the specimen contains mechanically-generated glyph sequences, the Strict control is not displayed and the filter is strict (i.e. the generating is based only on the characters in the filter box);
   * when the filter is strict, the specimen guarantees that of every pair g<sub>1</sub>, g<sub>2</sub> out of the characters in the search box, the sequences g<sub>1</sub>g<sub>2</sub> and g<sub>2</sub>g<sub>1</sub> appears at least once in the specimen (guarantee of completeness);
   * the filter box has a popup menu, with the latest 10 filters this user used, and also convenient pre-defined searches (e.g. ‘All Caps’ for the latin script module).
 * finally, the **font mix** settings, shown depending on whether there are multiple fonts to show and/or multiple scripts—if either is not the case then their snippet is not displayed; click link to get a list and pick another.
 
-The multiple fonts/scripts can be mixed by the glyph, word, paragraph or section, depending what is available in the specimen—all have glyphs; real-life specimens tend to also have words and paragraphs; mechanically-generated specimens tend to organise that in sections.
+All specimens are repeated N times when N fonts are to be shown. Thus it is guaranteed that every glyph is shown at least once in every font. The multiple fonts/scripts can be mixed by the glyph, word, paragraph or section, depending what is available in the specimen—all have glyphs; real-life specimens tend to also have words and paragraphs; mechanically-generated specimens tend to organise that in sections. T
 
 Below a demonstration for font mixing—
 
@@ -60,6 +53,8 @@ by glyph:
 ![](http://mmiworks.net/metapolator/mixbyglyph.png)
 
 **rule**: the specimen scrolls. Where possible, horizontally all typesetting is fitted to the panel width. The setup line does not scroll with the specimen (fixed position).
+
+The default mouse pointer for the whole UI—and certainly in a specimen—is ccs value “default” (i.e. arrow, pointing north-north-west).
 
 ### glyph boxes
 clicking on a glyph or between two glyphs depends on the glyph boxes; these are rectangles based on the font metrics that can be drawn ‘around’ each glyph. Below we see for the glyphs ‘A’ and ‘V’ how their box overlap is resolved by ‘splitting the difference’ and two non-overlapping boxes are created:
@@ -98,9 +93,9 @@ Here we see the specimen in the Parameters view, with the glyph select mechanism
 
 The selection mechanism is based on the icon grid model (i.e. not a text selection model) that is used in file browsers, specifically the Finder on OS-X. The glyph boxes act as ‘icons’, in a way. For diacritics and other compound glyphs (e.g. via opentype features) the parts that make up the glyph have their own separate box (which may not always be a rectangle, then).
 
-* all of the icon grid model model selection interactions work: click to select, click in whitespace to select none, rubber-banding of several boxes to select multiple, shift and cmd/ctrl to grow and reduce selections, pointer mouse cursor (not the text edit one) etc.
+* all of the icon grid model model selection interactions work: click to select, click in whitespace to select none, rubber-banding of several boxes to select multiple, shift and cmd/ctrl to grow and reduce selections, pointer mouse cursor (not the text edit one) etc. All text-type of selection behaviour—from dragging and (double-/triple-)clicking—shall be suppressed;
   * Shift and Command/Ctrl (it is ctrl on windows and linux machines) do exactly the same thing: allowing multiple select by allowing by click to toggle the select state of glyph (in our case).
-  *  rubber-banding: all glyph boxes that overlap (even with just a single pixel) within the dragged marquee are to be selected (the mouse-down deselects the previous selection); when Shift or Command/Ctrl is held before the mouse-down, the marquee toggles the select state of the overlapping glyph boxes (i.e. unselected -> selected and selected -> unselected); the moment of mouse-down is all that matters for ‘is Shift or Command/Ctrl down?’
+  *  rubber-banding: a drag (started in whitespace when the glyphs can be sorted in the specimen) starts a marquee selection (aka rubber-banding); all glyph boxes that overlap (even with just a single pixel) within the dragged marquee are to be selected (the mouse-down deselects the previous selection); when Shift or Command/Ctrl is held before the mouse-down, the marquee toggles the select state of the overlapping glyph boxes (i.e. unselected -> selected and selected -> unselected); the moment of mouse-down is all that matters for ‘is Shift or Command/Ctrl down?’; a semi-transparent rectangle tracks the rubber-banding, until the mouse button goes up; there is feedback during rubber-banding of what is becoming selected;
 * **rule**: the selection highlight is noticeable out of the corner of users’ eyes, but also completely out of the way of the ‘black on white’ of the selected glyphs (because user have to evaluate that while editing these glyphs); above it is done by a 4px blue rule right under the glyph containing box;
 * a selection is for that glyph, for that (adjustment) master (see: the italic ‘e’ above); **rule** when a glyph is selected, **every instance** of that glyph is highlighted in the specimen (see: the italic ‘a’ above).
 
@@ -394,9 +389,9 @@ moved to the [parameter editing](https://github.com/metapolator/metapolator/wiki
 ## glyph range
 A glyph range is treated as _nothing but a specimen_ and it is available as such in the Parameters view:
 
-![](http://mmiworks.net/metapolator/glyphrange.png)
+![](http://mmiworks.net/metapolator/glyphrangeprop.png)
 
-We see that at the bottom of the panel there is now a **glyph management bar**. The two encodings are click-to-edit. By drag-and-drop the glyph order can be rearranged, which is ultimately the order of exported fonts.
+the glyphs are displayed proportional. We see that at the bottom of the panel there is now a **glyph management bar**. The two encodings are click-to-edit. By drag-and-drop the glyph order can be rearranged, which is ultimately the order of exported fonts. The glyphs are always displayed in order they are in the master, even when being filtered.
 
 The **local menu** now contains these items:
 
