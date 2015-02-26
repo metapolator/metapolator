@@ -30,12 +30,26 @@ app.filter('specimenFilter', function() {
             }
             var string = specimen.text;
             
+            var filter;
+            // remove doubles from filter
+            var filter = "";
+            for (var i = 0; i< options.filter.length; i++){
+                if (filter.indexOf(options.filter[i]) == -1) {
+                    filter += options.filter[i];
+                }
+            }    
+                   
+            // setting the numer of characters needed to match the search box
             var strict = options.strict;
             var required = strict;
+            if (strict == 2 && filter.length == 1) {
+                required = 1;
+            }
+            
             var output = "";
             var newText = "";
             var text = string.split(" ");
-            var filter = options.filter;
+            
 
             // if nothing if filter, then we use the string 1:1
             if (filter.length == 0) {
@@ -50,9 +64,6 @@ app.filter('specimenFilter', function() {
                         for (var i = 0; i < word.length; i++) {
                             if (filter.indexOf(word[i]) > -1) {
                                 hits++;
-                            }
-                            if (strict == 3) {
-                                required = word.length;
                             }
                             if (hits >= required) {
                                 newText += word + " ";

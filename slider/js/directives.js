@@ -215,7 +215,6 @@ app.directive('sizeRope', function($document) {
             var factor = getFactor (fontsize);
             
             function getFactor (size) {
-                console.log(size);
                 if (size > 100) {
                     var factor = 1;
                 } else {
