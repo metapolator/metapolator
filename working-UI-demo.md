@@ -43,7 +43,7 @@ These work on the selections that can be made in the specimen, i.e. (multiple) m
 **local menu**: none
 
 ## specimen + glyph editor panel
-Forget about any direct-manipulation (i.e. with the mouse) parameter editing, or about making selections on sub-glyph (e.g. stroke, point) level. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master).
+Forget about any direct-manipulation (i.e. with the mouse) parameter editing, or about making selections on sub-glyph (e.g. stroke, point) level. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master), i.e. forget about the bottom bar with buttons and glyph code editing. For the filter there is no guarantee of completeness, nor a popup menu;
 
 ### updating the specimen after a parameter change
 **common sense rule #1**: glyphs that are not visible, or have not been changed, do not need to be recalculated.
