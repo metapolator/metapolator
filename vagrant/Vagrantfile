@@ -52,7 +52,7 @@ if test ! -e metapolator; then
     GIT_URL=https://github.com/metapolator/metapolator.git
     CHECKOUT_TYPE=read-only
     if test -e /vagrant/.ssh; then
-        ln -s /vagrant/.ssh ~/
+        ln -sf /vagrant/.ssh ~/
         GIT_URL=git@github.com:metapolator/metapolator.git
         CHECKOUT_TYPE=read-write
     fi
