@@ -7,6 +7,8 @@ On Mac OS X, run these commands to install vagrant:
 ```
 # install homebrew
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+# install virtualbox
+brew install Caskroom/cask/virtualbox;
 # install vagrant
 brew install Caskroom/cask/vagrant;
 ```
