@@ -1,6 +1,17 @@
 # Metapolator Installation
 
-The simplest and recommended method is to use the [Vagrant](http://www.vagrantup.com) box, for which you also need [Virtualbox](http://www.virtualbox.org). In an empty directory, run the commands:
+The simplest and recommended method is to use the [Vagrant](http://www.vagrantup.com) box, for which you also need [Virtualbox](http://www.virtualbox.org). 
+
+On Mac OS X, run these commands to install vagrant:
+
+```
+# install homebrew
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+# install vagrant
+brew install Caskroom/cask/vagrant;
+```
+
+In an empty directory, run the commands:
 
 ```
 vagrant init metapolator/bleeding-edge
