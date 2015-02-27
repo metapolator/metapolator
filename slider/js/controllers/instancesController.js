@@ -26,6 +26,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             display : false,
             masters: jQuery.extend(true, [], designSpace.masters),
         });
+        $scope.currentInstance = $scope.data.instances[($scope.data.instances.length - 1)];
     };
     
     // selecting
@@ -73,7 +74,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     // buttons visible
     $scope.canAddInstance = function() {
         var designSpace = $scope.data.currentDesignSpace;
-        if ((designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
+        if ((designspace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
             return true;
         } else {
             return false;
