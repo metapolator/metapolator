@@ -117,14 +117,14 @@ Here we can now see how much work we saved us in the masters column. The control
 Optional: explore spaces (we look pretty close to having that working too).
 
 ### control space sliders
-Since there are only stand-alone masters, only simple mixing of masters (e.g. 50% bold, 50% italic) can be performed. Feature stacking (100% bold **and** 100% italic) is the realm of mater sequences and cannot be performed. To further the do-more-with-less vibe, the configuration possibilities of the slider group was decimated and a new default behaviour picked: **one-master centric**:
+Since there are only stand-alone masters, only simple mixing of masters (e.g. 50% bold, 50% italic) can be performed. Feature stacking (100% bold **and** 100% italic) is the realm of master sequences and cannot be performed. To further the do-more-with-less vibe, the configuration possibilities of the slider group was decimated and a new default behaviour picked: **one-master centric**:
 
-![](http://mmiworks.net/metapolator/centric3.png)
+![](http://mmiworks.net/metapolator/centric4.png)
 
 * When 3 or more masters have been dropped on the control design space, one of them is shown on the lefthand side of _all_ sliders; all other masters are set in relation to this one, by the sliders; _this quite suits font designers, who tend to start their thinking from an ‘origin’ (say, the Regular font) and branch out from there—bolder, thinner, wider, etc._
 * the popup on the lower-lefthand side contains all dropped masters, in the order they were dropped, and allow any of these to be picked as the ‘lefthand master’; the default is the first master that was dropped on this design space; _in the example above it is possible to set up the sliders Regular-centric (shown), Bold-centric and Italic-centric_; when the lefthand master is changed, the slider setting are recalculated from the current metapolation coefficients;
 * all other masters are listed on the righthand side of the sliders, top–to–bottom in the order they were dropped;
-* for every additional master dropped on this design space, one additional slider is created; its default setting is 50%;
+* for every additional master dropped on this design space, one additional slider is created; its default setting is 50% and the new metapolation is calculated from that;
 * numerical input/output under the slider:
   * only one decimal point is to be shown;
   * since the slider has a resolution of 0.5% all values input by slider show exactly this resolution;
@@ -143,6 +143,11 @@ a simple slider with no configuration.
 ![](http://mmiworks.net/metapolator/centricX.png)
 
 Righthand-side masters can be removed _(it is logical that removing the lefthand-side one involves a prior step of setting what the new centre of thinking is)_. When the mouse hovers the label of a righthand-side master, and after a 500ms timeout, a closing box appears nest to it. Clicking it **removes the master from the metapolation of every instance that lives on this design space**.
+
+When a master is removed from a design space (this can also be triggered by the removal of the master from the whole project) the metapolation is recalculated from the remaining slider settings. When it was the lefthand-side master that was removed from the project, then conceptually the following is done:
+
+1. the master that is on the righthand-side of the top slider is promoted to lefthand-side master; sliders are recalculated;
+* the doomed master is removed; the metapolation is recalculated;
 
 #### metapolation math
 To calculate the metapolation, express all the righthand side masters in terms of the lefthand master:
