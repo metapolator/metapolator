@@ -1,6 +1,8 @@
 app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
     
+    $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
+    
     $scope.findMaster = function  (id) {
         for (var i = 0; i < $scope.data.sequences.length; i++){
             for (var j = 0; j < $scope.data.sequences[i].masters.length; j++){
@@ -14,8 +16,13 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     
 
-    $scope.selectDesignSpace = function(i) {
-        $scope.data.currentDesignSpace = i;
+    $scope.selectDesignSpace = function(id) {
+        for (var i = 0; i < $scope.data.designSpaces.length; i++){
+            if ($scope.data.designSpaces[i].id == id) {
+                $scope.data.currentDesignSpace = $scope.data.designSpaces[i];
+                break;
+            }
+        }
     };
     
     $scope.addDesignSpace = function() {
@@ -30,7 +37,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             triangle : false,
             mainMaster : "0"
         });
-        $scope.data.currentDesignSpace = i;
+        $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
     };
     
     function findDesignSpaceId() {
@@ -48,7 +55,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.total = 0;
     
     $scope.getMetapolationRatios = function(data) {
-        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
         $scope.output = [];
         var axes = data.axes;
@@ -76,7 +83,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     //
     
     $scope.removeMaster = function(m) {
-        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
         var master = masterSet[m].master.name;
         if (confirm("Remove '" + master + "' from this Design Space. Sure?")) {
@@ -87,7 +94,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
     
     $scope.changeMainMaster = function () {
-        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
         var n = designspace.mainMaster;
         var tempMaster = masterSet[0];
@@ -98,7 +105,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
     
     $scope.promoteMaster = function(m) {
-        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
         var master = masterSet[m];
         var tempMaster = masterSet[0];
@@ -108,7 +115,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
     
     function valueToAxes() {
-        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designspace = $scope.data.currentDesignSpace;
         designspace.axes = [];
         var masters = designspace.masters;
         for (var i = 1; i < masters.length; i++) {

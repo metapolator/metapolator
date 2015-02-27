@@ -14,7 +14,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     }
 
     $scope.addInstance = function() {
-        var designSpace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designSpace = $scope.data.currentDesignSpace;
         var id = findInstanceId();
         $scope.data.instances.push({
             id : id,
@@ -31,10 +31,21 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     // selecting
     
     $scope.currentInstance = null;
+    
+    function setCurrentDesignSpace (id) {
+        for (var i = 0; i < $scope.data.designSpaces.length; i++) {
+            if ($scope.data.designSpaces[i].id == id) {
+                $scope.data.currentDesignSpace = $scope.data.designSpaces[i];
+                break;
+            }
+        }  
+    }
 
     $scope.selectInstancesForEdit = function(thisInstance, sIndex, mIndex) {
         $scope.currentInstance = thisInstance;
         thisInstance.edit = !thisInstance.edit;
+        setCurrentDesignSpace(thisInstance.designSpace);
+         
         /*
         if ($scope.commandDown || $scope.controlDown) {// toggle on ctrl click
             thisInstance.edit = !thisInstance.edit;
@@ -61,7 +72,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     // buttons visible
     $scope.canAddInstance = function() {
-        var designSpace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designSpace = $scope.data.currentDesignSpace;
         if ((designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
             return true;
         } else {

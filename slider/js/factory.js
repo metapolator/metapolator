@@ -50,7 +50,7 @@ app.factory("sharedScope", function($rootScope) {
             mainMaster : "0"
         }],
         instances: [],
-        currentDesignSpace : 0
+        currentDesignSpace : null
 
     };
     return scope;

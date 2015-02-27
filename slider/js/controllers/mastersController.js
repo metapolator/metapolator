@@ -272,17 +272,17 @@ app.controller("mastersController", function($scope, sharedScope) {
                 var masterIndex = ui.item.index();
                 var master = $scope.data.sequences[sequenceIndex].masters[masterIndex];
 
-                if ($scope.data.designSpaces[$scope.data.currentDesignSpace].masters.indexOf(master) > -1) {
+                if ($scope.data.currentDesignSpace.masters.indexOf(master.id) > -1) {
                     alert("master already in this Design Space");
                 } else {
 
-                    if ($scope.data.designSpaces[$scope.data.currentDesignSpace].type == "Control") {
+                    if ($scope.data.currentDesignSpace.type == "Control") {
                         addNewMaster(master);
-                    } else if ($scope.data.designSpaces[$scope.data.currentDesignSpace].type == "Explore") {
+                    } else if ($scope.data.currentDesignSpace.type == "Explore") {
                         // get relative mouse position of where dropped
                         var mouseX = e.clientX - Math.round($(".drop-area").offset().left) - 10;
                         var mouseY = e.clientY - Math.round($(".drop-area").offset().top) - 10;
-                        $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push({
+                        $scope.data.currentDesignSpace.masters.push({
                             masterId : master.id,
                             value : 0,
                             coordinates : [mouseX, mouseY]
@@ -298,14 +298,14 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     function addNewMaster(master) {
-        var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
-        $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push({
+        designspace.masters.push({
             masterId : master.id,
             value : null
         });
         if (masterSet.length > 1) {
-            $scope.data.designSpaces[$scope.data.currentDesignSpace].axes.push({
+            designspace.axes.push({
                 value : 50
             });
         }

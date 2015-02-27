@@ -321,10 +321,10 @@ function($document) {
             
 
             // watch for data changes and re-render
-            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].masters[0], data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace.masters.length, data.currentDesignSpace.masters[0], data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
             }, true);
-            scope.$watch('data.designSpaces[data.currentDesignSpace].axes', function(newVal) {
+            scope.$watch('data.currentDesignSpace.axes', function(newVal) {
                 if (!dragActive) {
                     return scope.render();
                 }
@@ -332,7 +332,7 @@ function($document) {
 
             // (RE-)RENDER
             scope.render = function() {
-                var data = scope.data.designSpaces[scope.data.currentDesignSpace];
+                var data = scope.data.currentDesignSpace;
 
                 // remove all previous items before render
                 svg.selectAll('*').remove();
@@ -508,13 +508,13 @@ function($document) {
             
 
             // watch for data changes and re-render
-            scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
             }, true);
 
             // (RE-)RENDER
             scope.render = function() {
-                var data = scope.data.designSpaces[scope.data.currentDesignSpace];
+                var data = scope.data.currentDesignSpace;
                 // remove all previous items before render
                 layer2.selectAll('*').remove();
                 layer1.selectAll('*').remove();
