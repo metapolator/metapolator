@@ -74,7 +74,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     // buttons visible
     $scope.canAddInstance = function() {
         var designSpace = $scope.data.currentDesignSpace;
-        if ((designspace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
+        if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
             return true;
         } else {
             return false;
