@@ -307,6 +307,18 @@ function($document) {
             var indentRight = 20;
             var indentLeft = 40;
             var dragActive = false;
+            
+            function findMaster (id) {
+                for (var i = 0; i < scope.data.sequences.length; i++){
+                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++){
+                        if (scope.data.sequences[i].masters[j].id == id) {
+                            return scope.data.sequences[i].masters[j];
+                            break;
+                        }
+                    }
+                }
+            }
+            
 
             // watch for data changes and re-render
             scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].masters.length, data.designSpaces[data.currentDesignSpace].masters[0], data.designSpaces[data.currentDesignSpace].triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
@@ -331,7 +343,7 @@ function($document) {
                     svg.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
                     // create  label
                     svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(function() {
-                        return data.masters[0].master.name;
+                        return findMaster(data.masters[0].masterId).name;
                     });
                     svg.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingTop + paddingLabel).text("Just one more...");
                 }
@@ -443,7 +455,7 @@ function($document) {
 
                     // create left label
                     if (data.masters.length < 3) {
-                        svg.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(data.masters[0].master.name).attr('class', 'slider-label-left slider-label');
+                        svg.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(findMaster(data.masters[0].masterId).name).attr('class', 'slider-label-left slider-label');
                     }
 
                     // create rigth label
@@ -456,7 +468,7 @@ function($document) {
                     rightlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
 
                     rightlabels.append('text').text(function(d, i) {
-                        return data.masters[i + 1].master.name;
+                        return findMaster(data.masters[i + 1].masterId).name;
                     }).attr('class', 'slider-label-right slider-label');
 
                     rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
@@ -467,7 +479,7 @@ function($document) {
 
                     scope.getMetapolationRatios(data);
                 }
-            }
+            };
         }
     };
 }]);
@@ -481,6 +493,19 @@ function($document) {
             // we need 2 layers, so the masters are allways on top of the ellipses
             var layer2 = svg.append('g');
             var layer1 = svg.append('g');
+            
+            function findMaster (id) {
+                for (var i = 0; i < scope.data.sequences.length; i++){
+                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++){
+                        if (scope.data.sequences[i].masters[j].id == id) {
+                            return scope.data.sequences[i].masters[j];
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            
 
             // watch for data changes and re-render
             scope.$watchCollection('[data.designSpaces[data.currentDesignSpace].masters.length, data.currentDesignSpace]', function(newVals, oldVals, scope) {
@@ -530,7 +555,7 @@ function($document) {
                 }).attr('y', function(d) {
                     return d.coordinates[1] + 25;
                 }).text(function(d) {
-                    return d.master.name;
+                    return findMaster(d.masterId).name;
                 }).attr("font-size", "10px").attr("text-anchor", "middle").attr("font-size", "8px").attr("fill", "#fff").attr("id", function(d, i) {
                     return "label-" + i;
                 }).attr("class", "unselectable");

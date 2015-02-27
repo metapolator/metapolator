@@ -23,14 +23,18 @@
             <div class="diamond-fix" ng-class="{diamonddrag: !$middle}"></div>
         </span>
         <span class="selectable-ag" ng-click="instance.display = !instance.display" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};">Ag</span>
-        <span class="master-name" ng-click="selectInstancesForEdit(instance, $parent.$index, $index)" ng-class="{'selected': instance.edit}">
+        <span class="master-name" ng-click="selectInstancesForEdit(instance, $parent.$index, $index)" ng-class="{'selected': instance == currentInstance}">
             {{instance.name}}
         </span>
     </li>
 </ul>
+<b>Current Designspace:</b><br>
+{{data.designSpaces[data.currentDesignSpace]}}<br><br>
+<b>Current Instance:</b><br>
+{{currentInstance}}
 
 <div id="instances-tools">
-    <div id="add-instance" ng-click="addInstance();" class="instance-tool">
+    <div id="add-instance" ng-if="canAddInstance()" ng-click="addInstance();" class="instance-tool">
         <img src="img/addInstance.png">
     </div>
     <div id="add-instance" ng-click="duplicateInstance();" class="instance-tool">

@@ -1,5 +1,18 @@
 app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
+    
+    $scope.findMaster = function  (id) {
+        for (var i = 0; i < $scope.data.sequences.length; i++){
+            for (var j = 0; j < $scope.data.sequences[i].masters.length; j++){
+                if ($scope.data.sequences[i].masters[j].id == id) {
+                    return $scope.data.sequences[i].masters[j];
+                    break;
+                }
+            }
+        }
+    };
+
+    
 
     $scope.selectDesignSpace = function(i) {
         $scope.data.currentDesignSpace = i;
@@ -7,8 +20,10 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     
     $scope.addDesignSpace = function() {
         var i = $scope.data.designSpaces.length;
+        var id = findDesignSpaceId();
         $scope.data.designSpaces.push({
-            name : "Space " + (i + 1),
+            name : "Space " + id,
+            id : id,
             type : "x",
             masters : [],
             axes : [],
@@ -17,6 +32,17 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         });
         $scope.data.currentDesignSpace = i;
     };
+    
+    function findDesignSpaceId() {
+        var max = 0;
+        for (var i = 0; i < $scope.data.designSpaces.length; i++) {
+            if ($scope.data.designSpaces[i].id > max) {
+                max = $scope.data.designSpaces[i].id;
+            }
+        }
+        max++;
+        return max;
+    }
 
     $scope.output = [];
     $scope.total = 0;
@@ -31,12 +57,12 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         for (var i = 0; i < n; i++) {
             cake += (axes[i].value + 0.5) / (100.5 - axes[i].value);
         }
-        $scope.output.push(data.masters[0].master.name + ": " + roundup(1 / cake));
+        $scope.output.push($scope.findMaster(data.masters[0].masterId).name + ": " + roundup(1 / cake));
         masterSet[0].value = roundup(1 / cake);
         
         for (var i = 0; i < n; i++) {
             var piece = (axes[i].value + 0.5) / (100.5 - axes[i].value);
-            $scope.output.push(data.masters[i + 1].master.name + ": " + roundup(piece / cake));
+            $scope.output.push($scope.findMaster(data.masters[i + 1].masterId).name + ": " + roundup(piece / cake));
             masterSet[i + 1].value = roundup(piece / cake);
         }
     };
@@ -92,7 +118,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 value : thisValue
             });
         }
-        $scope.$apply();
     }
         
 

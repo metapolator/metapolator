@@ -283,7 +283,8 @@ app.controller("mastersController", function($scope, sharedScope) {
                         var mouseX = e.clientX - Math.round($(".drop-area").offset().left) - 10;
                         var mouseY = e.clientY - Math.round($(".drop-area").offset().top) - 10;
                         $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push({
-                            master : master,
+                            masterId : master.id,
+                            value : 0,
                             coordinates : [mouseX, mouseY]
                         });
                     }
@@ -300,7 +301,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         var designspace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
         var masterSet = designspace.masters;
         $scope.data.designSpaces[$scope.data.currentDesignSpace].masters.push({
-            master : master,
+            masterId : master.id,
             value : null
         });
         if (masterSet.length > 1) {

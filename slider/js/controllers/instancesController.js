@@ -1,18 +1,41 @@
 app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
     
-    $scope.addInstance = function () {
+    
+    function findInstanceId () {
+        var max = 0;
+        for (var i =0; i < $scope.data.instances.length; i++) {
+            if ($scope.data.instances[i].id > max) {
+                max = $scope.data.instances[i].id;
+            }
+        }
+        max++;
+        return max;
+    }
+
+    $scope.addInstance = function() {
+        var designSpace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        var id = findInstanceId();
         $scope.data.instances.push({
-            name: "New Instance",
-            designSpace: "",
-            fontFamily: "Roboto",
-            fontWeight: 700,
-            edit: false,
-            display: false
+            id : id,
+            name : "New Instance " + id,
+            designSpace : designSpace.id,
+            fontFamily : "Roboto",
+            fontWeight : 700,
+            edit : false,
+            display : false,
+            masters: jQuery.extend(true, [], designSpace.masters),
         });
     };
     
+    // selecting
+    
+    $scope.currentInstance = null;
+
     $scope.selectInstancesForEdit = function(thisInstance, sIndex, mIndex) {
+        $scope.currentInstance = thisInstance;
+        thisInstance.edit = !thisInstance.edit;
+        /*
         if ($scope.commandDown || $scope.controlDown) {// toggle on ctrl click
             thisInstance.edit = !thisInstance.edit;
             $scope.selectionStart = [sIndex, mIndex];
@@ -25,13 +48,25 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.deselectAll();
             thisInstance.edit = true;
         }
+        */
     };
-    
+
     $scope.deselectAll = function() {
         angular.forEach($scope.data.instaces, function(master) {
             master.edit = false;
         });
     };
+    
+    
 
+    // buttons visible
+    $scope.canAddInstance = function() {
+        var designSpace = $scope.data.designSpaces[$scope.data.currentDesignSpace];
+        if ((designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
 });
