@@ -29,6 +29,18 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         $scope.currentInstance = $scope.data.instances[($scope.data.instances.length - 1)];
     };
     
+    $scope.duplicateInstance = function () {
+        var duplicate = jQuery.extend(true, {}, $scope.currentInstance);
+        duplicate.name += " copy";
+        $scope.data.instances.push(duplicate);
+        $scope.currentInstance = $scope.data.instances[($scope.data.instances.length - 1)];
+    };
+    
+    $scope.deleteInstance = function () {
+        $scope.data.instances.splice($scope.data.instances.indexOf($scope.currentInstance), 1);
+        $scope.currentInstance = null;
+    };
+    
     // selecting
     
     $scope.currentInstance = null;

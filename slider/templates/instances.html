@@ -18,7 +18,7 @@
 
 
 <ul ui-sortable="sortableOptionsMasters" ng-model="data.instances" class="sequence">
-    <li ng-repeat="instance in data.instances" class="master" ng-class="{selected: instance.edit}">
+    <li ng-repeat="instance in data.instances track by $index" class="master" ng-class="{selected: instance.edit}">
         <span class="diamond" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}">
             <div class="diamond-fix" ng-class="{diamonddrag: !$middle}"></div>
         </span>
@@ -37,10 +37,10 @@
     <div id="add-instance" ng-if="canAddInstance()" ng-click="addInstance();" class="instance-tool">
         <img src="img/addInstance.png">
     </div>
-    <div id="add-instance" ng-click="duplicateInstance();" class="instance-tool">
+    <div id="duplicate-instance" ng-if="currentInstance" ng-click="duplicateInstance();" class="instance-tool">
         <img src="img/duplicateInstance.png">
     </div>
-    <div id="add-instance" ng-click="deleteInstance();" class="instance-tool">
+    <div id="delete-instance" ng-if="currentInstance" ng-click="deleteInstance();" class="instance-tool">
         <img src="img/deleteInstance.png">
     </div>
 </div>
