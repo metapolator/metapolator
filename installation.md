@@ -276,18 +276,18 @@ Running the tests in the browser will be supported, too.
 
 # Preparing fonts for import
 
-The outlines should be preparead as _strokes_:
+The outlines should be prepared as "strokes":
 
-* even number of points per contour otherwise we skip it
-* more than 3 points per contour otherwise we skip it
-* the first point should be the first right outline point of your stroke contour otherwise the skeleton gets scrambled
+* each contour must have an even number of cubic (PostScript) Bezier on-curve points, drawn in pairs
+* each contour must have 6 or more Bezier on-curve points
+* the first Bezier on-curve point should be the right-most point
 
 TODO: create a first steps tutorial
 
 # Development tools
 
-Partial support for code navigation with [TernJS](http://ternjs.net) is available. See `make-tern-project` in the top-level directory to create a suitable `.tern-project` file.
+Partial support for code navigation with [TernJS](http://ternjs.net) is available. See `make-tern-project` in the top-level directory to create a suitable `.tern-project` file, and discussion of support in https://github.com/metapolator/metapolator/issues/140
 
 For debugging the command-line interface or server code, [node-inspector](https://github.com/node-inspector/node-inspector) is good.
 
-We need more tests! Any contributions gratefully received.
+We need more tests! All contributions gratefully received.
