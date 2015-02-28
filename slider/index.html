@@ -89,8 +89,11 @@
         <div id="pagewrap">
             <div id="landscape">
 
-                <div id="panel-1" class="panel sub-panel">
-                    <parameters ng-controller="parametersController"></parameters>
+                <div id="panel-1" class="panel">
+                    <parameters ng-controller="parametersController" class="sub-panel standard-padding"></parameters>
+                    <div id="sub-parameters" class="sub-panel under-construction">
+                        COMING SOON:<br>MORE PARAMETERS
+                    </div>
                 </div>
                 <div id="panel-2" class="panel sub-panel">
                     <specimen ng-controller="specimenController" ng-init="addGlyphRange()"></specimen>
@@ -102,6 +105,7 @@
                         <masters ng-controller="mastersController" class="list" type="master"></masters>
                     </div>
                     <div id="subpanel-3-bottom" class="sub-panel under-construction">
+                        COMING SOON:<br>ADJUSTMENT MASTERS
                     </div>
                 </div>
 
@@ -121,6 +125,7 @@
                 <div id="panel-6" class="panel sub-panel standard-padding">
                 </div>
                 <div id="panel-7" class="panel sub-panel standard-padding under-construction">
+                    COMING SOON:<br>FAMILY EXPORT
                 </div>
             </div>
             <!-- end of landscape -->

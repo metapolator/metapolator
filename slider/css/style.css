@@ -40,6 +40,8 @@
     
     .under-construction {
         background: #48A115!important;
+        color: #99D676;
+        padding: 16px;
     }
 	
 	
@@ -114,6 +116,16 @@
 				width: calc(3/42 * 100%);
 			}
 			
+    			 parameters {
+    			     display: block;
+    			     background: #fff;
+    			     height: 50%;
+    			 }
+    			 
+    			 #sub-parameters {
+    			     height: 50%;
+    			 }
+			
 			#panel-2 {
 				width: calc(10/42 * 100%);
 			}
@@ -141,7 +153,6 @@
 					padding: 20px 0 40px 0;
 					border-bottom: 1px solid #ddd;
 				}
-				
 			
 			#panel-3 {
 				position: relative;
@@ -1022,15 +1033,6 @@
 
 /**************** parameters ************************/
 
-  
-    #panel-1 {
-        padding: 16px;
-    }
-    
-    parameters {
-        font-size: 14px;
-        font-family: "roboto condensed";
-    }
     
         .inspector-branche {
             margin-left: 16px;
