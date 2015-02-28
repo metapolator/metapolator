@@ -2,11 +2,85 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
     
     
+    
+    
+/***** selections *****/
+
+
+    $scope.mouseDown = false;
+    
+    $scope.toggleViewSet = function(set, initialDisplay) {
+        if (initialDisplay == "true") {
+            var newStatus = false;
+        } else {
+            var newStatus = true;
+        }
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                var hit = false;
+                angular.forEach(set, function(selection) {
+                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
+                        hit = true;
+                    }
+                });
+                if (hit) {
+                    instance.display = newStatus;
+                }
+            });
+        }); 
+    };
+
+    $scope.toggleEdit = function(listItem) {
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (listItem.parentObject == family.id && listItem.childObject == instance.id) {
+                    instance.edit = !instance.edit;
+                    instance.display = instance.edit;
+                }
+            });
+        });  
+    };
+
+    $scope.selectEdit = function(set) {
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                var hit = false;
+                angular.forEach(set, function(selection) {
+                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
+                        hit = true;
+                    }
+                });
+                if (hit) {
+                    instance.edit = true;
+                    instance.display = true;
+                } else {
+                    instance.edit = false;
+                    instance.display = false;
+                }
+            });
+        });
+    };
+
+    $scope.deselectAll = function() {
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                instance.edit = false;
+                instance.display = false;
+            });
+        });
+    };
+    
+    
+    
+    
+/***** controlling instances *****/
+    
+    
     function findInstanceId () {
         var max = 0;
-        for (var i =0; i < $scope.data.instances.length; i++) {
-            if ($scope.data.instances[i].id > max) {
-                max = $scope.data.instances[i].id;
+        for (var i =0; i < $scope.data.families[0].instances.length; i++) {
+            if ($scope.data.families[0].instances[i].id > max) {
+                max = $scope.data.families[0].instances[i].id;
             }
         }
         max++;
@@ -16,34 +90,46 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.addInstance = function() {
         var designSpace = $scope.data.currentDesignSpace;
         var id = findInstanceId();
-        $scope.data.instances.push({
+        $scope.data.families[0].instances.push({
             id : id,
+            edit : false,
+            display : false,
             name : "New Instance " + id,
             designSpace : designSpace.id,
             fontFamily : "Roboto",
             fontWeight : 700,
-            edit : false,
-            display : false,
             masters: jQuery.extend(true, [], designSpace.masters),
         });
-        $scope.currentInstance = $scope.data.instances[($scope.data.instances.length - 1)];
+        $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
     };
     
     $scope.duplicateInstance = function () {
         var duplicate = jQuery.extend(true, {}, $scope.currentInstance);
         duplicate.name += " copy";
-        $scope.data.instances.push(duplicate);
-        $scope.currentInstance = $scope.data.instances[($scope.data.instances.length - 1)];
+        $scope.data.families[0].instances.push(duplicate);
+        $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
     };
     
     $scope.deleteInstance = function () {
-        $scope.data.instances.splice($scope.data.instances.indexOf($scope.currentInstance), 1);
+        $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.currentInstance), 1);
         $scope.currentInstance = null;
     };
     
-    // selecting
     
+    
+    
+/***** feedback on design spaces *****/
+    
+    
+    
+     
     $scope.currentInstance = null;
+
+    $scope.setCurrentInstance = function(thisInstance) {
+        $scope.currentInstance = thisInstance;
+        setCurrentDesignSpace(thisInstance.designSpace);
+        valueToAxes(thisInstance);
+    };
     
     function setCurrentDesignSpace (id) {
         for (var i = 0; i < $scope.data.designSpaces.length; i++) {
@@ -88,37 +174,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         return b;
     }
 
-    $scope.selectInstancesForEdit = function(thisInstance, sIndex, mIndex) {
-        $scope.currentInstance = thisInstance;
-        thisInstance.edit = !thisInstance.edit;
-        setCurrentDesignSpace(thisInstance.designSpace);
-        valueToAxes(thisInstance);
-         
-        /*
-        if ($scope.commandDown || $scope.controlDown) {// toggle on ctrl click
-            thisInstance.edit = !thisInstance.edit;
-            $scope.selectionStart = [sIndex, mIndex];
-        } else if ($scope.shiftDown) {// set end for shift click
-            $scope.selectionEnd = [sIndex, mIndex];
-            //
-            console.log("todo: shift selecting");
-        } else {// clean click clears all but current
-            $scope.selectionStart = [sIndex, mIndex];
-            $scope.deselectAll();
-            thisInstance.edit = true;
-        }
-        */
-    };
 
-    $scope.deselectAll = function() {
-        angular.forEach($scope.data.instaces, function(master) {
-            master.edit = false;
-        });
-    };
     
     
+/***** bottom buttons *****/
 
-    // buttons visible
+
     $scope.canAddInstance = function() {
         var designSpace = $scope.data.currentDesignSpace;
         if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
@@ -126,6 +187,17 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         } else {
             return false;
         }
+    };
+    
+    
+    
+    
+/***** sortable *****/
+    
+    
+    $scope.sortableOptionsMasters = {
+        handle : '.list-edit-col',
+        helper : 'clone',
     };
 
 });

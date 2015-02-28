@@ -1,8 +1,143 @@
-app.directive('strict', function($document) {
+// monitor mouse status inside a list
+app.directive('list', function() {
+    return {
+        restrict : 'C',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('click', function(event) {
+                if (!$(event.target).parents('.list-li').length) {
+                    scope.deselectAll();
+                    scope.$apply();
+                }
+            });
+        }
+    };
+});
+
+// monitor mouse status inside a list
+app.directive('listUl', function() {
+    return {
+        restrict : 'C',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('mousedown', function(event) {
+                scope.mouseDown = true;
+                scope.$apply();
+            });
+            element.bind('mouseup', function(event) {
+                scope.mouseDown = false;
+                scope.$apply();
+            });
+        }
+    };
+});
+
+app.directive('listViewCol', function() {
+    return {
+        restrict : 'C',
+        link : function(scope, element, attrs, ctrl) {
+            //var type = $(element).parents(".list").attr("type");
+            element.bind('mousedown', function(event) {
+                $(element).parent().parent().parent().parent().find('.start-view-selection').removeClass('start-view-selection');
+                $(element).parent().addClass('start-view-selection');
+                scope.data.eventHandlers.initialDisplay = $(element).parent().attr("display");
+            });
+            element.bind('mousemove', function(event) {
+                if (scope.mouseDown) {
+                    $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
+                    $(element).parent().addClass('end-view-selection');
+                    var selected = [];
+                    var phase = 0;
+                    var display;
+                    var falseMouseMove = false;
+                    $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                        // handle a mousemove within same master as a normal click, so prevent triggering to apply set
+                        if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
+                            falseMouseMove = true;
+                        }
+                        var thisHit = false;
+                        if ($(this).hasClass('start-view-selection') || $(this).hasClass('end-view-selection')) {
+                            phase++;
+                            thisHit = true;
+                        }
+                        if (phase == 1 || (phase == 2 && thisHit)) {
+                            var sequence = $(this).attr("sequence");
+                            var master = $(this).attr("master");
+                            selected.push({
+                                parentObject : sequence,
+                                childObject: master
+                            });
+                        }
+                    });
+                    if (!falseMouseMove) {
+                        scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
+                        scope.$apply();
+                    }
+                }
+            });
+        }
+    };
+});
+
+app.directive('listEditCol', function() {
+    return {
+        restrict : 'C',
+        link : function(scope, element, attrs, ctrl) {
+            //var type = $(element).parents(".list").attr("type");
+            element.bind('click', function(event) {
+                var selected = [];
+                // manage key selections
+                if (event.shiftKey) {
+                    $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
+                    $(element).parent().addClass('end-edit-selection');
+                    var phase = 0;
+                    $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                        var thisHit = false;
+                        if ($(this).hasClass('start-edit-selection') || $(this).hasClass('end-edit-selection')) {
+                            phase++;
+                            thisHit = true;
+                        }
+                        if (phase == 1 || (phase == 2 && thisHit)) {
+                            var sequence = $(this).attr("sequence");
+                            var master = $(this).attr("master");
+                            selected.push({
+                                parentObject : sequence,
+                                childObject : master
+                            });
+                        }
+                    });
+                    scope.selectEdit(selected);
+                    scope.$apply();
+                } else if (event.ctrlKey || event.metaKey) {
+                    var sequence = $(element).parent().attr("sequence");
+                    var master = $(element).parent().attr("master");
+                    var thisListItem = {
+                        parentObject : sequence,
+                        childObject : master
+                    };
+                    scope.toggleEdit(thisListItem);
+                    scope.$apply();
+                } else {
+                    $(element).parent().parent().parent().parent().find('.start-edit-selection').removeClass('start-edit-selection');
+                    $(element).parent().addClass('start-edit-selection');
+                    var sequence = $(element).parent().attr("sequence");
+                    var master = $(element).parent().attr("master");
+                    selected.push({
+                        parentObject : sequence,
+                        childObject : master
+                    });
+                    scope.selectEdit(selected);
+                    scope.$apply();
+                }
+
+            });
+        }
+    };
+});
+
+app.directive('strict', function() {
     return {
         restrict : 'E',
-        link : function(scope, element, attrs, ctrl) {           
-            var svg = d3.select(element[0]).append('svg').attr('width', '90px').attr('height','20px');
+        link : function(scope, element, attrs, ctrl) {
+            var svg = d3.select(element[0]).append('svg').attr('width', '90px').attr('height', '20px');
             var strict = scope.filterOptions.strict;
             var x;
 
@@ -12,22 +147,22 @@ app.directive('strict', function($document) {
             }).on('drag', function() {
                 x = d3.event.x;
                 d3.select(this).attr('cx', limitX(x));
-                  
+
             }).on('dragend', function() {
                 d3.select(this).attr('cx', positionX(x).x);
                 scope.filterOptions.strict = positionX(x).strict;
-                scope.$apply(); 
+                scope.$apply();
             });
-            
+
             function limitX(x) {
                 if (x < 10) {
                     x = 10;
-                } else if (x > 50){
+                } else if (x > 50) {
                     x = 50;
                 }
                 return x;
             }
-            
+
             function positionX(x) {
                 var strict;
                 if (x < 20) {
@@ -41,13 +176,13 @@ app.directive('strict', function($document) {
                     strict = 3;
                 }
                 return {
-                    "x": x,
-                    "strict": strict
+                    "x" : x,
+                    "strict" : strict
                 };
             }
 
             // create line and slider
-            var line = svg.append('line').attr('x1', 10).attr('y1', 10).attr('x2', 50).attr('y2',10).style('stroke', '#000').style('stroke-width','2');
+            var line = svg.append('line').attr('x1', 10).attr('y1', 10).attr('x2', 50).attr('y2', 10).style('stroke', '#000').style('stroke-width', '2');
             svg.append('circle').attr('r', 3).attr('cx', 10).attr('cy', 10).style('fill', '#000');
             svg.append('circle').attr('r', 3).attr('cx', 30).attr('cy', 10).style('fill', '#000');
             svg.append('circle').attr('r', 3).attr('cx', 50).attr('cy', 10).style('fill', '#000');
@@ -60,7 +195,7 @@ app.directive('strict', function($document) {
 app.directive('specGlyphBox', function($document) {
     return {
         restrict : 'C',
-        link : function(scope, element, attrs, ctrl) {           
+        link : function(scope, element, attrs, ctrl) {
             element.bind('click', function(event) {
                 var sequence = $(element).attr("sequence");
                 var master = $(element).attr("master");
@@ -86,7 +221,7 @@ app.directive('rubberband', function($document) {
             var startX, startY, divX1, divX2, divY1, divY2;
             var myclick = false;
             var mymove = false;
-            
+
             element.bind('mousedown', function(event) {
                 if (!$(event.target).hasClass("no-rubberband")) {
                     if (!event.shiftKey && !event.ctrlKey && !event.metaKey) {
@@ -111,7 +246,7 @@ app.directive('rubberband', function($document) {
                         divX2 = startX;
                     } else {
                         divX1 = startX;
-                        divX2= x;
+                        divX2 = x;
                     }
                     if (y < startY) {
                         divY1 = y;
@@ -121,12 +256,12 @@ app.directive('rubberband', function($document) {
                         divY2 = y;
                     }
                     $("#templayer-rubberband").css({
-                        'left': divX1 + 'px',
+                        'left' : divX1 + 'px',
                         'top' : divY1 + 'px',
-                        'width': (divX2 - divX1) + 'px',
-                        'height': (divY2 - divY1) + 'px'
+                        'width' : (divX2 - divX1) + 'px',
+                        'height' : (divY2 - divY1) + 'px'
                     });
-                    $("#panel-2 .catchme").each(function(){
+                    $("#panel-2 .catchme").each(function() {
                         if (event.shiftKey || event.ctrlKey || event.metaKey) {
                             if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
                                 if ($(this).parent().hasClass("selected-glyph")) {
@@ -134,7 +269,7 @@ app.directive('rubberband', function($document) {
                                 } else {
                                     $(this).addClass("temp-selected-glyph");
                                 }
-                                
+
                             } else {
                                 $(this).removeClass("temp-selected-glyph");
                             }
@@ -143,14 +278,14 @@ app.directive('rubberband', function($document) {
                                 $(this).addClass("temp-selected-glyph");
                             } else {
                                 $(this).removeClass("temp-selected-glyph");
-                            } 
-                            
+                            }
+
                         }
                     });
                 }
             });
             element.bind('mouseup', function(event) {
-                $("#panel-2 .catchme").each(function(){
+                $("#panel-2 .catchme").each(function() {
                     $(this).removeClass("temp-unselected-glyph");
                 });
                 if (!$(event.target).hasClass("spec-glyph-box")) {
@@ -159,15 +294,15 @@ app.directive('rubberband', function($document) {
                 }
                 if (mymove) {
                     var selected = [];
-                    $("#" + element.context.id + " .catchme").each(function(){
+                    $("#" + element.context.id + " .catchme").each(function() {
                         $(this).removeClass("temp-selected-glyph");
                         if (isThisInBox(this, divX1, divX2, divY1, divY2)) {
                             selected.push({
-                                "sequence": $(this).attr("sequence"),
-                                "master": $(this).attr("master"),
-                                "glyph": $(this).attr("glyph")
+                                "sequence" : $(this).attr("sequence"),
+                                "master" : $(this).attr("master"),
+                                "glyph" : $(this).attr("glyph")
                             });
-                        }   
+                        }
                     });
                     if (event.shiftKey || event.ctrlKey || event.metaKey) {
                         scope.toggleSet(selected);
@@ -181,18 +316,19 @@ app.directive('rubberband', function($document) {
                 myclick = false;
                 mymove = false;
             });
-            
-            function isThisInBox (glyph, x1, x2, y1, y2) {
+
+            function isThisInBox(glyph, x1, x2, y1, y2) {
                 var myx1 = $(glyph).offset().left;
                 var myx2 = $(glyph).offset().left + $(glyph).outerWidth();
                 var myy1 = $(glyph).offset().top;
                 var myy2 = $(glyph).offset().top + $(glyph).outerHeight();
-                if (((x1 < myx1 && x2 > myx1) || (x1 < myx2 && x2 > myx2) || (x1 > myx1 && x2 < myx2)) && ((y1 < myy1 && y2 > myy1) || (y1 < myy2 && y2 > myy2)|| (y1 > myy1 && y2 < myy2))) {
+                if (((x1 < myx1 && x2 > myx1) || (x1 < myx2 && x2 > myx2) || (x1 > myx1 && x2 < myx2)) && ((y1 < myy1 && y2 > myy1) || (y1 < myy2 && y2 > myy2) || (y1 > myy1 && y2 < myy2))) {
                     return true;
                 } else {
                     return false;
                 }
             }
+
         }
     };
 });
@@ -202,7 +338,7 @@ app.directive('sizeRope', function($document) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var templayer = '<div id="templayer" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 10000;"></div>';
-            var svg = d3.select(element[0]).append('svg').attr('width', '16px').attr('height','16px');
+            var svg = d3.select(element[0]).append('svg').attr('width', '16px').attr('height', '16px');
             var svgT;
             var gT;
             var lineT;
@@ -212,26 +348,24 @@ app.directive('sizeRope', function($document) {
             var fontsize;
             var diamondSize = 8;
             var fontsize = parseInt(scope.fontSize);
-            var factor = getFactor (fontsize);
+            var factor = getFactor(fontsize);
             var lastLength;
             var startsize;
-            
-
 
             //drag behaviour
             var drag = d3.behavior.drag().on('dragstart', function() {
                 fontsize = parseInt(scope.fontSize);
                 startsize = fontsize;
                 lastLength = 0;
-                
+
                 // create a temp layer
                 $(document.body).append(templayer);
-                svgT = d3.select("#templayer").append('svg').attr('width', '100%').attr('height','100%');
+                svgT = d3.select("#templayer").append('svg').attr('width', '100%').attr('height', '100%');
                 screenX = $(element[0]).offset().left;
                 screenY = $(element[0]).offset().top;
                 gT = svgT.append('g');
                 diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
-             
+
             }).on('drag', function() {
                 diamondfill.style('fill', '#fff');
                 var x = d3.event.x - diamondSize;
@@ -244,7 +378,7 @@ app.directive('sizeRope', function($document) {
                 var thisLength = getRopeLength(screenX, screenY, x, -y);
                 if (thisLength != 0) {
                     var growth = thisLength - lastLength;
-                    factor = getFactor (fontsize);
+                    factor = getFactor(fontsize);
                     fontsize += Math.round(growth * factor);
                 } else {
                     fontsize = startsize;
@@ -253,8 +387,8 @@ app.directive('sizeRope', function($document) {
                     fontsize = 10;
                 }
                 scope.fontSize = fontsize;
-                scope.$apply(); 
-                lastLength = thisLength;  
+                scope.$apply();
+                lastLength = thisLength;
             }).on('dragend', function() {
                 diamondfill.style('fill', '#F85C37');
                 $("#templayer").remove();
@@ -264,9 +398,8 @@ app.directive('sizeRope', function($document) {
             var diamond = svg.append('g').call(drag);
             var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
 
-
-            function getRopeLength(originX, originY, xPosition, yPosition) {   
-                var length; 
+            function getRopeLength(originX, originY, xPosition, yPosition) {
+                var length;
                 if ((xPosition >= 0 && yPosition >= 0) || xPosition <= 0 && yPosition <= 0) {
                     length = Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2));
                     if (yPosition < 0) {
@@ -278,14 +411,15 @@ app.directive('sizeRope', function($document) {
                 return length;
             }
 
-            function getFactor (size) {
+            function getFactor(size) {
                 if (size > 100) {
                     var factor = 1;
                 } else {
                     var factor = size / 100;
-                }  
+                }
                 return factor;
             }
+
         }
     };
 });
@@ -319,10 +453,10 @@ function($document) {
             var indentRight = 20;
             var indentLeft = 40;
             var dragActive = false;
-            
-            function findMaster (id) {
-                for (var i = 0; i < scope.data.sequences.length; i++){
-                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++){
+
+            function findMaster(id) {
+                for (var i = 0; i < scope.data.sequences.length; i++) {
+                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++) {
                         if (scope.data.sequences[i].masters[j].id == id) {
                             return scope.data.sequences[i].masters[j];
                             break;
@@ -330,7 +464,6 @@ function($document) {
                     }
                 }
             }
-            
 
             // watch for data changes and re-render
             scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace.masters.length, data.currentDesignSpace.masters[0], data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
@@ -505,10 +638,10 @@ function($document) {
             // we need 2 layers, so the masters are allways on top of the ellipses
             var layer2 = svg.append('g');
             var layer1 = svg.append('g');
-            
-            function findMaster (id) {
-                for (var i = 0; i < scope.data.sequences.length; i++){
-                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++){
+
+            function findMaster(id) {
+                for (var i = 0; i < scope.data.sequences.length; i++) {
+                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++) {
                         if (scope.data.sequences[i].masters[j].id == id) {
                             return scope.data.sequences[i].masters[j];
                             break;
@@ -516,8 +649,6 @@ function($document) {
                     }
                 }
             }
-            
-            
 
             // watch for data changes and re-render
             scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace]', function(newVals, oldVals, scope) {

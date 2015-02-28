@@ -871,8 +871,9 @@
             z-index: 1000;
             font-size: 9px;
         }
-
-
+        
+        
+        
 
 /**************** masters ************************/
 
@@ -952,6 +953,10 @@
                 height: 28px;
                 position: relative;
             }
+            
+            .selected .list-sequence-col {
+                background: #f85c37;
+            }
                     
                 .list-sequence-col .diamond {
                     width: 100%;
@@ -989,7 +994,8 @@
             text-align: center;
             width: 32px;
             height: 100%;
-            padding: 4px;
+            padding-top: 1px;
+            font-size: 17px;
             background: #fff;
             cursor: default;
         }

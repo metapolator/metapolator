@@ -49,9 +49,14 @@ app.factory("sharedScope", function($rootScope) {
             triangle : false,
             mainMaster : "0"
         }],
-        instances: [],
-        currentDesignSpace : null
-
+        families : [{
+            id : 0,
+            instances: [] 
+        }],
+        currentDesignSpace : null,
+        eventHandlers : {
+            initialDisplay : null
+        }
     };
     return scope;
 });
