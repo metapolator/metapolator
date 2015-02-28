@@ -17,13 +17,13 @@
 <!-- end of menu -->
 
 
-<ul ui-sortable="sortableOptionsMasters" ng-model="data.instances" class="sequence">
-    <li ng-repeat="instance in data.instances track by $index" class="master" ng-class="{selected: instance.edit}">
-        <span class="diamond" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}">
-            <div class="diamond-fix" ng-class="{diamonddrag: !$middle}"></div>
+<ul ui-sortable="sortableOptionsMasters" ng-model="data.instances" class="list-ul">
+    <li ng-repeat="instance in data.instances track by $index" class="list-li" ng-class="{selected: instance.edit}">
+        <span class="list-sequence-col" ng-class="{'start' : $first && !$last, 'end' : $last && !$first, 'middle' : $middle, 'solo' : $first && $last}">
+            <div class="diamond"></div>
         </span>
-        <span class="selectable-ag" ng-click="instance.display = !instance.display" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};">Ag</span>
-        <span class="master-name" ng-click="selectInstancesForEdit(instance, $parent.$index, $index)" ng-class="{'selected': instance == currentInstance}">
+        <span class="list-view-col" ng-click="instance.display = !instance.display" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};">Ag</span>
+        <span class="list-edit-col" ng-click="selectInstancesForEdit(instance, $parent.$index, $index)" ng-class="{'selected': instance == currentInstance}">
             {{instance.name}}
         </span>
     </li>
