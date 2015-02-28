@@ -25,6 +25,7 @@ function($scope, $sce, sharedScope) {
     }];
     $scope.selectedSpecimen = $scope.specimen[0];
     $scope.fontSize = 80;
+    $scope.lineHeight = 0.8;
     $scope.nrOfFonts = 5;
     $scope.fontbys = ["word", "glyph", "paragraph"];
     $scope.filterOptions = {

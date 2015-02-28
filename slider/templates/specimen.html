@@ -3,7 +3,8 @@
     <select ng-model="selectedSpecimen" ng-options="specim.name for specim in specimen" class="specimen-tool"></select>
     <div id="standard-view-tools" >
         <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
-        <size-rope></size-rope>      
+        <size-rope></size-rope>  
+        <input type="text" id="lineheigt-nr" ng-model="lineHeight" size="1" class="specimen-tool">    
         <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
         <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
         <div id="font-by" ng-if="selectedSpecimen.name != 'glyph range'">
@@ -17,7 +18,7 @@
 <div id="specimen-content" rubberband>   
     <!-- standard view -->
     <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
-        <ul ng-style="{'font-size': fontSize + 'px', 'line-height': fontSize + 'px'}">
+        <ul ng-style="{'font-size': fontSize + 'px', 'line-height': (fontSize * lineHeight) + 'px'}">
             <li ng-repeat="thisglyph in filteredGlyphs track by $index" ng-style="{'margin-bottom': (fontSize / 5) + 'px'}" ng-class="{'selected-glyph':askIfEditGlyph(thisglyph.glyph, thisglyph.master.name), 'glyph-linebreak': thisglyph.linebreak}">
                 <div sequence="{{thisglyph.master.sequenceId}}" master="{{thisglyph.master.masterId}}" glyph="{{thisglyph.glyph}}" class="spec-glyph-box catchme unselectable" ng-style="{'font-family':thisglyph.master.family, 'font-weight':thisglyph.master.weight}">{{thisglyph.glyph}}</div>
             </li>

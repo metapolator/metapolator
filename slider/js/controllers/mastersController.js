@@ -182,7 +182,7 @@ app.controller("mastersController", function($scope, sharedScope) {
 
     $scope.selectionStart = [0, 0];
     $scope.selectionEnd = [];
-    
+
     $scope.selectMastersForEdit = function(thisMaster, sIndex, mIndex) {
         if ($scope.commandDown || $scope.controlDown) {// toggle on ctrl click
             thisMaster.edit = !thisMaster.edit;
@@ -271,11 +271,10 @@ app.controller("mastersController", function($scope, sharedScope) {
                 var sequenceIndex = ui.item.parent().parent().index();
                 var masterIndex = ui.item.index();
                 var master = $scope.data.sequences[sequenceIndex].masters[masterIndex];
-
-                if ($scope.data.currentDesignSpace.masters.indexOf(master.id) > -1) {
+                // check if master already in this designspace
+                if (isInDesignSpace(master.id)) {
                     alert("master already in this Design Space");
                 } else {
-
                     if ($scope.data.currentDesignSpace.type == "Control") {
                         addNewMaster(master);
                     } else if ($scope.data.currentDesignSpace.type == "Explore") {
@@ -289,11 +288,10 @@ app.controller("mastersController", function($scope, sharedScope) {
                         });
                     }
                     $scope.$apply();
-                    $(".drop-area").removeClass("drag-over");
+                    
                 }
-            } else {
-                $(".drop-area").removeClass("drag-over");
             }
+            $(".drop-area").removeClass("drag-over");
         }
     };
 
@@ -309,6 +307,17 @@ app.controller("mastersController", function($scope, sharedScope) {
                 value : 50
             });
         }
+    }
+
+    function isInDesignSpace(id) {
+        var x = false;
+        for (var i = 0; i < $scope.data.currentDesignSpace.masters.length; i++) {
+            if ($scope.data.currentDesignSpace.masters[i].masterId == id) {
+                x = true;
+                break;
+            }
+        }
+        return x;
     }
 
     function IsOverDropArea(ui) {

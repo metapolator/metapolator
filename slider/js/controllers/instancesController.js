@@ -53,11 +53,46 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             }
         }  
     }
+    
+    function valueToAxes(instance) {
+        var designspace = $scope.data.currentDesignSpace;
+        designspace.axes = [];
+        var mastersNewOrder = [];
+        var mastersCurrentOrder = instance.masters;
+        // set masters of instance in order of designspace setup
+        for (var i = 0; i < designspace.masters.length; i++) {
+            var thisMaster = {
+                masterId: designspace.masters[i].masterId,
+                value: 0
+            };
+            for (var j = 0; j < mastersCurrentOrder.length; j++) {
+                if (designspace.masters[i].masterId == mastersCurrentOrder[j].masterId) {
+                    thisMaster.value = mastersCurrentOrder[j].value;
+                }  
+            }
+            mastersNewOrder.push(thisMaster);
+        }
+        // translate ratio to slider value
+        // the little correction to avoid /0 i not yet included here
+        for (var i = 1; i < mastersNewOrder.length; i++) {
+            var thisRatio = mastersNewOrder[i].value / mastersNewOrder[0].value;
+            var thisValue = roundup(thisRatio / (1 + thisRatio) * 100);
+            designspace.axes.push({
+                value : thisValue
+            });
+        }
+    }
+    
+    function roundup(a) {
+        var b = Math.round(a * 10) / 10;
+        return b;
+    }
 
     $scope.selectInstancesForEdit = function(thisInstance, sIndex, mIndex) {
         $scope.currentInstance = thisInstance;
         thisInstance.edit = !thisInstance.edit;
         setCurrentDesignSpace(thisInstance.designSpace);
+        valueToAxes(thisInstance);
          
         /*
         if ($scope.commandDown || $scope.controlDown) {// toggle on ctrl click

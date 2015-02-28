@@ -76,7 +76,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
 
     function roundup(a) {
-        var b = Math.round(a * 1000) / 1000;
+        var b = Math.round(a * 10) / 10;
         return b;
     }
     
@@ -85,8 +85,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.removeMaster = function(m) {
         var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
-        var master = masterSet[m].master.name;
-        if (confirm("Remove '" + master + "' from this Design Space. Sure?")) {
+        if (confirm("Removing master from this Design Space. Sure?")) {
             masterSet.splice(m, 1);
             designspace.axes.splice((m - 1), 1);
             $scope.$apply();

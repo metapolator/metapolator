@@ -213,20 +213,16 @@ app.directive('sizeRope', function($document) {
             var diamondSize = 8;
             var fontsize = parseInt(scope.fontSize);
             var factor = getFactor (fontsize);
+            var lastLength;
+            var startsize;
             
-            function getFactor (size) {
-                if (size > 100) {
-                    var factor = 1;
-                } else {
-                    var factor = size / 100;
-                }  
-                
-                return factor;
-            }
+
 
             //drag behaviour
             var drag = d3.behavior.drag().on('dragstart', function() {
                 fontsize = parseInt(scope.fontSize);
+                startsize = fontsize;
+                lastLength = 0;
                 
                 // create a temp layer
                 $(document.body).append(templayer);
@@ -245,9 +241,20 @@ app.directive('sizeRope', function($document) {
                 diamondT.attr('transform', 'translate(' + x + ',' + y + ')');
                 gT.selectAll('*').remove();
                 lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#000').style('stroke-width', '2');
-                scope.fontSize = getSize(fontsize, screenX, screenY, x, -y);
-                
-                scope.$apply();   
+                var thisLength = getRopeLength(screenX, screenY, x, -y);
+                if (thisLength != 0) {
+                    var growth = thisLength - lastLength;
+                    factor = getFactor (fontsize);
+                    fontsize += Math.round(growth * factor);
+                } else {
+                    fontsize = startsize;
+                }
+                if (fontsize < 10) {
+                    fontsize = 10;
+                }
+                scope.fontSize = fontsize;
+                scope.$apply(); 
+                lastLength = thisLength;  
             }).on('dragend', function() {
                 diamondfill.style('fill', '#F85C37');
                 $("#templayer").remove();
@@ -257,22 +264,27 @@ app.directive('sizeRope', function($document) {
             var diamond = svg.append('g').call(drag);
             var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
 
-            // calculate size increase
-            function getSize(current, originX, originY, xPosition, yPosition) {    
+
+            function getRopeLength(originX, originY, xPosition, yPosition) {   
+                var length; 
                 if ((xPosition >= 0 && yPosition >= 0) || xPosition <= 0 && yPosition <= 0) {
-                    var growth = Math.floor(Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2)) * factor);
+                    length = Math.sqrt(Math.pow(xPosition, 2) + Math.pow(yPosition, 2));
                     if (yPosition < 0) {
-                        growth *= -1;
-                    }
-                    var newSize = current + growth;
-                    if (newSize < 10) {
-                        newSize = 10;
+                        length *= -1;
                     }
                 } else {
-                    var newSize = current;
+                    length = 0;
                 }
-                factor = getFactor (newSize);
-                return newSize;
+                return length;
+            }
+
+            function getFactor (size) {
+                if (size > 100) {
+                    var factor = 1;
+                } else {
+                    var factor = size / 100;
+                }  
+                return factor;
             }
         }
     };

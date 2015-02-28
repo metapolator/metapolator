@@ -6,9 +6,7 @@ $(function() {
         var view = parseInt($(this).context.id.split("-")[2]);
         moveLandscape(view, 1);
     });
-    
-    moveLandscape(1, 1);
-    
+        
     function moveLandscape(view, transition) {
         // move virtual dividers
         currentView = view;

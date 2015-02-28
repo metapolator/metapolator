@@ -13,20 +13,22 @@
 <!-- end of tabs -->
 
 <div class="design-space" ng-class="{unconfigured : data.currentDesignSpace.type =='x'}">
-    <div ng-show="data.currentDesignSpace.type == 'x'">
-        <div class="choose-space-type">
-            <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Explore'">
-                <img src="img/Explore.png">
-                <br>
-                Explore
-            </div>
-        </div>
+    <div class="design-space-container" ng-show="data.currentDesignSpace.type == 'x'">
         <div class="choose-space-type">
             <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Control'">
                 <img src="img/Control.png">
                 <br>
                 Control
             </div>
+        </div>
+        <div class="choose-space-type under-construction">
+            <!--
+            <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Explore'">
+                <img src="img/Explore.png">
+                <br>
+                Explore
+            </div>
+            -->
         </div>
     </div>
     
@@ -38,9 +40,11 @@
             <select class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="index as findMaster(master.masterId).name for (index, master) in data.currentDesignSpace.masters" ng-style="{'top': ((data.currentDesignSpace.masters.length - 2) * 50 + 43) + 'px'}" ng-if="data.currentDesignSpace.masters.length > 2"></select>
         </control>
         <explore ng-if="data.currentDesignSpace.type == 'Explore'"></explore>
+        <!--
         <button ng-if="data.currentDesignSpace.type == 'Control' && data.currentDesignSpace.masters.length == 3" class="triangle-button" ng-click="data.currentDesignSpace.triangle = !data.currentDesignSpace.triangle">
             Triangles: {{!data.currentDesignSpace.triangle}}
         </button>
+        -->
     </div> 
     <div id="temp-output"><div ng-if="data.currentDesignSpace.type == 'Control'" ng-repeat="outp in output track by $index">{{outp}}</div></div>
 </div>
