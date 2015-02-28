@@ -92,29 +92,23 @@
                 <div id="panel-1" class="panel sub-panel">
                     <parameters ng-controller="parametersController"></parameters>
                 </div>
-
                 <div id="panel-2" class="panel sub-panel">
-                    <specimen ng-controller="specimenController"></specimen>
+                    <specimen ng-controller="specimenController" ng-init="addGlyphRange()"></specimen>
                 </div>
-
 
                 <!-- start of view 2 -->
                 <div id="panel-3" class="panel">
-
                     <div id="subpanel-3-top" class="sub-panel">
                         <masters ng-controller="mastersController" class="list" type="master"></masters>
                     </div>
-                    
                     <div id="subpanel-3-bottom" class="sub-panel under-construction">
                     </div>
-                    
                 </div>
 
                 <div id="panel-4" class="panel">
                     <div id="subpanel-4-top" class="sub-panel">
                         <designspace ng-controller="designspaceController"></designspace>
                     </div>
-
                     <div id="subpanel-4-bottom" class="sub-panel">
                         <specimen ng-controller="specimenController"></specimen>
                     </div>
@@ -124,15 +118,12 @@
                 <div id="panel-5" class="panel sub-panel">
                     <instances ng-controller="instancesController" class="list" type="instance"></instances>
                 </div>
-
                 <div id="panel-6" class="panel sub-panel standard-padding">
                 </div>
-
                 <div id="panel-7" class="panel sub-panel standard-padding under-construction">
                 </div>
             </div>
             <!-- end of landscape -->
-
         </div>
 
         <div id="size-slider-line"></div>
