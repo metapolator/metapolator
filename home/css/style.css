@@ -220,6 +220,7 @@
     }
     
         .float-element-1 {
+            max-width: 99%;
             float: left;
             display: inline-block;
             margin-right: 18px;
@@ -227,6 +228,7 @@
         }
         
         .float-element-2 {
+            max-width: 99%;
             float: left;
             display: inline-block;
             margin-left: 18px;
@@ -281,6 +283,7 @@
     .float-element-1, .float-element-2 {
         float: none;
         margin-left: 0;
+        margin-right: 0;
         margin-bottom: 10px;
     }
         
@@ -332,4 +335,86 @@
         box-shadow: none;
     }
 
+}
+
+@media (max-width: 640px) {
+    
+    body {
+        font-size: 16px;
+        line-height: 23px;
+    }
+    
+    section {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 40px;
+    }
+    
+    .intro-content {
+        font-size: 20px;
+        line-height: 28px;
+    }
+    
+    .bullets {
+        margin: 30px 0;
+    }
+    
+    #home-section {
+        height: 400px;
+    }
+    
+    
+        #glyphslider{
+            display: none;
+        }
+    
+    #home-section {
+        padding-top: 40px;
+    }
+    
+    #menu {
+        width: 160px;
+        left: calc(50% - 80px);
+    }
+    
+        #menu #buttons ul li {
+            float: none;
+            width: 100%;
+        }
+    
+    #buttons ul li a {
+        font-size: 14px;
+        text-align: center;
+        width: 100%;
+        display: block;
+    }
+    
+    #menu #logo {
+        text-align: center;
+    }
+    
+
+
+}
+
+@media (max-width: 640px) {
+    body, .intro-content {
+        font-size: 12px;
+        line-height: 18px;
+    }
+    
+    section {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 30px;
+        line-height: 35px;
+    }
+    
+    .bluepill-left, .bluepill-right {
+        display: none;
+    }
 }
