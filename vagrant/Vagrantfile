@@ -51,13 +51,13 @@ cd $SHARED_DIR
 if test ! -e metapolator; then
     GIT_URL=https://github.com/metapolator/metapolator.git
     CHECKOUT_TYPE=read-only
-    if test -e /vagrant/.ssh; then
+    if test ! -e /vagrant/.ssh; then
         ln -sf /vagrant/.ssh ~/
-        GIT_URL=git@github.com:metapolator/metapolator.git
-        CHECKOUT_TYPE=read-write
     fi
+    GIT_URL=git@github.com:metapolator/metapolator.git
+    CHECKOUT_TYPE=read-write
     echo "Checking out Metapolator $CHECKOUT_METHOD"
-    git clone --recursive $GIT_URL # --recursive to get submodules
+    git clone --verbose --recursive $GIT_URL # --recursive to get submodules
 elif test ! -d metapolator/.git; then
     echo "You have a directory called 'metapolator' here, but it doesn't seem to be a git checkout"
     echo "Aborting: I don't want to overwrite this directory, whatever it is!"
