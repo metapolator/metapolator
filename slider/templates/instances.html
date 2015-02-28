@@ -29,7 +29,7 @@
 </ul>
 
 <div id="instances-tools">
-    <div id="add-instance" ng-if="canAddInstance()" ng-click="addInstance();" class="instance-tool">
+    <div id="add-instance" ng-click="addInstance();" class="instance-tool" ng-class="{'inactive': !canAddInstance()}">
         <img src="img/addInstance.png">
     </div>
     <!--
@@ -37,7 +37,7 @@
         <img src="img/duplicateInstance.png">
     </div>
     -->
-    <div id="delete-instance" ng-if="currentInstance" ng-click="deleteInstance();" class="instance-tool">
+    <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool" ng-class="{'inactive': !currentInstance}">
         <img src="img/deleteInstance.png">
     </div>
 </div>

@@ -88,19 +88,21 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     }
 
     $scope.addInstance = function() {
-        var designSpace = $scope.data.currentDesignSpace;
-        var id = findInstanceId();
-        $scope.data.families[0].instances.push({
-            id : id,
-            edit : false,
-            display : false,
-            name : "New Instance " + id,
-            designSpace : designSpace.id,
-            fontFamily : "Roboto",
-            fontWeight : 700,
-            masters: jQuery.extend(true, [], designSpace.masters),
-        });
-        $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+        if ($scope.canAddInstance()) {
+            var designSpace = $scope.data.currentDesignSpace;
+            var id = findInstanceId();
+            $scope.data.families[0].instances.push({
+                id : id,
+                edit : false,
+                display : false,
+                name : "New Instance " + id,
+                designSpace : designSpace.id,
+                fontFamily : "Roboto",
+                fontWeight : 700,
+                masters: jQuery.extend(true, [], designSpace.masters),
+            });
+            $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+        }
     };
     
     $scope.duplicateInstance = function () {
@@ -111,8 +113,10 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
     
     $scope.deleteInstance = function () {
-        $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.currentInstance), 1);
-        $scope.currentInstance = null;
+        if ($scope.currentInstance) {
+            $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.currentInstance), 1);
+            $scope.currentInstance = null;
+        }
     };
     
     

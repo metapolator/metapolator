@@ -1117,3 +1117,7 @@
                 border-right: 1px solid #000;
                 background: #fff;
             }
+            
+            .instance-tool.inactive {
+                opacity: 0.5;
+            }
