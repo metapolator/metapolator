@@ -88,45 +88,36 @@
 
         <div id="pagewrap">
             <div id="landscape">
-
                 <div id="panel-1" class="panel">
-                    <parameters ng-controller="parametersController" class="sub-panel standard-padding"></parameters>
-                    <div id="sub-parameters" class="sub-panel under-construction">
+                    <parameters ng-controller="parametersController" class="sub-panel standard-padding semi-panel"></parameters>
+                    <underconstruction class="sub-panel semi-panel">
                         COMING SOON:<br>MORE PARAMETERS
-                    </div>
+                    </underconstruction>
                 </div>
-                <div id="panel-2" class="panel sub-panel">
-                    <specimen ng-controller="specimenController" ng-init="addGlyphRange()"></specimen>
-                </div>
+                <specimen id="panel-2" ng-controller="specimenController" ng-init="addGlyphRange()" class="sub-panel panel"></specimen>
 
                 <!-- start of view 2 -->
                 <div id="panel-3" class="panel">
-                    <div id="subpanel-3-top" class="sub-panel">
-                        <masters ng-controller="mastersController" class="list" type="master"></masters>
-                    </div>
-                    <div id="subpanel-3-bottom" class="sub-panel under-construction">
+                    <masters ng-controller="mastersController" class="list sub-panel semi-panel" type="master"></masters>
+                    <underconstruction class="sub-panel semi-panel">
                         COMING SOON:<br>ADJUSTMENT MASTERS
-                    </div>
+                    </underconstruction>
                 </div>
 
                 <div id="panel-4" class="panel">
-                    <div id="subpanel-4-top" class="sub-panel">
-                        <designspace ng-controller="designspaceController"></designspace>
-                    </div>
-                    <div id="subpanel-4-bottom" class="sub-panel">
-                        <specimen ng-controller="specimenController"></specimen>
-                    </div>
+                    <designspace ng-controller="designspaceController" class="sub-panel semi-panel"></designspace>
+                    <specimen ng-controller="specimenController" class="sub-panel semi-panel"></specimen>
                 </div>
 
                 <!-- start of view 3 -->
-                <div id="panel-5" class="panel sub-panel">
-                    <instances ng-controller="instancesController" class="list" type="instance"></instances>
-                </div>
+                <instances id="panel-5" ng-controller="instancesController" class="list panel sub-panel" type="instance"></instances>
+                
                 <div id="panel-6" class="panel sub-panel standard-padding">
                 </div>
-                <div id="panel-7" class="panel sub-panel standard-padding under-construction">
+                
+                <underconstruction id="panel-7" class="panel sub-panel">
                     COMING SOON:<br>FAMILY EXPORT
-                </div>
+                </underconstruction>
             </div>
             <!-- end of landscape -->
         </div>
