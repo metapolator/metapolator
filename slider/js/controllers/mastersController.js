@@ -2,6 +2,26 @@ app.controller("mastersController", function($scope, sharedScope) {
     'use strict';
     $scope.data = sharedScope.data;
 
+/***** menu control *****/
+
+    $scope.deleteMaster = function(){
+        if (confirm("You are about to remove master(s). This could affect design spaces as well. Ok?")) {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                var notDeleted = [];
+                angular.forEach(sequence.masters, function(master) {
+                    if (!master.edit){
+                        notDeleted.push(master);
+                    }
+                });
+                sequence.masters = notDeleted;
+            }); 
+            
+        }
+        $scope.data.localmenu.masters = false;
+    };
+
+
+/***** selecting *****/
 
     $scope.mouseDown = false;
     
