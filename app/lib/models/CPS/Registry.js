@@ -46,13 +46,6 @@ define([
         return this._dataTypes[description.type];
     }
 
-    _p.getDefaultFactory = function(name) {
-        var description;
-        if(!this.exists(name))
-            throw new errors.CPSRegistryKey('Name "' + name + '" is no registered parameter');
-        description = this._parameters[name];
-        return this._dataTypes[description.type].defaultFactory;
-    }
 
     _p.register = function(name, parameterDescription) {
         if(this.exists(name))
