@@ -9,7 +9,6 @@ define([
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/SelectorList'
-  , 'metapolator/models/CPS/dataTypes/CPSGeneric'
   , 'gonzales/gonzales'
   , './parseSelectorList'
 ], function (
@@ -23,7 +22,6 @@ define([
   , AtRuleName
   , AtNamespaceCollection
   , SelectorList
-  , CPSGeneric
   , gonzales
   , parseSelectorList
 ) {
@@ -143,7 +141,7 @@ define([
          * _makeNode.
          */
       , 'declaration': function (node, source, ruleController) {
-            var name, value, typeDefinition;
+            var name, value, factory;
 
             if(node.children[0].type !== 'property')
                 throw new CPSError('The first child of "declaration" is '
@@ -164,16 +162,8 @@ define([
             // selectorListFromString uses the parser but doesn't need
             // initialized parameters
             if(ruleController) {
-                try {
-                    typeDefinition = ruleController.parameterRegistry.getTypeDefinition(name.name);
-                }
-                catch(error) {
-                    if(!(error instanceof errors.CPSRegistryKey))
-                        throw error;
-                    // initialize the generic datatype
-                    typeDefinition = CPSGeneric.factory;
-                }
-                value.initializeTypeFactory(name.name, typeDefinition);
+                factory = ruleController.parameterRegistry.getFactory(name.name);
+                value.initializeTypeFactory(name.name, factory);
             }
             return new Parameter(name, value, source, node.lineNo);
         }
