@@ -9,7 +9,7 @@ define([
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/SelectorList'
-  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
+  , 'metapolator/models/CPS/dataTypes/CPSGeneric'
   , 'gonzales/gonzales'
   , './parseSelectorList'
 ], function (
@@ -23,7 +23,7 @@ define([
   , AtRuleName
   , AtNamespaceCollection
   , SelectorList
-  , CPSDictionaryEntry
+  , CPSGeneric
   , gonzales
   , parseSelectorList
 ) {
@@ -171,7 +171,7 @@ define([
                     if(!(error instanceof errors.CPSRegistryKey))
                         throw error;
                     // initialize the generic datatype
-                    typeDefinition = CPSDictionaryEntry.factory;
+                    typeDefinition = CPSGeneric.factory;
                 }
                 value.initializeTypeFactory(name.name, typeDefinition);
             }

@@ -11,13 +11,13 @@ define([
 
     var ValueError = errors.Value;
 
-    function CPSDictionaryEntry(getAPI, stack) {
+    function CPSGeneric(getAPI, stack) {
         Parent.call(this, getAPI, stack);
     }
 
-    var _p = CPSDictionaryEntry.prototype = Object.create(Parent.prototype);
-    _p.constructor = CPSDictionaryEntry;
-    CPSDictionaryEntry.factory = new SharedFormulaeFactory(CPSDictionaryEntry);
+    var _p = CPSGeneric.prototype = Object.create(Parent.prototype);
+    _p.constructor = CPSGeneric;
+    CPSGeneric.factory = new SharedFormulaeFactory(CPSGeneric);
 
     _p.getValue = function() {
         var result = this._stack.execute(this._getAPI);
@@ -27,5 +27,5 @@ define([
         return result;
     };
 
-    return CPSDictionaryEntry;
+    return CPSGeneric;
 });
