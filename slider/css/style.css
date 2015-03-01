@@ -978,6 +978,11 @@
             padding: 4px 10px;
         }
         
+        .lm-button a {
+            color: #000;
+            text-decoration: none;
+        }
+        
             .lm-button:hover {
                 background: #ddd;
             }
