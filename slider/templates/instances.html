@@ -1,14 +1,11 @@
 <div class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
-        <li>
+        <li ng-class="{'inactive': !canAddInstance()}">
             <a href="#" ng-click="addInstance();">New</a>
         </li>
-        <li>
-            <a href="#" ng-click="duplicateInstance();">Duplicate</a>
-        </li>
         <li class="divider"></li>
-        <li>
+        <li ng-class="{'inactive': !currentInstance}">
             <a href="#" ng-click="deleteInstance();">Delete...</a>
         </li>
     </ul>

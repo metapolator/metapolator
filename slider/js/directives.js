@@ -1,3 +1,18 @@
+// deselecting local menus
+app.directive('body', function() {
+    return {
+        restrict : 'E',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('click', function(event) {
+                if (!$(event.target).parents('.localmenu').length) {
+                    scope.data.localmenu.project = false;
+                    scope.$apply();
+                }
+            });
+        }
+    };
+});
+
 // monitor mouse status inside a list
 app.directive('list', function() {
     return {

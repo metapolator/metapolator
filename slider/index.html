@@ -52,22 +52,19 @@
 
     </HEAD>
 
-    <BODY ng-app="Metapolator" class="unselectable">
-        <div id="menu" ng-controller="menuController">
+    <BODY ng-app="Metapolator" class="unselectable" ng-controller="menuController">
+        <div id="menu" >
             <div id="project">
-                <div id="project-dropdown" class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Project</b> {{data.projectName}} <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="#">New</a>
-                        </li>
- 
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">Close</a>
-                        </li>
-                    </ul>
-                </div>
+                <localmenu class="localmenu">
+                    <div class="lm-head" ng-mousedown="data.localmenu.project = !data.localmenu.project">
+                        <b>Project</b> {{data.projectName}}
+                    </div>
+                    <div class="lm-body" ng-if="data.localmenu.project">
+                        <div class="lm-button" ng-mouseup="newDocument()">New</div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button" ng-mouseup="closeDocument()">Close</div>
+                    </div>
+                </localmenu>
             </div>
             <!-- end of project -->
 
@@ -90,7 +87,7 @@
             <div id="landscape">
                 <div id="panel-1" class="panel">
                     <parameters ng-controller="parametersController" class="sub-panel standard-padding semi-panel"></parameters>
-                    <underconstruction class="sub-panel semi-panel">
+                    <underconstruction class="sub-panel semi-panel"> 
                         COMING SOON:<br>MORE PARAMETERS
                     </underconstruction>
                 </div>

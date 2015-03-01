@@ -50,6 +50,8 @@
 	}
 	
 		#project {
+		    width: 190px;
+		    padding: 16px 0 0 8px;
 			float: left;
 		}
 	
@@ -912,6 +914,51 @@
                 background: #fff;
             }
             
-            .instance-tool.inactive {
+            .inactive {
                 opacity: 0.5;
             }
+            
+            
+            
+            
+/**************** local menu ************************/
+
+    
+    localmenu {
+        position: relative;
+    }
+    
+    .lm-head {
+        cursor: default;
+    }
+    
+        .lm-head:after {
+            content: "▼";
+            font-size: 10px;
+            margin-left: 2px;
+        }
+        
+    .lm-body {
+        position: absolute;
+        z-index: 1000;
+        left: -2px;
+        top: 20px;
+        background: #fff;
+        width: 200px;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+    
+        .lm-button {
+            padding: 4px 10px;
+        }
+        
+            .lm-button:hover {
+                background: #ddd;
+            }
+            
+       .lm-divider {
+           margin: 4px 0;
+           background: #ddd;
+           height: 1px;
+        }
