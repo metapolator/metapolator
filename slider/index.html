@@ -55,8 +55,8 @@
     <BODY ng-app="Metapolator" class="unselectable" ng-controller="menuController">
         <div id="menu" >
             <div id="project">
-                <localmenu class="localmenu">
-                    <div class="lm-head" ng-mousedown="data.localmenu.project = !data.localmenu.project">
+                <localmenu class="localmenu" class="left">
+                    <div class="lm-head" ng-mousedown="selectMenu('project')">
                         <b>Project</b> {{data.projectName}}
                     </div>
                     <div class="lm-body" ng-if="data.localmenu.project">
@@ -80,6 +80,20 @@
                 </div>
             </div>
             <!-- end of view buttons -->
+            
+            <div id="help">
+                <localmenu class="localmenu right">
+                    <div class="lm-head" ng-mousedown="selectMenu('help')">
+                        <b>Help</b>
+                    </div>
+                    <div class="lm-body" ng-if="data.localmenu.help">
+                        <div class="lm-content">
+                            Please post questions about usage or anything in general in the <a href="https://plus.google.com/communities/110027004108709154749" target="_blank">Metapolator Google Plus Community Page</a>.<br><br>
+                            To report a specific bug or request a feature, create a new issue in the <a href="https://github.com/metapolator/metapolator/" target="_blank">github.com/metapolator/metapolator</a>.
+                        </div>
+                    </div>
+                </localmenu>
+            </div>
         </div>
         <!-- end of menu -->
 

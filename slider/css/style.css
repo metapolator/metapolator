@@ -50,13 +50,14 @@
 	}
 	
 		#project {
-		    width: 190px;
+		    width: 200px;
 		    padding: 16px 0 0 8px;
 			float: left;
 		}
 	
 		#view-buttons {
 			float: left;
+			width: 300px;
 			margin-left: calc(50% - 250px);
 			padding: 8px;
 		}
@@ -79,7 +80,10 @@
 				color: #000;
 			}
 			
-			
+        #help {
+            padding: 16px 10px 0 0;
+            float: right;
+        }
 			
 			
 /****** framework *****/
@@ -926,6 +930,7 @@
     
     localmenu {
         position: relative;
+        display: block;
     }
     
     .lm-head {
@@ -941,13 +946,33 @@
     .lm-body {
         position: absolute;
         z-index: 1000;
-        left: -2px;
         top: 20px;
         background: #fff;
         width: 200px;
         padding: 10px 0;
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
+    
+    .left .lm-body {
+        left: -2px;
+    }
+    
+    .right .lm-body {
+        right: -2px;
+    }
+    
+        .lm-content {
+            padding: 20px;
+        }
+        
+            .lm-content a {
+                color: #f85c37;
+                text-decoration: none;
+            }
+            
+                .lm-content a:hover {
+                    text-decoration: underline;
+                }
     
         .lm-button {
             padding: 4px 10px;

@@ -58,7 +58,8 @@ app.factory("sharedScope", function($rootScope) {
             initialDisplay : null
         },
         localmenu : {
-            project: false
+            project: false,
+            help: false
         }
     };
     return scope;

@@ -5,7 +5,11 @@ app.directive('body', function() {
         link : function(scope, element, attrs, ctrl) {
             element.bind('click', function(event) {
                 if (!$(event.target).parents('.localmenu').length) {
-                    scope.data.localmenu.project = false;
+                    for (var x in scope.data.localmenu) {
+                        if (x != menu) {
+                            scope.data.localmenu[x] = false;
+                        }
+                    }
                     scope.$apply();
                 }
             });
