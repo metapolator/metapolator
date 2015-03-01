@@ -1,9 +1,14 @@
 define([
-    '../../_BaseModel'
+    'metapolator/errors'
+  , '../../_BaseModel'
 ], function(
-    Parent
+    errors
+  , Parent
 ) {
     "use strict";
+
+    var AbstractInterfaceError = errors.AbstractInterface;
+
     /**
      * All Elements in a ParametersCollection have this base type OR
      * should at least expose the same Interface (ducktyping).
