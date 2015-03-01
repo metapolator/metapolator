@@ -55,6 +55,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.total = 0;
     
     $scope.getMetapolationRatios = function(data) {
+        console.log("!");
         var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
         $scope.output = [];
@@ -76,7 +77,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
 
     function roundup(a) {
-        var b = Math.round(a * 10) / 10;
+        var b = Math.round(a * 1000) / 1000;
         return b;
     }
     
