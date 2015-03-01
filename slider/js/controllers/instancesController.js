@@ -166,7 +166,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         // the little correction to avoid /0 i not yet included here
         for (var i = 1; i < mastersNewOrder.length; i++) {
             var thisRatio = mastersNewOrder[i].value / mastersNewOrder[0].value;
-            var thisValue = roundup(thisRatio / (1 + thisRatio) * 100);
+            
+            var thisValue = roundup(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
             designspace.axes.push({
                 value : thisValue
             });

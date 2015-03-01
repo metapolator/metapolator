@@ -55,7 +55,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.total = 0;
     
     $scope.getMetapolationRatios = function(data) {
-        console.log("!");
         var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
         $scope.output = [];
@@ -66,12 +65,12 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             cake += (axes[i].value + 0.5) / (100.5 - axes[i].value);
         }
         $scope.output.push($scope.findMaster(data.masters[0].masterId).name + ": " + roundup(1 / cake));
-        masterSet[0].value = roundup(1 / cake);
+        masterSet[0].value = 1 / cake;
         
         for (var i = 0; i < n; i++) {
             var piece = (axes[i].value + 0.5) / (100.5 - axes[i].value);
             $scope.output.push($scope.findMaster(data.masters[i + 1].masterId).name + ": " + roundup(piece / cake));
-            masterSet[i + 1].value = roundup(piece / cake);
+            masterSet[i + 1].value = piece / cake;
         }
     };
 
