@@ -10,8 +10,15 @@ define([
      * This Element is the container of all glyphs of a master.
      * It will have some metadata and contain children of type MOM Glyph.
      */
-    function Master() {
+    function Master(fontinfo) {
         Parent.call(this);
+        // FIXME: the data of fontinfo should be available via CPS
+        // this can be done similar to PointData
+        // MAYBE >> import fontinfo as CPS ???
+        // some concepts are still unclear :-/
+        Object.defineProperty(this, 'fontinfo', {
+            value: fontinfo
+        });
     }
     var _p = Master.prototype = Object.create(Parent.prototype);
     _p.constructor = Master;

@@ -67,6 +67,7 @@ define([
         this._cache = {
             masters: {}
           , glyphClasses:{}
+          , fontinfo: null
         };
         
         this.baseDir = baseDir || '.';
@@ -631,6 +632,29 @@ define([
 
         return this._cache.glyphClasses.reverseLookup;
     };
-    
+
+    _p._getFontinfo = function() {
+        var data;
+        try {
+            data = this._io.readFile(false,  this.fontinfoFile);
+        }
+        catch(error) {
+            if(error instanceof IONoEntryError) {
+                // this is legal, we have no fontinfo
+                this._log.warning('No fontinfo found, fallback to minimal (builtin) fontinfo.');
+                return minimalFontinfo;
+            }
+            throw error;
+        }
+        return plistLib.readPlistFromString(data);
+    };
+
+    _p.getFontinfo = function() {
+        var fontinfo = this._cache.fontinfo;
+        if(!fontinfo)
+            this._cache.fontinfo = fontinfo = this._getFontinfo();
+        return fontinfo;
+    };
+
     return MetapolatorProject;
 });
