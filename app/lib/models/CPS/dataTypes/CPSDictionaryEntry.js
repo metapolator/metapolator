@@ -20,13 +20,11 @@ define([
     CPSDictionaryEntry.factory = new SharedFormulaeFactory(CPSDictionaryEntry);
 
     _p.getValue = function() {
-        return this._stack.execute(this._getAPI);
-    };
-
-    _p.toString = function() {
-        return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
+        var result = this._stack.execute(this._getAPI);
+        // result MUST not be undefined
+        if(result === undefined)
+            throw new ValueError('The formula of this CPS did returns "undefined" which is never valid: ' + this);
+        return result;
     };
 
     return CPSDictionaryEntry;

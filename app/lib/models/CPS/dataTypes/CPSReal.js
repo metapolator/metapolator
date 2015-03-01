@@ -28,19 +28,13 @@ define([
                     ? 'result in NaN (happens with division by 0 for example)'
                     : 'not result in a number: "'+ result
                         + '" typeof: ' +  typeof result +
-                        + (typeof result.constructor === 'function'
+                        + (result && typeof result.constructor === 'function'
                                 ? ' a: ' + result.constructor.name
                                 : ''
                         )
                 )
             );
         return result;
-    };
-
-    _p.toString = function() {
-        return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
     };
 
     return CPSReal;
