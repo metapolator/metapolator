@@ -28,6 +28,12 @@ define([
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
+    _p.clone = function() {
+        var clone = new this.constructor(this._baseGlyphName, this._transformation);
+        this._cloneProperties(clone);
+        return clone;
+    }
+
     Object.defineProperty(_p, 'baseGlyphName', {
         get: function() {
             return this._baseGlyphName;

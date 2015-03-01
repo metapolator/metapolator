@@ -61,6 +61,12 @@ define([
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
+    _p.clone = function() {
+        var clone = new this.constructor(new PointData(this._skeleton));
+        this._cloneProperties(clone);
+        return clone;
+    };
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePoint'
     })

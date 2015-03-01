@@ -48,6 +48,21 @@ define([
       , multivers: 'multivers'
       , index: 'index'
       , type: 'type'
+    };
+
+    _p.clone = function() {
+        var clone = new this.constructor(), i,l;
+        this._cloneProperties(clone);
+        for(i=0,l=this._children.length;i<l;i++)
+            clone.add(this._children[i].clone());
+        return clone;
+    };
+
+    _p._cloneProperties = function(clone) {
+        if(this._id)
+            clone.id = this._id;
+        for(var k in this._classes)
+            clone.setClass(k);
     }
 
     Object.defineProperty(_p, 'MOMType', {

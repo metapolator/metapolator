@@ -38,11 +38,17 @@ define([
     //inherit from parent
     _p._cps_whitelist = {
         skeleton: 'skeleton'
-    };
-    //inherit from parent
+    };//inherit from parent
     (function(source) {
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
+
+
+    _p.clone = function() {
+        var clone = new this.constructor(new PointData(this._skeleton));
+        this._cloneProperties(clone);
+        return clone;
+    }
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM ContourPoint'

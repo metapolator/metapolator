@@ -74,6 +74,8 @@ define([
         this._controller = new ModelController(new RuleController(io, parameterRegistry, this.cpsDir));
         this._log = new log.Logger().setLevel(log.Level.INFO);
         this._log.addHandler(new log.Handler());
+
+        this._momCache = Object.create(null);
     }
     
     var _p = MetapolatorProject.prototype;
@@ -475,8 +477,19 @@ define([
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
-            , momMaster = master.loadMOM()
+            , skeleton = this._data.masters[masterName].skeleton
+            , sourceMOM
+            , momMaster
             ;
+            // FIXME: Bad implementation, we need much better management
+            // for masters etc. ALSO, if skeleton is the same, we should
+            // rather try to have a single MOM object for this, maybe with
+            // some kind of proxying to enable different "master.id"s
+            sourceMOM = this._momCache[skeleton];
+            if(!sourceMOM)
+                sourceMOM = this._momCache[skeleton] = master.loadMOM();
+            momMaster = sourceMOM.clone();
+
             momMaster.id = masterName;
             this._controller.addMaster(momMaster, master._cpsFile);
         }

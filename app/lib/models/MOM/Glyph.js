@@ -40,7 +40,11 @@ define([
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
-    
+    _p._cloneProperties = function(clone) {
+        Parent.prototype._cloneProperties.call(this, clone);
+        clone.setUFOData(this.getUFOData());
+    }
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Glyph'
     })

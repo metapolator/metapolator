@@ -22,7 +22,15 @@ define([
     }
     var _p = Master.prototype = Object.create(Parent.prototype);
     _p.constructor = Master;
-    
+
+    _p.clone = function() {
+        var clone = new this.constructor(this.fontinfo), i,l;
+        this._cloneProperties(clone);
+        for(i=0,l=this._children.length;i<l;i++)
+            clone.add(this._children[i].clone());
+        return clone;
+    };
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Master'
     })
