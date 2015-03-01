@@ -979,6 +979,8 @@
         }
         
         .lm-button a {
+            display: block;
+            width: 100%;
             color: #000;
             text-decoration: none;
         }
