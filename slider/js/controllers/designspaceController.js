@@ -119,11 +119,16 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var masters = designspace.masters;
         for (var i = 1; i < masters.length; i++) {
             var thisRatio = masters[i].value / masters[0].value;
-            var thisValue = roundup(thisRatio / (1 + thisRatio) * 100);
+            var thisValue = roundupsmall(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
             designspace.axes.push({
                 value : thisValue
             });
         }
+    }
+    
+    function roundupsmall(a) {
+        var b = Math.round(a * 10) / 10;
+        return b;
     }
         
 
