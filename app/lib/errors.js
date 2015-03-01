@@ -47,6 +47,7 @@ define(function() {
     makeError('MOM', undefined , new errors.Error);
     makeError('NotImplemented', undefined , new errors.Error);
     makeError('Deprecated', undefined , new errors.Error);
+    makeError('AbstractInterface', undefined , new errors.Error);
     makeError('CPS', undefined , new errors.Error);
     makeError('Key', undefined , new errors.Error);
     makeError('CPSRegistryKey', undefined , new errors.Key);
@@ -61,6 +62,9 @@ define(function() {
     makeError('Import', undefined , new errors.CPS);
     makeError('ImportPenstroke', undefined , new errors.Import);
     makeError('ImportContour', undefined , new errors.Import);
+    makeError('Event', undefined , new errors.Error);
+    makeError('Emitter', undefined , new errors.Event);
+    makeError('Receiver', undefined , new errors.Event);
 
     /**
      * if expression is false, throw an Assertion
