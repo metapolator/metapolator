@@ -5,6 +5,8 @@ app.controller("mastersController", function($scope, sharedScope) {
 /***** menu control *****/
 
     $scope.deleteMaster = function(){
+        // need to make functionality to go through design spaces and instances to remove masters as well
+        // and in instances recalculate the metap values
         if (confirm("You are about to remove master(s). This could affect design spaces as well. Ok?")) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 var notDeleted = [];
@@ -15,9 +17,21 @@ app.controller("mastersController", function($scope, sharedScope) {
                 });
                 sequence.masters = notDeleted;
             }); 
-            
         }
         $scope.data.localmenu.masters = false;
+    };
+    
+    $scope.importUfo = function () {
+        $scope.data.alert("Loading. Your UFO is coming soon.", true);
+    };
+    
+    $scope.data.alert = function (message, loading) {
+        $("#alert").show();
+        if (loading) {
+            $("#alert-loading").show();
+        }
+        $("#alert #alert-content").html(message);
+        setTimeout(function(){ $("#alert").hide(); }, 2000);
     };
 
 

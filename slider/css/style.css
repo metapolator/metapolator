@@ -996,3 +996,31 @@
            background: #ddd;
            height: 1px;
         }
+        
+        
+        
+        
+/**************** alert ************************/
+
+    #alert {
+        display: none;
+        position: fixed;
+        left: calc(50% - 200px);
+        width: 400px;
+        top: 60px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        min-height: 200px;
+    }
+    
+        #alert-loading {
+            text-align: center;
+            display: none;
+        }
+        
+        #alert-content {
+            text-align: center;
+            padding-top: 20px;
+        }
