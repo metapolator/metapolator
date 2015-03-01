@@ -2,124 +2,6 @@ app.controller("mastersController", function($scope, sharedScope) {
     'use strict';
     $scope.data = sharedScope.data;
 
-    /*
-     $scope.mouseclick = false;
-     $scope.mouseDown = false;
-     $scope.commandDown = false;
-     $scope.controlDown = false;
-     $scope.shiftDown = false;
-     $scope.startDiamond
-     $scope.lastDiamond
-
-     $(window).keydown(function(e) {
-     if (e.metaKey) {
-     $scope.commandDown = true;
-     }
-     if (e.shiftKey) {
-     $scope.shiftDown = true;
-     }
-     if (e.ctrlKey) {
-     $scope.controlDown = true;
-     }
-     });
-
-     $(window).keyup(function(e) {
-     $scope.commandDown = false;
-     $scope.controlDown = false;
-     $scope.shiftDown = false;
-     });
-
-     // sequences column
-     $scope.mastersSeqCache = [];
-     $scope.startDrag = function(thisMaster, nr) {
-     $scope.mouseclick = true;
-     $scope.startDiamond = nr;
-     // put stuff in a cache
-     angular.forEach($scope.masters, function(master, key) {
-     $scope.mastersSeqCache[key] = master.seq;
-     });
-     };
-
-     $scope.whileDrag = function(thisMaster, nr) {
-     if ($scope.mouseclick) {
-     $scope.lastDiamond = nr;
-     $scope.makeSequence();
-     }
-     };
-
-     $scope.allMastersSelected = function(thisSequence) {
-     var i = 0;
-     var hit = 0;
-     angular.forEach(thisSequence.masters, function(master) {
-     if (master.edit == true) {
-     hit++;
-     }
-     i++;
-     });
-     if (hit == i && i != 0) {
-     return true;
-     }
-     };
-
-     $scope.selectionStart = [0, 0];
-     $scope.selectionEnd = [];
-
-     $scope.selectMastersForEdit = function(thisMaster, sIndex, mIndex) {
-     if ($scope.commandDown || $scope.controlDown) {// toggle on ctrl click
-     thisMaster.edit = !thisMaster.edit;
-     $scope.selectionStart = [sIndex, mIndex];
-     } else if ($scope.shiftDown) {// set end for shift click
-     $scope.selectionEnd = [sIndex, mIndex];
-     $scope.selectSet();
-     } else {// clean click clears all but current
-     $scope.selectionStart = [sIndex, mIndex];
-     $scope.deselectAll();
-     thisMaster.edit = true;
-     }
-     };
-
-     $scope.selectSequenceForEdit = function(thisSequence) {
-     $scope.deselectAll();
-     angular.forEach(thisSequence.masters, function(master) {
-     master.edit = true;
-     });
-     };
-
-     $scope.selectSet = function() {
-     var countStart = [];
-     var countEnd = [];
-     // deselect all
-     $scope.deselectAll();
-     // check if selection is upwards or downwards
-     if ($scope.selectionStart[0] * 10 + $scope.selectionStart[1] > $scope.selectionEnd[0] * 10 + $scope.selectionEnd[1]) {
-     countStart = $scope.selectionEnd;
-     countEnd = $scope.selectionStart;
-     } else {
-     countStart = $scope.selectionStart;
-     countEnd = $scope.selectionEnd;
-     }
-     // walk through sequences.masters
-     for (var i = countStart[0]; i < countEnd[0] + 1; i++) {
-     // first sequence in selection
-     if (i == countStart[0]) {
-     for (var j = countStart[1]; j < $scope.data.sequences[i].masters.length; j++) {
-     $scope.data.sequences[i].masters[j].edit = true;
-     }
-     // last sequence in selection
-     } else if (i == countEnd[0]) {
-     for (var j = 0; j < countEnd[1] + 1; j++) {
-     $scope.data.sequences[i].masters[j].edit = true;
-     }
-     // middle sequences
-     } else {
-     for (var j = 0; j < $scope.data.sequences[i].masters.length; j++) {
-     $scope.data.sequences[i].masters[j].edit = true;
-     }
-     }
-     }
-     };
-
-     */
 
     $scope.mouseDown = false;
     
@@ -238,14 +120,22 @@ app.controller("mastersController", function($scope, sharedScope) {
     function addMasterToDesignSpace(master) {
         var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
+        var startValue = 0;
+        // for first two master give value 0.5, so first instance has right values
+        if (masterSet.length < 2) {
+            startValue = 0.5;
+        } 
         designspace.masters.push({
             masterId : master.id,
-            value : null
+            value : startValue
         });
         if (masterSet.length > 1) {
             designspace.axes.push({
                 value : 50
             });
+        }
+        if (designspace.axes.length == 1) {
+           $scope.data.addInstance(); 
         }
     }
 

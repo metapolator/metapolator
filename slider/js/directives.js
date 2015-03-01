@@ -23,7 +23,7 @@ app.directive('list', function() {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
             element.bind('click', function(event) {
-                if (!$(event.target).parents('.list-li').length) {
+                if (!$(event.target).parents('.list-li').length && !$(event.target).parents('.localmenu').length) {
                     scope.deselectAll();
                     scope.$apply();
                 }

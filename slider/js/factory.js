@@ -59,9 +59,11 @@ app.factory("sharedScope", function($rootScope) {
         },
         localmenu : {
             project: false,
-            help: false
+            help: false,
+            masters: false,
+            instances: false
         }
-    };
+    };    
     return scope;
 });
 

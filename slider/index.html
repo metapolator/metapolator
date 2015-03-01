@@ -56,7 +56,7 @@
         <div id="menu" >
             <div id="project">
                 <localmenu class="localmenu" class="left">
-                    <div class="lm-head" ng-mousedown="selectMenu('project')">
+                    <div class="lm-head" ng-mousedown="data.selectMenu('project')">
                         <b>Project</b> {{data.projectName}}
                     </div>
                     <div class="lm-body" ng-if="data.localmenu.project">
@@ -83,7 +83,7 @@
             
             <div id="help">
                 <localmenu class="localmenu right">
-                    <div class="lm-head" ng-mousedown="selectMenu('help')">
+                    <div class="lm-head" ng-mousedown="data.selectMenu('help')">
                         <b>Help</b>
                     </div>
                     <div class="lm-body" ng-if="data.localmenu.help">

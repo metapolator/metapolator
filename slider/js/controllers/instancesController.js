@@ -78,17 +78,19 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     
     function findInstanceId () {
         var max = 0;
-        for (var i =0; i < $scope.data.families[0].instances.length; i++) {
-            if ($scope.data.families[0].instances[i].id > max) {
-                max = $scope.data.families[0].instances[i].id;
-            }
-        }
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.id > max) {
+                    max = instance.id;
+                }
+            });
+        });
         max++;
         return max;
     }
 
-    $scope.addInstance = function() {
-        if ($scope.canAddInstance()) {
+    $scope.data.addInstance = function() {
+        if ($scope.data.canAddInstance()) {
             var designSpace = $scope.data.currentDesignSpace;
             var id = findInstanceId();
             $scope.data.families[0].instances.push({
@@ -102,6 +104,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 masters: jQuery.extend(true, [], designSpace.masters),
             });
             $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+            $scope.data.localmenu.instances = false;
         }
     };
     
@@ -116,6 +119,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         if ($scope.currentInstance) {
             $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.currentInstance), 1);
             $scope.currentInstance = null;
+            $scope.data.localmenu.instances = false;
         }
     };
     
@@ -185,7 +189,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 /***** bottom buttons *****/
 
 
-    $scope.canAddInstance = function() {
+    $scope.data.canAddInstance = function() {
         var designSpace = $scope.data.currentDesignSpace;
         if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
             return true;

@@ -51,7 +51,7 @@
 	
 		#project {
 		    width: 200px;
-		    padding: 16px 0 0 8px;
+		    padding: 0;
 			float: left;
 		}
 	
@@ -81,7 +81,7 @@
 			}
 			
         #help {
-            padding: 16px 10px 0 0;
+            padding: 0;
             float: right;
         }
 			
@@ -931,10 +931,12 @@
     localmenu {
         position: relative;
         display: block;
+        min-height: 30px;
     }
     
     .lm-head {
         cursor: default;
+        padding: 6px 8px;
     }
     
         .lm-head:after {
@@ -946,7 +948,7 @@
     .lm-body {
         position: absolute;
         z-index: 1000;
-        top: 20px;
+        top: 28px;
         background: #fff;
         width: 200px;
         padding: 10px 0;
@@ -954,11 +956,11 @@
     }
     
     .left .lm-body {
-        left: -2px;
+        left: 2px;
     }
     
     .right .lm-body {
-        right: -2px;
+        right: 2px;
     }
     
         .lm-content {

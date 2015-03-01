@@ -1,15 +1,13 @@
-<div class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Instances <span class="caret"></span></a>
-    <ul class="dropdown-menu" role="menu">
-        <li ng-class="{'inactive': !canAddInstance()}">
-            <a href="#" ng-click="addInstance();">New</a>
-        </li>
-        <li class="divider"></li>
-        <li ng-class="{'inactive': !currentInstance}">
-            <a href="#" ng-click="deleteInstance();">Delete...</a>
-        </li>
-    </ul>
-</div>
+<localmenu class="localmenu" class="left">
+    <div class="lm-head" ng-mousedown="data.selectMenu('instances')">
+        <b>Instances</b>
+    </div>
+    <div class="lm-body" ng-if="data.localmenu.instances">
+        <div class="lm-button" ng-class="{'inactive': !data.canAddInstance()}" ng-mouseup="data.addInstance()">New</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-class="{'inactive': !currentInstance}" ng-mouseup="deleteInstance()">Delete...</div>
+    </div>
+</localmenu>
 
 <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
     <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-repeat="instance in data.families[0].instances track by $index" class="list-li" ng-class="{'selected': instance.edit}">
@@ -26,7 +24,7 @@
 </ul>
 
 <div id="instances-tools">
-    <div id="add-instance" ng-click="addInstance();" class="instance-tool" ng-class="{'inactive': !canAddInstance()}">
+    <div id="add-instance" ng-click="data.addInstance();" class="instance-tool" ng-class="{'inactive': !data.canAddInstance()}">
         <img src="img/addInstance.png">
     </div>
     <!--
