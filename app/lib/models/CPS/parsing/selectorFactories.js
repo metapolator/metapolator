@@ -117,18 +117,7 @@ define([
       , 'simpleselector': function(node, source, ruleController) {
             var elements = node.children
                     .map(function(item){return item.instance;})
-              , invalid = false
-              , alien = false
-              , invalidMessage
               , value = []
-              , fallbackString
-                /* combinators that are not alien */
-              , combinators = {
-                    // the child combinator
-                    'child' : true
-                    // whitespace is the descendant combinator, but we have to detect
-                    // this another way
-                }
               , i=0
               , item
               , compoundSelectorElements = null
@@ -158,8 +147,8 @@ define([
                     compoundSelectorElements = null;
                     continue;
                 }
-                
-                // must be a simple selector (or invalid/alien)
+
+                // must be a simple selector (or invalid)
                 if(compoundSelectorElements === null) {
                     // if no other combinator is already there:
                     if(value.length && !(value[value.length-1] instanceof Combinator))

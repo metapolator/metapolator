@@ -7,7 +7,7 @@ define([
     /**
      * This Element represents a child of a of a MoM PenStrokePoint
      */
-    function _PenStrokePointChild(vector) {
+    function _PenStrokePointChild() {
         Parent.call(this);
     }
     var _p = _PenStrokePointChild.prototype = Object.create(Parent.prototype);

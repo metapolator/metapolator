@@ -76,8 +76,8 @@ define([
         }
       /**
        * Everything we refuse to understand at this point or later.
-       * 
-       * We use this constructy to keep alien data around and to be able
+       *
+       * We use this constructor to keep alien data around and to be able
        * to reproduce it upon serialization.
        */
       , '__GenericAST__': function (node, source) {

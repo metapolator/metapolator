@@ -23,6 +23,10 @@ define([
      */
     function Glyph() {
         Parent.call(this);
+        // FIXME: make a GlyphData Object, similar like PointData
+        // use that for advanceWidth/advanceHeight and everything setUFOData
+        // probably, remove _p.setUFOData in favor of a common interface
+        // for all MOM elements
         this._advanceWidth  = 0;
         this._advanceHeight = 0;
         this._ufoData = {};

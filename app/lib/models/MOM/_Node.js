@@ -45,7 +45,7 @@ define([
         this._parent = null;
         this._index = null;
         this._id = null;
-        this._classes = {};
+        this._classes = Object.create(null);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
         this._changeSubscriptions = null;
         emitterMixin.init(this, emitterMixinSetup);

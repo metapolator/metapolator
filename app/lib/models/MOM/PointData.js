@@ -19,5 +19,9 @@ define([
       , out: 'out'
     };
 
+    // NOTE: when changing these values is implemented, the according
+    // onPropertyChange/offPropertyChange methods nned to be implemented as well
+    // see: models/emitterMixin.js for this
+
     return PointData;
 })
