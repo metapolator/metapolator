@@ -2079,8 +2079,8 @@ define("requireLib", function(){});
 
 // we can define document as a dependency
 // works only in a browser context
-define('webAPI/document',[], document)
-;
+define('webAPI/document',[], document);
+
 /**
  * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -24044,24 +24044,24 @@ define('ui/redPill/app-controller',[], function() {
     
     function AppController($scope, model, registerFrontend, config) {
         this.$scope = $scope;
-        this.$scope.name = 'app'
+        this.$scope.name = 'app';
         // registering the root of the app, for callback purposes
         registerFrontend(this);
-        
+
         this.$scope.model = this.model = model;
         this.$scope.config = config;
     }
-    
+
     AppController.$inject = ['$scope', 'redPillModel', 'registerFrontend', 'config'];
     var _p = AppController.prototype;
-    
+
     _p.redraw = function() {
-        this.$scope.$apply()
-    }
-    
+        this.$scope.$apply();
+    };
+
     return AppController;
-})
-;
+});
+
 /**
  * @license RequireJS text 2.0.12 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -24472,8 +24472,8 @@ define('ui/redPill/app-directive',[
     }
     appDirective.$inject = [];
     return appDirective;
-})
-;
+});
+
 define('ui/redPill/redPillGlyphs/redPillGlyphs-controller',[], function() {
     
     function RedPillGlyphsController($scope, selectGlyphs, updateCPS) {
@@ -24481,18 +24481,18 @@ define('ui/redPill/redPillGlyphs/redPillGlyphs-controller',[], function() {
         this.$scope.name = 'redPillGlyphs';
         this.$scope.selectGlyphs = selectGlyphs;
         this.$scope.updateCPS = updateCPS;
-        
+
         // a default value
         this.$scope.selector = 'glyph';
-        
+
         this.$scope.glypsize = this.$scope.initialGlypsize = 50;
     }
     RedPillGlyphsController.$inject = ['$scope', 'selectGlyphs'];
     var _p = RedPillGlyphsController.prototype;
-    
+
     return RedPillGlyphsController;
-})
-;
+});
+
 
 define('require/text!ui/redPill/redPillGlyphs/redPillGlyphs.tpl',[],function () { return '<label>glyphs selector:\n    <input\n        type="text"\n        ng-model="selector"\n        />\n</label>\n<label>glyph size:\n    <input type="range" min="0.01" max="100" step="0.0001" ng-model="glyphsize"/>\n    {{ glyphsize || initialGlypsize}} %\n</label>\n\n<ol>\n    <li style="width:{{ glyphsize || initialGlypsize}}%"\n        ng-repeat="glyph in selectGlyphs(selector) track by glyph.nodeID">\n        <mtk-red-pill-glyph\n            mtk-glyph-element="glyph">\n            {{ glyph.particulars }}\n            </mtk-red-pill-glyph>\n\n    </li>\n</ol>\n';});
 
@@ -24513,16 +24513,16 @@ define('ui/redPill/redPillGlyphs/redPillGlyphs-directive',[
     }
     redPillGlyphsDirective.$inject = [];
     return redPillGlyphsDirective;
-})
-;
+});
+
 // we can define document as a dependency
 // works only in a browser context
-define('metapolator/webAPI/document',[], document)
-;
+define('metapolator/webAPI/document',[], document);
+
 define('metapolator/errors',[],function() {
     
     //metapolator errors
-    var errors = {}
+    var errors = {};
 
     /**
      * save three lines of coding for each error with this factory
@@ -24532,10 +24532,10 @@ define('metapolator/errors',[],function() {
     var makeError = function(name, Constructor, prototype, namespace)
     {
         if(prototype === undefined)
-            var prototype = new Error;
+            prototype = new Error();
 
         if(Constructor === undefined) {
-            var Constructor = function(message, stack) {
+            Constructor = function(message, stack) {
                 if(message !== undefined) {
                     this.name = name + 'Error';
                     this.message = message || "(no error message)";
@@ -24544,44 +24544,48 @@ define('metapolator/errors',[],function() {
                 if(!stack && typeof Error.captureStackTrace === 'function')
                     Error.captureStackTrace(this, Constructor);
                 else {
-                    stack = stack || (new Error).stack || '(no stack available)'
+                    stack = stack || (new Error()).stack || '(no stack available)';
                     this.stack = [this.name+': ', this.message, '\n'
                                                     , stack].join('');
                 }
             };
-        };
+        }
         Constructor.prototype = prototype;
         Constructor.prototype.constructor = Constructor;
         if(namespace === undefined)
             namespace = errors;
         namespace[name] = Constructor;
-    }
+    };
     errors.makeError = makeError;
     /**
      * the definitions go here
      */
     makeError('Error');
     makeError('Unhandled');
-    makeError('Assertion', undefined , new errors.Error);
-    makeError('CommandLine', undefined , new errors.Error);
-    makeError('Value', undefined , new RangeError);
-    makeError('MOM', undefined , new errors.Error);
-    makeError('NotImplemented', undefined , new errors.Error);
-    makeError('Deprecated', undefined , new errors.Error);
-    makeError('CPS', undefined , new errors.Error);
-    makeError('Key', undefined , new errors.Error);
-    makeError('CPSRegistryKey', undefined , new errors.Key);
-    makeError('CPSKey', undefined , new errors.Key);
-    makeError('CPSRecursion', undefined , new errors.CPS);
-    makeError('CPSFormula', undefined , new errors.CPS);
+    makeError('Assertion', undefined , new errors.Error());
+    makeError('CommandLine', undefined , new errors.Error());
+    makeError('Value', undefined , new RangeError());
+    makeError('MOM', undefined , new errors.Error());
+    makeError('NotImplemented', undefined , new errors.Error());
+    makeError('Deprecated', undefined , new errors.Error());
+    makeError('AbstractInterface', undefined , new errors.Error());
+    makeError('CPS', undefined , new errors.Error());
+    makeError('Key', undefined , new errors.Error());
+    makeError('CPSRegistryKey', undefined , new errors.Key());
+    makeError('CPSKey', undefined , new errors.Key());
+    makeError('CPSRecursion', undefined , new errors.CPS());
+    makeError('CPSFormula', undefined , new errors.CPS());
     // deprecated, CPSFormula superseeds this
-    makeError('CPSAlgebra', undefined , new errors.CPSFormula);
-    makeError('Project', undefined , new errors.CPS);
-    makeError('PointPen', undefined , new errors.CPS);
-    makeError('CPSParser', undefined , new errors.CPS);
-    makeError('Import', undefined , new errors.CPS);
-    makeError('ImportPenstroke', undefined , new errors.Import);
-    makeError('ImportContour', undefined , new errors.Import);
+    makeError('CPSAlgebra', undefined , new errors.CPSFormula());
+    makeError('Project', undefined , new errors.CPS());
+    makeError('PointPen', undefined , new errors.CPS());
+    makeError('CPSParser', undefined , new errors.CPS());
+    makeError('Import', undefined , new errors.CPS());
+    makeError('ImportPenstroke', undefined , new errors.Import());
+    makeError('ImportContour', undefined , new errors.Import());
+    makeError('Event', undefined , new errors.Error());
+    makeError('Emitter', undefined , new errors.Event());
+    makeError('Receiver', undefined , new errors.Event());
 
     /**
      * if expression is false, throw an Assertion
@@ -25413,6 +25417,7 @@ define('metapolator/models/CPS/whitelistProxies',[
 
 
     function _handlerFactory(target, whitelist) {
+        /* jshint validthis: true */
         return proxy(target, new this(whitelist));
     }
 
@@ -25517,54 +25522,56 @@ define('metapolator/math/Vector',[
       , y: 'y'
       , length: 'len'
       , angle: 'rad'
-    }
+    };
 
 
     Vector.fromArray = function(arr) {
         return new _p.constructor(arr[0], arr[1]);
-    }
+    };
 
     function _getReal() {
+        /*jshint validthis:true*/
         return this.real;
     }
 
     function _getImaginary() {
+        /*jshint validthis:true*/
         return this.imag;
     }
 
-    Object.defineProperty(_p, 'x', {get: _getReal})
-    Object.defineProperty(_p, 'y', {get: _getImaginary})
+    Object.defineProperty(_p, 'x', {get: _getReal});
+    Object.defineProperty(_p, 'y', {get: _getImaginary});
 
     // array interface
     Object.defineProperty(_p, 'length', {
         value: 2
       , writable: false
       , enumerable: true
-    })
-    Object.defineProperty(_p, '0', {get: _getReal})
-    Object.defineProperty(_p, '1', {get: _getImaginary})
+    });
+    Object.defineProperty(_p, '0', {get: _getReal});
+    Object.defineProperty(_p, '1', {get: _getImaginary});
 
     _p.valueOf = function() {
         return Array.prototype.slice.call(this);
-    }
+    };
 
     _p.toString = function() {
         return '<Vector ' + this.valueOf() +'>';
-    }
+    };
 
     // factories and constants
-    Vector.i = new Vector(0, 1),
-    Vector.one = new Vector(1, 0)
+    Vector.i = new Vector(0, 1);
+    Vector.one = new Vector(1, 0);
 
     Vector.from = function(x, y) {
         // just map to Parent and then convert
         var complex = Parent.from(x, y);
         return new Vector(complex.real, complex.imag);
-    },
+    };
 
     Vector.fromPolar = function(r, phi) {
         return new Vector(1, 1).fromPolar(r, phi);
-    }
+    };
 
 
     // Some getters, so we can use these easily with CPS. At the moment
@@ -25580,7 +25587,7 @@ define('metapolator/math/Vector',[
      */
     Object.defineProperty(_p, 'len', {
         get: Parent.prototype.magnitude
-    })
+    });
 
     /**
      * A getter for the angle of the vector in radians.
@@ -25590,8 +25597,8 @@ define('metapolator/math/Vector',[
     });
 
     return Vector;
-})
-;
+});
+
 /* Shared math functions */
 define('metapolator/math/utils',[], function() {
     
@@ -25669,7 +25676,7 @@ define('metapolator/math/hobby',[
           , theta = normalizeAngle(dir0 - angle_z1z0)
           , phi = normalizeAngle(angle_z1z0 - dir1)
           , u, v;
-        
+
         if(alpha !== undefined)
             u = (magnitude_z1z0 === 0 && (alpha === 0 || alpha === Infinity))
                 ? (alpha === 0 ? Infinity : 0)
@@ -25715,17 +25722,17 @@ define('metapolator/math/hobby',[
           ;
         if(_alpha || _beta)
             uv = _tension2control(z0, dir0, _alpha, _beta, dir1, z1);
-    
+
         if(alpha === 0)
             u = Infinity;
         else if (alpha !== undefined)
             u = uv[0]['-'](z0).magnitude()/alpha;
-    
+
         if(beta === 0)
             v = Infinity;
         else if (beta !== undefined)
             v = uv[1]['-'](z1).magnitude()/beta;
-    
+
         return[u, v];
     }
 
@@ -25852,30 +25859,281 @@ function()
     
     // All models will share some basics
     function _BaseModel() {
-        
+
     }
     var _p = _BaseModel.prototype;
-    
+
     return _BaseModel;
-})
-;
+});
+
+define('metapolator/models/emitterMixin',[
+    'metapolator/errors'
+], function(
+    errors
+) {
+    
+    var EmitterError = errors.Emitter;
+    /**
+     * usage:
+     *
+     * ```
+     * var emitterSetup = {
+     *     stateProperty: '_channel'
+     *   , onAPI: 'on'
+     *   , offAPI: 'off'
+     *   , triggerAPI: '_trigger'
+     * };
+     *
+     * function Emitter() {
+     *     // sets the this._channel property
+     *     emitterMixin.init(this, emitterSetup);
+     * }
+     * var _p = Emitter.prototype;
+     * emitterMixin(_p, emitterSetup);
+     * ```
+     * API:
+     *
+     * ```
+     * var e = new Emitter();
+     * ```
+     *
+     * *************
+     * subscribe default name: on
+     * on(channelName, callback, subscriberData {optional})
+     * returns subscriptionID
+     *
+     * ```
+     * var subscriberData = 'data the subscriber will get back ...';
+     * // note 'hello' is the channel name
+     * var subscriptionID = e.on('hello', callback, subscriberData);
+     *```
+     *
+     * *************
+     * a callback should have the following signature:
+     * `function(subscriberData, channelName, eventData)`
+     *
+     * The `callback` argument of `on` may have one of two forms
+     *   - a function
+     *   - [instance, 'methodName']
+     *
+     * subscriberData is set by the subscriber when calling `e.on`
+     * eventData can be sent by the caller of `e.trigger` but is optional.
+     *           This is part of the contract that a subscriber makes with
+     *           the sender.
+     * *************
+     *
+     * trigger default name: trigger
+     * trigger(channelName, eventData {optional} )
+     * ```
+     * eventData = {any: 'value'};
+     * e.trigger('hello', eventData);
+     *
+     * // a callback will be called like this: callback(subscriberData, eventData);
+     * // or, like this callback[0][callback[1]](subscriberData, eventData);
+     *
+     * ************
+     * unsubscribe default name: off
+     * off(subscriptionID);
+     * ```
+     * e.off(subscriptionID);
+     * ```
+     *
+     * *************
+     *
+     * the state property that is created has the following structure and adress:
+     *
+     * this[stateProperty] = {}
+     * this[stateProperty][ channelName ] = a subscribers object
+     *
+     *  the subscribers object is created in _getChannel:
+     * ```
+     *  {
+     *      idCounter: number
+     *      subscriberId: [
+     *             callback // a function of an array of [object, 'string methodname']
+     *           , data // <= anything, will the first argument for callback
+     *      ]
+     *    , subscriberId: [callback, data]
+     *    , ...
+     *  }
+     * ```
+     */
+    function emitterMixin(host, _setup) {
+        var setup = _setup || {}
+          , stateProperty = setup && setup.stateProperty || '_channel'
+          , onAPI = setup && setup.onAPI || 'on'
+          , offAPI = setup && setup.offAPI || 'off'
+          , triggerAPI = setup && setup.triggerAPI || '_trigger'
+          ;
+        if(host.hasOwnProperty(onAPI))
+            throw new EmitterError('The property name "' + onAPI
+                    + '" is already used by this host object (' + host.constructor.name + ').');
+        host[onAPI] = _mixinOn(stateProperty);
+        if(host.hasOwnProperty(offAPI))
+            throw new EmitterError('The property name "' + offAPI
+                    + '" is already used by this host object (' + host.constructor.name + ').');
+        host[offAPI] = _mixinOff(stateProperty);
+        if(host.hasOwnProperty(triggerAPI))
+            throw new EmitterError('The property name "' + triggerAPI
+                    + '" is already used by this host object (' + host.constructor.name + ').');
+        host[triggerAPI] = _mixinTrigger(stateProperty);
+    }
+
+    function init(thisVal, _setup) {
+        var setup = _setup || {}
+          , stateProperty = setup.stateProperty || '_channel'
+          ;
+        if(thisVal.hasOwnProperty(stateProperty))
+            throw new EmitterError('The property name "' + stateProperty
+                    + '" is already used by this object (' + thisVal.constructor.name + ': ' + thisVal+').');
+        Object.defineProperty(thisVal, stateProperty, {
+            value: Object.create(null)
+          , writable: false
+          , enumerable: true
+        });
+    }
+    emitterMixin.init = init;
+
+    function _getChannel(state, channelKey) {
+        var channel = state[channelKey];
+        if(!channel) {
+            channel = state[channelKey] = Object.create(null);
+            Object.defineProperty(channel, 'idCounter', {
+                value: 0
+              , writable: true
+              , enumerable: false
+              , configurable: false
+            });
+        }
+        return channel;
+    }
+
+    function __on(state, channelKey, subscription) {
+        var channel = _getChannel(state, channelKey)
+          , subscriberID = channel.idCounter++
+          ;
+        channel[subscriberID] = subscription;
+        return subscriberID;
+    }
+    function __off(state, channelKey, subscriberID) {
+        var channel = state[channelKey];
+        if(!channel || !channel[subscriberID]){
+            console.trace();
+            throw new EmitterError('Unsubscription without subscription from channel: '
+                    + '"' + channelKey + '" with subscriberID: "' + subscriberID + '".');
+            }
+        delete channel[subscriberID];
+    }
+    function __trigger(state, channelKey, eventData) {
+        var channel = state[channelKey]
+          , subscribers, subscriberID, i, l
+          , callback, subscriberData
+          ;
+        if(!channel) return;
+        subscribers = Object.keys(channel);
+        for(i=0,l=subscribers.length;i<l;i++) {
+            subscriberID = subscribers[i];
+            // subscriber may be undefined because of an unsubscription
+            // since we copied the subscribers
+            if(!(subscriberID in channel)) continue;
+            callback = channel[subscriberID][0];
+            subscriberData = channel[subscriberID][1];
+            if(callback instanceof Function)
+                callback(subscriberData, channelKey, eventData);
+            else if(callback instanceof Array)
+                // callback = [object, 'methodName']
+                // this is done to avoid to many new bound functions
+                callback[0][callback[1]](subscriberData, channelKey, eventData);
+            else
+                throw new EmitterError('Unkown callback type: ' + callback);
+        }
+    }
+
+    function _on(state, channelKey, callback, subscriberData) {
+        var subscription = [callback, subscriberData]
+          , i, l, results
+          ;
+        if(channelKey instanceof Array) {
+            results = [];
+            for(i=0,l=channelKey.length;i<l;i++)
+                results.push([channelKey[i], __on(state, channelKey[i], subscription)]);
+            return results;
+        }
+        return [channelKey, __on(state, channelKey, subscription)];
+    }
+    function _mixinOn(stateProperty) {
+        return function on(channelKey, callback, subscriberData) {
+            var state = this[stateProperty];
+            if(state === undefined)
+                throw new EmitterError('state "'+stateProperty+'" is undefined.');
+            return _on(state, channelKey, callback, subscriberData);
+        };
+    }
+    function _off(state, subscriberID) {
+        var i, l;
+        if(subscriberID[0] instanceof Array) {
+            for(i=0,l=subscriberID.length;i<l;i++)
+                __off(state, subscriberID[i][0], subscriberID[i][1]);
+            return;
+        }
+        __off(state, subscriberID[0], subscriberID[1]);
+    }
+    function _mixinOff(stateProperty) {
+        return function off(subscriberID) {
+            var state = this[stateProperty];
+            if(state === undefined)
+                throw new EmitterError('state "'+stateProperty+'" is undefined.');
+            return _off(state, subscriberID);
+        };
+    }
+    function _trigger(host, stateProperty, channelKey, eventData) {
+        var i,l, state = host[stateProperty];
+        if(state === undefined)
+            throw new EmitterError('state "'+stateProperty+'" is undefined.');
+        if(channelKey instanceof Array) {
+            for(i=0,l=channelKey.length;i<l;i++)
+                __trigger(state, channelKey[i], eventData);
+            return;
+        }
+        __trigger(state, channelKey, eventData);
+    }
+    function _mixinTrigger(stateProperty) {
+        return function trigger(channelKey, data) {
+            return _trigger(this, stateProperty, channelKey, data);
+        };
+    }
+
+    return emitterMixin;
+});
+
 define('metapolator/models/MOM/_Node',[
     'metapolator/errors'
   , '../_BaseModel'
   , 'metapolator/models/CPS/whitelistProxies'
+  , 'metapolator/models/emitterMixin'
 ], function(
     errors
   , Parent
   , whitelistProxies
+  , emitterMixin
 ) {
     
 
     var MOMError = errors.MOM;
 
-    var _id_counter = 0;
+    var _id_counter = 0
+      , emitterMixinSetup
+      ;
     function getUniqueID() {
         return _id_counter++;
     }
+
+    emitterMixinSetup = {
+          stateProperty: '_channel'
+        , onAPI: '_on'
+        , offAPI: '_off'
+        , triggerAPI: '_trigger'
+    };
 
     /**
      * The MOM is the structure against which we can run the selector queries
@@ -25886,6 +26144,7 @@ define('metapolator/models/MOM/_Node',[
      * This means, that a test like `item instanceof _Node` must return true.
      */
     function _Node() {
+        /*jshint validthis:true*/
         Parent.call(this);
         if(this.constructor.prototype === _p)
             throw new MOMError('MOM _Node must not be instantiated directly');
@@ -25895,8 +26154,16 @@ define('metapolator/models/MOM/_Node',[
         this._parent = null;
         this._index = null;
         this._id = null;
-        this._classes = {};
+        this._classes = Object.create(null);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+        this._changeSubscriptions = null;
+        emitterMixin.init(this, emitterMixinSetup);
+
+        this._cpsChange = {
+            timeoutId: null
+          , eventData: []
+          , trigger: this._triggerCpsChange.bind(this)
+        };
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
@@ -25909,11 +26176,28 @@ define('metapolator/models/MOM/_Node',[
       , multivers: 'multivers'
       , index: 'index'
       , type: 'type'
-    }
+    };
+
+    _p.clone = function() {
+        var clone = new this.constructor(), i,l;
+        this._cloneProperties(clone);
+        for(i=0,l=this._children.length;i<l;i++)
+            clone.add(this._children[i].clone());
+        return clone;
+    };
+
+    _p._cloneProperties = function(clone) {
+        if(this._id)
+            clone.id = this._id;
+        for(var k in this._classes)
+            clone.setClass(k);
+    };
+
+    emitterMixin(_p, emitterMixinSetup);
 
     Object.defineProperty(_p, 'MOMType', {
         get: function(){return 'MOM '+ this.constructor.name ;}
-    })
+    });
 
     /**
      * Implement a getter for CPS Type in children of _Node, we need it
@@ -25927,7 +26211,7 @@ define('metapolator/models/MOM/_Node',[
             // this should be implemented by items inheriting from _Node
             throw errors.NotImplemented('Implement CPS-Type name!');
         }
-    })
+    });
 
     Object.defineProperty(_p, 'children', {
         /**
@@ -25935,7 +26219,7 @@ define('metapolator/models/MOM/_Node',[
          * with the list of children via public interfaces.
          */
         get: function(){ return this._children.slice(); }
-    })
+    });
 
     Object.defineProperty(_p, 'id', {
         /**
@@ -25947,7 +26231,7 @@ define('metapolator/models/MOM/_Node',[
          */
         set: function(id){ this._id = id; }
       , get: function(){ return this._id; }
-    })
+    });
 
     /***
      * get the univers element of this node.
@@ -25962,7 +26246,7 @@ define('metapolator/models/MOM/_Node',[
                 return this._parent;
             return this._parent.univers;
         }
-    })
+    });
 
     /***
      * get the multivers element of this node.
@@ -25977,7 +26261,7 @@ define('metapolator/models/MOM/_Node',[
                 return this._parent;
             return this._parent.multivers;
         }
-    })
+    });
 
     /***
      * get the master element of this node or null if this node has no master
@@ -25992,13 +26276,13 @@ define('metapolator/models/MOM/_Node',[
                 return this._parent;
             return this._parent.master;
         }
-    })
+    });
 
     Object.defineProperty(_p, 'glyph', {
         get: function() {
             return this._parent && this._parent.glyph;
         }
-    })
+    });
 
     /**
      * returns a selector for this element, currently it is used for
@@ -26010,32 +26294,32 @@ define('metapolator/models/MOM/_Node',[
             return [
                     this._parent ? this._parent.particulars : '(no parent)'
                   , ' '
-                  , this.type,
+                  , this.type
                   , (this.id ? '#' + this.id : '')
                   , (this._parent
                         ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }
-    })
+    });
 
     _p.setClass = function(name) {
         this._classes[name] = null;
-    }
+    };
 
     _p.removeClass = function(name) {
         delete this._classes[name];
-    }
+    };
 
     _p.hasClass = function(name) {
         return name in this._classes;
-    }
+    };
 
-    _p.toString = function() { return ['<', this.MOMType, '>'].join('') };
+    _p.toString = function() { return ['<', this.MOMType, '>'].join('');};
 
     _p.isMOMNode = function(item) {
         return item instanceof _Node;
-    }
+    };
 
     /**
      *  enhance this list with accepted children Constructors
@@ -26052,7 +26336,7 @@ define('metapolator/models/MOM/_Node',[
             if(item instanceof this._acceptedChildren[i])
                 return true;
         return false;
-    }
+    };
 
     /**
      * Note: this is currently running very often when adding or deleting
@@ -26071,7 +26355,7 @@ define('metapolator/models/MOM/_Node',[
             if(item === this._children[i])
                 return i;
         return false;
-    }
+    };
 
     Object.defineProperty(_p, 'index', {
         get: function(){ return this._index;}
@@ -26115,7 +26399,7 @@ define('metapolator/models/MOM/_Node',[
             this._index = this._parent.find(this);
         }
       , get: function(){ return this._parent; }
-    })
+    });
 
     _p.remove = function(item) {
         if(Object.isFrozen(this._children))
@@ -26127,7 +26411,7 @@ define('metapolator/models/MOM/_Node',[
         this._children.splice(i, 1);
         item.parent = null;
         return true;
-    }
+    };
 
     _p.add = function(item) {
         if(Object.isFrozen(this._children))
@@ -26139,23 +26423,140 @@ define('metapolator/models/MOM/_Node',[
             item.parent.remove(item);
         this._children.push(item);
         item.parent = this;
-    }
+    };
 
     _p.query = function(selector) {
         return this.multivers.query(selector, this);
-    }
+    };
 
     _p.queryAll = function(selector) {
         return this.multivers.queryAll(selector, this);
-    }
+    };
 
     _p.getComputedStyle = function() {
         return this.multivers.getComputedStyleFor(this);
-    }
+    };
+
+    _p._triggerCpsChange = function(){
+       clearTimeout(this._cpsChange.timeoutId);
+       var eventData = this._cpsChange.eventData;
+       this._cpsChange.timeoutId = null;
+       this._cpsChange.eventData = [];
+       this._trigger('CPS-change', eventData);
+    };
+
+    _p._cpsChangeHandler = function(subscriberData, channelKey, eventData) {
+        // The styledicts are already debounced so that they fire only
+        // once after all sync tasks are done. Debouncing here could still
+        // be useful to create less events, however, the subscriber will
+        // have to debounce as well. Maybe, we could try to shift the
+        // StyleDict debouncing to here then also changes of this item's
+        // children will be held back (but they do the same, so a propper
+        // waiting time for 10 ms in the subscriber is maybe best)
+        if(eventData)
+            this._cpsChange.eventData.push(eventData);
+        if(this._cpsChange.timeoutId)
+            return;
+            // Now an event is scheduled, so there's no need for a further
+            // action. In the future, we may pass a promise around to trigger
+            // when the current task has finished. Similar considerations
+            // are in StyleDict.js at Styledict.prototype._nextTrigger
+            //clearTimeout(this._cpsChange.timeoutId);
+        this._cpsChange.timeoutId = setTimeout(this._cpsChange.trigger, 0);
+    };
+
+    /**
+     * When there is a listener for CPS-change the first time, this will
+     * subscribe to all it's children and to its computedStyle to get the
+     * message. The children will subscribe themselve to all their children.
+     *
+     * NOTE: currently we only register changes from StyleDict, that means
+     * the CPS model, we don't know about changes in the MOM.
+     */
+    _p._initCPSChangeEvent = function() {
+        var callback
+          , changeSubscriptions = this._changeSubscriptions
+          , style
+          , children, i, l, child
+          ;
+        if(changeSubscriptions === null) {
+            // only if this is the first subscription:
+            changeSubscriptions = this._changeSubscriptions = Object.create(null);
+            Object.defineProperty(changeSubscriptions, 'counter', {
+                value: 0
+              , writable: true
+              , enumerable: false
+            });
+
+            callback = [this, '_cpsChangeHandler'];
+            style = this.getComputedStyle();
+            // FIXME: do I wan't this to hold an actual reference to its
+            // StyleDict??? this was managed solely by models/Controller previously.
+            changeSubscriptions._styleDict_ = [style, style.on('change', callback)];
+            children = this._children;
+            for(i=0,l=children.length;i<l;i++) {
+                child = children[i];
+                changeSubscriptions[child.nodeID] = [child, child.on('CPS-change', callback)];
+            }
+        }
+        changeSubscriptions.counter += 1;
+    };
+
+    _p._deinitCPSChangeEvent = function(subscriberID) {
+        var k, subscription
+          , changeSubscriptions = this._changeSubscriptions
+          ;
+        if(!changeSubscriptions)
+            return;
+        changeSubscriptions.counter -= 1;
+        if(changeSubscriptions.counter === 0) {
+            delete changeSubscriptions._styleDict_;
+            for(k in changeSubscriptions) {
+                subscription = changeSubscriptions[k];
+                subscription[0].off(subscription[1]);
+            }
+        }
+        this._changeSubscriptions = null;
+    };
+
+    /**
+     * Use "CPS-change" this as an indicator to schedule a redraw;
+     */
+    _p.on = function(channel, subscriberCallback, subscriberData) {
+        // TODO: a beforeOnHook('change', method) would be nice here
+        // See also the comment in _p.off
+        var i,l;
+        if(channel instanceof Array) {
+            for(i=0,l=channel.length;i<l;i++)
+                if(channel[i] === 'CPS-change')
+                    this._initCPSChangeEvent();
+        }
+        else if(channel === 'CPS-change')
+            this._initCPSChangeEvent();
+
+        return this._on(channel, subscriberCallback, subscriberData);
+    };
+
+    _p.off = function(subscriberID) {
+        // will raise if not subscribed, so it happen before _deinitChangeEvent
+        var result = this._off(subscriberID), i,l;
+        // TODO: this requires knowledge of the structure of emitterMixin
+        // subscriberIDs! That is a bit unfortunate.
+        // A solution would be a afterOffHook('change', method) here.
+        // I consider that overengineering for the moment.
+        if(subscriberID[0] instanceof Array)
+            for(i=0,l=subscriberID.length;i<l;i++)
+                if(subscriberID[0] === 'CPS-change')
+                    this._deinitCPSChangeEvent();
+        else if(subscriberID[0] === 'CPS-change')
+            this._deinitCPSChangeEvent();
+
+        return result;// usually undefined
+    };
 
     return _Node;
-})
-;
+});
+
 define('metapolator/models/MOM/_Contour',[
     './_Node'
 ], function(
@@ -26166,6 +26567,7 @@ define('metapolator/models/MOM/_Contour',[
      * All children of a MOM Glyph have to inherit from MOM _Contour.
      */
     function _Contour() {
+        /*jshint validthis:true*/
         Parent.call(this);
         if(this.constructor.prototype === _p)
             throw new MOMError('MOM _Contour must not be instantiated '
@@ -26178,11 +26580,11 @@ define('metapolator/models/MOM/_Contour',[
         get: function() {
             return this._parent;
         }
-    })
+    });
 
     return _Contour;
-})
-;
+});
+
 define('metapolator/models/MOM/Glyph',[
     './_Node'
   , './_Contour'
@@ -26193,21 +26595,25 @@ define('metapolator/models/MOM/Glyph',[
   , whitelistProxies
 ) {
     
-
+    /*jshint sub:true*/
     /**
      * This Element is the container of all contours of a glyph.
      * It will have some metadata and contain children of type MOM _Contour.
-     * 
+     *
      * Possible candiates for other children would be everything else
      * found in a UFO-Glyph. But, we can make properties about that stuff,
      * too. Guidelines would make a good candidate for further children,
      * because we might actually want to access these via CPS.
-     * 
+     *
      * In the first version we the only child of MOM _Contour is
      * MOM PenStroke.
      */
     function Glyph() {
         Parent.call(this);
+        // FIXME: make a GlyphData Object, similar like PointData
+        // use that for advanceWidth/advanceHeight and everything setUFOData
+        // probably, remove _p.setUFOData in favor of a common interface
+        // for all MOM elements
         this._advanceWidth  = 0;
         this._advanceHeight = 0;
         this._ufoData = {};
@@ -26225,16 +26631,20 @@ define('metapolator/models/MOM/Glyph',[
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
-    
+    _p._cloneProperties = function(clone) {
+        Parent.prototype._cloneProperties.call(this, clone);
+        clone.setUFOData(this.getUFOData());
+    };
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Glyph'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'glyph'
-    })
-    
+    });
+
     _p.setUFOData = function(ufoGlyph) {
         var i=0, keys = Object.keys(ufoGlyph);
         for(;i<keys.length;i++)
@@ -26245,7 +26655,7 @@ define('metapolator/models/MOM/Glyph',[
         if( ufoGlyph['height'] ) {
             this._advanceHeight = ufoGlyph['height'];
         }
-    }
+    };
 
     /**
      * Return value is a copy of the UFO data for the Glyph.
@@ -26266,7 +26676,7 @@ define('metapolator/models/MOM/Glyph',[
         ret['width']  = this._advanceWidth;
         ret['height'] = this._advanceHeight;
         return ret;
-    }
+    };
 
     /**
      * Convert the UFO key to the key you should use for CPS. For example,
@@ -26276,17 +26686,17 @@ define('metapolator/models/MOM/Glyph',[
         var UFOtoCPSKeyMap = {   'width': 'advanceWidth'
                                , 'height': 'advanceHeight'
                              };
-        
-        if(UFOtoCPSKeyMap[ufokey]) 
-            return UFOtoCPSKeyMap[ufokey]; 
+
+        if(UFOtoCPSKeyMap[ufokey])
+            return UFOtoCPSKeyMap[ufokey];
         return ufokey;
     }
     Glyph.convertUFOtoCPSKey = convertUFOtoCPSKey;
     _p._acceptedChildren = [_Contour];
-    
+
     return Glyph;
-})
-;
+});
+
 define('metapolator/timer',[], (function(){
     var module;
 
@@ -27839,7 +28249,7 @@ define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
   , main
 ) {
     
-    
+
     /*global clearTimeout: true*/
     /*global setTimeout: true*/
     /*global console:true*/
@@ -27859,7 +28269,7 @@ define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
 
         return svgPen;
     }
-    
+
     function getSVG(element) {
         var svg = element[0].getElementsByTagName('svg')[0];
         if(!svg) {
@@ -28017,12 +28427,11 @@ define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
      */
     function render(scope, element, glyph, model) {
         var svg = getSVG(element)
-          , renderer
+          , renderer = scope.renderer
           ;
-        if(!scope.renderer)
-            scope.renderer = new RenderController(svg, model, glyph.parent);
-        renderer = scope.renderer;
-        
+        if(!renderer)
+            renderer = scope.renderer = new RenderController(svg, model, glyph.parent);
+
         renderer.abort();
         renderer.addLayer(glyph, 'outline', {
             penstroke: ExportController.renderPenstrokeOutline
@@ -28033,13 +28442,15 @@ define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
         }, false);
         renderer.run();
     }
-    
+
     function redPillGlyphDirective(model) {
         function link(scope, element, attrs) {
             render(scope, element, scope.mtkGlyphElement, model);
             scope.$on('cpsUpdate', render.bind(null, scope, element, scope.mtkGlyphElement, model));
             element.on('$destroy', function() {
-                clearTimeout(scope.timeoutId);
+                var renderer = scope.renderer;
+                if(renderer)
+                    renderer.abort();
             });
         }
         return {
@@ -28048,7 +28459,7 @@ define('ui/redPill/redPillGlyphs/redPillGlyph-directive',[
           , scope: { mtkGlyphElement: '=' }
         };
     }
-    
+
     redPillGlyphDirective.$inject = ['ModelController'];
     return redPillGlyphDirective;
 });
@@ -28070,8 +28481,8 @@ define('ui/redPill/redPillGlyphs/redPillGlyphs',[
            .directive('mtkRedPillGlyphs', directive)
            .directive('mtkRedPillGlyph', redPillGlyphDirective)
            ;
-})
-;
+});
+
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -36600,7 +37011,7 @@ define('metapolator/io/readDirRecursive',[
   , obtain
 ) {
     
-    
+
     /**
      * when name ends with a slash it is a directory name
      */
@@ -36610,7 +37021,7 @@ define('metapolator/io/readDirRecursive',[
 
     /**
      * Read an entire directory tree into a flat list of filenames.
-     * 
+     *
      * use this with caution:
      * It may run long and need a lot of memory for large/deep directories.
      * Also, the result may not be correct anymore when it's done.
@@ -36703,22 +37114,22 @@ define('ui/redPill/textEditor/textEditor-controller',[
         this.$scope = $scope;
         this.$scope.name = 'textEditor';
         this.io = io;
-        
+
         this.$scope.buffers = Object.create(null);
         this.$scope.files = [];
-        
+
         // FIXME: go async when this is used somewhere else than the demo
         // the demo io is InMemory, and as such sync is OK.
         this.path = 'project/data/com.metapolator/cps';
         $scope.allFiles = readDirRecursive(false, io, this.path)
         .map(function(len, name){ return name.slice(len);}.bind(null, this.path.length+1));
-        
+
         $scope.$on("codeMirrorDestroy", this._codemirrorDestroyHandler.bind(this));
         $scope.getEditorOptions = this.getEditorOptions.bind(this);
     }
     TextEditorController.$inject = ['$scope', 'io'];
     var _p = TextEditorController.prototype;
-    
+
     _p.getEditorOptions = function(source) {
         // From the CodeMirror docs:
         // Note that the options object passed to the constructor will
@@ -36733,49 +37144,49 @@ define('ui/redPill/textEditor/textEditor-controller',[
           , onLoad: this._codemirrorLoadedHandler.bind(this, source)
         };
     };
-    
+
     _p._getCodeMirrorDoc = function(file) {
         var text, doc
           , path = this.path + '/' + file
           , timeout
           ;
-          
+
         var update = function () {
             this.io.writeFile(false, path, doc.getValue());
-            
+
         }.bind(this);
         function onChange() {
             // reset the timeout
             window.cancelAnimationFrame(timeout);
             timeout = window.requestAnimationFrame(update);
         }
-        
+
         if(!(file in this.$scope.buffers)) {
             // FIXME: do this async eventually.
             text = this.io.readFile(false, path);
             this.$scope.buffers[file] = doc = new CodeMirror.Doc(text, 'css');
             // TODO: throttle this
             doc.on('change', onChange);
-            
+
         }
         return this.$scope.buffers[file].linkedDoc({sharedHist: true});
     };
-    
+
     _p._codemirrorLoadedHandler = function(source, cm) {
         var doc = this._getCodeMirrorDoc(source);
         cm.swapDoc(doc);
     };
-    
+
     _p._codemirrorDestroyHandler = function(event, cm) {
         var linked = cm.getDoc();
         linked.iterLinkedDocs(function(doc){ doc.unlinkDoc(linked);});
     };
-    
+
     return TextEditorController;
 });
 
 
-define('require/text!ui/redPill/textEditor/textEditor.tpl',[],function () { return '<label>select files:\n    <select \n            multiple\n            ng-model="data.files" \n            ng-options="name for name in {{ allFiles }}"\n            ></select>\n</label>\n\n<ol>\n    <li ng-repeat="file in data.files">\n        <span>file: {{ file }}</span>\n        <!--\n            Don\'t use ng-model here. the history of the resulting doc\n            will have ther instertion of the content as first entry.\n            Also the change event will fire immediately. We create the\n            doc in codemirrors on load event.\n        -->\n        <ui-codemirror\n            ui-codemirror-opts="getEditorOptions(file)"\n            ng-controller="CodeMirrorController"\n            ></ui-codemirror>\n    </li>\n</ol>\n';});
+define('require/text!ui/redPill/textEditor/textEditor.tpl',[],function () { return '<label>select files:\n    <select\n            multiple\n            ng-model="data.files"\n            ng-options="name for name in {{ allFiles }}"\n            ></select>\n</label>\n\n<ol>\n    <li ng-repeat="file in data.files">\n        <span>file: {{ file }}</span>\n        <!--\n            Don\'t use ng-model here. the history of the resulting doc\n            will have ther instertion of the content as first entry.\n            Also the change event will fire immediately. We create the\n            doc in codemirrors on load event.\n        -->\n        <ui-codemirror\n            ui-codemirror-opts="getEditorOptions(file)"\n            ng-controller="CodeMirrorController"\n            ></ui-codemirror>\n    </li>\n</ol>\n';});
 
 define('ui/redPill/textEditor/textEditor-directive',[
     'require/text!./textEditor.tpl'
@@ -36794,8 +37205,8 @@ define('ui/redPill/textEditor/textEditor-directive',[
     }
     textEditorDirective.$inject = [];
     return textEditorDirective;
-})
-;
+});
+
 define('ui/redPill/textEditor/CodeMirrorController',[
 ], function(
 ) {
@@ -36812,26 +37223,26 @@ define('ui/redPill/textEditor/CodeMirrorController',[
         $scope.$on('$destroy', this._destroy.bind(this));
     }
     CodeMirrorController.$inject = ['$scope'];
-    
+
     var _p = CodeMirrorController.prototype;
-    
+
     /**
      * informs the parent that there might be some cleanup needed
      */
     _p._emitCodeMirrorDestroy = function(cm) {
         this.$scope.$emit('codeMirrorDestroy', cm);
-    }
-    
+    };
+
     _p._destroy = function() {
         // the ui-codemirror directive listens to CodeMirror and calls
         // _emitCodeMirrorDestroy. We need this to propagate the cm object
         // which we wouldn't have a refernce to, otherwise.
-        this.$scope.$broadcast('CodeMirror', this._emitCodeMirrorDestroy.bind(this))
-    }
-    
+        this.$scope.$broadcast('CodeMirror', this._emitCodeMirrorDestroy.bind(this));
+    };
+
     return CodeMirrorController;
-})
-;
+});
+
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -37682,14 +38093,14 @@ define('ui/redPill/textEditor/textEditor',[
   , ___no_amd_module// ui.codemirror
 ) {
     
-    
+
     return angular.module('mtk.textEditor', ['ui.codemirror'])
            .controller('TextEditorController', Controller)
            .directive('mtkTextEditor', directive)
            .controller('CodeMirrorController', CodeMirrorController)
            ;
-})
-;
+});
+
 define('ui/redPill/app',[
     'angular'
   , './app-controller'
@@ -37708,12 +38119,12 @@ define('ui/redPill/app',[
       .controller('AppController', Controller)
       .directive('redPill', directive)
       ;
-})
-;
+});
+
 // we can define window as a dependency
 // works only in a browser context
-define('metapolator/webAPI/window',[], window)
-;
+define('metapolator/webAPI/window',[], window);
+
 define('RedPill',[
     'metapolator/errors'
   , 'metapolator/webAPI/window'
@@ -37723,50 +38134,50 @@ define('RedPill',[
   , window
 ) {
     
-    
+
     var CPSParserError = errors.CPSParser
       , CPSError = errors.CPS
       ;
-    
+
     function RedPill(io, fsEvents, project, angularApp, loadTextEditor) {
-        this.angularApp = angularApp
+        this.angularApp = angularApp;
         this.frontend = undefined;
         this.project = project;
         this.fsEvents = fsEvents;
         this.loadTextEditor = loadTextEditor;
         this.model = {
             masters: this.project.masters
-        }
+        };
         this._cache = {
             lastSelection: []
-        }
-        
+        };
+
         // load all masters, because right now it is very confusing
         // when some masters are missing from the MOM
         this.project.masters.forEach(this.project.open, this.project);
-        
-        
+
+
         // will be called on angular.bootstrap
-        // see ui/app-controller.js 
-        this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this))
+        // see ui/app-controller.js
+        this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this));
         this.angularApp.constant('redPillModel', this.model);
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
         this.angularApp.constant('io', io);
-        this.angularApp.constant('config', {loadTextEditor: loadTextEditor})
-        
+        this.angularApp.constant('config', {loadTextEditor: loadTextEditor});
+
         this.fsEvents.on('change', this.fileChangeHandler.bind(this));
     }
-    
+
     var _p = RedPill.prototype;
 
     _p._registerFrontend = function(appController) {
         if(this.frontend !== undefined)
             throw new Error('Registering more than one AppController is not allowed.'
-                           +' Don\'t use <red-pill> more than once in a template!')
+                           +' Don\'t use <red-pill> more than once in a template!');
         this.frontend = appController;
-    }
-    
+    };
+
     _p._selectGlyphs = function(selector) {
         try {
             return this.project.controller.queryAll(selector)
@@ -37778,16 +38189,16 @@ define('RedPill',[
             console.warn('selector "' + selector + '" did not parse:', error.message);
         }
         return false;
-    }
-    
+    };
+
     _p.selectGlyphs = function(selector) {
         var result = this._selectGlyphs(selector);
         if(!result)
             return this._cache.lastSelection;
         this._cache.lastSelection = result;
         return result;
-    }
-    
+    };
+
     _p.fileChangeHandler = function (path) {
         var match = path.indexOf(this.project.cpsDir)
           , sourceName
@@ -37810,10 +38221,10 @@ define('RedPill',[
                 throw error;
         }
     };
-    
+
     return RedPill;
-})
-;
+});
+
 /*
  * Don't edit this file by hand!
  * This file was generated from a npm-package using gulp. 
@@ -40135,8 +40546,8 @@ util.inherits(YAMLFormatter, Formatter);
 
 /**
  * This function formats a {@link LogRecord} object in YAML as follows:
- * 
- * time: {datetime} 
+ *
+ * time: {datetime}
  * message: {message}
  * [logger-name]: {string}
  * [level]: {level}
@@ -40144,14 +40555,14 @@ util.inherits(YAMLFormatter, Formatter);
  *
  * Each entry is returned as an array of length 1, which can be appended to
  * a log file (see FileLogger) as part of an "infinite" array.
- * 
+ *
  * @param {LogRecord} logRecord Record to be formatted
  */
 YAMLFormatter.prototype.formatMessage = function(logRecord) {
   if (!logRecord || !(logRecord instanceof LogRecord))
     return {};
 
-  var record = {}
+  var record = {};
   record.message = logRecord.getMessage() || "";
 
   //log errors as strings
@@ -40184,7 +40595,7 @@ YAMLFormatter.prototype.formatMessage = function(logRecord) {
   var thrown = logRecord.getThrown();
   if (thrown && util.isError(thrown))
     record.thrown = {message: thrown.message, stack: thrown.stack};
-  
+
   return yaml.safeDump([record]);
 };
 
@@ -40221,7 +40632,7 @@ LogRecord.prototype.fromObject = function (obj) {
   obj.level = new Level(obj.level);
   obj.millis = Date.parse(obj.date);
   return new LogRecord(obj);
-}
+};
 
 Level.DEBUG = new Level({name: "DEBUG", value: 3});
 
@@ -41047,20 +41458,35 @@ define('metapolator/models/MOM/Master',[
      * This Element is the container of all glyphs of a master.
      * It will have some metadata and contain children of type MOM Glyph.
      */
-    function Master() {
+    function Master(fontinfo) {
         Parent.call(this);
+        // FIXME: the data of fontinfo should be available via CPS
+        // this can be done similar to PointData
+        // MAYBE >> import fontinfo as CPS ???
+        // some concepts are still unclear :-/
+        Object.defineProperty(this, 'fontinfo', {
+            value: fontinfo
+        });
     }
     var _p = Master.prototype = Object.create(Parent.prototype);
     _p.constructor = Master;
-    
+
+    _p.clone = function() {
+        var clone = new this.constructor(this.fontinfo), i,l;
+        this._cloneProperties(clone);
+        for(i=0,l=this._children.length;i<l;i++)
+            clone.add(this._children[i].clone());
+        return clone;
+    };
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Master'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'master'
-    })
+    });
 
     /**
      * TODO: make indexed lookup for _Node.id
@@ -41077,8 +41503,8 @@ define('metapolator/models/MOM/Master',[
             }
         }
         return null;
-    }
-    
+    };
+
      /**
      * As long as there is just one univers, we don't need to display
      * the multivers and univers selectors
@@ -41088,20 +41514,20 @@ define('metapolator/models/MOM/Master',[
             return [
                     this._parent ? '' : '(no parent)'
                   , ' '
-                  , this.type,
+                  , this.type
                   , (this.id ? '#' + this.id : '')
                   , (this._parent
                         ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }
-    })
-    
+    });
+
     _p._acceptedChildren = [Glyph];
-    
+
     return Master;
-})
-;
+});
+
 define('metapolator/models/MOM/PointData',[
     'metapolator/models/CPS/whitelistProxies'
 ], function(
@@ -41116,16 +41542,21 @@ define('metapolator/models/MOM/PointData',[
     function PointData(obj) {
         for(var k in obj) this[k] = obj[k];
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
-    };
+    }
+
     PointData.prototype._cps_whitelist = {
         on: 'on'
       , in: 'in'
       , out: 'out'
     };
 
+    // NOTE: when changing these values is implemented, the according
+    // onPropertyChange/offPropertyChange methods nned to be implemented as well
+    // see: models/emitterMixin.js for this
+
     return PointData;
-})
-;
+});
+
 define('metapolator/models/MOM/_PenStrokePointChild',[
     './_Node'
 ], function(
@@ -41135,15 +41566,16 @@ define('metapolator/models/MOM/_PenStrokePointChild',[
     /**
      * This Element represents a child of a of a MoM PenStrokePoint
      */
-    function _PenStrokePointChild(vector) {
+    function _PenStrokePointChild() {
+        /*jshint validthis:true*/
         Parent.call(this);
     }
     var _p = _PenStrokePointChild.prototype = Object.create(Parent.prototype);
     _p.constructor = _PenStrokePointChild;
-    
+
     return _PenStrokePointChild;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePointLeft',[
     './_PenStrokePointChild'
 ], function(
@@ -41155,19 +41587,19 @@ define('metapolator/models/MOM/PenStrokePointLeft',[
     }
     var _p = PenStrokePointLeft.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePointLeft;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePointLeft'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'left'
-    })
-    
+    });
+
     return PenStrokePointLeft;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePointCenter',[
     './_PenStrokePointChild'
 ], function(
@@ -41179,19 +41611,19 @@ define('metapolator/models/MOM/PenStrokePointCenter',[
     }
     var _p = PenStrokePointCenter.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePointCenter;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePointCenter'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'center'
-    })
-    
+    });
+
     return PenStrokePointCenter;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePointRight',[
     './_PenStrokePointChild'
 ], function(
@@ -41203,19 +41635,19 @@ define('metapolator/models/MOM/PenStrokePointRight',[
     }
     var _p = PenStrokePointRight.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePointRight;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePointRight'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'right'
-    })
-    
+    });
+
     return PenStrokePointRight;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePoint',[
     './_Node'
   , './PointData'
@@ -41279,14 +41711,20 @@ define('metapolator/models/MOM/PenStrokePoint',[
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
+    _p.clone = function() {
+        var clone = new this.constructor(new PointData(this._skeleton));
+        this._cloneProperties(clone);
+        return clone;
+    };
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePoint'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'point'
-    })
+    });
 
     /**
      * This is the on curve point of the skeleton.
@@ -41296,31 +41734,31 @@ define('metapolator/models/MOM/PenStrokePoint',[
         get: function() {
             return this._skeleton;
         }
-    })
+    });
 
     Object.defineProperty(_p, 'left', {
         get: function() {
             return this._children[0];
         }
-    })
+    });
 
     Object.defineProperty(_p, 'center', {
         get: function() {
             return this._children[1];
         }
-    })
+    });
 
     Object.defineProperty(_p, 'right', {
         get: function() {
             return this._children[2];
         }
-    })
+    });
 
     _p._acceptedChildren = [_PenStrokePointChild];
 
     return PenStrokePoint;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStroke',[
     './_Contour'
   , './PenStrokePoint'
@@ -41339,22 +41777,22 @@ define('metapolator/models/MOM/PenStroke',[
     }
     var _p = PenStroke.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStroke;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStroke'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'penstroke'
-    })
-    
-    _p._acceptedChildren = [PenStrokePoint];
-    
-    return PenStroke;
-})
+    });
 
-;
+    _p._acceptedChildren = [PenStrokePoint];
+
+    return PenStroke;
+});
+
+
 define('metapolator/models/MOM/ContourPoint',[
     './_Node'
   , './PointData'
@@ -41395,11 +41833,17 @@ define('metapolator/models/MOM/ContourPoint',[
     //inherit from parent
     _p._cps_whitelist = {
         skeleton: 'skeleton'
-    };
-    //inherit from parent
+    };//inherit from parent
     (function(source) {
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
+
+
+    _p.clone = function() {
+        var clone = new this.constructor(new PointData(this._skeleton));
+        this._cloneProperties(clone);
+        return clone;
+    };
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM ContourPoint'
@@ -41446,19 +41890,19 @@ define('metapolator/models/MOM/Contour',[
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Contour'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'contour'
-    })
+    });
 
     _p._acceptedChildren = [ContourPoint];
 
     return Contour;
-})
+});
 
-;
+
 define('metapolator/models/MOM/Component',[
     './_Contour'
   , 'metapolator/models/CPS/whitelistProxies'
@@ -41489,6 +41933,12 @@ define('metapolator/models/MOM/Component',[
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
+    _p.clone = function() {
+        var clone = new this.constructor(this._baseGlyphName, this._transformation);
+        this._cloneProperties(clone);
+        return clone;
+    };
+
     Object.defineProperty(_p, 'baseGlyphName', {
         get: function() {
             return this._baseGlyphName;
@@ -41502,19 +41952,19 @@ define('metapolator/models/MOM/Component',[
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Component'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'component'
-    })
-    
-    _p._acceptedChildren = [];
-    
-    return Component;
-})
+    });
 
-;
+    _p._acceptedChildren = [];
+
+    return Component;
+});
+
+
 define('metapolator/project/MOMPointPen',[
     'metapolator/errors'
   , 'ufojs/main'
@@ -41790,7 +42240,8 @@ define('metapolator/project/ProjectMaster',[
 
     _p.loadMOM = function() {
         // create a MOM Master use this.glyphSet to create glyphs, penstrokes and points
-        var master = new Master()
+        var fontinfo = this._project.getFontinfo()
+          , master = new Master(fontinfo)
           , glyphNames = this.glyphSet.keys()
           , glyphName
           , ufoGlyph
@@ -41803,12 +42254,16 @@ define('metapolator/project/ProjectMaster',[
         for(;i<glyphNames.length;i++) {
             glyphName = glyphNames[i];
             ufoGlyph = this.glyphSet.get(glyphName);
-            glyph = new Glyph();
+            glyph = new Glyph();// FIXME do the stuff of setUFOData here!
             glyph.id = glyphName;
             if(glyphName in classes)
                 classes[glyphName].forEach(glyph.setClass, glyph);
             // fetch glyph data and draw the glyph to the MOM
             ufoGlyph.drawPoints(false, new MOMPointPen(glyph));
+            // FIXME: if possible remove all usages of `setUFOData`.
+            // This can happen in the Constructor.
+            // maybe, when event propagation for this stuf is built, we
+            // can use this method again
             glyph.setUFOData(ufoGlyph);
             master.add(glyph);
         }
@@ -41843,8 +42298,7 @@ define('metapolator/models/CPS/dataTypes/_FormulaeValue',[
 
     _p.toString = function() {
         return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
+             + ' with stack "' + this._stack + '">';
     };
 
     return _FormulaeValue;
@@ -42149,7 +42603,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
         // It is an array
 
         expectedLength = this.consumes + (
-                                description[0] !== '*getAPI*' ? 1 : 2);
+                                description[0] === '*getAPI*' || description[0] === '*unboxed+getAPI*' ? 2 : 1);
 
         if(description.length !== expectedLength)
             throw new ValueError(this.literal + ': An operator definition array must define '
@@ -42220,7 +42674,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
         for(i=0;i<consumes;i++) {
             arg = boxedNames[i];
             body.push('var ' , unboxedNames[i] , ' = ' , arg , ' instanceof NameToken '
-                    , '? getAPI(' , arg , '.getValue()) '
+                    , '? getAPI.get(' , arg , '.getValue()) '
                     , ': ' , arg , ';\n');
         }
         return unboxedNames;
@@ -42343,7 +42797,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
         /*jshint evil:true*/
         var body = ['\n']
           , i, j, k, l, ll, description, methodName
-          , names, args, type, typeVarsIndex, ctorIndex, isBoxed
+          , names, args, type, typeVarsIndex, ctorIndex, isBoxed, hasGetAPI
           , hasMatchAll = false
           , unboxedNameTokens = false
           , typeTests = {
@@ -42363,7 +42817,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
           , '  ;\n'
         );
         names = _makeLocalBoxedNames(body, this._methods, this.consumes);
-        args = 'getAPI' + (this.consumes ? ', ' + names.join(', ') : '');
+        args = names.join(', ');
 
         // a placeholder
         typeVarsIndex = body.length;
@@ -42375,6 +42829,8 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
             body.push('var ',methodName,' = methods[', i ,'];\n');
 
             isBoxed = description[0] === '*getAPI*';
+            hasGetAPI = isBoxed || description[0] === '*unboxed+getAPI*';
+
             if(unboxedNameTokens && isBoxed)
                 // This is a problem in the design of the operator
                 // see the lengthy error message in p._setMethod
@@ -42400,7 +42856,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
 
             body.push('if(true');
             // k: start at 1 if the first item is *getAPI*
-            for(j=0, k=isBoxed?1:0,ll=this.consumes;j<ll;k++,j++) {
+            for(j=0, k=hasGetAPI?1:0,ll=this.consumes;j<ll;k++,j++) {
                 type = description[k];
                 // always true
                 if(type === '*anything*') continue;
@@ -42410,7 +42866,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
             }
             body.push(
                 ')\n    '
-              , 'return ' ,methodName,'[', description.length-1, '](', args, ');\n'
+              , 'return ' ,methodName,'[', description.length-1, '](', (hasGetAPI ? 'getAPI, ' : ''), args, ');\n'
             );
 
             // write the constructor references
@@ -42492,6 +42948,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
           , args
           , result
           , operator
+          , description
           ;
         index = this._findMethod(getAPI ,argsObj);
         if(index === -1) {
@@ -42504,15 +42961,20 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
                     .join(', ')
             );
         }
-        if(typeof this._methods[index] === 'function') {
-            operator = this._methods[index];
+        description = this._methods[index];
+        if(typeof description === 'function') {
+            operator = description;
             args = argsObj.unboxedNameTokens;
         }
         else {
-            operator = this._methods[index].slice(-1).pop();
-            if(this._methods[index][0] === '*getAPI*') {
-                args = argsObj.original;
-                args.unshift(getAPI);
+            operator = description.slice(-1).pop();
+            if(description[0] === '*getAPI*') {
+                args = [getAPI];
+                Array.prototype.push.apply(args, argsObj.original);
+            }
+            else if(description[0] === '*unboxed+getAPI*') {
+                args = [getAPI];
+                Array.prototype.push.apply(args, argsObj.unboxedNameTokens);
             }
             else
                 args = argsObj.unboxedNameTokens;
@@ -42521,7 +42983,6 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
 
         // check for NaN and sorts of??
         return result;
-
     };
 
     /**
@@ -42545,7 +43006,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
     }
 
     Object.defineProperty(Internal_Arguments.prototype, 'unboxedNameTokens', {
-        get: function(){
+        get: function() {
             if(!this._unboxedNameTokens)
                 this._unboxedNameTokens = this.original.map(_unbox, this);
             return this._unboxedNameTokens;
@@ -42555,7 +43016,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
     function _unbox (token) {
          /*jshint validthis:true */
         if(token instanceof NameToken)
-            return this._getAPI(token.getValue());
+            return this._getAPI.get(token.getValue());
         return token;
     }
 
@@ -45081,81 +45542,237 @@ define('metapolator/models/CPS/parsing/Source',[
     function Source(name) {
         this._name = name;
     }
-    
+
     var _p = Source.prototype;
-    
+
     _p.toString = function() {
         return ['<Source:', this._name, '>'].join(' ');
-    }
-    
+    };
+
     Object.defineProperty(_p, 'name', {
         get: function(){ return this._name; }
     });
-    
+
     return Source;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/_Node',[
-    '../../_BaseModel'
+    'metapolator/errors'
+  , '../../_BaseModel'
+  , 'metapolator/models/emitterMixin'
 ], function(
-    Parent
+    errors
+  , Parent
+  , emitterMixin
 ) {
     
+
+    var AbstractInterfaceError = errors.AbstractInterface;
+
     /**
      * All Elements in a ParametersCollection have this base type OR
      * should at least expose the same Interface (ducktyping).
      */
     function _Node(source, lineNo) {
-        Parent.call(this)
+        /*jshint validthis:true*/
+        Parent.call(this);
         this._source = source;
         this._lineNo = lineNo;
+
+        // the `reset` method of ParameterCollection will call this constructor
+        // repeatedly. So we need a way to detect if this is was already
+        // applied or not
+        if(!this.__firstTimeInitFlag) {
+            emitterMixin.init(this);
+            Object.defineProperty(this, '__firstTimeInitFlag', {value: true});
+        }
     }
-    var _p = _Node.prototype = Object.create(Parent.prototype)
+    var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
-    
+
+    emitterMixin(_p);
+
     _p.toString = function() {
         throw new AbstractInterfaceError('This interface is abstract and'
             + 'needs an implementation (parameters/_Node.toString)');
-    }
-    
+    };
+
+    /**
+     * Trigger the destroy event and let the _Node clean up if needed.
+     * When destroy is called, this _Node is probably alredy removed from
+     * its hosting structure.
+     *
+     * Only the parent of this _Node may call destroy, when the node is
+     * deleted. So don't use it anywhere else!
+     * We will probably not have all nodes using this method, it depends
+     * on the context.
+     */
+    _p.destroy = function(data) {
+        this._trigger('destroy', data);
+    };
+
     function _getterCreator(item) {
+        /*jshint validthis:true*/
         var external = item[0]
           , internal = item[1]
           ;
         Object.defineProperty(this, external, {
             get: function(){ return this[internal]; }
-        })
-    };
+        });
+    }
+
     ([
         ['source', '_source']
       , ['lineNo', '_lineNo']
     ].forEach(_getterCreator, _p));
-    
+
     return _Node;
-})
-;
-define('metapolator/models/CPS/elements/Rule',[
+});
+
+define('metapolator/models/CPS/elements/SelectorList',[
     './_Node'
 ], function(
     Parent
 ) {
     
     /**
+     * A list of ComplexSelectors
+     *
+     * An instance of this must be treated as immutable, it will not
+     * change its content/selectors.
+     */
+    function SelectorList(selectors, source, lineNo) {
+        Parent.call(this, source, lineNo);
+        // Keeping this private. The value property returns a copy of
+        // the this._selectors array and that's the public interface.
+        this._selectors = selectors.slice();
+        this._multiplyCache = new WeakMap();
+
+        var i, l, selector, count=0, invalid=false, message;
+
+        for(i=0,l=this._selectors.length;i<l;i++) {
+            selector = this._selectors[i];
+            if(selector.invalid) {
+                invalid = true;
+                message = selector.message;
+                break;
+            }
+            if(!selector.selects)
+                continue;
+            count +=1;
+        }
+        if(!invalid && !count) {
+            invalid = true;
+            message = 'SelectorList has no valid selector';
+        }
+        Object.defineProperties(this,{
+            'selects': {
+                value: !invalid
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: invalid
+              , enumerable: true
+            }
+          , 'length': {
+                value: selectors.length
+              , enumerable: true
+            }
+          , 'message': {
+                value: message
+              , enumerable: true
+            }
+        });
+        Object.freeze(this);
+        Object.freeze(this._selectors);
+    }
+
+    /**
+     * A factory that creates one selectorlist from two input
+     * selectorLists
+     *
+     * This uses the value property of the input selectorLists,
+     * so the result uses only selecting ComplexSelectors
+     *
+     * The ComplexSelectors are combined using the descendant combinator.
+     */
+    SelectorList.multiply = function(a, b) {
+        var x, y, l, ll
+          , selectorsA = a._selectors
+          , selectorsB = b._selectors
+          , result = []
+          ;
+        for(x=0,l=selectorsA.length;x<l;x++) {
+            for(y=0, ll=selectorsB.length;y<ll;y++)
+                result.push(selectorsA[x].add(selectorsB[y]));
+        }
+        return new SelectorList(result);
+    };
+
+    var _p = SelectorList.prototype = Object.create(Parent.prototype);
+    _p.constructor = SelectorList;
+
+    Object.defineProperty(_p, 'value', {
+        get: function(){ return this._selectors.slice(); }
+    });
+
+    var _filterValid = function(selector) {
+        return !selector.invalid;
+    };
+
+    _p.toString = function() {
+        return this._selectors.filter(_filterValid).join(',\n') || 'invalidSelectorList';
+    };
+
+    _p.multiply = function(selectorList) {
+        // the cache is a WeakMap, so it will clean itself
+        var r = this._multiplyCache.get(selectorList);
+        if(!r) {
+            r = this.constructor.multiply(this, selectorList);
+            this._multiplyCache.set(selectorList, r);
+        }
+        return r;
+    };
+
+    return SelectorList;
+});
+
+define('metapolator/models/CPS/elements/Rule',[
+    'metapolator/errors'
+  , './_Node'
+], function(
+    errors
+  , Parent
+) {
+    
+
+    var ValueError = errors.Value;
+
+    /**
      * The container for selectors and parameters.
      */
     function Rule(selectorList, parameterDict, source, lineNo) {
         Parent.call(this, source, lineNo);
         this._selectorList = selectorList;
-        this._parameters = parameterDict;
+        Object.defineProperty(this, 'parameters', {
+            value: parameterDict
+          , enumerable: true
+        });
     }
-    
-    var _p = Rule.prototype = Object.create(Parent.prototype)
+
+    var _p = Rule.prototype = Object.create(Parent.prototype);
     _p.constructor = Rule;
-    
+
     _p.toString = function() {
-        return [this._selectorList, ' ', this._parameters].join('');
-    }
-    
+        return [this._selectorList, ' ', this.parameters].join('');
+    };
+
+    Object.defineProperty(_p, 'invalid', {
+        get: function(){
+            return this._selectorList.invalid;
+        }
+    });
+
     /**
      * If no namespaces are provided, the result of this method equals
      * this._selectorList.
@@ -45171,449 +45788,335 @@ define('metapolator/models/CPS/elements/Rule',[
                     selectorList = namespaces[i].multiply(selectorList);
         }
         return selectorList;
-    }
-    
-    Object.defineProperty(_p, 'parameters', {
-        get: function(){ return this._parameters; }
-    })
-    
+    };
+
+    _p.setSelectorList = function(selectorList) {
+        if(selectorList.invalid)
+            throw new ValueError('Trying to set an invalid selectorList: ' + selectorList);
+        this._selectorList = selectorList;
+        this._trigger('selector-change');
+    };
+
     return Rule;
-})
-;
-define('metapolator/models/CPS/elements/_Collection',[
-    'metapolator/errors'
-  , './_Node'
-  , './Rule'
-], function(
-    errors
-  , Parent
-  , Rule
-) {
-    
-    var CPSError = errors.CPS;
-    /**
-     * A Base for a Collection of Rules and Comments
-     */
-    function _Collection(items, source, lineNo) {
-        Parent.call(this, source, lineNo);
-        this._items = [];
-        if(items.length)
-            Array.prototype.push.apply(this._items, items);
-    }
-    var _p = _Collection.prototype = Object.create(Parent.prototype)
-    _p.constructor = _Collection;
-    
-    _p.toString = function() {
-        return this._items.join('\n\n');
-    }
-    
-    Object.defineProperty(_p, 'items', {
-        get: function(){return this._items.slice(); }
-    })
-    
-    function _filterRules(item) {
-        return item instanceof Rule;
-    }
-    Object.defineProperty(_p, 'rules', {
-        get: function(){return this._items.filter(_filterRules);}
-    })
-    
-    Object.defineProperty(_p, 'length', {
-        get: function(){ return this._items.length }
-    })
-    
-    return _Collection;
-})
-;
-define('metapolator/models/CPS/elements/_Name',[
+});
+
+define('metapolator/models/CPS/elements/Comment',[
     './_Node'
 ], function(
     Parent
 ) {
     
     /**
-     * Used as base of AtRuleName and ParameterName.
+     * Any comment in the CPS.
      */
-    function _Name(name, comments ,source, lineNo) {
+    function Comment(comment, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._comments = comments;
-        Object.defineProperty(this, 'name', {
-            value: name
-          , enumerable: true
+        Object.defineProperties(this, {
+            comment: {
+                value: comment
+              , enumerable: true
+            }
+          , invalid: {
+                value: false
+              , enumerable: true
+            }
         });
     }
-    var _p = _Name.prototype = Object.create(Parent.prototype)
-    _p.constructor = _Name;
-
-    /**
-     * Prints all comments after the name.
-     */
-    _p.toString = function() {
-        return [this.name,
-                this._comments.length ? ' ': '',
-                this._comments.join('\n')].join('');
-    }
-    return _Name;
-})
-;
-define('metapolator/models/CPS/elements/AtRuleName',[
-    './_Name'
-], function(
-    Parent
-) {
-    
-    /**
-     * The name of an AtRule.
-     */
-    function AtRuleName(name, comments ,source, lineNo) {
-        Parent.call(this, name, comments ,source, lineNo);
-    }
-    var _p = AtRuleName.prototype = Object.create(Parent.prototype)
-    _p.constructor = AtRuleName;
-    
-    return AtRuleName;
-})
-;
-define('metapolator/models/CPS/elements/AtRuleCollection',[
-    'metapolator/errors'
-  , './_Collection'
-  , './AtRuleName'
-], function(
-    errors
-  , Parent
-  , AtRuleName
-) {
-    
-    var CPSError = errors.CPS;
-    /**
-     * A Collection of Rules and Comments
-     */
-    function AtRuleCollection(name, items, source, lineNo) {
-        Parent.call(this, items, source, lineNo);
-        if(name)
-            this._name = name;
-    }
-    var _p = AtRuleCollection.prototype = Object.create(Parent.prototype)
-    _p.constructor = AtRuleCollection;
+    var _p = Comment.prototype = Object.create(Parent.prototype);
+    _p.constructor = Comment;
 
     _p.toString = function() {
-        return ['@', this._name ? this.name : 'name_not_set',
-                ' {\n', this._items.join('\n\n'),'\n}'].join('')
-    }
+        // TODO: escape */ within this.comment, or remove it if escaping doesn't work.
+        return ['/*', this.comment, '*/'].join('');
+    };
 
-    /**
-     * Due to the way the parsing is done, name can be set after
-     * initialisation but only once.
-     *
-     * If name is not set, trying to read the name raises an CPSError
-     */
-    Object.defineProperty(_p, 'name', {
-        set: function(name) {
-            if(this._name)
-                throw new CPSError('Name is already set');
-            if(!name instanceof AtRuleName)
-                throw new CPSError('Name has the wrong type, expected '
-                    + 'AtRuleName but got: ' + name.constructor.name
-                        ? name.constructor.name
-                        : name.constructor);
-            this._name = name;
-        }
-      , get: function(){
-            if(!this._name)
-                throw new CPSError('Name not set yet.');
-            return this._name.name;
-        }
-    })
+    return Comment;
+});
 
-    return AtRuleCollection;
-})
-;
-define('metapolator/models/CPS/elements/SelectorList',[
-    './_Node'
-], function(
-    Parent
-) {
-    
-    /**
-     * A list of ComplexSelectors
-     */
-    function SelectorList(selectors, source, lineNo) {
-        Parent.call(this, source, lineNo);
-        this._selectors = [];
-        this._value = [];
-        this._multiplyCache = new WeakMap();
-        if(selectors.length)
-            Array.prototype.push.apply(this._selectors, selectors);
-        
-        // Maybe we'll need to determine the following on demand, not on init??
-        var i, l, selector, count=0;
-        for(i=0,l=this._selectors.length;i<l;i++) {
-            selector = this._selectors[i];
-            if(selector.invalid) {
-                this._invalid = true;
-                this._message = selector.message;
-                break;
-            }
-            if(!selector.selects)
-                continue;
-            this._value.push(selector)
-            count +=1;
-        }
-        if(!count) {
-            this._invalid = true;
-            this._message = 'SelectorList has no selecting selector';
-        }
-    }
-    
-    /**
-     * A factory that creates one selectorlist from two input
-     * selectorLists
-     * 
-     * This uses the value property of the input selectorLists,
-     * so the result uses only selecting ComplexSelectors
-     * 
-     * The ComplexSelectors are combined using the descendant combinator.
-     */
-    SelectorList.multiply = function(a, b) {
-        var x, y, l, ll
-          , selectorsA = a._selectors
-          , selectorsB = b._selectors
-          , result = []
-          ;
-        for(x=0,l=selectorsA.length;x<l;x++) {
-            for(y=0, ll=selectorsB.length;y<ll;y++)
-                result.push(selectorsA[x].add(selectorsB[y]));
-        }
-        return new SelectorList(result);
-    }
-    
-    var _p = SelectorList.prototype = Object.create(Parent.prototype)
-    _p.constructor = SelectorList;
-    
-    
-    var _filterNotInvalid = function(selector) {
-        return !selector.invalid;
-    }
-    
-    var _filterSelecting = function(selector) {
-        return selector.selects;
-    }
-    
-    _p.toString = function() {
-        return this._selectors.filter(_filterNotInvalid).join(',\n') || 'invalidSelectorList';
-    }
-    
-    Object.defineProperty(_p, 'selectors', {
-        get: function(){ return this._selectors.slice(); }
-    })
-    
-    Object.defineProperty(_p, 'length', {
-        get: function(){ return this._selectors.length }
-    })
-    
-    Object.defineProperty(_p, 'selects', {
-        get: function(){ return !this._invalid; }
-    });
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._invalid;}
-    });
-    Object.defineProperty(_p, 'message', {
-        get: function(){ return this._message;}
-    });
-    Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value.slice(); }
-    });
-    
-    _p.multiply = function(selectorList) {
-        var r = this._multiplyCache.get(selectorList);
-        if(!r) {
-            r = this.constructor.multiply(this, selectorList);
-            this._multiplyCache.set(selectorList, r);
-        }
-        return r;
-    }
-    
-    /**
-     * Add selectors to this SelectorList.
-     */
-    //_p.push = function(selector /*, ... selectors */) {
-    //    var selectors = Array.prototype.slice.call(arguments)
-    //    return this._selectors.push.apply(this._selectors, selectors);
-    //}
-    
-    return SelectorList;
-})
-;
 define('metapolator/models/CPS/elements/ParameterCollection',[
     'metapolator/errors'
-  , './_Collection'
-  , './AtRuleCollection'
-  , './AtRuleName'
+  , './_Node'
   , './SelectorList'
   , './Rule'
+  , './Comment'
 ], function(
     errors
   , Parent
-  , AtRuleCollection
-  , AtRuleName
   , SelectorList
   , Rule
+  , Comment
 ) {
     
-    var CPSError = errors.CPS;
+    var CPSError = errors.CPS
+      , ValueError = errors.Value
+      ;
     /**
-     * A list of Rule, AtRuleCollection, ParameterCollection, and
+     * A list of Rule, ParameterCollection (also @namespace, @import) and
      * Comment Elements
      */
     function ParameterCollection(items, source, lineNo) {
-        Parent.call(this, items, source, lineNo);
+        Parent.call(this, source, lineNo);
+        this._items = items.slice();
+
         this._name = null;
-        this._selectorList = null;
+        this._rules = null;
+        this._rulesCacheSubscriptions = [];
         if(!this._allowNamespace) {
-            // lock this.name and this.selectorList
+            // lock this.name
             this.name = undefined;
-            this.selectorList = undefined;
         }
     }
-    var _p = ParameterCollection.prototype = Object.create(Parent.prototype)
+    var _p = ParameterCollection.prototype = Object.create(Parent.prototype);
     _p.constructor = ParameterCollection;
 
+    // called in RuleController._set
     _p.reset = function(/* same as constructor ! */) {
-        // reset all 'own' properties
-        Object.keys(this).forEach(function(key){ delete this[key];}, this);
-        this.constructor.apply(this, Array.prototype.slice.call(arguments));
-    }
+        this._unsetRulesCache();
+
+        // FIXME: without having other listeners on these items, we'll
+        // probably won't need to call the destroy method
+        // but maybe this becomes interesting when the ui displays this
+        // data structure
+        // uncomment calls to destroy everywhere???
+        var items = this._items, i, l;
+        this._items = null;
+        for(i=0,l=items.length;i<l;i++)
+            items[i].destroy();
+
+        // reset all own, enumerable, configurable properties
+        Object.keys(this).forEach(function(key) {
+            if(Object.getOwnPropertyDescriptor(this, key).configurable)
+                delete this[key];
+        }, this);
+
+        this.constructor.apply(this, arguments);
+        // the collection changed most probably
+        this._trigger('structural-change');
+    };
 
     _p.toString = function() {
-        var result;
-        if(!this._name)
-            return this._items.join('\n\n');
+        return this._items.join('\n\n');
+    };
 
-        return ['@',this._name, '(', this.selectorList,')', ' {\n',
-            this._items.join('\n\n') ,'\n}'].join('')
+    /**
+     * subclasses of this will have to overide this definition
+     */
+    Object.defineProperty(_p, 'invalid', {
+        value: false
+    });
+
+    function _filterRules(item) {
+        return item instanceof Rule;
     }
+
+    /**
+     * for display in the ui
+     */
+    Object.defineProperty(_p, 'items', {
+        get: function(){return this._items.slice();}
+    });
+
+    Object.defineProperty(_p, 'length', {
+        get: function(){ return this._items.length;}
+    });
 
     Object.defineProperty(_p, 'name', {
         enumerable: true
       , get: function() {
-            return (this._name ? this._name.name : null);
+            return (this._name ? this._name : null);
         }
       , set: function(name) {
             if(this._name !== null)
-                throw new CPSError('Name is already set');
+                throw new CPSError('Name is already set: ' + this._name);
             if(name === undefined) {
                 this._name = undefined;
                 return;
             }
-            else if(!(name instanceof AtRuleName))
+            else if(typeof name !== 'string')
                 throw new CPSError('Name has the wrong type, expected '
-                    + 'AtRuleName but got: '
-                    + (name.constructor.name
+                    + 'string but got: '
+                    + (name.constructor
                         ? name.constructor.name
-                        : name.constructor));
+                        : name + ' typeof: ' + (typeof name)));
             this._name = name;
         }
-    })
-
-    Object.defineProperty(_p, 'selectorList', {
-        enumerable: true
-      , set: function(selectorList) {
-            if(this._selectorList !== null)
-                throw new CPSError('selectorList is already set');
-            if(selectorList === undefined) {
-                this._selectorList = undefined;
-                return;
-            }
-            else if(!(selectorList instanceof SelectorList))
-                throw new CPSError('selectorList has the wrong type, expected '
-                    + 'SelectorList but got: '
-                    + (selectorList.constructor.name
-                        ? selectorList.constructor.name
-                        : selectorList.constructor));
-            this._selectorList = selectorList;
-        }
-      , get: function() {
-            return this._selectorList || null;
-        }
-    })
-
-
-    function _filterCollections(Type, name, item) {
-        return (
-            item instanceof Type
-            && (name !== undefined
-                            ? item.name === name
-                            : true)
-        );
-    }
-    _p.getAtRuleCollections = function(name) {
-        return this._items.filter(_filterCollections
-                                    .bind(null, AtRuleCollection, name));
-    }
-
-    _p.getNamespaceCollections = function() {
-        return this._items.filter(_filterCollections
-                        .bind(null, ParameterCollection, 'namespace'));
-    }
-
-    function _addNamespacedRuleGetter(propertyName, baseType, baseName
-                                                    , baseConstructor) {
-        Object.defineProperty(_p, propertyName, {
-            get: function() {
-                var i=0
-                  , namespacedRules = []
-                  , namespace = this.selectorList
-                  , childRules
-                  , addNamespace = _addNamespace.bind(null, namespace)
-                  ;
-                for(;i<this._items.length;i++) {
-                    if(_filterCollections(baseType, baseName, this._items[i]))
-                        childRules = baseConstructor(namespace, this._items[i]);
-                    else if(this._items[i] instanceof ParameterCollection) {
-                        childRules = this._items[i][propertyName];
-                        if (namespace)
-                            childRules.forEach(addNamespace);
-                    }
-                    else
-                        continue;
-                    Array.prototype.push.apply(namespacedRules, childRules)
-                }
-                return namespacedRules;
-            }
-        });
-    }
-
-    function _addNamespace(namespace, namespacedRule) {
-        namespacedRule[0].push(namespace);
-    }
-
-    function _createNamespacedRule(namespace, rule) {
-        return [ (namespace ? [namespace] : []), rule];
-    }
+    });
 
     /**
      * this returns all rules that are direct children of this collection
      * AND all rules of ParameterCollection instances that are
-     * direct children of this collection
+     * direct children of this collection, a "flattened" list in the form:
+     * [
+     *    [namespace Selectorlist, Rule]
+     *  , [namespace Selectorlist, Rule]
+     *  , ...
+     * ]
+     *
      */
-    _addNamespacedRuleGetter('rules', Rule, undefined,
-        function(namespace, rule) {
-            return [_createNamespacedRule(namespace, rule)];
+    Object.defineProperty(_p, 'rules', {
+        get: function() {
+            if(!this._rules)
+                this._rules = this._getRules();
+            return this._rules;
         }
-    );
+    });
 
     /**
-     * this returns all rules of dictionaries that are direct children of
-     * this collection AND all rules of dictionaries that are children of
-     * ParameterCollection instances that are direct children of this collection
+     * invalidate the cache on the right occasions,
+     * This are events that imply:
+     *  -- That a child rule changed its SelectorList
+     *  -- That this AtNamespaceCollection changed its SelectorList (right???)
+     *  -- That this ParameterCollection changed its set of Rules
+     *  -- That a child ParameterCollection changed its set of Rules
+     *
+     * We dont need invalidation of this cache if a Rule changed the contents
+     * of its ParameterDict.
      */
-    _addNamespacedRuleGetter('dictionaryRules', AtRuleCollection, 'dictionary',
-        // N.B. Here we invoke AtRuleCollection.rules, not ParameterCollection.rules
-        // AtRuleCollection.rules returns [Rule, Rule, Rule, ... ]
-        function(namespace, collection) {
-            return collection.rules.map(_createNamespacedRule.bind(null, namespace))
+    _p._unsetRulesCache = function() {
+        var i,l, subscription;
+        this._rules = null;
+        this._unsubscribeAll();
+    };
+
+    _p._subscribe = function(item, channel, callback, data) {
+        var subscriptionID = item.on(channel, callback, data);
+        this._rulesCacheSubscriptions.push([item, subscriptionID]);
+    };
+    _p._unsubscribeAll = function() {
+        var i, l, subscription;
+        for(i=0,l=this._rulesCacheSubscriptions.length;i<l;i++) {
+            subscription = this._rulesCacheSubscriptions[i];
+            subscription[0].off(subscription[1]);
         }
-    );
+        this._rulesCacheSubscriptions = [];
+    };
+
+    _p._structuralChangeHandler = function(data, channelName, eventData) {
+        this._unsetRulesCache();
+        this._trigger('structural-change');
+    };
+
+    _p._getRules = function () {
+        var i, l, j, ll
+          , rules = []
+          , childRules
+          , item, rule
+          , selectorList
+          , callback = [this, '_structuralChangeHandler']
+          , ruleChannel = 'selector-change'
+          , collectionChannel = 'structural-change'
+          , copyRules
+          ;
+        for(i=0, l=this._items.length;i<l;i++) {
+            item = this._items[i];
+            if(item instanceof Rule) {
+                this._subscribe(item, ruleChannel, callback);
+                if(item.invalid) continue;
+                // 0: array of namespaces, initially empty
+                // 1: the instance of Rule
+                // thus: [selectorList, rule, [_Collections where this rule is embeded]]
+                rules.push([ item.getSelectorList(), item]);//, [this] ]);
+            }
+            else if(item instanceof ParameterCollection) {
+                this._subscribe(item, collectionChannel, callback);
+                if(item.invalid)
+                    continue;
+                childRules = item.rules;
+                // rules of @import are copied, because they are reused
+                // in other collections as well. @namespace changes the
+                // rule array, for example, that changes all other instances
+                // of that rule array as well. So, rule arrays that are reused
+                // must be copied, this is currently only true for
+                // @import
+                // NOTE: this is also caused partly by the `this._rules`
+                // cache. Thus a possible solution would be to not use
+                // caches for some types of ParameterCollection. @import
+                // could, instead of returning the proxied value, return
+                // a copy of it's _reference rules.
+                // @namespace, on the other hand, needs no cache in principle
+                // becuase the important cache is the plain ParameterCollection
+                // that contains the @namespace ...
+                copyRules = (item.name === 'import');
+                for(j=0,ll=childRules.length;j<ll;j++) {
+                    rule = childRules[j];
+                    // add `this` to the third entry to produce a history
+                    // of nested ParameterCollections, this is to show
+                    // in the the ui where this rule comes from
+                    // rule[2].push(this);
+                    rules.push(copyRules ? rule.slice() : rule);
+                }
+            }
+        }
+        return rules;
+    };
+
+
+    function _checkItem(item) {
+        return (
+                (item instanceof Rule && !item.invalid)
+             || (item instanceof ParameterCollection && !item.invalid)
+             || item instanceof Comment
+        );
+    }
+    /**
+     * One to rule them all:
+     *
+     * insert a Rule (which must have a valid SelectorList)
+     * remove a Rule
+     * replace a rule
+     * Add/remove @namespace (with valid SelectorList) or @import
+     * Add/remove comments
+     * Remove invalid hunks of data. <= just don't allow inserting invalid hunks
+     *
+     * all is done with Array.prototype.splice
+     * see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+     *
+     * emits:
+     *      "delete" if there where deletions
+     *      "add" if there where insertion
+     *      "structural-change" if there where insertion or deletions
+     */
+    _p.splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
+        var insertions = _insertions instanceof Array
+            ? _insertions
+            : [_insertions]
+          , deleted
+          , args
+          , i, l
+          , item
+          , events = []
+          ;
+        for(i=0,l=insertions.length;i<l; i++) {
+            item = insertions[i];
+            if(!_checkItem(item))
+                throw new ValueError('Trying to insert an invalid item: ' + item);
+        }
+
+        args = [startIndex, deleteCount];
+        Array.prototype.push.apply(args, insertions);
+        deleted = Array.prototype.splice.apply(this._items, args);
+        for(i=0,l=deleted.length;i<l;i++)
+            deleted[i].destroy();
+        if(deleted.length)
+            events.push('delete');
+        if(insertions.length)
+            events.push('add');
+        if(!events.length)
+            // nothing happened
+            return;
+        events.push('structural-change');
+        // TODO: Add maybe information like three numbers:
+        //      index, deletedCount, insertedCount
+        // That could help to update the ui, however, usually a ui is not
+        // that delicate!.
+        // NOTE: index and deletedCount must be calculated see the
+        // docs for Array.prototype.slice
+        this._trigger(events);
+    };
+
+    _p.getItem = function(index) {
+        return this.items[index];
+    };
 
     return ParameterCollection;
 });
@@ -45622,7 +46125,7 @@ define('metapolator/models/CPS/parsing/engine',[
     'metapolator/errors'
   , './Source'
   , 'metapolator/models/CPS/elements/ParameterCollection'
-  
+
 ], function (
     errors
   , Source
@@ -45633,7 +46136,7 @@ define('metapolator/models/CPS/parsing/engine',[
     // FIXME: handle errors!
     // especially erros thrown by gonzales, due to bad CSS input need
     // some attention
-    
+
     var _pattern_linebreak = /\n/g;
     function _countLinebreaks(data) {
         switch (data) {
@@ -45647,10 +46150,10 @@ define('metapolator/models/CPS/parsing/engine',[
                 return 1;
             default:
                 // this is the most expensive one
-                return (data.match(_pattern_linebreak) || [] ).length
+                return (data.match(_pattern_linebreak) || [] ).length;
         }
     }
-    
+
     /**
      * Create a node as used in engine.
      */
@@ -45686,12 +46189,12 @@ define('metapolator/models/CPS/parsing/engine',[
         };
         return node;
     }
-    
+
     /**
      * Create a parameter node (ParameterCollection) from an Abstract
      * Syntax Tree(AST) like the one that is returned by gonzales.srcToCSSP
      * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
-     * 
+     *
      * In the ParameterList Tree, there will be some arrays of the AST
      * referenced. SO if you are going to change the AST, you might change
      * ParameterList items, too. Create a deep copy of the AST if you
@@ -45714,28 +46217,28 @@ define('metapolator/models/CPS/parsing/engine',[
           , oldNodeConstructors
           , i
           ;
-        
+
         // initial frame
         root = _makeNode(nodeConstructors, false, lineNo, ast);
         // use slice to make a copy of the ast array
         stack.push([ast.slice(), root]);
-        
+
         // we want to walk the complete tree, because we want to detect all
         // ["s", " \n "] etc. so we can count line breaks. I hope the gonzales
         // parser doesn't hide line breaks from us.
         // Line numbers are VERY helpful when working with a CSS file
         // that's why I want to keep them
-        while(frame = stack.pop()) {
+        while((frame = stack.pop())) {
             // if frame 2 is set this means that the element switched
             // nodeConstructors for its own object, and that the
             // old nodeConstructors object is in frame[2]
-            
-            ASTType = frame[0][0]
+
+            ASTType = frame[0][0];
             //remove the 2nd item from frame[0] and return it encapsulated
             // into an array
-            data = frame[0].splice(1, 1)
-            node = frame[1]
-            
+            data = frame[0].splice(1, 1);
+            node = frame[1];
+
             // only ASTType is left; frame[0].splice(1, 1) returned and empty array
             if(!data.length) {
                 // ASCENDING
@@ -45749,14 +46252,14 @@ define('metapolator/models/CPS/parsing/engine',[
                 continue;
             }
             // there may still be data left, we have to revisit this frame
-            stack.push(frame)
+            stack.push(frame);
             data = data[0];
             if(!(data instanceof Array)) {
                 // DEEPEST POINT, this node has no children
                 // assert(!('children' in node), 'A data node must not have a children key')
                 // save the data
                 node.data = data;
-                
+
                 if (ASTType in {'comment':null, 's':null})
                     // count linebreaks
                     lineNo += _countLinebreaks(data);
@@ -45764,7 +46267,7 @@ define('metapolator/models/CPS/parsing/engine',[
             }
             // data is an array
             // DESCENDING
-            
+
             // switch nodeConstructors if it's the right element
             // currently only used for @dictionary, but this mechanism
             // is very generic
@@ -45777,12 +46280,12 @@ define('metapolator/models/CPS/parsing/engine',[
                     break;
                 }
             }
-            
-            childNode = _makeNode(nodeConstructors, node, lineNo, data)
+
+            childNode = _makeNode(nodeConstructors, node, lineNo, data);
             // Each frame needs to be visited, because we want to count
             // lines.
             // Use slice to make a copy of the data array
-            stack.push([data.slice(), childNode, oldNodeConstructors])
+            stack.push([data.slice(), childNode, oldNodeConstructors]);
             if(!childNode.makeInstance)
                 continue;
             // keep the childNode
@@ -45795,40 +46298,13 @@ define('metapolator/models/CPS/parsing/engine',[
         if(!(root.instance instanceof ParameterCollection))
             throw new CPSError('Parser was expected to create an instance '
                                 + 'of ParameterCollection but it delivered '
-                                + 'a ' + root.instance.constructor.name)
-        
+                                + 'a ' + root.instance.constructor.name);
+
         return root.instance;
     }
     return parserEngine;
-})
-;
-define('metapolator/models/CPS/elements/Comment',[
-    './_Node'
-], function(
-    Parent
-) {
-    
-    /**
-     * Any comment in the CPS.
-     */
-    function Comment(comment, source, lineNo) {
-        Parent.call(this, source, lineNo);
-        this._comment = comment;
-    }
-    var _p = Comment.prototype = Object.create(Parent.prototype)
-    _p.constructor = Comment;
-    
-    _p.toString = function() {
-        return ['/*', this._comment, '*/'].join('');
-    }
-    
-    Object.defineProperty(_p, 'comment', {
-        get: function(){ return this._comment; }
-    })
-    
-    return Comment;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/GenericCPSNode',[
     './_Node'
   , 'gonzales/gonzales'
@@ -45848,33 +46324,33 @@ define('metapolator/models/CPS/elements/GenericCPSNode',[
         Parent.call(this, source, lineNo);
         this._ast = ast;
     }
-    var _p = GenericCPSNode.prototype = Object.create(Parent.prototype)
+    var _p = GenericCPSNode.prototype = Object.create(Parent.prototype);
     _p.constructor = GenericCPSNode;
-    
+
     // should this return a deep copy to protect its data??
     // since we are not about changing a GenericCPSNode at all,
     // it shouldn't be possible to change the _ast data!
     // Object.defineProperty(_p, 'ast', {
     //     get: function(){ return this._ast.slice(); }
     // })
-    
+
     _p.toString = function() {
-        return gonzales.csspToSrc(this._ast)
-    }
-    
+        return gonzales.csspToSrc(this._ast);
+    };
+
     Object.defineProperty(_p, 'type', {
         get: function(){ return this._ast[0]; }
-    })
-    
+    });
+
     return GenericCPSNode;
-})
-;
+});
+
 define('metapolator/models/CPS/parsing/baseFactories',[
     'metapolator/errors'
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/Comment'
   , 'metapolator/models/CPS/elements/GenericCPSNode'
-  
+
 ], function (
     errors
   , ParameterCollection
@@ -45888,32 +46364,32 @@ define('metapolator/models/CPS/parsing/baseFactories',[
      * this can be both because JavaScript allows to call a factory function
      * using the new operator like in `new myfactory()`. The factory must
      * return a new object in this case.
-     * 
+     *
      * all constructors take the following arguments: (node, source)
      * @node: object as created by parserEngine._makeNode and augmented by
      * parserEngine
      * @source: instance of parameters/Source
-     * 
+     *
      * We'll use mostly factories, because the "node" we use as argument
      * is not exactly a nice interface. However, its called _nodeConstructors
      * because that implies that these functions are beeing called using
      * the `new` keyword.
-     * 
+     *
      * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
      */
     return {
         /**
          * stylesheet:
-         * 
+         *
          * A list of rulesets, comments and __GenericAST__
          * We will delete __GenericAST__ of type 's'
-         * 
+         *
          * From the docs:
          * Consists of ruleset (a set of rules with selectors),
          * atrules (single-line at-rule),
          * atruleb (block at-rule)
          * and atruler (at-rule with ruleset).
-         * 
+         *
          * Also there are s (whitespace) and comment (comments).
          */
         'stylesheet': function(node, source) {
@@ -45924,18 +46400,18 @@ define('metapolator/models/CPS/parsing/baseFactories',[
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
-            
+
             return new ParameterCollection(items, source, node.lineNo);
         }
-        /** 
+        /**
          * comment:
-         * 
+         *
          * A comment. We keep comments in the most cases around.
-         * 
+         *
          * Nodes aware of comments are:
-         * 
+         *
          * stylesheet
          * simpleselector
          * block
@@ -45947,16 +46423,16 @@ define('metapolator/models/CPS/parsing/baseFactories',[
         }
       /**
        * Everything we refuse to understand at this point or later.
-       * 
-       * We use this constructy to keep alien data around and to be able
+       *
+       * We use this constructor to keep alien data around and to be able
        * to reproduce it upon serialization.
        */
       , '__GenericAST__': function (node, source) {
             return new GenericCPSNode(node.rawData, source, node.lineNo);
         }
-    }
-})
-;
+    };
+});
+
 define('metapolator/models/CPS/elements/Combinator',[
     './_Node'
 ], function(
@@ -45968,35 +46444,37 @@ define('metapolator/models/CPS/elements/Combinator',[
      */
     function Combinator(value, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._value = value;
+        Object.defineProperties(this, {
+            'type': {
+                value: this._types[value] || 'unknown'
+              , enumerable: true
+            }
+          , 'value': {
+                value: value
+              , enumerable: true
+            }
+        });
     }
-    var _p = Combinator.prototype = Object.create(Parent.prototype)
+    var _p = Combinator.prototype = Object.create(Parent.prototype);
     _p.constructor = Combinator;
-    
+
     _p.toString = function() {
-        if(this._value === ' ')
-            return this._value;
-        return ' ' + this._value + ' ';
-    }
-    
+        return (this.value === ' '
+             ? ' '
+             : ' ' + this.value + ' '
+        );
+    };
+
     _p._types = {
         '>': 'child'
       , ' ': 'descendant'
       , '+': 'next-sibling'
       , '~': 'following-sibling'
-    }
-    
-    Object.defineProperty(_p, 'type', {
-        get: function(){ return this._types[this._value] || 'unknown'; }
-    })
-    
-    Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value; }
-    })
-    
+    };
+
     return Combinator;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/ComplexSelector',[
     'metapolator/errors'
   , './_Node'
@@ -46007,23 +46485,23 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
   , Combinator
 ) {
     
-    
-    var CPSError = errors.CPS
+
+    var CPSError = errors.CPS;
     /**
      * A ComplexSelector is a chain of one or more compound selectors
-     * separated by combinators. 
-     * 
+     * separated by combinators.
+     *
      * TODO: we will need to extract the meaning of the elements
-     * 
+     *
      * so far, we extract:
-     * 
+     *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     * 
-     * 
+     *
+     *
      * A selector may be invalid, which would mark its selectorList invalid
      * (and thus all selectors in that list)
-     * 
+     *
      *  reasons for invalid selectors:
      *      it's empty
      *      a child of it is invalid
@@ -46031,115 +46509,101 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
      *          only possible for > at the moment
      *          invalid: master>>penstroke
      *          valid: master>*>penstroke
-     * 
+     *
      * a compound selector is invalid if
      *      - it has more than one of universal or type selector
-     *      - a universal or type selector occurs not as first 
-     * 
-     * 
-     * A selector may be alien, which means we ignore it, because we don't
-     * understand it. an alien selector is not invalid, thus its selectorlist
-     * is still valid.
-     * 
-     * 
+     *      - a universal or type selector occurs not as first
      */
     function ComplexSelector(value, source, lineNo) {
         Parent.call(this, source, lineNo);
         this._value = value;
-        this._invalid = false;
-        this._alien = false;
-        this._message = undefined;
         this._specificity = null;
 
-        var i = 0
-          , item
-          ;
-        
-        for(;i<this._value.length;i++) {
+        var i, l, item, invalid = false, message;
+        if(!this._value.length) {
+            invalid = true;
+            message =  'A selector must not be empty';
+        }
+        else if(this._value[this._value.length-1] instanceof Combinator) {
+                invalid = true;
+                message ='The last item of a selector must not '
+                                +'be a combinator, found: '
+                                + this._value[this._value.length-1].value;
+        } else for(i=0,l=this._value.length;i<l;i++) {
             item = value[i];
             if(item instanceof Combinator) {
-                if(!(item.type in this._combinators)) {
-                    this._alien = true;
-                    this._message = 'The combinator type "'+ item.type
-                            +'" is alien to us';
-                }
-                // keep on parsing, this can still become invalid
                 if(i === 0) {
-                    this._invalid = true;
-                    this._message = 'The first item in a selector must '
+                    invalid = true;
+                    message = 'The first item in a selector must '
                                                 +'not be a combinator';
-                    return;
+                }
+                else if(!(item.type in this._combinators)) {
+                    invalid = true;
+                    message = 'The combinator type "'+ item.type
+                                                    +'" is alien to us';
                 }
                 // if this is a combinator and the last item in values
                 // is a combinator, too, this is inavlid
                 else if(this._value[this._value.length-1] instanceof Combinator) {
-                    this._invalid = true;
-                    this._message = ['Two subsequent combinators in a'
+                    invalid = true;
+                    message = ['Two subsequent combinators in a'
                                     , 'selector are not valid. Found:'
                                     , this._value[this._value.length-1].value
                                     , 'followed by:' + item.value
                                     ].join(' ');
-                    return;
                 }
             }
-            else if(item.alien || item.invalid) {
-               this._invalid = item.invalid || this._invalid;
-               this._alien = item.alien || this._alien;
-               this._message = item.message;
-               return;
+            else if(item.invalid) {
+               invalid = true;
+               message = item.message;
             }
+
+            if (invalid) break;
         }
-        if(!this._value.length) {
-            this._invalid = true;
-            this._message =  'A selector must not be empty'
-        } 
-        else if(this._value[this._value.length-1] instanceof Combinator) {
-                this._invalid = true;
-                this._message ='The last item of a selector must not '
-                                +'be a combinator, found: '
-                                + this._value[this._value.length-1].value;
-        }
+
+        Object.defineProperties(this, {
+            'selects': {
+                value: !invalid
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: invalid
+              , enumerable: true
+            }
+          , 'message': {
+                value: message
+              , enumerable: true
+            }
+        });
     }
-    
+
     ComplexSelector.add = function(a, b) {
         var value = a.value;
         value.push(new Combinator(' ', a.source, a.lineNo));
         Array.prototype.push.apply(value, b._value);
         return new ComplexSelector(value, a.source, a.lineNo);
-    }
-    
-    var _p = ComplexSelector.prototype = Object.create(Parent.prototype)
+    };
+
+    var _p = ComplexSelector.prototype = Object.create(Parent.prototype);
     _p.constructor = ComplexSelector;
-    
+
     _p.toString = function() {
         return this._value.join('');
-    }
-    
+    };
+
     _p._combinators = {
         // the child combinator
         'child' : true
       , 'descendant': true
-    }
-    
-    Object.defineProperty(_p, 'selects', {
-        get: function(){ return !this._invalid && !this._alien; }
-    });
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._invalid;}
-    });
-    Object.defineProperty(_p, 'alien', {
-        get: function(){ return this._alien;}
-    });
-    Object.defineProperty(_p, 'message', {
-        get: function(){ return this._message;}
-    });
+    };
+
     Object.defineProperty(_p, 'value', {
         get: function() {
             // if _value is truthy return a copy of the _value array
             // if value is falsy, return its falsy value (probably undefiend)
             return this._value && this._value.slice();}
     });
-    
+
     Object.defineProperty(_p, 'specificity', {
         get: function() {
             var a, b, c, i=0, specificity;
@@ -46157,15 +46621,15 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
             }
             return this._specificity;
         }
-    })
-    
+    });
+
     _p.add = function(complexSelector) {
         return this.constructor.add(this, complexSelector);
-    }
-    
+    };
+
     return ComplexSelector;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/SimpleSelector',[
     'metapolator/errors'
   , './_Node'
@@ -46176,53 +46640,64 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
   , GenericCPSNode
 ) {
     
-    
-    var CPSError = errors.CPS
+
+    var CPSError = errors.CPS;
     /**
-     * This may become an interface for enhancement via plugins. 
-     * 
+     * This may become an interface for enhancement via plugins.
+     *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     * 
-     * A selector may be alien, which means we ignore it, because we don't
-     * understand it. An alien selector is not invalid, thus its SelectorList
-     * is still valid.
      */
     function SimpleSelector(type, name, value, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._invalid = false;
-        this._alien = false;
-        this._message = undefined;
-        this._value = undefined;
         this._specificity = null;
-
+        var invalid = false, message;
         if(!(type in this._supportedTypes)) {
-            this._alien = true;
-            this._message = 'Type of SimpleSelector is unsupported:' + type;
+            invalid = true;
+            message = 'Type of SimpleSelector is unsupported:' + type;
         }
-        this._type = type;
-        
-        if(name === undefined) {
-            this._invalid = true;
-            this._message = 'Name of SimpleSelector is unkown!';
-            return;
+        else if(name === undefined) {
+            invalid = true;
+            message = 'Name of SimpleSelector is unkown!';
         }
-        this._name = name;
-        
-        if(this._type === 'pseudo-class' && this._name === 'i') {
+        else if(type === 'pseudo-class' && name === 'i') {
             if(value === undefined || value !== value || typeof value !== 'number') {
-                this._invalid = true;
-                this._message = 'No valid value for pseudoclass "i": ('
+                invalid = true;
+                message = 'No valid value for pseudoclass "i": ('
                                             + typeof value +') '  + value;
-                return;
             }
-            this._value = value;
         }
+        Object.defineProperties(this, {
+            'selects': {
+                value: !invalid
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: invalid
+              , enumerable: true
+            }
+          , 'message': {
+                value: message
+              , enumerable: true
+            }
+          , 'type': {
+                value: type
+              , enumerable: true
+            }
+          , 'name': {
+                value: name
+              , enumerable: true
+            }
+          , 'value': {
+                value: value
+              , enumerable: true
+            }
+        });
     }
-    
-    var _p = SimpleSelector.prototype = Object.create(Parent.prototype)
+
+    var _p = SimpleSelector.prototype = Object.create(Parent.prototype);
     _p.constructor = SimpleSelector;
-    
+
     _p.toString = function() {
         switch(this.type) {
             case 'universal':
@@ -46236,13 +46711,12 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
                 return '::'+this.name;
             case 'pseudo-class':
                 return ':' + this.name
-                            + (this._value !== undefined
-                                    ? '('+this._value+')'
+                            + (this.value !== undefined
+                                    ? '('+this.value+')'
                                     : '');
         }
-        
-    }
-    
+    };
+
     _p._supportedTypes = {
         'universal': null
       , 'type': null
@@ -46250,33 +46724,14 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
       , 'id': null
       , 'pseudo-class': null
       , 'pseudo-element': null
-    }
-    
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._invalid;}
-    });
-    Object.defineProperty(_p, 'alien', {
-        get: function(){ return this._alien;}
-    });
-    Object.defineProperty(_p, 'message', {
-        get: function(){ return this._message;}
-    });
-    Object.defineProperty(_p, 'type', {
-        get: function(){ return this._type;}
-    });
-    Object.defineProperty(_p, 'name', {
-        get: function(){ return this._name;}
-    });
-    Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value;}
-    });
+    };
     Object.defineProperty(_p, 'specificity', {
         get: function() {
             var s = this._specificity;
             if(!s) {
                 var a, b, c;
                 a = b = c = 0;
-                switch(this._type) {
+                switch(this.type) {
                     case 'id':
                         a = 1;
                         break;
@@ -46295,10 +46750,10 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
             return s;
         }
     });
-    
+
     return SimpleSelector;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/CompoundSelector',[
     'metapolator/errors'
   , './_Node'
@@ -46325,48 +46780,37 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
      *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     *
-     *  reasons for invalid selectors:
-     *
-     * A selector may be alien, which means we ignore it, because we don't
-     * understand it. an alien selector is not invalid, thus its selectorlist
-     * is still valid.
      */
     function CompoundSelector(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._alien = false;
-        this._invalid = false;
-        this._message = undefined;
         this._specificity = undefined;
-        
+
         if(selectors.length === 0)
             throw new CPSError('CompoundSelector has no SimpleSelector items');
-        
+
         this._value = selectors.slice();
         if(!(this._value[0].type in {'universal': null, 'type': null})) {
             this._value.unshift(new SimpleSelector('universal', '*',
                                             undefined, source, lineNo));
             this._value[0].___implicit = true;
         }
-        
-        var i=0
+
+        var i,l
           , selector
+          , invalid = false
+          , message
           ;
-        for(;i<this._value.length;i++) {
+        for(i=0,l=this._value.length;i<l;i++) {
             selector = this._value[i];
-            if(selector.alien) {
-                this._alien = true;
-                this._message = 'Unknown selector: ' + selector.type + ' ' + selector.name;
-            }
             if(selector.invalid) {
-                this._invalid = true;
-                this._message = 'Invalid selector: ' + selector;
+                invalid = true;
+                message = 'Invalid selector: ' + selector;
                 break;
             }
             if(i !== 0
                     && selector.type in {'universal': null, 'type': null}) {
-                this._invalid = true;
-                this._message = ['Type Selector and Universal selector'
+                invalid = true;
+                message = ['Type Selector and Universal selector'
                                 , 'can only be the first in a CompoundSelector'
                                 , 'but found "'+ selector +'" at position:'
                                 , (i+1)].join(' ');
@@ -46374,6 +46818,25 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
             }
         }
 
+        Object.defineProperties(this, {
+            'selects': {
+                value: !invalid
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: invalid
+              , enumerable: true
+            }
+          , 'message': {
+                value: message
+              , enumerable: true
+            }
+          , 'type': {
+                // a element type name or *
+                value: this._value[0].name
+              , enumerable: true
+            }
+        });
         this._normalizedValue = undefined;
         this._normalizedName = undefined;
         this.compiled = false;
@@ -46407,29 +46870,11 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
         this.compiled = true;
     };
 
-    Object.defineProperty(_p, 'selects', {
-        get: function(){ return !this._invalid && !this._alien; }
-    });
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._invalid;}
-    });
-    Object.defineProperty(_p, 'alien', {
-        get: function(){ return this._alien;}
-    });
-    Object.defineProperty(_p, 'message', {
-        get: function(){ return this._message;}
-    });
     Object.defineProperty(_p, 'value', {
         get: function() {
             // if _value is truthy return a copy of the _value array
             // if value is falsy, return its falsy value (probably undefiend)
             return this._value && this._value.slice();}
-    });
-    // a element type name or *
-    Object.defineProperty(_p, 'type', {
-        get: function() {
-            return this._value[0].name;
-        }
     });
 
     /**
@@ -46483,7 +46928,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
   , 'metapolator/models/CPS/elements/Combinator'
   , 'metapolator/models/CPS/elements/GenericCPSNode'
   , 'metapolator/models/CPS/elements/Comment'
-  
+
 ], function (
     errors
   , baseFactories
@@ -46503,20 +46948,20 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
      * this can be both because JavaScript allows to call a factory function
      * using the new operator like in `new myfactory()`. The factory must
      * return a new object in this case.
-     * 
+     *
      * all constructors take the following arguments: (node, source)
      * @node: object as created by parserEngine._makeNode and augmented by
      * parserEngine
      * @source: instance of parameters/Source
-     * 
+     *
      * We'll use mostly factories, because the "node" we use as argument
      * is not exactly a nice interface. However, its called _nodeConstructors
      * because that implies that these functions are beeing called using
      * the `new` keyword.
-     * 
+     *
      * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
      */
-     
+
     // inherit from baseFactories
     var selectorFactories = Object.create(baseFactories);
     (function(factories){
@@ -46525,9 +46970,9 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
     })({
         /**
          * ruleset:
-         * 
+         *
          * Has a "selector" as first child and a "block" as second child.
-         * 
+         *
          * From the docs:
          * Consists of selector (selector) and block (a set of rules).
          */
@@ -46538,34 +46983,35 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                 + 'expected to be a "selector", but got "' + node.children[0].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
-            
+                +'.', (new Error()).stack);
+
             if(node.children[1].type !== 'block')
                 throw new CPSError('The second child of "ruleset" is '
                 + 'expected to be a "block", but got "' + node.children[1].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
             selectorList = node.children[0].instance;
             parameterDict = node.children[1].instance;
-            
-            return new Rule(selectorList, parameterDict, source, node.lineNo)
+
+            return new Rule(selectorList, parameterDict, source, node.lineNo);
         }
         // just a stub
       , 'block': function(node, source){
+            /*jshint sub:true*/
             var item = baseFactories['__GenericAST__'](node, source);
             item.selects = true;
             return item;
         }
         /**
          * selector:
-         * 
+         *
          * A list of selectors.
-         * 
+         *
          * It contains 'simpleselector' and divides these by 'delim'.
          * delim is a comma in the serialization. Comments are not in here,
          * as these map to the 'simpleselector's.
-         * 
+         *
          * From the docs:
          * Node to store simpleselector groups.
          */
@@ -46574,35 +47020,24 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
               , selectorList
               ;
             items = node.children
-                .filter(function(item){return item.type === 'simpleselector'})
-                .map(function(item){return item.instance;})
-            return new SelectorList(items, source, node.lineNo)
+                .filter(function(item){return item.type === 'simpleselector';})
+                .map(function(item){return item.instance;});
+            return new SelectorList(items, source, node.lineNo);
         }
         /**
          * simpleselector:
-         * 
+         *
          * An item in a list of selectors "selector".
-         * 
+         *
          * This has a lot different elements, also whitespace 's' AND
          * comments 'comment' etc.
-         * 
+         *
          * creates a ComplexSelector
          */
       , 'simpleselector': function(node, source, ruleController) {
             var elements = node.children
                     .map(function(item){return item.instance;})
-              , invalid = false
-              , alien = false
-              , invalidMessage
               , value = []
-              , fallbackString
-                /* combinators that are not alien */
-              , combinators = {
-                    // the child combinator
-                    'child' : true
-                    // whitespace is the descendant combinator, but we have to detect
-                    // this another way
-                }
               , i=0
               , item
               , compoundSelectorElements = null
@@ -46618,22 +47053,22 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                     // skip all comments
                     // we can get them back in if we want though
                     continue;
-            
+
                 if(item instanceof Combinator) {
                     // close the current simple selector
                     compoundSelectorElements = null;
                     value.push(item);
                     continue;
                 }
-                
+
                 // may be whitespace, or a simple selector
                 if(isWhitespace) {
                     // close the current simple selector
                     compoundSelectorElements = null;
                     continue;
                 }
-                
-                // must be a simple selector (or invalid/alien)
+
+                // must be a simple selector (or invalid)
                 if(compoundSelectorElements === null) {
                     // if no other combinator is already there:
                     if(value.length && !(value[value.length-1] instanceof Combinator))
@@ -46642,7 +47077,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                         // in this case. we could have remembered the source and line
                         // of the last whitespace
                         value.push(new Combinator(' ', source, node.lineNo));
-                
+
                     // make a new one
                     compoundSelectorElements = [];
                     value.push(compoundSelectorElements);
@@ -46656,22 +47091,22 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                 // replace directly
                 value[i] = compoundSelectorFactory(value[i],
                                 value[i][0]._source, value[i][0]._lineNo
-                              , ruleController && ruleController.selectorEngine)
+                              , ruleController && ruleController.selectorEngine);
             }
             return new ComplexSelector(value, source, node.lineNo);
         }
         /**
-         * 
+         *
          * Combinator: +, >, ~
          * is a child of ComplexSelector
-         * 
+         *
          */
       , 'combinator': function (node, source) {
             return new Combinator(node.data, source, node.lineNo);
         }
-    })
-    
-    
+    });
+
+
     function _getImplicitUniversalSelector(source, lineNo) {
         var ast = new GenericCPSNode(['ident', '*'])
           , selector = new SimpleSelector({type: 'universal', name: '*'}
@@ -46706,8 +47141,8 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
             cs.compile(selectorEngine);
         return cs;
     }
-    
-    
+
+
     function _getSimpleSelectorType(type, name) {
         switch(type) {
           case 'ident':
@@ -46725,7 +47160,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
         }
         return undefined;
     }
-    
+
     function _getSimpleSelectorName(element) {
         var name = name;
         if(typeof element._ast[1] === 'string') {
@@ -46741,10 +47176,10 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
         }
         if(typeof name !== 'string' && name !== undefined)
             throw new CPSError('Can\'t find a name for SimpleSelector ('
-                            + element + ')')
+                            + element + ')');
         return name;
     }
-    
+
     function _getSimpleSelectorClassValueForIndex(element) {
         var body
           , number
@@ -46756,8 +47191,8 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
         body = element._ast[1][2].slice(1)
                    .filter(function(item) {
                         return !(item[0] in {'s':null,'comment':null});
-                    })
-        
+                    });
+
         sign = '+';
         if(body.length === 2 && body[0][0] === 'unary') {
             //  as the docs say: unary is either - or +
@@ -46769,21 +47204,21 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
             // if the result is NaN return undefined
             return (number === number) ? number : undefined;
     }
-    
+
     function simpleSelectorFactory(element) {
         var name = _getSimpleSelectorName(element)
           , type = _getSimpleSelectorType(element.type, name)
           , value
           ;
-        
+
         if(type === 'pseudo-class' && name === 'i')
             value = _getSimpleSelectorClassValueForIndex(element);
         return new SimpleSelector(type, name, value);
     }
-    
+
     return selectorFactories;
-})
-;
+});
+
 define('metapolator/models/CPS/parsing/parseSelectorList',[
     'metapolator/errors'
   , 'gonzales/gonzales'
@@ -46791,7 +47226,7 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
   , './selectorFactories'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/Comment'
-  
+
 ], function (
     errors
   , gonzales
@@ -46802,16 +47237,18 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
 ) {
     
     var CPSError = errors.CPS
-      , CPSParserError = errors.CPSParser;;
+      , CPSParserError = errors.CPSParser
+      ;
 
     function selectorListFromString(string, sourceName, selectorEngine) {
+        var ast;
         try {
-            var ast = gonzales.srcToCSSP(string + '{}');
+            ast = gonzales.srcToCSSP(string + '{}');
         } catch(error) {
             throw new CPSParserError('Error parsing "' + string + '" as a selector. '
                 + 'Message: ' + error.message);
         }
-        return selectorListFromAST(ast, sourceName, selectorEngine)
+        return selectorListFromAST(ast, sourceName, selectorEngine);
     }
 
     function selectorListFromAST(ast, sourceName, selectorEngine) {
@@ -46845,19 +47282,19 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
             // might be a programming error.
         }
         if(!selectorList)
-            throw new CPSParserError('No selector found.')
+            throw new CPSParserError('No selector found.');
         if(!selectorList.selects)
             throw new CPSParserError('SelectorList will not select anything: '
-                    + selectorList.message)
+                    + selectorList.message);
         return selectorList;
     }
-    
+
     return {
         fromString: selectorListFromString
       , fromAST: selectorListFromAST
-    }
-})
-;
+    };
+});
+
 define('metapolator/models/CPS/dataTypes/formulae/parsing/SelectorToken',[
     'metapolator/errors'
   , './_ValueToken'
@@ -47008,6 +47445,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
     };
 
     _p._compile = function(_stack) {
+        /*jshint evil:true*/
         var i, l
           , args
           , stack = []
@@ -47298,7 +47736,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
      */
     _p.setFinalizeMethod = function(method) {
         this._finalizeMethod = method;
-    }
+    };
 
     _p.setBracketOperator = function(bracketLiteral, operatorLiteral) {
         if(!(operatorLiteral in this._operators))
@@ -47785,57 +48223,6 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
     return Parser;
 });
 
-define('metapolator/models/CPS/cpsGetters',[
-    'metapolator/errors'
-  , 'ufojs/main'
-  , 'metapolator/models/MOM/_Node'
-  , './whitelistProxies'
-], function(
-    errors
-  , ufoJSUtils
-  , _MOMNode
-  , whitelistProxies
-) {
-    
-
-    var CPSError = errors.CPS
-      , KeyError = errors.Key
-      , isInt = ufoJSUtils.isInt
-      , isIntString = ufoJSUtils.isIntString;
-
-    /**
-    * This is method is used by CPS Operators or the stack, to read
-    * a key from *anything*
-    *
-    * Throws a KeyError when it fails.
-    * The difference to whitelistGetter is that this method will look in
-    * the styleDict of MOM-Nodes if item is a MOM-Node. Otherwise it uses
-    * whitewlistGetter itself.
-    */
-    function genericGetter(item, name) {
-        if(item instanceof _MOMNode)
-            return item.getComputedStyle().get(name);
-        return whitelistGetter(item, name);
-    }
-
-    /**
-     *
-     */
-    function whitelistGetter(item, name) {
-        if(item === undefined){}//pass
-        else if(item.cps_proxy)
-            return item.cps_proxy[name]
-        else if(item instanceof Array)
-            return whitelistProxies.array(item)[name];
-        throw new KeyError('Item "'+item+'" doesn\'t specify a whitelist for cps, trying to read '+name);
-    }
-
-    return {
-        generic: genericGetter
-      , whitelist: whitelistGetter
-    };
-});
-
 define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
     'metapolator/errors'
   , './parsing/Parser'
@@ -47847,7 +48234,6 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
   , './parsing/_Token'
   , 'metapolator/models/CPS/elements/SelectorList'
   , 'metapolator/models/MOM/_Node'
-  , 'metapolator/models/CPS/cpsGetters'
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
   , 'metapolator/math/hobby'
@@ -47863,7 +48249,6 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
   , _Token
   , SelectorList
   , _MOMNode
-  , cpsGetters
   , transform
   , Vector
   , hobby
@@ -47912,19 +48297,25 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
          * of item and the details of the implementation
          */
       , new Operator('__get__', false, Infinity, 1, 1, [
-            ['*getAPI*', NameToken, 'string', function(getApi, name, key) {
-                var item = getApi(name.getValue());
-                return cpsGetters.generic(item, key);
+            ['*getAPI*', NameToken, 'string', function(getAPI, name, key) {
+                var item = getAPI.get(name.getValue());
+                return getAPI.genericGetter(item, key);
             }]
+            // FIXME: I think a signature of
+            // '*unboxed+getAPI*' ,'*anything*', '*anything*'
+            // would do the same trick, also, the last operator implementation
+            // here: '*unboxed+getAPI*','*anything*', ['number', 'string'] could be removed as well?
+            // maybe, also the first... ????
           , ['*getAPI*', NameToken, NameToken, function(getAPI, name1, name2) {
-                var item = getAPI(name1.getValue())
-                  , key = getAPI(name2.getValue())
+                var item = getAPI.get(name1.getValue())
+                  , key = getAPI.get(name2.getValue())
                   ;
-                return cpsGetters.generic(item, key);
+                return getAPI.genericGetter(item, key);
             }]
             // value: this['parent'][S"point.top"]
-          , [_MOMNode, SelectorList, function(node, selector) {
-                var result = node.query(selector);
+          , ['*unboxed+getAPI*', _MOMNode, SelectorList, function(getAPI, node, selector) {
+                // internally does node.query(selector); but with dependency subscription
+                var result = getAPI.query(node, selector);
                 if(!result)
                     throw new CPSFormulaError('Not found: an element for '
                                         + selector + ' '
@@ -47932,8 +48323,8 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
                                     );
                 return result;
             }]
-          , ['*anything*', ['number', 'string'], function(item, key) {
-                return cpsGetters.generic(item, key);
+          , ['*unboxed+getAPI*','*anything*', ['number', 'string'], function(getAPI, item, key) {
+                return getAPI.genericGetter(item, key);
             }]
         ])
         /**
@@ -47951,19 +48342,33 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
          */
       , new Operator(':', true, Infinity, 1, 1, [
             ['*getAPI*', NameToken, NameToken, function(getAPI, name, key) {
-                var item = getAPI(name.getValue());
-                return cpsGetters.generic(item, key.getValue());
+                var item = getAPI.get(name.getValue());
+                if(!item)
+                    console.log('item:', item, 'from', '"'+name.getValue()+'"', 'key:', '"'+key.getValue()+'"');
+                return getAPI.genericGetter(item, key.getValue());
             }]
           , ['*getAPI*', SelectorList, NameToken, function(getAPI, selector, key) {
                 // SelectorList selects from global scope, aka multivers
-                var item = getAPI('this').multivers.query(selector);
+                // var item = getAPI.get('this').multivers.query(selector);
+                // FIXME: do instead
+                // var item = getAPI.query(getAPI.get('this').multivers, selector); // internally node.query(selector); but with subscription
+
+                // is some form of subscription needed for node.multivers???
+                // maybe in the future, we will allow transports from one
+                // multivers to another, then host.multivers can change
+                var host = getAPI.get('this')
+                  , node = getAPI.genericGetter(host, 'multivers')
+                  , item = getAPI.query(node, selector)
+                  ;
+
+
                 if(!item)
                     throw new CPSFormulaError('Not found: an element for '
                                                         + selector);
-                return cpsGetters.generic(item, key.getValue());
+                return getAPI.genericGetter(item, key.getValue());
             }]
           , ['*getAPI*', '*anything*', NameToken, function(getAPI, item, key) {
-                return cpsGetters.generic(item, key.getValue());
+                return getAPI.genericGetter(item, key.getValue());
             }]
         ])
         /**
@@ -48141,6 +48546,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
          * This doesn't change the result of the calculation.
          */
       , new Operator('_print', false, Infinity, 0, 1, function(arg) {
+            /*global console*/
             console.log('cps _print: "' +arg +'" typeof', typeof arg
                                                     , 'object: ', arg);
             return arg;
@@ -48190,9 +48596,15 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
      */
     engine.setFinalizeMethod(function(result, getAPI) {
         if(result instanceof NameToken)
-            return getAPI(result.getValue());
-        else if(result instanceof SelectorList)
-            return getAPI('this').multivers.query(result);
+            return getAPI.get(result.getValue());
+        else if(result instanceof SelectorList) {
+            var host = getAPI.get('this') // this can\'t be overidden by cps
+              , node = getAPI.genericGetter(host, 'multivers')
+              ;
+            return getAPI.query(node, result);
+            // old, not fully subscribed:
+            // return getAPI.get('this').multivers.query(result);
+        }
         else if(result instanceof _Token)
             // maybe one day we allow stuff like operators as first class
             // values, but not now.
@@ -48221,11 +48633,6 @@ define('metapolator/models/CPS/dataTypes/SharedFormulaeFactory',[
     }
 
     var _p = SharedFormulaeFactory.prototype;
-
-    _p.defaultFactory =  function(name, element, getAPI) {
-        throw new errors.Deprecated('We will implement defaults within CPS.');
-        // return new this.TypeConstructor(getAPI);
-    };
 
     _p.init = function(parameterValue, setFactoryAPI, setInvalidAPI) {
         var invalidParamterMessage = false
@@ -48281,20 +48688,14 @@ define('metapolator/models/CPS/dataTypes/CPSReal',[
                 + (result !== result
                     ? 'result in NaN (happens with division by 0 for example)'
                     : 'not result in a number: "'+ result
-                        + '" typeof: ' +  typeof result +
-                        + (typeof result.constructor === 'function'
+                        + '" typeof: ' +  typeof result
+                        + (result && typeof result.constructor === 'function'
                                 ? ' a: ' + result.constructor.name
                                 : ''
                         )
                 )
             );
         return result;
-    };
-
-    _p.toString = function() {
-        return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
     };
 
     return CPSReal;
@@ -48331,12 +48732,6 @@ define('metapolator/models/CPS/dataTypes/CPSVector',[
                             + 'didn\'t resolve to a Vector: "'+ result
                             + '" typeof ' +  typeof result);
         return result;
-    };
-
-    _p.toString = function() {
-        return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
     };
 
     return CPSVector;
@@ -48377,13 +48772,39 @@ define('metapolator/models/CPS/dataTypes/CPSTransformation',[
         return result;
     };
 
-    _p.toString = function() {
-        return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
+    return CPSTransformation;
+});
+
+define('metapolator/models/CPS/dataTypes/CPSGeneric',[
+    'metapolator/errors'
+  , './_FormulaeValue'
+  , './SharedFormulaeFactory'
+], function(
+    errors
+  , Parent
+  , SharedFormulaeFactory
+) {
+    
+
+    var ValueError = errors.Value;
+
+    function CPSGeneric(getAPI, stack) {
+        Parent.call(this, getAPI, stack);
+    }
+
+    var _p = CPSGeneric.prototype = Object.create(Parent.prototype);
+    _p.constructor = CPSGeneric;
+    CPSGeneric.factory = new SharedFormulaeFactory(CPSGeneric);
+
+    _p.getValue = function() {
+        var result = this._stack.execute(this._getAPI);
+        // result MUST not be undefined
+        if(result === undefined)
+            throw new ValueError('The formula of this CPS did returns "undefined" which is never valid: ' + this);
+        return result;
     };
 
-    return CPSTransformation;
+    return CPSGeneric;
 });
 
 define('metapolator/models/CPS/Registry',[
@@ -48391,11 +48812,13 @@ define('metapolator/models/CPS/Registry',[
   , './dataTypes/CPSReal'
   , './dataTypes/CPSVector'
   , './dataTypes/CPSTransformation'
+  , './dataTypes/CPSGeneric'
 ], function(
     errors
   , CPSReal
   , CPSVector
   , CPSTransformation
+  , CPSGeneric
 ) {
     
     /**
@@ -48416,6 +48839,7 @@ define('metapolator/models/CPS/Registry',[
             real: CPSReal.factory
           , vector: CPSVector.factory
           , transformation: CPSTransformation.factory
+          , generic: CPSGeneric.factory
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
@@ -48424,23 +48848,24 @@ define('metapolator/models/CPS/Registry',[
 
     _p.exists = function(name) {
         return name in this._parameters;
-    }
+    };
 
-    _p.getTypeDefinition = function(name) {
-        var description;
-        if(!this.exists(name))
+    _p.getFactory = function(name, fallbackType /* optional string, default: 'generic'*/) {
+        var description, type
+          , _fallbackType = fallbackType === undefined ? 'generic' : fallbackType
+          ;
+        if(this.exists(name))
+            type = this._parameters[name].type;
+        else if(_fallbackType) {
+            if(!(_fallbackType in this._dataTypes))
+                throw new errors.CPSRegistryKey('Name "' + name + '" is no registered '
+                        + 'parameter and fallback-type "' + _fallbackType + '" is no known type');
+            type = _fallbackType;
+        }
+        else
             throw new errors.CPSRegistryKey('Name "' + name + '" is no registered parameter');
-        description = this._parameters[name];
-        return this._dataTypes[description.type];
-    }
-
-    _p.getDefaultFactory = function(name) {
-        var description;
-        if(!this.exists(name))
-            throw new errors.CPSRegistryKey('Name "' + name + '" is no registered parameter');
-        description = this._parameters[name];
-        return this._dataTypes[description.type].defaultFactory;
-    }
+         return this._dataTypes[type];
+    };
 
     _p.register = function(name, parameterDescription) {
         if(this.exists(name))
@@ -48452,11 +48877,11 @@ define('metapolator/models/CPS/Registry',[
                 +'" is unkown.');
 
         this._parameters[name] = parameterDescription;
-    }
+    };
 
     return Registry;
-})
-;
+});
+
 define('metapolator/project/parameters/registry',[
     'metapolator/errors'
   , 'metapolator/models/CPS/Registry'
@@ -48471,17 +48896,17 @@ define('metapolator/project/parameters/registry',[
     parameterRegistry.register('on', {
                 type: 'vector'
               , description: 'An On-Curve Point.'
-    })
+    });
 
     parameterRegistry.register('in', {
                 type: 'vector'
               , description: 'An incoming Control Point.'
-    })
+    });
 
     parameterRegistry.register('out', {
                 type: 'vector'
               , description: 'An outgoing Control Point.'
-    })
+    });
 
     parameterRegistry.register('inTension', {
                 type: 'real'
@@ -48497,25 +48922,25 @@ define('metapolator/project/parameters/registry',[
                 type: 'real'
               , description: 'The distance from center point to left or '
                             + 'right on curve point'
-    })
+    });
 
     parameterRegistry.register('inLength', {
                 type: 'real'
               , description: 'The distance from on-curve point to the Control Point'
                             + 'usually unused in favor of inTension'
-    })
+    });
 
     parameterRegistry.register('outLength', {
                 type: 'real'
               , description: 'The distance from on-curve point to the Control Point'
                             + 'usually unused in favor of outTension'
-    })
+    });
 
     parameterRegistry.register('onDir', {
                 type: 'real'
               , description: 'The direction in radians from center point '
                             + 'to left or right on curve point'
-    })
+    });
 
     parameterRegistry.register('inDir', {
                 type: 'real'
@@ -48526,7 +48951,7 @@ define('metapolator/project/parameters/registry',[
                 type: 'real'
               , description: 'The intrinsic value of the direction of an '
                                                 + 'incomimg Control Point.'
-    })
+    });
 
     parameterRegistry.register('outDir', {
                 type: 'real'
@@ -48564,48 +48989,63 @@ define('metapolator/models/CPS/elements/Parameter',[
     
     /**
      * A Parameter: name and value
+     *
+     * This is essentially immutable, to change it replace it with a new
+     * Parameter via its parent (ParameterDict).
      */
     function Parameter(parameterName, parameterValue, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._name = parameterName;
         this._value = parameterValue;
+
+        Object.defineProperties(this, {
+            'name': {
+                value: parameterName.name
+              , enumerable: true
+            }
+          , 'value': {
+                value: parameterValue
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: parameterValue.invalid
+              , enumerable: true
+            }
+        });
     }
-    var _p = Parameter.prototype = Object.create(Parent.prototype)
+    var _p = Parameter.prototype = Object.create(Parent.prototype);
     _p.constructor = Parameter;
-    
+
     _p.toString = function() {
-        return [this._name, ': ', this._value,';'].join('');
-    }
-    
-    Object.defineProperty(_p, 'name', {
-        get: function(){ return this._name.name; }
-    })
-    Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value; }
-    })
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._value.invalid; }
-    })
+        return [this.name, ': ', this._value,';'].join('');
+    };
+
     Object.defineProperty(_p, 'message', {
         get: function(){ return this._value.message; }
-    })
-    
+    });
+
     return Parameter;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/ParameterDict',[
     'metapolator/errors'
+  , 'metapolator/models/emitterMixin'
   , './_Node'
   , './GenericCPSNode'
   , './Parameter'
 ], function(
     errors
+  , emitterMixin
   , Parent
   , GenericCPSNode
   , Parameter
 ) {
     
-    
+
+    var ValueError = errors.Value
+      , KeyError = errors.Key
+      , propertyChangeEmitterSetup
+      ;
+
     // TODO:
     // Make this an ordered dict. Ordered to keep the comments where
     // they belong. Dict for access to the Parameters themselves!
@@ -48614,92 +49054,270 @@ define('metapolator/models/CPS/elements/ParameterDict',[
     // the last one wins, the other previous ones are not available via
     // keys, the index interface would work.
     // If this is not fancy enough we can still think of another approach.
-    
+
+    propertyChangeEmitterSetup = {
+          stateProperty: '_propertyChannels'
+        , onAPI: 'onPropertyChange'
+        , offAPI: 'offPropertyChange'
+        , triggerAPI: '_triggerPropertyChange'
+    };
+
     /**
      * A dictionary of parameters and a list of parameters, comments and
      * GenericCPSNodes
+     *
+     * channels for the on/off interface:
+     *
+     * "add" data: key
+     *      A new active property was added.
+     * "change" data: key
+     *      An active property was changed, there is a new value at key.
+     * "delete" data: key
+     *      There used to be an active property for key, but there is
+     *      no active property for key anymore.
+     * "erase" data:key
+     *      All active, inactive and invalid properties for key have been
+     *      removed. This is preceded by "delete" if there used to be
+     *      an active property for key. See "delete"
+     *
+     * Channels named after the active key/property-names are available
+     * via the onPropertyChange/offPropertyChange interface.
+     * They fire on "add", "delete", "change" for the respective key.
      */
-     
+
     function ParameterDict(items, source, lineNo) {
         Parent.call(this, source, lineNo);
         this._items = items.slice();
         this._dict = undefined;
         this._keys = undefined;
+        this._indexes = undefined;
+        emitterMixin.init(this, propertyChangeEmitterSetup);
     }
-    
-    var _p = ParameterDict.prototype = Object.create(Parent.prototype)
+
+    var _p = ParameterDict.prototype = Object.create(Parent.prototype);
     _p.constructor = ParameterDict;
-    
+
+    emitterMixin(_p, propertyChangeEmitterSetup);
+
     _p.toString = function() {
         var prepared = this._items.map(function(item) {
+            if(!item)
+                return '';
             if(item instanceof GenericCPSNode)
-                return ['    ', item, ';'].join('')
+                return ['    ', item, ';'].join('');
             return '    ' + item;
-        })
-        
+        });
+
         prepared.unshift('{');
         prepared.push('}');
         return prepared.join('\n');
     };
 
-
     function _filterParameters(item) {
         return (item instanceof Parameter && !item.invalid);
     }
-    
+
     Object.defineProperty(_p, 'items', {
         get: function() {
-            var _items = this._items, items = [], i, l, item;
-            for(i=0,l=this._items.length;i<l;i++)
-                if(_filterParameters(item = _items[i]))
-                    items.push(item);
-            return items;
+            return this._items.slice();
         }
     });
 
-    _p._getAllItems = function() {
-        return this._items.slice();
-    };
+    /**
+     * dictionary of active items:
+     * {
+     *      key: itemValue
+     * }
+     */
+    Object.defineProperty(_p, 'dict', {
+        get: function() {
+            if(!this._keys)
+                this._buildIndex();
+            var result = Object.create(null), k, dict = this._dict;
+            for(k in dict)
+                result[k] = this.getItemValue(dict[k]);
+            return result;
+        }
+    });
 
-    // FIXME: maybe this should be deprecated, it's expensive
-    // also, this.items could be cached, maybe
     Object.defineProperty(_p, 'length', {
-        get: function(){ return this.items.length; }
+        get: function(){ return this._items.length; }
     });
 
     _p._buildIndex = function() {
         var items = this._items
           , item
-          , i=items.length-1
-          , key, dict, keys
+          , i, key, dict, keys, indexes
           ;
         this._dict = dict = Object.create(null);
         this._keys = keys = [];
+        this._indexes = indexes = Object.create(null);
         // searching backwards, because the last item with key === name has
         // the highest precedence
-        for(;i>=0;i--) {
-            if(!_filterParameters(item = items[i]))
-                continue;
+        for(i=items.length-1;i>=0;i--) {
+            item = items[i];
             key = item.name;
+
+            if(!indexes[key]) indexes[key] = [];
+            indexes[key].push(i);
+
+            if(!_filterParameters(item))
+                continue;
             if(!(key in dict)) {
-                dict[key] = item.value;
+                dict[key] = i;
                 keys.push(key);
             }
         }
     };
 
+    // FIXME: add a splice API
+    // it's good for a more complex ui
+
+    /**
+     * replace or add
+     * overide the active item or create new entry
+     *
+     * emits: "add", "change" or nothing
+     */
+    _p.setParameter = function(item) {
+        var key = item.name
+          , items = this._items
+          , index
+          , event
+          , old
+          ;
+        if(!_filterParameters(item))
+            throw new ValueError('Trying to set an invalid property: ' + item);
+        if(!this.has(key)) {
+            event = 'add';
+            index = items.length;
+            items.push(item);
+            if(!this._indexes[key])
+                this._indexes[key] = [];
+            this._indexes[key].push(index);
+            this._keys.push(key);
+        }
+        else {
+            event = 'change';
+            index = this._dict[key];
+            old = items[index];
+            items[index] = item;
+        }
+        this._dict[key] = index;
+        // emit events
+        if(old) old.destroy();
+        this._trigger(event, key);
+        this._triggerPropertyChange(key, event);
+    };
+
+    /**
+     * Remove all items with key as name (valid, invalid, active, inactive)
+     * return number of removed items
+     *
+     * emits: ["delete", "erase"], "erase" or nothing
+     */
+    _p.erase = function(key) {
+        var count = 0, indexes, i
+          , items = this._items
+          , removed
+          , event
+          , deleteEvent = false
+          ;
+        if(!this._indexes)
+            this._buildIndex();
+        indexes = this._indexes[key];
+        if(!indexes)
+            return 0;
+        removed = [];
+        count = indexes.length;
+        delete indexes[key];
+        for(i=0;i<count;i++) {
+            // returns an array with the deleted elements
+            // since we delete always only one item [0].destroy(); is good
+            removed.push(items[indexes[i]]);
+            delete items[indexes[i]];
+        }
+        if(key in this._dict) {
+            // if key was active, this is also a delete event.
+            deleteEvent = true;
+            delete this._dict[key];
+            event = ['delete', 'erase'];
+        }
+        else
+            event = 'erase';
+        this._keys = Object.keys(this._dic);
+
+        for(i=0;i<count;i++)
+            removed[i].destroy();
+        this._trigger(event, key);
+        if(deleteEvent)
+            this._triggerPropertyChange(key, 'delete');
+        return count;
+    };
+
+    /**
+     * Remove/delete the currently active item for key.
+     * May make another valid parameter with the same name active,
+     * if there is any.
+     *
+     * emits: "change" or "delete" or noting
+     */
+    _p.removeCurrentActiveParameter = function(key) {
+        // return number of removed items
+        var indexes, index, i
+          , items = this._items
+          , old
+          , keys
+          , event
+          ;
+        if(!this.has(key))
+            return 0;
+        // delete the currently active item for key
+        index = this._dict[key];
+        old = items[index];
+        delete items[index];
+        delete this._dict[key];
+        indexes = this._indexes[key];
+        indexes.sort();
+        for(i=indexes.length;i>=0;i--) {
+            if(indexes[i] === index) {
+                // the old active key must come first in this iteration
+                // because the highest valid index is the active item
+                indexes.splice(i, 1);
+            }
+            else if(_filterParameters(items[indexes[i]])) {
+                // this changed the active value
+                this._dict[key] = indexes[i];
+                break;
+            }
+        }
+        old.destroy();
+        if(!(key in this._dict)) {
+            // no follow up was found
+            // delete event!
+            event = 'delete';
+            this._keys = Object.keys(this._dict);
+        }
+        else
+            // there is a successor, change event!
+            event = 'change';
+        this._trigger(event, key);
+        this._triggerPropertyChange(key, event);
+        return 1;
+    };
+
     _p.keys = function() {
         if(!this._keys)
             this._buildIndex();
-        return this._keys;
+        return this._keys.slice();
     };
 
     _p.get = function(key) {
         if(!this._dict)
             this._buildIndex();
         if(!(key in this._dict))
-            throw new errors.Key('Key "'+key+'" not in ParameterDict');
-        return this._dict[key];
+            throw new KeyError('Key "'+key+'" not in ParameterDict.');
+        return this.getItemValue(this._dict[key]);
     };
 
     _p.has = function(key) {
@@ -48707,24 +49325,50 @@ define('metapolator/models/CPS/elements/ParameterDict',[
             this._buildIndex();
         return key in this._dict;
     };
-    
+
     _p.find = function(key) {
-        var items = this.items
-          , i = 0
-          , indexes = []
-          ;
-        for(;i<items.length;i++) {
-            if(key === items[i].name);
-                indexes.push(i);
-        }
-        return indexes;
+        if(!this._dict)
+            this._buildIndex();
+        return this._indexes[key].slice() || [];
     };
 
-    _p.itemValue = function(index) {
+    _p.getItemValue = function(index) {
         return this._items[index].value;
     };
 
     return ParameterDict;
+});
+
+define('metapolator/models/CPS/elements/_Name',[
+    './_Node'
+], function(
+    Parent
+) {
+    
+    /**
+     * Used as base of AtRuleName and ParameterName.
+     */
+    function _Name(name, comments ,source, lineNo) {
+        /*jshint validthis:true*/
+        Parent.call(this, source, lineNo);
+        this._comments = comments;
+        Object.defineProperty(this, 'name', {
+            value: name
+          , enumerable: true
+        });
+    }
+    var _p = _Name.prototype = Object.create(Parent.prototype);
+    _p.constructor = _Name;
+
+    /**
+     * Prints all comments after the name.
+     */
+    _p.toString = function() {
+        return [this.name,
+                this._comments.length ? ' ': '',
+                this._comments.join('\n')].join('');
+    };
+    return _Name;
 });
 
 define('metapolator/models/CPS/elements/ParameterName',[
@@ -48739,12 +49383,12 @@ define('metapolator/models/CPS/elements/ParameterName',[
     function ParameterName(name, comments ,source, lineNo) {
         Parent.call(this, name, comments ,source, lineNo);
     }
-    var _p = ParameterName.prototype = Object.create(Parent.prototype)
+    var _p = ParameterName.prototype = Object.create(Parent.prototype);
     _p.constructor = ParameterName;
-    
+
     return ParameterName;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/ParameterValue',[
     'metapolator/errors'
   , './_Node'
@@ -48771,15 +49415,15 @@ define('metapolator/models/CPS/elements/ParameterValue',[
         this.factory = undefined;
         this._invalid = undefined;
     }
-    var _p = ParameterValue.prototype = Object.create(Parent.prototype)
+    var _p = ParameterValue.prototype = Object.create(Parent.prototype);
     _p.constructor = ParameterValue;
 
     Object.defineProperty(_p, 'value', {
         get: function(){ return '!!stub!!' + this._value.join('|||'); }
-    })
-
+    });
 
     function _setInvalidAPI(message) {
+        /*jshint validthis:true*/
         if(this._factory !== undefined)
             throw new errors.CPS('Can\'t mark as invalid: factory is already '
                                 + 'set.');
@@ -48788,6 +49432,7 @@ define('metapolator/models/CPS/elements/ParameterValue',[
     }
 
     function _setFactoryAPI(factory) {
+        /*jshint validthis:true*/
         if(this._invalid)
             throw new errors.CPS('Can\'t set factory: value is already '
                                 + 'marked as invalid: ' + this._message);
@@ -48800,7 +49445,7 @@ define('metapolator/models/CPS/elements/ParameterValue',[
         Object.defineProperty(this, 'factory', {
             enumerable: true
           , value: factory
-        })
+        });
     }
 
     _p.initializeTypeFactory = function(name, typeDefinition) {
@@ -48815,7 +49460,7 @@ define('metapolator/models/CPS/elements/ParameterValue',[
         if(this._factory === undefined && this._invalid === undefined)
             throw new errors.CPS('TypeDefinition for ' + name
                             + ' did not initialize this ParameterValue');
-    }
+    };
 
     Object.defineProperty(_p, 'invalid', {
         get: function(){ return this._invalid;}
@@ -48824,14 +49469,14 @@ define('metapolator/models/CPS/elements/ParameterValue',[
     // this property ommits the comments on purpose
     Object.defineProperty(_p, 'valueString', {
         get: function(){ return this._value.join(''); }
-    })
+    });
+
     Object.defineProperty(_p, 'astTokens', {
         get: function() {
             return this._value.map(
-                                function(item){ return item['_ast']; });
+                                function(item){ return item._ast; });
             }
-    })
-
+    });
 
     /**
      * Prints all comments before the value.
@@ -48840,17 +49485,15 @@ define('metapolator/models/CPS/elements/ParameterValue',[
         return [this._comments.join('\n'),
                 this._comments.length ? ' ': '',
                 this.valueString.trim()].join('');
-    }
+    };
 
     return ParameterValue;
-})
-;
+});
+
 define('metapolator/project/parameters/outputConverter',[
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/Source'
   , 'metapolator/models/CPS/elements/ParameterCollection'
-  , 'metapolator/models/CPS/elements/AtRuleCollection'
-  , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Parameter'
@@ -48862,8 +49505,6 @@ define('metapolator/project/parameters/outputConverter',[
     errors
   , Source
   , ParameterCollection
-  , AtRuleCollection
-  , AtRuleName
   , Rule
   , ParameterDict
   , Parameter
@@ -48949,18 +49590,12 @@ define('metapolator/project/parameters/outputConverter',[
           , source
         )
         // @dict
-      , new AtRuleCollection(
-            new AtRuleName('dictionary', [])
-          , [
-                new Rule(
-                    parseSelectorList.fromString('point>*', source.name)
-                  , parameterDictFromObject({
-                        pointBefore: 'parent:parent:children[parent:index - 1][this:type]'
-                      , pointAfter: 'parent:parent:children[parent:index+1][this:type]'
-                    })
-                  , source
-                )
-            ]
+      , new Rule(
+            parseSelectorList.fromString('point>*', source.name)
+          , parameterDictFromObject({
+                pointBefore: 'parent:parent:children[parent:index - 1][this:type]'
+              , pointAfter: 'parent:parent:children[parent:index+1][this:type]'
+            })
           , source
         )
       , new Rule(
@@ -49042,21 +49677,21 @@ define('metapolator/models/MOM/Univers',[
     }
     var _p = Univers.prototype = Object.create(Parent.prototype);
     _p.constructor = Univers;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Univers'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'univers'
-    })
-    
+    });
+
     _p._acceptedChildren = [Master];
-    
+
     return Univers;
-})
-;
+});
+
 define('metapolator/models/CPS/SelectorEngine',[
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
@@ -49089,7 +49724,7 @@ define('metapolator/models/CPS/SelectorEngine',[
     _p._complexSelectorMatches = function(complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
-                                         + 'ComplexSelector');
+                                         + 'ComplexSelector: ' + complexSelector);
         var compoundSelectors = complexSelector.value
           , compoundSelector
           , combinator
@@ -49201,7 +49836,7 @@ define('metapolator/models/CPS/SelectorEngine',[
                     throw new CPSError('simpleSelector.type "'+ simpleSelector.type +'" is not implemented.');
             }
         }
-        body.push(');')
+        body.push(');');
         return new Function(['element'], body.join(''));
     }
 
@@ -49283,7 +49918,7 @@ define('metapolator/models/CPS/SelectorEngine',[
           ;
         for(i=0, length = namespacedRules.length;i<length;i++) {
             namespacedRule = namespacedRules[i];
-            complexSelectors = namespacedRule[0];
+            complexSelectors = namespacedRule[0].value;
             for(j=0, lengthCS = complexSelectors.length;j<lengthCS;j++) {
                 if(this._complexSelectorMatches(complexSelectors[j], element)) {
                     // got a match with the most specific selector
@@ -49319,7 +49954,7 @@ define('metapolator/models/CPS/SelectorEngine',[
         if(!descendant && type !== 'child')
             throw new CPSError('Combinator type "' + type +'" is unsuported');
         //initial frame setup
-        frame = [element.children, 0, 0]
+        frame = [element.children, 0, 0];
         frame[2] = frame[0].length;
         do {
             i=frame[1];
@@ -49383,7 +50018,7 @@ define('metapolator/models/CPS/SelectorEngine',[
         if(!descendant && type !== 'child')
             throw new CPSError('Combinator type "' + type +'" is unsuported');
         //initial frame setup
-        frame = [element.children, 0, 0]
+        frame = [element.children, 0, 0];
         frame[2] = frame[0].length;
         do {
             i=frame[1];
@@ -49526,71 +50161,27 @@ define('metapolator/models/MOM/Multivers',[
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Multivers'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'multivers'
-    })
+    });
 
     _p.query = function(selector, scope) {
         return this._controller.query(selector, scope);
-    }
+    };
     _p.queryAll = function(selector, scope) {
         return this._controller.queryAll(selector, scope);
-    }
+    };
 
     _p.getComputedStyleFor = function(node) {
         return this._controller.getComputedStyle(node);
-    }
+    };
 
     _p._acceptedChildren = [Univers];
 
     return Multivers;
-})
-;
-define('metapolator/models/CPS/_CPSDict',[
-    'metapolator/errors'
-], function(
-    errors
-) {
-    
-
-    var NotImplementedError = errors.NotImplemented;
-
-    /**
-     * Common methods shared between ReferenceDict and StyleDict
-     */
-    function _CPSDict(controller, rules, element) {
-        /*jshint validthis:true */
-        this._rules = rules;
-        this._element = element;
-        this._controller = controller;
-        this._dict = null;
-    }
-
-    var _p = _CPSDict.prototype;
-    _p.constructor = _CPSDict;
-
-    _p._buildIndex = function() {
-        var i=0,l=this._rules.length, j, ll, keys, key;
-        this._dict = Object.create(null);
-        for(;i<l;i++) {
-            keys = this._rules[i].parameters.keys();
-            for(j=0, ll=keys.length; j<ll; j++) {
-                key = keys[j];
-                if(!(key in this._dict))
-                    this._dict[key] = this._rules[i].parameters.get(key);
-            }
-        }
-    };
-
-    _p.get = function(name) {
-        throw new NotImplementedError('The `get` method is missing in this '
-                                        +'implementation of _CPSDict');
-    };
-
-    return _CPSDict;
 });
 
 define('metapolator/memoize',['metapolator/errors'], function(errors) {
@@ -49693,101 +50284,641 @@ define('metapolator/memoize',['metapolator/errors'], function(errors) {
 
 define('metapolator/models/CPS/StyleDict',[
     'metapolator/errors'
-  , './_CPSDict'
-  , './cpsGetters'
+  , './whitelistProxies'
   , 'metapolator/memoize'
+  , 'metapolator/models/emitterMixin'
+  , 'metapolator/models/MOM/_Node'
+  , 'metapolator/models/CPS/elements/SelectorList'
 ], function(
     errors
-  , Parent
-  , cpsGetters
+  , whitelistProxies
   , memoize
+  , emitterMixin
+  , _MOMNode
+  , SelectorList
 ) {
     
 
     var KeyError = errors.Key
+      , ReceiverError = errors.Receiver
+      , AssertionError = errors.Assertion
       , CPSKeyError = errors.CPSKey
       , CPSRecursionError = errors.CPSRecursion
+      , assert = errors.assert
+      , propertyChangeEmitterSetup
       ;
+
+    propertyChangeEmitterSetup = {
+          stateProperty: '_dependants'
+        , onAPI: 'onPropertyChange'
+        // TODO: Not deleting the channel will take a bit more memory but in turn
+        // needs less garbadge collection
+        // we could delete this when the key is removed from this._dict
+        // and not added again, supposedly in _rebuildIndex and _paramerChangeHandler
+        // delete this._dependants[key];
+        // however, _rebuildIndex and updateDictEntry are not part of
+        // the concept of emitter/channel thus the emitter should
+        // provide a method: removeProperty(channel) which in turn can be called by
+        // _rebuildIndex and updateDictEntry. Also, that would throw an error
+        // if there are any subscriptions left. (we may add a on-delete event)
+        // for that case!?
+        , offAPI: 'offPropertyChange'
+        , triggerAPI: '_triggerPropertyChange'
+    };
 
     /**
      * StyleDict is an interface to a List of CPS.Rule elements.
+     *
+     * rules: StyleDict will pull the rules for element from controller
+     *        when needed, it uses controller.getRulesForElement(element)
+     *        controller, in turn will invalidate the rules via: StyleDict.prototype.invalidateRules
      */
-    function StyleDict(controller, rules, element) {
-        Parent.apply(this, arguments);
-
-        // FIXME: can we measure if bind or self plus closure is faster
-        // this.get.bind(this);
+    function StyleDict(controller, element, rules /* default: null */) {
+        // I prefer: this.get.bind(this);
+        // But this method is called a lot and thus the closure is faster.
+        // see: http://jsperf.com/bind-vs-native-bind-run
+        // that may change in the future
         var self = this;
-        this.getAPI = function(name){ return self.get(name);}
 
-        this._getting = {};
 
+        // new GetAPI(this); => would make a cleaner definition, but maybe slows things down???
+        this.getAPI = {
+            get: function(key) {
+                var result = self.get(key);
+                self._subscribeTo(self, key);
+                return result;
+            }
+          , query: function(node, selector) {
+                var result = node.query(selector);
+                self._subscribeTo(node, selector);
+                return result;
+            }
+          , genericGetter: function(item, key){
+                return self._genericGetter(item, key);
+            }
+        };
+
+
+        Object.defineProperty(this, 'element', {
+            value: element
+          , enumerable: true
+        });
+        this._controller = controller;
+        this._getting = {
+            recursionDetection: Object.create(null)
+          , stack: []
+          , current: null
+        };
+
+        this._rules = rules || null;
+        this._dict = null;
         this._cache = Object.create(null);
+
+        // subscriptions to the "add" channel of each parameterDict in this._rules
+        this._dictSubscriptions = [];
+
+        // subscriptions to the active key in a parameterDict
+        //
+        // triggered on "change" and "delete" (also on "add" but we subscribe later)
+        //
+        // cache_key refers to the same key here and in the parameterDict
+        // {
+        //    cache_key: [parameterDict, subscriptionUid] /* information needed to unsubscribe */
+        // }
+        this._propertySubscriptions = Object.create(null);
+
+        // All current subscriptions to dependencies of the cache.
+        // One subscription can be used by many _cache entries.
+        // {
+        //    subscriptionUid: [
+        //        /* information needed to unsubscribe */
+        //          item // the item/element/object subscribed to
+        //        , subscriberId // needed to unsubscribe, returned when subscribing
+        //
+        //        /* information to control subscribing and unsubscribing */
+        //        , object // set of _cache keys subscribed to this
+        //        , 0 // counter, number of dependencies, same as previous Object.keys(object).length
+        //    ];
+        //}
+        this._cacheSubscriptions = Object.create(null);
+
+        // the subscriptionUids for each key in cache
+        // {
+        //    cache_key: [subscriptionUid, ...]
+        // }
+        this._cacheDependencies = Object.create(null);
+
+        // emitter: PropertyChange
+        // Adds this[propertyChangeEmitterSetup.stateProperty]
+        // which is this._dependencies
+        emitterMixin.init(this, propertyChangeEmitterSetup);
+
+        // adds the default this._channel
+        emitterMixin.init(this);
+
+        this._subscriptionUidCounter = 0;
+        this._subscriptionUids = new WeakMap();
+        this._invalidating = 0;
+
+        // we can prepare this callback once for all channels
+        // see also _p._nextTrigger
+        this._delayedTriggerData = Object.create(null);
+        this.__delayedTrigger = this._delayedTrigger.bind(this);
     }
 
-    var _p = StyleDict.prototype = Object.create(Parent.prototype);
+    var _p = StyleDict.prototype;
     _p.constructor = StyleDict;
+
+    /**
+     * adds the methods:
+     *    onPropertyChange(propertyName, subscriberData) // returns subscriptionId
+     *    offPropertyChange(subscriptionId)
+     *    _triggerPropertyChange(propertyName, eventData)
+     *
+     * these are used mostly for inter-StyleDict communication / cache invalidation
+     */
+    emitterMixin(_p, propertyChangeEmitterSetup);
+
+    /**
+     * adds the methods:
+     *    on(channel, subscriberData) // returns subscriptionId
+     *    off(subscriptionId)
+     *    _trigger(channel, eventData)
+     */
+    emitterMixin(_p);
+
+    _p._getSubscriptionUid = function(item, key) {
+        var uid;
+        if(item instanceof _MOMNode) {
+            if(key instanceof SelectorList)
+                // TODO: currently all subtree changes are handled as one.
+                // I think we may become finer grained here. Like for example
+                // only fire if a change in a subtree affects the result
+                // of item.query(key); then, the SubscriptionUid must be
+                // different for different selectors. Until then all selectors
+                // for a _MOMNode have the same SubscriptionUid:
+                return item.nodeID + 'S:$';// + key
+            else
+                return item.nodeID + ':' + key;
+        }
+        else if(item instanceof StyleDict)
+            return '!' + item.element.nodeID + ':' + key;
+        // fallback, rare cases
+        uid = this._subscriptionUids.get(item);
+        if(!uid) {
+            uid = '?' + (this._uidCounter++) + ':' + key;
+            this._subscriptionUids.set(item, uid);
+        }
+        return uid;
+    };
+
+    _p._unsubscribeFromAll = function(key) {
+        // we have probably collected dependencies for this cache, since
+        // the cache is now invalidated, the dependencies can be unsubscribed
+        var dependencies = this._cacheDependencies[key]
+          , subscriptionUid
+          , subscription
+          , i, l
+          ;
+        if(!dependencies)
+            return;
+        for(i=0,l=dependencies.length;i<l;i++) {
+            subscriptionUid = dependencies[i];
+            subscription = this._cacheSubscriptions[subscriptionUid];
+            // remove dependency key from subscription
+            delete subscription[2][key];//index
+            subscription[3]--;//counter
+            if(subscription[3])
+                continue;
+            // no deps left
+            subscription[0].offPropertyChange(subscription[1]);
+            delete this._cacheSubscriptions[subscriptionUid];
+        }
+        delete this._cacheDependencies[key];
+    };
+
+    /**
+     *  if key is in cache, invalidate the cache and inform all subscribers/dependants
+     */
+    _p._invalidateCache = function(key) {
+        // FIXME:
+        // This event should fire whenever the value of the dict
+        // changed in a way, so that e.g. a redraw of a glyph is needed
+        // _invalidateCache seems resonable at the moment, but it might be
+        // a source of subtle bugs, when the event was not fired but should
+        // have been. So keep an eye on this.
+        this._nextTrigger('change', key);
+
+        if(!(key in this._cache)) {
+            // Because the key is not cached, there must not be any dependency or dependant
+            assert(!this._cacheDependencies[key] || !this._cacheDependencies[key].length
+                , 'Because the key is not cached, there must not be any dependency or dependant');
+            // FIXME: this should be the concern of the channel: PropertyChange
+            // it certainly is wrong in here... remove without replacement when everything works
+            // fine.
+            assert(!this._dependants[key] || !this._dependants[key].length
+                , 'Because the key is not cached, there must not be any dependency or dependant');
+            return;
+        }
+        // remove this this._invalidatingKeys when there are no errors
+        if(!this._invalidatingKeys)
+            this._invalidatingKeys = Object.create(null);
+        assert(!(key in this._invalidatingKeys), 'Key ' + key + 'is beeing invalidated at the moment: '+ Object.keys(this._invalidatingKeys));
+        this._invalidatingKeys[key] = true;
+
+
+        this._invalidating +=1;
+        delete this._cache[key];
+        this._unsubscribeFromAll(key);
+        this._triggerPropertyChange(key);
+        this._invalidating -= 1;
+        delete this._invalidatingKeys[key];
+        assert(!(key in this._cache), '"'+key + '" was just deleted, '
+                    + 'yet it is still there: ' + Object.keys(this._cache));
+    };
+
+    /**
+     * Schedule an event to fire after all synchronous tasks are finished
+     * using a simple setTimeout(,0); a subsequent call to this._nextTrigger
+     * will delay the timeout again and add it's data to the scheduled data.
+     *
+     * For now this is enough debouncing, however, we may need better
+     * mechanics in the future.
+     */
+    _p._nextTrigger = function(channelKey, data) {
+        /*global setTimeout:true, clearTimeout:true*/
+        // FIXME: use https://github.com/YuzuJS/setImmediate/blob/master/setImmediate.js
+        //        instead of setTimeout, everywhere not just here!
+        var channel = this._delayedTriggerData[channelKey];
+        if(!channel)
+            channel = this._delayedTriggerData[channelKey] = {
+                timeoutID: null
+              , data: []
+            };
+        if(arguments.length > 1)
+            channel.data.push(data);
+        if(channel.timeoutID)
+            return;
+            // all _nextTrigger calls will hapen during one synchronous process
+            // so there's no need to clearTimeout
+            // FIXME: TODO: in the future there may be asynchronisity introduced
+            // via the renderer. Then we should switch to a promise that triggers
+            // when it's done (using the "then" interface of the promise)
+            // clearTimeout(channel.timeoutID);
+
+        channel.timeoutID = setTimeout(this.__delayedTrigger, 0, channelKey);
+    };
+
+    /**
+     * This is only ever called via _nextTrigger and the
+     * this.__delayedTrigger bound method
+     */
+    _p._delayedTrigger = function(channelKey) {
+        var channel = this._delayedTriggerData[channelKey];
+        if(!channel)
+            throw new AssertionError('The data for "'+ channelKey +'" is missing.');
+        delete this._delayedTriggerData[channelKey];
+        this._trigger(channelKey, (channel.data.length ? channel.data : undefined));
+    };
+
+    _p._invalidateCacheHandler = function(subscriptionUid) {
+        assert(subscriptionUid in this._cacheSubscriptions, 'must be subscribed now');
+        var dependencies = Object.keys(this._cacheSubscriptions[subscriptionUid][2])
+          , i, l
+          ;
+        for(i=0,l=dependencies.length;i<l;i++)
+            this._invalidateCache(dependencies[i]);
+        assert(!(subscriptionUid in this._cacheSubscriptions), 'must NOT be subscribed anymore');
+    };
+
+    _p._subscribeTo = function(item, key) {
+        var subscriberId
+          , subscriptionUid = this._getSubscriptionUid(item, key)
+          , current = this._getting.current
+          , dependencies = this._cacheSubscriptions[subscriptionUid]
+          ;
+        // add dependency current to subscriptionUid
+        if(!dependencies) {
+            if(key instanceof SelectorList) {
+                // TODO: this can be controlled finer. But at the moment
+                // we don't do MOM tree changes anyways.
+                assert(item instanceof _MOMNode, 'When "key" is a Selector '
+                        +'"item" must be a MOM Element.');
+//                subscriberId = item.onSubtreeChange(key, [this, '_invalidateCacheHandler'], subscriptionUid);
+//                TODO: make _MOMNode.onSubtreeChange
+//                      and any *.cps_proxy.onPropertyChange
+                // FIXME: we don't do this currently
+                return;
+            }
+            else if(typeof item.onPropertyChange !== 'function') {
+                // NOTE, when the value at item[key] can change, that
+                // onPropertyChange and offPropertyChange must be implemented
+                // when item is "immutable", we don't need this
+                return;
+            }
+            else {
+
+                subscriberId = item.onPropertyChange(key, [this, '_invalidateCacheHandler'], subscriptionUid);
+            }
+            dependencies = this._cacheSubscriptions[subscriptionUid]
+                         = [item, subscriberId, Object.create(null), 0];
+        }
+        else if(current in dependencies[2])
+            // that cache already subscribed to item.key
+            return;
+        dependencies[2][current] = true;//index
+        dependencies[3] += 1;// counter
+
+        if(!this._cacheDependencies[current])
+            this._cacheDependencies[current] = [];
+        this._cacheDependencies[current].push(subscriptionUid);
+    };
+
+    _p._genericGetter = function (item, key) {
+        var result;
+        if(item === undefined) {
+            // used to be a
+            // pass
+            // is this happening at ALL?
+            // in which case?
+            // is that case legit?
+            // console.trace();
+            throw new Error('trying to read "'+key+'" from an undefined item');
+            // also see cpsGetters.whitelist for a similar case
+        }
+        else if(item instanceof _MOMNode) {
+            var cs = item.getComputedStyle();
+            result = cs.get(key);
+            this._subscribeTo(cs, key);
+        }
+        else if(item.cps_proxy) {
+            // FIXME:
+            // do we need this case at all? probably when item is a
+            // PenStrokePoint.skeleton and key is on/in/out
+            // I don't know if there's another case
+            // This means, however that everything that has a cps_proxy
+            // will have to provide a `onPropertyChange` API (which makes totally sense)
+            // arrays are obviously exceptions...
+            // so, the do we need this subscription at all question arises again
+            //
+            // FIXME: can't we just not subscribe to this and do the same as with array
+            // that is the original source of this item must be subscribed and =
+            // fire if item changes...
+            // it is probably happening in __get anyways, like this
+            // cpsGetters.whitelist(this.element, key);
+            // and then a this._subscribeTo(this.element, key)
+            // REMEMBER: this code was extracted from a merge of
+            // cpsGetters.generic plus cpsGetters.whitelist
+            // so, in the best case, we wouldn't use this condition at all,
+            // I think
+            result = item.cps_proxy[key];
+            this._subscribeTo(item, key);
+        }
+        else if(item instanceof Array)
+            result = whitelistProxies.array(item)[key];
+            // no subscription! the source of the Array should be subscribed
+            // to and fire when the array changes
+        else
+            throw new KeyError('Item "'+item+'" doesn\'t specify a whitelist for cps, trying to read '+key);
+        return result;
+    };
+
+
+    _p._buildIndex = function() {
+        var i, l, j, ll, keys, key, parameters, subscriberID;
+        if(this._rules === null)
+            // lazy rule getting, this call is most expensive
+            this._rules = this._controller.getRulesForElement(this.element);
+        this._dict = Object.create(null);
+        for(i=0,l=this._rules.length;i<l;i++) {
+            parameters = this._rules[i].parameters;
+            subscriberID = parameters.on('add', [this, '_parameterAddHandler'], i);
+            this._dictSubscriptions.push([parameters, subscriberID]);
+
+            keys = parameters.keys();
+            for(j=0, ll=keys.length; j<ll; j++) {
+                key = keys[j];
+                if(!(key in this._dict))
+                    this._setDictValue(parameters, key, i);
+            }
+        }
+    };
+
+    _p._unsubscribeFromDicts = function(){
+        var i, l, subscription;
+        for(i=0,l=this._dictSubscriptions.length;i<l;i++) {
+            subscription = this._dictSubscriptions[i];
+
+            // Uncaught UnhandledError: EmitterError:
+            // Unsubscription without subscription from channel:
+            //                  "add" with subscriberID: "1"
+            subscription[0].off(subscription[1]);
+        }
+        this._dictSubscriptions = [];
+    };
+   /**
+     * This method is called when the ParameterCollection of this styleDict
+     * changed so much that the this._rules (rules) list needs to be rebuild
+     *
+     * Changes in the ParameterCollection that are of this kind are:
+     * added or removed Rules
+     * SelectorList changes (it's always replacement) of Rules OR AtNamespaceCollections
+     * A reset of the ParameterCollection (which does all of the above)
+     *
+     * The value of this StyleDict may not change in the end but we don't
+     * know that before)
+     *
+     * This doesn't include add/remove events of parameters/parameterDicts,
+     * we'll handle that on another level.
+     *
+     * not used at the moment
+     */
+    _p.setRules = function(rules) {
+        this._rules = rules;
+        this._unsubscribeFromDicts();
+        this._rebuildIndex();
+    };
+
+    _p.invalidateRules = function() {
+        this._rules = null;
+        this._unsubscribeFromDicts();
+        // note: copypasta from _p._rebuildIndex
+        // which is unused at the moment
+        var key;
+        for(key in this._dict) {
+            this._unsetDictValue(key);
+            this._invalidateCache(key);
+        }
+        // this is needed to trigger _buildIndex when it is time:
+        this._dict = null;
+    };
+
+    _p._rebuildIndex = function() {
+        var key;
+        for(key in this._dict) {
+            this._unsetDictValue(key);
+            this._invalidateCache(key);
+        }
+        this._buildIndex();
+    };
+
+    /**
+     * parameters.onPropertyChange wont trigger on "add", because we won't
+     * have subscribed to it by then.
+     */
+    _p._parameterAddHandler = function(data, channelKey, key) {
+        var index = data
+          , parametersIndexForKey = this._propertySubscriptions[key]
+                    ? this._propertySubscriptions[key][2]
+                    : false
+          ;
+        if(parametersIndexForKey > index)
+            // the higher index overrides the lower index
+            return;
+        else if(parametersIndexForKey < index) {
+            this._unsetDictValue(key);
+            this._invalidateCache(key);
+        }
+        else if(parametersIndexForKey === index)
+            // When both are identical this means we don't have an "add"
+            // event by definition! Something in the programming logic went
+            // terribly wrong.
+            throw new AssertionError('The old index must not be identical '
+                        + 'to the new one, but it is.\n index: ' + index
+                        + ' key: ' + key
+                        + ' channel: ' + channelKey);
+        this._setDictValue(this._rules[index], key, index);
+    };
+
+    _p._setDictValue = function(parameters, key, parametersIndex) {
+        assert(!(key in this._propertySubscriptions), 'there may be no dependency yet!');
+        var subscription = this._propertySubscriptions[key] = [];
+        this._dict[key] = parameters.get(key);
+        subscription[0] = parameters;
+        subscription[1] = parameters.onPropertyChange(key, [this, '_paramerChangeHandler'], parameters);
+        subscription[2] = parametersIndex;
+    };
+
+    _p._unsetDictValue = function(key) {
+        var subscription = this._propertySubscriptions[key];
+        subscription[0].offPropertyChange(subscription[1]);
+        delete this._dict[key];
+        delete this._propertySubscriptions[key];
+    };
+
+    /**
+     *  remake the this._dict entry for key
+     */
+    _p._updateDictEntry = function(key) {
+        var i, l, parameters;
+        this._unsetDictValue(key);
+        for(i=0,l=this._rules.length;i<l;i++) {
+            parameters = this._rules[i].parameters;
+            if(!parameters.has(key))
+                continue;
+            this._setDictValue(parameters, key, i);
+            break;
+        }
+        this._invalidateCache(key);
+    };
+
+    _p._paramerChangeHandler = function(parameters, key, eventData) {
+        switch(eventData) {
+            case('change'):
+                // The value is still active and available, but its definition changed
+                this._dict[key] = parameters.get(key);
+                this._invalidateCache(key);
+                break;
+            case('delete'):
+                // the key of parameters was removed without replacement
+                // remove the entry and look for a new one
+                this._updateDictEntry(key);
+                break;
+            default:
+                throw new ReceiverError('Expected an event of "change" or '
+                                       + '"delete" but got "'+eventData+'"');
+        }
+    };
+
+    Object.defineProperty(_p, 'keys', {
+        get: function() {
+            if(!this._dict) this._buildIndex();
+            return Object.keys(this._dict);
+        }
+    });
 
     /**
      * Get a cps ParameterValue from the _rules
      * This is needed to construct the instance of the Parameter Type.
-     * Returns Null if the name is not defined.
+     * Returns Null if the key is not defined.
      */
-    _p._getCPSParameterValue = function(name) {
+    _p._getCPSParameterValue = function(key) {
         if(!this._dict) this._buildIndex();
-        return (name in this._dict) ? this._dict[name] : null;
+        return (key in this._dict) ? this._dict[key] : null;
     };
 
     /**
-     * Return a new instance of ParameterValue or null if the name is not defined.
+     * Return a new instance of ParameterValue or null if the key is not defined.
      */
-    _p._getParameter = function(name) {
-        var cpsParameterValue = this._getCPSParameterValue(name);
+    _p._getParameter = function(key) {
+        var cpsParameterValue = this._getCPSParameterValue(key);
         if(cpsParameterValue === null)
             return null;
-        return cpsParameterValue.factory(name, this._element, this.getAPI);
+        return cpsParameterValue.factory(key, this.element, this.getAPI);
     };
 
-    _p.__get = function(name, errors) {
-        var param = this._getParameter(name);
+    _p.__get = function(key, errors) {
+        var param = this._getParameter(key)
+          , result
+          ;
         if(param)
            return param.getValue();
-        errors.push(name + ' not found for ' + this._element.particulars);
-        return cpsGetters.whitelist(this._element, name);
-    }
+        errors.push(key + ' not found for ' + this.element.particulars);
+        // FIXME: prefer the following, then the cpsGetters module can be removed!
+        // if that is not possible, it's certainly interesting why
+        result = this.element.cps_proxy[key];
+        // old:
+        // result = cpsGetters.whitelist(this.element, key);
+        this._subscribeTo(this.element, key);
+        return result;
+    };
     /**
-     * Look up a parameter in this._element according to the following
+     * Look up a parameter in this.element according to the following
      * rules:
      *
-     * 1. If `name' is "this", return the MOM Element of this StyleDict
-     * (this._element). We check "this" first so it can't be overridden by
+     * 1. If `key' is "this", return the MOM Element of this StyleDict
+     * (this.element). We check "this" first so it can't be overridden by
      * a @dictionary rule.
      *
-     * 2. If `name' is defiened in CPS its value is returned.
+     * 2. If `key' is defiened in CPS its value is returned.
      *
-     * 3. If name is available/whitelisted at this._element, return that value.
+     * 3. If key is available/whitelisted at this.element, return that value.
      *
      * 4. throw KeyError.
      *
-     * If `name' is a registered parameter type, the return value's type is
+     * If `key' is a registered parameter type, the return value's type is
      * the parameter type or an error will be thrown;
      * Otherwise, the return value may be anything that is accessible
      * or constructable from CPS formulae, or a white-listed value on
      * any reachable element.
      */
-    _p._get = function(name) {
-        var errors = [];
-        if(name === 'this')
-            return this._element;
+    _p._get = function(key) {
+        var errors = [], getting;
+        if(key === 'this')
+            return this.element;
 
-        // Detect recursion on this._element
-        if(name in this._getting)
-            throw new CPSRecursionError('Looking up "' + name
+        getting = this._getting;
+        // Detect recursion on this.element
+        if(key in getting.recursionDetection)
+            throw new CPSRecursionError('Looking up "' + key
                             + '" is causing recursion in the element: '
-                            + this._element.particulars);
-        this._getting[name] = true;
+                            + this.element.particulars);
+
+        getting.recursionDetection[key] = true;
+        getting.stack.push(getting.current);
+        getting.current = key;
         try {
-            return this.__get(name, errors);
+            return this.__get(key, errors);
         }
         catch(error) {
             if(!(error instanceof KeyError))
@@ -49796,93 +50927,25 @@ define('metapolator/models/CPS/StyleDict',[
             throw new KeyError(errors.join('\n----\n'));
         }
         finally {
-            delete this._getting[name];
+            delete getting.recursionDetection[key];
+            getting.current = getting.stack.pop();
         }
     };
     // FIXME: memoize seems to be slower, can we fix it?
     //_p.get = memoize('get', _p._get);
-    _p.get = function(name) {
-        var val = this._cache[name];
+    _p.get = function(key) {
+        if(this._invalidating)
+            throw new AssertionError('This is invalidating, so get is illegal: ' + this.element.type + ' ' + this.element.nodeID);
+        var val = this._cache[key];
         if(val === undefined)
-            this._cache[name] = val = this._get(name);
+            this._cache[key] = val = this._get(key);
         return val;
-    }
+    };
 
     return StyleDict;
 });
 
-define('metapolator/models/CPS/ReferenceDict',[
-    'metapolator/errors'
-  , './_CPSDict'
-], function(
-    errors
-  , Parent
-) {
-    
-
-    var KeyError = errors.Key;
-
-    /**
-     * ReferenceDict is an interface to the items referenced by @dictionary
-     * rules.
-     *
-     * This is returned by the getReferenceDictionary function of
-     * metapolator/models/Controller.
-     */
-    function ReferenceDict(controller, rules, element) {
-        Parent.apply(this, arguments);
-    }
-
-    var _p = ReferenceDict.prototype = Object.create(Parent.prototype);
-    _p.constructor = ReferenceDict;
-
-    _p._buildIndex = function() {
-        var i=0, j, keys, key;
-        this._dict = Object.create(null);
-        for(;i<this._rules.length;i++) {
-            keys = this._rules[i].parameters.keys();
-            for(j=0; j<keys.length; j++) {
-                key = keys[j];
-                if(!(key in this._dict))
-                    this._dict[key] = this._rules[i].parameters.get(key);
-            }
-        }
-    };
-
-    /**
-     * Get a CPS @dictionary ParameterValue from the _rules for name;
-     * Raises KeyError if name was not found.
-     */
-    _p._getCPSParameterValue = function(name) {
-        if(!this._dict) this._buildIndex();
-        if(name in this._dict)
-            return this._dict[name];
-        throw new KeyError('Not found CPS @dictionary reference "'+ name+'" for: '
-            + this._element.particulars);
-    };
-
-    /**
-     * Returns a CPSDictionaryEntry instance or raises KeyError
-     */
-    _p._getParameter = function(name) {
-        var cpsParameterValue = this._getCPSParameterValue(name);
-        return cpsParameterValue.factory(
-            name, this._element,
-            this._controller.getComputedStyle(this._element).getAPI
-        );
-    };
-
-    /**
-     * Returns the the value of an @dictionary parameter or raises KeyError
-     */
-    _p.get = function(name) {
-        return this._getParameter(name).getValue();
-    };
-
-    return ReferenceDict;
-});
-
-define('metapolator/models/CPS/parsing/curry',[  
+define('metapolator/models/CPS/parsing/curry',[
 
 ], function (
 
@@ -49891,27 +50954,48 @@ define('metapolator/models/CPS/parsing/curry',[
     /**
      * similar to function.prototype.bind, but it doesn't set
      * the value of 'this'
-     * 
+     *
      */
     function curry(func/* args */) {
         var args = Array.prototype.slice.call(arguments, 1);
         return function() {
            return func.apply(this, args.concat(
                         Array.prototype.slice.call(arguments)));
-        }
+        };
     }
     return curry;
-})
-;
+});
+
+define('metapolator/models/CPS/elements/AtRuleName',[
+    './_Name'
+], function(
+    Parent
+) {
+    
+    /**
+     * The name of an AtRule.
+     */
+    function AtRuleName(name, comments ,source, lineNo) {
+        Parent.call(this, name, comments ,source, lineNo);
+    }
+    var _p = AtRuleName.prototype = Object.create(Parent.prototype);
+    _p.constructor = AtRuleName;
+
+    return AtRuleName;
+});
+
 define('metapolator/models/CPS/elements/AtNamespaceCollection',[
     'metapolator/errors'
   , './ParameterCollection'
+  , './SelectorList'
 ], function(
     errors
   , Parent
+  , SelectorList
 ) {
     
     var CPSError = errors.CPS
+      , ValueError = errors.Value
       ;
     /**
      * A list of Rule, AtRuleCollection, ParameterCollection, and
@@ -49919,8 +51003,9 @@ define('metapolator/models/CPS/elements/AtNamespaceCollection',[
      */
     function AtNamespaceCollection(name, selectorList, items, source, lineNo) {
         // The _allowNamespace property of this prototype tells the Parent
-        // constructor to not look up this.name and this.selectorList
+        // constructor to not look up this.name
         Parent.call(this, items, source, lineNo);
+        this._selectorList = null;
         if(name)
             this.name = name;
         if(selectorList)
@@ -49932,41 +51017,79 @@ define('metapolator/models/CPS/elements/AtNamespaceCollection',[
 
     _p._allowNamespace = true;
 
-    return AtNamespaceCollection;
-})
-;
-define('metapolator/models/CPS/dataTypes/CPSDictionaryEntry',[
-    'metapolator/errors'
-  , './_FormulaeValue'
-  , './SharedFormulaeFactory'
-], function(
-    errors
-  , Parent
-  , SharedFormulaeFactory
-) {
-    
+    _p.toString = function() {
+        return ['@',this.name, '(', this.selectorList,')', ' {\n',
+            this._items.join('\n\n') ,'\n}'].join('');
+    };
 
-    var ValueError = errors.Value;
+    Object.defineProperty(_p, 'invalid', {
+        get: function() {
+            return !this._selectorList || this._selectorList.invalid;
+        }
+    });
 
-    function CPSDictionaryEntry(getAPI, stack) {
-        Parent.call(this, getAPI, stack);
+    /**
+     * Selectorlist may be invalid when it is set initially.
+     * This is that the parser can set selectorlist even if it
+     * was invalid in the source file, but the API should not be allowed
+     * to do so dynamically.
+     * If the api creates a new AtNamespaceCollection it still
+     * can set an invalid selectorlist (or none). There is however little
+     * use for it because an invalid AtNamespaceCollection wont be accepted
+     * by a parent ParameterCollection. If there's a problem with this
+     * behavior we may change it.
+     */
+    function setSelectorList (selectorList) {
+        /*jshint validthis: true*/
+        if(!(selectorList instanceof SelectorList)) {
+            throw new CPSError('selectorList has the wrong type, expected '
+                + 'SelectorList but got: '
+                + (selectorList ? (selectorList.constructor.name
+                    ? selectorList.constructor.name
+                    : selectorList.constructor): selectorList));
+        }
+        else if(selectorList.invalid && this._selectorList !== null)
+            throw new ValueError('trying to set an invalid selectorList: '+ selectorList);
+
+        this._selectorList = selectorList;
+        this._unsetRulesCache();
+        this._trigger(['selector-change', 'structural-change']);
     }
 
-    var _p = CPSDictionaryEntry.prototype = Object.create(Parent.prototype);
-    _p.constructor = CPSDictionaryEntry;
-    CPSDictionaryEntry.factory = new SharedFormulaeFactory(CPSDictionaryEntry);
+    _p.setSelectorList = setSelectorList;
 
-    _p.getValue = function() {
-        return this._stack.execute(this._getAPI);
+    Object.defineProperty(_p, 'selectorList', {
+        enumerable: true
+      , set: setSelectorList
+      , get: function() {
+            return this._selectorList;
+        }
+    });
+
+    /**
+     * Wrapper to add the namespace to the rules returned by
+     * Parant.prototype._getRules
+     */
+    _p._getRules = function() {
+        var rules, i, l
+          , namespace = this.selectorList
+          ;
+        if(namespace.invalid)
+            return [];
+        rules = Parent.prototype._getRules.call(this);
+        for(i=0,l=rules.length;i<l;i++) {
+            var chk = rules[i][1].parameters.has('__intersection');
+            // NOTE: Parent.prototype._getRules must copy rule arrays
+            // of collections of which the rules are going to be reused!
+            // FIXME: is is better do always create a copy here?
+            // that would spare that test in Parent.prototype._getRules
+            // rules[i] = [namespace.multiply(rules[i][0]), rules[i][1]]
+            rules[i][0] = namespace.multiply(rules[i][0]);
+        }
+        return rules;
     };
 
-    _p.toString = function() {
-        return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
-    };
-
-    return CPSDictionaryEntry;
+    return AtNamespaceCollection;
 });
 
 define('metapolator/models/CPS/parsing/parameterFactories',[
@@ -49980,7 +51103,6 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/SelectorList'
-  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
   , 'gonzales/gonzales'
   , './parseSelectorList'
 ], function (
@@ -49994,11 +51116,11 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
   , AtRuleName
   , AtNamespaceCollection
   , SelectorList
-  , CPSDictionaryEntry
   , gonzales
   , parseSelectorList
 ) {
     
+    /*jshint sub:true*/
     var CPSError = errors.CPS;
 
     /**
@@ -50042,9 +51164,9 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                         : '<no instance>'), '" '
                 ,'in a '+node.type+' from: ', source, 'line: '
                 , node.lineNo
-                ,'.'].join(''), (new Error).stack)
+                ,'.'].join(''), (new Error()).stack);
         name = node.children[0].data;
-        return new Constructor(name, comments ,source, node.lineNo)
+        return new Constructor(name, comments ,source, node.lineNo);
     }
 
     // inherit from selectorFactories
@@ -50114,37 +51236,29 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
          * _makeNode.
          */
       , 'declaration': function (node, source, ruleController) {
-            var name, value, typeDefinition;
+            var name, value, factory;
 
             if(node.children[0].type !== 'property')
                 throw new CPSError('The first child of "declaration" is '
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'value')
                 throw new CPSError('The second child of "declaration" is '
                 + 'expected to be a "value", but got "' + node.children[1].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             name = node.children[0].instance;
             value = node.children[1].instance;
             // selectorListFromString uses the parser but doesn't need
             // initialized parameters
             if(ruleController) {
-                try {
-                    typeDefinition = ruleController.parameterRegistry.getTypeDefinition(name.name);
-                }
-                catch(error) {
-                    if(!(error instanceof errors.CPSRegistryKey))
-                        throw error;
-                    // initialize the generic datatype
-                    typeDefinition = CPSDictionaryEntry.factory;
-                }
-                value.initializeTypeFactory(name.name, typeDefinition);
+                factory = ruleController.parameterRegistry.getFactory(name.name);
+                value.initializeTypeFactory(name.name, factory);
             }
             return new Parameter(name, value, source, node.lineNo);
         }
@@ -50199,7 +51313,7 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                     comments.push(children[i].instance);
                 else
                     value.push(children[i].instance);
-            return new ParameterValue(value, comments ,source, node.lineNo)
+            return new ParameterValue(value, comments ,source, node.lineNo);
         }
       // tinker on @namespace
       , 'atruler': function(node, source) {
@@ -50217,27 +51331,34 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                 else if(!name && node.children[i].instance instanceof AtRuleName)
                     name = node.children[i].instance;
                 else if(!selectorList && node.children[i].instance instanceof SelectorList)
-                    selectorList = node.children[i].instance
+                    selectorList = node.children[i].instance;
             if ( !name
                     // we only know @namespace here!
                     || name.name !== 'namespace'
                     || !collection)
                 return this['__GenericAST__'](node, source);
             // may be undefined
-            collection.selectorList = selectorList;
-            collection.name = name;
+            // if it is, we couldn't parse it
+            // an example would be: @namespace("point){}
+            // note the " doesn't close
+            // TODO: it would be nice to preserve the broken information.
+            // so that the AtNamespaceCollection can be repaired better
+            // in the ui
+            if(selectorList !== undefined)
+                collection.selectorList = selectorList;
+            collection.name = name.name;
             return collection;
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
       , 'atrulerq': function(node, source, ruleController) {
-            var i=0
+            var i
               , braces
               , selectorString
               , selectorList
               ;
 
             // find 'braces'
-            for(var i=1;i<node.rawData.length;i++)
+            for(i=1;i<node.rawData.length;i++)
                 if(node.rawData[i][0] && node.rawData[i][0] === 'braces') {
                     braces = node.rawData[i];
                     break;
@@ -50260,7 +51381,7 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                 // remove empty entries
                 .filter(function(item){return !!item.length;})
                 // create a 'normalized' selectorString
-                .join(', ')
+                .join(', ');
 
             try {
                 return parseSelectorList.fromString(selectorString, undefined
@@ -50291,38 +51412,36 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
             // name, selectorList
             return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);
         }
-    })
+    });
 
     return {
         factories: parameterFactories
       , genericNameFactory: genericNameFactory
-    }
-})
-;
+    };
+});
+
 define('metapolator/models/CPS/parsing/atDictionaryFactories',[
     'metapolator/errors'
   , './curry'
   , './parameterFactories'
   , 'metapolator/models/CPS/elements/Parameter'
-  , 'metapolator/models/CPS/elements/AtRuleCollection'
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
-  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
+  , 'metapolator/models/CPS/dataTypes/CPSGeneric'
 
 ], function (
     errors
   , curry
   , parameterFactories
   , Parameter
-  , AtRuleCollection
   , ParameterCollection
   , AtRuleName
-  , CPSDictionaryEntry
+  , CPSGeneric
 ) {
     
     var CPSError = errors.CPS
@@ -50366,6 +51485,7 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
             var k;
             for(k in factories) atDictionaryFactories[k] = factories[k];
     })({
+        /*jshint sub:true*/
         /**
          * Augments the AtRuleCollection created by atrulers with a name.
          */
@@ -50408,7 +51528,7 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
             //return new AtRuleCollection(undefined, items, source, node.lineNo);
             // We are NOT creating AtRuleCollections anymore!
@@ -50423,17 +51543,17 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'value')
                 throw new CPSError('The second child of "declaration" is '
                 + 'expected to be a "value", but got "' + node.children[1].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
             name = node.children[0].instance;
             value = node.children[1].instance;
-            value.initializeTypeFactory(name.name, CPSDictionaryEntry.factory);
+            value.initializeTypeFactory(name.name, CPSGeneric.factory);
             return new Parameter(name, value, source, node.lineNo);
         }
     });
@@ -50452,66 +51572,186 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
         factories: atDictionaryFactories
       , atDictionaryParsingSwitch: atDictionaryParsingSwitch
     };
-})
-;
+});
+
 define('metapolator/models/CPS/elements/AtImportCollection',[
     'metapolator/errors'
   , './ParameterCollection'
-  , 'es6/Proxy'
+  , './_Node'
+  , 'obtain/obtain'
 ], function(
     errors
   , Parent
-  , Proxy
+  , GrandParent
+  , obtain
 ) {
     
     var CPSError = errors.CPS;
     /**
-     * Essentially a proxy for the parameterCollection argument. But
-     * we can define new properties or override existing ones. And we have
-     * a new type.
-     *
-     * Even though the Constructor returns not it's own `this` value,
-     * instead a Proxy of it, we can still test its type:
-     *         instanceof ParameterCollection === true
-     *         instanceof AtImportCollection === true
+     * Essentially a proxy for the ParameterCollection intance it references.
      *
      * The serialization results in an @import Rule, not in the actual
      * cps that the parameterCollection would produce, but we can still
      * use it as if it was the parameterCollection directly.
      *
-     * ResourceName: the resource name of the @import rule
-     * in `@import "bold.cps";` "bold.cps" is the resourceName
+     * Most importantly, the "rules" getter is proxied.
+     *
+     * Use `setResource` to initialize this object.
+     *
+     */
+    function AtImportCollection(ruleController, source, lineNo) {
+        GrandParent.call(this, source, lineNo);// setup the emitter
+        this._selectorList = null;
+        this._name = null;
+        this.name = 'import';
+        this._resourceName = null;
+        this._reference = null;
+        this._ruleController = ruleController;
+    }
+    var _p = AtImportCollection.prototype = Object.create(Parent.prototype);
+    _p.constructor = AtImportCollection;
+
+    function _makeProxyForProperty(name, description) {
+        var proxy = {};
+        proxy.enumerable = description.enumerable;
+        proxy.configurable = description.configurable;
+        if('value' in description) {
+            if(typeof description === 'function') {
+                // proxy call
+                proxy.value = function() {
+                    this._reference[0][name].apply(this._reference[0], arguments);
+                };
+            }
+            else {
+                // simple getter
+                proxy.get = function() {
+                    return this._reference[0][name];
+                };
+                // simple setter
+                proxy.set = function(value) {
+                    this._reference[0][name] = value;
+                };
+            }
+        }
+        else {
+            if('get' in description) {
+                // simple getter
+                proxy.get = function() {
+                    return this._reference[0][name];
+                };
+            }
+            if('set' in description) {
+                // proxy setter
+                proxy.set = function(value) {
+                    this._reference[0][name] = value;
+                };
+            }
+        }
+        if(!('set' in proxy))
+            proxy.writable = description.writable;
+
+        return proxy;
+    }
+
+    _p._proxyEventHandler = function(data, channelName, eventData) {
+        this._trigger(channelName, eventData);
+    };
+    /**
+     * Use the public method "setResource" rather than this.
      *
      * parameterCollection: the instance of the ParameterCollection that
      * is loaded for resourceName.
+     *
+     * parameterCollection is returned from this._ruleController.getRule
      */
-    function AtImportCollection(resourceName, parameterCollection) {
+    _p._setResource = function(resourceName, parameterCollection) {
+        // assert(!parameterCollection.invalid); <= should be valid, it's from ruleController
+        if(this._reference) {
+            if(this._reference[0] === parameterCollection)
+                return;
+            this._reference[0].off(this._reference[1]);
+        }
+
+        // assert(this._resourceName !== resourceName) <= that would be a flaw in the logic somewhere
         this._resourceName = resourceName;
-        var proxy = new Proxy(this, new ProxyHandler(parameterCollection));
-        return proxy;
-    }
-    var _p = AtImportCollection.prototype = Object.create(Parent.prototype);
-    AtImportCollection.prototype.constructor = AtImportCollection;
 
-    function ProxyHandler(reference) {
-        this._reference = reference;
-        this.get = _get;
-    }
+        // NOTE: We should subscribe on all this._reference events and
+        // proxy them. At the moment, however, ParameterCollection will
+        // only trigger 'structural-change', so this is it.
+        this._reference = [
+            parameterCollection
+          , parameterCollection.on('structural-change', [this, '_proxyEventHandler'])
+        ];
+        this._trigger(['resource-change', 'structural-change']);
+    };
 
-    function _get(target, name, receiver) {
-        if(_p.hasOwnProperty(name) || target.hasOwnProperty(name))
-            return target[name];
-        return this._reference[name];
-    }
+    _p._getRule = function(async, resourceName) {
+        return this._ruleController.getRule(async, resourceName);
+    };
+    /**
+     * A lot of errors can happen here but we won't handle them!
+     * As a last resort we can present the user what actually happened
+     * but that is not happening here.
+     *
+     * async: the first argument, this is a obatainJS interface
+     *
+     * resourceName: the resource name of the @import rule
+     * in `@import "bold.cps";` "bold.cps" is the resourceName
+     */
+    _p.setResource = obtain.factory(
+        {
+            parameterCollection:[false, 'resourceName', _p._getRule]
+        }
+      , {
+            parameterCollection:[true, 'resourceName', _p._getRule]
+        }
+      , ['resourceName']
+      , function(obtain, resourceName) {
+            var parameterCollection = obtain('parameterCollection');
+            this._setResource(resourceName, parameterCollection);
+            return true;
+        }
+    );
 
     _p.toString = function() {
         return '@import "' + this.resourceName + '";';
     };
 
+    Object.defineProperty(_p, 'invalid', {
+        get: function() {
+            return (!this._reference || this._reference[0].invalid);
+        }
+    });
+
     Object.defineProperty(_p, 'resourceName', {
         get: function(){ return this._resourceName; }
       , enumerable: true
     });
+
+    // create some proxy properties
+    (function(_p, parent) {
+        var names = Object.getOwnPropertyNames(parent), i, l
+          , name, description, proxyDescription
+          ;
+        for(i=0,l=names.length;i<l;i++) {
+            name = names[i];
+            // FIXME: a whitelist may be better
+            // currently we make proxies for:
+            // reset, items, length, rules, splice
+            // reset should maybe throw an error
+            if(     // only public interfaces
+                    name[0] === '_'
+                    // use the inherited name getter/setter
+                    || name === 'name'
+                    // only interfaces that are not ownProperties of this prototype
+                    // so inherited stuff will be overidden
+                    || _p.hasOwnProperty(name))
+                continue;
+            description = Object.getOwnPropertyDescriptor(parent, name);
+            proxyDescription = _makeProxyForProperty(name, description);
+            Object.defineProperty(_p, name, proxyDescription);
+        }
+    })(_p, Parent.prototype);
 
     return AtImportCollection;
 });
@@ -50556,7 +51796,8 @@ define('metapolator/models/CPS/parsing/atImportFactories',[
          * Find the name of the resource to load and return a ParameterCollection
          */
         'atrules': function(node, source, ruleController) {
-            var args, resource, parameterCollection;
+            /*jshint sub:true*/
+            var args, resource, atImportCollection;
             // filter all whitespace
             args = node.children.slice(1).filter(function(child) {
                 if(child.instance instanceof GenericCPSNode && child.instance.type === 's')
@@ -50571,8 +51812,19 @@ define('metapolator/models/CPS/parsing/atImportFactories',[
                 return this['__GenericAST__'](node, source);
             resource = args[0].data.slice(1,-1);
 
-            parameterCollection = ruleController.getRule(false, resource)
-            return new AtImportCollection(resource, parameterCollection);
+            atImportCollection = new AtImportCollection(ruleController, source, node.lineNo);
+            atImportCollection.setResource(false, resource);
+            // TODO: we can set up the parser easier for asynchronisity,
+            // since the AtImportCollection now handles receiving the
+            // parameter collection from ruleController. we could just
+            // register the promise somewhere central that central place
+            // would wait for all registered promises to "end (successful
+            // or not, we must handle then)
+            // Useful is the atImportCollection only when
+            // !atImportCollection.invalid otherwise it can't be queried
+            // for contents
+            return atImportCollection;
+
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
     });
@@ -50623,7 +51875,7 @@ define('metapolator/models/CPS/parsing/parseRules',[
             atDictionaryFactories.atDictionaryParsingSwitch,
             atImportFactories.atImportParsingSwitch
         ]
-      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
+      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches)
       ;
     /**
      * Create a ParameterCollection from a CSS string
@@ -50639,15 +51891,15 @@ define('metapolator/models/CPS/parsing/parseRules',[
             throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
         }
 
-        return module.fromAST(ast, sourceName, ruleController)
+        return module.fromAST(ast, sourceName, ruleController);
     }
 
     module.fromString = rulesFromString;
     module.fromAST = rulesFromAST;
 
     return module;
-})
-;
+});
+
 define('metapolator/models/Controller',[
     'metapolator/errors'
   , 'metapolator/models/CPS/SelectorEngine'
@@ -50655,9 +51907,9 @@ define('metapolator/models/Controller',[
   , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/StyleDict'
-  , 'metapolator/models/CPS/ReferenceDict'
   , 'metapolator/models/CPS/parsing/parseRules'
   , 'obtain/obtain'
+  , 'metapolator/timer'
 ], function(
     errors
   , SelectorEngine
@@ -50665,9 +51917,9 @@ define('metapolator/models/Controller',[
   , Univers
   , Rule
   , StyleDict
-  , ReferenceDict
   , parseRules
   , obtain
+  , timer
 ) {
     
     var CPSError = errors.CPS
@@ -50685,8 +51937,11 @@ define('metapolator/models/Controller',[
         this._univers = new Univers();
         this._MOM.add(this._univers);
 
-        this._caches = undefined;
-        this._resetCaches();
+        // {element.nodeID: styleDict}
+        this._styleDicts = Object.create(null);
+
+        // {ruleName:[parameterCollection, subscriptionID, [element.nodeIDs, ...]]}
+        this._rules = Object.create(null);
     }
 
     var _p = Controller.prototype;
@@ -50696,139 +51951,121 @@ define('metapolator/models/Controller',[
      * monkey patched on instances
      */
     _p.StyleDict = StyleDict;
-    _p.ReferenceDict = ReferenceDict;
-
-    /**
-     * TODO: see if it's possible to invalidate only parts of the cache:
-     * when only one master is affected by a change, it is overkill
-     * to delete all the other items as well.
-     */
-    _p._resetCaches = function() {
-        this._caches = {
-            styleDicts: Object.create(null)
-          , referenceDicts: Object.create(null)
-          , rules: Object.create(null)
-        }
-    };
 
     _p.updateChangedRule = function(async, sourceName) {
-        var promise = this._ruleController.reloadRule(async, sourceName);
-        return (async
-                    ? promise.then(this._resetCaches.bind(this))
-                    : this._resetCaches()
-               );
+        return this._ruleController.reloadRule(async, sourceName);
     };
 
     _p.addMaster = function(master, sourceName) {
         this._masters[master.id] = sourceName;
         this._univers.add(master);
-    }
+    };
 
     _p.hasMaster = function (master) {
         return master in this._masters;
-    }
+    };
 
     _p._getMasterRule = function (master) {
         if(!(master in this._masters))
             throw new KeyError('Master "'+ master +'" not found in '
                                 + Object.keys(this._masters).join(', '));
         return this._masters[master];
-    }
-
-    _p.__getRules = function(masterName, property) {
-        var ruleName = this._getMasterRule(masterName)
-          , parameterCollection = this._ruleController.getRule(false, ruleName)
-          , namespacedRules = parameterCollection[property]
-          , i = 0
-          , len = namespacedRules.length
-          , namespacedRule
-          , complexSelectors
-          , sortFunc = SelectorEngine.compareSelectorSpecificity
-          ;
-
-        for(;i<len;i++) {
-            namespacedRule = namespacedRules[i];
-            // this is expensive
-            complexSelectors = namespacedRule[1].getSelectorList(namespacedRule[0]).value;
-            complexSelectors.sort(sortFunc);
-            namespacedRules[i][0] = complexSelectors;
-        }
-        return namespacedRules;
     };
 
-    _p._getRules = function(masterName, property) {
-        // FIXME: with this cache key the parameterCollection has to be
-        // created twice, once for rules and once fo dictionaryRules
-        // HOWEVER! the parameterCollection is cached in the rule controller
-        var key = [masterName, property].join(',')
-          , result = this._caches.rules[key];
-          ;
-        if(!result)
-            result = this._caches.rules[key] = this.__getRules(masterName, property);
-        return result;
+    _p.getMasterCPS = function(async, master) {
+        var ruleName = this._getMasterRule(master);
+        return this._ruleController.getRule(async, ruleName);
     };
+
     /**
-    * returns a single StyleDict to read the final cascaded, computed
-    * style for that element.
-    *
-    * Note: this interface element could be based on the result of
-    * rulesForElement and just search that rules up to the end
-    */
-    _p._getComputedStyle = function(element) {
-        var masterRules = element.master
-                ? this._getRules(element.master.id, 'rules')
-                : []
-          , rules = this._selectorEngine.getMatchingRules(masterRules, element)
+     * Used from within _getComputedStyle and StyleDict, don't use it
+     * anywhere else! This is not cached here and pretty expensive.
+     * If needed we will add a rules property getter to StyleDict.
+     */
+    _p.getRulesForElement = function(element) {
+        // FIXME: hard coding global.cps is not good here, can this
+        // be done configurable?
+        var ruleName = element.master
+                    ? this._getMasterRule(element.master.id)
+                    : 'global.cps'
+          , parameterCollection
+          , subscriptionID
+          , rules, allRules
           ;
-        return new this.StyleDict(this, rules, element);
-    }
+        if(!this._rules[ruleName]) {
+            // subscribe only once, this saves calling us a lot of handlers
+            // for each styledict
+            // we are currently not unsubscribing, becuause we don't
+            // unload parameterCollections ever.
+            // TODO: unload parameterCollections if they are not used anymore.
+            //       Probably add a reference counter for that. Maybe this
+            //       is better done in _ruleController. The unsubscription
+            //       here could happen on('destroy');
+            parameterCollection = this._ruleController.getRule(false, ruleName);
+            subscriptionID = parameterCollection.on('structural-change', [this, '_updateRule'], ruleName);
+            this._rules[ruleName] = [parameterCollection, subscriptionID, []];
+        }
+        else
+            parameterCollection = this._rules[ruleName][0];
+        allRules = parameterCollection.rules;
+        rules = this._selectorEngine.getMatchingRules(allRules, element);
+        this._rules[ruleName][2].push(element.nodeID);
+        return rules;
+    };
 
+    _p._getComputedStyle = function(element) {
+        // rules will be pulled lazily from styleDict, when needed
+        var rules = null // rules = this.getRulesForElement(element)
+          , styleDict = new this.StyleDict(this, element, rules)
+          ;
+        this._styleDicts[element.nodeID] = styleDict;
+        return styleDict;
+    };
+
+    /**
+     * returns a single StyleDict to read the final cascaded, computed
+     * style for that element.
+     */
     _p.getComputedStyle = function(element) {
         if(element.multivers !== this._MOM)
             throw new CPSError('getComputedStyle with an element that is not '
                 + 'part of the multivers is not supported' + element);
-        if(!this._caches.styleDicts[element.nodeID])
-            this._caches.styleDicts[element.nodeID] = this._getComputedStyle(element);
-        return this._caches.styleDicts[element.nodeID];
-    }
-
-    _p._getReferenceDictionary = function(element) {
-        throw new errors.Deprecated('@dictionary should not get intialized anymore!');
-        var masterRules = element.master
-                ? this._getRules(element.master.id, 'dictionaryRules')
-                : []
-        var rules = this._selectorEngine.getMatchingRules(masterRules, element);
-        return new this.ReferenceDict(this, rules, element);
-    }
-
-    /**
-     * A reference dictionary is the interface to the values referenced
-     * by the @dictionary CPS rules
-     */
-    _p.getReferenceDictionary = function(element) {
-        if(element.multivers !== this._MOM)
-            throw new CPSError('getReferenceDictionary with an element that is not '
-                + 'part of the multivers is not supported' + element);
-        if(!this._caches.referenceDicts[element.nodeID])
-            this._caches.referenceDicts[element.nodeID] = this._getReferenceDictionary(element);
-        return this._caches.referenceDicts[element.nodeID];
+        // this._styleDicts cache set in _getComputedStyle
+        return this._styleDicts[element.nodeID] || this._getComputedStyle(element);
     };
 
-    _p._checkScope = function(scope) {
-        var i=0;
-        if(scope) {
-            if(!(scope instanceof Array))
-                scope = [scope];
-            for(;i<scope.length;i++)
-                if(scope[i].multivers !== this._MOM)
-                    throw new CPSError('Query with a scope that is not '
-                        +'part of the multivers is not supported '
-                        + scope[i].particulars);
+    /**
+     * Update each styleDict that uses the rule called `ruleName`
+     */
+    _p._updateRule = function(ruleName) {
+        var ids = this._rules[ruleName][2]
+          , parameterCollection = this._rules[ruleName][0]
+          , allRules, styleDict, rules
+          , i, l
+          ;
+        allRules = parameterCollection.rules;
+        for(i=0,l=ids.length;i<l;i++) {
+            styleDict = this._styleDicts[ ids[i] ];
+            styleDict.invalidateRules();
+            continue;
         }
-        else
-            scope = [this._MOM];
+    };
+
+    _p._checkScope = function(_scope) {
+        var i, scope;
+        if(!_scope)
+            return [this._MOM];
+        scope = _scope instanceof Array
+            ? _scope
+            : [_scope]
+            ;
+        for(i=0;i<scope.length;i++)
+            if(scope[i].multivers !== this._MOM)
+                throw new CPSError('Query with a scope that is not '
+                    +'part of the multivers is not supported '
+                    + scope[i].particulars);
         return scope;
-    }
+    };
 
     _p.queryAll = function(selector, scope) {
         var result = this._selectorEngine.queryAll(this._checkScope(scope), selector);
@@ -50836,15 +52073,15 @@ define('metapolator/models/Controller',[
         // it may become useful to invent an analogue to Web API NodeList
         result.query = this._selectorEngine.queryAll.bind(this._selectorEngine, result);
         return result;
-    }
+    };
 
     _p.query = function(selector, scope) {
         return this._selectorEngine.query(this._checkScope(scope), selector);
-    }
+    };
 
     return Controller;
-})
-;
+});
+
 define('metapolator/models/CPS/RuleController',[
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/parseRules'
@@ -55809,141 +57046,141 @@ define('metapolator/project/import/SegmentPoint',[
 ) {
     
     var DeprecatedError = errors.Deprecated;
-    
+
     function SegmentPoint(xy, smooth, name, kwargs) {
         Parent.apply(this, xy);
-        
+
         this.smooth = smooth;
         this.name = name;
-        
+
         // I expect the 'identifier' keyword here, but that kwds syntax
         // could bring in even more names.
         this.kwargs = kwargs || {};
     }
-  
+
     SegmentPoint.factory = function(xy, smooth, name, kwargs) {
         return new SegmentPoint(xy, smooth, name, kwargs);
     };
-    
+
     var _p = SegmentPoint.prototype = Object.create(Parent.prototype);
-    
+
     _p.toString = function() {
         return '<SegmentPoint'
             + (this.name ? ' ' + this.name : '')
             + ' ' + this.valueOf() +'>';
     };
-    
+
     Object.defineProperty(_p, 'vector', {
         get: function() {
             throw new DeprecatedError('SegmentPoint is now a subclass of '
                 +' metapolator/math/Vector don\'t use this property.');
         }
     });
-    
+
     return SegmentPoint;
 });
 
 /**
  * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
+ *
  * You should have received a copy of the MIT License along with this program.
  * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
+ *
  * This is a translation of BasePen defined in fontTools/pens/basePen.py
  * The svn revision of the source file in trunk/Lib/ was 498 from 2005-04-10 15:18:42  +0200
- * 
+ *
  * I even copied the docstrings and comments! (These may still refer to the Python code)
  */
 define('metapolator/project/import/SegmentPen',[
     'ufojs/tools/pens/BasePen'
   , 'metapolator/errors'
   , './SegmentPoint'
-        
+
 ], function(
     Parent
   , errors
   , Point
 ) {
     
-    
+
     /*constructor*/
     function SegmentPen() {
         this._currentContour = null;
         this.contours = [];
-        
+
         Parent.apply(this, [{}].concat(arguments));
-    };
-    
+    }
+
     /*inheritance*/
     var _p = SegmentPen.prototype = Object.create(Parent.prototype);
     _p.constructor = SegmentPen;
-    
+
     _p._PointConstructor = Point;
-    
+
     _p._pointFactory = function(val) {
         return (val instanceof Array)
             ? new this._PointConstructor(val)
              // expect it is already a Point
             : val;
-    }
-    
+    };
+
     _p._newContour = function(kwargs) {
         errors.assert(this._currentContour === null,
-                                'this._currentContour should be null')
+                                'this._currentContour should be null');
         this._currentContour = {
             commands: []
           , type: 'contour'
           , closed: undefined
           , kwargs: kwargs
-        }
-    }
-    
+        };
+    };
+
     _p._closeContour = function() {
         // maybe if the contour is empty, this might happen ???
         // please report if you have trouble with this assertion
         errors.assert(this._currentContour !== null,
-                                'this._currentContour should NOT be null')
+                                'this._currentContour should NOT be null');
         this.contours.push(this._currentContour);
         this._currentContour = null;
-    }
-    
+    };
+
     _p._endPath = function() {
         // assert this._currentContour !== null
         this._currentContour.closed = false;
         this._closeContour();
-    }
-    
+    };
+
     _p._closePath = function() {
         this._currentContour.closed = true;
         this._closeContour();
-    }
-    
+    };
+
     _p.flush = function() {
         var contours = this.contours;
         this.contours = [];
         this._currentContour = null;
         return contours;
-    }
-    
+    };
+
     _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
         this._newContour(kwargs);
         pt = this._pointFactory(pt);
         this._currentContour.commands.push(['moveTo', pt]);
-    }
-    
+    };
+
     _p._lineTo = function(pt)
     {
         pt = this._pointFactory(pt);
         this._currentContour.commands.push(['lineTo', pt]);
-    }
-    
+    };
+
     _p._curveToOne = function(pt1, pt2, pt3)
     {
         pt1 = this._pointFactory(pt1);
         pt2 = this._pointFactory(pt2);
         pt3 = this._pointFactory(pt3);
         this._currentContour.commands.push(['curveTo', pt1, pt2, pt3]);
-    }
+    };
 
     _p.addComponent = function(glyphName, transformation, kwargs)
     {
@@ -55954,7 +57191,7 @@ define('metapolator/project/import/SegmentPen',[
             , kwargs:         kwargs
         };
         this.contours.push(component);
-    }
+    };
 
     return SegmentPen;
 });
@@ -55992,7 +57229,7 @@ define(
     }
 
     /*inheritance*/
-    ImportOutlinePen.prototype = Object.create(Parent.prototype)
+    ImportOutlinePen.prototype = Object.create(Parent.prototype);
     ImportOutlinePen.prototype.constructor = ImportOutlinePen;
 
     /*definition*/
@@ -56000,29 +57237,32 @@ define(
         _flushContour: function(segments, contour_kwargs)
         {
             assert(segments.length >= 1, 'Less than one segment');
-            var pen = this.pen;
+            var pen = this.pen
+              , closed, points, point, movePt, smooth, name, kwargs, segmentType
+              ;
             if( segments[0][0] == "move" ) {
                 // It's an open path.
-                var closed = false,
-                    points = segments[0][1];
+                closed = false;
+                points = segments[0][1];
                 assert(points.length === 1, 'Points length is not 1');
-                var movePt = points[0][0],
-                    smooth = points[0][1],
-                    name = points[0][2],
-                    kwargs = points[0][3];
+                point = points[0];
+                movePt = [0];
+                smooth = points[0][1];
+                name = points[0][2];
+                kwargs = points[0][3];
                 segments.splice(0, 1);
             } else {
                 // It's a closed path, do a moveTo to the last
                 // point of the last segment.
-                var closed = true,
-                    segment = segments[segments.length - 1],
-                    segmentType = segment[0],
-                    points = segment[1],
-                    point = points[points.length - 1],
-                    movePt = point[0],
-                    smooth = point[1],
-                    name = point[2],
-                    kwargs = point[3];
+                closed = true;
+                var segment = segments[segments.length - 1];
+                segmentType = segment[0];
+                points = segment[1];
+                point = points[points.length - 1];
+                movePt = point[0];
+                smooth = point[1];
+                name = point[2];
+                kwargs = point[3];
             }
             if(movePt === null) {
                 // quad special case: a contour with no on-curve points
@@ -56035,8 +57275,8 @@ define(
             var outputImpliedClosingLine = this.outputImpliedClosingLine,
                 nSegments = segments.length;
             for(var i = 0; i < nSegments; i++) {
-                var segmentType = segments[i][0],
-                    points = [];
+                segmentType = segments[i][0];
+                points = [];
                 for(var n = 0; n < segments[i][1].length; n++)
                     points.push(Point.factory.apply(null, segments[i][1][n]));
 
@@ -56075,33 +57315,33 @@ define('metapolator/project/import/tools',[
     Point
 ) {
     
-    
+
     function line2curve(p0, p3) {
         var p1, p2
-          , distance = (p3['-'](p0))['*'](.33333)
+          , distance = (p3['-'](p0))['*'](0.33333)
           , newCurve = ['curveTo']
           ;
         // at a third between p0 and p3
         p1 = new Point(p0['+'](distance));
         // at 2 thirds between p3 and p0
         p2 = new Point(p3['-'](distance));
-        
+
         newCurve.push(p1, p2, p3);
         newCurve.wasLine = true;
         return newCurve;
     }
-    
+
     function getCenter(l, r) {
         return l['+'](r)['*'](0.5);
     }
-    
+
     function makeNameDict(str) {
         var result = {};
         ((str || '').match(/\S+/g) || [])
             .forEach(function(piece){ this[piece] = null;}, result);
         return result;
     }
-    
+
     /**
      * if a name/class/key "example" is only in left it becomes: "left-example"
      * if a name/class/key "example" is only in right it becomes: "right-example"
@@ -56129,19 +57369,19 @@ define('metapolator/project/import/tools',[
             merged['right-' + k] = null;
         return Object.keys(merged).join(' ') || null;
     }
-    
+
     function getCenterPoint(l, r) {
         return new Point(getCenter(l, r), undefined
                        , mergeNames(l.name, r.name));
     }
-    
+
     function getCenterSegment(left, right) {
         var result = [left[0]], i=1;
         for(;i<left.length;i++)
             result.push(getCenterPoint(left[i], right[i]));
         return result;
     }
-    
+
     /**
      * see the docstring of StrokeContoue._findNextDirection
      */
@@ -56182,9 +57422,9 @@ define('metapolator/project/import/tools',[
       , getCenterPoint: getCenterPoint
       , getCenterSegment: getCenterSegment
       , getDirection: getDirection
-    }
-})
-;
+    };
+});
+
 define('metapolator/project/import/StrokeContour',[
     'metapolator/errors'
   , './tools'
@@ -56642,13 +57882,13 @@ define('metapolator/project/import/StrokeContour',[
               .map(_setPolarControls.bind(null, stroke,'r'))
               .forEach(_setKey.bind(null, stroke,'r'))
               ;
-        
+
         stroke.map(_extractKey.bind(null,'z'))
               .map(_setPolarControls.bind(null, stroke,'z'))
               .forEach(_setKey.bind(null, stroke,'z'))
               ;
-        
-        stroke.forEach(_setTensions.bind(null, stroke,'l'))
+
+        stroke.forEach(_setTensions.bind(null, stroke,'l'));
         stroke.forEach(_setTensions.bind(null, stroke,'r'));
         return stroke;
     };
@@ -56788,7 +58028,6 @@ define('metapolator/project/ImportController',[
 
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
-  , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Parameter'
@@ -56809,7 +58048,6 @@ define('metapolator/project/ImportController',[
 
   , ParameterCollection
   , AtNamespaceCollection
-  , AtRuleName
   , Rule
   , ParameterDict
   , Parameter
@@ -56821,8 +58059,8 @@ define('metapolator/project/ImportController',[
   , ufojsErrors
 ) {
     
-    // jshint option
     /*global console:true*/
+    /*jshint  sub:true*/
 
     var GlifLibError = ufojsErrors.GlifLib;
 
@@ -56861,7 +58099,7 @@ define('metapolator/project/ImportController',[
                         false, this._sourceUFODir, undefined, options);
         }
         return this._sourceGlyphSet;
-    }
+    };
 
     _p['import'] = function(glyphs) {
         var missing, i=0
@@ -57006,7 +58244,7 @@ define('metapolator/project/ImportController',[
         );
 
         return [new AtNamespaceCollection(
-                    new AtRuleName('namespace', [])
+                    'namespace'
                   , parseSelectorList.fromString('glyph#'+(glyphName.replace('.', '\\.')))
                   , rules)
                 ];
@@ -57192,7 +58430,7 @@ define('metapolator/project/ImportController',[
      * returns an atNamespaceRule(penstroke:i({penStrokeIndex}))
      */
     function makeCPSPenStrokeRule(penStrokeData, index) {
-        var name = new AtRuleName('namespace', [])
+        var name = 'namespace'
           , selectorList = parseSelectorList.fromString('penstroke:i('+index+')')
           , i = 0
           , items = []
@@ -57200,7 +58438,6 @@ define('metapolator/project/ImportController',[
         for(;i<penStrokeData.length;i++)
             Array.prototype.push.apply(
                 items, makeCPSPointRules(penStrokeData[i], i, penStrokeData.length));
-
 
         return new AtNamespaceCollection(name, selectorList, items);
     }
@@ -57232,7 +58469,7 @@ define('metapolator/project/ImportController',[
     }
 
     function makeCPSContourRule(contourData, index) {
-        var name = new AtRuleName('namespace', [])
+        var name = 'namespace'
           , selectorList = parseSelectorList.fromString('contour:i('+index+')')
           , i = 0
           , items = []
@@ -57309,7 +58546,7 @@ define('metapolator/project/MetapolatorProject',[
       , KeyError = errors.Key
       , IONoEntryError = ufoErrors.IONoEntry
       ;
-    
+
     function MetapolatorProject(io, baseDir) {
         this._io = io;
         this._data = {
@@ -57318,40 +58555,48 @@ define('metapolator/project/MetapolatorProject',[
         this._cache = {
             masters: {}
           , glyphClasses:{}
+          , fontinfo: null
         };
-        
+
         this.baseDir = baseDir || '.';
-        this._controller = new ModelController(new RuleController(io, parameterRegistry, this.cpsDir));
+
+        Object.defineProperty(this, 'ruleController', {
+            value: new RuleController(io, parameterRegistry, this.cpsDir)
+        });
+
+        this._controller = new ModelController(this.ruleController);
         this._log = new log.Logger().setLevel(log.Level.INFO);
         this._log.addHandler(new log.Handler());
+
+        this._momCache = Object.create(null);
     }
-    
+
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
     Object.defineProperty(_p, 'dataDir', {
         get: function(){ return this.baseDir + '/data/com.metapolator';}
     });
-    
+
     Object.defineProperty(_p, 'projectFile', {
         get: function(){ return this.dataDir + '/project.yaml';}
     });
-    
+
     Object.defineProperty(_p, 'cpsDir', {
         get: function(){ return this.dataDir + '/cps';}
     });
-    
+
     Object.defineProperty(_p, 'cpsOutputConverterFile', {
         get: function(){ return 'centreline-skeleton-to-symmetric-outline.cps'; }
     });
-    
+
     Object.defineProperty(_p, 'cpsGlobalFile', {
         get: function(){ return 'global.cps'; }
     });
-    
+
     Object.defineProperty(_p, 'layerContentsFile', {
         get: function(){ return this.baseDir+'/layercontents.plist'; }
     });
-    
+
     Object.defineProperty(_p, 'groupsFileName', {
         value: 'groups.plist'
     });
@@ -57366,7 +58611,7 @@ define('metapolator/project/MetapolatorProject',[
     Object.defineProperty(_p, 'fontinfoFile', {
         get: function(){ return this.baseDir+'/' + this.fontinfoFileName; }
     });
-    
+
     Object.defineProperty(_p, 'logFile', {
         get: function(){ return this.dataDir + '/log.yaml';}
     });
@@ -57454,43 +58699,43 @@ define('metapolator/project/MetapolatorProject',[
         // FIXME: all I/O is synchronous for now
 
         this._io.mkDir(false, this.baseDir);
-        
+
         // create baseDir/metainfo.plist
         this._io.writeFile(false, this.baseDir+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV3));
-        
+
         // create dir baseDir/data
         this._io.mkDir(false, this.baseDir+'/data');
         // create dir baseDir/data/com.metapolator
         this._io.mkDir(false, this.dataDir);
-        
+
         // project file:
         // create this.dataDir/project.yaml => yaml({})
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
-        
+
         // create dir this.dataDir/cps
         this._io.mkDir(false, this.cpsDir);
-        
+
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
                                         plistLib.createPlistString([]));
-        
+
         // the glyphs dir must be there to make the UFO valid, but we don't
         // use it currently :-(
         // create dir baseDir/glyphs
         this._createGlyphLayer('public.default', 'glyphs');
-        
+
         // create default CPS output stage
         // this is the standard wiring of cps compounds etc.
-        // we include it, so it can be studied and if needed changed 
+        // we include it, so it can be studied and if needed changed
         this._io.writeFile(false, [this.cpsDir, '/', this.cpsOutputConverterFile].join(''),
                                         this.getDefaultCPS().toString());
-        
+
         // this can be empty, all masters will use this by default
         this._io.writeFile(false, [this.cpsDir, '/', this.cpsGlobalFile].join(''),
                             '/* all masters use this CPS file by default*/');
-    }
-    
+    };
+
     _p.load = function() {
         // the files created in _p.init need to exist
         // however, we try to load only
@@ -57504,7 +58749,7 @@ define('metapolator/project/MetapolatorProject',[
 
         // Add ConsoleHandler for debugging (also replays existing entries)
         this._log.addHandler(new log.ConsoleHandler());
-        
+
         // Reload any saved log entries before adding CallbackHandler for new entries
         var logText, logRecords;
         try {
@@ -57530,56 +58775,56 @@ define('metapolator/project/MetapolatorProject',[
         fh = new CallbackHandler(this._io.appendFile.bind(this._io, true, this.logFile));
         fh.setFormatter(new YAMLFormatter());
         this._log.addHandler(fh);
-    }
-    
+    };
+
     /**
      * return a ParameterCollection with the default CPS wiring, as the
      * importer expects it.
      */
     _p.getDefaultCPS = function() {
         return defaultParameters;
-    }
-    
+    };
+
     _p.hasMaster = function(masterName) {
         return masterName in this._data.masters;
-    }
-    
+    };
+
     Object.defineProperty(_p, 'masters', {
-        get: function(){ return Object.keys(this._data.masters); } 
+        get: function(){ return Object.keys(this._data.masters); }
     });
-    
+
     Object.defineProperty(_p, 'controller', {
         get: function(){ return this._controller; }
     });
-    
+
     _p._createGlyphLayer = function(name, layerDirName) {
         if(layerDirName === undefined)
             layerDirName = 'glyphs.' + name;
-        
+
         var layerDir = [this.baseDir,'/',layerDirName].join('');
-        
+
         // read layercontents.plist
         var layercontents = plistLib.readPlistFromString(
                 this._io.readFile(false, this.layerContentsFile));
-        
+
         // see if there is a layer with this name
         for(var i=0;i<layercontents.length;i++)
             if(layercontents[i][0] === name)
                 throw new ProjectError('A glyph layer with name "'+name
                                                 +'" already exists.');
-        
+
         // create new layer dir
         this._io.mkDir(false, layerDir);
-        
+
         // store layer in layercontents
         layercontents.push([name, layerDirName]);
         this._io.writeFile(false, this.layerContentsFile,
                                     plistLib.createPlistString(layercontents));
-        
+
         // create empty layerDir/contents.plist
         this._io.writeFile(false, layerDir + '/contents.plist',
                                         plistLib.createPlistString({}));
-    }
+    };
 
     /**
      * Delete a glyph layer.
@@ -57615,8 +58860,8 @@ define('metapolator/project/MetapolatorProject',[
 
         // Remove layer dir and its contents
         this._io.rmDirRecursive(false, layerDir);
-    }
-    
+    };
+
     /**
      * lookup a name in a laycontents list as defined for layercontents.plist
      */
@@ -57645,8 +58890,8 @@ define('metapolator/project/MetapolatorProject',[
                                 + '" does not exist, but is mentioned in '
                                 +'layercontents.plist.');
         return layerDir;
-    }
-    
+    };
+
     /**
      * Create a master entry for this masterName, with the given cpsFile
      * and skeleton.
@@ -57656,7 +58901,7 @@ define('metapolator/project/MetapolatorProject',[
      *
      * If any element does not exist, it is assumed the caller will create
      * it before attempting to use the font.
-     * 
+     *
      */
     _p.createMaster = function(masterName, cpsFile, skeleton) {
         // get the name for this master from the CLI
@@ -57664,16 +58909,16 @@ define('metapolator/project/MetapolatorProject',[
             throw new ProjectError('Master "'+masterName+'" already exists.');
         var master = {cpsFile: cpsFile};
         this._data.masters[masterName] = master;
-        
+
         // create a skeleton layer for this master
         master.skeleton = skeleton;
         if (skeleton === 'skeleton.' + masterName)
             this._createGlyphLayer(master.skeleton);
 
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
-        
+
         return this.getMaster(masterName);
-    }
+    };
 
     /**
      * delete a master entry for this masterName
@@ -57703,15 +58948,15 @@ define('metapolator/project/MetapolatorProject',[
 
         // FIXME: Check we successfully deleted it
         return true;
-    }
+    };
 
     _p._getMaster = function(masterName) {
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
         return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsFile);
-    }
-    
+    };
+
     _p.getMaster = function(masterName) {
         if(!this.hasMaster(masterName))
             throw new KeyError('Master "'+masterName+'" not in project');
@@ -57719,25 +58964,36 @@ define('metapolator/project/MetapolatorProject',[
             this._cache.masters[masterName] = this._getMaster(masterName);
         }
         return this._cache.masters[masterName];
-    }
+    };
 
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
-            , momMaster = master.loadMOM()
+            , skeleton = this._data.masters[masterName].skeleton
+            , sourceMOM
+            , momMaster
             ;
+            // FIXME: Bad implementation, we need much better management
+            // for masters etc. ALSO, if skeleton is the same, we should
+            // rather try to have a single MOM object for this, maybe with
+            // some kind of proxying to enable different "master.id"s
+            sourceMOM = this._momCache[skeleton];
+            if(!sourceMOM)
+                sourceMOM = this._momCache[skeleton] = master.loadMOM();
+            momMaster = sourceMOM.clone();
+
             momMaster.id = masterName;
             this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
-    }
-    
+    };
+
     _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( this._log, this, 
+        var importer = new ImportController( this._log, this,
                                              masterName, sourceUFODir);
         importer.import(glyphs);
-    
+
         this._importGroupsFile(sourceUFODir, false);
         this._importFontInfoFile(sourceUFODir, false);
     };
@@ -57801,7 +59057,7 @@ define('metapolator/project/MetapolatorProject',[
      * @see _importPListFile
      */
     _p._importGroupsFile = function(sourceUFODir, override) {
-        this._importPListFile( sourceUFODir, override, 
+        this._importPListFile( sourceUFODir, override,
                                this.groupsFileName, this.groupsFile );
     };
 
@@ -57812,10 +59068,10 @@ define('metapolator/project/MetapolatorProject',[
      * @see _importPListFile
      */
     _p._importFontInfoFile = function(sourceUFODir, override) {
-        this._importPListFile( sourceUFODir, override, 
+        this._importPListFile( sourceUFODir, override,
                                this.fontinfoFileName, this.fontinfoFile );
     };
-    
+
     _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller
         var model = this.open(masterName)
@@ -57824,28 +59080,28 @@ define('metapolator/project/MetapolatorProject',[
           , glyphSet
           , exportController
           ;
-        
+
         // create a bare ufoV2 directory
         this._io.mkDir(false, dirName);
-        
+
         // create dirName/metainfo.plist
         this._io.writeFile(false, dirName+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV2));
-        
+
         // fontforge requires a fontinfo.plist that defines unitsPerEm
         this._io.writeFile(false, dirName+'/fontinfo.plist'
                                 , plistLib.createPlistString(minimalFontinfo));
-        
+
         this._io.mkDir(false, dirName+'/glyphs');
         this._io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
-        
+
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
-        
+
         exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
-    }
-    
+    };
+
     _p._getGlyphClassesReverseLookup = function() {
         var result = {}
           , data
@@ -57882,7 +59138,30 @@ define('metapolator/project/MetapolatorProject',[
 
         return this._cache.glyphClasses.reverseLookup;
     };
-    
+
+    _p._getFontinfo = function() {
+        var data;
+        try {
+            data = this._io.readFile(false,  this.fontinfoFile);
+        }
+        catch(error) {
+            if(error instanceof IONoEntryError) {
+                // this is legal, we have no fontinfo
+                this._log.warning('No fontinfo found, fallback to minimal (builtin) fontinfo.');
+                return minimalFontinfo;
+            }
+            throw error;
+        }
+        return plistLib.readPlistFromString(data);
+    };
+
+    _p.getFontinfo = function() {
+        var fontinfo = this._cache.fontinfo;
+        if(!fontinfo)
+            this._cache.fontinfo = fontinfo = this._getFontinfo();
+        return fontinfo;
+    };
+
     return MetapolatorProject;
 });
 
@@ -59012,13 +60291,13 @@ requirejs.config({
 
 // feature detection for generators
 try {
+    /*jshint evil:true*/
     eval("(function *(){})()");
     requirejs.config({
     paths: {
         'metapolator/project/ExportController': 'project/ExportController.es6'
     }});
 } catch(err) {
-    console,log(err);
     console.info("No generators, falling back.");
 }
 ;
