@@ -21,6 +21,6 @@ masters:
 #   metapolated:
 #     cpsFile: metapolated.cps
 #     skeleton: skeleton.base
-#   interpolated:
-#     cpsFile: interpolated.cps
-#     skeleton: skeleton.base
+  interpolated:
+    cpsFile: interpolated.cps
+    skeleton: skeleton.base

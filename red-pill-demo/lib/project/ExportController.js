@@ -404,7 +404,8 @@
         var entry = this.tryEntries[i];
         if (entry.tryLoc <= this.prev &&
             hasOwn.call(entry, "finallyLoc") && (
-              (entry.finallyLoc === finallyLoc || this.prev < entry.finallyLoc))) {
+              entry.finallyLoc === finallyLoc ||
+              this.prev < entry.finallyLoc)) {
           return entry;
         }
       }
@@ -825,10 +826,12 @@ define([
     }
     ExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
+    ExportController.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
         var gen = drawGlyphToPointPenGenerator(renderer, model, glyph, pen);
         while(!(gen.next().done));
     };
+
+    _p.drawGlyphToPointPen = ExportController.drawGlyphToPointPen
 
     return ExportController;
 });
