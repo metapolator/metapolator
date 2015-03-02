@@ -2,19 +2,30 @@ define([
     'metapolator/errors'
   , '../_BaseModel'
   , 'metapolator/models/CPS/whitelistProxies'
+  , 'metapolator/models/emitterMixin'
 ], function(
     errors
   , Parent
   , whitelistProxies
+  , emitterMixin
 ) {
     "use strict";
 
     var MOMError = errors.MOM;
 
-    var _id_counter = 0;
+    var _id_counter = 0
+      , emitterMixinSetup
+      ;
     function getUniqueID() {
         return _id_counter++;
     }
+
+    emitterMixinSetup = {
+          stateProperty: '_channel'
+        , onAPI: '_on'
+        , offAPI: '_off'
+        , triggerAPI: '_trigger'
+    };
 
     /**
      * The MOM is the structure against which we can run the selector queries
@@ -36,6 +47,14 @@ define([
         this._id = null;
         this._classes = {};
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+        this._changeSubscriptions = null;
+        emitterMixin.init(this, emitterMixinSetup);
+
+        this._cpsChange = {
+            timeoutId: null
+          , eventData: []
+          , trigger: this._triggerCpsChange.bind(this)
+        };
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
@@ -64,6 +83,8 @@ define([
         for(var k in this._classes)
             clone.setClass(k);
     }
+
+    emitterMixin(_p, emitterMixinSetup);
 
     Object.defineProperty(_p, 'MOMType', {
         get: function(){return 'MOM '+ this.constructor.name ;}
@@ -305,7 +326,123 @@ define([
 
     _p.getComputedStyle = function() {
         return this.multivers.getComputedStyleFor(this);
+    };
+
+    _p._triggerCpsChange = function(){
+       clearTimeout(this._cpsChange.timeoutId);
+       var eventData = this._cpsChange.eventData;
+       this._cpsChange.timeoutId = null;
+       this._cpsChange.eventData = [];
+       this._trigger('CPS-change', eventData);
     }
+    _p._cpsChangeHandler = function(subscriberData, channelKey, eventData) {
+        // The styledicts are already debounced so that they fire only
+        // once after all sync tasks are done. Debouncing here could still
+        // be useful to create less events, however, the subscriber will
+        // have to debounce as well. Maybe, we could try to shift the
+        // StyleDict debouncing to here then also changes of this item's
+        // children will be held back (but they do the same, so a propper
+        // waiting time for 10 ms in the subscriber is maybe best)
+        if(eventData)
+            this._cpsChange.eventData.push(eventData);
+        if(this._cpsChange.timeoutId)
+            return;
+            // Now an event is scheduled, so there's no need for a further
+            // action. In the future, we may pass a promise around to trigger
+            // when the current task has finished. Similar considerations
+            // are in StyleDict.js at Styledict.prototype._nextTrigger
+            //clearTimeout(this._cpsChange.timeoutId);
+        this._cpsChange.timeoutId = setTimeout(this._cpsChange.trigger, 0);
+    };
+
+    /**
+     * When there is a listener for CPS-change the first time, this will
+     * subscribe to all it's children and to its computedStyle to get the
+     * message. The children will subscribe themselve to all their children.
+     *
+     * NOTE: currently we only register changes from StyleDict, that means
+     * the CPS model, we don't know about changes in the MOM.
+     */
+    _p._initCPSChangeEvent = function() {
+        var callback
+          , changeSubscriptions = this._changeSubscriptions
+          , style
+          , children, i, l, child
+          ;
+        if(changeSubscriptions === null) {
+            // only if this is the first subscription:
+            changeSubscriptions = this._changeSubscriptions = Object.create(null);
+            Object.defineProperty(changeSubscriptions, 'counter', {
+                value: 0
+              , writable: true
+              , enumerable: false
+            });
+
+            callback = [this, '_cpsChangeHandler'];
+            style = this.getComputedStyle();
+            // FIXME: do I wan't this to hold an actual reference to its
+            // StyleDict??? this was managed solely by models/Controller previously.
+            changeSubscriptions._styleDict_ = [style, style.on('change', callback)];
+            children = this._children;
+            for(i=0,l=children.length;i<l;i++) {
+                child = children[i];
+                changeSubscriptions[child.nodeID] = [child, child.on('CPS-change', callback)];
+            }
+        }
+        changeSubscriptions.counter += 1;
+    };
+
+    _p._deinitCPSChangeEvent = function(subscriberID) {
+        var k, subscription
+          , changeSubscriptions = this._changeSubscriptions
+          ;
+        if(!changeSubscriptions)
+            return;
+        changeSubscriptions.counter -= 1;
+        if(changeSubscriptions.counter === 0) {
+            delete changeSubscriptions._styleDict_;
+            for(k in changeSubscriptions) {
+                subscription = changeSubscriptions[k];
+                subscription[0].off(subscription[1]);
+            }
+        }
+        this._changeSubscriptions = null;
+    };
+
+    /**
+     * Use "CPS-change" this as an indicator to schedule a redraw;
+     */
+    _p.on = function(channel, subscriberCallback, subscriberData) {
+        // TODO: a beforeOnHook('change', method) would be nice here
+        // See also the comment in _p.off
+        var i,l;
+        if(channel instanceof Array) {
+            for(i=0,l=channel.length;i<l;i++)
+                if(channel[i] === 'CPS-change')
+                    this._initCPSChangeEvent();
+        }
+        else if(channel === 'CPS-change')
+            this._initCPSChangeEvent();
+
+        return this._on(channel, subscriberCallback, subscriberData);
+    };
+
+    _p.off = function(subscriberID) {
+        // will raise if not subscribed, so it happen before _deinitChangeEvent
+        var result = this._off(subscriberID), i,l;
+        // TODO: this requires knowledge of the structure of emitterMixin
+        // subscriberIDs! That is a bit unfortunate.
+        // A solution would be a afterOffHook('change', method) here.
+        // I consider that overengineering for the moment.
+        if(subscriberID[0] instanceof Array)
+            for(i=0,l=subscriberID.length;i<l;i++)
+                if(subscriberID[0] === 'CPS-change')
+                    this._deinitCPSChangeEvent();
+        else if(subscriberID[0] === 'CPS-change')
+            this._deinitCPSChangeEvent();
+
+        return result;// usually undefined
+    };
 
     return _Node;
 })

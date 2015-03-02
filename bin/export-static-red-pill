@@ -24,15 +24,18 @@ for module in $MODULES; do
     mkdir -p "$(dirname $TARGET/$module)" && cp "$SOURCE/app/$module" "$TARGET/$module";
 done
 
+for mainfile in "redPillMain" "sliderDemoMain" "metapolatorStandAlone"; do
 # build the javascript into one file
-node $SOURCE/node_modules/.bin/r.js -o \
+    node $SOURCE/node_modules/.bin/r.js -o \
         optimize=none\
         mainConfigFile="$SOURCE/app/lib/browserConfig.js" \
         baseUrl="$SOURCE/app/lib" \
         paths.requireLib="bower_components/requirejs/require" \
-        name="redPillMain" \
+        name="$mainfile" \
         include=requireLib,browserConfig \
-        out="$TARGET/main.js";
+        out="$TARGET/$mainfile"".js";
+done
+
 
 # build the less to css
 node $SOURCE/node_modules/.bin/lessc \
@@ -40,8 +43,23 @@ node $SOURCE/node_modules/.bin/lessc \
         --strict-imports "$SOURCE/app/lib/ui/redPill/app.less" \
         "$TARGET/main.css";
 
-sed s":<!-- development -->:<!-- development:" "$SOURCE/app/red-pill.html" | \
-    sed s":<!-- production:<!-- production -->:" > "$TARGET/index.html";
+
+# we keep the html files separate usually, but for an export we
+# move them to the root directory
+cp $SOURCE/app/lib/html/*.html $TARGET/;
+
+echo 'copied html files to root';
+
+for line in $(find $TARGET -maxdepth 1 -name "*.html" -type f); do
+  echo "activating production <header> of $line";
+  mv $line "$line~";
+  sed s":<!-- development -->:<!-- development:" "$line~" | \
+      sed s":<!-- production:<!-- production -->:" > "$line";
+  unlink "$line~";
+done
+
+cp $TARGET/red-pill.html $TARGET/index.html;
+
 
 # make a directory listing at index.html in $TARGET for every directory recursively
 

@@ -71,7 +71,12 @@ define([
         };
         
         this.baseDir = baseDir || '.';
-        this._controller = new ModelController(new RuleController(io, parameterRegistry, this.cpsDir));
+
+        Object.defineProperty(this, 'ruleController', {
+            value: new RuleController(io, parameterRegistry, this.cpsDir)
+        });
+
+        this._controller = new ModelController(this.ruleController);
         this._log = new log.Logger().setLevel(log.Level.INFO);
         this._log.addHandler(new log.Handler());
 
