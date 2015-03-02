@@ -6,42 +6,63 @@ define([
     "use strict";
     /**
      * A list of ComplexSelectors
+     *
+     * An instance of this must be treated as immutable, it will not
+     * change its content/selectors.
      */
     function SelectorList(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._selectors = [];
-        this._value = [];
+        // Keeping this private. The value property returns a copy of
+        // the this._selectors array and that's the public interface.
+        this._selectors = selectors.slice();
         this._multiplyCache = new WeakMap();
-        if(selectors.length)
-            Array.prototype.push.apply(this._selectors, selectors);
-        
-        // Maybe we'll need to determine the following on demand, not on init??
-        var i, l, selector, count=0;
+
+        var i, l, selector, count=0, invalid=false, message;
+
         for(i=0,l=this._selectors.length;i<l;i++) {
             selector = this._selectors[i];
             if(selector.invalid) {
-                this._invalid = true;
-                this._message = selector.message;
+                invalid = true;
+                message = selector.message;
                 break;
             }
             if(!selector.selects)
                 continue;
-            this._value.push(selector)
             count +=1;
         }
-        if(!count) {
-            this._invalid = true;
-            this._message = 'SelectorList has no selecting selector';
+        if(!invalid && !count) {
+            invalid = true;
+            message = 'SelectorList has no valid selector';
         }
+        Object.defineProperties(this,{
+            'selects': {
+                value: !invalid
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: invalid
+              , enumerable: true
+            }
+          , 'length': {
+                value: selectors.length
+              , enumerable: true
+            }
+          , 'message': {
+                value: message
+              , enumerable: true
+            }
+        });
+        Object.freeze(this);
+        Object.freeze(this._selectors);
     }
-    
+
     /**
      * A factory that creates one selectorlist from two input
      * selectorLists
-     * 
+     *
      * This uses the value property of the input selectorLists,
      * so the result uses only selecting ComplexSelectors
-     * 
+     *
      * The ComplexSelectors are combined using the descendant combinator.
      */
     SelectorList.multiply = function(a, b) {
@@ -59,41 +80,19 @@ define([
     
     var _p = SelectorList.prototype = Object.create(Parent.prototype)
     _p.constructor = SelectorList;
-    
-    
-    var _filterNotInvalid = function(selector) {
-        return !selector.invalid;
-    }
-    
-    var _filterSelecting = function(selector) {
-        return selector.selects;
-    }
-    
-    _p.toString = function() {
-        return this._selectors.filter(_filterNotInvalid).join(',\n') || 'invalidSelectorList';
-    }
-    
-    Object.defineProperty(_p, 'selectors', {
-        get: function(){ return this._selectors.slice(); }
-    })
-    
-    Object.defineProperty(_p, 'length', {
-        get: function(){ return this._selectors.length }
-    })
-    
-    Object.defineProperty(_p, 'selects', {
-        get: function(){ return !this._invalid; }
-    });
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._invalid;}
-    });
-    Object.defineProperty(_p, 'message', {
-        get: function(){ return this._message;}
-    });
+
     Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value.slice(); }
+        get: function(){ return this._selectors.slice(); }
     });
-    
+
+    var _filterValid = function(selector) {
+        return !selector.invalid;
+    };
+
+    _p.toString = function() {
+        return this._selectors.filter(_filterValid).join(',\n') || 'invalidSelectorList';
+    };
+
     _p.multiply = function(selectorList) {
         var r = this._multiplyCache.get(selectorList);
         if(!r) {
@@ -101,15 +100,7 @@ define([
             this._multiplyCache.set(selectorList, r);
         }
         return r;
-    }
-    
-    /**
-     * Add selectors to this SelectorList.
-     */
-    //_p.push = function(selector /*, ... selectors */) {
-    //    var selectors = Array.prototype.slice.call(arguments)
-    //    return this._selectors.push.apply(this._selectors, selectors);
-    //}
-    
+    };
+
     return SelectorList;
-})
+});

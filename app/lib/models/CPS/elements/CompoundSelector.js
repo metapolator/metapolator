@@ -24,48 +24,37 @@ define([
      *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     *
-     *  reasons for invalid selectors:
-     *
-     * A selector may be alien, which means we ignore it, because we don't
-     * understand it. an alien selector is not invalid, thus its selectorlist
-     * is still valid.
      */
     function CompoundSelector(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._alien = false;
-        this._invalid = false;
-        this._message = undefined;
         this._specificity = undefined;
-        
+
         if(selectors.length === 0)
             throw new CPSError('CompoundSelector has no SimpleSelector items');
-        
+
         this._value = selectors.slice();
         if(!(this._value[0].type in {'universal': null, 'type': null})) {
             this._value.unshift(new SimpleSelector('universal', '*',
                                             undefined, source, lineNo));
             this._value[0].___implicit = true;
         }
-        
-        var i=0
+
+        var i,l
           , selector
+          , invalid = false
+          , message
           ;
-        for(;i<this._value.length;i++) {
+        for(i=0,l=this._value.length;i<l;i++) {
             selector = this._value[i];
-            if(selector.alien) {
-                this._alien = true;
-                this._message = 'Unknown selector: ' + selector.type + ' ' + selector.name;
-            }
             if(selector.invalid) {
-                this._invalid = true;
-                this._message = 'Invalid selector: ' + selector;
+                invalid = true;
+                message = 'Invalid selector: ' + selector;
                 break;
             }
             if(i !== 0
                     && selector.type in {'universal': null, 'type': null}) {
-                this._invalid = true;
-                this._message = ['Type Selector and Universal selector'
+                invalid = true;
+                message = ['Type Selector and Universal selector'
                                 , 'can only be the first in a CompoundSelector'
                                 , 'but found "'+ selector +'" at position:'
                                 , (i+1)].join(' ');
@@ -73,6 +62,25 @@ define([
             }
         }
 
+        Object.defineProperties(this, {
+            'selects': {
+                value: !invalid
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: invalid
+              , enumerable: true
+            }
+          , 'message': {
+                value: message
+              , enumerable: true
+            }
+          , 'type': {
+                // a element type name or *
+                value: this._value[0].name
+              , enumerable: true
+            }
+        });
         this._normalizedValue = undefined;
         this._normalizedName = undefined;
         this.compiled = false;
@@ -106,29 +114,11 @@ define([
         this.compiled = true;
     };
 
-    Object.defineProperty(_p, 'selects', {
-        get: function(){ return !this._invalid && !this._alien; }
-    });
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._invalid;}
-    });
-    Object.defineProperty(_p, 'alien', {
-        get: function(){ return this._alien;}
-    });
-    Object.defineProperty(_p, 'message', {
-        get: function(){ return this._message;}
-    });
     Object.defineProperty(_p, 'value', {
         get: function() {
             // if _value is truthy return a copy of the _value array
             // if value is falsy, return its falsy value (probably undefiend)
             return this._value && this._value.slice();}
-    });
-    // a element type name or *
-    Object.defineProperty(_p, 'type', {
-        get: function() {
-            return this._value[0].name;
-        }
     });
 
     /**

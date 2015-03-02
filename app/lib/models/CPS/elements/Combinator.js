@@ -9,31 +9,33 @@ define([
      */
     function Combinator(value, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._value = value;
+        Object.defineProperties(this, {
+            'type': {
+                value: this._types[value] || 'unknown'
+              , enumerable: true
+            }
+          , 'value': {
+                value: value
+              , enumerable: true
+            }
+        });
     }
     var _p = Combinator.prototype = Object.create(Parent.prototype)
     _p.constructor = Combinator;
     
     _p.toString = function() {
-        if(this._value === ' ')
-            return this._value;
-        return ' ' + this._value + ' ';
-    }
-    
+        return (this.value === ' '
+             ? ' '
+             : ' ' + this.value + ' '
+        );
+    };
+
     _p._types = {
         '>': 'child'
       , ' ': 'descendant'
       , '+': 'next-sibling'
       , '~': 'following-sibling'
-    }
-    
-    Object.defineProperty(_p, 'type', {
-        get: function(){ return this._types[this._value] || 'unknown'; }
-    })
-    
-    Object.defineProperty(_p, 'value', {
-        get: function(){ return this._value; }
-    })
-    
+    };
+
     return Combinator;
 })

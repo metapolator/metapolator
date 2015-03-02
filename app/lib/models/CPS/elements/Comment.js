@@ -9,18 +9,24 @@ define([
      */
     function Comment(comment, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._comment = comment;
+        Object.defineProperties(this, {
+            comment: {
+                value: comment
+              , enumerable: true
+            }
+          , invalid: {
+                value: false
+              , enumerable: true
+            }
+        });
     }
-    var _p = Comment.prototype = Object.create(Parent.prototype)
+    var _p = Comment.prototype = Object.create(Parent.prototype);
     _p.constructor = Comment;
-    
+
     _p.toString = function() {
-        return ['/*', this._comment, '*/'].join('');
-    }
-    
-    Object.defineProperty(_p, 'comment', {
-        get: function(){ return this._comment; }
-    })
-    
+        // TODO: escape */ within this.comment, or remove it if escaping doesn't work.
+        return ['/*', this.comment, '*/'].join('');
+    };
+
     return Comment;
-})
+});
