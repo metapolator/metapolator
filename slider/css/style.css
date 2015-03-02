@@ -820,6 +820,8 @@
             padding: 4px 10px;
             background: #fff;
             cursor: default;
+            white-space: nowrap;
+            overflow: hidden;
         }
         
           .list-edit-col.selected {

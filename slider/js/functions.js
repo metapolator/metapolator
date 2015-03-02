@@ -1,16 +1,20 @@
 // some issues with outerWidth() and offsetWidth
+var currentView = 0;
 
-$(function() {
+$(document).ready(function(){
+    
+    $(window).resize(function(){
+        moveLandscape(currentView, 0);
+    });
 
     $(".menu-item").on("click", function() {
         var view = parseInt($(this).context.id.split("-")[2]);
         moveLandscape(view, 1);
     });
     
-    moveLandscape(1, 1);
+   // moveLandscape(1, 1);
         
     function moveLandscape(view, transition) {
-        // move virtual dividers
         currentView = view;
         //$("#divider-1").css("left", $("#panel-" + (view * 2 + 1)).outerWidth());
         //$("#divider-2").css("left", $("#panel-" + (view * 2 + 1)).outerWidth() + $("#panel-" + (view * 2 + 2)).outerWidth());
