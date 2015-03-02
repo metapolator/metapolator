@@ -23,8 +23,7 @@ define([
 
     _p.toString = function() {
         return '<' + this.constructor.name
-             + ' v: ' + this.value.valueOf()
-             + ' with stack' + this._stack + '>';
+             + ' with stack "' + this._stack + '">';
     };
 
     return _FormulaeValue;

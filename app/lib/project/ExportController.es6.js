@@ -19,6 +19,7 @@ define([
   , timer
 ) {
     "use strict";
+    /*jshint esnext:true*/
     var KeyError = errors.Key
       , CPSKeyError = errors.CPSKey
     ;
@@ -306,10 +307,12 @@ define([
     }
     ExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
 
-    _p.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
+    ExportController.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
         var gen = drawGlyphToPointPenGenerator(renderer, model, glyph, pen);
         while(!(gen.next().done));
     };
+
+    _p.drawGlyphToPointPen = ExportController.drawGlyphToPointPen;
 
     return ExportController;
 });

@@ -14,7 +14,7 @@ define([
   , main
 ) {
     "use strict";
-    
+
     /*global clearTimeout: true*/
     /*global setTimeout: true*/
     /*global console:true*/
@@ -34,7 +34,7 @@ define([
 
         return svgPen;
     }
-    
+
     function getSVG(element) {
         var svg = element[0].getElementsByTagName('svg')[0];
         if(!svg) {
@@ -192,12 +192,11 @@ define([
      */
     function render(scope, element, glyph, model) {
         var svg = getSVG(element)
-          , renderer
+          , renderer = scope.renderer
           ;
-        if(!scope.renderer)
-            scope.renderer = new RenderController(svg, model, glyph.parent);
-        renderer = scope.renderer;
-        
+        if(!renderer)
+            renderer = scope.renderer = new RenderController(svg, model, glyph.parent);
+
         renderer.abort();
         renderer.addLayer(glyph, 'outline', {
             penstroke: ExportController.renderPenstrokeOutline
@@ -208,13 +207,15 @@ define([
         }, false);
         renderer.run();
     }
-    
+
     function redPillGlyphDirective(model) {
         function link(scope, element, attrs) {
             render(scope, element, scope.mtkGlyphElement, model);
             scope.$on('cpsUpdate', render.bind(null, scope, element, scope.mtkGlyphElement, model));
             element.on('$destroy', function() {
-                clearTimeout(scope.timeoutId);
+                var renderer = scope.renderer;
+                if(renderer)
+                    renderer.abort();
             });
         }
         return {
@@ -223,7 +224,7 @@ define([
           , scope: { mtkGlyphElement: '=' }
         };
     }
-    
+
     redPillGlyphDirective.$inject = ['ModelController'];
     return redPillGlyphDirective;
 });

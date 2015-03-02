@@ -1,25 +1,39 @@
 define([
-    './_Node'
+    'metapolator/errors'
+  , './_Node'
 ], function(
-    Parent
+    errors
+  , Parent
 ) {
     "use strict";
+
+    var ValueError = errors.Value;
+
     /**
      * The container for selectors and parameters.
      */
     function Rule(selectorList, parameterDict, source, lineNo) {
         Parent.call(this, source, lineNo);
         this._selectorList = selectorList;
-        this._parameters = parameterDict;
+        Object.defineProperty(this, 'parameters', {
+            value: parameterDict
+          , enumerable: true
+        });
     }
-    
-    var _p = Rule.prototype = Object.create(Parent.prototype)
+
+    var _p = Rule.prototype = Object.create(Parent.prototype);
     _p.constructor = Rule;
-    
+
     _p.toString = function() {
-        return [this._selectorList, ' ', this._parameters].join('');
-    }
-    
+        return [this._selectorList, ' ', this.parameters].join('');
+    };
+
+    Object.defineProperty(_p, 'invalid', {
+        get: function(){
+            return this._selectorList.invalid;
+        }
+    });
+
     /**
      * If no namespaces are provided, the result of this method equals
      * this._selectorList.
@@ -35,11 +49,14 @@ define([
                     selectorList = namespaces[i].multiply(selectorList);
         }
         return selectorList;
-    }
-    
-    Object.defineProperty(_p, 'parameters', {
-        get: function(){ return this._parameters; }
-    })
-    
+    };
+
+    _p.setSelectorList = function(selectorList) {
+        if(selectorList.invalid)
+            throw new ValueError('Trying to set an invalid selectorList: ' + selectorList);
+        this._selectorList = selectorList;
+        this._trigger('selector-change');
+    };
+
     return Rule;
-})
+});

@@ -143,7 +143,7 @@ define([
         // It is an array
 
         expectedLength = this.consumes + (
-                                description[0] !== '*getAPI*' ? 1 : 2);
+                                description[0] === '*getAPI*' || description[0] === '*unboxed+getAPI*' ? 2 : 1);
 
         if(description.length !== expectedLength)
             throw new ValueError(this.literal + ': An operator definition array must define '
@@ -214,7 +214,7 @@ define([
         for(i=0;i<consumes;i++) {
             arg = boxedNames[i];
             body.push('var ' , unboxedNames[i] , ' = ' , arg , ' instanceof NameToken '
-                    , '? getAPI(' , arg , '.getValue()) '
+                    , '? getAPI.get(' , arg , '.getValue()) '
                     , ': ' , arg , ';\n');
         }
         return unboxedNames;
@@ -337,7 +337,7 @@ define([
         /*jshint evil:true*/
         var body = ['"use strict";\n']
           , i, j, k, l, ll, description, methodName
-          , names, args, type, typeVarsIndex, ctorIndex, isBoxed
+          , names, args, type, typeVarsIndex, ctorIndex, isBoxed, hasGetAPI
           , hasMatchAll = false
           , unboxedNameTokens = false
           , typeTests = {
@@ -357,7 +357,7 @@ define([
           , '  ;\n'
         );
         names = _makeLocalBoxedNames(body, this._methods, this.consumes);
-        args = 'getAPI' + (this.consumes ? ', ' + names.join(', ') : '');
+        args = names.join(', ');
 
         // a placeholder
         typeVarsIndex = body.length;
@@ -369,6 +369,8 @@ define([
             body.push('var ',methodName,' = methods[', i ,'];\n');
 
             isBoxed = description[0] === '*getAPI*';
+            hasGetAPI = isBoxed || description[0] === '*unboxed+getAPI*';
+
             if(unboxedNameTokens && isBoxed)
                 // This is a problem in the design of the operator
                 // see the lengthy error message in p._setMethod
@@ -394,7 +396,7 @@ define([
 
             body.push('if(true');
             // k: start at 1 if the first item is *getAPI*
-            for(j=0, k=isBoxed?1:0,ll=this.consumes;j<ll;k++,j++) {
+            for(j=0, k=hasGetAPI?1:0,ll=this.consumes;j<ll;k++,j++) {
                 type = description[k];
                 // always true
                 if(type === '*anything*') continue;
@@ -404,7 +406,7 @@ define([
             }
             body.push(
                 ')\n    '
-              , 'return ' ,methodName,'[', description.length-1, '](', args, ');\n'
+              , 'return ' ,methodName,'[', description.length-1, '](', (hasGetAPI ? 'getAPI, ' : ''), args, ');\n'
             );
 
             // write the constructor references
@@ -486,6 +488,7 @@ define([
           , args
           , result
           , operator
+          , description
           ;
         index = this._findMethod(getAPI ,argsObj);
         if(index === -1) {
@@ -498,15 +501,20 @@ define([
                     .join(', ')
             );
         }
-        if(typeof this._methods[index] === 'function') {
-            operator = this._methods[index];
+        description = this._methods[index];
+        if(typeof description === 'function') {
+            operator = description;
             args = argsObj.unboxedNameTokens;
         }
         else {
-            operator = this._methods[index].slice(-1).pop();
-            if(this._methods[index][0] === '*getAPI*') {
-                args = argsObj.original;
-                args.unshift(getAPI);
+            operator = description.slice(-1).pop();
+            if(description[0] === '*getAPI*') {
+                args = [getAPI];
+                Array.prototype.push.apply(args, argsObj.original);
+            }
+            else if(description[0] === '*unboxed+getAPI*') {
+                args = [getAPI];
+                Array.prototype.push.apply(args, argsObj.unboxedNameTokens);
             }
             else
                 args = argsObj.unboxedNameTokens;
@@ -515,7 +523,6 @@ define([
 
         // check for NaN and sorts of??
         return result;
-
     };
 
     /**
@@ -539,7 +546,7 @@ define([
     }
 
     Object.defineProperty(Internal_Arguments.prototype, 'unboxedNameTokens', {
-        get: function(){
+        get: function() {
             if(!this._unboxedNameTokens)
                 this._unboxedNameTokens = this.original.map(_unbox, this);
             return this._unboxedNameTokens;
@@ -549,7 +556,7 @@ define([
     function _unbox (token) {
          /*jshint validthis:true */
         if(token instanceof NameToken)
-            return this._getAPI(token.getValue());
+            return this._getAPI.get(token.getValue());
         return token;
     }
 

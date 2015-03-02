@@ -3,11 +3,13 @@ define([
   , './dataTypes/CPSReal'
   , './dataTypes/CPSVector'
   , './dataTypes/CPSTransformation'
+  , './dataTypes/CPSGeneric'
 ], function(
     errors
   , CPSReal
   , CPSVector
   , CPSTransformation
+  , CPSGeneric
 ) {
     "use strict";
     /**
@@ -28,6 +30,7 @@ define([
             real: CPSReal.factory
           , vector: CPSVector.factory
           , transformation: CPSTransformation.factory
+          , generic: CPSGeneric.factory
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
@@ -36,23 +39,24 @@ define([
 
     _p.exists = function(name) {
         return name in this._parameters;
-    }
+    };
 
-    _p.getTypeDefinition = function(name) {
-        var description;
-        if(!this.exists(name))
+    _p.getFactory = function(name, fallbackType /* optional string, default: 'generic'*/) {
+        var description, type
+          , _fallbackType = fallbackType === undefined ? 'generic' : fallbackType
+          ;
+        if(this.exists(name))
+            type = this._parameters[name].type;
+        else if(_fallbackType) {
+            if(!(_fallbackType in this._dataTypes))
+                throw new errors.CPSRegistryKey('Name "' + name + '" is no registered '
+                        + 'parameter and fallback-type "' + _fallbackType + '" is no known type');
+            type = _fallbackType;
+        }
+        else
             throw new errors.CPSRegistryKey('Name "' + name + '" is no registered parameter');
-        description = this._parameters[name];
-        return this._dataTypes[description.type];
-    }
-
-    _p.getDefaultFactory = function(name) {
-        var description;
-        if(!this.exists(name))
-            throw new errors.CPSRegistryKey('Name "' + name + '" is no registered parameter');
-        description = this._parameters[name];
-        return this._dataTypes[description.type].defaultFactory;
-    }
+         return this._dataTypes[type];
+    };
 
     _p.register = function(name, parameterDescription) {
         if(this.exists(name))
@@ -64,7 +68,7 @@ define([
                 +'" is unkown.');
 
         this._parameters[name] = parameterDescription;
-    }
+    };
 
     return Registry;
-})
+});

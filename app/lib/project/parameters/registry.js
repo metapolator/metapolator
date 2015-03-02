@@ -12,17 +12,17 @@ define([
     parameterRegistry.register('on', {
                 type: 'vector'
               , description: 'An On-Curve Point.'
-    })
+    });
 
     parameterRegistry.register('in', {
                 type: 'vector'
               , description: 'An incoming Control Point.'
-    })
+    });
 
     parameterRegistry.register('out', {
                 type: 'vector'
               , description: 'An outgoing Control Point.'
-    })
+    });
 
     parameterRegistry.register('inTension', {
                 type: 'real'
@@ -38,25 +38,25 @@ define([
                 type: 'real'
               , description: 'The distance from center point to left or '
                             + 'right on curve point'
-    })
+    });
 
     parameterRegistry.register('inLength', {
                 type: 'real'
               , description: 'The distance from on-curve point to the Control Point'
                             + 'usually unused in favor of inTension'
-    })
+    });
 
     parameterRegistry.register('outLength', {
                 type: 'real'
               , description: 'The distance from on-curve point to the Control Point'
                             + 'usually unused in favor of outTension'
-    })
+    });
 
     parameterRegistry.register('onDir', {
                 type: 'real'
               , description: 'The direction in radians from center point '
                             + 'to left or right on curve point'
-    })
+    });
 
     parameterRegistry.register('inDir', {
                 type: 'real'
@@ -67,7 +67,7 @@ define([
                 type: 'real'
               , description: 'The intrinsic value of the direction of an '
                                                 + 'incomimg Control Point.'
-    })
+    });
 
     parameterRegistry.register('outDir', {
                 type: 'real'

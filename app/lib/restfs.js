@@ -18,12 +18,13 @@ define([
 
     // Sanitize a file path, ensuring it doesn't go above /
     var _cleanPath = function(s) {
+        /*jshint newcap:false*/
         s = path.normalize(s);
         // If the path goes above root, return 500
         if (s.split('/')[0] === '..')
             throw new _ForbiddenError('path "' + s + '" is above root');
         return s;
-    }
+    };
 
     // callback for fs.readdir
     // attaches a slash to every directory name
@@ -50,7 +51,7 @@ define([
         else
             for(i=0;i<files.length;i++)
                 fs.stat(dirName+'/'+files[i], callback.bind(null, files, i));
-    }
+    };
 
     // serve usable status codes for the directory PUT
     var _mkDirHandler = function(res, next, err) {
@@ -63,14 +64,15 @@ define([
             res.send(400, 'Can\'t create dir: ' + err); // Bad Request
         else
             res.send(201);// Created
-    }
+    };
+
     // serve usable status codes for the directory DELETE
     var _rmDirHandler = function(res, next, err) {
         if(err && err.code !== 'ENOENT')
             res.send(400, 'Can\'t delete dir: ' + err); // Bad Request
         else
             res.send(204);// No content returned
-    }
+    };
 
     // file PUT and POST
     var _writeFileHandler = function(res, next, err) {
@@ -78,14 +80,14 @@ define([
             next(err);
         else
             res.send(204);
-    }
+    };
 
     var _unlinkFileHandler = function(res, next, err) {
         if(err && err.code !== 'ENOENT')
             next(err);
         else
             res.send(204);
-    }
+    };
 
     var restfs = function(rootDir) {
         if(rootDir.slice(-1) === '/')
@@ -107,10 +109,10 @@ define([
                     break;
                     case 'PUT':
                     // try to create the directory
-                    fs.mkdir(fullPath, _mkDirHandler.bind(null, res, next))
+                    fs.mkdir(fullPath, _mkDirHandler.bind(null, res, next));
                     break;
                     case 'DELETE':
-                    fs.rmdir(fullPath, _rmDirHandler.bind(null, res, next))
+                    fs.rmdir(fullPath, _rmDirHandler.bind(null, res, next));
                     break;
                     default:
                     res.send(405);// 405 Method Not Allowed
@@ -163,7 +165,7 @@ define([
                 // default error handler of express
                 next();
         });
-    }
+    };
 
     return restfs;
 });

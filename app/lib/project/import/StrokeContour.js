@@ -455,13 +455,13 @@ define([
               .map(_setPolarControls.bind(null, stroke,'r'))
               .forEach(_setKey.bind(null, stroke,'r'))
               ;
-        
+
         stroke.map(_extractKey.bind(null,'z'))
               .map(_setPolarControls.bind(null, stroke,'z'))
               .forEach(_setKey.bind(null, stroke,'z'))
               ;
-        
-        stroke.forEach(_setTensions.bind(null, stroke,'l'))
+
+        stroke.forEach(_setTensions.bind(null, stroke,'l'));
         stroke.forEach(_setTensions.bind(null, stroke,'r'));
         return stroke;
     };

@@ -24,8 +24,8 @@ util.inherits(YAMLFormatter, Formatter);
 
 /**
  * This function formats a {@link LogRecord} object in YAML as follows:
- * 
- * time: {datetime} 
+ *
+ * time: {datetime}
  * message: {message}
  * [logger-name]: {string}
  * [level]: {level}
@@ -33,14 +33,14 @@ util.inherits(YAMLFormatter, Formatter);
  *
  * Each entry is returned as an array of length 1, which can be appended to
  * a log file (see FileLogger) as part of an "infinite" array.
- * 
+ *
  * @param {LogRecord} logRecord Record to be formatted
  */
 YAMLFormatter.prototype.formatMessage = function(logRecord) {
   if (!logRecord || !(logRecord instanceof LogRecord))
     return {};
 
-  var record = {}
+  var record = {};
   record.message = logRecord.getMessage() || "";
 
   //log errors as strings
@@ -73,7 +73,7 @@ YAMLFormatter.prototype.formatMessage = function(logRecord) {
   var thrown = logRecord.getThrown();
   if (thrown && util.isError(thrown))
     record.thrown = {message: thrown.message, stack: thrown.stack};
-  
+
   return yaml.safeDump([record]);
 };
 

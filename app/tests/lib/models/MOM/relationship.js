@@ -31,32 +31,32 @@ define([
               , penStroke = new PenStroke
               , penStrokePoint = new PenStrokePoint
               ;
-            
+
             assert.isTrue(univers instanceof _Node);
             assert.isTrue(univers.isMOMNode(univers));
             assert.isFalse(univers.isMOMNode({}));
             assert.isTrue(univers.isMOMNode(master));
             assert.isTrue(univers.qualifiesAsChild(master));
-            
+
             univers.add(master);
             assert.strictEqual(univers, master.parent);
             assert.isTrue(univers.isMOMNode(glyph));
-            
+
             assert.throws(
                 univers.add.bind(univers, glyph)
               , errors.MOM
               , '<MOM Univers> doesn\'t accept <MOM Glyph> as a child object.'
             );
-            
+
             assert.isTrue(master.qualifiesAsChild(glyph));
             master.add(glyph);
             assert.strictEqual(master, glyph.parent);
-            
+
             assert.isTrue(penStroke instanceof _Contour);
             assert.isTrue(glyph.qualifiesAsChild(penStroke));
             glyph.add(penStroke);
             assert.strictEqual(glyph, penStroke.parent);
-            
+
             assert.isTrue(penStroke.qualifiesAsChild(penStrokePoint));
             penStroke.add(penStrokePoint);
             assert.strictEqual(penStroke, penStrokePoint.parent);

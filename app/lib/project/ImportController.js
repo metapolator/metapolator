@@ -8,7 +8,6 @@ define([
 
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
-  , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Parameter'
@@ -29,7 +28,6 @@ define([
 
   , ParameterCollection
   , AtNamespaceCollection
-  , AtRuleName
   , Rule
   , ParameterDict
   , Parameter
@@ -41,8 +39,8 @@ define([
   , ufojsErrors
 ) {
     "use strict";
-    // jshint option
     /*global console:true*/
+    /*jshint  sub:true*/
 
     var GlifLibError = ufojsErrors.GlifLib;
 
@@ -81,7 +79,7 @@ define([
                         false, this._sourceUFODir, undefined, options);
         }
         return this._sourceGlyphSet;
-    }
+    };
 
     _p['import'] = function(glyphs) {
         var missing, i=0
@@ -226,7 +224,7 @@ define([
         );
 
         return [new AtNamespaceCollection(
-                    new AtRuleName('namespace', [])
+                    'namespace'
                   , parseSelectorList.fromString('glyph#'+(glyphName.replace('.', '\\.')))
                   , rules)
                 ];
@@ -412,7 +410,7 @@ define([
      * returns an atNamespaceRule(penstroke:i({penStrokeIndex}))
      */
     function makeCPSPenStrokeRule(penStrokeData, index) {
-        var name = new AtRuleName('namespace', [])
+        var name = 'namespace'
           , selectorList = parseSelectorList.fromString('penstroke:i('+index+')')
           , i = 0
           , items = []
@@ -420,7 +418,6 @@ define([
         for(;i<penStrokeData.length;i++)
             Array.prototype.push.apply(
                 items, makeCPSPointRules(penStrokeData[i], i, penStrokeData.length));
-
 
         return new AtNamespaceCollection(name, selectorList, items);
     }
@@ -452,7 +449,7 @@ define([
     }
 
     function makeCPSContourRule(contourData, index) {
-        var name = new AtRuleName('namespace', [])
+        var name = 'namespace'
           , selectorList = parseSelectorList.fromString('contour:i('+index+')')
           , i = 0
           , items = []

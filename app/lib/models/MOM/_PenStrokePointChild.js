@@ -7,11 +7,12 @@ define([
     /**
      * This Element represents a child of a of a MoM PenStrokePoint
      */
-    function _PenStrokePointChild(vector) {
+    function _PenStrokePointChild() {
+        /*jshint validthis:true*/
         Parent.call(this);
     }
     var _p = _PenStrokePointChild.prototype = Object.create(Parent.prototype);
     _p.constructor = _PenStrokePointChild;
-    
+
     return _PenStrokePointChild;
-})
+});

@@ -61,14 +61,20 @@ define([
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
+    _p.clone = function() {
+        var clone = new this.constructor(new PointData(this._skeleton));
+        this._cloneProperties(clone);
+        return clone;
+    };
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePoint'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'point'
-    })
+    });
 
     /**
      * This is the on curve point of the skeleton.
@@ -78,27 +84,27 @@ define([
         get: function() {
             return this._skeleton;
         }
-    })
+    });
 
     Object.defineProperty(_p, 'left', {
         get: function() {
             return this._children[0];
         }
-    })
+    });
 
     Object.defineProperty(_p, 'center', {
         get: function() {
             return this._children[1];
         }
-    })
+    });
 
     Object.defineProperty(_p, 'right', {
         get: function() {
             return this._children[2];
         }
-    })
+    });
 
     _p._acceptedChildren = [_PenStrokePointChild];
 
     return PenStrokePoint;
-})
+});

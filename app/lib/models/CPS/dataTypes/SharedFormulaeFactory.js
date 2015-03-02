@@ -15,11 +15,6 @@ define([
 
     var _p = SharedFormulaeFactory.prototype;
 
-    _p.defaultFactory =  function(name, element, getAPI) {
-        throw new errors.Deprecated('We will implement defaults within CPS.');
-        // return new this.TypeConstructor(getAPI);
-    };
-
     _p.init = function(parameterValue, setFactoryAPI, setInvalidAPI) {
         var invalidParamterMessage = false
           , stack

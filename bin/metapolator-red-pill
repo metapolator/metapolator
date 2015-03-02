@@ -55,13 +55,23 @@ if (require.main === module) {
             // thus path/to/metapolator-code is the root directory
             var rootDir = path.dirname(path.dirname(require.main.filename))
               , libDir = rootDir + '/app/lib'
-              , index = rootDir + '/app/red-pill.html'
+              , htmlDir = rootDir + '/app/lib/html'
+              , index = htmlDir + '/red-pill.html'
               , project = parseArgs.project(io, projectDir)
               , app = express()
               , server = app.listen(getPort(program))
               , socketIO = SocketIO(server)
               ;
             app.get('/', function(req, res, next) { res.sendfile(index); }) // index file
+               // any .html file
+               .get('/*.html', function(req, res, next) {
+                    var i = req.path.lastIndexOf('/');
+                    if(i === -1){
+                        next();
+                        return;
+                    }
+                    res.sendfile(htmlDir + req.path.slice(i));
+               })
                .use('/lib', express.static(libDir)) // application code
                ;
             // project is a RESTful directory with a socket io channel

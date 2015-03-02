@@ -12,16 +12,16 @@ define([
     function Source(name) {
         this._name = name;
     }
-    
+
     var _p = Source.prototype;
-    
+
     _p.toString = function() {
         return ['<Source:', this._name, '>'].join(' ');
-    }
-    
+    };
+
     Object.defineProperty(_p, 'name', {
         get: function(){ return this._name; }
     });
-    
+
     return Source;
-})
+});

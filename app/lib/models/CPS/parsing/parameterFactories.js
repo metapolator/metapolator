@@ -9,7 +9,6 @@ define([
   , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/SelectorList'
-  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
   , 'gonzales/gonzales'
   , './parseSelectorList'
 ], function (
@@ -23,11 +22,11 @@ define([
   , AtRuleName
   , AtNamespaceCollection
   , SelectorList
-  , CPSDictionaryEntry
   , gonzales
   , parseSelectorList
 ) {
     "use strict";
+    /*jshint sub:true*/
     var CPSError = errors.CPS;
 
     /**
@@ -71,9 +70,9 @@ define([
                         : '<no instance>'), '" '
                 ,'in a '+node.type+' from: ', source, 'line: '
                 , node.lineNo
-                ,'.'].join(''), (new Error).stack)
+                ,'.'].join(''), (new Error()).stack);
         name = node.children[0].data;
-        return new Constructor(name, comments ,source, node.lineNo)
+        return new Constructor(name, comments ,source, node.lineNo);
     }
 
     // inherit from selectorFactories
@@ -143,37 +142,29 @@ define([
          * _makeNode.
          */
       , 'declaration': function (node, source, ruleController) {
-            var name, value, typeDefinition;
+            var name, value, factory;
 
             if(node.children[0].type !== 'property')
                 throw new CPSError('The first child of "declaration" is '
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'value')
                 throw new CPSError('The second child of "declaration" is '
                 + 'expected to be a "value", but got "' + node.children[1].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             name = node.children[0].instance;
             value = node.children[1].instance;
             // selectorListFromString uses the parser but doesn't need
             // initialized parameters
             if(ruleController) {
-                try {
-                    typeDefinition = ruleController.parameterRegistry.getTypeDefinition(name.name);
-                }
-                catch(error) {
-                    if(!(error instanceof errors.CPSRegistryKey))
-                        throw error;
-                    // initialize the generic datatype
-                    typeDefinition = CPSDictionaryEntry.factory;
-                }
-                value.initializeTypeFactory(name.name, typeDefinition);
+                factory = ruleController.parameterRegistry.getFactory(name.name);
+                value.initializeTypeFactory(name.name, factory);
             }
             return new Parameter(name, value, source, node.lineNo);
         }
@@ -228,7 +219,7 @@ define([
                     comments.push(children[i].instance);
                 else
                     value.push(children[i].instance);
-            return new ParameterValue(value, comments ,source, node.lineNo)
+            return new ParameterValue(value, comments ,source, node.lineNo);
         }
       // tinker on @namespace
       , 'atruler': function(node, source) {
@@ -246,27 +237,34 @@ define([
                 else if(!name && node.children[i].instance instanceof AtRuleName)
                     name = node.children[i].instance;
                 else if(!selectorList && node.children[i].instance instanceof SelectorList)
-                    selectorList = node.children[i].instance
+                    selectorList = node.children[i].instance;
             if ( !name
                     // we only know @namespace here!
                     || name.name !== 'namespace'
                     || !collection)
                 return this['__GenericAST__'](node, source);
             // may be undefined
-            collection.selectorList = selectorList;
-            collection.name = name;
+            // if it is, we couldn't parse it
+            // an example would be: @namespace("point){}
+            // note the " doesn't close
+            // TODO: it would be nice to preserve the broken information.
+            // so that the AtNamespaceCollection can be repaired better
+            // in the ui
+            if(selectorList !== undefined)
+                collection.selectorList = selectorList;
+            collection.name = name.name;
             return collection;
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
       , 'atrulerq': function(node, source, ruleController) {
-            var i=0
+            var i
               , braces
               , selectorString
               , selectorList
               ;
 
             // find 'braces'
-            for(var i=1;i<node.rawData.length;i++)
+            for(i=1;i<node.rawData.length;i++)
                 if(node.rawData[i][0] && node.rawData[i][0] === 'braces') {
                     braces = node.rawData[i];
                     break;
@@ -289,7 +287,7 @@ define([
                 // remove empty entries
                 .filter(function(item){return !!item.length;})
                 // create a 'normalized' selectorString
-                .join(', ')
+                .join(', ');
 
             try {
                 return parseSelectorList.fromString(selectorString, undefined
@@ -320,15 +318,15 @@ define([
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
             // name, selectorList
             return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);
         }
-    })
+    });
 
     return {
         factories: parameterFactories
       , genericNameFactory: genericNameFactory
-    }
-})
+    };
+});

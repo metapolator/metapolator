@@ -42,7 +42,8 @@ define([
 
     _p.loadMOM = function() {
         // create a MOM Master use this.glyphSet to create glyphs, penstrokes and points
-        var master = new Master()
+        var fontinfo = this._project.getFontinfo()
+          , master = new Master(fontinfo)
           , glyphNames = this.glyphSet.keys()
           , glyphName
           , ufoGlyph
@@ -55,12 +56,16 @@ define([
         for(;i<glyphNames.length;i++) {
             glyphName = glyphNames[i];
             ufoGlyph = this.glyphSet.get(glyphName);
-            glyph = new Glyph();
+            glyph = new Glyph();// FIXME do the stuff of setUFOData here!
             glyph.id = glyphName;
             if(glyphName in classes)
                 classes[glyphName].forEach(glyph.setClass, glyph);
             // fetch glyph data and draw the glyph to the MOM
             ufoGlyph.drawPoints(false, new MOMPointPen(glyph));
+            // FIXME: if possible remove all usages of `setUFOData`.
+            // This can happen in the Constructor.
+            // maybe, when event propagation for this stuf is built, we
+            // can use this method again
             glyph.setUFOData(ufoGlyph);
             master.add(glyph);
         }

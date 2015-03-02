@@ -54,12 +54,12 @@ requirejs.config({
 
 // feature detection for generators
 try {
+    /*jshint evil:true*/
     eval("(function *(){})()");
     requirejs.config({
     paths: {
         'metapolator/project/ExportController': 'project/ExportController.es6'
     }});
 } catch(err) {
-    console,log(err);
     console.info("No generators, falling back.");
 }

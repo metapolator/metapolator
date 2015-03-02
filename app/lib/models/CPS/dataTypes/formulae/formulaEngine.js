@@ -9,7 +9,6 @@ define([
   , './parsing/_Token'
   , 'metapolator/models/CPS/elements/SelectorList'
   , 'metapolator/models/MOM/_Node'
-  , 'metapolator/models/CPS/cpsGetters'
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
   , 'metapolator/math/hobby'
@@ -25,7 +24,6 @@ define([
   , _Token
   , SelectorList
   , _MOMNode
-  , cpsGetters
   , transform
   , Vector
   , hobby
@@ -74,19 +72,25 @@ define([
          * of item and the details of the implementation
          */
       , new Operator('__get__', false, Infinity, 1, 1, [
-            ['*getAPI*', NameToken, 'string', function(getApi, name, key) {
-                var item = getApi(name.getValue());
-                return cpsGetters.generic(item, key);
+            ['*getAPI*', NameToken, 'string', function(getAPI, name, key) {
+                var item = getAPI.get(name.getValue());
+                return getAPI.genericGetter(item, key);
             }]
+            // FIXME: I think a signature of
+            // '*unboxed+getAPI*' ,'*anything*', '*anything*'
+            // would do the same trick, also, the last operator implementation
+            // here: '*unboxed+getAPI*','*anything*', ['number', 'string'] could be removed as well?
+            // maybe, also the first... ????
           , ['*getAPI*', NameToken, NameToken, function(getAPI, name1, name2) {
-                var item = getAPI(name1.getValue())
-                  , key = getAPI(name2.getValue())
+                var item = getAPI.get(name1.getValue())
+                  , key = getAPI.get(name2.getValue())
                   ;
-                return cpsGetters.generic(item, key);
+                return getAPI.genericGetter(item, key);
             }]
             // value: this['parent'][S"point.top"]
-          , [_MOMNode, SelectorList, function(node, selector) {
-                var result = node.query(selector);
+          , ['*unboxed+getAPI*', _MOMNode, SelectorList, function(getAPI, node, selector) {
+                // internally does node.query(selector); but with dependency subscription
+                var result = getAPI.query(node, selector);
                 if(!result)
                     throw new CPSFormulaError('Not found: an element for '
                                         + selector + ' '
@@ -94,8 +98,8 @@ define([
                                     );
                 return result;
             }]
-          , ['*anything*', ['number', 'string'], function(item, key) {
-                return cpsGetters.generic(item, key);
+          , ['*unboxed+getAPI*','*anything*', ['number', 'string'], function(getAPI, item, key) {
+                return getAPI.genericGetter(item, key);
             }]
         ])
         /**
@@ -113,19 +117,33 @@ define([
          */
       , new Operator(':', true, Infinity, 1, 1, [
             ['*getAPI*', NameToken, NameToken, function(getAPI, name, key) {
-                var item = getAPI(name.getValue());
-                return cpsGetters.generic(item, key.getValue());
+                var item = getAPI.get(name.getValue());
+                if(!item)
+                    console.log('item:', item, 'from', '"'+name.getValue()+'"', 'key:', '"'+key.getValue()+'"');
+                return getAPI.genericGetter(item, key.getValue());
             }]
           , ['*getAPI*', SelectorList, NameToken, function(getAPI, selector, key) {
                 // SelectorList selects from global scope, aka multivers
-                var item = getAPI('this').multivers.query(selector);
+                // var item = getAPI.get('this').multivers.query(selector);
+                // FIXME: do instead
+                // var item = getAPI.query(getAPI.get('this').multivers, selector); // internally node.query(selector); but with subscription
+
+                // is some form of subscription needed for node.multivers???
+                // maybe in the future, we will allow transports from one
+                // multivers to another, then host.multivers can change
+                var host = getAPI.get('this')
+                  , node = getAPI.genericGetter(host, 'multivers')
+                  , item = getAPI.query(node, selector)
+                  ;
+
+
                 if(!item)
                     throw new CPSFormulaError('Not found: an element for '
                                                         + selector);
-                return cpsGetters.generic(item, key.getValue());
+                return getAPI.genericGetter(item, key.getValue());
             }]
           , ['*getAPI*', '*anything*', NameToken, function(getAPI, item, key) {
-                return cpsGetters.generic(item, key.getValue());
+                return getAPI.genericGetter(item, key.getValue());
             }]
         ])
         /**
@@ -303,6 +321,7 @@ define([
          * This doesn't change the result of the calculation.
          */
       , new Operator('_print', false, Infinity, 0, 1, function(arg) {
+            /*global console*/
             console.log('cps _print: "' +arg +'" typeof', typeof arg
                                                     , 'object: ', arg);
             return arg;
@@ -352,9 +371,15 @@ define([
      */
     engine.setFinalizeMethod(function(result, getAPI) {
         if(result instanceof NameToken)
-            return getAPI(result.getValue());
-        else if(result instanceof SelectorList)
-            return getAPI('this').multivers.query(result);
+            return getAPI.get(result.getValue());
+        else if(result instanceof SelectorList) {
+            var host = getAPI.get('this') // this can\'t be overidden by cps
+              , node = getAPI.genericGetter(host, 'multivers')
+              ;
+            return getAPI.query(node, result);
+            // old, not fully subscribed:
+            // return getAPI.get('this').multivers.query(result);
+        }
         else if(result instanceof _Token)
             // maybe one day we allow stuff like operators as first class
             // values, but not now.

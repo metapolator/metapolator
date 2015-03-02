@@ -76,8 +76,7 @@ define({
 
     // Non-functional test suite(s) to run in each browser
     suites: [
-        'tests/lib/Metapolator'
-      , 'tests/lib/export/_all_'
+        'tests/lib/export/_all_'
       , 'tests/lib/models/CPS/_all_'
       , 'tests/lib/models/MOM/_all_'
       , 'tests/lib/es6/Proxy'

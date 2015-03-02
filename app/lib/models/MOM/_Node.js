@@ -2,19 +2,30 @@ define([
     'metapolator/errors'
   , '../_BaseModel'
   , 'metapolator/models/CPS/whitelistProxies'
+  , 'metapolator/models/emitterMixin'
 ], function(
     errors
   , Parent
   , whitelistProxies
+  , emitterMixin
 ) {
     "use strict";
 
     var MOMError = errors.MOM;
 
-    var _id_counter = 0;
+    var _id_counter = 0
+      , emitterMixinSetup
+      ;
     function getUniqueID() {
         return _id_counter++;
     }
+
+    emitterMixinSetup = {
+          stateProperty: '_channel'
+        , onAPI: '_on'
+        , offAPI: '_off'
+        , triggerAPI: '_trigger'
+    };
 
     /**
      * The MOM is the structure against which we can run the selector queries
@@ -25,6 +36,7 @@ define([
      * This means, that a test like `item instanceof _Node` must return true.
      */
     function _Node() {
+        /*jshint validthis:true*/
         Parent.call(this);
         if(this.constructor.prototype === _p)
             throw new MOMError('MOM _Node must not be instantiated directly');
@@ -34,8 +46,16 @@ define([
         this._parent = null;
         this._index = null;
         this._id = null;
-        this._classes = {};
+        this._classes = Object.create(null);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+        this._changeSubscriptions = null;
+        emitterMixin.init(this, emitterMixinSetup);
+
+        this._cpsChange = {
+            timeoutId: null
+          , eventData: []
+          , trigger: this._triggerCpsChange.bind(this)
+        };
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
@@ -48,11 +68,28 @@ define([
       , multivers: 'multivers'
       , index: 'index'
       , type: 'type'
-    }
+    };
+
+    _p.clone = function() {
+        var clone = new this.constructor(), i,l;
+        this._cloneProperties(clone);
+        for(i=0,l=this._children.length;i<l;i++)
+            clone.add(this._children[i].clone());
+        return clone;
+    };
+
+    _p._cloneProperties = function(clone) {
+        if(this._id)
+            clone.id = this._id;
+        for(var k in this._classes)
+            clone.setClass(k);
+    };
+
+    emitterMixin(_p, emitterMixinSetup);
 
     Object.defineProperty(_p, 'MOMType', {
         get: function(){return 'MOM '+ this.constructor.name ;}
-    })
+    });
 
     /**
      * Implement a getter for CPS Type in children of _Node, we need it
@@ -66,7 +103,7 @@ define([
             // this should be implemented by items inheriting from _Node
             throw errors.NotImplemented('Implement CPS-Type name!');
         }
-    })
+    });
 
     Object.defineProperty(_p, 'children', {
         /**
@@ -74,7 +111,7 @@ define([
          * with the list of children via public interfaces.
          */
         get: function(){ return this._children.slice(); }
-    })
+    });
 
     Object.defineProperty(_p, 'id', {
         /**
@@ -86,7 +123,7 @@ define([
          */
         set: function(id){ this._id = id; }
       , get: function(){ return this._id; }
-    })
+    });
 
     /***
      * get the univers element of this node.
@@ -101,7 +138,7 @@ define([
                 return this._parent;
             return this._parent.univers;
         }
-    })
+    });
 
     /***
      * get the multivers element of this node.
@@ -116,7 +153,7 @@ define([
                 return this._parent;
             return this._parent.multivers;
         }
-    })
+    });
 
     /***
      * get the master element of this node or null if this node has no master
@@ -131,13 +168,13 @@ define([
                 return this._parent;
             return this._parent.master;
         }
-    })
+    });
 
     Object.defineProperty(_p, 'glyph', {
         get: function() {
             return this._parent && this._parent.glyph;
         }
-    })
+    });
 
     /**
      * returns a selector for this element, currently it is used for
@@ -149,32 +186,32 @@ define([
             return [
                     this._parent ? this._parent.particulars : '(no parent)'
                   , ' '
-                  , this.type,
+                  , this.type
                   , (this.id ? '#' + this.id : '')
                   , (this._parent
                         ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }
-    })
+    });
 
     _p.setClass = function(name) {
         this._classes[name] = null;
-    }
+    };
 
     _p.removeClass = function(name) {
         delete this._classes[name];
-    }
+    };
 
     _p.hasClass = function(name) {
         return name in this._classes;
-    }
+    };
 
-    _p.toString = function() { return ['<', this.MOMType, '>'].join('') };
+    _p.toString = function() { return ['<', this.MOMType, '>'].join('');};
 
     _p.isMOMNode = function(item) {
         return item instanceof _Node;
-    }
+    };
 
     /**
      *  enhance this list with accepted children Constructors
@@ -191,7 +228,7 @@ define([
             if(item instanceof this._acceptedChildren[i])
                 return true;
         return false;
-    }
+    };
 
     /**
      * Note: this is currently running very often when adding or deleting
@@ -210,7 +247,7 @@ define([
             if(item === this._children[i])
                 return i;
         return false;
-    }
+    };
 
     Object.defineProperty(_p, 'index', {
         get: function(){ return this._index;}
@@ -254,7 +291,7 @@ define([
             this._index = this._parent.find(this);
         }
       , get: function(){ return this._parent; }
-    })
+    });
 
     _p.remove = function(item) {
         if(Object.isFrozen(this._children))
@@ -266,7 +303,7 @@ define([
         this._children.splice(i, 1);
         item.parent = null;
         return true;
-    }
+    };
 
     _p.add = function(item) {
         if(Object.isFrozen(this._children))
@@ -278,19 +315,136 @@ define([
             item.parent.remove(item);
         this._children.push(item);
         item.parent = this;
-    }
+    };
 
     _p.query = function(selector) {
         return this.multivers.query(selector, this);
-    }
+    };
 
     _p.queryAll = function(selector) {
         return this.multivers.queryAll(selector, this);
-    }
+    };
 
     _p.getComputedStyle = function() {
         return this.multivers.getComputedStyleFor(this);
-    }
+    };
+
+    _p._triggerCpsChange = function(){
+       clearTimeout(this._cpsChange.timeoutId);
+       var eventData = this._cpsChange.eventData;
+       this._cpsChange.timeoutId = null;
+       this._cpsChange.eventData = [];
+       this._trigger('CPS-change', eventData);
+    };
+
+    _p._cpsChangeHandler = function(subscriberData, channelKey, eventData) {
+        // The styledicts are already debounced so that they fire only
+        // once after all sync tasks are done. Debouncing here could still
+        // be useful to create less events, however, the subscriber will
+        // have to debounce as well. Maybe, we could try to shift the
+        // StyleDict debouncing to here then also changes of this item's
+        // children will be held back (but they do the same, so a propper
+        // waiting time for 10 ms in the subscriber is maybe best)
+        if(eventData)
+            this._cpsChange.eventData.push(eventData);
+        if(this._cpsChange.timeoutId)
+            return;
+            // Now an event is scheduled, so there's no need for a further
+            // action. In the future, we may pass a promise around to trigger
+            // when the current task has finished. Similar considerations
+            // are in StyleDict.js at Styledict.prototype._nextTrigger
+            //clearTimeout(this._cpsChange.timeoutId);
+        this._cpsChange.timeoutId = setTimeout(this._cpsChange.trigger, 0);
+    };
+
+    /**
+     * When there is a listener for CPS-change the first time, this will
+     * subscribe to all it's children and to its computedStyle to get the
+     * message. The children will subscribe themselve to all their children.
+     *
+     * NOTE: currently we only register changes from StyleDict, that means
+     * the CPS model, we don't know about changes in the MOM.
+     */
+    _p._initCPSChangeEvent = function() {
+        var callback
+          , changeSubscriptions = this._changeSubscriptions
+          , style
+          , children, i, l, child
+          ;
+        if(changeSubscriptions === null) {
+            // only if this is the first subscription:
+            changeSubscriptions = this._changeSubscriptions = Object.create(null);
+            Object.defineProperty(changeSubscriptions, 'counter', {
+                value: 0
+              , writable: true
+              , enumerable: false
+            });
+
+            callback = [this, '_cpsChangeHandler'];
+            style = this.getComputedStyle();
+            // FIXME: do I wan't this to hold an actual reference to its
+            // StyleDict??? this was managed solely by models/Controller previously.
+            changeSubscriptions._styleDict_ = [style, style.on('change', callback)];
+            children = this._children;
+            for(i=0,l=children.length;i<l;i++) {
+                child = children[i];
+                changeSubscriptions[child.nodeID] = [child, child.on('CPS-change', callback)];
+            }
+        }
+        changeSubscriptions.counter += 1;
+    };
+
+    _p._deinitCPSChangeEvent = function(subscriberID) {
+        var k, subscription
+          , changeSubscriptions = this._changeSubscriptions
+          ;
+        if(!changeSubscriptions)
+            return;
+        changeSubscriptions.counter -= 1;
+        if(changeSubscriptions.counter === 0) {
+            delete changeSubscriptions._styleDict_;
+            for(k in changeSubscriptions) {
+                subscription = changeSubscriptions[k];
+                subscription[0].off(subscription[1]);
+            }
+        }
+        this._changeSubscriptions = null;
+    };
+
+    /**
+     * Use "CPS-change" this as an indicator to schedule a redraw;
+     */
+    _p.on = function(channel, subscriberCallback, subscriberData) {
+        // TODO: a beforeOnHook('change', method) would be nice here
+        // See also the comment in _p.off
+        var i,l;
+        if(channel instanceof Array) {
+            for(i=0,l=channel.length;i<l;i++)
+                if(channel[i] === 'CPS-change')
+                    this._initCPSChangeEvent();
+        }
+        else if(channel === 'CPS-change')
+            this._initCPSChangeEvent();
+
+        return this._on(channel, subscriberCallback, subscriberData);
+    };
+
+    _p.off = function(subscriberID) {
+        // will raise if not subscribed, so it happen before _deinitChangeEvent
+        var result = this._off(subscriberID), i,l;
+        // TODO: this requires knowledge of the structure of emitterMixin
+        // subscriberIDs! That is a bit unfortunate.
+        // A solution would be a afterOffHook('change', method) here.
+        // I consider that overengineering for the moment.
+        if(subscriberID[0] instanceof Array)
+            for(i=0,l=subscriberID.length;i<l;i++)
+                if(subscriberID[0] === 'CPS-change')
+                    this._deinitCPSChangeEvent();
+        else if(subscriberID[0] === 'CPS-change')
+            this._deinitCPSChangeEvent();
+
+        return result;// usually undefined
+    };
 
     return _Node;
-})
+});

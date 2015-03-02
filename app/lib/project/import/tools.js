@@ -4,33 +4,33 @@ define([
     Point
 ) {
     "use strict";
-    
+
     function line2curve(p0, p3) {
         var p1, p2
-          , distance = (p3['-'](p0))['*'](.33333)
+          , distance = (p3['-'](p0))['*'](0.33333)
           , newCurve = ['curveTo']
           ;
         // at a third between p0 and p3
         p1 = new Point(p0['+'](distance));
         // at 2 thirds between p3 and p0
         p2 = new Point(p3['-'](distance));
-        
+
         newCurve.push(p1, p2, p3);
         newCurve.wasLine = true;
         return newCurve;
     }
-    
+
     function getCenter(l, r) {
         return l['+'](r)['*'](0.5);
     }
-    
+
     function makeNameDict(str) {
         var result = {};
         ((str || '').match(/\S+/g) || [])
             .forEach(function(piece){ this[piece] = null;}, result);
         return result;
     }
-    
+
     /**
      * if a name/class/key "example" is only in left it becomes: "left-example"
      * if a name/class/key "example" is only in right it becomes: "right-example"
@@ -58,19 +58,19 @@ define([
             merged['right-' + k] = null;
         return Object.keys(merged).join(' ') || null;
     }
-    
+
     function getCenterPoint(l, r) {
         return new Point(getCenter(l, r), undefined
                        , mergeNames(l.name, r.name));
     }
-    
+
     function getCenterSegment(left, right) {
         var result = [left[0]], i=1;
         for(;i<left.length;i++)
             result.push(getCenterPoint(left[i], right[i]));
         return result;
     }
-    
+
     /**
      * see the docstring of StrokeContoue._findNextDirection
      */
@@ -111,5 +111,5 @@ define([
       , getCenterPoint: getCenterPoint
       , getCenterSegment: getCenterSegment
       , getDirection: getDirection
-    }
-})
+    };
+});

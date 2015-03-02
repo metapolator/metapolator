@@ -41,7 +41,7 @@ if (require.main === module) {
             // load all masters, because right now it is very confusing
             // when some masters are missing from the MOM
             project.masters.forEach(project.open, project);
-            
+
             masterInstancePairs.unshift(master, instance)
             while(true) {
                 master = masterInstancePairs.shift();

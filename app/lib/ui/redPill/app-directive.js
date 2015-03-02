@@ -14,4 +14,4 @@ define([
     }
     appDirective.$inject = [];
     return appDirective;
-})
+});

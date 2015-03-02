@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Metapolator: foreign integration</title>
+    <!-- development -->
+    <script src="/lib/bower_components/requirejs/require.js"></script>
+    <script>
+    require(['/lib/browserConfig.js'], function(){
+        require(['/lib/metapolatorStandAlone.js']);
+    });
+    </script>
+    <!-- end of development -->
+    <!-- production
+    <script src="metapolatorStandAlone.js"></script>
+    <!-- end of production -->
+  <style>
+    .compatibility-info {
+        background: orange;
+        color: white;
+        border: .5em solid red;
+        padding: 1em;
+    }
+    .compatibility-info pre {
+        background: black;
+        padding: .5em;
+    }
+    body.dependencies-ready .compatibility-info{
+        display: none;
+    }
+
+    svg {
+        height: 100px;
+    }
+  </style>
+  <script>
+    function initializeInputSliders(container) {
+        return ['width ', ' weight '].map(function(labelText) {
+            var items = [], item, i;
+            item = document.createElement('input');
+            item.setAttribute('type', 'range');
+            item.setAttribute('min', 0.0);
+            item.setAttribute('max', 1.0);
+            item.setAttribute('value', 0.5);
+            item.setAttribute('step', 0.0001);
+
+            var label = document.createElement('label');
+            label.textContent = labelText;
+            label.appendChild(item);
+            container.appendChild(label);
+            return item;
+        });
+    }
+
+    function onProjectLoaded(stateless, stateful) {
+        // stateful has the keys: 'project', 'glyphRendererAPI','controller'
+        console.log('project loaded', Object.keys(stateful));
+
+        var masterName = 'interpolated'
+          , parameterCollection = stateful.controller.getMasterCPS(false, masterName)
+          // NOTE: We must know where the rule is, it's the third one in
+          // this case. Also, the items in a parameterCollection must
+          // not all be of type CPS/Rule. There are also @namespace/@import
+          // collections and comments.
+          , cpsRule = parameterCollection.getItem(2)
+          , parameterDict = cpsRule.parameters
+          , inputs = initializeInputSliders(document.body)
+          , setParameter = stateless.cpsAPITools.setParameter // shortcut
+          ;
+
+        function inputChangeHandler() {
+            var x = parseFloat(inputs[0].value)
+                , y = parseFloat(inputs[1].value)
+                , a = (1-x) * (1-y)
+                , b = (  x) * (1-y)
+                , c = (1-x) * (  y)
+                , d = (  x) * (  y)
+                ;
+            setParameter(parameterDict, 'proportion1', a);
+            setParameter(parameterDict, 'proportion2', b);
+            setParameter(parameterDict, 'proportion3', c);
+            setParameter(parameterDict, 'proportion4', d);
+        }
+
+        inputs[0].addEventListener('input', inputChangeHandler);
+        inputs[1].addEventListener('input', inputChangeHandler);
+
+        document.body.appendChild(document.createElement('br'));
+
+        // render some glyphs
+        'metapolator'.split('').forEach(function(glyphName) {
+            var svg = stateful.glyphRendererAPI.get(masterName, glyphName);
+            document.body.appendChild(svg);
+        });
+    }
+
+    function onMetapolatorReady(stateless) {
+        // stateless has the keys 'initProject' and 'cpsAPITools'
+        console.log('metapolator is now ready', Object.keys(stateless));
+        // The path for a Ajax request on your webserver
+        // NOTE: the project is exported with directory listing index.html files
+        //       we need that for "static" HTTP servers!
+        var projectPath = 'project';
+        // returns a promise
+        stateless.initProject(projectPath)
+            .then(onProjectLoaded.bind(null, stateless));
+    }
+
+    if(!window.metapolatorReady)
+        window.metapolatorReady = [];
+    window.metapolatorReady.push(onMetapolatorReady);  // <= could be an array or our api
+  </script>
+  </head>
+  <body>
+    <div class="compatibility-info">
+        If this message does not disappear after a short moment:
+        <h2>Your Browser may be incompatible</h2>
+        <p>You can either use a current version of FireFox or Chromium/Google Chrome.</p>
+        <p>In order to run Metapolator in <strong>Chrome</strong>
+        or <strong>Chromium</strong>
+
+        <ol><li>Make sure that <a href="chrome://flags/#enable-javascript-harmony">chrome://flags/#enable-javascript-harmony</a>
+        is <strong>disabled</strong> (it is by default).</li>
+        <li>Close all running instances of Chromium/Chrome.</li>
+        <li>
+        Then start it from the command-line like so:</p>
+        <pre># if the command for your chrome-browser is "chrome"
+$ chrome --js-flags="--harmony --harmony_proxies"
+
+# in a current *ubuntu linux that might be for chromium:
+$ chromium-browser --js-flags="--harmony --harmony_proxies"
+
+# and for chrome
+$ google-chrome-stable --js-flags="--harmony --harmony_proxies"
+</pre>
+</li></ol>
+    </div>
+  </body>
+</html>

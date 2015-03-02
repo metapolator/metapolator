@@ -15,4 +15,4 @@ define([
            .directive('mtkRedPillGlyphs', directive)
            .directive('mtkRedPillGlyph', redPillGlyphDirective)
            ;
-})
+});

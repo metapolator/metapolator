@@ -16,4 +16,4 @@ define([
       .controller('AppController', Controller)
       .directive('redPill', directive)
       ;
-})
+});

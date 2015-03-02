@@ -1,7 +1,7 @@
 <label>select files:
-    <select 
+    <select
             multiple
-            ng-model="data.files" 
+            ng-model="data.files"
             ng-options="name for name in {{ allFiles }}"
             ></select>
 </label>

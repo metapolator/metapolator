@@ -30,7 +30,7 @@
             var recursive_cps = [
                     'point{ on: on; }'
                   , 'point>left{ on: parent:on; } point{ on: left:on; }'
-                  , '*{ on: customOn; } @dictionary{ point{ customOn: this:on;} }'
+                  , '*{ on: customOn;} point{ customOn: this:on;}'
                 ]
               , failingSelectors = [
                     'master#master_0 point'
