@@ -28,7 +28,7 @@ define([
             atDictionaryFactories.atDictionaryParsingSwitch,
             atImportFactories.atImportParsingSwitch
         ]
-      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
+      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches)
       ;
     /**
      * Create a ParameterCollection from a CSS string
@@ -44,11 +44,11 @@ define([
             throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
         }
 
-        return module.fromAST(ast, sourceName, ruleController)
+        return module.fromAST(ast, sourceName, ruleController);
     }
 
     module.fromString = rulesFromString;
     module.fromAST = rulesFromAST;
 
     return module;
-})
+});

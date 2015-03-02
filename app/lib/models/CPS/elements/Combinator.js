@@ -20,9 +20,9 @@ define([
             }
         });
     }
-    var _p = Combinator.prototype = Object.create(Parent.prototype)
+    var _p = Combinator.prototype = Object.create(Parent.prototype);
     _p.constructor = Combinator;
-    
+
     _p.toString = function() {
         return (this.value === ' '
              ? ' '
@@ -38,4 +38,4 @@ define([
     };
 
     return Combinator;
-})
+});

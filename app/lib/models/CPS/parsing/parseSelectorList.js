@@ -5,7 +5,7 @@ define([
   , './selectorFactories'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/Comment'
-  
+
 ], function (
     errors
   , gonzales
@@ -16,16 +16,18 @@ define([
 ) {
     "use strict";
     var CPSError = errors.CPS
-      , CPSParserError = errors.CPSParser;;
+      , CPSParserError = errors.CPSParser
+      ;
 
     function selectorListFromString(string, sourceName, selectorEngine) {
+        var ast;
         try {
-            var ast = gonzales.srcToCSSP(string + '{}');
+            ast = gonzales.srcToCSSP(string + '{}');
         } catch(error) {
             throw new CPSParserError('Error parsing "' + string + '" as a selector. '
                 + 'Message: ' + error.message);
         }
-        return selectorListFromAST(ast, sourceName, selectorEngine)
+        return selectorListFromAST(ast, sourceName, selectorEngine);
     }
 
     function selectorListFromAST(ast, sourceName, selectorEngine) {
@@ -59,15 +61,15 @@ define([
             // might be a programming error.
         }
         if(!selectorList)
-            throw new CPSParserError('No selector found.')
+            throw new CPSParserError('No selector found.');
         if(!selectorList.selects)
             throw new CPSParserError('SelectorList will not select anything: '
-                    + selectorList.message)
+                    + selectorList.message);
         return selectorList;
     }
-    
+
     return {
         fromString: selectorListFromString
       , fromAST: selectorListFromAST
-    }
-})
+    };
+});

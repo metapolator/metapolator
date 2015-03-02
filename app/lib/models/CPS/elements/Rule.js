@@ -20,10 +20,10 @@ define([
           , enumerable: true
         });
     }
-    
-    var _p = Rule.prototype = Object.create(Parent.prototype)
+
+    var _p = Rule.prototype = Object.create(Parent.prototype);
     _p.constructor = Rule;
-    
+
     _p.toString = function() {
         return [this._selectorList, ' ', this.parameters].join('');
     };
@@ -59,4 +59,4 @@ define([
     };
 
     return Rule;
-})
+});

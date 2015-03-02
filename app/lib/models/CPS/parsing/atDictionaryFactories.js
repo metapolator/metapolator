@@ -58,6 +58,7 @@ define([
             var k;
             for(k in factories) atDictionaryFactories[k] = factories[k];
     })({
+        /*jshint sub:true*/
         /**
          * Augments the AtRuleCollection created by atrulers with a name.
          */
@@ -100,7 +101,7 @@ define([
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
             //return new AtRuleCollection(undefined, items, source, node.lineNo);
             // We are NOT creating AtRuleCollections anymore!
@@ -115,14 +116,14 @@ define([
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'value')
                 throw new CPSError('The second child of "declaration" is '
                 + 'expected to be a "value", but got "' + node.children[1].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
             name = node.children[0].instance;
             value = node.children[1].instance;
             value.initializeTypeFactory(name.name, CPSGeneric.factory);
@@ -144,4 +145,4 @@ define([
         factories: atDictionaryFactories
       , atDictionaryParsingSwitch: atDictionaryParsingSwitch
     };
-})
+});

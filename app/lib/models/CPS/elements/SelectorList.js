@@ -76,9 +76,9 @@ define([
                 result.push(selectorsA[x].add(selectorsB[y]));
         }
         return new SelectorList(result);
-    }
-    
-    var _p = SelectorList.prototype = Object.create(Parent.prototype)
+    };
+
+    var _p = SelectorList.prototype = Object.create(Parent.prototype);
     _p.constructor = SelectorList;
 
     Object.defineProperty(_p, 'value', {

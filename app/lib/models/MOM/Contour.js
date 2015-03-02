@@ -19,15 +19,15 @@ define([
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Contour'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'contour'
-    })
+    });
 
     _p._acceptedChildren = [ContourPoint];
 
     return Contour;
-})
+});
 

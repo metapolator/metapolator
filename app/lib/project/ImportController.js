@@ -39,8 +39,8 @@ define([
   , ufojsErrors
 ) {
     "use strict";
-    // jshint option
     /*global console:true*/
+    /*jshint  sub:true*/
 
     var GlifLibError = ufojsErrors.GlifLib;
 
@@ -79,7 +79,7 @@ define([
                         false, this._sourceUFODir, undefined, options);
         }
         return this._sourceGlyphSet;
-    }
+    };
 
     _p['import'] = function(glyphs) {
         var missing, i=0

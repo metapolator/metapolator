@@ -213,7 +213,7 @@ define([
             render(scope, element, scope.mtkGlyphElement, model);
             scope.$on('cpsUpdate', render.bind(null, scope, element, scope.mtkGlyphElement, model));
             element.on('$destroy', function() {
-                var renderer = scope.renderer
+                var renderer = scope.renderer;
                 if(renderer)
                     renderer.abort();
             });

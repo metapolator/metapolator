@@ -110,6 +110,7 @@ define([
     };
 
     _p._compile = function(_stack) {
+        /*jshint evil:true*/
         var i, l
           , args
           , stack = []

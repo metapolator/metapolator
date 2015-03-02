@@ -16,7 +16,8 @@ define([
      * should at least expose the same Interface (ducktyping).
      */
     function _Node(source, lineNo) {
-        Parent.call(this)
+        /*jshint validthis:true*/
+        Parent.call(this);
         this._source = source;
         this._lineNo = lineNo;
 
@@ -28,7 +29,7 @@ define([
             Object.defineProperty(this, '__firstTimeInitFlag', {value: true});
         }
     }
-    var _p = _Node.prototype = Object.create(Parent.prototype)
+    var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
 
     emitterMixin(_p);
@@ -53,17 +54,19 @@ define([
     };
 
     function _getterCreator(item) {
+        /*jshint validthis:true*/
         var external = item[0]
           , internal = item[1]
           ;
         Object.defineProperty(this, external, {
             get: function(){ return this[internal]; }
-        })
-    };
+        });
+    }
+
     ([
         ['source', '_source']
       , ['lineNo', '_lineNo']
     ].forEach(_getterCreator, _p));
-    
+
     return _Node;
-})
+});

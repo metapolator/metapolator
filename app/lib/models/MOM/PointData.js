@@ -12,7 +12,8 @@ define([
     function PointData(obj) {
         for(var k in obj) this[k] = obj[k];
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
-    };
+    }
+
     PointData.prototype._cps_whitelist = {
         on: 'on'
       , in: 'in'
@@ -24,4 +25,4 @@ define([
     // see: models/emitterMixin.js for this
 
     return PointData;
-})
+});

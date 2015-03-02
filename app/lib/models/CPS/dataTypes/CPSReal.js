@@ -27,7 +27,7 @@ define([
                 + (result !== result
                     ? 'result in NaN (happens with division by 0 for example)'
                     : 'not result in a number: "'+ result
-                        + '" typeof: ' +  typeof result +
+                        + '" typeof: ' +  typeof result
                         + (result && typeof result.constructor === 'function'
                                 ? ' a: ' + result.constructor.name
                                 : ''

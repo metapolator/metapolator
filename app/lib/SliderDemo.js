@@ -14,17 +14,17 @@ define([
       ;
 
     function SliderDemo(io, fsEvents, project, angularApp, loadTextEditor) {
-        this.angularApp = angularApp
+        this.angularApp = angularApp;
         this.frontend = undefined;
         this.project = project;
         this.fsEvents = fsEvents;
         this.loadTextEditor = loadTextEditor;
         this.model = {
             masters: this.project.masters
-        }
+        };
         this._cache = {
             lastSelection: []
-        }
+        };
 
         console.info('loading masters');
         // load all masters, because right now it is very confusing
@@ -34,12 +34,12 @@ define([
 
         // will be called on angular.bootstrap
         // see ui/app-controller.js
-        this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this))
+        this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this));
         this.angularApp.constant('redPillModel', this.model);
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
         this.angularApp.constant('io', io);
-        this.angularApp.constant('config', {loadTextEditor: loadTextEditor})
+        this.angularApp.constant('config', {loadTextEditor: loadTextEditor});
 
         this.angularApp.constant('glyphRendererAPI', new GlyphRendererAPI(window.document, this.project.controller));
 
@@ -51,9 +51,9 @@ define([
     _p._registerFrontend = function(appController) {
         if(this.frontend !== undefined)
             throw new Error('Registering more than one AppController is not allowed.'
-                           +' Don\'t use <red-pill> more than once in a template!')
+                           +' Don\'t use <red-pill> more than once in a template!');
         this.frontend = appController;
-    }
+    };
 
     _p._selectGlyphs = function(selector) {
         try {
@@ -66,7 +66,7 @@ define([
             console.warn('selector "' + selector + '" did not parse:', error.message);
         }
         return false;
-    }
+    };
 
     _p.selectGlyphs = function(selector) {
         var result = this._selectGlyphs(selector);
@@ -74,7 +74,7 @@ define([
             return this._cache.lastSelection;
         this._cache.lastSelection = result;
         return result;
-    }
+    };
 
     _p.fileChangeHandler = function (path) {
         var match = path.indexOf(this.project.cpsDir)
@@ -100,4 +100,4 @@ define([
     };
 
     return SliderDemo;
-})
+});

@@ -33,12 +33,12 @@ define([
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Master'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'master'
-    })
+    });
 
     /**
      * TODO: make indexed lookup for _Node.id
@@ -55,8 +55,8 @@ define([
             }
         }
         return null;
-    }
-    
+    };
+
      /**
      * As long as there is just one univers, we don't need to display
      * the multivers and univers selectors
@@ -66,16 +66,16 @@ define([
             return [
                     this._parent ? '' : '(no parent)'
                   , ' '
-                  , this.type,
+                  , this.type
                   , (this.id ? '#' + this.id : '')
                   , (this._parent
                         ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }
-    })
-    
+    });
+
     _p._acceptedChildren = [Glyph];
-    
+
     return Master;
-})
+});

@@ -23,54 +23,56 @@ define([
       , y: 'y'
       , length: 'len'
       , angle: 'rad'
-    }
+    };
 
 
     Vector.fromArray = function(arr) {
         return new _p.constructor(arr[0], arr[1]);
-    }
+    };
 
     function _getReal() {
+        /*jshint validthis:true*/
         return this.real;
     }
 
     function _getImaginary() {
+        /*jshint validthis:true*/
         return this.imag;
     }
 
-    Object.defineProperty(_p, 'x', {get: _getReal})
-    Object.defineProperty(_p, 'y', {get: _getImaginary})
+    Object.defineProperty(_p, 'x', {get: _getReal});
+    Object.defineProperty(_p, 'y', {get: _getImaginary});
 
     // array interface
     Object.defineProperty(_p, 'length', {
         value: 2
       , writable: false
       , enumerable: true
-    })
-    Object.defineProperty(_p, '0', {get: _getReal})
-    Object.defineProperty(_p, '1', {get: _getImaginary})
+    });
+    Object.defineProperty(_p, '0', {get: _getReal});
+    Object.defineProperty(_p, '1', {get: _getImaginary});
 
     _p.valueOf = function() {
         return Array.prototype.slice.call(this);
-    }
+    };
 
     _p.toString = function() {
         return '<Vector ' + this.valueOf() +'>';
-    }
+    };
 
     // factories and constants
-    Vector.i = new Vector(0, 1),
-    Vector.one = new Vector(1, 0)
+    Vector.i = new Vector(0, 1);
+    Vector.one = new Vector(1, 0);
 
     Vector.from = function(x, y) {
         // just map to Parent and then convert
         var complex = Parent.from(x, y);
         return new Vector(complex.real, complex.imag);
-    },
+    };
 
     Vector.fromPolar = function(r, phi) {
         return new Vector(1, 1).fromPolar(r, phi);
-    }
+    };
 
 
     // Some getters, so we can use these easily with CPS. At the moment
@@ -86,7 +88,7 @@ define([
      */
     Object.defineProperty(_p, 'len', {
         get: Parent.prototype.magnitude
-    })
+    });
 
     /**
      * A getter for the angle of the vector in radians.
@@ -96,4 +98,4 @@ define([
     });
 
     return Vector;
-})
+});

@@ -8,6 +8,7 @@ define([
      * All children of a MOM Glyph have to inherit from MOM _Contour.
      */
     function _Contour() {
+        /*jshint validthis:true*/
         Parent.call(this);
         if(this.constructor.prototype === _p)
             throw new MOMError('MOM _Contour must not be instantiated '
@@ -20,7 +21,7 @@ define([
         get: function() {
             return this._parent;
         }
-    })
+    });
 
     return _Contour;
-})
+});

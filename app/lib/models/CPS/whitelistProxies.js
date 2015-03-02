@@ -17,6 +17,7 @@ define([
 
 
     function _handlerFactory(target, whitelist) {
+        /* jshint validthis: true */
         return proxy(target, new this(whitelist));
     }
 

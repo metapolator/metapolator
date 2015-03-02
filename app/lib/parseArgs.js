@@ -17,10 +17,10 @@ define([
             throw new CommandLineError('/ and \\ are not allowed in a '
                                       + 'Master name: ' + s);
         return s;
-    }
+    };
 
     parseArgs.project = function (io, s) {
-        if (s === undefined || s == '')
+        if (s === undefined || s === '')
             s = process.cwd();
         if (s.slice(-1) != '/')
             s += '/';
@@ -29,12 +29,12 @@ define([
             throw new CommandLineError('\'' + s + '\' does not look '
                                       + 'like a Metapolator project');
         return project;
-    }
+    };
 
     parseArgs.projectMaster = function (io, s) {
         var split = s.lastIndexOf('/');
         return [parseArgs.project(io, s.substr(0, split)), parseArgs.masterName(s.substr(split + 1))];
-    }
+    };
 
     parseArgs.masterInstancePairs = function (args) {
         if(args.length%2 !== 0)
@@ -44,7 +44,7 @@ define([
         for(var i=0;i<args.length;i=i+2)
             args[i] = parseArgs.masterName(args[i]);
         return args;
-    }
+    };
 
     return parseArgs;
-})
+});

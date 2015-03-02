@@ -9,7 +9,7 @@ define([
   , 'metapolator/models/CPS/elements/Combinator'
   , 'metapolator/models/CPS/elements/GenericCPSNode'
   , 'metapolator/models/CPS/elements/Comment'
-  
+
 ], function (
     errors
   , baseFactories
@@ -29,20 +29,20 @@ define([
      * this can be both because JavaScript allows to call a factory function
      * using the new operator like in `new myfactory()`. The factory must
      * return a new object in this case.
-     * 
+     *
      * all constructors take the following arguments: (node, source)
      * @node: object as created by parserEngine._makeNode and augmented by
      * parserEngine
      * @source: instance of parameters/Source
-     * 
+     *
      * We'll use mostly factories, because the "node" we use as argument
      * is not exactly a nice interface. However, its called _nodeConstructors
      * because that implies that these functions are beeing called using
      * the `new` keyword.
-     * 
+     *
      * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
      */
-     
+
     // inherit from baseFactories
     var selectorFactories = Object.create(baseFactories);
     (function(factories){
@@ -51,9 +51,9 @@ define([
     })({
         /**
          * ruleset:
-         * 
+         *
          * Has a "selector" as first child and a "block" as second child.
-         * 
+         *
          * From the docs:
          * Consists of selector (selector) and block (a set of rules).
          */
@@ -64,34 +64,35 @@ define([
                 + 'expected to be a "selector", but got "' + node.children[0].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
-            
+                +'.', (new Error()).stack);
+
             if(node.children[1].type !== 'block')
                 throw new CPSError('The second child of "ruleset" is '
                 + 'expected to be a "block", but got "' + node.children[1].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
             selectorList = node.children[0].instance;
             parameterDict = node.children[1].instance;
-            
-            return new Rule(selectorList, parameterDict, source, node.lineNo)
+
+            return new Rule(selectorList, parameterDict, source, node.lineNo);
         }
         // just a stub
       , 'block': function(node, source){
+            /*jshint sub:true*/
             var item = baseFactories['__GenericAST__'](node, source);
             item.selects = true;
             return item;
         }
         /**
          * selector:
-         * 
+         *
          * A list of selectors.
-         * 
+         *
          * It contains 'simpleselector' and divides these by 'delim'.
          * delim is a comma in the serialization. Comments are not in here,
          * as these map to the 'simpleselector's.
-         * 
+         *
          * From the docs:
          * Node to store simpleselector groups.
          */
@@ -100,18 +101,18 @@ define([
               , selectorList
               ;
             items = node.children
-                .filter(function(item){return item.type === 'simpleselector'})
-                .map(function(item){return item.instance;})
-            return new SelectorList(items, source, node.lineNo)
+                .filter(function(item){return item.type === 'simpleselector';})
+                .map(function(item){return item.instance;});
+            return new SelectorList(items, source, node.lineNo);
         }
         /**
          * simpleselector:
-         * 
+         *
          * An item in a list of selectors "selector".
-         * 
+         *
          * This has a lot different elements, also whitespace 's' AND
          * comments 'comment' etc.
-         * 
+         *
          * creates a ComplexSelector
          */
       , 'simpleselector': function(node, source, ruleController) {
@@ -133,14 +134,14 @@ define([
                     // skip all comments
                     // we can get them back in if we want though
                     continue;
-            
+
                 if(item instanceof Combinator) {
                     // close the current simple selector
                     compoundSelectorElements = null;
                     value.push(item);
                     continue;
                 }
-                
+
                 // may be whitespace, or a simple selector
                 if(isWhitespace) {
                     // close the current simple selector
@@ -157,7 +158,7 @@ define([
                         // in this case. we could have remembered the source and line
                         // of the last whitespace
                         value.push(new Combinator(' ', source, node.lineNo));
-                
+
                     // make a new one
                     compoundSelectorElements = [];
                     value.push(compoundSelectorElements);
@@ -171,22 +172,22 @@ define([
                 // replace directly
                 value[i] = compoundSelectorFactory(value[i],
                                 value[i][0]._source, value[i][0]._lineNo
-                              , ruleController && ruleController.selectorEngine)
+                              , ruleController && ruleController.selectorEngine);
             }
             return new ComplexSelector(value, source, node.lineNo);
         }
         /**
-         * 
+         *
          * Combinator: +, >, ~
          * is a child of ComplexSelector
-         * 
+         *
          */
       , 'combinator': function (node, source) {
             return new Combinator(node.data, source, node.lineNo);
         }
-    })
-    
-    
+    });
+
+
     function _getImplicitUniversalSelector(source, lineNo) {
         var ast = new GenericCPSNode(['ident', '*'])
           , selector = new SimpleSelector({type: 'universal', name: '*'}
@@ -221,8 +222,8 @@ define([
             cs.compile(selectorEngine);
         return cs;
     }
-    
-    
+
+
     function _getSimpleSelectorType(type, name) {
         switch(type) {
           case 'ident':
@@ -240,7 +241,7 @@ define([
         }
         return undefined;
     }
-    
+
     function _getSimpleSelectorName(element) {
         var name = name;
         if(typeof element._ast[1] === 'string') {
@@ -256,10 +257,10 @@ define([
         }
         if(typeof name !== 'string' && name !== undefined)
             throw new CPSError('Can\'t find a name for SimpleSelector ('
-                            + element + ')')
+                            + element + ')');
         return name;
     }
-    
+
     function _getSimpleSelectorClassValueForIndex(element) {
         var body
           , number
@@ -271,8 +272,8 @@ define([
         body = element._ast[1][2].slice(1)
                    .filter(function(item) {
                         return !(item[0] in {'s':null,'comment':null});
-                    })
-        
+                    });
+
         sign = '+';
         if(body.length === 2 && body[0][0] === 'unary') {
             //  as the docs say: unary is either - or +
@@ -284,17 +285,17 @@ define([
             // if the result is NaN return undefined
             return (number === number) ? number : undefined;
     }
-    
+
     function simpleSelectorFactory(element) {
         var name = _getSimpleSelectorName(element)
           , type = _getSimpleSelectorType(element.type, name)
           , value
           ;
-        
+
         if(type === 'pseudo-class' && name === 'i')
             value = _getSimpleSelectorClassValueForIndex(element);
         return new SimpleSelector(type, name, value);
     }
-    
+
     return selectorFactories;
-})
+});

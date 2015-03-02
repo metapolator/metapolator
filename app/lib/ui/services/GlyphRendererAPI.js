@@ -57,7 +57,7 @@ define([
         this._glyphContainer = this._doc.createElementNS(svgns, 'defs');
         var svg = this._doc.createElementNS(svgns, 'svg');
         svg.style.display = 'none';
-        svg.appendChild(this._glyphContainer)
+        svg.appendChild(this._glyphContainer);
         svg.appendChild(this._doc.createElementNS(svgns, 'g'));
 
         if(this._doc.body.firstChild)

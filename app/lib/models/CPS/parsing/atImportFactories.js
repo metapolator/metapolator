@@ -38,6 +38,7 @@ define([
          * Find the name of the resource to load and return a ParameterCollection
          */
         'atrules': function(node, source, ruleController) {
+            /*jshint sub:true*/
             var args, resource, atImportCollection;
             // filter all whitespace
             args = node.children.slice(1).filter(function(child) {

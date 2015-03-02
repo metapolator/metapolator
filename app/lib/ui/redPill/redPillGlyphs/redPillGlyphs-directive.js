@@ -15,4 +15,4 @@ define([
     }
     redPillGlyphsDirective.$inject = [];
     return redPillGlyphsDirective;
-})
+});

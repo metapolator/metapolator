@@ -19,6 +19,7 @@ define([
   , timer
 ) {
     "use strict";
+    /*jshint esnext:true*/
     var KeyError = errors.Key
       , CPSKeyError = errors.CPSKey
     ;
@@ -311,7 +312,7 @@ define([
         while(!(gen.next().done));
     };
 
-    _p.drawGlyphToPointPen = ExportController.drawGlyphToPointPen
+    _p.drawGlyphToPointPen = ExportController.drawGlyphToPointPen;
 
     return ExportController;
 });

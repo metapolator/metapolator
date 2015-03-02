@@ -180,7 +180,7 @@ define([
                 // 0: array of namespaces, initially empty
                 // 1: the instance of Rule
                 // thus: [selectorList, rule, [_Collections where this rule is embeded]]
-                rules.push([ item.getSelectorList(), item])//, [this] ]);
+                rules.push([ item.getSelectorList(), item]);//, [this] ]);
             }
             else if(item instanceof ParameterCollection) {
                 this._subscribe(item, collectionChannel, callback);
@@ -281,7 +281,7 @@ define([
 
     _p.getItem = function(index) {
         return this.items[index];
-    }
+    };
 
     return ParameterCollection;
 });

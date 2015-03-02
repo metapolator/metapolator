@@ -48,7 +48,7 @@ define([
         var clone = new this.constructor(new PointData(this._skeleton));
         this._cloneProperties(clone);
         return clone;
-    }
+    };
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM ContourPoint'

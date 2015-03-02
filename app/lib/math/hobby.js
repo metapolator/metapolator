@@ -56,7 +56,7 @@ define([
           , theta = normalizeAngle(dir0 - angle_z1z0)
           , phi = normalizeAngle(angle_z1z0 - dir1)
           , u, v;
-        
+
         if(alpha !== undefined)
             u = (magnitude_z1z0 === 0 && (alpha === 0 || alpha === Infinity))
                 ? (alpha === 0 ? Infinity : 0)
@@ -102,17 +102,17 @@ define([
           ;
         if(_alpha || _beta)
             uv = _tension2control(z0, dir0, _alpha, _beta, dir1, z1);
-    
+
         if(alpha === 0)
             u = Infinity;
         else if (alpha !== undefined)
             u = uv[0]['-'](z0).magnitude()/alpha;
-    
+
         if(beta === 0)
             v = Infinity;
         else if (beta !== undefined)
             v = uv[1]['-'](z1).magnitude()/beta;
-    
+
         return[u, v];
     }
 

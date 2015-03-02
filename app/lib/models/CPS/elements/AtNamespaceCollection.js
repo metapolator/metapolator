@@ -104,4 +104,4 @@ define([
     };
 
     return AtNamespaceCollection;
-})
+});

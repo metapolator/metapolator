@@ -58,7 +58,7 @@ define([
       , KeyError = errors.Key
       , IONoEntryError = ufoErrors.IONoEntry
       ;
-    
+
     function MetapolatorProject(io, baseDir) {
         this._io = io;
         this._data = {
@@ -69,7 +69,7 @@ define([
           , glyphClasses:{}
           , fontinfo: null
         };
-        
+
         this.baseDir = baseDir || '.';
 
         Object.defineProperty(this, 'ruleController', {
@@ -82,33 +82,33 @@ define([
 
         this._momCache = Object.create(null);
     }
-    
+
     var _p = MetapolatorProject.prototype;
     _p.constructor = MetapolatorProject;
     Object.defineProperty(_p, 'dataDir', {
         get: function(){ return this.baseDir + '/data/com.metapolator';}
     });
-    
+
     Object.defineProperty(_p, 'projectFile', {
         get: function(){ return this.dataDir + '/project.yaml';}
     });
-    
+
     Object.defineProperty(_p, 'cpsDir', {
         get: function(){ return this.dataDir + '/cps';}
     });
-    
+
     Object.defineProperty(_p, 'cpsOutputConverterFile', {
         get: function(){ return 'centreline-skeleton-to-symmetric-outline.cps'; }
     });
-    
+
     Object.defineProperty(_p, 'cpsGlobalFile', {
         get: function(){ return 'global.cps'; }
     });
-    
+
     Object.defineProperty(_p, 'layerContentsFile', {
         get: function(){ return this.baseDir+'/layercontents.plist'; }
     });
-    
+
     Object.defineProperty(_p, 'groupsFileName', {
         value: 'groups.plist'
     });
@@ -123,7 +123,7 @@ define([
     Object.defineProperty(_p, 'fontinfoFile', {
         get: function(){ return this.baseDir+'/' + this.fontinfoFileName; }
     });
-    
+
     Object.defineProperty(_p, 'logFile', {
         get: function(){ return this.dataDir + '/log.yaml';}
     });
@@ -211,43 +211,43 @@ define([
         // FIXME: all I/O is synchronous for now
 
         this._io.mkDir(false, this.baseDir);
-        
+
         // create baseDir/metainfo.plist
         this._io.writeFile(false, this.baseDir+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV3));
-        
+
         // create dir baseDir/data
         this._io.mkDir(false, this.baseDir+'/data');
         // create dir baseDir/data/com.metapolator
         this._io.mkDir(false, this.dataDir);
-        
+
         // project file:
         // create this.dataDir/project.yaml => yaml({})
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
-        
+
         // create dir this.dataDir/cps
         this._io.mkDir(false, this.cpsDir);
-        
+
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
                                         plistLib.createPlistString([]));
-        
+
         // the glyphs dir must be there to make the UFO valid, but we don't
         // use it currently :-(
         // create dir baseDir/glyphs
         this._createGlyphLayer('public.default', 'glyphs');
-        
+
         // create default CPS output stage
         // this is the standard wiring of cps compounds etc.
-        // we include it, so it can be studied and if needed changed 
+        // we include it, so it can be studied and if needed changed
         this._io.writeFile(false, [this.cpsDir, '/', this.cpsOutputConverterFile].join(''),
                                         this.getDefaultCPS().toString());
-        
+
         // this can be empty, all masters will use this by default
         this._io.writeFile(false, [this.cpsDir, '/', this.cpsGlobalFile].join(''),
                             '/* all masters use this CPS file by default*/');
-    }
-    
+    };
+
     _p.load = function() {
         // the files created in _p.init need to exist
         // however, we try to load only
@@ -261,7 +261,7 @@ define([
 
         // Add ConsoleHandler for debugging (also replays existing entries)
         this._log.addHandler(new log.ConsoleHandler());
-        
+
         // Reload any saved log entries before adding CallbackHandler for new entries
         var logText, logRecords;
         try {
@@ -287,56 +287,56 @@ define([
         fh = new CallbackHandler(this._io.appendFile.bind(this._io, true, this.logFile));
         fh.setFormatter(new YAMLFormatter());
         this._log.addHandler(fh);
-    }
-    
+    };
+
     /**
      * return a ParameterCollection with the default CPS wiring, as the
      * importer expects it.
      */
     _p.getDefaultCPS = function() {
         return defaultParameters;
-    }
-    
+    };
+
     _p.hasMaster = function(masterName) {
         return masterName in this._data.masters;
-    }
-    
+    };
+
     Object.defineProperty(_p, 'masters', {
-        get: function(){ return Object.keys(this._data.masters); } 
+        get: function(){ return Object.keys(this._data.masters); }
     });
-    
+
     Object.defineProperty(_p, 'controller', {
         get: function(){ return this._controller; }
     });
-    
+
     _p._createGlyphLayer = function(name, layerDirName) {
         if(layerDirName === undefined)
             layerDirName = 'glyphs.' + name;
-        
+
         var layerDir = [this.baseDir,'/',layerDirName].join('');
-        
+
         // read layercontents.plist
         var layercontents = plistLib.readPlistFromString(
                 this._io.readFile(false, this.layerContentsFile));
-        
+
         // see if there is a layer with this name
         for(var i=0;i<layercontents.length;i++)
             if(layercontents[i][0] === name)
                 throw new ProjectError('A glyph layer with name "'+name
                                                 +'" already exists.');
-        
+
         // create new layer dir
         this._io.mkDir(false, layerDir);
-        
+
         // store layer in layercontents
         layercontents.push([name, layerDirName]);
         this._io.writeFile(false, this.layerContentsFile,
                                     plistLib.createPlistString(layercontents));
-        
+
         // create empty layerDir/contents.plist
         this._io.writeFile(false, layerDir + '/contents.plist',
                                         plistLib.createPlistString({}));
-    }
+    };
 
     /**
      * Delete a glyph layer.
@@ -372,8 +372,8 @@ define([
 
         // Remove layer dir and its contents
         this._io.rmDirRecursive(false, layerDir);
-    }
-    
+    };
+
     /**
      * lookup a name in a laycontents list as defined for layercontents.plist
      */
@@ -402,8 +402,8 @@ define([
                                 + '" does not exist, but is mentioned in '
                                 +'layercontents.plist.');
         return layerDir;
-    }
-    
+    };
+
     /**
      * Create a master entry for this masterName, with the given cpsFile
      * and skeleton.
@@ -413,7 +413,7 @@ define([
      *
      * If any element does not exist, it is assumed the caller will create
      * it before attempting to use the font.
-     * 
+     *
      */
     _p.createMaster = function(masterName, cpsFile, skeleton) {
         // get the name for this master from the CLI
@@ -421,16 +421,16 @@ define([
             throw new ProjectError('Master "'+masterName+'" already exists.');
         var master = {cpsFile: cpsFile};
         this._data.masters[masterName] = master;
-        
+
         // create a skeleton layer for this master
         master.skeleton = skeleton;
         if (skeleton === 'skeleton.' + masterName)
             this._createGlyphLayer(master.skeleton);
 
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
-        
+
         return this.getMaster(masterName);
-    }
+    };
 
     /**
      * delete a master entry for this masterName
@@ -460,15 +460,15 @@ define([
 
         // FIXME: Check we successfully deleted it
         return true;
-    }
+    };
 
     _p._getMaster = function(masterName) {
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
         return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsFile);
-    }
-    
+    };
+
     _p.getMaster = function(masterName) {
         if(!this.hasMaster(masterName))
             throw new KeyError('Master "'+masterName+'" not in project');
@@ -476,7 +476,7 @@ define([
             this._cache.masters[masterName] = this._getMaster(masterName);
         }
         return this._cache.masters[masterName];
-    }
+    };
 
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
@@ -499,13 +499,13 @@ define([
             this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
-    }
-    
+    };
+
     _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( this._log, this, 
+        var importer = new ImportController( this._log, this,
                                              masterName, sourceUFODir);
         importer.import(glyphs);
-    
+
         this._importGroupsFile(sourceUFODir, false);
         this._importFontInfoFile(sourceUFODir, false);
     };
@@ -569,7 +569,7 @@ define([
      * @see _importPListFile
      */
     _p._importGroupsFile = function(sourceUFODir, override) {
-        this._importPListFile( sourceUFODir, override, 
+        this._importPListFile( sourceUFODir, override,
                                this.groupsFileName, this.groupsFile );
     };
 
@@ -580,10 +580,10 @@ define([
      * @see _importPListFile
      */
     _p._importFontInfoFile = function(sourceUFODir, override) {
-        this._importPListFile( sourceUFODir, override, 
+        this._importPListFile( sourceUFODir, override,
                                this.fontinfoFileName, this.fontinfoFile );
     };
-    
+
     _p.exportInstance = function(masterName, instanceName, precision) {
         // returns a models/Controller
         var model = this.open(masterName)
@@ -592,28 +592,28 @@ define([
           , glyphSet
           , exportController
           ;
-        
+
         // create a bare ufoV2 directory
         this._io.mkDir(false, dirName);
-        
+
         // create dirName/metainfo.plist
         this._io.writeFile(false, dirName+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV2));
-        
+
         // fontforge requires a fontinfo.plist that defines unitsPerEm
         this._io.writeFile(false, dirName+'/fontinfo.plist'
                                 , plistLib.createPlistString(minimalFontinfo));
-        
+
         this._io.mkDir(false, dirName+'/glyphs');
         this._io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
-        
+
         glyphSet = this.getNewGlyphSet(
                                 false, dirName +'/glyphs', undefined, 2);
-        
+
         exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
-    }
-    
+    };
+
     _p._getGlyphClassesReverseLookup = function() {
         var result = {}
           , data

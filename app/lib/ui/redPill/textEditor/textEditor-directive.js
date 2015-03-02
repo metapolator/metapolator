@@ -15,4 +15,4 @@ define([
     }
     textEditorDirective.$inject = [];
     return textEditorDirective;
-})
+});

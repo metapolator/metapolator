@@ -27,25 +27,25 @@ define([
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Multivers'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'multivers'
-    })
+    });
 
     _p.query = function(selector, scope) {
         return this._controller.query(selector, scope);
-    }
+    };
     _p.queryAll = function(selector, scope) {
         return this._controller.queryAll(selector, scope);
-    }
+    };
 
     _p.getComputedStyleFor = function(node) {
         return this._controller.getComputedStyle(node);
-    }
+    };
 
     _p._acceptedChildren = [Univers];
 
     return Multivers;
-})
+});

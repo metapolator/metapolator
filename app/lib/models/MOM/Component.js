@@ -32,7 +32,7 @@ define([
         var clone = new this.constructor(this._baseGlyphName, this._transformation);
         this._cloneProperties(clone);
         return clone;
-    }
+    };
 
     Object.defineProperty(_p, 'baseGlyphName', {
         get: function() {
@@ -47,15 +47,15 @@ define([
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Component'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'component'
-    })
-    
+    });
+
     _p._acceptedChildren = [];
-    
+
     return Component;
-})
+});
 

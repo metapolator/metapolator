@@ -10,8 +10,8 @@ define([
     function AtRuleName(name, comments ,source, lineNo) {
         Parent.call(this, name, comments ,source, lineNo);
     }
-    var _p = AtRuleName.prototype = Object.create(Parent.prototype)
+    var _p = AtRuleName.prototype = Object.create(Parent.prototype);
     _p.constructor = AtRuleName;
-    
+
     return AtRuleName;
-})
+});

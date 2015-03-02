@@ -79,7 +79,7 @@ define([
 
     _p._proxyEventHandler = function(data, channelName, eventData) {
         this._trigger(channelName, eventData);
-    }
+    };
     /**
      * Use the public method "setResource" rather than this.
      *

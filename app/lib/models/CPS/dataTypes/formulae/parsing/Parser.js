@@ -165,7 +165,7 @@ define([
      */
     _p.setFinalizeMethod = function(method) {
         this._finalizeMethod = method;
-    }
+    };
 
     _p.setBracketOperator = function(bracketLiteral, operatorLiteral) {
         if(!(operatorLiteral in this._operators))

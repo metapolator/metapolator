@@ -142,7 +142,7 @@ define([
                     throw new CPSError('simpleSelector.type "'+ simpleSelector.type +'" is not implemented.');
             }
         }
-        body.push(');')
+        body.push(');');
         return new Function(['element'], body.join(''));
     }
 
@@ -260,7 +260,7 @@ define([
         if(!descendant && type !== 'child')
             throw new CPSError('Combinator type "' + type +'" is unsuported');
         //initial frame setup
-        frame = [element.children, 0, 0]
+        frame = [element.children, 0, 0];
         frame[2] = frame[0].length;
         do {
             i=frame[1];
@@ -324,7 +324,7 @@ define([
         if(!descendant && type !== 'child')
             throw new CPSError('Combinator type "' + type +'" is unsuported');
         //initial frame setup
-        frame = [element.children, 0, 0]
+        frame = [element.children, 0, 0];
         frame[2] = frame[0].length;
         do {
             i=frame[1];

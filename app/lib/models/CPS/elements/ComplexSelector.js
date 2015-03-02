@@ -8,23 +8,23 @@ define([
   , Combinator
 ) {
     "use strict";
-    
-    var CPSError = errors.CPS
+
+    var CPSError = errors.CPS;
     /**
      * A ComplexSelector is a chain of one or more compound selectors
-     * separated by combinators. 
-     * 
+     * separated by combinators.
+     *
      * TODO: we will need to extract the meaning of the elements
-     * 
+     *
      * so far, we extract:
-     * 
+     *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     * 
-     * 
+     *
+     *
      * A selector may be invalid, which would mark its selectorList invalid
      * (and thus all selectors in that list)
-     * 
+     *
      *  reasons for invalid selectors:
      *      it's empty
      *      a child of it is invalid
@@ -32,7 +32,7 @@ define([
      *          only possible for > at the moment
      *          invalid: master>>penstroke
      *          valid: master>*>penstroke
-     * 
+     *
      * a compound selector is invalid if
      *      - it has more than one of universal or type selector
      *      - a universal or type selector occurs not as first
@@ -99,21 +99,21 @@ define([
             }
         });
     }
-    
+
     ComplexSelector.add = function(a, b) {
         var value = a.value;
         value.push(new Combinator(' ', a.source, a.lineNo));
         Array.prototype.push.apply(value, b._value);
         return new ComplexSelector(value, a.source, a.lineNo);
-    }
-    
-    var _p = ComplexSelector.prototype = Object.create(Parent.prototype)
+    };
+
+    var _p = ComplexSelector.prototype = Object.create(Parent.prototype);
     _p.constructor = ComplexSelector;
-    
+
     _p.toString = function() {
         return this._value.join('');
-    }
-    
+    };
+
     _p._combinators = {
         // the child combinator
         'child' : true
@@ -126,7 +126,7 @@ define([
             // if value is falsy, return its falsy value (probably undefiend)
             return this._value && this._value.slice();}
     });
-    
+
     Object.defineProperty(_p, 'specificity', {
         get: function() {
             var a, b, c, i=0, specificity;
@@ -144,11 +144,11 @@ define([
             }
             return this._specificity;
         }
-    })
-    
+    });
+
     _p.add = function(complexSelector) {
         return this.constructor.add(this, complexSelector);
-    }
-    
+    };
+
     return ComplexSelector;
-})
+});

@@ -28,7 +28,7 @@ LogRecord.prototype.fromObject = function (obj) {
   obj.level = new Level(obj.level);
   obj.millis = Date.parse(obj.date);
   return new LogRecord(obj);
-}
+};
 
 Level.DEBUG = new Level({name: "DEBUG", value: 3});
 

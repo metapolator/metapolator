@@ -24,15 +24,15 @@ define([
         this.factory = undefined;
         this._invalid = undefined;
     }
-    var _p = ParameterValue.prototype = Object.create(Parent.prototype)
+    var _p = ParameterValue.prototype = Object.create(Parent.prototype);
     _p.constructor = ParameterValue;
 
     Object.defineProperty(_p, 'value', {
         get: function(){ return '!!stub!!' + this._value.join('|||'); }
-    })
-
+    });
 
     function _setInvalidAPI(message) {
+        /*jshint validthis:true*/
         if(this._factory !== undefined)
             throw new errors.CPS('Can\'t mark as invalid: factory is already '
                                 + 'set.');
@@ -41,6 +41,7 @@ define([
     }
 
     function _setFactoryAPI(factory) {
+        /*jshint validthis:true*/
         if(this._invalid)
             throw new errors.CPS('Can\'t set factory: value is already '
                                 + 'marked as invalid: ' + this._message);
@@ -53,7 +54,7 @@ define([
         Object.defineProperty(this, 'factory', {
             enumerable: true
           , value: factory
-        })
+        });
     }
 
     _p.initializeTypeFactory = function(name, typeDefinition) {
@@ -68,7 +69,7 @@ define([
         if(this._factory === undefined && this._invalid === undefined)
             throw new errors.CPS('TypeDefinition for ' + name
                             + ' did not initialize this ParameterValue');
-    }
+    };
 
     Object.defineProperty(_p, 'invalid', {
         get: function(){ return this._invalid;}
@@ -77,14 +78,14 @@ define([
     // this property ommits the comments on purpose
     Object.defineProperty(_p, 'valueString', {
         get: function(){ return this._value.join(''); }
-    })
+    });
+
     Object.defineProperty(_p, 'astTokens', {
         get: function() {
             return this._value.map(
-                                function(item){ return item['_ast']; });
+                                function(item){ return item._ast; });
             }
-    })
-
+    });
 
     /**
      * Prints all comments before the value.
@@ -93,7 +94,7 @@ define([
         return [this._comments.join('\n'),
                 this._comments.length ? ' ': '',
                 this.valueString.trim()].join('');
-    }
+    };
 
     return ParameterValue;
-})
+});

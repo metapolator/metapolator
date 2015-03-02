@@ -36,6 +36,7 @@ define([
      * This means, that a test like `item instanceof _Node` must return true.
      */
     function _Node() {
+        /*jshint validthis:true*/
         Parent.call(this);
         if(this.constructor.prototype === _p)
             throw new MOMError('MOM _Node must not be instantiated directly');
@@ -82,13 +83,13 @@ define([
             clone.id = this._id;
         for(var k in this._classes)
             clone.setClass(k);
-    }
+    };
 
     emitterMixin(_p, emitterMixinSetup);
 
     Object.defineProperty(_p, 'MOMType', {
         get: function(){return 'MOM '+ this.constructor.name ;}
-    })
+    });
 
     /**
      * Implement a getter for CPS Type in children of _Node, we need it
@@ -102,7 +103,7 @@ define([
             // this should be implemented by items inheriting from _Node
             throw errors.NotImplemented('Implement CPS-Type name!');
         }
-    })
+    });
 
     Object.defineProperty(_p, 'children', {
         /**
@@ -110,7 +111,7 @@ define([
          * with the list of children via public interfaces.
          */
         get: function(){ return this._children.slice(); }
-    })
+    });
 
     Object.defineProperty(_p, 'id', {
         /**
@@ -122,7 +123,7 @@ define([
          */
         set: function(id){ this._id = id; }
       , get: function(){ return this._id; }
-    })
+    });
 
     /***
      * get the univers element of this node.
@@ -137,7 +138,7 @@ define([
                 return this._parent;
             return this._parent.univers;
         }
-    })
+    });
 
     /***
      * get the multivers element of this node.
@@ -152,7 +153,7 @@ define([
                 return this._parent;
             return this._parent.multivers;
         }
-    })
+    });
 
     /***
      * get the master element of this node or null if this node has no master
@@ -167,13 +168,13 @@ define([
                 return this._parent;
             return this._parent.master;
         }
-    })
+    });
 
     Object.defineProperty(_p, 'glyph', {
         get: function() {
             return this._parent && this._parent.glyph;
         }
-    })
+    });
 
     /**
      * returns a selector for this element, currently it is used for
@@ -185,32 +186,32 @@ define([
             return [
                     this._parent ? this._parent.particulars : '(no parent)'
                   , ' '
-                  , this.type,
+                  , this.type
                   , (this.id ? '#' + this.id : '')
                   , (this._parent
                         ? ':i(' + this._parent.find(this) + ')'
                         : '')
                 ].join('');
         }
-    })
+    });
 
     _p.setClass = function(name) {
         this._classes[name] = null;
-    }
+    };
 
     _p.removeClass = function(name) {
         delete this._classes[name];
-    }
+    };
 
     _p.hasClass = function(name) {
         return name in this._classes;
-    }
+    };
 
-    _p.toString = function() { return ['<', this.MOMType, '>'].join('') };
+    _p.toString = function() { return ['<', this.MOMType, '>'].join('');};
 
     _p.isMOMNode = function(item) {
         return item instanceof _Node;
-    }
+    };
 
     /**
      *  enhance this list with accepted children Constructors
@@ -227,7 +228,7 @@ define([
             if(item instanceof this._acceptedChildren[i])
                 return true;
         return false;
-    }
+    };
 
     /**
      * Note: this is currently running very often when adding or deleting
@@ -246,7 +247,7 @@ define([
             if(item === this._children[i])
                 return i;
         return false;
-    }
+    };
 
     Object.defineProperty(_p, 'index', {
         get: function(){ return this._index;}
@@ -290,7 +291,7 @@ define([
             this._index = this._parent.find(this);
         }
       , get: function(){ return this._parent; }
-    })
+    });
 
     _p.remove = function(item) {
         if(Object.isFrozen(this._children))
@@ -302,7 +303,7 @@ define([
         this._children.splice(i, 1);
         item.parent = null;
         return true;
-    }
+    };
 
     _p.add = function(item) {
         if(Object.isFrozen(this._children))
@@ -314,15 +315,15 @@ define([
             item.parent.remove(item);
         this._children.push(item);
         item.parent = this;
-    }
+    };
 
     _p.query = function(selector) {
         return this.multivers.query(selector, this);
-    }
+    };
 
     _p.queryAll = function(selector) {
         return this.multivers.queryAll(selector, this);
-    }
+    };
 
     _p.getComputedStyle = function() {
         return this.multivers.getComputedStyleFor(this);
@@ -334,7 +335,8 @@ define([
        this._cpsChange.timeoutId = null;
        this._cpsChange.eventData = [];
        this._trigger('CPS-change', eventData);
-    }
+    };
+
     _p._cpsChangeHandler = function(subscriberData, channelKey, eventData) {
         // The styledicts are already debounced so that they fire only
         // once after all sync tasks are done. Debouncing here could still
@@ -445,4 +447,4 @@ define([
     };
 
     return _Node;
-})
+});

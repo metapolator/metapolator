@@ -118,6 +118,6 @@ define([
             return s;
         }
     });
-    
+
     return SimpleSelector;
-})
+});

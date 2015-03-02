@@ -297,7 +297,7 @@ define([
             this._buildIndex();
         return key in this._dict;
     };
-    
+
     _p.find = function(key) {
         if(!this._dict)
             this._buildIndex();

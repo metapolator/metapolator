@@ -6,7 +6,7 @@ define([
   , obtain
 ) {
     "use strict";
-    
+
     /**
      * when name ends with a slash it is a directory name
      */
@@ -16,7 +16,7 @@ define([
 
     /**
      * Read an entire directory tree into a flat list of filenames.
-     * 
+     *
      * use this with caution:
      * It may run long and need a lot of memory for large/deep directories.
      * Also, the result may not be correct anymore when it's done.
