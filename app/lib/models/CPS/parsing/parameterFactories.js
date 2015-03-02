@@ -243,8 +243,15 @@ define([
                     || !collection)
                 return this['__GenericAST__'](node, source);
             // may be undefined
-            collection.selectorList = selectorList;
-            collection.name = name;
+            // if it is, we couldn't parse it
+            // an example would be: @namespace("point){}
+            // note the " doesn't close
+            // TODO: it would be nice to preserve the broken information.
+            // so that the AtNamespaceCollection can be repaired better
+            // in the ui
+            if(selectorList !== undefined)
+                collection.selectorList = selectorList;
+            collection.name = name.name;
             return collection;
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)

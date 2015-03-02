@@ -94,6 +94,7 @@ define([
     };
 
     _p.multiply = function(selectorList) {
+        // the cache is a WeakMap, so it will clean itself
         var r = this._multiplyCache.get(selectorList);
         if(!r) {
             r = this.constructor.multiply(this, selectorList);

@@ -30,7 +30,7 @@ define([
     _p._complexSelectorMatches = function(complexSelector, element, scopeElement) {
         if(!(complexSelector instanceof ComplexSelector))
             throw new CPSError('complexSelector is not of type '
-                                         + 'ComplexSelector');
+                                         + 'ComplexSelector: ' + complexSelector);
         var compoundSelectors = complexSelector.value
           , compoundSelector
           , combinator
@@ -224,7 +224,7 @@ define([
           ;
         for(i=0, length = namespacedRules.length;i<length;i++) {
             namespacedRule = namespacedRules[i];
-            complexSelectors = namespacedRule[0];
+            complexSelectors = namespacedRule[0].value;
             for(j=0, lengthCS = complexSelectors.length;j<lengthCS;j++) {
                 if(this._complexSelectorMatches(complexSelectors[j], element)) {
                     // got a match with the most specific selector

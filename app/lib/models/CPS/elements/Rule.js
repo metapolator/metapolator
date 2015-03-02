@@ -1,9 +1,14 @@
 define([
-    './_Node'
+    'metapolator/errors'
+  , './_Node'
 ], function(
-    Parent
+    errors
+  , Parent
 ) {
     "use strict";
+
+    var ValueError = errors.Value;
+
     /**
      * The container for selectors and parameters.
      */
@@ -22,6 +27,13 @@ define([
     _p.toString = function() {
         return [this._selectorList, ' ', this.parameters].join('');
     };
+
+    Object.defineProperty(_p, 'invalid', {
+        get: function(){
+            return this._selectorList.invalid;
+        }
+    });
+
     /**
      * If no namespaces are provided, the result of this method equals
      * this._selectorList.
@@ -37,6 +49,13 @@ define([
                     selectorList = namespaces[i].multiply(selectorList);
         }
         return selectorList;
+    };
+
+    _p.setSelectorList = function(selectorList) {
+        if(selectorList.invalid)
+            throw new ValueError('Trying to set an invalid selectorList: ' + selectorList);
+        this._selectorList = selectorList;
+        this._trigger('selector-change');
     };
 
     return Rule;

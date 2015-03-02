@@ -38,7 +38,7 @@ define([
          * Find the name of the resource to load and return a ParameterCollection
          */
         'atrules': function(node, source, ruleController) {
-            var args, resource, parameterCollection;
+            var args, resource, atImportCollection;
             // filter all whitespace
             args = node.children.slice(1).filter(function(child) {
                 if(child.instance instanceof GenericCPSNode && child.instance.type === 's')
@@ -53,8 +53,19 @@ define([
                 return this['__GenericAST__'](node, source);
             resource = args[0].data.slice(1,-1);
 
-            parameterCollection = ruleController.getRule(false, resource)
-            return new AtImportCollection(resource, parameterCollection);
+            atImportCollection = new AtImportCollection(ruleController, source, node.lineNo);
+            atImportCollection.setResource(false, resource);
+            // TODO: we can set up the parser easier for asynchronisity,
+            // since the AtImportCollection now handles receiving the
+            // parameter collection from ruleController. we could just
+            // register the promise somewhere central that central place
+            // would wait for all registered promises to "end (successful
+            // or not, we must handle then)
+            // Useful is the atImportCollection only when
+            // !atImportCollection.invalid otherwise it can't be queried
+            // for contents
+            return atImportCollection;
+
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
     });
