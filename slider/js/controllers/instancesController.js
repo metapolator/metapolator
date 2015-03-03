@@ -92,6 +92,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data.addInstance = function() {
         if ($scope.data.canAddInstance()) {
             var designSpace = $scope.data.currentDesignSpace;
+            var masterSet = jQuery.extend(true, [], designSpace.masters);
+            var newValue = 1 / masterSet.length;
+            angular.forEach(masterSet, function(thisMaster) {
+                   thisMaster.value = newValue;
+            });
             var id = findInstanceId();
             $scope.data.families[0].instances.push({
                 id : id,
@@ -101,7 +106,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 designSpace : designSpace.id,
                 fontFamily : "Roboto",
                 fontWeight : 700,
-                masters: jQuery.extend(true, [], designSpace.masters),
+                masters: masterSet,
             });
             $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
