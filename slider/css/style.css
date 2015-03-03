@@ -343,6 +343,10 @@
                margin-right: 3px;
                text-align: right;
            }
+           
+           #filter {
+               width: 180px;
+           }
         
             size-rope {
                 float: left;
