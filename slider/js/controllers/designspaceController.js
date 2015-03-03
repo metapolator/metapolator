@@ -86,12 +86,38 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.removeMaster = function(m) {
         var designspace = $scope.data.currentDesignSpace;
         var masterSet = designspace.masters;
-        if (confirm("Removing master from this Design Space. Sure?")) {
+        if (confirm("Removing master from this Design Space, and also from all Instances in this Design Space. Sure?")) {
+            // remove master from all instances in this design space
+            angular.forEach($scope.data.families, function(family) {
+                angular.forEach(family.instances, function(instance) {
+                    if (instance.designSpace == designspace.id) {
+                        angular.forEach(instance.masters, function(master, index) {
+                            if (master.masterId == masterSet[m].masterId) {
+                                instance.masters.splice(index, 1);
+                                reDistribute(instance.masters);
+                            } 
+                        });
+                    }
+                });
+            });
+            // remove the master from the designspace
             masterSet.splice(m, 1);
             designspace.axes.splice((m - 1), 1);
             $scope.$apply();
         }
     };
+    
+    function reDistribute(masters) {
+        var totalValue = 0;
+        angular.forEach(masters, function(master) {
+            totalValue += master.value;
+        });
+        var addFactor = 1 / totalValue;
+        angular.forEach(masters, function(master) {
+            master.value *= addFactor;
+        });
+        return masters;
+    }
     
     $scope.changeMainMaster = function () {
         var designspace = $scope.data.currentDesignSpace;
