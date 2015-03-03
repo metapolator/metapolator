@@ -53,6 +53,8 @@
                         <div class="lm-button" ng-mouseup="newDocument()">New</div>
                         <div class="lm-divider"></div>
                         <div class="lm-button" ng-mouseup="closeDocument()">Close</div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button" ng-mouseup="renameProject()">Rename project</div>
                     </div>
                 </localmenu>
             </div>
@@ -127,9 +129,17 @@
             <!-- end of landscape -->
         </div>
         
+        <div id="layover"></div>
+        
         <div id="alert">
             <div id="alert-loading"><img src="img/loading.gif"></div>
             <div id="alert-content"></div>
+        </div>
+        
+        <div id="rename-project" ng-controller="menuController">
+            <b>Rename your Metapolator project</b><br><br>
+            <form ng-submit="closeRename()"><input ng-model="data.projectName"></form>
+            <!--<button ng-click="closeRename()">Close</button>-->
         </div>
     </BODY>
 </html>

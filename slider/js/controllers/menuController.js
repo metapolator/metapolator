@@ -19,5 +19,16 @@ app.controller('menuController', function($scope, $http, sharedScope) {
             }
         }
     };
+    
+    $scope.renameProject = function () {
+        $("#layover").show();
+        $("#rename-project").show();
+        $scope.data.localmenu.project = false;
+    };
+    
+    $scope.closeRename = function () {
+        $("#layover").hide();
+        $("#rename-project").hide();
+    };
 
 });

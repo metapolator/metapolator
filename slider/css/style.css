@@ -88,7 +88,7 @@
 	}
 	
 		#project {
-		    width: 200px;
+		    width: 400px;
 		    padding: 0;
 			float: left;
 		}
@@ -96,7 +96,7 @@
 		#view-buttons {
 			float: left;
 			width: 300px;
-			margin-left: calc(50% - 250px);
+			margin-left: calc(50% - 450px);
 			padding: 8px;
 		}
 		
@@ -1039,17 +1039,23 @@
         
 /**************** alert ************************/
 
-    #alert {
+    #alert, #rename-project {
         display: none;
         position: fixed;
-        left: calc(50% - 200px);
-        width: 400px;
+        
+
         top: 60px;
         padding: 20px;
         background: #fff;
         border-radius: 3px;
         box-shadow: 0 0 5px rgba(0,0,0,0.5);
+
+    }
+    
+    #alert {
+        width: 400px;
         min-height: 200px;
+        left: calc(50% - 200px);
     }
     
         #alert-loading {
@@ -1061,3 +1067,23 @@
             text-align: center;
             padding-top: 20px;
         }
+        
+    #rename-project {
+        width: 260px;
+        left: calc(50% - 130px);
+    }
+    
+        #rename-project input {
+            width: 100%;
+        }
+
+
+    #layover {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0,0,0,0.6);
+    }
