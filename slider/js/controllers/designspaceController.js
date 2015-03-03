@@ -31,7 +31,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         $scope.data.designSpaces.push({
             name : "Space " + id,
             id : id,
-            type : "x",
+            type : "Control",
             masters : [],
             axes : [],
             triangle : false,
