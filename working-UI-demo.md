@@ -96,7 +96,7 @@ it looks to me that that best strategy is to—
 Stand-alone masters only; forget about master sequences and adjustment master (sequences). This saves us from a lot of exponential complexity, especially in the design spaces panel. There are also no clones. This means:
 
 * no adjustment master panel at all;
-* no interaction nor indications in the sequence column (first one); it can be left out or sit there as a dead column;
+* no interaction nor indications in the sequence column (first one), black bullets are shown always;
 * no sequence title item;
 * no Clone button.
 
@@ -174,7 +174,8 @@ See the parameter specimen above for update highlighting. The recalc rate is dif
 ## instances column
 Stand-alone instances only; This saves the complication of family handling, also in the design spaces. This means:
 
-* no interaction nor indications in the family column (first one); it can be left out or sit there as a dead column;
+* no interaction nor indications in the family column (first one), blue diamonds are shown always;
+* no multi-selections possible;
 * no family title item;
 * no Create family of instances button.
 
