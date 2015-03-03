@@ -108,22 +108,22 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 fontWeight : 700,
                 masters: masterSet,
             });
-            $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+            $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
         }
     };
     
     $scope.duplicateInstance = function () {
-        var duplicate = jQuery.extend(true, {}, $scope.currentInstance);
+        var duplicate = jQuery.extend(true, {}, $scope.data.currentInstance);
         duplicate.name += " copy";
         $scope.data.families[0].instances.push(duplicate);
-        $scope.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+        $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
     };
     
     $scope.deleteInstance = function () {
         if ($scope.currentInstance) {
             $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.currentInstance), 1);
-            $scope.currentInstance = null;
+            $scope.data.currentInstance = null;
             $scope.data.localmenu.instances = false;
         }
     };
@@ -136,10 +136,10 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     
     
      
-    $scope.currentInstance = null;
+    $scope.data.currentInstance = null;
 
     $scope.setCurrentInstance = function(thisInstance) {
-        $scope.currentInstance = thisInstance;
+        $scope.data.currentInstance = thisInstance;
         setCurrentDesignSpace(thisInstance.designSpace);
         valueToAxes(thisInstance);
     };

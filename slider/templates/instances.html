@@ -11,7 +11,7 @@
 
 <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
     <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-repeat="instance in data.families[0].instances track by $index" class="list-li" ng-class="{'selected': instance.edit}">
-        <span class="list-sequence-col" ng-class="{'start' : $first && !$last, 'end' : $last && !$first, 'middle' : $middle, 'solo' : $first && $last}">
+        <span class="list-sequence-col" ng-class="{'start' : $first && !$last, 'end' : $last && !$first, 'middle' : $middle, 'solo' : $first && $last, 'currentinstance': instance == data.currentInstance}">
             <div class="diamond"></div>
         </span>
         <span class="list-view-col" ng-click="instance.display = !instance.display" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};">
@@ -23,7 +23,7 @@
     </li>
 </ul>
 
-{{currentInstance}}
+{{data.currentInstance}}
 
 <div id="instances-tools">
     <div id="add-instance" ng-click="data.addInstance();" class="instance-tool" ng-class="{'inactive': !data.canAddInstance()}">

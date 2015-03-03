@@ -56,7 +56,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     
     $scope.getMetapolationRatios = function(data) {
         var designspace = $scope.data.currentDesignSpace;
-        var masterSet = designspace.masters;
+        var masterSet = jQuery.extend(true, [], designspace.masters);
         $scope.output = [];
         var axes = data.axes;
         var n = axes.length;
@@ -72,6 +72,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             $scope.output.push($scope.findMaster(data.masters[i + 1].masterId).name + ": " + roundup(piece / cake));
             masterSet[i + 1].value = piece / cake;
         }
+        $scope.data.currentInstance.masters = masterSet;
     };
 
 
