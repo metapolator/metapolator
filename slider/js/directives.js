@@ -18,21 +18,6 @@ app.directive('body', function() {
 });
 
 // monitor mouse status inside a list
-app.directive('list', function() {
-    return {
-        restrict : 'C',
-        link : function(scope, element, attrs, ctrl) {
-            element.bind('click', function(event) {
-                if (!$(event.target).parents('.list-li').length && !$(event.target).parents('.localmenu').length) {
-                    scope.deselectAll();
-                    scope.$apply();
-                }
-            });
-        }
-    };
-});
-
-// monitor mouse status inside a list
 app.directive('listUl', function() {
     return {
         restrict : 'C',
