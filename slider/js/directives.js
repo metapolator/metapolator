@@ -1,3 +1,76 @@
+app.directive('rename', function() {
+    return {
+        restrict : 'C',
+        require: 'ngModel',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('dblclick', function(event) {
+                $(element[0]).attr("contenteditable", "true");
+                $(element[0]).addClass("renaming");
+                $(element[0]).focus();
+                selectAllText(element[0]);
+                
+                
+            });
+            element.bind('blur', function(event) {
+                finishedRenaming(element[0]);
+            });
+            element.bind('keypress', function(event) {
+                if(event.which == 13) {
+                    finishedRenaming(element[0]);
+                    $(element[0]).blur();
+                }
+            });
+            
+            ctrl.$render = function() {
+                element.html(ctrl.$viewValue);
+            };
+            
+            
+            function finishedRenaming(div) {
+               scope.$apply(function() {
+                    scope.data.currentDesignSpace.trigger++; // this is to trigger the designspace to redraw
+                    ctrl.$setViewValue(element.html());
+                });
+                
+                document.getSelection().removeAllRanges();
+                $(div).removeAttr("contenteditable");
+                $(div).removeClass("renaming");
+            }
+            
+            function selectAllText(element) {
+               var doc = document;
+               if (doc.body.createTextRange) {
+                   var range = document.body.createTextRange();
+                   range.moveToElementText(element);
+                   range.select();
+               } else if (window.getSelection) {
+                   var selection = window.getSelection();        
+                   var range = document.createRange();
+                   range.selectNodeContents(element);
+                   selection.removeAllRanges();
+                   selection.addRange(range);
+               }
+            };
+        }
+    };
+});
+
+jQuery.fn.selectText = function(){
+   var doc = document;
+   var element = this[0];
+   if (doc.body.createTextRange) {
+       var range = document.body.createTextRange();
+       range.moveToElementText(element);
+       range.select();
+   } else if (window.getSelection) {
+       var selection = window.getSelection();        
+       var range = document.createRange();
+       range.selectNodeContents(element);
+       selection.removeAllRanges();
+       selection.addRange(range);
+   }
+};
+
 // deselecting local menus
 app.directive('body', function() {
     return {
@@ -470,7 +543,7 @@ function($document) {
             }
 
             // watch for data changes and re-render
-            scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace.masters.length, data.currentDesignSpace.masters[0], data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.masters[0], data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return scope.render();
             }, true);
             scope.$watch('data.currentDesignSpace.axes', function(newVal) {

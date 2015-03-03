@@ -41,6 +41,7 @@ app.factory("sharedScope", function($rootScope) {
         }],
         adjustmentMasters : [],
         designSpaces : [{
+            trigger: 0,
             name : "Space 0",
             id : 0,
             type : "Control",
@@ -48,11 +49,13 @@ app.factory("sharedScope", function($rootScope) {
             axes : [],
             triangle : false,
             mainMaster : "0"
+            
         }],
         families : [{
             id : 0,
             instances: [] 
         }],
+        preview : "Ag",
         currentDesignSpace : null,
         eventHandlers : {
             initialDisplay : null

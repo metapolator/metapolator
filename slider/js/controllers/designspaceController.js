@@ -35,7 +35,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             masters : [],
             axes : [],
             triangle : false,
-            mainMaster : "0"
+            mainMaster : "0",
+            trigger : 0 //this is to trigger the designspace to redraw when a master is renamed
         });
         $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
     };

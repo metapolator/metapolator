@@ -2,9 +2,7 @@
     <li ng-repeat="space in data.designSpaces" ng-click="selectDesignSpace(space.id)" ng-class="{selected : space == data.currentDesignSpace}">
         <div><img ng-src="{{ 'img/' + space.type + '.png'}}">
         </div>
-        <div>
-            {{space.name}}
-        </div>
+        <div class="rename" ng-model="space.name"></div>
     </li>
     <li ng-click="addDesignSpace()">
         +
@@ -21,15 +19,15 @@
                 Control
             </div>
         </div>
+        <!--
         <div class="choose-space-type under-construction">
-            <!--
             <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Explore'">
                 <img src="img/Explore.png">
                 <br>
                 Explore
             </div>
-            -->
         </div>
+        -->
     </div>
     
     <div class="drop-area" ng-show="data.currentDesignSpace.type != 'x'">
