@@ -1,3 +1,37 @@
+app.directive('projectRename', function() {
+    return {
+        restrict : 'C',
+        require: 'ngModel',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('blur', function(event) {
+                finishedRenaming(element[0]);
+            });
+            element.bind('keypress', function(event) {
+                if(event.which == 13) {
+                    finishedRenaming(element[0]);
+                    $(element[0]).blur();
+                }
+            });
+            
+            ctrl.$render = function() {
+                element.html(ctrl.$viewValue);
+            };
+            
+            
+            function finishedRenaming(div) {
+               scope.$apply(function() {
+                    scope.data.currentDesignSpace.trigger++; // this is to trigger the designspace to redraw
+                    ctrl.$setViewValue(element.html());
+                });
+                
+                document.getSelection().removeAllRanges();
+                $(div).removeAttr("contenteditable");
+                $(div).removeClass("renaming");
+            }
+        }
+    };
+});
+
 app.directive('rename', function() {
     return {
         restrict : 'C',
@@ -7,9 +41,7 @@ app.directive('rename', function() {
                 $(element[0]).attr("contenteditable", "true");
                 $(element[0]).addClass("renaming");
                 $(element[0]).focus();
-                selectAllText(element[0]);
-                
-                
+                scope.data.selectAllText(element[0]);
             });
             element.bind('blur', function(event) {
                 finishedRenaming(element[0]);
@@ -36,21 +68,6 @@ app.directive('rename', function() {
                 $(div).removeAttr("contenteditable");
                 $(div).removeClass("renaming");
             }
-            
-            function selectAllText(element) {
-               var doc = document;
-               if (doc.body.createTextRange) {
-                   var range = document.body.createTextRange();
-                   range.moveToElementText(element);
-                   range.select();
-               } else if (window.getSelection) {
-                   var selection = window.getSelection();        
-                   var range = document.createRange();
-                   range.selectNodeContents(element);
-                   selection.removeAllRanges();
-                   selection.addRange(range);
-               }
-            };
         }
     };
 });

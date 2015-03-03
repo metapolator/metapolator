@@ -47,7 +47,7 @@
             <div id="project">
                 <localmenu class="localmenu" class="left">
                     <div class="lm-head" ng-mousedown="data.selectMenu('project')">
-                        <b>Project</b> {{data.projectName}}
+                        <b>Project</b> <span id="project-name" ng-model="data.projectName" class="project-rename"></span>
                     </div>
                     <div class="lm-body" ng-if="data.localmenu.project">
                         <div class="lm-button" ng-mouseup="newDocument()">New</div>

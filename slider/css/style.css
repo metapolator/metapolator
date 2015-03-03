@@ -85,18 +85,20 @@
 	#menu {
 		width: 100%;
 		height: 50px;
+		position: relative;
 	}
 	
 		#project {
-		    width: 400px;
 		    padding: 0;
 			float: left;
 		}
 	
 		#view-buttons {
+		    position: absolute;
+		    top: 0;
+		    left: calc(50% - 50px);
 			float: left;
 			width: 300px;
-			margin-left: calc(50% - 450px);
 			padding: 8px;
 		}
 		

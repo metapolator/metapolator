@@ -21,9 +21,27 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
     
     $scope.renameProject = function () {
-        $("#layover").show();
-        $("#rename-project").show();
         $scope.data.localmenu.project = false;
+        $("#project-name").attr("contenteditable", "true");
+        $("#project-name").addClass("renaming");
+        $("#project-name").focus();
+        
+        $scope.data.selectAllText(document.getElementById("project-name"));
+    };
+    
+    $scope.data.selectAllText = function(element) {
+       var doc = document;
+       if (doc.body.createTextRange) {
+           var range = document.body.createTextRange();
+           range.moveToElementText(element);
+           range.select();
+       } else if (window.getSelection) {
+           var selection = window.getSelection();        
+           var range = document.createRange();
+           range.selectNodeContents(element);
+           selection.removeAllRanges();
+           selection.addRange(range);
+       }
     };
     
     $scope.closeRename = function () {
