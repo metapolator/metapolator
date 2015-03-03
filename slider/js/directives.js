@@ -548,7 +548,7 @@ function($document) {
                         // update scope and redraw ellipses
                         var thisIndex = d3.select(this).attr('index');
                         var thisValue = (limitX(d3.event.x) - indentLeft) / (axisWidth / 100);
-                        data.axes[thisIndex].value = thisValue;
+                        data.axes[thisIndex].value = formatX(thisValue);
                         //d3.select("#output-label-" + thisIndex).text(thisValue.toFixed(1) + "%");
                         // get ratios
                         scope.getMetapolationRatios(data);
@@ -566,6 +566,12 @@ function($document) {
                             x = axisWidth + indentLeft;
                         }
                         return x;
+                    }
+                    
+                    function formatX(x) {
+                        var roundedX = Math.round(x * 2) / 2;
+                        var toF = roundedX.toFixed(1);
+                        return toF;
                     }
 
                     // create slider containers

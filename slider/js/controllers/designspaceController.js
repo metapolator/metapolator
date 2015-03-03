@@ -62,13 +62,13 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var n = axes.length;
         var cake = 1;
         for (var i = 0; i < n; i++) {
-            cake += (axes[i].value + 0.5) / (100.5 - axes[i].value);
+            cake += (parseInt(axes[i].value) + 0.5) / (100.5 - parseInt(axes[i].value));
         }
         $scope.output.push($scope.findMaster(data.masters[0].masterId).name + ": " + roundup(1 / cake));
         masterSet[0].value = 1 / cake;
         
         for (var i = 0; i < n; i++) {
-            var piece = (axes[i].value + 0.5) / (100.5 - axes[i].value);
+            var piece = (parseInt(axes[i].value) + 0.5) / (100.5 - parseInt(axes[i].value));
             $scope.output.push($scope.findMaster(data.masters[i + 1].masterId).name + ": " + roundup(piece / cake));
             masterSet[i + 1].value = piece / cake;
         }
