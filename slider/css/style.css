@@ -369,6 +369,7 @@
             height: calc(100% - 54px);
             overflow-y: auto;
             padding: 16px;
+            position: relative;
         }
         
            .specimen-tool {

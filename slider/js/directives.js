@@ -1,33 +1,82 @@
+// is in viewport watcher
+app.directive('viewportWatcher', function() {
+    return {
+        restrict : 'A',
+        link : function(scope, element, attrs, ctrl) {
+            var scrolltimer;
+            element.bind('scroll', function(event) {
+                // detecing the 'scroll release'
+                clearTimeout(scrolltimer);
+                scrolltimer = setTimeout(function() {
+                    watch();
+                }, 250);
+            });
+
+            scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences", function(newVal) {
+                // a delay because we wait for the nr-repeat to rebuild
+                setTimeout(function() {
+                    watch();
+                }, 250);
+            }, true);
+
+            watch();
+
+            function watch() {
+                var viewport = $(element).outerHeight();
+                var isInView = [];
+                console.clear();
+                console.log("watch");
+                $(element).find(".spec-glyph-box").each(function() {
+                    //if($(this).html() == "c") {
+                    //    console.log($(this).position().top);
+                   // }
+                    
+                    $(this).removeClass("is-in-view");
+                    var thisY1 = $(this).position().top;
+                    var thisY2 = $(this).position().top + $(this).outerHeight();
+                    if ((thisY1 > 0 && thisY1 < viewport) || (thisY2 > 0 && thisY2 < viewport)) {
+                        $(this).addClass("is-in-view");
+                        isInView.push($(this).html());
+                    }
+                });
+                console.log(isInView);
+            }
+
+        }
+    };
+});
+
 app.directive('projectRename', function() {
     return {
         restrict : 'C',
-        require: 'ngModel',
+        require : 'ngModel',
         link : function(scope, element, attrs, ctrl) {
             element.bind('blur', function(event) {
                 finishedRenaming(element[0]);
             });
             element.bind('keypress', function(event) {
-                if(event.which == 13) {
+                if (event.which == 13) {
                     finishedRenaming(element[0]);
                     $(element[0]).blur();
                 }
             });
-            
+
             ctrl.$render = function() {
                 element.html(ctrl.$viewValue);
             };
-            
-            
+
             function finishedRenaming(div) {
-               scope.$apply(function() {
-                    scope.data.currentDesignSpace.trigger++; // this is to trigger the designspace to redraw
+                scope.$apply(function() {
+                    scope.data.currentDesignSpace.trigger++;
+                    // this is to trigger the designspace to redraw
                     ctrl.$setViewValue(element.html());
                 });
-                
+
                 document.getSelection().removeAllRanges();
                 $(div).removeAttr("contenteditable");
                 $(div).removeClass("renaming");
             }
+
         }
     };
 });
@@ -35,7 +84,7 @@ app.directive('projectRename', function() {
 app.directive('rename', function() {
     return {
         restrict : 'C',
-        require: 'ngModel',
+        require : 'ngModel',
         link : function(scope, element, attrs, ctrl) {
             element.bind('dblclick', function(event) {
                 $(element[0]).attr("contenteditable", "true");
@@ -47,45 +96,46 @@ app.directive('rename', function() {
                 finishedRenaming(element[0]);
             });
             element.bind('keypress', function(event) {
-                if(event.which == 13) {
+                if (event.which == 13) {
                     finishedRenaming(element[0]);
                     $(element[0]).blur();
                 }
             });
-            
+
             ctrl.$render = function() {
                 element.html(ctrl.$viewValue);
             };
-            
-            
+
             function finishedRenaming(div) {
-               scope.$apply(function() {
-                    scope.data.currentDesignSpace.trigger++; // this is to trigger the designspace to redraw
+                scope.$apply(function() {
+                    scope.data.currentDesignSpace.trigger++;
+                    // this is to trigger the designspace to redraw
                     ctrl.$setViewValue(element.html());
                 });
-                
+
                 document.getSelection().removeAllRanges();
                 $(div).removeAttr("contenteditable");
                 $(div).removeClass("renaming");
             }
+
         }
     };
 });
 
-jQuery.fn.selectText = function(){
-   var doc = document;
-   var element = this[0];
-   if (doc.body.createTextRange) {
-       var range = document.body.createTextRange();
-       range.moveToElementText(element);
-       range.select();
-   } else if (window.getSelection) {
-       var selection = window.getSelection();        
-       var range = document.createRange();
-       range.selectNodeContents(element);
-       selection.removeAllRanges();
-       selection.addRange(range);
-   }
+jQuery.fn.selectText = function() {
+    var doc = document;
+    var element = this[0];
+    if (doc.body.createTextRange) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(element);
+        range.select();
+    } else if (window.getSelection) {
+        var selection = window.getSelection();
+        var range = document.createRange();
+        range.selectNodeContents(element);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
 };
 
 // deselecting local menus
@@ -157,7 +207,7 @@ app.directive('listViewCol', function() {
                             var master = $(this).attr("master");
                             selected.push({
                                 parentObject : sequence,
-                                childObject: master
+                                childObject : master
                             });
                         }
                     });
@@ -657,7 +707,7 @@ function($document) {
                         }
                         return x;
                     }
-                    
+
                     function formatX(x) {
                         var roundedX = Math.round(x * 2) / 2;
                         var toF = roundedX.toFixed(1);
