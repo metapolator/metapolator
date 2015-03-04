@@ -61,11 +61,10 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         });
     };
 
-    $scope.deselectAll = function() {
+    $scope.deselectAllEdit = function() {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 instance.edit = false;
-                instance.display = false;
             });
         });
     };
@@ -90,6 +89,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     }
 
     $scope.data.addInstance = function() {
+        $scope.deselectAllEdit();
         if ($scope.data.canAddInstance()) {
             var designSpace = $scope.data.currentDesignSpace;
             var masterSet = jQuery.extend(true, [], designSpace.masters);
@@ -100,8 +100,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var id = findInstanceId();
             $scope.data.families[0].instances.push({
                 id : id,
-                edit : false,
-                display : false,
+                edit : true,
+                display : true,
                 ag : "Ag",
                 name : "New Instance " + id,
                 designSpace : designSpace.id,
