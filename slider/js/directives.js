@@ -12,6 +12,7 @@ app.directive('viewportWatcher', function() {
                 }, 250);
             });
 
+            // detect if the filter changes something to the specimen
             scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences", function(newVal) {
                 // a delay because we wait for the nr-repeat to rebuild
                 setTimeout(function() {
@@ -24,12 +25,8 @@ app.directive('viewportWatcher', function() {
             function watch() {
                 var viewport = $(element).outerHeight();
                 var isInView = [];
-                console.log("watch");
+                console.clear();
                 $(element).find(".spec-glyph-box").each(function() {
-                    //if($(this).html() == "c") {
-                    //    console.log($(this).position().top);
-                   // }
-                    
                     $(this).removeClass("is-in-view");
                     var thisY1 = $(this).position().top;
                     var thisY2 = $(this).position().top + $(this).outerHeight();
@@ -40,7 +37,6 @@ app.directive('viewportWatcher', function() {
                 });
                 console.log(isInView);
             }
-
         }
     };
 });

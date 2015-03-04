@@ -423,6 +423,8 @@
             list-style: none;
             display: inline-block;
             cursor: default;
+            overflow: visible;
+            float: left;
         }
         
         #specimen-content ul li.spec-glyph-box-range {
