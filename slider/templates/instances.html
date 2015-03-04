@@ -5,7 +5,7 @@
     <div class="lm-body" ng-if="data.localmenu.instances">
         <div class="lm-button" ng-class="{'inactive': !data.canAddInstance()}" ng-mouseup="data.addInstance()">New</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-class="{'inactive': !currentInstance}" ng-mouseup="deleteInstance()">Delete...</div>
+        <div class="lm-button" ng-class="{'inactive': !data.currentInstance}" ng-mouseup="deleteInstance()">Delete...</div>
     </div>
 </localmenu>
 
