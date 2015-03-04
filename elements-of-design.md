@@ -208,7 +208,7 @@ _(yep, the divider between the two can be moved up/down by users.)_
 ### master section
 The master section is completely occupied by the master list with a label + local menu above it:
 
-![](http://mmiworks.net/metapolator/masterlist4.png)
+![](http://mmiworks.net/metapolator/masterlist5.png)
 
 _**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
 
@@ -237,7 +237,7 @@ The control column shows the name of the master and allow users to directly mani
 * drag and drop into a design space (also of a multiple-selection).
 
 ##### sequence column
-Here master sequences are managed. The connected dots show the extend of the sequence, and the arrow on the bottom item shows the top-down order of the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
+Here master sequences are managed. All masters have a dot in this column—this identifies masters in other places in the UI. Connected dots show the extend of the sequence, and the arrow on the bottom item shows the top-down order of the sequence. The title item above the top master identifies the sequence elsewhere in the UI, double click to get a text edit box.
 
 * create master sequences via local menu (see below), or by mouse-down, drag across multiple masters, release: all masters involved form a new master sequence; default title: "sequence \<number\>", where the number steadily increases (for the project scope);
   * the sequencing starts on mouse-down; when the mouse is down and moved outside the sequence column, the sequencing is undone; when the mouse is released outside the view column, the sequencing did not take place.
@@ -366,7 +366,7 @@ As mentioned before, the (family of) instances column is the panel that ties tog
 
 The instances panel is completely occupied by the instances list with a label + local menu above it:
 
-![](http://mmiworks.net/metapolator/instanceslist2.png)
+![](http://mmiworks.net/metapolator/instanceslist3.png)
 
 _**quick overview**: this design space contains one instance and one family of instances; the lone instance (Instance #1) is probably for exploration, because it has still its default name; the family of instances is called Exotic and consist of 9 instances; one (Thin) is currently selected, any edits or actions are applied to it; two other instances (Light, Regular) are marked to be also viewed in the specimen (in Design Spaces view)._
 
@@ -395,9 +395,9 @@ The control column shows the name of the instance and allow users to directly ma
 * drag and drop into a design space (also a multiple-selection).
 
 ##### family column
-Here families of instances are managed. The connected diamonds show the extend of the family, and the arrow on the bottom item shows the top-down order of the instances. The title item above the top instance identifies the family elsewhere in the UI (e.g. for font name generating), double click to get a text edit box. The title item also shows the number of instances contained, double click to get a text edit box with up/down arrows:
+Here families of instances are managed. All instances have a diamond in this column—this identifies instances in other places in the UI. Connected diamonds show the extend of the family, and the arrow on the bottom item shows the top-down order of the instances. The title item above the top instance identifies the family elsewhere in the UI (e.g. for font name generating), double click to get a text edit box. The title item also shows the number of instances contained, double click to get a text edit box with up/down arrows:
 
-![](http://mmiworks.net/metapolator/stringlen.png)
+![](http://mmiworks.net/metapolator/stringlen2.png)
 
 The changes to the number of instances is applied at the bottom of the list.
 
@@ -410,7 +410,7 @@ The changes to the number of instances is applied at the bottom of the list.
 * extend the family by grabbing the top/bottom diamond and dragging it over instances above/below the family;
 * reduce the family by grabbing the top/bottom diamond and dragging it over instances down/up towards centre of the family;
 * click in the family title item to select the complete family;<br/>
-![](http://mmiworks.net/metapolator/stringselected2.png)<br/>
+![](http://mmiworks.net/metapolator/stringselected3.png)<br/>
 this is different than selecting all the instances in a family (e.g. in how it interacts with adding and removing items, or with copying it and pasting it elsewhere); multiple selection also works here;
 * drag and drop complete families, via the title item
 * a family contains two or more instances; reducing a family to one instance by any means results in removing the family;
