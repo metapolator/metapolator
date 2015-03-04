@@ -24,7 +24,6 @@ app.directive('viewportWatcher', function() {
             function watch() {
                 var viewport = $(element).outerHeight();
                 var isInView = [];
-                console.clear();
                 console.log("watch");
                 $(element).find(".spec-glyph-box").each(function() {
                     //if($(this).html() == "c") {
