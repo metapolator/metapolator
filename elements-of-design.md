@@ -291,7 +291,7 @@ The local menu is as follows:
 * these menu commands operate on single and multiple selections of masters and master sequences;
 * **Import ufo…** imports a ufo and creates a new master out of it;
 * **Copy From Project…** shows a project browser and then a master browser within a selected project; then copies selected master(s) to this project;
-* **Delete…** of master(s);
+* **Delete…** of master(s); deleting a master is a heavy thing: show a confirmation dialog that mentions in how many design spaces it is used;
 * **Set Scripts…** shows a dialog to manage which scripts are supported by master(s);
 * **Quick Export…** of master(s) or sequence(s) to ufo, using best guesses where it comes to the trimmings (e.g. metadata, kerning, and opentype features);
 * **Create Sequence** out of a multi-selection of masters that are all not part of a sequence; when it is a discontinuous selection, this pulls them together under the top master;
@@ -429,7 +429,7 @@ The local menu is as follows:
 
 * New
 * Duplicate
-* Delete…
+* Delete
 * -- \<separator\> --
 * Promote To Master
 * -- \<separator\> --
@@ -442,7 +442,7 @@ The local menu is as follows:
 
 * these menu commands operate on single and multiple selections of instances and families of instances;
 * **New** instance, set to default metapolation mix; when this instance is created _inside_ a family, the metapolation is a 50-50 mix of instances above and below; on the edge of a family, extrapolate;
-* **Delete…** of instance(s);
+* **Delete** of instance(s); deleting an instance is lightweight—no dialog shown; but deleting the last instance of a design space is the same as closing this design space; thus we can handle it the same: (raise the design space when necessary) cover it in contrasting color and put a confirmation dialog; the text in the dialog will be different depending on what action triggered it;
 * **Promote To Master** of instance(s)—transformed to master(s)—or family/-ies—transformed to master sequences; the instance(s) or family/-ies involved remain untouched;
 * **Quick Export…** of instance(s) or family/-ies to ufo, using best guesses where it comes to the trimmings (e.g. metadata, kerning, and opentype features);
 * **Create Family** out of a multi-selection of instances that are all not part of a family; when it is a discontinuous selection, this pulls them together under the top instance; when there is no aforementioned multi-select, create a new family of 9 instances;
