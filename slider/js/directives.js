@@ -175,11 +175,11 @@ app.directive('listEditCol', function() {
     return {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
-            //var type = $(element).parents(".list").attr("type");
+            var type = $(element).parents(".list").attr("type");
             element.bind('click', function(event) {
                 var selected = [];
                 // manage key selections
-                if (event.shiftKey) {
+                if (event.shiftKey && type == "master") {
                     $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
                     $(element).parent().addClass('end-edit-selection');
                     var phase = 0;
@@ -200,7 +200,7 @@ app.directive('listEditCol', function() {
                     });
                     scope.selectEdit(selected);
                     scope.$apply();
-                } else if (event.ctrlKey || event.metaKey) {
+                } else if ((event.ctrlKey || event.metaKey) && type == "master") {
                     var sequence = $(element).parent().attr("sequence");
                     var master = $(element).parent().attr("master");
                     var thisListItem = {
