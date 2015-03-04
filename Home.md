@@ -10,20 +10,22 @@ Software Development
 * [Concepts](https://github.com/metapolator/metapolator/wiki/concepts)
   * [Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
   * [CPS](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
+  * [API](https://github.com/metapolator/metapolator/issues/332)
 * [Architecture](https://github.com/metapolator/metapolator/wiki/architecture)
 * [Roadmap](https://github.com/metapolator/metapolator/wiki/roadmap)
 * [Coding Style](https://github.com/metapolator/metapolator/wiki/coding-style)
 
 Misc
 * [Terminology](https://github.com/metapolator/metapolator/wiki/Terminology)
-* [Version 1](https://github.com/metapolator/metapolator/wiki/v1)
+* [Version 0.0.1](https://github.com/metapolator/metapolator/wiki/v1)
   * [Step by Step Guide](https://docs.google.com/document/d/1fiYpDxoBaiymMjzxptRZr6HkDaF3QqdEZuq_Vdz2JjU/edit)
 
 Conferences
-* [Libre Graphics Meeting, Liepzig, Germany](http://libregraphicsmeeting.org/2014)
-* [Automatic Type Design, ANRT, Nancy, France](http://automatic-type-design.anrt-nancy.fr/index_en.php)
-* [Tag Der Schrift, Zurich, Switzerland](http://www.tagderschrift.org/) - [photos](https://plus.google.com/100858309774292261525/posts/aj477TvM2kr)
-* [TUG 2014, Portland, USA](http://tug.org/tug2014/)
+* [Libre Graphics Meeting, Liepzig, Germany](http://libregraphicsmeeting.org/2014) Simon Egli and Nicolas Pauly
+* [Automatic Type Design, ANRT, Nancy, France](http://automatic-type-design.anrt-nancy.fr/index_en.php) Simon Egli and Nicolas Pauly
+* [Tag Der Schrift, Zurich, Switzerland](http://www.tagderschrift.org/) - [photos](https://plus.google.com/100858309774292261525/posts/aj477TvM2kr) Simon Egli
+* [TUG 2014, Portland, USA](http://tug.org/tug2014/) Dave Crossland
+* [Libre Graphics Meeting, Toronto, Canada](http://libregraphicsmeeting.org/2015) Peter Sikking
 
 Meta
 
