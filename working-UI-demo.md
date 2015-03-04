@@ -61,7 +61,7 @@ A progress indication needs to be shown. We will put it inline with the glyphs, 
 
 are repurposed for this (example color: red):
 
-![](http://mmiworks.net/metapolator/updateunder.png).
+![](http://mmiworks.net/metapolator/updateunder.png)
 
 The same staying-out-of-the-way factor of the selection highlight is used for the update. Specifically, it is exactly the same linen just with a different color.
 
@@ -99,6 +99,8 @@ Stand-alone masters only; forget about master sequences and adjustment master (s
 * no interaction nor indications in the sequence column (first one), black bullets are shown always;
 * no sequence title item;
 * no Clone button.
+
+![](http://mmiworks.net/metapolator/demomasters.png)
 
 Simon and I will come up with a (picture) glimpse of things to come for the adjustment master list.
 
@@ -178,6 +180,8 @@ Stand-alone instances only; This saves the complication of family handling, also
 * no multi-selections possible;
 * no family title item;
 * no Create family of instances button.
+
+![](http://mmiworks.net/metapolator/demoinstances.png)
 
 ### local menu
 The local menu is as follows:
