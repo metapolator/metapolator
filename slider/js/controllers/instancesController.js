@@ -115,17 +115,27 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
     
     $scope.duplicateInstance = function () {
-        var duplicate = jQuery.extend(true, {}, $scope.data.currentInstance);
-        duplicate.name += " copy";
-        $scope.data.families[0].instances.push(duplicate);
-        $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+        if ($scope.data.currentInstance) {
+            $scope.deselectAllEdit();
+            var duplicate = jQuery.extend(true, {}, $scope.data.currentInstance);
+            duplicate.name += " copy";
+            duplicate.edit = true;
+            duplicate.id = findInstanceId();
+            $scope.data.families[0].instances.push(duplicate);
+            $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+        }
     };
     
     $scope.deleteInstance = function () {
-        if ($scope.currentInstance) {
+        if ($scope.data.currentInstance) {
             $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.currentInstance), 1);
             $scope.data.currentInstance = null;
             $scope.data.localmenu.instances = false;
+            // set top instance as current
+            if ($scope.data.families[0].instances.length) {
+                $scope.data.currentInstance = $scope.data.families[0].instances[0];
+                $scope.data.currentInstance.edit = true;
+            }
         }
     };
     
@@ -133,8 +143,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     
     
 /***** feedback on design spaces *****/
-    
-    
+      
     
      
     $scope.data.currentInstance = null;

@@ -26,12 +26,10 @@
     <div id="add-instance" ng-click="data.addInstance();" class="instance-tool" ng-class="{'inactive': !data.canAddInstance()}">
         <img src="img/addInstance.png">
     </div>
-    <!--
-    <div id="duplicate-instance" ng-if="currentInstance" ng-click="duplicateInstance();" class="instance-tool">
+    <div id="duplicate-instance"ng-click="duplicateInstance();" class="instance-tool" ng-class="{'inactive': !data.currentInstance}">
         <img src="img/duplicateInstance.png">
     </div>
-    -->
-    <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool" ng-class="{'inactive': !currentInstance}">
+    <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool" ng-class="{'inactive': !data.currentInstance}">
         <img src="img/deleteInstance.png">
     </div>
 </div>
