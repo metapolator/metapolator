@@ -14,7 +14,7 @@
         <span class="list-sequence-col" ng-class="{'start' : $first && !$last, 'end' : $last && !$first, 'middle' : $middle, 'solo' : $first && $last, 'currentinstance': instance == data.currentInstance}">
             <div class="diamond"></div>
         </span>
-        <span class="list-view-col rename" ng-model="data.preview" ng-click="instance.display = !instance.display" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
+        <span class="list-view-col rename" ng-model="instance.ag" ng-click="instance.display = !instance.display" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
         <span class="list-edit-col rename" ng-model="instance.name" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
     </li>
 </ul>

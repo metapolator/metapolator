@@ -102,6 +102,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 id : id,
                 edit : false,
                 display : false,
+                ag : "Ag",
                 name : "New Instance " + id,
                 designSpace : designSpace.id,
                 fontFamily : "Roboto",
