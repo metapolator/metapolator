@@ -41,7 +41,9 @@ some **general rules** for all spaces:
 * masters, master sequences, adjustment masters and adjustment master sequences are removed from a design space by dragging them out of the design spaces panel and dropping them back over the masters column;
 * adjustment masters (sequences) cannot be dropped on a design space when it does not contain master or master sequence;
 * the size of the design spaces area is quite variable, in width (window resize) and in height (‘let’s have a good look at that specimen’). Therefore design spaces scroll where necessary;
-* reconfiguring a design space, by adding or deleting master & co, means change to all instances, because now more/less elements go into their mix.
+* reconfiguring a design space, by adding or deleting master & co, means change to all instances, because now more/less elements go into their mix;
+* when an instance is selected, the design space it lives on is raised to the top—if it is not already;
+  * if multiple instances are selected, the first one selected is taken for above action.
 
 ## exploration space
 The action starts when masters get drag ’n’ dropped on the exploration space. Adding one master is not _that_ interesting:
