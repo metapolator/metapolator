@@ -226,6 +226,13 @@ triangle form:
 
 The currently selected instance is the one being edited and represented by the cursor.
 
+#### multi-selected
+Here is a glimpse of how to handle/represent multi-selects in the instances list—2 out of 4 instances have been multi-selected, guess which ones:
+
+![](http://mmiworks.net/metapolator/2outof4.png)
+
+Note that the thumbs (the part grabbed with the mouse) has been removed from the sliders, the selected have been embolden and the not-seleced have been played down.
+
 #### family affair
 When a family is selected in the instances list:
 
