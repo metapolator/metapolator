@@ -24,7 +24,13 @@ At the top of the panel itself, we find the setup line. From left (R–to–L lo
 ![](http://mmiworks.net/metapolator/tunebywire.png)<br/>
 _(for R–to–L locales, right and left have to be flipped)_
   * we see there is plenty of bail-out area (the two blue quadrants), to make no change; when the diamond is pulled over this area, the pt-size displayed is the one that was in use before this interaction started;
-  * while the diamond is moved around, constantly (every event) the amount of in/decrease calculated by taking the distance (Pythagorus of x and y deltas) the diamond is moved—divided by the input scaling (derived from the instantaneous point size at that moment; at pt size >= 100 it is 1, < 100 it is 100/pt size); the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
+  * the control follows the function: y = 11250 / (500 - x) - 12.5, where x is input pixels, y is output font size; when x=0 the font size is 10 (our minimum) and the slope is 1/20; when x=400, font size is 100 and the slope of the curve is 1pt / 1pix, which fits seamless with the rule that above 100pt 1pix = 1pt;
+  * the inverse function is: x = 500 - (11250 / (y + 12.5)), above 100pt, x = 300 + y);
+  * conceptually, one would calculate a pixel offset out of the current font size, using the inverse function, when the diamond control is not being used;
+    * as soon as rope interaction starts, add the pixels the rope is pulled (north-east = positive, south-west is negative) to the offset and use the function to calculate the font size, with the conditions:
+      * minimal font size 10;
+      * input (offset included) > 400, y = x - 300.
+  * the update of the number and of the specimen itself is of course continuous; users can concentrate on looking at the specimen itself while scooting the diamond around and then…
   * when users release the diamond, it returns to its resting position and the change is permanent.
 * the **filter box** is where users type characters to filter the specimen;
   * when the specimen contains real-life words, the Strict control—a discrete, 3-position slider—is displayed next to it—
