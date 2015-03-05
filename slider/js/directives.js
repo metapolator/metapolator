@@ -595,9 +595,10 @@ app.directive('control', function($document) {
             var indentLeft = 40;
             var dragActive = false;
             var diamondsize = 6;
+            var diamondPadding = 2 * diamondsize;
 
             // watch for data changes and redraw
-            scope.$watchCollection('[data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return redraw();
             }, true);
             scope.$watch('data.currentDesignSpace.axes', function(newVal) {
@@ -607,7 +608,7 @@ app.directive('control', function($document) {
                 }
             }, true);
 
-            // redraw
+            /***** redraw *****/
             function redraw() {
                 var designSpace = scope.data.currentDesignSpace;
                 var inactiveInstances = [];
@@ -632,32 +633,21 @@ app.directive('control', function($document) {
                 var diamonds = layer2.selectAll('g').data(inactiveInstances).enter().append('g').selectAll('polygon').data(function(d){
                     return d.axes;
                 }).enter().append('g').attr('transform', function (d, i) {
-                    var x = paddingLeft + axisWidth / 100 * d.value;
-                    var y = i * axisDistance + paddingTop - diamondsize;
+                    var x = paddingLeft - diamondsize + axisWidth / 100 * d.value;
+                    var y = i * axisDistance + paddingTop - diamondsize - diamondPadding;
                     return "translate(" + x + "," + y + ")";
                 }).append('polygon').attr('points', '0,6 6,0 12,6, 6,12').attr('class', 'blue-diamond');
 
 
-/*
-                    var x = 20;
-                    var y = i * axisDistance + paddingTop - diamondsize;
-                    return "translate(" + x + "," + y + ")";
-*/
 
 
-
-
-
-
-
-
-                // One master in Design Space
+                /***** One master in Design Space *****/
                 if (designSpace.masters.length == 1) {
                     layer1.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
                     layer1.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(scope.data.findMaster(designSpace.masters[0].masterId).name);
                     layer1.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingTop + paddingLabel).text("Just one more...");
                 }
-                // More masters in Design Space
+                /*****More masters in Design Space *****/
                 else if (designSpace.masters.length > 1) {
                     var drag = d3.behavior.drag().on('dragstart', function() {
                         dragActive = true;
@@ -693,7 +683,7 @@ app.directive('control', function($document) {
                     }
 
                     // create slider containers
-                    var axes = layer1.selectAll('g').data(designSpace.axes).enter().append('g').attr('transform', function(d, i) {
+                    var axes = layer1.selectAll('g').data(thisInstance.axes).enter().append('g').attr('transform', function(d, i) {
                         var x = paddingLeft - indentLeft;
                         var y = i * axisDistance + paddingTop;
                         return "translate(" + x + "," + y + ")";
@@ -702,7 +692,7 @@ app.directive('control', function($document) {
                     // append axis itself
                     axes.append('path').attr('d', function(d, i) {
                         // prevent last axis from having the vertical offset
-                        if (i != (designSpace.axes.length - 1)) {
+                        if (i != (thisInstance.axes.length - 1)) {
                             var offset = 1;
                         } else {
                             var offset = 0;
@@ -718,8 +708,8 @@ app.directive('control', function($document) {
                     }).attr('class', 'slider-handle').call(drag);
 
                     // create left label
-                    if (designSpace.masters.length < 3) {
-                        layer1.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (designSpace.axes.length - 1) * axisDistance)).text(scope.data.findMaster(designSpace.masters[0].masterId).name).attr('class', 'slider-label-left slider-label');
+                    if (thisInstance.masters.length < 3) {
+                        layer1.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (thisInstance.axes.length - 1) * axisDistance)).text(scope.data.findMaster(thisInstance.masters[0].masterId).name).attr('class', 'slider-label-left slider-label');
                     }
 
                     // create rigth label
@@ -732,7 +722,7 @@ app.directive('control', function($document) {
                     rightlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
 
                     rightlabels.append('text').text(function(d, i) {
-                        return scope.data.findMaster(designSpace.masters[i + 1].masterId).name;
+                        return scope.data.findMaster(thisInstance.masters[i + 1].masterId).name;
                     }).attr('class', 'slider-label-right slider-label');
 
                     rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {

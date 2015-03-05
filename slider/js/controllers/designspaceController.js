@@ -55,7 +55,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.total = 0;
 
     $scope.getMetapolationRatios = function() {
-        console.log("get metap ratios");
         var designspace = $scope.data.currentDesignSpace;
         var masterSet = jQuery.extend(true, [], designspace.masters);
         var axes = designspace.axes;

@@ -98,6 +98,9 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             angular.forEach(masterSet, function(thisMaster) {
                    thisMaster.value = newValue;
             });
+            angular.forEach(axesSet, function(thisAxis) {
+                   thisAxis.value = 50;
+            });
             var id = findInstanceId();
             $scope.data.families[0].instances.push({
                 id : id,
@@ -113,6 +116,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
+            $scope.data.currentDesignSpace.trigger++;
         }
     };
     
