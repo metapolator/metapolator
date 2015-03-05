@@ -1,5 +1,5 @@
 <ul id="design-space-tabs">
-    <li ng-repeat="space in data.designSpaces" ng-click="selectDesignSpace(space.id)" ng-class="{selected : space == data.currentDesignSpace}">
+    <li ng-repeat="space in data.designSpaces" ng-click="selectDesignSpace(space)" ng-class="{selected : space == data.currentDesignSpace}">
         <div><img ng-src="{{ 'img/' + space.type + '.png'}}">
         </div>
         <div class="rename" ng-model="space.name"></div>
@@ -32,7 +32,7 @@
     
     <div class="drop-area" ng-show="data.currentDesignSpace.type != 'x'">
         <control ng-if="data.currentDesignSpace.type == 'Control'">
-            <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 45) + 'px'}">
+            <div class="slider-input-container" ng-if="data.currentInstance.axes.length > 1" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 45) + 'px'}">
                 <input ng-model="axis.value" class="slider-input-output">%
             </div>
             <select class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="index as data.findMaster(master.masterId).name for (index, master) in data.currentDesignSpace.masters" ng-style="{'top': ((data.currentDesignSpace.masters.length - 2) * 50 + 43) + 'px'}" ng-if="data.currentDesignSpace.masters.length > 2"></select>

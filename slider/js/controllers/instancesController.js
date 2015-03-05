@@ -61,7 +61,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         });
     };
 
-    $scope.deselectAllEdit = function() {
+    $scope.data.deselectAllEdit = function() {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 instance.edit = false;
@@ -89,7 +89,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     }
 
     $scope.data.addInstance = function() {
-        $scope.deselectAllEdit();
+        $scope.data.deselectAllEdit();
         if ($scope.data.canAddInstance()) {
             var designSpace = $scope.data.currentDesignSpace;
             var masterSet = jQuery.extend(true, [], designSpace.masters);
@@ -121,7 +121,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     
     $scope.duplicateInstance = function () {
         if ($scope.data.currentInstance) {
-            $scope.deselectAllEdit();
+            $scope.data.deselectAllEdit();
             var duplicate = jQuery.extend(true, {}, $scope.data.currentInstance);
             duplicate.name += " copy";
             duplicate.edit = true;

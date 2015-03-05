@@ -14,12 +14,23 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         }
     };
 
-    $scope.selectDesignSpace = function(id) {
-        for (var i = 0; i < $scope.data.designSpaces.length; i++) {
-            if ($scope.data.designSpaces[i].id == id) {
-                $scope.data.currentDesignSpace = $scope.data.designSpaces[i];
-                break;
-            }
+    $scope.selectDesignSpace = function(designSpace) {
+        $scope.data.currentDesignSpace = designSpace;
+        var id = designSpace.id;
+        // set last instance of this design space as current instance
+        var instanceInSpace = null;
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.designSpace == id) {
+                    instanceInSpace = instance;
+                }
+            });
+        });
+        $scope.data.deselectAllEdit();
+        if (instanceInSpace) {
+        $scope.data.currentInstance = instanceInSpace;
+        $scope.data.currentInstance.edit = true;
+        $scope.data.currentInstance.display = true;  
         }
     };
 
@@ -37,6 +48,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             trigger : 0 //this is to trigger the designspace to redraw when a master is renamed
         });
         $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
+        $scope.data.deselectAllEdit();
+        $scope.data.currentInstance = null;
     };
 
     function findDesignSpaceId() {
