@@ -598,7 +598,7 @@ app.directive('control', function($document) {
             var diamondPadding = 2 * diamondsize;
 
             // watch for data changes and redraw
-            scope.$watchCollection('[data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return redraw();
             }, true);
             scope.$watch('data.currentDesignSpace.axes', function(newVal) {

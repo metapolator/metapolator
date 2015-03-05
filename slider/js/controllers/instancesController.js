@@ -116,7 +116,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
-            $scope.data.currentDesignSpace.trigger++;
         }
     };
     
@@ -134,16 +133,42 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     
     $scope.deleteInstance = function () {
         if ($scope.data.currentInstance) {
-            $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.currentInstance), 1);
-            $scope.data.currentInstance = null;
-            $scope.data.localmenu.instances = false;
-            // set top instance as current
-            if ($scope.data.families[0].instances.length) {
-                $scope.data.currentInstance = $scope.data.families[0].instances[0];
-                $scope.data.currentInstance.edit = true;
+            var designSpace = $scope.data.currentInstance.designSpace;
+            var n = 0;
+            angular.forEach($scope.data.families, function(family) {
+                angular.forEach(family.instances, function(instance) {
+                    if (instance.designSpace == designSpace) {
+                        n++;
+                    }
+                });
+            });
+            // last instance of the design space
+            if (n == 1) {
+                if (confirm("Removing last instance from Design Space. This will remove the Design Space. Sure?")) {
+                    $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
+                    $scope.data.currentDesignSpace = null;
+                    deleteInstanceConfirmed();
+                }  
+            } else {
+                deleteInstanceConfirmed();
             }
         }
+        
+        
+
     };
+    
+    function deleteInstanceConfirmed () {
+        $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.data.currentInstance), 1);
+        $scope.data.localmenu.instances = false;
+        // set top instance as current
+        if ($scope.data.families[0].instances.length) {
+            $scope.data.currentInstance = $scope.data.families[0].instances[0];
+            $scope.data.currentInstance.edit = true;
+        } else {
+            $scope.data.currentInstance = null;
+        }
+    }
     
     
     
@@ -227,9 +252,13 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
 
     $scope.data.canAddInstance = function() {
-        var designSpace = $scope.data.currentDesignSpace;
-        if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
-            return true;
+        if ($scope.data.currentDesignSpace) {
+            var designSpace = $scope.data.currentDesignSpace;
+            if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
