@@ -12,7 +12,7 @@ $(document).ready(function(){
         moveLandscape(view, 1);
     });
     
-   // moveLandscape(1, 1);
+   //moveLandscape(1, 1);
         
     function moveLandscape(view, transition) {
         currentView = view;

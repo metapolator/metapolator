@@ -3,7 +3,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     
     $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
     
-    $scope.findMaster = function  (id) {
+    $scope.data.findMaster = function  (id) {
         for (var i = 0; i < $scope.data.sequences.length; i++){
             for (var j = 0; j < $scope.data.sequences[i].masters.length; j++){
                 if ($scope.data.sequences[i].masters[j].id == id) {
@@ -55,22 +55,22 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.output = [];
     $scope.total = 0;
     
-    $scope.getMetapolationRatios = function(data) {
+    $scope.getMetapolationRatios = function() {
         var designspace = $scope.data.currentDesignSpace;
         var masterSet = jQuery.extend(true, [], designspace.masters);
         $scope.output = [];
-        var axes = data.axes;
+        var axes = designspace.axes;
         var n = axes.length;
         var cake = 1;
         for (var i = 0; i < n; i++) {
             cake += (parseInt(axes[i].value) + 0.5) / (100.5 - parseInt(axes[i].value));
         }
-        $scope.output.push($scope.findMaster(data.masters[0].masterId).name + ": " + roundup(1 / cake));
+        $scope.output.push($scope.data.findMaster(designspace.masters[0].masterId).name + ": " + roundup(1 / cake));
         masterSet[0].value = 1 / cake;
         
         for (var i = 0; i < n; i++) {
             var piece = (parseInt(axes[i].value) + 0.5) / (100.5 - parseInt(axes[i].value));
-            $scope.output.push($scope.findMaster(data.masters[i + 1].masterId).name + ": " + roundup(piece / cake));
+            $scope.output.push($scope.data.findMaster(designspace.masters[i + 1].masterId).name + ": " + roundup(piece / cake));
             masterSet[i + 1].value = piece / cake;
         }
         $scope.data.currentInstance.masters = masterSet;

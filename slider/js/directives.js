@@ -25,7 +25,7 @@ app.directive('viewportWatcher', function() {
             function watch() {
                 var viewport = $(element).outerHeight();
                 var isInView = [];
-                console.clear();
+                //console.clear();
                 $(element).find(".spec-glyph-box").each(function() {
                     $(this).removeClass("is-in-view");
                     var thisY1 = $(this).position().top;
@@ -37,6 +37,7 @@ app.directive('viewportWatcher', function() {
                 });
                 console.log(isInView);
             }
+
         }
     };
 });
@@ -576,12 +577,13 @@ app.directive('arrow', function($document) {
     };
 });
 
-app.directive('control', ['$document',
-function($document) {
+app.directive('control', function($document) {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var svg = d3.select(element[0]).append('svg');
+            var layer2 = svg.append('g');
+            var layer1 = svg.append('g');
             var paddingLeft = 50;
             var paddingTop = 30;
             var axisWidth = 200;
@@ -592,101 +594,60 @@ function($document) {
             var indentRight = 20;
             var indentLeft = 40;
             var dragActive = false;
+            var diamondsize = 6;
 
-            function findMaster(id) {
-                for (var i = 0; i < scope.data.sequences.length; i++) {
-                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++) {
-                        if (scope.data.sequences[i].masters[j].id == id) {
-                            return scope.data.sequences[i].masters[j];
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // watch for data changes and re-render
-            scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.masters[0], data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
-                return scope.render();
+            // watch for data changes and redraw
+            scope.$watchCollection('[data.families[0].instances.length, data.currentDesignSpace.masters.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.masters[0], data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+                return redraw();
             }, true);
             scope.$watch('data.currentDesignSpace.axes', function(newVal) {
+                // prevent a redraw loop, this watch is for manual change of an input box
                 if (!dragActive) {
-                    return scope.render();
+                    return redraw();
                 }
             }, true);
 
-            // (RE-)RENDER
-            scope.render = function() {
-                var data = scope.data.currentDesignSpace;
-
+            // redraw
+            function redraw() {
+                var designSpace = scope.data.currentDesignSpace;
+                var inactiveInstances = [];
+                angular.forEach(scope.data.families, function(family) {
+                    angular.forEach(family.instances, function(instance) {
+                        // push inactive instances of this designspace
+                        if (instance.designSpace == designSpace.id && instance != scope.data.currentInstance) {
+                            inactiveInstances.push(instance);
+                        }
+                    });
+                });
                 // remove all previous items before render
-                svg.selectAll('*').remove();
+                layer1.selectAll('*').remove();
+                layer2.selectAll('*').remove();
 
-                // 1 master in Design Space
-                if (data.masters.length == 1) {
-                    // create axes
-                    svg.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
-                    // create  label
-                    svg.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(function() {
-                        return findMaster(data.masters[0].masterId).name;
-                    });
-                    svg.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingTop + paddingLabel).text("Just one more...");
+                // draw inactive instances
+                var diamonds = layer2.selectAll('g').data(inactiveInstances).enter().append('g').attr('transform', function(d, i) {
+                    var x = 20;
+                    var y = i * axisDistance + paddingTop - diamondsize;
+                    return "translate(" + x + "," + y + ")";
+                }).append('polygon').attr('points', '0,6 6,0 12,6, 6,12').attr('class', 'blue-diamond');
+
+                // One master in Design Space
+                if (designSpace.masters.length == 1) {
+                    layer1.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
+                    layer1.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(scope.data.findMaster(designSpace.masters[0].masterId).name);
+                    layer1.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingTop + paddingLabel).text("Just one more...");
                 }
-
-                // Triangle view
-                else if (data.axes.length == 2 && data.triangle == true) {
-
-                    // pythagoras
-                    function getDistance(a1, a2, b1, b2) {
-                        var c = Math.sqrt(Math.pow((a1 - a2), 2) + Math.pow((b1 - b2), 2));
-                        return c;
-                    }
-
-                    //drag behaviour
-                    var drag = d3.behavior.drag().on('dragstart', function() {
-                        d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
-                        dragActive = true;
-                    }).on('drag', function() {
-
-                        d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y);
-                        var lengthA = getDistance(d3.event.x, 183, d3.event.y, 10) + 1;
-                        var lengthB = getDistance(d3.event.x, 183, d3.event.y, 210) + 1;
-                        var lengthC = getDistance(d3.event.x, 10, d3.event.y, 110) + 1;
-                        var ratioAtoB = Math.floor((1 / lengthB) / (1 / lengthA + 1 / lengthB) * 100);
-                        var ratioBtoC = Math.floor((1 / lengthC) / (1 / lengthB + 1 / lengthC) * 100);
-                        data.axes[0].value = ratioAtoB;
-                        data.axes[1].value = ratioBtoC;
-                        scope.$apply();
-                    }).on('dragend', function() {
-                        dragActive = false;
-                        d3.select(this).attr('stroke', 'none');
-                    });
-
-                    // create triangle and slider
-                    svg.append('polygon').attr('points', '183, 10 183, 210 10, 110').attr('style', 'stroke: #000; stroke-width: 1; fill: none');
-                    svg.append('circle').attr('fill', '#000').attr('cx', function(d) {
-                        return 120;
-                    }).attr('cy', function(d) {
-                        return 110;
-                    }).attr('index', function(d, i) {
-                        return i;
-                    }).attr('r', 12).style("cursor", "pointer").call(drag);
-                }
-
-                // All other cases
-                else if (data.masters.length > 0) {
-                    // create drag events
+                // More masters in Design Space
+                else if (designSpace.masters.length > 1) {
                     var drag = d3.behavior.drag().on('dragstart', function() {
                         dragActive = true;
                         d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
                     }).on('drag', function() {
                         d3.select(this).attr('cx', limitX(d3.event.x));
-                        // update scope and redraw ellipses
                         var thisIndex = d3.select(this).attr('index');
                         var thisValue = (limitX(d3.event.x) - indentLeft) / (axisWidth / 100);
-                        data.axes[thisIndex].value = formatX(thisValue);
-                        //d3.select("#output-label-" + thisIndex).text(thisValue.toFixed(1) + "%");
-                        // get ratios
-                        scope.getMetapolationRatios(data);
+                        designSpace.axes[thisIndex].value = formatX(thisValue);
+                        // slider values to metapolation ratios
+                        scope.getMetapolationRatios();
                         scope.$apply();
                     }).on('dragend', function() {
                         dragActive = false;
@@ -710,7 +671,7 @@ function($document) {
                     }
 
                     // create slider containers
-                    var axes = svg.selectAll('g').data(data.axes).enter().append('g').attr('transform', function(d, i) {
+                    var axes = layer1.selectAll('g').data(designSpace.axes).enter().append('g').attr('transform', function(d, i) {
                         var x = paddingLeft - indentLeft;
                         var y = i * axisDistance + paddingTop;
                         return "translate(" + x + "," + y + ")";
@@ -719,7 +680,7 @@ function($document) {
                     // append axis itself
                     axes.append('path').attr('d', function(d, i) {
                         // prevent last axis from having the vertical offset
-                        if (i != (data.axes.length - 1)) {
+                        if (i != (designSpace.axes.length - 1)) {
                             var offset = 1;
                         } else {
                             var offset = 0;
@@ -734,18 +695,9 @@ function($document) {
                         return i;
                     }).attr('class', 'slider-handle').call(drag);
 
-                    // create output label
-                    /*
-                    axes.append('text').attr('x', (indent + (0.5 * axisWidth))).attr('y', paddingLabel).text(function(d, i) {
-                    return data.axes[i].value.toFixed(1) + '%';
-                    }).attr("id", function(d, i) {
-                    return "output-label-" + i;
-                    }).attr('class', 'slider-label-output slider-label');
-                    */
-
                     // create left label
-                    if (data.masters.length < 3) {
-                        svg.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (data.axes.length - 1) * axisDistance)).text(findMaster(data.masters[0].masterId).name).attr('class', 'slider-label-left slider-label');
+                    if (designSpace.masters.length < 3) {
+                        layer1.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (designSpace.axes.length - 1) * axisDistance)).text(scope.data.findMaster(designSpace.masters[0].masterId).name).attr('class', 'slider-label-left slider-label');
                     }
 
                     // create rigth label
@@ -758,7 +710,7 @@ function($document) {
                     rightlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
 
                     rightlabels.append('text').text(function(d, i) {
-                        return findMaster(data.masters[i + 1].masterId).name;
+                        return scope.data.findMaster(designSpace.masters[i + 1].masterId).name;
                     }).attr('class', 'slider-label-right slider-label');
 
                     rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
@@ -767,15 +719,14 @@ function($document) {
                         scope.removeMaster(i + 1);
                     });
 
-                    scope.getMetapolationRatios(data);
+                    scope.getMetapolationRatios();
                 }
             };
         }
     };
-}]);
+});
 
-app.directive('explore', ['$document',
-function($document) {
+app.directive('explore', function($document) {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
@@ -784,24 +735,13 @@ function($document) {
             var layer2 = svg.append('g');
             var layer1 = svg.append('g');
 
-            function findMaster(id) {
-                for (var i = 0; i < scope.data.sequences.length; i++) {
-                    for (var j = 0; j < scope.data.sequences[i].masters.length; j++) {
-                        if (scope.data.sequences[i].masters[j].id == id) {
-                            return scope.data.sequences[i].masters[j];
-                            break;
-                        }
-                    }
-                }
-            }
-
             // watch for data changes and re-render
             scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace]', function(newVals, oldVals, scope) {
-                return scope.render();
+                return redraw();
             }, true);
 
             // (RE-)RENDER
-            scope.render = function() {
+            function redraw() {
                 var data = scope.data.currentDesignSpace;
                 // remove all previous items before render
                 layer2.selectAll('*').remove();
@@ -843,7 +783,7 @@ function($document) {
                 }).attr('y', function(d) {
                     return d.coordinates[1] + 25;
                 }).text(function(d) {
-                    return findMaster(d.masterId).name;
+                    return scope.data.findMaster(d.masterId).name;
                 }).attr("font-size", "10px").attr("text-anchor", "middle").attr("font-size", "8px").attr("fill", "#fff").attr("id", function(d, i) {
                     return "label-" + i;
                 }).attr("class", "unselectable");
@@ -947,5 +887,5 @@ function($document) {
             };
         }
     };
-}]);
+});
 
