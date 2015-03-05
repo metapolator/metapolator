@@ -222,7 +222,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     }
     */
     
-    $scope.data.addAxisToInstance = function() {
+    $scope.data.addAxisToInstance = function(masterId) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == $scope.data.currentDesignSpace.id) {
@@ -232,6 +232,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     }
                     instance.axes.push({
                         value : thisValue
+                    });
+                    var metapValue = 0;
+                    instance.masters.push({
+                        masterId : masterId,
+                        value : metapValue
                     });
                 }
             });
