@@ -153,9 +153,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 deleteInstanceConfirmed();
             }
         }
-        
-        
-
     };
     
     function deleteInstanceConfirmed () {
@@ -182,7 +179,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.setCurrentInstance = function(thisInstance) {
         $scope.data.currentInstance = thisInstance;
         setCurrentDesignSpace(thisInstance.designSpace);
-        valueToAxes(thisInstance);
     };
     
     function setCurrentDesignSpace (id) {
@@ -194,6 +190,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }  
     }
     
+    /*
     function valueToAxes(instance) {
         var designspace = $scope.data.currentDesignSpace;
         designspace.axes = [];
@@ -223,6 +220,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
         }
     }
+    */
     
     $scope.data.addAxisToInstance = function() {
         angular.forEach($scope.data.families, function(family) {
