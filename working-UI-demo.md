@@ -40,6 +40,18 @@ Her is the list of parameters we support:
 
 These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs. We can make a nice interim design for this panel, something very simple with a hint of things to come.
 
+### interim design
+
+Analysing what’s different about the parameter system for the working UI demo, we see the following:
+
+* **only two levels**: master and glyph; this simple display and control hierarchy means that we can drop the support for indicating and tracking back (across an eight-level hierarchy) of ‘where did this value come from?’ or ‘whats the fall-out from this?’
+* **only eight parameters, _max_** which are the same for both levels (there _are no_ master parameters, in general);
+* **lots value ranges** instead of single values; with the sub-glyph levels missing, the chance of looking at ranges has gone up drastically; let’s design modification of these ranges (changing the end-point values rejigs the whole range.
+
+What stays is a system of **operators** (=, ×, +, max=, min=)—completed (with - and ÷) for straightforward expression—which can be combined at will at all (2) levels of the hierarchy. This allows for some manipulation power. _Example: for this master (or selection of glyphs), divide the Weight by 1.2, add twelve units the Weight, maximum Weight is 24 units and minimum Weight is 7._
+
+_(let’s make some drawings)_
+
 **local menu**: none
 
 ## specimen + glyph editor panel
