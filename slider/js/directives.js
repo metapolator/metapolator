@@ -35,7 +35,7 @@ app.directive('viewportWatcher', function() {
                         isInView.push($(this).html());
                     }
                 });
-                console.log(isInView);
+                //console.log(isInView);
             }
 
         }
@@ -597,7 +597,7 @@ app.directive('control', function($document) {
             var diamondsize = 6;
 
             // watch for data changes and redraw
-            scope.$watchCollection('[data.families[0].instances.length, data.currentDesignSpace.masters.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.masters[0], data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
                 return redraw();
             }, true);
             scope.$watch('data.currentDesignSpace.axes', function(newVal) {
@@ -611,11 +611,16 @@ app.directive('control', function($document) {
             function redraw() {
                 var designSpace = scope.data.currentDesignSpace;
                 var inactiveInstances = [];
+                var thisInstance;
                 angular.forEach(scope.data.families, function(family) {
                     angular.forEach(family.instances, function(instance) {
                         // push inactive instances of this designspace
-                        if (instance.designSpace == designSpace.id && instance != scope.data.currentInstance) {
-                            inactiveInstances.push(instance);
+                        if (instance.designSpace == designSpace.id) {
+                            if (instance == scope.data.currentInstance) {
+                               thisInstance = instance;
+                            } else {
+                               inactiveInstances.push(instance); 
+                            }
                         }
                     });
                 });
@@ -624,11 +629,27 @@ app.directive('control', function($document) {
                 layer2.selectAll('*').remove();
 
                 // draw inactive instances
-                var diamonds = layer2.selectAll('g').data(inactiveInstances).enter().append('g').attr('transform', function(d, i) {
-                    var x = 20;
+                var diamonds = layer2.selectAll('g').data(inactiveInstances).enter().append('g').selectAll('polygon').data(function(d){
+                    return d.axes;
+                }).enter().append('g').attr('transform', function (d, i) {
+                    var x = paddingLeft + axisWidth / 100 * d.value;
                     var y = i * axisDistance + paddingTop - diamondsize;
                     return "translate(" + x + "," + y + ")";
                 }).append('polygon').attr('points', '0,6 6,0 12,6, 6,12').attr('class', 'blue-diamond');
+
+
+/*
+                    var x = 20;
+                    var y = i * axisDistance + paddingTop - diamondsize;
+                    return "translate(" + x + "," + y + ")";
+*/
+
+
+
+
+
+
+
 
                 // One master in Design Space
                 if (designSpace.masters.length == 1) {
@@ -646,6 +667,7 @@ app.directive('control', function($document) {
                         var thisIndex = d3.select(this).attr('index');
                         var thisValue = (limitX(d3.event.x) - indentLeft) / (axisWidth / 100);
                         designSpace.axes[thisIndex].value = formatX(thisValue);
+                        scope.data.currentInstance.axes[thisIndex].value = formatX(thisValue);
                         // slider values to metapolation ratios
                         scope.getMetapolationRatios();
                         scope.$apply();

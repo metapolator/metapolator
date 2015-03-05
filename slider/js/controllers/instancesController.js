@@ -93,6 +93,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         if ($scope.data.canAddInstance()) {
             var designSpace = $scope.data.currentDesignSpace;
             var masterSet = jQuery.extend(true, [], designSpace.masters);
+            var axesSet = jQuery.extend(true, [], designSpace.axes);
             var newValue = 1 / masterSet.length;
             angular.forEach(masterSet, function(thisMaster) {
                    thisMaster.value = newValue;
@@ -108,6 +109,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 fontFamily : "Roboto",
                 fontWeight : 700,
                 masters: masterSet,
+                axes: axesSet
             });
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
@@ -192,6 +194,22 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
         }
     }
+    
+    $scope.data.addAxisToInstance = function() {
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.designSpace == $scope.data.currentDesignSpace.id) {
+                    var thisValue = 0;
+                    if (instance == $scope.data.currentInstance) {
+                        thisValue = 50;
+                    }
+                    instance.axes.push({
+                        value : thisValue
+                    });
+                }
+            });
+        });
+    };
     
     function roundup(a) {
         var b = Math.round(a * 10) / 10;
