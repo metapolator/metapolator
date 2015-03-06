@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="f" format="2">
+  <advance width="432"/>
+  <unicode hex="0066"/>
+  <outline>
+    <contour identifier="bottomSerif">
+      <point x="290" y="10" type="move" name="bottom right serif"/>
+      <point x="206.6675" y="10"/>
+      <point x="123.33250000000001" y="10"/>
+      <point x="40" y="10" type="curve" name="bottom left serif"/>
+    </contour>
+    <contour identifier="stem">
+      <point x="165" y="10" type="move" name="bottom left-left right-right"/>
+      <point x="165" y="84.99925"/>
+      <point x="165" y="297.00075"/>
+      <point x="165" y="460" type="curve" name="vertical left"/>
+      <point x="165" y="595"/>
+      <point x="199" y="670"/>
+      <point x="288" y="670" type="curve" name="horizontal top"/>
+      <point x="351.5" y="670"/>
+      <point x="379" y="632.5"/>
+      <point x="379" y="586.5" type="curve" name="drop top fixation"/>
+      <point x="379" y="548.5"/>
+      <point x="378" y="531"/>
+      <point x="380" y="531" type="curve" name="drop top"/>
+    </contour>
+    <contour identifier="horizontalStroke">
+      <point x="370" y="450" type="move" name="right"/>
+      <point x="256.6678" y="450"/>
+      <point x="143.3322" y="450"/>
+      <point x="30" y="450" type="curve" name="left"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array/>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>f</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>432</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

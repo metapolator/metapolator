@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="s" format="2">
+  <advance width="475"/>
+  <unicode hex="0073"/>
+  <outline>
+    <contour identifier="sShape">
+      <point x="103.5" y="118.5" type="move" name="drop bottom"/>
+      <point x="86.5" y="103"/>
+      <point x="68.5" y="92.5"/>
+      <point x="68.5" y="69.5" type="curve" name="drop bottom fixation"/>
+      <point x="68.5" y="19"/>
+      <point x="149.5" y="-2"/>
+      <point x="239" y="-2" type="curve" name="horizontal bottom"/>
+      <point x="342" y="-2"/>
+      <point x="410" y="39.5"/>
+      <point x="410" y="105" type="curve" name="vertical bottom"/>
+      <point x="410" y="181.167"/>
+      <point x="327.1545" y="204.71"/>
+      <point x="246.5" y="227.00900000000001" type="curve" name="spine"/>
+      <point x="165.195" y="249.33749999999998"/>
+      <point x="81" y="272.8515"/>
+      <point x="81" y="349.5" type="curve" name="vertical top"/>
+      <point x="81" y="414"/>
+      <point x="136" y="460"/>
+      <point x="241" y="460" type="curve" name="horizontal top"/>
+      <point x="311.5" y="460"/>
+      <point x="380" y="437.5"/>
+      <point x="380" y="398.5" type="curve" name="drop top fixation"/>
+      <point x="380" y="377"/>
+      <point x="363.5" y="364.5"/>
+      <point x="348.5" y="352.5" type="curve" name="drop top"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>s</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>475</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

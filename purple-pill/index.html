@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <TITLE>Purple Pill</TITLE>
+
+        <!-- css -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/style.css">
+
+        <!-- jquery -->
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
+        <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
+
+        <!-- fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css'>
+        
+        <!-- Angular -->
+        <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
+        <script src='js/app.js' type='text/javascript'></script>
+        <script src='js/factory.js' type='text/javascript'></script>
+        <script src='js/templates.js' type='text/javascript'></script>
+        <script src='js/filters.js'></script>
+        <script src='js/controllers/menuController.js' type='text/javascript'></script>
+        <script src='js/controllers/parametersController.js' type='text/javascript'></script> 
+        <script src='js/controllers/specimenController.js' type='text/javascript'></script>
+        <script src='js/controllers/mastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/adjustmentMastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/designspaceController.js' type='text/javascript'></script>
+        <script src='js/controllers/instancesController.js' type='text/javascript'></script>
+        <script src='js/controllers/fontmappingController.js' type='text/javascript'></script> 
+        <script src='js/controllers/metadataController.js' type='text/javascript'></script> 
+        <script src='js/directives.js' type='text/javascript'></script>
+        <script src='js/sortable.js' type='text/javascript'></script>
+        <script src='js/functions.js'></script>
+        
+        <!-- d3 JS -->
+        <script src="js/d3-v3-min.js" charset="utf-8"></script>
+
+    </HEAD>
+
+    <BODY ng-app="Metapolator" class="unselectable" ng-controller="menuController">
+        <div id="menu" >
+            <div id="project">
+                <localmenu class="localmenu" class="left">
+                    <div class="lm-head" ng-mousedown="data.selectMenu('project')">
+                        <b>Project</b> <span id="project-name" ng-model="data.projectName" class="project-rename"></span>
+                    </div>
+                    <div class="lm-body" ng-if="data.localmenu.project">
+                        <div class="lm-button" ng-mouseup="newDocument()">New</div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button" ng-mouseup="closeDocument()">Close</div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button" ng-mouseup="renameProject()">Rename project</div>
+                    </div>
+                </localmenu>
+            </div>
+            <!-- end of project -->
+
+            <div id="view-buttons">
+                <div id="menu-item-0" class="menu-item menu-item-current">
+                    Parameters
+                </div>
+                <div id="menu-item-1" class="menu-item">
+                    Design spaces
+                </div>
+                <div id="menu-item-2" class="menu-item">
+                    Fonts
+                </div>
+            </div>
+            <!-- end of view buttons -->
+            
+            <div id="help">
+                <localmenu class="localmenu right">
+                    <div class="lm-head" ng-mousedown="data.selectMenu('help')">
+                        <b>Help</b>
+                    </div>
+                    <div class="lm-body" ng-if="data.localmenu.help">
+                        <div class="lm-button"><a href="https://github.com/metapolator/metapolator" target="_blank">Github Project</a></div>
+                        <div class="lm-button"><a title="Browse existing feature requests and bug reports on our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">Github Issues</a></div>
+                        <div class="lm-button"><a title="To report a bug or request a feature, create a new issue in our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">New Issue</a></div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://metapolator.com" target="_blank">metapolator.com</a></div>
+                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://twitter.com/metapolator" target="_blank">@metapolator</a></div>
+                        <div class="lm-button"><b></b><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://plus.google.com/communities/110027004108709154749" target="_blank">+metapolator</a></b></div>
+                        </div>
+                    </div>
+                </localmenu>
+            </div>
+        </div>
+        <!-- end of menu -->
+
+        <div id="pagewrap">
+            <div id="landscape">
+                <div id="panel-1" class="panel">
+                    <parameters ng-controller="parametersController" class="sub-panel panel standard-padding"></parameters>
+                </div>
+                <specimen id="panel-2" ng-controller="specimenController" ng-init="addGlyphRange()" class="sub-panel panel"></specimen>
+
+                <!-- start of view 2 -->
+                <div id="panel-3" class="panel">
+                    <masters ng-controller="mastersController" class="list sub-panel semi-panel" type="master"></masters>
+                    <underconstruction class="sub-panel semi-panel">
+                        COMING SOON:<br>ADJUSTMENT MASTERS
+                    </underconstruction>
+                </div>
+
+                <div id="panel-4" class="panel">
+                    <designspace ng-controller="designspaceController" class="sub-panel semi-panel"></designspace>
+                </div>
+
+                <!-- start of view 3 -->
+                <instances id="panel-5" ng-controller="instancesController" class="list panel sub-panel" type="instance"></instances>
+                
+                <div id="panel-6" class="panel sub-panel standard-padding">
+                </div>
+                
+                <underconstruction id="panel-7" class="panel sub-panel">
+                    COMING SOON:<br>FAMILY EXPORT
+                </underconstruction>
+            </div>
+            <!-- end of landscape -->
+        </div>
+        
+        <div id="layover"></div>
+        
+        <div id="alert">
+            <div id="alert-loading"><img src="img/loading.gif"></div>
+            <div id="alert-content"></div>
+        </div>
+        
+        <div id="rename-project" ng-controller="menuController">
+            <b>Rename your Metapolator project</b><br><br>
+            <form ng-submit="closeRename()"><input ng-model="data.projectName"></form>
+            <!--<button ng-click="closeRename()">Close</button>-->
+        </div>
+    </BODY>
+    <script src="metapolatorStandAlone.js"></script>
+</html>

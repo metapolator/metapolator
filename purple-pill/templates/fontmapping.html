@@ -1,0 +1,14 @@
+<b>Font Mapping</b>
+<br>
+<br>
+
+<div ng-repeat="sequence in data.sequences">
+    <div ng-repeat="master in sequence.masters">
+        <div class="mapping" ng-click="master.mapping = !master.mapping" ng-class="{'selected' : master.mapping}">
+            {{master.name}}
+        </div>
+    </div>
+</div>
+
+
+<input id="font-mapping-export" type="submit" value="Export">

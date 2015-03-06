@@ -1,0 +1,38 @@
+<localmenu class="localmenu" class="left">
+    <div class="lm-head" ng-mousedown="data.selectMenu('masters')">
+        <b>Masters</b>
+    </div>
+    <div class="lm-body" ng-if="data.localmenu.masters">
+        <div class="lm-button" ng-mouseup="importUfo()">Import ufo...</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-mouseup="duplicateMaster()">Duplicate</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-mouseup="deleteMaster()">Delete...</div>
+    </div>
+</localmenu>
+
+<ul>
+    <li ng-repeat="sequence in data.sequences">
+        <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="list-ul">
+            <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit}">
+                <span class="list-sequence-col" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
+                    <div class="diamond"></div>
+                </span>
+                <span class="list-view-col rename" ng-model="master.ag" ng-click="master.display = !master.display" ng-class="{'selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};"></span>
+                <span class="list-edit-col rename" ng-model="master.name" ng-class="{'selected': master.edit}"></span>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<div id="masters-tools">
+    <div id="import-ufo" ng-click="importUfo();" class="master-tool">
+        <img src="img/importUfo.png">
+    </div>
+    <div id="duplicate-master" ng-click="duplicateMaster();" class="master-tool">
+        <img src="img/duplicateMaster.png">
+    </div>
+    <div id="delete-master" ng-click="cloneMaster();" class="master-tool">
+        <img src="img/cloneMaster.png">
+    </div>
+</div>

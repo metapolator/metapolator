@@ -1,0 +1,20 @@
+<div class="inspector-header">
+    <span>{{data.projectName}}</span>
+</div>
+<div ng-repeat="sequence in data.sequences">
+
+    <div class="inspector-branche" style="display: block" ng-repeat="master in sequence.masters"  ng-if="master.edit">
+        <div class="inspector-header">
+            <arrow></arrow>
+            <span ng-class="{'inspector-inactive' : !master.edit}">{{master.name}}</span>
+        </div>
+        <div class="inspector-branche" ng-repeat="glyph in master.glyphs" ng-if="glyph.edit">
+            <div class="inspector-header">
+                <arrow></arrow>
+                <span>{{glyph.value}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="parameter-slider"></div>
