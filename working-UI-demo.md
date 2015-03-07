@@ -78,9 +78,11 @@ No matter what is being shown in the parameter panel, the layout maintains the f
       * min
       * max
       * effective value
-        * level 5 **value ranges**:
+        * level 5 **value range**:
         * lowest value
         * highest value
+
+_This means that the parameter panel is split in two, a master and a glyph part; each of these parts has three categories, skeleton, horizontal metrics and stroke; each category lists its parameters; each parameter shows the operators that are set and (when needed) the effective value; when the value of an operator is a range, the lowest and highest value are shown._
 
 _(let’s make some drawings, peter)_
 
