@@ -53,11 +53,11 @@ What stays is a system of **operators** (=, ×, +, max, min)—completed (with -
 #### hierarchy
 No matter what is being shown in the parameter panel, the layout maintains the following display hierarchy (in top–to–bottom order of display):
 
-* **context:**
+* level 1 **context**:
 * master
 * glyph
-  * **parameter category:**
-    * **parameter:**
+  * level 2 **parameter category**:
+    * level 3 **parameter**:
   * skeleton
     * Width
     * Height
@@ -69,7 +69,7 @@ No matter what is being shown in the parameter panel, the layout maintains the f
   * stroke
     * Tension
     * Weight
-      * **operators and display:**
+      * level 4 **operators and values**:
       * =
       * ×
       * ÷
@@ -78,6 +78,9 @@ No matter what is being shown in the parameter panel, the layout maintains the f
       * min
       * max
       * effective value
+        * level 5 **value ranges**:
+        * lowest value
+        * highest value
 
 _(let’s make some drawings, peter)_
 
