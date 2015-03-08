@@ -4,7 +4,7 @@ define([
   , 'ufojs/main'
 ], function(
     errors
-  , proxy
+  , Proxy
   , ufoJSUtils
 ) {
     "use strict";
@@ -18,7 +18,7 @@ define([
 
     function _handlerFactory(target, whitelist) {
         /* jshint validthis: true */
-        return proxy(target, new this(whitelist));
+        return new Proxy(target, new this(whitelist));
     }
 
     function _get(target, name, receiver) {
