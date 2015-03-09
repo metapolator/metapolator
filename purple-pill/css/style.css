@@ -437,18 +437,9 @@
             cursor: default;
             overflow: visible;
             float: left;
+            white-space: pre;
         }
-        
-        #specimen-content ul li.spec-glyph-box-range {
-            
-        }
-                     
-            #specimen-content ul li div.spec-glyph-box {              
-                display: inline-block;
-                white-space: pre;
-                border-bottom: 4px solid transparent;
-            }
-            
+                  
             /* space character is temp until there is a space character in the master */
             .space-character {
                 width: 40px;
@@ -464,7 +455,7 @@
                 
                     #specimen-content li glyph {
                         display: block;
-                        height: 100%;
+                        border-bottom: 4px solid transparent;
                     }
                     
                        #specimen-content li glyph svg {

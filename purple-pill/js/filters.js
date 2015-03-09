@@ -29,27 +29,26 @@ app.filter('specimenFilter', function() {
                 }
             }
             var string = specimen.text;
-            
+
             var filter;
             // remove doubles from filter
             var filter = "";
-            for (var i = 0; i< options.filter.length; i++){
+            for (var i = 0; i < options.filter.length; i++) {
                 if (filter.indexOf(options.filter[i]) == -1) {
                     filter += options.filter[i];
                 }
-            }    
-                   
+            }
+
             // setting the numer of characters needed to match the search box
             var strict = options.strict;
             var required = strict;
             if (strict == 2 && filter.length == 1) {
                 required = 1;
             }
-            
+
             var output = "";
             var newText = "";
             var text = string.split(" ");
-            
 
             // if nothing if filter, then we use the string 1:1
             if (filter.length == 0) {
@@ -94,7 +93,6 @@ app.filter('specimenFilter', function() {
 
             var filtered = [];
             var glyphId = 0;
-            
 
             for (var i = 0; i < newText.length; i++) {
                 var glyph = newText[i];
@@ -107,12 +105,16 @@ app.filter('specimenFilter', function() {
                     glyph = " ";
                 }
                 filtered.push({
-                    glyphName: glyph.toLowerCase(),
+                    master : {
+                        sequenceId : 0,
+                        masterId : 4
+                    },
+                    glyphName : glyph.toLowerCase(),
                     glyphId : glyph.toLowerCase() + "_" + glyphId
                 });
                 glyphId++;
             }
-            
+
             return filtered;
         }
     };
