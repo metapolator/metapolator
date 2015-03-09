@@ -106,12 +106,10 @@ app.filter('specimenFilter', function() {
                     i += 3;
                     glyph = " ";
                 }
-                if (glyph != " ") {
-                    filtered.push({
-                        glyphName: glyph.toLowerCase(),
-                        glyphId : glyph.toLowerCase() + "_" + glyphId
-                    });
-                }
+                filtered.push({
+                    glyphName: glyph.toLowerCase(),
+                    glyphId : glyph.toLowerCase() + "_" + glyphId
+                });
                 glyphId++;
             }
             

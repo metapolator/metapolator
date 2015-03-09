@@ -3,9 +3,13 @@ app.directive('glyph', function($compile) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var glyphName = attrs.glyph;
-            var svg = scope.renderGlyphs(glyphName);
-            $compile(svg)(scope);
-            element.append(svg);
+            if (glyphName == " ") {
+                element.addClass("space-character");
+            } else {
+                var svg = scope.renderGlyphs(glyphName);
+                $compile(svg)(scope);
+                element.append(svg);
+            }
         }
     };
 });

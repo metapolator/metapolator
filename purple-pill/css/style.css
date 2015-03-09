@@ -450,6 +450,11 @@
                 border-bottom: 4px solid transparent;
             }
             
+            /* space character is temp until there is a space character in the master */
+            .space-character {
+                width: 40px;
+            }
+            
              #specimen-content ul li.spec-glyph-box-range div.spec-glyph-box {
                  text-align: center;
              }
