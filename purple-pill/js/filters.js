@@ -17,6 +17,7 @@ app.filter('rangeFilter', function() {
 
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences) {
+        console.clear();
         if (specimen.name != "glyph range") {
             // count fonts visible
             var nrOfFonts = 0;
@@ -96,7 +97,7 @@ app.filter('specimenFilter', function() {
 
             // building the filterd string
             for (var i = 0; i < newText.length; i++) {
-                var glyph = newText[i];
+                var glyph = newText[i].toLowerCase();
                 // adding linebreak or paragraph
                 if (glyph == "*" && newText[i + 1] == "n") {
                     i++;
@@ -107,17 +108,40 @@ app.filter('specimenFilter', function() {
                     i++;
                     glyph = "paragraph";
                 }
+                else if (glyph == "<") {
+                    console.log("found start");
+                    // foreign glyph
+                    glyph = "";
+                    var foundEnd = false;
+                    for (var q = 1; q < 10; q++) {
+                        if (!foundEnd) {
+                            if (newText[i + q] != ">") {
+                                glyph += newText[i + q];
+                            } else {
+                                var foundEnd = true;
+                            }
+                        }
+                    }
+                    if (!foundEnd) {
+                        // just a normal "<"
+                        glyph = "<";
+                    } else {
+                         console.log("found end, length = " + glyph.length);
+                        i = i + glyph.length + 1;
+                    }
+                }
+                console.log(glyph);
                 filtered.push({
                     master : {
                         sequenceId : 0,
                         masterId : 4
                     },
-                    glyphName : glyph.toLowerCase(),
-                    glyphId : glyph.toLowerCase() + "_" + glyphId
+                    glyphName : glyph,
+                    glyphId : glyph + "_" + glyphId
                 });
                 glyphId++;
             }
-
+            
             return filtered;
         }
     };
