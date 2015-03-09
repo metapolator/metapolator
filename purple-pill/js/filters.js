@@ -93,9 +93,9 @@ app.filter('specimenFilter', function() {
             }
 
             var filtered = [];
+            var glyphId = 0;
             
 
-            // repeat proces for nr of fonts
             for (var i = 0; i < newText.length; i++) {
                 var glyph = newText[i];
 
@@ -107,9 +107,14 @@ app.filter('specimenFilter', function() {
                     glyph = " ";
                 }
                 if (glyph != " ") {
-                    filtered.push(glyph.toLowerCase());
+                    filtered.push({
+                        glyphName: glyph.toLowerCase(),
+                        glyphId : glyph.toLowerCase() + "_" + glyphId
+                    });
                 }
+                glyphId++;
             }
+            
             return filtered;
         }
     };
