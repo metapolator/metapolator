@@ -74,11 +74,13 @@ function($scope, $sce, sharedScope) {
             $scope.specimen[0].text = "metapolator";
             $scope.$apply();
             clearInterval(checker);
-            
+            $("#layover").hide();
+            $(".compatibility-info").hide();
         }
     }
 
     $scope.startEngine = function () {
+        $("#layover").show();
         if (!window.metapolatorReady) {
             window.metapolatorReady = [];
         }

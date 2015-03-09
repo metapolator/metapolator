@@ -1128,3 +1128,13 @@
         width: 100%;
         background: rgba(0,0,0,0.6);
     }
+
+    .compatibility-info {
+        position: fixed;
+        left: calc(50% - 300px);
+        top: 18px;
+        width: 600px;
+        background: #fff;
+        padding: 40px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.8);
+    }
