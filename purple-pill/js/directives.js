@@ -7,9 +7,11 @@ app.directive('glyph', function($compile) {
                 if (glyphName == " ") {
                     element.addClass("space-character");
                 } else {
+                    element.addClass("loading-glyph");
                     var svg = scope.renderGlyphs(glyphName);
                     $compile(svg)(scope);
                     element.append(svg);
+                    element.removeClass("loading-glyph");
                 }
             } else {
                 var svg = scope.fakeSVG[glyphName];
@@ -358,6 +360,7 @@ app.directive('specGlyphBox', function($document) {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
             element.bind('click', function(event) {
+                
                 var sequence = $(element).attr("sequence");
                 var master = $(element).attr("master");
                 var glyph = $(element).attr("glyph");
@@ -446,10 +449,12 @@ app.directive('rubberband', function($document) {
                 }
             });
             element.bind('mouseup', function(event) {
+                // remove temp hover classes
                 $("#panel-2 .catchme").each(function() {
                     $(this).removeClass("temp-unselected-glyph");
                 });
-                if (!$(event.target).hasClass("spec-glyph-box")) {
+                if (!$(event.target).parents(".spec-glyph-box").length) {
+                    console.log($(event.target));
                     scope.deselectAll();
                     scope.$apply();
                 }

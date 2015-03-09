@@ -439,39 +439,39 @@
             float: left;
             white-space: pre;
         }
-                  
-            /* space character is temp until there is a space character in the master */
-            .space-character {
-                width: 40px;
+        
+            #specimen-content li glyph {
+                display: block;
+                border-bottom: 4px solid transparent;
             }
-            
-             #specimen-content ul li.spec-glyph-box-range div.spec-glyph-box {
-                 text-align: center;
-             }
-                
-                #specimen-content ul li.selected-glyph .spec-glyph-box {
+                  
+                /* space character is temp until there is a space character in the master */
+                .space-character {
+                    width: 40px;
+                }
+                            
+                #specimen-content ul li .selected-glyph {
                     border-bottom: 4px solid #00f!important;
                 }
-                
-                    #specimen-content li glyph {
-                        display: block;
-                        border-bottom: 4px solid transparent;
-                    }
                     
-                       #specimen-content li glyph svg {
-                           display: block;
-                           height: 100%;
-                       } 
+                   #specimen-content li glyph svg {
+                       display: block;
+                       height: 100%;
+                   } 
                 
-                body #specimen-content ul li.selected-glyph .temp-unselected-glyph {
+                body #specimen-content ul .selected-glyph.temp-unselected-glyph {
                     border-bottom: 4px solid transparent!important;
                 }
+                
+                body specimen #specimen-content ul .loading-glyph {
+                    border-bottom: 4px solid #f00!important;
+                }
                         
-                #specimen-content ul li .temp-selected-glyph {
+                #specimen-content ul .temp-selected-glyph {
                     border-bottom: 4px solid #00f!important;   
                 }
                     
-                #specimen-content ul li.glyph-linebreak {
+                #specimen-content ul .glyph-linebreak {
                     display: block;
                 }
                 

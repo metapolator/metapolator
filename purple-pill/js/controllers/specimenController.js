@@ -143,6 +143,7 @@ function($scope, $sce, sharedScope) {
 
     // setting the edit mode of glyphs
     $scope.selectGlyph = function(sequenceId, masterId, glyph) {
+        console.log("select");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
@@ -157,10 +158,12 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.toggleGlyph = function(sequenceId, masterId, glyph) {
+        console.log("toggle");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
                     if ($scope.data.sequences[j].masters[k].glyphs[l].value == glyph && sequenceId == j && masterId == k) {
+                        console.log($scope.data.sequences[j].masters[k].glyphs[l]);
                         $scope.data.sequences[j].masters[k].glyphs[l].edit = !$scope.data.sequences[j].masters[k].glyphs[l].edit;
                     }
                 }
@@ -169,6 +172,7 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.selectSet = function(set) {
+        console.log("sel set");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
@@ -189,6 +193,7 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.toggleSet = function(set) {
+        console.log("toggle set");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
@@ -207,6 +212,7 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.deselectAll = function() {
+        console.log("des");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {

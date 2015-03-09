@@ -54,7 +54,7 @@ app.factory("sharedScope", function($rootScope) {
                 display: true,
                 edit : true,
                 ag : "ag",
-                glyphs : [{value:"a", edit: false}, {value:"b", edit: false}, {value:"c", edit: false}, {value:"d", edit: false}, {value:"e", edit: false}, {value:"f", edit: false}, {value:"g", edit: false}, {value:"h", edit: false}, {value:"i", edit: false}, {value:"j", edit: false}, {value:"k", edit: false}, {value:"l", edit: false}, {value:"m", edit: false}, {value:"n", edit: false}, {value:"o", edit: false}, {value:"p", edit: false}, {value:"q", edit: false}, {value:"r", edit: false}, {value:"s", edit: false}, {value:"t", edit: false}, {value:"u", edit: false}, {value:"v", edit: false}, {value:"w", edit: false}, {value:"x", edit: false}, {value:"y", edit: false}, {value:"z", edit: false}]
+                glyphs : [{value:"a", edit: false}, {value:"b", edit: false}, {value:"c", edit: false}, {value:"d", edit: false}, {value:"e", edit: false}, {value:"f", edit: false}, {value:"g", edit: false}, {value:"h", edit: false}, {value:"i", edit: false}, {value:"j", edit: false}, {value:"k", edit: false}, {value:"l", edit: false}, {value:"m", edit: false}, {value:"n", edit: false}, {value:"o", edit: false}, {value:"p", edit: false}, {value:"q", edit: false}, {value:"r", edit: false}, {value:"s", edit: false}, {value:"t", edit: false}, {value:"u", edit: false}, {value:"v", edit: false}, {value:"w", edit: false}, {value:"x", edit: false}, {value:"y", edit: false}, {value:"z", edit: false}, {value:" ", edit: false}]
             }]
         }],
         adjustmentMasters : [],
