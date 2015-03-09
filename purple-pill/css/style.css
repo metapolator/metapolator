@@ -1,15 +1,3 @@
-    #specimen-content li glyph {
-        display: block;
-        height: 100%;
-    }
-    
-       #specimen-content li glyph svg {
-           display: block;
-           height: 100%;
-       } 
-
-
-
     @font-face {
         font-family: 'glyphs';
         src: url('../fonts/glyphs.ttf');
@@ -133,6 +121,13 @@
             padding: 0;
             float: right;
         }
+        
+        #engine-mode {
+            position: fixed;
+            z-index: 1000;
+            left: 200px;
+            top: 6px;
+        }
 			
 			
 /****** framework *****/
@@ -181,6 +176,10 @@
                 display: block;
                 position: relative;
             }
+            
+                parameters {
+                    width: 100%;
+                }
             
                 masters.sub-panel {
                     overflow: visible;
@@ -462,6 +461,16 @@
                 #specimen-content ul li.selected-glyph .spec-glyph-box {
                     border-bottom: 4px solid #00f!important;
                 }
+                
+                    #specimen-content li glyph {
+                        display: block;
+                        height: 100%;
+                    }
+                    
+                       #specimen-content li glyph svg {
+                           display: block;
+                           height: 100%;
+                       } 
                 
                 body #specimen-content ul li.selected-glyph .temp-unselected-glyph {
                     border-bottom: 4px solid transparent!important;

@@ -59,6 +59,10 @@
                 </localmenu>
             </div>
             <!-- end of project -->
+            
+            <div id="engine-mode">
+                You are currently in UI development mode. <a href="index2.html" target="_self">Click</a> for red-pill mode.
+            </div>
 
             <div id="view-buttons">
                 <div id="menu-item-0" class="menu-item menu-item-current">
@@ -98,7 +102,7 @@
                 <div id="panel-1" class="panel">
                     <parameters ng-controller="parametersController" class="sub-panel panel standard-padding"></parameters>
                 </div>
-                <specimen id="panel-2" ng-controller="specimenController" ng-init="addGlyphRange()" class="sub-panel panel"></specimen>
+                <specimen id="panel-2" ng-controller="specimenController" ng-init="addGlyphRange(); startFakeEngine();" class="sub-panel panel"></specimen>
 
                 <!-- start of view 2 -->
                 <div id="panel-3" class="panel">
@@ -110,6 +114,7 @@
 
                 <div id="panel-4" class="panel">
                     <designspace ng-controller="designspaceController" class="sub-panel semi-panel"></designspace>
+                    <specimen ng-controller="specimenController" class="sub-panel sem-panel"></specimen>
                 </div>
 
                 <!-- start of view 3 -->
@@ -138,5 +143,4 @@
             <!--<button ng-click="closeRename()">Close</button>-->
         </div>
     </BODY>
-    <script src="metapolatorStandAlone.js"></script>
 </html>

@@ -3,11 +3,16 @@ app.directive('glyph', function($compile) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var glyphName = attrs.glyph;
-            if (glyphName == " ") {
-                element.addClass("space-character");
+            if (scope.data.pill =="red") {
+                if (glyphName == " ") {
+                    element.addClass("space-character");
+                } else {
+                    var svg = scope.renderGlyphs(glyphName);
+                    $compile(svg)(scope);
+                    element.append(svg);
+                }
             } else {
-                var svg = scope.renderGlyphs(glyphName);
-                $compile(svg)(scope);
+                var svg = scope.fakeSVG[glyphName];
                 element.append(svg);
             }
         }
