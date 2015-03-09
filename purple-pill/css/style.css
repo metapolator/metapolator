@@ -445,8 +445,18 @@
             }
                   
                 /* space character is temp until there is a space character in the master */
-                .space-character {
+                #specimen-content li.space-character {
                     width: 40px;
+                }
+                
+                #specimen-content li.line-break {
+                    clear: both;
+                    width: 0;
+                }
+                
+                #specimen-content li.paragraph-break {
+                    clear: both;
+                    width: 100%;
                 }
                             
                 #specimen-content ul li .selected-glyph {
@@ -1110,7 +1120,7 @@
 
 
     #layover {
-        display: none;
+        display: block;
         position: fixed;
         left: 0;
         top: 0;

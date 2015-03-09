@@ -30,7 +30,6 @@ app.filter('specimenFilter', function() {
             }
             var string = specimen.text;
 
-            var filter;
             // remove doubles from filter
             var filter = "";
             for (var i = 0; i < options.filter.length; i++) {
@@ -92,17 +91,21 @@ app.filter('specimenFilter', function() {
             }
 
             var filtered = [];
+            // add a glyphid for the track by at the ng-repeat
             var glyphId = 0;
 
+            // building the filterd string
             for (var i = 0; i < newText.length; i++) {
                 var glyph = newText[i];
-
-                // adding linebreak property for paragraphs
-                var linebreak = false;
-                if (glyph == "<" && newText[i + 1] == "b" && newText[i + 2] == "r") {
-                    linebreak = true;
-                    i += 3;
-                    glyph = " ";
+                // adding linebreak or paragraph
+                if (glyph == "*" && newText[i + 1] == "n") {
+                    i++;
+                    glyph = "linebreak";
+                    
+                }
+                else if (glyph == "*" && newText[i + 1] == "p") {
+                    i++;
+                    glyph = "paragraph";
                 }
                 filtered.push({
                     master : {

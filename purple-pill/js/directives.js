@@ -3,19 +3,21 @@ app.directive('glyph', function($compile) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var glyphName = attrs.glyph;
-            if (scope.data.pill =="red") {
-                if (glyphName == " ") {
-                    element.addClass("space-character");
-                } else {
-                    element.addClass("loading-glyph");
+            if (glyphName == " ") {
+                element.parent().addClass("space-character");
+            } else if (glyphName == "linebreak") {
+                element.parent().addClass("line-break");
+            } else if (glyphName == "paragraph") {
+                element.parent().addClass("paragraph-break");
+            } else {
+                if (scope.data.pill =="red") {
                     var svg = scope.renderGlyphs(glyphName);
                     $compile(svg)(scope);
                     element.append(svg);
-                    element.removeClass("loading-glyph");
+                } else {
+                    var svg = scope.fakeSVG[glyphName];
+                    element.append(svg);
                 }
-            } else {
-                var svg = scope.fakeSVG[glyphName];
-                element.append(svg);
             }
         }
     };

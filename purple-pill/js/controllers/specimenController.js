@@ -80,7 +80,6 @@ function($scope, $sce, sharedScope) {
     }
 
     $scope.startEngine = function () {
-        $("#layover").show();
         if (!window.metapolatorReady) {
             window.metapolatorReady = [];
         }
@@ -92,6 +91,7 @@ function($scope, $sce, sharedScope) {
     };
     
     $scope.startFakeEngine = function () {
+        $("#layover").hide();
         $scope.specimen[0].text = "metapolator";
     };
 
@@ -120,8 +120,11 @@ function($scope, $sce, sharedScope) {
         name : "pangram 3",
         text : "Quick wafting zephyrs vex bold Jim"
     }, {
+        name : "something with breaks",
+        text : "hey you*nthe rock*nsteady crew"
+    }, {
         name : "paragraph 1",
-        text : "Duis tincidunt nisi id nibh feugiat mattis. Integer augue elit, eleifend eget lorem finibus, placerat scelerisque eros. Curabitur et tortor sapien. Mauris pulvinar efficitur velit. <br>Duis consequat placerat nisl condimentum ullamcorper. Aenean placerat, sapien non egestas sagittis, purus ex pharetra velit, vitae tincidunt lectus tortor vel mi. Praesent sollicitudin maximus orci, quis egestas sapien auctor vel. Aliquam erat volutpat. Interdum et malesuada fames ac ante ipsum primis in faucibus. <br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis, purus a posuere iaculis, felis tortor mattis leo, vitae ullamcorper sem ligula in metus. Suspendisse ac tincidunt eros. Sed ac ornare elit. Integer ut lorem sed justo tempor vehicula. Phasellus facilisis justo quis felis faucibus ultrices. Integer pulvinar orci vitae leo accumsan, sit amet tincidunt ligula dapibus. Vestibulum in ligula turpis. "
+        text : "Duis tincidunt nisi id nibh feugiat mattis. Integer augue elit, eleifend eget lorem finibus, placerat scelerisque eros. Curabitur et tortor sapien. Mauris pulvinar efficitur velit. *pDuis consequat placerat nisl condimentum ullamcorper. Aenean placerat, sapien non egestas sagittis, purus ex pharetra velit, vitae tincidunt lectus tortor vel mi. Praesent sollicitudin maximus orci, quis egestas sapien auctor vel. Aliquam erat volutpat. Interdum et malesuada fames ac ante ipsum primis in faucibus. *pLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis, purus a posuere iaculis, felis tortor mattis leo, vitae ullamcorper sem ligula in metus. Suspendisse ac tincidunt eros. Sed ac ornare elit. Integer ut lorem sed justo tempor vehicula. Phasellus facilisis justo quis felis faucibus ultrices. Integer pulvinar orci vitae leo accumsan, sit amet tincidunt ligula dapibus. Vestibulum in ligula turpis."
     }];
 
     $scope.addGlyphRange = function() {
