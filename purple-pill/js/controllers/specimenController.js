@@ -70,10 +70,11 @@ function($scope, $sce, sharedScope) {
     
     function stateChecker() {
         if (globalStateful) {
-            $scope.specimen[0].text = "abcdefghijklmnopqrstuvwxyz";
+            $scope.data.pill = "red";
+            $scope.specimen[0].text = "metapolator";
             $scope.$apply();
             clearInterval(checker);
-            $scope.data.pill = "red";
+            
         }
     }
 
