@@ -67,7 +67,7 @@ No matter what is being shown in the parameter panel, the layout maintains the f
   * Tension
   * Weight
     * level 3 **operators and values**:
-    * =
+    * = (assignment) or : (inherent value)
     * ×
     * ÷
     * +
