@@ -437,7 +437,6 @@
             cursor: default;
             overflow: visible;
             float: left;
-            white-space: pre;
         }
         
             #specimen-content li glyph {
