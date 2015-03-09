@@ -56,33 +56,30 @@ No matter what is being shown in the parameter panel, the layout maintains the f
 * level 1 **context**:
 * master
 * glyph
-  * level 2 **parameter category**:
-    * level 3 **parameter**:
-  * skeleton
-    * Width
-    * Height
-    * X-height
-    * Slant
-  * horizontal metrics
+  * level 2 **parameter**:
+  * Width
+  * Height
+  * horizontal metrics _(category heading)_
     * Spacing
     * Sidebearings
-  * stroke
-    * Tension
-    * Weight
-      * level 4 **operators and values**:
-      * =
-      * ×
-      * ÷
-      * +
-      * -
-      * min
-      * max
-      * effective value
-        * level 5 **value range**:
-        * lowest value
-        * highest value
+  * X-height
+  * Slant
+  * Tension
+  * Weight
+    * level 3 **operators and values**:
+    * =
+    * ×
+    * ÷
+    * +
+    * -
+    * min
+    * max
+    * effective value
+      * level 4 **value range**:
+      * lowest value
+      * highest value
 
-_This means that the parameter panel is split in two, a master and a glyph part; each of these parts has three categories, skeleton, horizontal metrics and stroke; each category lists its parameters; each parameter shows the operators that are set and (when needed) the effective value; when the value of an operator is a range, the lowest and highest value are shown._
+_This means that the parameter panel is split in two, a master and a glyph part; each of these parts has a lists of parameters; each parameter shows the operators that are set and (when needed) the effective value; when the value of an operator is a range, the lowest and highest value are shown._
 
 _(let’s make some drawings, peter)_
 
