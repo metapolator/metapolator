@@ -59,11 +59,10 @@ No matter what is being shown in the parameter panel, the layout maintains the f
   * level 2 **parameter**:
   * Width
   * Height
-  * horizontal metrics _(category heading)_
-    * Spacing
-    * Sidebearings
   * X-height
   * Slant
+  * Spacing
+  * Sidebearings
   * Tension
   * Weight
     * level 3 **operators and values**:
