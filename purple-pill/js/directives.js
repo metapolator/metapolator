@@ -423,6 +423,7 @@ app.directive('rubberband', function($document) {
             element.bind('mousedown', function(event) {
                 // second condition is to exclude the rubberbanding on the scrollbar
                 if (!$(event.target).hasClass("no-rubberband") && event.pageX < element.offset().left + element.outerWidth() - 20) {
+                    $("#templayer-rubberband").remove();
                     if (!event.shiftKey && !event.ctrlKey && !event.metaKey) {
                         scope.deselectAll();
                         scope.$apply();
@@ -489,7 +490,6 @@ app.directive('rubberband', function($document) {
                     $(this).removeClass("temp-unselected-glyph");
                 });
                 if (!$(event.target).parents(".spec-glyph-box").length) {
-                    console.log($(event.target));
                     scope.deselectAll();
                     scope.$apply();
                 }
