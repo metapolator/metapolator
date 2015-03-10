@@ -19,9 +19,7 @@ app.filter('rangeFilter', function() {
 
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences) {
-        if (specimen.name != "glyph range") {
-            console.clear();
-            
+        if (specimen.name != "glyph range") {          
             function stringToGlyphs(string, unique) {
                 var glyphs = [];
                 for (var i = 0; i < string.length; i++) {
@@ -119,7 +117,6 @@ app.filter('specimenFilter', function() {
                     }
                 }
             }
-
 
             /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/
             var newGlyphText = stringToGlyphs(newText);

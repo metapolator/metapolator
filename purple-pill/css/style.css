@@ -447,6 +447,12 @@
                 /* space character is temp until there is a space character in the master */
                 #specimen-content li.space-character {
                     width: 40px;
+                    clear: none;
+                }
+                
+                #specimen-content li.space-character.clear-space {
+                    width: 0;
+                    clear: both;
                 }
                 
                 #specimen-content li.line-break {
