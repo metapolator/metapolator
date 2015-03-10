@@ -17,9 +17,8 @@ app.filter('rangeFilter', function() {
 
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences) {
-        console.clear();
         if (specimen.name != "glyph range") {
-            // count fonts visible
+            /***** count master with display true *****/
             var nrOfFonts = 0;
             for (var i = 0; i < sequences.length; i++) {
                 for (var j = 0; j < sequences[i].masters.length; j++) {
@@ -31,15 +30,56 @@ app.filter('specimenFilter', function() {
             }
             var string = specimen.text;
 
-            // remove doubles from filter
-            var filter = "";
+            /***** remove doubles from filter *****/
+            console.clear();
+            var filter = [];
             for (var i = 0; i < options.filter.length; i++) {
-                if (filter.indexOf(options.filter[i]) == -1) {
-                    filter += options.filter[i];
+                var fGlyph = options.filter[i].toLowerCase();
+                // adding linebreak or paragraph
+                if (fGlyph == "*" && options.filter[i + 1] == "n") {
+                    i++;
+                    fGlyph = "*n";
+                    
+                }
+                else if (fGlyph == "*" && options.filter[i + 1] == "p") {
+                    i++;
+                    fGlyph = "*p";
+                }
+                else if (fGlyph == "<") {
+                    // foreign glyph
+                    fGlyph = "<";
+                    var foundEnd = false;
+                    for (var q = 1; q < 10; q++) {
+                        if (!foundEnd) {
+                            if (options.filter[i + q] != ">") {
+                                fGlyph += options.filter[i + q];
+                            } else {
+                                fGlyph += ">";
+                                var foundEnd = true;
+                            }
+                        }
+                    }
+                    if (!foundEnd) {
+                        // just a normal "<"
+                        fGlyph = "<";
+                    } else {
+                        i = i + fGlyph.length - 1;
+                    }
+                }
+                // check if is already in filter array, *n and *b are allowed to be double
+                if (filter.indexOf(fGlyph) < 0 || fGlyph == "*n" || fGlyph == "*p") {
+                    console.log(filter);
+                    console.log(fGlyph);
+                    console.log(filter.indexOf(fGlyph));
+                    filter.push(fGlyph);
                 }
             }
+            //console.clear();
+            console.log(filter);
+            
 
-            // setting the numer of characters needed to match the search box
+
+            /***** setting the numer of characters needed to match the search box *****/
             var strict = options.strict;
             var required = strict;
             if (strict == 2 && filter.length == 1) {
@@ -50,13 +90,16 @@ app.filter('specimenFilter', function() {
             var newText = "";
             var text = string.split(" ");
 
-            // if nothing if filter, then we use the string 1:1
+            // if nothing in filter, then we use the string 1:1
             if (filter.length == 0) {
                 newText = string;
             } else {
                 if (strict == 3) {
                     // if strict is 3, we use the filter 1:1
-                    newText = filter;
+                    newText = "";
+                    for (var i =0; i < filter.length; i++) {
+                        newText += filter[i];
+                    }
                 } else {
                     text.forEach(function(word) {
                         var hits = 0;
@@ -73,7 +116,7 @@ app.filter('specimenFilter', function() {
                 }
             }
 
-            // find the masters display true
+            /***** create a masterarray with masters display true *****/
             var masterArray = [];
             for (var j = 0; j < sequences.length; j++) {
                 for (var k = 0; k < sequences[j].masters.length; k++) {
@@ -95,7 +138,7 @@ app.filter('specimenFilter', function() {
             // add a glyphid for the track by at the ng-repeat
             var glyphId = 0;
 
-            // building the filterd string
+            /***** building the filterd string *****/
             for (var i = 0; i < newText.length; i++) {
                 var glyph = newText[i].toLowerCase();
                 // adding linebreak or paragraph
@@ -109,7 +152,6 @@ app.filter('specimenFilter', function() {
                     glyph = "paragraph";
                 }
                 else if (glyph == "<") {
-                    console.log("found start");
                     // foreign glyph
                     glyph = "";
                     var foundEnd = false;
@@ -126,11 +168,9 @@ app.filter('specimenFilter', function() {
                         // just a normal "<"
                         glyph = "<";
                     } else {
-                         console.log("found end, length = " + glyph.length);
                         i = i + glyph.length + 1;
                     }
                 }
-                console.log(glyph);
                 filtered.push({
                     master : {
                         sequenceId : 0,

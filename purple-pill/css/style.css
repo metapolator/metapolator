@@ -885,6 +885,11 @@
             cursor: default;
         }
         
+            .list-view-col svg {
+                height: 90%;
+                margin-top: 10%;
+            }
+        
             .list-view-col.selected {
                 background: #f85c37;
             }

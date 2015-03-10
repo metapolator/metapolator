@@ -2,7 +2,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     'use strict';
     $scope.data = sharedScope.data;
 
-/***** menu control *****/
+    /***** menu control *****/
 
     $scope.deleteMaster = function(){
         // need to make functionality to go through design spaces and instances to remove masters as well
@@ -34,9 +34,9 @@ app.controller("mastersController", function($scope, sharedScope) {
         $("#alert #alert-content").html(message);
         setTimeout(function(){ $("#alert").hide(); }, 2000);
     };
+    
 
-
-/***** selecting *****/
+    /***** selecting *****/
 
     $scope.mouseDown = false;
     

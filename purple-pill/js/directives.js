@@ -1,3 +1,35 @@
+/*
+app.directive('ag', function($compile) {
+    return {
+        restrict : 'C',
+        require : 'ngModel',
+        link : function(scope, element, attrs, ctrl) {
+            var sequence = attrs.sequence;  
+            var master = attrs.master;      
+            var thisMaster = scope.data.sequences[sequence].masters[master];
+            if (thisMaster.type == "redpill") {
+                if (scope.data.pill =="red") {
+                    var svg0 = scope.data.renderGlyphs(thisMaster.ag[0]);
+                    $compile(svg0)(scope);
+                    element.append(svg0);
+                    var svg1 = scope.data.renderGlyphs(thisMaster.ag[1]);
+                    $compile(svg1)(scope);
+                    element.append(svg1);
+                } else {
+                    var svg0 = scope.data.fakeSVG[thisMaster.ag[0]];
+                    var svg1 = scope.data.fakeSVG[thisMaster.ag[1]];
+                    element.append(svg0);
+                    element.append(svg1);
+                }
+            } else {
+                var ag = thisMaster.ag;
+                element.append(ag);
+            }
+        }
+    };
+});
+*/
+
 app.directive('glyph', function($compile) {
     return {
         restrict : 'E',
@@ -11,11 +43,11 @@ app.directive('glyph', function($compile) {
                 element.parent().addClass("paragraph-break");
             } else {
                 if (scope.data.pill =="red") {
-                    var svg = scope.renderGlyphs(glyphName);
+                    var svg = scope.data.renderGlyphs(glyphName);
                     $compile(svg)(scope);
                     element.append(svg);
                 } else {
-                    var svg = scope.fakeSVG[glyphName];
+                    var svg = scope.data.fakeSVG[glyphName];
                     element.append(svg);
                 }
             }

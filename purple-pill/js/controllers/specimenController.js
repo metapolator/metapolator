@@ -95,7 +95,7 @@ function($scope, $sce, sharedScope) {
         $scope.specimen[0].text = "metapolator";
     };
 
-    $scope.renderGlyphs = function(glyphName) {
+    $scope.data.renderGlyphs = function(glyphName) {
         return globalStateful.glyphRendererAPI.get(globalMastername, glyphName);
     };
 
@@ -109,7 +109,8 @@ function($scope, $sce, sharedScope) {
         helper : 'clone'
     };
 
-    // specimen panel parameters
+    /*****************filter parameters *****************/
+   
     $scope.specimen = [{
         name : "metapolator",
         text : ""
@@ -124,7 +125,7 @@ function($scope, $sce, sharedScope) {
         text : "hey you*nthe rock*nsteady crew"
     }, {
         name : "Some devanagari",
-        text : "<dvA> <dvI> <dvKHA> <dvBHA>"
+        text : "<dvA><dvI><dvKHA><dvBHA><dvDA><dvDHA>"
     } ,{
         name : "paragraph 1",
         text : "Duis tincidunt nisi id nibh feugiat mattis. Integer augue elit, eleifend eget lorem finibus, placerat scelerisque eros. Curabitur et tortor sapien. Mauris pulvinar efficitur velit. *pDuis consequat placerat nisl condimentum ullamcorper. Aenean placerat, sapien non egestas sagittis, purus ex pharetra velit, vitae tincidunt lectus tortor vel mi. Praesent sollicitudin maximus orci, quis egestas sapien auctor vel. Aliquam erat volutpat. Interdum et malesuada fames ac ante ipsum primis in faucibus. *pLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis, purus a posuere iaculis, felis tortor mattis leo, vitae ullamcorper sem ligula in metus. Suspendisse ac tincidunt eros. Sed ac ornare elit. Integer ut lorem sed justo tempor vehicula. Phasellus facilisis justo quis felis faucibus ultrices. Integer pulvinar orci vitae leo accumsan, sit amet tincidunt ligula dapibus. Vestibulum in ligula turpis."
@@ -135,6 +136,7 @@ function($scope, $sce, sharedScope) {
             name : "glyph range"
         });
     };
+    
 
     $scope.selectedSpecimen = $scope.specimen[0];
     $scope.fontSize = 120;
@@ -146,10 +148,16 @@ function($scope, $sce, sharedScope) {
         strict : 1,
         selectedFontby : $scope.fontbys[0]
     };
+    
+    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences", function(newVal) {
+        $scope.filteredGlyphs = newVal;
+    }, true);
 
-    // setting the edit mode of glyphs
+
+
+    /***************** setting the edit mode of glyphs *****************/
+   
     $scope.selectGlyph = function(sequenceId, masterId, glyph) {
-        console.log("select");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
@@ -164,12 +172,10 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.toggleGlyph = function(sequenceId, masterId, glyph) {
-        console.log("toggle");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
                     if ($scope.data.sequences[j].masters[k].glyphs[l].value == glyph && sequenceId == j && masterId == k) {
-                        console.log($scope.data.sequences[j].masters[k].glyphs[l]);
                         $scope.data.sequences[j].masters[k].glyphs[l].edit = !$scope.data.sequences[j].masters[k].glyphs[l].edit;
                     }
                 }
@@ -178,7 +184,6 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.selectSet = function(set) {
-        console.log("sel set");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
@@ -199,7 +204,6 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.toggleSet = function(set) {
-        console.log("toggle set");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
@@ -218,7 +222,6 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.deselectAll = function() {
-        console.log("des");
         for (var j = 0; j < $scope.data.sequences.length; j++) {
             for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
                 for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
@@ -238,13 +241,14 @@ function($scope, $sce, sharedScope) {
         }
         return edit;
     };
-
-    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences", function(newVal) {
-        $scope.filteredGlyphs = newVal;
-    }, true);
+    
+    
 
 
-    $scope.fakeSVG = {
+
+    /***************** - *****************/
+
+    $scope.data.fakeSVG = {
         a: '<svg viewBox="0 0 517.75 1000"><g id="mp_glyph_12550" transform="matrix(1,0,0,-1,0,659)"><path d="M344.41,74.3053 C319.21,44.9761 284.031,30.85 253.9,30.85 C210.741,30.85 173.95,62.4228 173.95,122.6 C173.95,199.246 249.334,225.563 340.05,235.734 C340.05,241.117 340.05,246.501 340.05,251.884 C159.142,232.724 56.65,197.338 56.65,95.4 C56.65,21.513 120.45,-4.85 183.35,-4.85 C239.311,-4.85 309.892,11.4634 355.416,63.2992 C351.747,66.9679 348.079,70.6366 344.41,74.3053 z M525.5,33.125 C518.127,27.4795 510.604,24.2589 502.8,24.2589 C472.859,24.2589 467.55,42.496 467.55,99.9 C467.55,161.099 467.55,222.301 467.55,283.5 C467.55,433.114 404.655,466.575 274.75,466.575 C156.618,466.575 84.0285,418.381 84.0285,359.75 C84.0285,329 109.529,304.25 139.529,304.25 C170.279,304.25 195.029,329 195.029,359.75 C195.029,378.809 182.21,400.844 182.117,416.75 C181.983,439.585 213.693,450.425 252.65,450.425 C319.055,450.425 340.05,415.049 340.05,300.5 C340.05,225.701 340.05,150.899 340.05,76.1 C340.05,25.3477 367.378,-2.62766 435.65,-2.62766 C465.742,-2.62766 504.379,1.52742 525.5,21.375 C525.5,25.2916 525.5,29.2084 525.5,33.125 z"></g></svg>',
         b: '<svg viewBox="0 0 530.1 1000"><g id="mp_glyph_12891" transform="matrix(1,0,0,-1,0,659)"><path d="M320.95,-7.35 C401.874,-7.35 534.8,33.6724 534.8,230.075 C534.8,396.63 443.946,478.925 349.45,478.925 C297.493,478.925 240.034,454.878 217,415.75 C217,406.25 217,396.75 217,387.25 C238.026,428.127 273.616,444.075 296.75,444.075 C350.345,444.075 406.45,368.291 406.45,230.925 C406.45,78.7835 353.786,11.35 301.4,11.35 C307.917,5.11673 314.433,-1.11673 320.95,-7.35 z M105.65,0 C105.65,35.748 120.443,63 139.5,63 C181.269,63 216.545,-7.35 320.95,-7.35 C314.433,-1.11673 307.917,5.11673 301.4,11.35 C261.809,11.35 217,42.0142 217,126 C174.5,126 132,126 89.5,126 C89.5,84.0004 89.5,41.9996 89.5,0 C94.8833,0 100.267,0 105.65,0 C105.65,0 105.65,0 105.65,0 z M217,668.5 C155.688,668.5 94.3744,668.5 33.0625,668.5 C33.0625,662.833 33.0625,657.167 33.0625,651.5 C94.3744,651.5 155.688,651.5 217,651.5 C217,657.167 217,662.833 217,668.5 z M217,126 C217,303.998 217,482.002 217,660 C174.5,660 132,660 89.5,660 C89.5,482.002 89.5,303.998 89.5,126 C132,126 174.5,126 217,126 z"></g></svg>',
         c: '<svg viewBox="0 0 477.85 1000"><g id="mp_glyph_12936" transform="matrix(1,0,0,-1,0,659)"><path d="M447.591,84.25 C425.873,51.5673 376.167,21.525 330.546,21.525 C225.062,21.525 175.65,94.5224 175.65,230 C175.65,397.414 232.135,453.35 285.65,453.35 C324.737,453.35 348.048,435.63 348.048,401.375 C348.048,384.128 343.241,361.712 343.241,339.125 C343.241,306.125 368.741,282.784 403.991,282.784 C445.991,282.784 459.491,319.625 459.491,340.625 C459.491,407.831 391.409,468.65 290.75,468.65 C133.832,468.65 47.3,376.191 47.3,230 C47.3,68.561 129.806,-6.525 299.095,-6.525 C373.155,-6.525 431.427,28.3548 459.491,75.75 C455.524,78.5833 451.558,81.4167 447.591,84.25 z"></g></svg>',
