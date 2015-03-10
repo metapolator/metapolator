@@ -37,9 +37,9 @@ app.directive('glyph', function($compile) {
             var glyphName = attrs.glyph;
             if (glyphName == " ") {
                 element.parent().addClass("space-character");
-            } else if (glyphName == "linebreak") {
+            } else if (glyphName == "*n") {
                 element.parent().addClass("line-break");
-            } else if (glyphName == "paragraph") {
+            } else if (glyphName == "*p") {
                 element.parent().addClass("paragraph-break");
             } else {
                 if (scope.data.pill =="red") {

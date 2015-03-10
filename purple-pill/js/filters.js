@@ -15,80 +15,65 @@ app.filter('rangeFilter', function() {
     };
 });
 
+
+
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences) {
         if (specimen.name != "glyph range") {
-            /***** count master with display true *****/
-            var nrOfFonts = 0;
-            for (var i = 0; i < sequences.length; i++) {
-                for (var j = 0; j < sequences[i].masters.length; j++) {
-                    var thisFont = sequences[i].masters[j];
-                    if (thisFont.display == true) {
-                        nrOfFonts++;
-                    }
-                }
-            }
-            var string = specimen.text;
-
-            /***** remove doubles from filter *****/
             console.clear();
-            var filter = [];
-            for (var i = 0; i < options.filter.length; i++) {
-                var fGlyph = options.filter[i].toLowerCase();
-                // adding linebreak or paragraph
-                if (fGlyph == "*" && options.filter[i + 1] == "n") {
-                    i++;
-                    fGlyph = "*n";
-                    
-                }
-                else if (fGlyph == "*" && options.filter[i + 1] == "p") {
-                    i++;
-                    fGlyph = "*p";
-                }
-                else if (fGlyph == "<") {
-                    // foreign glyph
-                    fGlyph = "<";
-                    var foundEnd = false;
-                    for (var q = 1; q < 10; q++) {
-                        if (!foundEnd) {
-                            if (options.filter[i + q] != ">") {
-                                fGlyph += options.filter[i + q];
-                            } else {
-                                fGlyph += ">";
-                                var foundEnd = true;
+            
+            function stringToGlyphs(string, unique) {
+                var glyphs = [];
+                for (var i = 0; i < string.length; i++) {
+                    // temporary to lowercase because Project Zero has no lowercases yet
+                    var glyph = string[i].toLowerCase();
+                    // detecting linebreak or paragraph
+                    if (glyph == "*" && (string[i + 1] == "n" || string[i + 1] == "p")) {
+                        glyph = "*" + string[i + 1];
+                        i++;
+                    }
+                    else if (glyph == "<") {
+                        // detecting foreign glyph
+                        glyph = "";
+                        var foundEnd = false;
+                        for (var q = 1; q < 10; q++) {
+                            if (!foundEnd) {
+                                if (string[i + q] != ">") {
+                                    glyph += string[i + q];
+                                } else {
+                                    var foundEnd = true;
+                                }
                             }
                         }
+                        if (!foundEnd) {
+                            // just a normal "<"
+                            glyph = "<";
+                        } else {
+                            i = i + glyph.length + 1;
+                        }
                     }
-                    if (!foundEnd) {
-                        // just a normal "<"
-                        fGlyph = "<";
+                    if (unique) {
+                        // unique is set for the filter
+                        if (glyphs.indexOf(glyph) < 0 || glyph == "*n" || glyph == "*p") {
+                            glyphs.push(glyph);
+                        }
                     } else {
-                        i = i + fGlyph.length - 1;
+                        glyphs.push(glyph);
                     }
                 }
-                // check if is already in filter array, *n and *b are allowed to be double
-                if (filter.indexOf(fGlyph) < 0 || fGlyph == "*n" || fGlyph == "*p") {
-                    console.log(filter);
-                    console.log(fGlyph);
-                    console.log(filter.indexOf(fGlyph));
-                    filter.push(fGlyph);
-                }
+                return glyphs;
             }
-            //console.clear();
-            console.log(filter);
-            
 
+            var string = specimen.text;
+            var filter = stringToGlyphs(options.filter, true);
+            var newText = "";
 
-            /***** setting the numer of characters needed to match the search box *****/
+            // setting the numer of characters needed to match the search box
             var strict = options.strict;
             var required = strict;
             if (strict == 2 && filter.length == 1) {
                 required = 1;
             }
-
-            var output = "";
-            var newText = "";
-            var text = string.split(" ");
 
             // if nothing in filter, then we use the string 1:1
             if (filter.length == 0) {
@@ -96,15 +81,14 @@ app.filter('specimenFilter', function() {
             } else {
                 if (strict == 3) {
                     // if strict is 3, we use the filter 1:1
-                    newText = "";
-                    for (var i =0; i < filter.length; i++) {
-                        newText += filter[i];
-                    }
+                    newText = filter;
                 } else {
+                    var text = string.split(" ");
                     text.forEach(function(word) {
+                        var wordInGlyps = stringToGlyphs(word);
                         var hits = 0;
-                        for (var i = 0; i < word.length; i++) {
-                            if (filter.indexOf(word[i]) > -1) {
+                        for (var i = 0; i < wordInGlyps.length; i++) {
+                            if (filter.indexOf(wordInGlyps[i]) > -1) {
                                 hits++;
                             }
                             if (hits >= required) {
@@ -116,12 +100,14 @@ app.filter('specimenFilter', function() {
                 }
             }
 
-            /***** create a masterarray with masters display true *****/
+            /***** create a masterarray with masters display true *****/         
             var masterArray = [];
+            var nrOfFonts = 0;
             for (var j = 0; j < sequences.length; j++) {
                 for (var k = 0; k < sequences[j].masters.length; k++) {
                     var thisFont = sequences[j].masters[k];
-                    if (thisFont.display == true) {
+                    if (thisFont.display == true && thisFont.type == "redpill") {
+                        nrOfFonts++;
                         var foundFont = {
                             "sequenceId" : j,
                             "masterId" : k,
@@ -134,54 +120,35 @@ app.filter('specimenFilter', function() {
                 }
             }
 
-            var filtered = [];
-            // add a glyphid for the track by at the ng-repeat
-            var glyphId = 0;
 
-            /***** building the filterd string *****/
-            for (var i = 0; i < newText.length; i++) {
-                var glyph = newText[i].toLowerCase();
-                // adding linebreak or paragraph
-                if (glyph == "*" && newText[i + 1] == "n") {
-                    i++;
-                    glyph = "linebreak";
-                    
-                }
-                else if (glyph == "*" && newText[i + 1] == "p") {
-                    i++;
-                    glyph = "paragraph";
-                }
-                else if (glyph == "<") {
-                    // foreign glyph
-                    glyph = "";
-                    var foundEnd = false;
-                    for (var q = 1; q < 10; q++) {
-                        if (!foundEnd) {
-                            if (newText[i + q] != ">") {
-                                glyph += newText[i + q];
-                            } else {
-                                var foundEnd = true;
-                            }
-                        }
-                    }
-                    if (!foundEnd) {
-                        // just a normal "<"
-                        glyph = "<";
-                    } else {
-                        i = i + glyph.length + 1;
-                    }
-                }
-                filtered.push({
-                    master : {
-                        sequenceId : 0,
-                        masterId : 4
-                    },
-                    glyphName : glyph,
-                    glyphId : glyph + "_" + glyphId
-                });
-                glyphId++;
-            }
+            /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/
+            var newGlyphText = stringToGlyphs(newText);
+            var filtered = [];
+            var glyphId = 0;
             
+            for (var q = 0; q < masterArray.length; q++) {
+                // repeating for the number of master with display true. every glyph of this loop starts with a new master (masterId)
+                var masterId = q;
+                for (var i = 0; i < newGlyphText.length; i++) {
+                    var glyph = newGlyphText[i];
+                    var master = masterArray[masterId];
+                    filtered.push({
+                        master : {
+                            sequenceId : master.sequenceId,
+                            masterId : master.masterId
+                        },
+                        glyphName : glyph,
+                        glyphId : glyph + "_" + glyphId
+                    });
+                    glyphId++;
+                    if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == " ") || (options.selectedFontby == "paragraph" && glyph == "*p")) {
+                        masterId++;
+                    }
+                    if (masterId == nrOfFonts) {
+                        masterId = 0;
+                    }
+                }
+            }
             return filtered;
         }
     };
