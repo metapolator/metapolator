@@ -65,6 +65,7 @@ app.filter('specimenFilter', function() {
             var string = specimen.text;
             var filter = stringToGlyphs(options.filter, true);
             var newText = "";
+            var newGlyphText = "";
 
             // setting the numer of characters needed to match the search box
             var strict = options.strict;
@@ -79,7 +80,7 @@ app.filter('specimenFilter', function() {
             } else {
                 if (strict == 3) {
                     // if strict is 3, we use the filter 1:1
-                    newText = filter;
+                    newGlyphText = filter;
                 } else {
                     var text = string.split(" ");
                     text.forEach(function(word) {
@@ -119,7 +120,10 @@ app.filter('specimenFilter', function() {
             }
 
             /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/
-            var newGlyphText = stringToGlyphs(newText);
+            if (newGlyphText == "") {
+                // if strict 3, then newflyphtext is already build
+                newGlyphText = stringToGlyphs(newText);
+            }
             var filtered = [];
             var glyphId = 0;
             
