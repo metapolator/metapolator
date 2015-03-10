@@ -421,7 +421,8 @@ app.directive('rubberband', function($document) {
             var mymove = false;
 
             element.bind('mousedown', function(event) {
-                if (!$(event.target).hasClass("no-rubberband")) {
+                // second condition is to exclude the rubberbanding on the scrollbar
+                if (!$(event.target).hasClass("no-rubberband") && event.pageX < element.offset().left + element.outerWidth() - 20) {
                     if (!event.shiftKey && !event.ctrlKey && !event.metaKey) {
                         scope.deselectAll();
                         scope.$apply();
