@@ -111,6 +111,28 @@ To achieve their goals users can perform the following actions:
 
 We will look at each of these now.
 
+#### adding expressions
+When the Add button is pressed on one of the sections, a popup panel is shown:
+
+![](http://mmiworks.net/metapolator/demoparaadd.png)
+
+The panel has two columns of pushbuttons (highlights on mouse-down, invokes on mouse-up inside, bails out on mouse-up outside area), one for picking a parameter, one for picking an operator. The order of picking them does not matter (parameter first or operator first), the button invoke that completes a parameter + operator choice closes the panel, inserts the parameter + operator expression in the section according to the [hierarchy](https://github.com/metapolator/metapolator/wiki/working-UI-demo#hierarchy) with a focussed, empty value field.
+
+When the first choice has been made:
+
+![](http://mmiworks.net/metapolator/demoparaadd1.png)
+
+another choice in the same column can still be picked by clicking it (i.e. the column shows radio behaviour after the first click).
+
+Clicking the full-width & bold Cancel button at the bottom closes the panel without adding any expression to the section, as does clicking outside the panel at any time.
+
+##### unavailable combinations
+The value assign (=), min and max operators can only be defined once for each parameter, for each section. We arrange this for these operators by making an parameter + operator unavailable when it is already defined in that section. When the parameter is picked first, the operator is greyed out, when the operator  is picked first, the parameter is greyed out.
+
+_Example: Width-min is already defined for the glyph section. When the Add panel is shown for that section, both Width and min are normal and active. When Width is picked first, min becomes greyed out. When min is picked first, Width becomes greyed out._
+
+In extreme cases any of the =, min, or max operators may be greyed out when the Add panel pops up, because all parameters already define it.
+
 #### the math
 Calculating the effective value of each parameter is done in the following, strict order:
 
