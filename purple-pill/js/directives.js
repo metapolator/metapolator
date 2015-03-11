@@ -196,8 +196,8 @@ app.directive('body', function() {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
-            element.bind('click', function(event) {
-                if (!$(event.target).parents('.localmenu').length) {
+            element.bind('mouseup', function(event) {
+                if (!$(event.target).parents('.localmenu').length || $(event.target).hasClass('lm-divider') || $(event.target).hasClass('lm-body') || $(event.target).hasClass('inactive')) {
                     for (var x in scope.data.localmenu) {
                         if (x != menu) {
                             scope.data.localmenu[x] = false;
