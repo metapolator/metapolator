@@ -133,6 +133,38 @@ _Example: Width-min is already defined for the glyph section. When the Add panel
 
 In extreme cases any of the =, min, or max operators may be greyed out when the Add panel pops up, because all parameters already define it.
 
+#### removing and changing expressions
+In principle any parameter expression can be removed, or have its parameter or operator component changed. These change actions are really the same as removing the old and adding the new expression, including starting out again with a focussed, empty value field.
+
+Some expressions cannot be removed, nor changed, **all of these are in the glyph section**—
+
+* any effective value expression;
+* any inherent value expression;
+* any value assign expression that on removal would be automatically replaced by an inherent value expression **with the same value**.
+
+Any expression that can be removed/changed highlights on mouse-over (no delay) the area taken up by the operator and—if it is displayed at the same line as this operator—the parameter label (all possible shown here):
+
+![](http://mmiworks.net/metapolator/demoparachangeme.png)
+
+clicking on either a parameter label or an operator shows different popup panels. For parameter labels, this popup is shown:
+
+![](http://mmiworks.net/metapolator/demoparaparapop.png)
+
+it is a variant of the Add popup with the following changes:
+
+* only one column: the parameter column with the correct parameter label highlighted;
+* invoking any other parameter button closes the popup and changes the parameter of the expression (remember: remove then add);
+* the Remove button at the bottom removes the expression from the section (no warning);
+* a click on the highlighted button closes the popup without changing anything, as does clicking outside the panel at any time.
+
+For operators, this popup is shown:
+
+![](http://mmiworks.net/metapolator/demoparaoppop.png)
+
+which works analogue to the parameter one, just changes the operator.
+
+**note**: that both of these popup also implement the greying out of [unavailable combinations](https://github.com/metapolator/metapolator/wiki/working-UI-demo#unavailable-combinations).
+
 #### the math
 Calculating the effective value of each parameter is done in the following, strict order:
 
