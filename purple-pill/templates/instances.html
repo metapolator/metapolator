@@ -19,14 +19,14 @@
     </li>
 </ul>
 
-<br><br><br>
 
-<div ng-repeat="instance in data.families[0].instances">
-    <b>{{instance.id}}</b>
-    <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
-    <div>masters: <span ng-repeat="master in instance.masters">[{{master.masterId}}]: {{master.value | number:3}} | </span></div>
+<div style="padding: 20px">
+    <div ng-repeat="instance in data.families[0].instances">
+        <b>{{instance.id}}</b>
+        <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
+        <div>masters: <span ng-repeat="master in instance.masters">[{{master.masterId}}]: {{master.value | number:3}} | </span></div>
+    </div>
 </div>
-
 
 <div id="instances-tools">
     <div id="add-instance" ng-click="data.addInstance();" class="instance-tool" ng-class="{'inactive': !data.canAddInstance()}">

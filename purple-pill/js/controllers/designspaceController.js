@@ -167,7 +167,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         designspace.mainMaster = "0";
         
         // trigger the designspace to redraw
-        $scope.data.currentDesignSpace++;
+        $scope.data.currentDesignSpace.trigger++;
     };
 
     function valueToAxes() {

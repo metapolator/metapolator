@@ -5,6 +5,8 @@ $(document).ready(function() {
 
     /***************  dividers ***************/
 
+    moveLandscape(1, false);
+    
     $("divider").draggable({
         axis : "x",
         start : function() {
@@ -27,7 +29,6 @@ $(document).ready(function() {
     var mirrorWorkArea;
 
     function checkMirror(element) {
-        console.clear();
         var i = parseInt($(element).attr("div"));
         if (i == 0) {
             var thisO = 0;
@@ -59,15 +60,9 @@ $(document).ready(function() {
         if (mirrorPanel) {
             mirrorWorkArea = divider.parts[mirrorPanel] + divider.parts[outerPanel];
         }
-        console.log("outerPanel: " + outerPanel);
-        console.log("centerPanel: " + centerPanel);
-        console.log("inactivePanel: " + inactivePanel);
-        console.log("mirrorPanel: " + mirrorPanel);
-        console.log("mirrorWorkArea: " + mirrorWorkArea);
     }
 
     function keepTrack(element) {
-        console.clear();
         var i = parseInt($(element).attr("div"));
         var screenWidth = $("#pagewrap").outerWidth();
         if (i == 0) {
@@ -84,8 +79,6 @@ $(document).ready(function() {
         moveLandscape(currentView, false);
         recountSums();
         resizePanels();
-        console.log(divider.parts);
-        console.log(divider.sums);
     }
 
     divider = {
@@ -119,7 +112,6 @@ $(document).ready(function() {
     function setDividersRelative() {
         var screenWidth = $("#pagewrap").outerWidth();
         var landscapeWidth = $("#landscape").outerWidth();
-        console.log(landscapeWidth);
         for (var id = 0; id < 7; id++) {
             var thisWidth = Math.floor($("#panel-" + (id + 1)).outerWidth());
             $("#panel-" + (id + 1)).css("width", "calc(" + thisWidth + "/" + landscapeWidth + " * 100%)");
@@ -134,9 +126,6 @@ $(document).ready(function() {
     $(window).resize(function() {
         moveLandscape(currentView, false);
         setArrayAbsolute();
-        console.clear();
-        console.log(divider.parts);
-        console.log(divider.sums);
     });
 
     $(".menu-item").on("click", function() {
@@ -144,7 +133,7 @@ $(document).ready(function() {
         moveLandscape(view, true);
     });
 
-    moveLandscape(0, 1);
+    
 
     function moveLandscape(view, transition) {
         currentView = view;
