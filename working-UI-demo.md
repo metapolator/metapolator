@@ -148,7 +148,7 @@ Any expression that can be removed/changed highlights on mouse-over (no delay) t
 
 clicking on either a parameter label or an operator shows different popup panels. For parameter labels, this popup is shown:
 
-![](http://mmiworks.net/metapolator/demoparaparapop.png)
+![](http://mmiworks.net/metapolator/demoparaparapop2.png)
 
 it is a variant of the Add popup with the following changes:
 
@@ -159,11 +159,14 @@ it is a variant of the Add popup with the following changes:
 
 For operators, this popup is shown:
 
-![](http://mmiworks.net/metapolator/demoparaoppop.png)
+![](http://mmiworks.net/metapolator/demoparaoppop2.png)
 
 which works analogue to the parameter one, just changes the operator.
 
 **note**: that both of these popup also implement the greying out of [unavailable combinations](https://github.com/metapolator/metapolator/wiki/working-UI-demo#unavailable-combinations).
+
+#### changing values
+**Every** value in the right hand column can be edited. **Every** one of them highlights on mouse-over (no delay). A click puts the value in edit mode.
 
 #### the math
 Calculating the effective value of each parameter is done in the following, strict order:
