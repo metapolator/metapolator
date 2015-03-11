@@ -53,7 +53,7 @@ What stays is a system of **operators** (=, ×, +, max, min)—completed (with -
 #### hierarchy
 No matter what is being shown in the parameter panel, the layout maintains the following display hierarchy (in top–to–bottom order of display):
 
-* level 1 **context**:
+* level 1 **section**:
 * master
 * glyph
   * level 2 **parameter**:
@@ -80,7 +80,54 @@ No matter what is being shown in the parameter panel, the layout maintains the f
 
 _This means that the parameter panel is split in two, a master and a glyph part; each of these parts has a lists of parameters; each parameter shows the operators that are set and (when needed) the effective value; when the value of an operator is a range, the lowest and highest value are shown._
 
-_(let’s make some drawings, peter)_
+#### an overview
+
+![](http://mmiworks.net/metapolator/demoparaoverview.png)
+
+_An example shows how the parameter panel works, currently one glyph is selected in the specimen. At the top is the master section, where any number of parameter expressions can appear that work on the whole master. In this case two have been defined for this master, for Width and Slant. Both Master and Glyph sections have Add buttons (not Swiss flags) in their headings to add more expressions._
+
+_In the glyph section all parameters are shown (in this case all possible 8). Each one has an assigned value (=) or an inherent value (:) coming from lower levels that we cannot display right now. Independently, Tension and Weight also show that a range of values exists for this selection (the glyph). The black pen nib symbols indicate that 4 parameters have effective values, resulting from expressions. For Width and Slant this is the result of the Master expressions, for Spacing and Sidebearings it is the result of a single local expression (these parameters are coupled by Spacing = Sidebearing-front + Sidebearing-back)._
+
+#### starting simple
+Here are the absolute simplest forms the parameter panel can have. This is what we expect to show right after a ufo has been imported.
+
+When one or more masters are the selection:
+
+![](http://mmiworks.net/metapolator/demoparasimplemaster.png)
+
+The simplest state is no expressions at master level and glyph level is never shown for master selections.
+
+When one or more glyphs are the selection:
+
+![](http://mmiworks.net/metapolator/demoparasimpleglyph.png)
+
+The simplest state is  no expressions at master level and at glyph level all the parameters are shown with straight values. Most of the parameters are best modelled as being glyph-level and can be represented with a value-assignment expression. Some parameters are obviously point ones and shown to have inherent values. It is very normal that even in this simplest form ranges are shown.
+
+To achieve their goals users can perform the following actions:
+
+* add expressions to the master and glyph sections;
+* change expressions or remove them;
+* change any of the values in the right-hand column.
+
+We will look at each of these now.
+
+#### the math
+Calculating the effective value of each parameter is done in the following, strict order:
+
+1. take the assigned or inherent value—
+  * an assigned value on any level beats an inherent one;
+  * an assigned value on glyph level beats an assigned value on master level.
+* apply any glyph-level multiplication (×) and divide (÷) expressions;
+* apply any glyph-level addition (+) and subtraction (-) expressions;
+* apply any master-level multiplication (×) and divide (÷) expressions;
+* apply any master-level addition (+) and subtraction (-) expressions;
+* apply any minimum value (min) expression;
+  * a min on glyph level beats a min on master level.
+* apply any maximum value (max) expression;
+  * a max on glyph level beats a max on master level.
+* done.
+
+We see that by and large this follows the order of display of expressions.
 
 **local menu**: none
 
