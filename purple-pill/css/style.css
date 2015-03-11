@@ -1159,6 +1159,7 @@
     #layover {
         display: block;
         position: fixed;
+        z-index: 1000;
         left: 0;
         top: 0;
         height: 100%;
@@ -1168,6 +1169,7 @@
 
     .compatibility-info {
         position: fixed;
+        z-index: 1001;
         left: calc(50% - 300px);
         top: 18px;
         width: 600px;
