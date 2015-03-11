@@ -27,9 +27,9 @@
     <!-- glyph range -->
     <div id="glyph-range" ng-if="selectedSpecimen.name == 'glyph range'">
         <div ng-repeat="sequence in data.sequences">
-            <ul class="glyph-range-master" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display && master.type == 'redpill'" class="glyph-range">
-                <li ng-class="{'selected-glyph':glyph.edit}" ng-style="{'margin': (fontSize / 6) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range">
-                    <glyph sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband"></glyph>
+            <ul class="glyph-range-master glyph-range" ui-sortable="sortableOptions" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display && master.type == 'redpill'">
+                <li ng-style="{'margin': (fontSize / 6) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range">
+                    <glyph sequence="{{$grandparent.$index}}" master="{{$parent.$index}}" glyph="{{glyph.value}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'selected-glyph':glyph.edit}"></glyph>
                 </li>
             </ul>
         </div>
