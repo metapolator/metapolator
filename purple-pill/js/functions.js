@@ -2,6 +2,7 @@
 var currentView = 0;
 
 $(document).ready(function() {
+        
 
     /***************  dividers ***************/
 

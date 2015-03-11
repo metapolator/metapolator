@@ -1102,6 +1102,10 @@
                 background: #ddd;
             }
             
+            .lm-button.lm-button-hover {
+                background: #ddd;
+            }
+            
        .lm-divider {
            margin: 4px 0;
            background: #ddd;

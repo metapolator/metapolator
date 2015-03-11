@@ -30,6 +30,20 @@ app.directive('ag', function($compile) {
 });
 */
 
+app.directive('lmButton', function($compile) {
+    return {
+        restrict : 'C',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('hover', function(event) {
+                element.addClass("lm-button-hover");
+            });
+            element.bind('mouseleave', function(event) {
+                element.removeClass("lm-button-hover");
+            });
+        }
+    };
+});
+
 app.directive('glyph', function($compile) {
     return {
         restrict : 'E',
