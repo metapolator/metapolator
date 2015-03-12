@@ -126,12 +126,30 @@ another choice in the same column can still be picked by clicking it (i.e. the c
 
 Clicking the full-width & bold Cancel button at the bottom closes the panel without adding any expression to the section, as does clicking outside the panel at any time.
 
-##### unavailable combinations
+##### unique expressions
 The value assign (=), min and max operators can only be defined once for each parameter, for each section. We arrange this for these operators by making an parameter + operator unavailable when it is already defined in that section. When the parameter is picked first, the operator is greyed out, when the operator  is picked first, the parameter is greyed out.
 
 _Example: Width-min is already defined for the glyph section. When the Add panel is shown for that section, both Width and min are normal and active. When Width is picked first, min becomes greyed out. When min is picked first, Width becomes greyed out._
 
 In extreme cases any of the =, min, or max operators may be greyed out when the Add panel pops up, because all parameters already define it.
+
+##### consolidated expressions
+The design must strike a delicate balance between allowing users to define expressions for randomly overlapping glyph and master selections, helping users with math, and ensuring that the parameter panel view down not contain an ‘spaghetti code’ of operator lines.
+
+To achieve the first two goals, we will allow users to enter any number of operators, just so that they can reach their goals:
+
+To achieve the goal of no spaghetti, we will clean up after them by consolidating each of the ×, ÷, +, - expressions:
+
+
+
+The right moment to do consolidation is when the selection that is the context of parameter work finishes, i.e. when the selection in the master list or specimen changes. For **each** of the Master and Glyph sections, and for **each** parameter, individually:
+
+* if there are multiple × expressions, consolidate them into one by multiplying the individual values (new value is one? fine, just put it);
+* if there are multiple ÷ expressions, consolidate them into one by multiplying the individual values (new value is one? fine, just put it);
+* if there are multiple + expressions, consolidate them into one by adding up the individual values (new value is zero? fine, just put it);
+* if there are multiple - expressions, consolidate them into one by adding up the individual values (new value is zero? fine, just put it).
+
+Why not consolidate × with ÷ and + with -, makes math sense, no? Because we do not know and cannot judge **why** some expressions were entered as × and some as ÷, some as + and some as -, we better not go too far.
 
 #### removing and changing expressions
 In principle any parameter expression can be removed, or have its parameter or operator component changed. These change actions are really the same as removing the old and adding the new expression, including starting out again with a focussed, empty value field.
@@ -167,6 +185,22 @@ which works analogue to the parameter one, just changes the operator.
 
 #### changing values
 **Every** value in the right hand column can be edited. **Every** one of them highlights on mouse-over (no delay). A click puts the value in edit mode.
+
+When a new value is committed by users (i.e. by a return or on blur) the data of the selection and the display in the specimen is updated. _This is a bit of a deliberate slowdown, I do not think we can afford real real-time tracking of input values in the specimen._
+
+**special rules** for some operators:
+
+* committing a new value for an **inherent value** operator (:) changes it to a value assign (=) one;
+* committing a new value for either **min** or **max** operator triggers a check: that for this parameter there is not a min expression with a higher value than a max expression; note that the min and max can appear in both Master and Glyph sections, and that only effective expressions matter; _a min that is defined in the Master section but is overridden by a min in the Glyph section does not matter;_
+  * when the x-over occurs (min higher than max), then the value that was just committed is not used for data and display, the value field is kept/brought back to edit state (even scrolled back into view when necessary) and the text of the field is drawn in red.
+* committing a new value for an **effective value** (i.e. overwriting a calculated outcome) triggers a **calc-back**: the inverse of the [math section](https://github.com/metapolator/metapolator/wiki/working-UI-demo#the-math); here it is in strict order:
+  1. if a min or max is defined for this parameter and the new effective value can be made valid by simply redefining the value of this min or max (to the same value), without the need to touch the assigned or inherent value, then **just do it** and stop evaluating the rules below;
+  * apply the inverse of any master-level addition (+) and subtraction (-) expressions;
+  * apply the inverse of any master-level multiplication (×) and divide (÷) expressions;
+  * apply the inverse of any glyph-level addition (+) and subtraction (-) expressions;
+  * apply the inverse of any glyph-level multiplication (×) and divide (÷) expressions;
+  * the value that is the result from the computations above is the new assigned value (=) of this parameter (if it had an inherent value (:) up to now, this is replaced by an assigned one);
+  * done.
 
 #### the math
 Calculating the effective value of each parameter is done in the following, strict order:
