@@ -38,7 +38,7 @@ Her is the list of parameters we support:
   * sidebearings _(value pair, e.g. “40|30”, = front|back, **not** left|right)_
 * X-height _(tricky, works only for latin and needs preparation in the incoming ufo)_
 
-These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs. We can make a nice interim design for this panel, something very simple with a hint of things to come.
+These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs.
 
 ### interim design
 
@@ -134,15 +134,19 @@ _Example: Width-min is already defined for the glyph section. When the Add panel
 In extreme cases any of the =, min, or max operators may be greyed out when the Add panel pops up, because all parameters already define it.
 
 ##### consolidated expressions
-The design must strike a delicate balance between allowing users to define expressions for randomly overlapping glyph and master selections, helping users with math, and ensuring that the parameter panel view down not contain an ‘spaghetti code’ of operator lines.
+The design must strike a delicate balance between allowing users to define expressions for randomly overlapping glyph and master selections, helping users with math, and ensuring that the parameter panel view does not contain ‘spaghetti code’ of operator lines.
 
 To achieve the first two goals, we will allow users to enter any number of operators, just so that they can reach their goals:
 
-To achieve the goal of no spaghetti, we will clean up after them by consolidating each of the ×, ÷, +, - expressions:
+![](http://mmiworks.net/metapolator/demoparamulti.png)
 
+_(here is a nice example of a range in the master parameters; glyphs of several masters have been selected here and they have a range of slants on master level. the adjustment done here to the slant of the master _does_ apply to all glyphs in those masters, and not just to the selected glyphs.)_
 
+To achieve the goal of ‘no spaghetti’, we will clean up after users by consolidating each of the ×, ÷, +, - expressions:
 
-The right moment to do consolidation is when the selection that is the context of parameter work finishes, i.e. when the selection in the master list or specimen changes. For **each** of the Master and Glyph sections, and for **each** parameter, individually:
+![](http://mmiworks.net/metapolator/demoparaconsoled.png)
+
+The right moment to perform consolidation is when the selection that is the context of parameter work finishes, i.e. when the selection in the master list or specimen changes. For **each** of the Master and Glyph sections, and for **each** parameter, individually:
 
 * if there are multiple × expressions, consolidate them into one by multiplying the individual values (new value is one? fine, just put it);
 * if there are multiple ÷ expressions, consolidate them into one by multiplying the individual values (new value is one? fine, just put it);
@@ -201,6 +205,9 @@ When a new value is committed by users (i.e. by a return or on blur) the data of
   * apply the inverse of any glyph-level multiplication (×) and divide (÷) expressions;
   * the value that is the result from the computations above is the new assigned value (=) of this parameter (if it had an inherent value (:) up to now, this is replaced by an assigned one);
   * done.
+
+##### changing ranges
+
 
 #### the math
 Calculating the effective value of each parameter is done in the following, strict order:
