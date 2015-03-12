@@ -367,13 +367,3 @@ notice the _very_ green areas; they are blank in the working UI demo, there is n
 This creates an opportunity for communicating the future of Metapolator, and the fact that we need support to be able to realise that future. Since these are just website frames, the green panels can be updated at any given moment, evolving as the project evolves. No need to get in a funk right now to determine the perfect content.
 
 **note:** especially the large green panel on the right is promising; just where users are getting their results out (ufos), there is a lot of space to communicate.
-
-## the _what’s next_ list
-The list below, regularly updated by Peter, in consensus with both Jeroen and Dave, lists the upcoming implementation tasks for the working UI demo:
-
-1. finish generic list interaction _(e.g buttons on the bottom, line and column interaction)_
-* based on the above, make master and instance list work _(especially the wiring to other panels)_
-* parameter panel _(needs design)_
-* font export column, export duration estimate and progress indication _(needs design)_
-* finish the local menus _(both mouse click-move-click and mouse down-drag-release modes)_
-* … _(updated as we progress)_
