@@ -153,6 +153,8 @@ The right moment to perform consolidation is when the selection that is the cont
 * if there are multiple + expressions, consolidate them into one by adding up the individual values (new value is zero? fine, just put it);
 * if there are multiple - expressions, consolidate them into one by adding up the individual values (new value is zero? fine, just put it).
 
+We see in our example that consolidation is also applied to ranges.
+
 Why not consolidate × with ÷ and + with -, makes math sense, no? Because we do not know and cannot judge **why** some expressions were entered as × and some as ÷, some as + and some as -, we better not go too far.
 
 #### removing and changing expressions
@@ -207,7 +209,16 @@ When a new value is committed by users (i.e. by a return or on blur) the data of
   * done.
 
 ##### changing ranges
+When either the highest or the lowest value of a range has a new value committed, the whole range is changed proportionately by it. If hi<sub>old</sub> and lo<sub>old</sub> get changed to hi<sub>new</sub> and lo<sub>new</sub> (really only one of hi or lo gets changed per commit, yes), then for every Value<sub>old</sub> in the range Value<sub>new</sub> = lo<sub>new</sub> + ( (hi<sub>new</sub> - lo<sub>new</sub>)/(hi<sub>old</sub> - lo<sub>old</sub>) ) * (Value<sub>old</sub> - lo<sub>old</sub>).
 
+Yes, a range change can x-over (e.g. range is 10–50, 10 gets changed to 100, result is 50–100). The math above simply handles that, as long as we on commit of that 100 check which on is the new hi, and which the new lo (and also stick the two numbers in the right place in the UI).
+
+What if hi<sub>new</sub> = lo<sub>new</sub>? That could be intentional (fold a range into a single value) or just a mistake. We cannot know, so we better ask. A dialog with text “Replace the range of \<lo<sub>old</sub>\> to \<hi<sub>old</sub>\> with the single value \<Value<sub>new</sub>\>?” and OK and Cancel buttons.
+
+The range that is being changed can be of effective values (actually, that is a compelling reason for having this). Then two situations can occur:
+
+1. the path of max, min, -, +, ÷, and × expressions to the value assignment contains **only single values**; then it is simple enough to take the new value committed, do a calc-back and find out whether a min, max or one of the value assign range needs changing, do it and have the fallout trickle down the system; this builds the effective value range;
+* the path of max, min, -, +, ÷, and × expressions to the value assignment contains **one or more ranges**; in that case the effective value range is first change proportionately, then each new effective value is calc-ed back, via its own expression path, to a value-assignment value; this builds the value-assignment range.
 
 #### the math
 Calculating the effective value of each parameter is done in the following, strict order:
