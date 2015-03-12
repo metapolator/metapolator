@@ -1050,10 +1050,16 @@
         padding: 6px 8px;
     }
     
+
+    
         .lm-head:after {
             content: "▼";
             font-size: 10px;
             margin-left: 2px;
+        }
+        
+        .lm-head:hover:after {
+            color: #f85c37;
         }
         
     .lm-body {
@@ -1169,6 +1175,7 @@
 
     .compatibility-info {
         position: fixed;
+        border-radius: 4px;
         z-index: 1001;
         left: calc(50% - 300px);
         top: 18px;
