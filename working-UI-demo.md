@@ -40,6 +40,8 @@ Her is the list of _possible_ parameters we could support:
 
 These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs.
 
+**local menu**: none
+
 ### interim design
 
 Analysing what’s different about the parameter system for the working UI demo, we see the following:
@@ -248,7 +250,22 @@ Calculating the effective value of each parameter is done in the following, stri
 
 We see that by and large this follows the order of display of expressions.
 
-**local menu**: none
+#### layout and typography hints
+Just some input for visual design and development.
+
+**note** that in general laying out the parameter panel is like laying out a telephone book; its tight, with many rows of name and number.
+
+![](http://mmiworks.net/metapolator/demoparaalign.png)
+
+We see that the layout is built out of two columns, within which all text is right-aligned. I put two spaces between the parameter label and the operator and two spaces in front of every value to determine the width of the value columns.
+
+The sign for effective value is from zapf dingbats (black nib).
+
+There is extra leading under every 3rd parameter (I used 5pt). After every range and energy effective value there is a bit (2pt) of extra leading (but not where the 5pt just mentioned is applied).
+
+Some of the ‘extra’ structural text (“to”, ‘°’, the ‘+’ that separates the two sidebearings) are toned down. I used 50% grey (cf. black).
+
+If the Sidebearings label is set in a condensed front, then the mid-axis can be shifted to the left and there is room for longer value numbers. 6 digits, with still room for a minus and a decimal point should do it. We should avoid crazy long fractional parts. Four fractional digits (1.2345) should be good enough for anything (said Bill Gates), and 1.3000 shall be displayed as 1.3 (i.e. chop off trailing zeros in fractions). Fingers crossed that the individual sidebearings numbers fit in 3 digits…
 
 ## specimen + glyph editor panel
 Forget about any direct-manipulation (i.e. with the mouse), direct specimen text editing, parameter editing, or about making selections on sub-glyph (e.g. stroke, point) level. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master), i.e. forget about the bottom bar with buttons and glyph code editing. For the filter there is no guarantee of completeness, nor a popup menu;
