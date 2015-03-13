@@ -183,78 +183,90 @@ function($scope, $sce, sharedScope) {
 
     /***************** setting the edit mode of glyphs *****************/
 
-    $scope.selectGlyph = function(sequenceId, masterId, glyph) {
-        for (var j = 0; j < $scope.data.sequences.length; j++) {
-            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
-                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
-                    if ($scope.data.sequences[j].masters[k].glyphs[l].value == glyph && sequenceId == j && masterId == k) {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = true;
-                    } else {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = false;
-                    }
+    $scope.selectGlyph = function(sequenceId, masterId, glyphName) {
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if(master.type == "redpill") {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if (glyph.value == glyphName && sequence.id == sequenceId && master.id == masterId) {
+                            glyph.edit = true;
+                        } else {
+                            glyph.edit = false;
+                        }
+                    }); 
                 }
-            }
-        }
+            });
+        });
     };
 
-    $scope.toggleGlyph = function(sequenceId, masterId, glyph) {
-        for (var j = 0; j < $scope.data.sequences.length; j++) {
-            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
-                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
-                    if ($scope.data.sequences[j].masters[k].glyphs[l].value == glyph && sequenceId == j && masterId == k) {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = !$scope.data.sequences[j].masters[k].glyphs[l].edit;
-                    }
+    $scope.toggleGlyph = function(sequenceId, masterId, glyphName) {
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if(master.type == "redpill") {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if (glyph.value == glyphName && sequence.id == sequenceId && master.id == masterId) {
+                            glyph.edit = !glyph.edit;
+                        }
+                    }); 
                 }
-            }
-        }
+            });
+        });
     };
 
     $scope.selectSet = function(set) {
-        for (var j = 0; j < $scope.data.sequences.length; j++) {
-            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
-                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
-                    var isinset = false;
-                    for (var m = 0; m < set.length; m++) {
-                        if ($scope.data.sequences[j].masters[k].glyphs[l].value == set[m].glyph && j == set[m].sequence && k == set[m].master) {
-                            isinset = true;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if(master.type == "redpill") {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        var isinset = false;
+                        for (var m = 0; m < set.length; m++) {
+                            if (glyph.value == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
+                                isinset = true;
+                            }
+                        } 
+                        // could gain speed here, by removing out of set
+                        if (isinset) {
+                            glyph.edit = true;
+                        } else {
+                            glyph.edit = false;
                         }
-                    }
-                    if (isinset) {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = true;
-                    } else {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = false;
-                    }
+                    }); 
                 }
-            }
-        }
+            });
+        });
     };
 
     $scope.toggleSet = function(set) {
-        for (var j = 0; j < $scope.data.sequences.length; j++) {
-            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
-                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
-                    var isinset = false;
-                    for (var m = 0; m < set.length; m++) {
-                        if ($scope.data.sequences[j].masters[k].glyphs[l].value == set[m].glyph && j == set[m].sequence && k == set[m].master) {
-                            isinset = true;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if(master.type == "redpill") {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        var isinset = false;
+                        for (var m = 0; m < set.length; m++) {
+                            if (glyph.value == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
+                                isinset = true;
+                            }
+                        } 
+                        // could gain speed here, by removing out of set
+                        if (isinset) {
+                            glyph.edit = !glyph.edit;
                         }
-                    }
-                    if (isinset) {
-                        $scope.data.sequences[j].masters[k].glyphs[l].edit = !$scope.data.sequences[j].masters[k].glyphs[l].edit;
-                    }
+                    }); 
                 }
-            }
-        }
+            });
+        });
     };
 
     $scope.deselectAll = function() {
-        for (var j = 0; j < $scope.data.sequences.length; j++) {
-            for (var k = 0; k < $scope.data.sequences[j].masters.length; k++) {
-                for (var l = 0; l < $scope.data.sequences[j].masters[k].glyphs.length; l++) {
-                    $scope.data.sequences[j].masters[k].glyphs[l].edit = false;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if(master.type == "redpill") {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        glyph.edit = false;
+                    }); 
                 }
-            }
-        }
+            });
+        });
     };
 
     // find out if the glyph edit is true
