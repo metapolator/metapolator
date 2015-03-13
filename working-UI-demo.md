@@ -26,7 +26,7 @@ When not:
 * Close
 
 ## parameters panel
-Her is the list of parameters we support:
+Her is the list of _possible_ parameters we could support:
 
 * Width
 * Height
