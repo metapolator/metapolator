@@ -253,7 +253,7 @@ We see that by and large this follows the order of display of expressions.
 #### layout and typography hints
 Just some input for visual design and development.
 
-**note** that in general laying out the parameter panel is like laying out a telephone book; its tight, with many rows of name and number.
+**note** that in general laying out the parameter panel is like laying out a telephone book; it’s tight, with many rows of name and number.
 
 ![](http://mmiworks.net/metapolator/demoparaalign.png)
 
