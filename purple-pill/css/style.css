@@ -980,9 +980,20 @@
     }
     
         .parameters-selection-head {
-            width: 100%;
+            width: calc(100% - 34px);
+            display: inline-block;
             background: #ddd;
             padding: 5px;
+        }
+        
+        .parameters-add {
+            width: 30px;
+            margin-left: 4px;
+            display: inline-block;
+            background: #ddd;
+            padding: 5px;
+            text-align: center;
+            cursor: default;
         }
         
         .parameters-selection-body {
@@ -1002,9 +1013,54 @@
                 padding: 2px;
             }
         
+    #parameters-control-panel {
+        display: block;
+        position: absolute;
+        z-index: 102;
+        right: 35px;
+        width: 200px;
+        background: #ddd;
+        padding: 8px;
+        border: 1px solid rgba(0,0,0,0.1);
+        box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+    } 
+    
+        #control-panel-parameters {
+            width: 65%;
+            display: inline-block;
+            float: left;
+        }       
         
+            .control-panel-parameter{
+                width: calc(100% - 4px);
+            }
 
-
+        #control-panel-operators {
+            width: 35%;
+            display: inline-block;
+            float: left;
+        }  
+            
+            .control-panel-operator {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .control-panel-button {
+                background: #aaa;
+                padding: 4px;
+                margin-bottom: 4px; 
+            }
+            
+                .control-panel-button:hover {
+                    background: #60BFEF;
+                }
+            
+            .control-panel-cancel {
+                clear: both;
+                text-align: center;
+                font-weight: 700;
+            }
 
 
 /**************** metadata ************************/

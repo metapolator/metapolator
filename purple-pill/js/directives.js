@@ -217,8 +217,11 @@ app.directive('body', function() {
                             scope.data.localmenu[x] = false;
                         }
                     }
-                    scope.$apply();
                 }
+                if (!$(event.target).hasClass('parameters-add')) {
+                    scope.data.parametersPanel = 0;
+                }
+                scope.$apply();
             });
         }
     };

@@ -58,5 +58,15 @@ app.controller("parametersController", function($scope, sharedScope) {
             });
         }); 
     };
+    
+    $scope.parametersWindow = function(event, target) {
+        var top = $(event.target).position().top + 15;
+        $scope.parameterPanelTop = top;
+        if (target != $scope.data.parametersPanel) {
+            $scope.data.parametersPanel = target;
+        } else {
+            $scope.data.parametersPanel = 0;
+        }
+    };
 
 });

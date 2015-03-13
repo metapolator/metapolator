@@ -529,8 +529,9 @@ app.factory("sharedScope", function($rootScope) {
             project : false,
             help : false,
             masters : false,
-            instances : false
-        }
+            instances : false,
+        },
+        parametersPanel : 0
     };
     return scope;
 });
