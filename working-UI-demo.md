@@ -101,8 +101,18 @@ When one or more glyphs are the selection:
 
 ![](http://mmiworks.net/metapolator/demoparasimpleglyph.png)
 
-The simplest state is  no expressions at master level and at glyph level all the parameters are shown with straight values. Most of the parameters are best modelled as being glyph-level and can be represented with a value-assignment expression. Some parameters are obviously point ones and shown to have inherent values. It is very normal that even in this simplest form ranges are shown.
+The simplest state is no expressions at master level and at glyph level all the parameters are shown with straight values. Most of the parameters are best modelled as being glyph-level and can be represented with a value-assignment expression. Some parameters are obviously sub-glyph parameters (Tension & Weight) and shown to have inherent values. 
 
+##### ranges
+It is very normal that even in this simplest form ranges are shown.
+
+Ranges are shown when for a parameter expression multiple, and different, data values are stored. This can be the case for multiple selections and for sub-glyph parameters (Tension & Weight). When multiple values are stored that are all _exactly_ the same then there is no range.
+
+When a multiple selection is the context and for some of the selected objects a parameter expression is define _(say + 2)_ and for the rest not, then for the ones missing a **trivial expression** is inserted _(in this example + 0)_, which builds a range to display _(+ 0 to 2)_.
+
+The trivial expressions are: × 1, ÷ 1, + 0, - 0, max \<assigned/inherent value\>, min \<assigned/inherent value\>.
+
+##### action!
 To achieve their goals users can perform the following actions:
 
 * add expressions to the master and glyph sections;
