@@ -943,32 +943,66 @@
 /**************** parameters ************************/
 
     
-        .inspector-branche {
-            margin-left: 16px;
-            display: block;
+        #inspector {
+            height: 100px;
+            overflow: auto;
         }
         
-        .inspector-header {
-            color: #224DB3;
+            .inspector-branche {
+                margin-left: 16px;
+                display: block;
+            }
+            
+            .inspector-header {
+                color: #224DB3;
+            }
+            
+            .inspector-inactive {
+                color: #aaa;
+                margin-left: 17px;
+            }
+            
+            arrow {
+                cursor: pointer;
+                color: #555;
+            }
+            
+            arrow::before {
+                content: "►";
+            }
+            
+            arrow.open::before {
+                content: "▼";
+            }
+            
+    #parameters-selection{
+        width: 100%;
+    }
+    
+        .parameters-selection-head {
+            width: 100%;
+            background: #ddd;
+            padding: 5px;
         }
         
-        .inspector-inactive {
-            color: #aaa;
-            margin-left: 17px;
+        .parameters-selection-body {
+            width: 100%;
         }
         
-        arrow {
-            cursor: pointer;
-            color: #555;
-        }
+            .parameter-key {
+                width: 65%;
+                display: inline-block;
+                text-align: right;
+                padding: 2px;
+            }
+            
+            .parameter-value {
+                width: 35%;
+                display: inline-block;
+                padding: 2px;
+            }
         
-        arrow::before {
-            content: "►";
-        }
         
-        arrow.open::before {
-            content: "▼";
-        }
 
 
 

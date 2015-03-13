@@ -70,6 +70,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             });
         });  
+        $scope.data.updateParameters();
     };
 
     $scope.selectEdit = function(set) {
@@ -90,6 +91,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             });
         });
+        $scope.data.updateParameters();
     };
 
     $scope.deselectAll = function() {

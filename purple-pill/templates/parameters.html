@@ -1,17 +1,35 @@
-<div class="inspector-header">
-    <span>{{data.projectName}}</span>
-</div>
-<div ng-repeat="sequence in data.sequences">
-    <div class="inspector-branche" style="display: block" ng-repeat="master in sequence.masters"  ng-if="master.edit && master.type != 'test'">
-        <div class="inspector-header">
-            <arrow></arrow>
-            <span ng-class="{'inspector-inactive' : !master.edit}">{{master.name}}</span>
-        </div>
-        <div class="inspector-branche" ng-repeat="glyph in master.glyphs" ng-if="glyph.edit">
+<div id="inspector">
+    <div class="inspector-header">
+        <span>{{data.projectName}}</span>
+    </div>
+    <div ng-repeat="sequence in data.sequences">
+        <div class="inspector-branche" style="display: block" ng-repeat="master in sequence.masters"  ng-if="master.edit && master.type != 'test'">
             <div class="inspector-header">
                 <arrow></arrow>
-                <span>{{glyph.value}}</span>
+                <span ng-class="{'inspector-inactive' : !master.edit}">{{master.name}}</span>
             </div>
+            <div class="inspector-branche" ng-repeat="glyph in master.glyphs" ng-if="glyph.edit">
+                <div class="inspector-header">
+                    <arrow></arrow>
+                    <span>{{glyph.value}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="parameters-selection">
+    <div class="parameters-selection-head">Master</div>
+    <div class="parameters-selection-body">
+        <div ng-repeat="(key, value) in data.masterParameters">
+            <div class="parameter-key">{{key}} =</div><div class="parameter-value">{{value}}</div>
+        </div>
+    </div>
+    
+    <div class="parameters-selection-head">Glyph</div>
+    <div class="parameters-selection-body">
+        <div ng-repeat="(key, value) in data.glyphParameters">
+            <div class="parameter-key">{{key}} =</div><div class="parameter-value">{{value}}</div>
         </div>
     </div>
 </div>
