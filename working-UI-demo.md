@@ -333,7 +333,6 @@ Simon and I will come up with a (picture) glimpse of things to come for the adju
 The local menu is as follows:
 
 * Import ufo…
-* -- \<separator\> --
 * Duplicate
 * -- \<separator\> --
 * Delete…
