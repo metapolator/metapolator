@@ -1,4 +1,14 @@
-A further development of the pioneering work [performed earlier](https://github.com/metapolator/metapolator/wiki/elements-of-design#working-with-masters-and-glyphs-in-context). Note the [challenges](https://github.com/metapolator/metapolator/wiki/elements-of-design#challenges) and [the rules](https://github.com/metapolator/metapolator/wiki/elements-of-design#the-rules).
+A further development of the pioneering work [performed earlier](https://github.com/metapolator/metapolator/wiki/elements-of-design#working-with-masters-and-glyphs-in-context).
+
+## challenges
+
+1. why does this master / glyph / stroke / line look like this?
+  * on which hierarchy level(s) is the parameter set?
+* for a given context (global, master, script, glyph, stroke, line, point, vector shape), what parameters are set?
+  * is there interaction with settings at higher hierarchy levels—if so, where?
+  * are there settings on lower levels that make this one ineffective?
+* for a given _leaf_ context (glyph, line, point, vector shape) what are the effective values of the native parameters of that level?
+* when a multi-selection is the context (e.g. a couple of masters, or a handful of glyphs), how not to get thoroughly confused by a plethora of different set/effective values for the same parameter?
 
 ## an interim parameter overview
 _—work in progress_
