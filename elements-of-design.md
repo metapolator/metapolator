@@ -210,7 +210,7 @@ The master section is completely occupied by the master list with a label + loca
 
 ![](http://mmiworks.net/metapolator/masterlist5.png)
 
-_**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in either Parameters or Design Spaces view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
+_**quick overview**: this project contains 7 masters; one (Light) is currently selected, any edits or actions are applied to it; two other masters (Thin, Thin Italic) are marked to be also viewed in the specimen (in the Parameters view); there are two master sequences, one containing 4 masters (called Weight) and one containing two—called Itals._
 
 #### list behaviour
 The list scrolls vertically when necessary and consist of 3 columns. From left (for L–to–R UI locales) we see:
@@ -223,7 +223,7 @@ The list scrolls vertically when necessary and consist of 3 columns. From left (
 The view column shows some characters, set in this master, to identify it. Which characters appear there by default is dependent on the scripts setup of this master.
 
 * The characters can also be edited by users: double click to get a text edit box; this allows users to set up their own identification system;
-* when a master is not part of the current selection, clicking its view column toggles display of this master in the specimen (in either Parameters or Design Spaces view); a highlight in this column confirms the view mode;
+* when a master is not part of the current selection, clicking its view column toggles display of this master in the specimen (in the Parameters view); a highlight in this column confirms the view mode;
   * mouse-down in the view column, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off;
   * the toggle is on mouse-down; when the mouse is down and moved outside the view column, the item is un-toggled (also for the swipe action above); when the mouse is released outside the view column, the view state of the item is un-changed(also for the swipe action above).
 * being (de)selected does not change the view mode of a master.
@@ -231,7 +231,7 @@ The view column shows some characters, set in this master, to identify it. Which
 ##### control column
 The control column shows the name of the master and allow users to directly manipulate the master list item:
 
-* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; one or more masters can be selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the specimen (in either Parameters or Design Spaces view);
+* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; one or more masters can be selected in this list, this is what gets manipulated in the Parameters view (parameter editing, local menu actions) and the Design Spaces view; ah, and what is selected is always shown in the Parameters view specimen; **note** that two separate select states are to be maintained, one for the Parameters view, one for the Design Spaces view; while a transition is made from view to view, the select state is swapped out, preferably smoothly;
 * double click to rename master, to get a text edit box;
 * drag and drop to resort master list items (also of a multiple-selection); 
 * drag and drop into a design space (also of a multiple-selection).
@@ -389,7 +389,7 @@ The view column shows some characters, set in this instance, to identify it. Whi
 ##### control column
 The control column shows the name of the instance and allow users to directly manipulate the instance list item:
 
-* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; one or more instances can be selected in this list, this is what gets manipulated in the Design Spaces and Fonts view; what is selected is always shown in the specimen (in Design Spaces view);
+* click to select; standard list multiple selection—i.e. add and subtract items through command/ctrl and shift keys—is fully supported; one or more instances can be selected in this list, this is what gets manipulated in the Design Spaces and Fonts view; what is selected is always shown in the specimen (in Design Spaces view); **note** that two separate select states are to be maintained, one for the Design Spaces view, one for the Fonts view; while a transition is made from view to view, the select state is swapped out, preferably smoothly;
 * double click to rename instance, to get a text edit box;
 * drag and drop to resort instance list items (also of a multiple-selection);
 * drag and drop into a design space (also a multiple-selection).
@@ -518,119 +518,7 @@ Immediate, live update of parameters & skeleton changes means in practice within
 Ah yeah, what is special about the character range view? It is the only one where it makes sense to offer glyph management (add, sort and delete).
 
 ## parameter review and editing
-Let us develop the section called ‘parameters’, the one at the very start (in reading direction) of the overall UI layout. It is used to review and edit parameters of (adjustment) masters, up and down this hierarchy:
-
-* project
-  * master
-    * script
-      * glyph
-        * stroke (fka skeleton, or segment)
-          * line
-          * point
-        * vector shape
-
-Some interesting dynamics are at play:
-
-1. parameters really _belong_ to the lower levels of the hierarchy, i.e. parameters are **_native_** to either—
-  * glyph;
-  * line;
-  * point;
-  * vector.
-* parameters set at any level in the hierarchy (except for project) can be modified at a higher level (e.g. the width set for a glyph can be scaled (* 0.9) at master level);
-* parameters set at any level in the hierarchy can be modified, or even overwritten, at a lower level—down to the level where these parameters are native (e.g. the weight set for a script can be capped by a maximum (<= X) value at glyph level; the slant set at a project level can be overwritten (= 0) at glyph level);
-* a number of parameters are mandatory—if one is missing, glyphs cannot be drawn. thus for a master—for each and every glyph, line, point, vector shape they native to to—they need to be be defined (= XYZ) at that, or a higher level; for an adjustment master no such requirement exists (thus is the nature of an adjustment master: it is a delta);
-
-### challenges
-
-1. why does this master / glyph / stroke / line look like this?
-  * on which hierarchy level(s) is the parameter set?
-* for a given context (global, master, script, glyph, stroke, line, point, vector shape), what parameters are set?
-  * is there interaction with settings at higher hierarchy levels—if so, where?
-  * are there settings on lower levels that make this one ineffective?
-* for a given _leaf_ context (glyph, line, point, vector shape) what are the effective values of the native parameters of that level?
-* when a multi-selection is the context (e.g. a couple of masters, or a handful of glyphs), how not to get thoroughly confused by a plethora of different set/effective values for the same parameter?
-
-### the rules
-
-From a user interaction perspective, this is a simple but effective system for how the parameter operators cascade along the hierarchy:
-
-1. only parameters who have their value set (=) anywhere in the hierarchy are defined; for most parameters a sensible default can be defined to make sure this does not happen, but not for all (e.g coordinates);<br/>
-_(e.g. any scaling (×), offset (+), etc operators may be defined for coordinate x along the hierarchy, but if x is not set to a value anywhere, it is undefined)_
-* the lowest hierarchy level that sets the value (=) wins;<br/>
-_(e.g. script level sets a parameter and glyph level too, then the glyph one wins—for this glyph)_
-* all scaling (×) and offsets (+) that are defined at any hierarchy level is applied; evaluation is bottom–to–top along the hierarchy and scaling is performed before offset if both are defined on the same hierarchy node<br/>
-_(e.g. if there is a mix of scaling and offsets at project (× 2.0), master (× 0.9 + -12) and glyph (+ 9) level of a parameter then first + 9, then × 0.9, then - 12 and last × 2.0 is performed on the parameter_
-* the lowest hierarchy level that sets a maximum (<=) wins;<br/>
-_(e.g. master level sets a maximum and point level too, then the point one wins—for that point)_
-* the lowest hierarchy level that sets a minimum (>=) wins.<br/>
-_(analogue to maximum)_
-
-### a rough design
-For how to set the working context, see the [highlighting section](https://github.com/metapolator/metapolator/wiki/elements-of-design#3-the-highlight).
-
-![](http://mmiworks.net/metapolator/masterpar.png)
-
-Above we see the parameters panel when a master is the working context. From the top—
-
-* project-level parameters are also displayed, in this case slant is scaled (* 2) for all masters;
-* for the master itself the point parameter ‘Direction in’ is set; it is shown next to it that 38% of all points in glyphs in this masters have this value overwritten somewhere along the hierarchy (it is also shown for the minimum and maximum operators, where applicable);
-* the ‘+’ buttons allow to add a parameter entries to the different levels;
-* when master is the working context, if more than one is configured for this master; in this case both latin and cyrillic script have no parameters defined, hence they are closed by default.
-
-![](http://mmiworks.net/metapolator/moverpar.png)
-
-Above we see the different **mouse-over** interaction. From the top—
-
-* close box to remove the parameter entry;
-* highlight over the operator (=); click to show a popup to change it:<br/>![](http://mmiworks.net/metapolator/opspop.png)
-* override percentage to highlight in the ‘character range or specimens’ panel the points that did receive an override;
-* value: click to activate an edit box.
-
-#### leaf nodes
-
-![](http://mmiworks.net/metapolator/pointpar2.png)
-
-Above we see the parameters panel when a leaf node, a point, is the working context. From the top—
-
-* all the hierarchy levels, from project downwards, are shown—collapsed by default—above the leaf level, but scrolled out of view (except for the direct parent) to save space;
-* an offset (+) parameter is set for Tension in; its value is negative; the ‘×+’ sign shows that at higher levels scale (*) and/or offset operators have also been applied to this parameter for this point; clicking the symbol pops up a panel that shows the trail of what is applied where (it is also shown for the scale  operator, where applicable);
-* the whole light-grey section is _all_ point parameters, with the current values for this point; it is split in Skeleton and Pen sections for clarity (and shorter parameter names on each line);
-* parameters that have a ‘=’ before their value have been set (operator =) directly at point level, with no scaling or offsets applied;
-* parameters that have a ‘:’ before their value have **not** been set (operator =) directly at point level, either operators are at play at other levels and/or at this point level also other operators than set (=) are active; clicking the ‘:’ allows to change the operator to ‘=’; clicking the value pops up a panel that shows the trail of what is applied where to reach this value.
-
-#### copy & paste
-![](http://mmiworks.net/metapolator/hipara.png)
-
-By clicking the parameter name, any parameter-configuring item can be highlighted. It can then be cut—deleting the item—or copied to the clipboard. What is copied is the triplet of parameter name, operator and value. It can then be pasted—
-
-* it is always pasted in the current working context, as set by the highlights in the ‘masters and adjustment masters’ and ‘character range or specimens’ panels (these can be quite complex, e.g. points across several glyphs, across several masters); there is no need to click in the parameter panel ageing to steer ‘where it needs to be pasted’;
-* for each individual destination of the working context (e.g. each point of a multi-select of points), if a parameter-configuring item with the same parameter name and operator already exists, then overwrite its value with the pasted one;
-  * for any other destination, add the pasted triplet as a new parameter configuration.
-
-#### drag & drop
-![](http://mmiworks.net/metapolator/moveonup.png)
-
-Any parameter-configuring item can be grabbed by the parameter name and dragged to a **higher** level in the hierarchy. This has the same effect as Cutting the item from its original location and pasting it at its destination—but then _without_ altering the contents of the clipboard.
-
-#### multi-select contexts
-On every level of the hierarchy (below project) it is possible to make several objects _of the same type_ the working context, i.e. several masters, scripts, glyphs, lines, points, or vector shapes. The challenge is that different values may be set for the same parameter, or that for one or more selected items it is not set at all.
-
-![](http://mmiworks.net/metapolator/multipara2.png)
-
-Above we see the display of a multi-select of four points. From the top—
-
-* the Tension in parameter is set for 50% of the items (i.e. 2 points) that form the context; clicking this percentage number highlights in the ‘character range or specimens’ panel the points that did;
-  * the range that the Tension in parameter is set to is shown to be -0.5 to 0.4;
-  * no ‘×+’ sign, nor the override percentage is shown in a multi-select context, because the baths up and down the hierarchy have become so much more complex for a set;
-* Angle is only set for one of the points, for multi-select contexts these part-set values are lifted out of the current-values section, where the resulting values for all items are shown;
-* in the current-values section we see a mix of single and multiple values, set at point level or above.
-
-For multi-select contexts the functionality of the parameters panel is more limited, but users can still do the following useful things:
-
-* see what parameters are set, how often and where, for the context
-* inspect the range of values, effective and/or set;
-* remove any parameter entry;
-* overwrite a range of values with a single one—an empty edit box is shown when clicking on the value range.
+Superseded by a [dedicated page](https://github.com/metapolator/metapolator/wiki/parameter-editing) and an [interim design](https://github.com/metapolator/metapolator/wiki/working-UI-demo#interim-design).
 
 ## metapolation sliders
 Superseded by [this](https://github.com/metapolator/metapolator/wiki/design-spaces#control-space).
