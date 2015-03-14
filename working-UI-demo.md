@@ -414,7 +414,7 @@ The local menu is as follows:
 * New
 * Duplicate
 * -- \<separator\> --
-* Delete…
+* Delete
 
 ## font export panel
 Simple manual opentype mapping, good chance that we can do it. I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
