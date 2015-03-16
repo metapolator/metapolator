@@ -218,7 +218,7 @@ app.directive('body', function() {
                         }
                     }
                 }
-                if (!$(event.target).hasClass('parameters-add')) {
+                if (!$(event.target).hasClass('parameters-add') && !$(event.target).hasClass('control-panel-button')) {
                     scope.data.parametersPanel = 0;
                 }
                 scope.$apply();

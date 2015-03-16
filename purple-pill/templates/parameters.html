@@ -1,3 +1,42 @@
+<div id="parameters-selection">
+    <div class="parameters-selection-head">Master</div><div class="parameters-add" ng-click="parametersWindow($event, 1, 'master')">+</div>
+    <div class="parameters-selection-body">
+        <div ng-repeat="parameter in filteredMasterParameters=(data.sequences | mastersInEditFilter)" class="parameter-row">
+            <div class="parameter-normal">
+                <div class="parameter-key">{{parameter.name}}</div>
+                <div class="parameter-operator">{{parameter.operator}}</div>
+                <div class="parameter-value"><input ng-model="parameter.value" ng-change="editParameter(parameter.name, parameter.operatorer, parameter.value)"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="parameters-selection-head">Glyph</div><div class="parameters-add" ng-click="parametersWindow($event, 2, 'glyph')">+</div>
+    <div class="parameters-selection-body">
+        <div ng-repeat="parameter in filteredGlyphParameters=(data.sequences | glyphsInEditFilter)" class="parameter-row">
+            <div class="parameter-normal">
+                <div class="parameter-key">{{parameter.name}}</div>
+                <div class="parameter-operator">{{parameter.operator}}</div>
+                <div class="parameter-value"><input ng-model="parameter.value" ng-change="editParameter(parameter.name, parameter.operatorer, parameter.value)"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="parameters-control-panel" ng-if="data.parametersPanel > 0" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">
+    <div id="control-panel-parameters">
+        <div ng-repeat="parameter in parameters" ng-class="{'selected': parameter == windowParameter}" class="control-panel-parameter control-panel-button" ng-click="addParameter(parameter)">{{parameter}}</div>
+    </div>
+    <div id="control-panel-operators">
+        <div ng-repeat="operator in operators" ng-class="{'selected': operator == windowOperator}" class="control-panel-operator control-panel-button" ng-click="addOperator(operator)">{{operator}}</div>
+    </div>
+    <div class="control-panel-cancel control-panel-button" ng-click="data.parametersPanel = 0">
+        Cancel
+    </div>
+</div>
+
+<div id="parameter-slider"></div>
+
 <div id="inspector">
     <div class="inspector-header">
         <span>{{data.projectName}}</span>
@@ -17,48 +56,3 @@
         </div>
     </div>
 </div>
-
-<div id="parameters-selection">
-    <div class="parameters-selection-head">Master</div><div class="parameters-add" ng-click="parametersWindow($event, 1)">+</div>
-    <div class="parameters-selection-body">
-        <div ng-repeat="(key, value) in data.masterParameters">
-            <div class="parameter-key">{{key}} =</div><div class="parameter-value">{{value}}</div>
-        </div>
-    </div>
-    
-    <div class="parameters-selection-head">Glyph</div><div class="parameters-add" ng-click="parametersWindow($event, 2)">+</div>
-    <div class="parameters-selection-body">
-        <div ng-repeat="(key, value) in data.glyphParameters">
-            <div class="parameter-key">{{key}} =</div><div class="parameter-value">{{value}}</div>
-        </div>
-    </div>
-</div>
-
-{{data.parametersPanel}}
-
-<div id="parameters-control-panel" ng-if="data.parametersPanel > 0" ng-style="{'top': parameterPanelTop}">
-    <div id="control-panel-parameters">
-        <div class="control-panel-parameter control-panel-button">Width</div>
-        <div class="control-panel-parameter control-panel-button">Height</div>
-        <div class="control-panel-parameter control-panel-button">X-Height</div>
-        <div class="control-panel-parameter control-panel-button">Slant</div>
-        <div class="control-panel-parameter control-panel-button">Spacing</div>
-        <div class="control-panel-parameter control-panel-button">Sidebearings</div>
-        <div class="control-panel-parameter control-panel-button">Tension</div>
-        <div class="control-panel-parameter control-panel-button">Weight</div>
-    </div>
-    <div id="control-panel-operators">
-        <div class="control-panel-operator control-panel-button">=</div>
-        <div class="control-panel-operator control-panel-button">x</div>
-        <div class="control-panel-operator control-panel-button">÷</div>
-        <div class="control-panel-operator control-panel-button">+</div>
-        <div class="control-panel-operator control-panel-button">-</div>
-        <div class="control-panel-operator control-panel-button">min</div>
-        <div class="control-panel-operator control-panel-button">max</div>
-    </div>
-    <div class="control-panel-cancel control-panel-button">
-        Cancel
-    </div>
-</div>
-
-<div id="parameter-slider"></div>

@@ -1,3 +1,35 @@
+app.filter('mastersInEditFilter', function() {
+    return function(sequences) {
+        var filtered;
+        angular.forEach(sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.edit) {
+                    filtered = master.parameters;
+                }
+            });
+        }); 
+        return filtered;
+    };
+});
+
+app.filter('glyphsInEditFilter', function() {
+    return function(sequences) {
+        var filtered;
+        angular.forEach(sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.edit) {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if (glyph.edit) {
+                            filtered = glyph.parameters;
+                        }
+                    });
+                }
+            });
+        }); 
+        return filtered;
+    };
+});
+
 app.filter('rangeFilter', function() {
     return function(specimen, filter) {
         var filtered = [];

@@ -944,8 +944,6 @@
 
     
         #inspector {
-            height: 100px;
-            overflow: auto;
         }
         
             .inspector-branche {
@@ -1000,24 +998,49 @@
             width: 100%;
         }
         
-            .parameter-key {
-                width: 65%;
-                display: inline-block;
-                text-align: right;
-                padding: 2px;
+            .parameter-row {
+                clear: both;
+                width: 100%;
+                cursor: default;
             }
-            
-            .parameter-value {
-                width: 35%;
-                display: inline-block;
-                padding: 2px;
-            }
+        
+                .parameter-key {
+                    width: 60%;
+                    display: inline-block;
+                    text-align: right;
+                    padding: 2px;
+                    float: left;
+                }
+                
+                .parameter-operator {
+                    width: 10%;
+                    display: inline-block;
+                    text-align: center;
+                    padding: 2px;
+                    float: left;
+                }
+                
+                .parameter-value {
+                    width: 30%;
+                    display: inline-block;
+                    padding: 2px;
+                    float: left;
+                    padding-right: 20px;
+                }
+                
+                    .parameter-value input {
+                        width: 100%;
+                        border: 0;
+                    }
+                    
+                        .parameter-value input:focus {
+                            background: #ddd;
+                        }
         
     #parameters-control-panel {
         display: block;
-        position: absolute;
+        position: fixed;
         z-index: 102;
-        right: 35px;
         width: 200px;
         background: #ddd;
         padding: 8px;
@@ -1052,7 +1075,7 @@
                 margin-bottom: 4px; 
             }
             
-                .control-panel-button:hover {
+                .control-panel-button.selected {
                     background: #60BFEF;
                 }
             
