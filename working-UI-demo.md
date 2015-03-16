@@ -416,9 +416,33 @@ The local menu is as follows:
 * Delete
 
 ## font export panel
-I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
+**Simple default** opentype mapping: when an instance is metapolated from masters that all stem from one imported ufo **and** that ufo has opentype features, then the instance will have these features set automatically (as indicated in the fonts panel).
 
-Simple default opentype mapping: when an instance is metapolated from masters that all stem from one imported ufo **and** that ufo has opentype features, then the instance will have these features set automatically (as indicated in the fonts panel). 
+### indicating export duration
+The estimate of the duration of an export is calculated from the selected instances in the fonts panel, taking the number of glyphs in each selected instance into account. The export speed (in glyphs/second) used for estimating the export duration is benchmarked for the machine where this instance of Metapolator runs on.
+
+Time is expressed in human-significant terms:
+
+* 33 seconds
+* 2 minutes, 47 seconds
+* 14 minutes _(from 10 mins and up, do not list seconds)_
+* 1 hour, 12 minutes
+* 11 hours _(from 8 hours and up, do not list minutes)_
+* 2 days, 9 hours
+
+room next to the Export… button is used for the estimate:
+
+![](http://mmiworks.net/metapolator/demoexport.png)
+
+_(not to worry, it won’t be all this green)_
+
+When the Export… button is clicked, a file dialog is shown to determine the location to export to. Once the export commences:
+
+![](http://mmiworks.net/metapolator/demoexportprogress.png)
+
+1. when an export runs, no other export can be started (button is greyed out);
+* preferably the export is based on copies of data, and users can keep working in the same project;
+* the bar next to the Export… button functions as progress bar; it uses the duration estimate (as shown before the export commenced) in the first couple of seconds, after that a completion estimate calculated from the progress. 
 
 ### local menu
 The local menu is as follows:
