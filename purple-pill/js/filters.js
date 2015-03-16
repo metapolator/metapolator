@@ -7,7 +7,7 @@ app.filter('mastersInEditFilter', function() {
                     filtered = master.parameters;
                 }
             });
-        }); 
+        });
         return filtered;
     };
 });
@@ -25,7 +25,7 @@ app.filter('glyphsInEditFilter', function() {
                     });
                 }
             });
-        }); 
+        });
         return filtered;
     };
 });
@@ -47,11 +47,9 @@ app.filter('rangeFilter', function() {
     };
 });
 
-
-
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences) {
-        if (specimen.name != "glyph range") {          
+        if (specimen.name != "glyph range") {
             function stringToGlyphs(string, unique) {
                 var glyphs = [];
                 for (var i = 0; i < string.length; i++) {
@@ -61,8 +59,7 @@ app.filter('specimenFilter', function() {
                     if (glyph == "*" && (string[i + 1] == "n" || string[i + 1] == "p")) {
                         glyph = "*" + string[i + 1];
                         i++;
-                    }
-                    else if (glyph == "<") {
+                    } else if (glyph == "<") {
                         // detecting foreign glyph
                         glyph = "";
                         var foundEnd = false;
@@ -131,7 +128,7 @@ app.filter('specimenFilter', function() {
                 }
             }
 
-            /***** create a masterarray with masters display true *****/         
+            /***** create a masterarray with masters display true *****/
             var masterArray = [];
             var nrOfFonts = 0;
             for (var j = 0; j < sequences.length; j++) {
@@ -158,7 +155,7 @@ app.filter('specimenFilter', function() {
             }
             var filtered = [];
             var glyphId = 0;
-            
+
             for (var q = 0; q < masterArray.length; q++) {
                 // repeating for the number of master with display true. every glyph of this loop starts with a new master (masterId)
                 var masterId = q;

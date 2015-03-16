@@ -52,1232 +52,2051 @@ app.factory("sharedScope", function($rootScope) {
                 ag : "ag",
                 parameters : [{
                     name : "width",
-                    operator : "=",
-                    value : 80
+                    unit : "",
+                    operations : [{
+                        operator : "*",
+                        value : 1.2
+                    }]
                 }],
                 glyphs : [{
                     value : "dvA",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "dvI",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "dvKHA",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "dvBHA",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "dvDA",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "dvDHA",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "dvSSA",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "a",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "b",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "c",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "d",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "e",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "f",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "g",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "h",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "i",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "j",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "k",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "l",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "m",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "n",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "o",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "p",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "q",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "r",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "s",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "t",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "u",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "v",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "w",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "x",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "y",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : "z",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }, {
                     value : " ",
                     edit : false,
                     parameters : [{
                         name : "width",
-                        operator : "=",
-                        value : 80
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 80
+                        }]
                     }, {
                         name : "height",
-                        operator : "=",
-                        value : 200
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 200
+                        }]
                     }, {
                         name : "xHeight",
-                        operator : "=",
-                        value : 100
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 100
+                        }]
                     }, {
                         name : "slant",
-                        operator : "=",
-                        value : 2
+                        unit : "°",
+                        operations : [{
+                            operator : "=",
+                            value : 1
+                        }]
                     }, {
                         name : "spacing",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
                         name : "sidebearings",
-                        operator : "=",
-                        value : "50+50"
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : "50+50"
+                        }]
                     }, {
                         name : "tension",
-                        operator : "=",
-                        value : 10
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 10
+                        }]
                     }, {
-                        name : "width",
-                        operator : "=",
-                        value : 100
+                        name : "weight",
+                        unit : "",
+                        operations : [{
+                            operator : "=",
+                            value : 20
+                        }]
                     }]
                 }]
             }]

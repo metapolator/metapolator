@@ -996,6 +996,7 @@
         
         .parameters-selection-body {
             width: 100%;
+            min-height: 30px;
         }
         
             .parameter-row {
@@ -1033,7 +1034,7 @@
                         border: 0;
                     }
                     
-                        .parameter-value input:focus {
+                        .parameter-value input:focus, .parameter-value input:hover {
                             background: #ddd;
                         }
         
@@ -1073,6 +1074,7 @@
                 background: #aaa;
                 padding: 4px;
                 margin-bottom: 4px; 
+                cursor: default;
             }
             
                 .control-panel-button.selected {

@@ -2,10 +2,10 @@
     <div class="parameters-selection-head">Master</div><div class="parameters-add" ng-click="parametersWindow($event, 1, 'master')">+</div>
     <div class="parameters-selection-body">
         <div ng-repeat="parameter in filteredMasterParameters=(data.sequences | mastersInEditFilter)" class="parameter-row">
-            <div class="parameter-normal">
-                <div class="parameter-key">{{parameter.name}}</div>
-                <div class="parameter-operator">{{parameter.operator}}</div>
-                <div class="parameter-value"><input ng-model="parameter.value" ng-change="editParameter(parameter.name, parameter.operatorer, parameter.value)"></div>
+            <div class="parameter-operation-row" ng-repeat="operator in parameter.operations">
+                <div class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
+                <div class="parameter-operator">{{operator.operator}}</div>
+                <div class="parameter-value"><input ng-model="operator.value" ng-change="editParameter(parameter.name, operator.operatorer, operator.value)"></div>
             </div>
         </div>
     </div>
@@ -13,10 +13,10 @@
     <div class="parameters-selection-head">Glyph</div><div class="parameters-add" ng-click="parametersWindow($event, 2, 'glyph')">+</div>
     <div class="parameters-selection-body">
         <div ng-repeat="parameter in filteredGlyphParameters=(data.sequences | glyphsInEditFilter)" class="parameter-row">
-            <div class="parameter-normal">
-                <div class="parameter-key">{{parameter.name}}</div>
-                <div class="parameter-operator">{{parameter.operator}}</div>
-                <div class="parameter-value"><input ng-model="parameter.value" ng-change="editParameter(parameter.name, parameter.operatorer, parameter.value)"></div>
+            <div class="parameter-operation-row" ng-repeat="operator in parameter.operations">
+                <div class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
+                <div class="parameter-operator">{{operator.operator}}</div>
+                <div class="parameter-value"><input ng-model="operator.value" ng-change="editParameter(parameter.name, operator.operatorer, operator.value)"></div>
             </div>
         </div>
     </div>

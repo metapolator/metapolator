@@ -8,7 +8,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
-    $scope.operators = ["=", "x", "÷", "+", "_", "min", "max"];
+    $scope.operators = ["=", "x", "÷", "+", "-", "min", "max"];
     $scope.parameterLevel = null;
 
     $scope.data.glyphParameters = {
@@ -118,19 +118,11 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit) {
                     if ($scope.parameterLevel == "master") {
-                        master.parameters.push({
-                            name : parameter,
-                            operator : operator,
-                            value : 0
-                        });
+                        $scope.pushParameter(master, parameter, operator);
                     } else if ($scope.parameterLevel == "glyph") {
                         angular.forEach(master.glyphs, function(glyph) {
                             if (glyph.edit) {
-                                glyph.parameters.push({
-                                    name : parameter,
-                                    operator : operator,
-                                    value : 0
-                                });
+                                $scope.pushParameter(glyph, parameter, operator);
                             }
                         });
                     }
@@ -138,6 +130,29 @@ app.controller("parametersController", function($scope, sharedScope) {
             });
         });
         $scope.data.parametersPanel = 0;
+    };
+    
+    $scope.pushParameter = function (element, newParameter, operator) {
+        var hasParameter = false;
+        angular.forEach(element.parameters, function(parameter) {
+            if (parameter.name == newParameter) {
+                hasParameter = true;
+                parameter.operations.push({
+                    operator : operator,
+                    value : 0
+                });
+            }
+        });       
+        if (!hasParameter) {
+            element.parameters.push({
+                name: newParameter,
+                unit: "",
+                operations: [{
+                    operator: operator,
+                    value: 0
+                }]
+            });    
+        }      
     };
 
     $scope.hasMasterThisParameter = function(parameter) {
