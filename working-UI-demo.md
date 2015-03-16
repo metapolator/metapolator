@@ -416,7 +416,9 @@ The local menu is as follows:
 * Delete
 
 ## font export panel
-Simple manual opentype mapping, good chance that we can do it. I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
+I will design something super-simple that warns how long a font export will take (estimate): “this export will take approximately 3 hours, 43 minutes.” ah, and a progress bar while it is exporting.
+
+Simple default opentype mapping: when an instance is metapolated from masters that all stem from one imported ufo **and** that ufo has opentype features, then the instance will have these features set automatically (as indicated in the fonts panel). 
 
 ### local menu
 The local menu is as follows:
@@ -427,6 +429,8 @@ The local menu is as follows:
 * Copy Opentype Features from Master…
 * Copy Opentype Features from Font…
 * Load Opentype Features File…
+* -- \<separator\> --
+* Remove Opentype Features
 
 ## metadata panel
 Completely forgetaboutit. This is not easily dealt with. Simon and I will come up with a (picture) glimpse of things to come for metadata.
