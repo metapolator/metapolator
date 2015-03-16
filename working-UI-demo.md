@@ -441,7 +441,7 @@ When the Export… button is clicked, a file dialog is shown to determine the lo
 ![](http://mmiworks.net/metapolator/demoexportprogress.png)
 
 1. when an export runs, no other export can be started (button is greyed out);
-* preferably the export is based on copies of data, and users can keep working in the same project;
+* _preferably_ the export is based on copies of data, and users can keep working in the same project;
 * the bar next to the Export… button functions as progress bar; it uses the duration estimate (as shown before the export commenced) in the first couple of seconds, after that a completion estimate calculated from the progress. 
 
 ### local menu
