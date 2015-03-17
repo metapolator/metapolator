@@ -1003,7 +1003,14 @@
                 clear: both;
                 width: 100%;
                 cursor: default;
+                font-size: 13px;
+                font-family: "Roboto Condensed";
             }
+            
+                .parameter-row input {
+                    font-size: 13px;
+                    font-family: "Roboto Condensed";
+                }
         
                 .parameter-key {
                     width: 60%;

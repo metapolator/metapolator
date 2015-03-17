@@ -10,6 +10,10 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
     $scope.operators = ["=", "x", "÷", "+", "-", "min", "max"];
     $scope.parameterLevel = null;
+    
+    $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators", function(newVal) {
+        $scope.filteredGlyphParameters = newVal;
+    }, true);
 
     $scope.data.glyphParameters = {
         width : [],
@@ -155,7 +159,8 @@ app.controller("parametersController", function($scope, sharedScope) {
         }      
     };
 
-    $scope.hasMasterThisParameter = function(parameter) {
-
+    $scope.hasInheritance = function(parameterName) {
+        
     };
+    
 });

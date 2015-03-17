@@ -53,6 +53,7 @@ app.factory("sharedScope", function($rootScope) {
                 parameters : [{
                     name : "width",
                     unit : "",
+                    calculatedValue : 0,
                     operations : [{
                         operator : "*",
                         value : 1.2
@@ -64,6 +65,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -71,6 +73,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -78,6 +81,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -85,6 +89,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -92,6 +97,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -99,6 +105,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -106,6 +113,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -113,6 +121,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -124,6 +133,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -131,6 +141,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -138,6 +149,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -145,6 +157,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -152,6 +165,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -159,6 +173,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -166,6 +181,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -173,6 +189,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -184,6 +201,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -191,6 +209,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -198,6 +217,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -205,6 +225,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -212,6 +233,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -219,6 +241,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -226,6 +249,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -233,6 +257,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -244,6 +269,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -251,6 +277,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -258,6 +285,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -265,6 +293,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -272,6 +301,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -279,6 +309,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -286,6 +317,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -293,6 +325,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -304,6 +337,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -311,6 +345,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -318,6 +353,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -325,6 +361,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -332,6 +369,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -339,6 +377,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -346,6 +385,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -353,6 +393,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -364,6 +405,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -371,6 +413,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -378,6 +421,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -385,6 +429,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -392,6 +437,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -399,6 +445,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -406,6 +453,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -413,6 +461,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -424,6 +473,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -431,6 +481,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -438,6 +489,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -445,6 +497,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -452,6 +505,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -459,6 +513,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -466,6 +521,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -473,6 +529,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -484,6 +541,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -491,6 +549,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -498,6 +557,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -505,6 +565,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -512,6 +573,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -519,6 +581,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -526,6 +589,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -533,6 +597,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -544,6 +609,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -551,6 +617,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -558,6 +625,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -565,6 +633,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -572,6 +641,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -579,6 +649,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -586,6 +657,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -593,6 +665,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -604,6 +677,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -611,6 +685,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -618,6 +693,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -625,6 +701,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -632,6 +709,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -639,6 +717,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -646,6 +725,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -653,6 +733,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -664,6 +745,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -671,6 +753,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -678,6 +761,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -685,6 +769,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -692,6 +777,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -699,6 +785,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -706,6 +793,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -713,6 +801,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -724,6 +813,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -731,6 +821,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -738,6 +829,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -745,6 +837,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -752,6 +845,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -759,6 +853,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -766,6 +861,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -773,6 +869,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -784,6 +881,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -791,6 +889,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -798,6 +897,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -805,6 +905,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -812,6 +913,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -819,6 +921,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -826,6 +929,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -833,6 +937,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -844,6 +949,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -851,6 +957,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -858,6 +965,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -865,6 +973,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -872,6 +981,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -879,6 +989,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -886,6 +997,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -893,6 +1005,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -904,6 +1017,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -911,6 +1025,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -918,6 +1033,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -925,6 +1041,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -932,6 +1049,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -939,6 +1057,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -946,6 +1065,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -953,6 +1073,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -964,6 +1085,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -971,6 +1093,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -978,6 +1101,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -985,6 +1109,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -992,6 +1117,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -999,6 +1125,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1006,6 +1133,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1013,6 +1141,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1024,6 +1153,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1031,6 +1161,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1038,6 +1169,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1045,6 +1177,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1052,6 +1185,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1059,6 +1193,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1066,6 +1201,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1073,6 +1209,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1084,6 +1221,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1091,6 +1229,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1098,6 +1237,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1105,6 +1245,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1112,6 +1253,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1119,6 +1261,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1126,6 +1269,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1133,6 +1277,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1144,6 +1289,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1151,6 +1297,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1158,6 +1305,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1165,6 +1313,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1172,6 +1321,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1179,6 +1329,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1186,6 +1337,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1193,6 +1345,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1204,6 +1357,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1211,6 +1365,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1218,6 +1373,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1225,6 +1381,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1232,6 +1389,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1239,6 +1397,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1246,6 +1405,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1253,6 +1413,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1264,6 +1425,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1271,6 +1433,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1278,6 +1441,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1285,6 +1449,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1292,6 +1457,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1299,6 +1465,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1306,6 +1473,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1313,6 +1481,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1324,6 +1493,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1331,6 +1501,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1338,6 +1509,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1345,6 +1517,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1352,6 +1525,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1359,6 +1533,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1366,6 +1541,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1373,6 +1549,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1384,6 +1561,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1391,6 +1569,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1398,6 +1577,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1405,6 +1585,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1412,6 +1593,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1419,6 +1601,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1426,6 +1609,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1433,6 +1617,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1444,6 +1629,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1451,6 +1637,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1458,6 +1645,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1465,6 +1653,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1472,6 +1661,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1479,6 +1669,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1486,6 +1677,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1493,6 +1685,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1504,6 +1697,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1511,6 +1705,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1518,6 +1713,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1525,6 +1721,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1532,6 +1729,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1539,6 +1737,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1546,6 +1745,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1553,6 +1753,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1564,6 +1765,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1571,6 +1773,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1578,6 +1781,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1585,6 +1789,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1592,6 +1797,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1599,6 +1805,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1606,6 +1813,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1613,6 +1821,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1624,6 +1833,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1631,6 +1841,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1638,6 +1849,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1645,6 +1857,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1652,6 +1865,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1659,6 +1873,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1666,6 +1881,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1673,6 +1889,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1684,6 +1901,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1691,6 +1909,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1698,6 +1917,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1705,6 +1925,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1712,6 +1933,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1719,6 +1941,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1726,6 +1949,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1733,6 +1957,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1744,6 +1969,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1751,6 +1977,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1758,6 +1985,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1765,6 +1993,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1772,6 +2001,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1779,6 +2009,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1786,6 +2017,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1793,6 +2025,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1804,6 +2037,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1811,6 +2045,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1818,6 +2053,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1825,6 +2061,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1832,6 +2069,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1839,6 +2077,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1846,6 +2085,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1853,6 +2093,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1864,6 +2105,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1871,6 +2113,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1878,6 +2121,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1885,6 +2129,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1892,6 +2137,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1899,6 +2145,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1906,6 +2153,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1913,6 +2161,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1924,6 +2173,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1931,6 +2181,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1938,6 +2189,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -1945,6 +2197,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -1952,6 +2205,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1959,6 +2213,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -1966,6 +2221,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -1973,6 +2229,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -1984,6 +2241,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -1991,6 +2249,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -1998,6 +2257,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -2005,6 +2265,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -2012,6 +2273,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -2019,6 +2281,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -2026,6 +2289,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -2033,6 +2297,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20
@@ -2044,6 +2309,7 @@ app.factory("sharedScope", function($rootScope) {
                     parameters : [{
                         name : "width",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 80
@@ -2051,6 +2317,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "height",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 200
@@ -2058,6 +2325,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "xHeight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 100
@@ -2065,6 +2333,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "slant",
                         unit : "°",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 1
@@ -2072,6 +2341,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "spacing",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -2079,6 +2349,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "sidebearings",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : "50+50"
@@ -2086,6 +2357,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "tension",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 10
@@ -2093,6 +2365,7 @@ app.factory("sharedScope", function($rootScope) {
                     }, {
                         name : "weight",
                         unit : "",
+                        calculatedValue : 0,
                         operations : [{
                             operator : "=",
                             value : 20

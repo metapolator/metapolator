@@ -13,20 +13,77 @@ app.filter('mastersInEditFilter', function() {
 });
 
 app.filter('glyphsInEditFilter', function() {
-    return function(sequences) {
-        var filtered;
+    return function(sequences, theParameters, theOperators) {
+        console.clear();
+        var selectedGlyphs = [];
+        // check which glyphs are in edit
         angular.forEach(sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
-                            filtered = glyph.parameters;
+                            selectedGlyphs.push({
+                                parameters: glyph.parameters,
+                                glyph: glyph,
+                                master: master,
+                                sequence: sequence
+                            });
                         }
                     });
                 }
             });
+        });      
+        
+        // compare the standard parameters and operators (the_) with parameters in selected glyphs 
+        var parameterArray = [];
+        angular.forEach(theParameters, function(theParameter) {
+            var theOperations = [];
+            var hasThisParameter = false;
+            angular.forEach(theOperators, function(theOperator) {
+                var hasThisOperator = false;
+                var lowest = null;
+                var highest = null;
+                // look inside glyphs
+                angular.forEach(selectedGlyphs, function(glyph) {
+                    angular.forEach(glyph.parameters, function(glyphParameter) {
+                        if(glyphParameter.name == theParameter) {
+                            hasThisParameter = true;
+                            angular.forEach(glyphParameter.operations, function(operation) {
+                                if (operation.operator == theOperator) {
+                                    hasThisOperator = true;
+                                    if (operation.value < lowest || lowest == null) {
+                                        lowest = operation.value;
+                                    }
+                                    if (operation.value > highest || highest == null) {
+                                        highest = operation.value;
+                                    }
+                                }
+                            });    
+                        }
+                    });
+                });
+                var range = true;
+                if (lowest == highest) {
+                    range = false;
+                }
+                if (hasThisOperator) {
+                    theOperations.push({
+                        operator: theOperator,
+                        range: range,
+                        low: lowest,
+                        high: highest 
+                    });
+                }
+            });   
+            if (hasThisParameter) {
+                parameterArray.push({
+                    name: theParameter,
+                    operations: theOperations
+                });
+            }
         });
-        return filtered;
+        console.log(parameterArray);
+        return parameterArray;
     };
 });
 

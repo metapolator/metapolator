@@ -12,11 +12,19 @@
     
     <div class="parameters-selection-head">Glyph</div><div class="parameters-add" ng-click="parametersWindow($event, 2, 'glyph')">+</div>
     <div class="parameters-selection-body">
-        <div ng-repeat="parameter in filteredGlyphParameters=(data.sequences | glyphsInEditFilter)" class="parameter-row">
+        <div ng-repeat="parameter in filteredGlyphParameters" class="parameter-row">
             <div class="parameter-operation-row" ng-repeat="operator in parameter.operations">
                 <div class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
                 <div class="parameter-operator">{{operator.operator}}</div>
-                <div class="parameter-value"><input ng-model="operator.value" ng-change="editParameter(parameter.name, operator.operatorer, operator.value)" class="ng-input-focus"></div>
+                <div class="parameter-value">
+                    <input ng-model="operator.low" ng-change="editParameter(parameter.name, operator.operatorer, operator.value)" class="ng-input-focus">
+                    <input ng-if="operator.range" ng-model="operator.high" class="ng-input-focus">
+                </div>
+            </div>
+            <div class="parameter-operation-row" ng-if="hasInheritance(parameter.name)">
+                <div class="parameter-key"></div>
+                <div class="parameter-operator">-></div>
+                <div class="parameter-value">{{calculatedValue(parameter.name)}}</div>
             </div>
         </div>
     </div>
