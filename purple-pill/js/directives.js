@@ -2,7 +2,7 @@ app.directive('ngInputFocus', function($compile) {
     return {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
-            element[0].focus(); 
+            //element[0].focus(); 
         }
     };
 });

@@ -14,7 +14,6 @@ app.filter('mastersInEditFilter', function() {
 
 app.filter('glyphsInEditFilter', function() {
     return function(sequences, theParameters, theOperators) {
-        console.clear();
         var selectedGlyphs = [];
         // check which glyphs are in edit
         angular.forEach(sequences, function(sequence) {
@@ -82,7 +81,6 @@ app.filter('glyphsInEditFilter', function() {
                 });
             }
         });
-        console.log(parameterArray);
         return parameterArray;
     };
 });

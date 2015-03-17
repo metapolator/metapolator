@@ -15,74 +15,29 @@ app.controller("parametersController", function($scope, sharedScope) {
         $scope.filteredGlyphParameters = newVal;
     }, true);
 
-    $scope.data.glyphParameters = {
-        width : [],
-        height : [],
-        xHeight : [],
-        slant : [],
-        spacing : [],
-        sidebearings : [],
-        tension : [],
-        weight : []
-    };
 
-    $scope.data.masterParameters = {
-        width : [],
-        height : [],
-        xHeight : [],
-        slant : [],
-        spacing : [],
-        sidebearings : [],
-        tension : [],
-        weight : []
-    };
-
-    $scope.rangeToHightLow = function() {
-        angular.forEach($scope.data.glyphParameters, function(parameterValue, parameterKey) {
-            var thisParameter = $scope.data.glyphParameters[parameterKey];
-            if (thisParameter.length > 1) {
-                thisParameter = thisParameter.sort();
-                var lowest = thisParameter[0];
-                console.log(lowest);
-                var highest = thisParameter[thisParameter.length - 1];
-                $scope.data.glyphParameters[parameterKey] = lowest + " to " + highest;
-            } else {
-                var thisValue = thisParameter[0];
-                $scope.data.glyphParameters[parameterKey] = thisValue;
-            }
-        });
-    };
-
-    $scope.data.updateParameters = function() {
-        // empty parameters selection
-        /*
-         angular.forEach($scope.data.glyphParameters, function(parameterValue, parameterKey) {
-         $scope.data.glyphParameters[parameterKey] = [];
-         });
-         angular.forEach($scope.data.masterParameters, function(parameterValue, parameterKey) {
-         $scope.data.masterParameters[parameterKey] = [];
-         });
-
+    $scope.editParameter = function(editParameter, editOperator) {
          angular.forEach($scope.data.sequences, function(sequence) {
-         angular.forEach(sequence.masters, function(master) {
-         if(master.type == "redpill" && master.edit) {
-         // push master parametes
-         angular.forEach(master.parameters, function(parameterValue, parameterKey) {
-         $scope.data.masterParameters[parameterKey].push(parameterValue);
-         });
-         angular.forEach(master.glyphs, function(glyph) {
-         if (glyph.edit) {
-         // push glyph parameters
-         angular.forEach(glyph.parameters, function(parameterValue, parameterKey) {
-         $scope.data.glyphParameters[parameterKey].push(parameterValue);
-         });
-         }
-         });
-         }
-         });
-         });
-         $scope.rangeToHightLow();
-         */
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit) {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if(glyph.edit) {
+                            angular.forEach(glyph.parameters, function(parameter) {
+                                if(parameter.name == editParameter.name) {
+                                    angular.forEach(parameter.operations, function(operation) {
+                                        if(operation.operator == editOperator.operator) {
+                                            if (!editOperator.range) {
+                                                operation.value = editOperator.low;       
+                                            } 
+                                        }
+                                    });        
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
     };
 
     $scope.windowParameter = null;
