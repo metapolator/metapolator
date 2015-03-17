@@ -267,6 +267,12 @@ Some of the ‘extra’ structural text (“to”, ‘°’, the ‘+’ that se
 
 If the Sidebearings label is set in a condensed front, then the mid-axis can be shifted to the left and there is room for longer value numbers. 6 digits, with still room for a minus and a decimal point should do it. We should avoid crazy long fractional parts. Four fractional digits (1.2345) should be good enough for anything (said Bill Gates), and 1.3000 shall be displayed as 1.3 (i.e. chop off trailing zeros in fractions). Fingers crossed that the individual sidebearings numbers fit in 3 digits…
 
+We will reward users who can spare a bit more space for the parameters column:
+
+![](http://mmiworks.net/metapolator/demoparawide.png)
+
+the ranges can be unwrapped, which can lead to a substantial reduction of the number of lines that need to be displayed.
+
 ## specimen + glyph editor panel
 Forget about any direct-manipulation (i.e. with the mouse), direct specimen text editing, parameter editing, or about making selections on sub-glyph (e.g. stroke, point) level. What is performed in the specimen is (multiple) selections of glyphs, to individually adjust these (whole glyphs). There is no glyph management (e.g. Add or Delete glyph from master), i.e. forget about the bottom bar with buttons and glyph code editing. For the filter there is no guarantee of completeness, nor a popup menu;
 
