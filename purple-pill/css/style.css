@@ -30,6 +30,10 @@
 		padding: 16px;
 	}
 	
+	.align-right {
+	    text-align: right;
+	}
+	
     #temp-output {
         position: absolute;
         left: 70%;
@@ -1013,7 +1017,7 @@
                 }
         
                 .parameter-key {
-                    width: 60%;
+                    width: 40%;
                     display: inline-block;
                     text-align: right;
                     padding: 2px;
@@ -1029,7 +1033,7 @@
                 }
                 
                 .parameter-value {
-                    width: 30%;
+                    width: 50%;
                     display: inline-block;
                     padding: 2px;
                     float: left;
@@ -1037,8 +1041,14 @@
                 }
                 
                     .parameter-value input {
-                        width: 100%;
+                        width: 40%;
                         border: 0;
+                    }
+                    
+                    .calculated-value {
+                        width: 40%;
+                        text-align: right;
+                        display: inline-block;
                     }
                     
                         .parameter-value input:focus, .parameter-value input:hover {

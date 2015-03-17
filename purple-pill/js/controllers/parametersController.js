@@ -27,7 +27,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                                     angular.forEach(parameter.operations, function(operation) {
                                         if(operation.operator == editOperator.operator) {
                                             if (!editOperator.range) {
-                                                operation.value = editOperator.low;       
+                                                operation.value = parseFloat(editOperator.low);       
                                             } 
                                         }
                                     });        
@@ -114,8 +114,88 @@ app.controller("parametersController", function($scope, sharedScope) {
         }      
     };
 
-    $scope.hasInheritance = function(parameterName) {
+    $scope.hasInheritance = function(theParameter) {
+        var inheritance = false;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit) {
+                    angular.forEach(master.parameters, function(parameter) {
+                        if (parameter.name == theParameter.name) {
+                            inheritance = true;
+                        }    
+                    });
+                }
+            });
+        });
+        return inheritance;
+    };
+    
+    $scope.calculatedValue = function(theParameter) {
+        var operations = [];
+        var masterFixed = null;
+        var glyphFixed = null;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit) {
+                    angular.forEach(master.parameters, function(parameter) {
+                        if (parameter.name == theParameter.name) {
+                            angular.forEach(parameter.operations, function(operation) {
+                                if (operation.operator == "=") {
+                                    masterFixed = operation.value;
+                                } else {
+                                    operations.push({
+                                        operator: operation.operator,
+                                        value: operation.value
+                                    });
+                                }
+                            });
+                        }    
+                    });
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if (glyph.edit) {
+                            angular.forEach(glyph.parameters, function(parameter) {
+                                if (parameter.name == theParameter.name) {
+                                    angular.forEach(parameter.operations, function(operation) {
+                                        if (operation.operator == "=") {
+                                            glyphFixed = operation.value;
+                                        } else {
+                                            operations.push({
+                                                operator: operation.operator,
+                                                value: operation.value
+                                            });
+                                        }
+                                    });
+                                }    
+                            });
+                        }    
+                    });
+                }
+            });
+        });
+        if (glyphFixed) {
+            var calculatedValue = glyphFixed;
+        } else if (masterFixed) {
+            var calculatedValue = masterFixed;
+        }
+        console.log("->" + calculatedValue);
+        angular.forEach(operations, function(operation) {
+            console.log (operation);
+            if (operation.operator == "+") {
+                calculatedValue += parseFloat(operation.value);
+            } else if (operation.operator == "-") {
+                calculatedValue -= parseFloat(operation.value);
+            } else if (operation.operator == "x") {
+                console.log("!");
+                calculatedValue *= parseFloat(operation.value);
+            } else if (operation.operator == "÷") {
+                calculatedValue /= parseFloat(operation.value);
+            }
+            console.log(calculatedValue);
+        });
         
+        
+        console.log(calculatedValue);
+        return calculatedValue;
     };
     
 });

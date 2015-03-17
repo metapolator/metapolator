@@ -17,14 +17,13 @@
                 <div class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
                 <div class="parameter-operator">{{operator.operator}}</div>
                 <div class="parameter-value">
-                    <input ng-model="operator.low" ng-blur="editParameter(parameter, operator)" class="ng-input-focus">
-                    <input ng-if="operator.range" ng-model="operator.high" ng-blur="editParameter(parameter, operator)" class="ng-input-focus">
+                    <input ng-model="operator.low" ng-blur="editParameter(parameter, operator)" class="ng-input-focus align-right"><span ng-if="operator.range" > to <input ng-model="operator.high" ng-blur="editParameter(parameter, operator)" class="ng-input-focus"></span>
                 </div>
             </div>
-            <div class="parameter-operation-row" ng-if="hasInheritance(parameter.name)">
+            <div class="parameter-operation-row" ng-if="hasInheritance(parameter)">
                 <div class="parameter-key"></div>
                 <div class="parameter-operator">-></div>
-                <div class="parameter-value">{{calculatedValue(parameter.name)}}</div>
+                <div class="parameter-value"><span class="calculated-value">{{calculatedValue(parameter)}}</span></div>
             </div>
         </div>
     </div>

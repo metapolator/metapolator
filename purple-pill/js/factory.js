@@ -55,7 +55,7 @@ app.factory("sharedScope", function($rootScope) {
                     unit : "",
                     calculatedValue : 0,
                     operations : [{
-                        operator : "*",
+                        operator : "x",
                         value : 1.2
                     }]
                 }],
