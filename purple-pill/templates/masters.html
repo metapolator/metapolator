@@ -11,19 +11,22 @@
     </div>
 </localmenu>
 
-<ul>
-    <li ng-repeat="sequence in data.sequences">
-        <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="list-ul">
-            <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit}">
-                <span class="list-sequence-col" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
-                    <div class="diamond"></div>
-                </span>
-                <span class="list-view-col rename" ng-model="master.ag" ng-click="toggleDisplay(master)" ng-class="{'selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};"></span>
-                <span class="list-edit-col rename" ng-model="master.name" ng-class="{'selected': master.edit}"></span>
-            </li>
-        </ul>
-    </li>
-</ul>
+
+<div id="masters-list">
+    <ul>
+        <li ng-repeat="sequence in data.sequences">
+            <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="list-ul">
+                <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit}">
+                    <span class="list-sequence-col" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
+                        <div class="diamond"></div>
+                    </span>
+                    <span class="list-view-col rename" ng-model="master.ag" ng-click="toggleDisplay(master)" ng-class="{'selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};"></span>
+                    <span class="list-edit-col rename" ng-model="master.name" ng-class="{'selected': master.edit}"></span>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
 
 <div id="masters-tools">
     <div id="import-ufo" ng-click="importUfo();" class="master-tool">

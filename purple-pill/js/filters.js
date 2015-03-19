@@ -234,7 +234,31 @@ app.filter('specimenFilter', function() {
                     }
                 }
             }
-            return filtered;
+            // glyph combination matrix
+            if (strict == 3 && filter.length > 1) {
+                var filteredMatrix = [];
+                var fMCounter = 0;
+                for (var i = 0; i < filtered.length; i++){
+                    for (var j = 0; j < filtered.length; j++){
+                        filteredMatrix.push({
+                            master: filtered[i].master,
+                            glyphName: filtered[i].glyphName,
+                            glyphId: filtered[i].glyphName + "_" + fMCounter
+                        });  
+                        fMCounter++;
+                        filteredMatrix.push({
+                            master: filtered[j].master,
+                            glyphName: filtered[j].glyphName,
+                            glyphId: filtered[j].glyphName + "_" + fMCounter
+                        });  
+                        fMCounter++;
+                    }
+                }
+                return filteredMatrix;
+            }
+            else {
+                return filtered;
+            }
         }
     };
 });
