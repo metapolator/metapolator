@@ -33,9 +33,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         $scope.data.currentInstance.display = true;  
         }
     };
-
+    
     $scope.addDesignSpace = function() {
-        var i = $scope.data.designSpaces.length;
         var id = findDesignSpaceId();
         $scope.data.designSpaces.push({
             name : "Space " + id,
@@ -50,6 +49,15 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
         $scope.data.deselectAllEdit();
         $scope.data.currentInstance = null;
+        $scope.data.localmenu.designspace = false;
+    };
+
+    $scope.removeDesignSpace = function () {
+        if (confirm("This will remove all Instances in this Design Space. Sure?")) {
+            $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
+            $scope.data.deleteInstanceDirect($scope.data.currentDesignSpace.id);
+            $scope.data.currentDesignSpace = null;
+        }  
     };
 
     function findDesignSpaceId() {
@@ -74,12 +82,12 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var n = axes.length;
         var cake = 1;
         for (var i = 0; i < n; i++) {
-            cake += (parseInt(axes[i].value) + 0.5) / (100.5 - parseInt(axes[i].value));
+            cake += (parseInt(axes[i].value)) / (100 - parseInt(axes[i].value));
         }
         masterSet[0].value = 1 / cake;
 
         for (var i = 0; i < n; i++) {
-            var piece = (parseInt(axes[i].value) + 0.5) / (100.5 - parseInt(axes[i].value));
+            var piece = (parseInt(axes[i].value) ) / (100 - parseInt(axes[i].value));
             masterSet[i + 1].value = piece / cake;
         }
         $scope.data.currentInstance.masters = masterSet;

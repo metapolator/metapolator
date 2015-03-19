@@ -1,8 +1,19 @@
 <ul id="design-space-tabs">
     <li ng-repeat="space in data.designSpaces" ng-click="selectDesignSpace(space)" ng-class="{selected : space == data.currentDesignSpace}">
-        <div><img ng-src="{{ 'img/' + space.type + '.png'}}">
-        </div>
-        <div class="rename" ng-model="space.name"></div>
+        <!--<<div>img ng-src="{{ 'img/' + space.type + '.png'}}"></div>-->
+        <localmenu class="localmenu localmenu-inside" class="left" ng-if="space == data.currentDesignSpace">
+            <div class="lm-head" ng-mousedown="data.selectMenu('designspace')">
+                <div class="rename" ng-model="space.name"></div>&nbsp;
+            </div>
+            <div class="lm-body" ng-if="data.localmenu.designspace">
+                <div class="lm-button" ng-mouseup="addDesignSpace()">New</div>
+                <div class="lm-button" ng-mouseup="">Duplicate</div>
+                <div class="lm-divider"></div>
+                <div class="lm-button" ng-mouseup="removeDesignSpace()">Delete…</div>
+            </div>
+        </localmenu>
+        <div class="rename" ng-model="space.name" ng-if="space != data.currentDesignSpace"></div>
+        
     </li>
     <li ng-click="addDesignSpace()">
         +

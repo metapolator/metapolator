@@ -520,7 +520,6 @@
 
     #design-space-tabs {
         list-style: none;
-        overflow: auto;
         margin: 0;
         padding: 0;
         background: #d7d2c8;
@@ -1188,12 +1187,18 @@
         min-height: 30px;
     }
     
+        .localmenu-inside {
+            min-height: 0;
+        }
+    
     .lm-head {
         cursor: default;
         padding: 6px 8px;
     }
     
-
+        .localmenu-inside .lm-head {
+            padding: 0 8px 0 0;
+        }
     
         .lm-head:after {
             content: "▼";
@@ -1238,6 +1243,9 @@
     
         .lm-button {
             padding: 4px 10px;
+            color: #000;
+            display: block;
+            width: 100%;
             cursor: default;
         }
         
@@ -1257,6 +1265,7 @@
             }
             
        .lm-divider {
+           width: 100%;
            margin: 4px 0;
            background: #ddd;
            height: 1px;

@@ -12,6 +12,7 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.data.selectMenu = function(menu) {
+        console.log(menu);
         $scope.data.localmenu[menu] = !$scope.data.localmenu[menu];
         for (var x in $scope.data.localmenu) {
             if (x != menu) {

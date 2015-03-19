@@ -160,6 +160,19 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }
     };
     
+    // delete after deleting design space
+    $scope.data.deleteInstanceDirect = function (designSpace) {
+        // reverse order, otherwise splice gets confused
+        for (i = $scope.data.families.length - 1; i >= 0; i--) {
+            for (j = $scope.data.families[i].instances.length - 1; j >= 0; j--) {
+                var instance = $scope.data.families[i].instances[j];
+                if (instance.designSpace == designSpace) {
+                    $scope.data.families[i].instances.splice($scope.data.families[i].instances.indexOf(instance), 1);
+                }            
+             }            
+        }
+    };
+    
     function deleteInstanceConfirmed () {
         $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.data.currentInstance), 1);
         $scope.data.localmenu.instances = false;

@@ -2399,6 +2399,7 @@ app.factory("sharedScope", function($rootScope) {
             help : false,
             masters : false,
             instances : false,
+            designspace: false
         },
         parametersPanel : 0
     };
