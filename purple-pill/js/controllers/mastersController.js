@@ -87,11 +87,9 @@ app.controller("mastersController", function($scope, sharedScope) {
                     master.display = true;
                 } else {
                     master.edit = false;
-                    master.display = false;
                 }
             });
         });
-        $scope.data.updateParameters();
     };
 
     $scope.deselectAll = function() {
@@ -101,6 +99,12 @@ app.controller("mastersController", function($scope, sharedScope) {
                 master.display = false;
             });
         });
+    };
+    
+    $scope.toggleDisplay = function(master) {
+        if(!master.edit) {
+            master.display = !master.display;
+        }
     };
 
     /***** Dropping to design space *****/

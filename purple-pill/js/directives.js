@@ -575,13 +575,14 @@ app.directive('sizeRope', function($document) {
             var fontsize;
             var diamondSize = 8;
             var fontsize = parseInt(scope.fontSize);
-            var factor = getFactor(fontsize);
             var lastLength;
             var startsize;
+            var pixelOffset;
 
             //drag behaviour
             var drag = d3.behavior.drag().on('dragstart', function() {
                 fontsize = parseInt(scope.fontSize);
+                pixelOffset = getpixelOffset(fontsize);
                 startsize = fontsize;
                 lastLength = 0;
 
@@ -603,17 +604,13 @@ app.directive('sizeRope', function($document) {
                 gT.selectAll('*').remove();
                 lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#000').style('stroke-width', '2');
                 var thisLength = getRopeLength(screenX, screenY, x, -y);
-                if (thisLength != 0) {
-                    var growth = thisLength - lastLength;
-                    factor = getFactor(fontsize);
-                    fontsize += Math.round(growth * factor);
+                var absolutePixels = thisLength + pixelOffset;
+                if (absolutePixels > 399) {
+                    fontsize =  absolutePixels - 300;   
                 } else {
-                    fontsize = startsize;
+                    fontsize = 11250 / (500 - absolutePixels) - 12.5;
                 }
-                if (fontsize < 10) {
-                    fontsize = 10;
-                }
-                scope.fontSize = fontsize;
+                scope.fontSize = limit(fontsize);
                 scope.$apply();
                 lastLength = thisLength;
             }).on('dragend', function() {
@@ -624,6 +621,14 @@ app.directive('sizeRope', function($document) {
             // create static diamond
             var diamond = svg.append('g').call(drag);
             var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
+            
+            function limit(fontsize) {
+                var size = Math.round(fontsize);
+                if (size < 10) {
+                    size = 10;
+                }
+                return size;
+            }
 
             function getRopeLength(originX, originY, xPosition, yPosition) {
                 var length;
@@ -637,16 +642,15 @@ app.directive('sizeRope', function($document) {
                 }
                 return length;
             }
-
-            function getFactor(size) {
-                if (size > 100) {
-                    var factor = 1;
+            
+            function getpixelOffset(fontsize) {
+                if(fontsize > 99){
+                    var offset = 300 + fontsize;
                 } else {
-                    var factor = size / 100;
+                    var offset = 500 - (11250 / (fontsize + 12.5));
                 }
-                return factor;
+                return offset;
             }
-
         }
     };
 });

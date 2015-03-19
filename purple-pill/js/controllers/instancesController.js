@@ -55,7 +55,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     instance.display = true;
                 } else {
                     instance.edit = false;
-                    instance.display = false;
                 }
             });
         });
@@ -67,6 +66,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 instance.edit = false;
             });
         });
+    };
+    
+    $scope.toggleDisplay = function(instance) {
+        if(!instance.edit) {
+            instance.display = !instance.display;
+        }
     };
     
     
