@@ -226,6 +226,7 @@ The view column shows some characters, set in this master, to identify it. Which
 * when a master is not part of the current selection, clicking its view column toggles display of this master in the specimen (in the Parameters view); a highlight in this column confirms the view mode;
   * mouse-down in the view column, drag across multiple masters, release: switches the view mode of all masters involved on/off, depending on whether the mouse-down master went on or off;
   * the toggle is on mouse-down; when the mouse is down and moved outside the view column, the item is un-toggled (also for the swipe action above); when the mouse is released outside the view column, the view state of the item is un-changed(also for the swipe action above).
+* to be clear: when a master is selected, its view column cannot be toggled, also not by dragging the mouse across;
 * being (de)selected does not change the view mode of a master.
 
 ##### control column
