@@ -10,27 +10,26 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
     $scope.operators = ["=", "x", "÷", "+", "-", "min", "max"];
     $scope.parameterLevel = null;
-    
+
     $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators:data.viewState", function(newVal) {
         $scope.filteredGlyphParameters = newVal;
     }, true);
 
-
     $scope.editParameter = function(editParameter, editOperator) {
-         angular.forEach($scope.data.sequences, function(sequence) {
+        angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
                     angular.forEach(master.glyphs, function(glyph) {
-                        if(glyph.edit) {
+                        if (glyph.edit) {
                             angular.forEach(glyph.parameters, function(parameter) {
-                                if(parameter.name == editParameter.name) {
+                                if (parameter.name == editParameter.name) {
                                     angular.forEach(parameter.operations, function(operation) {
-                                        if(operation.operator == editOperator.operator) {
+                                        if (operation.operator == editOperator.operator) {
                                             if (!editOperator.range) {
-                                                operation.value = parseFloat(editOperator.low);       
-                                            } 
+                                                operation.value = parseFloat(editOperator.low);
+                                            }
                                         }
-                                    });        
+                                    });
                                 }
                             });
                         }
@@ -90,8 +89,8 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         $scope.data.parametersPanel = 0;
     };
-    
-    $scope.pushParameter = function (element, newParameter, operator) {
+
+    $scope.pushParameter = function(element, newParameter, operator) {
         var hasParameter = false;
         angular.forEach(element.parameters, function(parameter) {
             if (parameter.name == newParameter) {
@@ -101,17 +100,17 @@ app.controller("parametersController", function($scope, sharedScope) {
                     value : 0
                 });
             }
-        });       
+        });
         if (!hasParameter) {
             element.parameters.push({
-                name: newParameter,
-                unit: "",
-                operations: [{
-                    operator: operator,
-                    value: 0
+                name : newParameter,
+                unit : "",
+                operations : [{
+                    operator : operator,
+                    value : 0
                 }]
-            });    
-        }      
+            });
+        }
     };
 
     $scope.hasInheritance = function(theParameter) {
@@ -122,14 +121,14 @@ app.controller("parametersController", function($scope, sharedScope) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             inheritance = true;
-                        }    
+                        }
                     });
                 }
             });
         });
         return inheritance;
     };
-    
+
     $scope.calculatedValue = function(theParameter) {
         var operations = [];
         var masterFixed = null;
@@ -144,12 +143,12 @@ app.controller("parametersController", function($scope, sharedScope) {
                                     masterFixed = operation.value;
                                 } else {
                                     operations.push({
-                                        operator: operation.operator,
-                                        value: operation.value
+                                        operator : operation.operator,
+                                        value : operation.value
                                     });
                                 }
                             });
-                        }    
+                        }
                     });
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
@@ -160,14 +159,14 @@ app.controller("parametersController", function($scope, sharedScope) {
                                             glyphFixed = operation.value;
                                         } else {
                                             operations.push({
-                                                operator: operation.operator,
-                                                value: operation.value
+                                                operator : operation.operator,
+                                                value : operation.value
                                             });
                                         }
                                     });
-                                }    
+                                }
                             });
-                        }    
+                        }
                     });
                 }
             });
@@ -178,23 +177,44 @@ app.controller("parametersController", function($scope, sharedScope) {
             var calculatedValue = masterFixed;
         }
         angular.forEach(operations, function(operation) {
-            console.log (operation);
             if (operation.operator == "+") {
                 calculatedValue += parseFloat(operation.value);
             } else if (operation.operator == "-") {
                 calculatedValue -= parseFloat(operation.value);
             } else if (operation.operator == "x") {
-                console.log("!");
                 calculatedValue *= parseFloat(operation.value);
             } else if (operation.operator == "÷") {
                 calculatedValue /= parseFloat(operation.value);
             }
-            console.log(calculatedValue);
         });
-        
-        
-        console.log(calculatedValue);
         return calculatedValue;
     };
-    
+
+    $scope.areGlyphsSelected = function() {
+        var selected = false;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if (glyph.edit) {
+                            selected = true;
+                        }
+                    });
+                }
+            });
+        });
+        return selected;
+    };
+
+    $scope.areMastersSelected = function() {
+        var selected = false;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                    selected = true;
+                }
+            });
+        });
+        return selected;
+    };
 });

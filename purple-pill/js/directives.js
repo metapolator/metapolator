@@ -292,7 +292,6 @@ app.directive('listViewCol', function() {
                     }
                 });
                 if (!falseMouseMove) {
-                    console.log("!");
                     scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
                     scope.$apply();
                 }
