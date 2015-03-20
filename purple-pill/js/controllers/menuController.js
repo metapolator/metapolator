@@ -48,8 +48,4 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         $("#layover").hide();
         $("#rename-project").hide();
     };
-    
- 
-    
-
 });

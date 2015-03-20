@@ -12,7 +12,7 @@ app.factory("sharedScope", function($rootScope) {
                 name : 'Roboto Light',
                 weight : '100',
                 display : false,
-                edit : false,
+                edit : [false, false],
                 ag : "Ag"
             }, {
                 type : "test",
@@ -21,7 +21,7 @@ app.factory("sharedScope", function($rootScope) {
                 name : 'Roboto Regular',
                 weight : '400',
                 display : false,
-                edit : false,
+                edit : [false, false],
                 ag : "Ag"
             }, {
                 type : "test",
@@ -30,7 +30,7 @@ app.factory("sharedScope", function($rootScope) {
                 name : 'Roboto Bold',
                 weight : '700',
                 display : false,
-                edit : false,
+                edit : [false, false],
                 ag : "Ag"
             }, {
                 type : "test",
@@ -39,7 +39,7 @@ app.factory("sharedScope", function($rootScope) {
                 name : 'Roboto Ultra-Bold',
                 weight : '900',
                 display : false,
-                edit : false,
+                edit : [false, false],
                 ag : "Ag"
             }, {
                 type : "redpill",
@@ -48,7 +48,7 @@ app.factory("sharedScope", function($rootScope) {
                 weight : '400',
                 name : "Red Pill Master",
                 display : true,
-                edit : true,
+                edit : [false, false],
                 ag : "ag",
                 parameters : [{
                     name : "width",
@@ -2401,7 +2401,8 @@ app.factory("sharedScope", function($rootScope) {
             instances : false,
             designspace: false
         },
-        parametersPanel : 0
+        parametersPanel : 0,
+        viewState: 0
     };
     return scope;
 });

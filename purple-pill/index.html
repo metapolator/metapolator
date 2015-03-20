@@ -66,14 +66,14 @@
             </div>
             <!-- end of project -->
 
-            <div id="view-buttons" class="unselectable">
-                <div id="menu-item-0" class="menu-item menu-item-current">
+            <div id="view-buttons">
+                <div ng-click="data.viewState = 0" id="menu-item-0" class="menu-item menu-item-current">
                     Parameters
                 </div>
-                <div id="menu-item-1" class="menu-item">
+                <div ng-click="data.viewState = 1" id="menu-item-1" class="menu-item">
                     Design spaces
                 </div>
-                <div id="menu-item-2" class="menu-item">
+                <div ng-click="data.viewState = 2" id="menu-item-2" class="menu-item">
                     Fonts
                 </div>
             </div>

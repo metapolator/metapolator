@@ -11,7 +11,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.operators = ["=", "x", "÷", "+", "-", "min", "max"];
     $scope.parameterLevel = null;
     
-    $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators", function(newVal) {
+    $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators:data.viewState", function(newVal) {
         $scope.filteredGlyphParameters = newVal;
     }, true);
 
@@ -19,7 +19,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.editParameter = function(editParameter, editOperator) {
          angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if(glyph.edit) {
                             angular.forEach(glyph.parameters, function(parameter) {
@@ -75,7 +75,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.setParameter = function(parameter, operator) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
                     if ($scope.parameterLevel == "master") {
                         $scope.pushParameter(master, parameter, operator);
                     } else if ($scope.parameterLevel == "glyph") {
@@ -118,7 +118,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var inheritance = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             inheritance = true;
@@ -136,7 +136,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var glyphFixed = null;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             angular.forEach(parameter.operations, function(operation) {

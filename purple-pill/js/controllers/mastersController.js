@@ -11,7 +11,7 @@ app.controller("mastersController", function($scope, sharedScope) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 var notDeleted = [];
                 angular.forEach(sequence.masters, function(master) {
-                    if (!master.edit){
+                    if (!master.edit[$scope.data.viewState]){
                         notDeleted.push(master);
                     }
                 });
@@ -65,8 +65,8 @@ app.controller("mastersController", function($scope, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (listItem.parentObject == sequence.id && listItem.childObject == master.id) {
-                    master.edit = !master.edit;
-                    master.display = master.edit;
+                    master.edit[$scope.data.viewState] = !master.edit[$scope.data.viewState];
+                    master.display = master.edit[$scope.data.viewState];
                 }
             });
         });  
@@ -83,10 +83,10 @@ app.controller("mastersController", function($scope, sharedScope) {
                     }
                 });
                 if (hit) {
-                    master.edit = true;
+                    master.edit[$scope.data.viewState] = true;
                     master.display = true;
                 } else {
-                    master.edit = false;
+                    master.edit[$scope.data.viewState] = false;
                 }
             });
         });
@@ -95,14 +95,14 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.deselectAll = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                master.edit = false;
+                master.edit[$scope.data.viewState] = false;
                 master.display = false;
             });
         });
     };
     
     $scope.toggleDisplay = function(master) {
-        if(!master.edit) {
+        if(!master.edit[$scope.data.viewState]) {
             master.display = !master.display;
         }
     };
