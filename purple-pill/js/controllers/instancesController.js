@@ -124,16 +124,50 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }
     };
     
-    $scope.duplicateInstance = function () {
-        if ($scope.data.currentInstance) {
+    $scope.data.duplicateInstance = function (instance, space) {
+        if (instance) {
             $scope.data.deselectAllEdit();
-            var duplicate = jQuery.extend(true, {}, $scope.data.currentInstance);
-            duplicate.name += " copy";
+            var duplicate = jQuery.extend(true, {}, instance);
+            duplicate.name = $scope.duplicateName(duplicate.name);
             duplicate.edit = true;
             duplicate.id = findInstanceId();
+            if (space) {
+                duplicate.designSpace = space;
+            }
             $scope.data.families[0].instances.push(duplicate);
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
         }
+    };
+    
+    
+    
+    $scope.duplicateName = function(inputname){
+        var serieNr = 1;
+        var cleanName = inputname;
+        var endsWithNr = inputname.match(/\d+$/);
+        if (endsWithNr) {
+            var nrString = endsWithNr[0];
+            cleanName = inputname.substr(0, (inputname.length - nrString.length));
+            serieNr = parseInt(nrString);
+        } 
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                var thisName = instance.name;
+                endsWithNr = thisName.match(/\d+$/);
+                if (endsWithNr) {
+                    nrString = endsWithNr[0];
+                    var thisCleanName = thisName.substr(0, (thisName.length - nrString.length));
+                    if (thisCleanName == cleanName) {
+                        var thisNr = parseInt(nrString);
+                        if (thisNr > serieNr) {
+                            serieNr = thisNr;
+                        }
+                    }
+                }
+            });
+        });
+        serieNr++;
+        return cleanName + serieNr;       
     };
     
     $scope.deleteInstance = function () {

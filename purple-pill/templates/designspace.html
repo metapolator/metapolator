@@ -1,5 +1,5 @@
 <ul id="design-space-tabs">
-    <li ng-repeat="space in data.designSpaces" ng-click="selectDesignSpace(space)" ng-class="{selected : space == data.currentDesignSpace}">
+    <li ng-repeat="space in data.designSpaces track by space.id" ng-click="selectDesignSpace(space)" ng-class="{selected : space == data.currentDesignSpace}">
         <!--<<div>img ng-src="{{ 'img/' + space.type + '.png'}}"></div>-->
         <localmenu class="localmenu localmenu-inside" class="left" ng-if="space == data.currentDesignSpace">
             <div class="lm-head" ng-mousedown="data.selectMenu('designspace')">
@@ -7,7 +7,7 @@
             </div>
             <div class="lm-body" ng-if="data.localmenu.designspace">
                 <div class="lm-button" ng-mouseup="addDesignSpace()">New</div>
-                <div class="lm-button" ng-mouseup="">Duplicate</div>
+                <div class="lm-button" ng-mouseup="duplicateDesignSpace()">Duplicate</div>
                 <div class="lm-divider"></div>
                 <div class="lm-button" ng-mouseup="removeDesignSpace()">Delete…</div>
             </div>

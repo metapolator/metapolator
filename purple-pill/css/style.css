@@ -717,7 +717,7 @@
             
             .slider-input-container {
                 position: absolute;
-                z-index: 1000;
+                z-index: 10;
                 left: 120px; 
                 color: #f85c37;
                 font-size: 9px;
@@ -1142,6 +1142,11 @@
         height: 100%;
         display: block;
     }
+    
+        #instances-list {
+            height: calc(100% - 63px);
+            overflow: auto;
+        }
 
         instances ul {
             padding: 0;
@@ -1158,6 +1163,7 @@
             left: 0;
             width: 100%;
             border-top: 1px solid #000;
+            background: #fff;
         }
         
             .instance-tool {

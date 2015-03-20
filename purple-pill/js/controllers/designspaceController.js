@@ -28,9 +28,9 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         });
         $scope.data.deselectAllEdit();
         if (instanceInSpace) {
-        $scope.data.currentInstance = instanceInSpace;
-        $scope.data.currentInstance.edit = true;
-        $scope.data.currentInstance.display = true;  
+            $scope.data.currentInstance = instanceInSpace;
+            $scope.data.currentInstance.edit = true;
+            $scope.data.currentInstance.display = true;  
         }
     };
     
@@ -56,8 +56,36 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         if (confirm("This will remove all Instances in this Design Space. Sure?")) {
             $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
             $scope.data.deleteInstanceDirect($scope.data.currentDesignSpace.id);
-            $scope.data.currentDesignSpace = null;
+            var lastDesignspace;
+            angular.forEach($scope.data.designSpaces, function(space) {
+                lastDesignspace = space;            
+            });
+            $scope.selectDesignSpace(lastDesignspace);
+            $scope.data.localmenu.designspace = false;
         }  
+    };
+    
+    $scope.duplicateDesignSpace = function () {
+        var duplicate = jQuery.extend(true, {}, $scope.data.currentDesignSpace);
+        var oldId = duplicate.id;
+        var duplicateId = findDesignSpaceId();
+        duplicate.name += " copy";
+        duplicate.id = duplicateId;
+        $scope.data.designSpaces.push(duplicate);
+        $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
+        // duplicate its instances
+        var toBeDuplicated = [];
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.designSpace == oldId) {
+                    toBeDuplicated.push(instance);
+                }
+            });
+        }); 
+        angular.forEach(toBeDuplicated, function(duplicate) {
+            $scope.data.duplicateInstance(duplicate, duplicateId);
+        });  
+        $scope.data.localmenu.designspace = false;
     };
 
     function findDesignSpaceId() {
