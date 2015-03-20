@@ -34,7 +34,7 @@
 </div>
 
 
-<div id="parameters-control-panel" ng-if="data.parametersPanel > 0" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">
+<div id="parameters-control-panel" class="control-panel" ng-if="data.parametersPanel > 0" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">
     <div id="control-panel-parameters">
         <div ng-repeat="parameter in parameters" ng-class="{'selected': parameter == windowParameter}" class="control-panel-parameter control-panel-button push-button" ng-click="addParameter(parameter)">{{parameter}}</div>
     </div>

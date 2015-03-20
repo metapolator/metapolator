@@ -1131,7 +1131,7 @@
                 cursor: default;
             }
             
-                .control-panel-button.selected {
+                .control-panel-button.selected, .control-panel-button.push-button-down {
                     background: #60BFEF;
                 }
             
