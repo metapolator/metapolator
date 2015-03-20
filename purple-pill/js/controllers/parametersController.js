@@ -8,10 +8,10 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
-    $scope.operators = ["=", "x", "÷", "+", "-", "min", "max"];
+    $scope.operators = ["x", "÷", "+", "-", "=", "min", "max"];
     $scope.parameterLevel = null;
 
-    $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators:data.viewState", function(newVal) {
+    $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators", function(newVal) {
         $scope.filteredGlyphParameters = newVal;
     }, true);
 

@@ -1,9 +1,9 @@
 app.filter('mastersInEditFilter', function() {
-    return function(sequences, viewState) {
+    return function(sequences) {
         var filtered;
         angular.forEach(sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit[viewState]) {
+                if (master.edit[0]) {
                     filtered = master.parameters;
                 }
             });
@@ -13,12 +13,12 @@ app.filter('mastersInEditFilter', function() {
 });
 
 app.filter('glyphsInEditFilter', function() {
-    return function(sequences, theParameters, theOperators, viewState) {
+    return function(sequences, theParameters, theOperators) {
         var selectedGlyphs = [];
         // check which glyphs are in edit
         angular.forEach(sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit[viewState]) {
+                if (master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             selectedGlyphs.push({
