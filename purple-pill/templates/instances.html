@@ -34,13 +34,13 @@
 </div>
 
 <div id="instances-tools">
-    <div id="add-instance" ng-click="data.addInstance();" class="instance-tool" ng-class="{'inactive': !data.canAddInstance()}">
+    <div id="add-instance" ng-click="data.addInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
         <img src="img/addInstance.png">
     </div>
-    <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool" ng-class="{'inactive': !data.currentInstance}">
+    <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
         <img src="img/duplicateInstance.png">
     </div>
-    <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool" ng-class="{'inactive': !data.currentInstance}">
+    <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
         <img src="img/deleteInstance.png">
     </div>
 </div>

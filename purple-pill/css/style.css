@@ -86,6 +86,17 @@
 	}
 	*/
 	
+    
+/****** standard buttons ******/
+
+    .push-button-down {
+        box-shadow: inset 2px 2px 2px rgba(0,0,0,0.5);
+    }
+    
+    .inactive.push-button-down {
+        box-shadow: none;
+    }
+
 
 	
 /****** menu *****/

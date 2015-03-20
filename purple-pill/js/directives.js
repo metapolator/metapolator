@@ -1,3 +1,17 @@
+app.directive('pushButton', function($compile) {
+    return {
+        restrict : 'C',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('mousedown', function(event) {
+                element.addClass("push-button-down");
+            });
+            element.bind('mouseup mouseleave', function(event) {
+                element.removeClass("push-button-down");
+            });
+        }
+    };
+});
+
 app.directive('ngInputFocus', function($compile) {
     return {
         restrict : 'C',

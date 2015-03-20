@@ -36,12 +36,12 @@
 
 <div id="parameters-control-panel" ng-if="data.parametersPanel > 0" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">
     <div id="control-panel-parameters">
-        <div ng-repeat="parameter in parameters" ng-class="{'selected': parameter == windowParameter}" class="control-panel-parameter control-panel-button" ng-click="addParameter(parameter)">{{parameter}}</div>
+        <div ng-repeat="parameter in parameters" ng-class="{'selected': parameter == windowParameter}" class="control-panel-parameter control-panel-button push-button" ng-click="addParameter(parameter)">{{parameter}}</div>
     </div>
     <div id="control-panel-operators">
-        <div ng-repeat="operator in operators" ng-class="{'selected': operator == windowOperator}" class="control-panel-operator control-panel-button" ng-click="addOperator(operator)">{{operator}}</div>
+        <div ng-repeat="operator in operators" ng-class="{'selected': operator == windowOperator}" class="control-panel-operator control-panel-button push-button" ng-click="addOperator(operator)">{{operator}}</div>
     </div>
-    <div class="control-panel-cancel control-panel-button" ng-click="data.parametersPanel = 0">
+    <div class="control-panel-cancel control-panel-button push-button" ng-click="data.parametersPanel = 0">
         Cancel
     </div>
 </div>
