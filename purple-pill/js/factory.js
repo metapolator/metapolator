@@ -48,7 +48,7 @@ app.factory("sharedScope", function($rootScope) {
                 weight : '400',
                 name : "Red Pill Master",
                 display : true,
-                edit : [false, false],
+                edit : [true, true],
                 ag : "ag",
                 parameters : [{
                     name : "width",
