@@ -76,9 +76,17 @@
 
 
 /****** testing stuff *****/
+	/*
+	.start-view-selection {
+	    background: purple!important;
+	}
 	
+	.end-view-selection {
+	    background: green!important;
+	}
+	*/
 	
-	
+
 	
 /****** menu *****/
 	
@@ -926,6 +934,14 @@
             background: #fff;
             cursor: default;
         }
+                
+            .temp-view-selection-true {
+                background: #f85c37!important;
+            }
+            
+            .temp-view-selection-false {
+                background: white!important;
+            }
         
             .list-view-col svg {
                 height: 90%;

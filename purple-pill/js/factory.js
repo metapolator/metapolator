@@ -2392,6 +2392,7 @@ app.factory("sharedScope", function($rootScope) {
         }],
         currentDesignSpace : null,
         eventHandlers : {
+            mousedown : false,
             initialDisplay : null
         },
         localmenu : {

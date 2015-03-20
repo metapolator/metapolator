@@ -259,18 +259,57 @@ app.directive('listViewCol', function() {
         link : function(scope, element, attrs, ctrl) {
             //var type = $(element).parents(".list").attr("type");
             element.bind('mousedown', function(event) {
+                scope.data.eventHandlers.mousedown = true;
                 $(element).parent().parent().parent().parent().find('.start-view-selection').removeClass('start-view-selection');
                 $(element).parent().addClass('start-view-selection');
                 scope.data.eventHandlers.initialDisplay = $(element).parent().attr("display");
             });
+            element.bind('mouseup', function(event) {
+                scope.data.eventHandlers.mousedown = false;
+                $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
+                $(element).parent().addClass('end-view-selection');
+                var selected = [];
+                var phase = 0;
+                var display;
+                var falseMouseMove = false;
+                $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                    // handle a mousemove within same master as a normal click, so prevent triggering to apply set
+                    if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
+                        falseMouseMove = true;
+                    }
+                    var thisHit = false;
+                    if ($(this).hasClass('start-view-selection') || $(this).hasClass('end-view-selection')) {
+                        phase++;
+                        thisHit = true;
+                    }
+                    if (phase == 1 || (phase == 2 && thisHit)) {
+                        var sequence = $(this).attr("sequence");
+                        var master = $(this).attr("master");
+                        selected.push({
+                            parentObject : sequence,
+                            childObject : master
+                        });
+                    }
+                });
+                if (!falseMouseMove) {
+                    console.log("!");
+                    scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
+                    scope.$apply();
+                }
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
+
+            });
             element.bind('mousemove', function(event) {
-                if (scope.mouseDown) {
+                if (scope.data.eventHandlers.mousedown) {
                     $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
                     $(element).parent().addClass('end-view-selection');
                     var selected = [];
                     var phase = 0;
                     var display;
                     var falseMouseMove = false;
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
                     $(element).parent().parent().parent().parent().find('.list-li').each(function() {
                         // handle a mousemove within same master as a normal click, so prevent triggering to apply set
                         if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
@@ -281,19 +320,14 @@ app.directive('listViewCol', function() {
                             phase++;
                             thisHit = true;
                         }
-                        if (phase == 1 || (phase == 2 && thisHit)) {
-                            var sequence = $(this).attr("sequence");
-                            var master = $(this).attr("master");
-                            selected.push({
-                                parentObject : sequence,
-                                childObject : master
-                            });
+                        if ((phase == 1 || (phase == 2 && thisHit)) && !falseMouseMove) {
+                            if (scope.data.eventHandlers.initialDisplay == "true") {
+                                $(this).find('.list-view-col').addClass('temp-view-selection-false');
+                            } else {
+                                $(this).find('.list-view-col').addClass('temp-view-selection-true');
+                            }
                         }
                     });
-                    if (!falseMouseMove) {
-                        scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
-                        scope.$apply();
-                    }
                 }
             });
         }

@@ -177,7 +177,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         } else if (masterFixed) {
             var calculatedValue = masterFixed;
         }
-        console.log("->" + calculatedValue);
         angular.forEach(operations, function(operation) {
             console.log (operation);
             if (operation.operator == "+") {
