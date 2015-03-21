@@ -496,7 +496,13 @@ define([
      * parameters.onPropertyChange wont trigger on "add", because we won't
      * have subscribed to it by then.
      */
-    _p._parameterAddHandler = function(data, channelKey, key) {
+    _p._parameterAddHandler = function(data, channelKey, keys) {
+        var i, l;
+        for(i=0,l=keys.length;i<l;i++)
+            this.__parameterAddHandler(data, channelKey, keys[i]);
+    };
+
+    _p.__parameterAddHandler = function(data, channelKey, key) {
         var index = data
           , parametersIndexForKey = this._propertySubscriptions[key]
                     ? this._propertySubscriptions[key][2]
