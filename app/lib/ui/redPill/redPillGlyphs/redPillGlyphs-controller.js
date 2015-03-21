@@ -7,7 +7,7 @@ define([], function() {
         this.$scope.updateCPS = updateCPS;
 
         // a default value
-        this.$scope.selector = 'glyph';
+        this.$scope.selector = 'glyph#a';
 
         this.$scope.glypsize = this.$scope.initialGlypsize = 50;
     }

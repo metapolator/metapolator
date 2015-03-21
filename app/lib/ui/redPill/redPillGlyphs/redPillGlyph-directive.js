@@ -40,7 +40,7 @@ define([
         if(!svg) {
             svg = document.createElementNS(svgns, 'svg');
             svg.setAttribute('width', '100%');
-            svg.setAttribute('viewBox', '0 0 1000 1000');
+            svg.setAttribute('viewBox', '0 0 1200 1200');
             element.append(svg);
         }
         return svg;
@@ -56,7 +56,7 @@ define([
           , layer = svg.getElementsByClassName(uniqueClass)[0];
         if(!layer) {
             layer = document.createElementNS(svgns, 'g');
-            layer.setAttribute('transform', 'matrix(1, 0, 0, -1, 0, 800)');
+            layer.setAttribute('transform', 'matrix(1, 0, 0, -1, 0, 900)');
             layer.setAttribute('class', uniqueClass);
             svg.appendChild(layer);
         }

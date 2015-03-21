@@ -11,6 +11,13 @@ define([
 
     var AbstractInterfaceError = errors.AbstractInterface;
 
+    var _id_counter = 0
+      , emitterMixinSetup
+      ;
+    function getUniqueID() {
+        return _id_counter++;
+    }
+
     /**
      * All Elements in a ParametersCollection have this base type OR
      * should at least expose the same Interface (ducktyping).
@@ -20,6 +27,7 @@ define([
         Parent.call(this);
         this._source = source;
         this._lineNo = lineNo;
+        Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
 
         // the `reset` method of ParameterCollection will call this constructor
         // repeatedly. So we need a way to detect if this is was already
