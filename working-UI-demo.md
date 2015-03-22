@@ -378,7 +378,7 @@ A brand new design space with no masters looks like this:
 
 ![](http://mmiworks.net/metapolator/hellomaster.png)
 
-a little welcome in a _pure_ stroke font, with a reference to the macpaint 1.0 screenshot.
+Simon created this little welcome in a _pure_ stroke font (linking to the skeleton based nature of metapolator, with also reference to the [macpaint 1.0 screenshot](http://lowendmac.com/wp-content/uploads/mac-128k.jpg).
 
 After dropping the first master the design space looks like this:
 
@@ -408,7 +408,7 @@ When a master is removed from a design space (this can also be triggered by the 
 * the doomed master is removed; the metapolation is recalculated;
 
 #### metapolation math
-To calculate the metapolation coefficients, add up all the slider settings (aka the cake) and divide each master by this number (piece of cake).
+To calculate the metapolation coefficients, add up all the slider settings (the cake, as Jeroen puts it) and divide each master by this number (piece of cake).
 
 The procedure to calculate the sliders from a set of metapolation coefficients is straightforward:
 
