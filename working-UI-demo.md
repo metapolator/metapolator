@@ -358,7 +358,7 @@ _Quick overview: there are 4 masters in this workspace, the Bold one has been se
 * When 3 or more masters have been dropped on the control design space, one of them is shown as the ‘slack master’ (above: Bold), i.e. the one that picks up the slack of what the others leave, sizing itself to implement the 100% rule;
   * the slack master has a reversed slider, starting from the other side; its thumb is rigidly connected to the thumb of the _largest_ (in slider value) of the other masters; **note** that when sliding (or value editing) any of the other masters, they can enter and leave this role of ‘largest’;
   * changing the slack slider changes the largest slider, and changing the largest slider changes the slack slider; the difference is—
-    * changing the slack slider changes **all other ones** so that they stay in relative proportion;
+    * changing the slack slider changes **all other ones** so that they retain their relative proportions;
     * changing the largest slider, **only** changes the slack one—and the largest slider can lose its ‘largest’ role when moved below any other non-slack slider.
   * the popup beside the slack master label contains all dropped masters, in the order they were dropped, and allow any of these to be picked as slack master; the default is the second master that was dropped on this design space; when the slack master is changed, the slider setting are recalculated from the current metapolation coefficients;
 * all masters are always listed top–to–bottom in the order they were dropped;
@@ -372,8 +372,9 @@ Here is the same design space as shown above, but now Alternate has been set to 
 
 ![](http://mmiworks.net/metapolator/nonsilentmixeralt.png)
 
-the change of slack master does not change any metapolation coefficients, but does change the input numbers and blue diamonds positions.
+the change of slack master does not change any metapolation coefficients, but does change the input numbers and blue diamonds positions. All sliders and blue diamond positions are to be recalculated using [the math](https://github.com/metapolator/metapolator/wiki/working-UI-demo#metapolation-math) below.
 
+#### starting from zero
 A brand new design space with no masters looks like this:
 
 ![](http://mmiworks.net/metapolator/hellomaster.png)
