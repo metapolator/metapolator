@@ -368,18 +368,18 @@ _Quick overview: there are 4 masters in this workspace, the Bold one has been se
   * only one decimal point is to be shown;
   * values that are typed in by users or a result from calculation (from metapolation coefficients) can be any, single-decimal, value.
 
-Here is the same design space as shown above, but now Alternate has been set to be slack master:
+Here is the same design space as shown above, but right after Alternate has been set to be slack master:
 
 ![](http://mmiworks.net/metapolator/nonsilentmixeralt.png)
 
-the change of slack master does not change any metapolation coefficients, but does change the input numbers and blue diamonds positions. All sliders and blue diamond positions are to be recalculated using [the math](https://github.com/metapolator/metapolator/wiki/working-UI-demo#metapolation-math) below.
+the change of slack master does not change any metapolation coefficients, but _does_ change the input numbers and blue diamonds positions. All sliders and blue diamond positions are to be recalculated using [the math](https://github.com/metapolator/metapolator/wiki/working-UI-demo#metapolation-math) below.
 
 #### starting from zero
 A brand new design space with no masters looks like this:
 
 ![](http://mmiworks.net/metapolator/hellomaster.png)
 
-Simon created this little welcome in a _pure_ stroke font (linking to the skeleton based nature of metapolator, with also reference to the [macpaint 1.0 screenshot](http://lowendmac.com/wp-content/uploads/mac-128k.jpg).
+Simon created this little welcome in a _pure_ stroke font (linking to the skeleton-based nature of metapolator), with also reference to the [macpaint 1.0 screenshot](http://lowendmac.com/wp-content/uploads/mac-128k.jpg).
 
 After dropping the first master the design space looks like this:
 
@@ -413,7 +413,7 @@ To calculate the metapolation coefficients, add up all the slider settings (the 
 
 The procedure to calculate the sliders from a set of metapolation coefficients is straightforward:
 
-1. determine the slack master and then the largest coefficient of all the non-slacks (it does not matter is there are multiple masters _(heh)_ that largest, any one will do;
+1. determine the slack master and then (by coefficient) the largest of all the non-slacks (it does not matter that there are multiple masters _(heh)_ that are largest, any one will do);
 * 100 * largest / (slack + largest) is the position of the largest slider;
 * the slack slider is set to 100 - largest;
 * all other non-slack masters are set in proportion to the largest one (i.e. to 100 * coefficient / (slack + largest);
