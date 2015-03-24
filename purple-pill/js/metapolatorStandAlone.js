@@ -2079,12 +2079,12 @@ define("requireLib", function(){});
 
 // we can define document as a dependency
 // works only in a browser context
-define('webAPI/document',[], document)
-;
+define('webAPI/document',[], document);
+
 define('metapolator/errors',[],function() {
     
     //metapolator errors
-    var errors = {}
+    var errors = {};
 
     /**
      * save three lines of coding for each error with this factory
@@ -2094,10 +2094,10 @@ define('metapolator/errors',[],function() {
     var makeError = function(name, Constructor, prototype, namespace)
     {
         if(prototype === undefined)
-            var prototype = new Error;
+            prototype = new Error();
 
         if(Constructor === undefined) {
-            var Constructor = function(message, stack) {
+            Constructor = function(message, stack) {
                 if(message !== undefined) {
                     this.name = name + 'Error';
                     this.message = message || "(no error message)";
@@ -2106,48 +2106,48 @@ define('metapolator/errors',[],function() {
                 if(!stack && typeof Error.captureStackTrace === 'function')
                     Error.captureStackTrace(this, Constructor);
                 else {
-                    stack = stack || (new Error).stack || '(no stack available)'
+                    stack = stack || (new Error()).stack || '(no stack available)';
                     this.stack = [this.name+': ', this.message, '\n'
                                                     , stack].join('');
                 }
             };
-        };
+        }
         Constructor.prototype = prototype;
         Constructor.prototype.constructor = Constructor;
         if(namespace === undefined)
             namespace = errors;
         namespace[name] = Constructor;
-    }
+    };
     errors.makeError = makeError;
     /**
      * the definitions go here
      */
     makeError('Error');
     makeError('Unhandled');
-    makeError('Assertion', undefined , new errors.Error);
-    makeError('CommandLine', undefined , new errors.Error);
-    makeError('Value', undefined , new RangeError);
-    makeError('MOM', undefined , new errors.Error);
-    makeError('NotImplemented', undefined , new errors.Error);
-    makeError('Deprecated', undefined , new errors.Error);
-    makeError('AbstractInterface', undefined , new errors.Error);
-    makeError('CPS', undefined , new errors.Error);
-    makeError('Key', undefined , new errors.Error);
-    makeError('CPSRegistryKey', undefined , new errors.Key);
-    makeError('CPSKey', undefined , new errors.Key);
-    makeError('CPSRecursion', undefined , new errors.CPS);
-    makeError('CPSFormula', undefined , new errors.CPS);
+    makeError('Assertion', undefined , new errors.Error());
+    makeError('CommandLine', undefined , new errors.Error());
+    makeError('Value', undefined , new RangeError());
+    makeError('MOM', undefined , new errors.Error());
+    makeError('NotImplemented', undefined , new errors.Error());
+    makeError('Deprecated', undefined , new errors.Error());
+    makeError('AbstractInterface', undefined , new errors.Error());
+    makeError('CPS', undefined , new errors.Error());
+    makeError('Key', undefined , new errors.Error());
+    makeError('CPSRegistryKey', undefined , new errors.Key());
+    makeError('CPSKey', undefined , new errors.Key());
+    makeError('CPSRecursion', undefined , new errors.CPS());
+    makeError('CPSFormula', undefined , new errors.CPS());
     // deprecated, CPSFormula superseeds this
-    makeError('CPSAlgebra', undefined , new errors.CPSFormula);
-    makeError('Project', undefined , new errors.CPS);
-    makeError('PointPen', undefined , new errors.CPS);
-    makeError('CPSParser', undefined , new errors.CPS);
-    makeError('Import', undefined , new errors.CPS);
-    makeError('ImportPenstroke', undefined , new errors.Import);
-    makeError('ImportContour', undefined , new errors.Import);
-    makeError('Event', undefined , new errors.Error);
-    makeError('Emitter', undefined , new errors.Event);
-    makeError('Receiver', undefined , new errors.Event);
+    makeError('CPSAlgebra', undefined , new errors.CPSFormula());
+    makeError('Project', undefined , new errors.CPS());
+    makeError('PointPen', undefined , new errors.CPS());
+    makeError('CPSParser', undefined , new errors.CPS());
+    makeError('Import', undefined , new errors.CPS());
+    makeError('ImportPenstroke', undefined , new errors.Import());
+    makeError('ImportContour', undefined , new errors.Import());
+    makeError('Event', undefined , new errors.Error());
+    makeError('Emitter', undefined , new errors.Event());
+    makeError('Receiver', undefined , new errors.Event());
 
     /**
      * if expression is false, throw an Assertion
@@ -4508,8 +4508,8 @@ util.inherits(YAMLFormatter, Formatter);
 
 /**
  * This function formats a {@link LogRecord} object in YAML as follows:
- * 
- * time: {datetime} 
+ *
+ * time: {datetime}
  * message: {message}
  * [logger-name]: {string}
  * [level]: {level}
@@ -4517,14 +4517,14 @@ util.inherits(YAMLFormatter, Formatter);
  *
  * Each entry is returned as an array of length 1, which can be appended to
  * a log file (see FileLogger) as part of an "infinite" array.
- * 
+ *
  * @param {LogRecord} logRecord Record to be formatted
  */
 YAMLFormatter.prototype.formatMessage = function(logRecord) {
   if (!logRecord || !(logRecord instanceof LogRecord))
     return {};
 
-  var record = {}
+  var record = {};
   record.message = logRecord.getMessage() || "";
 
   //log errors as strings
@@ -4557,7 +4557,7 @@ YAMLFormatter.prototype.formatMessage = function(logRecord) {
   var thrown = logRecord.getThrown();
   if (thrown && util.isError(thrown))
     record.thrown = {message: thrown.message, stack: thrown.stack};
-  
+
   return yaml.safeDump([record]);
 };
 
@@ -4594,7 +4594,7 @@ LogRecord.prototype.fromObject = function (obj) {
   obj.level = new Level(obj.level);
   obj.millis = Date.parse(obj.date);
   return new LogRecord(obj);
-}
+};
 
 Level.DEBUG = new Level({name: "DEBUG", value: 3});
 
@@ -6635,13 +6635,13 @@ function()
     
     // All models will share some basics
     function _BaseModel() {
-        
+
     }
     var _p = _BaseModel.prototype;
-    
+
     return _BaseModel;
-})
-;
+});
+
 if(typeof Proxy === 'function')
     define('es6/Proxy', [], function() {return Proxy;});
 else // typeof Proxy === 'object' => the old Proxy Proposal
@@ -6655,7 +6655,7 @@ define('metapolator/models/CPS/whitelistProxies',[
   , 'ufojs/main'
 ], function(
     errors
-  , proxy
+  , Proxy
   , ufoJSUtils
 ) {
     
@@ -6668,7 +6668,8 @@ define('metapolator/models/CPS/whitelistProxies',[
 
 
     function _handlerFactory(target, whitelist) {
-        return proxy(target, new this(whitelist));
+        /* jshint validthis: true */
+        return new Proxy(target, new this(whitelist));
     }
 
     function _get(target, name, receiver) {
@@ -7072,7 +7073,7 @@ define('metapolator/models/MOM/_Node',[
             clone.id = this._id;
         for(var k in this._classes)
             clone.setClass(k);
-    }
+    };
 
     emitterMixin(_p, emitterMixinSetup);
 
@@ -7324,7 +7325,8 @@ define('metapolator/models/MOM/_Node',[
        this._cpsChange.timeoutId = null;
        this._cpsChange.eventData = [];
        this._trigger('CPS-change', eventData);
-    }
+    };
+
     _p._cpsChangeHandler = function(subscriberData, channelKey, eventData) {
         // The styledicts are already debounced so that they fire only
         // once after all sync tasks are done. Debouncing here could still
@@ -7447,6 +7449,7 @@ define('metapolator/models/MOM/_Contour',[
      * All children of a MOM Glyph have to inherit from MOM _Contour.
      */
     function _Contour() {
+        /*jshint validthis:true*/
         Parent.call(this);
         if(this.constructor.prototype === _p)
             throw new MOMError('MOM _Contour must not be instantiated '
@@ -7459,11 +7462,11 @@ define('metapolator/models/MOM/_Contour',[
         get: function() {
             return this._parent;
         }
-    })
+    });
 
     return _Contour;
-})
-;
+});
+
 define('metapolator/models/MOM/Glyph',[
     './_Node'
   , './_Contour'
@@ -7474,7 +7477,7 @@ define('metapolator/models/MOM/Glyph',[
   , whitelistProxies
 ) {
     
-
+    /*jshint sub:true*/
     /**
      * This Element is the container of all contours of a glyph.
      * It will have some metadata and contain children of type MOM _Contour.
@@ -7513,16 +7516,16 @@ define('metapolator/models/MOM/Glyph',[
     _p._cloneProperties = function(clone) {
         Parent.prototype._cloneProperties.call(this, clone);
         clone.setUFOData(this.getUFOData());
-    }
+    };
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Glyph'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'glyph'
-    })
+    });
 
     _p.setUFOData = function(ufoGlyph) {
         var i=0, keys = Object.keys(ufoGlyph);
@@ -7534,7 +7537,7 @@ define('metapolator/models/MOM/Glyph',[
         if( ufoGlyph['height'] ) {
             this._advanceHeight = ufoGlyph['height'];
         }
-    }
+    };
 
     /**
      * Return value is a copy of the UFO data for the Glyph.
@@ -7555,7 +7558,7 @@ define('metapolator/models/MOM/Glyph',[
         ret['width']  = this._advanceWidth;
         ret['height'] = this._advanceHeight;
         return ret;
-    }
+    };
 
     /**
      * Convert the UFO key to the key you should use for CPS. For example,
@@ -7574,8 +7577,8 @@ define('metapolator/models/MOM/Glyph',[
     _p._acceptedChildren = [_Contour];
 
     return Glyph;
-})
-;
+});
+
 define('metapolator/models/MOM/Master',[
     './_Node'
   , './Glyph'
@@ -7597,7 +7600,6 @@ define('metapolator/models/MOM/Master',[
         Object.defineProperty(this, 'fontinfo', {
             value: fontinfo
         });
-        this._advanceHeight = 0;
     }
     var _p = Master.prototype = Object.create(Parent.prototype);
     _p.constructor = Master;
@@ -7766,7 +7768,8 @@ define('metapolator/models/MOM/PointData',[
     function PointData(obj) {
         for(var k in obj) this[k] = obj[k];
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
-    };
+    }
+
     PointData.prototype._cps_whitelist = {
         on: 'on'
       , in: 'in'
@@ -7778,8 +7781,8 @@ define('metapolator/models/MOM/PointData',[
     // see: models/emitterMixin.js for this
 
     return PointData;
-})
-;
+});
+
 define('metapolator/models/MOM/_PenStrokePointChild',[
     './_Node'
 ], function(
@@ -7790,14 +7793,15 @@ define('metapolator/models/MOM/_PenStrokePointChild',[
      * This Element represents a child of a of a MoM PenStrokePoint
      */
     function _PenStrokePointChild() {
+        /*jshint validthis:true*/
         Parent.call(this);
     }
     var _p = _PenStrokePointChild.prototype = Object.create(Parent.prototype);
     _p.constructor = _PenStrokePointChild;
 
     return _PenStrokePointChild;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePointLeft',[
     './_PenStrokePointChild'
 ], function(
@@ -7809,19 +7813,19 @@ define('metapolator/models/MOM/PenStrokePointLeft',[
     }
     var _p = PenStrokePointLeft.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePointLeft;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePointLeft'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'left'
-    })
-    
+    });
+
     return PenStrokePointLeft;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePointCenter',[
     './_PenStrokePointChild'
 ], function(
@@ -7833,19 +7837,19 @@ define('metapolator/models/MOM/PenStrokePointCenter',[
     }
     var _p = PenStrokePointCenter.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePointCenter;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePointCenter'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'center'
-    })
-    
+    });
+
     return PenStrokePointCenter;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePointRight',[
     './_PenStrokePointChild'
 ], function(
@@ -7857,19 +7861,19 @@ define('metapolator/models/MOM/PenStrokePointRight',[
     }
     var _p = PenStrokePointRight.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStrokePointRight;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStrokePointRight'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors */
         value: 'right'
-    })
-    
+    });
+
     return PenStrokePointRight;
-})
-;
+});
+
 define('metapolator/models/MOM/PenStrokePoint',[
     './_Node'
   , './PointData'
@@ -7999,22 +8003,22 @@ define('metapolator/models/MOM/PenStroke',[
     }
     var _p = PenStroke.prototype = Object.create(Parent.prototype);
     _p.constructor = PenStroke;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM PenStroke'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'penstroke'
-    })
-    
-    _p._acceptedChildren = [PenStrokePoint];
-    
-    return PenStroke;
-})
+    });
 
-;
+    _p._acceptedChildren = [PenStrokePoint];
+
+    return PenStroke;
+});
+
+
 define('metapolator/models/MOM/ContourPoint',[
     './_Node'
   , './PointData'
@@ -8065,7 +8069,7 @@ define('metapolator/models/MOM/ContourPoint',[
         var clone = new this.constructor(new PointData(this._skeleton));
         this._cloneProperties(clone);
         return clone;
-    }
+    };
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM ContourPoint'
@@ -8112,19 +8116,19 @@ define('metapolator/models/MOM/Contour',[
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Contour'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'contour'
-    })
+    });
 
     _p._acceptedChildren = [ContourPoint];
 
     return Contour;
-})
+});
 
-;
+
 /*
  * Don't edit this file by hand!
  * This file was generated from a npm-package using gulp. 
@@ -8415,54 +8419,56 @@ define('metapolator/math/Vector',[
       , y: 'y'
       , length: 'len'
       , angle: 'rad'
-    }
+    };
 
 
     Vector.fromArray = function(arr) {
         return new _p.constructor(arr[0], arr[1]);
-    }
+    };
 
     function _getReal() {
+        /*jshint validthis:true*/
         return this.real;
     }
 
     function _getImaginary() {
+        /*jshint validthis:true*/
         return this.imag;
     }
 
-    Object.defineProperty(_p, 'x', {get: _getReal})
-    Object.defineProperty(_p, 'y', {get: _getImaginary})
+    Object.defineProperty(_p, 'x', {get: _getReal});
+    Object.defineProperty(_p, 'y', {get: _getImaginary});
 
     // array interface
     Object.defineProperty(_p, 'length', {
         value: 2
       , writable: false
       , enumerable: true
-    })
-    Object.defineProperty(_p, '0', {get: _getReal})
-    Object.defineProperty(_p, '1', {get: _getImaginary})
+    });
+    Object.defineProperty(_p, '0', {get: _getReal});
+    Object.defineProperty(_p, '1', {get: _getImaginary});
 
     _p.valueOf = function() {
         return Array.prototype.slice.call(this);
-    }
+    };
 
     _p.toString = function() {
         return '<Vector ' + this.valueOf() +'>';
-    }
+    };
 
     // factories and constants
-    Vector.i = new Vector(0, 1),
-    Vector.one = new Vector(1, 0)
+    Vector.i = new Vector(0, 1);
+    Vector.one = new Vector(1, 0);
 
     Vector.from = function(x, y) {
         // just map to Parent and then convert
         var complex = Parent.from(x, y);
         return new Vector(complex.real, complex.imag);
-    },
+    };
 
     Vector.fromPolar = function(r, phi) {
         return new Vector(1, 1).fromPolar(r, phi);
-    }
+    };
 
 
     // Some getters, so we can use these easily with CPS. At the moment
@@ -8478,7 +8484,7 @@ define('metapolator/math/Vector',[
      */
     Object.defineProperty(_p, 'len', {
         get: Parent.prototype.magnitude
-    })
+    });
 
     /**
      * A getter for the angle of the vector in radians.
@@ -8488,8 +8494,8 @@ define('metapolator/math/Vector',[
     });
 
     return Vector;
-})
-;
+});
+
 define('metapolator/models/MOM/Component',[
     './_Contour'
   , 'metapolator/models/CPS/whitelistProxies'
@@ -8524,7 +8530,7 @@ define('metapolator/models/MOM/Component',[
         var clone = new this.constructor(this._baseGlyphName, this._transformation);
         this._cloneProperties(clone);
         return clone;
-    }
+    };
 
     Object.defineProperty(_p, 'baseGlyphName', {
         get: function() {
@@ -12577,20 +12583,20 @@ define('metapolator/models/CPS/parsing/Source',[
     function Source(name) {
         this._name = name;
     }
-    
+
     var _p = Source.prototype;
-    
+
     _p.toString = function() {
         return ['<Source:', this._name, '>'].join(' ');
-    }
-    
+    };
+
     Object.defineProperty(_p, 'name', {
         get: function(){ return this._name; }
     });
-    
+
     return Source;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/_Node',[
     'metapolator/errors'
   , '../../_BaseModel'
@@ -12602,14 +12608,7 @@ define('metapolator/models/CPS/elements/_Node',[
 ) {
     
 
-    var AbstractInterfaceError = errors.AbstractInterface
-      , _emitterSetup
-      ;
-
-    _emitterSetup = {
-        // make trigger private
-        triggerAPI: '_trigger'
-    };
+    var AbstractInterfaceError = errors.AbstractInterface;
 
     /**
      * All Elements in a ParametersCollection have this base type OR
@@ -12625,14 +12624,14 @@ define('metapolator/models/CPS/elements/_Node',[
         // repeatedly. So we need a way to detect if this is was already
         // applied or not
         if(!this.__firstTimeInitFlag) {
-            emitterMixin.init(this, _emitterSetup);
+            emitterMixin.init(this);
             Object.defineProperty(this, '__firstTimeInitFlag', {value: true});
         }
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
     _p.constructor = _Node;
 
-    emitterMixin(_p, _emitterSetup);
+    emitterMixin(_p);
 
     _p.toString = function() {
         throw new AbstractInterfaceError('This interface is abstract and'
@@ -12685,6 +12684,8 @@ define('metapolator/models/CPS/elements/SelectorList',[
      */
     function SelectorList(selectors, source, lineNo) {
         Parent.call(this, source, lineNo);
+        // Keeping this private. The value property returns a copy of
+        // the this._selectors array and that's the public interface.
         this._selectors = selectors.slice();
         this._multiplyCache = new WeakMap();
 
@@ -12794,14 +12795,17 @@ define('metapolator/models/CPS/elements/Rule',[
     function Rule(selectorList, parameterDict, source, lineNo) {
         Parent.call(this, source, lineNo);
         this._selectorList = selectorList;
-        this._parameters = parameterDict;
+        Object.defineProperty(this, 'parameters', {
+            value: parameterDict
+          , enumerable: true
+        });
     }
 
     var _p = Rule.prototype = Object.create(Parent.prototype);
     _p.constructor = Rule;
 
     _p.toString = function() {
-        return [this._selectorList, ' ', this._parameters].join('');
+        return [this._selectorList, ' ', this.parameters].join('');
     };
 
     Object.defineProperty(_p, 'invalid', {
@@ -12833,10 +12837,6 @@ define('metapolator/models/CPS/elements/Rule',[
         this._selectorList = selectorList;
         this._trigger('selector-change');
     };
-
-    Object.defineProperty(_p, 'parameters', {
-        get: function(){ return this._parameters; }
-    });
 
     return Rule;
 });
@@ -13056,7 +13056,7 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
                 // 0: array of namespaces, initially empty
                 // 1: the instance of Rule
                 // thus: [selectorList, rule, [_Collections where this rule is embeded]]
-                rules.push([ item.getSelectorList(), item])//, [this] ]);
+                rules.push([ item.getSelectorList(), item]);//, [this] ]);
             }
             else if(item instanceof ParameterCollection) {
                 this._subscribe(item, collectionChannel, callback);
@@ -13099,6 +13099,28 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
              || item instanceof Comment
         );
     }
+
+    /**
+     * FIXME: this is copy and pasted from models/ParameterDict but the
+     *        implementation should be shared!
+     *
+     * Calculate the start index where Array.prototype.splice really starts.
+     *
+     * > start:
+     * > Index at which to start changing the array. If greater than the
+     * > length of the array, actual starting index will be set to the
+     * > length of the array. If negative, will begin that many elements
+     * > from the end.
+     *
+     * Not in that documentation, if negative after length-start: start = 0
+     */
+    _p._getCanonicalStartIndex = function(start, length) {
+        if(start >= length)
+            return length;
+        if(start < 0)
+            return Math.max(0, length - start);
+        return start;
+    };
     /**
      * One to rule them all:
      *
@@ -13126,6 +13148,7 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
           , i, l
           , item
           , events = []
+          , canonicalStartIndex = this._getCanonicalStartIndex(startIndex, this._items.length)
           ;
         for(i=0,l=insertions.length;i<l; i++) {
             item = insertions[i];
@@ -13152,12 +13175,13 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
         // that delicate!.
         // NOTE: index and deletedCount must be calculated see the
         // docs for Array.prototype.slice
-        this.trigger(events);
+        this._trigger(events);
+        return [canonicalStartIndex, deleted.length, insertions.length];
     };
 
     _p.getItem = function(index) {
         return this.items[index];
-    }
+    };
 
     return ParameterCollection;
 });
@@ -13166,7 +13190,7 @@ define('metapolator/models/CPS/parsing/engine',[
     'metapolator/errors'
   , './Source'
   , 'metapolator/models/CPS/elements/ParameterCollection'
-  
+
 ], function (
     errors
   , Source
@@ -13177,7 +13201,7 @@ define('metapolator/models/CPS/parsing/engine',[
     // FIXME: handle errors!
     // especially erros thrown by gonzales, due to bad CSS input need
     // some attention
-    
+
     var _pattern_linebreak = /\n/g;
     function _countLinebreaks(data) {
         switch (data) {
@@ -13191,10 +13215,10 @@ define('metapolator/models/CPS/parsing/engine',[
                 return 1;
             default:
                 // this is the most expensive one
-                return (data.match(_pattern_linebreak) || [] ).length
+                return (data.match(_pattern_linebreak) || [] ).length;
         }
     }
-    
+
     /**
      * Create a node as used in engine.
      */
@@ -13230,12 +13254,12 @@ define('metapolator/models/CPS/parsing/engine',[
         };
         return node;
     }
-    
+
     /**
      * Create a parameter node (ParameterCollection) from an Abstract
      * Syntax Tree(AST) like the one that is returned by gonzales.srcToCSSP
      * see: https://github.com/css/gonzales/blob/master/doc/AST.CSSP.en.md
-     * 
+     *
      * In the ParameterList Tree, there will be some arrays of the AST
      * referenced. SO if you are going to change the AST, you might change
      * ParameterList items, too. Create a deep copy of the AST if you
@@ -13258,28 +13282,28 @@ define('metapolator/models/CPS/parsing/engine',[
           , oldNodeConstructors
           , i
           ;
-        
+
         // initial frame
         root = _makeNode(nodeConstructors, false, lineNo, ast);
         // use slice to make a copy of the ast array
         stack.push([ast.slice(), root]);
-        
+
         // we want to walk the complete tree, because we want to detect all
         // ["s", " \n "] etc. so we can count line breaks. I hope the gonzales
         // parser doesn't hide line breaks from us.
         // Line numbers are VERY helpful when working with a CSS file
         // that's why I want to keep them
-        while(frame = stack.pop()) {
+        while((frame = stack.pop())) {
             // if frame 2 is set this means that the element switched
             // nodeConstructors for its own object, and that the
             // old nodeConstructors object is in frame[2]
-            
-            ASTType = frame[0][0]
+
+            ASTType = frame[0][0];
             //remove the 2nd item from frame[0] and return it encapsulated
             // into an array
-            data = frame[0].splice(1, 1)
-            node = frame[1]
-            
+            data = frame[0].splice(1, 1);
+            node = frame[1];
+
             // only ASTType is left; frame[0].splice(1, 1) returned and empty array
             if(!data.length) {
                 // ASCENDING
@@ -13293,14 +13317,14 @@ define('metapolator/models/CPS/parsing/engine',[
                 continue;
             }
             // there may still be data left, we have to revisit this frame
-            stack.push(frame)
+            stack.push(frame);
             data = data[0];
             if(!(data instanceof Array)) {
                 // DEEPEST POINT, this node has no children
                 // assert(!('children' in node), 'A data node must not have a children key')
                 // save the data
                 node.data = data;
-                
+
                 if (ASTType in {'comment':null, 's':null})
                     // count linebreaks
                     lineNo += _countLinebreaks(data);
@@ -13308,7 +13332,7 @@ define('metapolator/models/CPS/parsing/engine',[
             }
             // data is an array
             // DESCENDING
-            
+
             // switch nodeConstructors if it's the right element
             // currently only used for @dictionary, but this mechanism
             // is very generic
@@ -13321,12 +13345,12 @@ define('metapolator/models/CPS/parsing/engine',[
                     break;
                 }
             }
-            
-            childNode = _makeNode(nodeConstructors, node, lineNo, data)
+
+            childNode = _makeNode(nodeConstructors, node, lineNo, data);
             // Each frame needs to be visited, because we want to count
             // lines.
             // Use slice to make a copy of the data array
-            stack.push([data.slice(), childNode, oldNodeConstructors])
+            stack.push([data.slice(), childNode, oldNodeConstructors]);
             if(!childNode.makeInstance)
                 continue;
             // keep the childNode
@@ -13339,13 +13363,13 @@ define('metapolator/models/CPS/parsing/engine',[
         if(!(root.instance instanceof ParameterCollection))
             throw new CPSError('Parser was expected to create an instance '
                                 + 'of ParameterCollection but it delivered '
-                                + 'a ' + root.instance.constructor.name)
-        
+                                + 'a ' + root.instance.constructor.name);
+
         return root.instance;
     }
     return parserEngine;
-})
-;
+});
+
 define('metapolator/models/CPS/elements/GenericCPSNode',[
     './_Node'
   , 'gonzales/gonzales'
@@ -13441,7 +13465,7 @@ define('metapolator/models/CPS/parsing/baseFactories',[
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
 
             return new ParameterCollection(items, source, node.lineNo);
@@ -13471,9 +13495,9 @@ define('metapolator/models/CPS/parsing/baseFactories',[
       , '__GenericAST__': function (node, source) {
             return new GenericCPSNode(node.rawData, source, node.lineNo);
         }
-    }
-})
-;
+    };
+});
+
 define('metapolator/models/CPS/elements/Combinator',[
     './_Node'
 ], function(
@@ -13688,10 +13712,6 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
      *
      * simple selectors:
      *          universal, type, id, class, id, pseudo-class pseudo-element
-     *
-     * A selector may be alien, which means we ignore it, because we don't
-     * understand it. An alien selector is not invalid, thus its SelectorList
-     * is still valid.
      */
     function SimpleSelector(type, name, value, source, lineNo) {
         Parent.call(this, source, lineNo);
@@ -14028,21 +14048,22 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                 + 'expected to be a "selector", but got "' + node.children[0].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'block')
                 throw new CPSError('The second child of "ruleset" is '
                 + 'expected to be a "block", but got "' + node.children[1].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
             selectorList = node.children[0].instance;
             parameterDict = node.children[1].instance;
 
-            return new Rule(selectorList, parameterDict, source, node.lineNo)
+            return new Rule(selectorList, parameterDict, source, node.lineNo);
         }
         // just a stub
       , 'block': function(node, source){
+            /*jshint sub:true*/
             var item = baseFactories['__GenericAST__'](node, source);
             item.selects = true;
             return item;
@@ -14064,9 +14085,9 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
               , selectorList
               ;
             items = node.children
-                .filter(function(item){return item.type === 'simpleselector'})
-                .map(function(item){return item.instance;})
-            return new SelectorList(items, source, node.lineNo)
+                .filter(function(item){return item.type === 'simpleselector';})
+                .map(function(item){return item.instance;});
+            return new SelectorList(items, source, node.lineNo);
         }
         /**
          * simpleselector:
@@ -14081,20 +14102,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
       , 'simpleselector': function(node, source, ruleController) {
             var elements = node.children
                     .map(function(item){return item.instance;})
-              , invalid = false
-              , alien = false
-              , invalidMessage
               , value = []
-              , fallbackString
-                /*
-                 * FIXME: combinators is unused, review this function completely!
-                 * combinators that are not alien */
-              , combinators = {
-                    // the child combinator
-                    'child' : true
-                    // whitespace is the descendant combinator, but we have to detect
-                    // this another way
-                }
               , i=0
               , item
               , compoundSelectorElements = null
@@ -14125,7 +14133,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                     continue;
                 }
 
-                // must be a simple selector (or invalid/alien)
+                // must be a simple selector (or invalid)
                 if(compoundSelectorElements === null) {
                     // if no other combinator is already there:
                     if(value.length && !(value[value.length-1] instanceof Combinator))
@@ -14148,7 +14156,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
                 // replace directly
                 value[i] = compoundSelectorFactory(value[i],
                                 value[i][0]._source, value[i][0]._lineNo
-                              , ruleController && ruleController.selectorEngine)
+                              , ruleController && ruleController.selectorEngine);
             }
             return new ComplexSelector(value, source, node.lineNo);
         }
@@ -14161,7 +14169,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
       , 'combinator': function (node, source) {
             return new Combinator(node.data, source, node.lineNo);
         }
-    })
+    });
 
 
     function _getImplicitUniversalSelector(source, lineNo) {
@@ -14233,7 +14241,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
         }
         if(typeof name !== 'string' && name !== undefined)
             throw new CPSError('Can\'t find a name for SimpleSelector ('
-                            + element + ')')
+                            + element + ')');
         return name;
     }
 
@@ -14248,7 +14256,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
         body = element._ast[1][2].slice(1)
                    .filter(function(item) {
                         return !(item[0] in {'s':null,'comment':null});
-                    })
+                    });
 
         sign = '+';
         if(body.length === 2 && body[0][0] === 'unary') {
@@ -14274,8 +14282,8 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
     }
 
     return selectorFactories;
-})
-;
+});
+
 define('metapolator/models/CPS/parsing/parseSelectorList',[
     'metapolator/errors'
   , 'gonzales/gonzales'
@@ -14283,7 +14291,7 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
   , './selectorFactories'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/Comment'
-  
+
 ], function (
     errors
   , gonzales
@@ -14294,16 +14302,18 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
 ) {
     
     var CPSError = errors.CPS
-      , CPSParserError = errors.CPSParser;;
+      , CPSParserError = errors.CPSParser
+      ;
 
     function selectorListFromString(string, sourceName, selectorEngine) {
+        var ast;
         try {
-            var ast = gonzales.srcToCSSP(string + '{}');
+            ast = gonzales.srcToCSSP(string + '{}');
         } catch(error) {
             throw new CPSParserError('Error parsing "' + string + '" as a selector. '
                 + 'Message: ' + error.message);
         }
-        return selectorListFromAST(ast, sourceName, selectorEngine)
+        return selectorListFromAST(ast, sourceName, selectorEngine);
     }
 
     function selectorListFromAST(ast, sourceName, selectorEngine) {
@@ -14337,19 +14347,19 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
             // might be a programming error.
         }
         if(!selectorList)
-            throw new CPSParserError('No selector found.')
+            throw new CPSParserError('No selector found.');
         if(!selectorList.selects)
             throw new CPSParserError('SelectorList will not select anything: '
-                    + selectorList.message)
+                    + selectorList.message);
         return selectorList;
     }
-    
+
     return {
         fromString: selectorListFromString
       , fromAST: selectorListFromAST
-    }
-})
-;
+    };
+});
+
 define('metapolator/models/CPS/dataTypes/formulae/parsing/SelectorToken',[
     'metapolator/errors'
   , './_ValueToken'
@@ -14500,6 +14510,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
     };
 
     _p._compile = function(_stack) {
+        /*jshint evil:true*/
         var i, l
           , args
           , stack = []
@@ -14790,7 +14801,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
      */
     _p.setFinalizeMethod = function(method) {
         this._finalizeMethod = method;
-    }
+    };
 
     _p.setBracketOperator = function(bracketLiteral, operatorLiteral) {
         if(!(operatorLiteral in this._operators))
@@ -15354,7 +15365,7 @@ define('metapolator/math/hobby',[
           , theta = normalizeAngle(dir0 - angle_z1z0)
           , phi = normalizeAngle(angle_z1z0 - dir1)
           , u, v;
-        
+
         if(alpha !== undefined)
             u = (magnitude_z1z0 === 0 && (alpha === 0 || alpha === Infinity))
                 ? (alpha === 0 ? Infinity : 0)
@@ -15400,17 +15411,17 @@ define('metapolator/math/hobby',[
           ;
         if(_alpha || _beta)
             uv = _tension2control(z0, dir0, _alpha, _beta, dir1, z1);
-    
+
         if(alpha === 0)
             u = Infinity;
         else if (alpha !== undefined)
             u = uv[0]['-'](z0).magnitude()/alpha;
-    
+
         if(beta === 0)
             v = Infinity;
         else if (beta !== undefined)
             v = uv[1]['-'](z1).magnitude()/beta;
-    
+
         return[u, v];
     }
 
@@ -15994,7 +16005,7 @@ define('metapolator/models/CPS/dataTypes/CPSReal',[
                 + (result !== result
                     ? 'result in NaN (happens with division by 0 for example)'
                     : 'not result in a number: "'+ result
-                        + '" typeof: ' +  typeof result +
+                        + '" typeof: ' +  typeof result
                         + (result && typeof result.constructor === 'function'
                                 ? ' a: ' + result.constructor.name
                                 : ''
@@ -16081,7 +16092,7 @@ define('metapolator/models/CPS/dataTypes/CPSTransformation',[
     return CPSTransformation;
 });
 
-define('metapolator/models/CPS/dataTypes/CPSDictionaryEntry',[
+define('metapolator/models/CPS/dataTypes/CPSGeneric',[
     'metapolator/errors'
   , './_FormulaeValue'
   , './SharedFormulaeFactory'
@@ -16094,13 +16105,13 @@ define('metapolator/models/CPS/dataTypes/CPSDictionaryEntry',[
 
     var ValueError = errors.Value;
 
-    function CPSDictionaryEntry(getAPI, stack) {
+    function CPSGeneric(getAPI, stack) {
         Parent.call(this, getAPI, stack);
     }
 
-    var _p = CPSDictionaryEntry.prototype = Object.create(Parent.prototype);
-    _p.constructor = CPSDictionaryEntry;
-    CPSDictionaryEntry.factory = new SharedFormulaeFactory(CPSDictionaryEntry);
+    var _p = CPSGeneric.prototype = Object.create(Parent.prototype);
+    _p.constructor = CPSGeneric;
+    CPSGeneric.factory = new SharedFormulaeFactory(CPSGeneric);
 
     _p.getValue = function() {
         var result = this._stack.execute(this._getAPI);
@@ -16110,7 +16121,7 @@ define('metapolator/models/CPS/dataTypes/CPSDictionaryEntry',[
         return result;
     };
 
-    return CPSDictionaryEntry;
+    return CPSGeneric;
 });
 
 define('metapolator/models/CPS/Registry',[
@@ -16118,13 +16129,13 @@ define('metapolator/models/CPS/Registry',[
   , './dataTypes/CPSReal'
   , './dataTypes/CPSVector'
   , './dataTypes/CPSTransformation'
-  , './dataTypes/CPSDictionaryEntry'
+  , './dataTypes/CPSGeneric'
 ], function(
     errors
   , CPSReal
   , CPSVector
   , CPSTransformation
-  , CPSDictionaryEntry
+  , CPSGeneric
 ) {
     
     /**
@@ -16145,7 +16156,7 @@ define('metapolator/models/CPS/Registry',[
             real: CPSReal.factory
           , vector: CPSVector.factory
           , transformation: CPSTransformation.factory
-          , generic: CPSDictionaryEntry.factory
+          , generic: CPSGeneric.factory
         };
     }
     var _p = Registry.prototype;// = Object.create(Parent.prototype)
@@ -16154,11 +16165,11 @@ define('metapolator/models/CPS/Registry',[
 
     _p.exists = function(name) {
         return name in this._parameters;
-    }
+    };
 
     _p.getFactory = function(name, fallbackType /* optional string, default: 'generic'*/) {
         var description, type
-          , _fallbackType = fallbackType === undefined ? 'generic' : fallbackType;
+          , _fallbackType = fallbackType === undefined ? 'generic' : fallbackType
           ;
         if(this.exists(name))
             type = this._parameters[name].type;
@@ -16171,7 +16182,7 @@ define('metapolator/models/CPS/Registry',[
         else
             throw new errors.CPSRegistryKey('Name "' + name + '" is no registered parameter');
          return this._dataTypes[type];
-    }
+    };
 
     _p.register = function(name, parameterDescription) {
         if(this.exists(name))
@@ -16183,11 +16194,11 @@ define('metapolator/models/CPS/Registry',[
                 +'" is unkown.');
 
         this._parameters[name] = parameterDescription;
-    }
+    };
 
     return Registry;
-})
-;
+});
+
 define('metapolator/project/parameters/registry',[
     'metapolator/errors'
   , 'metapolator/models/CPS/Registry'
@@ -16202,17 +16213,17 @@ define('metapolator/project/parameters/registry',[
     parameterRegistry.register('on', {
                 type: 'vector'
               , description: 'An On-Curve Point.'
-    })
+    });
 
     parameterRegistry.register('in', {
                 type: 'vector'
               , description: 'An incoming Control Point.'
-    })
+    });
 
     parameterRegistry.register('out', {
                 type: 'vector'
               , description: 'An outgoing Control Point.'
-    })
+    });
 
     parameterRegistry.register('inTension', {
                 type: 'real'
@@ -16228,25 +16239,25 @@ define('metapolator/project/parameters/registry',[
                 type: 'real'
               , description: 'The distance from center point to left or '
                             + 'right on curve point'
-    })
+    });
 
     parameterRegistry.register('inLength', {
                 type: 'real'
               , description: 'The distance from on-curve point to the Control Point'
                             + 'usually unused in favor of inTension'
-    })
+    });
 
     parameterRegistry.register('outLength', {
                 type: 'real'
               , description: 'The distance from on-curve point to the Control Point'
                             + 'usually unused in favor of outTension'
-    })
+    });
 
     parameterRegistry.register('onDir', {
                 type: 'real'
               , description: 'The direction in radians from center point '
                             + 'to left or right on curve point'
-    })
+    });
 
     parameterRegistry.register('inDir', {
                 type: 'real'
@@ -16257,7 +16268,7 @@ define('metapolator/project/parameters/registry',[
                 type: 'real'
               , description: 'The intrinsic value of the direction of an '
                                                 + 'incomimg Control Point.'
-    })
+    });
 
     parameterRegistry.register('outDir', {
                 type: 'real'
@@ -16285,56 +16296,6 @@ define('metapolator/project/parameters/registry',[
     });
 
     return parameterRegistry;
-});
-
-define('metapolator/models/CPS/elements/_Name',[
-    './_Node'
-], function(
-    Parent
-) {
-    
-    /**
-     * Used as base of AtRuleName and ParameterName.
-     */
-    function _Name(name, comments ,source, lineNo) {
-        /*jshint validthis:true*/
-        Parent.call(this, source, lineNo);
-        this._comments = comments;
-        Object.defineProperty(this, 'name', {
-            value: name
-          , enumerable: true
-        });
-    }
-    var _p = _Name.prototype = Object.create(Parent.prototype);
-    _p.constructor = _Name;
-
-    /**
-     * Prints all comments after the name.
-     */
-    _p.toString = function() {
-        return [this.name,
-                this._comments.length ? ' ': '',
-                this._comments.join('\n')].join('');
-    };
-    return _Name;
-});
-
-define('metapolator/models/CPS/elements/AtRuleName',[
-    './_Name'
-], function(
-    Parent
-) {
-    
-    /**
-     * The name of an AtRule.
-     */
-    function AtRuleName(name, comments ,source, lineNo) {
-        Parent.call(this, name, comments ,source, lineNo);
-    }
-    var _p = AtRuleName.prototype = Object.create(Parent.prototype);
-    _p.constructor = AtRuleName;
-
-    return AtRuleName;
 });
 
 define('metapolator/models/CPS/elements/Parameter',[
@@ -16695,6 +16656,38 @@ define('metapolator/models/CPS/elements/ParameterDict',[
     return ParameterDict;
 });
 
+define('metapolator/models/CPS/elements/_Name',[
+    './_Node'
+], function(
+    Parent
+) {
+    
+    /**
+     * Used as base of AtRuleName and ParameterName.
+     */
+    function _Name(name, comments ,source, lineNo) {
+        /*jshint validthis:true*/
+        Parent.call(this, source, lineNo);
+        this._comments = comments;
+        Object.defineProperty(this, 'name', {
+            value: name
+          , enumerable: true
+        });
+    }
+    var _p = _Name.prototype = Object.create(Parent.prototype);
+    _p.constructor = _Name;
+
+    /**
+     * Prints all comments after the name.
+     */
+    _p.toString = function() {
+        return [this.name,
+                this._comments.length ? ' ': '',
+                this._comments.join('\n')].join('');
+    };
+    return _Name;
+});
+
 define('metapolator/models/CPS/elements/ParameterName',[
     './_Name'
 ], function(
@@ -16818,7 +16811,6 @@ define('metapolator/project/parameters/outputConverter',[
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/Source'
   , 'metapolator/models/CPS/elements/ParameterCollection'
-  , 'metapolator/models/CPS/elements/AtRuleName'
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Parameter'
@@ -16830,7 +16822,6 @@ define('metapolator/project/parameters/outputConverter',[
     errors
   , Source
   , ParameterCollection
-  , AtRuleName
   , Rule
   , ParameterDict
   , Parameter
@@ -17003,21 +16994,21 @@ define('metapolator/models/MOM/Univers',[
     }
     var _p = Univers.prototype = Object.create(Parent.prototype);
     _p.constructor = Univers;
-    
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Univers'
-    })
-    
+    });
+
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'univers'
-    })
-    
+    });
+
     _p._acceptedChildren = [Master];
-    
+
     return Univers;
-})
-;
+});
+
 define('metapolator/models/CPS/SelectorEngine',[
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
@@ -17162,7 +17153,7 @@ define('metapolator/models/CPS/SelectorEngine',[
                     throw new CPSError('simpleSelector.type "'+ simpleSelector.type +'" is not implemented.');
             }
         }
-        body.push(');')
+        body.push(');');
         return new Function(['element'], body.join(''));
     }
 
@@ -17280,7 +17271,7 @@ define('metapolator/models/CPS/SelectorEngine',[
         if(!descendant && type !== 'child')
             throw new CPSError('Combinator type "' + type +'" is unsuported');
         //initial frame setup
-        frame = [element.children, 0, 0]
+        frame = [element.children, 0, 0];
         frame[2] = frame[0].length;
         do {
             i=frame[1];
@@ -17344,7 +17335,7 @@ define('metapolator/models/CPS/SelectorEngine',[
         if(!descendant && type !== 'child')
             throw new CPSError('Combinator type "' + type +'" is unsuported');
         //initial frame setup
-        frame = [element.children, 0, 0]
+        frame = [element.children, 0, 0];
         frame[2] = frame[0].length;
         do {
             i=frame[1];
@@ -17487,29 +17478,29 @@ define('metapolator/models/MOM/Multivers',[
 
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Multivers'
-    })
+    });
 
     Object.defineProperty(_p, 'type', {
         /* this is used for CPS selectors*/
         value: 'multivers'
-    })
+    });
 
     _p.query = function(selector, scope) {
         return this._controller.query(selector, scope);
-    }
+    };
     _p.queryAll = function(selector, scope) {
         return this._controller.queryAll(selector, scope);
-    }
+    };
 
     _p.getComputedStyleFor = function(node) {
         return this._controller.getComputedStyle(node);
-    }
+    };
 
     _p._acceptedChildren = [Univers];
 
     return Multivers;
-})
-;
+});
+
 define('metapolator/memoize',['metapolator/errors'], function(errors) {
     
 
@@ -18271,7 +18262,7 @@ define('metapolator/models/CPS/StyleDict',[
     return StyleDict;
 });
 
-define('metapolator/models/CPS/parsing/curry',[  
+define('metapolator/models/CPS/parsing/curry',[
 
 ], function (
 
@@ -18280,18 +18271,36 @@ define('metapolator/models/CPS/parsing/curry',[
     /**
      * similar to function.prototype.bind, but it doesn't set
      * the value of 'this'
-     * 
+     *
      */
     function curry(func/* args */) {
         var args = Array.prototype.slice.call(arguments, 1);
         return function() {
            return func.apply(this, args.concat(
                         Array.prototype.slice.call(arguments)));
-        }
+        };
     }
     return curry;
-})
-;
+});
+
+define('metapolator/models/CPS/elements/AtRuleName',[
+    './_Name'
+], function(
+    Parent
+) {
+    
+    /**
+     * The name of an AtRule.
+     */
+    function AtRuleName(name, comments ,source, lineNo) {
+        Parent.call(this, name, comments ,source, lineNo);
+    }
+    var _p = AtRuleName.prototype = Object.create(Parent.prototype);
+    _p.constructor = AtRuleName;
+
+    return AtRuleName;
+});
+
 define('metapolator/models/CPS/elements/AtNamespaceCollection',[
     'metapolator/errors'
   , './ParameterCollection'
@@ -18428,6 +18437,7 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
   , parseSelectorList
 ) {
     
+    /*jshint sub:true*/
     var CPSError = errors.CPS;
 
     /**
@@ -18471,9 +18481,9 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                         : '<no instance>'), '" '
                 ,'in a '+node.type+' from: ', source, 'line: '
                 , node.lineNo
-                ,'.'].join(''), (new Error).stack)
+                ,'.'].join(''), (new Error()).stack);
         name = node.children[0].data;
-        return new Constructor(name, comments ,source, node.lineNo)
+        return new Constructor(name, comments ,source, node.lineNo);
     }
 
     // inherit from selectorFactories
@@ -18550,14 +18560,14 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'value')
                 throw new CPSError('The second child of "declaration" is '
                 + 'expected to be a "value", but got "' + node.children[1].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             name = node.children[0].instance;
             value = node.children[1].instance;
@@ -18620,7 +18630,7 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                     comments.push(children[i].instance);
                 else
                     value.push(children[i].instance);
-            return new ParameterValue(value, comments ,source, node.lineNo)
+            return new ParameterValue(value, comments ,source, node.lineNo);
         }
       // tinker on @namespace
       , 'atruler': function(node, source) {
@@ -18638,7 +18648,7 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                 else if(!name && node.children[i].instance instanceof AtRuleName)
                     name = node.children[i].instance;
                 else if(!selectorList && node.children[i].instance instanceof SelectorList)
-                    selectorList = node.children[i].instance
+                    selectorList = node.children[i].instance;
             if ( !name
                     // we only know @namespace here!
                     || name.name !== 'namespace'
@@ -18658,14 +18668,14 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
         }
       , 'atkeyword': curry(genericNameFactory, AtRuleName)
       , 'atrulerq': function(node, source, ruleController) {
-            var i=0
+            var i
               , braces
               , selectorString
               , selectorList
               ;
 
             // find 'braces'
-            for(var i=1;i<node.rawData.length;i++)
+            for(i=1;i<node.rawData.length;i++)
                 if(node.rawData[i][0] && node.rawData[i][0] === 'braces') {
                     braces = node.rawData[i];
                     break;
@@ -18688,7 +18698,7 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                 // remove empty entries
                 .filter(function(item){return !!item.length;})
                 // create a 'normalized' selectorString
-                .join(', ')
+                .join(', ');
 
             try {
                 return parseSelectorList.fromString(selectorString, undefined
@@ -18719,38 +18729,36 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
             // name, selectorList
             return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);
         }
-    })
+    });
 
     return {
         factories: parameterFactories
       , genericNameFactory: genericNameFactory
-    }
-})
-;
+    };
+});
+
 define('metapolator/models/CPS/parsing/atDictionaryFactories',[
     'metapolator/errors'
   , './curry'
   , './parameterFactories'
   , 'metapolator/models/CPS/elements/Parameter'
-//  , 'metapolator/models/CPS/elements/AtRuleCollection'
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtRuleName'
-  , 'metapolator/models/CPS/dataTypes/CPSDictionaryEntry'
+  , 'metapolator/models/CPS/dataTypes/CPSGeneric'
 
 ], function (
     errors
   , curry
   , parameterFactories
   , Parameter
-//  , AtRuleCollection
   , ParameterCollection
   , AtRuleName
-  , CPSDictionaryEntry
+  , CPSGeneric
 ) {
     
     var CPSError = errors.CPS
@@ -18794,6 +18802,7 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
             var k;
             for(k in factories) atDictionaryFactories[k] = factories[k];
     })({
+        /*jshint sub:true*/
         /**
          * Augments the AtRuleCollection created by atrulers with a name.
          */
@@ -18836,7 +18845,7 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance)
+                items.push(node.children[i].instance);
             }
             //return new AtRuleCollection(undefined, items, source, node.lineNo);
             // We are NOT creating AtRuleCollections anymore!
@@ -18851,17 +18860,17 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
                 + 'expected to be a "property", but got "' + node.children[0].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'value')
                 throw new CPSError('The second child of "declaration" is '
                 + 'expected to be a "value", but got "' + node.children[1].type +'" '
                 +'" in a declaration from: ' + source + 'line: '
                 + node.lineNo
-                +'.', (new Error).stack)
+                +'.', (new Error()).stack);
             name = node.children[0].instance;
             value = node.children[1].instance;
-            value.initializeTypeFactory(name.name, CPSDictionaryEntry.factory);
+            value.initializeTypeFactory(name.name, CPSGeneric.factory);
             return new Parameter(name, value, source, node.lineNo);
         }
     });
@@ -18880,8 +18889,8 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
         factories: atDictionaryFactories
       , atDictionaryParsingSwitch: atDictionaryParsingSwitch
     };
-})
-;
+});
+
 define('metapolator/models/CPS/elements/AtImportCollection',[
     'metapolator/errors'
   , './ParameterCollection'
@@ -18963,7 +18972,7 @@ define('metapolator/models/CPS/elements/AtImportCollection',[
 
     _p._proxyEventHandler = function(data, channelName, eventData) {
         this._trigger(channelName, eventData);
-    }
+    };
     /**
      * Use the public method "setResource" rather than this.
      *
@@ -19104,6 +19113,7 @@ define('metapolator/models/CPS/parsing/atImportFactories',[
          * Find the name of the resource to load and return a ParameterCollection
          */
         'atrules': function(node, source, ruleController) {
+            /*jshint sub:true*/
             var args, resource, atImportCollection;
             // filter all whitespace
             args = node.children.slice(1).filter(function(child) {
@@ -19182,7 +19192,7 @@ define('metapolator/models/CPS/parsing/parseRules',[
             atDictionaryFactories.atDictionaryParsingSwitch,
             atImportFactories.atImportParsingSwitch
         ]
-      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches);
+      , rulesFromAST = curry(parserEngine, parameterFactories, factorySwitches)
       ;
     /**
      * Create a ParameterCollection from a CSS string
@@ -19198,15 +19208,15 @@ define('metapolator/models/CPS/parsing/parseRules',[
             throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
         }
 
-        return module.fromAST(ast, sourceName, ruleController)
+        return module.fromAST(ast, sourceName, ruleController);
     }
 
     module.fromString = rulesFromString;
     module.fromAST = rulesFromAST;
 
     return module;
-})
-;
+});
+
 define('metapolator/timer',[], (function(){
     var module;
 
@@ -19306,7 +19316,7 @@ define('metapolator/models/Controller',[
     _p.getMasterCPS = function(async, master) {
         var ruleName = this._getMasterRule(master);
         return this._ruleController.getRule(async, ruleName);
-    }
+    };
 
     /**
      * Used from within _getComputedStyle and StyleDict, don't use it
@@ -25260,141 +25270,141 @@ define('metapolator/project/import/SegmentPoint',[
 ) {
     
     var DeprecatedError = errors.Deprecated;
-    
+
     function SegmentPoint(xy, smooth, name, kwargs) {
         Parent.apply(this, xy);
-        
+
         this.smooth = smooth;
         this.name = name;
-        
+
         // I expect the 'identifier' keyword here, but that kwds syntax
         // could bring in even more names.
         this.kwargs = kwargs || {};
     }
-  
+
     SegmentPoint.factory = function(xy, smooth, name, kwargs) {
         return new SegmentPoint(xy, smooth, name, kwargs);
     };
-    
+
     var _p = SegmentPoint.prototype = Object.create(Parent.prototype);
-    
+
     _p.toString = function() {
         return '<SegmentPoint'
             + (this.name ? ' ' + this.name : '')
             + ' ' + this.valueOf() +'>';
     };
-    
+
     Object.defineProperty(_p, 'vector', {
         get: function() {
             throw new DeprecatedError('SegmentPoint is now a subclass of '
                 +' metapolator/math/Vector don\'t use this property.');
         }
     });
-    
+
     return SegmentPoint;
 });
 
 /**
  * Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
- * 
+ *
  * You should have received a copy of the MIT License along with this program.
  * If not, see http://www.opensource.org/licenses/mit-license.php
- * 
+ *
  * This is a translation of BasePen defined in fontTools/pens/basePen.py
  * The svn revision of the source file in trunk/Lib/ was 498 from 2005-04-10 15:18:42  +0200
- * 
+ *
  * I even copied the docstrings and comments! (These may still refer to the Python code)
  */
 define('metapolator/project/import/SegmentPen',[
     'ufojs/tools/pens/BasePen'
   , 'metapolator/errors'
   , './SegmentPoint'
-        
+
 ], function(
     Parent
   , errors
   , Point
 ) {
     
-    
+
     /*constructor*/
     function SegmentPen() {
         this._currentContour = null;
         this.contours = [];
-        
+
         Parent.apply(this, [{}].concat(arguments));
-    };
-    
+    }
+
     /*inheritance*/
     var _p = SegmentPen.prototype = Object.create(Parent.prototype);
     _p.constructor = SegmentPen;
-    
+
     _p._PointConstructor = Point;
-    
+
     _p._pointFactory = function(val) {
         return (val instanceof Array)
             ? new this._PointConstructor(val)
              // expect it is already a Point
             : val;
-    }
-    
+    };
+
     _p._newContour = function(kwargs) {
         errors.assert(this._currentContour === null,
-                                'this._currentContour should be null')
+                                'this._currentContour should be null');
         this._currentContour = {
             commands: []
           , type: 'contour'
           , closed: undefined
           , kwargs: kwargs
-        }
-    }
-    
+        };
+    };
+
     _p._closeContour = function() {
         // maybe if the contour is empty, this might happen ???
         // please report if you have trouble with this assertion
         errors.assert(this._currentContour !== null,
-                                'this._currentContour should NOT be null')
+                                'this._currentContour should NOT be null');
         this.contours.push(this._currentContour);
         this._currentContour = null;
-    }
-    
+    };
+
     _p._endPath = function() {
         // assert this._currentContour !== null
         this._currentContour.closed = false;
         this._closeContour();
-    }
-    
+    };
+
     _p._closePath = function() {
         this._currentContour.closed = true;
         this._closeContour();
-    }
-    
+    };
+
     _p.flush = function() {
         var contours = this.contours;
         this.contours = [];
         this._currentContour = null;
         return contours;
-    }
-    
+    };
+
     _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
         this._newContour(kwargs);
         pt = this._pointFactory(pt);
         this._currentContour.commands.push(['moveTo', pt]);
-    }
-    
+    };
+
     _p._lineTo = function(pt)
     {
         pt = this._pointFactory(pt);
         this._currentContour.commands.push(['lineTo', pt]);
-    }
-    
+    };
+
     _p._curveToOne = function(pt1, pt2, pt3)
     {
         pt1 = this._pointFactory(pt1);
         pt2 = this._pointFactory(pt2);
         pt3 = this._pointFactory(pt3);
         this._currentContour.commands.push(['curveTo', pt1, pt2, pt3]);
-    }
+    };
 
     _p.addComponent = function(glyphName, transformation, kwargs)
     {
@@ -25405,7 +25415,7 @@ define('metapolator/project/import/SegmentPen',[
             , kwargs:         kwargs
         };
         this.contours.push(component);
-    }
+    };
 
     return SegmentPen;
 });
@@ -25443,7 +25453,7 @@ define(
     }
 
     /*inheritance*/
-    ImportOutlinePen.prototype = Object.create(Parent.prototype)
+    ImportOutlinePen.prototype = Object.create(Parent.prototype);
     ImportOutlinePen.prototype.constructor = ImportOutlinePen;
 
     /*definition*/
@@ -25451,29 +25461,32 @@ define(
         _flushContour: function(segments, contour_kwargs)
         {
             assert(segments.length >= 1, 'Less than one segment');
-            var pen = this.pen;
+            var pen = this.pen
+              , closed, points, point, movePt, smooth, name, kwargs, segmentType
+              ;
             if( segments[0][0] == "move" ) {
                 // It's an open path.
-                var closed = false,
-                    points = segments[0][1];
+                closed = false;
+                points = segments[0][1];
                 assert(points.length === 1, 'Points length is not 1');
-                var movePt = points[0][0],
-                    smooth = points[0][1],
-                    name = points[0][2],
-                    kwargs = points[0][3];
+                point = points[0];
+                movePt = [0];
+                smooth = points[0][1];
+                name = points[0][2];
+                kwargs = points[0][3];
                 segments.splice(0, 1);
             } else {
                 // It's a closed path, do a moveTo to the last
                 // point of the last segment.
-                var closed = true,
-                    segment = segments[segments.length - 1],
-                    segmentType = segment[0],
-                    points = segment[1],
-                    point = points[points.length - 1],
-                    movePt = point[0],
-                    smooth = point[1],
-                    name = point[2],
-                    kwargs = point[3];
+                closed = true;
+                var segment = segments[segments.length - 1];
+                segmentType = segment[0];
+                points = segment[1];
+                point = points[points.length - 1];
+                movePt = point[0];
+                smooth = point[1];
+                name = point[2];
+                kwargs = point[3];
             }
             if(movePt === null) {
                 // quad special case: a contour with no on-curve points
@@ -25486,8 +25499,8 @@ define(
             var outputImpliedClosingLine = this.outputImpliedClosingLine,
                 nSegments = segments.length;
             for(var i = 0; i < nSegments; i++) {
-                var segmentType = segments[i][0],
-                    points = [];
+                segmentType = segments[i][0];
+                points = [];
                 for(var n = 0; n < segments[i][1].length; n++)
                     points.push(Point.factory.apply(null, segments[i][1][n]));
 
@@ -25526,33 +25539,33 @@ define('metapolator/project/import/tools',[
     Point
 ) {
     
-    
+
     function line2curve(p0, p3) {
         var p1, p2
-          , distance = (p3['-'](p0))['*'](.33333)
+          , distance = (p3['-'](p0))['*'](0.33333)
           , newCurve = ['curveTo']
           ;
         // at a third between p0 and p3
         p1 = new Point(p0['+'](distance));
         // at 2 thirds between p3 and p0
         p2 = new Point(p3['-'](distance));
-        
+
         newCurve.push(p1, p2, p3);
         newCurve.wasLine = true;
         return newCurve;
     }
-    
+
     function getCenter(l, r) {
         return l['+'](r)['*'](0.5);
     }
-    
+
     function makeNameDict(str) {
         var result = {};
         ((str || '').match(/\S+/g) || [])
             .forEach(function(piece){ this[piece] = null;}, result);
         return result;
     }
-    
+
     /**
      * if a name/class/key "example" is only in left it becomes: "left-example"
      * if a name/class/key "example" is only in right it becomes: "right-example"
@@ -25580,19 +25593,19 @@ define('metapolator/project/import/tools',[
             merged['right-' + k] = null;
         return Object.keys(merged).join(' ') || null;
     }
-    
+
     function getCenterPoint(l, r) {
         return new Point(getCenter(l, r), undefined
                        , mergeNames(l.name, r.name));
     }
-    
+
     function getCenterSegment(left, right) {
         var result = [left[0]], i=1;
         for(;i<left.length;i++)
             result.push(getCenterPoint(left[i], right[i]));
         return result;
     }
-    
+
     /**
      * see the docstring of StrokeContoue._findNextDirection
      */
@@ -25633,9 +25646,9 @@ define('metapolator/project/import/tools',[
       , getCenterPoint: getCenterPoint
       , getCenterSegment: getCenterSegment
       , getDirection: getDirection
-    }
-})
-;
+    };
+});
+
 define('metapolator/project/import/StrokeContour',[
     'metapolator/errors'
   , './tools'
@@ -26093,13 +26106,13 @@ define('metapolator/project/import/StrokeContour',[
               .map(_setPolarControls.bind(null, stroke,'r'))
               .forEach(_setKey.bind(null, stroke,'r'))
               ;
-        
+
         stroke.map(_extractKey.bind(null,'z'))
               .map(_setPolarControls.bind(null, stroke,'z'))
               .forEach(_setKey.bind(null, stroke,'z'))
               ;
-        
-        stroke.forEach(_setTensions.bind(null, stroke,'l'))
+
+        stroke.forEach(_setTensions.bind(null, stroke,'l'));
         stroke.forEach(_setTensions.bind(null, stroke,'r'));
         return stroke;
     };
@@ -26270,8 +26283,8 @@ define('metapolator/project/ImportController',[
   , ufojsErrors
 ) {
     
-    // jshint option
     /*global console:true*/
+    /*jshint  sub:true*/
 
     var GlifLibError = ufojsErrors.GlifLib;
 
@@ -26310,7 +26323,7 @@ define('metapolator/project/ImportController',[
                         false, this._sourceUFODir, undefined, options);
         }
         return this._sourceGlyphSet;
-    }
+    };
 
     _p['import'] = function(glyphs) {
         var missing, i=0
@@ -26945,7 +26958,7 @@ define('metapolator/project/MetapolatorProject',[
         // this can be empty, all masters will use this by default
         this._io.writeFile(false, [this.cpsDir, '/', this.cpsGlobalFile].join(''),
                             '/* all masters use this CPS file by default*/');
-    }
+    };
 
     _p.load = function() {
         // the files created in _p.init need to exist
@@ -26986,7 +26999,7 @@ define('metapolator/project/MetapolatorProject',[
         fh = new CallbackHandler(this._io.appendFile.bind(this._io, true, this.logFile));
         fh.setFormatter(new YAMLFormatter());
         this._log.addHandler(fh);
-    }
+    };
 
     /**
      * return a ParameterCollection with the default CPS wiring, as the
@@ -26994,11 +27007,11 @@ define('metapolator/project/MetapolatorProject',[
      */
     _p.getDefaultCPS = function() {
         return defaultParameters;
-    }
+    };
 
     _p.hasMaster = function(masterName) {
         return masterName in this._data.masters;
-    }
+    };
 
     Object.defineProperty(_p, 'masters', {
         get: function(){ return Object.keys(this._data.masters); }
@@ -27035,7 +27048,7 @@ define('metapolator/project/MetapolatorProject',[
         // create empty layerDir/contents.plist
         this._io.writeFile(false, layerDir + '/contents.plist',
                                         plistLib.createPlistString({}));
-    }
+    };
 
     /**
      * Delete a glyph layer.
@@ -27071,7 +27084,7 @@ define('metapolator/project/MetapolatorProject',[
 
         // Remove layer dir and its contents
         this._io.rmDirRecursive(false, layerDir);
-    }
+    };
 
     /**
      * lookup a name in a laycontents list as defined for layercontents.plist
@@ -27101,7 +27114,7 @@ define('metapolator/project/MetapolatorProject',[
                                 + '" does not exist, but is mentioned in '
                                 +'layercontents.plist.');
         return layerDir;
-    }
+    };
 
     /**
      * Create a master entry for this masterName, with the given cpsFile
@@ -27129,7 +27142,7 @@ define('metapolator/project/MetapolatorProject',[
         this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
 
         return this.getMaster(masterName);
-    }
+    };
 
     /**
      * delete a master entry for this masterName
@@ -27159,14 +27172,14 @@ define('metapolator/project/MetapolatorProject',[
 
         // FIXME: Check we successfully deleted it
         return true;
-    }
+    };
 
     _p._getMaster = function(masterName) {
         var master =  this._data.masters[masterName]
           , glyphSetDir = this._getLayerDir(master.skeleton)
           ;
         return new ProjectMaster(this._io, this, masterName, glyphSetDir, master.cpsFile);
-    }
+    };
 
     _p.getMaster = function(masterName) {
         if(!this.hasMaster(masterName))
@@ -27175,7 +27188,7 @@ define('metapolator/project/MetapolatorProject',[
             this._cache.masters[masterName] = this._getMaster(masterName);
         }
         return this._cache.masters[masterName];
-    }
+    };
 
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
@@ -27198,7 +27211,7 @@ define('metapolator/project/MetapolatorProject',[
             this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
-    }
+    };
 
     _p.import = function(masterName, sourceUFODir, glyphs) {
         var importer = new ImportController( this._log, this,
@@ -27311,7 +27324,7 @@ define('metapolator/project/MetapolatorProject',[
 
         exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
-    }
+    };
 
     _p._getGlyphClassesReverseLookup = function() {
         var result = {}
@@ -28509,9 +28522,9 @@ define('metapolator/ui/services/GlyphRendererAPI',[
         this._glyphContainer = this._doc.createElementNS(svgns, 'defs');
         var svg = this._doc.createElementNS(svgns, 'svg');
         svg.style.display = 'none';
-        svg.appendChild(this._glyphContainer)
+        svg.appendChild(this._glyphContainer);
         svg.appendChild(this._doc.createElementNS(svgns, 'g'));
-        
+
         if(this._doc.body.firstChild)
             this._doc.body.insertBefore(svg, this._doc.body.firstChild);
         else
@@ -28755,6 +28768,9 @@ require([
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/elements/ParameterValue'
   , 'metapolator/models/CPS/elements/Parameter'
+  , 'metapolator/models/CPS/elements/ParameterDict'
+  , 'metapolator/models/CPS/elements/Rule'
+  , 'metapolator/models/CPS/parsing/parseSelectorList'
 ],
 function (
     document
@@ -28765,6 +28781,9 @@ function (
   , parameterRegistry
   , ParameterValue
   , Parameter
+  , ParameterDict
+  , Rule
+  , parseSelectorList
 ) {
     
     /*global setTimeout window*/
@@ -28847,6 +28866,15 @@ function (
             _value.initializeTypeFactory(name.name, factory);
             parameter = new Parameter({name:name}, _value);
             parameterDict.setParameter(parameter);
+        },
+        addNewRule: function addNewRule(parameterCollection, index, selectorListString) {
+            var source = 'generated'
+              , selectorList = parseSelectorList.fromString(selectorListString)
+              , parameterDict = new ParameterDict([], source, 0)
+              , rule = new Rule(selectorList, parameterDict, source, lineNo)
+              ;
+            // returns the actual index at which the rule was created
+            return parameterCollection.splice(index, 0, rule)[0];
         }
     };
 });
@@ -28909,13 +28937,13 @@ requirejs.config({
 
 // feature detection for generators
 try {
+    /*jshint evil:true*/
     eval("(function *(){})()");
     requirejs.config({
     paths: {
         'metapolator/project/ExportController': 'project/ExportController.es6'
     }});
 } catch(err) {
-    console,log(err);
     console.info("No generators, falling back.");
 }
 ;
