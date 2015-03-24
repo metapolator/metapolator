@@ -28871,7 +28871,7 @@ function (
             var source = 'generated'
               , selectorList = parseSelectorList.fromString(selectorListString)
               , parameterDict = new ParameterDict([], source, 0)
-              , rule = new Rule(selectorList, parameterDict, source, lineNo)
+              , rule = new Rule(selectorList, parameterDict, source, 0)
               ;
             // returns the actual index at which the rule was created
             return parameterCollection.splice(index, 0, rule)[0];
