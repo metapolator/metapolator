@@ -220,11 +220,13 @@ app.filter('specimenFilter', function() {
                     filtered.push({
                         master : {
                             sequenceId : master.sequenceId,
-                            masterId : master.masterId
+                            masterId : master.masterId,
+                            name : master.name
                         },
                         glyphName : glyph,
-                        glyphId : glyph + "_" + glyphId
+                        glyphId : master.name + "_" + glyph + "_" + glyphId
                     });
+                    
                     glyphId++;
                     if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == " ") || (options.selectedFontby == "paragraph" && glyph == "*p")) {
                         masterId++;
@@ -233,6 +235,15 @@ app.filter('specimenFilter', function() {
                         masterId = 0;
                     }
                 }
+                filtered.push({
+                    master : {
+                        sequenceId : master.sequenceId,
+                        masterId : master.masterId,
+                        name : master.name
+                    },
+                    glyphName : glyph,
+                    glyphId : master.name + "_" + glyph + "_" + glyphId
+                });
             }
             // glyph combination matrix
             if (strict == 3 && filter.length > 1) {
