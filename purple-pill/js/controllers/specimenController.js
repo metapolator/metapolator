@@ -5,27 +5,10 @@ function($scope, $sce, sharedScope) {
     /***************** API *****************/
 
     var globalStateful;
+    var globalStateless;
     var globalMastername;
 
     $scope.data.pill = "blue";
-
-    function initializeInputSliders(container) {
-        return ['width ', ' weight '].map(function(labelText) {
-            var items = [], item, i;
-            item = document.createElement('input');
-            item.setAttribute('type', 'range');
-            item.setAttribute('min', 0.0);
-            item.setAttribute('max', 1.0);
-            item.setAttribute('value', 0.5);
-            item.setAttribute('step', 0.0001);
-
-            var label = document.createElement('label');
-            label.textContent = labelText;
-            label.appendChild(item);
-            document.getElementById('parameter-slider').appendChild(label);
-            return item;
-        });
-    }
 
     function onProjectLoaded(stateless, stateful) {
         // stateful has the keys: 'project', 'glyphRendererAPI','controller'
@@ -36,7 +19,7 @@ function($scope, $sce, sharedScope) {
         // this case. Also, the items in a parameterCollection must
         // not all be of type CPS/Rule. There are also @namespace/@import
         // collections and comments.
-        , cpsRule = parameterCollection.getItem(2), parameterDict = cpsRule.parameters, inputs = initializeInputSliders(document.body), setParameter = stateless.cpsAPITools.setParameter// shortcut
+        , cpsRule = parameterCollection.getItem(2), parameterDict = cpsRule.parameters, setParameter = stateless.cpsAPITools.setParameter// shortcut
         ;
 
         function inputChangeHandler() {
@@ -48,10 +31,11 @@ function($scope, $sce, sharedScope) {
         }
 
 
-        inputs[0].addEventListener('input', inputChangeHandler);
-        inputs[1].addEventListener('input', inputChangeHandler);
+        //inputs[0].addEventListener('input', inputChangeHandler);
+        //inputs[1].addEventListener('input', inputChangeHandler);
 
         globalStateful = stateful;
+        globalStateless = stateless;
         globalMastername = masterName;
     }
 
@@ -65,11 +49,70 @@ function($scope, $sce, sharedScope) {
         // returns a promise
         stateless.initProject(projectPath).then(onProjectLoaded.bind(null, stateless));
     }
+    
+    
+    $scope.data.scale = function (key, value) {
+        var parameterCollection = globalStateful.project.ruleController.getRule(false, "lib/scale.cps");
+        var l = parameterCollection.length;
+        var cpsRule = parameterCollection.getItem(l - 1);
+        var parameterDict = cpsRule.parameters;
+        var setParameter = globalStateless.cpsAPITools.setParameter;
+        setParameter(parameterDict, key, value); 
+    };
+    
+    $scope.data.addRule = function () {
+        var key = "widthFactor";
+        var value = 5;
+        var masterName = "web";
+        var glyphName = "a";
+        var parameterCollection = globalStateful.controller.getMasterCPS(false, masterName);
+        var l = parameterCollection.length;
+        var selectorListString = "master#" + masterName + " glyph#" + glyphName + " *";
+        var ruleIndex = globalStateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
+        var cpsRule = parameterCollection.getItem(ruleIndex);
+        var parameterDict = cpsRule.parameters;
+        var setParameter = globalStateless.cpsAPITools.setParameter;
+        setParameter(parameterDict, key, value); 
+        console.log(parameterCollection.toString());
+    };
+    
+    
+    
+    
+    
 
     var checker;
 
     function stateChecker() {
         if (globalStateful) {
+            $scope.data.sequences[0].masters = [];
+            var masters = globalStateful.controller.queryAll("master");
+            var masterId = 0;
+            for (var i = 0; i < masters.length; i++){
+                var master = masters[i];
+                var masterName = master.id;
+                var glyphs = master.children;
+                var myGlyphs = [];
+                var edit = false;
+                if (i == 0) { edit = true; }
+                for (var j = 0; j < glyphs.length; j++) {
+                    myGlyphs.push({
+                        value: glyphs[j].id,
+                        edit: false
+                    });
+                }
+                $scope.data.sequences[0].masters.push({
+                    id: masterId,
+                    name: masterName,
+                    type: "redpill",
+                    display: edit,
+                    edit: [edit, edit],
+                    ag: "ag",
+                    glyphs: myGlyphs,
+                    parameters: []
+                });
+                masterId++;  
+            }
             $scope.data.pill = "red";
             $scope.specimen[0].text = "metapolator";
             $scope.$apply();
@@ -88,7 +131,7 @@ function($scope, $sce, sharedScope) {
         // <= could be an array or our api
         checker = setInterval(function() {
             stateChecker();
-        }, 100);
+        }, 50);
     };
 
     $scope.startFakeEngine = function() {
@@ -96,8 +139,8 @@ function($scope, $sce, sharedScope) {
         $scope.specimen[0].text = "metapolator";
     };
 
-    $scope.data.renderGlyphs = function(glyphName) {
-        return globalStateful.glyphRendererAPI.get(globalMastername, glyphName);
+    $scope.data.renderGlyphs = function(masterName, glyphName) {
+        return globalStateful.glyphRendererAPI.get(masterName, glyphName);
     };
 
     /***************** end of API *****************/

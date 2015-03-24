@@ -1,6 +1,13 @@
 app.controller("parametersController", function($scope, sharedScope) {
     'use strict';
     $scope.data = sharedScope.data;
+    
+    /* temp testing */
+   
+    $scope.data.overallWidth = 1;
+    $scope.data.xTranslate = 1;
+    $scope.data.yTranslate = 1;
+    $scope.data.heightFactor = 1;
 
     $scope.sortableOptions = {
         connectWith : ".master-ul",

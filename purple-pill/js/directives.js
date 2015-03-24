@@ -21,37 +21,24 @@ app.directive('ngInputFocus', function($compile) {
     };
 });
 
-/*
+
 app.directive('ag', function($compile) {
     return {
         restrict : 'C',
         require : 'ngModel',
         link : function(scope, element, attrs, ctrl) {
-            var sequence = attrs.sequence;  
-            var master = attrs.master;      
-            var thisMaster = scope.data.sequences[sequence].masters[master];
-            if (thisMaster.type == "redpill") {
-                if (scope.data.pill =="red") {
-                    var svg0 = scope.data.renderGlyphs(thisMaster.ag[0]);
-                    $compile(svg0)(scope);
-                    element.append(svg0);
-                    var svg1 = scope.data.renderGlyphs(thisMaster.ag[1]);
-                    $compile(svg1)(scope);
-                    element.append(svg1);
-                } else {
-                    var svg0 = scope.data.fakeSVG[thisMaster.ag[0]];
-                    var svg1 = scope.data.fakeSVG[thisMaster.ag[1]];
-                    element.append(svg0);
-                    element.append(svg1);
-                }
-            } else {
-                var ag = thisMaster.ag;
-                element.append(ag);
-            }
+            var masterName = attrs.mastername; 
+            var masterAg = attrs.masterag;           
+            var svg0 = scope.data.renderGlyphs(masterName, masterAg[0]);
+            $compile(svg0)(scope);
+            element.append(svg0);
+            var svg1 = scope.data.renderGlyphs(masterName, masterAg[1]);
+            $compile(svg1)(scope);
+            element.append(svg1);
         }
     };
 });
-*/
+
 
 app.directive('lmButton', function($compile) {
     return {
@@ -71,6 +58,8 @@ app.directive('glyph', function($compile) {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
+            var masterName = attrs.mastername;
+            console.log(masterName);
             var glyphName = attrs.glyph;
             if (glyphName == " ") {
                 element.parent().addClass("space-character");
@@ -80,7 +69,7 @@ app.directive('glyph', function($compile) {
                 element.parent().addClass("paragraph-break");
             } else {
                 if (scope.data.pill =="red") {
-                    var svg = scope.data.renderGlyphs(glyphName);
+                    var svg = scope.data.renderGlyphs(masterName, glyphName);
                     $compile(svg)(scope);
                     element.append(svg);
                 } else {
