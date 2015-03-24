@@ -118,6 +118,15 @@ function (
             _value.initializeTypeFactory(name, factory);
             parameter = new Parameter({name:name}, _value);
             parameterDict.setParameter(parameter);
+        },
+        addNewRule: function addNewRule(parameterCollection, index, selectorListString) {
+            var source = 'generated'
+              , selectorList = parseSelectorList.fromString(selectorListString)
+              , parameterDict = new ParameterDict([], source, 0)
+              , rule = new Rule(selectorList, parameterDict, source, lineNo)
+              ;
+            // returns the actual index at which the rule was created
+            return parameterCollection.splice(index, 0, rule)[0];
         }
       , addNewRule: function addNewRule(parameterCollection, index, selectorListString) {
             var source = 'generated'
