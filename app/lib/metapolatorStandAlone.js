@@ -10,6 +10,9 @@ require([
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/elements/ParameterValue'
   , 'metapolator/models/CPS/elements/Parameter'
+  , 'metapolator/models/CPS/elements/ParameterDict'
+  , 'metapolator/models/CPS/elements/Rule'
+  , 'metapolator/models/CPS/parsing/parseSelectorList'
 ],
 function (
     document
@@ -20,6 +23,9 @@ function (
   , parameterRegistry
   , ParameterValue
   , Parameter
+  , ParameterDict
+  , Rule
+  , parseSelectorList
 ) {
     "use strict";
     /*global setTimeout window*/
@@ -102,6 +108,15 @@ function (
             _value.initializeTypeFactory(name.name, factory);
             parameter = new Parameter({name:name}, _value);
             parameterDict.setParameter(parameter);
+        }
+      , addNewRule: function addNewRule(parameterCollection, index, selectorListString) {
+            var source = 'generated'
+              , selectorList = parseSelectorList.fromString(selectorListString)
+              , parameterDict = new ParameterDict([], source, 0)
+              , rule = new Rule(selectorList, parameterDict, source, 0)
+              ;
+            // returns the actual index at which the rule was created
+            return parameterCollection.splice(index, 0, rule)[0];
         }
     };
 });
