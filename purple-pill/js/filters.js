@@ -235,15 +235,6 @@ app.filter('specimenFilter', function() {
                         masterId = 0;
                     }
                 }
-                filtered.push({
-                    master : {
-                        sequenceId : master.sequenceId,
-                        masterId : master.masterId,
-                        name : master.name
-                    },
-                    glyphName : glyph,
-                    glyphId : master.name + "_" + glyph + "_" + glyphId
-                });
             }
             // glyph combination matrix
             if (strict == 3 && filter.length > 1) {

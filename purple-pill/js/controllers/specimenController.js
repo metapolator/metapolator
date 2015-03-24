@@ -61,13 +61,13 @@ function($scope, $sce, sharedScope) {
     };
     
     $scope.data.addRule = function () {
-        var key = "overallWidth";
+        var key = "widthFactor";
         var value = 5;
-        var masterName = "base";
+        var masterName = "web";
         var glyphName = "a";
         var parameterCollection = globalStateful.controller.getMasterCPS(false, masterName);
         var l = parameterCollection.length;
-        var selectorListString = "master#" + masterName + " glyph#" + glyphName;
+        var selectorListString = "master#" + masterName + " glyph#" + glyphName + " *";
         var ruleIndex = globalStateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
         var cpsRule = parameterCollection.getItem(ruleIndex);
         var parameterDict = cpsRule.parameters;
