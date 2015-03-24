@@ -18087,8 +18087,9 @@ define('metapolator/models/CPS/StyleDict',[
         var index = data
           , parametersIndexForKey = this._propertySubscriptions[key]
                     ? this._propertySubscriptions[key][2]
-                    : false
+                    : undefined
           ;
+
         if(parametersIndexForKey > index)
             // the higher index overrides the lower index
             return;
@@ -18104,7 +18105,7 @@ define('metapolator/models/CPS/StyleDict',[
                         + 'to the new one, but it is.\n index: ' + index
                         + ' key: ' + key
                         + ' channel: ' + channelKey);
-        this._setDictValue(this._rules[index], key, index);
+        this._setDictValue(this._rules[index].parameters, key, index);
     };
 
     _p._setDictValue = function(parameters, key, parametersIndex) {
