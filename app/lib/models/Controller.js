@@ -137,15 +137,12 @@ define([
      */
     _p._updateRule = function(ruleName) {
         var ids = this._rules[ruleName][2]
-          , parameterCollection = this._rules[ruleName][0]
-          , allRules, styleDict, rules
+          , styleDict
           , i, l
           ;
-        allRules = parameterCollection.rules;
         for(i=0,l=ids.length;i<l;i++) {
             styleDict = this._styleDicts[ ids[i] ];
             styleDict.invalidateRules();
-            continue;
         }
     };
 

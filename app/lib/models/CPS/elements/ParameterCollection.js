@@ -292,6 +292,10 @@ define([
         if(!events.length)
             // nothing happened
             return;
+
+        // prune the cache.
+        this._rules = null;
+
         events.push('structural-change');
         // TODO: Add maybe information like three numbers:
         //      index, deletedCount, insertedCount

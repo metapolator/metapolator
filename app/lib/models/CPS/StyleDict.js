@@ -455,6 +455,11 @@ define([
         this._rebuildIndex();
     };
 
+    /**
+     * invalidate the rules and let this._buildIndex get them lazily when
+     * needed.
+     *
+     */
     _p.invalidateRules = function() {
         this._rules = null;
         this._unsubscribeFromDicts();
