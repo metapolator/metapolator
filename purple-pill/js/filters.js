@@ -103,7 +103,7 @@ app.filter('rangeFilter', function() {
 });
 
 app.filter('specimenFilter', function() {
-    return function(specimen, options, sequences) {
+    return function(specimen, options, sequences, families, specimenPanel) {
         if (specimen.name != "glyph range") {
             function stringToGlyphs(string, unique) {
                 var glyphs = [];
@@ -186,28 +186,52 @@ app.filter('specimenFilter', function() {
             /***** create a masterarray with masters display true *****/
             var masterArray = [];
             var nrOfFonts = 0;
-            for (var j = 0; j < sequences.length; j++) {
-                for (var k = 0; k < sequences[j].masters.length; k++) {
-                    var thisFont = sequences[j].masters[k];
-                    if (thisFont.display == true && thisFont.type == "redpill") {
-                        nrOfFonts++;
-                        var foundFont = {
-                            "sequenceId" : j,
-                            "masterId" : k,
-                            "family" : thisFont.fontFamily,
-                            "weight" : thisFont.weight,
-                            "name" : thisFont.name
-                        };
-                        masterArray.push(foundFont);
-                    }
-                }
+            if (specimenPanel == 1) {
+                angular.forEach(sequences, function(sequence) {
+                    angular.forEach(sequence.masters, function(master) {
+                        if (master.display && master.type == "redpill") {
+                            nrOfFonts++;
+                            masterArray.push({
+                                "sequenceId" : sequence.id,
+                                "masterId" : master.id,
+                                "name" : master.name
+                            });
+                        }
+                    });
+                });
+            } else if (specimenPanel == 2) {
+                angular.forEach(families, function(family) {
+                    angular.forEach(family.instances, function(instance) {
+                        if (instance.display) {
+                            nrOfFonts++;
+                            masterArray.push({
+                                "sequenceId" : family.id,
+                                "masterId" : instance.id,
+                                "name" : instance.name
+                            });
+                        }
+                    });
+                });
             }
-
-            /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/
+            
             if (newGlyphText == "") {
                 // if strict 3, then newflyphtext is already build
                 newGlyphText = stringToGlyphs(newText);
             }
+            
+            /***** building the matrix when strict == 3 *****/
+            if (strict == 3 && filter.length > 1) {
+                var matrix = [];
+                for (var i = 0; i < newGlyphText.length; i++){
+                    for (var j = 0; j < newGlyphText.length; j++){
+                        matrix.push(newGlyphText[i]); 
+                        matrix.push(newGlyphText[j]);  
+                    }
+                }
+                newGlyphText = matrix;
+            }
+             
+            /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/           
             var filtered = [];
             var glyphId = 0;
 
@@ -246,31 +270,7 @@ app.filter('specimenFilter', function() {
                     glyphId : master.name + "_*n_" + glyphId
                 });
             }
-            // glyph combination matrix
-            if (strict == 3 && filter.length > 1) {
-                var filteredMatrix = [];
-                var fMCounter = 0;
-                for (var i = 0; i < filtered.length; i++){
-                    for (var j = 0; j < filtered.length; j++){
-                        filteredMatrix.push({
-                            master: filtered[i].master,
-                            glyphName: filtered[i].glyphName,
-                            glyphId: filtered[i].glyphName + "_" + fMCounter
-                        });  
-                        fMCounter++;
-                        filteredMatrix.push({
-                            master: filtered[j].master,
-                            glyphName: filtered[j].glyphName,
-                            glyphId: filtered[j].glyphName + "_" + fMCounter
-                        });  
-                        fMCounter++;
-                    }
-                }
-                return filteredMatrix;
-            }
-            else {
-                return filtered;
-            }
         }
+        return filtered;
     };
 });

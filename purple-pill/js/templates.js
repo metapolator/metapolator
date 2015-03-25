@@ -19,6 +19,13 @@ app.directive('specimen', function() {
     };
 }); 
 
+app.directive('specimen2', function() {
+    return {
+        restrict : 'E',
+        templateUrl : 'templates/specimen2.html'
+    };
+}); 
+
 app.directive('masters', function() {
     return {
         restrict : 'E',

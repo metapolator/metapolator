@@ -107,7 +107,6 @@ app.directive('viewportWatcher', function() {
             function watch() {
                 var viewport = $(element).outerHeight();
                 var isInView = [];
-                //console.clear();
                 $(element).find(".spec-glyph-box").each(function() {
                     $(this).removeClass("is-in-view");
                     var thisY1 = $(this).position().top;

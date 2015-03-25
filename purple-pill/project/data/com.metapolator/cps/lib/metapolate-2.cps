@@ -1,4 +1,4 @@
-@import 'lib/centreline-skeleton-to-symmetric-outline.cps';
+@import 'centreline-skeleton-to-symmetric-outline.cps';
 
 /* Boilerplate of a two master metapolation
  * Before this you may want to read single-inheritance.cps

@@ -42,6 +42,10 @@
         padding: 20px;
     }
     
+    specimen2 {
+        height: 50%;
+    }
+    
     .unselectable {                
         -webkit-touch-callout: none;
         -webkit-user-select: none;

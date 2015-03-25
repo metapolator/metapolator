@@ -8,6 +8,7 @@ $(document).ready(function() {
 
     moveLandscape(0, false);
     
+    /*
     $("divider").draggable({
         axis : "x",
         start : function() {
@@ -22,6 +23,7 @@ $(document).ready(function() {
             setDividersRelative();
         }
     });
+    */
 
     var mirrorPanel;
     var outerPanel;
@@ -129,6 +131,7 @@ $(document).ready(function() {
     var containmentMargin = 60;
     setContainment();
     
+    /*
     $("dividerHor").draggable({
         axis : "y",
         containment: [ 0, containmentTop , 0, containmentBottom ],
@@ -142,6 +145,7 @@ $(document).ready(function() {
             divideHor(this);
         }
     });
+    */
     
     function setContainment() {
         var menuHeight = $("#menu").outerHeight();

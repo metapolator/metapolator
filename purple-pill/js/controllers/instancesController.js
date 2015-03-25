@@ -107,12 +107,13 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                    thisAxis.value = 50;
             });
             var id = findInstanceId();
+            var instanceName = "instance" + id;
             $scope.data.families[0].instances.push({
                 id : id,
                 edit : true,
                 display : true,
                 ag : "Ag",
-                name : "New Instance " + id,
+                name : instanceName,
                 designSpace : designSpace.id,
                 fontFamily : "Roboto",
                 fontWeight : 700,
@@ -122,7 +123,9 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
         }
-        // add instance to engine as master
+        // add instance to engine (as master)
+        $scope.data.stateful.project.createMaster(instanceName, "lib/metapolate-2.cps", "skeleton.base");
+        $scope.data.stateful.project.open(instanceName);
     };
     
     $scope.data.duplicateInstance = function (instance, space) {

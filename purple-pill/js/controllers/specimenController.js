@@ -11,22 +11,22 @@ function($scope, $sce, sharedScope) {
     function onProjectLoaded(stateless, stateful) {
         $scope.data.stateful = stateful;
         $scope.data.stateless = stateless;
-        $scope.data.sequences[0].masters = [];
+        // adding masters
         var masters = $scope.data.stateful.controller.queryAll("master");
         var masterId = 0;
-        // adding masters
         for (var i = 0; i < masters.length; i++){
             var master = masters[i];
             var masterName = master.id;
             var glyphs = master.children;
-            var myGlyphs = [];
+            var glyphs = [];
             var edit = false;
             //if (i == 0) { edit = true; }
             // adding glyphs to each master
-            for (var j = 0; j < glyphs.length; j++) {
-                myGlyphs.push({
-                    value: glyphs[j].id,
-                    edit: false
+            for (var j = 0; j < master.children.length; j++) {
+                glyphs.push({
+                    value: master.children[j].id,
+                    edit: false,
+                    parameters: []
                 });
             }
             $scope.data.sequences[0].masters.push({
@@ -37,7 +37,7 @@ function($scope, $sce, sharedScope) {
                 display: edit,
                 edit: [edit, edit],
                 ag: "ag",
-                glyphs: myGlyphs,
+                glyphs: glyphs,
                 parameters: []
             });
             masterId++;  
@@ -93,7 +93,6 @@ function($scope, $sce, sharedScope) {
         var parameterDict = cpsRule.parameters;
         var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
         setParameter(parameterDict, key, value); 
-        console.log(parameterCollection.toString());
     };
     
     $scope.data.renderGlyphs = function(masterName, glyphName) {
@@ -107,6 +106,9 @@ function($scope, $sce, sharedScope) {
     };
 
     /*****************filter parameters *****************/
+   
+   // specimenPanel tells the filter to use masters or instances
+   $scope.specimenPanel;
 
     $scope.specimen = [{
         name : "metapolator",
@@ -128,7 +130,7 @@ function($scope, $sce, sharedScope) {
         text : "<dvA><dvI><dvKHA><dvBHA><dvDA><dvDHA>"
     }, {
         name : "Paragraph 1",
-        text : "Grumpy wizards make toxic brew for the evil Queen and Jack. One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.*pHe lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.*pThe bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked."
+        text : "Grumpy wizards make toxic brew for the evil Queen and Jack One morning when Gregor Samsa woke from troubled dreams he found himself transformed in his bed into a horrible vermin*pHe lay on his armour-like back and if he lifted his head a little he could see his brown belly slightly domed and divided by arches into stiff sections*pThe bedding was hardly able to cover it and seemed ready to slide off any moment His many legs pitifully thin compared with the size of the rest of him waved about helplessly as he looked"
     }];
 
     $scope.addGlyphRange = function() {
@@ -138,7 +140,7 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.selectedSpecimen = $scope.specimen[0];
-    $scope.fontSize = 120;
+    $scope.fontSize = 90;
     $scope.lineHeight = 0.8;
     $scope.nrOfFonts = 5;
     $scope.fontbys = ["word", "glyph", "paragraph"];
@@ -148,7 +150,7 @@ function($scope, $sce, sharedScope) {
         selectedFontby : $scope.fontbys[0]
     };
 
-    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences", function(newVal) {
+    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel", function(newVal) {
         $scope.filteredGlyphs = newVal;
         setTimeout(function() {
              manageSpaces();
@@ -162,29 +164,42 @@ function($scope, $sce, sharedScope) {
     }, true);
 
     function manageSpaces() {
-        console.clear();
         var spaces = $(".space-character");
         var x = 0;
         var prev_x = 0;
         var prev_space = false;
         
         $(spaces).css({
-            // auto when the master will have a space character
+            // width: auto when the master will have a space character
             "width": "40px",
             "clear": "none"
         }); 
-        
-        $.each(spaces, function(index, space) {
-            x = $(space).position().left;
-            console.log(x);
-            if (x < prev_x) {
-                $(prev_space).css({
-                    "width": "0",
-                    "clear": "both"
-                });
+        console.clear();
+        var brokenEnd = false;
+        var startPosition = 16;
+        $("#non-glyph-range li").each(function(){
+            if ($(this).position().left == startPosition){                
+                if ($(this).hasClass("space-character")) {
+                    $(this).css({
+                        "width": "0",
+                        "clear": "both"
+                    }); 
+                }
+                if (brokenEnd && !$(this).hasClass("space-character")&& !$(this).hasClass("line-break") && !$(this).hasClass("paragraph-break")) {
+                    $(prev_space).css({
+                        "width": "0",
+                        "clear": "both"
+                    });
+                }
             }
-            prev_space = space;
-            prev_x = x;
+            if ($(this).hasClass("space-character")) {
+                prev_space = this;
+                brokenEnd = false;
+            } else if ($(this).hasClass("line-break") || $(this).hasClass("paragraph-break")) {
+                brokenEnd = false;
+            } else {
+                brokenEnd = true;
+            }
         });
     }
 
