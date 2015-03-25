@@ -1,11 +1,12 @@
-<input ng-model="data.overallWidth" ng-change="data.scale('overallWidth', data.overallWidth)"> width<br>
-<input ng-model="data.xTranslate" ng-change="data.scale('xTranslate', data.xTranslate)"> xTrans<br>
-<input ng-model="data.yTranslate" ng-change="data.scale('yTranslate', data.yTranslate)"> yTrans<br>
-<input ng-model="data.heightFactor" ng-change="data.scale('heightFactor', data.heightFactor)"> height<br>
-<button ng-click="data.addRule()">+</button>
+<div class="standard-padding">
+    <input ng-model="data.overallWidth" ng-change="data.scale('overallWidth', data.overallWidth)"> width<br>
+    <input ng-model="data.xTranslate" ng-change="data.scale('xTranslate', data.xTranslate)"> xTrans<br>
+    <input ng-model="data.yTranslate" ng-change="data.scale('yTranslate', data.yTranslate)"> yTrans<br>
+    <input ng-model="data.heightFactor" ng-change="data.scale('heightFactor', data.heightFactor)"> height<br>
+    <button ng-click="data.addRule()">+</button>
+</div>
 
-
-<div id="inspector">
+<div id="inspector" class="standard-padding">
     <div class="inspector-header">
         <span>{{data.projectName}}</span>
     </div>
@@ -13,7 +14,7 @@
         <div class="inspector-branche" style="display: block" ng-repeat="master in sequence.masters"  ng-if="master.edit[data.viewState] && master.type != 'test'">
             <div class="inspector-header">
                 <arrow></arrow>
-                <span ng-class="{'inspector-inactive' : !master.edit[data.viewState]}">{{master.name}}</span>
+                <span ng-class="{'inspector-inactive' : !master.edit[data.viewState]}">{{master.displayName}}</span>
             </div>
             <div class="inspector-branche" ng-repeat="glyph in master.glyphs" ng-if="glyph.edit">
                 <div class="inspector-header">
@@ -31,7 +32,7 @@
         <div class="parameters-selection-body">
             <div ng-repeat="parameter in filteredMasterParameters=(data.sequences | mastersInEditFilter)" class="parameter-row">
                 <div class="parameter-operation-row" ng-repeat="operator in parameter.operations">
-                    <div class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
+                    <div class="parameter-key"><span ng-if="$index == 0">{{parameter.displayName}}</span></div>
                     <div class="parameter-operator">{{operator.operator}}</div>
                     <div class="parameter-value"><input ng-model="operator.value" ng-change="editParameter(parameter.name, operator.operatorer, operator.value)" class="ng-input-focus"></div>
                 </div>

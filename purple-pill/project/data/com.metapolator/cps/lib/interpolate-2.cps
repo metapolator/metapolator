@@ -5,32 +5,30 @@
  * more control over your resulting master you may
  * wan't to use a metapolation approach.
  */
-@dictionary {
-    point > * {
-        indexGlyph: parent:parent:parent:index;
-        indexPenstroke: parent:parent:index;
-        indexPoint: parent:index;
-        base1: baseMaster1
-                    :children[indexGlyph]
-                    :children[indexPenstroke]
-                    :children[indexPoint]
-                    :children[index]
-                    ;
-        base2: baseMaster2
-                    :children[indexGlyph]
-                    :children[indexPenstroke]
-                    :children[indexPoint]
-                    :children[index]
-                    ;
-        /* Ensure that the used proportions sum up to
-         * 1; any other value produces usually unwanted effects.
-         * You don't want this? in your master redefine it as 
-         * interpolationUnit: 1;
-         */
-        interpolationUnit: 1/(proportion1 + proportion2);
-        _p1: proportion1*interpolationUnit;
-        _p2: proportion2*interpolationUnit;
-    }
+point > * {
+    indexGlyph: parent:parent:parent:index;
+    indexPenstroke: parent:parent:index;
+    indexPoint: parent:index;
+    base1: baseMaster1
+                :children[indexGlyph]
+                :children[indexPenstroke]
+                :children[indexPoint]
+                :children[index]
+                ;
+    base2: baseMaster2
+                :children[indexGlyph]
+                :children[indexPenstroke]
+                :children[indexPoint]
+                :children[index]
+                ;
+    /* Ensure that the used proportions sum up to
+     * 1; any other value produces usually unwanted effects.
+     * You don't want this? in your master redefine it as 
+     * interpolationUnit: 1;
+     */
+    interpolationUnit: 1/(proportion1 + proportion2);
+    _p1: proportion1*interpolationUnit;
+    _p2: proportion2*interpolationUnit;
 }
 
 point > * {
@@ -40,11 +38,9 @@ point > * {
 }
 
 /* set up this masters super masters */
-@dictionary {
-    * {
-        baseMaster1: S"master#anyOther";
-        baseMaster2: S"master#any";
-        proportion1: .5;
-        proportion2: .5;
-    }
+* {
+    baseMaster1: S"master#anyOther";
+    baseMaster2: S"master#any";
+    proportion1: .5;
+    proportion2: .5;
 }

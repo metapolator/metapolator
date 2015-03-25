@@ -122,6 +122,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
         }
+        // add instance to engine as master
     };
     
     $scope.data.duplicateInstance = function (instance, space) {

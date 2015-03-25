@@ -235,6 +235,16 @@ app.filter('specimenFilter', function() {
                         masterId = 0;
                     }
                 }
+                // paragraph break after each loop
+                filtered.push({
+                    master : {
+                        sequenceId : master.sequenceId,
+                        masterId : master.masterId,
+                        name : master.name
+                    },
+                    glyphName : "*n",
+                    glyphId : master.name + "_*n_" + glyphId
+                });
             }
             // glyph combination matrix
             if (strict == 3 && filter.length > 1) {

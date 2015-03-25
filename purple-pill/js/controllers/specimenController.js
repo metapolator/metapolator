@@ -2,41 +2,50 @@ app.controller('specimenController', ['$scope', '$sce', 'sharedScope',
 function($scope, $sce, sharedScope) {
     $scope.data = sharedScope.data;
 
-    /***************** API *****************/
+    /***************** initializing *****************/
 
-    var globalStateful;
-    var globalStateless;
-    var globalMastername;
-
+    $scope.data.stateful;
+    $scope.data.stateless;
     $scope.data.pill = "blue";
 
     function onProjectLoaded(stateless, stateful) {
-        // stateful has the keys: 'project', 'glyphRendererAPI','controller'
-        console.log('project loaded', Object.keys(stateful));
-
-        var masterName = 'interpolated', parameterCollection = stateful.controller.getMasterCPS(false, masterName)
-        // NOTE: We must know where the rule is,    it's the third one in
-        // this case. Also, the items in a parameterCollection must
-        // not all be of type CPS/Rule. There are also @namespace/@import
-        // collections and comments.
-        , cpsRule = parameterCollection.getItem(2), parameterDict = cpsRule.parameters, setParameter = stateless.cpsAPITools.setParameter// shortcut
-        ;
-
-        function inputChangeHandler() {
-            var x = parseFloat(inputs[0].value), y = parseFloat(inputs[1].value), a = (1 - x) * (1 - y), b = (x) * (1 - y), c = (1 - x) * (y), d = (x) * (y);
-            setParameter(parameterDict, 'proportion1', a);
-            setParameter(parameterDict, 'proportion2', b);
-            setParameter(parameterDict, 'proportion3', c);
-            setParameter(parameterDict, 'proportion4', d);
+        $scope.data.stateful = stateful;
+        $scope.data.stateless = stateless;
+        $scope.data.sequences[0].masters = [];
+        var masters = $scope.data.stateful.controller.queryAll("master");
+        var masterId = 0;
+        // adding masters
+        for (var i = 0; i < masters.length; i++){
+            var master = masters[i];
+            var masterName = master.id;
+            var glyphs = master.children;
+            var myGlyphs = [];
+            var edit = false;
+            //if (i == 0) { edit = true; }
+            // adding glyphs to each master
+            for (var j = 0; j < glyphs.length; j++) {
+                myGlyphs.push({
+                    value: glyphs[j].id,
+                    edit: false
+                });
+            }
+            $scope.data.sequences[0].masters.push({
+                id: masterId,
+                name: masterName,
+                displayName: masterName,
+                type: "redpill",
+                display: edit,
+                edit: [edit, edit],
+                ag: "ag",
+                glyphs: myGlyphs,
+                parameters: []
+            });
+            masterId++;  
         }
-
-
-        //inputs[0].addEventListener('input', inputChangeHandler);
-        //inputs[1].addEventListener('input', inputChangeHandler);
-
-        globalStateful = stateful;
-        globalStateless = stateless;
-        globalMastername = masterName;
+        $scope.data.pill = "red";
+        $scope.$apply();
+        $("#layover").hide();
+        $(".compatibility-info").hide();
     }
 
     function onMetapolatorReady(stateless) {
@@ -49,14 +58,25 @@ function($scope, $sce, sharedScope) {
         // returns a promise
         stateless.initProject(projectPath).then(onProjectLoaded.bind(null, stateless));
     }
+
+    $scope.startEngine = function() {
+        if (!window.metapolatorReady) {
+            window.metapolatorReady = [];
+        }
+        window.metapolatorReady.push(onMetapolatorReady);
+        // <= could be an array or our api
+    };
     
-    
+    /***************** end of initializing *****************/
+   
+   
+   
     $scope.data.scale = function (key, value) {
-        var parameterCollection = globalStateful.project.ruleController.getRule(false, "lib/scale.cps");
+        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, "lib/scale.cps");
         var l = parameterCollection.length;
         var cpsRule = parameterCollection.getItem(l - 1);
         var parameterDict = cpsRule.parameters;
-        var setParameter = globalStateless.cpsAPITools.setParameter;
+        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
         setParameter(parameterDict, key, value); 
     };
     
@@ -65,85 +85,22 @@ function($scope, $sce, sharedScope) {
         var value = 5;
         var masterName = "web";
         var glyphName = "a";
-        var parameterCollection = globalStateful.controller.getMasterCPS(false, masterName);
+        var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, masterName);
         var l = parameterCollection.length;
         var selectorListString = "master#" + masterName + " glyph#" + glyphName + " *";
-        var ruleIndex = globalStateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
+        var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
         var cpsRule = parameterCollection.getItem(ruleIndex);
         var parameterDict = cpsRule.parameters;
-        var setParameter = globalStateless.cpsAPITools.setParameter;
+        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
         setParameter(parameterDict, key, value); 
         console.log(parameterCollection.toString());
     };
     
-    
-    
-    
-    
-
-    var checker;
-
-    function stateChecker() {
-        if (globalStateful) {
-            $scope.data.sequences[0].masters = [];
-            var masters = globalStateful.controller.queryAll("master");
-            var masterId = 0;
-            for (var i = 0; i < masters.length; i++){
-                var master = masters[i];
-                var masterName = master.id;
-                var glyphs = master.children;
-                var myGlyphs = [];
-                var edit = false;
-                if (i == 0) { edit = true; }
-                for (var j = 0; j < glyphs.length; j++) {
-                    myGlyphs.push({
-                        value: glyphs[j].id,
-                        edit: false
-                    });
-                }
-                $scope.data.sequences[0].masters.push({
-                    id: masterId,
-                    name: masterName,
-                    type: "redpill",
-                    display: edit,
-                    edit: [edit, edit],
-                    ag: "ag",
-                    glyphs: myGlyphs,
-                    parameters: []
-                });
-                masterId++;  
-            }
-            $scope.data.pill = "red";
-            $scope.specimen[0].text = "metapolator";
-            $scope.$apply();
-            clearInterval(checker);
-            $("#layover").hide();
-            $(".compatibility-info").hide();
-        }
-    }
-
-
-    $scope.startEngine = function() {
-        if (!window.metapolatorReady) {
-            window.metapolatorReady = [];
-        }
-        window.metapolatorReady.push(onMetapolatorReady);
-        // <= could be an array or our api
-        checker = setInterval(function() {
-            stateChecker();
-        }, 50);
-    };
-
-    $scope.startFakeEngine = function() {
-        $("#layover").hide();
-        $scope.specimen[0].text = "metapolator";
-    };
-
     $scope.data.renderGlyphs = function(masterName, glyphName) {
-        return globalStateful.glyphRendererAPI.get(masterName, glyphName);
+        return $scope.data.stateful.glyphRendererAPI.get(masterName, glyphName);
     };
-
-    /***************** end of API *****************/
+   
+   /***************** end of API *****************/
 
     $scope.sortableOptions = {
         helper : 'clone'
@@ -153,7 +110,7 @@ function($scope, $sce, sharedScope) {
 
     $scope.specimen = [{
         name : "metapolator",
-        text : ""
+        text : "metapolator"
     }, {
         name : "Pangram 1",
         text : "The quick brown fox jumps over the lazy dog"
@@ -205,19 +162,26 @@ function($scope, $sce, sharedScope) {
     }, true);
 
     function manageSpaces() {
+        console.clear();
         var spaces = $(".space-character");
         var x = 0;
         var prev_x = 0;
         var prev_space = false;
-                
-        $.each(spaces, function(index, space) {
-            $(space).removeClass("clear-space");
-        });
+        
+        $(spaces).css({
+            // auto when the master will have a space character
+            "width": "40px",
+            "clear": "none"
+        }); 
         
         $.each(spaces, function(index, space) {
             x = $(space).position().left;
+            console.log(x);
             if (x < prev_x) {
-                $(prev_space).addClass("clear-space");
+                $(prev_space).css({
+                    "width": "0",
+                    "clear": "both"
+                });
             }
             prev_space = space;
             prev_x = x;

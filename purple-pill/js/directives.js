@@ -59,7 +59,6 @@ app.directive('glyph', function($compile) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var masterName = attrs.mastername;
-            console.log(masterName);
             var glyphName = attrs.glyph;
             if (glyphName == " ") {
                 element.parent().addClass("space-character");

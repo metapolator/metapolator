@@ -956,8 +956,8 @@
             }
         
             .list-view-col svg {
-                height: 90%;
-                margin-top: 10%;
+                height: 60%;
+                margin-top: 20%;
             }
         
             .list-view-col.selected {
