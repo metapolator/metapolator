@@ -13168,6 +13168,10 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
         if(!events.length)
             // nothing happened
             return;
+
+        // prune the cache.
+        this._rules = null;
+
         events.push('structural-change');
         // TODO: Add maybe information like three numbers:
         //      index, deletedCount, insertedCount
@@ -18056,6 +18060,11 @@ define('metapolator/models/CPS/StyleDict',[
         this._rebuildIndex();
     };
 
+    /**
+     * invalidate the rules and let this._buildIndex get them lazily when
+     * needed.
+     *
+     */
     _p.invalidateRules = function() {
         this._rules = null;
         this._unsubscribeFromDicts();
@@ -19381,15 +19390,12 @@ define('metapolator/models/Controller',[
      */
     _p._updateRule = function(ruleName) {
         var ids = this._rules[ruleName][2]
-          , parameterCollection = this._rules[ruleName][0]
-          , allRules, styleDict, rules
+          , styleDict
           , i, l
           ;
-        allRules = parameterCollection.rules;
         for(i=0,l=ids.length;i<l;i++) {
             styleDict = this._styleDicts[ ids[i] ];
             styleDict.invalidateRules();
-            continue;
         }
     };
 
