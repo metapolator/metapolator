@@ -20,7 +20,7 @@ function($scope, $sce, sharedScope) {
             var glyphs = master.children;
             var glyphs = [];
             var edit = false;
-            //if (i == 0) { edit = true; }
+            if (i == 0) { edit = true; }
             // adding glyphs to each master
             for (var j = 0; j < master.children.length; j++) {
                 glyphs.push({
@@ -174,7 +174,6 @@ function($scope, $sce, sharedScope) {
             "width": "40px",
             "clear": "none"
         }); 
-        console.clear();
         var brokenEnd = false;
         var startPosition = 16;
         $("#non-glyph-range li").each(function(){
