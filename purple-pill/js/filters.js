@@ -224,9 +224,9 @@ app.filter('specimenFilter', function() {
                 var matrix = [];
                 for (var i = 0; i < newGlyphText.length; i++){
                     for (var j = 0; j < newGlyphText.length; j++){
-                        matrix.push(newGlyphText[i]); 
-                        matrix.push(newGlyphText[j]);  
+                        matrix.push(newGlyphText[i], newGlyphText[j], " "); 
                     }
+                    matrix.push("*n"); 
                 }
                 newGlyphText = matrix;
             }
