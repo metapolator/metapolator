@@ -226,7 +226,6 @@ app.filter('specimenFilter', function() {
                     for (var j = 0; j < newGlyphText.length; j++){
                         matrix.push(newGlyphText[i], newGlyphText[j], " "); 
                     }
-                    matrix.push("*n"); 
                 }
                 newGlyphText = matrix;
             }
