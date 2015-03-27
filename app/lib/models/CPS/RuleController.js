@@ -63,6 +63,10 @@ define([
     _p._readFile = function(async, fileName) {
                             return this._io.readFile(async, fileName); };
 
+    _p._getFilePath = function(sourceName) {
+        return [this._cpsDir, sourceName].join('/');
+    };
+
     _p._getRule = obtain.factory(
         {
             fileName: ['importing', 'sourceName', function(importing, sourceName) {
@@ -70,7 +74,8 @@ define([
                 throw new CPSRecursionError(sourceName + ' @imports itself: '
                                     + Object.keys(importing).join(' » '));
                 importing[sourceName] = true;
-                return [this._cpsDir, sourceName].join('/');}]
+                return this._getFilePath(sourceName);
+            }]
           , cps: [false, 'fileName', 'commissionId', _p._readFile]
           , api: ['importing', function(importing) {
                 // return the api needed by parseRules.fromString
@@ -129,5 +134,31 @@ define([
         this._rules[sourceName].cached = false;
         return this.getRule(async, sourceName);
     };
+
+    /**
+     * Create a new file or override an existing one
+     *
+     * FIXME/TODO:
+     * Initially RuleController did only reading and re-reading of cps files.
+     * Eventually we will also need creating, updating and removing of cps files
+     * and ParameterCollections.
+     * This will need some concept to work without race conditions and
+     * in a reliable fashion.
+     *
+     * This method is very simple, it will create a new file or overide
+     * an existing file. There is no guard that keeps this method from
+     * overiding existing files, because the io api doesn't suppport that.
+     *
+     * Keep that in mind when using this method and if this behavior creates
+     * a problem for your case, please report it, so that we can think of a
+     * sound solution.
+     */
+    _p.write = function(async, sourceName, content) {
+        var path = this._getFilePath(sourceName)
+          , _content = content === undefined ? '' : content
+          ;
+        return this._io.writeFile(async, path, _content);
+    };
+
     return RuleController;
 });
