@@ -2176,7 +2176,7 @@ define('metapolator/errors',[],function() {
      * unnoticed by the main program.
      */
     function unhandledPromise(originalError) {
-        var error = new errors.Unhandled(originalError+'');
+        var error = new errors.Unhandled(originalError+'\n'+originalError.stack);
         error.originalError = originalError;
         // use setTimout to escape the catch all that es6/Promise applies
         // and that silences unhandled errors
@@ -13465,12 +13465,14 @@ define('metapolator/models/CPS/parsing/baseFactories',[
             var items = []
               , i=0
               ;
-            for(;i<node.children.length;i++) {
-                if(node.children[i].type === '__GenericAST__'
-                                && node.children[i].instance.type === 's')
-                    continue;
-                items.push(node.children[i].instance);
-            }
+
+            if(node.children)
+                for(;i<node.children.length;i++) {
+                    if(node.children[i].type === '__GenericAST__'
+                                    && node.children[i].instance.type === 's')
+                        continue;
+                    items.push(node.children[i].instance);
+                }
 
             return new ParameterCollection(items, source, node.lineNo);
         }
@@ -18075,7 +18077,11 @@ define('metapolator/models/CPS/StyleDict',[
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
-        // this is needed to trigger _buildIndex when it is time:
+        // needed if this._dict had no keys previously
+        // because then this._invalidateCache would not run
+        // for example when the rules changed from not providing keys to
+        // now providing keys
+        this._nextTrigger('change', key);
         this._dict = null;
     };
 
@@ -18085,6 +18091,11 @@ define('metapolator/models/CPS/StyleDict',[
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
+        // needed if this._dict had no keys previously
+        // because then this._invalidateCache would not run
+        // for example when the rules changed from not providing keys to
+        // now providing keys
+        this._nextTrigger('change', key);
         this._buildIndex();
     };
 
@@ -19218,6 +19229,10 @@ define('metapolator/models/CPS/parsing/parseRules',[
             throw new CPSParserError("("+sourceName+") "+error.message, error.stack);
         }
 
+        // An empty string as input to gonzales creates an undefined ast.
+        // FIXME: this should be the output of gonzales for an empty string!
+        if(ast === undefined) ast = ['stylesheet'];
+
         return module.fromAST(ast, sourceName, ruleController);
     }
 
@@ -19495,6 +19510,10 @@ define('metapolator/models/CPS/RuleController',[
     _p._readFile = function(async, fileName) {
                             return this._io.readFile(async, fileName); };
 
+    _p._getFilePath = function(sourceName) {
+        return [this._cpsDir, sourceName].join('/');
+    };
+
     _p._getRule = obtain.factory(
         {
             fileName: ['importing', 'sourceName', function(importing, sourceName) {
@@ -19502,7 +19521,8 @@ define('metapolator/models/CPS/RuleController',[
                 throw new CPSRecursionError(sourceName + ' @imports itself: '
                                     + Object.keys(importing).join(' » '));
                 importing[sourceName] = true;
-                return [this._cpsDir, sourceName].join('/');}]
+                return this._getFilePath(sourceName);
+            }]
           , cps: [false, 'fileName', 'commissionId', _p._readFile]
           , api: ['importing', function(importing) {
                 // return the api needed by parseRules.fromString
@@ -19561,6 +19581,32 @@ define('metapolator/models/CPS/RuleController',[
         this._rules[sourceName].cached = false;
         return this.getRule(async, sourceName);
     };
+
+    /**
+     * Create a new file or override an existing one
+     *
+     * FIXME/TODO:
+     * Initially RuleController did only reading and re-reading of cps files.
+     * Eventually we will also need creating, updating and removing of cps files
+     * and ParameterCollections.
+     * This will need some concept to work without race conditions and
+     * in a reliable fashion.
+     *
+     * This method is very simple, it will create a new file or overide
+     * an existing file. There is no guard that keeps this method from
+     * overiding existing files, because the io api doesn't suppport that.
+     *
+     * Keep that in mind when using this method and if this behavior creates
+     * a problem for your case, please report it, so that we can think of a
+     * sound solution.
+     */
+    _p.write = function(async, sourceName, content) {
+        var path = this._getFilePath(sourceName)
+          , _content = content === undefined ? '' : content
+          ;
+        return this._io.writeFile(async, path, _content);
+    };
+
     return RuleController;
 });
 
@@ -28593,7 +28639,17 @@ define('metapolator/ui/services/GlyphRendererAPI',[
         while(data.svg.lastChild)
             data.svg.removeChild(data.svg.lastChild);
         data.components = [];
-        draw(renderer, this._controller, data.MOM, pen);
+        try {
+            draw(renderer, this._controller, data.MOM, pen);
+        }
+        catch(e) {
+            // FIXME:
+            console.warn('Drawing glyph', data.MOM.particulars, 'failed with ' + e, e.stack);
+            if(e instanceof KeyError)
+                console.info('KeyError means usually that a property definition in the CPS is missing');
+            console.info('The user should get informed by the UI!');
+        }
+
         this._compareAndRevoke(oldComponents, data.components);
 
         // FIXME: * One day we have to subscribe to unitsPerEM AND
@@ -28674,11 +28730,25 @@ define('metapolator/ui/services/GlyphRendererAPI',[
      */
     _p._setSVGViewBox = function(data, svg) {
         var svgs = svg ? [svg] : data.svgInstances
-          , width = data.MOM.getComputedStyle().get('advanceWidth')
+          , styledict = data.MOM.getComputedStyle()
+          , width
           , height = data.MOM.master.fontinfo.unitsPerEm || 1000
-          , viewBox = [0, 0, width, height].join(' ')
+          , viewBox
           , i,l
           ;
+
+        try {
+            width = styledict.get('advanceWidth')
+        }
+        catch(e){
+            if(!(e instanceof KeyError))
+                throw e;
+            // FIXME: we should inform the user of this problem
+            width = height;
+        }
+
+        viewBox = [0, 0, width, height].join(' ')
+
         for(i=0,l=svgs.length;i<l;i++) {
             if(svgs[i].parentElement);
             svgs[i].setAttribute('viewBox', viewBox);
@@ -28768,6 +28838,7 @@ define('metapolator/ui/services/GlyphRendererAPI',[
 
 require([
     'webAPI/document'
+  , 'metapolator/errors'
   , 'metapolator/project/MetapolatorProject'
   , 'ufojs/tools/io/staticBrowserREST'
   , 'metapolator/io/InMemory'
@@ -28777,10 +28848,12 @@ require([
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Rule'
+  , 'metapolator/models/CPS/elements/AtImportCollection'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 ],
 function (
     document
+  , errors
   , MetapolatorProject
   , ioREST
   , InMemory
@@ -28790,6 +28863,7 @@ function (
   , Parameter
   , ParameterDict
   , Rule
+  , AtImportCollection
   , parseSelectorList
 ) {
     
@@ -28814,8 +28888,6 @@ function (
     window.metapolatorReady = {push: metapolatorReady};
     // if there are already registered callbacks
     if(callbacks) callbacks.map(metapolatorReady);
-
-
 
     // export the modules that will be needed
     exports.initProject = function(projectPath) {
@@ -28873,8 +28945,8 @@ function (
             _value.initializeTypeFactory(name.name, factory);
             parameter = new Parameter({name:name}, _value);
             parameterDict.setParameter(parameter);
-        },
-        addNewRule: function addNewRule(parameterCollection, index, selectorListString) {
+        }
+      , addNewRule: function addNewRule(parameterCollection, index, selectorListString) {
             var source = 'generated'
               , selectorList = parseSelectorList.fromString(selectorListString)
               , parameterDict = new ParameterDict([], source, 0)
@@ -28882,6 +28954,28 @@ function (
               ;
             // returns the actual index at which the rule was created
             return parameterCollection.splice(index, 0, rule)[0];
+        }
+        /**
+         * CAUTION: Here an intersting dependency to ruleController emerges.
+         * Probably this method should be part of the stateful interface,
+         * because this way a ruleController from a different project can
+         * be used which is not intended right now and was never tested!
+         */
+      , addNewAtImport: function addNewAtImport(async, parameterCollection
+                                    , index, ruleController, resourceName) {
+            var collection = new AtImportCollection(ruleController, 'generated')
+                // it's only a promise if `async` is true
+              , promise = collection.setResource(async, resourceName)
+              ;
+
+            function resolve() {
+                return parameterCollection.splice(index, 0, collection)[0];
+            }
+
+            return async
+                 ? promise.then(resolve, errors.unhandledPromise)
+                 : resolve()
+                 ;
         }
     };
 });
