@@ -12,7 +12,7 @@ app.factory("sharedScope", function($rootScope) {
             trigger : 0,
             name : "Space 0",
             id : 0,
-            type : "Control",
+            type : "x",
             masters : [],
             axes : [],
             triangle : false,

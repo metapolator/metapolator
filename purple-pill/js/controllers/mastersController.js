@@ -139,18 +139,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 if (isInDesignSpace(master.id)) {
                     alert("master already in this Design Space");
                 } else {
-                    if ($scope.data.currentDesignSpace.type == "Control") {
-                        addMasterToDesignSpace(master);
-                    } else if ($scope.data.currentDesignSpace.type == "Explore") {
-                        // get relative mouse position of where dropped
-                        var mouseX = e.clientX - Math.round($(".drop-area").offset().left) - 10;
-                        var mouseY = e.clientY - Math.round($(".drop-area").offset().top) - 10;
-                        $scope.data.currentDesignSpace.masters.push({
-                            masterId : master.id,
-                            value : 0,
-                            coordinates : [mouseX, mouseY]
-                        });
-                    }
+                    addMasterToDesignSpace(master);
                     $scope.$apply();
                 }
             }
@@ -160,6 +149,9 @@ app.controller("mastersController", function($scope, sharedScope) {
 
     function addMasterToDesignSpace(master) {
         var designspace = $scope.data.currentDesignSpace;
+        if ($scope.data.currentDesignSpace.type == "x") {
+            $scope.data.currentDesignSpace.type = "Control";
+        }
         var masterSet = designspace.masters;
         var startValue = 0;
         // for first two master give value 0.5, so first instance has right values

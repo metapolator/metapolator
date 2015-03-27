@@ -21,8 +21,11 @@
 </ul>
 <!-- end of tabs -->
 
-<div class="design-space" ng-class="{unconfigured : data.currentDesignSpace.type =='x'}">
+<div class="design-space drop-area" ng-class="{unconfigured : data.currentDesignSpace.type =='x'}">
     <div class="design-space-container" ng-show="data.currentDesignSpace.type == 'x'">
+        Drag a master from the left panel into this Design Space. When you drop your first master, an instance of it is created. You will need at least
+        two masters to affect interpolation to your instance.
+        <!--
         <div class="choose-space-type">
             <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Control'">
                 <img src="img/Control.png">
@@ -30,7 +33,7 @@
                 Control
             </div>
         </div>
-        <!--
+        
         <div class="choose-space-type under-construction">
             <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Explore'">
                 <img src="img/Explore.png">
@@ -41,7 +44,7 @@
         -->
     </div>
     
-    <div class="drop-area" ng-show="data.currentDesignSpace.type != 'x'">
+    <div class="" ng-show="data.currentDesignSpace.type != 'x'">
         <control ng-if="data.currentDesignSpace.type == 'Control'">
             <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 45) + 'px'}">
                 <input ng-model="axis.value" class="slider-input-output">%
