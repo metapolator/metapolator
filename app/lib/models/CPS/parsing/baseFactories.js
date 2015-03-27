@@ -49,12 +49,14 @@ define([
             var items = []
               , i=0
               ;
-            for(;i<node.children.length;i++) {
-                if(node.children[i].type === '__GenericAST__'
-                                && node.children[i].instance.type === 's')
-                    continue;
-                items.push(node.children[i].instance);
-            }
+
+            if(node.children)
+                for(;i<node.children.length;i++) {
+                    if(node.children[i].type === '__GenericAST__'
+                                    && node.children[i].instance.type === 's')
+                        continue;
+                    items.push(node.children[i].instance);
+                }
 
             return new ParameterCollection(items, source, node.lineNo);
         }
