@@ -470,7 +470,11 @@ define([
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
-        // this is needed to trigger _buildIndex when it is time:
+        // needed if this._dict had no keys previously
+        // because then this._invalidateCache would not run
+        // for example when the rules changed from not providing keys to
+        // now providing keys
+        this._nextTrigger('change', key);
         this._dict = null;
     };
 
@@ -480,6 +484,11 @@ define([
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
+        // needed if this._dict had no keys previously
+        // because then this._invalidateCache would not run
+        // for example when the rules changed from not providing keys to
+        // now providing keys
+        this._nextTrigger('change', key);
         this._buildIndex();
     };
 
