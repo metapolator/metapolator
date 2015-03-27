@@ -3,12 +3,12 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
     
     /* temp testing */
-   
-    $scope.data.overallWidth = 1;
-    $scope.data.xTranslate = 1;
-    $scope.data.yTranslate = 1;
-    $scope.data.heightFactor = 1;
-
+    $scope.data.weightFactor = 100;
+    $scope.data.widthFactor = 100;
+    $scope.data.heightFactor = 100;
+    $scope.data.sidebearingLeft = 0;
+    $scope.data.sidebearingRight = 0;
+    
     $scope.sortableOptions = {
         connectWith : ".master-ul",
         cancel : ".selectable-ag"

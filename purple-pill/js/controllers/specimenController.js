@@ -34,7 +34,7 @@ function($scope, $sce, sharedScope) {
                 name: masterName,
                 displayName: masterName,
                 type: "redpill",
-                display: edit,
+                display: true,
                 edit: [edit, edit],
                 ag: "ag",
                 glyphs: glyphs,
@@ -71,12 +71,14 @@ function($scope, $sce, sharedScope) {
    
    
    
-    $scope.data.scale = function (key, value) {
-        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, "lib/scale.cps");
-        var l = parameterCollection.length;
-        var cpsRule = parameterCollection.getItem(l - 1);
+    $scope.data.scale = function (key, value, ruleNr, factor) {
+        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, "lib/parameters.cps");
+        var cpsRule = parameterCollection.getItem(ruleNr);
         var parameterDict = cpsRule.parameters;
         var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+        if (!factor) {
+            value /= 100;
+        }
         setParameter(parameterDict, key, value); 
     };
     
