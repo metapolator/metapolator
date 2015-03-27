@@ -3,6 +3,7 @@
 
 require([
     'webAPI/document'
+  , 'metapolator/errors'
   , 'metapolator/project/MetapolatorProject'
   , 'ufojs/tools/io/staticBrowserREST'
   , 'metapolator/io/InMemory'
@@ -12,10 +13,12 @@ require([
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Rule'
+  , 'metapolator/models/CPS/elements/AtImportCollection'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 ],
 function (
     document
+  , errors
   , MetapolatorProject
   , ioREST
   , InMemory
@@ -25,6 +28,7 @@ function (
   , Parameter
   , ParameterDict
   , Rule
+  , AtImportCollection
   , parseSelectorList
 ) {
     "use strict";
@@ -49,8 +53,6 @@ function (
     window.metapolatorReady = {push: metapolatorReady};
     // if there are already registered callbacks
     if(callbacks) callbacks.map(metapolatorReady);
-
-
 
     // export the modules that will be needed
     exports.initProject = function(projectPath) {
@@ -117,6 +119,28 @@ function (
               ;
             // returns the actual index at which the rule was created
             return parameterCollection.splice(index, 0, rule)[0];
+        }
+        /**
+         * CAUTION: Here an intersting dependency to ruleController emerges.
+         * Probably this method should be part of the stateful interface,
+         * because this way a ruleController from a different project can
+         * be used which is not intended right now and was never tested!
+         */
+      , addNewAtImport: function addNewAtImport(async, parameterCollection
+                                    , index, ruleController, resourceName) {
+            var collection = new AtImportCollection(ruleController, 'generated')
+                // it's only a promise if `async` is true
+              , promise = collection.setResource(async, resourceName)
+              ;
+
+            function resolve() {
+                return parameterCollection.splice(index, 0, collection)[0];
+            }
+
+            return async
+                 ? promise.then(resolve, errors.unhandledPromise)
+                 : resolve()
+                 ;
         }
     };
 });
