@@ -40,7 +40,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         var masterId = findMasterId();
         var masterName = "master" + masterId;
         var cpsFile = masterName + ".cps";
-        var cpsString = '@import "flexmaster.cps"; master#' + masterName  + ' glyph, point > center, contour > p  { sidebearingLeft: 0; sidebearingRight: 0; widthFactor: 1; heightFactor: 1; } master#' + masterName + ' point > left, point > right, contour > p {  weightFactor: 1; }';
+        var cpsString = '@import "flexmaster.cps"; glyph, point > center, contour > p  { sidebearingLeft: 0; sidebearingRight: 0; widthFactor: 1; heightFactor: 1; } point > left, point > right, contour > p {  weightFactor: 1; }';
         $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString); 
         $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
         $scope.data.stateful.project.open(masterName);
