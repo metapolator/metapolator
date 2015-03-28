@@ -1,7 +1,28 @@
 @import 'wired-up.cps';
 @import 'global.cps';
-@import 'lib/parameters.cps';
 
+point>center, contour > p{
+    _scale: (Scaling widthFactor heightFactor);
+    scale: _scale;
+    _translate: (Translation sidebearingLeft yTranslate);
+    translate: _translate;
+    transform:  translate * scale;
+}
+
+glyph {
+    advanceWidth: base:advanceWidth * widthFactor + sidebearingLeft + sidebearingRight;
+    advanceHeight: base:advanceHeight * heightFactor;
+}
+
+point > center {
+    on: transform * skeleton:on;
+    in: transform * skeleton:in;
+    out: transform * skeleton:out;
+}
+
+contour > p {
+    on: transform * skeleton:on;
+}
 
 @namespace("
   glyph#dvI penstroke#bubble point

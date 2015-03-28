@@ -30,6 +30,7 @@
         <script src='js/factory.js' type='text/javascript'></script>
         <script src='js/templates.js' type='text/javascript'></script>
         <script src='js/filters.js'></script>
+        <script src='js/controllers/engine.js' type='text/javascript'></script>
         <script src='js/controllers/menuController.js' type='text/javascript'></script>
         <script src='js/controllers/parametersController.js' type='text/javascript'></script> 
         <script src='js/controllers/specimenController.js' type='text/javascript'></script>
@@ -48,8 +49,8 @@
 
     </HEAD>
 
-    <BODY ng-app="Metapolator" ng-controller="menuController">
-        <div id="menu" class="unselectable">
+    <BODY ng-app="Metapolator" ng-controller="engine">
+        <div id="menu" class="unselectable" ng-controller="menuController">
             <div id="project">
                 <localmenu class="localmenu" class="left">
                     <div class="lm-head" ng-mousedown="data.selectMenu('project')">
@@ -106,7 +107,7 @@
                 <div id="panel-1" class="panel">
                     <parameters ng-controller="parametersController" class="sub-panel panel"></parameters>
                 </div>
-                <specimen id="panel-2" ng-controller="specimenController" ng-init="addGlyphRange(); startEngine(); specimenPanel = 1" class="sub-panel panel"></specimen>
+                <specimen id="panel-2" ng-controller="specimenController" ng-init="addGlyphRange(); specimenPanel = 1" class="sub-panel panel"></specimen>
 
                 <!-- start of view 2 -->
                 <div id="panel-3" class="panel">

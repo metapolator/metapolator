@@ -1,18 +1,55 @@
 app.controller("parametersController", function($scope, sharedScope) {
-    'use strict';
     $scope.data = sharedScope.data;
     
     /* temp testing */
-    $scope.data.weightFactor = 100;
-    $scope.data.widthFactor = 100;
-    $scope.data.heightFactor = 100;
-    $scope.data.sidebearingLeft = 0;
-    $scope.data.sidebearingRight = 0;
+    $scope.data.weightFactor = 140;
+    $scope.data.widthFactor = 110;
+    $scope.data.heightFactor = 98;
+    $scope.data.sidebearingLeft = -10;
+    $scope.data.sidebearingRight = -10;
     
-    $scope.sortableOptions = {
-        connectWith : ".master-ul",
-        cancel : ".selectable-ag"
+    
+    $scope.data.editParameter = function (key, value, nr, factor) {
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[0]) {
+                    var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
+                    var l = parameterCollection.length;
+                    var cpsRule = parameterCollection.getItem(l - nr);
+                    var parameterDict = cpsRule.parameters;
+                    var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+                    if (!factor) {
+                        value /= 100;
+                    }
+                    setParameter(parameterDict, key, value); 
+                }
+            });
+        });
     };
+    
+    $scope.data.addRule = function () {
+        var key = "widthFactor";
+        var value = 5;
+        var masterName = "web";
+        var glyphName = "a";
+        var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, masterName);
+        var l = parameterCollection.length;
+        var selectorListString = "master#" + masterName + " glyph#" + glyphName + " *";
+        var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
+        var cpsRule = parameterCollection.getItem(ruleIndex);
+        var parameterDict = cpsRule.parameters;
+        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+        setParameter(parameterDict, key, value); 
+    };
+    
+
+    
+    /******/
+
+
+
+
+
 
     $scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
     $scope.operators = ["x", "÷", "+", "-", "=", "min", "max"];

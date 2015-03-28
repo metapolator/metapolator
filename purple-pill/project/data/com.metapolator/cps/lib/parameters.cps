@@ -22,12 +22,12 @@ contour > p {
 }
 
 glyph, point > center, contour > p  {
-    sidebearingLeft: 0;
-    sidebearingRight: 0;
-    widthFactor: 1;
-    heightFactor: 1;
+    sidebearingLeft: -10;
+    sidebearingRight: -10;
+    widthFactor: 1.1;
+    heightFactor: 0.98;
 }
 
 point > left, point > right, contour > p {
-    weightFactor: 1;
+    weightFactor: 1.4;
 }

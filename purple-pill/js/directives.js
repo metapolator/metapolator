@@ -785,7 +785,8 @@ app.directive('control', function($document) {
                         scope.data.currentInstance.axes[thisIndex].value = formatX(thisValue);
                         // slider values to metapolation ratios
                         scope.getMetapolationRatios();
-                        scope.$apply();
+                        scope.data.metapolate();
+                        //scope.$apply();
                     }).on('dragend', function() {
                         dragActive = false;
                         d3.select(this).attr('stroke', 'none');

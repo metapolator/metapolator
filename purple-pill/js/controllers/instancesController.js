@@ -96,6 +96,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data.addInstance = function() {
         $scope.data.deselectAllEdit();
         if ($scope.data.canAddInstance()) {
+            var cpsFile = "lib/metapolate-2.cps";
             var designSpace = $scope.data.currentDesignSpace;
             var masterSet = jQuery.extend(true, [], designSpace.masters);
             var axesSet = jQuery.extend(true, [], designSpace.axes);
@@ -118,14 +119,35 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 fontFamily : "Roboto",
                 fontWeight : 700,
                 masters: masterSet,
-                axes: axesSet
+                axes: axesSet,
+                cpsFile: cpsFile
             });
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
+            // create a master inside the engine and attach a cps file
+            $scope.data.stateful.project.ruleController.write(false, cpsFile, ''); 
+            $scope.data.stateful.project.createMaster(instanceName, cpsFile, "skeleton.base");
+            $scope.data.stateful.project.open(instanceName);
+            $scope.data.metapolate();
         }
-        // add instance to engine (as master)
-        $scope.data.stateful.project.createMaster(instanceName, "lib/metapolate-2.cps", "skeleton.base");
-        $scope.data.stateful.project.open(instanceName);
+    };
+    
+    $scope.setParameter;
+    
+    $scope.data.metapolate = function () {
+        var instance = $scope.data.currentInstance;
+        //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
+        var parameterCollection =  $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
+        var l = parameterCollection.length;
+        var cpsRule = parameterCollection.getItem(l - 1);
+        var parameterDict = cpsRule.parameters;
+        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+        for (var i = 0; i < instance.masters.length; i++) {
+            var masterName = instance.masters[i].masterName;
+            var selector = 'S"master#' + masterName + '"';
+            setParameter(parameterDict, "baseMaster" + (i + 1), selector);  
+            setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);   
+        }
     };
     
     $scope.data.duplicateInstance = function (instance, space) {

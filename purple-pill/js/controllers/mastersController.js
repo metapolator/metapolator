@@ -35,6 +35,42 @@ app.controller("mastersController", function($scope, sharedScope) {
         setTimeout(function(){ $("#alert").hide(); }, 2000);
     };
     
+    
+    $scope.data.addNewMaster = function () {
+        var masterId = findMasterId();
+        var masterName = "master" + masterId;
+        var cpsFile = masterName + ".cps";
+        var cpsString = '@import "flexmaster.cps"; master#' + masterName  + ' glyph, point > center, contour > p  { sidebearingLeft: 0; sidebearingRight: 0; widthFactor: 1; heightFactor: 1; } master#' + masterName + ' point > left, point > right, contour > p {  weightFactor: 1; }';
+        $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString); 
+        $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
+        $scope.data.stateful.project.open(masterName);
+        var glyphs = [];       
+        $scope.data.sequences[0].masters.push({
+            id: masterId,
+            name: masterName,
+            displayName: masterName,
+            cpsFile: cpsFile,
+            type: "redpill",
+            display: true,
+            edit: [true, true],
+            ag: "ag",
+            glyphs: glyphs,
+            parameters: []
+        });
+    };
+    
+    function findMasterId () {
+        var max = 0;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.id > max) {
+                    max = master.id;
+                }
+            });
+        });
+        max++;
+        return max;
+    }
 
     /***** selecting *****/
 
@@ -160,6 +196,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         } 
         designspace.masters.push({
             masterId : master.id,
+            masterName: master.name,
             value : startValue
         });
         if (masterSet.length > 1) {

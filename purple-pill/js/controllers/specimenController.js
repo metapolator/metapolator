@@ -2,106 +2,10 @@ app.controller('specimenController', ['$scope', '$sce', 'sharedScope',
 function($scope, $sce, sharedScope) {
     $scope.data = sharedScope.data;
 
-    /***************** initializing *****************/
-
-    $scope.data.stateful;
-    $scope.data.stateless;
-    $scope.data.pill = "blue";
-
-    function onProjectLoaded(stateless, stateful) {
-        $scope.data.stateful = stateful;
-        $scope.data.stateless = stateless;
-        // adding masters
-        var masters = $scope.data.stateful.controller.queryAll("master");
-        var masterId = 0;
-        for (var i = 0; i < masters.length; i++){
-            var master = masters[i];
-            var masterName = master.id;
-            var glyphs = master.children;
-            var glyphs = [];
-            var edit = false;
-            if (i == 0) { edit = true; }
-            // adding glyphs to each master
-            for (var j = 0; j < master.children.length; j++) {
-                glyphs.push({
-                    value: master.children[j].id,
-                    edit: false,
-                    parameters: []
-                });
-            }
-            $scope.data.sequences[0].masters.push({
-                id: masterId,
-                name: masterName,
-                displayName: masterName,
-                type: "redpill",
-                display: true,
-                edit: [edit, edit],
-                ag: "ag",
-                glyphs: glyphs,
-                parameters: []
-            });
-            masterId++;  
-        }
-        $scope.data.pill = "red";
-        $scope.$apply();
-        $("#layover").hide();
-        $(".compatibility-info").hide();
-    }
-
-    function onMetapolatorReady(stateless) {
-        // stateless has the keys 'initProject' and 'cpsAPITools'
-        console.log('metapolator is now ready', Object.keys(stateless));
-        // The path for a Ajax request on your webserver
-        // NOTE: the project is exported with directory listing index.html files
-        //       we need that for "static" HTTP servers!
-        var projectPath = 'project';
-        // returns a promise
-        stateless.initProject(projectPath).then(onProjectLoaded.bind(null, stateless));
-    }
-
-    $scope.startEngine = function() {
-        if (!window.metapolatorReady) {
-            window.metapolatorReady = [];
-        }
-        window.metapolatorReady.push(onMetapolatorReady);
-        // <= could be an array or our api
-    };
-    
-    /***************** end of initializing *****************/
-   
-   
-   
-    $scope.data.scale = function (key, value, ruleNr, factor) {
-        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, "lib/parameters.cps");
-        var cpsRule = parameterCollection.getItem(ruleNr);
-        var parameterDict = cpsRule.parameters;
-        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-        if (!factor) {
-            value /= 100;
-        }
-        setParameter(parameterDict, key, value); 
-    };
-    
-    $scope.data.addRule = function () {
-        var key = "widthFactor";
-        var value = 5;
-        var masterName = "web";
-        var glyphName = "a";
-        var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, masterName);
-        var l = parameterCollection.length;
-        var selectorListString = "master#" + masterName + " glyph#" + glyphName + " *";
-        var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
-        var cpsRule = parameterCollection.getItem(ruleIndex);
-        var parameterDict = cpsRule.parameters;
-        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-        setParameter(parameterDict, key, value); 
-    };
-    
     $scope.data.renderGlyphs = function(masterName, glyphName) {
         return $scope.data.stateful.glyphRendererAPI.get(masterName, glyphName);
     };
-   
-   /***************** end of API *****************/
+
 
     $scope.sortableOptions = {
         helper : 'clone'
@@ -135,6 +39,7 @@ function($scope, $sce, sharedScope) {
         text : "Grumpy wizards make toxic brew for the evil Queen and Jack One morning when Gregor Samsa woke from troubled dreams he found himself transformed in his bed into a horrible vermin*pHe lay on his armour-like back and if he lifted his head a little he could see his brown belly slightly domed and divided by arches into stiff sections*pThe bedding was hardly able to cover it and seemed ready to slide off any moment His many legs pitifully thin compared with the size of the rest of him waved about helplessly as he looked"
     }];
 
+    // only for the masters specimen panel
     $scope.addGlyphRange = function() {
         $scope.specimen.push({
             name : "glyph range"
