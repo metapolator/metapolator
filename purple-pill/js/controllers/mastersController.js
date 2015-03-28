@@ -34,28 +34,36 @@ app.controller("mastersController", function($scope, sharedScope) {
         $("#alert #alert-content").html(message);
         setTimeout(function(){ $("#alert").hide(); }, 2000);
     };
-    
-    
-    $scope.data.addNewMaster = function () {
-        var masterId = findMasterId();
-        var masterName = "master" + masterId;
-        var cpsFile = masterName + ".cps";
-        var cpsString = '@import "flexmaster.cps"; glyph, point > center, contour > p  { sidebearingLeft: 0; sidebearingRight: 0; widthFactor: 1; heightFactor: 1; } point > left, point > right, contour > p {  weightFactor: 1; }';
-        $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString); 
-        $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
-        $scope.data.stateful.project.open(masterName);
-        var glyphs = [];       
-        $scope.data.sequences[0].masters.push({
-            id: masterId,
-            name: masterName,
-            displayName: masterName,
-            cpsFile: cpsFile,
-            type: "redpill",
-            display: true,
-            edit: [true, true],
-            ag: "ag",
-            glyphs: glyphs,
-            parameters: []
+        
+    $scope.data.duplicateMasters = function () {
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[0]) {
+                    var masterId = findMasterId();
+                    var masterName = "master" + masterId;
+                    var cpsFile = masterName + ".cps";
+                    // duplicate here
+                    var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
+                    var cpsString = "" + sourceCollection;
+                    
+                    $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString); 
+                    $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
+                    $scope.data.stateful.project.open(masterName);
+                    var glyphs = [];       
+                    $scope.data.sequences[0].masters.push({
+                        id: masterId,
+                        name: masterName,
+                        displayName: masterName,
+                        cpsFile: cpsFile,
+                        type: "redpill",
+                        display: true,
+                        edit: [true, true],
+                        ag: "ag",
+                        glyphs: glyphs,
+                        parameters: []
+                    });
+                }
+            });
         });
     };
     

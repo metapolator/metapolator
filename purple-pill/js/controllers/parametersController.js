@@ -2,11 +2,11 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
     
     /* temp testing */
-    $scope.data.weightFactor = 140;
-    $scope.data.widthFactor = 110;
-    $scope.data.heightFactor = 98;
-    $scope.data.sidebearingLeft = -10;
-    $scope.data.sidebearingRight = -10;
+    $scope.data.weightFactor = 100;
+    $scope.data.widthFactor = 100;
+    $scope.data.heightFactor = 100;
+    $scope.data.sidebearingLeft = 0;
+    $scope.data.sidebearingRight = 0;
     
     
     $scope.data.editParameter = function (key, value, nr, factor) {

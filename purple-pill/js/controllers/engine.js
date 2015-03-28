@@ -15,30 +15,31 @@ app.controller('engine', function($scope, sharedScope) {
         for (var i = 0; i < masters.length; i++){
             var master = masters[i];
             var masterName = master.id;
-            var glyphs = master.children;
-            var glyphs = [];
-            var edit = false;
-            if (i == 0) { edit = true; }
-            // adding glyphs to each master
-            for (var j = 0; j < master.children.length; j++) {
-                glyphs.push({
-                    value: master.children[j].id,
-                    edit: false,
+            if (masterName == "regular") {
+                var glyphs = master.children;
+                var glyphs = [];
+                // adding glyphs to each master
+                for (var j = 0; j < master.children.length; j++) {
+                    glyphs.push({
+                        value: master.children[j].id,
+                        edit: false,
+                        parameters: []
+                    });
+                }
+                $scope.data.sequences[0].masters.push({
+                    id: masterId,
+                    name: masterName,
+                    displayName: masterName,
+                    cpsFile: "lib/parameters.cps",
+                    type: "redpill",
+                    display: true,
+                    edit: [true, true],
+                    ag: "ag",
+                    glyphs: glyphs,
                     parameters: []
                 });
-            }
-            $scope.data.sequences[0].masters.push({
-                id: masterId,
-                name: masterName,
-                displayName: masterName,
-                type: "redpill",
-                display: true,
-                edit: [edit, edit],
-                ag: "ag",
-                glyphs: glyphs,
-                parameters: []
-            });
-            masterId++;  
+                masterId++; 
+            } 
         }
         $scope.data.pill = "red";
         $scope.$apply();
