@@ -49,7 +49,7 @@
             <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 45) + 'px'}">
                 <input ng-model="axis.value" class="slider-input-output">%
             </div>
-            <select class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="index as data.findMaster(master.masterId).name for (index, master) in data.currentDesignSpace.masters" ng-style="{'top': ((data.currentDesignSpace.masters.length - 2) * 50 + 43) + 'px'}" ng-if="data.currentDesignSpace.masters.length > 2"></select>
+            <select class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="index as data.findMaster(master.masterName).displayName for (index, master) in data.currentDesignSpace.masters" ng-style="{'top': ((data.currentDesignSpace.masters.length - 2) * 50 + 43) + 'px'}" ng-if="data.currentDesignSpace.masters.length > 2"></select>
         </control>
         <explore ng-if="data.currentDesignSpace.type == 'Explore'"></explore>
         <!--

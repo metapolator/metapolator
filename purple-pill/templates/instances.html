@@ -27,7 +27,7 @@
         <div ng-repeat="instance in data.families[0].instances track by instance.id">
             <b>{{instance.id}}</b>
             <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
-            <div>masters: <span ng-repeat="master in instance.masters">[{{master.masterId}}]: {{master.value | number:3}} | </span></div>
+            <div>masters: <span ng-repeat="master in instance.masters">[{{master.masterName}}]: {{master.value | number:3}} | </span></div>
         </div>
     </div>
 

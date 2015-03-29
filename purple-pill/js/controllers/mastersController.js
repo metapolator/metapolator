@@ -197,7 +197,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 value : 50
             });
             // add this axis to each instance in the design space
-            $scope.data.addAxisToInstance(master.id);
+            $scope.data.addAxisToInstance(master);
         }
         if (designspace.axes.length == 1) {
            $scope.data.addInstance(); 

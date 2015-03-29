@@ -237,7 +237,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var instanceName = "instance" + $scope.uniqueInstanceId;
             var cpsFile = instanceName + ".cps";
             var cpsString = $scope.createMultiMasterCPS(masterSet);
-            console.log(cpsString);
             $scope.data.families[0].instances.push({
                 id : $scope.uniqueInstanceId,
                 edit : true,
@@ -421,7 +420,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
      }
      */
 
-    $scope.data.addAxisToInstance = function(masterId) {
+    $scope.data.addAxisToInstance = function(master) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == $scope.data.currentDesignSpace.id) {
@@ -432,11 +431,15 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     instance.axes.push({
                         value : thisValue
                     });
-                    var metapValue = 0;
                     instance.masters.push({
-                        masterId : masterId,
-                        value : metapValue
+                        masterName : master.name,
+                        masterdisplayName: master.displayName,
+                        value : 0
                     });
+                    // empty current cps File and rewrite it with new masters
+                    //$scope.data.stateful.project.ruleController.write(false, instance.cpsFile, "");
+                    var cpsString = $scope.createMultiMasterCPS(instance.masters);
+                    $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
                 }
             });
         });
