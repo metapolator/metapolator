@@ -198,13 +198,23 @@ function($scope, $sce, sharedScope) {
     };
 
     // find out if the glyph edit is true
-    $scope.askIfEditGlyph = function(glyph, master, sequence) {
+    $scope.askIfEditGlyph = function(glyphName, masterId, sequenceId) {
         var edit = false;
-        for (var i = 0; i < $scope.data.sequences[sequence].masters[master].glyphs.length; i++) {
-            if ($scope.data.sequences[sequence].masters[master].glyphs[i].value == glyph && $scope.data.sequences[sequence].masters[master].glyphs[i].edit) {
-                var edit = true;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            if (sequence.id == sequenceId) {
+                angular.forEach(sequence.masters, function(master) {
+                    if(master.id == masterId) {
+                        angular.forEach(master.glyphs, function(glyph) {
+                            if(glyph.value == glyphName) {
+                                if (glyph.edit) {
+                                    edit = true;
+                                }
+                            }    
+                        }); 
+                    }
+                });
             }
-        }
+        });
         return edit;
     };
 

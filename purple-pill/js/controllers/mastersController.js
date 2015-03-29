@@ -3,6 +3,8 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
 
     /***** menu control *****/
+   
+    $scope.uniqueMasterId = 0;
 
     $scope.deleteMasters = function(){
         // need to make functionality to go through design spaces and instances to remove masters as well
@@ -32,8 +34,8 @@ app.controller("mastersController", function($scope, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
-                    var masterId = findMasterId();
-                    var masterName = "master" + masterId;
+                    $scope.uniqueMasterId++;
+                    var masterName = "master" + $scope.uniqueMasterId;
                     var cpsFile = masterName + ".cps";
                     // duplicate cps file
                     var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
@@ -43,9 +45,9 @@ app.controller("mastersController", function($scope, sharedScope) {
                     $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
                     $scope.data.stateful.project.open(masterName);
                     $scope.data.sequences[0].masters.push({
-                        id: masterId,
+                        id: $scope.uniqueMasterId,
                         name: masterName,
-                        displayName: master.name + "_copy",
+                        displayName: masterName,
                         cpsFile: cpsFile,
                         type: "redpill",
                         display: true,
@@ -59,19 +61,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         });
         $scope.data.localmenu.masters = false;
     };
-    
-    function findMasterId () {
-        var max = 0;
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.id > max) {
-                    max = master.id;
-                }
-            });
-        });
-        max++;
-        return max;
-    }
+   
 
     /***** selecting *****/
 
