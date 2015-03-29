@@ -17,6 +17,8 @@ app.controller("mastersController", function($scope, sharedScope) {
                         notDeleted.push(master);
                     } else {
                         $scope.data.stateful.project.deleteMaster(master.name);
+                        // empty cps file
+                        $scope.data.stateful.project.ruleController.write(false, master.cpsFile, ""); 
                     }
                 });
                 sequence.masters = notDeleted;
