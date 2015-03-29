@@ -880,7 +880,7 @@
             .list-sequence-col {
                 float: left;
                 width: 24px;
-                height: 28px;
+                height: 100%;
                 position: relative;
             }
             

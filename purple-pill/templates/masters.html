@@ -5,9 +5,9 @@
     <div class="lm-body" ng-if="data.localmenu.masters">
         <div class="lm-button" ng-mouseup="importUfo()">Import ufo…</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="duplicateMaster()">Duplicate</div>
+        <div class="lm-button" ng-mouseup="duplicateMasters()">Duplicate</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="deleteMaster()">Delete…</div>
+        <div class="lm-button" ng-mouseup="deleteMasters()">Delete…</div>
     </div>
 </localmenu>
 
@@ -29,10 +29,10 @@
 </div>
 
 <div id="masters-tools">
-    <div id="import-ufo" ng-click="importUfo();" class="master-tool push-button">
+    <div title="import ufo" id="import-ufo" ng-click="importUfo();" class="master-tool push-button">
         <img src="img/importUfo.png">
     </div>
-    <div id="duplicate-master" ng-click="duplicateMaster();" class="master-tool push-button">
+    <div title="duplicate master(s)" id="duplicate-master" ng-click="duplicateMasters();" class="master-tool push-button">
         <img src="img/duplicateMaster.png">
     </div>
 </div>

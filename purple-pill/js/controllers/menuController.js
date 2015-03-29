@@ -1,5 +1,14 @@
 app.controller('menuController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
+    
+    $scope.data.alert = function (message, loading) {
+        $("#alert").show();
+        if (loading) {
+            $("#alert-loading").show();
+        }
+        $("#alert #alert-content").html(message);
+        setTimeout(function(){ $("#alert").hide(); }, 2000);
+    };
 
     $scope.newDocument = function() {
         alert("New Document");

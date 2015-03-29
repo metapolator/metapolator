@@ -9,13 +9,14 @@ app.controller('engine', function($scope, sharedScope) {
     function onProjectLoaded(stateless, stateful) {
         $scope.data.stateful = stateful;
         $scope.data.stateless = stateless;
-        // adding masters
+        // adding initial masters
         var masters = $scope.data.stateful.controller.queryAll("master");
         var masterId = 0;
         for (var i = 0; i < masters.length; i++){
             var master = masters[i];
             var masterName = master.id;
-            if (masterName == "regular") {
+            // skip base for the ui
+            if (masterName != "base") {
                 var glyphs = master.children;
                 var glyphs = [];
                 // adding glyphs to each master
@@ -26,11 +27,13 @@ app.controller('engine', function($scope, sharedScope) {
                         parameters: []
                     });
                 }
+                // temp private method, see issue #332
+                var cpsFile = $scope.data.stateful.controller._getMasterRule(masterName);
                 $scope.data.sequences[0].masters.push({
                     id: masterId,
                     name: masterName,
                     displayName: masterName,
-                    cpsFile: "lib/parameters.cps",
+                    cpsFile: cpsFile,
                     type: "redpill",
                     display: true,
                     edit: [true, true],

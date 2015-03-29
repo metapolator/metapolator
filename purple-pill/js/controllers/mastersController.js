@@ -4,7 +4,7 @@ app.controller("mastersController", function($scope, sharedScope) {
 
     /***** menu control *****/
 
-    $scope.deleteMaster = function(){
+    $scope.deleteMasters = function(){
         // need to make functionality to go through design spaces and instances to remove masters as well
         // and in instances recalculate the metap values
         if (confirm("You are about to remove master(s). This could affect design spaces as well. Ok?")) {
@@ -13,6 +13,8 @@ app.controller("mastersController", function($scope, sharedScope) {
                 angular.forEach(sequence.masters, function(master) {
                     if (!master.edit[$scope.data.viewState]){
                         notDeleted.push(master);
+                    } else {
+                        $scope.data.stateful.project.deleteMaster(master.name);
                     }
                 });
                 sequence.masters = notDeleted;
@@ -25,46 +27,37 @@ app.controller("mastersController", function($scope, sharedScope) {
         $scope.data.alert("Loading. Your UFO is coming soon.", true);
         $scope.data.localmenu.masters = false;
     };
-    
-    $scope.data.alert = function (message, loading) {
-        $("#alert").show();
-        if (loading) {
-            $("#alert-loading").show();
-        }
-        $("#alert #alert-content").html(message);
-        setTimeout(function(){ $("#alert").hide(); }, 2000);
-    };
         
-    $scope.data.duplicateMasters = function () {
+    $scope.duplicateMasters = function () {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
                     var masterId = findMasterId();
                     var masterName = "master" + masterId;
                     var cpsFile = masterName + ".cps";
-                    // duplicate here
+                    // duplicate cps file
                     var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
                     var cpsString = "" + sourceCollection;
-                    
+                    // create new cps file and new master
                     $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString); 
                     $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
                     $scope.data.stateful.project.open(masterName);
-                    var glyphs = [];       
                     $scope.data.sequences[0].masters.push({
                         id: masterId,
                         name: masterName,
-                        displayName: masterName,
+                        displayName: master.name + "_copy",
                         cpsFile: cpsFile,
                         type: "redpill",
                         display: true,
                         edit: [true, true],
                         ag: "ag",
-                        glyphs: glyphs,
-                        parameters: []
+                        glyphs: angular.copy(master.glyphs),
+                        parameters: angular.copy(master.parameters)
                     });
                 }
             });
         });
+        $scope.data.localmenu.masters = false;
     };
     
     function findMasterId () {
