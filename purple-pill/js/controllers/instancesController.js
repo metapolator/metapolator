@@ -1,14 +1,11 @@
 app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
-    
-    
-    
-    
-/***** cps *****/
+
+    /***** cps *****/
 
     $scope.createMultiMasterCPS = function (masterSet) {
         var end = masterSet.length + 1;
-        var cpsString = "@import 'centreline-skeleton-to-symmetric-outline.cps'";
+        var cpsString = "@import 'centreline-skeleton-to-symmetric-outline.cps';";
         cpsString += "point > * { indexGlyph: parent:parent:parent:index; indexPenstroke: parent:parent:index; indexPoint: parent:index;";
         for (var i = 1; i < end; i++) {
             cpsString += "base" + i + ": baseMaster" + i + ":children[indexGlyph]:children[indexPenstroke]:children[indexPoint]:children[index];";
@@ -17,6 +14,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         for (var i = 1; i < end; i++) {
             if (i != 1) {
                 cpsString += " + ";
+            }
             cpsString += "proportion" + i;
         }
         cpsString += ");";
@@ -119,15 +117,24 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             cpsString +=  "(normalizeAngle base" + i + ":outDir) * _p" + i;
         }
         cpsString += ";}";
+        
+        // add the metapolation values as last item
+        cpsString += "* { ";
+        for (var i = 1; i < end; i++) {
+            cpsString += 'baseMaster' + i + ': S"master#' + masterSet[i - 1].masterName + '";';
+            cpsString += "proportion" + i + ": " + masterSet[i - 1].value + ";";
+        }
+        cpsString += "}";
+        return cpsString;
     };
 
 
 
-/***** selections *****/
 
+    /***** selections *****/
 
     $scope.mouseDown = false;
-    
+
     $scope.toggleViewSet = function(set, initialDisplay) {
         if (initialDisplay == "true") {
             var newStatus = false;
@@ -146,7 +153,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     instance.display = newStatus;
                 }
             });
-        }); 
+        });
     };
 
     $scope.toggleEdit = function(listItem) {
@@ -157,7 +164,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     instance.display = instance.edit;
                 }
             });
-        });  
+        });
     };
 
     $scope.selectEdit = function(set) {
@@ -186,20 +193,16 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
         });
     };
-    
+
     $scope.toggleDisplay = function(instance) {
-        if(!instance.edit) {
+        if (!instance.edit) {
             instance.display = !instance.display;
         }
     };
-    
-    
-    
-    
-/***** controlling instances *****/
-    
-    
-    function findInstanceId () {
+
+    /***** controlling instances *****/
+
+    function findInstanceId() {
         var max = 0;
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
@@ -212,6 +215,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         return max;
     }
 
+
     $scope.uniqueInstanceId = 0;
 
     $scope.data.addInstance = function() {
@@ -223,16 +227,17 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var axesSet = jQuery.extend(true, [], designSpace.axes);
             var newValue = 1 / masterSet.length;
             angular.forEach(masterSet, function(thisMaster) {
-                   thisMaster.value = newValue;
+                thisMaster.value = newValue;
             });
             angular.forEach(axesSet, function(thisAxis) {
-                   thisAxis.value = 50;
+                thisAxis.value = 50;
             });
             // add the instance
             $scope.uniqueInstanceId++;
             var instanceName = "instance" + $scope.uniqueInstanceId;
             var cpsFile = instanceName + ".cps";
-            var cpsString = '@import "lib/metapolate-2.cps"; * { baseMaster1: S"master#' + masterSet[0].masterName + '"; baseMaster2: S"master#' + masterSet[1].masterName + '"; proportion1: .5; proportion2: .5;}';
+            var cpsString = $scope.createMultiMasterCPS(masterSet);
+            console.log(cpsString);
             $scope.data.families[0].instances.push({
                 id : $scope.uniqueInstanceId,
                 edit : true,
@@ -242,27 +247,25 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 designSpace : designSpace.id,
                 fontFamily : "Roboto",
                 fontWeight : 700,
-                masters: masterSet,
-                axes: axesSet,
-                cpsFile: cpsFile
+                masters : masterSet,
+                axes : axesSet,
+                cpsFile : cpsFile
             });
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
             // create a master inside the engine and attach a cps file
-            $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString); 
+            $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
             $scope.data.stateful.project.createMaster(instanceName, cpsFile, "skeleton.base");
             $scope.data.stateful.project.open(instanceName);
             $scope.data.metapolate();
         }
     };
-    
-    $scope.setParameter;
-    
-    $scope.data.metapolate = function () {
-        console.log("!");
+
+
+    $scope.data.metapolate = function() {
         var instance = $scope.data.currentInstance;
         //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
-        var parameterCollection =  $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
+        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
         var l = parameterCollection.length;
         var cpsRule = parameterCollection.getItem(l - 1);
         var parameterDict = cpsRule.parameters;
@@ -270,12 +273,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         for (var i = 0; i < instance.masters.length; i++) {
             var masterName = instance.masters[i].masterName;
             var selector = 'S"master#' + masterName + '"';
-            setParameter(parameterDict, "baseMaster" + (i + 1), selector);  
-            setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);   
+            setParameter(parameterDict, "baseMaster" + (i + 1), selector);
+            setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);
         }
     };
-    
-    $scope.data.duplicateInstance = function (instance, space) {
+
+    $scope.data.duplicateInstance = function(instance, space) {
         if (instance) {
             $scope.data.deselectAllEdit();
             var duplicate = jQuery.extend(true, {}, instance);
@@ -289,10 +292,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
         }
     };
-    
-    
-    
-    $scope.duplicateName = function(inputname){
+
+    $scope.duplicateName = function(inputname) {
         var serieNr = 1;
         var cleanName = inputname;
         var endsWithNr = inputname.match(/\d+$/);
@@ -300,7 +301,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var nrString = endsWithNr[0];
             cleanName = inputname.substr(0, (inputname.length - nrString.length));
             serieNr = parseInt(nrString);
-        } 
+        }
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 var thisName = instance.name;
@@ -318,10 +319,10 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
         });
         serieNr++;
-        return cleanName + serieNr;       
+        return cleanName + serieNr;
     };
-    
-    $scope.deleteInstance = function () {
+
+    $scope.deleteInstance = function() {
         if ($scope.data.currentInstance) {
             var designSpace = $scope.data.currentInstance.designSpace;
             var n = 0;
@@ -338,27 +339,27 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
                     $scope.data.currentDesignSpace = null;
                     deleteInstanceConfirmed();
-                }  
+                }
             } else {
                 deleteInstanceConfirmed();
             }
         }
     };
-    
+
     // delete after deleting design space
-    $scope.data.deleteInstanceDirect = function (designSpace) {
+    $scope.data.deleteInstanceDirect = function(designSpace) {
         // reverse order, otherwise splice gets confused
-        for (i = $scope.data.families.length - 1; i >= 0; i--) {
-            for (j = $scope.data.families[i].instances.length - 1; j >= 0; j--) {
+        for ( i = $scope.data.families.length - 1; i >= 0; i--) {
+            for ( j = $scope.data.families[i].instances.length - 1; j >= 0; j--) {
                 var instance = $scope.data.families[i].instances[j];
                 if (instance.designSpace == designSpace) {
                     $scope.data.families[i].instances.splice($scope.data.families[i].instances.indexOf(instance), 1);
-                }            
-             }            
+                }
+            }
         }
     };
-    
-    function deleteInstanceConfirmed () {
+
+    function deleteInstanceConfirmed() {
         $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.data.currentInstance), 1);
         $scope.data.localmenu.instances = false;
         // set top instance as current
@@ -369,62 +370,57 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.currentInstance = null;
         }
     }
-    
-    
-    
-    
-/***** feedback on design spaces *****/
-      
-    
-     
+
+    /***** feedback on design spaces *****/
+
     $scope.data.currentInstance = null;
 
     $scope.setCurrentInstance = function(thisInstance) {
         $scope.data.currentInstance = thisInstance;
         setCurrentDesignSpace(thisInstance.designSpace);
     };
-    
-    function setCurrentDesignSpace (id) {
+
+    function setCurrentDesignSpace(id) {
         for (var i = 0; i < $scope.data.designSpaces.length; i++) {
             if ($scope.data.designSpaces[i].id == id) {
                 $scope.data.currentDesignSpace = $scope.data.designSpaces[i];
                 break;
             }
-        }  
+        }
     }
-    
+
     /*
-    function valueToAxes(instance) {
-        var designspace = $scope.data.currentDesignSpace;
-        designspace.axes = [];
-        var mastersNewOrder = [];
-        var mastersCurrentOrder = instance.masters;
-        // set masters of instance in order of designspace setup
-        for (var i = 0; i < designspace.masters.length; i++) {
-            var thisMaster = {
-                masterId: designspace.masters[i].masterId,
-                value: 0
-            };
-            for (var j = 0; j < mastersCurrentOrder.length; j++) {
-                if (designspace.masters[i].masterId == mastersCurrentOrder[j].masterId) {
-                    thisMaster.value = mastersCurrentOrder[j].value;
-                }  
-            }
-            mastersNewOrder.push(thisMaster);
-        }
-        // translate ratio to slider value
-        // the little correction to avoid /0 i not yet included here
-        for (var i = 1; i < mastersNewOrder.length; i++) {
-            var thisRatio = mastersNewOrder[i].value / mastersNewOrder[0].value;
-            
-            var thisValue = roundup(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
-            designspace.axes.push({
-                value : thisValue
-            });
-        }
-    }
-    */
-    
+     function valueToAxes(instance) {
+     var designspace = $scope.data.currentDesignSpace;
+     designspace.axes = [];
+     var mastersNewOrder = [];
+     var mastersCurrentOrder = instance.masters;
+     // set masters of instance in order of designspace setup
+     for (var i = 0; i < designspace.masters.length; i++) {
+     var thisMaster = {
+     masterId: designspace.masters[i].masterId,
+     value: 0
+     };
+     for (var j = 0; j < mastersCurrentOrder.length; j++) {
+     if (designspace.masters[i].masterId == mastersCurrentOrder[j].masterId) {
+     thisMaster.value = mastersCurrentOrder[j].value;
+     }
+     }
+     mastersNewOrder.push(thisMaster);
+     }
+     // translate ratio to slider value
+     // the little correction to avoid /0 i not yet included here
+     for (var i = 1; i < mastersNewOrder.length; i++) {
+     var thisRatio = mastersNewOrder[i].value / mastersNewOrder[0].value;
+
+     var thisValue = roundup(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
+     designspace.axes.push({
+     value : thisValue
+     });
+     }
+     }
+     */
+
     $scope.data.addAxisToInstance = function(masterId) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
@@ -445,22 +441,18 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
         });
     };
-    
+
     function roundup(a) {
         var b = Math.round(a * 10) / 10;
         return b;
     }
 
-
-    
-    
-/***** bottom buttons *****/
-
+    /***** bottom buttons *****/
 
     $scope.data.canAddInstance = function() {
         if ($scope.data.currentDesignSpace) {
             var designSpace = $scope.data.currentDesignSpace;
-            if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0) ) {
+            if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0)) {
                 return true;
             } else {
                 return false;
@@ -469,13 +461,9 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             return false;
         }
     };
-    
-    
-    
-    
-/***** sortable *****/
-    
-    
+
+    /***** sortable *****/
+
     $scope.sortableOptionsMasters = {
         handle : '.list-edit-col',
         helper : 'clone',
