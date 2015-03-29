@@ -74,10 +74,4 @@ point:i(-1) > left {
 }
 /* end boilerplate two master metapolation */
 
-/* set up this masters super masters */
-* {
-    baseMaster1: S"master#base";
-    baseMaster2: S"master#flexmaster";
-    proportion1: .5;
-    proportion2: .5;
-}
+

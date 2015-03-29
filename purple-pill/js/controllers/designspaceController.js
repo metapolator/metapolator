@@ -3,10 +3,10 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
 
-    $scope.data.findMaster = function(id) {
+    $scope.data.findMaster = function(masterName) {
         for (var i = 0; i < $scope.data.sequences.length; i++) {
             for (var j = 0; j < $scope.data.sequences[i].masters.length; j++) {
-                if ($scope.data.sequences[i].masters[j].id == id) {
+                if ($scope.data.sequences[i].masters[j].name == masterName) {
                     return $scope.data.sequences[i].masters[j];
                     break;
                 }

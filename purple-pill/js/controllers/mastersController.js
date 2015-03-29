@@ -188,8 +188,8 @@ app.controller("mastersController", function($scope, sharedScope) {
             startValue = 0.5;
         } 
         designspace.masters.push({
-            masterId : master.id,
-            masterName: master.name,
+            masterName : master.name,
+            masterdisplayName: master.displayName,
             value : startValue
         });
         if (masterSet.length > 1) {

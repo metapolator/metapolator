@@ -4,6 +4,125 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     
     
     
+/***** cps *****/
+
+    $scope.createMultiMasterCPS = function (masterSet) {
+        var end = masterSet.length + 1;
+        var cpsString = "@import 'centreline-skeleton-to-symmetric-outline.cps'";
+        cpsString += "point > * { indexGlyph: parent:parent:parent:index; indexPenstroke: parent:parent:index; indexPoint: parent:index;";
+        for (var i = 1; i < end; i++) {
+            cpsString += "base" + i + ": baseMaster" + i + ":children[indexGlyph]:children[indexPenstroke]:children[indexPoint]:children[index];";
+        }
+        cpsString += "interpolationUnit: 1/(";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            cpsString += "proportion" + i;
+        }
+        cpsString += ");";
+        for (var i = 1; i < end; i++) {
+            cpsString += "_p" + i + ": proportion" + i + "*interpolationUnit;";
+        }
+        cpsString += "} point > * { inLength: ";
+        for (var i = 1; i < end; i++) {
+            cpsString += "_p" + i + ": proportion" + i + "*interpolationUnit;";
+        }
+        cpsString += "} point > * { inLength: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":inLength * _p" + i;
+        }
+        cpsString += "; outLength: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":outLength * _p" + i;
+        }
+        cpsString += "; inTension: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(min 10000 base" + i + ":inTension) * _p" + i;
+        }
+        cpsString += "; outTension: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(min 10000 base" + i + ":outTension) * _p" + i;
+        }
+        cpsString += "; inDirIntrinsic: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":inDirIntrinsic) * _p" + i;
+        }
+        cpsString += "; outDirIntrinsic: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":outDirIntrinsic) * _p" + i;
+        }
+        cpsString += ";} point > left, point > right { onDir: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":onDir) * _p" + i;
+        }
+        cpsString += "; onLength: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":onLength * _p" + i;
+        }
+        cpsString += ";} point > center { on: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":on * _p" + i;
+        }
+        cpsString += "; in: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":in * _p" + i;
+        }
+        cpsString += "; out: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":out * _p" + i;
+        }
+        cpsString += ";} point:i(0) > left, point:i(0) > right { inDir: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString +=  "(normalizeAngle base" + i + ":inDir) * _p" + i;
+        }
+        cpsString += ";} point:i(-1) > right, point:i(-1) > left { outDir: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString +=  "(normalizeAngle base" + i + ":outDir) * _p" + i;
+        }
+        cpsString += ";}";
+    };
+
+
+
 /***** selections *****/
 
 
@@ -93,10 +212,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         return max;
     }
 
+    $scope.uniqueInstanceId = 0;
+
     $scope.data.addInstance = function() {
         $scope.data.deselectAllEdit();
         if ($scope.data.canAddInstance()) {
-            var cpsFile = "lib/metapolate-2.cps";
+            // link instance to design space and use its masters and values
             var designSpace = $scope.data.currentDesignSpace;
             var masterSet = jQuery.extend(true, [], designSpace.masters);
             var axesSet = jQuery.extend(true, [], designSpace.axes);
@@ -107,10 +228,13 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             angular.forEach(axesSet, function(thisAxis) {
                    thisAxis.value = 50;
             });
-            var id = findInstanceId();
-            var instanceName = "instance" + id;
+            // add the instance
+            $scope.uniqueInstanceId++;
+            var instanceName = "instance" + $scope.uniqueInstanceId;
+            var cpsFile = instanceName + ".cps";
+            var cpsString = '@import "lib/metapolate-2.cps"; * { baseMaster1: S"master#' + masterSet[0].masterName + '"; baseMaster2: S"master#' + masterSet[1].masterName + '"; proportion1: .5; proportion2: .5;}';
             $scope.data.families[0].instances.push({
-                id : id,
+                id : $scope.uniqueInstanceId,
                 edit : true,
                 display : true,
                 ag : "Ag",
@@ -125,7 +249,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             $scope.data.localmenu.instances = false;
             // create a master inside the engine and attach a cps file
-            $scope.data.stateful.project.ruleController.write(false, cpsFile, ''); 
+            $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString); 
             $scope.data.stateful.project.createMaster(instanceName, cpsFile, "skeleton.base");
             $scope.data.stateful.project.open(instanceName);
             $scope.data.metapolate();
@@ -135,6 +259,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.setParameter;
     
     $scope.data.metapolate = function () {
+        console.log("!");
         var instance = $scope.data.currentInstance;
         //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
         var parameterCollection =  $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);

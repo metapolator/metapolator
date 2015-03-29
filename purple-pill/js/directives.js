@@ -769,7 +769,7 @@ app.directive('control', function($document) {
                 /***** One master in Design Space *****/
                 if (designSpace.masters.length == 1) {
                     layer1.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
-                    layer1.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(scope.data.findMaster(designSpace.masters[0].masterId).name);
+                    layer1.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(scope.data.findMaster(designSpace.masters[0].masterName).displayName);
                     layer1.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingTop + paddingLabel).text("Just one more...");
                 }
                 /*****More masters in Design Space *****/
@@ -835,7 +835,7 @@ app.directive('control', function($document) {
 
                     // create left label
                     if (thisInstance.masters.length < 3) {
-                        layer1.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (thisInstance.axes.length - 1) * axisDistance)).text(scope.data.findMaster(thisInstance.masters[0].masterId).name).attr('class', 'slider-label-left slider-label');
+                        layer1.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (thisInstance.axes.length - 1) * axisDistance)).text(scope.data.findMaster(thisInstance.masters[0].masterName).displayName).attr('class', 'slider-label-left slider-label');
                     }
 
                     // create rigth label
@@ -848,7 +848,7 @@ app.directive('control', function($document) {
                     rightlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
 
                     rightlabels.append('text').text(function(d, i) {
-                        return scope.data.findMaster(thisInstance.masters[i + 1].masterId).name;
+                        return scope.data.findMaster(thisInstance.masters[i + 1].masterName).displayName;
                     }).attr('class', 'slider-label-right slider-label');
 
                     rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
@@ -921,7 +921,7 @@ app.directive('explore', function($document) {
                 }).attr('y', function(d) {
                     return d.coordinates[1] + 25;
                 }).text(function(d) {
-                    return scope.data.findMaster(d.masterId).name;
+                    return scope.data.findMaster(d.masterName).displayName;
                 }).attr("font-size", "10px").attr("text-anchor", "middle").attr("font-size", "8px").attr("fill", "#fff").attr("id", function(d, i) {
                     return "label-" + i;
                 }).attr("class", "unselectable");
