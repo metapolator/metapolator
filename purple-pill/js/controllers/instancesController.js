@@ -3,7 +3,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     /***** cps *****/
 
-    $scope.createMultiMasterCPS = function (masterSet) {
+    $scope.createMultiMasterCPS = function(masterSet) {
         var end = masterSet.length + 1;
         var cpsString = "@import 'centreline-skeleton-to-symmetric-outline.cps';";
         cpsString += "point > * { indexGlyph: parent:parent:parent:index; indexPenstroke: parent:parent:index; indexPoint: parent:index;";
@@ -107,17 +107,17 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             if (i != 1) {
                 cpsString += " + ";
             }
-            cpsString +=  "(normalizeAngle base" + i + ":inDir) * _p" + i;
+            cpsString += "(normalizeAngle base" + i + ":inDir) * _p" + i;
         }
         cpsString += ";} point:i(-1) > right, point:i(-1) > left { outDir: ";
         for (var i = 1; i < end; i++) {
             if (i != 1) {
                 cpsString += " + ";
             }
-            cpsString +=  "(normalizeAngle base" + i + ":outDir) * _p" + i;
+            cpsString += "(normalizeAngle base" + i + ":outDir) * _p" + i;
         }
         cpsString += ";}";
-        
+
         // add the metapolation values as last item
         cpsString += "* { ";
         for (var i = 1; i < end; i++) {
@@ -128,93 +128,23 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         return cpsString;
     };
 
-
-
-
-    /***** selections *****/
-
-    $scope.mouseDown = false;
-
-    $scope.toggleViewSet = function(set, initialDisplay) {
-        if (initialDisplay == "true") {
-            var newStatus = false;
-        } else {
-            var newStatus = true;
-        }
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                var hit = false;
-                angular.forEach(set, function(selection) {
-                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
-                        hit = true;
-                    }
-                });
-                if (hit) {
-                    instance.display = newStatus;
-                }
-            });
-        });
-    };
-
-    $scope.toggleEdit = function(listItem) {
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (listItem.parentObject == family.id && listItem.childObject == instance.id) {
-                    instance.edit = !instance.edit;
-                    instance.display = instance.edit;
-                }
-            });
-        });
-    };
-
-    $scope.selectEdit = function(set) {
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                var hit = false;
-                angular.forEach(set, function(selection) {
-                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
-                        hit = true;
-                    }
-                });
-                if (hit) {
-                    instance.edit = true;
-                    instance.display = true;
-                } else {
-                    instance.edit = false;
-                }
-            });
-        });
-    };
-
-    $scope.data.deselectAllEdit = function() {
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                instance.edit = false;
-            });
-        });
-    };
-
-    $scope.toggleDisplay = function(instance) {
-        if (!instance.edit) {
-            instance.display = !instance.display;
+    $scope.data.metapolate = function() {
+        var instance = $scope.data.currentInstance;
+        //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
+        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
+        var l = parameterCollection.length;
+        var cpsRule = parameterCollection.getItem(l - 1);
+        var parameterDict = cpsRule.parameters;
+        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+        for (var i = 0; i < instance.masters.length; i++) {
+            var masterName = instance.masters[i].masterName;
+            var selector = 'S"master#' + masterName + '"';
+            //setParameter(parameterDict, "baseMaster" + (i + 1), selector);
+            setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);
         }
     };
 
     /***** controlling instances *****/
-
-    function findInstanceId() {
-        var max = 0;
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (instance.id > max) {
-                    max = instance.id;
-                }
-            });
-        });
-        max++;
-        return max;
-    }
-
 
     $scope.uniqueInstanceId = 0;
 
@@ -224,11 +154,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             // link instance to design space and use its masters and values
             var designSpace = $scope.data.currentDesignSpace;
             var masterSet = jQuery.extend(true, [], designSpace.masters);
-            var axesSet = jQuery.extend(true, [], designSpace.axes);
             var newValue = 1 / masterSet.length;
             angular.forEach(masterSet, function(thisMaster) {
                 thisMaster.value = newValue;
             });
+            var axesSet = jQuery.extend(true, [], designSpace.axes);
             angular.forEach(axesSet, function(thisAxis) {
                 thisAxis.value = 50;
             });
@@ -251,29 +181,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 cpsFile : cpsFile
             });
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
-            $scope.data.localmenu.instances = false;
             // create a master inside the engine and attach a cps file
             $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
             $scope.data.stateful.project.createMaster(instanceName, cpsFile, "skeleton.base");
             $scope.data.stateful.project.open(instanceName);
             $scope.data.metapolate();
-        }
-    };
-
-
-    $scope.data.metapolate = function() {
-        var instance = $scope.data.currentInstance;
-        //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
-        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
-        var l = parameterCollection.length;
-        var cpsRule = parameterCollection.getItem(l - 1);
-        var parameterDict = cpsRule.parameters;
-        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-        for (var i = 0; i < instance.masters.length; i++) {
-            var masterName = instance.masters[i].masterName;
-            var selector = 'S"master#' + masterName + '"';
-            setParameter(parameterDict, "baseMaster" + (i + 1), selector);
-            setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);
+            $scope.data.localmenu.instances = false;
         }
     };
 
@@ -283,7 +196,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var duplicate = jQuery.extend(true, {}, instance);
             duplicate.name = $scope.duplicateName(duplicate.name);
             duplicate.edit = true;
-            duplicate.id = findInstanceId();
+            $scope.uniqueInstanceId++;
+            duplicate.id = $scope.uniqueInstanceId;
             if (space) {
                 duplicate.designSpace = space;
             }
@@ -376,54 +290,23 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     $scope.setCurrentInstance = function(thisInstance) {
         $scope.data.currentInstance = thisInstance;
-        setCurrentDesignSpace(thisInstance.designSpace);
+        $scope.setCurrentDesignSpace(thisInstance.designSpace);
     };
 
-    function setCurrentDesignSpace(id) {
+    $scope.setCurrentDesignSpace = function(designSpaceId) {
         for (var i = 0; i < $scope.data.designSpaces.length; i++) {
-            if ($scope.data.designSpaces[i].id == id) {
+            if ($scope.data.designSpaces[i].id == designSpaceId) {
                 $scope.data.currentDesignSpace = $scope.data.designSpaces[i];
                 break;
             }
         }
-    }
-
-    /*
-     function valueToAxes(instance) {
-     var designspace = $scope.data.currentDesignSpace;
-     designspace.axes = [];
-     var mastersNewOrder = [];
-     var mastersCurrentOrder = instance.masters;
-     // set masters of instance in order of designspace setup
-     for (var i = 0; i < designspace.masters.length; i++) {
-     var thisMaster = {
-     masterId: designspace.masters[i].masterId,
-     value: 0
-     };
-     for (var j = 0; j < mastersCurrentOrder.length; j++) {
-     if (designspace.masters[i].masterId == mastersCurrentOrder[j].masterId) {
-     thisMaster.value = mastersCurrentOrder[j].value;
-     }
-     }
-     mastersNewOrder.push(thisMaster);
-     }
-     // translate ratio to slider value
-     // the little correction to avoid /0 i not yet included here
-     for (var i = 1; i < mastersNewOrder.length; i++) {
-     var thisRatio = mastersNewOrder[i].value / mastersNewOrder[0].value;
-
-     var thisValue = roundup(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
-     designspace.axes.push({
-     value : thisValue
-     });
-     }
-     }
-     */
+    };
 
     $scope.data.addAxisToInstance = function(master) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == $scope.data.currentDesignSpace.id) {
+                    // for the current instance the slider value of the new axis is 50, for the others in this designspace it is 0 
                     var thisValue = 0;
                     if (instance == $scope.data.currentInstance) {
                         thisValue = 50;
@@ -433,22 +316,18 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     });
                     instance.masters.push({
                         masterName : master.name,
-                        masterdisplayName: master.displayName,
+                        masterdisplayName : master.displayName,
                         value : 0
                     });
-                    // empty current cps File and rewrite it with new masters
-                    //$scope.data.stateful.project.ruleController.write(false, instance.cpsFile, "");
+                    // empty current cps file and rewrite it with new masters
                     var cpsString = $scope.createMultiMasterCPS(instance.masters);
+                    $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, "");
                     $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
+                    $scope.data.metapolate();
                 }
             });
         });
     };
-
-    function roundup(a) {
-        var b = Math.round(a * 10) / 10;
-        return b;
-    }
 
     /***** bottom buttons *****/
 
@@ -462,6 +341,75 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             }
         } else {
             return false;
+        }
+    };
+
+    /***** selections *****/
+
+    $scope.mouseDown = false;
+
+    $scope.toggleViewSet = function(set, initialDisplay) {
+        if (initialDisplay == "true") {
+            var newStatus = false;
+        } else {
+            var newStatus = true;
+        }
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                var hit = false;
+                angular.forEach(set, function(selection) {
+                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
+                        hit = true;
+                    }
+                });
+                if (hit) {
+                    instance.display = newStatus;
+                }
+            });
+        });
+    };
+
+    $scope.toggleEdit = function(listItem) {
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (listItem.parentObject == family.id && listItem.childObject == instance.id) {
+                    instance.edit = !instance.edit;
+                    instance.display = instance.edit;
+                }
+            });
+        });
+    };
+
+    $scope.selectEdit = function(set) {
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                var hit = false;
+                angular.forEach(set, function(selection) {
+                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
+                        hit = true;
+                    }
+                });
+                if (hit) {
+                    instance.edit = true;
+                    instance.display = true;
+                } else {
+                    instance.edit = false;
+                }
+            });
+        });
+    };
+
+    $scope.data.deselectAllEdit = function() {
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                instance.edit = false;
+            });
+        });
+    };
+
+    $scope.toggleDisplay = function(instance) {
+        if (!instance.edit) {
+            instance.display = !instance.display;
         }
     };
 
