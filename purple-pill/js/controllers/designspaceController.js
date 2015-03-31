@@ -124,41 +124,34 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.removeMaster = function(m) {
         var designspace = $scope.data.currentDesignSpace;
-        var masterSet = designspace.masters;
+        var axesSet = designspace.axes;
         if (confirm("Removing master from this Design Space, and also from all Instances in this Design Space. Sure?")) {
             // remove master from all instances in this design space
             angular.forEach($scope.data.families, function(family) {
                 angular.forEach(family.instances, function(instance) {
                     if (instance.designSpace == designspace.id) {
                         // remove axis from instance
-                        instance.axes.splice((m - 1), 1);
-                        // remove master from masterslist and redistribute proportions over remaining masters
-                        angular.forEach(instance.masters, function(master, index) {
-                            if (master.masterId == masterSet[m].masterId) {
-                                instance.masters.splice(index, 1);
-                                reDistribute(instance.masters);
-                            }
-                        });
+                        instance.axes.splice(m, 1);
+                        reDistribute(instance.axes);
                     }
                 });
             });
             // remove the master from the designspace
-            masterSet.splice(m, 1);
-            designspace.axes.splice((m - 1), 1);
+            designspace.axes.splice(m, 1);
             $scope.$apply();
         }
     };
 
-    function reDistribute(masters) {
+    function reDistribute(axes) {
         var totalValue = 0;
-        angular.forEach(masters, function(master) {
-            totalValue += master.value;
+        angular.forEach(axes, function(axis) {
+            totalValue += axis.metapValue;
         });
+        console.log(totalValue);
         var addFactor = 1 / totalValue;
-        angular.forEach(masters, function(master) {
-            master.value *= addFactor;
+        angular.forEach(axes, function(axis) {
+            axis.metapValue *= addFactor;
         });
-        return masters;
     }
 
 
