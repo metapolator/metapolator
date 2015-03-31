@@ -8,7 +8,7 @@ app.directive('control', function($document) {
             var svg = d3.select(element[0]).append('svg');
             var layer2 = svg.append('g');
             var layer1 = svg.append('g');
-            var paddingLeft = 50, paddingTop = 30, axisWidth = 200, paddingLabel = 25, axisDistance = 40, axisTab = 10,  axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 6, diamondPadding = 2 * diamondsize;
+            var paddingLeft = 50, paddingTop = 30, axisWidth = 200, paddingLabel = 25, axisDistance = 40, axisTab = 10,  axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3;
 
             // watch for data changes and redraw
             scope.$watchCollection('[data.currentInstance, data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
@@ -20,11 +20,6 @@ app.directive('control', function($document) {
                     return redraw();
                 }
             }, true);
-            
-            
-
-            
-            
 
             /***** redraw *****/
             function redraw() {
@@ -53,10 +48,7 @@ app.directive('control', function($document) {
                     var x = paddingLeft - diamondsize + axisWidth / 100 * d.value;
                     var y = i * axisDistance + paddingTop - diamondsize - diamondPadding;
                     return "translate(" + x + "," + y + ")";
-                }).append('polygon').attr('points', '0,6 6,0 12,6, 6,12').attr('class', 'blue-diamond');
-
-               
-
+                }).append('polygon').attr('points', '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize).attr('class', 'blue-diamond');
 
                 /***** One master in Design Space *****/
                 if (designSpace.axes.length == 1) {                  
@@ -72,7 +64,7 @@ app.directive('control', function($document) {
                     axes.append('path').attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (thisInstance.axes[0].value  * (axisWidth / 100) + indentLeft) + ' 0').attr('class', 'slider-axis-active').attr('id', "axis-active0");
                     
                     // append slider handles
-                    axes.append('circle').attr('r', 8).attr('cx', thisInstance.axes[0].value * (axisWidth / 100) + indentLeft).attr('cy', '0').attr('index', 0).attr('class', 'slider-handle').call(drag);
+                    axes.append('circle').attr('r', 8).attr('cx', thisInstance.axes[0].value * (axisWidth / 100) + indentLeft).attr('cy', '0').attr('index', 0).attr('class', 'slider-handle').attr('id', 'slider0').call(drag);
 
                     // create left label
                     axes.append('text').attr('x', paddingLeft - indentLeft).attr('y', paddingLabel).text(scope.data.findMaster(thisInstance.axes[0].masterName).displayName).attr('class', 'slider-label-left slider-label');
@@ -171,54 +163,81 @@ app.directive('control', function($document) {
            /***** drag behaviour *****/
            var drag = d3.behavior.drag().on('dragstart', function() {
                 dragActive = true;
-                //d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
             }).on('drag', function() {
                 // redraw slider and active axis
                 var slack = designSpace.mainMaster;
                 var xPosition = limitX(d3.event.x);
-                d3.select(this).attr('cx', xPosition);
                 var thisIndex = d3.select(this).attr('index');
                 var thisValue = (xPosition - indentLeft) / (axisWidth / 100);
-                // don't redraw the axis when we have two masters
-                var type = d3.select(this).attr('type');
+                var type = d3.select(this).attr('type'); // don't redraw the axis when we have two masters
+                
                 if (type != 'two-master-handle') {
-                    var activeAxis = d3.select("path#axis-active" + thisIndex);
-                    // slackmaster: reverse active axis
-                    if (thisIndex == designSpace.mainMaster) {
-                        activeAxis.attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab);
+                    if (thisIndex == slack) {
+                        drawSlackAxes(slack, xPosition);
+                        var highestSet = findHighest(slack);
+                        angular.forEach(highestSet, function(axes) {
+                            drawNormalAxes(axes, xPosition);
+                            writeValueToModel(axes, thisValue);
+                        });
                     } else {
-                        activeAxis.attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0');
+                        drawNormalAxes(thisIndex, xPosition);
                         // when current slider has the largest value, it drags the slack slider with it
-                        if (isLargestSlider(thisInstance, thisIndex, thisValue, slack)) {
-                            d3.select("circle#slider" + slack).attr('cx', xPosition);
-                            d3.select("path#axis-active" + slack).attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab);
-                            thisInstance.axes[designSpace.mainMaster].value = formatX(100 - thisValue);
+                        if (thisInstance.axes.length > 1 && isLargestSlider(thisInstance, thisIndex, thisValue, slack)) {
+                            drawSlackAxes(slack, xPosition);
+                            writeValueToModel(slack, 100 - thisValue);
                         }
                     }
-
+                }
+                else {
+                    d3.select(this).attr('cx', xPosition);
+                    writeValueToModel(1, 100 - thisValue);
                 }
                 // write value of this axis to model
                 // slackmaster: reverse active axis
-                if (thisIndex == designSpace.mainMaster) {
-                    designSpace.axes[thisIndex].value = formatX(100 - thisValue);
-                    scope.data.currentInstance.axes[thisIndex].value = formatX(100 - thisValue);
-                } else {
-                    designSpace.axes[thisIndex].value = formatX(thisValue);
-                    scope.data.currentInstance.axes[thisIndex].value = formatX(thisValue);
+                if (thisIndex == slack) {
+                    thisValue = 100 - thisValue;
                 }
-
-                if (type == 'two-master-handle') {
-                    designSpace.axes[1].value = formatX(100 - thisValue);
-                    scope.data.currentInstance.axes[1].value = formatX(100 - thisValue);
-                }
+                writeValueToModel(thisIndex, thisValue);
                 // translate axis values to metapolation ratios
                 scope.getMetapolationRatios();
                 scope.$apply();
             }).on('dragend', function() {
                 scope.data.metapolate();
                 dragActive = false;
-                //d3.select(this).attr('stroke', 'none');
             });
+            
+            function findHighest (slack) {
+                var highest;
+                var max = 0;
+                for (var i = 0; i < thisInstance.axes.length; i++) {
+                    if (thisInstance.axes[i].value > max && i != slack) {
+                        highest = i;
+                        max = thisInstance.axes[i].value;
+                    }
+                }
+                var highestSet = [];
+                for (var i = 0; i < thisInstance.axes.length; i++) {
+                    if (thisInstance.axes[i].value == max && i != slack) {
+                        highestSet.push(i);
+                    }
+                }
+                return highestSet;
+            }
+            
+            function drawNormalAxes (axis, xPosition) {
+                d3.select("circle#slider" + axis).attr('cx', xPosition);
+                d3.select("path#axis-active" + axis).attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0');
+            }
+            
+            function drawSlackAxes (axis, xPosition) {
+                d3.select("circle#slider" + axis).attr('cx', xPosition);
+                d3.select("path#axis-active" + axis).attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab);
+            }
+            
+            function writeValueToModel (axis, value) {
+                designSpace.axes[axis].value = formatX(value);
+                thisInstance.axes[axis].value = formatX(value);
+            }
 
             function limitX(x) {
                 if (x < indentLeft) {
