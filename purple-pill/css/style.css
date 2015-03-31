@@ -788,8 +788,7 @@
             
         .left-label-select {
             position: absolute;
-            left: 10px;
-            top: 100px;
+            left: 230px;
             z-index: 1000;
             font-size: 9px;
         }

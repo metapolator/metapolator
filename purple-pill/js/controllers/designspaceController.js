@@ -41,7 +41,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             id : id,
             type : "x",
             axes : [],
-            mainMaster : "0",
+            mainMaster : 1,
             trigger : 0 //this is to trigger the designspace to redraw when a master is renamed
         });
         $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
@@ -163,6 +163,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
 
     $scope.changeMainMaster = function() {
+        /*
         var designspace = $scope.data.currentDesignSpace;
         // swop main master in each instance in the design space
         angular.forEach($scope.data.families, function(family) {
@@ -198,6 +199,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         
         // trigger the designspace to redraw
         $scope.data.currentDesignSpace.trigger++;
+        */
     };
 
     function valueToAxes() {

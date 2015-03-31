@@ -115,8 +115,13 @@ app.directive('control', function($document) {
                         axes.append('path').attr('d', function(d, i) {
                             return 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0';
                         }).attr('class', 'slider-axis');
+                        // active axis
                         axes.append('path').attr('d', function(d, i) {
-                            return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (d.value * (axisWidth / 100) + indentLeft) + ' 0';
+                            if (i == designSpace.mainMaster) {
+                                return 'M' + (d.value * (axisWidth / 100) + indentLeft) + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab;
+                            } else {
+                               return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (d.value * (axisWidth / 100) + indentLeft) + ' 0'; 
+                            }
                         }).attr('class', 'slider-axis-active').attr('id', function(d, i) {
                             return "axis-active" + i;
                         });
@@ -130,8 +135,10 @@ app.directive('control', function($document) {
                     }
                         
                     // create left label
-                    axes.append('text').attr('x', paddingLeft - indentLeft).attr('y', paddingLabel).text(function(d, i){
-                        return scope.data.findMaster(thisInstance.axes[i].masterName).displayName;
+                    axes.append('text').attr('x', paddingLeft - indentLeft).attr('y', paddingLabel).text(function(d, i) {
+                        if (i != designSpace.mainMaster) {
+                            return scope.data.findMaster(thisInstance.axes[i].masterName).displayName;
+                        }
                     }).attr('class', 'slider-label-left slider-label');
 
                         // create rigth label
@@ -172,15 +179,30 @@ app.directive('control', function($document) {
                 var type = d3.select(this).attr('type');
                 if (type != 'two-master-handle') {
                     var activeAxis = d3.select("path#axis-active" + thisIndex);
-                    activeAxis.attr('d', function(d, i) {
-                        return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0';
-                    });
+                    // slackmaster: reverse active axis
+                    if (thisIndex == designSpace.mainMaster) {
+                        activeAxis.attr('d', function(d, i) {
+                            return 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab;
+                        });
+                    } else {
+                        activeAxis.attr('d', function(d, i) {
+                            return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0';
+                        });
+                    }
+
                 }
                 // write value of this axis to model
                 
                 var thisValue = (xPosition - indentLeft) / (axisWidth / 100);
-                designSpace.axes[thisIndex].value = formatX(thisValue);
-                scope.data.currentInstance.axes[thisIndex].value = formatX(thisValue);
+                // slackmaster: reverse active axis
+                if (thisIndex == designSpace.mainMaster) {
+                    designSpace.axes[thisIndex].value = formatX(100 - thisValue);
+                    scope.data.currentInstance.axes[thisIndex].value = formatX(100 - thisValue);
+                } else {
+                    designSpace.axes[thisIndex].value = formatX(thisValue);
+                    scope.data.currentInstance.axes[thisIndex].value = formatX(thisValue);
+                }
+
                 if (type == 'two-master-handle') {
                     designSpace.axes[1].value = formatX(100 - thisValue);
                     scope.data.currentInstance.axes[1].value = formatX(100 - thisValue);
