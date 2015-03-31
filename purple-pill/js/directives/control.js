@@ -161,8 +161,14 @@ app.directive('control', function($document) {
             }
             
            /***** drag behaviour *****/
+           var slackRatios;
            var drag = d3.behavior.drag().on('dragstart', function() {
-                dragActive = true;
+               var slack = designSpace.mainMaster;
+               var thisIndex = d3.select(this).attr('index');
+               if (slack == thisIndex) {
+                   slackRatios = setSlackRatio(slack);
+               }
+               dragActive = true;
             }).on('drag', function() {
                 // redraw slider and active axis
                 var slack = designSpace.mainMaster;
@@ -174,11 +180,15 @@ app.directive('control', function($document) {
                 if (type != 'two-master-handle') {
                     if (thisIndex == slack) {
                         drawSlackAxes(slack, xPosition);
-                        var highestSet = findHighest(slack);
-                        angular.forEach(highestSet, function(axes) {
-                            drawNormalAxes(axes, xPosition);
-                            writeValueToModel(axes, thisValue);
-                        });
+                        // change all others proportionally
+                        for (var i = 0; i < thisInstance.axes.length; i++) {
+                            if (i != slack) {
+                                var proportionalValue = thisValue * slackRatios[i];
+                                var proportionalPosition = proportionalValue * (axisWidth / 100) + indentLeft;
+                                drawNormalAxes(i, proportionalPosition);
+                                writeValueToModel(i, proportionalValue);
+                            }
+                        }
                     } else {
                         drawNormalAxes(thisIndex, xPosition);
                         // when current slider has the largest value, it drags the slack slider with it
@@ -206,6 +216,16 @@ app.directive('control', function($document) {
                 dragActive = false;
             });
             
+            function setSlackRatio (slack) {
+                var ratios = [];
+                var highest = findHighest(slack);
+                var max = thisInstance.axes[highest].value;
+                for (var i = 0; i < thisInstance.axes.length; i++) {
+                    ratios.push(thisInstance.axes[i].value / max);
+                } 
+                return ratios;
+            }
+            
             function findHighest (slack) {
                 var highest;
                 var max = 0;
@@ -215,13 +235,7 @@ app.directive('control', function($document) {
                         max = thisInstance.axes[i].value;
                     }
                 }
-                var highestSet = [];
-                for (var i = 0; i < thisInstance.axes.length; i++) {
-                    if (thisInstance.axes[i].value == max && i != slack) {
-                        highestSet.push(i);
-                    }
-                }
-                return highestSet;
+                return highest;
             }
             
             function drawNormalAxes (axis, xPosition) {
