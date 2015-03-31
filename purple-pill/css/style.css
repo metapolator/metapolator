@@ -579,7 +579,7 @@
     .design-space {
         height: calc(100% - 32px);
         background: #fff;
-        overflow: scroll;
+        overflow: auto;
     }
 
     .unconfigured {
