@@ -40,8 +40,9 @@
         <script src='js/controllers/instancesController.js' type='text/javascript'></script>
         <script src='js/controllers/fontmappingController.js' type='text/javascript'></script> 
         <script src='js/controllers/metadataController.js' type='text/javascript'></script> 
-        <script src='js/directives.js' type='text/javascript'></script>
-        <script src='js/sortable.js' type='text/javascript'></script>
+        <script src='js/directives/control.js' type='text/javascript'></script> 
+        <script src='js/directives/directives.js' type='text/javascript'></script>
+        <script src='js/directives/sortable.js' type='text/javascript'></script>
         <script src='js/functions.js'></script>
         
         <!-- d3 JS -->
@@ -49,7 +50,7 @@
 
     </HEAD>
 
-    <BODY ng-app="Metapolator" ng-controller="engine">
+    <BODY ng-app="Metapolator" ng-controller="engine" ng-init="engine()">
         <div id="menu" class="unselectable" ng-controller="menuController">
             <div id="project">
                 <localmenu class="localmenu" class="left">

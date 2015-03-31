@@ -28,13 +28,15 @@ app.directive('ag', function($compile) {
         require : 'ngModel',
         link : function(scope, element, attrs, ctrl) {
             var masterName = attrs.mastername; 
-            var masterAg = attrs.masterag;           
-            var svg0 = scope.data.renderGlyphs(masterName, masterAg[0]);
-            $compile(svg0)(scope);
-            element.append(svg0);
-            var svg1 = scope.data.renderGlyphs(masterName, masterAg[1]);
-            $compile(svg1)(scope);
-            element.append(svg1);
+            var masterAg = attrs.masterag;  
+            if (scope.data.pill != "blue") {        
+                var svg0 = scope.data.renderGlyphs(masterName, masterAg[0]);
+                $compile(svg0)(scope);
+                element.append(svg0);
+                var svg1 = scope.data.renderGlyphs(masterName, masterAg[1]);
+                $compile(svg1)(scope);
+                element.append(svg1);
+            }
         }
     };
 });
@@ -698,169 +700,6 @@ app.directive('arrow', function($document) {
                 //childBranche.toggle();
                 //element.toggleClass("open");
             });
-        }
-    };
-});
-
-app.directive('control', function($document) {
-    return {
-        restrict : 'E',
-        link : function(scope, element, attrs, ctrl) {
-            var svg = d3.select(element[0]).append('svg');
-            var layer2 = svg.append('g');
-            var layer1 = svg.append('g');
-            var paddingLeft = 50;
-            var paddingTop = 30;
-            var axisWidth = 200;
-            var paddingLabel = 25;
-            var axisDistance = 50;
-            var axisTab = 10;
-            var axisTabLeft = 60;
-            var indentRight = 20;
-            var indentLeft = 40;
-            var dragActive = false;
-            var diamondsize = 6;
-            var diamondPadding = 2 * diamondsize;
-
-            // watch for data changes and redraw
-            scope.$watchCollection('[data.currentInstance, data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
-                return redraw();
-            }, true);
-            scope.$watch('data.currentDesignSpace.axes', function(newVal) {
-                // prevent a redraw loop, this watch is for manual change of an input box
-                if (!dragActive) {
-                    return redraw();
-                }
-            }, true);
-
-            /***** redraw *****/
-            function redraw() {
-                var designSpace = scope.data.currentDesignSpace;
-                var inactiveInstances = [];
-                var thisInstance;
-                angular.forEach(scope.data.families, function(family) {
-                    angular.forEach(family.instances, function(instance) {
-                        // push inactive instances of this designspace
-                        if (instance.designSpace == designSpace.id) {
-                            if (instance == scope.data.currentInstance) {
-                               thisInstance = instance;
-                            } else {
-                               inactiveInstances.push(instance); 
-                            }
-                        }
-                    });
-                });
-                // remove all previous items before render
-                layer1.selectAll('*').remove();
-                layer2.selectAll('*').remove();
-
-                // draw inactive instances
-                var diamonds = layer2.selectAll('g').data(inactiveInstances).enter().append('g').selectAll('polygon').data(function(d){
-                    return d.axes;
-                }).enter().append('g').attr('transform', function (d, i) {
-                    var x = paddingLeft - diamondsize + axisWidth / 100 * d.value;
-                    var y = i * axisDistance + paddingTop - diamondsize - diamondPadding;
-                    return "translate(" + x + "," + y + ")";
-                }).append('polygon').attr('points', '0,6 6,0 12,6, 6,12').attr('class', 'blue-diamond');
-
-
-
-
-                /***** One master in Design Space *****/
-                if (designSpace.masters.length == 1) {
-                    layer1.append('path').attr('class', 'slider-axis').attr('d', 'M' + paddingLeft + ' ' + (paddingTop + axisTab) + ' L' + paddingLeft + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + paddingTop + ' L' + (paddingLeft + axisWidth) + ' ' + (paddingTop + axisTab)).attr('fill', 'none');
-                    layer1.append('text').attr('class', 'label-left slider-label').attr('x', paddingLeft - indentLeft).attr('y', paddingTop + paddingLabel).text(scope.data.findMaster(designSpace.masters[0].masterName).displayName);
-                    layer1.append('text').attr('class', 'label-right-inactive slider-label').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingTop + paddingLabel).text("Just one more...");
-                }
-                /*****More masters in Design Space *****/
-                else if (designSpace.masters.length > 1) {
-                    var drag = d3.behavior.drag().on('dragstart', function() {
-                        dragActive = true;
-                        d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
-                    }).on('drag', function() {
-                        d3.select(this).attr('cx', limitX(d3.event.x));
-                        var thisIndex = d3.select(this).attr('index');
-                        var thisValue = (limitX(d3.event.x) - indentLeft) / (axisWidth / 100);
-                        designSpace.axes[thisIndex].value = formatX(thisValue);
-                        scope.data.currentInstance.axes[thisIndex].value = formatX(thisValue);
-                        // slider values to metapolation ratios
-                        scope.getMetapolationRatios();
-                        
-                        //scope.$apply();
-                    }).on('dragend', function() {
-                        scope.data.metapolate();
-                        dragActive = false;
-                        d3.select(this).attr('stroke', 'none');
-                    });
-
-                    function limitX(x) {
-                        if (x < indentLeft) {
-                            x = indentLeft;
-                        }
-                        if (x > (axisWidth + indentLeft)) {
-                            x = axisWidth + indentLeft;
-                        }
-                        return x;
-                    }
-
-                    function formatX(x) {
-                        var roundedX = Math.round(x * 2) / 2;
-                        var toF = roundedX.toFixed(1);
-                        return toF;
-                    }
-
-                    // create slider containers
-                    var axes = layer1.selectAll('g').data(thisInstance.axes).enter().append('g').attr('transform', function(d, i) {
-                        var x = paddingLeft - indentLeft;
-                        var y = i * axisDistance + paddingTop;
-                        return "translate(" + x + "," + y + ")";
-                    }).attr('class', 'slider-container');
-
-                    // append axis itself
-                    axes.append('path').attr('d', function(d, i) {
-                        // prevent last axis from having the vertical offset
-                        if (i != (thisInstance.axes.length - 1)) {
-                            var offset = 1;
-                        } else {
-                            var offset = 0;
-                        }
-                        return 'M' + indentLeft + ' ' + (axisTab + offset * axisTabLeft) + ' L' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0 L' + (indentLeft + axisWidth) + ' ' + axisTab;
-                    }).attr('class', 'slider-axis');
-
-                    // append slider handles
-                    axes.append('circle').attr('r', 8).attr('cx', function(d) {
-                        return d.value * (axisWidth / 100) + indentLeft;
-                    }).attr('cy', '0').attr('index', function(d, i) {
-                        return i;
-                    }).attr('class', 'slider-handle').call(drag);
-
-                    // create left label
-                    if (thisInstance.masters.length < 3) {
-                        layer1.append('text').attr('x', paddingLeft - indentLeft).attr('y', (paddingTop + paddingLabel + (thisInstance.axes.length - 1) * axisDistance)).text(scope.data.findMaster(thisInstance.masters[0].masterName).displayName).attr('class', 'slider-label-left slider-label');
-                    }
-
-                    // create rigth label
-                    var rightlabels = axes.append('g').attr('transform', function(d, i) {
-                        var x = indentLeft + axisWidth - indentRight;
-                        var y = paddingLabel;
-                        return "translate(" + x + "," + y + ")";
-                    }).attr('class', 'slider-label-right-container');
-
-                    rightlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
-
-                    rightlabels.append('text').text(function(d, i) {
-                        return scope.data.findMaster(thisInstance.masters[i + 1].masterName).displayName;
-                    }).attr('class', 'slider-label-right slider-label');
-
-                    rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
-                        return i;
-                    }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
-                        scope.removeMaster(i + 1);
-                    });
-
-                    scope.getMetapolationRatios();
-                }
-            };
         }
     };
 });

@@ -1,8 +1,8 @@
 @import 'flexmaster.cps';
 
 glyph, point > center, contour > p  {
-    sidebearingLeft: 0;
-    sidebearingRight: 0;
+    sidebearingLeftSummand: 0;
+    sidebearingRightSummand: 0;
     widthFactor: 1;
     heightFactor: 1;
 }

@@ -3,8 +3,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     /***** cps *****/
 
-    $scope.createMultiMasterCPS = function(masterSet) {
-        var end = masterSet.length + 1;
+    $scope.createMultiMasterCPS = function(axesSet) {
+        var end = axesSet.length + 1;
         var cpsString = "@import 'centreline-skeleton-to-symmetric-outline.cps';";
         cpsString += "point > * { indexGlyph: parent:parent:parent:index; indexPenstroke: parent:parent:index; indexPoint: parent:index;";
         for (var i = 1; i < end; i++) {
@@ -121,26 +121,28 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         // add the metapolation values as last item
         cpsString += "* { ";
         for (var i = 1; i < end; i++) {
-            cpsString += 'baseMaster' + i + ': S"master#' + masterSet[i - 1].masterName + '";';
-            cpsString += "proportion" + i + ": " + masterSet[i - 1].value + ";";
+            cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i - 1].masterName + '";';
+            cpsString += "proportion" + i + ": " + axesSet[i - 1].value + ";";
         }
         cpsString += "}";
         return cpsString;
     };
 
     $scope.data.metapolate = function() {
-        var instance = $scope.data.currentInstance;
-        //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
-        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
-        var l = parameterCollection.length;
-        var cpsRule = parameterCollection.getItem(l - 1);
-        var parameterDict = cpsRule.parameters;
-        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-        for (var i = 0; i < instance.masters.length; i++) {
-            var masterName = instance.masters[i].masterName;
-            var selector = 'S"master#' + masterName + '"';
-            //setParameter(parameterDict, "baseMaster" + (i + 1), selector);
-            setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);
+        if($scope.data.pill != "blue") {
+            var instance = $scope.data.currentInstance;
+            //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
+            var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
+            var l = parameterCollection.length;
+            var cpsRule = parameterCollection.getItem(l - 1);
+            var parameterDict = cpsRule.parameters;
+            var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+            for (var i = 0; i < instance.masters.length; i++) {
+                var masterName = instance.masters[i].masterName;
+                var selector = 'S"master#' + masterName + '"';
+                //setParameter(parameterDict, "baseMaster" + (i + 1), selector);
+                setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);
+            }
         }
     };
 
@@ -153,20 +155,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         if ($scope.data.canAddInstance()) {
             // link instance to design space and use its masters and values
             var designSpace = $scope.data.currentDesignSpace;
-            var masterSet = jQuery.extend(true, [], designSpace.masters);
-            var newValue = 1 / masterSet.length;
-            angular.forEach(masterSet, function(thisMaster) {
-                thisMaster.value = newValue;
-            });
             var axesSet = jQuery.extend(true, [], designSpace.axes);
-            angular.forEach(axesSet, function(thisAxis) {
-                thisAxis.value = 50;
-            });
             // add the instance
             $scope.uniqueInstanceId++;
             var instanceName = "instance" + $scope.uniqueInstanceId;
             var cpsFile = instanceName + ".cps";
-            var cpsString = $scope.createMultiMasterCPS(masterSet);
+            var cpsString = $scope.createMultiMasterCPS(axesSet);
             $scope.data.families[0].instances.push({
                 id : $scope.uniqueInstanceId,
                 edit : true,
@@ -176,17 +170,18 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 designSpace : designSpace.id,
                 fontFamily : "Roboto",
                 fontWeight : 700,
-                masters : masterSet,
                 axes : axesSet,
                 cpsFile : cpsFile
             });
             $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
             // create a master inside the engine and attach a cps file
-            $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
-            $scope.data.stateful.project.createMaster(instanceName, cpsFile, "skeleton.base");
-            $scope.data.stateful.project.open(instanceName);
-            $scope.data.metapolate();
-            $scope.data.localmenu.instances = false;
+            if($scope.data.pill != "blue") {
+                $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
+                $scope.data.stateful.project.createMaster(instanceName, cpsFile, "skeleton.base");
+                $scope.data.stateful.project.open(instanceName);
+                $scope.data.metapolate();
+                $scope.data.localmenu.instances = false;
+            }
         }
     };
 
@@ -302,28 +297,27 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }
     };
 
-    $scope.data.addAxisToInstance = function(master) {
+    $scope.data.addAxisToInstance = function(master, value) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == $scope.data.currentDesignSpace.id) {
                     // for the current instance the slider value of the new axis is 50, for the others in this designspace it is 0 
                     var thisValue = 0;
                     if (instance == $scope.data.currentInstance) {
-                        thisValue = 50;
+                        thisValue = value;
                     }
                     instance.axes.push({
-                        value : thisValue
-                    });
-                    instance.masters.push({
+                        metapValue : null,
                         masterName : master.name,
                         masterdisplayName : master.displayName,
-                        value : 0
+                        value : thisValue
                     });
                     // empty current cps file and rewrite it with new masters
-                    var cpsString = $scope.createMultiMasterCPS(instance.masters);
-                    $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, "");
-                    $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
-                    $scope.data.metapolate();
+                    if ($scope.data.pill != "blue") {
+                        var cpsString = $scope.createMultiMasterCPS(instance.masters);
+                        $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, "");
+                        $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
+                    }
                 }
             });
         });

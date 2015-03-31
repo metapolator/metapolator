@@ -1,15 +1,32 @@
 app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
     
-    /* temp testing */
-    $scope.data.weightFactor = 100;
-    $scope.data.widthFactor = 100;
-    $scope.data.heightFactor = 100;
-    $scope.data.sidebearingLeft = 0;
-    $scope.data.sidebearingRight = 0;
+    $scope.parameters = [{
+        name: "weight",
+        factor: null,
+        summand: null
+    },{
+        name: "width",
+        factor: null,
+        summand: null
+    },{
+        name: "height",
+        factor: null,
+        summand: null
+    },{
+        name: "sideBearingLeft",
+        factor: null,
+        summand: null
+    },{
+        name: "sideBearingRight",
+        factor: null,
+        summand: null
+    }];
+    $scope.parameterVariations = ["Factor", "Summand"];
+
+
     
-    
-    $scope.data.editParameter = function (key, value, nr, factor) {
+    $scope.data.setParameter = function (key, value, nr, factor) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
@@ -26,6 +43,30 @@ app.controller("parametersController", function($scope, sharedScope) {
             });
         });
     };
+
+    $scope.data.getParameter = function () {
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[0]) {
+                    angular.forEach($scope.parameters, function(parameter, index) {
+                        angular.forEach($scope.parameterVariations, function(variation) {
+                            var key = parameter.name + variation;
+                            console.log(key);
+                            var masterMOMNode = $scope.data.stateful.controller.query("master#" + master.name);
+                            var styleDict = masterMOMNode.getComputedStyle();
+                            var value = styleDict.get(key);
+                            if (value) {
+                                $scope.parameters[index][variation.toLowerCase()] = value;
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    };
+    
+    
+    
     
     $scope.data.addRule = function () {
         var key = "widthFactor";
@@ -42,7 +83,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         setParameter(parameterDict, key, value); 
     };
     
-
+    
     
     /******/
 
@@ -51,7 +92,7 @@ app.controller("parametersController", function($scope, sharedScope) {
 
 
 
-    $scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
+    //$scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
     $scope.operators = ["x", "÷", "+", "-", "=", "min", "max"];
     $scope.parameterLevel = null;
 

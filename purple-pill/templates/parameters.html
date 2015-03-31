@@ -1,10 +1,13 @@
 <div id="temp-parameters" class="standard-padding">
-    <input ng-model="data.weightFactor" ng-change="data.editParameter('weightFactor', data.weightFactor, 1, false)"> weight<br>
-    <input ng-model="data.widthFactor" ng-change="data.editParameter('widthFactor', data.widthFactor, 2, false)"> width<br>
-    <input ng-model="data.heightFactor" ng-change="data.editParameter('heightFactor', data.heightFactor, 2, false)"> height<br>
-    <input ng-model="data.sidebearingLeft" ng-change="data.editParameter('sidebearingLeft', data.sidebearingLeft, 2, true)"> Sidebearing left<br>
-    <input ng-model="data.sidebearingRight" ng-change="data.editParameter('sidebearingRight', data.sidebearingRight, 2, true)"> Sidebearing Right<br>
+    <div ng-repeat="parameter in parameters">
+        * <input ng-model="parameter.factor" ng-blur="data.setParameter(parameter, 'factor')"> 
+        + <input ng-model="parameter.summand" ng-blur="data.setParameter(parameter, 'summand')"> 
+        {{parameter.name}}
+    </div>
+    
 
+    
+    <button ng-click="data.getParameter()">get</button>
 </div>
 
 <!--

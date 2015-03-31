@@ -40,9 +40,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             name : "Space " + id,
             id : id,
             type : "x",
-            masters : [],
             axes : [],
-            triangle : false,
             mainMaster : "0",
             trigger : 0 //this is to trigger the designspace to redraw when a master is renamed
         });
@@ -105,20 +103,16 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.getMetapolationRatios = function() {
         var designspace = $scope.data.currentDesignSpace;
-        var masterSet = jQuery.extend(true, [], designspace.masters);
         var axes = designspace.axes;
         var n = axes.length;
-        var cake = 1;
+        var cake = 0;
         for (var i = 0; i < n; i++) {
-            cake += (parseInt(axes[i].value)) / (100 - parseInt(axes[i].value));
+            cake += parseInt(axes[i].value);
         }
-        masterSet[0].value = 1 / cake;
-
         for (var i = 0; i < n; i++) {
-            var piece = (parseInt(axes[i].value) ) / (100 - parseInt(axes[i].value));
-            masterSet[i + 1].value = piece / cake;
+            var piece = parseInt(axes[i].value);
+            $scope.data.currentInstance.axes[i].metapValue = piece / cake;
         }
-        $scope.data.currentInstance.masters = masterSet;
     };
 
     function roundup(a) {

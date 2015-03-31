@@ -60,12 +60,33 @@ app.controller('engine', function($scope, sharedScope) {
         // returns a promise
         stateless.initProject(projectPath).then(onProjectLoaded.bind(null, stateless));
     }
+    
+    $scope.engine = function () {
+        if (!window.metapolatorReady) {
+            window.metapolatorReady = [];
+        }
+        window.metapolatorReady.push(onMetapolatorReady);
+        // <= could be an array or our api
+    };
+    
+    $scope.fakeEngine = function() {
+        var masters = [["A","Regular"], ["B","Light"], ["C","Bold"], ["D","Condensed"]];
+        for (var i = 0; i < masters.length; i++){
+            $scope.data.sequences[0].masters.push({
+                id: i,
+                name: masters[i][0],
+                displayName: masters[i][1],
+                type: "redpill",
+                display: true,
+                edit: [true, true],
+                ag: "ag"
+            });
+        }
 
-    if (!window.metapolatorReady) {
-        window.metapolatorReady = [];
-    }
-    window.metapolatorReady.push(onMetapolatorReady);
-    // <= could be an array or our api
+        $scope.data.pill = "blue";
+        $("#layover").hide();
+        $(".compatibility-info").hide();
+    };
     
 
 });

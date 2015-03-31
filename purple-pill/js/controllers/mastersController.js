@@ -165,7 +165,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 var masterIndex = ui.item.index();
                 var master = $scope.data.sequences[sequenceIndex].masters[masterIndex];
                 // check if master already in this designspace
-                if (isInDesignSpace(master.id)) {
+                if (isInDesignSpace(master.name)) {
                     alert("master already in this Design Space");
                 } else {
                     addMasterToDesignSpace(master);
@@ -181,33 +181,25 @@ app.controller("mastersController", function($scope, sharedScope) {
         if ($scope.data.currentDesignSpace.type == "x") {
             $scope.data.currentDesignSpace.type = "Control";
         }
-        var masterSet = designspace.masters;
-        var startValue = 0;
-        // for first two master give value 0.5, so first instance has right values
-        if (masterSet.length < 2) {
-            startValue = 0.5;
-        } 
-        designspace.masters.push({
+        var thisValue = 50;
+        if (designspace.axes.length == 1) {
+           thisValue = 100 -  designspace.axes[0].value;
+        }
+        designspace.axes.push({
             masterName : master.name,
             masterdisplayName: master.displayName,
-            value : startValue
+            value : thisValue
         });
-        if (masterSet.length > 1) {
-            designspace.axes.push({
-                value : 50
-            });
-            // add this axis to each instance in the design space
-            $scope.data.addAxisToInstance(master);
-        }
+        $scope.data.addAxisToInstance(master, thisValue);
         if (designspace.axes.length == 1) {
            $scope.data.addInstance(); 
         }
     }
 
-    function isInDesignSpace(id) {
+    function isInDesignSpace(masterName) {
         var x = false;
-        for (var i = 0; i < $scope.data.currentDesignSpace.masters.length; i++) {
-            if ($scope.data.currentDesignSpace.masters[i].masterId == id) {
+        for (var i = 0; i < $scope.data.currentDesignSpace.axes.length; i++) {
+            if ($scope.data.currentDesignSpace.axes[i].masterName == masterName) {
                 x = true;
                 break;
             }

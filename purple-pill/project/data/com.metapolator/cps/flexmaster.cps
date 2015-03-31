@@ -1,16 +1,16 @@
 @import 'wired-up.cps';
 @import 'global.cps';
 
-point>center, contour > p{
+point > center, contour > p{
     _scale: (Scaling widthFactor heightFactor);
     scale: _scale;
-    _translate: (Translation sidebearingLeft yTranslate);
+    _translate: (Translation sidebearingLeftSummand yTranslate);
     translate: _translate;
     transform:  translate * scale;
 }
 
 glyph {
-    advanceWidth: base:advanceWidth * widthFactor + sidebearingLeft + sidebearingRight;
+    advanceWidth: base:advanceWidth * widthFactor + sidebearingLeftSummand + sidebearingRightSummand;
     advanceHeight: base:advanceHeight * heightFactor;
 }
 
@@ -40,10 +40,8 @@ contour > p {
 , glyph#a penstroke#stem point:i(-2)
 , point.drop
 ") {
-    @dictionary {
-        * {
-            uniformScale: 1.15;
-        }
+    * {
+        uniformScale: 1.15;
     }
 }
 
@@ -51,10 +49,8 @@ contour > p {
   glyph#dvA penstroke#lowerBow point:i(0)
 , glyph#dvA penstroke#lowerBow point:i(1)
 ") {
-    @dictionary{
-        * {
-            uniformScale: 1.2;
-        }
+    * {
+        uniformScale: 1.2;
     }
 }
 
@@ -62,10 +58,8 @@ contour > p {
   glyph#i penstroke#dot point
 , glyph#j penstroke#dot point
 ") {
-    @dictionary {
-        * {
-            uniformScale: 1.5;
-        }
+    * {
+        uniformScale: 1.5;
     }
 }
 
