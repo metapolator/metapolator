@@ -122,7 +122,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         cpsString += "* { ";
         for (var i = 1; i < end; i++) {
             cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i - 1].masterName + '";';
-            cpsString += "proportion" + i + ": " + axesSet[i - 1].value + ";";
+            cpsString += "proportion" + i + ": " + axesSet[i - 1].metapValue + ";";
         }
         cpsString += "}";
         return cpsString;
@@ -307,14 +307,14 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                         thisValue = value;
                     }
                     instance.axes.push({
-                        metapValue : null,
+                        metapValue : 0,
                         masterName : master.name,
                         masterdisplayName : master.displayName,
                         value : thisValue
                     });
                     // empty current cps file and rewrite it with new masters
                     if ($scope.data.pill != "blue") {
-                        var cpsString = $scope.createMultiMasterCPS(instance.masters);
+                        var cpsString = $scope.createMultiMasterCPS(instance.axes);
                         $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, "");
                         $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
                     }

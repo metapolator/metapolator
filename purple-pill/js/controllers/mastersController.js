@@ -188,7 +188,8 @@ app.controller("mastersController", function($scope, sharedScope) {
         designspace.axes.push({
             masterName : master.name,
             masterdisplayName: master.displayName,
-            value : thisValue
+            value : thisValue,
+            metapValue : 1
         });
         $scope.data.addAxisToInstance(master, thisValue);
         if (designspace.axes.length == 1) {
