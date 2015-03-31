@@ -137,11 +137,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var cpsRule = parameterCollection.getItem(l - 1);
             var parameterDict = cpsRule.parameters;
             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-            for (var i = 0; i < instance.masters.length; i++) {
-                var masterName = instance.masters[i].masterName;
+            for (var i = 0; i < instance.axes.length; i++) {
+                var masterName = instance.axes[i].masterName;
                 var selector = 'S"master#' + masterName + '"';
                 //setParameter(parameterDict, "baseMaster" + (i + 1), selector);
-                setParameter(parameterDict, "proportion" + (i + 1), instance.masters[i].value);
+                setParameter(parameterDict, "proportion" + (i + 1), instance.axes[i].metapValue);
             }
         }
     };
