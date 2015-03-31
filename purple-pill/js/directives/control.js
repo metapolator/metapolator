@@ -132,7 +132,7 @@ app.directive('control', function($document) {
                         // active axis
                         axes.append('path').attr('d', function(d, i) {
                             if (i == designSpace.mainMaster) {
-                                return 'M' + (d.value * (axisWidth / 100) + indentLeft) + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab;
+                                return 'M' + ((100 - d.value) * (axisWidth / 100) + indentLeft) + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab;
                             } else {
                                 return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (d.value * (axisWidth / 100) + indentLeft) + ' 0';
                             }
@@ -141,8 +141,12 @@ app.directive('control', function($document) {
                         });
 
                         // append slider handles
-                        axes.append('circle').attr('r', 8).attr('cx', function(d) {
-                            return d.value * (axisWidth / 100) + indentLeft;
+                        axes.append('circle').attr('r', 8).attr('cx', function(d, i) {
+                            if (i == designSpace.mainMaster) {
+                                return (100 - d.value) * (axisWidth / 100) + indentLeft;
+                            } else {
+                                return d.value * (axisWidth / 100) + indentLeft;
+                            }
                         }).attr('cy', '0').attr('index', function(d, i) {
                             return i;
                         }).attr('class', 'slider-handle').attr('id', function(d, i) {
@@ -185,7 +189,6 @@ app.directive('control', function($document) {
                 var thisIndex = d3.select(this).attr('index');
                 if (slack == thisIndex) {
                     slackRatios = setSlackRatio(slack);
-                    console.log(slackRatios);
                 }
                 dragActive = true;
             }).on('drag', function() {

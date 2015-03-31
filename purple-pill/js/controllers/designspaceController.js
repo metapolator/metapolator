@@ -147,7 +147,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         angular.forEach(axes, function(axis) {
             totalValue += axis.metapValue;
         });
-        console.log(totalValue);
         var addFactor = 1 / totalValue;
         angular.forEach(axes, function(axis) {
             axis.metapValue *= addFactor;
@@ -157,14 +156,39 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.changeMainMaster = function() {
         var designspace = $scope.data.currentDesignSpace;
+        var slack = designspace.mainMaster;
         // swop main master in each instance in the design space
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == designspace.id) {
-                    // todo : recalculate axes based on new mainmaster
+                    var axes = instance.axes;
+                    // 1 find highest of the others
+                    var max = 0;
+                    var highest;
+                    for (var i = 0; i < axes.length; i++) {
+                        if (parseFloat(axes[i].value) > max && i != slack) {
+                            highest = i;
+                            max = parseFloat(axes[i].value);
+                        }
+                    }
+                    // 2 find ratio of others compared to highest
+                    var ratio = 100 / (parseFloat(axes[highest].value) + parseFloat(axes[slack].value));
+                    for (var i = 0; i < axes.length; i++) {
+                        axes[i].value = formatX(ratio * axes[i].value);
+                    }
                 }
             });
-        });      
+        });   
+        
+        function formatX(x) {
+            var roundedX = Math.round(x * 2) / 2;
+            var toF = roundedX.toFixed(1);
+            return toF;
+        }
+
+        
+        
+           
         // trigger the designspace to redraw
         $scope.data.currentDesignSpace.trigger++;
     };
@@ -175,7 +199,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == designspace.id) {
-                    console.log("revalue");
                     instance.axes = [];
                     var masters = instance.masters;
                     for (var i = 1; i < masters.length; i++) {
@@ -188,7 +211,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 }
             });
         });
-        console.log($scope.data.currentInstance.masters[0]);
         /*
         designspace.axes = [];
         var masters = designspace.masters;
