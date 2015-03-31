@@ -167,6 +167,7 @@ app.directive('control', function($document) {
                var thisIndex = d3.select(this).attr('index');
                if (slack == thisIndex) {
                    slackRatios = setSlackRatio(slack);
+                   console.log(slackRatios);
                }
                dragActive = true;
             }).on('drag', function() {
@@ -230,9 +231,9 @@ app.directive('control', function($document) {
                 var highest;
                 var max = 0;
                 for (var i = 0; i < thisInstance.axes.length; i++) {
-                    if (thisInstance.axes[i].value > max && i != slack) {
+                    if (parseFloat(thisInstance.axes[i].value) > max && i != slack) {
                         highest = i;
-                        max = thisInstance.axes[i].value;
+                        max = parseFloat(thisInstance.axes[i].value);
                     }
                 }
                 return highest;
