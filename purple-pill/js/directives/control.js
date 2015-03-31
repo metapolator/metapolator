@@ -4,6 +4,7 @@ app.directive('control', function($document) {
         link : function(scope, element, attrs, ctrl) {
             var dragActive = false;
             var designSpace;
+            var thisInstance;
             var svg = d3.select(element[0]).append('svg');
             var layer2 = svg.append('g');
             var layer1 = svg.append('g');
@@ -29,7 +30,6 @@ app.directive('control', function($document) {
             function redraw() {
                 designSpace = scope.data.currentDesignSpace;
                 var inactiveInstances = [];
-                var thisInstance;
                 angular.forEach(scope.data.families, function(family) {
                     angular.forEach(family.instances, function(instance) {
                         // push inactive instances of this designspace
@@ -131,7 +131,9 @@ app.directive('control', function($document) {
                             return d.value * (axisWidth / 100) + indentLeft;
                         }).attr('cy', '0').attr('index', function(d, i) {
                             return i;
-                        }).attr('class', 'slider-handle').call(drag);
+                        }).attr('class', 'slider-handle').attr('id', function(d, i) {
+                            return 'slider' + i;
+                        }).call(drag);
                     }
                         
                     // create left label
@@ -172,28 +174,30 @@ app.directive('control', function($document) {
                 //d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
             }).on('drag', function() {
                 // redraw slider and active axis
+                var slack = designSpace.mainMaster;
                 var xPosition = limitX(d3.event.x);
                 d3.select(this).attr('cx', xPosition);
                 var thisIndex = d3.select(this).attr('index');
+                var thisValue = (xPosition - indentLeft) / (axisWidth / 100);
                 // don't redraw the axis when we have two masters
                 var type = d3.select(this).attr('type');
                 if (type != 'two-master-handle') {
                     var activeAxis = d3.select("path#axis-active" + thisIndex);
                     // slackmaster: reverse active axis
                     if (thisIndex == designSpace.mainMaster) {
-                        activeAxis.attr('d', function(d, i) {
-                            return 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab;
-                        });
+                        activeAxis.attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab);
                     } else {
-                        activeAxis.attr('d', function(d, i) {
-                            return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0';
-                        });
+                        activeAxis.attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0');
+                        // when current slider has the largest value, it drags the slack slider with it
+                        if (isLargestSlider(thisInstance, thisIndex, thisValue, slack)) {
+                            d3.select("circle#slider" + slack).attr('cx', xPosition);
+                            d3.select("path#axis-active" + slack).attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab);
+                            thisInstance.axes[designSpace.mainMaster].value = formatX(100 - thisValue);
+                        }
                     }
 
                 }
                 // write value of this axis to model
-                
-                var thisValue = (xPosition - indentLeft) / (axisWidth / 100);
                 // slackmaster: reverse active axis
                 if (thisIndex == designSpace.mainMaster) {
                     designSpace.axes[thisIndex].value = formatX(100 - thisValue);
@@ -230,6 +234,16 @@ app.directive('control', function($document) {
                 var roundedX = Math.round(x * 2) / 2;
                 var toF = roundedX.toFixed(1);
                 return toF;
+            }
+            
+            function isLargestSlider(instance, index, value, slack) {
+                var largest = true;
+                for (var i = 0; i < instance.axes.length; i++) {
+                    if (instance.axes[i].value > value && i != index && i != slack) {
+                        largest = false;
+                    }
+                }
+                return largest;
             }
         }
     };

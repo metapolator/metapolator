@@ -163,43 +163,17 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
 
     $scope.changeMainMaster = function() {
-        /*
         var designspace = $scope.data.currentDesignSpace;
         // swop main master in each instance in the design space
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == designspace.id) {
-                    // swop masters
-                    var masterSet = instance.masters;
-                    var n = designspace.mainMaster;
-                    var tempMaster = masterSet[0];
-                    masterSet[0] = masterSet[n];
-                    masterSet[n] = tempMaster;
-                    
-                    // calculate metapolation value to new axes
-                    instance.axes = [];
-                    for (var i = 1; i < masterSet.length; i++) {
-                        var thisRatio = masterSet[i].value / masterSet[0].value;
-                        var thisValue = roundupsmall(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
-                        instance.axes.push({
-                            value : thisValue
-                        });
-                    }
+                    // todo : recalculate axes based on new mainmaster
                 }
             });
-        });
-        
-        // swop main master in the designspace
-        var masterSet = designspace.masters;
-        var n = designspace.mainMaster;
-        var tempMaster = masterSet[0];
-        masterSet[0] = masterSet[n];
-        masterSet[n] = tempMaster;
-        designspace.mainMaster = "0";
-        
+        });      
         // trigger the designspace to redraw
         $scope.data.currentDesignSpace.trigger++;
-        */
     };
 
     function valueToAxes() {
