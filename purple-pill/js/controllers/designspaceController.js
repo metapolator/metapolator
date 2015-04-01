@@ -102,8 +102,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.total = 0;
 
     $scope.getMetapolationRatios = function() {
-        var designspace = $scope.data.currentDesignSpace;
-        var axes = designspace.axes;
+        var instance = $scope.data.currentInstance;
+        var axes = instance.axes;
         var n = axes.length;
         var cake = 0;
         for (var i = 0; i < n; i++) {
@@ -111,7 +111,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         }
         for (var i = 0; i < n; i++) {
             var piece = parseInt(axes[i].value);
-            $scope.data.currentInstance.axes[i].metapValue = piece / cake;
+            instance.axes[i].metapValue = piece / cake;
         }
     };
 
@@ -203,5 +203,15 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var b = Math.round(a * 10) / 10;
         return b;
     }
+    
+    $scope.redrawAxesFromInput = function () {
+        var instance = $scope.data.currentInstance;
+        var axes = instance.axes;
+        if (axes.length == 2) {
+            axes[1].value = 100 - axes[0].value;
+        }
+        $scope.getMetapolationRatios();
+        $scope.data.currentDesignSpace.trigger++;  
+    };
 
 });
