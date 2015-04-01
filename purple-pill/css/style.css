@@ -888,6 +888,7 @@
             width: 100%;
             height: 28px;
             border-bottom: 1px solid #ddd;
+            background: #fff;
         }
         
             .list-li.selected {
