@@ -132,7 +132,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                     if (instance.designSpace == designspace.id) {
                         // remove axis from instance
                         instance.axes.splice(m, 1);
-                        reDistribute(instance.axes);
+                        reDistributeValues(instance.axes);
+                        reDestributeAxes(instance.axes);
                     }
                 });
             });
@@ -140,9 +141,32 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             designspace.axes.splice(m, 1);
             $scope.$apply();
         }
+        // reassigning the key of mainmaster
+        if (m < designspace.mainMaster) {
+            designspace.mainMaster--;   
+        }
     };
+    
+    function reDestributeAxes(axes) {
+        var designspace = $scope.data.currentDesignSpace;
+        var slack = designspace.mainMaster;
+        // 1 find highest of the others
+        var max = 0;
+        var highest;
+        for (var i = 0; i < axes.length; i++) {
+            if (parseFloat(axes[i].value) > max && i != slack) {
+                highest = i;
+                max = parseFloat(axes[i].value);
+            }
+        }
+        // 2 find ratio of others compared to highest
+        var ratio = 100 / (parseFloat(axes[highest].value) + parseFloat(axes[slack].value));
+        for (var i = 0; i < axes.length; i++) {
+            axes[i].value = formatX(ratio * axes[i].value);
+        }
+    }
 
-    function reDistribute(axes) {
+    function reDistributeValues(axes) {
         var totalValue = 0;
         angular.forEach(axes, function(axis) {
             totalValue += axis.metapValue;
@@ -161,67 +185,18 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == designspace.id) {
-                    var axes = instance.axes;
-                    // 1 find highest of the others
-                    var max = 0;
-                    var highest;
-                    for (var i = 0; i < axes.length; i++) {
-                        if (parseFloat(axes[i].value) > max && i != slack) {
-                            highest = i;
-                            max = parseFloat(axes[i].value);
-                        }
-                    }
-                    // 2 find ratio of others compared to highest
-                    var ratio = 100 / (parseFloat(axes[highest].value) + parseFloat(axes[slack].value));
-                    for (var i = 0; i < axes.length; i++) {
-                        axes[i].value = formatX(ratio * axes[i].value);
-                    }
+                    reDestributeAxes(instance.axes);
                 }
             });
         });   
-        
-        function formatX(x) {
-            var roundedX = Math.round(x * 2) / 2;
-            var toF = roundedX.toFixed(1);
-            return toF;
-        }
-
-        
-        
-           
         // trigger the designspace to redraw
         $scope.data.currentDesignSpace.trigger++;
     };
 
-    function valueToAxes() {
-        var designspace = $scope.data.currentDesignSpace;
-        // for all instances in this design space
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (instance.designSpace == designspace.id) {
-                    instance.axes = [];
-                    var masters = instance.masters;
-                    for (var i = 1; i < masters.length; i++) {
-                        var thisRatio = masters[i].value / masters[0].value;
-                        var thisValue = roundupsmall(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
-                        instance.axes.push({
-                            value : thisValue
-                        });
-                    }
-                }
-            });
-        });
-        /*
-        designspace.axes = [];
-        var masters = designspace.masters;
-        for (var i = 1; i < masters.length; i++) {
-            var thisRatio = masters[i].value / masters[0].value;
-            var thisValue = roundupsmall(100 - (100.5 - 0.5 * thisRatio) / (1 + thisRatio));
-            designspace.axes.push({
-                value : thisValue
-            });
-        }
-        */
+    function formatX(x) {
+        var roundedX = Math.round(x * 2) / 2;
+        var toF = roundedX.toFixed(1);
+        return toF;
     }
 
     function roundupsmall(a) {

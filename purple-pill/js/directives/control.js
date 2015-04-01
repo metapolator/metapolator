@@ -243,7 +243,11 @@ app.directive('control', function($document) {
                 var highest = findHighest(slack);
                 var max = thisInstance.axes[highest].value;
                 for (var i = 0; i < thisInstance.axes.length; i++) {
-                    ratios.push(thisInstance.axes[i].value / max);
+                    if (max != 0) {
+                        ratios.push(thisInstance.axes[i].value / max);
+                    } else {
+                        ratios.push(1);
+                    }
                 }
                 return ratios;
             }
