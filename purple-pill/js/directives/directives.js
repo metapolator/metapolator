@@ -405,33 +405,33 @@ app.directive('strict', function() {
 
             }).on('drag', function() {
                 x = d3.event.x;
-                d3.select(this).attr('cx', limitX(x));
+                d3.select(this).attr('x', limitX(x));
 
             }).on('dragend', function() {
-                d3.select(this).attr('cx', positionX(x).x);
+                d3.select(this).attr('x', positionX(x).x);
                 scope.filterOptions.strict = positionX(x).strict;
                 scope.$apply();
             });
 
             function limitX(x) {
-                if (x < 10) {
-                    x = 10;
-                } else if (x > 50) {
-                    x = 50;
+                if (x < 2) {
+                    x = 2;
+                } else if (x > 37) {
+                    x = 37;
                 }
                 return x;
             }
 
             function positionX(x) {
                 var strict;
-                if (x < 20) {
-                    x = 10;
+                if (x < 13) {
+                    x = 2;
                     strict = 1;
-                } else if (x > 19 && x < 40) {
-                    x = 30;
+                } else if (x > 12 && x < 29) {
+                    x = 21;
                     strict = 2;
                 } else {
-                    x = 50;
+                    x = 37;
                     strict = 3;
                 }
                 return {
@@ -441,12 +441,10 @@ app.directive('strict', function() {
             }
 
             // create line and slider
-            var line = svg.append('line').attr('x1', 10).attr('y1', 10).attr('x2', 50).attr('y2', 10).style('stroke', '#000').style('stroke-width', '2');
-            svg.append('circle').attr('r', 3).attr('cx', 10).attr('cy', 10).style('fill', '#000');
-            svg.append('circle').attr('r', 3).attr('cx', 30).attr('cy', 10).style('fill', '#000');
-            svg.append('circle').attr('r', 3).attr('cx', 50).attr('cy', 10).style('fill', '#000');
-            svg.append('text').attr('class', 'slider-label').attr('x', 62).attr('y', 13).text('strict');
-            var slider = svg.append('circle').attr('r', 8).attr('cx', (strict * 20 - 10)).attr('cy', 10).style('fill', '#000').call(drag);
+            // centers at 7, 26 and 42
+            svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 13).text('strict');
+            var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', 'black').style('fill', 'white').style('stroke-width', '1').call(drag);
+            var line = svg.append('line').attr('x1', 7).attr('y1', 10).attr('x2', 42).attr('y2', 10).style('stroke', '#000').style('stroke-width', '1');
         }
     };
 });
@@ -628,17 +626,17 @@ app.directive('sizeRope', function($document) {
                 screenX = $(element[0]).offset().left;
                 screenY = $(element[0]).offset().top;
                 gT = svgT.append('g');
-                diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
+                diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('stroke', 'black').style('fill', 'white');
 
             }).on('drag', function() {
-                diamondfill.style('fill', '#fff');
+                diamondfill.style('stroke', '#fff');
                 var x = d3.event.x - diamondSize;
                 var y = d3.event.y - diamondSize;
                 var originX = screenX + diamondSize;
                 var originY = screenY + diamondSize;
                 diamondT.attr('transform', 'translate(' + x + ',' + y + ')');
                 gT.selectAll('*').remove();
-                lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#000').style('stroke-width', '2');
+                lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#000').style('stroke-width', '1');
                 var thisLength = getRopeLength(screenX, screenY, x, -y);
                 var absolutePixels = thisLength + pixelOffset;
                 if (absolutePixels > 399) {
@@ -650,13 +648,13 @@ app.directive('sizeRope', function($document) {
                 scope.$apply();
                 lastLength = thisLength;
             }).on('dragend', function() {
-                diamondfill.style('fill', '#F85C37');
+                diamondfill.style('stroke', 'black');
                 $("#templayer").remove();
             });
 
             // create static diamond
             var diamond = svg.append('g').call(drag);
-            var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('fill', '#F85C37');
+            var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('stroke', 'black').style('fill', 'white');
             
             function limit(fontsize) {
                 var size = Math.round(fontsize);

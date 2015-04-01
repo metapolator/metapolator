@@ -1,25 +1,27 @@
-<div id="specimen-toolbar">
-    <select ng-model="selectedSpecimen" ng-options="specim.name for specim in specimen" class="specimen-tool"></select>
-    <div id="standard-view-tools" >
-        <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
-        <size-rope></size-rope>  
-        <input type="text" id="lineheigt-nr" ng-model="lineHeight" size="1" class="specimen-tool">    
-        <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
-        <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
-        <div id="font-by" ng-if="selectedSpecimen.name != 'glyph range'">
-            font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
+<div class="panel-border">
+    <div id="specimen-toolbar">
+        <select ng-model="selectedSpecimen" ng-options="specim.name for specim in specimen" class="specimen-tool"></select>
+        <div id="standard-view-tools" >
+            <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
+            <size-rope></size-rope>  
+            <input type="text" id="lineheigt-nr" ng-model="lineHeight" size="1" class="specimen-tool">    
+            <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
+            <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
+            <div id="font-by" ng-if="selectedSpecimen.name != 'glyph range'">
+                font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
+            </div>
+        </div>  
+    </div>
+    
+    
+    <div id="specimen-content" viewport-watcher>   
+        <!-- standard view -->
+        <div id="non-glyph-range">
+            <ul>
+                <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}">
+                    <glyph mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box unselectable"></glyph>
+                </li>
+            </ul>
         </div>
-    </div>  
-</div>
-
-
-<div id="specimen-content" viewport-watcher>   
-    <!-- standard view -->
-    <div id="non-glyph-range">
-        <ul>
-            <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}">
-                <glyph mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box unselectable"></glyph>
-            </li>
-        </ul>
     </div>
 </div>

@@ -33,7 +33,8 @@ app.factory("sharedScope", function($rootScope) {
             help : false,
             masters : false,
             instances : false,
-            designspace: false
+            designspace: false,
+            fonts: false
         },
         parametersPanel : 0,
         viewState: 0

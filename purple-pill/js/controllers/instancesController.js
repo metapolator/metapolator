@@ -1,132 +1,7 @@
 app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
-    /***** cps *****/
-
-    $scope.createMultiMasterCPS = function(axesSet) {
-        var end = axesSet.length + 1;
-        var cpsString = "@import 'centreline-skeleton-to-symmetric-outline.cps';";
-        cpsString += "point > * { indexGlyph: parent:parent:parent:index; indexPenstroke: parent:parent:index; indexPoint: parent:index;";
-        for (var i = 1; i < end; i++) {
-            cpsString += "base" + i + ": baseMaster" + i + ":children[indexGlyph]:children[indexPenstroke]:children[indexPoint]:children[index];";
-        }
-        cpsString += "interpolationUnit: 1/(";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "proportion" + i;
-        }
-        cpsString += ");";
-        for (var i = 1; i < end; i++) {
-            cpsString += "_p" + i + ": proportion" + i + "*interpolationUnit;";
-        }
-        cpsString += "} point > * { inLength: ";
-        for (var i = 1; i < end; i++) {
-            cpsString += "_p" + i + ": proportion" + i + "*interpolationUnit;";
-        }
-        cpsString += "} point > * { inLength: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "base" + i + ":inLength * _p" + i;
-        }
-        cpsString += "; outLength: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "base" + i + ":outLength * _p" + i;
-        }
-        cpsString += "; inTension: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "(min 10000 base" + i + ":inTension) * _p" + i;
-        }
-        cpsString += "; outTension: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "(min 10000 base" + i + ":outTension) * _p" + i;
-        }
-        cpsString += "; inDirIntrinsic: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "(normalizeAngle base" + i + ":inDirIntrinsic) * _p" + i;
-        }
-        cpsString += "; outDirIntrinsic: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "(normalizeAngle base" + i + ":outDirIntrinsic) * _p" + i;
-        }
-        cpsString += ";} point > left, point > right { onDir: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "(normalizeAngle base" + i + ":onDir) * _p" + i;
-        }
-        cpsString += "; onLength: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "base" + i + ":onLength * _p" + i;
-        }
-        cpsString += ";} point > center { on: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "base" + i + ":on * _p" + i;
-        }
-        cpsString += "; in: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "base" + i + ":in * _p" + i;
-        }
-        cpsString += "; out: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "base" + i + ":out * _p" + i;
-        }
-        cpsString += ";} point:i(0) > left, point:i(0) > right { inDir: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "(normalizeAngle base" + i + ":inDir) * _p" + i;
-        }
-        cpsString += ";} point:i(-1) > right, point:i(-1) > left { outDir: ";
-        for (var i = 1; i < end; i++) {
-            if (i != 1) {
-                cpsString += " + ";
-            }
-            cpsString += "(normalizeAngle base" + i + ":outDir) * _p" + i;
-        }
-        cpsString += ";}";
-
-        // add the metapolation values as last item
-        cpsString += "* { ";
-        for (var i = 1; i < end; i++) {
-            cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i - 1].masterName + '";';
-            cpsString += "proportion" + i + ": " + axesSet[i - 1].metapValue + ";";
-        }
-        cpsString += "}";
-        return cpsString;
-    };
+    $scope.data.colorCoding = ["red","green","blue","purple","orange","brown"];
 
     $scope.data.metapolate = function() {
         if($scope.data.pill != "blue") {
@@ -158,6 +33,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             // link instance to design space and use its masters and values
             var designSpace = $scope.data.currentDesignSpace;
             var axesSet = jQuery.extend(true, [], designSpace.axes);
+            var newMetapValue = 100/ axesSet.length;
+            angular.forEach(axesSet, function(axis) {
+                axis.value = 50;
+                axis.metapValue = newMetapValue;
+            });
             // add the instance
             $scope.uniqueInstanceId++;
             var instanceName = "instance" + $scope.uniqueInstanceId;
@@ -414,6 +294,133 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.sortableOptionsMasters = {
         handle : '.list-edit-col',
         helper : 'clone',
+    };
+    
+    /***** cps *****/
+
+    $scope.createMultiMasterCPS = function(axesSet) {
+        var end = axesSet.length + 1;
+        var cpsString = "@import 'centreline-skeleton-to-symmetric-outline.cps';";
+        cpsString += "point > * { indexGlyph: parent:parent:parent:index; indexPenstroke: parent:parent:index; indexPoint: parent:index;";
+        for (var i = 1; i < end; i++) {
+            cpsString += "base" + i + ": baseMaster" + i + ":children[indexGlyph]:children[indexPenstroke]:children[indexPoint]:children[index];";
+        }
+        cpsString += "interpolationUnit: 1/(";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "proportion" + i;
+        }
+        cpsString += ");";
+        for (var i = 1; i < end; i++) {
+            cpsString += "_p" + i + ": proportion" + i + "*interpolationUnit;";
+        }
+        cpsString += "} point > * { inLength: ";
+        for (var i = 1; i < end; i++) {
+            cpsString += "_p" + i + ": proportion" + i + "*interpolationUnit;";
+        }
+        cpsString += "} point > * { inLength: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":inLength * _p" + i;
+        }
+        cpsString += "; outLength: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":outLength * _p" + i;
+        }
+        cpsString += "; inTension: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(min 10000 base" + i + ":inTension) * _p" + i;
+        }
+        cpsString += "; outTension: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(min 10000 base" + i + ":outTension) * _p" + i;
+        }
+        cpsString += "; inDirIntrinsic: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":inDirIntrinsic) * _p" + i;
+        }
+        cpsString += "; outDirIntrinsic: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":outDirIntrinsic) * _p" + i;
+        }
+        cpsString += ";} point > left, point > right { onDir: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":onDir) * _p" + i;
+        }
+        cpsString += "; onLength: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":onLength * _p" + i;
+        }
+        cpsString += ";} point > center { on: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":on * _p" + i;
+        }
+        cpsString += "; in: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":in * _p" + i;
+        }
+        cpsString += "; out: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "base" + i + ":out * _p" + i;
+        }
+        cpsString += ";} point:i(0) > left, point:i(0) > right { inDir: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":inDir) * _p" + i;
+        }
+        cpsString += ";} point:i(-1) > right, point:i(-1) > left { outDir: ";
+        for (var i = 1; i < end; i++) {
+            if (i != 1) {
+                cpsString += " + ";
+            }
+            cpsString += "(normalizeAngle base" + i + ":outDir) * _p" + i;
+        }
+        cpsString += ";}";
+
+        // add the metapolation values as last item
+        cpsString += "* { ";
+        for (var i = 1; i < end; i++) {
+            cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i - 1].masterName + '";';
+            cpsString += "proportion" + i + ": " + axesSet[i - 1].metapValue + ";";
+        }
+        cpsString += "}";
+        return cpsString;
     };
 
 });

@@ -33,12 +33,6 @@ app.directive('masters', function() {
     };
 }); 
 
-app.directive('adjustmentMasters', function() {
-    return {
-        restrict : 'E',
-        templateUrl : 'templates/adjustment-masters.html'
-    };
-}); 
 
 app.directive('designspace', function() {
     return {
@@ -54,16 +48,9 @@ app.directive('instances', function() {
     };
 }); 
 
-app.directive('fontmapping', function() {
+app.directive('fontexport', function() {
     return {
         restrict : 'E',
-        templateUrl : 'templates/fontmapping.html'
-    };
-}); 
-
-app.directive('metadata', function() {
-    return {
-        restrict : 'E',
-        templateUrl : 'templates/metadata.html'
+        templateUrl : 'templates/fontexport.html'
     };
 }); 

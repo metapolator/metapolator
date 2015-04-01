@@ -42,13 +42,22 @@ app.directive('control', function($document) {
                 layer2.selectAll('*').remove();
 
                 // draw inactive instances
-                var diamonds = layer2.selectAll('g').data(inactiveInstances).enter().append('g').selectAll('polygon').data(function(d) {
-                    return d.axes;
-                }).enter().append('g').attr('transform', function(d, i) {
-                    var x = paddingLeft - diamondsize + axisWidth / 100 * d.value;
-                    var y = i * axisDistance + paddingTop - diamondsize - diamondPadding;
-                    return "translate(" + x + "," + y + ")";
-                }).append('polygon').attr('points', '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize).attr('class', 'blue-diamond');
+                for(i = 0; i < inactiveInstances.length; i++) {
+                    layer2.append('g').selectAll('polygon').data(inactiveInstances[i].axes).enter().append('g').attr('transform', function(d, i) {
+                        if (i == scope.data.currentDesignSpace.mainMaster) {
+                            var x = paddingLeft - diamondsize + axisWidth / 100 * (100 - d.value);    
+                        } else {
+                            var x = paddingLeft - diamondsize + axisWidth / 100 * d.value;    
+                        }
+                        var y = i * axisDistance + paddingTop - diamondsize - diamondPadding;
+                        return "translate(" + x + "," + y + ")";
+                    }).append('polygon').attr('points', '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize).attr('class', 'blue-diamond').attr('stroke', function(){
+                        return scope.data.colorCoding[inactiveInstances[i].id];
+                    }).attr('fill', 'none');   
+                }
+                
+                
+
 
                 /***** One master in Design Space *****/
                 if (designSpace.axes.length == 1) {

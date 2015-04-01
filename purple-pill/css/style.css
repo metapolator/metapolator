@@ -17,7 +17,7 @@
 		width: 100%;
 		font-family: "Roboto";
 		font-size: 13px;
-		background: #d7d2c8;
+		background: #fff;
 	}
 	
 	* {
@@ -132,16 +132,12 @@
 				background: #fff;
 				margin-right: 4px;
 				font-size: 0.8em;
+				border: 1px solid #ddd;
+				cursor: default;
 			}
 			
-			#view-buttons .menu-item:hover {
-				cursor: pointer;
-				background: #f85c37;
-			}
-			
-			#view-buttons .menu-item-current {
-				background: #f85c37;
-				color: #000;
+			#view-buttons .menu-item:hover, #view-buttons .menu-item-current {
+				border: 1px solid #000;
 			}
 			
         #help {
@@ -186,18 +182,29 @@
 			    overflow-x: hidden;
 			    position: relative;
 				background: #fff;
-				/*border: 4px solid #d7d2c8;*/
+				padding: 4px;
 			}
 			
 			.semi-panel {
 			    height: 50%;
 		    }
+		    
+		    .panel-border {
+		        border: 1px solid #ddd;
+		        height: 100%;
+		        position: relative;
+		    }
+		    
+		      .panel-border-with-menu {
+		          height: calc(100% - 30px);
+		      }
 			
             underconstruction {
                 display: block;
                 background: #48A115!important;
                 color: #99D676;
                 padding: 16px;
+                height: 100%;
             }
             
             specimen, specimen2, masters, designspace, instances, parameters {
@@ -547,22 +554,21 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        background: #d7d2c8;
+        background: #fff;
         height: 32px;
     }
 
     #design-space-tabs li {
         float: left;
         padding: 6px 10px;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
         margin-right: 4px;
         cursor: pointer;
         background: #fff;
+        height: 32px;
     }
 
     #design-space-tabs li.selected {
-        background: #f85c37;
+        background: #aaa;
         color: #fff;
     }
 
@@ -627,6 +633,7 @@
                 position: absolute;
                 width: 100%;
                 height: 100%;
+                background: #eee;
             }
             
             control svg, explore svg {
@@ -724,7 +731,7 @@
         
         .slider-axis-active {
             stroke: #000;
-            stroke-width: 3;
+            stroke-width: 2px;
             fill: none;
         }
 
@@ -732,7 +739,9 @@
             position: absolute;
             top: 3px;
             cursor: pointer;
-            fill: #000;
+            fill: transparent;
+            stroke: #000;
+            stroke-width: 2px;
         } 
              
         .slider-label {
@@ -758,12 +767,17 @@
             }
             
                 .slider-input-output {
-                    width: 30px;
+                    width: 50px;
                     border: 0;
-                    color: #f85c37;
-                    text-align: right;
+                    color: #000;
+                    background: transparent;
+                    text-align: center;
                     font-size: 9px;
                 }
+                    
+                    .slider-input-output:focus {
+                        background: #fff;
+                    }
     
         .triangle-button {
             position: absolute;
@@ -794,17 +808,10 @@
             font-size: 9px;
         }
         
+        .slider-hover-square {
+            opacity: 0;
+        }
         
-        
-        
-/**************** blue diamonds ************************/
-
-
-    .blue-diamond {
-        fill: #7DADFF;
-        opacity: 0.6;
-    }
-
         
 
 /**************** masters ************************/
@@ -873,18 +880,20 @@
         }
 
     .list-ul {
-        border-top: 1px solid #ffa392;
         width: 100%;
-        background: #ddd; 
         margin-bottom: 10px;
     }
 
         .list-li {
             width: 100%;
             height: 28px;
-            background: #fff;
-            border-bottom: 1px solid #ffa392;
+            border-bottom: 1px solid #ddd;
         }
+        
+            .list-li.selected {
+                background: #ddd;
+                border-bottom: 1px solid #fff;
+            }
         
             .list-sequence-col {
                 float: left;
@@ -892,57 +901,13 @@
                 height: 100%;
                 position: relative;
             }
-            
-            .selected .list-sequence-col {
-                background: #f85c37;
-            }
                     
-                .list-sequence-col .diamond {
-                    width: 100%;
-                    height: 100%;
+                .list-sequence-col svg {
+                    margin: 7px;
                 }
-                
-                    instances .list-sequence-col.start .diamond {
-                       /*background-image: url('../img/diamonds/diamond-top.png');*/
-                       background-image: url('../img/diamonds/diamond-sole.png');
-                    }
-                    
-                    instances .list-sequence-col.middle .diamond {
-                        /*background-image: url('../img/diamonds/diamond-full.png');*/
-                       background-image: url('../img/diamonds/diamond-sole.png');
-                    }
-                    
-                    instances .list-sequence-col.end .diamond {
-                       /*background-image: url('../img/diamonds/diamond-bottom.png');*/
-                       background-image: url('../img/diamonds/diamond-sole.png');
-                    }
-                    
-                    instances .list-sequence-col.solo .diamond {
-                        background-image: url('../img/diamonds/diamond-sole.png');
-                    }
-                    
-                    masters .list-sequence-col.start .diamond {
-                       /*background-image: url('../img/diamonds/diamond-top.png');*/
-                       background-image: url('../img/diamonds/dot-sole.png');
-                    }
-                    
-                    masters .list-sequence-col.middle .diamond {
-                        /*background-image: url('../img/diamonds/diamond-full.png');*/
-                       background-image: url('../img/diamonds/dot-sole.png');
-                    }
-                    
-                    masters .list-sequence-col.end .diamond {
-                       /*background-image: url('../img/diamonds/diamond-bottom.png');*/
-                       background-image: url('../img/diamonds/dot-sole.png');
-                    }
-                    
-                    masters .list-sequence-col.solo .diamond {
-                        background-image: url('../img/diamonds/dot-sole.png');
-                    }
                     
                     /* while dragging */
                     .ui-sortable-helper {
-                        background: #fff;
                         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
                     }
                 
@@ -953,8 +918,9 @@
         .list-view-col {
             float: left;
             text-align: center;
-            width: 32px;
-            height: 100%;
+            width: 28px;
+            height: calc(100% - 4px);
+            margin: 2px;
             padding-top: 1px;
             font-size: 17px;
             background: #fff;
@@ -975,7 +941,7 @@
             }
         
             .list-view-col.selected {
-                background: #f85c37;
+                background: #888;
             }
             
         .list-edit-col {
@@ -983,15 +949,11 @@
             width: calc(100% - 56px);
             height: 100%;
             padding: 4px 10px;
-            background: #fff;
             cursor: default;
             white-space: nowrap;
             overflow: hidden;
         }
-        
-          .list-edit-col.selected {
-                background: #f85c37;
-            }
+       
             
 
 
@@ -1255,8 +1217,12 @@
         }
         
         .lm-head:hover {
-            background: #f85c37;
+            background: #ddd;
         }
+        
+            designspace .lm-head:hover {
+                background: transparent;
+            }
         
     .lm-body {
         position: absolute;
@@ -1411,12 +1377,12 @@
         content: " ";
         width: 3px;
         height: 100%;
-        background: #d7d2c8;
+        background: transparent;
     }
     
         divider:hover {
-            background: #d7d2c8;
-            border-left: 1px dashed #fff;
+            background: #transparent;
+            border-left: 1px solid transparent;
         }
 
     dividerHor {
@@ -1438,10 +1404,10 @@
         content: " ";
         height: 3px;
         width: 100%;
-        background: #d7d2c8;
+        background: transparent;
     }
     
         dividerHor:hover {
             background: #d7d2c8;
-            border-top: 1px dashed #fff;
+            border-top: 1px solid transparent;
         }

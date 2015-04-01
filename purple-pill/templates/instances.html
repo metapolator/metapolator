@@ -11,36 +11,41 @@
     </div>
 </localmenu>
 
-<div id="instances-list">
-    <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
-        <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance.edit}">
-            <span class="list-sequence-col" ng-class="{'start' : $first && !$last, 'end' : $last && !$first, 'middle' : $middle, 'solo' : $first && $last, 'currentinstance': instance == data.currentInstance}">
-                <div class="diamond"></div>
-            </span>
-            <span class="list-view-col rename" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
-            <span class="list-edit-col rename" ng-model="instance.name" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
-        </li>
-    </ul>
-    
-    
-    <div style="padding: 20px">
-        <div ng-repeat="instance in data.families[0].instances track by instance.id">
-            <b>{{instance.id}}</b>
-            <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
-            <div>masters: <span ng-repeat="axis in instance.axes">[{{axis.masterName}}]: {{axis.metapValue | number:3}} | </span></div>
+<div class="panel-border panel-border-with-menu">
+    <div id="instances-list">
+        <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
+            <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance.edit}">
+                <span class="list-sequence-col" ng-class="{'start' : $first && !$last, 'end' : $last && !$first, 'middle' : $middle, 'solo' : $first && $last, 'currentinstance': instance == data.currentInstance}">
+                    <svg height="12" width="12">
+                        <path d="M6 0 L12 6 L6 12 L0 6 Z" class="diamond" stroke="{{data.colorCoding[instance.id]}}" fill="none">
+                    </svg> 
+                    <!--<div class="diamond"></div>-->
+                </span>
+                <span class="list-view-col rename" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
+                <span class="list-edit-col rename" ng-model="instance.name" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
+            </li>
+        </ul>
+        
+        
+        <div style="padding: 20px">
+            <div ng-repeat="instance in data.families[0].instances track by instance.id">
+                <b>{{instance.id}}</b>
+                <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
+                <div>masters: <span ng-repeat="axis in instance.axes">[{{axis.masterName}}]: {{axis.metapValue | number:3}} | </span></div>
+            </div>
         </div>
+    
     </div>
-
-</div>
-
-<div id="instances-tools">
-    <div id="add-instance" ng-click="data.addInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
-        <img src="img/addInstance.png">
-    </div>
-    <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
-        <img src="img/duplicateInstance.png">
-    </div>
-    <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
-        <img src="img/deleteInstance.png">
+    
+    <div id="instances-tools">
+        <div id="add-instance" ng-click="data.addInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
+            <img src="img/addInstance.png">
+        </div>
+        <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+            <img src="img/duplicateInstance.png">
+        </div>
+        <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+            <img src="img/deleteInstance.png">
+        </div>
     </div>
 </div>
