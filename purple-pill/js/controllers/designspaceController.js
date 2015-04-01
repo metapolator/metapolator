@@ -204,14 +204,54 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         return b;
     }
     
-    $scope.redrawAxesFromInput = function () {
+    $scope.redrawAxesFromInput = function (inputAxis) {
+        var slack = $scope.data.currentDesignSpace.mainMaster;
         var instance = $scope.data.currentInstance;
         var axes = instance.axes;
+        // prevent input beyond 0 - 100 or NaN
+        for (var i = 0; i < axes.length; i++) {
+            if (isNaN(axes[i].value) || axes[i].value == "") {
+                axes[i].value = 0;
+            }
+            if (axes[i].value > 100) {
+                axes[i].value = 100;
+            }
+            if (axes[i].value < 0) {
+                axes[i].value = 0;
+            }
+        }
+        // when 2 master situation, 1 follows 0
         if (axes.length == 2) {
             axes[1].value = 100 - axes[0].value;
+        }
+        if (axes.length > 2) {
+            var max = 0;
+            for (var i = 0; i < axes.length; i++) {
+                if (parseFloat(axes[i].value) >= max && i != slack) {
+                    max = parseFloat(axes[i].value);
+                }
+            }
+            if (inputAxis != slack) {
+                // correct the slack behaviour
+                axes[slack].value = 100 - max;
+            } else {
+                var newMax = 100 - axes[slack].value;
+                if (max != 0) {
+                    var ratio = newMax / max;
+                } else {
+                    var ratio = 1;
+                }
+                // correct all sliders but slack proportionally
+                for (var i = 0; i < axes.length; i++) {
+                    if (i != slack) {
+                        axes[i].value = formatX(ratio * axes[i].value);
+                    }
+                }
+            }
         }
         $scope.getMetapolationRatios();
         $scope.data.currentDesignSpace.trigger++;  
     };
+    
 
 });

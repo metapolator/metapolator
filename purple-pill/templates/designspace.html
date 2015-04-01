@@ -47,7 +47,7 @@
     <div class="" ng-show="data.currentDesignSpace.type != 'x'">
         <control ng-if="data.currentDesignSpace.type == 'Control'">
             <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 40 + 40) + 'px'}">
-                <input ng-hide="data.currentInstance.axes.length == 2 && $index == 1" counter="{{$index}}" ng-model="axis.value" ng-change="redrawAxesFromInput()" class="slider-input-output">
+                <input ng-hide="data.currentInstance.axes.length == 2 && $index == 1" counter="{{$index}}" ng-model="axis.value" ng-change="redrawAxesFromInput($index)" class="slider-input-output">
             </div>
             <select class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="data.currentDesignSpace.axes.indexOf(axis) as data.findMaster(axis.masterName).displayName for (index, axis) in data.currentDesignSpace.axes" ng-style="{'top': (data.currentDesignSpace.mainMaster * 40 + 40) + 'px'}" ng-if="data.currentDesignSpace.axes.length > 2"></select>
         </control>
