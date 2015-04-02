@@ -254,12 +254,12 @@
 			}
 					
 			#panel-6 {
-				width: calc(4/42 * 100%);
+				width: calc(1/42 * 100%);
 				position: relative;
 			}
 
 			#panel-7 {
-				width: calc(9/42 * 100%);
+				width: calc(12/42 * 100%);
 				position: relative;
 			}
 
