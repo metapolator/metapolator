@@ -327,11 +327,11 @@ The bar at the top of the specimen that controls the view options is further dev
 ![](http://mmiworks.net/metapolator/specimenbar.png)
 
 #### line spacing
-First up from left is the line spacing control, right after the display size control. It contains 3 presets and a user-controlled custom setting. Clicking the triangle, including its padding—
+First up from left is the line spacing control, right after the display size control. It contains 3 presets and a user-controlled custom setting. Clicking the triangle, including its padding:
 
 ![](http://mmiworks.net/metapolator/spacingtriangle.png)
 
-open a popup **settings** menu (means it got a checkmark for the current setting) with the following items:
+opens a popup **settings** menu (which means it got a checkmark for the current setting) with the following items:
 
 * Tight
 * Normal
@@ -345,9 +345,9 @@ The first 3 settings enable automatic line spacing according to predefined curve
 
 _tight, loose and normal line spacing indicators﻿_
 
-The width of these icons is identical to the width of **all** the text for the Custom spacing (including ‘/’). The height is related to the height of the Custom text _(here a 12px high icon fitted best with 14pt text)_.
+The width of these icons is identical to the width of **all** the text for the Custom spacing (including the ‘/’). The height is related to the height of the Custom text _(here a 12px high icon fitted best with 14pt text)_.
 
-The linespacing curves (y is the spacing value, x the display point size input):
+The linespacing curves (y is the spacing value, x the display point size):
 
 * **Tight** _(1.2@10pt, 1@24, 0.8@300﻿)_: if x > 300, then y = 0.8, else y = 1 / (0.1525x + 0.85) + 0.7785;
 * **Normal** _(1.5@10pt, 1.2@24, 0.9@300)_: if x > 300, then y = 0.9, else y = 1 / (0.1x + 0.58) + 0.8673;
@@ -357,21 +357,21 @@ For the **Custom** line spacing setting, a text field is shown:
 
 ![](http://mmiworks.net/metapolator/spacingcustom.png)
 
-the number is editable, the ‘/’ not. The number is always displayed with 2 decimal positions. When users switch to an automatic setting and then back to Custom again, the same Custom value is used. The default Custom value (when users switch to Custom for the first time during runtime) is 1.00. The Custom line spacing value is simply set, regardless of the current display point size.
+the number is editable, the ‘/’ not. The number is always displayed with 2 decimal positions. When users switch to an automatic setting and then back to Custom again, the same Custom value is used. The default Custom value (when users switch to Custom for the first time during runtime) is 1.00. The Custom line spacing value is used in a straightforward fashion, regardless of the current display point size.
 
 ### glyph mixer
 The Filter mechanism has evolved a bit. Instead of filtering glyphs out of a specimen, it is more about mixing glyphs in. **note** that the labels in the text box and on the 3-state slider have changed.
 
 * when there is nothing in the glyph mixer text box, the specimen is displayed as-is;
 * when there is user input in the mixer box, what happens depends on the **Pure setting**:
-  * when the setting is ‘least pure’ (slider to the left), the glyphs from the mixer box are inserted in the specimen (which means that the specimen **gets longer**), with a frequency that is halfway-house between inserting each glyph once (lame) and replacing half the glyph (the next setting, below), as follows:
+  * when the setting is ‘least pure’ (slider to the left), the glyphs from the mixer box are inserted in the specimen (which means that the specimen **gets longer**), with a frequency that is halfway-house between inserting each glyph once (quite lame) and replacing half the glyphs (the next setting, below), as follows:
     * take the glyphs in the mixer box as-is (no duplicates-removal);
-    * calculate the **frequency** of insertion: frequency = sqrt(\<length of specimen\> / (2 * \<length of mixer box string\>) ); do not round this number;
+    * calculate the insertion **interval**: frequency = sqrt( (2 * \<length of specimen\> ) / \<length of mixer box string\>); do not round this number;
     * make a **counter** that start at 0.5 and goes up by 1 _(0.5, 1.5, 2.5, 3.5, etc.)_;
-    * take counter * frequency, and round down; this is the **position to insert** a mixer box glyph (simply rotate through them);
+    * take counter * interval, and round down; this is the **position to insert** a mixer box glyph (simply rotate through them, starting a the front);
     * this up to the end of the specimen (**note:** it gets a bit longer in the process).
-  * when the Pure slider is in the middle, **every second** specimen glyph gets replaced by a mixer box glyph (simply rotate through them); specimen whitespace, linefeeds and returns are skipped in this process;take the glyphs in the mixer box as-is (no duplicates-removal);
-  * when the setting is ‘most pure’ (slider to the right), the specimen is ignored and the mixer box glyphs **generate sentence-like content**, in this way:
+  * when the Pure slider is in the middle, **every second** specimen glyph gets replaced by a mixer box glyph (simply rotate through them, starting a the front); specimen whitespace, linefeeds and returns are skipped in this process; take the glyphs in the mixer box as-is (no duplicates-removal);
+  * when the setting is ‘purest’ (slider to the right), the specimen is ignored and the mixer box glyphs **generate sentence-like content**, in this way:
     * clean up the mixer box glyphs, remove duplicates;
     * if there is (effectively) only one glyph in mixer box, put it on the screen (done), else—
     * for i = 0; i < mixer-box-length
