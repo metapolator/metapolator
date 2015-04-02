@@ -93,16 +93,16 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }
     };
     
-    $scope.data.registerInstance = function (instance, cpsString) {
+    $scope.data.registerInstance = function (instance) {
         $scope.data.families[0].instances.push(instance);
         $scope.data.deselectAllEdit();
         $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
         // create a master inside the engine and attach a cps file
         var cpsString = $scope.createMultiMasterCPS(instance.axes);
         if($scope.data.pill != "blue") {
-            $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
+            $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
             $scope.data.stateful.project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
-            $scope.data.stateful.project.open(instanceName);
+            $scope.data.stateful.project.open(instance.name);
             $scope.data.metapolate();
             $scope.data.localmenu.instances = false;
         } 
