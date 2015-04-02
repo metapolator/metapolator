@@ -366,7 +366,7 @@ The Filter mechanism has evolved a bit. Instead of filtering glyphs out of a spe
 * when there is user input in the mixer box, what happens depends on the **Pure setting**:
   * when the setting is ‘least pure’ (slider to the left), the glyphs from the mixer box are inserted in the specimen (which means that the specimen **gets longer**), with a frequency that is halfway-house between inserting each glyph once (quite lame) and replacing half the glyphs (the next setting, below), as follows:
     * take the glyphs in the mixer box as-is (no duplicates-removal);
-    * calculate the insertion **interval**: frequency = sqrt( (2 * \<length of specimen\> ) / \<length of mixer box string\>); do not round this number;
+    * calculate the insertion **interval**: frequency = sqrt( (2 * \<length of specimen\>) / \<length of mixer box string\> ); do not round this number;
     * make a **counter** that start at 0.5 and goes up by 1 _(0.5, 1.5, 2.5, 3.5, etc.)_;
     * take counter * interval, and round down; this is the **position to insert** a mixer box glyph (simply rotate through them, starting a the front);
     * this up to the end of the specimen (**note:** it gets a bit longer in the process).
