@@ -1,7 +1,7 @@
 app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
-    $scope.data.colorCoding = [""];
+    $scope.data.colorCoding = ["red"];
     
     $scope.addColor = function () {
         var a = $scope.data.colorCoding.length % 3;
@@ -52,8 +52,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.uniqueInstanceId = 0;
 
     $scope.data.addInstance = function() {
-        $scope.data.deselectAllEdit();
-        $scope.addColor();
         if ($scope.data.canAddInstance()) {
             // link instance to design space and use its masters and values
             var designSpace = $scope.data.currentDesignSpace;
@@ -62,13 +60,10 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             angular.forEach(axesSet, function(axis) {
                 axis.value = 50;
                 axis.metapValue = newMetapValue;
-            });
-            // add the instance
-            $scope.uniqueInstanceId++;
+            });            
             var instanceName = "instance" + $scope.uniqueInstanceId;
             var cpsFile = instanceName + ".cps";
-            var cpsString = $scope.createMultiMasterCPS(axesSet);
-            $scope.data.families[0].instances.push({
+            var thisInstance = {
                 id : $scope.uniqueInstanceId,
                 edit : true,
                 display : true,
@@ -79,33 +74,40 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 fontWeight : 700,
                 axes : axesSet,
                 cpsFile : cpsFile
-            });
-            $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
-            // create a master inside the engine and attach a cps file
-            if($scope.data.pill != "blue") {
-                $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
-                $scope.data.stateful.project.createMaster(instanceName, cpsFile, "skeleton.base");
-                $scope.data.stateful.project.open(instanceName);
-                $scope.data.metapolate();
-                $scope.data.localmenu.instances = false;
-            }
+            };
+            $scope.data.registerInstance(thisInstance);
         }
     };
 
     $scope.data.duplicateInstance = function(instance, space) {
         if (instance) {
-            $scope.data.deselectAllEdit();
             var duplicate = jQuery.extend(true, {}, instance);
             duplicate.name = $scope.duplicateName(duplicate.name);
             duplicate.edit = true;
-            $scope.uniqueInstanceId++;
             duplicate.id = $scope.uniqueInstanceId;
             if (space) {
+                // duplicate via duplicate design space
                 duplicate.designSpace = space;
             }
-            $scope.data.families[0].instances.push(duplicate);
-            $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+            $scope.data.registerInstance(duplicate);
         }
+    };
+    
+    $scope.data.registerInstance = function (instance, cpsString) {
+        $scope.data.families[0].instances.push(instance);
+        $scope.data.deselectAllEdit();
+        $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
+        // create a master inside the engine and attach a cps file
+        var cpsString = $scope.createMultiMasterCPS(instance.axes);
+        if($scope.data.pill != "blue") {
+            $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
+            $scope.data.stateful.project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
+            $scope.data.stateful.project.open(instanceName);
+            $scope.data.metapolate();
+            $scope.data.localmenu.instances = false;
+        } 
+        $scope.uniqueInstanceId++;
+        $scope.addColor();
     };
 
     $scope.duplicateName = function(inputname) {
