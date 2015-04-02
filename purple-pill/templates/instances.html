@@ -16,10 +16,9 @@
         <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
             <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance.edit}">
                 <span class="list-sequence-col" ng-class="{'start' : $first && !$last, 'end' : $last && !$first, 'middle' : $middle, 'solo' : $first && $last, 'currentinstance': instance == data.currentInstance}">
-                    <svg height="12" width="12">
-                        <path d="M6 0 L12 6 L6 12 L0 6 Z" class="diamond" stroke="{{data.colorCoding[instance.id]}}" fill="none">
+                    <svg height="16" width="16">
+                        <path d="M8 2 L14 8 L8 14 L2 8 Z" class="diamond" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
                     </svg> 
-                    <!--<div class="diamond"></div>-->
                 </span>
                 <span class="list-view-col rename" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
                 <span class="list-edit-col rename" ng-model="instance.name" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>

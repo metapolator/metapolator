@@ -213,7 +213,7 @@
                 height: 100%;
             }
             
-            specimen, specimen2, masters, designspace, instances, parameters {
+            specimen, specimen2, masters, designspace, instances, parameters, fontexport {
                 display: block;
                 position: relative;
             }
@@ -223,6 +223,10 @@
                 }
             
                 masters.sub-panel {
+                    overflow: visible;
+                }
+                
+                fontexport.sub-panel {
                     overflow: visible;
                 }
 			
@@ -767,7 +771,6 @@
             .slider-input-container {
                 position: absolute;
                 z-index: 10;
-                left: 120px; 
                 color: #f85c37;
                 font-size: 9px;
             }
@@ -910,7 +913,7 @@
             }
                     
                 .list-sequence-col svg {
-                    margin: 7px;
+                    margin: 6px;
                 }
                     
                     /* while dragging */

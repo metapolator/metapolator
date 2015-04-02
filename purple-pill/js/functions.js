@@ -6,7 +6,7 @@ $(document).ready(function() {
 
     /***************  dividers ***************/
 
-    moveLandscape(0, false);
+    moveLandscape(1, false);
     
     $("divider").draggable({
         axis : "x",

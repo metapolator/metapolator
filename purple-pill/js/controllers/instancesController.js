@@ -1,7 +1,31 @@
 app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
-    $scope.data.colorCoding = ["red","green","blue","purple","orange","brown"];
+    $scope.data.colorCoding = [""];
+    
+    $scope.addColor = function () {
+        var a = $scope.data.colorCoding.length % 3;
+        var b = ($scope.data.colorCoding.length + 1) % 3;
+        var c = ($scope.data.colorCoding.length + 2) % 3;
+        var r = getRandom(a);
+        var g = getRandom(b);
+        var b = getRandom(c);
+        var color = "rgb(" + r + "," + g + "," + b + ")";
+        console.log(color);
+        $scope.data.colorCoding.push(color);
+    };
+    
+    $scope.getDiamondColor = function (instance) {
+        if (instance == $scope.data.currentInstance) {
+            return $scope.data.colorCoding[instance.id];
+        } else {
+            return "none";    
+        }
+    };
+    
+    function getRandom (x) {
+        return Math.round(85 * Math.random()) + x * 85;
+    }
 
     $scope.data.metapolate = function() {
         if($scope.data.pill != "blue") {
@@ -29,6 +53,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     $scope.data.addInstance = function() {
         $scope.data.deselectAllEdit();
+        $scope.addColor();
         if ($scope.data.canAddInstance()) {
             // link instance to design space and use its masters and values
             var designSpace = $scope.data.currentDesignSpace;

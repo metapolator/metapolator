@@ -17,6 +17,7 @@ app.directive('control', function($document) {
             
             var axisWidth;
             var paddingLeft = 50, paddingTop = 30, paddingLabel = 25, axisDistance = 40, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3;
+            var diamondShape = '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize;
 
             // watch for data changes and redraw
             scope.$watchCollection('[data.currentInstance, data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
@@ -32,8 +33,9 @@ app.directive('control', function($document) {
             /***** redraw *****/
             function redraw() {
                 // responsive axes
-                scope.$apply(scope.designSpaceWidth = $("#panel-4").outerWidth());
+                scope.designSpaceWidth = $("#panel-4").outerWidth();
                 axisWidth = scope.designSpaceWidth - 200;
+                var axesString = 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0';
                 
                 designSpace = scope.data.currentDesignSpace;
                 var inactiveInstances = [];
@@ -53,8 +55,6 @@ app.directive('control', function($document) {
                 layer1.selectAll('*').remove();
                 layer2.selectAll('*').remove();
                 
-                //if (!(inactiveInstances.length == 2 || i == 1)) {
-
                 // draw inactive instances
                 for(i = 0; i < inactiveInstances.length; i++) {
                     for(j = 0; j < inactiveInstances[i].axes.length; j++) {
@@ -67,12 +67,13 @@ app.directive('control', function($document) {
                                 }
                                 var y = j * axisDistance + paddingTop - diamondsize - diamondPadding;
                                 return "translate(" + x + "," + y + ")";
-                            }).append('polygon').attr('points', '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize).attr('class', 'blue-diamond').attr('stroke', function(){
+                            }).append('polygon').attr('points', diamondShape).attr('class', 'blue-diamond').attr('stroke', function(){
                                 return scope.data.colorCoding[inactiveInstances[i].id];
                             }).attr('fill', 'none'); 
                         } 
                     } 
                 }
+                var diamondcolor = scope.data.colorCoding[thisInstance.id];
                 
                 
 
@@ -87,21 +88,15 @@ app.directive('control', function($document) {
                     }).attr('class', 'slider-container');
 
                     // append axis itself
-                    axes.append('path').attr('d', 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0').attr('class', 'slider-axis');
+                    axes.append('path').attr('d', axesString).attr('class', 'slider-axis');
                     axes.append('path').attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (thisInstance.axes[0].value * (axisWidth / 100) + indentLeft) + ' 0').attr('class', 'slider-axis-active').attr('id', "axis-active0");
 
-                    // append slider handles
+                    // append slider handle and according diamond
                     axes.append('circle').attr('r', 8).attr('cx', thisInstance.axes[0].value * (axisWidth / 100) + indentLeft).attr('cy', '0').attr('index', 0).attr('class', 'slider-handle').attr('id', 'slider0').call(drag);
-
-                    // create left label
-                    //axes.append('text').attr('x', paddingLeft - indentLeft).attr('y', paddingLabel).text(scope.data.findMaster(thisInstance.axes[0].masterName).displayName).attr('class', 'slider-label-left slider-label');
+                    axes.append('g').attr('id', 'diamond0').attr('transform', "translate(" + (thisInstance.axes[0].value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)").append('polygon').attr('points', diamondShape).attr('fill', diamondcolor);
 
                     // create left label and remove button
-                    var leftlabels = axes.append('g').attr('transform', function() {
-                        var x = paddingLeft - indentLeft;
-                        var y = paddingLabel;
-                        return "translate(" + x + "," + y + ")";
-                    }).attr('class', 'slider-label-right-container');
+                    var leftlabels = axes.append('g').attr('transform', "translate(" + (paddingLeft - indentLeft) + "," + paddingLabel + ")").attr('class', 'slider-label-right-container');
                     leftlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
                     leftlabels.append('text').text(scope.data.findMaster(thisInstance.axes[0].masterName).displayName).attr('class', 'slider-label-right slider-label').attr('x', 16);
                     leftlabels.append('text').attr('x', 0).attr('y', '2').text("o").attr('masterName', thisInstance.axes[0].masterName).attr('class', 'slider-button slider-remove-master').on('click', function() {
@@ -125,8 +120,9 @@ app.directive('control', function($document) {
                             return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0 L' + (indentLeft + axisWidth) + ' ' + axisTab;
                         }).attr('class', 'slider-axis-active');
 
-                        // append slider handles
+                        // append slider handles and according diamond
                         axes.append('circle').attr('r', 8).attr('cx', thisInstance.axes[0].value * (axisWidth / 100) + indentLeft).attr('cy', '0').attr('index', 0).attr('class', 'slider-handle').attr('type', 'two-master-handle').call(drag);
+                        axes.append('g').attr('id', 'diamond0').attr('transform', "translate(" + (thisInstance.axes[0].value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)").append('polygon').attr('points', diamondShape).attr('fill', diamondcolor);
 
                         // create right label
                         //axes.append('text').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingLabel).text(scope.data.findMaster(thisInstance.axes[1].masterName).displayName).attr('class', 'slider-label-right slider-label');
@@ -154,7 +150,7 @@ app.directive('control', function($document) {
 
                         // append axis itself
                         axes.append('path').attr('d', function(d, i) {
-                            return 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0';
+                            return axesString;
                         }).attr('class', 'slider-axis');
                         // active axis
                         axes.append('path').attr('d', function(d, i) {
@@ -167,7 +163,7 @@ app.directive('control', function($document) {
                             return "axis-active" + i;
                         });
 
-                        // append slider handles
+                        // append slider handles and according diamond
                         axes.append('circle').attr('r', 8).attr('cx', function(d, i) {
                             if (i == designSpace.mainMaster) {
                                 return (100 - d.value) * (axisWidth / 100) + indentLeft;
@@ -179,6 +175,16 @@ app.directive('control', function($document) {
                         }).attr('class', 'slider-handle').attr('id', function(d, i) {
                             return 'slider' + i;
                         }).call(drag);
+                        
+                        axes.append('g').attr('id', function(d,i){
+                            return 'diamond' + i;
+                        }).attr('transform', function(d, i) {
+                            if (i == designSpace.mainMaster) {
+                                return "translate(" + ((100 - d.value) * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)";
+                            } else {
+                                return "translate(" + (d.value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)";
+                            }
+                        }).append('polygon').attr('points', diamondShape).attr('fill', diamondcolor);
                     }
 
                     // left labels and remove buttons
@@ -249,6 +255,7 @@ app.directive('control', function($document) {
                     }
                 } else {
                     d3.select(this).attr('cx', xPosition);
+                    d3.select('g#diamond' + thisIndex).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
                     writeValueToModel(1, 100 - thisValue);
                 }
                 // write value of this axis to model
@@ -294,11 +301,13 @@ app.directive('control', function($document) {
             function drawNormalAxes(axis, xPosition) {
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
                 d3.select("path#axis-active" + axis).attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0');
+                d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
             }
 
             function drawSlackAxes(axis, xPosition) {
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
                 d3.select("path#axis-active" + axis).attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab);
+                d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
             }
 
             function writeValueToModel(axis, value) {
@@ -331,7 +340,6 @@ app.directive('control', function($document) {
                 }
                 return largest;
             }
-
         }
     };
 });
