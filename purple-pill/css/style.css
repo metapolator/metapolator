@@ -561,7 +561,7 @@
         margin: 0;
         padding: 0;
         background: #fff;
-        height: 32px;
+        height: 30px;
     }
 
     #design-space-tabs li {
@@ -570,7 +570,7 @@
         margin-right: 4px;
         cursor: pointer;
         background: #fff;
-        height: 32px;
+        height: 30px;
     }
 
     #design-space-tabs li.selected {
