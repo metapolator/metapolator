@@ -2,14 +2,20 @@ app.directive('control', function($document) {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
+            
+            
+            $( window ).resize(function() {
+                return redraw();
+            });
+            
             var dragActive = false;
             var designSpace;
             var thisInstance;
             var svg = d3.select(element[0]).append('svg');
             var layer2 = svg.append('g');
             var layer1 = svg.append('g');
-            scope.designSpaceWidth = $("#panel-4").outerWidth();
-            var axisWidth = scope.designSpaceWidth - 200;
+            
+            var axisWidth;
             var paddingLeft = 50, paddingTop = 30, paddingLabel = 25, axisDistance = 40, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3;
 
             // watch for data changes and redraw
@@ -25,6 +31,10 @@ app.directive('control', function($document) {
 
             /***** redraw *****/
             function redraw() {
+                // responsive axes
+                scope.$apply(scope.designSpaceWidth = $("#panel-4").outerWidth());
+                axisWidth = scope.designSpaceWidth - 200;
+                
                 designSpace = scope.data.currentDesignSpace;
                 var inactiveInstances = [];
                 angular.forEach(scope.data.families, function(family) {
