@@ -2,6 +2,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
     $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
+    $scope.designSpaceWidth;
 
     $scope.data.findMaster = function(masterName) {
         for (var i = 0; i < $scope.data.sequences.length; i++) {

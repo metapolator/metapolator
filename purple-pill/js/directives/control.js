@@ -8,7 +8,9 @@ app.directive('control', function($document) {
             var svg = d3.select(element[0]).append('svg');
             var layer2 = svg.append('g');
             var layer1 = svg.append('g');
-            var paddingLeft = 50, paddingTop = 30, axisWidth = 200, paddingLabel = 25, axisDistance = 40, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3;
+            scope.designSpaceWidth = $("#panel-4").outerWidth();
+            var axisWidth = scope.designSpaceWidth - 200;
+            var paddingLeft = 50, paddingTop = 30, paddingLabel = 25, axisDistance = 40, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3;
 
             // watch for data changes and redraw
             scope.$watchCollection('[data.currentInstance, data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
