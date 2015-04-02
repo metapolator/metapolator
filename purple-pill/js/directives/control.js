@@ -40,20 +40,26 @@ app.directive('control', function($document) {
                 // remove all previous items before render
                 layer1.selectAll('*').remove();
                 layer2.selectAll('*').remove();
+                
+                //if (!(inactiveInstances.length == 2 || i == 1)) {
 
                 // draw inactive instances
                 for(i = 0; i < inactiveInstances.length; i++) {
-                    layer2.append('g').selectAll('polygon').data(inactiveInstances[i].axes).enter().append('g').attr('transform', function(d, i) {
-                        if (i == scope.data.currentDesignSpace.mainMaster) {
-                            var x = paddingLeft - diamondsize + axisWidth / 100 * (100 - d.value);    
-                        } else {
-                            var x = paddingLeft - diamondsize + axisWidth / 100 * d.value;    
-                        }
-                        var y = i * axisDistance + paddingTop - diamondsize - diamondPadding;
-                        return "translate(" + x + "," + y + ")";
-                    }).append('polygon').attr('points', '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize).attr('class', 'blue-diamond').attr('stroke', function(){
-                        return scope.data.colorCoding[inactiveInstances[i].id];
-                    }).attr('fill', 'none');   
+                    for(j = 0; j < inactiveInstances[i].axes.length; j++) {
+                        if (!(inactiveInstances[i].axes.length == 2 && j == 1)) {
+                            layer2.append('g').attr('transform', function() {
+                                if (j == scope.data.currentDesignSpace.mainMaster) {
+                                    var x = paddingLeft - diamondsize + axisWidth / 100 * (100 - inactiveInstances[i].axes[j].value);    
+                                } else {
+                                    var x = paddingLeft - diamondsize + axisWidth / 100 * inactiveInstances[i].axes[j].value;    
+                                }
+                                var y = j * axisDistance + paddingTop - diamondsize - diamondPadding;
+                                return "translate(" + x + "," + y + ")";
+                            }).append('polygon').attr('points', '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize).attr('class', 'blue-diamond').attr('stroke', function(){
+                                return scope.data.colorCoding[inactiveInstances[i].id];
+                            }).attr('fill', 'none'); 
+                        } 
+                    } 
                 }
                 
                 
