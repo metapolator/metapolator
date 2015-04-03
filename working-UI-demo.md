@@ -375,10 +375,10 @@ The Filter mechanism has evolved a bit. Instead of filtering glyphs out of a spe
     * clean up the mixer box glyphs, remove duplicates;
     * if there is (effectively) only one glyph in mixer box, put it on the screen (done), else—
     * for i = 0; i < mixer-box-length
-    * for j = i; j < mixer-box-length _(we cover only half the matrix, from the diagonal to the right)_
-      * if i == j, append “\<space\>glyph<sub>i</sub>glyph<sub>i</sub>” to the output string, **unless** i == j == 0, then start the string with “glyph<sub>i</sub>glyph<sub>i</sub>”; else—
-      * if j-i is **odd**, append “glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
-      * if j-i is **even**, append “\<space\>glyph<sub>i</sub>glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
+      * for j = i; j < mixer-box-length _(we cover only half the matrix, from the diagonal to the right)_
+        * if i == j, append “\<space\>glyph<sub>i</sub>glyph<sub>i</sub>” to the output string, **unless** i == j == 0, then start the string with “glyph<sub>i</sub>glyph<sub>i</sub>”; else—
+        * if j-i is **odd**, append “glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
+        * if j-i is **even**, append “\<space\>glyph<sub>i</sub>glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
     * done.
 
 _example: input string “abcde” generates the text output “aaba acada aea bbcb bdbeb ccdc cec dded ee”﻿_
