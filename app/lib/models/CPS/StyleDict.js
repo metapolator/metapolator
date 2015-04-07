@@ -30,7 +30,7 @@ define([
         // TODO: Not deleting the channel will take a bit more memory but in turn
         // needs less garbadge collection
         // we could delete this when the key is removed from this._dict
-        // and not added again, supposedly in _rebuildIndex and _paramerChangeHandler
+        // and not added again, supposedly in _rebuildIndex and _parameterChangeHandler
         // delete this._dependants[key];
         // however, _rebuildIndex and updateDictEntry are not part of
         // the concept of emitter/channel thus the emitter should
@@ -526,7 +526,7 @@ define([
         var subscription = this._propertySubscriptions[key] = [];
         this._dict[key] = parameters.get(key);
         subscription[0] = parameters;
-        subscription[1] = parameters.onPropertyChange(key, [this, '_paramerChangeHandler'], parameters);
+        subscription[1] = parameters.onPropertyChange(key, [this, '_parameterChangeHandler'], parameters);
         subscription[2] = parametersIndex;
     };
 
@@ -553,7 +553,7 @@ define([
         this._invalidateCache(key);
     };
 
-    _p._paramerChangeHandler = function(parameters, key, eventData) {
+    _p._parameterChangeHandler = function(parameters, key, eventData) {
         switch(eventData) {
             case('change'):
                 // The value is still active and available, but its definition changed
@@ -567,7 +567,8 @@ define([
                 break;
             default:
                 throw new ReceiverError('Expected an event of "change" or '
-                                       + '"delete" but got "'+eventData+'"');
+                                       + '"delete" but got "'+eventData+'" '
+                                       + '(parameterChangeHandler for "'+key+'")');
         }
     };
 
