@@ -57,7 +57,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                         if(glyph.edit){
                             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
                             // check if there is already a rule for this keyName in this glyph
-                            if (!hasRule(glyph)) {
+                            if (!$scope.hasRule(glyph)) {
                                 var l = parameterCollection.length;
                                 var selectorListString = "glyph#" + glyph.value + " *";
                                 var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
@@ -68,7 +68,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                                 console.log("has rule(" + ruleIndex + ")");
                             }
                             // check if parameter is there already in the rule
-                            if (!hasParameter(glyph, keyName)) {
+                            if (!$scope.hasParameter(glyph, keyName)) {
                                 // add parameter to rule
                                 glyph.parameters.push({
                                     name: keyName,
@@ -76,7 +76,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                                 }); 
                             } else {
                                 // edit parameter in rule
-                                var parameter = getParameterInRule(glyph, keyName);
+                                var parameter = $scope.getParameterInRule(glyph, keyName);
                                 parameter.value = value;
                             }
                             var cpsRule = parameterCollection.getItem(ruleIndex);
@@ -92,7 +92,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
     };
     
-    function getParameterInRule(glyph, keyName){
+    $scope.getParameterInRule = function(glyph, keyName){
         var theParameter;
         angular.forEach(glyph.parameters, function(parameter) {
             if (parameter.name == keyName) {
@@ -100,17 +100,17 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
         });
         return theParameter;
-    }
+    };
     
-    function hasRule(glyph){
+    $scope.hasRule = function(glyph){
         var hasRule = false;
         if (glyph.parameters.length > 0) {
             hasRule = true;
         }
         return hasRule;
-    }
+    };
     
-    function hasParameter(glyph, keyName){
+    $scope.hasParameter = function(glyph, keyName){
         var hasParameter = false;
         angular.forEach(glyph.parameters, function(parameter) {
             if (parameter.name == keyName) {
@@ -118,7 +118,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
         });
         return hasParameter;
-    }
+    };
 
     $scope.data.getParameter = function () {
         angular.forEach($scope.data.sequences, function(sequence) {
