@@ -16529,8 +16529,14 @@ define('metapolator/models/CPS/elements/ParameterDict',[
         this._dict[key] = index;
         // emit events
         if(old) old.destroy();
-        this._trigger(event, key);
+
+        // first trigger the propertyChange channel, it's less confusing
+        // for listeners when they don't get a propertyChange 'add' event
+        // after having added the property already because of the normal on channel
+        // FIXME: can there be a reasonable rule, like is it always better to
+        // _triggerPropertyChange before _trigger or so?
         this._triggerPropertyChange(key, event);
+        this._trigger(event, key);
     };
 
     /**
@@ -17637,7 +17643,7 @@ define('metapolator/models/CPS/StyleDict',[
         // TODO: Not deleting the channel will take a bit more memory but in turn
         // needs less garbadge collection
         // we could delete this when the key is removed from this._dict
-        // and not added again, supposedly in _rebuildIndex and _paramerChangeHandler
+        // and not added again, supposedly in _rebuildIndex and _parameterChangeHandler
         // delete this._dependants[key];
         // however, _rebuildIndex and updateDictEntry are not part of
         // the concept of emitter/channel thus the emitter should
@@ -18133,7 +18139,7 @@ define('metapolator/models/CPS/StyleDict',[
         var subscription = this._propertySubscriptions[key] = [];
         this._dict[key] = parameters.get(key);
         subscription[0] = parameters;
-        subscription[1] = parameters.onPropertyChange(key, [this, '_paramerChangeHandler'], parameters);
+        subscription[1] = parameters.onPropertyChange(key, [this, '_parameterChangeHandler'], parameters);
         subscription[2] = parametersIndex;
     };
 
@@ -18160,7 +18166,7 @@ define('metapolator/models/CPS/StyleDict',[
         this._invalidateCache(key);
     };
 
-    _p._paramerChangeHandler = function(parameters, key, eventData) {
+    _p._parameterChangeHandler = function(parameters, key, eventData) {
         switch(eventData) {
             case('change'):
                 // The value is still active and available, but its definition changed
@@ -18174,7 +18180,8 @@ define('metapolator/models/CPS/StyleDict',[
                 break;
             default:
                 throw new ReceiverError('Expected an event of "change" or '
-                                       + '"delete" but got "'+eventData+'"');
+                                       + '"delete" but got "'+eventData+'" '
+                                       + '(parameterChangeHandler for "'+key+'")');
         }
     };
 
