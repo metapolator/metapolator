@@ -83,8 +83,14 @@ define([
     _p.getRulesForElement = function(element) {
         // FIXME: hard coding global.cps is not good here, can this
         // be done configurable?
-        var ruleName = element.master
-                    ? this._getMasterRule(element.master.id)
+        // FIXME: instead of using master a new property in the cps
+        //      nodes, something like "cpsRootElement" could be created
+        //      Or master returns itself when using the master property
+        var master = element.MOMType === 'MOM Master'
+                    ? element
+                    : element.master
+          , ruleName = master
+                    ? this._getMasterRule(master.id)
                     : 'global.cps'
           , parameterCollection
           , subscriptionID
