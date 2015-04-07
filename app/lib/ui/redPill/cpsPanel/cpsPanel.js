@@ -2,15 +2,15 @@ define([
     'angular'
   , './cpsPanel-controller'
   , './cpsPanel-directive'
-  , './elements/parameterDict'
+  , './elements/propertyDict'
 ], function(
     angular
   , Controller
   , directive
-  , parameterDict
+  , propertyDict
 ) {
     "use strict";
-    return angular.module('mtk.cpsPanel', [parameterDict.name])
+    return angular.module('mtk.cpsPanel', [propertyDict.name])
       .controller('CpsPanelController', Controller)
       .directive('mtkCpsPanel', directive)
       ;

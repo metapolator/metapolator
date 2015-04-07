@@ -10,17 +10,16 @@ define([
           // not all be of type CPS/Rule. There are also @namespace/@import
           // collections and comments.
           , cpsRule = parameterCollection.getItem(2)
-          , parameterDict = cpsRule.parameters
+          , propertyDict = cpsRule.parameters
           ;
-
         this.$scope = $scope;
-        this.$scope.parameterDict = parameterDict;
+        this.$scope.propertyDict = propertyDict;
     }
     CpsPanelController.$inject = ['$scope', 'ModelController'];
     var _p = CpsPanelController.prototype;
 
 
-    // This is handling one ParameterCollection at a time.
+    // This is handling one PropertyCollection at a time.
     // Also it provides display and update facilities for StyleDicts
     // That is two modes!
 
@@ -34,12 +33,12 @@ define([
 
     // if possible invalid and valid parameters equal from their inputs but differ in style
 
-    // Parameters are in:
+    // Propertys are in:
     // StyleDict dictionary displays
-    // Rule Displays (ParameterDict)
+    // Rule Displays (PropertyDict)
 
-    // Rules are in ParameterCollections (displayed in Collection View)
-    // ParameterCollections are in other ParameterCollections
+    // Rules are in PropertyCollections (displayed in Collection View)
+    // PropertyCollections are in other PropertyCollections
     //          - It should be possible to embed a Collection View into another
     //            with some visual impression of the depth (maybe not indents, because space may get few)
     //          - it should be possible to open any collection view as top level
@@ -63,7 +62,7 @@ define([
     // the inactive parameters should be visually very differeny from the active parameters
     //           although, editing should be possible
     // parameters can be added to all displayed rules
-    // (OR new rules can be added to the master ParameterCollection of the element
+    // (OR new rules can be added to the master PropertyCollection of the element
     // but that must be a shortcut to the same functionality as in the Collection View)
 
     // the other styledict view will just display the active key/value pairs
@@ -72,10 +71,10 @@ define([
 
 
     // startin bottom up ...
-    // first I implement ParameterDict (a list of Parameters and Comments)
+    // first I implement PropertyDict (a list of Propertys and Comments)
     // and the full update cycle of it.
     // initially: for each item: make item // just display
-    //            subscribe to changes of ParameterCollection (things won't change, just get replaced)
+    //            subscribe to changes of PropertyCollection (things won't change, just get replaced)
     //            on any change: update the right thing
     //
     //            make an update to any thing

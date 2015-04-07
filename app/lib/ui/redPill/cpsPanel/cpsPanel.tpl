@@ -2,6 +2,6 @@
 <!--
     Aa a starter: we draw only one preselected parameter dict
 
-    How to pass the parameterDict element to the controller of cps-parameter-dict?
+    How to pass the propertyDict element to the controller of cps-property-dict?
 -->
-<cps-parameter-dict cps-parameter-dict="parameterDict" />
+<mtk-cps-property-dict cps-property-dict="propertyDict" />
