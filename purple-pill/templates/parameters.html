@@ -1,17 +1,21 @@
 <div class="panel-border">
     <div id="temp-parameters" class="standard-padding">
+        Master
         <div ng-repeat="parameter in parameters">
-            * <input ng-model="parameter.factor" ng-blur="data.setParameter(parameter, 'factor')"> 
-            + <input ng-model="parameter.summand" ng-blur="data.setParameter(parameter, 'summand')"> 
-            {{parameter.name}}
+            <input ng-model="parameter.factor" ng-blur="data.setParameterMaster(parameter, parameter.factor, 'Factor')"> 
+            <!--+ <input ng-model="parameter.summand" ng-blur="data.setParameter(parameter, parameter.summand, 'Summand')"> -->
+            {{parameter.name}}Factor
         </div>
-        
-    
-        
+        <hr>
+        Glyph
+        <div ng-repeat="parameter in parameters">
+            <input ng-model="parameter.factor" ng-blur="data.setParameterGlyph(parameter, parameter.factor, 'Factor')"> 
+            {{parameter.name}}Factor
+        </div>
         <button ng-click="data.getParameter()">get</button>
     </div>
     
-    <!--
+    
         
     <div id="inspector" class="standard-padding">
         <div class="inspector-header">
@@ -32,6 +36,8 @@
             </div>
         </div>
     </div>
+    
+    <!--
     
     <div id="parameters-selection">
         <div id="parameters-of-master" ng-if="areMastersSelected()">

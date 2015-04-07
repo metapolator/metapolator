@@ -3,46 +3,122 @@ app.controller("parametersController", function($scope, sharedScope) {
     
     $scope.parameters = [{
         name: "weight",
-        factor: null,
+        factor: 1,
         summand: null
     },{
         name: "width",
-        factor: null,
+        factor: 1,
         summand: null
     },{
         name: "height",
-        factor: null,
+        factor: 1,
         summand: null
-    },{
+    }];
+    /*,{
         name: "sideBearingLeft",
-        factor: null,
+        factor: 1,
         summand: null
     },{
         name: "sideBearingRight",
-        factor: null,
+        factor: 1,
         summand: null
     }];
+    */
     $scope.parameterVariations = ["Factor", "Summand"];
 
 
     
-    $scope.data.setParameter = function (key, value, nr, factor) {
+    $scope.data.setParameterMaster = function (key, value, type) {
+        var keyName = key.name + type;
+        if (key.name == "weight") {
+            ruleLine = 2;
+        } else {
+            ruleLine = 1;
+        }
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
                     var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
-                    var l = parameterCollection.length;
-                    var cpsRule = parameterCollection.getItem(l - nr);
+                    var cpsRule = parameterCollection.getItem(ruleLine);
                     var parameterDict = cpsRule.parameters;
                     var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-                    if (!factor) {
-                        value /= 100;
-                    }
-                    setParameter(parameterDict, key, value); 
+                    setParameter(parameterDict, keyName, value); 
                 }
             });
         });
     };
+    
+    $scope.data.setParameterGlyph = function (key, value, type) {
+        var keyName = key.name + type;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[0]) {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if(glyph.edit){
+                            var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
+                            // check if there is already a rule for this keyName in this glyph
+                            if (!hasRule(glyph)) {
+                                var l = parameterCollection.length;
+                                var selectorListString = "glyph#" + glyph.value + " *";
+                                var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
+                                // register rule position in model
+                                glyph.ruleIndex = ruleIndex;
+                            } else {
+                                var ruleIndex = glyph.ruleIndex;
+                                console.log("has rule(" + ruleIndex + ")");
+                            }
+                            // check if parameter is there already in the rule
+                            if (!hasParameter(glyph, keyName)) {
+                                // add parameter to rule
+                                glyph.parameters.push({
+                                    name: keyName,
+                                    value: value
+                                }); 
+                            } else {
+                                // edit parameter in rule
+                                var parameter = getParameterInRule(glyph, keyName);
+                                parameter.value = value;
+                            }
+                            var cpsRule = parameterCollection.getItem(ruleIndex);
+                            console.log(cpsRule);
+                            var parameterDict = cpsRule.parameters;
+                            console.log(parameterDict);
+                            var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+                            setParameter(parameterDict, keyName, value); 
+                        }
+                    });
+                }
+            });
+        });
+    };
+    
+    function getParameterInRule(glyph, keyName){
+        var theParameter;
+        angular.forEach(glyph.parameters, function(parameter) {
+            if (parameter.name == keyName) {
+                theParameter = parameter;
+            }
+        });
+        return theParameter;
+    }
+    
+    function hasRule(glyph){
+        var hasRule = false;
+        if (glyph.parameters.length > 0) {
+            hasRule = true;
+        }
+        return hasRule;
+    }
+    
+    function hasParameter(glyph, keyName){
+        var hasParameter = false;
+        angular.forEach(glyph.parameters, function(parameter) {
+            if (parameter.name == keyName) {
+                hasParameter = true;
+            }
+        });
+        return hasParameter;
+    }
 
     $scope.data.getParameter = function () {
         angular.forEach($scope.data.sequences, function(sequence) {
@@ -68,20 +144,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     
     
     
-    $scope.data.addRule = function () {
-        var key = "widthFactor";
-        var value = 5;
-        var masterName = "web";
-        var glyphName = "a";
-        var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, masterName);
-        var l = parameterCollection.length;
-        var selectorListString = "master#" + masterName + " glyph#" + glyphName + " *";
-        var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
-        var cpsRule = parameterCollection.getItem(ruleIndex);
-        var parameterDict = cpsRule.parameters;
-        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-        setParameter(parameterDict, key, value); 
-    };
+
     
     
     
