@@ -18,7 +18,7 @@ var basename = path.basename;
  * Expose the root command.
  */
 
-exports = module.exports = new Command;
+exports = module.exports = new Command();
 
 /**
  * Expose `Command`.
@@ -58,7 +58,7 @@ function Option(flags, description) {
  * @api private
  */
 
-Option.prototype.name = function(){
+Option.prototype.name = function() {
   return this.long
     .replace('--', '')
     .replace('no-', '');
@@ -72,9 +72,8 @@ Option.prototype.name = function(){
  * @api private
  */
 
-Option.prototype.is = function(arg){
-  return arg == this.short
-    || arg == this.long;
+Option.prototype.is = function(arg) {
+  return arg == this.short || arg == this.long;
 };
 
 /**
@@ -121,28 +120,40 @@ Command.prototype.__proto__ = EventEmitter.prototype;
  *      program
  *        .command('setup')
  *        .description('run remote setup commands')
- *        .action(function(){
+ *        .action(function() {
  *          console.log('setup');
  *        });
  *
  *      program
  *        .command('exec <cmd>')
  *        .description('run the given remote command')
- *        .action(function(cmd){
+ *        .action(function(cmd) {
  *          console.log('exec "%s"', cmd);
+ *        });
+ *
+ *      program
+ *        .command('teardown <dir> [otherDirs...]')
+ *        .description('run teardown commands')
+ *        .action(function(dir, otherDirs) {
+ *          console.log('dir "%s"', dir);
+ *          if (otherDirs) {
+ *            otherDirs.forEach(function (oDir) {
+ *              console.log('dir "%s"', oDir);
+ *            });
+ *          }
  *        });
  *
  *      program
  *        .command('*')
  *        .description('deploy the given env')
- *        .action(function(env){
+ *        .action(function(env) {
  *          console.log('deploying "%s"', env);
  *        });
  *
  *      program.parse(process.argv);
   *
  * @param {String} name
- * @param {String} [desc]
+ * @param {String} [desc] for git-style sub-commands
  * @return {Command} the new command
  * @api public
  */
@@ -161,7 +172,7 @@ Command.prototype.command = function(name, desc) {
 };
 
 /**
- * Define argument syntax for a top-level command.
+ * Define argument syntax for the top-level command.
  *
  * @api public
  */
@@ -194,7 +205,7 @@ Command.prototype.addImplicitHelpCommand = function() {
  * @api public
  */
 
-Command.prototype.parseArgDescription = function(args){
+Command.prototype.parseArgDescription = function(args) {
   if (!args.length) return null;
   var self = this
   var repeatToken = '...';
@@ -232,7 +243,7 @@ Command.prototype.parseArgDescription = function(args){
  *      program
  *        .command('help')
  *        .description('display verbose help')
- *        .action(function(){
+ *        .action(function() {
  *           // output help here
  *        });
  *
@@ -241,7 +252,7 @@ Command.prototype.parseArgDescription = function(args){
  * @api public
  */
 
-Command.prototype.action = function(fn){
+Command.prototype.action = function(fn) {
   var self = this;
   var listener = function(args, unknown){
     // Parse any so-far unknown options
@@ -257,7 +268,7 @@ Command.prototype.action = function(fn){
 
     // Leftover arguments need to be pushed back. Fixes issue #56
     if (parsed.args.length) args = parsed.args.concat(args);
-    self._args.forEach(function(arg, i){
+    self._args.forEach(function(arg, i) {
       if (arg.required && null == args[i]) {
         self.missingArgument(arg.name);
       }
@@ -326,7 +337,7 @@ Command.prototype.action = function(fn){
  * @api public
  */
 
-Command.prototype.option = function(flags, description, fn, defaultValue){
+Command.prototype.option = function(flags, description, fn, defaultValue) {
   var self = this
     , option = new Option(flags, description)
     , oname = option.name()
@@ -348,7 +359,7 @@ Command.prototype.option = function(flags, description, fn, defaultValue){
 
   // when it's passed assign the value
   // and conditionally invoke the callback
-  this.on(oname, function(val){
+  this.on(oname, function(val) {
     // coercion
     if (null !== val && fn) val = fn(val, undefined === self[name] ? defaultValue : self[name]);
 
@@ -379,7 +390,7 @@ Command.prototype.option = function(flags, description, fn, defaultValue){
  * @api public
  */
 
-Command.prototype.parse = function(argv){
+Command.prototype.parse = function(argv) {
   // implicit help
   if (this.executables) this.addImplicitHelpCommand();
   this.option('-h, --help', 'output usage information');
@@ -456,7 +467,7 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
  * @api private
  */
 
-Command.prototype.normalize = function(args){
+Command.prototype.normalize = function(args) {
   var ret = []
     , arg
     , lastOpt
@@ -464,12 +475,14 @@ Command.prototype.normalize = function(args){
 
   for (var i = 0, len = args.length; i < len; ++i) {
     arg = args[i];
-    i > 0 && (lastOpt = this.optionFor(args[i-1]));
+    if (i > 0) {
+      lastOpt = this.optionFor(args[i-1]);
+    }
 
     if (lastOpt && lastOpt.required) {
      	ret.push(arg);
     } else if (arg.length > 1 && '-' == arg[0] && '-' != arg[1]) {
-      arg.slice(1).split('').forEach(function(c){
+      arg.slice(1).split('').forEach(function(c) {
         ret.push('-' + c);
       });
     } else if (/^--/.test(arg) && ~(index = arg.indexOf('='))) {
@@ -494,7 +507,7 @@ Command.prototype.normalize = function(args){
  * @api private
  */
 
-Command.prototype.parseArgs = function(args, parsed){
+Command.prototype.parseArgs = function(args, parsed) {
   var cmds = this.commands
     , len = cmds.length
     , name;
@@ -527,7 +540,7 @@ Command.prototype.parseArgs = function(args, parsed){
  * @api private
  */
 
-Command.prototype.optionFor = function(arg){
+Command.prototype.optionFor = function(arg) {
   for (var i = 0, len = this.options.length; i < len; ++i) {
     if (this.options[i].is(arg)) {
       return this.options[i];
@@ -544,7 +557,7 @@ Command.prototype.optionFor = function(arg){
  * @api public
  */
 
-Command.prototype.parseOptions = function(argv){
+Command.prototype.parseOptions = function(argv) {
   var args = []
     , len = argv.length
     , literal
@@ -623,7 +636,7 @@ Command.prototype.parseOptions = function(argv){
  * @api private
  */
 
-Command.prototype.missingArgument = function(name){
+Command.prototype.missingArgument = function(name) {
   console.error();
   console.error("  error: missing required argument `%s'", name);
   console.error();
@@ -638,7 +651,7 @@ Command.prototype.missingArgument = function(name){
  * @api private
  */
 
-Command.prototype.optionMissingArgument = function(option, flag){
+Command.prototype.optionMissingArgument = function(option, flag) {
   console.error();
   if (flag) {
     console.error("  error: option `%s' argument missing, got `%s'", option.flags, flag);
@@ -656,7 +669,7 @@ Command.prototype.optionMissingArgument = function(option, flag){
  * @api private
  */
 
-Command.prototype.unknownOption = function(flag){
+Command.prototype.unknownOption = function(flag) {
   console.error();
   console.error("  error: unknown option `%s'", flag);
   console.error();
@@ -676,27 +689,27 @@ Command.prototype.unknownOption = function(flag){
  * @api public
  */
 
-Command.prototype.version = function(str, flags){
+Command.prototype.version = function(str, flags) {
   if (0 == arguments.length) return this._version;
   this._version = str;
   flags = flags || '-V, --version';
   this.option(flags, 'output the version number');
-  this.on('version', function(){
-    console.log(str);
+  this.on('version', function() {
+    process.stdout.write(str + '\n');
     process.exit(0);
   });
   return this;
 };
 
 /**
- * Set the description `str`.
+ * Set the description to `str`.
  *
  * @param {String} str
  * @return {String|Command}
  * @api public
  */
 
-Command.prototype.description = function(str){
+Command.prototype.description = function(str) {
   if (0 == arguments.length) return this._description;
   this._description = str;
   return this;
@@ -710,7 +723,7 @@ Command.prototype.description = function(str){
  * @api public
  */
 
-Command.prototype.alias = function(alias){
+Command.prototype.alias = function(alias) {
   if (0 == arguments.length) return this._alias;
   this._alias = alias;
   return this;
@@ -724,8 +737,8 @@ Command.prototype.alias = function(alias){
  * @api public
  */
 
-Command.prototype.usage = function(str){
-  var args = this._args.map(function(arg){
+Command.prototype.usage = function(str) {
+  var args = this._args.map(function(arg) {
     return arg.required
       ? '<' + arg.name + '>'
       : '[' + arg.name + ']';
@@ -751,8 +764,8 @@ Command.prototype.usage = function(str){
  * @api private
  */
 
-Command.prototype.largestOptionLength = function(){
-  return this.options.reduce(function(max, option){
+Command.prototype.largestOptionLength = function() {
+  return this.options.reduce(function(max, option) {
     return Math.max(max, option.flags.length);
   }, 0);
 };
@@ -764,11 +777,11 @@ Command.prototype.largestOptionLength = function(){
  * @api private
  */
 
-Command.prototype.optionHelp = function(){
+Command.prototype.optionHelp = function() {
   var width = this.largestOptionLength();
 
   // Prepend the help information
-  return (this.options.map(function(option){
+  return (this.options.map(function(option) {
       return pad(option.flags, width)
         + '  ' + option.description;
       }))
@@ -782,7 +795,7 @@ Command.prototype.optionHelp = function(){
  * @api private
  */
 
-Command.prototype.commandHelp = function(){
+Command.prototype.commandHelp = function() {
   if (!this.commands.length) return '';
   return [
       ''
@@ -818,7 +831,7 @@ Command.prototype.commandHelp = function(){
  * @api private
  */
 
-Command.prototype.helpInformation = function(){
+Command.prototype.helpInformation = function() {
   return [
       ''
     , '  Usage: ' + this._name
@@ -841,7 +854,7 @@ Command.prototype.helpInformation = function(){
  * @api public
  */
 
-Command.prototype.outputHelp = function(){
+Command.prototype.outputHelp = function() {
   process.stdout.write(this.helpInformation());
   this.emit('--help');
 };
@@ -852,7 +865,7 @@ Command.prototype.outputHelp = function(){
  * @api public
  */
 
-Command.prototype.help = function(exitCode){
+Command.prototype.help = function(exitCode) {
   this.outputHelp();
   process.exit(exitCode);
 };
@@ -866,7 +879,7 @@ Command.prototype.help = function(exitCode){
  */
 
 function camelcase(flag) {
-  return flag.split('-').reduce(function(str, word){
+  return flag.split('-').reduce(function(str, word) {
     return str + word[0].toUpperCase() + word.slice(1);
   });
 }
