@@ -2,7 +2,7 @@ define([
     'angular'
   , './cpsPanel-controller'
   , './cpsPanel-directive'
-  , './elements/propertyDict'
+  , './elements/propertyDict/propertyDict'
 ], function(
     angular
   , Controller
