@@ -74,7 +74,7 @@ define([
         this._items = items.slice();
         this._dict = undefined;
         this._keys = null;
-        this._indexes = undefined;
+        this._indexes = Object.create(null);
         emitterMixin.init(this, propertyChangeEmitterSetup);
     }
 
