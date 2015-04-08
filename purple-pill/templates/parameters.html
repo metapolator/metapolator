@@ -1,22 +1,53 @@
 <div class="panel-border">
-    <div id="temp-parameters" class="standard-padding">
-        Master
-        <div ng-repeat="parameter in parameters">
-            <input ng-model="parameter.factor" ng-blur="data.setParameterMaster(parameter, parameter.factor, 'Factor')"> 
-            <!--+ <input ng-model="parameter.summand" ng-blur="data.setParameter(parameter, parameter.summand, 'Summand')"> -->
-            {{parameter.name}}Factor
+    <div id="parameters-selection">
+        <div id="parameters-of-master" ng-if="areMastersSelected()">
+            <div class="parameters-selection-head">Master</div><div class="parameters-add" ng-click="parametersWindow($event, 1, 'master')">+</div>
+            <div class="parameters-selection-body">
+                <div ng-repeat="parameter in selectionParametersMasters" class="parameter-row">
+                    {{parameter.name}}<br>
+                    <div ng-repeat="operator in parameter.operators">
+                        {{operator.display}} <input ng-model="operator.value" ng-blur="data.setParameterMaster(parameter.name, operator.name, operator.value, true)">
+                    </div> 
+                </div>
+            </div>
         </div>
-        <hr>
-        Glyph
-        <div ng-repeat="parameter in parameters">
-            <input ng-model="parameter.factor" ng-blur="data.setParameterGlyph(parameter, parameter.factor, 'Factor')"> 
-            {{parameter.name}}Factor
+        
+
+        <div id="parameters-of-glyph" ng-if="areGlyphsSelected()">
+            <div class="parameters-selection-head">Glyph</div><div class="parameters-add" ng-click="parametersWindow($event, 2, 'glyph')">+</div>
+            <div class="parameters-selection-body">
+                <div ng-repeat="parameter in selectionParametersGlyphs" class="parameter-row">
+                    {{parameter.name}}<br>
+                    <div ng-repeat="operator in parameter.operators">
+                        {{operator.display}} <input ng-model="operator.value" ng-blur="data.setParameterGlyph(parameter.name, operator.name, operator.value, true)">
+                    </div>                 
+                </div>
+            </div>
         </div>
-        <button ng-click="data.getParameter()">get</button>
     </div>
     
     
-        
+    <div id="parameters-control-panel" class="control-panel" ng-if="data.parametersPanel > 0" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">
+        <div id="control-panel-parameters">
+            <div ng-repeat="parameter in parameters" ng-class="{'selected': parameter == panelParameter}" class="control-panel-parameter control-panel-button push-button" ng-click="addParameterToPanel(parameter)">{{parameter}}</div>
+        </div>
+        <div id="control-panel-operators">
+            <div ng-repeat="operator in operators" ng-class="{'selected': operator.affix == panelOperator}" class="control-panel-operator control-panel-button push-button" ng-click="addOperatorToPanel(operator.affix)">{{operator.display}}</div>
+        </div>
+        <div class="control-panel-cancel control-panel-button push-button" ng-click="data.parametersPanel = 0">
+            Cancel
+        </div>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ 
     <div id="inspector" class="standard-padding">
         <div class="inspector-header">
             <span>{{data.projectName}}</span>
@@ -36,58 +67,4 @@
             </div>
         </div>
     </div>
-    
-    <!--
-    
-    <div id="parameters-selection">
-        <div id="parameters-of-master" ng-if="areMastersSelected()">
-            <div class="parameters-selection-head">Master</div><div class="parameters-add" ng-click="parametersWindow($event, 1, 'master')">+</div>
-            <div class="parameters-selection-body">
-                <div ng-repeat="parameter in filteredMasterParameters=(data.sequences | mastersInEditFilter)" class="parameter-row">
-                    <div class="parameter-operation-row" ng-repeat="operator in parameter.operations">
-                        <div class="parameter-key"><span ng-if="$index == 0">{{parameter.displayName}}</span></div>
-                        <div class="parameter-operator">{{operator.operator}}</div>
-                        <div class="parameter-value"><input ng-model="operator.value" ng-change="editParameter(parameter.name, operator.operatorer, operator.value)" class="ng-input-focus"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="parameters-of-glyph" ng-if="areGlyphsSelected()">
-            <div class="parameters-selection-head">Glyph</div><div class="parameters-add" ng-click="parametersWindow($event, 2, 'glyph')">+</div>
-            <div class="parameters-selection-body">
-                <div ng-repeat="parameter in filteredGlyphParameters" class="parameter-row">
-                    <div class="parameter-operation-row" ng-repeat="operator in parameter.operations">
-                        <div class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
-                        <div class="parameter-operator">{{operator.operator}}</div>
-                        <div class="parameter-value">
-                            <input ng-model="operator.low" ng-blur="editParameter(parameter, operator)" class="ng-input-focus align-right"><span ng-if="operator.range" > to <input ng-model="operator.high" ng-blur="editParameter(parameter, operator)" class="ng-input-focus"></span>
-                        </div>
-                    </div>
-                    <div class="parameter-operation-row" ng-if="hasInheritance(parameter)">
-                        <div class="parameter-key"></div>
-                        <div class="parameter-operator">-></div>
-                        <div class="parameter-value"><span class="calculated-value">{{calculatedValue(parameter)}}</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div id="parameters-control-panel" class="control-panel" ng-if="data.parametersPanel > 0" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">
-        <div id="control-panel-parameters">
-            <div ng-repeat="parameter in parameters" ng-class="{'selected': parameter == windowParameter}" class="control-panel-parameter control-panel-button push-button" ng-click="addParameter(parameter)">{{parameter}}</div>
-        </div>
-        <div id="control-panel-operators">
-            <div ng-repeat="operator in operators" ng-class="{'selected': operator == windowOperator}" class="control-panel-operator control-panel-button push-button" ng-click="addOperator(operator)">{{operator}}</div>
-        </div>
-        <div class="control-panel-cancel control-panel-button push-button" ng-click="data.parametersPanel = 0">
-            Cancel
-        </div>
-    </div>
-    
-    <div id="parameter-slider"></div>
-    
-    -->
 </div>

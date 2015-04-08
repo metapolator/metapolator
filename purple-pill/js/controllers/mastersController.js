@@ -99,7 +99,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             });
         });  
-        $scope.data.updateParameters();
+        $scope.data.updateSelectionParameters();
     };
 
     $scope.selectEdit = function(set) {
@@ -119,6 +119,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             });
         });
+        $scope.data.updateSelectionParameters();
     };
 
     $scope.deselectAll = function() {
@@ -128,6 +129,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 master.display = false;
             });
         });
+        $scope.data.updateSelectionParameters();
     };
     
     $scope.toggleDisplay = function(master) {

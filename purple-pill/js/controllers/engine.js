@@ -39,11 +39,34 @@ app.controller('engine', function($scope, sharedScope) {
                     edit: [true, true],
                     ag: "ag",
                     glyphs: glyphs,
-                    parameters: []
+                    parameters: [{
+                        name: "weight",
+                        unit: "",
+                        operators: [{
+                           name: "Factor",
+                           value: 1 
+                        }]
+                        
+                    }, {
+                        name: "width",
+                        unit: "",
+                        operators: [{
+                           name: "Factor",
+                           value: 1 
+                        }]
+                    },{
+                        name: "height",
+                        unit: "",
+                        operators: [{
+                           name: "Factor",
+                           value: 1 
+                        }]
+                    }]
                 });
                 masterId++; 
             } 
         }
+        $scope.data.updateSelectionParameters();
         $scope.data.pill = "red";
         $scope.$apply();
         $("#layover").hide();

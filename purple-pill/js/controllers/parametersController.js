@@ -1,36 +1,43 @@
 app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
-    
-    $scope.parameters = [{
-        name: "weight",
-        factor: 1,
-        summand: null
-    },{
-        name: "width",
-        factor: 1,
-        summand: null
-    },{
-        name: "height",
-        factor: 1,
-        summand: null
-    }];
-    /*,{
-        name: "sideBearingLeft",
-        factor: 1,
-        summand: null
-    },{
-        name: "sideBearingRight",
-        factor: 1,
-        summand: null
-    }];
-    */
-    $scope.parameterVariations = ["Factor", "Summand"];
 
-
+    $scope.parameters = ["weight", "width", "height"];
+    $scope.operators = [{
+        display: "x",
+        standardValue: 1,
+        affix: "Factor"
+    }];
     
-    $scope.data.setParameterMaster = function (key, value, type) {
-        var keyName = key.name + type;
-        if (key.name == "weight") {
+
+    $scope.selectionParametersMasters = [];
+    $scope.selectionParametersGlyphs = [];
+
+    // responds on selection change in masters panel (for masters) or specimen panel (for glyphs)
+    $scope.data.updateSelectionParameters = function() {
+        $scope.selectionParametersMasters = [];
+        $scope.selectionParametersGlyphs = [];
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[0]) {
+                    angular.forEach(master.parameters, function(masterParameter) {
+                        $scope.selectionParametersMasters.push(masterParameter);
+                    });
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if (glyph.edit) {
+                            angular.forEach(glyph.parameters, function(glyphParameter) {
+                                $scope.selectionParametersGlyphs.push(glyphParameter);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    };
+
+    // do administration in model and make call to API
+    $scope.data.setParameterMaster = function(parameterName, operatorName, value, hasRule) {
+        var key = parameterName + operatorName;
+        if (key == "weightFactor") {
             ruleLine = 2;
         } else {
             ruleLine = 1;
@@ -42,22 +49,23 @@ app.controller("parametersController", function($scope, sharedScope) {
                     var cpsRule = parameterCollection.getItem(ruleLine);
                     var parameterDict = cpsRule.parameters;
                     var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-                    setParameter(parameterDict, keyName, value); 
+                    setParameter(parameterDict, key, value);
                 }
             });
         });
     };
-    
-    $scope.data.setParameterGlyph = function (key, value, type) {
-        var keyName = key.name + type;
+
+    // do administration in model and make call to API
+    $scope.data.setParameterGlyph = function(parameterName, operatorName, value, hasRule) {
+        var key = parameterName + operatorName;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
-                        if(glyph.edit){
+                        if (glyph.edit) {
                             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
                             // check if there is already a rule for this keyName in this glyph
-                            if (!$scope.hasRule(glyph)) {
+                            if (!hasRule) {
                                 var l = parameterCollection.length;
                                 var selectorListString = "glyph#" + glyph.value + " *";
                                 var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
@@ -65,62 +73,48 @@ app.controller("parametersController", function($scope, sharedScope) {
                                 glyph.ruleIndex = ruleIndex;
                             } else {
                                 var ruleIndex = glyph.ruleIndex;
-                                console.log("has rule(" + ruleIndex + ")");
                             }
-                            // check if parameter is there already in the rule
-                            if (!$scope.hasParameter(glyph, keyName)) {
-                                // add parameter to rule
-                                glyph.parameters.push({
-                                    name: keyName,
-                                    value: value
-                                }); 
-                            } else {
-                                // edit parameter in rule
-                                var parameter = $scope.getParameterInRule(glyph, keyName);
-                                parameter.value = value;
-                            }
+                             // edit parameter in model
+                            var parameter = $scope.getParameterInRule(glyph, parameterName, operatorName);
+                            parameter.value = value;
+                            // edit via API
                             var cpsRule = parameterCollection.getItem(ruleIndex);
-                            console.log(cpsRule);
                             var parameterDict = cpsRule.parameters;
-                            console.log(parameterDict);
                             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-                            setParameter(parameterDict, keyName, value); 
+                            setParameter(parameterDict, key, value);
                         }
                     });
                 }
             });
         });
     };
-    
-    $scope.getParameterInRule = function(glyph, keyName){
+
+    // check in model if the glyph has this specific parameter
+    $scope.getParameterInRule = function(glyph, parameterName, operatorName) {
         var theParameter;
         angular.forEach(glyph.parameters, function(parameter) {
-            if (parameter.name == keyName) {
-                theParameter = parameter;
+            if (parameter.name == parameterName) {
+                angular.forEach(parameter.operators, function(operator) {
+                    if (operator.name == operatorName) {
+                        theParameter = operator;
+                    }
+                });
             }
         });
         return theParameter;
     };
-    
-    $scope.hasRule = function(glyph){
-        var hasRule = false;
-        if (glyph.parameters.length > 0) {
-            hasRule = true;
-        }
-        return hasRule;
-    };
-    
-    $scope.hasParameter = function(glyph, keyName){
+
+    $scope.hasParameter = function(glyph, key) {
         var hasParameter = false;
         angular.forEach(glyph.parameters, function(parameter) {
-            if (parameter.name == keyName) {
+            if (parameter.name == key) {
                 hasParameter = true;
             }
         });
         return hasParameter;
     };
 
-    $scope.data.getParameter = function () {
+    $scope.data.getParameter = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
@@ -140,24 +134,82 @@ app.controller("parametersController", function($scope, sharedScope) {
             });
         });
     };
-    
-    
-    
-    
-
-    
-    
-    
-    /******/
 
 
 
 
-
-
-    //$scope.parameters = ["width", "height", "xHeight", "slant", "spacing", "sidebearings", "tension", "weight"];
-    $scope.operators = ["x", "÷", "+", "-", "=", "min", "max"];
+    /*** handling the parameter add panel ***/
+   
     $scope.parameterLevel = null;
+    $scope.panelParameter = null;
+    $scope.panelOperator = null;
+   
+    $scope.addParameterToPanel = function(parameterName) {
+        $scope.panelParameter = parameterName;
+        if ($scope.panelParameter && $scope.panelOperator) {
+            $scope.addParameterToElements($scope.panelParameter, $scope.panelOperator);
+        }
+    };
+
+    $scope.addOperatorToPanel = function(operatorName) {
+        $scope.panelOperator = operatorName;
+        if ($scope.panelParameter && $scope.panelOperator) {
+            $scope.addParameterToElements($scope.panelParameter, $scope.panelOperator);
+        }
+    };
+    
+    $scope.addParameterToElements = function(parameter, operator) {
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                    if ($scope.parameterLevel == "master") {
+                        $scope.pushParameterToModel(master, parameter, operator);
+                    } else if ($scope.parameterLevel == "glyph") {
+                        angular.forEach(master.glyphs, function(glyph) {
+                            if (glyph.edit) {
+                                $scope.pushParameterToModel(glyph, parameter, operator);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        $scope.data.parametersPanel = 0;
+    };
+    
+    $scope.pushParameterToModel = function(element, newParameter, operator) {
+        var hasRule = false;
+        if (element.parameters.length > 0) {
+            hasRule = true;
+        }
+        var hasParameter = false;
+        var newValue = 1;
+        angular.forEach(element.parameters, function(parameter) {
+            if (parameter.name == newParameter) {
+                hasParameter = true;
+                parameter.operators.push({
+                    name : operator,
+                    value : newValue
+                });
+            }
+        });
+        if (!hasParameter) {
+            element.parameters.push({
+                name : newParameter,
+                unit : "",
+                operators : [{
+                    name : operator,
+                    value : newValue
+                }]
+            });
+        }
+        $scope.data.updateSelectionParameters();
+        $scope.data.setParameterGlyph(newParameter, operator, newValue, hasRule);
+    };
+   
+   
+   
+   
 
     $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators", function(newVal) {
         $scope.filteredGlyphParameters = newVal;
@@ -187,13 +239,12 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
     };
 
-    $scope.windowParameter = null;
-    $scope.windowOperator = null;
+
 
     $scope.parametersWindow = function(event, target, level) {
         $scope.parameterLevel = level;
-        $scope.windowOperator = null;
-        $scope.windowParameter = null;
+        $scope.panelOperator = null;
+        $scope.panelParameter = null;
         var top = $(event.target).offset().top + 20;
         var left = $(event.target).offset().left + 20;
         $scope.parameterPanelTop = top;
@@ -205,61 +256,11 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
     };
 
-    $scope.addParameter = function(parameter) {
-        $scope.windowParameter = parameter;
-        if ($scope.windowParameter && $scope.windowOperator) {
-            $scope.setParameter($scope.windowParameter, $scope.windowOperator);
-        }
-    };
 
-    $scope.addOperator = function(operator) {
-        $scope.windowOperator = operator;
-        if ($scope.windowParameter && $scope.windowOperator) {
-            $scope.setParameter($scope.windowParameter, $scope.windowOperator);
-        }
-    };
 
-    $scope.setParameter = function(parameter, operator) {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
-                    if ($scope.parameterLevel == "master") {
-                        $scope.pushParameter(master, parameter, operator);
-                    } else if ($scope.parameterLevel == "glyph") {
-                        angular.forEach(master.glyphs, function(glyph) {
-                            if (glyph.edit) {
-                                $scope.pushParameter(glyph, parameter, operator);
-                            }
-                        });
-                    }
-                }
-            });
-        });
-        $scope.data.parametersPanel = 0;
-    };
 
-    $scope.pushParameter = function(element, newParameter, operator) {
-        var hasParameter = false;
-        angular.forEach(element.parameters, function(parameter) {
-            if (parameter.name == newParameter) {
-                hasParameter = true;
-                parameter.operations.push({
-                    operator : operator,
-                    value : 0
-                });
-            }
-        });
-        if (!hasParameter) {
-            element.parameters.push({
-                name : newParameter,
-                unit : "",
-                operations : [{
-                    operator : operator,
-                    value : 0
-                }]
-            });
-        }
-    };
+
+
 
     $scope.hasInheritance = function(theParameter) {
         var inheritance = false;
