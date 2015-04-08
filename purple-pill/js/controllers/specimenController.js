@@ -114,7 +114,7 @@ function($scope, $sce, sharedScope) {
     $scope.selectGlyph = function(sequenceId, masterId, glyphName) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.type == "redpill") {
+                if(master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.value == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = true;
@@ -131,7 +131,7 @@ function($scope, $sce, sharedScope) {
     $scope.toggleGlyph = function(sequenceId, masterId, glyphName) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.type == "redpill") {
+                if(master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.value == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = !glyph.edit;
@@ -146,7 +146,7 @@ function($scope, $sce, sharedScope) {
     $scope.selectSet = function(set) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.type == "redpill") {
+                if(master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
@@ -170,7 +170,7 @@ function($scope, $sce, sharedScope) {
     $scope.toggleSet = function(set) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.type == "redpill") {
+                if(master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
@@ -192,7 +192,7 @@ function($scope, $sce, sharedScope) {
     $scope.deselectAll = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.type == "redpill") {
+                if(master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         glyph.edit = false;
                     }); 
@@ -208,7 +208,7 @@ function($scope, $sce, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             if (sequence.id == sequenceId) {
                 angular.forEach(sequence.masters, function(master) {
-                    if(master.id == masterId) {
+                    if(master.id == masterId && master.edit[0]) {
                         angular.forEach(master.glyphs, function(glyph) {
                             if(glyph.value == glyphName) {
                                 if (glyph.edit) {

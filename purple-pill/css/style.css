@@ -524,7 +524,7 @@
                        height: 100%;
                    } 
                 
-                body #specimen-content ul .selected-glyph.temp-unselected-glyph {
+                body #specimen-content ul .selected-glyph.temp-unselected-glyph.master-edit {
                     border-bottom: 4px solid transparent!important;
                 }
                 
@@ -532,7 +532,7 @@
                     border-bottom: 4px solid #f00!important;
                 }
                         
-                #specimen-content ul .temp-selected-glyph {
+                #specimen-content ul .temp-selected-glyph.master-edit {
                     border-bottom: 4px solid #00f!important;   
                 }
                     
@@ -933,16 +933,15 @@
             margin: 2px;
             padding-top: 1px;
             font-size: 17px;
-            background: #fff;
             cursor: default;
         }
                 
             .temp-view-selection-true {
-                background: #f85c37!important;
+                background: #888!important;
             }
             
             .temp-view-selection-false {
-                background: white!important;
+                background: transparent!important;
             }
         
             .list-view-col svg {

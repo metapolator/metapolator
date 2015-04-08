@@ -20,7 +20,7 @@
         <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
             <ul>
                 <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}">
-                    <glyph mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph>
+                    <glyph mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'master-edit': glyph.master.edit,'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph>
                 </li>
             </ul>
         </div>
@@ -30,7 +30,7 @@
             <div ng-repeat="sequence in data.sequences">
                 <ul ui-sortable="sortableOptions" class="glyph-range-master glyph-range" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display && master.type == 'redpill'">
                     <li ng-style="{'margin': (fontSize / 6) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range">
-                        <glyph mastername="{{master.name}}" sequence="{{sequence.id}}" master="{{master.id}}" glyph="{{glyph.value}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'selected-glyph':glyph.edit}"></glyph>
+                        <glyph mastername="{{master.name}}" sequence="{{sequence.id}}" master="{{master.id}}" glyph="{{glyph.value}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'selected-glyph':(glyph.edit && master.edit[0])}"></glyph>
                     </li>
                 </ul>
             </div>

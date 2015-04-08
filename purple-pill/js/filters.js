@@ -194,7 +194,8 @@ app.filter('specimenFilter', function() {
                             masterArray.push({
                                 "sequenceId" : sequence.id,
                                 "masterId" : master.id,
-                                "name" : master.name
+                                "name" : master.name,
+                                "edit" : master.edit[0]
                             });
                         }
                     });
@@ -244,7 +245,8 @@ app.filter('specimenFilter', function() {
                         master : {
                             sequenceId : master.sequenceId,
                             masterId : master.masterId,
-                            name : master.name
+                            name : master.name,
+                            edit: master.edit
                         },
                         glyphName : glyph,
                         glyphId : master.name + "_" + glyph + "_" + glyphId
