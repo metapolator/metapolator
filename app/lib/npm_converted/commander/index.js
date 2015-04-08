@@ -13,6 +13,7 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var dirname = path.dirname;
 var basename = path.basename;
+var fs = require('fs');
 
 /**
  * Expose the root command.
@@ -161,12 +162,17 @@ Command.prototype.__proto__ = EventEmitter.prototype;
 Command.prototype.command = function(name, desc) {
   var args = name.split(/ +/);
   var cmd = new Command(args.shift());
-  if (desc) cmd.description(desc);
-  if (desc) this.executables = true;
-  if (desc) this._execs[cmd._name] = true;
+
+  if (desc) {
+    cmd.description(desc);
+    this.executables = true;
+    this._execs[cmd._name] = true;
+  }
+
   this.commands.push(cmd);
   cmd.parseArgDescription(args);
   cmd.parent = this;
+
   if (desc) return this;
   return cmd;
 };
@@ -254,7 +260,7 @@ Command.prototype.parseArgDescription = function(args) {
 
 Command.prototype.action = function(fn) {
   var self = this;
-  var listener = function(args, unknown){
+  var listener = function(args, unknown) {
     // Parse any so-far unknown options
     args = args || [];
     unknown = unknown || [];
@@ -361,7 +367,9 @@ Command.prototype.option = function(flags, description, fn, defaultValue) {
   // and conditionally invoke the callback
   this.on(oname, function(val) {
     // coercion
-    if (null !== val && fn) val = fn(val, undefined === self[name] ? defaultValue : self[name]);
+    if (null !== val && fn) val = fn(val, undefined === self[name]
+      ? defaultValue
+      : self[name]);
 
     // unassigned or bool
     if ('boolean' == typeof self[name] || 'undefined' == typeof self[name]) {
@@ -380,6 +388,18 @@ Command.prototype.option = function(flags, description, fn, defaultValue) {
   });
 
   return this;
+};
+
+/**
+ * Allow unknown options on the command line.
+ *
+ * @param {Boolean} arg if `true` or omitted, no error will be thrown
+ * for unknown options.
+ * @api public
+ */
+Command.prototype.allowUnknownOption = function(arg) {
+    this._allowUnknownOption = arguments.length === 0 || arg;
+    return this;
 };
 
 /**
@@ -439,19 +459,42 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
   var dir = dirname(argv[1]);
   var bin = basename(argv[1], '.js') + '-' + args[0];
 
-  // check for ./<bin> first
+  // prefer local `./<bin>` to bin in the $PATH
   var local = path.join(dir, bin);
+  try {
+    // for versions before node v0.8 when there weren't `fs.existsSync`
+    if (fs.statSync(local).isFile()) {
+      bin = local;
+    }
+  } catch (e) {}
 
   // run it
   args = args.slice(1);
-  args.unshift(local);
-  var proc = spawn('node', args, { stdio: 'inherit', customFds: [0, 1, 2] });
-  proc.on('error', function(err){
+
+  var proc;
+  if (process.platform !== 'win32') {
+    if (isExplicitJS) {
+      args.unshift(localBin);
+      // add executable arguments to spawn
+      args = (process.execArgv || []).concat(args);
+
+      proc = spawn('node', args, { stdio: 'inherit', customFds: [0, 1, 2] });
+    } else {
+      proc = spawn(bin, args, { stdio: 'inherit', customFds: [0, 1, 2] });
+    }
+  } else {
+    args.unshift(localBin);
+    proc = spawn(process.execPath, args, { stdio: 'inherit'});
+  }
+
+  proc.on('close', process.exit.bind(process));
+  proc.on('error', function(err) {
     if (err.code == "ENOENT") {
       console.error('\n  %s(1) does not exist, try --help\n', bin);
     } else if (err.code == "EACCES") {
       console.error('\n  %s(1) not executable. try chmod or run with root\n', bin);
     }
+    process.exit(1);
   });
 
   this.runningCommand = proc;
@@ -630,6 +673,23 @@ Command.prototype.parseOptions = function(argv) {
 };
 
 /**
+ * Return an object containing options as key-value pairs
+ *
+ * @return {Object}
+ * @api public
+ */
+Command.prototype.opts = function() {
+  var result = {}
+    , len = this.options.length;
+
+  for (var i = 0 ; i < len; i++) {
+    var key = camelcase(this.options[i].name());
+    result[key] = key === 'version' ? this._version : this[key];
+  }
+  return result;
+}
+
+/**
  * Argument `name` is missing.
  *
  * @param {String} name
@@ -676,6 +736,20 @@ Command.prototype.unknownOption = function(flag) {
   process.exit(1);
 };
 
+
+/**
+ * Variadic argument with `name` is not the last argument as required.
+ *
+ * @param {String} name
+ * @api private
+ */
+
+Command.prototype.variadicArgNotLast = function(name) {
+  console.error();
+  console.error("  error: variadic arguments must be last `%s'", name);
+  console.error();
+  process.exit(1);
+};
 
 /**
  * Set the program version to `str`.
@@ -755,6 +829,18 @@ Command.prototype.usage = function(str) {
   this._usage = str;
 
   return this;
+};
+
+/**
+ * Get the name of the command
+ *
+ * @param {String} name
+ * @return {String|Command}
+ * @api public
+ */
+
+Command.prototype.name = function() {
+  return this._name;
 };
 
 /**
@@ -896,6 +982,71 @@ function camelcase(flag) {
 function pad(str, width) {
   var len = Math.max(0, width - str.length);
   return str + Array(len + 1).join(' ');
+}
+
+/**
+ * Prepend to each line of `str` spaced string of `offset` length.
+ *
+ * @param {String} str
+ * @param {Number} offset
+ * @param {Boolean} skipFirstLine
+ * @return {String}
+ * @api private
+ */
+function offset(str, offset, skipFirstLine) {
+  var res = String(str || '').replace(/^/gm, pad('', offset));
+  if (!skipFirstLine) {
+    res = res.replace(/^\s+/, '');
+  }
+  return res;
+}
+
+/**
+ * Output help information if necessary
+ *
+ * @param {Command} command to output help for
+ * @param {Array} array of options to search for -h or --help
+ * @api private
+ */
+
+function outputHelpIfNecessary(cmd, options) {
+  options = options || [];
+  for (var i = 0; i < options.length; i++) {
+    if (options[i] == '--help' || options[i] == '-h') {
+      cmd.outputHelp();
+      process.exit(0);
+
+      // used for test flow only
+      options.splice(i, 1);
+    }
+  }
+}
+
+/**
+ * Takes an argument an returns its human readable equivalent for help usage.
+ *
+ * @param {Object} arg
+ * @return {String}
+ * @api private
+ */
+
+function humanReadableArgName(arg) {
+  var nameOutput = arg.name + (arg.variadic === true ? '...' : '');
+
+  return arg.required
+    ? '<' + nameOutput + '>'
+    : '[' + nameOutput + ']'
+}
+
+// for versions before node v0.8 when there weren't `fs.existsSync`
+function exists(file) {
+  try {
+    if (fs.statSync(file).isFile()) {
+      return true;
+    }
+  } catch (e) {
+    return false;
+  }
 }
 
 });
