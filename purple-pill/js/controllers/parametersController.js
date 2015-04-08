@@ -37,16 +37,12 @@ app.controller("parametersController", function($scope, sharedScope) {
     // do administration in model and make call to API
     $scope.data.setParameterMaster = function(parameterName, operatorName, value, hasRule) {
         var key = parameterName + operatorName;
-        if (key == "weightFactor") {
-            ruleLine = 2;
-        } else {
-            ruleLine = 1;
-        }
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
                     var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
-                    var cpsRule = parameterCollection.getItem(ruleLine);
+                    // the master properties are at rulenr 3
+                    var cpsRule = parameterCollection.getItem(3);
                     var parameterDict = cpsRule.parameters;
                     var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
                     setParameter(parameterDict, key, value);
@@ -67,7 +63,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                             // check if there is already a rule for this keyName in this glyph
                             if (!hasRule) {
                                 var l = parameterCollection.length;
-                                var selectorListString = "glyph#" + glyph.value + " *";
+                                var selectorListString = "glyph#" + glyph.value;
                                 var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
                                 // register rule position in model
                                 glyph.ruleIndex = ruleIndex;
@@ -119,14 +115,13 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.type == "redpill" && master.edit[0]) {
                     angular.forEach($scope.parameters, function(parameter, index) {
-                        angular.forEach($scope.parameterVariations, function(variation) {
-                            var key = parameter.name + variation;
-                            console.log(key);
+                        angular.forEach($scope.operators, function(operator) {
+                            var key = parameter + operator.affix;
                             var masterMOMNode = $scope.data.stateful.controller.query("master#" + master.name);
                             var styleDict = masterMOMNode.getComputedStyle();
                             var value = styleDict.get(key);
                             if (value) {
-                                $scope.parameters[index][variation.toLowerCase()] = value;
+                                console.log(key + ": " + value);
                             }
                         });
                     });
