@@ -22,9 +22,9 @@
                 </span>
                 <span class="list-view-col rename" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
                 <span class="list-edit-col rename" ng-model="instance.name" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
-                <div class="export-col">
-                    <div class="export-checkmark" ng-click="instance.exportFont = !instance.exportFont"><span ng-if="instance.exportFont">✓</span><span ng-if="!instance.exportFont">&nbsp;</span></div>
-                    <div class="opentype-features"><span ng-if="instance.openTypeFeatures">ot.fea</span></div>
+                <div class="export-col" ng-click="instance.exportFont = !instance.exportFont">
+                    <div class="export-checkmark"><span ng-if="instance.exportFont">✓</span><span ng-if="!instance.exportFont">&nbsp;</span></div>
+                    <div class="opentype-features">&nbsp;</div>
                 </div>
             </li>
         </ul>
