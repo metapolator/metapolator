@@ -107,7 +107,7 @@ function (
                 , parameter
                 , factory = parameterRegistry.getFactory(name)
                 ;
-            _value.initializeTypeFactory(name.name, factory);
+            _value.initializeTypeFactory(name, factory);
             parameter = new Parameter({name:name}, _value);
             parameterDict.setParameter(parameter);
         }
