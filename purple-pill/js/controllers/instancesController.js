@@ -104,8 +104,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.stateful.project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
             $scope.data.stateful.project.open(instance.name);
             $scope.data.metapolate();
-            $scope.data.localmenu.instances = false;
         } 
+        $scope.data.localmenu.instances = false;
         $scope.uniqueInstanceId++;
         $scope.addColor();
     };
