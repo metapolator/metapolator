@@ -60,6 +60,7 @@
     "util": "~0.10.3",
     "inherits": "2.0.1",
     "chokidar": "^0.10.4",
-    "socket.io": "^1.2.0"
+    "socket.io": "^1.2.0",
+    "graceful-readlink": ">= 1.0.0"
   }
 }
