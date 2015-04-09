@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="q" format="2">
+  <advance width="578"/>
+  <unicode hex="0071"/>
+  <outline>
+    <contour identifier="topSerif">
+      <point x="558" y="450" type="move" name="serif right top"/>
+      <point x="491.334" y="450"/>
+      <point x="424.666" y="450"/>
+      <point x="358" y="450" type="curve" name="no-serif left top"/>
+    </contour>
+    <contour identifier="bottomSerif">
+      <point x="558" y="-199.5" type="move" name="serif right bottom"/>
+      <point x="474.6675" y="-199.5"/>
+      <point x="391.3325" y="-199.5"/>
+      <point x="308" y="-199.5" type="curve" name="serif left bottom"/>
+    </contour>
+    <contour identifier="stem">
+      <point x="433" y="-199" type="move" name="bottom"/>
+      <point x="433" y="17.331170000000014"/>
+      <point x="433" y="233.66882999999999"/>
+      <point x="433" y="450" type="curve" name="top"/>
+    </contour>
+    <contour identifier="bowl">
+      <point x="370" y="258" type="move" name="connection"/>
+      <point x="370" y="425"/>
+      <point x="331.5055" y="452.5"/>
+      <point x="254.5" y="452.5" type="curve" name="horizontal top"/>
+      <point x="171" y="452.5"/>
+      <point x="106" y="383.5"/>
+      <point x="106" y="230.5" type="curve" name="vertical"/>
+      <point x="106" y="69"/>
+      <point x="180" y="0"/>
+      <point x="260" y="0" type="curve" name="horizontal bottom"/>
+      <point x="323.509" y="0"/>
+      <point x="362" y="46.5"/>
+      <point x="380" y="120.5" type="curve" name="end"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array>
+        <dict>
+          <key>angle</key>
+          <integer>0</integer>
+          <key>isGlobal</key>
+          <integer>0</integer>
+          <key>magnetic</key>
+          <integer>5</integer>
+          <key>x</key>
+          <integer>432</integer>
+          <key>y</key>
+          <string>-190</string>
+        </dict>
+      </array>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>q</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>578</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

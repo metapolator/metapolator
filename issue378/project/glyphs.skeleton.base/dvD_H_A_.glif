@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dvDHA" format="2">
+  <advance width="624"/>
+  <unicode hex="0927"/>
+  <outline>
+    <contour identifier="bowConnection">
+      <point x="321" y="325" type="move"/>
+      <point x="269.66718" y="325"/>
+      <point x="218.33282" y="325"/>
+      <point x="167" y="325" type="curve"/>
+    </contour>
+    <contour identifier="upperBow">
+      <point x="294" y="325" type="move"/>
+      <point x="222" y="325"/>
+      <point x="130" y="352.4955"/>
+      <point x="130" y="435" type="curve"/>
+      <point x="130" y="492.5"/>
+      <point x="160.5" y="544"/>
+      <point x="237.5" y="544" type="curve"/>
+    </contour>
+    <contour identifier="lowerBow">
+      <point x="411.5" y="169" type="move"/>
+      <point x="404.5" y="102.5"/>
+      <point x="343" y="63"/>
+      <point x="268" y="63" type="curve"/>
+      <point x="187.5" y="63"/>
+      <point x="119.5" y="108"/>
+      <point x="119.5" y="193" type="curve"/>
+      <point x="119.5" y="262"/>
+      <point x="162" y="325"/>
+      <point x="273" y="325" type="curve"/>
+    </contour>
+    <contour identifier="rightBar">
+      <point x="644" y="550" type="move"/>
+      <point x="548.6676199999999" y="550"/>
+      <point x="453.33238" y="550"/>
+      <point x="358" y="550" type="curve"/>
+    </contour>
+    <contour identifier="leftBar">
+      <point x="295" y="550" type="move"/>
+      <point x="190.00105" y="550"/>
+      <point x="84.99895000000001" y="550"/>
+      <point x="-20" y="550" type="curve"/>
+    </contour>
+    <contour identifier="stem">
+      <point x="474" y="0" type="move"/>
+      <point x="474" y="183.3315"/>
+      <point x="474" y="366.6685"/>
+      <point x="474" y="550" type="curve"/>
+    </contour>
+  </outline>
+</glyph>

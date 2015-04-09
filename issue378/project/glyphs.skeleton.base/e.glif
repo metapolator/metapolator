@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="e" format="2">
+  <advance width="515"/>
+  <unicode hex="0065"/>
+  <outline>
+    <contour identifier="stroke">
+      <point x="412" y="200" type="move"/>
+      <point x="412" y="366.5"/>
+      <point x="347" y="460"/>
+      <point x="260.5" y="460" type="curve"/>
+      <point x="171" y="460"/>
+      <point x="104.5" y="364.5"/>
+      <point x="104.5" y="231.5" type="curve"/>
+      <point x="104.5" y="51"/>
+      <point x="206" y="7"/>
+      <point x="303.5" y="7" type="curve"/>
+      <point x="357" y="7"/>
+      <point x="435.5" y="33.5"/>
+      <point x="465" y="80" type="curve"/>
+    </contour>
+    <contour identifier="bar">
+      <point x="445.829" y="210" type="move"/>
+      <point x="342.22036943" y="210"/>
+      <point x="238.60863057" y="210"/>
+      <point x="135" y="210" type="curve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>e</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>515</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

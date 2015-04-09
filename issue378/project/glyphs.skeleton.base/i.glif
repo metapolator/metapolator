@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="i" format="2">
+  <advance width="320"/>
+  <unicode hex="0069"/>
+  <outline>
+    <contour identifier="dot">
+      <point x="161" y="680" type="move"/>
+      <point x="160.635" y="680"/>
+      <point x="161" y="641"/>
+      <point x="161" y="592" type="curve"/>
+      <point x="161" y="543"/>
+      <point x="160.635" y="504"/>
+      <point x="161" y="504" type="curve"/>
+    </contour>
+    <contour identifier="stem">
+      <point x="165" y="10" type="move" name="bottom"/>
+      <point x="165" y="156.6652"/>
+      <point x="165" y="303.3348"/>
+      <point x="165" y="450" type="curve" name="top"/>
+    </contour>
+    <contour identifier="topSerif">
+      <point x="240" y="450" type="move" name="top right no-serif"/>
+      <point x="176.6673" y="450"/>
+      <point x="113.3327" y="450"/>
+      <point x="50" y="450" type="curve" name="top left serif"/>
+    </contour>
+    <contour identifier="bottomSerif">
+      <point x="290" y="10" type="move" name="bottom right serif"/>
+      <point x="206.6675" y="10"/>
+      <point x="123.33250000000001" y="10"/>
+      <point x="40" y="10" type="curve" name="bottom left serif"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array/>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>i</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>320</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <TITLE>Metapolator – font editor for designing typeface families - Purple Pill Demo</TITLE>
+        
+        <meta property="og:title" content="Metapolator - Demo" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time." />
+        <meta property="og:url" content="http://metapolator.com/purple-pill" />
+        <meta property="og:image" content="http://metapolator.com/home/img/mp-logo.svg" />
+
+        <!-- css -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/style.css">
+
+        <!-- jquery -->
+        <script src='js/jquery/jquery.min.js'></script>
+        <script src='js/jquery/jquery-ui.min.js'></script>
+        <link rel='stylesheet' href='js/jquery/jquery-ui.css'>
+
+        <!-- fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css'>
+        
+        <!-- Angular -->
+        <script src="js/angular/angular.min.js" type="text/javascript"></script>
+        <script src='js/app.js' type='text/javascript'></script>
+        <script src='js/factory.js' type='text/javascript'></script>
+        <script src='js/templates.js' type='text/javascript'></script>
+        <script src='js/filters.js'></script>
+        <script src='js/controllers/engine.js' type='text/javascript'></script>
+        <script src='js/controllers/menuController.js' type='text/javascript'></script>
+        <script src='js/controllers/parametersController.js' type='text/javascript'></script> 
+        <script src='js/controllers/specimenController.js' type='text/javascript'></script>
+        <script src='js/controllers/mastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/adjustmentMastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/designspaceController.js' type='text/javascript'></script>
+        <script src='js/controllers/instancesController.js' type='text/javascript'></script>
+        <script src='js/controllers/fontmappingController.js' type='text/javascript'></script> 
+        <script src='js/controllers/metadataController.js' type='text/javascript'></script> 
+        <script src='js/directives/control.js' type='text/javascript'></script> 
+        <script src='js/directives/directives.js' type='text/javascript'></script>
+        <script src='js/directives/sortable.js' type='text/javascript'></script>
+        
+        <!-- d3 JS -->
+        <script src="js/d3-v3-min.js" charset="utf-8"></script>
+
+    </HEAD>
+
+    <BODY ng-app="Metapolator" ng-controller="engine" ng-init="engine()">
+        <div id="mytools">
+            Ok, this is the scenario:<br>
+            Drop 1 master with button below (instance is created, you can slide, but that has no point of course).<br><br>
+            Drop another (the cps is replaced, I log the cps string every time), we should be able to do interpolation now.<br>
+            Drag the sliders (nothing happens).<br><br>
+            <button ng-if="data.dropped < 3" ng-click="data.dropMaster()">Drop master</button><br><br><hr><br><br>
+            
+            But when we create a new instance with button below, from this design space now this one can interpolate (drag sliders, the effect is on release). It never had its cps replaced (had the right n.cps straight away). So something with this makes the issue.<br><br>
+            <button ng-click="data.addInstance()">Add a new instance</button><br><br><hr><br><br>
+            
+            You can now continue and drop a 3rd master (cps is replaced) -> slide (something happens, but I suspect not all values are being counted) -> create new instance (with n=3 straight away), this one works as expected.
+        </div>
+        <div id="mywindow">
+            <designspace ng-controller="designspaceController" class="sub-panel semi-panel"></designspace>
+            <specimen2 ng-controller="specimenController" class="sub-panel semi-panel" ng-init="specimenPanel = 2"></specimen2>
+            <instances id="panel-5" ng-controller="instancesController" class="list panel sub-panel" type="instance"></instances>
+        </div>
+
+        <div class="compatibility-info">
+            If this message does not disappear after a short moment: <h2>Your Browser may be incompatible</h2><p>You can either use a current version of FireFox or Chromium/Google Chrome.</p><p>In order to run Metapolator in <strong>Chrome</strong> or <strong>Chromium</strong>
+            <ol>
+                <li>
+                    Make sure that <a href="chrome://flags/#enable-javascript-harmony">chrome://flags/#enable-javascript-harmony</a> is <strong>disabled</strong> (it is by default).
+                </li>
+                <li>
+                    Close all running instances of Chromium/Chrome.
+                </li>
+                <li>
+                    Then start it from the command-line like so:</p>
+<pre># if the command for your chrome-browser is "chrome"
+$ chrome --js-flags="--harmony --harmony_proxies"
+
+# in a current *ubuntu linux that might be for chromium:
+$ chromium-browser --js-flags="--harmony --harmony_proxies"
+
+# and for chrome
+$ google-chrome-stable --js-flags="--harmony --harmony_proxies"
+                    </pre>
+                </li>
+            </ol>
+        </div>
+    </BODY>
+    <script src="js/metapolatorStandAlone.js"></script>
+</html>

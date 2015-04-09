@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="a" format="2">
+  <advance width="545"/>
+  <unicode hex="0061"/>
+  <outline>
+    <contour identifier="bowl">
+      <point x="323.698" y="61.30225" type="move"/>
+      <point x="289.46500000000003" y="21.863155"/>
+      <point x="248.56099999999998" y="13"/>
+      <point x="212.5" y="13" type="curve"/>
+      <point x="162" y="13"/>
+      <point x="109" y="42.9966"/>
+      <point x="109" y="109" type="curve"/>
+      <point x="109" y="197.56"/>
+      <point x="176" y="230.5"/>
+      <point x="317" y="243.809" type="curve"/>
+    </contour>
+    <contour identifier="stem">
+      <point x="525" y="25" type="move"/>
+      <point x="508.1925" y="13.93165"/>
+      <point x="480.547" y="10.8156"/>
+      <point x="460.5" y="10.8156" type="curve"/>
+      <point x="411.4465" y="10.8156"/>
+      <point x="389" y="33.79885"/>
+      <point x="389" y="88" type="curve"/>
+      <point x="389" y="155.99932"/>
+      <point x="389" y="224.00068"/>
+      <point x="389" y="292" type="curve"/>
+      <point x="389" y="417"/>
+      <point x="357" y="458.5"/>
+      <point x="256" y="458.5" type="curve" name="horizontal"/>
+      <point x="162.36" y="458.5"/>
+      <point x="126.342" y="421.591"/>
+      <point x="126.3925" y="382" type="curve"/>
+      <point x="126.4545" y="350.89599999999996"/>
+      <point x="152" y="319.706"/>
+      <point x="172" y="307" type="curve"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array/>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>a</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>545</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

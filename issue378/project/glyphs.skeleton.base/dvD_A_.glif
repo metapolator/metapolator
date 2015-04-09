@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dvDA" format="2">
+  <advance width="489"/>
+  <unicode hex="0926"/>
+  <anchor x="383" y="-87" name="blwm.u"/>
+  <anchor x="375" y="-8" name="blwm.virama"/>
+  <anchor x="389" y="560" name="abvm.e"/>
+  <anchor x="389" y="560" name="abvm.bindu"/>
+  <outline>
+    <contour identifier="bow">
+      <point x="389" y="408.5" type="move"/>
+      <point x="375.5" y="414.5"/>
+      <point x="338.007" y="420"/>
+      <point x="309" y="420" type="curve"/>
+      <point x="193" y="420"/>
+      <point x="116.5" y="347.5"/>
+      <point x="116.5" y="232.5" type="curve"/>
+      <point x="116.5" y="106.5"/>
+      <point x="188.5" y="35"/>
+      <point x="293.5" y="35" type="curve"/>
+      <point x="305.5" y="35"/>
+      <point x="322" y="36"/>
+      <point x="337" y="39.5" type="curve"/>
+    </contour>
+    <contour identifier="verticalConnection">
+      <point x="319" y="408.5" type="move"/>
+      <point x="319" y="455.999525"/>
+      <point x="319" y="503.500475"/>
+      <point x="319" y="551" type="curve"/>
+    </contour>
+    <contour identifier="appendix">
+      <point x="344.988" y="42.8291" type="move"/>
+      <point x="372.7845" y="4.1162"/>
+      <point x="420.9625" y="-25.7832"/>
+      <point x="471" y="-51" type="curve"/>
+    </contour>
+    <contour identifier="bubble">
+      <point x="376.024" y="219.342" type="move"/>
+      <point x="372.024" y="219.342"/>
+      <point x="373.024" y="186.342"/>
+      <point x="373.024" y="140.342" type="curve"/>
+      <point x="373.024" y="89.3877"/>
+      <point x="354.20050000000003" y="50.75"/>
+      <point x="340" y="31" type="curve"/>
+    </contour>
+    <contour identifier="bar">
+      <point x="-20" y="550" type="move"/>
+      <point x="156.33157" y="550"/>
+      <point x="332.66843" y="550"/>
+      <point x="509" y="550" type="curve"/>
+    </contour>
+  </outline>
+</glyph>
