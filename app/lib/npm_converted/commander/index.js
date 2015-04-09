@@ -10,6 +10,7 @@ define(function (require, exports, module) {
 
 var EventEmitter = require('events').EventEmitter;
 var spawn = require('child_process').spawn;
+var readlink = require('graceful-readlink').readlinkSync;
 var path = require('path');
 var dirname = path.dirname;
 var basename = path.basename;
@@ -88,6 +89,7 @@ function Command(name) {
   this.commands = [];
   this.options = [];
   this._execs = [];
+  this._allowUnknownOption = false;
   this._args = [];
   this._name = name;
 }
@@ -159,7 +161,8 @@ Command.prototype.__proto__ = EventEmitter.prototype;
  * @api public
  */
 
-Command.prototype.command = function(name, desc) {
+Command.prototype.command = function(name, desc, opts) {
+  opts = opts || {};
   var args = name.split(/ +/);
   var cmd = new Command(args.shift());
 
@@ -169,6 +172,7 @@ Command.prototype.command = function(name, desc) {
     this._execs[cmd._name] = true;
   }
 
+  cmd._noHelp = !!opts.noHelp;
   this.commands.push(cmd);
   cmd.parseArgDescription(args);
   cmd.parent = this;
@@ -274,9 +278,16 @@ Command.prototype.action = function(fn) {
 
     // Leftover arguments need to be pushed back. Fixes issue #56
     if (parsed.args.length) args = parsed.args.concat(args);
+
     self._args.forEach(function(arg, i) {
       if (arg.required && null == args[i]) {
         self.missingArgument(arg.name);
+      } else if (arg.variadic) {
+        if (i !== self._args.length - 1) {
+          self.variadicArgNotLast(arg.name);
+        }
+
+        args[i] = args.splice(i);
       }
     });
 
@@ -285,7 +296,7 @@ Command.prototype.action = function(fn) {
       this.help(1);
     }
 
-    fn.apply(this, args);
+    fn.apply(self, args);
   };
   var parent = this.parent || this;
   var name = parent === this ? '*' : this._name;
@@ -350,7 +361,19 @@ Command.prototype.option = function(flags, description, fn, defaultValue) {
     , name = camelcase(oname);
 
   // default as 3rd arg
-  if ('function' != typeof fn) defaultValue = fn, fn = null;
+  if (typeof fn != 'function') {
+    if (fn instanceof RegExp) {
+      var regex = fn;
+      fn = function(val, def) {
+        var m = regex.exec(val);
+        return m ? m[0] : def;
+      }
+    }
+    else {
+      defaultValue = fn;
+      fn = null;
+    }
+  }
 
   // preassign default value only for --no-*, [optional], or <required>
   if (false == option.bool || option.optional || option.required) {
@@ -422,6 +445,12 @@ Command.prototype.parse = function(argv) {
   // guess name
   this._name = this._name || basename(argv[1], '.js');
 
+  // github-style sub-commands with no sub-command
+  if (this.executables && argv.length < 3) {
+    // this user needs help
+    argv.push('--help');
+  }
+
   // process argv
   var parsed = this.parseOptions(this.normalize(argv.slice(2)));
   var args = this.args = parsed.args;
@@ -430,7 +459,9 @@ Command.prototype.parse = function(argv) {
 
   // executable sub-commands
   var name = result.args[0];
-  if (this._execs[name]) return this.executeSubCommand(argv, args, parsed.unknown);
+  if (this._execs[name] && typeof this._execs[name] != "function") {
+    return this.executeSubCommand(argv, args, parsed.unknown);
+  }
 
   return result;
 };
@@ -456,19 +487,34 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
   }
 
   // executable
-  var dir = dirname(argv[1]);
-  var bin = basename(argv[1], '.js') + '-' + args[0];
+  var f = argv[1];
+  // name of the subcommand, link `pm-install`
+  var bin = basename(f, '.js') + '-' + args[0];
+
+
+  // In case of globally installed, get the base dir where executable
+  //  subcommand file should be located at
+  var baseDir
+    , link = readlink(f);
+
+  // when symbolink is relative path
+  if (link !== f && link.charAt(0) !== '/') {
+    link = path.join(dirname(f), link)
+  }
+  baseDir = dirname(link);
 
   // prefer local `./<bin>` to bin in the $PATH
-  var local = path.join(dir, bin);
-  try {
-    // for versions before node v0.8 when there weren't `fs.existsSync`
-    if (fs.statSync(local).isFile()) {
-      bin = local;
-    }
-  } catch (e) {}
+  var localBin = path.join(baseDir, bin);
 
-  // run it
+  // whether bin file is a js script with explicit `.js` extension
+  var isExplicitJS = false;
+  if (exists(localBin + '.js')) {
+    bin = localBin + '.js';
+    isExplicitJS = true;
+  } else if (exists(localBin)) {
+    bin = localBin;
+  }
+
   args = args.slice(1);
 
   var proc;
@@ -522,8 +568,12 @@ Command.prototype.normalize = function(args) {
       lastOpt = this.optionFor(args[i-1]);
     }
 
-    if (lastOpt && lastOpt.required) {
-     	ret.push(arg);
+    if (arg === '--') {
+      // Honor option terminator
+      ret = ret.concat(args.slice(i));
+      break;
+    } else if (lastOpt && lastOpt.required) {
+      ret.push(arg);
     } else if (arg.length > 1 && '-' == arg[0] && '-' != arg[1]) {
       arg.slice(1).split('').forEach(function(c) {
         ret.push('-' + c);
@@ -687,7 +737,7 @@ Command.prototype.opts = function() {
     result[key] = key === 'version' ? this._version : this[key];
   }
   return result;
-}
+};
 
 /**
  * Argument `name` is missing.
@@ -730,12 +780,12 @@ Command.prototype.optionMissingArgument = function(option, flag) {
  */
 
 Command.prototype.unknownOption = function(flag) {
+  if (this._allowUnknownOption) return;
   console.error();
   console.error("  error: unknown option `%s'", flag);
   console.error();
   process.exit(1);
 };
-
 
 /**
  * Variadic argument with `name` is not the last argument as required.
@@ -813,9 +863,7 @@ Command.prototype.alias = function(alias) {
 
 Command.prototype.usage = function(str) {
   var args = this._args.map(function(arg) {
-    return arg.required
-      ? '<' + arg.name + '>'
-      : '[' + arg.name + ']';
+    return humanReadableArgName(arg);
   });
 
   var usage = '[options'
@@ -889,9 +937,7 @@ Command.prototype.commandHelp = function() {
     , ''
     , this.commands.map(function(cmd){
       var args = cmd._args.map(function(arg){
-        return arg.required
-          ? '<' + arg.name + '>'
-          : '[' + arg.name + ']';
+        return humanReadableArgName(arg);
       }).join(' ');
 
       return cmd._name
