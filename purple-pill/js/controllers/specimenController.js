@@ -50,11 +50,11 @@ function($scope, $sce, sharedScope) {
     $scope.fontSize = 90;
     $scope.lineHeight = 0.8;
     $scope.nrOfFonts = 5;
-    $scope.fontbys = ["word", "glyph", "paragraph"];
+    $scope.fontbys = ["glyph", "word", "paragraph"];
     $scope.filterOptions = {
         filter : "",
         strict : 1,
-        selectedFontby : $scope.fontbys[0]
+        selectedFontby : $scope.fontbys[2]
     };
 
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel", function(newVal) {

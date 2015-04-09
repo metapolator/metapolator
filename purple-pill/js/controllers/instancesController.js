@@ -28,7 +28,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     $scope.data.metapolate = function() {
         if($scope.data.pill != "blue") {
-            console.clear();
             var instance = $scope.data.currentInstance;
             //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
