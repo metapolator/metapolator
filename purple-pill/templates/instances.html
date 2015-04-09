@@ -1,0 +1,57 @@
+<localmenu class="localmenu" class="left">
+    <div class="lm-head" ng-mousedown="data.selectMenu('instances')">
+        <b>Instances</b>
+    </div>
+    <div class="lm-body" ng-if="data.localmenu.instances">
+        <div class="lm-button" ng-class="{'inactive': !data.canAddInstance()}" ng-mouseup="data.addInstance()">New</div>
+        <div class="lm-button" ng-class="{'inactive': !data.currentInstance}" ng-mouseup="data.duplicateInstance(data.currentInstance, null)">Duplicate</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-class="{'inactive': !data.currentInstance}" ng-mouseup="deleteInstance()">Delete</div>
+        
+    </div>
+</localmenu>
+
+<div class="panel-border panel-border-with-menu">
+    <div id="instances-list">
+        <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
+            <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance == data.currentInstance}">
+                <span class="list-sequence-col">
+                    <svg height="16" width="16">
+                        <path d="M8 2 L14 8 L8 14 L2 8 Z" class="diamond" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
+                    </svg> 
+                </span>
+                <span class="list-view-col rename" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
+                <span class="list-edit-col rename" ng-model="instance.name" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
+                <div class="export-col" ng-click="instance.exportFont = !instance.exportFont">
+                    <div class="export-checkmark"><span ng-if="instance.exportFont">✓</span><span ng-if="!instance.exportFont">&nbsp;</span></div>
+                    <div class="opentype-features">&nbsp;</div>
+                </div>
+            </li>
+        </ul>
+        
+        
+        <div style="padding: 20px">
+            <div ng-repeat="instance in data.families[0].instances track by instance.id">
+                <b>{{instance.id}}</b>
+                <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
+                <div>masters: <span ng-repeat="axis in instance.axes">[{{axis.masterdisplayName}}]: {{axis.metapValue | number:3}} | </span></div>
+            </div>
+        </div>
+    
+    </div>
+    
+    <div id="instances-tools">
+        <div id="add-instance" ng-click="data.addInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
+            <img src="img/addInstance.png">
+        </div>
+        <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+            <img src="img/duplicateInstance.png">
+        </div>
+        <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+            <img src="img/deleteInstance.png">
+        </div>
+        <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': data.families[0].instances.length == 0}">
+            Export…
+        </div>
+    </div>
+</div>

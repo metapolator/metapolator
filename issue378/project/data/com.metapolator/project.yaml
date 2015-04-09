@@ -1,0 +1,13 @@
+masters:
+  base:
+    cpsFile: base.cps
+    skeleton: skeleton.base
+  regular:
+    cpsFile: lib/parameters.cps
+    skeleton: skeleton.base
+  wideLight:
+    cpsFile: wide-light.cps
+    skeleton: skeleton.base
+  wideExtraBold:
+   cpsFile: wide-extra-bold.cps
+   skeleton: skeleton.base

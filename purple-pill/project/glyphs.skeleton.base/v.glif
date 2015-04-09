@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="v" format="2">
+  <advance width="536"/>
+  <unicode hex="0076"/>
+  <outline>
+    <contour identifier="C:bottomFillOne">
+      <point x="290" y="0"/>
+      <point x="290" y="0" type="curve" name="bottom right"/>
+      <point x="309.9998" y="55.33278"/>
+      <point x="330.0002" y="110.66722"/>
+      <point x="350" y="166" type="curve" name="top right"/>
+      <point x="306.6671" y="145.33354"/>
+      <point x="263.3329" y="124.66646"/>
+      <point x="220" y="104" type="curve" name="top left"/>
+      <point x="237.33316" y="69.33368"/>
+      <point x="254.66684" y="34.66632"/>
+      <point x="272" y="0" type="curve" name="bottom left"/>
+      <point x="277.99994" y="0"/>
+      <point x="284.00006" y="0"/>
+      <point x="290" y="0" type="curve" name="bottom right"/>
+      <point x="290" y="0"/>
+    </contour>
+    <contour identifier="topRightSerif">
+      <point x="526" y="450" type="move" name="top right serif"/>
+      <point x="476.0005" y="450"/>
+      <point x="425.9995" y="450"/>
+      <point x="376" y="450" type="curve" name="top left serif"/>
+    </contour>
+    <contour identifier="topLeftSerif">
+      <point x="270" y="450" type="move" name="top right serif"/>
+      <point x="183.3342" y="450"/>
+      <point x="96.6658" y="450"/>
+      <point x="10" y="450" type="curve" name="top left serif"/>
+    </contour>
+    <contour identifier="upDiagonalOne">
+      <point x="280" y="4.5" type="move" name="bottom"/>
+      <point x="342.83270500000003" y="150.998535"/>
+      <point x="405.66729499999997" y="297.501465"/>
+      <point x="468.5" y="444" type="curve" name="top"/>
+    </contour>
+    <contour identifier="downDiagonalOne">
+      <point x="285" y="135" type="move" name="bottom"/>
+      <point x="238.833795" y="229.165725"/>
+      <point x="192.666205" y="323.334275"/>
+      <point x="146.5" y="417.5" type="curve" name="top"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>v</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>536</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

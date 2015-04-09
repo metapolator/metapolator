@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="c" format="2">
+  <advance width="503"/>
+  <unicode hex="0063"/>
+  <outline>
+    <contour identifier="cShape">
+      <point x="456" y="80" type="move" name="outstroke"/>
+      <point x="430" y="38.5"/>
+      <point x="371.5" y="7.5"/>
+      <point x="309.5" y="7.5" type="curve" name="horizontal bottom"/>
+      <point x="175" y="7.5"/>
+      <point x="105.5" y="83"/>
+      <point x="105.5" y="230" type="curve" name="vertical left"/>
+      <point x="105.5" y="389.5"/>
+      <point x="177.7745" y="461"/>
+      <point x="281" y="461" type="curve" name="horizontal top"/>
+      <point x="357.658" y="461"/>
+      <point x="398.70500000000004" y="418"/>
+      <point x="398.70500000000004" y="368.5" type="curve" name="drop top fixation"/>
+      <point x="398.70500000000004" y="343.002"/>
+      <point x="386.5" y="303.4975"/>
+      <point x="358.5" y="288.4395" type="curve" name="drop top"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guides</key>
+      <array/>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict>
+        <key>Back</key>
+        <dict>
+          <key>anchors</key>
+          <array/>
+          <key>components</key>
+          <array/>
+          <key>contours</key>
+          <array/>
+          <key>lib</key>
+          <dict/>
+          <key>name</key>
+          <string>c</string>
+          <key>unicodes</key>
+          <array/>
+          <key>width</key>
+          <integer>503</integer>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

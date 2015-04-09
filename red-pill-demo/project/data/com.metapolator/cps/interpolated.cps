@@ -1,8 +1,13 @@
-@dictionary {
-    * {
-        baseMaster1: S"master#enhanced";
-        baseMaster2: S"master#inherited";
-        proportion1: 50;
-        proportion2: 50;
-    }
+@import "lib/interpolate-4.cps";
+@import "global.cps";
+
+* {
+    baseMaster1: S"master#cl";
+    baseMaster2: S"master#wl";
+    baseMaster3: S"master#ceb";
+    baseMaster4: S"master#web";
+    proportion1: .25;
+    proportion2: .25;
+    proportion3: .25;
+    proportion4: .25;
 }

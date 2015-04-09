@@ -15,29 +15,15 @@
         <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
         <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
 
-        <!-- bootstrap -->
-        <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-        <script src="bootstrap/js/bootstrap.min.js"></script>
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
         <!-- fonts -->
-        <link href='http://fonts.googleapis.com/css?family=Lato:400,900italic,900,700italic,400italic,300italic,300,100italic,100,700' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Merriweather:400,900italic,900,700italic,400italic,700,300,300italic' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
-
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css'>
+        
         <!-- Angular -->
         <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
         <script src='js/app.js' type='text/javascript'></script>
         <script src='js/factory.js' type='text/javascript'></script>
         <script src='js/templates.js' type='text/javascript'></script>
+        <script src='js/filters.js'></script>
         <script src='js/controllers/menuController.js' type='text/javascript'></script>
         <script src='js/controllers/parametersController.js' type='text/javascript'></script> 
         <script src='js/controllers/specimenController.js' type='text/javascript'></script>
@@ -56,30 +42,21 @@
 
     </HEAD>
 
-    <BODY ng-app="Metapolator">
-        <div id="menu" ng-controller="menuController">
+    <BODY ng-app="Metapolator" class="unselectable" ng-controller="menuController">
+        <div id="menu" >
             <div id="project">
-                <div id="project-dropdown" class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Project</b> {{data.projectName}} <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="#">New</a>
-                        </li>
-                        <li>
-                            <a href="#">Clone</a>
-                        </li>
-                        <li>
-                            <a href="#">Open</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">Save</a>
-                        </li>
-                        <li>
-                            <a href="#">Save As...</a>
-                        </li>
-                    </ul>
-                </div>
+                <localmenu class="localmenu" class="left">
+                    <div class="lm-head" ng-mousedown="data.selectMenu('project')">
+                        <b>Project</b> <span id="project-name" ng-model="data.projectName" class="project-rename"></span>
+                    </div>
+                    <div class="lm-body" ng-if="data.localmenu.project">
+                        <div class="lm-button" ng-mouseup="newDocument()">New</div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button" ng-mouseup="closeDocument()">Close</div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button" ng-mouseup="renameProject()">Rename project</div>
+                    </div>
+                </localmenu>
             </div>
             <!-- end of project -->
 
@@ -95,69 +72,74 @@
                 </div>
             </div>
             <!-- end of view buttons -->
+            
+            <div id="help">
+                <localmenu class="localmenu right">
+                    <div class="lm-head" ng-mousedown="data.selectMenu('help')">
+                        <b>Help</b>
+                    </div>
+                    <div class="lm-body" ng-if="data.localmenu.help">
+                        <div class="lm-button"><a href="https://github.com/metapolator/metapolator" target="_blank">Github Project</a></div>
+                        <div class="lm-button"><a title="Browse existing feature requests and bug reports on our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">Github Issues</a></div>
+                        <div class="lm-button"><a title="To report a bug or request a feature, create a new issue in our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">New Issue</a></div>
+                        <div class="lm-divider"></div>
+                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://metapolator.com" target="_blank">metapolator.com</a></div>
+                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://twitter.com/metapolator" target="_blank">@metapolator</a></div>
+                        <div class="lm-button"><b></b><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://plus.google.com/communities/110027004108709154749" target="_blank">+metapolator</a></b></div>
+                        </div>
+                    </div>
+                </localmenu>
+            </div>
         </div>
         <!-- end of menu -->
 
         <div id="pagewrap">
             <div id="landscape">
-
-                <div id="panel-1" class="panel sub-panel">
-                    <parameters ng-controller="parametersController"></parameters>
+                <div id="panel-1" class="panel">
+                    <parameters ng-controller="parametersController" class="sub-panel standard-padding semi-panel"></parameters>
+                    <underconstruction class="sub-panel semi-panel"> 
+                        COMING SOON:<br>MORE PARAMETERS
+                    </underconstruction>
                 </div>
-
-                <div id="panel-2" class="panel sub-panel standard-padding">
-                    <specimen ng-controller="specimenController"></specimen>
-                </div>
-
+                <specimen id="panel-2" ng-controller="specimenController" ng-init="addGlyphRange()" class="sub-panel panel"></specimen>
 
                 <!-- start of view 2 -->
                 <div id="panel-3" class="panel">
-
-                    <div id="subpanel-3-top" class="sub-panel">
-                        <masters ng-controller="mastersController" ng-mouseup="mouseclick = false"></masters>
-                    </div>
+                    <masters ng-controller="mastersController" class="list sub-panel semi-panel" type="master"></masters>
+                    <underconstruction class="sub-panel semi-panel">
+                        COMING SOON:<br>ADJUSTMENT MASTERS
+                    </underconstruction>
                 </div>
 
                 <div id="panel-4" class="panel">
-                    <div id="subpanel-4-top" class="sub-panel">
-                        <designspace ng-controller="designspaceController"></designspace>
-                    </div>
-
-                    <div id="subpanel-4-bottom" class="sub-panel standard-padding">
-                        <specimen ng-controller="specimenController"></specimen>
-                    </div>
-
-                    <div class="divider-hor" id="divider-4">
-                        <div class="divider-left"></div>
-                    </div>
+                    <designspace ng-controller="designspaceController" class="sub-panel semi-panel"></designspace>
+                    <specimen ng-controller="specimenController" class="sub-panel semi-panel"></specimen>
                 </div>
 
                 <!-- start of view 3 -->
-                <div id="panel-5" class="panel sub-panel">
-                    <instances ng-controller="instancesController"></instances>
-                </div>
-
+                <instances id="panel-5" ng-controller="instancesController" class="list panel sub-panel" type="instance"></instances>
+                
                 <div id="panel-6" class="panel sub-panel standard-padding">
-                    <fontmapping ng-controller="fontmappingController"></fontmapping>
                 </div>
-
-                <div id="panel-7" class="panel sub-panel standard-padding">
-                    <metadata ng-controller="metadataController"></metadata>
-                </div>
+                
+                <underconstruction id="panel-7" class="panel sub-panel">
+                    COMING SOON:<br>FAMILY EXPORT
+                </underconstruction>
             </div>
             <!-- end of landscape -->
-
         </div>
-
-        <!-- dividers -->
-        <div class="divider" id="divider-1">
-            <div class="divider-top"></div>
+        
+        <div id="layover"></div>
+        
+        <div id="alert">
+            <div id="alert-loading"><img src="img/loading.gif"></div>
+            <div id="alert-content"></div>
         </div>
-
-        <div class="divider" id="divider-2">
-            <div class="divider-top"></div>
+        
+        <div id="rename-project" ng-controller="menuController">
+            <b>Rename your Metapolator project</b><br><br>
+            <form ng-submit="closeRename()"><input ng-model="data.projectName"></form>
+            <!--<button ng-click="closeRename()">Close</button>-->
         </div>
-        <div id="size-slider-line"></div>
-        <!-- end of dividers -->
     </BODY>
 </html>

@@ -1,0 +1,7 @@
+masters:
+  base:
+    cpsFile: base.cps
+    skeleton: skeleton.base
+  regular:
+    cpsFile: lib/parameters.cps
+    skeleton: skeleton.base

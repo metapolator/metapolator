@@ -1,60 +1,38 @@
-<div class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Masters <span class="caret"></span></a>
-    <ul class="dropdown-menu" role="menu">
-        <li>
-            <a href="#">Import ufo...</a>
-        </li>
-        <li>
-            <a href="#">Copy From Project...</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-            <a href="#">Set Scripts…</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-            <a href="#">Quick Export...</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-            <a href="#">Delete...</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-            <a href="#">Create Sequence</a>
-        </li>
-        <li>
-            <a href="#">Delete Sequence...</a>
-        </li>
-    </ul>
-</div>
+<localmenu class="localmenu" class="left">
+    <div class="lm-head" ng-mousedown="data.selectMenu('masters')">
+        <b>Masters</b>
+    </div>
+    <div class="lm-body" ng-if="data.localmenu.masters">
+        <div class="lm-button" ng-mouseup="importUfo()">Import ufo...</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-mouseup="duplicateMaster()">Duplicate</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-mouseup="deleteMaster()">Delete...</div>
+    </div>
+</localmenu>
 
-<ul ui-sortable="sortableOptionsSequences" ng-model="data.sequences">
+<ul>
     <li ng-repeat="sequence in data.sequences">
-        <div class="sequence-name" ng-click="selectSequenceForEdit(sequence)" ng-class="{selected: allMastersSelected(sequence)}">{{sequence.name}}</div>
-        <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="sequence">
-            
-            <li ng-repeat="master in sequence.masters" class="master" ng-class="{selected: master.edit}">
-                <span class="diamond" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
-                    <div class="diamond-fix" ng-class="{diamonddrag: !$middle}"></div>
+        <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="list-ul">
+            <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit}">
+                <span class="list-sequence-col" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
+                    <div class="diamond"></div>
                 </span>
-                <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
-                <span class="master-name" ng-click="selectMastersForEdit(master, $parent.$index, $index)" ng-class="{'selected': master.edit}">
-                    {{master.name}}
-                </span>
+                <span class="list-view-col rename" ng-model="master.ag" ng-click="master.display = !master.display" ng-class="{'selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};"></span>
+                <span class="list-edit-col rename" ng-model="master.name" ng-class="{'selected': master.edit}"></span>
             </li>
         </ul>
     </li>
 </ul>
 
-
-<!--
-<ul ui-sortable="sortableOptions" ng-model="data.sequence.masters" class="master-ul" ng-repeat="sequence in data.sequences">
-    {{sequence.name}}
-    <li ng-repeat="master in sequence.masters" class="master-li">
-        <span class="selectable-diamond"></span>
-        <span class="selectable-ag" ng-click="master.display = !master.display" ng-class="{'ui-selected': master.display}" style="font-family:'{{master.fontFamily}}'; font-weight:{{master.weight}};">Ag</span>
-        <span class="selectable-name" ng-click="master.edit = !master.edit" ng-class="{'ui-selected': master.edit}" >{{master.name}}</span>
-    </li>
-</ul>
--->
+<div id="masters-tools">
+    <div id="import-ufo" ng-click="importUfo();" class="master-tool">
+        <img src="img/importUfo.png">
+    </div>
+    <div id="duplicate-master" ng-click="duplicateMaster();" class="master-tool">
+        <img src="img/duplicateMaster.png">
+    </div>
+    <div id="delete-master" ng-click="cloneMaster();" class="master-tool">
+        <img src="img/cloneMaster.png">
+    </div>
+</div>

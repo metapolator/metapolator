@@ -1,33 +1,17 @@
 <div class="inspector-header">
-    <arrow class="open"></arrow>
     <span>{{data.projectName}}</span>
 </div>
-<div class="inspector-branche" style="display: block" ng-repeat="sequence in data.sequences">
-    <div class="inspector-header">
-        <arrow></arrow>
-        <span>{{sequence.name}}</span>
-    </div>
-    <div class="inspector-branche" ng-repeat="master in sequence.masters">
+<div ng-repeat="sequence in data.sequences">
+
+    <div class="inspector-branche" style="display: block" ng-repeat="master in sequence.masters"  ng-if="master.edit">
         <div class="inspector-header">
-            <arrow ng-if="master.edit"></arrow>
+            <arrow></arrow>
             <span ng-class="{'inspector-inactive' : !master.edit}">{{master.name}}</span>
         </div>
-        <div class="inspector-branche" ng-repeat="glyph in data.glyphs" ng-if="master.edit">
+        <div class="inspector-branche" ng-repeat="glyph in master.glyphs" ng-if="glyph.edit">
             <div class="inspector-header">
                 <arrow></arrow>
-                <span>{{glyph}}</span>
-            </div>
-            <div class="inspector-branche" ng-repeat="stroke in data.strokes">
-                <div class="inspector-header">
-                    <arrow></arrow>
-                    <span>{{stroke}}</span>
-                </div>
-                <div class="inspector-branche" ng-repeat="point in data.points">
-                    <div class="inspector-header">
-                        <arrow></arrow>
-                        <span>{{point}}</span>
-                    </div>
-                </div>    
+                <span>{{glyph.value}}</span>
             </div>
         </div>
     </div>

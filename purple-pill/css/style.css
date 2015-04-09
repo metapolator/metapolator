@@ -1,0 +1,1481 @@
+    @font-face {
+        font-family: 'glyphs';
+        src: url('../fonts/glyphs.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+	html {
+		height: 100%;
+		width: 100%;
+		overflow: auto;
+	}
+	
+	body {
+		margin: 0;
+		height: 100%;
+		width: 100%;
+		font-family: "Roboto";
+		font-size: 13px;
+		background: #fff;
+	}
+	
+	* {
+		box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;  
+	}
+	
+	.standard-padding {
+		padding: 16px;
+	}
+	
+	.align-right {
+	    text-align: right;
+	}
+	
+    #temp-output {
+        position: absolute;
+        left: 70%;
+        top: 100px;
+        width: 30%;
+        padding: 20px;
+    }
+    
+    .unselectable {                
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    .selectable {
+        -webkit-touch-callout: all;
+        -webkit-user-select: all;
+        -khtml-user-select: all;
+        -moz-user-select: all;
+        -ms-user-select: all;
+        user-select: all;
+    } 
+    
+    .rename {
+        cursor: default;
+    }
+
+    .renaming {
+        cursor: text!important;
+        -webkit-touch-callout: text!important;
+        -webkit-user-select: text!important;
+        -khtml-user-select: text!important;
+        -moz-user-select: text!important;
+        -ms-user-select: text!important;
+        user-select: text!important;
+    }
+
+
+/****** testing stuff *****/
+
+    #temp-parameters input {
+        width: 40px;
+        margin-bottom: 8px;
+    }
+
+	/*
+	.start-view-selection {
+	    background: purple!important;
+	}
+	
+	.end-view-selection {
+	    background: green!important;
+	}
+	*/
+	
+    
+/****** standard buttons ******/
+
+    .push-button-down {
+        box-shadow: inset 2px 2px 2px rgba(0,0,0,0.5);
+    }
+    
+    .inactive.push-button-down {
+        box-shadow: none;
+    }
+
+
+	
+/****** menu *****/
+	
+	
+	#menu {
+		width: 100%;
+		height: 50px;
+		position: relative;
+	}
+	
+		#project {
+		    padding: 0;
+			float: left;
+		}
+	
+		#view-buttons {
+		    position: fixed;
+		    top: 0;
+		    left: calc(50% - 154px);
+			padding: 8px;
+		}
+		
+			 #view-buttons .menu-item {
+				float: left;
+				padding: 8px;
+				background: #fff;
+				margin-right: 4px;
+				font-size: 0.8em;
+				border: 1px solid #ddd;
+				cursor: default;
+				width: 100px;
+				text-align: center;
+			}
+			
+    			 #view-buttons .menu-item:last-child{
+    			     margin-right: 0;
+    			 }
+			
+			#view-buttons .menu-item:hover, #view-buttons .menu-item-current {
+				border: 1px solid #000;
+			}
+			
+        #help {
+            padding: 0;
+            float: right;
+        }
+        
+        #engine-mode {
+            position: fixed;
+            z-index: 1000;
+            left: 200px;
+            top: 6px;
+        }
+			
+			
+/****** framework *****/
+	
+	
+	#pagewrap {
+		width: 100%;
+		height: calc(100% - 50px);
+		position: relative;
+		overflow-x: hidden;
+	}
+	
+		#landscape {
+			width: 262.5%;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		
+			.panel {
+				float: left;
+                height: 100%;
+                position: relative;
+			}
+			
+			.sub-panel {
+			    overflow-y: auto;
+			    overflow-x: hidden;
+			    position: relative;
+				background: #fff;
+				padding: 4px;
+			}
+			
+			.semi-panel {
+			    height: 50%;
+		    }
+		    
+		    .panel-border {
+		        border: 1px solid #ddd;
+		        height: 100%;
+		        position: relative;
+		    }
+		    
+		      .panel-border-with-menu {
+		          height: calc(100% - 30px);
+		      }
+			
+            underconstruction {
+                display: block;
+                background: #48A115!important;
+                color: #99D676;
+                padding: 16px;
+                height: 100%;
+            }
+            
+            specimen, specimen2, masters, designspace, instances, parameters, fontexport {
+                display: block;
+                position: relative;
+            }
+            
+                parameters {
+                    width: 100%;
+                }
+            
+                masters.sub-panel {
+                    overflow: visible;
+                }
+                
+                fontexport.sub-panel {
+                    overflow: visible;
+                }
+			
+			#panel-1 {
+				width: calc(3/42 * 100%);
+			}
+			
+			 #parameter-slider {
+			     margin-top: 50px;
+			 }
+			
+			#panel-2 {
+				width: calc(10/42 * 100%);
+			}
+						
+			#panel-3 {
+				position: relative;
+				width: calc(3/42 * 100%);
+			}
+
+			#panel-4 {
+				width: calc(10/42 * 100%);
+				position: relative;
+			}
+		
+			#panel-5 {
+				width: calc(3/42 * 100%);
+				position: relative;
+			}
+					
+			#panel-6 {
+				width: calc(1/42 * 100%);
+				position: relative;
+			}
+
+			#panel-7 {
+				width: calc(12/42 * 100%);
+				position: relative;
+			}
+
+
+
+
+/***************** divider ******************/
+
+/*
+    .divider {
+        position: absolute;
+        height: calc(100% - 50px);
+        width: 9px;
+        top: 50px;
+        z-index: 100;
+    }
+    
+    
+    #divider-1 {
+        left: calc(3/16 * 100% - 4px);   
+    }
+    
+    #divider-2 {
+        left: calc(13/16 * 100% - 4px);   
+    }
+    
+        .divider-top {
+            height: 100%;
+            width: 5px;
+        }
+        
+        .divider:hover .divider-top {
+            border-right: 1px dashed #000;
+        }
+        
+        .divider:hover {
+            cursor: ew-resize;
+        }
+        
+        
+    .divider-hor {
+        position: absolute;
+        width: 100%;
+        height: 9px;
+        z-index: 100;
+    }
+    
+    
+    #divider-3, #divider-4 {
+        top: 50%;   
+    }
+    
+    
+        .divider-left {
+            width: 100%;
+            height: 5px;
+        }
+        
+        .divider-hor:hover .divider-left {
+            border-bottom: 1px dashed #000;
+        }
+        
+        .divider-hor:hover {
+            cursor: ns-resize;
+        }
+
+*/
+    
+
+			
+/***************** dropdown menu ******************/
+/* !!! later: override and combine with bootstrap css */
+
+	
+	.dropdown {
+		margin-bottom: 20px;
+	}
+	
+		.dropdown a {
+			text-decoration: none;
+		}
+	
+		.dropdown .dropdown-toggle {
+			position: relative; /* temporarily hack for a sticking out of parents div */
+			top: 8px; /* idem */
+			display: inine-block;
+			padding: 8px;
+			background: #ddd;
+			color: #000;
+			overflow: auto;
+            white-space: nowrap;
+		}
+		
+		#project-dropdown .dropdown-toggle {
+			background: none;
+			display: block;
+			padding-bottom: 0;
+
+		}
+		
+			.dropdown .dropdown-toggle:hover, .dropdown .dropdown-toggle:focus {
+				background: #f85c37;
+				color: #000;
+			}
+			
+			.dropdown .dropdown-menu {
+				margin-top: 16px;
+				border-radius: 0;
+				border: 0;
+				box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+			}
+			
+	
+	
+	
+/******************* specimen ********************/
+
+
+    #specimen-toolbar {
+        padding-bottom: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .specimen-info-holder {
+        text-align: center;
+    }
+
+        .specimen-info {
+            text-align: left;
+            display: inline-block;
+            padding: 8px;
+            font-size: 9px;
+            text-transform: uppercase;
+            text-align: center;
+            background: #ddd;
+        }
+
+    .specimen {
+        padding: 20px 0 40px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+
+    #specimen {
+        background: #fff;
+        width: 800px;
+        margin: 0 auto;
+        height: 100%;
+    }
+    
+        #specimen-toolbar {
+            overflow: auto;
+            height: 38px;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            z-index: 1000;
+        }
+        
+        #specimen-content {
+            height: calc(100% - 38px);
+            overflow-y: auto;
+            padding: 16px;
+            position: relative;
+        }
+        
+           .specimen-tool {
+               float: left;
+               margin-right: 8px;
+           }
+           
+           #size-nr {
+               font-size: 12px;
+               font-family: "Lato";
+               width: 38px;
+               margin-right: 3px;
+               text-align: right;
+               border: 0;
+           }
+           
+           #lineheigt-nr {
+               border: 0;
+           }
+           
+           #filter {
+               width: 180px;
+           }
+        
+            size-rope {
+                float: left;
+                margin-right: 12px;
+                margin-top: 2px;
+                width: 16px;
+                height: 16px;
+            }
+         
+   #font-by {
+    float: right;
+   }
+   
+   .chunk {
+    display: inline-block;
+    float: left;
+   }
+              
+    #non-glyph-range {
+        
+    }
+    
+    #specimen-content ul {
+        padding: 0;
+        margin: 0;
+    }
+    
+    #specimen-content ul.glyph-range-master {
+        margin-bottom: 40px;
+    }
+    
+        #specimen-content ul li {
+            list-style: none;
+            display: inline-block;
+            cursor: default;
+            overflow: visible;
+            float: left;
+        }
+        
+            #specimen-content li glyph {
+                display: block;
+                border-bottom: 4px solid transparent;
+            }
+                  
+                /* space character is temp until there is a space character in the master */
+                #specimen-content li.space-character {
+                    width: 40px;
+                    clear: none;
+                }
+                
+                #specimen-content li.space-character.clear-space {
+                    width: 0;
+                    clear: both;
+                }
+                
+                #specimen-content li.line-break {
+                    clear: both;
+                    width: 0;
+                }
+                
+                #specimen-content li.paragraph-break {
+                    clear: both;
+                    width: 100%;
+                }
+                            
+                #specimen-content ul li .selected-glyph {
+                    border-bottom: 4px solid #00f!important;
+                }
+                    
+                   #specimen-content li glyph svg {
+                       display: block;
+                       height: 100%;
+                   } 
+                
+                body #specimen-content ul .selected-glyph.temp-unselected-glyph.master-edit {
+                    border-bottom: 4px solid transparent!important;
+                }
+                
+                body specimen #specimen-content ul .loading-glyph {
+                    border-bottom: 4px solid #f00!important;
+                }
+                        
+                #specimen-content ul .temp-selected-glyph.master-edit {
+                    border-bottom: 4px solid #00f!important;   
+                }
+                    
+                #specimen-content ul .glyph-linebreak {
+                    display: block;
+                }
+                
+
+           
+    .rubberband {
+        background: rgba(0, 0, 0, 0.1);
+        border: 1px dashed #000;
+    }
+           
+           
+           
+	
+/************ design space ****************/
+
+
+    #design-space-panel {
+        float: left;
+        width: 700px;
+        margin: 0 auto;
+        height: 100%;
+    }
+
+    #design-space-tabs {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background: #fff;
+        height: 30px;
+    }
+
+    #design-space-tabs li {
+        float: left;
+        padding: 6px 10px;
+        margin-right: 4px;
+        cursor: pointer;
+        background: #fff;
+        height: 30px;
+    }
+
+    #design-space-tabs li.selected {
+        background: #aaa;
+        color: #fff;
+    }
+
+    #design-space-tabs li div {
+        float: left;
+    }
+
+    #design-space-tabs li img {
+        height: 12px;
+        width: 12px;
+        margin-right: 4px;
+    }
+
+    .design-space {
+        height: calc(100% - 32px);
+        background: #fff;
+        overflow: auto;
+    }
+
+    .unconfigured {
+        background: #ddd;
+    }
+    
+    .design-space-container {
+        width: 100%;
+        height: 100%;
+        padding: 40px;
+        color: #ddd;
+        font-style: italic;
+    }
+
+    .choose-space-type {
+        width: 50%;
+        height: 100%;
+        float: left;
+        text-align: center;
+        padding-top: 5%;
+    }
+
+    .choose-space-type-button {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .choose-space-type-button:hover {
+        color: #f85c37;
+    }
+
+    .drop-area {
+        width: 100%;
+        background: #fff;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+    
+        .drag-over {
+            border: 1px dashed #000;
+        }
+    
+    
+            control, explore {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: #eee;
+            }
+            
+            control svg, explore svg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                top: 0;
+            }
+
+                
+                li:first-child .slider-label-first {
+                    display: none;
+                }
+                
+                li:first-child .slider-label-last {
+                    left: 50%;
+                }
+                
+                    .slider-label {
+                        border: none;
+                        background: transparent;
+                    }
+
+                .slider-label-first {
+                    left: 0;
+                    top: 10px;
+                }
+                
+                .slider-label-last {
+                    text-align: right;
+                    right: 0;
+                }
+                
+                .slider-label-middle {
+                    position: absolute;
+                    text-align: center;
+                    right: 0;
+                    top: 10px;
+                    width: 100%;
+                    font-size: 16px;
+                }
+                
+        .li-explore {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #000;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+            .explore-name {
+                position: absolute;
+                z-index: 10;
+                color: #fff;
+                left: 6px;
+                top: 4px;
+                text-align: center;
+                font-size: 12px;
+            }
+            
+            .explore-name-full {
+                position: absolute;
+                z-index: 10;
+                left: 24px;
+                top: 0px;
+                background: #ddd;
+                color: #333;
+                padding: 4px 8px;
+                font-size: 12px;
+                opacity: 0;
+                transition: all 1s ease;
+            }
+            
+            .show-name-full .explore-name-full {
+                opacity: 1;
+            }	
+            
+            
+            
+            
+/************ sliders ***************/
+        
+ 
+    .slider-container {
+        
+    }      
+      
+        .slider-axis {
+            stroke: #ddd;
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .slider-axis-active {
+            stroke: #000;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 3px;
+            cursor: pointer;
+            fill: transparent;
+            stroke: #000;
+            stroke-width: 2px;
+        } 
+             
+        .slider-label {
+            font-size: 9px;
+            cursor: default;
+        }
+    
+            .label-right-inactive {
+                fill: #aaa;
+                font-style: italic;
+            }
+            
+            .slider-label-output {
+                fill: #f85c37;
+            }
+            
+            .slider-input-container {
+                position: absolute;
+                z-index: 10;
+                color: #f85c37;
+                font-size: 9px;
+            }
+            
+                .slider-input-output {
+                    width: 50px;
+                    border: 0;
+                    color: #000;
+                    background: transparent;
+                    text-align: center;
+                    font-size: 9px;
+                }
+                    
+                    .slider-input-output:focus {
+                        background: #fff;
+                    }
+    
+        .triangle-button {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+    
+        .slider-button {
+            font-family: "glyphs";
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+            .slider-button.slider-remove-master {
+                fill: #f00;
+            }
+        
+            .slider-label-right-container:hover .slider-button {
+                opacity: 1;
+            }
+            
+        .left-label-select {
+            position: absolute;
+            left: 230px;
+            z-index: 1000;
+            font-size: 9px;
+        }
+        
+        .slider-hover-square {
+            opacity: 0;
+        }
+        
+        
+
+/**************** masters ************************/
+
+
+    masters {
+        position: relative;
+        height: 100%;
+        display: block;
+    }
+    
+        #masters-list {
+            height: calc(100% - 63px);
+            overflow: auto;
+        }
+
+        masters ul {
+            list-style: none;     
+            margin: 0;
+            padding: 0;
+            
+        }
+            
+        #masters-tools {
+            position: absolute;
+            background: #fff;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid #000;
+        }
+        
+            .master-tool {
+                float: left;
+                width: 33px;
+                height: 32px;
+                display: inline-block;
+                cursor: pointer;
+                text-align: center;
+                border-right: 1px solid #000;
+                background: #fff;
+            }
+
+
+
+
+/****** list *****/
+
+
+    .list-name {
+        margin-left: 24px;
+        padding: 4px 10px;
+        width: 50%;
+        color: #ddd;
+        cursor: pointer;
+        background: #fff;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border: 1px solid #ddd;
+        border-bottom: 0px;
+    }
+        
+        .list-name.selected {
+           background: #f85c37; 
+           color: #fff;
+        }
+
+    .list-ul {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+        .list-li {
+            width: 100%;
+            height: 28px;
+            border-bottom: 1px solid #ddd;
+            background: #fff;
+        }
+        
+            .list-li.selected {
+                background: #ddd;
+                border-bottom: 1px solid #fff;
+            }
+        
+            .list-sequence-col {
+                float: left;
+                width: 24px;
+                height: 100%;
+                position: relative;
+            }
+                    
+                .list-sequence-col svg {
+                    margin: 6px;
+                }
+                    
+                    /* while dragging */
+                    .ui-sortable-helper {
+                        box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+                    }
+                
+                    .ui-sortable-helper .list-sequence-col .diamond-fix {
+                        background-image: url('../img/diamonds/diamond.png')!important;
+                    }
+                
+        .list-view-col {
+            float: left;
+            text-align: center;
+            width: 28px;
+            height: calc(100% - 4px);
+            margin: 2px;
+            padding-top: 1px;
+            font-size: 17px;
+            cursor: default;
+        }
+                
+            .temp-view-selection-true {
+                background: #888!important;
+            }
+            
+            .temp-view-selection-false {
+                background: transparent!important;
+            }
+        
+            .list-view-col svg {
+                height: 60%;
+                margin-top: 20%;
+            }
+        
+            .list-view-col.selected {
+                background: #888;
+            }
+            
+        .list-edit-col {
+            float: left;
+            width: calc(100% - 56px);
+            height: 100%;
+            padding: 4px 10px;
+            cursor: default;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+            
+
+
+
+/**************** parameters ************************/
+
+    
+        #inspector {
+        }
+        
+            .inspector-branche {
+                margin-left: 16px;
+                display: block;
+            }
+            
+            .inspector-header {
+                color: #224DB3;
+            }
+            
+            .inspector-inactive {
+                color: #aaa;
+                margin-left: 17px;
+            }
+            
+            arrow {
+                cursor: pointer;
+                color: #555;
+            }
+            
+            arrow::before {
+                content: "►";
+            }
+            
+            arrow.open::before {
+                content: "▼";
+            }
+            
+    #parameters-selection{
+        width: 100%;
+    }
+    
+        .parameters-selection-head {
+            width: calc(100% - 34px);
+            display: inline-block;
+            background: #ddd;
+            padding: 5px;
+        }
+        
+        .parameters-add {
+            width: 30px;
+            margin-left: 4px;
+            display: inline-block;
+            background: #ddd;
+            padding: 5px;
+            text-align: center;
+            cursor: default;
+        }
+        
+        .parameters-selection-body {
+            width: 100%;
+            min-height: 30px;
+        }
+        
+            .parameter-row {
+                clear: both;
+                width: 100%;
+                cursor: default;
+                font-size: 13px;
+                font-family: "Roboto Condensed";
+            }
+            
+                .parameter-row input {
+                    font-size: 13px;
+                    font-family: "Roboto Condensed";
+                }
+        
+                .parameter-key {
+                    width: 40%;
+                    display: inline-block;
+                    text-align: right;
+                    padding: 2px;
+                    float: left;
+                }
+                
+                .parameter-operator {
+                    width: 10%;
+                    display: inline-block;
+                    text-align: center;
+                    padding: 2px;
+                    float: left;
+                }
+                
+                .parameter-value {
+                    width: 50%;
+                    display: inline-block;
+                    padding: 2px;
+                    float: left;
+                    padding-right: 20px;
+                }
+                
+                    .parameter-value input {
+                        width: 40%;
+                        border: 0;
+                    }
+                    
+                    .calculated-value {
+                        width: 40%;
+                        text-align: right;
+                        display: inline-block;
+                    }
+                    
+                        .parameter-value input:focus, .parameter-value input:hover {
+                            background: #ddd;
+                        }
+        
+    #parameters-control-panel {
+        display: block;
+        position: fixed;
+        z-index: 102;
+        width: 200px;
+        background: #ddd;
+        padding: 8px;
+        border: 1px solid rgba(0,0,0,0.1);
+        box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+    } 
+    
+        #control-panel-parameters {
+            width: 65%;
+            display: inline-block;
+            float: left;
+        }       
+        
+            .control-panel-parameter{
+                width: calc(100% - 4px);
+            }
+
+        #control-panel-operators {
+            width: 35%;
+            display: inline-block;
+            float: left;
+        }  
+            
+            .control-panel-operator {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .control-panel-button {
+                background: #aaa;
+                padding: 4px;
+                margin-bottom: 4px; 
+                cursor: default;
+            }
+            
+                .control-panel-button.selected, .control-panel-button.push-button-down {
+                    background: #60BFEF;
+                }
+            
+            .control-panel-cancel {
+                clear: both;
+                text-align: center;
+                font-weight: 700;
+            }
+
+
+/**************** metadata ************************/
+
+
+    metadata input {
+        padding: 20px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-family: "Lato";
+        border: 0px;
+        background: #ddd;
+        color: #f85c37;
+    }
+    
+        metadata input:focus {
+            background: #f85c37;
+            color: #fff;
+        }
+
+
+/***************** instances ******************/
+
+
+    instances {
+        position: relative;
+        height: 100%;
+        display: block;
+    }
+    
+        #instances-list {
+            height: calc(100% - 63px);
+            overflow: auto;
+        }
+
+        instances ul {
+            padding: 0;
+            margin: 0;
+        }
+    
+            instances ul li {
+                list-style: none;
+            }
+            
+        #instances-tools {
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid #ddd;
+            background: #fff;
+        }
+        
+            .instance-tool {
+                float: left;
+                width: 33px;
+                height: 32px;
+                display: inline-block;
+                cursor: pointer;
+                text-align: center;
+                border-right: 1px solid #ddd;
+                background: #fff;
+            }
+            
+            .inactive {
+                opacity: 0.5;
+            }
+     
+     
+     
+     
+            
+/**************** export fonts ************************/
+
+
+    #instances-list .list-edit-col {
+        width: calc(100% - 136px);
+    }
+
+    fontexport.sub-panel {
+        background: transparent;
+        height: 30px;
+    } 
+    
+    instances.sub-panel {
+        overflow: visible;
+    }
+    
+        instances .panel-border {
+            width: calc(100% + 90px);
+        }
+       
+    .export-col {
+        width: 80px;
+        float: left;
+        height: 100%;
+        background: #aaa;
+        cursor: default;
+    }
+            
+        .export-checkmark {
+            width: 50%;
+            display: inline-block;
+            float: left;
+            font-size: 24px;
+            line-height: 20px;
+            padding-left: 20px;
+            
+        }
+        
+        .opentype-features {
+            width: 50%;
+            display: inline-block;
+            float: left;
+            font-size: 10px;
+            padding-top: 4px;
+        }
+        
+    #export-button {
+        float: right;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        height: 32px;
+        text-align: center;
+        background: #ddd;
+        padding: 8px;
+        cursor: default;
+    }
+            
+            
+            
+/**************** local menu ************************/
+
+    
+    localmenu {
+        position: relative;
+        display: block;
+        min-height: 30px;
+    }
+    
+        .localmenu-inside {
+            min-height: 0;
+        }
+    
+    .lm-head {
+        cursor: default;
+        padding: 6px 8px;
+    }
+    
+        .localmenu-inside .lm-head {
+            padding: 0 8px 0 0;
+        }
+    
+        .lm-head:after {
+            content: "▼";
+            font-size: 10px;
+            margin-left: 2px;
+        }
+        
+        .lm-head:hover {
+            background: #ddd;
+        }
+        
+            designspace .lm-head:hover {
+                background: transparent;
+            }
+        
+    .lm-body {
+        position: absolute;
+        z-index: 1000;
+        top: 28px;
+        background: #fff;
+        width: 200px;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+    
+    .left .lm-body {
+        left: 2px;
+    }
+    
+    .right .lm-body {
+        right: 2px;
+    }
+    
+        .lm-content {
+            padding: 20px;
+        }
+        
+            .lm-content a {
+                color: #f85c37;
+                text-decoration: none;
+            }
+            
+                .lm-content a:hover {
+                    text-decoration: underline;
+                }
+    
+        .lm-button {
+            padding: 4px 10px;
+            color: #000;
+            display: block;
+            width: 100%;
+            cursor: default;
+        }
+        
+        .lm-button a {
+            display: block;
+            width: 100%;
+            color: #000;
+            text-decoration: none;
+        }
+        
+            .lm-button:hover {
+                background: #ddd;
+            }
+            
+            .lm-button.lm-button-hover {
+                background: #ddd;
+            }
+            
+       .lm-divider {
+           width: 100%;
+           margin: 4px 0;
+           background: #ddd;
+           height: 1px;
+        }
+        
+        
+        
+        
+/**************** alert ************************/
+
+    #alert, #rename-project {
+        display: none;
+        position: fixed;
+        
+
+        top: 60px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+
+    }
+    
+    #alert {
+        width: 400px;
+        min-height: 200px;
+        left: calc(50% - 200px);
+    }
+    
+        #alert-loading {
+            text-align: center;
+            display: none;
+        }
+        
+        #alert-content {
+            text-align: center;
+            padding-top: 20px;
+        }
+        
+    #rename-project {
+        width: 260px;
+        left: calc(50% - 130px);
+    }
+    
+        #rename-project input {
+            width: 100%;
+        }
+
+
+    #layover {
+        display: block;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0,0,0,0.6);
+    }
+
+    .compatibility-info {
+        position: fixed;
+        border-radius: 4px;
+        z-index: 1001;
+        left: calc(50% - 300px);
+        top: 18px;
+        width: 600px;
+        background: #fff;
+        padding: 40px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.8);
+    }
+    
+    
+    
+    
+/**************** dividers ************************/
+
+
+    divider {
+        position: absolute;
+        top: 0;
+        z-index: 100;
+        height: 100%;
+        width: 4px;
+        background: transparent;
+        cursor: ew-resize;
+        padding: 30px 0;
+        border-left: 1px solid transparent;
+    }
+    
+    divider:after {
+        position: absolute;
+        left: -4px;
+        top: 0;
+        content: " ";
+        width: 3px;
+        height: 100%;
+        background: transparent;
+    }
+    
+        divider:hover {
+            background: #transparent;
+            border-left: 1px solid transparent;
+        }
+
+    dividerHor {
+        position: absolute;
+        top: 0;
+        z-index: 100;
+        height: 4px;
+        width: 100%;
+        background: transparent;
+        cursor: ns-resize;
+        padding: 0 30px;
+        border-top: 1px solid transparent;
+    }
+    
+    dividerHor:after {
+        position: absolute;
+        top: -4px;
+        left: 0;
+        content: " ";
+        height: 3px;
+        width: 100%;
+        background: transparent;
+    }
+    
+        dividerHor:hover {
+            background: #d7d2c8;
+            border-top: 1px solid transparent;
+        }

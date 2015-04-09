@@ -1,14 +1,10 @@
 // some issues with outerWidth() and offsetWidth
+var currentView = 0;
 
-$(function() {
-    var currentView = 0, bufferIn = 180, bufferOut = 270, id, leftPanel, rightPanel, leftStart, rightStart, mirror = 0, dividerStart;
-
-    updateContainment();
-    setSizesAbsolute();
-    setLandscapeWidth();
+$(document).ready(function(){
     
-    $(".readmore-header").on("click", function() {
-        $(this).parent(".readmore").toggleClass("readmore-show");
+    $(window).resize(function(){
+        moveLandscape(currentView, 0);
     });
 
     $(".menu-item").on("click", function() {
@@ -16,6 +12,39 @@ $(function() {
         moveLandscape(view, 1);
     });
     
+   moveLandscape(1, 1);
+        
+    function moveLandscape(view, transition) {
+        currentView = view;
+        //$("#divider-1").css("left", $("#panel-" + (view * 2 + 1)).outerWidth());
+        //$("#divider-2").css("left", $("#panel-" + (view * 2 + 1)).outerWidth() + $("#panel-" + (view * 2 + 2)).outerWidth());
+        //updateContainment();
+
+        // move landscape
+        if (transition == 1) {
+            $("#landscape").css("transition", "all 700ms ease");
+        } else {
+            $("#landscape").css("transition", "none");
+        }
+        var thisLeft = -$("#panel-" + (view * 2 + 1)).position().left;
+        $("#landscape").css("left", thisLeft);
+
+        // set menu buttons
+        for (var i = 0; i < 3; i++) {
+            $("#menu-item-" + i).removeClass("menu-item-current");
+        }
+        $("#menu-item-" + view).addClass("menu-item-current");
+    } 
+    
+    
+
+
+/*  
+    var currentView = 0, bufferIn = 180, bufferOut = 270, id, leftPanel, rightPanel, leftStart, rightStart, mirror = 0, dividerStart;
+
+    updateContainment();
+    setSizesAbsolute();
+    setLandscapeWidth();
     $(window).resize(function() {
         resizeLandscape();
     });
@@ -126,34 +155,7 @@ $(function() {
         }
         $("#landscape").css("width", landscapeWidth);
     }
-
-
-
-    function moveLandscape(view, transition) {
-        // move virtual dividers
-        currentView = view;
-        $("#divider-1").css("left", $("#panel-" + (view * 2 + 1)).outerWidth());
-        $("#divider-2").css("left", $("#panel-" + (view * 2 + 1)).outerWidth() + $("#panel-" + (view * 2 + 2)).outerWidth());
-        updateContainment();
-
-        // move landscape
-        if (transition == 1) {
-            $("#landscape").css("transition", "all 700ms ease");
-        } else {
-            $("#landscape").css("transition", "none");
-        }
-        var thisLeft = -$("#panel-" + (view * 2 + 1)).position().left;
-        $("#landscape").css("left", thisLeft);
-
-        // set menu buttons
-        for (var i = 0; i < 3; i++) {
-            $("#menu-item-" + i).removeClass("menu-item-current");
-        }
-        $("#menu-item-" + view).addClass("menu-item-current");
-    }
-
-
-
+    
     function resizeLandscape() {
         newWindowSize = $(window).outerWidth();
         oldWindowSize = $("#panel-1").outerWidth() + $("#panel-2").outerWidth() + $("#panel-3").outerWidth();
@@ -189,6 +191,16 @@ $(function() {
         moveLandscape(currentView);
         setSizesAbsolute();
     }
+    
+    
+*/
+
+
+
+
+
+
+
 
 });
 

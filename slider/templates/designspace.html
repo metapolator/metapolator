@@ -1,10 +1,8 @@
 <ul id="design-space-tabs">
-    <li ng-repeat="space in data.designSpaces" ng-click="selectDesignSpace($index)" ng-class="{selected : $index == data.currentDesignSpace}">
+    <li ng-repeat="space in data.designSpaces" ng-click="selectDesignSpace(space)" ng-class="{selected : space == data.currentDesignSpace}">
         <div><img ng-src="{{ 'img/' + space.type + '.png'}}">
         </div>
-        <div>
-            {{space.name}}
-        </div>
+        <div class="rename" ng-model="space.name"></div>
     </li>
     <li ng-click="addDesignSpace()">
         +
@@ -12,29 +10,38 @@
 </ul>
 <!-- end of tabs -->
 
-<div class="design-space" ng-class="{unconfigured : data.designSpaces[data.currentDesignSpace].type =='x'}">
-    <div ng-show="data.designSpaces[data.currentDesignSpace].type == 'x'">
+<div class="design-space" ng-class="{unconfigured : data.currentDesignSpace.type =='x'}">
+    <div class="design-space-container" ng-show="data.currentDesignSpace.type == 'x'">
         <div class="choose-space-type">
-            <div class="choose-space-type-button" ng-click="data.designSpaces[data.currentDesignSpace].type = 'Explore'">
-                <img src="img/Explore.png">
-                <br>
-                Explore
-            </div>
-        </div>
-        <div class="choose-space-type">
-            <div class="choose-space-type-button" ng-click="data.designSpaces[data.currentDesignSpace].type = 'Control'">
+            <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Control'">
                 <img src="img/Control.png">
                 <br>
                 Control
             </div>
         </div>
+        <!--
+        <div class="choose-space-type under-construction">
+            <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Explore'">
+                <img src="img/Explore.png">
+                <br>
+                Explore
+            </div>
+        </div>
+        -->
     </div>
     
-    <div class="drop-area" ng-show="data.designSpaces[data.currentDesignSpace].type != 'x'">
-        <control ng-if="data.designSpaces[data.currentDesignSpace].type == 'Control'"></control>
-        <explore ng-if="data.designSpaces[data.currentDesignSpace].type == 'Explore'"></explore>
-        <button ng-if="data.designSpaces[data.currentDesignSpace].type == 'Control' && data.designSpaces[data.currentDesignSpace].masters.length == 3" class="triangle-button" ng-click="data.designSpaces[data.currentDesignSpace].triangle = !data.designSpaces[data.currentDesignSpace].triangle">
-            Triangles: {{!data.designSpaces[data.currentDesignSpace].triangle}}
+    <div class="drop-area" ng-show="data.currentDesignSpace.type != 'x'">
+        <control ng-if="data.currentDesignSpace.type == 'Control'">
+            <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 45) + 'px'}">
+                <input ng-model="axis.value" class="slider-input-output">%
+            </div>
+            <select class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="index as data.findMaster(master.masterId).name for (index, master) in data.currentDesignSpace.masters" ng-style="{'top': ((data.currentDesignSpace.masters.length - 2) * 50 + 43) + 'px'}" ng-if="data.currentDesignSpace.masters.length > 2"></select>
+        </control>
+        <explore ng-if="data.currentDesignSpace.type == 'Explore'"></explore>
+        <!--
+        <button ng-if="data.currentDesignSpace.type == 'Control' && data.currentDesignSpace.masters.length == 3" class="triangle-button" ng-click="data.currentDesignSpace.triangle = !data.currentDesignSpace.triangle">
+            Triangles: {{!data.currentDesignSpace.triangle}}
         </button>
+        -->
     </div> 
 </div>
