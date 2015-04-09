@@ -5,8 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <TITLE>Metapolator – font editor for designing typeface families - Purple Pill Demo</TITLE>
-        
+        <title>Metapolator – Font Editor for Designing Typeface Families - Purple Pill Demo</title>
+        <meta name="description" content="Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.">
+
         <meta property="og:title" content="Metapolator - Demo" />
         <meta property="og:type" content="website" />
         <meta property="og:description" content="Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time." />
@@ -48,9 +49,9 @@
         <!-- d3 JS -->
         <script src="js/d3-v3-min.js" charset="utf-8"></script>
 
-    </HEAD>
+    </head>
 
-    <BODY ng-app="Metapolator" ng-controller="engine" ng-init="engine()">
+    <body ng-app="Metapolator" ng-controller="engine" ng-init="engine()">
         <div id="menu" class="unselectable" ng-controller="menuController">
             <div id="project">
                 <localmenu class="localmenu" class="left">
@@ -87,15 +88,30 @@
                         <b>Help</b>
                     </div>
                     <div class="lm-body" ng-if="data.localmenu.help">
-                        <div class="lm-button"><a href="https://github.com/metapolator/metapolator" target="_blank">Github Project</a></div>
-                        <div class="lm-button"><a title="Browse existing feature requests and bug reports on our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">Github Issues</a></div>
-                        <div class="lm-button"><a title="To report a bug or request a feature, create a new issue in our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">New Issue</a></div>
-                        <div class="lm-divider"></div>
-                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://metapolator.com" target="_blank">metapolator.com</a></div>
-                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://twitter.com/metapolator" target="_blank">@metapolator</a></div>
-                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://plus.google.com/communities/110027004108709154749" target="_blank">+metapolator</a></b></div>
-                        <div class="lm-divider"></div>
-                        <div class="lm-button"><a title="To look behind the curtain and see the true underlying reality, take the red pill" href="http://metapolator.com/red-pill-demo/" target="_blank">Open Tech View in new Tab</a></b></div>
+                        <div class="lm-button">
+                          <a href="https://github.com/metapolator/metapolator" target="_blank">Github Project</a>
+                        </div>
+                        <div class="lm-button">
+                          <a title="Browse existing feature requests and bug reports on our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">Github Issues</a>
+                        </div>
+                        <div class="lm-button">
+                          <a title="To report a bug or request a feature, create a new issue in our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">New Issue</a>
+                        </div>
+                        <div class="lm-divider">
+                        </div>
+                        <div class="lm-button">
+                          <a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://metapolator.com" target="_blank">metapolator.com</a>
+                        </div>
+                        <div class="lm-button">
+                          <a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://twitter.com/metapolator" target="_blank">@metapolator</a>
+                        </div>
+                        <div class="lm-button">
+                          <a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://plus.google.com/communities/110027004108709154749" target="_blank">+metapolator</a>
+                        </div>
+                        <div class="lm-divider">
+                        </div>
+                        <div class="lm-button">
+                          <a title="To look behind the curtain and see the true underlying reality, take the red pill" href="http://metapolator.com/red-pill-demo/" target="_blank">Open Tech View in new Tab</a>
                         </div>
                     </div>
                 </localmenu>
@@ -172,7 +188,7 @@
                     Close all running instances of Chromium/Chrome.
                 </li>
                 <li>
-                    Then start it from the command-line like so:</p>
+                    Then start it from the command-line like so:
 <pre># if the command for your chrome-browser is "chrome"
 $ chrome --js-flags="--harmony --harmony_proxies"
 
@@ -185,6 +201,6 @@ $ google-chrome-stable --js-flags="--harmony --harmony_proxies"
                 </li>
             </ol>
         </div>
-    </BODY>
+    </body>
     <script src="js/metapolatorStandAlone.js"></script>
 </html>
