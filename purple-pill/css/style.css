@@ -1158,6 +1158,7 @@
         #instances-list {
             height: calc(100% - 63px);
             overflow: auto;
+            width: calc(100% + 90px);
         }
 
         instances ul {
@@ -1170,10 +1171,10 @@
             }
             
         #instances-tools {
+            width: calc(100% + 90px);
             position: absolute;
             bottom: 0px;
             left: 0;
-            width: 100%;
             border-top: 1px solid #ddd;
             background: #fff;
         }
@@ -1201,7 +1202,7 @@
 
 
     #instances-list .list-edit-col {
-        width: calc(100% - 136px);
+        width: calc(100% - 146px);
     }
 
     fontexport.sub-panel {
@@ -1214,37 +1215,23 @@
     }
     
         instances .panel-border {
-            width: calc(100% + 90px);
+            overflow: visible;
         }
        
     .export-col {
-        width: 80px;
+        width: 90px;
         float: left;
         height: 100%;
         background: #aaa;
         cursor: default;
+        text-align: center;
+        font-size: 24px;
+        line-height: 20px;
     }
-            
-        .export-checkmark {
-            width: 50%;
-            display: inline-block;
-            float: left;
-            font-size: 24px;
-            line-height: 20px;
-            padding-left: 20px;
-            
-        }
-        
-        .opentype-features {
-            width: 50%;
-            display: inline-block;
-            float: left;
-            font-size: 10px;
-            padding-top: 4px;
-        }
         
     #export-button {
         float: right;
+        width: 90px;
         border-left: 1px solid #ddd;
         border-right: 1px solid #ddd;
         height: 32px;
