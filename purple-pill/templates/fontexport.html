@@ -3,14 +3,7 @@
         <b>Fonts</b>
     </div>
     <div class="lm-body" ng-if="data.localmenu.fonts">
-        <div class="lm-button" ng-mouseup="">Check All</div>
-        <div class="lm-button" ng-mouseup="">Uncheck All</div>
-        <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="">Copy Opentype Features from Master…</div>
-        <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="">Remove Opentype Features</div>
+        <div class="lm-button" ng-class="{'inactive': data.families[0].instances.length == 0}" ng-mouseup="checkAll()">Check All</div>
+        <div class="lm-button" ng-class="{'inactive': data.families[0].instances.length == 0}" ng-mouseup="uncheckAll()">Uncheck All</div>
     </div>
 </localmenu>
-
-<div class="panel-border panel-border-with-menu">
-</div>

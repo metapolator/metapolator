@@ -22,6 +22,10 @@
                 </span>
                 <span class="list-view-col rename" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}" style="font-family:'{{instance.fontFamily}}'; font-weight:{{instance.fontWeight}};"></span>
                 <span class="list-edit-col rename" ng-model="instance.name" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
+                <div class="export-col">
+                    <div class="export-checkmark" ng-click="instance.exportFont = !instance.exportFont"><span ng-if="instance.exportFont">✓</span><span ng-if="!instance.exportFont">&nbsp;</span></div>
+                    <div class="opentype-features"><span ng-if="instance.openTypeFeatures">ot.fea</span></div>
+                </div>
             </li>
         </ul>
         
@@ -45,6 +49,9 @@
         </div>
         <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
             <img src="img/deleteInstance.png">
+        </div>
+        <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': data.families[0].instances.length == 0}">
+            Export…
         </div>
     </div>
 </div>

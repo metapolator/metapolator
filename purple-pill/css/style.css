@@ -962,7 +962,6 @@
             white-space: nowrap;
             overflow: hidden;
         }
-       
             
 
 
@@ -1172,10 +1171,10 @@
             
         #instances-tools {
             position: absolute;
-            bottom: 4px;
+            bottom: 0px;
             left: 0;
             width: 100%;
-            border-top: 1px solid #000;
+            border-top: 1px solid #ddd;
             background: #fff;
         }
         
@@ -1186,14 +1185,74 @@
                 display: inline-block;
                 cursor: pointer;
                 text-align: center;
-                border-right: 1px solid #000;
+                border-right: 1px solid #ddd;
                 background: #fff;
             }
             
             .inactive {
                 opacity: 0.5;
             }
+     
+     
+     
+     
             
+/**************** export fonts ************************/
+
+
+    #instances-list .list-edit-col {
+        width: calc(100% - 136px);
+    }
+
+    fontexport.sub-panel {
+        background: transparent;
+        height: 30px;
+    } 
+    
+    instances.sub-panel {
+        overflow: visible;
+    }
+    
+        instances .panel-border {
+            width: calc(100% + 90px);
+        }
+       
+    .export-col {
+        width: 80px;
+        float: left;
+        height: 100%;
+        background: #aaa;
+        cursor: default;
+    }
+            
+        .export-checkmark {
+            width: 50%;
+            display: inline-block;
+            float: left;
+            font-size: 24px;
+            line-height: 20px;
+            padding-left: 20px;
+            
+        }
+        
+        .opentype-features {
+            width: 50%;
+            display: inline-block;
+            float: left;
+            font-size: 10px;
+            padding-top: 4px;
+        }
+        
+    #export-button {
+        float: right;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        height: 32px;
+        text-align: center;
+        background: #ddd;
+        padding: 8px;
+        cursor: default;
+    }
             
             
             

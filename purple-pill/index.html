@@ -38,7 +38,7 @@
         <script src='js/controllers/adjustmentMastersController.js' type='text/javascript'></script>
         <script src='js/controllers/designspaceController.js' type='text/javascript'></script>
         <script src='js/controllers/instancesController.js' type='text/javascript'></script>
-        <script src='js/controllers/fontmappingController.js' type='text/javascript'></script> 
+        <script src='js/controllers/fontexportController.js' type='text/javascript'></script> 
         <script src='js/controllers/metadataController.js' type='text/javascript'></script> 
         <script src='js/directives/control.js' type='text/javascript'></script> 
         <script src='js/directives/directives.js' type='text/javascript'></script>
@@ -131,7 +131,7 @@
                 <!-- start of view 3 -->
                 <instances id="panel-5" ng-controller="instancesController" class="list panel sub-panel" type="instance"></instances>
                 
-                <fontexport id="panel-6" class="panel sub-panel standard-padding">
+                <fontexport id="panel-6" class="panel sub-panel standard-padding" ng-controller="fontexportController">
                 </fontexport>
                 
                 <div id="panel-7" class="panel sub-panel">

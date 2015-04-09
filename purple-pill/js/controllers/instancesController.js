@@ -11,7 +11,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         var g = getRandom(b);
         var b = getRandom(c);
         var color = "rgb(" + r + "," + g + "," + b + ")";
-        console.log(color);
         $scope.data.colorCoding.push(color);
     };
     
@@ -73,7 +72,9 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 fontFamily : "Roboto",
                 fontWeight : 700,
                 axes : axesSet,
-                cpsFile : cpsFile
+                cpsFile : cpsFile,
+                exportFont : true,
+                openTypeFeatures : true
             };
             $scope.data.registerInstance(thisInstance);
         }
