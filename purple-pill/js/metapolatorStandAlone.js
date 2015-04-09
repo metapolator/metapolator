@@ -28888,6 +28888,31 @@ function (
         setTimeout(callback, 0, exports);
     }
 
+    /**
+     * FIXME: this should be part of app/lib/project/MetapolatorProject
+     * probably. I copy and pasted it from app/lib/RedPill
+     *
+     * this === project
+     */
+    function fileChangeHandler(path) {
+        var match = path.indexOf(this.cpsDir)
+          , sourceName
+          ;
+        if(match !== 0)
+            return;
+        // +1 to remove the leading slash
+        sourceName = path.slice(this.cpsDir.length + 1);
+        try {
+            this.controller.updateChangedRule(true, sourceName);
+        }
+        catch(error) {
+            // KeyError will be thrown by RuleController.replaceRule if
+            // sourceName is unknown, which is expected at this point,
+            // because that means that sourceName is unused.
+            if(!(error instanceof errors.Key))
+                throw error;
+        }
+    }
 
     // This pattern is used by google analytics, for example, to execute
     // api calls "before" the api is available. The calling code does:
@@ -28910,10 +28935,12 @@ function (
         io.mkDir(false, 'project');
         // copy the project into memory
         promise = ioREST.copyRecursive(true, projectPath, io, 'project');
-        return promise.then(function(){
+
+        return promise.then(function() {
             var project, glyphRendererAPI;
             project = new MetapolatorProject(io, 'project');
             project.load();
+            fsEvents.on('change', fileChangeHandler.bind(project));
             // load all masters, because right now it is very confusing
             // when some masters are missing from the MOM
             project.masters.forEach(project.open, project);
@@ -28955,7 +28982,7 @@ function (
                 , parameter
                 , factory = parameterRegistry.getFactory(name)
                 ;
-            _value.initializeTypeFactory(name.name, factory);
+            _value.initializeTypeFactory(name, factory);
             parameter = new Parameter({name:name}, _value);
             parameterDict.setParameter(parameter);
         }
