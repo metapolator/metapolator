@@ -28,15 +28,15 @@ When not:
 ## parameters panel
 Her is the list of _possible_ parameters we could support:
 
-* Width
-* Height
+* Width _(of the skeleton curves bounding box)_
+* Height _(of the skeleton curves bounding box)_
 * Slant
-* Tension (modifies in & out)
-* Weight
-* horizontal metrics _(all measured to skeleton)_
+* Tension _(modifies in & out, at each point)_
+* Weight _(overall pen width at each point)_
+* horizontal metrics _(all measured to the edge of the skeleton curves bounding box)_
   * spacing _(total space surrounding this glyph, = front + back)_
   * sidebearings _(value pair, e.g. “40|30”, = front|back, **not** left|right)_
-* X-height _(tricky, works only for latin and needs preparation in the incoming ufo)_
+* X-height _(unlikely to be realised with a descent workflow, because it works only for latin and needs either preparation in the incoming ufo, or a glyph selection in the specimen to not mess up all kinds of glyphs that are not lowercase latin)_
 
 These work on the selections that can be made in the specimen, i.e. (multiple) masters and (multiple) glyphs.
 
