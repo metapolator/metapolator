@@ -1436,7 +1436,7 @@
     }
     
         divider:hover {
-            background: #transparent;
+            background: transparent;
             border-left: 1px solid transparent;
         }
 
@@ -1463,6 +1463,6 @@
     }
     
         dividerHor:hover {
-            background: #d7d2c8;
+            background: transparent;
             border-top: 1px solid transparent;
         }
