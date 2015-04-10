@@ -224,7 +224,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     // empty current cps file and rewrite it with new masters
                     if ($scope.data.pill != "blue") {
                         var cpsString = $scope.createMultiMasterCPS(instance.axes);
-                        $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, "");
                         $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
                     }
                 }

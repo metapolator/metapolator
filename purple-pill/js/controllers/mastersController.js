@@ -52,8 +52,8 @@ app.controller("mastersController", function($scope, sharedScope) {
                         displayName: masterName,
                         cpsFile: cpsFile,
                         type: "redpill",
-                        display: true,
-                        edit: [true, true],
+                        display: false,
+                        edit: [false, false],
                         ag: "ag",
                         glyphs: angular.copy(master.glyphs),
                         parameters: angular.copy(master.parameters)
@@ -96,6 +96,9 @@ app.controller("mastersController", function($scope, sharedScope) {
                 if (listItem.parentObject == sequence.id && listItem.childObject == master.id) {
                     master.edit[$scope.data.viewState] = !master.edit[$scope.data.viewState];
                     master.display = master.edit[$scope.data.viewState];
+                    if (master.edit[0] == false) {
+                        $scope.deselectAllGlyphs(master);
+                    }
                 }
             });
         });  
@@ -116,6 +119,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                     master.display = true;
                 } else {
                     master.edit[$scope.data.viewState] = false;
+                    $scope.deselectAllGlyphs(master);
                 }
             });
         });
@@ -127,6 +131,7 @@ app.controller("mastersController", function($scope, sharedScope) {
             angular.forEach(sequence.masters, function(master) {
                 master.edit[$scope.data.viewState] = false;
                 master.display = false;
+                $scope.deselectAllGlyphs(master);
             });
         });
         $scope.data.updateSelectionParameters();
@@ -136,6 +141,12 @@ app.controller("mastersController", function($scope, sharedScope) {
         if(!master.edit[$scope.data.viewState]) {
             master.display = !master.display;
         }
+    };
+    
+    $scope.deselectAllGlyphs = function (master) {
+        angular.forEach(master.glyphs, function(glyph) {
+            glyph.edit = false;
+        });
     };
 
     /***** Dropping to design space *****/
