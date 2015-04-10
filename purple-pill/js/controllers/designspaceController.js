@@ -108,10 +108,10 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var n = axes.length;
         var cake = 0;
         for (var i = 0; i < n; i++) {
-            cake += parseInt(axes[i].value);
+            cake += parseFloat(axes[i].value);
         }
         for (var i = 0; i < n; i++) {
-            var piece = parseInt(axes[i].value);
+            var piece = parseFloat(axes[i].value);
             instance.axes[i].metapValue = piece / cake;
         }
     };
@@ -160,8 +160,10 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 max = parseFloat(axes[i].value);
             }
         }
+        
         // 2 find ratio of others compared to highest
         var ratio = 100 / (parseFloat(axes[highest].value) + parseFloat(axes[slack].value));
+        console.log(ratio);
         for (var i = 0; i < axes.length; i++) {
             axes[i].value = formatX(ratio * axes[i].value);
         }
