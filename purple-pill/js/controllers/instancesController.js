@@ -67,6 +67,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 display : true,
                 ag : "Ag",
                 name : instanceName,
+                displayName : instanceName,
                 designSpace : designSpace.id,
                 fontFamily : "Roboto",
                 fontWeight : 700,
@@ -82,7 +83,9 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data.duplicateInstance = function(instance, space) {
         if (instance) {
             var duplicate = jQuery.extend(true, {}, instance);
-            duplicate.name = $scope.duplicateName(duplicate.name);
+            var newName = $scope.duplicateName(duplicate.name);
+            duplicate.name = newName;
+            duplicate.displayName = newName;
             duplicate.edit = true;
             duplicate.id = $scope.uniqueInstanceId;
             if (space) {
@@ -111,13 +114,13 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
 
     $scope.duplicateName = function(inputname) {
-        var serieNr = 1;
+        var serialNr = 1;
         var cleanName = inputname;
         var endsWithNr = inputname.match(/\d+$/);
         if (endsWithNr) {
             var nrString = endsWithNr[0];
             cleanName = inputname.substr(0, (inputname.length - nrString.length));
-            serieNr = parseInt(nrString);
+            serialNr = parseInt(nrString);
         }
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
@@ -128,15 +131,15 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     var thisCleanName = thisName.substr(0, (thisName.length - nrString.length));
                     if (thisCleanName == cleanName) {
                         var thisNr = parseInt(nrString);
-                        if (thisNr > serieNr) {
-                            serieNr = thisNr;
+                        if (thisNr > serialNr) {
+                            serialNr = thisNr;
                         }
                     }
                 }
             });
         });
-        serieNr++;
-        return cleanName + serieNr;
+        serialNr++;
+        return cleanName + serialNr;
     };
 
     $scope.deleteInstance = function() {
@@ -448,5 +451,4 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         cpsString += "}";
         return cpsString;
     };
-
 });
