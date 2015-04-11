@@ -1,4 +1,10 @@
-define(['jszip'], function(JSZip) {
+define([
+    'jszip'
+  , 'io/readDirRecursive'
+], function(
+    JSZip
+  , readDirRecursive
+) {
     "use strict";
 
     var unpack = function(zipData, io, targetPath){
@@ -7,16 +13,13 @@ define(['jszip'], function(JSZip) {
 
     var encode = function(io, sourcePath){
         var zip = new JSZip();
+        var files = readDirRecursive(sourcePath);
+        var i;
 
-        /*For now I'll simply create a zip file
-          with some arbitrary sample files in it.
+        for (i in files){
+            zip.file(files[i], io.readFile(files[i]));
+        }
 
-          In the next commits we'll substitute that by the actual
-          traverse of the subtree rooted at "sourcePath". */
-
-        zip.file("Hello.txt", "Hello World\n");
-        var f = zip.folder("folder");
-        f.file("Again.txt", "Yeah!\n");
         var content = zip.generate({type:"string"});
         return content;
     };
