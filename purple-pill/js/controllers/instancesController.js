@@ -229,6 +229,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                         var cpsString = $scope.createMultiMasterCPS(instance.axes);
                         $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
                     }
+                    $scope.data.getMetapolationRatios(instance);
                 }
             });
         });

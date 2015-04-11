@@ -102,8 +102,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.output = [];
     $scope.total = 0;
 
-    $scope.getMetapolationRatios = function() {
-        var instance = $scope.data.currentInstance;
+    $scope.data.getMetapolationRatios = function(instance) {
         var axes = instance.axes;
         var n = axes.length;
         var cake = 0;
@@ -185,11 +184,9 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         
         // 2 find ratio of others compared to highest
         var ratio = 100 / (parseFloat(axes[highest].value) + parseFloat(axes[slack].value));
-        console.log(ratio);
         for (var i = 0; i < axes.length; i++) {
             axes[i].value = formatX(ratio * axes[i].value);
         }
-        console.log(axes);
     };
 
     function reDistributeValues(axes) {
@@ -220,7 +217,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     function formatX(x) {
-        var roundedX = Math.round(x * 2) / 2;
+        var roundedX = Math.round(x * 10) / 10;
         var toF = roundedX.toFixed(1);
         return toF;
     }
@@ -275,7 +272,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 }
             }
         }
-        $scope.getMetapolationRatios();
+        $scope.data.getMetapolationRatios(instance);
         $scope.data.currentDesignSpace.trigger++;  
     };
     

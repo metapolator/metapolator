@@ -210,8 +210,6 @@ app.directive('control', function($document) {
                     }).on("click", function(d, i) {
                         scope.removeMaster(i);
                     });
-
-                    scope.getMetapolationRatios();
                 }
             }
 
@@ -265,7 +263,7 @@ app.directive('control', function($document) {
                 }
                 writeValueToModel(thisIndex, thisValue);
                 // translate axis values to metapolation ratios
-                scope.getMetapolationRatios();
+                scope.data.getMetapolationRatios(thisInstance);
                 scope.$apply();
             }).on('dragend', function() {
                 scope.data.metapolate();
@@ -326,7 +324,7 @@ app.directive('control', function($document) {
             }
 
             function formatX(x) {
-                var roundedX = Math.round(x * 2) / 2;
+                var roundedX = Math.round(x * 10) / 10;
                 var toF = roundedX.toFixed(1);
                 return toF;
             }
