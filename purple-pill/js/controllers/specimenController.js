@@ -208,7 +208,7 @@ function($scope, $sce, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             if (sequence.id == sequenceId) {
                 angular.forEach(sequence.masters, function(master) {
-                    if(master.id == masterId && master.edit[0]) {
+                    if(master.id == masterId && master.edit) {
                         angular.forEach(master.glyphs, function(glyph) {
                             if(glyph.value == glyphName) {
                                 if (glyph.edit) {
