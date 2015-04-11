@@ -216,6 +216,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         if (designspace.axes.length == 1) {
            $scope.data.addInstance(); 
         }
+        $scope.data.checkIfIsLargest();
     }
 
     function isInDesignSpace(masterName) {

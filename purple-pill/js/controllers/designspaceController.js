@@ -134,7 +134,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                         // remove axis from instance
                         instance.axes.splice(m, 1);
                         reDistributeValues(instance.axes);
-                        reDestributeAxes(instance.axes);
+                        $scope.reDestributeAxes(instance.axes);
                     }
                 });
             });
@@ -148,7 +148,29 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         }
     };
     
-    function reDestributeAxes(axes) {
+    $scope.data.checkIfIsLargest = function() {
+        var isLargest = false;
+        var designspace = $scope.data.currentDesignSpace;
+        var axes = designspace.axes;
+        if (axes.length > 2) {
+            var slack = axes[designspace.mainMaster];
+            var newMaster = axes[axes.length - 1];
+            angular.forEach(axes, function(axis) {
+                if (newMaster.value > axis.value && axis != slack) {
+                    isLargest = true;
+                }
+            });
+            angular.forEach($scope.data.families, function(family) {
+                angular.forEach(family.instances, function(instance) {
+                    if (instance.designSpace == designspace.id) {
+                        $scope.reDestributeAxes(instance.axes);
+                    }
+                });
+            });
+        }
+    };
+    
+    $scope.reDestributeAxes = function (axes) {
         var designspace = $scope.data.currentDesignSpace;
         var slack = designspace.mainMaster;
         // 1 find highest of the others
@@ -167,7 +189,8 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         for (var i = 0; i < axes.length; i++) {
             axes[i].value = formatX(ratio * axes[i].value);
         }
-    }
+        console.log(axes);
+    };
 
     function reDistributeValues(axes) {
         var totalValue = 0;
@@ -188,7 +211,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == designspace.id) {
-                    reDestributeAxes(instance.axes);
+                    $scope.reDestributeAxes(instance.axes);
                 }
             });
         });   
