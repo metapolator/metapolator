@@ -18,7 +18,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         $scope.selectionParametersGlyphs = [];
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[0]) {
+                if (master.type == "redpill" && master.edit) {
                     angular.forEach(master.parameters, function(masterParameter) {
                         $scope.selectionParametersMasters.push(masterParameter);
                     });
@@ -39,7 +39,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var key = parameterName + operatorName;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[0]) {
+                if (master.type == "redpill" && master.edit) {
                     var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
                     // the master properties are at rulenr 3
                     var cpsRule = parameterCollection.getItem(3);
@@ -56,7 +56,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var key = parameterName + operatorName;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[0]) {
+                if (master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
@@ -113,7 +113,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.data.getParameter = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[0]) {
+                if (master.type == "redpill" && master.edit) {
                     angular.forEach($scope.parameters, function(parameter, index) {
                         angular.forEach($scope.operators, function(operator) {
                             var key = parameter + operator.affix;
@@ -156,7 +156,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.addParameterToElements = function(parameter, operator) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                if (master.type == "redpill" && master.edit) {
                     if ($scope.parameterLevel == "master") {
                         $scope.pushParameterToModel(master, parameter, operator);
                     } else if ($scope.parameterLevel == "glyph") {
@@ -213,7 +213,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.editParameter = function(editParameter, editOperator) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                if (master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             angular.forEach(glyph.parameters, function(parameter) {
@@ -261,7 +261,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var inheritance = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                if (master.type == "redpill" && master.edit) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             inheritance = true;
@@ -279,7 +279,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var glyphFixed = null;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                if (master.type == "redpill" && master.edit) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             angular.forEach(parameter.operations, function(operation) {
@@ -338,7 +338,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var selected = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                if (master.type == "redpill" && master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             selected = true;
@@ -354,7 +354,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var selected = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[$scope.data.viewState]) {
+                if (master.type == "redpill" && master.edit) {
                     selected = true;
                 }
             });

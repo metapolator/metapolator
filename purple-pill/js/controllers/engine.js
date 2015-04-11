@@ -36,7 +36,7 @@ app.controller('engine', function($scope, sharedScope) {
                     cpsFile: cpsFile,
                     type: "redpill",
                     display: true,
-                    edit: [true, true],
+                    edit: true,
                     ag: "ag",
                     glyphs: glyphs,
                     parameters: [{
@@ -101,7 +101,7 @@ app.controller('engine', function($scope, sharedScope) {
                 displayName: masters[i][1],
                 type: "redpill",
                 display: true,
-                edit: [true, true],
+                edit: true,
                 ag: "ag"
             });
         }

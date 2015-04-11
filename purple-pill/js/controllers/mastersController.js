@@ -13,7 +13,7 @@ app.controller("mastersController", function($scope, sharedScope) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 var notDeleted = [];
                 angular.forEach(sequence.masters, function(master) {
-                    if (!master.edit[$scope.data.viewState]){
+                    if (!master.edit){
                         notDeleted.push(master);
                     } else {
                         $scope.data.stateful.project.deleteMaster(master.name);
@@ -35,7 +35,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.duplicateMasters = function () {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit[0]) {
+                if (master.type == "redpill" && master.edit) {
                     $scope.uniqueMasterId++;
                     var masterName = "master" + $scope.uniqueMasterId;
                     var cpsFile = masterName + ".cps";
@@ -53,7 +53,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                         cpsFile: cpsFile,
                         type: "redpill",
                         display: false,
-                        edit: [false, false],
+                        edit: false,
                         ag: "ag",
                         glyphs: angular.copy(master.glyphs),
                         parameters: angular.copy(master.parameters)
@@ -91,55 +91,63 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.toggleEdit = function(listItem) {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (listItem.parentObject == sequence.id && listItem.childObject == master.id) {
-                    master.edit[$scope.data.viewState] = !master.edit[$scope.data.viewState];
-                    master.display = master.edit[$scope.data.viewState];
-                    if (master.edit[0] == false) {
-                        $scope.deselectAllGlyphs(master);
+        if($scope.data.viewState == 0) {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (listItem.parentObject == sequence.id && listItem.childObject == master.id) {
+                        master.edit = !master.edit;
+                        master.display = master.edit;
+                        if (master.edit == false) {
+                            $scope.deselectAllGlyphs(master);
+                        }
                     }
-                }
-            });
-        });  
-        $scope.data.updateSelectionParameters();
+                });
+            });  
+            $scope.data.updateSelectionParameters();
+        }
     };
 
     $scope.selectEdit = function(set) {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                var hit = false;
-                angular.forEach(set, function(selection) {
-                    if (selection.parentObject == sequence.id && selection.childObject == master.id) {
-                        hit = true;
+        if($scope.data.viewState == 0) {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    var hit = false;
+                    angular.forEach(set, function(selection) {
+                        if (selection.parentObject == sequence.id && selection.childObject == master.id) {
+                            hit = true;
+                        }
+                    });
+                    if (hit) {
+                        master.edit = true;
+                        master.display = true;
+                    } else {
+                        master.edit = false;
+                        $scope.deselectAllGlyphs(master);
                     }
                 });
-                if (hit) {
-                    master.edit[$scope.data.viewState] = true;
-                    master.display = true;
-                } else {
-                    master.edit[$scope.data.viewState] = false;
-                    $scope.deselectAllGlyphs(master);
-                }
             });
-        });
-        $scope.data.updateSelectionParameters();
+            $scope.data.updateSelectionParameters();
+        }
     };
 
     $scope.deselectAll = function() {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                master.edit[$scope.data.viewState] = false;
-                master.display = false;
-                $scope.deselectAllGlyphs(master);
+        if($scope.data.viewState == 0) {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    master.edit = false;
+                    master.display = false;
+                    $scope.deselectAllGlyphs(master);
+                });
             });
-        });
-        $scope.data.updateSelectionParameters();
+            $scope.data.updateSelectionParameters();
+        }
     };
     
     $scope.toggleDisplay = function(master) {
-        if(!master.edit[$scope.data.viewState]) {
-            master.display = !master.display;
+        if($scope.data.viewState == 0) {
+            if(!master.edit) {
+                master.display = !master.display;
+            }
         }
     };
     

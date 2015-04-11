@@ -16,20 +16,19 @@ app.directive('ngInputFocus', function($compile) {
     return {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
-            //element[0].focus(); 
+            //element[0].focus();
         }
     };
 });
-
 
 app.directive('ag', function($compile) {
     return {
         restrict : 'C',
         require : 'ngModel',
         link : function(scope, element, attrs, ctrl) {
-            var masterName = attrs.mastername; 
-            var masterAg = attrs.masterag;  
-            if (scope.data.pill != "blue") {        
+            var masterName = attrs.mastername;
+            var masterAg = attrs.masterag;
+            if (scope.data.pill != "blue") {
                 var svg0 = scope.data.renderGlyphs(masterName, masterAg[0]);
                 $compile(svg0)(scope);
                 element.append(svg0);
@@ -40,7 +39,6 @@ app.directive('ag', function($compile) {
         }
     };
 });
-
 
 app.directive('lmButton', function($compile) {
     return {
@@ -69,7 +67,7 @@ app.directive('glyph', function($compile) {
             } else if (glyphName == "*p") {
                 element.parent().addClass("paragraph-break");
             } else {
-                if (scope.data.pill =="red") {
+                if (scope.data.pill == "red") {
                     var svg = scope.data.renderGlyphs(masterName, glyphName);
                     $compile(svg)(scope);
                     element.append(svg);
@@ -260,58 +258,23 @@ app.directive('listViewCol', function() {
     return {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
-            //var type = $(element).parents(".list").attr("type");
             element.bind('mousedown', function(event) {
-                scope.data.eventHandlers.mousedown = true;
-                $(element).parent().parent().parent().parent().find('.start-view-selection').removeClass('start-view-selection');
-                $(element).parent().addClass('start-view-selection');
-                scope.data.eventHandlers.initialDisplay = $(element).parent().attr("display");
+                if (scope.data.viewState == 0) {
+                    scope.data.eventHandlers.mousedown = true;
+                    $(element).parent().parent().parent().parent().find('.start-view-selection').removeClass('start-view-selection');
+                    $(element).parent().addClass('start-view-selection');
+                    scope.data.eventHandlers.initialDisplay = $(element).parent().attr("display");
+                }
             });
             element.bind('mouseup', function(event) {
-                scope.data.eventHandlers.mousedown = false;
-                $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
-                $(element).parent().addClass('end-view-selection');
-                var selected = [];
-                var phase = 0;
-                var display;
-                var falseMouseMove = false;
-                $(element).parent().parent().parent().parent().find('.list-li').each(function() {
-                    // handle a mousemove within same master as a normal click, so prevent triggering to apply set
-                    if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
-                        falseMouseMove = true;
-                    }
-                    var thisHit = false;
-                    if ($(this).hasClass('start-view-selection') || $(this).hasClass('end-view-selection')) {
-                        phase++;
-                        thisHit = true;
-                    }
-                    if (phase == 1 || (phase == 2 && thisHit)) {
-                        var sequence = $(this).attr("sequence");
-                        var master = $(this).attr("master");
-                        selected.push({
-                            parentObject : sequence,
-                            childObject : master
-                        });
-                    }
-                });
-                if (!falseMouseMove) {
-                    scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
-                    scope.$apply();
-                }
-                    $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
-                    $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
-
-            });
-            element.bind('mousemove', function(event) {
-                if (scope.data.eventHandlers.mousedown) {
+                if (scope.data.viewState == 0) {
+                    scope.data.eventHandlers.mousedown = false;
                     $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
                     $(element).parent().addClass('end-view-selection');
                     var selected = [];
                     var phase = 0;
                     var display;
                     var falseMouseMove = false;
-                    $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
-                    $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
                     $(element).parent().parent().parent().parent().find('.list-li').each(function() {
                         // handle a mousemove within same master as a normal click, so prevent triggering to apply set
                         if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
@@ -319,38 +282,6 @@ app.directive('listViewCol', function() {
                         }
                         var thisHit = false;
                         if ($(this).hasClass('start-view-selection') || $(this).hasClass('end-view-selection')) {
-                            phase++;
-                            thisHit = true;
-                        }
-                        if ((phase == 1 || (phase == 2 && thisHit)) && !falseMouseMove) {
-                            if (scope.data.eventHandlers.initialDisplay == "true") {
-                                $(this).find('.list-view-col').addClass('temp-view-selection-false');
-                            } else {
-                                $(this).find('.list-view-col').addClass('temp-view-selection-true');
-                            }
-                        }
-                    });
-                }
-            });
-        }
-    };
-});
-
-app.directive('listEditCol', function() {
-    return {
-        restrict : 'C',
-        link : function(scope, element, attrs, ctrl) {
-            var type = $(element).parents(".list").attr("type");
-            element.bind('click', function(event) {
-                var selected = [];
-                // manage key selections
-                if (event.shiftKey && type == "master") {
-                    $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
-                    $(element).parent().addClass('end-edit-selection');
-                    var phase = 0;
-                    $(element).parent().parent().parent().parent().find('.list-li').each(function() {
-                        var thisHit = false;
-                        if ($(this).hasClass('start-edit-selection') || $(this).hasClass('end-edit-selection')) {
                             phase++;
                             thisHit = true;
                         }
@@ -363,30 +294,103 @@ app.directive('listEditCol', function() {
                             });
                         }
                     });
-                    scope.selectEdit(selected);
-                    scope.$apply();
-                } else if ((event.ctrlKey || event.metaKey) && type == "master") {
-                    var sequence = $(element).parent().attr("sequence");
-                    var master = $(element).parent().attr("master");
-                    var thisListItem = {
-                        parentObject : sequence,
-                        childObject : master
-                    };
-                    scope.toggleEdit(thisListItem);
-                    scope.$apply();
-                } else {
-                    $(element).parent().parent().parent().parent().find('.start-edit-selection').removeClass('start-edit-selection');
-                    $(element).parent().addClass('start-edit-selection');
-                    var sequence = $(element).parent().attr("sequence");
-                    var master = $(element).parent().attr("master");
-                    selected.push({
-                        parentObject : sequence,
-                        childObject : master
-                    });
-                    scope.selectEdit(selected);
-                    scope.$apply();
-                }
+                    if (!falseMouseMove) {
+                        scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
+                        scope.$apply();
+                    }
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
 
+                }
+            });
+            element.bind('mousemove', function(event) {
+                if (scope.data.viewState == 0) {
+                    if (scope.data.eventHandlers.mousedown) {
+                        $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
+                        $(element).parent().addClass('end-view-selection');
+                        var selected = [];
+                        var phase = 0;
+                        var display;
+                        var falseMouseMove = false;
+                        $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
+                        $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
+                        $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                            // handle a mousemove within same master as a normal click, so prevent triggering to apply set
+                            if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
+                                falseMouseMove = true;
+                            }
+                            var thisHit = false;
+                            if ($(this).hasClass('start-view-selection') || $(this).hasClass('end-view-selection')) {
+                                phase++;
+                                thisHit = true;
+                            }
+                            if ((phase == 1 || (phase == 2 && thisHit)) && !falseMouseMove) {
+                                if (scope.data.eventHandlers.initialDisplay == "true") {
+                                    $(this).find('.list-view-col').addClass('temp-view-selection-false');
+                                } else {
+                                    $(this).find('.list-view-col').addClass('temp-view-selection-true');
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    };
+});
+
+app.directive('listEditCol', function() {
+    return {
+        restrict : 'C',
+        link : function(scope, element, attrs, ctrl) {
+            var type = $(element).parents(".list").attr("type");
+            element.bind('click', function(event) {
+                if (scope.data.viewState == 0) {
+                    var selected = [];
+                    // manage key selections
+                    if (event.shiftKey && type == "master") {
+                        $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
+                        $(element).parent().addClass('end-edit-selection');
+                        var phase = 0;
+                        $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                            var thisHit = false;
+                            if ($(this).hasClass('start-edit-selection') || $(this).hasClass('end-edit-selection')) {
+                                phase++;
+                                thisHit = true;
+                            }
+                            if (phase == 1 || (phase == 2 && thisHit)) {
+                                var sequence = $(this).attr("sequence");
+                                var master = $(this).attr("master");
+                                selected.push({
+                                    parentObject : sequence,
+                                    childObject : master
+                                });
+                            }
+                        });
+                        scope.selectEdit(selected);
+                        scope.$apply();
+                    } else if ((event.ctrlKey || event.metaKey) && type == "master") {
+                        var sequence = $(element).parent().attr("sequence");
+                        var master = $(element).parent().attr("master");
+                        var thisListItem = {
+                            parentObject : sequence,
+                            childObject : master
+                        };
+                        scope.toggleEdit(thisListItem);
+                        scope.$apply();
+                    } else {
+                        $(element).parent().parent().parent().parent().find('.start-edit-selection').removeClass('start-edit-selection');
+                        $(element).parent().addClass('start-edit-selection');
+                        var sequence = $(element).parent().attr("sequence");
+                        var master = $(element).parent().attr("master");
+                        selected.push({
+                            parentObject : sequence,
+                            childObject : master
+                        });
+                        scope.selectEdit(selected);
+                        scope.$apply();
+                    }
+                }
             });
         }
     };
@@ -454,7 +458,7 @@ app.directive('specGlyphBox', function($document) {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
             element.bind('click', function(event) {
-                
+
                 var sequence = $(element).attr("sequence");
                 var master = $(element).attr("master");
                 var glyph = $(element).attr("glyph");
@@ -640,7 +644,7 @@ app.directive('sizeRope', function($document) {
                 var thisLength = getRopeLength(screenX, screenY, x, -y);
                 var absolutePixels = thisLength + pixelOffset;
                 if (absolutePixels > 399) {
-                    fontsize =  absolutePixels - 300;   
+                    fontsize = absolutePixels - 300;
                 } else {
                     fontsize = 11250 / (500 - absolutePixels) - 12.5;
                 }
@@ -655,7 +659,7 @@ app.directive('sizeRope', function($document) {
             // create static diamond
             var diamond = svg.append('g').call(drag);
             var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('stroke', 'black').style('fill', 'white');
-            
+
             function limit(fontsize) {
                 var size = Math.round(fontsize);
                 if (size < 10) {
@@ -676,15 +680,16 @@ app.directive('sizeRope', function($document) {
                 }
                 return length;
             }
-            
+
             function getpixelOffset(fontsize) {
-                if(fontsize > 99){
+                if (fontsize > 99) {
                     var offset = 300 + fontsize;
                 } else {
                     var offset = 500 - (11250 / (fontsize + 12.5));
                 }
                 return offset;
             }
+
         }
     };
 });

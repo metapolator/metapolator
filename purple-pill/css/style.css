@@ -900,6 +900,11 @@
             background: #fff;
         }
         
+            .inactive-master .list-li {
+                background: #fff!important;
+                transition: background 0.5s;
+            }
+        
             .list-li.selected {
                 background: #ddd;
                 border-bottom: 1px solid #fff;
@@ -947,6 +952,11 @@
             .list-view-col svg {
                 height: 60%;
                 margin-top: 20%;
+            }
+            
+            .inactive-master .list-view-col {
+                background: #fff!important;
+                transition: background 0.5s;
             }
         
             .list-view-col.selected {
