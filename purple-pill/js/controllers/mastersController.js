@@ -70,6 +70,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.mouseDown = false;
     
     $scope.toggleViewSet = function(set, initialDisplay) {
+        console.log("!");
         if (initialDisplay == "true") {
             var newStatus = false;
         } else {
@@ -77,14 +78,17 @@ app.controller("mastersController", function($scope, sharedScope) {
         }
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                var hit = false;
-                angular.forEach(set, function(selection) {
-                    if (selection.parentObject == sequence.id && selection.childObject == master.id) {
-                        hit = true;
+                if (!master.edit) {
+                    console.log(master.displayName);
+                    var hit = false;
+                    angular.forEach(set, function(selection) {
+                        if (selection.parentObject == sequence.id && selection.childObject == master.id) {
+                            hit = true;
+                        }
+                    });
+                    if (hit) {
+                        master.display = newStatus;
                     }
-                });
-                if (hit) {
-                    master.display = newStatus;
                 }
             });
         }); 
