@@ -39,7 +39,7 @@
         <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
             <img src="img/deleteInstance.png">
         </div>
-        <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': data.families[0].instances.length == 0}">
+        <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': !data.instancesForExport()}">
             Export…
         </div>
     </div>

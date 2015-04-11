@@ -193,7 +193,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 if (isInDesignSpace(master.name)) {
                     alert("master already in this Design Space");
                 } else {
-                    addMasterToDesignSpace(master);
+                    $scope.addMasterToDesignSpace(master);
                     $scope.$apply();
                 }
             }
@@ -201,7 +201,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         }
     };
 
-    function addMasterToDesignSpace(master) {
+    $scope.addMasterToDesignSpace = function(master) {
         var designspace = $scope.data.currentDesignSpace;
         if ($scope.data.currentDesignSpace.type == "x") {
             $scope.data.currentDesignSpace.type = "Control";
@@ -220,8 +220,11 @@ app.controller("mastersController", function($scope, sharedScope) {
         if (designspace.axes.length == 1) {
            $scope.data.addInstance(); 
         }
+        if (designspace.axes.length > 1) {
+           $scope.data.metapolate(); 
+        }
         $scope.data.checkIfIsLargest();
-    }
+    };
 
     function isInDesignSpace(masterName) {
         var x = false;

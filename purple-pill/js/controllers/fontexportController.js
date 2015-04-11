@@ -22,6 +22,19 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
     $scope.data.exportFonts = function (){
         console.log("exporting");
     };
+    
+    $scope.data.instancesForExport = function() {
+        var instancesForExport = false;
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.exportFont) {
+                    instancesForExport = true;
+                }
+            });
+        }); 
+        console.log(instancesForExport);
+        return instancesForExport;
+    };
 
 
 });
