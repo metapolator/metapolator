@@ -18,6 +18,7 @@ define([
   , './ImportController'
   , './ExportController'
   , 'yaml'
+  , 'io/zip'
 ], function(
     errors
   , log
@@ -38,6 +39,7 @@ define([
   , ImportController
   , ExportController
   , yaml
+  , zip
 ) {
     "use strict";
 
@@ -612,6 +614,16 @@ define([
 
         exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
+    };
+
+    _p.exportInstanceZIP = function(masterName, instanceName, precision) {
+        this.exportInstance(masterName, instanceName, precision);
+        var content = zip.encode(this._io, instanceName);
+
+        /*TODO: do something with the blob
+                (i.e. save it to disk or
+                 provide it to the user as a download) */
+        this._io.writeFile(false, instanceName+'.zip', content);
     };
 
     _p._getGlyphClassesReverseLookup = function() {
