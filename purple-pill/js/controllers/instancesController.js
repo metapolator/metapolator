@@ -65,7 +65,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 id : $scope.uniqueInstanceId,
                 edit : true,
                 display : true,
-                ag : "Ag",
+                ag : "ag",
                 name : instanceName,
                 displayName : instanceName,
                 designSpace : designSpace.id,
