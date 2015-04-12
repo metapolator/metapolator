@@ -177,6 +177,10 @@
 			top: 0;
 		}
 		
+		#landscape.transition {
+		    transition: left 700ms;
+		}
+		
 			.panel {
 				float: left;
                 height: 100%;
@@ -229,154 +233,8 @@
                 fontexport.sub-panel {
                     overflow: visible;
                 }
-			
-			#panel-1 {
-				width: calc(3/42 * 100%);
-			}
-			
-			 #parameter-slider {
-			     margin-top: 50px;
-			 }
-			
-			#panel-2 {
-				width: calc(10/42 * 100%);
-			}
-						
-			#panel-3 {
-				position: relative;
-				width: calc(3/42 * 100%);
-			}
-
-			#panel-4 {
-				width: calc(10/42 * 100%);
-				position: relative;
-			}
-		
-			#panel-5 {
-				width: calc(3/42 * 100%);
-				position: relative;
-			}
-					
-			#panel-6 {
-				width: calc(1/42 * 100%);
-				position: relative;
-			}
-
-			#panel-7 {
-				width: calc(12/42 * 100%);
-				position: relative;
-			}
-
-
-
-
-/***************** divider ******************/
-
-/*
-    .divider {
-        position: absolute;
-        height: calc(100% - 50px);
-        width: 9px;
-        top: 50px;
-        z-index: 100;
-    }
-    
-    
-    #divider-1 {
-        left: calc(3/16 * 100% - 4px);   
-    }
-    
-    #divider-2 {
-        left: calc(13/16 * 100% - 4px);   
-    }
-    
-        .divider-top {
-            height: 100%;
-            width: 5px;
-        }
-        
-        .divider:hover .divider-top {
-            border-right: 1px dashed #000;
-        }
-        
-        .divider:hover {
-            cursor: ew-resize;
-        }
-        
-        
-    .divider-hor {
-        position: absolute;
-        width: 100%;
-        height: 9px;
-        z-index: 100;
-    }
-    
-    
-    #divider-3, #divider-4 {
-        top: 50%;   
-    }
-    
-    
-        .divider-left {
-            width: 100%;
-            height: 5px;
-        }
-        
-        .divider-hor:hover .divider-left {
-            border-bottom: 1px dashed #000;
-        }
-        
-        .divider-hor:hover {
-            cursor: ns-resize;
-        }
-
-*/
-    
 
 			
-/***************** dropdown menu ******************/
-/* !!! later: override and combine with bootstrap css */
-
-	
-	.dropdown {
-		margin-bottom: 20px;
-	}
-	
-		.dropdown a {
-			text-decoration: none;
-		}
-	
-		.dropdown .dropdown-toggle {
-			position: relative; /* temporarily hack for a sticking out of parents div */
-			top: 8px; /* idem */
-			display: inine-block;
-			padding: 8px;
-			background: #ddd;
-			color: #000;
-			overflow: auto;
-            white-space: nowrap;
-		}
-		
-		#project-dropdown .dropdown-toggle {
-			background: none;
-			display: block;
-			padding-bottom: 0;
-
-		}
-		
-			.dropdown .dropdown-toggle:hover, .dropdown .dropdown-toggle:focus {
-				background: #f85c37;
-				color: #000;
-			}
-			
-			.dropdown .dropdown-menu {
-				margin-top: 16px;
-				border-radius: 0;
-				border: 0;
-				box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-			}
-			
-	
 	
 	
 /******************* specimen ********************/
@@ -1428,27 +1286,22 @@
         top: 0;
         z-index: 100;
         height: 100%;
-        width: 4px;
+        width: 10px;
         background: transparent;
         cursor: ew-resize;
         padding: 30px 0;
-        border-left: 1px solid transparent;
     }
+    
     
     divider:after {
         position: absolute;
-        left: -4px;
+        left: -10px;
         top: 0;
         content: " ";
-        width: 3px;
+        width: 10px;
         height: 100%;
         background: transparent;
     }
-    
-        divider:hover {
-            background: transparent;
-            border-left: 1px solid transparent;
-        }
 
     dividerHor {
         position: absolute;

@@ -33,7 +33,7 @@ app.directive('control', function($document) {
             /***** redraw *****/
             function redraw() {
                 // responsive axes
-                scope.designSpaceWidth = $("#panel-4").outerWidth();
+                scope.designSpaceWidth = $("#panel-3").outerWidth();
                 axisWidth = scope.designSpaceWidth - 200;
                 var axesString = 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0';
                 

@@ -1,13 +1,15 @@
 app.controller('menuController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
-    
-    $scope.data.alert = function (message, loading) {
+
+    $scope.data.alert = function(message, loading) {
         $("#alert").show();
         if (loading) {
             $("#alert-loading").show();
         }
         $("#alert #alert-content").html(message);
-        setTimeout(function(){ $("#alert").hide(); }, 2000);
+        setTimeout(function() {
+            $("#alert").hide();
+        }, 2000);
     };
 
     $scope.newDocument = function() {
@@ -28,33 +30,33 @@ app.controller('menuController', function($scope, $http, sharedScope) {
             }
         }
     };
-    
-    $scope.renameProject = function () {
-        $scope.data.localmenu.project = false;
-        $("#project-name").attr("contenteditable", "true");
-        $("#project-name").addClass("renaming");
-        $("#project-name").focus();
-        
-        $scope.data.selectAllText(document.getElementById("project-name"));
-    };
-    
+
     $scope.data.selectAllText = function(element) {
-       var doc = document;
-       if (doc.body.createTextRange) {
-           var range = document.body.createTextRange();
-           range.moveToElementText(element);
-           range.select();
-       } else if (window.getSelection) {
-           var selection = window.getSelection();        
-           var range = document.createRange();
-           range.selectNodeContents(element);
-           selection.removeAllRanges();
-           selection.addRange(range);
-       }
+        var doc = document;
+        if (doc.body.createTextRange) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(element);
+            range.select();
+        } else if (window.getSelection) {
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(element);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     };
-    
-    $scope.closeRename = function () {
-        $("#layover").hide();
-        $("#rename-project").hide();
+
+    /***** dividers *****/
+
+
+    $scope.data.getLandscapeLeft = function() {
+        var end = $scope.data.view.viewState * 2;
+        var parts = 0;
+        for (var i = 0; i < end; i++) {
+            parts += $scope.data.view.panels[i];
+        }
+        var x = "calc(" + (parts / -16) + " * 100%)";
+        return x;
     };
+
 });

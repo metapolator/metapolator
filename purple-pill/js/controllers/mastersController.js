@@ -95,7 +95,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.toggleEdit = function(listItem) {
-        if($scope.data.viewState == 0) {
+        if($scope.data.view.viewState == 0) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (listItem.parentObject == sequence.id && listItem.childObject == master.id) {
@@ -112,7 +112,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.selectEdit = function(set) {
-        if($scope.data.viewState == 0) {
+        if($scope.data.view.viewState == 0) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     var hit = false;
@@ -135,7 +135,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.deselectAll = function() {
-        if($scope.data.viewState == 0) {
+        if($scope.data.view.viewState == 0) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     master.edit = false;
@@ -148,7 +148,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
     
     $scope.toggleDisplay = function(master) {
-        if($scope.data.viewState == 0) {
+        if($scope.data.view.viewState == 0) {
             if(!master.edit) {
                 master.display = !master.display;
             }

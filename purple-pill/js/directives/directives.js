@@ -259,7 +259,7 @@ app.directive('listViewCol', function() {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
             element.bind('mousedown', function(event) {
-                if (scope.data.viewState == 0) {
+                if (scope.data.view.viewState == 0) {
                     scope.data.eventHandlers.mousedown = true;
                     $(element).parent().parent().parent().parent().find('.start-view-selection').removeClass('start-view-selection');
                     $(element).parent().addClass('start-view-selection');
@@ -267,7 +267,7 @@ app.directive('listViewCol', function() {
                 }
             });
             element.bind('mouseup', function(event) {
-                if (scope.data.viewState == 0) {
+                if (scope.data.view.viewState == 0) {
                     scope.data.eventHandlers.mousedown = false;
                     $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
                     $(element).parent().addClass('end-view-selection');
@@ -304,7 +304,7 @@ app.directive('listViewCol', function() {
                 }
             });
             element.bind('mousemove', function(event) {
-                if (scope.data.viewState == 0) {
+                if (scope.data.view.viewState == 0) {
                     if (scope.data.eventHandlers.mousedown) {
                         $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
                         $(element).parent().addClass('end-view-selection');
@@ -347,7 +347,7 @@ app.directive('listEditCol', function() {
         link : function(scope, element, attrs, ctrl) {
             var type = $(element).parents(".list").attr("type");
             element.bind('click', function(event) {
-                if (scope.data.viewState == 0) {
+                if (scope.data.view.viewState == 0) {
                     var selected = [];
                     // manage key selections
                     if (event.shiftKey && type == "master") {

@@ -32,7 +32,6 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
                 }
             });
         }); 
-        console.log(instancesForExport);
         return instancesForExport;
     };
 
