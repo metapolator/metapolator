@@ -760,7 +760,7 @@
         
             .inactive-master .list-li {
                 background: #fff!important;
-                transition: background 0.5s;
+                transition: background 1s;
             }
         
             .list-li.selected {
