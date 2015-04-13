@@ -1,17 +1,24 @@
 define([
     'jszip'
   , 'io/readDirRecursive'
+  , 'metapolator/errors'
 ], function(
     JSZip
   , readDirRecursive
+  , errors
 ) {
     "use strict";
 
-    var unpack = function(zipData, io, targetPath){
-        /* TODO: Implement-me! */
+    var NotImplementedError = errors.NotImplemented;
+
+    var unpack = function(async, zipData, io, targetPath){
+        throw new NotImplementedError('ZIP unpack method is not yet implemented');
     };
 
-    var encode = function(io, sourcePath){
+    var encode = function(async, io, sourcePath){
+        if(async)
+            throw new NotImplementedError('Asynchronous execution is not yet implemented');
+
         var zip = new JSZip();
         var files = readDirRecursive(false, io, sourcePath);
         var i;
