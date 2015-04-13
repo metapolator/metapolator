@@ -631,9 +631,9 @@ define([
                 return name.slice(-1) === '/';
             }
 
-            var i;
             var entries = io.readDir(false, dir);
-            for (i in entries){
+            var i, l;
+            for (i=0, l=entries.length; i<l; i++){
                 var entry = entries[i];
                 var fullPath = [dir, entry].join(dir.slice(-1) === '/' ? '' : '/');
                 if (_isDirName(fullPath)){
