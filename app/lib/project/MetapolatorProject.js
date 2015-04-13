@@ -18,7 +18,7 @@ define([
   , './ImportController'
   , './ExportController'
   , 'yaml'
-  , 'io/zip'
+  , 'io/zipUtil'
 ], function(
     errors
   , log
@@ -39,7 +39,7 @@ define([
   , ImportController
   , ExportController
   , yaml
-  , zip
+  , zipUtil
 ) {
     "use strict";
 
@@ -622,7 +622,7 @@ define([
         this.exportInstance(masterName, temp_dir, precision);
 
         //encode it as a zip file
-        var content = zip.encode(this._io, temp_dir);
+        var content = zipUtil.encode(this._io, temp_dir);
         this._io.writeFile(false, instanceName, new Buffer(content, 'base64'));
 
         //delete the temp dir
