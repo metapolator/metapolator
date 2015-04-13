@@ -34,6 +34,7 @@ app.controller('engine', function($scope, sharedScope) {
                     name : masterName,
                     displayName : masterName,
                     cpsFile : cpsFile,
+                    ruleIndex: 3,
                     type : "redpill",
                     display : true,
                     edit : true,

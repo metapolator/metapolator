@@ -51,10 +51,11 @@ app.controller("mastersController", function($scope, sharedScope) {
                         name: masterName,
                         displayName: masterName,
                         cpsFile: cpsFile,
+                        ruleIndex: angular.copy(master.ruleIndex),
                         type: "redpill",
                         display: false,
                         edit: false,
-                        ag: "ag",
+                        ag: angular.copy(master.ag),
                         glyphs: angular.copy(master.glyphs),
                         parameters: angular.copy(master.parameters)
                     });

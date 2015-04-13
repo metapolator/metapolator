@@ -8,7 +8,7 @@
                         <div class="parameter-key"><span ng-if="$index == 0">{{parameter.displayName}}</span></div>
                         <div class="parameter-operator">{{operator.name}}</div>
                         <div class="operator-value">
-                            <input ng-model="operator.value" ng-blur="data.setParameterMaster(parameter.name, operator.name, operator.value, true)">    
+                            <input ng-model="operator.value" ng-blur="data.changeParameter(parameter.name, operator.name, operator.value, 'master')">    
                         </div>
                     </div> 
                 </div>
@@ -24,7 +24,7 @@
                         <div class="parameter-key"><span ng-if="$index == 0">{{parameter.displayName}}</span></div>
                         <div class="parameter-operator">{{operator.name}}</div>
                         <div class="operator-value">
-                            <input ng-model="operator.value" ng-blur="data.setParameterGlyph(parameter.name, operator.name, operator.value, true)">    
+                            <input ng-model="operator.value" ng-blur="data.changeParameter(parameter.name, operator.name, operator.value, 'glyph')">    
                         </div>
                     </div>               
                 </div>
