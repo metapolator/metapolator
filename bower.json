@@ -30,6 +30,7 @@
     "angular-ui-codemirror": "~0.1.6",
     "harmony-reflect": "~1.1.0",
     "event-emitter.js": "~0.2.0",
-    "jszip": "~2.5.0"
+    "jszip": "~2.5.0",
+    "mustache.js": "~2.0.0"
   }
 }
