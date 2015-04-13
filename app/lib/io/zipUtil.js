@@ -19,19 +19,19 @@ define([
         if(async)
             throw new NotImplementedError('Asynchronous execution is not yet implemented');
 
-        var zip = new JSZip();
-        var files = readDirRecursive(false, io, sourcePath);
-        var i;
-
-        for (i in files){
-            var file = files[i];
-            var relative_path = file.split(sourcePath)[1];
-            var data = io.readFile(false, file);
+        var zip = new JSZip(),
+            files = readDirRecursive(false, io, sourcePath),
+            i
+            ;
+        for (i=0; i<files.length; i++){
+            var file = files[i],
+                relative_path = file.split(sourcePath)[1],
+                data = io.readFile(false, file)
+                ;
             zip.file(relative_path, data, {binary:true});
         }
 
-        var content = zip.generate({type:"base64"});
-        return content;
+        return zip.generate({type:"base64"});
     };
 
     return {
