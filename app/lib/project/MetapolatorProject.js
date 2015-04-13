@@ -631,11 +631,13 @@ define([
                 return name.slice(-1) === '/';
             }
 
-            var entries = io.readDir(false, dir);
-            var i, l;
+            var entries = io.readDir(false, dir),
+                i, l
+                ;
             for (i=0, l=entries.length; i<l; i++){
-                var entry = entries[i];
-                var fullPath = [dir, entry].join(dir.slice(-1) === '/' ? '' : '/');
+                var entry = entries[i],
+                    fullPath = [dir, entry].join(dir.slice(-1) === '/' ? '' : '/')
+                    ;
                 if (_isDirName(fullPath)){
                     rmDirRecursive(io, fullPath);
                 } else {
