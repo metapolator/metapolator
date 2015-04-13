@@ -48,11 +48,7 @@ if (require.main === module) {
                 instance = masterInstancePairs.shift();
                 console.warn('Exporting "'+master+'" to "'+instance+'"');
 
-                String.prototype.endsWith = function(suffix) {
-                    return this.indexOf(suffix, this.length - suffix.length) !== -1;
-                };
-
-                if (instance.endsWith(".zip")){
+                if (instance.slice(-4) === '.zip'){
                     project.exportZipInstance(master, instance, program.precision);
                 } else {
                     project.exportInstance(master, instance, program.precision);
