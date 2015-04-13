@@ -13,14 +13,17 @@ define([
 
     var encode = function(io, sourcePath){
         var zip = new JSZip();
-        var files = readDirRecursive(sourcePath);
+        var files = readDirRecursive(false, io, sourcePath);
         var i;
 
         for (i in files){
-            zip.file(files[i], io.readFile(files[i]));
+            var file = files[i];
+            var relative_path = file.split(sourcePath)[1];
+            var data = io.readFile(false, file);
+            zip.file(relative_path, data, {binary:true});
         }
 
-        var content = zip.generate({type:"string"});
+        var content = zip.generate({type:"base64"});
         return content;
     };
 

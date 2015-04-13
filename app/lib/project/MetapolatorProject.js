@@ -616,14 +616,36 @@ define([
         exportController.export();
     };
 
-    _p.exportInstanceZIP = function(masterName, instanceName, precision) {
-        this.exportInstance(masterName, instanceName, precision);
-        var content = zip.encode(this._io, instanceName);
+    _p.exportZipInstance = function(masterName, instanceName, precision) {
+        //export the font to a temporary directory
+        var temp_dir = instanceName+"_temp";
+        this.exportInstance(masterName, temp_dir, precision);
 
-        /*TODO: do something with the blob
-                (i.e. save it to disk or
-                 provide it to the user as a download) */
-        this._io.writeFile(false, instanceName+'.zip', content);
+        //encode it as a zip file
+        var content = zip.encode(this._io, temp_dir);
+        this._io.writeFile(false, instanceName, new Buffer(content, 'base64'));
+
+        //delete the temp dir
+        function rmDirRecursive(io, dir){
+            function _isDirName(name) {
+                return name.slice(-1) === '/';
+            }
+
+            var i;
+            var entries = io.readDir(false, dir);
+            for (i in entries){
+                var entry = entries[i];
+                var fullPath = [dir, entry].join(dir.slice(-1) === '/' ? '' : '/');
+                if (_isDirName(fullPath)){
+                    rmDirRecursive(io, fullPath);
+                } else {
+                    io.unlink(false, fullPath);
+                }
+            }
+            io.rmDir(false, dir);
+        }
+
+        rmDirRecursive(this._io, temp_dir);
     };
 
     _p._getGlyphClassesReverseLookup = function() {
