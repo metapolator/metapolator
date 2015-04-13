@@ -871,6 +871,14 @@
         width: 100%;
     }
     
+    #parameters-of-master {
+        overflow: auto;
+    }
+    
+    #parameters-of-glyph {
+        margin-top: 20px;
+    }
+    
         .parameters-selection-head {
             width: calc(100% - 34px);
             display: inline-block;
@@ -922,7 +930,7 @@
                     float: left;
                 }
                 
-                .parameter-value {
+                .operator-value {
                     width: 50%;
                     display: inline-block;
                     padding: 2px;
@@ -930,7 +938,8 @@
                     padding-right: 20px;
                 }
                 
-                    .parameter-value input {
+                    .operator-value input {
+                        background: #eee;
                         width: 40%;
                         border: 0;
                     }
@@ -941,7 +950,7 @@
                         display: inline-block;
                     }
                     
-                        .parameter-value input:focus, .parameter-value input:hover {
+                        .operator-value input:focus, .operator-value input:hover {
                             background: #ddd;
                         }
         
@@ -993,6 +1002,8 @@
                 text-align: center;
                 font-weight: 700;
             }
+            
+        
 
 
 /**************** metadata ************************/
