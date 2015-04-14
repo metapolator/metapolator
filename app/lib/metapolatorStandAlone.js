@@ -15,6 +15,8 @@ require([
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/AtImportCollection'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , 'metapolator/project/cps-generators/interpolation'
+  , 'metapolator/project/cps-generators/metapolation'
 ],
 function (
     document
@@ -30,6 +32,8 @@ function (
   , Rule
   , AtImportCollection
   , parseSelectorList
+  , cpsGenInterpolation
+  , cpsGenMetapolation
 ) {
     "use strict";
     /*global setTimeout window*/
@@ -47,6 +51,7 @@ function (
      * this === project
      */
     function fileChangeHandler(path) {
+        /*jshint validthis: true*/
         var match = path.indexOf(this.cpsDir)
           , sourceName
           ;
@@ -170,4 +175,9 @@ function (
                  ;
         }
     };
+
+    exports.cpsGenerators = {
+        interpolation: cpsGenInterpolation
+      , metapolation: cpsGenMetapolation
+    }
 });
