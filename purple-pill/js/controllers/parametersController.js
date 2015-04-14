@@ -190,6 +190,8 @@ app.controller("parametersController", function($scope, sharedScope) {
         $scope.optimizeOperators();     
     };
     
+    
+    
     $scope.getRangeValue = function(element, parameterName, myOperator, elementType) {
         var operatorName = myOperator.name;
         var oldLow = myOperator.low;
@@ -221,11 +223,13 @@ app.controller("parametersController", function($scope, sharedScope) {
             var scale = oldHigh - oldLow;
             if (oldLow == newLow) {
                 var changeFactor = newHigh / oldHigh;
+                var change = newHigh - oldHigh;
             } else {
                  var changeFactor = newLow / oldLow;
+                 var change = newLow - oldLow;
             }
             var myShare = (currentValue - oldLow) / scale;
-            var newValue = myShare * (newHigh - oldHigh) + currentValue;
+            var newValue = myShare * change + currentValue;
         }
         return newValue;
     };
