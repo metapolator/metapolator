@@ -256,7 +256,7 @@ Spacing = front Sidebearing + back Sidebearing, and a change to Spacing is equal
 
 They exist because it would be ludicrous if at master level users could not express simply to “increase Spacing by 15”, and it would be just as ludicrous that users could not adjust either sidebearing for individual glyphs.
 
-OK, three numbers, **why only two parameters**, with both Sidebearings squeezed into one? This is because the system of glyph width, advance, sidebearings and spacing is a game of _three_ numbers. It is bloat to end up with _four_ parameters. Hence a Jedi mind trick was performed, there are 3 parameters (Width, Spacing and Sidebearings) and four numbers can be put in. Note that through the coupling of Spacing and Sidebearings the degrees of freedom is lower than four.
+OK, three numbers, **why only two parameters?** This is because the system of glyph width, advance, front & back sidebearings, and spacing is a game of _three_ numbers. It is redundant bloat to end up with _four_ parameters. Hence a Jedi mind trick was performed, there are 3 parameters (Width, Spacing and Sidebearings) and four numbers can be put in. Note that through the coupling of Spacing and Sidebearings the degrees of freedom is lower than four.
 
 Rules for handling Spacing and Sidebearings:
 
