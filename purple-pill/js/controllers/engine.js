@@ -121,6 +121,7 @@ app.controller('engine', function($scope, sharedScope) {
                 displayName : masters[i][1],
                 display : myEdit,
                 edit : myEdit,
+                ruleIndex: 3,
                 ag : "ag",
                 glyphs : glyphs,
                 parameters : [{

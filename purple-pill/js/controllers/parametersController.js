@@ -44,58 +44,53 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.selectionParametersGlyphs = [];
 
     $scope.data.updateSelectionParameters = function() {
-        console.clear();
-        $scope.selectionParametersGlyphs = [];
-        
+        $scope.selectionParametersMasters = $scope.updateSelectionParametersElements("master");
+        $scope.selectionParametersGlyphs = $scope.updateSelectionParametersElements("glyph");
+    };
+
+    $scope.updateSelectionParametersElements = function(level) {
+        var selectionParameters = [];
         angular.forEach($scope.parameters, function(theParameter) {
             var theOperators = [];
             var hasThisParameter = false;
             angular.forEach($scope.operators, function(theOperator) {
                 var hasThisOperator = false;
-                var nrOfGlyphs = 0;
+                var nrOfElements = 0;
                 var nrOfHasOperator = 0;
                 var lowest = null;
                 var highest = null;
-                angular.forEach($scope.data.sequences, function(sequence) {
-                    angular.forEach(sequence.masters, function(master) {
-                        if (master.edit) {
-                            angular.forEach(master.glyphs, function(glyph) {
-                                if (glyph.edit) {
-                                    nrOfGlyphs++;
-                                    angular.forEach(glyph.parameters, function(glyphParameter) {
-                                        if (glyphParameter.name == theParameter.name) {
-                                            hasThisParameter = true;
-                                            angular.forEach(glyphParameter.operators, function(operator) {
-                                                if (operator.name == theOperator.name) {
-                                                    hasThisOperator = true;
-                                                    nrOfHasOperator++;
-                                                    if (operator.value < lowest || lowest == null) {
-                                                        lowest = operator.value;
-                                                    }
-                                                    if (operator.value > highest || highest == null) {
-                                                        highest = operator.value;
-                                                    }
-                                                }
-                                            });
-                                        }
-
-                                    });
+                // get all the elements - depending on the level we are in - with edit == true
+                var elements = $scope.findElements(level);
+                angular.forEach(elements, function(element) {
+                    nrOfElements++;
+                    angular.forEach(element.parameters, function(elementParameter) {
+                        if (elementParameter.name == theParameter.name) {
+                            hasThisParameter = true;
+                            angular.forEach(elementParameter.operators, function(operator) {
+                                if (operator.name == theOperator.name) {
+                                    hasThisOperator = true;
+                                    nrOfHasOperator++;
+                                    if (operator.value < lowest || lowest == null) {
+                                        lowest = operator.value;
+                                    }
+                                    if (operator.value > highest || highest == null) {
+                                        highest = operator.value;
+                                    }
                                 }
                             });
-                            
                         }
                     });
                 });
-                // standard value                  
-                if (nrOfGlyphs > nrOfHasOperator && nrOfHasOperator > 0) {
-                    console.log("!");
+                // when a multiple selection contains one object with a setting and onther without, the standard value is used
+                if (nrOfElements > nrOfHasOperator && nrOfHasOperator > 0) {
                     if (theOperator.standardValue < lowest) {
                         lowest = theOperator.standardValue;
-                    } 
+                    }
                     if (theOperator.standardValue > highest) {
                         highest = theOperator.standardValue;
                     }
                 }
+                // if the values within a selection differ, we are having a range
                 var range = true;
                 if (lowest == highest) {
                     range = false;
@@ -110,16 +105,43 @@ app.controller("parametersController", function($scope, sharedScope) {
                 }
             });
             if (hasThisParameter) {
-                $scope.selectionParametersGlyphs.push({
+                selectionParameters.push({
                     name : theParameter.name,
                     displayName : theParameter.displayName,
                     operators : theOperators
                 });
             }
         });
+        return selectionParameters;
     };
 
-    $scope.data.changeParameter = function(parameterName, operatorName, value, elementType) {
+    $scope.findElements = function(level) {
+        var elements = [];
+        if (level == "master") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit) {
+                        elements.push(master);
+                    }
+                });
+            });
+        } else if (level == "glyph") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit) {
+                        angular.forEach(master.glyphs, function(glyph) {
+                            if (glyph.edit) {
+                                elements.push(glyph);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        return elements;
+    };
+
+    $scope.changeParameter = function(parameterName, operatorName, value, elementType) {
         var key = parameterName + "Factor";
         if (parameterName == "sidebearingLeft" || parameterName == "sidebearingRight") {
             var key = parameterName + "Summand";
@@ -128,12 +150,13 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit) {
                     if (elementType == "master") {
-                        // check if the glyph has a rule already
-                        if (master.parameters.length > 0) {
+                        // check if the master has a rule already
+                        if (master.ruleIndex) {
                             var ruleIndex = master.ruleIndex;
                         } else {
                             var ruleIndex = $scope.addRullAPI(elementType, master, master.name);
                         }
+                        $scope.setParameterModel(master, parameterName, operatorName, value);
                         $scope.setParameterAPI(master, ruleIndex, key, value);
                     } else if (elementType == "glyph") {
                         angular.forEach(master.glyphs, function(glyph) {
