@@ -29852,15 +29852,12 @@ define('metapolator/project/cps-generators/interpolation',[
     return function(masterCount) {
         var n
           , view = {}
-          , masterNs = view.n = [] // [1,2,3,4] when masterCount = 4
+          , masterNs = view.n = [] // [0,1,2,3] when masterCount = 4
           ;
-        // FIXME: what is better to confront designers with, counting
-        // from 0 or counting from 1? I tend to change this to 0 in the
-        // future, after the blue-pill 0.2.0 demo is out.
-        for(n=1;n<=masterCount;n++)
+        for(n=0;n<masterCount;n++)
             masterNs.push(n);
         return mustache.render(template, view);
-    }
+    };
 });
 
 
@@ -29877,16 +29874,14 @@ define('metapolator/project/cps-generators/metapolation',[
     return function(masterCount) {
         var n
           , view = {}
-          , masterNs = view.n = [] // [1,2,3,4] when masterCount = 4
+          , masterNs = view.n = [] // [0,1,2,3] when masterCount = 4
           ;
-        // FIXME: what is better to confront designers with, counting
-        // from 0 or counting from 1? I tend to change this to 0 in the
-        // future, after the blue-pill 0.2.0 demo is out.
-        for(n=1;n<=masterCount;n++)
+        for(n=0;n<masterCount;n++)
             masterNs.push(n);
         return mustache.render(template, view);
-    }
+    };
 });
+
 
 
 // This file is meant to export a stand alone version of the metapolator,
@@ -30064,6 +30059,10 @@ function (
                  ? promise.then(resolve, errors.unhandledPromise)
                  : resolve()
                  ;
+        }
+      , cpsGenerators: {
+            interpolation: cpsGenInterpolation
+          , metapolation: cpsGenMetapolation
         }
     };
 
