@@ -141,7 +141,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         return elements;
     };
 
-    
     $scope.changeParameter = function(parameterName, operator, elementType, range) {
         var operatorName = operator.name;
         var key = parameterName + "Factor";
@@ -159,9 +158,9 @@ app.controller("parametersController", function($scope, sharedScope) {
                             var ruleIndex = $scope.addRullAPI(elementType, master, master.name);
                         }
                         if (range) {
-                           var value = $scope.getRangeValue(master, parameterName, operator, elementType); 
+                            var value = $scope.validateValue($scope.getRangeValue(master, parameterName, operator, elementType));
                         } else {
-                            var value = operator.low;
+                            var value = $scope.validateValue(operator.low);
                         }
                         $scope.setParameterModel(master, master, parameterName, operatorName, value);
                         $scope.setParameterAPI(master, ruleIndex, key, value);
@@ -175,9 +174,9 @@ app.controller("parametersController", function($scope, sharedScope) {
                                     var ruleIndex = $scope.addRullAPI(elementType, master, glyph.value);
                                 }
                                 if (range) {
-                                   var value = $scope.getRangeValue(glyph, parameterName, operator, elementType); 
+                                    var value = $scope.validateValue($scope.getRangeValue(glyph, parameterName, operator, elementType));
                                 } else {
-                                    var value = operator.low;
+                                    var value = $scope.validateValue(operator.low);
                                 }
                                 $scope.setParameterModel(master, glyph, parameterName, operatorName, value);
                                 $scope.setParameterAPI(master, ruleIndex, key, value);
@@ -186,12 +185,19 @@ app.controller("parametersController", function($scope, sharedScope) {
                     }
                 }
             });
-        });   
-        $scope.optimizeOperators();     
+        });
+        $scope.optimizeOperators();
     };
-    
-    
-    
+
+    $scope.validateValue = function(x) {
+        if (isNaN(x) || x == "") {
+            x = 0;
+        }
+        var roundedX = Math.round(x * 100) / 100;
+        var toF = roundedX.toFixed(2);
+        return toF;
+    };
+
     $scope.getRangeValue = function(element, parameterName, myOperator, elementType) {
         var operatorName = myOperator.name;
         var oldLow = myOperator.low;
@@ -216,7 +222,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     currentValue = globalOperator.standardValue;
                 }
             });
-        }       
+        }
         if (oldLow == newLow && oldHigh == newHigh) {
             // no change
         } else {
@@ -225,8 +231,8 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var changeFactor = newHigh / oldHigh;
                 var change = newHigh - oldHigh;
             } else {
-                 var changeFactor = newLow / oldLow;
-                 var change = newLow - oldLow;
+                var changeFactor = newLow / oldLow;
+                var change = newLow - oldLow;
             }
             var myShare = (currentValue - oldLow) / scale;
             var newValue = myShare * change + currentValue;
@@ -267,7 +273,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 });
             }
         });
-        // in ranges situation can appear where an element doesn't have the parameter or the operator already 
+        // in ranges situation can appear where an element doesn't have the parameter or the operator already
         if (!theOperator) {
             // create operator
             var newOperator = $scope.getOperatorByName(operatorName);
@@ -279,13 +285,13 @@ app.controller("parametersController", function($scope, sharedScope) {
                 newParameter.operators.push(newOperator);
                 element.parameters.push(newParameter);
             } else {
-               theParameter.operators.push(newOperator); 
+                theParameter.operators.push(newOperator);
             }
         } else {
-           theOperator.value = parseFloat(value); 
+            theOperator.value = parseFloat(value);
         }
     };
-    
+
     $scope.getParameterByName = function(parameterName) {
         var theParameter;
         angular.forEach($scope.parameters, function(parameter) {
@@ -295,7 +301,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         return theParameter;
     };
-    
+
     $scope.getOperatorByName = function(operatorName) {
         var theOperator;
         angular.forEach($scope.operators, function(operator) {
