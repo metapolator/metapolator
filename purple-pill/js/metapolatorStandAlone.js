@@ -2082,7 +2082,7 @@ define("requireLib", function(){});
 define('webAPI/document',[], document);
 
 define('metapolator/errors',[],function() {
-    
+    "use strict";
     //metapolator errors
     var errors = {};
 
@@ -2194,7 +2194,7 @@ define('metapolator/errors',[],function() {
  */
 define('path',['require','exports','module'],function (require, exports, module) {var process = process || {};
 (function () {
-  
+  "use strict";
 
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3336,7 +3336,7 @@ module.exports = Level;
  * This file was generated from a npm-package using gulp. 
  * For more information see gulpfile.js in the project root
  */
-define('util-logging/logrecord',['require','exports','module','./level','util/util'],function (require, exports, module) {
+define('util-logging/logrecord',['require','exports','module','./level','util/util'],function (require, exports, module) {"use strict";
 
 
 var Level = require("./level");
@@ -3548,7 +3548,7 @@ module.exports = LogRecord;
  * This file was generated from a npm-package using gulp. 
  * For more information see gulpfile.js in the project root
  */
-define('util-logging/handler',['require','exports','module','./level','./logrecord','util/util'],function (require, exports, module) {
+define('util-logging/handler',['require','exports','module','./level','./logrecord','util/util'],function (require, exports, module) {"use strict";
 
 var Level = require("./level");
 var LogRecord = require("./logrecord");
@@ -3670,7 +3670,7 @@ module.exports = Handler;
  * This file was generated from a npm-package using gulp. 
  * For more information see gulpfile.js in the project root
  */
-define('util-logging/logger',['require','exports','module','path','util/util','./level','./handler','./logrecord'],function (require, exports, module) {
+define('util-logging/logger',['require','exports','module','path','util/util','./level','./handler','./logrecord'],function (require, exports, module) {"use strict";
 
 
 var path = require("path");
@@ -4158,7 +4158,7 @@ module.exports = Logger;
  * This file was generated from a npm-package using gulp. 
  * For more information see gulpfile.js in the project root
  */
-define('util-logging/formatter',['require','exports','module','util/util','./logrecord','./level','path'],function (require, exports, module) {
+define('util-logging/formatter',['require','exports','module','util/util','./logrecord','./level','path'],function (require, exports, module) {"use strict";
 
 var util = require("util/util");
 var LogRecord = require("./logrecord");
@@ -4269,7 +4269,7 @@ module.exports = Formatter;
  * This file was generated from a npm-package using gulp. 
  * For more information see gulpfile.js in the project root
  */
-define('util-logging/consolehandler',['require','exports','module','./level','./handler','./formatter','util/util'],function (require, exports, module) {
+define('util-logging/consolehandler',['require','exports','module','./level','./handler','./formatter','util/util'],function (require, exports, module) {"use strict";
 
 var Level = require("./level");
 var Handler = require("./handler");
@@ -4336,7 +4336,7 @@ module.exports = ConsoleHandler;
  * This file was generated from a npm-package using gulp. 
  * For more information see gulpfile.js in the project root
  */
-define('util-logging/consolelogger',['require','exports','module','./logger','./consolehandler','./level','util/util'],function (require, exports, module) {
+define('util-logging/consolelogger',['require','exports','module','./logger','./consolehandler','./level','util/util'],function (require, exports, module) {"use strict";
 
 
 var Logger = require("./logger");
@@ -4376,7 +4376,7 @@ module.exports = ConsoleLogger;
  * This file was generated from a npm-package using gulp. 
  * For more information see gulpfile.js in the project root
  */
-define('util-logging/util-logging',['require','exports','module','./logger','./level','./consolehandler','./consolelogger','./handler','./logrecord','./formatter'],function (require, exports, module) {
+define('util-logging/util-logging',['require','exports','module','./logger','./level','./consolehandler','./consolelogger','./handler','./logrecord','./formatter'],function (require, exports, module) {"use strict";
 
 /**
  * This module exports all the classes that make up the util-logging package.
@@ -4418,7 +4418,7 @@ module.exports = {
 });
 
 define('logging/callbackhandler',['require','exports','module','util-logging/level','util-logging/handler','util-logging/formatter','util/util'],function (require, exports, module) {
-
+"use strict";
 
 var Level = require("util-logging/level");
 var Handler = require("util-logging/handler");
@@ -4480,10 +4480,10 @@ module.exports = CallbackHandler;
 });
 
 /* js-yaml 3.2.0 https://github.com/nodeca/js-yaml */
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define('yaml',[],e);else{var t;"undefined"!=typeof window?t=window:"undefined"!=typeof global?t=global:"undefined"!=typeof self&&(t=self),t.jsyaml=e()}}(function(){return function e(t,n,i){function r(a,s){if(!n[a]){if(!t[a]){var c="function"==typeof require&&require;if(!s&&c)return c(a,!0);if(o)return o(a,!0);throw new Error("Cannot find module '"+a+"'")}var u=n[a]={exports:{}};t[a][0].call(u.exports,function(e){var n=t[a][1][e];return r(n?n:e)},u,u.exports,e,t,n,i)}return n[a].exports}for(var o="function"==typeof require&&require,a=0;a<i.length;a++)r(i[a]);return r}({1:[function(e,t){var n=e("./lib/js-yaml.js");t.exports=n},{"./lib/js-yaml.js":2}],2:[function(e,t){function n(e){return function(){throw new Error("Function "+e+" is deprecated and cannot be used.")}}var i=e("./js-yaml/loader"),r=e("./js-yaml/dumper");t.exports.Type=e("./js-yaml/type"),t.exports.Schema=e("./js-yaml/schema"),t.exports.FAILSAFE_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.JSON_SCHEMA=e("./js-yaml/schema/json"),t.exports.CORE_SCHEMA=e("./js-yaml/schema/core"),t.exports.DEFAULT_SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_FULL_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.load=i.load,t.exports.loadAll=i.loadAll,t.exports.safeLoad=i.safeLoad,t.exports.safeLoadAll=i.safeLoadAll,t.exports.dump=r.dump,t.exports.safeDump=r.safeDump,t.exports.YAMLException=e("./js-yaml/exception"),t.exports.MINIMAL_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.scan=n("scan"),t.exports.parse=n("parse"),t.exports.compose=n("compose"),t.exports.addConstructor=n("addConstructor")},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(e,t){function n(e){return void 0===e||null===e}function i(e){return"object"==typeof e&&null!==e}function r(e){return Array.isArray(e)?e:n(e)?[]:[e]}function o(e,t){var n,i,r,o;if(t)for(o=Object.keys(t),n=0,i=o.length;i>n;n+=1)r=o[n],e[r]=t[r];return e}function a(e,t){var n,i="";for(n=0;t>n;n+=1)i+=e;return i}function s(e){return 0===e&&Number.NEGATIVE_INFINITY===1/e}t.exports.isNothing=n,t.exports.isObject=i,t.exports.toArray=r,t.exports.repeat=a,t.exports.isNegativeZero=s,t.exports.extend=o},{}],4:[function(e,t){function n(e,t){var n,i,r,o,a,s,c;if(null===t)return{};for(n={},i=Object.keys(t),r=0,o=i.length;o>r;r+=1)a=i[r],s=String(t[a]),"!!"===a.slice(0,2)&&(a="tag:yaml.org,2002:"+a.slice(2)),c=e.compiledTypeMap[a],c&&b.call(c.styleAliases,s)&&(s=c.styleAliases[s]),n[a]=s;return n}function i(e){var t,n,i;if(t=e.toString(16).toUpperCase(),255>=e)n="x",i=2;else if(65535>=e)n="u",i=4;else{if(!(4294967295>=e))throw new y("code point within a string may not be greater than 0xFFFFFFFF");n="U",i=8}return"\\"+n+g.repeat("0",i-t.length)+t}function r(e){this.schema=e.schema||x,this.indent=Math.max(1,e.indent||2),this.skipInvalid=e.skipInvalid||!1,this.flowLevel=g.isNothing(e.flowLevel)?-1:e.flowLevel,this.styleMap=n(this.schema,e.styles||null),this.implicitTypes=this.schema.compiledImplicit,this.explicitTypes=this.schema.compiledExplicit,this.tag=null,this.result=""}function o(e,t){return"\n"+g.repeat(" ",e.indent*t)}function a(e,t){var n,i,r;for(n=0,i=e.implicitTypes.length;i>n;n+=1)if(r=e.implicitTypes[n],r.resolve(t))return!0;return!1}function s(e,t){var n,r,o,s,c,u;for(e.dump="",n=!1,r=0,u=t.charCodeAt(0)||0,-1!==V.indexOf(t)?n=!0:0===t.length?n=!0:j===u||j===t.charCodeAt(t.length-1)?n=!0:(_===u||q===u)&&(n=!0),o=0,s=t.length;s>o;o+=1)c=t.charCodeAt(o),n||(w===c||C===c||k===c||L===c||D===c||P===c||H===c||B===c||E===c||F===c||T===c||I===c||$===c||Y===c||N===c||S===c||O===c||U===c||M===c||R===c)&&(n=!0),(G[c]||!(c>=32&&126>=c||133===c||c>=160&&55295>=c||c>=57344&&65533>=c||c>=65536&&1114111>=c))&&(e.dump+=t.slice(r,o),e.dump+=G[c]||i(c),r=o+1,n=!0);o>r&&(e.dump+=t.slice(r,o)),!n&&a(e,e.dump)&&(n=!0),n&&(e.dump='"'+e.dump+'"')}function c(e,t,n){var i,r,o="",a=e.tag;for(i=0,r=n.length;r>i;i+=1)d(e,t,n[i],!1,!1)&&(0!==i&&(o+=", "),o+=e.dump);e.tag=a,e.dump="["+o+"]"}function u(e,t,n,i){var r,a,s="",c=e.tag;for(r=0,a=n.length;a>r;r+=1)d(e,t+1,n[r],!0,!0)&&(i&&0===r||(s+=o(e,t)),s+="- "+e.dump);e.tag=c,e.dump=s||"[]"}function l(e,t,n){var i,r,o,a,s,c="",u=e.tag,l=Object.keys(n);for(i=0,r=l.length;r>i;i+=1)s="",0!==i&&(s+=", "),o=l[i],a=n[o],d(e,t,o,!1,!1)&&(e.dump.length>1024&&(s+="? "),s+=e.dump+": ",d(e,t,a,!1,!1)&&(s+=e.dump,c+=s));e.tag=u,e.dump="{"+c+"}"}function p(e,t,n,i){var r,a,s,c,u,l,p="",f=e.tag,h=Object.keys(n);for(r=0,a=h.length;a>r;r+=1)l="",i&&0===r||(l+=o(e,t)),s=h[r],c=n[s],d(e,t+1,s,!0,!0)&&(u=null!==e.tag&&"?"!==e.tag||e.dump&&e.dump.length>1024,u&&(l+=e.dump&&C===e.dump.charCodeAt(0)?"?":"? "),l+=e.dump,u&&(l+=o(e,t)),d(e,t+1,c,!0,u)&&(l+=e.dump&&C===e.dump.charCodeAt(0)?":":": ",l+=e.dump,p+=l));e.tag=f,e.dump=p||"{}"}function f(e,t,n){var i,r,o,a,s,c;for(r=n?e.explicitTypes:e.implicitTypes,o=0,a=r.length;a>o;o+=1)if(s=r[o],(s.instanceOf||s.predicate)&&(!s.instanceOf||"object"==typeof t&&t instanceof s.instanceOf)&&(!s.predicate||s.predicate(t))){if(e.tag=n?s.tag:"?",s.represent){if(c=e.styleMap[s.tag]||s.defaultStyle,"[object Function]"===A.call(s.represent))i=s.represent(t,c);else{if(!b.call(s.represent,c))throw new y("!<"+s.tag+'> tag resolver accepts not "'+c+'" style');i=s.represent[c](t,c)}e.dump=i}return!0}return!1}function d(e,t,n,i,r){e.tag=null,e.dump=n,f(e,n,!1)||f(e,n,!0);var o=A.call(e.dump);if(i&&(i=0>e.flowLevel||e.flowLevel>t),(null!==e.tag&&"?"!==e.tag||2!==e.indent&&t>0)&&(r=!1),"[object Object]"===o)i&&0!==Object.keys(e.dump).length?p(e,t,e.dump,r):l(e,t,e.dump);else if("[object Array]"===o)i&&0!==e.dump.length?u(e,t,e.dump,r):c(e,t,e.dump);else{if("[object String]"!==o){if(e.skipInvalid)return!1;throw new y("unacceptabe kind of an object to dump "+o)}"?"!==e.tag&&s(e,e.dump)}return null!==e.tag&&"?"!==e.tag&&(e.dump="!<"+e.tag+"> "+e.dump),!0}function h(e,t){t=t||{};var n=new r(t);return d(n,0,e,!0,!0)?n.dump+"\n":""}function m(e,t){return h(e,g.extend({schema:v},t))}var g=e("./common"),y=e("./exception"),x=e("./schema/default_full"),v=e("./schema/default_safe"),A=Object.prototype.toString,b=Object.prototype.hasOwnProperty,w=9,C=10,k=13,j=32,I=33,S=34,E=35,O=37,F=38,N=39,T=42,L=44,_=45,M=58,Y=62,q=63,U=64,D=91,P=93,R=96,H=123,$=124,B=125,G={};G[0]="\\0",G[7]="\\a",G[8]="\\b",G[9]="\\t",G[10]="\\n",G[11]="\\v",G[12]="\\f",G[13]="\\r",G[27]="\\e",G[34]='\\"',G[92]="\\\\",G[133]="\\N",G[160]="\\_",G[8232]="\\L",G[8233]="\\P";var V=["y","Y","yes","Yes","YES","on","On","ON","n","N","no","No","NO","off","Off","OFF"];t.exports.dump=h,t.exports.safeDump=m},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(e,t){function n(e,t){this.name="YAMLException",this.reason=e,this.mark=t,this.message=this.toString(!1)}n.prototype.toString=function(e){var t;return t="JS-YAML: "+(this.reason||"(unknown reason)"),!e&&this.mark&&(t+=" "+this.mark.toString()),t},t.exports=n},{}],6:[function(e,t){function n(e){return 10===e||13===e}function i(e){return 9===e||32===e}function r(e){return 9===e||32===e||10===e||13===e}function o(e){return 44===e||91===e||93===e||123===e||125===e}function a(e){var t;return e>=48&&57>=e?e-48:(t=32|e,t>=97&&102>=t?t-97+10:-1)}function s(e){return 120===e?2:117===e?4:85===e?8:0}function c(e){return e>=48&&57>=e?e-48:-1}function u(e){return 48===e?"\x00":97===e?"":98===e?"\b":116===e?"	":9===e?"	":110===e?"\n":118===e?"":102===e?"\f":114===e?"\r":101===e?"":32===e?" ":34===e?'"':47===e?"/":92===e?"\\":78===e?"":95===e?" ":76===e?"\u2028":80===e?"\u2029":""}function l(e,t){this.input=e,this.filename=t.filename||null,this.schema=t.schema||H,this.onWarning=t.onWarning||null,this.legacy=t.legacy||!1,this.implicitTypes=this.schema.compiledImplicit,this.typeMap=this.schema.compiledTypeMap,this.length=e.length,this.position=0,this.line=0,this.lineStart=0,this.lineIndent=0,this.documents=[]}function p(e,t){return new D(t,new P(e.filename,e.input,e.position,e.line,e.position-e.lineStart))}function f(e,t){throw p(e,t)}function d(e,t){var n=p(e,t);if(!e.onWarning)throw n;e.onWarning.call(null,n)}function h(e,t,n,i){var r,o,a,s;if(n>t){if(s=e.input.slice(t,n),i)for(r=0,o=s.length;o>r;r+=1)a=s.charCodeAt(r),9===a||a>=32&&1114111>=a||f(e,"expected valid JSON character");e.result+=s}}function m(e,t,n){var i,r,o,a;for(U.isObject(n)||f(e,"cannot merge mappings; the provided source object is unacceptable"),i=Object.keys(n),o=0,a=i.length;a>o;o+=1)r=i[o],$.call(t,r)||(t[r]=n[r])}function g(e,t,n,i,r){var o,a;if(i=String(i),null===t&&(t={}),"tag:yaml.org,2002:merge"===n)if(Array.isArray(r))for(o=0,a=r.length;a>o;o+=1)m(e,t,r[o]);else m(e,t,r);else t[i]=r;return t}function y(e){var t;t=e.input.charCodeAt(e.position),10===t?e.position++:13===t?(e.position++,10===e.input.charCodeAt(e.position)&&e.position++):f(e,"a line break is expected"),e.line+=1,e.lineStart=e.position}function x(e,t,r){for(var o=0,a=e.input.charCodeAt(e.position);0!==a;){for(;i(a);)a=e.input.charCodeAt(++e.position);if(t&&35===a)do a=e.input.charCodeAt(++e.position);while(10!==a&&13!==a&&0!==a);if(!n(a))break;for(y(e),a=e.input.charCodeAt(e.position),o++,e.lineIndent=0;32===a;)e.lineIndent++,a=e.input.charCodeAt(++e.position);e.lineIndent<r&&d(e,"deficient indentation")}return o}function v(e){var t,n=e.position;return t=e.input.charCodeAt(n),45!==t&&46!==t||e.input.charCodeAt(n+1)!==t||e.input.charCodeAt(n+2)!==t||(n+=3,t=e.input.charCodeAt(n),0!==t&&!r(t))?!1:!0}function A(e,t){1===t?e.result+=" ":t>1&&(e.result+=U.repeat("\n",t-1))}function b(e,t,a){var s,c,u,l,p,f,d,m,g,y=e.kind,b=e.result;if(g=e.input.charCodeAt(e.position),r(g)||o(g)||35===g||38===g||42===g||33===g||124===g||62===g||39===g||34===g||37===g||64===g||96===g)return!1;if((63===g||45===g)&&(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c)))return!1;for(e.kind="scalar",e.result="",u=l=e.position,p=!1;0!==g;){if(58===g){if(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c))break}else if(35===g){if(s=e.input.charCodeAt(e.position-1),r(s))break}else{if(e.position===e.lineStart&&v(e)||a&&o(g))break;if(n(g)){if(f=e.line,d=e.lineStart,m=e.lineIndent,x(e,!1,-1),e.lineIndent>=t){p=!0,g=e.input.charCodeAt(e.position);continue}e.position=l,e.line=f,e.lineStart=d,e.lineIndent=m;break}}p&&(h(e,u,l,!1),A(e,e.line-f),u=l=e.position,p=!1),i(g)||(l=e.position+1),g=e.input.charCodeAt(++e.position)}return h(e,u,l,!1),e.result?!0:(e.kind=y,e.result=b,!1)}function w(e,t){var i,r,o;if(i=e.input.charCodeAt(e.position),39!==i)return!1;for(e.kind="scalar",e.result="",e.position++,r=o=e.position;0!==(i=e.input.charCodeAt(e.position));)if(39===i){if(h(e,r,e.position,!0),i=e.input.charCodeAt(++e.position),39!==i)return!0;r=o=e.position,e.position++}else n(i)?(h(e,r,o,!0),A(e,x(e,!1,t)),r=o=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a single quoted scalar"):(e.position++,o=e.position);f(e,"unexpected end of the stream within a single quoted scalar")}function C(e,t){var i,r,o,c,u,l;if(l=e.input.charCodeAt(e.position),34!==l)return!1;for(e.kind="scalar",e.result="",e.position++,i=r=e.position;0!==(l=e.input.charCodeAt(e.position));){if(34===l)return h(e,i,e.position,!0),e.position++,!0;if(92===l){if(h(e,i,e.position,!0),l=e.input.charCodeAt(++e.position),n(l))x(e,!1,t);else if(256>l&&nt[l])e.result+=it[l],e.position++;else if((u=s(l))>0){for(o=u,c=0;o>0;o--)l=e.input.charCodeAt(++e.position),(u=a(l))>=0?c=(c<<4)+u:f(e,"expected hexadecimal character");e.result+=String.fromCharCode(c),e.position++}else f(e,"unknown escape sequence");i=r=e.position}else n(l)?(h(e,i,r,!0),A(e,x(e,!1,t)),i=r=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a double quoted scalar"):(e.position++,r=e.position)}f(e,"unexpected end of the stream within a double quoted scalar")}function k(e,t){var n,i,o,a,s,c,u,l,p,d,h,m=!0,y=e.tag;if(h=e.input.charCodeAt(e.position),91===h)a=93,u=!1,i=[];else{if(123!==h)return!1;a=125,u=!0,i={}}for(null!==e.anchor&&(e.anchorMap[e.anchor]=i),h=e.input.charCodeAt(++e.position);0!==h;){if(x(e,!0,t),h=e.input.charCodeAt(e.position),h===a)return e.position++,e.tag=y,e.kind=u?"mapping":"sequence",e.result=i,!0;m||f(e,"missed comma between flow collection entries"),p=l=d=null,s=c=!1,63===h&&(o=e.input.charCodeAt(e.position+1),r(o)&&(s=c=!0,e.position++,x(e,!0,t))),n=e.line,N(e,t,B,!1,!0),p=e.tag,l=e.result,x(e,!0,t),h=e.input.charCodeAt(e.position),!c&&e.line!==n||58!==h||(s=!0,h=e.input.charCodeAt(++e.position),x(e,!0,t),N(e,t,B,!1,!0),d=e.result),u?g(e,i,p,l,d):i.push(s?g(e,null,p,l,d):l),x(e,!0,t),h=e.input.charCodeAt(e.position),44===h?(m=!0,h=e.input.charCodeAt(++e.position)):m=!1}f(e,"unexpected end of the stream within a flow collection")}function j(e,t){var r,o,a,s,u=Z,l=!1,p=t,d=0,m=!1;if(s=e.input.charCodeAt(e.position),124===s)o=!1;else{if(62!==s)return!1;o=!0}for(e.kind="scalar",e.result="";0!==s;)if(s=e.input.charCodeAt(++e.position),43===s||45===s)Z===u?u=43===s?z:J:f(e,"repeat of a chomping mode identifier");else{if(!((a=c(s))>=0))break;0===a?f(e,"bad explicit indentation width of a block scalar; it cannot be less than one"):l?f(e,"repeat of an indentation width identifier"):(p=t+a-1,l=!0)}if(i(s)){do s=e.input.charCodeAt(++e.position);while(i(s));if(35===s)do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s)}for(;0!==s;){for(y(e),e.lineIndent=0,s=e.input.charCodeAt(e.position);(!l||e.lineIndent<p)&&32===s;)e.lineIndent++,s=e.input.charCodeAt(++e.position);if(!l&&e.lineIndent>p&&(p=e.lineIndent),n(s))d++;else{if(e.lineIndent<p){u===z?e.result+=U.repeat("\n",d):u===Z&&l&&(e.result+="\n");break}o?i(s)?(m=!0,e.result+=U.repeat("\n",d+1)):m?(m=!1,e.result+=U.repeat("\n",d+1)):0===d?l&&(e.result+=" "):e.result+=U.repeat("\n",d):e.result+=l?U.repeat("\n",d+1):U.repeat("\n",d),l=!0,d=0,r=e.position;do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s);h(e,r,e.position,!1),s=e.input.charCodeAt(e.position)}}return!0}function I(e,t){var n,i,o,a=e.tag,s=[],c=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=s),o=e.input.charCodeAt(e.position);0!==o&&45===o&&(i=e.input.charCodeAt(e.position+1),r(i));)if(c=!0,e.position++,x(e,!0,-1)&&e.lineIndent<=t)s.push(null),o=e.input.charCodeAt(e.position);else if(n=e.line,N(e,t,V,!1,!0),s.push(e.result),x(e,!0,-1),o=e.input.charCodeAt(e.position),(e.line===n||e.lineIndent>t)&&0!==o)f(e,"bad indentation of a sequence entry");else if(e.lineIndent<t)break;return c?(e.tag=a,e.kind="sequence",e.result=s,!0):!1}function S(e,t,n){var o,a,s,c,u=e.tag,l={},p=null,d=null,h=null,m=!1,y=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=l),c=e.input.charCodeAt(e.position);0!==c;){if(o=e.input.charCodeAt(e.position+1),s=e.line,63!==c&&58!==c||!r(o)){if(!N(e,n,G,!1,!0))break;if(e.line===s){for(c=e.input.charCodeAt(e.position);i(c);)c=e.input.charCodeAt(++e.position);if(58===c)c=e.input.charCodeAt(++e.position),r(c)||f(e,"a whitespace character is expected after the key-value separator within a block mapping"),m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!1,a=!1,p=e.tag,d=e.result;else{if(!y)return e.tag=u,!0;f(e,"can not read an implicit mapping pair; a colon is missed")}}else{if(!y)return e.tag=u,!0;f(e,"can not read a block mapping entry; a multiline key may not be an implicit key")}}else 63===c?(m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!0,a=!0):m?(m=!1,a=!0):f(e,"incomplete explicit mapping pair; a key node is missed"),e.position+=1,c=o;if((e.line===s||e.lineIndent>t)&&(N(e,t,W,!0,a)&&(m?d=e.result:h=e.result),m||(g(e,l,p,d,h),p=d=h=null),x(e,!0,-1),c=e.input.charCodeAt(e.position)),e.lineIndent>t&&0!==c)f(e,"bad indentation of a mapping entry");else if(e.lineIndent<t)break}return m&&g(e,l,p,d,null),y&&(e.tag=u,e.kind="mapping",e.result=l),y}function E(e){var t,n,i,o,a=!1,s=!1;if(o=e.input.charCodeAt(e.position),33!==o)return!1;if(null!==e.tag&&f(e,"duplication of a tag property"),o=e.input.charCodeAt(++e.position),60===o?(a=!0,o=e.input.charCodeAt(++e.position)):33===o?(s=!0,n="!!",o=e.input.charCodeAt(++e.position)):n="!",t=e.position,a){do o=e.input.charCodeAt(++e.position);while(0!==o&&62!==o);e.position<e.length?(i=e.input.slice(t,e.position),o=e.input.charCodeAt(++e.position)):f(e,"unexpected end of the stream within a verbatim tag")}else{for(;0!==o&&!r(o);)33===o&&(s?f(e,"tag suffix cannot contain exclamation marks"):(n=e.input.slice(t-1,e.position+1),et.test(n)||f(e,"named tag handle cannot contain such characters"),s=!0,t=e.position+1)),o=e.input.charCodeAt(++e.position);i=e.input.slice(t,e.position),X.test(i)&&f(e,"tag suffix cannot contain flow indicator characters")}return i&&!tt.test(i)&&f(e,"tag name cannot contain such characters: "+i),a?e.tag=i:$.call(e.tagMap,n)?e.tag=e.tagMap[n]+i:"!"===n?e.tag="!"+i:"!!"===n?e.tag="tag:yaml.org,2002:"+i:f(e,'undeclared tag handle "'+n+'"'),!0}function O(e){var t,n;if(n=e.input.charCodeAt(e.position),38!==n)return!1;for(null!==e.anchor&&f(e,"duplication of an anchor property"),n=e.input.charCodeAt(++e.position),t=e.position;0!==n&&!r(n)&&!o(n);)n=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an anchor node must contain at least one character"),e.anchor=e.input.slice(t,e.position),!0}function F(e){{var t,n,i;e.length,e.input}if(i=e.input.charCodeAt(e.position),42!==i)return!1;for(i=e.input.charCodeAt(++e.position),t=e.position;0!==i&&!r(i)&&!o(i);)i=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an alias node must contain at least one character"),n=e.input.slice(t,e.position),e.anchorMap.hasOwnProperty(n)||f(e,'unidentified alias "'+n+'"'),e.result=e.anchorMap[n],x(e,!0,-1),!0}function N(e,t,n,i,r){var o,a,s,c,u,l,p,h,m=!1,g=!0,y=!1;if(e.tag=null,e.anchor=null,e.kind=null,e.result=null,o=a=s=W===n||V===n,i&&x(e,!0,-1))if(m=!0,e.lineIndent===t)g=!1;else{if(!(e.lineIndent>t))return!1;g=!0}if(g)for(;E(e)||O(e);)if(x(e,!0,-1))if(m=!0,e.lineIndent>t)g=!0,s=o;else{if(e.lineIndent!==t)return!0;g=!1,s=o}else s=!1;if(s&&(s=m||r),(g||W===n)&&(p=B===n||G===n?t:t+1,h=e.position-e.lineStart,g?s&&(I(e,h)||S(e,h,p))||k(e,p)?y=!0:(a&&j(e,p)||w(e,p)||C(e,p)?y=!0:F(e)?(y=!0,(null!==e.tag||null!==e.anchor)&&f(e,"alias node should not have any properties")):b(e,p,B===n)&&(y=!0,null===e.tag&&(e.tag="?")),null!==e.anchor&&(e.anchorMap[e.anchor]=e.result)):y=s&&I(e,h)),null!==e.tag&&"!"!==e.tag)if("?"===e.tag){for(c=0,u=e.implicitTypes.length;u>c;c+=1)if(l=e.implicitTypes[c],l.resolve(e.result)){e.result=l.construct(e.result),e.tag=l.tag;break}}else $.call(e.typeMap,e.tag)?(l=e.typeMap[e.tag],null!==e.result&&l.kind!==e.kind&&f(e,"unacceptable node kind for !<"+e.tag+'> tag; it should be "'+l.kind+'", not "'+e.kind+'"'),l.resolve(e.result)?e.result=l.construct(e.result):f(e,"cannot resolve a node with !<"+e.tag+"> explicit tag")):d(e,"unknown tag !<"+e.tag+">");return null!==e.tag||null!==e.anchor||y}function T(e){var t,o,a,s,c=e.position,u=!1;for(e.version=null,e.checkLineBreaks=e.legacy,e.tagMap={},e.anchorMap={};0!==(s=e.input.charCodeAt(e.position))&&(x(e,!0,-1),s=e.input.charCodeAt(e.position),!(e.lineIndent>0||37!==s));){for(u=!0,s=e.input.charCodeAt(++e.position),t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);for(o=e.input.slice(t,e.position),a=[],o.length<1&&f(e,"directive name must not be less than one character in length");0!==s;){for(;i(s);)s=e.input.charCodeAt(++e.position);if(35===s){do s=e.input.charCodeAt(++e.position);while(0!==s&&!n(s));break}if(n(s))break;for(t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);a.push(e.input.slice(t,e.position))}0!==s&&y(e),$.call(ot,o)?ot[o](e,o,a):d(e,'unknown document directive "'+o+'"')}return x(e,!0,-1),0===e.lineIndent&&45===e.input.charCodeAt(e.position)&&45===e.input.charCodeAt(e.position+1)&&45===e.input.charCodeAt(e.position+2)?(e.position+=3,x(e,!0,-1)):u&&f(e,"directives end mark is expected"),N(e,e.lineIndent-1,W,!1,!0),x(e,!0,-1),e.checkLineBreaks&&Q.test(e.input.slice(c,e.position))&&d(e,"non-ASCII line breaks are interpreted as content"),e.documents.push(e.result),e.position===e.lineStart&&v(e)?void(46===e.input.charCodeAt(e.position)&&(e.position+=3,x(e,!0,-1))):void(e.position<e.length-1&&f(e,"end of the stream or a document separator is expected"))}function L(e,t){e=String(e),t=t||{},0!==e.length&&10!==e.charCodeAt(e.length-1)&&13!==e.charCodeAt(e.length-1)&&(e+="\n");var n=new l(e,t);for(K.test(n.input)&&f(n,"the stream contains non-printable characters"),n.input+="\x00";32===n.input.charCodeAt(n.position);)n.lineIndent+=1;for(;n.position<n.length-1;)T(n);return n.documents}function _(e,t,n){var i,r,o=L(e,n);for(i=0,r=o.length;r>i;i+=1)t(o[i])}function M(e,t){var n=L(e,t);if(0===n.length)return void 0;if(1===n.length)return n[0];throw new D("expected a single document in the stream, but found more")}function Y(e,t,n){_(e,t,U.extend({schema:R},n))}function q(e,t){return M(e,U.extend({schema:R},t))}for(var U=e("./common"),D=e("./exception"),P=e("./mark"),R=e("./schema/default_safe"),H=e("./schema/default_full"),$=Object.prototype.hasOwnProperty,B=1,G=2,V=3,W=4,Z=1,J=2,z=3,K=/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uD800-\uDFFF\uFFFE\uFFFF]/,Q=/[\x85\u2028\u2029]/,X=/[,\[\]\{\}]/,et=/^(?:!|!!|![a-z\-]+!)$/i,tt=/^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i,nt=new Array(256),it=new Array(256),rt=0;256>rt;rt++)nt[rt]=u(rt)?1:0,it[rt]=u(rt);var ot={YAML:function(e,t,n){var i,r,o;null!==e.version&&f(e,"duplication of %YAML directive"),1!==n.length&&f(e,"YAML directive accepts exactly one argument"),i=/^([0-9]+)\.([0-9]+)$/.exec(n[0]),null===i&&f(e,"ill-formed argument of the YAML directive"),r=parseInt(i[1],10),o=parseInt(i[2],10),1!==r&&f(e,"unacceptable YAML version of the document"),e.version=n[0],e.checkLineBreaks=2>o,1!==o&&2!==o&&d(e,"unsupported YAML version of the document")},TAG:function(e,t,n){var i,r;2!==n.length&&f(e,"TAG directive accepts exactly two arguments"),i=n[0],r=n[1],et.test(i)||f(e,"ill-formed tag handle (first argument) of the TAG directive"),$.call(e.tagMap,i)&&f(e,'there is a previously declared suffix for "'+i+'" tag handle'),tt.test(r)||f(e,"ill-formed tag prefix (second argument) of the TAG directive"),e.tagMap[i]=r}};t.exports.loadAll=_,t.exports.load=M,t.exports.safeLoadAll=Y,t.exports.safeLoad=q},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(e,t){function n(e,t,n,i,r){this.name=e,this.buffer=t,this.position=n,this.line=i,this.column=r}var i=e("./common");n.prototype.getSnippet=function(e,t){var n,r,o,a,s;if(!this.buffer)return null;for(e=e||4,t=t||75,n="",r=this.position;r>0&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(r-1));)if(r-=1,this.position-r>t/2-1){n=" ... ",r+=5;break}for(o="",a=this.position;a<this.buffer.length&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(a));)if(a+=1,a-this.position>t/2-1){o=" ... ",a-=5;break}return s=this.buffer.slice(r,a),i.repeat(" ",e)+n+s+o+"\n"+i.repeat(" ",e+this.position-r+n.length)+"^"},n.prototype.toString=function(e){var t,n="";return this.name&&(n+='in "'+this.name+'" '),n+="at line "+(this.line+1)+", column "+(this.column+1),e||(t=this.getSnippet(),t&&(n+=":\n"+t)),n},t.exports=n},{"./common":3}],8:[function(e,t){function n(e,t,i){var r=[];return e.include.forEach(function(e){i=n(e,t,i)}),e[t].forEach(function(e){i.forEach(function(t,n){t.tag===e.tag&&r.push(n)}),i.push(e)}),i.filter(function(e,t){return-1===r.indexOf(t)})}function i(){function e(e){i[e.tag]=e}var t,n,i={};for(t=0,n=arguments.length;n>t;t+=1)arguments[t].forEach(e);return i}function r(e){this.include=e.include||[],this.implicit=e.implicit||[],this.explicit=e.explicit||[],this.implicit.forEach(function(e){if(e.loadKind&&"scalar"!==e.loadKind)throw new a("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.")}),this.compiledImplicit=n(this,"implicit",[]),this.compiledExplicit=n(this,"explicit",[]),this.compiledTypeMap=i(this.compiledImplicit,this.compiledExplicit)}var o=e("./common"),a=e("./exception"),s=e("./type");r.DEFAULT=null,r.create=function(){var e,t;switch(arguments.length){case 1:e=r.DEFAULT,t=arguments[0];break;case 2:e=arguments[0],t=arguments[1];break;default:throw new a("Wrong number of arguments for Schema.create function")}if(e=o.toArray(e),t=o.toArray(t),!e.every(function(e){return e instanceof r}))throw new a("Specified list of super schemas (or a single Schema object) contains a non-Schema object.");if(!t.every(function(e){return e instanceof s}))throw new a("Specified list of YAML types (or a single Type object) contains a non-Type object.");return new r({include:e,explicit:t})},t.exports=r},{"./common":3,"./exception":5,"./type":14}],9:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./json")]})},{"../schema":8,"./json":13}],10:[function(e,t){var n=e("../schema");t.exports=n.DEFAULT=new n({include:[e("./default_safe")],explicit:[e("../type/js/undefined"),e("../type/js/regexp"),e("../type/js/function")]})},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./core")],implicit:[e("../type/timestamp"),e("../type/merge")],explicit:[e("../type/binary"),e("../type/omap"),e("../type/pairs"),e("../type/set")]})},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(e,t){var n=e("../schema");t.exports=new n({explicit:[e("../type/str"),e("../type/seq"),e("../type/map")]})},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(e,t){var n=e("../schema");t.exports=new n({include:[e("./failsafe")],implicit:[e("../type/null"),e("../type/bool"),e("../type/int"),e("../type/float")]})},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(e,t){function n(e){var t={};return null!==e&&Object.keys(e).forEach(function(n){e[n].forEach(function(e){t[String(e)]=n})}),t}function i(e,t){if(t=t||{},Object.keys(t).forEach(function(t){if(-1===o.indexOf(t))throw new r('Unknown option "'+t+'" is met in definition of "'+e+'" YAML type.')}),this.tag=e,this.kind=t.kind||null,this.resolve=t.resolve||function(){return!0},this.construct=t.construct||function(e){return e},this.instanceOf=t.instanceOf||null,this.predicate=t.predicate||null,this.represent=t.represent||null,this.defaultStyle=t.defaultStyle||null,this.styleAliases=n(t.styleAliases||null),-1===a.indexOf(this.kind))throw new r('Unknown kind "'+this.kind+'" is specified for "'+e+'" YAML type.')}var r=e("./exception"),o=["kind","resolve","construct","instanceOf","predicate","represent","defaultStyle","styleAliases"],a=["scalar","sequence","mapping"];t.exports=i},{"./exception":5}],15:[function(e,t){function n(e){var t,n,i=0,r=e.length;for(n=0,i=0;r>i;i+=1)if(t=e.charCodeAt(i),10!==t&&13!==t){if(-1===u[127&t])return!1;n+=6,n>=8&&(n-=8)}return n?!1:!0}function i(e){var t,n,i,r,o=0,s=e.length,l=[];for(i=0,r=0,o=0;s>o;o+=1)n=e.charCodeAt(o),t=u[127&n],10!==n&&13!==n&&(r=r<<6|t,i+=6,i>=8&&(i-=8,c!==e.charAt(o)&&l.push(r>>i&255),r&=(1<<i)-1));return a?new a(l):l}function r(e){var t,n,i,r="";for(t=0,n=e.length-2;n>t;t+=3)r+=l[e[t+0]>>2],r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[((15&e[t+1])<<2)+(e[t+2]>>6)],r+=l[63&e[t+2]];return i=e.length%3,0!==i&&(t=e.length-i,r+=l[e[t+0]>>2],2===i?(r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[(15&e[t+1])<<2],r+=c):(r+=l[(3&e[t+0])<<4],r+=c+c)),r}function o(e){return a&&a.isBuffer(e)}var a=e("buffer").Buffer,s=e("../type"),c="=",u=[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,0,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1],l="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");t.exports=new s("tag:yaml.org,2002:binary",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../type":14,buffer:31}],16:[function(e,t){function n(e){var t=e.length;return 4===t&&("true"===e||"True"===e||"TRUE"===e)||5===t&&("false"===e||"False"===e||"FALSE"===e)}function i(e){return"true"===e||"True"===e||"TRUE"===e}function r(e){return"[object Boolean]"===Object.prototype.toString.call(e)}var o=e("../type");t.exports=new o("tag:yaml.org,2002:bool",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{lowercase:function(e){return e?"true":"false"},uppercase:function(e){return e?"TRUE":"FALSE"},camelcase:function(e){return e?"True":"False"}},defaultStyle:"lowercase"})},{"../type":14}],17:[function(e,t){function n(e){return c.test(e)?!0:!1}function i(e){var t,n,i,r;return t=e.replace(/_/g,"").toLowerCase(),n="-"===t[0]?-1:1,r=[],0<="+-".indexOf(t[0])&&(t=t.slice(1)),".inf"===t?1===n?Number.POSITIVE_INFINITY:Number.NEGATIVE_INFINITY:".nan"===t?0/0:0<=t.indexOf(":")?(t.split(":").forEach(function(e){r.unshift(parseFloat(e,10))}),t=0,i=1,r.forEach(function(e){t+=e*i,i*=60}),n*t):n*parseFloat(t,10)}function r(e,t){if(isNaN(e))switch(t){case"lowercase":return".nan";case"uppercase":return".NAN";case"camelcase":return".NaN"}else if(Number.POSITIVE_INFINITY===e)switch(t){case"lowercase":return".inf";case"uppercase":return".INF";case"camelcase":return".Inf"}else{if(Number.NEGATIVE_INFINITY!==e)return a.isNegativeZero(e)?"-0.0":e.toString(10);switch(t){case"lowercase":return"-.inf";case"uppercase":return"-.INF";case"camelcase":return"-.Inf"}}}function o(e){return"[object Number]"===Object.prototype.toString.call(e)&&(0!==e%1||a.isNegativeZero(e))}var a=e("../common"),s=e("../type"),c=new RegExp("^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?|\\.[0-9_]+(?:[eE][-+][0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");t.exports=new s("tag:yaml.org,2002:float",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r,defaultStyle:"lowercase"})},{"../common":3,"../type":14}],18:[function(e,t){function n(e){return e>=48&&57>=e||e>=65&&70>=e||e>=97&&102>=e}function i(e){return e>=48&&55>=e}function r(e){return e>=48&&57>=e}function o(e){var t,o=e.length,a=0,s=!1;if(!o)return!1;if(t=e[a],("-"===t||"+"===t)&&(t=e[++a]),"0"===t){if(a+1===o)return!0;if(t=e[++a],"b"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if("0"!==t&&"1"!==t)return!1;s=!0}return s}if("x"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if(!n(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(!i(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(":"===t)break;if(!r(e.charCodeAt(a)))return!1;s=!0}return s?":"!==t?!0:/^(:[0-5]?[0-9])+$/.test(e.slice(a)):!1}function a(e){var t,n,i=e,r=1,o=[];return-1!==i.indexOf("_")&&(i=i.replace(/_/g,"")),t=i[0],("-"===t||"+"===t)&&("-"===t&&(r=-1),i=i.slice(1),t=i[0]),"0"===i?0:"0"===t?"b"===i[1]?r*parseInt(i.slice(2),2):"x"===i[1]?r*parseInt(i,16):r*parseInt(i,8):-1!==i.indexOf(":")?(i.split(":").forEach(function(e){o.unshift(parseInt(e,10))}),i=0,n=1,o.forEach(function(e){i+=e*n,n*=60}),r*i):r*parseInt(i,10)}function s(e){return"[object Number]"===Object.prototype.toString.call(e)&&0===e%1&&!c.isNegativeZero(e)}var c=e("../common"),u=e("../type");t.exports=new u("tag:yaml.org,2002:int",{kind:"scalar",resolve:o,construct:a,predicate:s,represent:{binary:function(e){return"0b"+e.toString(2)
-},octal:function(e){return"0"+e.toString(8)},decimal:function(e){return e.toString(10)},hexadecimal:function(e){return"0x"+e.toString(16).toUpperCase()}},defaultStyle:"decimal",styleAliases:{binary:[2,"bin"],octal:[8,"oct"],decimal:[10,"dec"],hexadecimal:[16,"hex"]}})},{"../common":3,"../type":14}],19:[function(e,t){function n(e){try{var t="("+e+")",n=a.parse(t,{range:!0});return"Program"!==n.type||1!==n.body.length||"ExpressionStatement"!==n.body[0].type||"FunctionExpression"!==n.body[0].expression.type?!1:!0}catch(i){return!1}}function i(e){var t,n="("+e+")",i=a.parse(n,{range:!0}),r=[];if("Program"!==i.type||1!==i.body.length||"ExpressionStatement"!==i.body[0].type||"FunctionExpression"!==i.body[0].expression.type)throw new Error("Failed to resolve function");return i.body[0].expression.params.forEach(function(e){r.push(e.name)}),t=i.body[0].expression.body.range,new Function(r,n.slice(t[0]+1,t[1]-1))}function r(e){return e.toString()}function o(e){return"[object Function]"===Object.prototype.toString.call(e)}var a;try{a=e("esprima")}catch(s){"undefined"!=typeof window&&(a=window.esprima)}var c=e("../../type");t.exports=new c("tag:yaml.org,2002:js/function",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14,esprima:"Lkr711"}],20:[function(e,t){function n(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";if("/"===t[0]){if(n&&(i=n[1]),i.length>3)return!1;if("/"!==t[t.length-i.length-1])return!1;t=t.slice(1,t.length-i.length-1)}try{{new RegExp(t,i)}return!0}catch(r){return!1}}function i(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";return"/"===t[0]&&(n&&(i=n[1]),t=t.slice(1,t.length-i.length-1)),new RegExp(t,i)}function r(e){var t="/"+e.source+"/";return e.global&&(t+="g"),e.multiline&&(t+="m"),e.ignoreCase&&(t+="i"),t}function o(e){return"[object RegExp]"===Object.prototype.toString.call(e)}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/regexp",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],21:[function(e,t){function n(){return!0}function i(){return void 0}function r(){return""}function o(e){return"undefined"==typeof e}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/undefined",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],22:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:map",{kind:"mapping"})},{"../type":14}],23:[function(e,t){function n(e){return"<<"===e}var i=e("../type");t.exports=new i("tag:yaml.org,2002:merge",{kind:"scalar",resolve:n})},{"../type":14}],24:[function(e,t){function n(e){var t=e.length;return 1===t&&"~"===e||4===t&&("null"===e||"Null"===e||"NULL"===e)}function i(){return null}function r(e){return null===e}var o=e("../type");t.exports=new o("tag:yaml.org,2002:null",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{canonical:function(){return"~"},lowercase:function(){return"null"},uppercase:function(){return"NULL"},camelcase:function(){return"Null"}},defaultStyle:"lowercase"})},{"../type":14}],25:[function(e,t){function n(e){var t,n,i,a,s,c=[],u=e;for(t=0,n=u.length;n>t;t+=1){if(i=u[t],s=!1,"[object Object]"!==o.call(i))return!1;for(a in i)if(r.call(i,a)){if(s)return!1;s=!0}if(!s)return!1;if(-1!==c.indexOf(a))return!1;c.push(a)}return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty,o=Object.prototype.toString;t.exports=new i("tag:yaml.org,2002:omap",{kind:"sequence",resolve:n})},{"../type":14}],26:[function(e,t){function n(e){var t,n,i,r,a,s=e;for(a=new Array(s.length),t=0,n=s.length;n>t;t+=1){if(i=s[t],"[object Object]"!==o.call(i))return!1;if(r=Object.keys(i),1!==r.length)return!1;a[t]=[r[0],i[r[0]]]}return!0}function i(e){var t,n,i,r,o,a=e;for(o=new Array(a.length),t=0,n=a.length;n>t;t+=1)i=a[t],r=Object.keys(i),o[t]=[r[0],i[r[0]]];return o}var r=e("../type"),o=Object.prototype.toString;t.exports=new r("tag:yaml.org,2002:pairs",{kind:"sequence",resolve:n,construct:i})},{"../type":14}],27:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:seq",{kind:"sequence"})},{"../type":14}],28:[function(e,t){function n(e){var t,n=e;for(t in n)if(r.call(n,t)&&null!==n[t])return!1;return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty;t.exports=new i("tag:yaml.org,2002:set",{kind:"mapping",resolve:n})},{"../type":14}],29:[function(e,t){var n=e("../type");t.exports=new n("tag:yaml.org,2002:str",{kind:"scalar"})},{"../type":14}],30:[function(e,t){function n(e){var t;return t=a.exec(e),null===t?!1:!0}function i(e){var t,n,i,r,o,s,c,u,l,p,f=0,d=null;if(t=a.exec(e),null===t)throw new Error("Date resolve error");if(n=+t[1],i=+t[2]-1,r=+t[3],!t[4])return new Date(Date.UTC(n,i,r));if(o=+t[4],s=+t[5],c=+t[6],t[7]){for(f=t[7].slice(0,3);f.length<3;)f+="0";f=+f}return t[9]&&(u=+t[10],l=+(t[11]||0),d=6e4*(60*u+l),"-"===t[9]&&(d=-d)),p=new Date(Date.UTC(n,i,r,o,s,c,f)),d&&p.setTime(p.getTime()-d),p}function r(e){return e.toISOString()}var o=e("../type"),a=new RegExp("^([0-9][0-9][0-9][0-9])-([0-9][0-9]?)-([0-9][0-9]?)(?:(?:[Tt]|[ \\t]+)([0-9][0-9]?):([0-9][0-9]):([0-9][0-9])(?:\\.([0-9]*))?(?:[ \\t]*(Z|([-+])([0-9][0-9]?)(?::([0-9][0-9]))?))?)?$");t.exports=new o("tag:yaml.org,2002:timestamp",{kind:"scalar",resolve:n,construct:i,instanceOf:Date,represent:r})},{"../type":14}],31:[function(){},{}]},{},[1])(1)});
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define('yaml',[],e);else{var t;"undefined"!=typeof window?t=window:"undefined"!=typeof global?t=global:"undefined"!=typeof self&&(t=self),t.jsyaml=e()}}(function(){return function e(t,n,i){function r(a,s){if(!n[a]){if(!t[a]){var c="function"==typeof require&&require;if(!s&&c)return c(a,!0);if(o)return o(a,!0);throw new Error("Cannot find module '"+a+"'")}var u=n[a]={exports:{}};t[a][0].call(u.exports,function(e){var n=t[a][1][e];return r(n?n:e)},u,u.exports,e,t,n,i)}return n[a].exports}for(var o="function"==typeof require&&require,a=0;a<i.length;a++)r(i[a]);return r}({1:[function(e,t){"use strict";var n=e("./lib/js-yaml.js");t.exports=n},{"./lib/js-yaml.js":2}],2:[function(e,t){"use strict";function n(e){return function(){throw new Error("Function "+e+" is deprecated and cannot be used.")}}var i=e("./js-yaml/loader"),r=e("./js-yaml/dumper");t.exports.Type=e("./js-yaml/type"),t.exports.Schema=e("./js-yaml/schema"),t.exports.FAILSAFE_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.JSON_SCHEMA=e("./js-yaml/schema/json"),t.exports.CORE_SCHEMA=e("./js-yaml/schema/core"),t.exports.DEFAULT_SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_FULL_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.load=i.load,t.exports.loadAll=i.loadAll,t.exports.safeLoad=i.safeLoad,t.exports.safeLoadAll=i.safeLoadAll,t.exports.dump=r.dump,t.exports.safeDump=r.safeDump,t.exports.YAMLException=e("./js-yaml/exception"),t.exports.MINIMAL_SCHEMA=e("./js-yaml/schema/failsafe"),t.exports.SAFE_SCHEMA=e("./js-yaml/schema/default_safe"),t.exports.DEFAULT_SCHEMA=e("./js-yaml/schema/default_full"),t.exports.scan=n("scan"),t.exports.parse=n("parse"),t.exports.compose=n("compose"),t.exports.addConstructor=n("addConstructor")},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(e,t){"use strict";function n(e){return void 0===e||null===e}function i(e){return"object"==typeof e&&null!==e}function r(e){return Array.isArray(e)?e:n(e)?[]:[e]}function o(e,t){var n,i,r,o;if(t)for(o=Object.keys(t),n=0,i=o.length;i>n;n+=1)r=o[n],e[r]=t[r];return e}function a(e,t){var n,i="";for(n=0;t>n;n+=1)i+=e;return i}function s(e){return 0===e&&Number.NEGATIVE_INFINITY===1/e}t.exports.isNothing=n,t.exports.isObject=i,t.exports.toArray=r,t.exports.repeat=a,t.exports.isNegativeZero=s,t.exports.extend=o},{}],4:[function(e,t){"use strict";function n(e,t){var n,i,r,o,a,s,c;if(null===t)return{};for(n={},i=Object.keys(t),r=0,o=i.length;o>r;r+=1)a=i[r],s=String(t[a]),"!!"===a.slice(0,2)&&(a="tag:yaml.org,2002:"+a.slice(2)),c=e.compiledTypeMap[a],c&&b.call(c.styleAliases,s)&&(s=c.styleAliases[s]),n[a]=s;return n}function i(e){var t,n,i;if(t=e.toString(16).toUpperCase(),255>=e)n="x",i=2;else if(65535>=e)n="u",i=4;else{if(!(4294967295>=e))throw new y("code point within a string may not be greater than 0xFFFFFFFF");n="U",i=8}return"\\"+n+g.repeat("0",i-t.length)+t}function r(e){this.schema=e.schema||x,this.indent=Math.max(1,e.indent||2),this.skipInvalid=e.skipInvalid||!1,this.flowLevel=g.isNothing(e.flowLevel)?-1:e.flowLevel,this.styleMap=n(this.schema,e.styles||null),this.implicitTypes=this.schema.compiledImplicit,this.explicitTypes=this.schema.compiledExplicit,this.tag=null,this.result=""}function o(e,t){return"\n"+g.repeat(" ",e.indent*t)}function a(e,t){var n,i,r;for(n=0,i=e.implicitTypes.length;i>n;n+=1)if(r=e.implicitTypes[n],r.resolve(t))return!0;return!1}function s(e,t){var n,r,o,s,c,u;for(e.dump="",n=!1,r=0,u=t.charCodeAt(0)||0,-1!==V.indexOf(t)?n=!0:0===t.length?n=!0:j===u||j===t.charCodeAt(t.length-1)?n=!0:(_===u||q===u)&&(n=!0),o=0,s=t.length;s>o;o+=1)c=t.charCodeAt(o),n||(w===c||C===c||k===c||L===c||D===c||P===c||H===c||B===c||E===c||F===c||T===c||I===c||$===c||Y===c||N===c||S===c||O===c||U===c||M===c||R===c)&&(n=!0),(G[c]||!(c>=32&&126>=c||133===c||c>=160&&55295>=c||c>=57344&&65533>=c||c>=65536&&1114111>=c))&&(e.dump+=t.slice(r,o),e.dump+=G[c]||i(c),r=o+1,n=!0);o>r&&(e.dump+=t.slice(r,o)),!n&&a(e,e.dump)&&(n=!0),n&&(e.dump='"'+e.dump+'"')}function c(e,t,n){var i,r,o="",a=e.tag;for(i=0,r=n.length;r>i;i+=1)d(e,t,n[i],!1,!1)&&(0!==i&&(o+=", "),o+=e.dump);e.tag=a,e.dump="["+o+"]"}function u(e,t,n,i){var r,a,s="",c=e.tag;for(r=0,a=n.length;a>r;r+=1)d(e,t+1,n[r],!0,!0)&&(i&&0===r||(s+=o(e,t)),s+="- "+e.dump);e.tag=c,e.dump=s||"[]"}function l(e,t,n){var i,r,o,a,s,c="",u=e.tag,l=Object.keys(n);for(i=0,r=l.length;r>i;i+=1)s="",0!==i&&(s+=", "),o=l[i],a=n[o],d(e,t,o,!1,!1)&&(e.dump.length>1024&&(s+="? "),s+=e.dump+": ",d(e,t,a,!1,!1)&&(s+=e.dump,c+=s));e.tag=u,e.dump="{"+c+"}"}function p(e,t,n,i){var r,a,s,c,u,l,p="",f=e.tag,h=Object.keys(n);for(r=0,a=h.length;a>r;r+=1)l="",i&&0===r||(l+=o(e,t)),s=h[r],c=n[s],d(e,t+1,s,!0,!0)&&(u=null!==e.tag&&"?"!==e.tag||e.dump&&e.dump.length>1024,u&&(l+=e.dump&&C===e.dump.charCodeAt(0)?"?":"? "),l+=e.dump,u&&(l+=o(e,t)),d(e,t+1,c,!0,u)&&(l+=e.dump&&C===e.dump.charCodeAt(0)?":":": ",l+=e.dump,p+=l));e.tag=f,e.dump=p||"{}"}function f(e,t,n){var i,r,o,a,s,c;for(r=n?e.explicitTypes:e.implicitTypes,o=0,a=r.length;a>o;o+=1)if(s=r[o],(s.instanceOf||s.predicate)&&(!s.instanceOf||"object"==typeof t&&t instanceof s.instanceOf)&&(!s.predicate||s.predicate(t))){if(e.tag=n?s.tag:"?",s.represent){if(c=e.styleMap[s.tag]||s.defaultStyle,"[object Function]"===A.call(s.represent))i=s.represent(t,c);else{if(!b.call(s.represent,c))throw new y("!<"+s.tag+'> tag resolver accepts not "'+c+'" style');i=s.represent[c](t,c)}e.dump=i}return!0}return!1}function d(e,t,n,i,r){e.tag=null,e.dump=n,f(e,n,!1)||f(e,n,!0);var o=A.call(e.dump);if(i&&(i=0>e.flowLevel||e.flowLevel>t),(null!==e.tag&&"?"!==e.tag||2!==e.indent&&t>0)&&(r=!1),"[object Object]"===o)i&&0!==Object.keys(e.dump).length?p(e,t,e.dump,r):l(e,t,e.dump);else if("[object Array]"===o)i&&0!==e.dump.length?u(e,t,e.dump,r):c(e,t,e.dump);else{if("[object String]"!==o){if(e.skipInvalid)return!1;throw new y("unacceptabe kind of an object to dump "+o)}"?"!==e.tag&&s(e,e.dump)}return null!==e.tag&&"?"!==e.tag&&(e.dump="!<"+e.tag+"> "+e.dump),!0}function h(e,t){t=t||{};var n=new r(t);return d(n,0,e,!0,!0)?n.dump+"\n":""}function m(e,t){return h(e,g.extend({schema:v},t))}var g=e("./common"),y=e("./exception"),x=e("./schema/default_full"),v=e("./schema/default_safe"),A=Object.prototype.toString,b=Object.prototype.hasOwnProperty,w=9,C=10,k=13,j=32,I=33,S=34,E=35,O=37,F=38,N=39,T=42,L=44,_=45,M=58,Y=62,q=63,U=64,D=91,P=93,R=96,H=123,$=124,B=125,G={};G[0]="\\0",G[7]="\\a",G[8]="\\b",G[9]="\\t",G[10]="\\n",G[11]="\\v",G[12]="\\f",G[13]="\\r",G[27]="\\e",G[34]='\\"',G[92]="\\\\",G[133]="\\N",G[160]="\\_",G[8232]="\\L",G[8233]="\\P";var V=["y","Y","yes","Yes","YES","on","On","ON","n","N","no","No","NO","off","Off","OFF"];t.exports.dump=h,t.exports.safeDump=m},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(e,t){"use strict";function n(e,t){this.name="YAMLException",this.reason=e,this.mark=t,this.message=this.toString(!1)}n.prototype.toString=function(e){var t;return t="JS-YAML: "+(this.reason||"(unknown reason)"),!e&&this.mark&&(t+=" "+this.mark.toString()),t},t.exports=n},{}],6:[function(e,t){"use strict";function n(e){return 10===e||13===e}function i(e){return 9===e||32===e}function r(e){return 9===e||32===e||10===e||13===e}function o(e){return 44===e||91===e||93===e||123===e||125===e}function a(e){var t;return e>=48&&57>=e?e-48:(t=32|e,t>=97&&102>=t?t-97+10:-1)}function s(e){return 120===e?2:117===e?4:85===e?8:0}function c(e){return e>=48&&57>=e?e-48:-1}function u(e){return 48===e?"\x00":97===e?"":98===e?"\b":116===e?"	":9===e?"	":110===e?"\n":118===e?"":102===e?"\f":114===e?"\r":101===e?"":32===e?" ":34===e?'"':47===e?"/":92===e?"\\":78===e?"":95===e?" ":76===e?"\u2028":80===e?"\u2029":""}function l(e,t){this.input=e,this.filename=t.filename||null,this.schema=t.schema||H,this.onWarning=t.onWarning||null,this.legacy=t.legacy||!1,this.implicitTypes=this.schema.compiledImplicit,this.typeMap=this.schema.compiledTypeMap,this.length=e.length,this.position=0,this.line=0,this.lineStart=0,this.lineIndent=0,this.documents=[]}function p(e,t){return new D(t,new P(e.filename,e.input,e.position,e.line,e.position-e.lineStart))}function f(e,t){throw p(e,t)}function d(e,t){var n=p(e,t);if(!e.onWarning)throw n;e.onWarning.call(null,n)}function h(e,t,n,i){var r,o,a,s;if(n>t){if(s=e.input.slice(t,n),i)for(r=0,o=s.length;o>r;r+=1)a=s.charCodeAt(r),9===a||a>=32&&1114111>=a||f(e,"expected valid JSON character");e.result+=s}}function m(e,t,n){var i,r,o,a;for(U.isObject(n)||f(e,"cannot merge mappings; the provided source object is unacceptable"),i=Object.keys(n),o=0,a=i.length;a>o;o+=1)r=i[o],$.call(t,r)||(t[r]=n[r])}function g(e,t,n,i,r){var o,a;if(i=String(i),null===t&&(t={}),"tag:yaml.org,2002:merge"===n)if(Array.isArray(r))for(o=0,a=r.length;a>o;o+=1)m(e,t,r[o]);else m(e,t,r);else t[i]=r;return t}function y(e){var t;t=e.input.charCodeAt(e.position),10===t?e.position++:13===t?(e.position++,10===e.input.charCodeAt(e.position)&&e.position++):f(e,"a line break is expected"),e.line+=1,e.lineStart=e.position}function x(e,t,r){for(var o=0,a=e.input.charCodeAt(e.position);0!==a;){for(;i(a);)a=e.input.charCodeAt(++e.position);if(t&&35===a)do a=e.input.charCodeAt(++e.position);while(10!==a&&13!==a&&0!==a);if(!n(a))break;for(y(e),a=e.input.charCodeAt(e.position),o++,e.lineIndent=0;32===a;)e.lineIndent++,a=e.input.charCodeAt(++e.position);e.lineIndent<r&&d(e,"deficient indentation")}return o}function v(e){var t,n=e.position;return t=e.input.charCodeAt(n),45!==t&&46!==t||e.input.charCodeAt(n+1)!==t||e.input.charCodeAt(n+2)!==t||(n+=3,t=e.input.charCodeAt(n),0!==t&&!r(t))?!1:!0}function A(e,t){1===t?e.result+=" ":t>1&&(e.result+=U.repeat("\n",t-1))}function b(e,t,a){var s,c,u,l,p,f,d,m,g,y=e.kind,b=e.result;if(g=e.input.charCodeAt(e.position),r(g)||o(g)||35===g||38===g||42===g||33===g||124===g||62===g||39===g||34===g||37===g||64===g||96===g)return!1;if((63===g||45===g)&&(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c)))return!1;for(e.kind="scalar",e.result="",u=l=e.position,p=!1;0!==g;){if(58===g){if(c=e.input.charCodeAt(e.position+1),r(c)||a&&o(c))break}else if(35===g){if(s=e.input.charCodeAt(e.position-1),r(s))break}else{if(e.position===e.lineStart&&v(e)||a&&o(g))break;if(n(g)){if(f=e.line,d=e.lineStart,m=e.lineIndent,x(e,!1,-1),e.lineIndent>=t){p=!0,g=e.input.charCodeAt(e.position);continue}e.position=l,e.line=f,e.lineStart=d,e.lineIndent=m;break}}p&&(h(e,u,l,!1),A(e,e.line-f),u=l=e.position,p=!1),i(g)||(l=e.position+1),g=e.input.charCodeAt(++e.position)}return h(e,u,l,!1),e.result?!0:(e.kind=y,e.result=b,!1)}function w(e,t){var i,r,o;if(i=e.input.charCodeAt(e.position),39!==i)return!1;for(e.kind="scalar",e.result="",e.position++,r=o=e.position;0!==(i=e.input.charCodeAt(e.position));)if(39===i){if(h(e,r,e.position,!0),i=e.input.charCodeAt(++e.position),39!==i)return!0;r=o=e.position,e.position++}else n(i)?(h(e,r,o,!0),A(e,x(e,!1,t)),r=o=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a single quoted scalar"):(e.position++,o=e.position);f(e,"unexpected end of the stream within a single quoted scalar")}function C(e,t){var i,r,o,c,u,l;if(l=e.input.charCodeAt(e.position),34!==l)return!1;for(e.kind="scalar",e.result="",e.position++,i=r=e.position;0!==(l=e.input.charCodeAt(e.position));){if(34===l)return h(e,i,e.position,!0),e.position++,!0;if(92===l){if(h(e,i,e.position,!0),l=e.input.charCodeAt(++e.position),n(l))x(e,!1,t);else if(256>l&&nt[l])e.result+=it[l],e.position++;else if((u=s(l))>0){for(o=u,c=0;o>0;o--)l=e.input.charCodeAt(++e.position),(u=a(l))>=0?c=(c<<4)+u:f(e,"expected hexadecimal character");e.result+=String.fromCharCode(c),e.position++}else f(e,"unknown escape sequence");i=r=e.position}else n(l)?(h(e,i,r,!0),A(e,x(e,!1,t)),i=r=e.position):e.position===e.lineStart&&v(e)?f(e,"unexpected end of the document within a double quoted scalar"):(e.position++,r=e.position)}f(e,"unexpected end of the stream within a double quoted scalar")}function k(e,t){var n,i,o,a,s,c,u,l,p,d,h,m=!0,y=e.tag;if(h=e.input.charCodeAt(e.position),91===h)a=93,u=!1,i=[];else{if(123!==h)return!1;a=125,u=!0,i={}}for(null!==e.anchor&&(e.anchorMap[e.anchor]=i),h=e.input.charCodeAt(++e.position);0!==h;){if(x(e,!0,t),h=e.input.charCodeAt(e.position),h===a)return e.position++,e.tag=y,e.kind=u?"mapping":"sequence",e.result=i,!0;m||f(e,"missed comma between flow collection entries"),p=l=d=null,s=c=!1,63===h&&(o=e.input.charCodeAt(e.position+1),r(o)&&(s=c=!0,e.position++,x(e,!0,t))),n=e.line,N(e,t,B,!1,!0),p=e.tag,l=e.result,x(e,!0,t),h=e.input.charCodeAt(e.position),!c&&e.line!==n||58!==h||(s=!0,h=e.input.charCodeAt(++e.position),x(e,!0,t),N(e,t,B,!1,!0),d=e.result),u?g(e,i,p,l,d):i.push(s?g(e,null,p,l,d):l),x(e,!0,t),h=e.input.charCodeAt(e.position),44===h?(m=!0,h=e.input.charCodeAt(++e.position)):m=!1}f(e,"unexpected end of the stream within a flow collection")}function j(e,t){var r,o,a,s,u=Z,l=!1,p=t,d=0,m=!1;if(s=e.input.charCodeAt(e.position),124===s)o=!1;else{if(62!==s)return!1;o=!0}for(e.kind="scalar",e.result="";0!==s;)if(s=e.input.charCodeAt(++e.position),43===s||45===s)Z===u?u=43===s?z:J:f(e,"repeat of a chomping mode identifier");else{if(!((a=c(s))>=0))break;0===a?f(e,"bad explicit indentation width of a block scalar; it cannot be less than one"):l?f(e,"repeat of an indentation width identifier"):(p=t+a-1,l=!0)}if(i(s)){do s=e.input.charCodeAt(++e.position);while(i(s));if(35===s)do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s)}for(;0!==s;){for(y(e),e.lineIndent=0,s=e.input.charCodeAt(e.position);(!l||e.lineIndent<p)&&32===s;)e.lineIndent++,s=e.input.charCodeAt(++e.position);if(!l&&e.lineIndent>p&&(p=e.lineIndent),n(s))d++;else{if(e.lineIndent<p){u===z?e.result+=U.repeat("\n",d):u===Z&&l&&(e.result+="\n");break}o?i(s)?(m=!0,e.result+=U.repeat("\n",d+1)):m?(m=!1,e.result+=U.repeat("\n",d+1)):0===d?l&&(e.result+=" "):e.result+=U.repeat("\n",d):e.result+=l?U.repeat("\n",d+1):U.repeat("\n",d),l=!0,d=0,r=e.position;do s=e.input.charCodeAt(++e.position);while(!n(s)&&0!==s);h(e,r,e.position,!1),s=e.input.charCodeAt(e.position)}}return!0}function I(e,t){var n,i,o,a=e.tag,s=[],c=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=s),o=e.input.charCodeAt(e.position);0!==o&&45===o&&(i=e.input.charCodeAt(e.position+1),r(i));)if(c=!0,e.position++,x(e,!0,-1)&&e.lineIndent<=t)s.push(null),o=e.input.charCodeAt(e.position);else if(n=e.line,N(e,t,V,!1,!0),s.push(e.result),x(e,!0,-1),o=e.input.charCodeAt(e.position),(e.line===n||e.lineIndent>t)&&0!==o)f(e,"bad indentation of a sequence entry");else if(e.lineIndent<t)break;return c?(e.tag=a,e.kind="sequence",e.result=s,!0):!1}function S(e,t,n){var o,a,s,c,u=e.tag,l={},p=null,d=null,h=null,m=!1,y=!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=l),c=e.input.charCodeAt(e.position);0!==c;){if(o=e.input.charCodeAt(e.position+1),s=e.line,63!==c&&58!==c||!r(o)){if(!N(e,n,G,!1,!0))break;if(e.line===s){for(c=e.input.charCodeAt(e.position);i(c);)c=e.input.charCodeAt(++e.position);if(58===c)c=e.input.charCodeAt(++e.position),r(c)||f(e,"a whitespace character is expected after the key-value separator within a block mapping"),m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!1,a=!1,p=e.tag,d=e.result;else{if(!y)return e.tag=u,!0;f(e,"can not read an implicit mapping pair; a colon is missed")}}else{if(!y)return e.tag=u,!0;f(e,"can not read a block mapping entry; a multiline key may not be an implicit key")}}else 63===c?(m&&(g(e,l,p,d,null),p=d=h=null),y=!0,m=!0,a=!0):m?(m=!1,a=!0):f(e,"incomplete explicit mapping pair; a key node is missed"),e.position+=1,c=o;if((e.line===s||e.lineIndent>t)&&(N(e,t,W,!0,a)&&(m?d=e.result:h=e.result),m||(g(e,l,p,d,h),p=d=h=null),x(e,!0,-1),c=e.input.charCodeAt(e.position)),e.lineIndent>t&&0!==c)f(e,"bad indentation of a mapping entry");else if(e.lineIndent<t)break}return m&&g(e,l,p,d,null),y&&(e.tag=u,e.kind="mapping",e.result=l),y}function E(e){var t,n,i,o,a=!1,s=!1;if(o=e.input.charCodeAt(e.position),33!==o)return!1;if(null!==e.tag&&f(e,"duplication of a tag property"),o=e.input.charCodeAt(++e.position),60===o?(a=!0,o=e.input.charCodeAt(++e.position)):33===o?(s=!0,n="!!",o=e.input.charCodeAt(++e.position)):n="!",t=e.position,a){do o=e.input.charCodeAt(++e.position);while(0!==o&&62!==o);e.position<e.length?(i=e.input.slice(t,e.position),o=e.input.charCodeAt(++e.position)):f(e,"unexpected end of the stream within a verbatim tag")}else{for(;0!==o&&!r(o);)33===o&&(s?f(e,"tag suffix cannot contain exclamation marks"):(n=e.input.slice(t-1,e.position+1),et.test(n)||f(e,"named tag handle cannot contain such characters"),s=!0,t=e.position+1)),o=e.input.charCodeAt(++e.position);i=e.input.slice(t,e.position),X.test(i)&&f(e,"tag suffix cannot contain flow indicator characters")}return i&&!tt.test(i)&&f(e,"tag name cannot contain such characters: "+i),a?e.tag=i:$.call(e.tagMap,n)?e.tag=e.tagMap[n]+i:"!"===n?e.tag="!"+i:"!!"===n?e.tag="tag:yaml.org,2002:"+i:f(e,'undeclared tag handle "'+n+'"'),!0}function O(e){var t,n;if(n=e.input.charCodeAt(e.position),38!==n)return!1;for(null!==e.anchor&&f(e,"duplication of an anchor property"),n=e.input.charCodeAt(++e.position),t=e.position;0!==n&&!r(n)&&!o(n);)n=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an anchor node must contain at least one character"),e.anchor=e.input.slice(t,e.position),!0}function F(e){{var t,n,i;e.length,e.input}if(i=e.input.charCodeAt(e.position),42!==i)return!1;for(i=e.input.charCodeAt(++e.position),t=e.position;0!==i&&!r(i)&&!o(i);)i=e.input.charCodeAt(++e.position);return e.position===t&&f(e,"name of an alias node must contain at least one character"),n=e.input.slice(t,e.position),e.anchorMap.hasOwnProperty(n)||f(e,'unidentified alias "'+n+'"'),e.result=e.anchorMap[n],x(e,!0,-1),!0}function N(e,t,n,i,r){var o,a,s,c,u,l,p,h,m=!1,g=!0,y=!1;if(e.tag=null,e.anchor=null,e.kind=null,e.result=null,o=a=s=W===n||V===n,i&&x(e,!0,-1))if(m=!0,e.lineIndent===t)g=!1;else{if(!(e.lineIndent>t))return!1;g=!0}if(g)for(;E(e)||O(e);)if(x(e,!0,-1))if(m=!0,e.lineIndent>t)g=!0,s=o;else{if(e.lineIndent!==t)return!0;g=!1,s=o}else s=!1;if(s&&(s=m||r),(g||W===n)&&(p=B===n||G===n?t:t+1,h=e.position-e.lineStart,g?s&&(I(e,h)||S(e,h,p))||k(e,p)?y=!0:(a&&j(e,p)||w(e,p)||C(e,p)?y=!0:F(e)?(y=!0,(null!==e.tag||null!==e.anchor)&&f(e,"alias node should not have any properties")):b(e,p,B===n)&&(y=!0,null===e.tag&&(e.tag="?")),null!==e.anchor&&(e.anchorMap[e.anchor]=e.result)):y=s&&I(e,h)),null!==e.tag&&"!"!==e.tag)if("?"===e.tag){for(c=0,u=e.implicitTypes.length;u>c;c+=1)if(l=e.implicitTypes[c],l.resolve(e.result)){e.result=l.construct(e.result),e.tag=l.tag;break}}else $.call(e.typeMap,e.tag)?(l=e.typeMap[e.tag],null!==e.result&&l.kind!==e.kind&&f(e,"unacceptable node kind for !<"+e.tag+'> tag; it should be "'+l.kind+'", not "'+e.kind+'"'),l.resolve(e.result)?e.result=l.construct(e.result):f(e,"cannot resolve a node with !<"+e.tag+"> explicit tag")):d(e,"unknown tag !<"+e.tag+">");return null!==e.tag||null!==e.anchor||y}function T(e){var t,o,a,s,c=e.position,u=!1;for(e.version=null,e.checkLineBreaks=e.legacy,e.tagMap={},e.anchorMap={};0!==(s=e.input.charCodeAt(e.position))&&(x(e,!0,-1),s=e.input.charCodeAt(e.position),!(e.lineIndent>0||37!==s));){for(u=!0,s=e.input.charCodeAt(++e.position),t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);for(o=e.input.slice(t,e.position),a=[],o.length<1&&f(e,"directive name must not be less than one character in length");0!==s;){for(;i(s);)s=e.input.charCodeAt(++e.position);if(35===s){do s=e.input.charCodeAt(++e.position);while(0!==s&&!n(s));break}if(n(s))break;for(t=e.position;0!==s&&!r(s);)s=e.input.charCodeAt(++e.position);a.push(e.input.slice(t,e.position))}0!==s&&y(e),$.call(ot,o)?ot[o](e,o,a):d(e,'unknown document directive "'+o+'"')}return x(e,!0,-1),0===e.lineIndent&&45===e.input.charCodeAt(e.position)&&45===e.input.charCodeAt(e.position+1)&&45===e.input.charCodeAt(e.position+2)?(e.position+=3,x(e,!0,-1)):u&&f(e,"directives end mark is expected"),N(e,e.lineIndent-1,W,!1,!0),x(e,!0,-1),e.checkLineBreaks&&Q.test(e.input.slice(c,e.position))&&d(e,"non-ASCII line breaks are interpreted as content"),e.documents.push(e.result),e.position===e.lineStart&&v(e)?void(46===e.input.charCodeAt(e.position)&&(e.position+=3,x(e,!0,-1))):void(e.position<e.length-1&&f(e,"end of the stream or a document separator is expected"))}function L(e,t){e=String(e),t=t||{},0!==e.length&&10!==e.charCodeAt(e.length-1)&&13!==e.charCodeAt(e.length-1)&&(e+="\n");var n=new l(e,t);for(K.test(n.input)&&f(n,"the stream contains non-printable characters"),n.input+="\x00";32===n.input.charCodeAt(n.position);)n.lineIndent+=1;for(;n.position<n.length-1;)T(n);return n.documents}function _(e,t,n){var i,r,o=L(e,n);for(i=0,r=o.length;r>i;i+=1)t(o[i])}function M(e,t){var n=L(e,t);if(0===n.length)return void 0;if(1===n.length)return n[0];throw new D("expected a single document in the stream, but found more")}function Y(e,t,n){_(e,t,U.extend({schema:R},n))}function q(e,t){return M(e,U.extend({schema:R},t))}for(var U=e("./common"),D=e("./exception"),P=e("./mark"),R=e("./schema/default_safe"),H=e("./schema/default_full"),$=Object.prototype.hasOwnProperty,B=1,G=2,V=3,W=4,Z=1,J=2,z=3,K=/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uD800-\uDFFF\uFFFE\uFFFF]/,Q=/[\x85\u2028\u2029]/,X=/[,\[\]\{\}]/,et=/^(?:!|!!|![a-z\-]+!)$/i,tt=/^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i,nt=new Array(256),it=new Array(256),rt=0;256>rt;rt++)nt[rt]=u(rt)?1:0,it[rt]=u(rt);var ot={YAML:function(e,t,n){var i,r,o;null!==e.version&&f(e,"duplication of %YAML directive"),1!==n.length&&f(e,"YAML directive accepts exactly one argument"),i=/^([0-9]+)\.([0-9]+)$/.exec(n[0]),null===i&&f(e,"ill-formed argument of the YAML directive"),r=parseInt(i[1],10),o=parseInt(i[2],10),1!==r&&f(e,"unacceptable YAML version of the document"),e.version=n[0],e.checkLineBreaks=2>o,1!==o&&2!==o&&d(e,"unsupported YAML version of the document")},TAG:function(e,t,n){var i,r;2!==n.length&&f(e,"TAG directive accepts exactly two arguments"),i=n[0],r=n[1],et.test(i)||f(e,"ill-formed tag handle (first argument) of the TAG directive"),$.call(e.tagMap,i)&&f(e,'there is a previously declared suffix for "'+i+'" tag handle'),tt.test(r)||f(e,"ill-formed tag prefix (second argument) of the TAG directive"),e.tagMap[i]=r}};t.exports.loadAll=_,t.exports.load=M,t.exports.safeLoadAll=Y,t.exports.safeLoad=q},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(e,t){"use strict";function n(e,t,n,i,r){this.name=e,this.buffer=t,this.position=n,this.line=i,this.column=r}var i=e("./common");n.prototype.getSnippet=function(e,t){var n,r,o,a,s;if(!this.buffer)return null;for(e=e||4,t=t||75,n="",r=this.position;r>0&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(r-1));)if(r-=1,this.position-r>t/2-1){n=" ... ",r+=5;break}for(o="",a=this.position;a<this.buffer.length&&-1==="\x00\r\n\u2028\u2029".indexOf(this.buffer.charAt(a));)if(a+=1,a-this.position>t/2-1){o=" ... ",a-=5;break}return s=this.buffer.slice(r,a),i.repeat(" ",e)+n+s+o+"\n"+i.repeat(" ",e+this.position-r+n.length)+"^"},n.prototype.toString=function(e){var t,n="";return this.name&&(n+='in "'+this.name+'" '),n+="at line "+(this.line+1)+", column "+(this.column+1),e||(t=this.getSnippet(),t&&(n+=":\n"+t)),n},t.exports=n},{"./common":3}],8:[function(e,t){"use strict";function n(e,t,i){var r=[];return e.include.forEach(function(e){i=n(e,t,i)}),e[t].forEach(function(e){i.forEach(function(t,n){t.tag===e.tag&&r.push(n)}),i.push(e)}),i.filter(function(e,t){return-1===r.indexOf(t)})}function i(){function e(e){i[e.tag]=e}var t,n,i={};for(t=0,n=arguments.length;n>t;t+=1)arguments[t].forEach(e);return i}function r(e){this.include=e.include||[],this.implicit=e.implicit||[],this.explicit=e.explicit||[],this.implicit.forEach(function(e){if(e.loadKind&&"scalar"!==e.loadKind)throw new a("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.")}),this.compiledImplicit=n(this,"implicit",[]),this.compiledExplicit=n(this,"explicit",[]),this.compiledTypeMap=i(this.compiledImplicit,this.compiledExplicit)}var o=e("./common"),a=e("./exception"),s=e("./type");r.DEFAULT=null,r.create=function(){var e,t;switch(arguments.length){case 1:e=r.DEFAULT,t=arguments[0];break;case 2:e=arguments[0],t=arguments[1];break;default:throw new a("Wrong number of arguments for Schema.create function")}if(e=o.toArray(e),t=o.toArray(t),!e.every(function(e){return e instanceof r}))throw new a("Specified list of super schemas (or a single Schema object) contains a non-Schema object.");if(!t.every(function(e){return e instanceof s}))throw new a("Specified list of YAML types (or a single Type object) contains a non-Type object.");return new r({include:e,explicit:t})},t.exports=r},{"./common":3,"./exception":5,"./type":14}],9:[function(e,t){"use strict";var n=e("../schema");t.exports=new n({include:[e("./json")]})},{"../schema":8,"./json":13}],10:[function(e,t){"use strict";var n=e("../schema");t.exports=n.DEFAULT=new n({include:[e("./default_safe")],explicit:[e("../type/js/undefined"),e("../type/js/regexp"),e("../type/js/function")]})},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(e,t){"use strict";var n=e("../schema");t.exports=new n({include:[e("./core")],implicit:[e("../type/timestamp"),e("../type/merge")],explicit:[e("../type/binary"),e("../type/omap"),e("../type/pairs"),e("../type/set")]})},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(e,t){"use strict";var n=e("../schema");t.exports=new n({explicit:[e("../type/str"),e("../type/seq"),e("../type/map")]})},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(e,t){"use strict";var n=e("../schema");t.exports=new n({include:[e("./failsafe")],implicit:[e("../type/null"),e("../type/bool"),e("../type/int"),e("../type/float")]})},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(e,t){"use strict";function n(e){var t={};return null!==e&&Object.keys(e).forEach(function(n){e[n].forEach(function(e){t[String(e)]=n})}),t}function i(e,t){if(t=t||{},Object.keys(t).forEach(function(t){if(-1===o.indexOf(t))throw new r('Unknown option "'+t+'" is met in definition of "'+e+'" YAML type.')}),this.tag=e,this.kind=t.kind||null,this.resolve=t.resolve||function(){return!0},this.construct=t.construct||function(e){return e},this.instanceOf=t.instanceOf||null,this.predicate=t.predicate||null,this.represent=t.represent||null,this.defaultStyle=t.defaultStyle||null,this.styleAliases=n(t.styleAliases||null),-1===a.indexOf(this.kind))throw new r('Unknown kind "'+this.kind+'" is specified for "'+e+'" YAML type.')}var r=e("./exception"),o=["kind","resolve","construct","instanceOf","predicate","represent","defaultStyle","styleAliases"],a=["scalar","sequence","mapping"];t.exports=i},{"./exception":5}],15:[function(e,t){"use strict";function n(e){var t,n,i=0,r=e.length;for(n=0,i=0;r>i;i+=1)if(t=e.charCodeAt(i),10!==t&&13!==t){if(-1===u[127&t])return!1;n+=6,n>=8&&(n-=8)}return n?!1:!0}function i(e){var t,n,i,r,o=0,s=e.length,l=[];for(i=0,r=0,o=0;s>o;o+=1)n=e.charCodeAt(o),t=u[127&n],10!==n&&13!==n&&(r=r<<6|t,i+=6,i>=8&&(i-=8,c!==e.charAt(o)&&l.push(r>>i&255),r&=(1<<i)-1));return a?new a(l):l}function r(e){var t,n,i,r="";for(t=0,n=e.length-2;n>t;t+=3)r+=l[e[t+0]>>2],r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[((15&e[t+1])<<2)+(e[t+2]>>6)],r+=l[63&e[t+2]];return i=e.length%3,0!==i&&(t=e.length-i,r+=l[e[t+0]>>2],2===i?(r+=l[((3&e[t+0])<<4)+(e[t+1]>>4)],r+=l[(15&e[t+1])<<2],r+=c):(r+=l[(3&e[t+0])<<4],r+=c+c)),r}function o(e){return a&&a.isBuffer(e)}var a=e("buffer").Buffer,s=e("../type"),c="=",u=[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,0,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1],l="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");t.exports=new s("tag:yaml.org,2002:binary",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../type":14,buffer:31}],16:[function(e,t){"use strict";function n(e){var t=e.length;return 4===t&&("true"===e||"True"===e||"TRUE"===e)||5===t&&("false"===e||"False"===e||"FALSE"===e)}function i(e){return"true"===e||"True"===e||"TRUE"===e}function r(e){return"[object Boolean]"===Object.prototype.toString.call(e)}var o=e("../type");t.exports=new o("tag:yaml.org,2002:bool",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{lowercase:function(e){return e?"true":"false"},uppercase:function(e){return e?"TRUE":"FALSE"},camelcase:function(e){return e?"True":"False"}},defaultStyle:"lowercase"})},{"../type":14}],17:[function(e,t){"use strict";function n(e){return c.test(e)?!0:!1}function i(e){var t,n,i,r;return t=e.replace(/_/g,"").toLowerCase(),n="-"===t[0]?-1:1,r=[],0<="+-".indexOf(t[0])&&(t=t.slice(1)),".inf"===t?1===n?Number.POSITIVE_INFINITY:Number.NEGATIVE_INFINITY:".nan"===t?0/0:0<=t.indexOf(":")?(t.split(":").forEach(function(e){r.unshift(parseFloat(e,10))}),t=0,i=1,r.forEach(function(e){t+=e*i,i*=60}),n*t):n*parseFloat(t,10)}function r(e,t){if(isNaN(e))switch(t){case"lowercase":return".nan";case"uppercase":return".NAN";case"camelcase":return".NaN"}else if(Number.POSITIVE_INFINITY===e)switch(t){case"lowercase":return".inf";case"uppercase":return".INF";case"camelcase":return".Inf"}else{if(Number.NEGATIVE_INFINITY!==e)return a.isNegativeZero(e)?"-0.0":e.toString(10);switch(t){case"lowercase":return"-.inf";case"uppercase":return"-.INF";case"camelcase":return"-.Inf"}}}function o(e){return"[object Number]"===Object.prototype.toString.call(e)&&(0!==e%1||a.isNegativeZero(e))}var a=e("../common"),s=e("../type"),c=new RegExp("^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?|\\.[0-9_]+(?:[eE][-+][0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");t.exports=new s("tag:yaml.org,2002:float",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r,defaultStyle:"lowercase"})},{"../common":3,"../type":14}],18:[function(e,t){"use strict";function n(e){return e>=48&&57>=e||e>=65&&70>=e||e>=97&&102>=e}function i(e){return e>=48&&55>=e}function r(e){return e>=48&&57>=e}function o(e){var t,o=e.length,a=0,s=!1;if(!o)return!1;if(t=e[a],("-"===t||"+"===t)&&(t=e[++a]),"0"===t){if(a+1===o)return!0;if(t=e[++a],"b"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if("0"!==t&&"1"!==t)return!1;s=!0}return s}if("x"===t){for(a++;o>a;a++)if(t=e[a],"_"!==t){if(!n(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(!i(e.charCodeAt(a)))return!1;s=!0}return s}for(;o>a;a++)if(t=e[a],"_"!==t){if(":"===t)break;if(!r(e.charCodeAt(a)))return!1;s=!0}return s?":"!==t?!0:/^(:[0-5]?[0-9])+$/.test(e.slice(a)):!1}function a(e){var t,n,i=e,r=1,o=[];return-1!==i.indexOf("_")&&(i=i.replace(/_/g,"")),t=i[0],("-"===t||"+"===t)&&("-"===t&&(r=-1),i=i.slice(1),t=i[0]),"0"===i?0:"0"===t?"b"===i[1]?r*parseInt(i.slice(2),2):"x"===i[1]?r*parseInt(i,16):r*parseInt(i,8):-1!==i.indexOf(":")?(i.split(":").forEach(function(e){o.unshift(parseInt(e,10))}),i=0,n=1,o.forEach(function(e){i+=e*n,n*=60}),r*i):r*parseInt(i,10)}function s(e){return"[object Number]"===Object.prototype.toString.call(e)&&0===e%1&&!c.isNegativeZero(e)}var c=e("../common"),u=e("../type");t.exports=new u("tag:yaml.org,2002:int",{kind:"scalar",resolve:o,construct:a,predicate:s,represent:{binary:function(e){return"0b"+e.toString(2)
+},octal:function(e){return"0"+e.toString(8)},decimal:function(e){return e.toString(10)},hexadecimal:function(e){return"0x"+e.toString(16).toUpperCase()}},defaultStyle:"decimal",styleAliases:{binary:[2,"bin"],octal:[8,"oct"],decimal:[10,"dec"],hexadecimal:[16,"hex"]}})},{"../common":3,"../type":14}],19:[function(e,t){"use strict";function n(e){try{var t="("+e+")",n=a.parse(t,{range:!0});return"Program"!==n.type||1!==n.body.length||"ExpressionStatement"!==n.body[0].type||"FunctionExpression"!==n.body[0].expression.type?!1:!0}catch(i){return!1}}function i(e){var t,n="("+e+")",i=a.parse(n,{range:!0}),r=[];if("Program"!==i.type||1!==i.body.length||"ExpressionStatement"!==i.body[0].type||"FunctionExpression"!==i.body[0].expression.type)throw new Error("Failed to resolve function");return i.body[0].expression.params.forEach(function(e){r.push(e.name)}),t=i.body[0].expression.body.range,new Function(r,n.slice(t[0]+1,t[1]-1))}function r(e){return e.toString()}function o(e){return"[object Function]"===Object.prototype.toString.call(e)}var a;try{a=e("esprima")}catch(s){"undefined"!=typeof window&&(a=window.esprima)}var c=e("../../type");t.exports=new c("tag:yaml.org,2002:js/function",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14,esprima:"Lkr711"}],20:[function(e,t){"use strict";function n(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";if("/"===t[0]){if(n&&(i=n[1]),i.length>3)return!1;if("/"!==t[t.length-i.length-1])return!1;t=t.slice(1,t.length-i.length-1)}try{{new RegExp(t,i)}return!0}catch(r){return!1}}function i(e){var t=e,n=/\/([gim]*)$/.exec(e),i="";return"/"===t[0]&&(n&&(i=n[1]),t=t.slice(1,t.length-i.length-1)),new RegExp(t,i)}function r(e){var t="/"+e.source+"/";return e.global&&(t+="g"),e.multiline&&(t+="m"),e.ignoreCase&&(t+="i"),t}function o(e){return"[object RegExp]"===Object.prototype.toString.call(e)}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/regexp",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],21:[function(e,t){"use strict";function n(){return!0}function i(){return void 0}function r(){return""}function o(e){return"undefined"==typeof e}var a=e("../../type");t.exports=new a("tag:yaml.org,2002:js/undefined",{kind:"scalar",resolve:n,construct:i,predicate:o,represent:r})},{"../../type":14}],22:[function(e,t){"use strict";var n=e("../type");t.exports=new n("tag:yaml.org,2002:map",{kind:"mapping"})},{"../type":14}],23:[function(e,t){"use strict";function n(e){return"<<"===e}var i=e("../type");t.exports=new i("tag:yaml.org,2002:merge",{kind:"scalar",resolve:n})},{"../type":14}],24:[function(e,t){"use strict";function n(e){var t=e.length;return 1===t&&"~"===e||4===t&&("null"===e||"Null"===e||"NULL"===e)}function i(){return null}function r(e){return null===e}var o=e("../type");t.exports=new o("tag:yaml.org,2002:null",{kind:"scalar",resolve:n,construct:i,predicate:r,represent:{canonical:function(){return"~"},lowercase:function(){return"null"},uppercase:function(){return"NULL"},camelcase:function(){return"Null"}},defaultStyle:"lowercase"})},{"../type":14}],25:[function(e,t){"use strict";function n(e){var t,n,i,a,s,c=[],u=e;for(t=0,n=u.length;n>t;t+=1){if(i=u[t],s=!1,"[object Object]"!==o.call(i))return!1;for(a in i)if(r.call(i,a)){if(s)return!1;s=!0}if(!s)return!1;if(-1!==c.indexOf(a))return!1;c.push(a)}return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty,o=Object.prototype.toString;t.exports=new i("tag:yaml.org,2002:omap",{kind:"sequence",resolve:n})},{"../type":14}],26:[function(e,t){"use strict";function n(e){var t,n,i,r,a,s=e;for(a=new Array(s.length),t=0,n=s.length;n>t;t+=1){if(i=s[t],"[object Object]"!==o.call(i))return!1;if(r=Object.keys(i),1!==r.length)return!1;a[t]=[r[0],i[r[0]]]}return!0}function i(e){var t,n,i,r,o,a=e;for(o=new Array(a.length),t=0,n=a.length;n>t;t+=1)i=a[t],r=Object.keys(i),o[t]=[r[0],i[r[0]]];return o}var r=e("../type"),o=Object.prototype.toString;t.exports=new r("tag:yaml.org,2002:pairs",{kind:"sequence",resolve:n,construct:i})},{"../type":14}],27:[function(e,t){"use strict";var n=e("../type");t.exports=new n("tag:yaml.org,2002:seq",{kind:"sequence"})},{"../type":14}],28:[function(e,t){"use strict";function n(e){var t,n=e;for(t in n)if(r.call(n,t)&&null!==n[t])return!1;return!0}var i=e("../type"),r=Object.prototype.hasOwnProperty;t.exports=new i("tag:yaml.org,2002:set",{kind:"mapping",resolve:n})},{"../type":14}],29:[function(e,t){"use strict";var n=e("../type");t.exports=new n("tag:yaml.org,2002:str",{kind:"scalar"})},{"../type":14}],30:[function(e,t){"use strict";function n(e){var t;return t=a.exec(e),null===t?!1:!0}function i(e){var t,n,i,r,o,s,c,u,l,p,f=0,d=null;if(t=a.exec(e),null===t)throw new Error("Date resolve error");if(n=+t[1],i=+t[2]-1,r=+t[3],!t[4])return new Date(Date.UTC(n,i,r));if(o=+t[4],s=+t[5],c=+t[6],t[7]){for(f=t[7].slice(0,3);f.length<3;)f+="0";f=+f}return t[9]&&(u=+t[10],l=+(t[11]||0),d=6e4*(60*u+l),"-"===t[9]&&(d=-d)),p=new Date(Date.UTC(n,i,r,o,s,c,f)),d&&p.setTime(p.getTime()-d),p}function r(e){return e.toISOString()}var o=e("../type"),a=new RegExp("^([0-9][0-9][0-9][0-9])-([0-9][0-9]?)-([0-9][0-9]?)(?:(?:[Tt]|[ \\t]+)([0-9][0-9]?):([0-9][0-9]):([0-9][0-9])(?:\\.([0-9]*))?(?:[ \\t]*(Z|([-+])([0-9][0-9]?)(?::([0-9][0-9]))?))?)?$");t.exports=new o("tag:yaml.org,2002:timestamp",{kind:"scalar",resolve:n,construct:i,instanceOf:Date,represent:r})},{"../type":14}],31:[function(){},{}]},{},[1])(1)});
 define('logging/yamlformatter',['require','exports','module','util/util','util-logging/formatter','util-logging/logrecord','yaml'],function (require, exports, module) {
-
+"use strict";
 
 var util = require("util/util");
 var Formatter = require("util-logging/formatter");
@@ -4567,7 +4567,7 @@ module.exports = YAMLFormatter;
 // Monkey-patches
 
 define('logging/logger-patch',['require','exports','module','util-logging/logger','util-logging/logrecord','util-logging/level'],function (require, exports, module) {
-
+"use strict";
 
 var Logger = require("util-logging/logger");
 
@@ -4613,7 +4613,7 @@ Logger.prototype.debug = function() {
  */
  
 define('ufojs/errors',[],function() {
-    
+    "use strict";
     //ufojs errors
     var errors = {}
     
@@ -4684,7 +4684,7 @@ define('ufojs/errors',[],function() {
 });
 
 define('obtain/Promise',[], function() {
-    
+    "use strict";
     /**
      * This is a module to pull in an Ecmascript 6 compatible Promise
      * implementation for NodeJS. For browsers: only decent/current browsers
@@ -4702,7 +4702,7 @@ define('obtain/Promise',[], function() {
 });
 
 define('obtain/obtain',['./Promise'], function(Promise) {
-    
+    "use strict";
     function NotImplementedError(){}
     
     function Expectation(name) {
@@ -5410,7 +5410,7 @@ define('obtain/obtain',['./Promise'], function(Promise) {
  */
 
 define('ufojs/main',['./errors'], function(errors) {
-    
+    "use strict";
     var ValueError = errors.Value,
         TypeError = errors.Type;
 
@@ -5845,7 +5845,7 @@ define('ufojs/xml/main',[
 ], function(
     errors
 ) {
-    
+    "use strict";
     var DependencyError = errors.Dependency
       , TypeError = errors.Type
       , NotImplementedError = errors.NotImplemented
@@ -6238,7 +6238,7 @@ define('ufojs/xml/main',[
  * See the commented out code if is helpful for the task.
  */
 define('ufojs/plistLib/DataObject',[],function() {
-    
+    "use strict";
     function DataObject(data) {
         this._data = data;
     }
@@ -6283,7 +6283,7 @@ define('ufojs/plistLib/DataObject',[],function() {
  * makes it a number, no longer an IntObject
  */
 define('ufojs/plistLib/IntObject',[],function() {
-    
+    "use strict";
     
     function IntObject(val) {
         this.value = parseInt(val, 10);
@@ -6339,7 +6339,7 @@ define('ufojs/plistLib/main',[
   , DataObject
   , IntObject
 ) {
-    
+    "use strict";
     //shortcuts
     var TypeError = errors.Type,
         ValueError = errors.Value,
@@ -6632,7 +6632,7 @@ define('metapolator/models/_BaseModel',[
 ],
 function()
 {
-    
+    "use strict";
     // All models will share some basics
     function _BaseModel() {
 
@@ -6658,7 +6658,7 @@ define('metapolator/models/CPS/whitelistProxies',[
   , Proxy
   , ufoJSUtils
 ) {
-    
+    "use strict";
 
     var CPSError = errors.CPS
       , KeyError = errors.Key
@@ -6753,7 +6753,7 @@ define('metapolator/models/emitterMixin',[
 ], function(
     errors
 ) {
-    
+    "use strict";
     var EmitterError = errors.Emitter;
     /**
      * usage:
@@ -6999,7 +6999,7 @@ define('metapolator/models/MOM/_Node',[
   , whitelistProxies
   , emitterMixin
 ) {
-    
+    "use strict";
 
     var MOMError = errors.MOM;
 
@@ -7444,7 +7444,7 @@ define('metapolator/models/MOM/_Contour',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * All children of a MOM Glyph have to inherit from MOM _Contour.
      */
@@ -7476,7 +7476,7 @@ define('metapolator/models/MOM/Glyph',[
   , _Contour
   , whitelistProxies
 ) {
-    
+    "use strict";
     /*jshint sub:true*/
     /**
      * This Element is the container of all contours of a glyph.
@@ -7586,7 +7586,7 @@ define('metapolator/models/MOM/Master',[
     Parent
   , Glyph
 ) {
-    
+    "use strict";
     /**
      * This Element is the container of all glyphs of a master.
      * It will have some metadata and contain children of type MOM Glyph.
@@ -7689,7 +7689,7 @@ define('metapolator/models/MOM/Master',[
  */
 
 define('ufojs/tools/pens/AbstractPointPen',['ufojs/main', 'ufojs/errors'], function(main, errors) {
-    
+    "use strict";
     var enhance = main.enhance;
     //shortcuts
     var NotImplementedError = errors.NotImplemented;
@@ -7759,7 +7759,7 @@ define('metapolator/models/MOM/PointData',[
 ], function(
     whitelistProxies
 ) {
-    
+    "use strict";
 
     /**
      * Used to set the skeleton point coordinates to MOM Point and OutlinePoint
@@ -7788,7 +7788,7 @@ define('metapolator/models/MOM/_PenStrokePointChild',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * This Element represents a child of a of a MoM PenStrokePoint
      */
@@ -7807,7 +7807,7 @@ define('metapolator/models/MOM/PenStrokePointLeft',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     function PenStrokePointLeft() {
         Parent.call(this);
     }
@@ -7831,7 +7831,7 @@ define('metapolator/models/MOM/PenStrokePointCenter',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     function PenStrokePointCenter() {
         Parent.call(this);
     }
@@ -7855,7 +7855,7 @@ define('metapolator/models/MOM/PenStrokePointRight',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     function PenStrokePointRight() {
         Parent.call(this);
     }
@@ -7891,7 +7891,7 @@ define('metapolator/models/MOM/PenStrokePoint',[
   , PenStrokePointRight
   , whitelistProxies
 ) {
-    
+    "use strict";
     /**
      * This Element represents a point of a of a MoM PenStroke contour.
      * Its properties are the absolute coordinates of an on-curve point
@@ -7992,7 +7992,7 @@ define('metapolator/models/MOM/PenStroke',[
     Parent
   , PenStrokePoint
 ) {
-    
+    "use strict";
     /**
      * This Element is the container of all points of a pen stroke contour.
      * It may have some metadata (like an identifier) and contain children
@@ -8028,7 +8028,7 @@ define('metapolator/models/MOM/ContourPoint',[
   , PointData
   , whitelistProxies
 ) {
-    
+    "use strict";
     /**
      * This Element represents a point of a of a MoM Contour (outline).
      * Its properties are the absolute coordinates of an on-curve point
@@ -8102,7 +8102,7 @@ define('metapolator/models/MOM/Contour',[
     Parent
   , ContourPoint
 ) {
-    
+    "use strict";
     /**
      * This Element is the container of all points of a outline contour.
      * It may have some metadata (like an identifier) and contain children
@@ -8401,7 +8401,7 @@ define('metapolator/math/Vector',[
     Parent
   , whitelistProxies
 ) {
-    
+    "use strict";
 
     /**
      * Add access with geometry names "x" and "y" and a minimal
@@ -8503,7 +8503,7 @@ define('metapolator/models/MOM/Component',[
     Parent
   , whitelistProxies
 ) {
-    
+    "use strict";
     /**
      * This is a UFO component reference.
      */
@@ -8620,7 +8620,7 @@ define(
     'ufojs/tools/misc/transform',['ufojs/main', 'ufojs/errors'],
     function(main, errors)
 {
-    
+    "use strict";
     /*shortcuts*/
     var enhance = main.enhance;
     
@@ -9031,7 +9031,7 @@ define('metapolator/project/MOMPointPen',[
   , PointData
   , transform
 ) {
-    
+    "use strict";
 
     var PointPenError = errors.PointPen
       , isNumber = ufoJSUtils.isNumber
@@ -9248,7 +9248,7 @@ define('metapolator/project/ProjectMaster',[
   , Glyph
   , MOMPointPen
 ) {
-    
+    "use strict";
 
     function ProjectMaster(io, project, name, glyphSetDir, cpsFile) {
         this._io = io;
@@ -9319,7 +9319,7 @@ define('metapolator/models/CPS/dataTypes/_FormulaeValue',[
 ], function(
     errors
 ) {
-    
+    "use strict";
 
     var NotImplementedError = errors.NotImplemented;
 
@@ -9350,7 +9350,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/_Token',[
 ], function(
     errors
 ) {
-    
+    "use strict";
 
     var CPSFormulaError = errors.CPSFormula;
 
@@ -9450,7 +9450,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/_ValueToken',[
     errors
   , Parent
 ) {
-    
+    "use strict";
 
     function _ValueToken(literal) {
         /*jshint validthis:true */
@@ -9477,7 +9477,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/NameToken',[
     errors
   , Parent
 ) {
-    
+    "use strict";
 
     function NameToken(literal) {
         Parent.call(this, literal, 0, 0);
@@ -9510,7 +9510,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
   , NameToken
   , ufoJSUtils
 ) {
-    
+    "use strict";
 
     var CPSFormulaError = errors.CPSFormula
       , ValueError = errors.Value
@@ -9836,7 +9836,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
      */
     _p.compile = function () {
         /*jshint evil:true*/
-        var body = ['\n']
+        var body = ['"use strict";\n']
           , i, j, k, l, ll, description, methodName
           , names, args, type, typeVarsIndex, ctorIndex, isBoxed, hasGetAPI
           , hasMatchAll = false
@@ -10071,7 +10071,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/NumberToken',[
     errors
   , Parent
 ) {
-    
+    "use strict";
 
     /**
      * Literal is a string representing a number.
@@ -10102,7 +10102,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/StringToken',[
     errors
   , Parent
 ) {
-    
+    "use strict";
 
     /**
      * Literal is a string representing itself as a string.
@@ -12574,7 +12574,7 @@ define('metapolator/models/CPS/parsing/Source',[
 ], function(
 
 ) {
-    
+    "use strict";
     /**
      * The source of a all _Nodes in one PropertyCollection.
      * Currently only the name. To trace later where a value
@@ -12606,7 +12606,7 @@ define('metapolator/models/CPS/elements/_Node',[
   , Parent
   , emitterMixin
 ) {
-    
+    "use strict";
 
     var AbstractInterfaceError = errors.AbstractInterface;
 
@@ -12675,7 +12675,7 @@ define('metapolator/models/CPS/elements/SelectorList',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * A list of ComplexSelectors
      *
@@ -12785,7 +12785,7 @@ define('metapolator/models/CPS/elements/Rule',[
     errors
   , Parent
 ) {
-    
+    "use strict";
 
     var ValueError = errors.Value;
 
@@ -12846,7 +12846,7 @@ define('metapolator/models/CPS/elements/Comment',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * Any comment in the CPS.
      */
@@ -12887,7 +12887,7 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
   , Rule
   , Comment
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , ValueError = errors.Value
       ;
@@ -13200,7 +13200,7 @@ define('metapolator/models/CPS/parsing/engine',[
   , Source
   , ParameterCollection
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS;
     // FIXME: handle errors!
     // especially erros thrown by gonzales, due to bad CSS input need
@@ -13381,7 +13381,7 @@ define('metapolator/models/CPS/elements/GenericCPSNode',[
     Parent
   , gonzales
 ) {
-    
+    "use strict";
     /**
      * We keep the CPS declarations that we don't understand as Generic
      * CPS object around. These objects can be turned into a CPS string
@@ -13426,7 +13426,7 @@ define('metapolator/models/CPS/parsing/baseFactories',[
   , Comment
   , GenericCPSNode
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS;
     /**
      * Constructors OR factory functions
@@ -13509,7 +13509,7 @@ define('metapolator/models/CPS/elements/Combinator',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * Any Combinator in the CPS is part of a ComplexSelector.
      */
@@ -13555,7 +13555,7 @@ define('metapolator/models/CPS/elements/ComplexSelector',[
   , Parent
   , Combinator
 ) {
-    
+    "use strict";
 
     var CPSError = errors.CPS;
     /**
@@ -13710,7 +13710,7 @@ define('metapolator/models/CPS/elements/SimpleSelector',[
   , Parent
   , GenericCPSNode
 ) {
-    
+    "use strict";
 
     var CPSError = errors.CPS;
     /**
@@ -13836,7 +13836,7 @@ define('metapolator/models/CPS/elements/CompoundSelector',[
   , GenericCPSNode
   , SimpleSelector
 ) {
-    
+    "use strict";
 
     var CPSError = errors.CPS;
 
@@ -14012,7 +14012,7 @@ define('metapolator/models/CPS/parsing/selectorFactories',[
   , GenericCPSNode
   , Comment
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS;
     /**
      * Constructors OR factory functions
@@ -14306,7 +14306,7 @@ define('metapolator/models/CPS/parsing/parseSelectorList',[
   , Rule
   , Comment
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , CPSParserError = errors.CPSParser
       ;
@@ -14375,7 +14375,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/SelectorToken',[
   , Parent
   , parseSelectorList
 ) {
-    
+    "use strict";
 
     /**
      * Literal is a string representing a CPS selector.
@@ -14417,7 +14417,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
   , StringToken
   , SelectorToken
 ) {
-    
+    "use strict";
 
     var CPSFormulaError = errors.CPSFormula
       , stackCache = Object.create(null)
@@ -14523,7 +14523,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
           , resultCounter = 0
           , resultName = 'commands[0]'
           , body = [
-               ''
+               '"use strict";'
               , 'var commands = this._stack;'
           ];
         for(i=0,l=this._stack.length;i<l;i++) {
@@ -14596,7 +14596,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/BracketToken',[
     errors
   , Parent
 ) {
-    
+    "use strict";
 
     /**
      * Literal is a string, one of '(' , ')', '[', ']'
@@ -14661,7 +14661,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
   , NumberToken
   , NameToken
 ) {
-    
+    "use strict";
 
     var CPSFormulaError = errors.CPSFormula
       , KeyError = errors.Key
@@ -15296,7 +15296,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
 
 /* Shared math functions */
 define('metapolator/math/utils',[], function() {
-    
+    "use strict";
 
     /**
      * Normalize `angle` given in radians between 0 and 2*PI
@@ -15320,7 +15320,7 @@ define('metapolator/math/hobby',[
     Vector
   , utils
 ) {
-    
+    "use strict";
 
     /**
      * All points in this module are expected instances of
@@ -15577,7 +15577,7 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
   , hobby
   , mathUtils
 ) {
-    
+    "use strict";
 
     var ValueError = errors.Value
       , CPSFormulaError = errors.CPSFormula
@@ -15947,7 +15947,7 @@ define('metapolator/models/CPS/dataTypes/SharedFormulaeFactory',[
     errors
   , formulaEngine
 ) {
-    
+    "use strict";
 
     var CPSFormulaeError = errors.CPSFormulae;
 
@@ -15991,7 +15991,7 @@ define('metapolator/models/CPS/dataTypes/CPSReal',[
   , Parent
   , SharedFormulaeFactory
 ) {
-    
+    "use strict";
 
     var ValueError = errors.Value;
 
@@ -16035,7 +16035,7 @@ define('metapolator/models/CPS/dataTypes/CPSVector',[
   , SharedFormulaeFactory
   , Vector
 ) {
-    
+    "use strict";
 
     var ValueError = errors.Value;
 
@@ -16071,7 +16071,7 @@ define('metapolator/models/CPS/dataTypes/CPSTransformation',[
   , SharedFormulaeFactory
   , transform
 ) {
-    
+    "use strict";
 
     var ValueError = errors.Value
     , Transformation = transform.Transform
@@ -16107,7 +16107,7 @@ define('metapolator/models/CPS/dataTypes/CPSGeneric',[
   , Parent
   , SharedFormulaeFactory
 ) {
-    
+    "use strict";
 
     var ValueError = errors.Value;
 
@@ -16143,7 +16143,7 @@ define('metapolator/models/CPS/Registry',[
   , CPSTransformation
   , CPSGeneric
 ) {
-    
+    "use strict";
     /**
      * global registry for all known parameter names
      */
@@ -16212,7 +16212,7 @@ define('metapolator/project/parameters/registry',[
     errors
   , Registry
 ) {
-    
+    "use strict";
 
     var parameterRegistry = new Registry();
 
@@ -16309,7 +16309,7 @@ define('metapolator/models/CPS/elements/Parameter',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * A Parameter: name and value
      *
@@ -16362,7 +16362,7 @@ define('metapolator/models/CPS/elements/ParameterDict',[
   , GenericCPSNode
   , Parameter
 ) {
-    
+    "use strict";
 
     var ValueError = errors.Value
       , KeyError = errors.Key
@@ -16673,7 +16673,7 @@ define('metapolator/models/CPS/elements/_Name',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * Used as base of AtRuleName and ParameterName.
      */
@@ -16705,7 +16705,7 @@ define('metapolator/models/CPS/elements/ParameterName',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * The name of a Parameter.
      */
@@ -16725,7 +16725,7 @@ define('metapolator/models/CPS/elements/ParameterValue',[
     errors
   , Parent
 ) {
-    
+    "use strict";
     /**
      * The value of a Parameter.
      *
@@ -16842,7 +16842,7 @@ define('metapolator/project/parameters/outputConverter',[
   , Comment
   , parseSelectorList
 ) {
-    
+    "use strict";
 
     var items = []
       , source = new Source('(generated/default parameters)')
@@ -16996,7 +16996,7 @@ define('metapolator/models/MOM/Univers',[
     Parent
   , Master
 ) {
-    
+    "use strict";
     /**
      * This Element is the container of all masters of a metapolator superfamily.
      * It only contains children of type MOM Master
@@ -17038,7 +17038,7 @@ define('metapolator/models/CPS/SelectorEngine',[
   , CompoundSelector
   , SimpleSelector
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , selectorListFromString = parseSelectorList.fromString
       , stringify = JSON.stringify
@@ -17124,7 +17124,7 @@ define('metapolator/models/CPS/SelectorEngine',[
         /*jshint evil:true*/
         var simpleSelectors = compoundSelector.normalizedValue
           , simpleSelector
-          , body = ['', 'return (true']
+          , body = ['"use strict";', 'return (true']
           , tests = []
           , i,l
           , val
@@ -17468,7 +17468,7 @@ define('metapolator/models/MOM/Multivers',[
     Parent
   , Univers
 ) {
-    
+    "use strict";
     /**
      * This is the root element of a MOM Tree.
      *
@@ -17514,7 +17514,7 @@ define('metapolator/models/MOM/Multivers',[
 });
 
 define('metapolator/memoize',['metapolator/errors'], function(errors) {
-    
+    "use strict";
 
     // _cache is a state variable of this module. It's a single WeakMap
     // to manage all caches on a per-instance basis.
@@ -17626,7 +17626,7 @@ define('metapolator/models/CPS/StyleDict',[
   , _MOMNode
   , SelectorList
 ) {
-    
+    "use strict";
 
     var KeyError = errors.Key
       , ReceiverError = errors.Receiver
@@ -18295,7 +18295,7 @@ define('metapolator/models/CPS/parsing/curry',[
 ], function (
 
 ) {
-    
+    "use strict";
     /**
      * similar to function.prototype.bind, but it doesn't set
      * the value of 'this'
@@ -18316,7 +18316,7 @@ define('metapolator/models/CPS/elements/AtRuleName',[
 ], function(
     Parent
 ) {
-    
+    "use strict";
     /**
      * The name of an AtRule.
      */
@@ -18338,7 +18338,7 @@ define('metapolator/models/CPS/elements/AtNamespaceCollection',[
   , Parent
   , SelectorList
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , ValueError = errors.Value
       ;
@@ -18464,7 +18464,7 @@ define('metapolator/models/CPS/parsing/parameterFactories',[
   , gonzales
   , parseSelectorList
 ) {
-    
+    "use strict";
     /*jshint sub:true*/
     var CPSError = errors.CPS;
 
@@ -18788,7 +18788,7 @@ define('metapolator/models/CPS/parsing/atDictionaryFactories',[
   , AtRuleName
   , CPSGeneric
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , genericNameFactory = parameterFactories.genericNameFactory
       ;
@@ -18930,7 +18930,7 @@ define('metapolator/models/CPS/elements/AtImportCollection',[
   , GrandParent
   , obtain
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS;
     /**
      * Essentially a proxy for the ParameterCollection intance it references.
@@ -19116,7 +19116,7 @@ define('metapolator/models/CPS/parsing/atImportFactories',[
   , AtRuleName
   , GenericCPSNode
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , genericNameFactory = parameterFactories.genericNameFactory
       ;
@@ -19207,7 +19207,7 @@ define('metapolator/models/CPS/parsing/parseRules',[
   , atDictionaryFactories
   , atImportFactories
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , CPSParserError = errors.CPSParser
       , parameterFactories = parameterFactoriesModule.factories
@@ -19294,7 +19294,7 @@ define('metapolator/models/Controller',[
   , obtain
   , timer
 ) {
-    
+    "use strict";
     var CPSError = errors.CPS
       , KeyError = errors.Key
       ;
@@ -19467,7 +19467,7 @@ define('metapolator/models/CPS/RuleController',[
   , parseRules
   , obtain
 ) {
-    
+    "use strict";
     var KeyError = errors.Key
       , CPSRecursionError = errors.CPSRecursion
       ;
@@ -19636,7 +19636,7 @@ define(
     'ufojs/ufoLib/glifLib/constants',[],
     function()
 {
-    
+    "use strict";
     // -------------------------
     // Reading and Writing Modes
     // -------------------------
@@ -19695,7 +19695,7 @@ define(
         main,
         errors
 ) {
-    
+    "use strict";
     var assert = errors.assert,
         NameTranslationError = errors.NameTranslation,
         setLike = main.setLike,
@@ -19995,7 +19995,7 @@ define(
       , plistLib
       , obtain
 ) {
-    
+    "use strict";
     var enhance = main.enhance,
         isInstance = main.isInstance,
         isInt = main.isInt,
@@ -21572,7 +21572,7 @@ define(
         filenames,
         validators
 ) {
-    
+    "use strict";
     var setLike = main.setLike,
         userNameToFileName = filenames.userNameToFileName,
         colorValidator = validators.colorValidator,
@@ -21686,7 +21686,7 @@ define(
         errors,
         AbstractPointPen
 ) {
-    
+    "use strict";
     //shortcuts
     var enhance = main.enhance,
         NotImplementedError = errors.NotImplemented,
@@ -21860,7 +21860,7 @@ define(
         errors,
         Parent
 ) {
-    
+    "use strict";
     var enhance = main.enhance,
         assert = errors.assert;
     /*constructor*/
@@ -21975,7 +21975,7 @@ define(
       , obtain
       , PointToSegmentPen
 ) {
-    
+    "use strict";
     
     // ------------
     // Simple Glyph
@@ -22077,7 +22077,7 @@ define('ufojs/ufoLib/glifLib/readGlyph',[
   , validators
   , constants
 ) {
-    
+    "use strict";
     var GlifLibError = errors.GlifLib,
         glyphLibValidator = validators.glyphLibValidator,
         guidelinesValidator = validators.guidelinesValidator,
@@ -23058,7 +23058,7 @@ define(
         validators,
         constants
 ) {
-    
+    "use strict";
     //shortcuts
     var enhance = main.enhance,
         isNumber = main.isNumber,
@@ -23307,7 +23307,7 @@ define(
         constants,
         GLIFPointPen
 ) {
-    
+    "use strict";
     var GlifLibError = errors.GlifLib,
         isNumber = main.isNumber,
         isInt = main.isInt,
@@ -23675,7 +23675,7 @@ define(
         main,
         xml
 ) {
-    
+    "use strict";
     
     var evaluateXPath = xml.evaluateXPath;
     
@@ -23804,7 +23804,7 @@ define(
       , writeGlyph
       , rapidValueFetching
 ) {
-    
+    "use strict";
     var enhance = main.enhance
       , GlifLibError = errors.GlifLib
       , KeyError = errors.Key
@@ -24788,7 +24788,7 @@ define(
  * sequence of length 2 will do.
  */
 define('ufojs/tools/pens/main',['ufojs/main', 'ufojs/errors'], function(main, errors){
-    
+    "use strict";
     var assert = errors.assert,
         range = main.range;
     
@@ -24897,7 +24897,7 @@ define('ufojs/tools/pens/main',['ufojs/main', 'ufojs/errors'], function(main, er
  * I even copied the docstrings and comments! (These may still refer to the Python code)
  */
 define('ufojs/tools/pens/AbstractPen',['ufojs/main', 'ufojs/errors'], function(main, errors) {
-    
+    "use strict";
     var enhance = main.enhance;
     //shortcuts
     var NotImplementedError = errors.NotImplemented;
@@ -25026,7 +25026,7 @@ define(
         transform
     )
 {
-    
+    "use strict";
     var enhance = main.enhance,
         Transform = transform.Transform;
     /**
@@ -25124,7 +25124,7 @@ define(
         AbstractPen,
         TransformPen
 ) {
-    
+    "use strict";
     var enhance = mainmain.enhance,
         NotImplementedError = errors.NotImplemented,
         AssertionError = errors.Assertion,
@@ -25334,7 +25334,7 @@ define('metapolator/project/import/SegmentPoint',[
     errors
   , Parent
 ) {
-    
+    "use strict";
     var DeprecatedError = errors.Deprecated;
 
     function SegmentPoint(xy, smooth, name, kwargs) {
@@ -25391,7 +25391,7 @@ define('metapolator/project/import/SegmentPen',[
   , errors
   , Point
 ) {
-    
+    "use strict";
 
     /*constructor*/
     function SegmentPen() {
@@ -25499,7 +25499,7 @@ define(
       , Parent
       , Point
 ) {
-    
+    "use strict";
     var enhance = ufoJSUtils.enhance,
         assert = errors.assert;
 
@@ -25604,7 +25604,7 @@ define('metapolator/project/import/tools',[
 ], function(
     Point
 ) {
-    
+    "use strict";
 
     function line2curve(p0, p3) {
         var p1, p2
@@ -25724,7 +25724,7 @@ define('metapolator/project/import/StrokeContour',[
   , tools
   , hobby
 ) {
-    
+    "use strict";
     var AssertionError = errors.Assertion
       , ImportPenstroke = errors.ImportPenstroke
       , line2curve = tools.line2curve
@@ -26193,7 +26193,7 @@ define('metapolator/project/import/contourFromContour',[
     errors
   , tools
 ) {
-    
+    "use strict";
     var AssertionError = errors.Assertion
       , ImportContourError = errors.ImportContour
       , line2curve = tools.line2curve
@@ -26348,7 +26348,7 @@ define('metapolator/project/ImportController',[
   , parseSelectorList
   , ufojsErrors
 ) {
-    
+    "use strict";
     /*global console:true*/
     /*jshint  sub:true*/
 
@@ -26817,7 +26817,7 @@ define('metapolator/project/MetapolatorProject',[
   , ExportController
   , yaml
 ) {
-    
+    "use strict";
 
         // FIXME: make this available for browsers too
     // Specify formatVersion as an int, as required by
@@ -27479,7 +27479,7 @@ define('ufojs/tools/io/_base',[
     errors
   , obtain
 ) {
-    
+    "use strict";
     
     var NotImplementedError = errors.NotImplemented
       , Parent = Object
@@ -27786,7 +27786,7 @@ define('ufojs/tools/io/staticBrowserREST',[
   , obtain
   , Parent
 ) {
-    
+    "use strict";
     /*global XMLHttpRequest: true*/
     /*global ArrayBuffer: true*/
     /*global Uint8Array: true*/
@@ -28123,7 +28123,7 @@ define('metapolator/io/InMemory',[
   , path
   , EventEmitter
 ) {
-    
+    "use strict";
 
     /*global process: true*/
     /*global setTimeout: true*/
@@ -28466,7 +28466,7 @@ define(
         BasePen
     )
 {
-    
+    "use strict";
     var enhance = main.enhance;
     
     /*constructor*/
@@ -28540,7 +28540,7 @@ define('metapolator/ui/services/GlyphRendererAPI',[
   , PointToSegmentPen
   , SVGPen
 ) {
-    
+    "use strict";
 
     var KeyError = errors.Key
       , AssertionError = errors.Assertion
@@ -28846,6 +28846,1049 @@ define('metapolator/ui/services/GlyphRendererAPI',[
     return GlyphRendererAPI;
 });
 
+/*!
+ * mustache.js - Logic-less {{mustache}} templates with JavaScript
+ * http://github.com/janl/mustache.js
+ */
+
+/*global define: false*/
+
+(function (global, factory) {
+  if (typeof exports === "object" && exports) {
+    factory(exports); // CommonJS
+  } else if (typeof define === "function" && define.amd) {
+    define('bower_components/mustache.js/mustache',['exports'], factory); // AMD
+  } else {
+    factory(global.Mustache = {}); // <script>
+  }
+}(this, function (mustache) {
+
+  var Object_toString = Object.prototype.toString;
+  var isArray = Array.isArray || function (object) {
+    return Object_toString.call(object) === '[object Array]';
+  };
+
+  function isFunction(object) {
+    return typeof object === 'function';
+  }
+
+  function escapeRegExp(string) {
+    return string.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+  }
+
+  // Workaround for https://issues.apache.org/jira/browse/COUCHDB-577
+  // See https://github.com/janl/mustache.js/issues/189
+  var RegExp_test = RegExp.prototype.test;
+  function testRegExp(re, string) {
+    return RegExp_test.call(re, string);
+  }
+
+  var nonSpaceRe = /\S/;
+  function isWhitespace(string) {
+    return !testRegExp(nonSpaceRe, string);
+  }
+
+  var entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+  };
+
+  function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+      return entityMap[s];
+    });
+  }
+
+  var whiteRe = /\s*/;
+  var spaceRe = /\s+/;
+  var equalsRe = /\s*=/;
+  var curlyRe = /\s*\}/;
+  var tagRe = /#|\^|\/|>|\{|&|=|!/;
+
+  /**
+   * Breaks up the given `template` string into a tree of tokens. If the `tags`
+   * argument is given here it must be an array with two string values: the
+   * opening and closing tags used in the template (e.g. [ "<%", "%>" ]). Of
+   * course, the default is to use mustaches (i.e. mustache.tags).
+   *
+   * A token is an array with at least 4 elements. The first element is the
+   * mustache symbol that was used inside the tag, e.g. "#" or "&". If the tag
+   * did not contain a symbol (i.e. {{myValue}}) this element is "name". For
+   * all text that appears outside a symbol this element is "text".
+   *
+   * The second element of a token is its "value". For mustache tags this is
+   * whatever else was inside the tag besides the opening symbol. For text tokens
+   * this is the text itself.
+   *
+   * The third and fourth elements of the token are the start and end indices,
+   * respectively, of the token in the original template.
+   *
+   * Tokens that are the root node of a subtree contain two more elements: 1) an
+   * array of tokens in the subtree and 2) the index in the original template at
+   * which the closing tag for that section begins.
+   */
+  function parseTemplate(template, tags) {
+    if (!template)
+      return [];
+
+    var sections = [];     // Stack to hold section tokens
+    var tokens = [];       // Buffer to hold the tokens
+    var spaces = [];       // Indices of whitespace tokens on the current line
+    var hasTag = false;    // Is there a {{tag}} on the current line?
+    var nonSpace = false;  // Is there a non-space char on the current line?
+
+    // Strips all whitespace tokens array for the current line
+    // if there was a {{#tag}} on it and otherwise only space.
+    function stripSpace() {
+      if (hasTag && !nonSpace) {
+        while (spaces.length)
+          delete tokens[spaces.pop()];
+      } else {
+        spaces = [];
+      }
+
+      hasTag = false;
+      nonSpace = false;
+    }
+
+    var openingTagRe, closingTagRe, closingCurlyRe;
+    function compileTags(tags) {
+      if (typeof tags === 'string')
+        tags = tags.split(spaceRe, 2);
+
+      if (!isArray(tags) || tags.length !== 2)
+        throw new Error('Invalid tags: ' + tags);
+
+      openingTagRe = new RegExp(escapeRegExp(tags[0]) + '\\s*');
+      closingTagRe = new RegExp('\\s*' + escapeRegExp(tags[1]));
+      closingCurlyRe = new RegExp('\\s*' + escapeRegExp('}' + tags[1]));
+    }
+
+    compileTags(tags || mustache.tags);
+
+    var scanner = new Scanner(template);
+
+    var start, type, value, chr, token, openSection;
+    while (!scanner.eos()) {
+      start = scanner.pos;
+
+      // Match any text between tags.
+      value = scanner.scanUntil(openingTagRe);
+
+      if (value) {
+        for (var i = 0, valueLength = value.length; i < valueLength; ++i) {
+          chr = value.charAt(i);
+
+          if (isWhitespace(chr)) {
+            spaces.push(tokens.length);
+          } else {
+            nonSpace = true;
+          }
+
+          tokens.push([ 'text', chr, start, start + 1 ]);
+          start += 1;
+
+          // Check for whitespace on the current line.
+          if (chr === '\n')
+            stripSpace();
+        }
+      }
+
+      // Match the opening tag.
+      if (!scanner.scan(openingTagRe))
+        break;
+
+      hasTag = true;
+
+      // Get the tag type.
+      type = scanner.scan(tagRe) || 'name';
+      scanner.scan(whiteRe);
+
+      // Get the tag value.
+      if (type === '=') {
+        value = scanner.scanUntil(equalsRe);
+        scanner.scan(equalsRe);
+        scanner.scanUntil(closingTagRe);
+      } else if (type === '{') {
+        value = scanner.scanUntil(closingCurlyRe);
+        scanner.scan(curlyRe);
+        scanner.scanUntil(closingTagRe);
+        type = '&';
+      } else {
+        value = scanner.scanUntil(closingTagRe);
+      }
+
+      // Match the closing tag.
+      if (!scanner.scan(closingTagRe))
+        throw new Error('Unclosed tag at ' + scanner.pos);
+
+      token = [ type, value, start, scanner.pos ];
+      tokens.push(token);
+
+      if (type === '#' || type === '^') {
+        sections.push(token);
+      } else if (type === '/') {
+        // Check section nesting.
+        openSection = sections.pop();
+
+        if (!openSection)
+          throw new Error('Unopened section "' + value + '" at ' + start);
+
+        if (openSection[1] !== value)
+          throw new Error('Unclosed section "' + openSection[1] + '" at ' + start);
+      } else if (type === 'name' || type === '{' || type === '&') {
+        nonSpace = true;
+      } else if (type === '=') {
+        // Set the tags for the next time around.
+        compileTags(value);
+      }
+    }
+
+    // Make sure there are no open sections when we're done.
+    openSection = sections.pop();
+
+    if (openSection)
+      throw new Error('Unclosed section "' + openSection[1] + '" at ' + scanner.pos);
+
+    return nestTokens(squashTokens(tokens));
+  }
+
+  /**
+   * Combines the values of consecutive text tokens in the given `tokens` array
+   * to a single token.
+   */
+  function squashTokens(tokens) {
+    var squashedTokens = [];
+
+    var token, lastToken;
+    for (var i = 0, numTokens = tokens.length; i < numTokens; ++i) {
+      token = tokens[i];
+
+      if (token) {
+        if (token[0] === 'text' && lastToken && lastToken[0] === 'text') {
+          lastToken[1] += token[1];
+          lastToken[3] = token[3];
+        } else {
+          squashedTokens.push(token);
+          lastToken = token;
+        }
+      }
+    }
+
+    return squashedTokens;
+  }
+
+  /**
+   * Forms the given array of `tokens` into a nested tree structure where
+   * tokens that represent a section have two additional items: 1) an array of
+   * all tokens that appear in that section and 2) the index in the original
+   * template that represents the end of that section.
+   */
+  function nestTokens(tokens) {
+    var nestedTokens = [];
+    var collector = nestedTokens;
+    var sections = [];
+
+    var token, section;
+    for (var i = 0, numTokens = tokens.length; i < numTokens; ++i) {
+      token = tokens[i];
+
+      switch (token[0]) {
+      case '#':
+      case '^':
+        collector.push(token);
+        sections.push(token);
+        collector = token[4] = [];
+        break;
+      case '/':
+        section = sections.pop();
+        section[5] = token[2];
+        collector = sections.length > 0 ? sections[sections.length - 1][4] : nestedTokens;
+        break;
+      default:
+        collector.push(token);
+      }
+    }
+
+    return nestedTokens;
+  }
+
+  /**
+   * A simple string scanner that is used by the template parser to find
+   * tokens in template strings.
+   */
+  function Scanner(string) {
+    this.string = string;
+    this.tail = string;
+    this.pos = 0;
+  }
+
+  /**
+   * Returns `true` if the tail is empty (end of string).
+   */
+  Scanner.prototype.eos = function () {
+    return this.tail === "";
+  };
+
+  /**
+   * Tries to match the given regular expression at the current position.
+   * Returns the matched text if it can match, the empty string otherwise.
+   */
+  Scanner.prototype.scan = function (re) {
+    var match = this.tail.match(re);
+
+    if (!match || match.index !== 0)
+      return '';
+
+    var string = match[0];
+
+    this.tail = this.tail.substring(string.length);
+    this.pos += string.length;
+
+    return string;
+  };
+
+  /**
+   * Skips all text until the given regular expression can be matched. Returns
+   * the skipped string, which is the entire tail if no match can be made.
+   */
+  Scanner.prototype.scanUntil = function (re) {
+    var index = this.tail.search(re), match;
+
+    switch (index) {
+    case -1:
+      match = this.tail;
+      this.tail = "";
+      break;
+    case 0:
+      match = "";
+      break;
+    default:
+      match = this.tail.substring(0, index);
+      this.tail = this.tail.substring(index);
+    }
+
+    this.pos += match.length;
+
+    return match;
+  };
+
+  /**
+   * Represents a rendering context by wrapping a view object and
+   * maintaining a reference to the parent context.
+   */
+  function Context(view, parentContext) {
+    this.view = view;
+    this.cache = { '.': this.view };
+    this.parent = parentContext;
+  }
+
+  /**
+   * Creates a new context using the given view with this context
+   * as the parent.
+   */
+  Context.prototype.push = function (view) {
+    return new Context(view, this);
+  };
+
+  /**
+   * Returns the value of the given name in this context, traversing
+   * up the context hierarchy if the value is absent in this context's view.
+   */
+  Context.prototype.lookup = function (name) {
+    var cache = this.cache;
+
+    var value;
+    if (name in cache) {
+      value = cache[name];
+    } else {
+      var context = this, names, index, lookupHit = false;
+
+      while (context) {
+        if (name.indexOf('.') > 0) {
+          value = context.view;
+          names = name.split('.');
+          index = 0;
+
+          /**
+           * Using the dot notion path in `name`, we descend through the
+           * nested objects.
+           *
+           * To be certain that the lookup has been successful, we have to
+           * check if the last object in the path actually has the property
+           * we are looking for. We store the result in `lookupHit`.
+           *
+           * This is specially necessary for when the value has been set to
+           * `undefined` and we want to avoid looking up parent contexts.
+           **/
+          while (value != null && index < names.length) {
+            if (index === names.length - 1 && value != null)
+              lookupHit = (typeof value === 'object') &&
+                value.hasOwnProperty(names[index]);
+            value = value[names[index++]];
+          }
+        } else if (context.view != null && typeof context.view === 'object') {
+          value = context.view[name];
+          lookupHit = context.view.hasOwnProperty(name);
+        }
+
+        if (lookupHit)
+          break;
+
+        context = context.parent;
+      }
+
+      cache[name] = value;
+    }
+
+    if (isFunction(value))
+      value = value.call(this.view);
+
+    return value;
+  };
+
+  /**
+   * A Writer knows how to take a stream of tokens and render them to a
+   * string, given a context. It also maintains a cache of templates to
+   * avoid the need to parse the same template twice.
+   */
+  function Writer() {
+    this.cache = {};
+  }
+
+  /**
+   * Clears all cached templates in this writer.
+   */
+  Writer.prototype.clearCache = function () {
+    this.cache = {};
+  };
+
+  /**
+   * Parses and caches the given `template` and returns the array of tokens
+   * that is generated from the parse.
+   */
+  Writer.prototype.parse = function (template, tags) {
+    var cache = this.cache;
+    var tokens = cache[template];
+
+    if (tokens == null)
+      tokens = cache[template] = parseTemplate(template, tags);
+
+    return tokens;
+  };
+
+  /**
+   * High-level method that is used to render the given `template` with
+   * the given `view`.
+   *
+   * The optional `partials` argument may be an object that contains the
+   * names and templates of partials that are used in the template. It may
+   * also be a function that is used to load partial templates on the fly
+   * that takes a single argument: the name of the partial.
+   */
+  Writer.prototype.render = function (template, view, partials) {
+    var tokens = this.parse(template);
+    var context = (view instanceof Context) ? view : new Context(view);
+    return this.renderTokens(tokens, context, partials, template);
+  };
+
+  /**
+   * Low-level method that renders the given array of `tokens` using
+   * the given `context` and `partials`.
+   *
+   * Note: The `originalTemplate` is only ever used to extract the portion
+   * of the original template that was contained in a higher-order section.
+   * If the template doesn't use higher-order sections, this argument may
+   * be omitted.
+   */
+  Writer.prototype.renderTokens = function (tokens, context, partials, originalTemplate) {
+    var buffer = '';
+
+    var token, symbol, value;
+    for (var i = 0, numTokens = tokens.length; i < numTokens; ++i) {
+      value = undefined;
+      token = tokens[i];
+      symbol = token[0];
+
+      if (symbol === '#') value = this._renderSection(token, context, partials, originalTemplate);
+      else if (symbol === '^') value = this._renderInverted(token, context, partials, originalTemplate);
+      else if (symbol === '>') value = this._renderPartial(token, context, partials, originalTemplate);
+      else if (symbol === '&') value = this._unescapedValue(token, context);
+      else if (symbol === 'name') value = this._escapedValue(token, context);
+      else if (symbol === 'text') value = this._rawValue(token);
+
+      if (value !== undefined)
+        buffer += value;
+    }
+
+    return buffer;
+  };
+
+  Writer.prototype._renderSection = function (token, context, partials, originalTemplate) {
+    var self = this;
+    var buffer = '';
+    var value = context.lookup(token[1]);
+
+    // This function is used to render an arbitrary template
+    // in the current context by higher-order sections.
+    function subRender(template) {
+      return self.render(template, context, partials);
+    }
+
+    if (!value) return;
+
+    if (isArray(value)) {
+      for (var j = 0, valueLength = value.length; j < valueLength; ++j) {
+        buffer += this.renderTokens(token[4], context.push(value[j]), partials, originalTemplate);
+      }
+    } else if (typeof value === 'object' || typeof value === 'string' || typeof value === 'number') {
+      buffer += this.renderTokens(token[4], context.push(value), partials, originalTemplate);
+    } else if (isFunction(value)) {
+      if (typeof originalTemplate !== 'string')
+        throw new Error('Cannot use higher-order sections without the original template');
+
+      // Extract the portion of the original template that the section contains.
+      value = value.call(context.view, originalTemplate.slice(token[3], token[5]), subRender);
+
+      if (value != null)
+        buffer += value;
+    } else {
+      buffer += this.renderTokens(token[4], context, partials, originalTemplate);
+    }
+    return buffer;
+  };
+
+  Writer.prototype._renderInverted = function(token, context, partials, originalTemplate) {
+    var value = context.lookup(token[1]);
+
+    // Use JavaScript's definition of falsy. Include empty arrays.
+    // See https://github.com/janl/mustache.js/issues/186
+    if (!value || (isArray(value) && value.length === 0))
+      return this.renderTokens(token[4], context, partials, originalTemplate);
+  };
+
+  Writer.prototype._renderPartial = function(token, context, partials) {
+    if (!partials) return;
+
+    var value = isFunction(partials) ? partials(token[1]) : partials[token[1]];
+    if (value != null)
+      return this.renderTokens(this.parse(value), context, partials, value);
+  };
+
+  Writer.prototype._unescapedValue = function(token, context) {
+    var value = context.lookup(token[1]);
+    if (value != null)
+      return value;
+  };
+
+  Writer.prototype._escapedValue = function(token, context) {
+    var value = context.lookup(token[1]);
+    if (value != null)
+      return mustache.escape(value);
+  };
+
+  Writer.prototype._rawValue = function(token) {
+    return token[1];
+  };
+
+  mustache.name = "mustache.js";
+  mustache.version = "2.0.0";
+  mustache.tags = [ "{{", "}}" ];
+
+  // All high-level mustache.* functions use this writer.
+  var defaultWriter = new Writer();
+
+  /**
+   * Clears all cached templates in the default writer.
+   */
+  mustache.clearCache = function () {
+    return defaultWriter.clearCache();
+  };
+
+  /**
+   * Parses and caches the given template in the default writer and returns the
+   * array of tokens it contains. Doing this ahead of time avoids the need to
+   * parse templates on the fly as they are rendered.
+   */
+  mustache.parse = function (template, tags) {
+    return defaultWriter.parse(template, tags);
+  };
+
+  /**
+   * Renders the `template` with the given `view` and `partials` using the
+   * default writer.
+   */
+  mustache.render = function (template, view, partials) {
+    return defaultWriter.render(template, view, partials);
+  };
+
+  // This is here for backwards compatibility with 0.4.x.
+  mustache.to_html = function (template, view, partials, send) {
+    var result = mustache.render(template, view, partials);
+
+    if (isFunction(send)) {
+      send(result);
+    } else {
+      return result;
+    }
+  };
+
+  // Export the escaping function so that the user may override it.
+  // See https://github.com/janl/mustache.js/issues/244
+  mustache.escape = escapeHtml;
+
+  // Export these mainly for testing, but also for advanced usage.
+  mustache.Scanner = Scanner;
+  mustache.Context = Context;
+  mustache.Writer = Writer;
+
+}));
+
+/**
+ * @license RequireJS text 2.0.12 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
+ * Available via the MIT or new BSD license.
+ * see: http://github.com/requirejs/text for details
+ */
+/*jslint regexp: true */
+/*global require, XMLHttpRequest, ActiveXObject,
+  define, window, process, Packages,
+  java, location, Components, FileUtils */
+
+define('require/text',['module'], function (module) {
+    'use strict';
+
+    var text, fs, Cc, Ci, xpcIsWindows,
+        progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
+        xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
+        bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
+        hasLocation = typeof location !== 'undefined' && location.href,
+        defaultProtocol = hasLocation && location.protocol && location.protocol.replace(/\:/, ''),
+        defaultHostName = hasLocation && location.hostname,
+        defaultPort = hasLocation && (location.port || undefined),
+        buildMap = {},
+        masterConfig = (module.config && module.config()) || {};
+
+    text = {
+        version: '2.0.12',
+
+        strip: function (content) {
+            //Strips <?xml ...?> declarations so that external SVG and XML
+            //documents can be added to a document without worry. Also, if the string
+            //is an HTML document, only the part inside the body tag is returned.
+            if (content) {
+                content = content.replace(xmlRegExp, "");
+                var matches = content.match(bodyRegExp);
+                if (matches) {
+                    content = matches[1];
+                }
+            } else {
+                content = "";
+            }
+            return content;
+        },
+
+        jsEscape: function (content) {
+            return content.replace(/(['\\])/g, '\\$1')
+                .replace(/[\f]/g, "\\f")
+                .replace(/[\b]/g, "\\b")
+                .replace(/[\n]/g, "\\n")
+                .replace(/[\t]/g, "\\t")
+                .replace(/[\r]/g, "\\r")
+                .replace(/[\u2028]/g, "\\u2028")
+                .replace(/[\u2029]/g, "\\u2029");
+        },
+
+        createXhr: masterConfig.createXhr || function () {
+            //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
+            var xhr, i, progId;
+            if (typeof XMLHttpRequest !== "undefined") {
+                return new XMLHttpRequest();
+            } else if (typeof ActiveXObject !== "undefined") {
+                for (i = 0; i < 3; i += 1) {
+                    progId = progIds[i];
+                    try {
+                        xhr = new ActiveXObject(progId);
+                    } catch (e) {}
+
+                    if (xhr) {
+                        progIds = [progId];  // so faster next time
+                        break;
+                    }
+                }
+            }
+
+            return xhr;
+        },
+
+        /**
+         * Parses a resource name into its component parts. Resource names
+         * look like: module/name.ext!strip, where the !strip part is
+         * optional.
+         * @param {String} name the resource name
+         * @returns {Object} with properties "moduleName", "ext" and "strip"
+         * where strip is a boolean.
+         */
+        parseName: function (name) {
+            var modName, ext, temp,
+                strip = false,
+                index = name.indexOf("."),
+                isRelative = name.indexOf('./') === 0 ||
+                             name.indexOf('../') === 0;
+
+            if (index !== -1 && (!isRelative || index > 1)) {
+                modName = name.substring(0, index);
+                ext = name.substring(index + 1, name.length);
+            } else {
+                modName = name;
+            }
+
+            temp = ext || modName;
+            index = temp.indexOf("!");
+            if (index !== -1) {
+                //Pull off the strip arg.
+                strip = temp.substring(index + 1) === "strip";
+                temp = temp.substring(0, index);
+                if (ext) {
+                    ext = temp;
+                } else {
+                    modName = temp;
+                }
+            }
+
+            return {
+                moduleName: modName,
+                ext: ext,
+                strip: strip
+            };
+        },
+
+        xdRegExp: /^((\w+)\:)?\/\/([^\/\\]+)/,
+
+        /**
+         * Is an URL on another domain. Only works for browser use, returns
+         * false in non-browser environments. Only used to know if an
+         * optimized .js version of a text resource should be loaded
+         * instead.
+         * @param {String} url
+         * @returns Boolean
+         */
+        useXhr: function (url, protocol, hostname, port) {
+            var uProtocol, uHostName, uPort,
+                match = text.xdRegExp.exec(url);
+            if (!match) {
+                return true;
+            }
+            uProtocol = match[2];
+            uHostName = match[3];
+
+            uHostName = uHostName.split(':');
+            uPort = uHostName[1];
+            uHostName = uHostName[0];
+
+            return (!uProtocol || uProtocol === protocol) &&
+                   (!uHostName || uHostName.toLowerCase() === hostname.toLowerCase()) &&
+                   ((!uPort && !uHostName) || uPort === port);
+        },
+
+        finishLoad: function (name, strip, content, onLoad) {
+            content = strip ? text.strip(content) : content;
+            if (masterConfig.isBuild) {
+                buildMap[name] = content;
+            }
+            onLoad(content);
+        },
+
+        load: function (name, req, onLoad, config) {
+            //Name has format: some.module.filext!strip
+            //The strip part is optional.
+            //if strip is present, then that means only get the string contents
+            //inside a body tag in an HTML string. For XML/SVG content it means
+            //removing the <?xml ...?> declarations so the content can be inserted
+            //into the current doc without problems.
+
+            // Do not bother with the work if a build and text will
+            // not be inlined.
+            if (config && config.isBuild && !config.inlineText) {
+                onLoad();
+                return;
+            }
+
+            masterConfig.isBuild = config && config.isBuild;
+
+            var parsed = text.parseName(name),
+                nonStripName = parsed.moduleName +
+                    (parsed.ext ? '.' + parsed.ext : ''),
+                url = req.toUrl(nonStripName),
+                useXhr = (masterConfig.useXhr) ||
+                         text.useXhr;
+
+            // Do not load if it is an empty: url
+            if (url.indexOf('empty:') === 0) {
+                onLoad();
+                return;
+            }
+
+            //Load the text. Use XHR if possible and in a browser.
+            if (!hasLocation || useXhr(url, defaultProtocol, defaultHostName, defaultPort)) {
+                text.get(url, function (content) {
+                    text.finishLoad(name, parsed.strip, content, onLoad);
+                }, function (err) {
+                    if (onLoad.error) {
+                        onLoad.error(err);
+                    }
+                });
+            } else {
+                //Need to fetch the resource across domains. Assume
+                //the resource has been optimized into a JS module. Fetch
+                //by the module name + extension, but do not include the
+                //!strip part to avoid file system issues.
+                req([nonStripName], function (content) {
+                    text.finishLoad(parsed.moduleName + '.' + parsed.ext,
+                                    parsed.strip, content, onLoad);
+                });
+            }
+        },
+
+        write: function (pluginName, moduleName, write, config) {
+            if (buildMap.hasOwnProperty(moduleName)) {
+                var content = text.jsEscape(buildMap[moduleName]);
+                write.asModule(pluginName + "!" + moduleName,
+                               "define(function () { return '" +
+                                   content +
+                               "';});\n");
+            }
+        },
+
+        writeFile: function (pluginName, moduleName, req, write, config) {
+            var parsed = text.parseName(moduleName),
+                extPart = parsed.ext ? '.' + parsed.ext : '',
+                nonStripName = parsed.moduleName + extPart,
+                //Use a '.js' file name so that it indicates it is a
+                //script that can be loaded across domains.
+                fileName = req.toUrl(parsed.moduleName + extPart) + '.js';
+
+            //Leverage own load() method to load plugin value, but only
+            //write out values that do not have the strip argument,
+            //to avoid any potential issues with ! in file names.
+            text.load(nonStripName, req, function (value) {
+                //Use own write() method to construct full module value.
+                //But need to create shell that translates writeFile's
+                //write() to the right interface.
+                var textWrite = function (contents) {
+                    return write(fileName, contents);
+                };
+                textWrite.asModule = function (moduleName, contents) {
+                    return write.asModule(moduleName, fileName, contents);
+                };
+
+                text.write(pluginName, nonStripName, textWrite, config);
+            }, config);
+        }
+    };
+
+    if (masterConfig.env === 'node' || (!masterConfig.env &&
+            typeof process !== "undefined" &&
+            process.versions &&
+            !!process.versions.node &&
+            !process.versions['node-webkit'])) {
+        //Using special require.nodeRequire, something added by r.js.
+        fs = require.nodeRequire('fs');
+
+        text.get = function (url, callback, errback) {
+            try {
+                var file = fs.readFileSync(url, 'utf8');
+                //Remove BOM (Byte Mark Order) from utf8 files if it is there.
+                if (file.indexOf('\uFEFF') === 0) {
+                    file = file.substring(1);
+                }
+                callback(file);
+            } catch (e) {
+                if (errback) {
+                    errback(e);
+                }
+            }
+        };
+    } else if (masterConfig.env === 'xhr' || (!masterConfig.env &&
+            text.createXhr())) {
+        text.get = function (url, callback, errback, headers) {
+            var xhr = text.createXhr(), header;
+            xhr.open('GET', url, true);
+
+            //Allow plugins direct access to xhr headers
+            if (headers) {
+                for (header in headers) {
+                    if (headers.hasOwnProperty(header)) {
+                        xhr.setRequestHeader(header.toLowerCase(), headers[header]);
+                    }
+                }
+            }
+
+            //Allow overrides specified in config
+            if (masterConfig.onXhr) {
+                masterConfig.onXhr(xhr, url);
+            }
+
+            xhr.onreadystatechange = function (evt) {
+                var status, err;
+                //Do not explicitly handle errors, those should be
+                //visible via console output in the browser.
+                if (xhr.readyState === 4) {
+                    status = xhr.status || 0;
+                    if (status > 399 && status < 600) {
+                        //An http 4xx or 5xx error. Signal an error.
+                        err = new Error(url + ' HTTP status: ' + status);
+                        err.xhr = xhr;
+                        if (errback) {
+                            errback(err);
+                        }
+                    } else {
+                        callback(xhr.responseText);
+                    }
+
+                    if (masterConfig.onXhrComplete) {
+                        masterConfig.onXhrComplete(xhr, url);
+                    }
+                }
+            };
+            xhr.send(null);
+        };
+    } else if (masterConfig.env === 'rhino' || (!masterConfig.env &&
+            typeof Packages !== 'undefined' && typeof java !== 'undefined')) {
+        //Why Java, why is this so awkward?
+        text.get = function (url, callback) {
+            var stringBuffer, line,
+                encoding = "utf-8",
+                file = new java.io.File(url),
+                lineSeparator = java.lang.System.getProperty("line.separator"),
+                input = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file), encoding)),
+                content = '';
+            try {
+                stringBuffer = new java.lang.StringBuffer();
+                line = input.readLine();
+
+                // Byte Order Mark (BOM) - The Unicode Standard, version 3.0, page 324
+                // http://www.unicode.org/faq/utf_bom.html
+
+                // Note that when we use utf-8, the BOM should appear as "EF BB BF", but it doesn't due to this bug in the JDK:
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
+                if (line && line.length() && line.charAt(0) === 0xfeff) {
+                    // Eat the BOM, since we've already found the encoding on this file,
+                    // and we plan to concatenating this buffer with others; the BOM should
+                    // only appear at the top of a file.
+                    line = line.substring(1);
+                }
+
+                if (line !== null) {
+                    stringBuffer.append(line);
+                }
+
+                while ((line = input.readLine()) !== null) {
+                    stringBuffer.append(lineSeparator);
+                    stringBuffer.append(line);
+                }
+                //Make sure we return a JavaScript string and not a Java string.
+                content = String(stringBuffer.toString()); //String
+            } finally {
+                input.close();
+            }
+            callback(content);
+        };
+    } else if (masterConfig.env === 'xpconnect' || (!masterConfig.env &&
+            typeof Components !== 'undefined' && Components.classes &&
+            Components.interfaces)) {
+        //Avert your gaze!
+        Cc = Components.classes;
+        Ci = Components.interfaces;
+        Components.utils['import']('resource://gre/modules/FileUtils.jsm');
+        xpcIsWindows = ('@mozilla.org/windows-registry-key;1' in Cc);
+
+        text.get = function (url, callback) {
+            var inStream, convertStream, fileObj,
+                readData = {};
+
+            if (xpcIsWindows) {
+                url = url.replace(/\//g, '\\');
+            }
+
+            fileObj = new FileUtils.File(url);
+
+            //XPCOM, you so crazy
+            try {
+                inStream = Cc['@mozilla.org/network/file-input-stream;1']
+                           .createInstance(Ci.nsIFileInputStream);
+                inStream.init(fileObj, 1, 0, false);
+
+                convertStream = Cc['@mozilla.org/intl/converter-input-stream;1']
+                                .createInstance(Ci.nsIConverterInputStream);
+                convertStream.init(inStream, "utf-8", inStream.available(),
+                Ci.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER);
+
+                convertStream.readString(inStream.available(), readData);
+                convertStream.close();
+                inStream.close();
+                callback(readData.value);
+            } catch (e) {
+                throw new Error((fileObj && fileObj.path || '') + ': ' + e);
+            }
+        };
+    }
+    return text;
+});
+
+
+define('require/text!metapolator/project/cps-generators/interpolation.tpl',[],function () { return '@import \'centreline-skeleton-to-symmetric-outline.cps\';\n\nglyph {\n{{#n}}\n    base{{.}}: baseMaster{{.}}:children[index];\n{{/n}}\n}\n\ncontour > p {\n    indexGlyph: parent:parent:index;\n    indexContour: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexContour]\n        :children[index]\n        ;\n{{/n}}\n}\n\npoint > * {\n    indexGlyph: parent:parent:parent:index;\n    indexPenstroke: parent:parent:index;\n    indexPoint: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexPenstroke]\n        :children[indexPoint]\n        :children[index]\n        ;\n{{/n}}\n}\n\n* {\n    /* Ensure that the used proportions sum up to 1.\n     * Any other value produces usually unwanted effects.\n     * If you don\'t want this in your master redefine it as\n     * interpolationUnit: 1;\n     */\n    interpolationUnit: 1/(0{{#n}}\n        + proportion{{.}}{{/n}});\n{{#n}}\n    _p{{.}}: proportion{{.}}*interpolationUnit;\n{{/n}}\n}\n\nglyph {\n    advanceWidth: 0{{#n}}\n        + base{{.}}:advanceWidth * _p{{.}}{{/n}};\n    advanceHeight: 0{{#n}}\n        + base{{.}}:advanceHeight * _p{{.}}{{/n}};\n}\n\npoint > left,\npoint > right,\npoint > center,\ncontour > p {\n    on: 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    in: 0{{#n}}\n        + base{{.}}:in * _p{{.}}{{/n}};\n    out: 0{{#n}}\n        + base{{.}}:out * _p{{.}}{{/n}};\n}\n\n\n/****\n * set up the super masters of this master and the proportions:\n\n* {\n{{#n}}\n    baseMaster{{.}}: S"master#anyName_{{.}}";\n{{/n}}\n{{#n}}\n    proportion{{.}}: 1;\n{{/n}}\n}\n\n****/\n';});
+
+define('metapolator/project/cps-generators/interpolation',[
+    'bower_components/mustache.js/mustache'
+  , 'require/text!./interpolation.tpl'
+], function(
+    mustache
+  , template
+) {
+    return function(masterCount) {
+        var n
+          , view = {}
+          , masterNs = view.n = [] // [1,2,3,4] when masterCount = 4
+          ;
+        // FIXME: what is better to confront designers with, counting
+        // from 0 or counting from 1? I tend to change this to 0 in the
+        // future, after the blue-pill 0.2.0 demo is out.
+        for(n=1;n<=masterCount;n++)
+            masterNs.push(n);
+        return mustache.render(template, view);
+    }
+});
+
+
+
+define('require/text!metapolator/project/cps-generators/metapolation.tpl',[],function () { return '@import \'centreline-skeleton-to-symmetric-outline.cps\';\n\nglyph {\n{{#n}}\n    base{{.}}: baseMaster{{.}}:children[index];\n{{/n}}\n}\n\ncontour > p {\n    indexGlyph: parent:parent:index;\n    indexContour: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexContour]\n        :children[index]\n        ;\n{{/n}}\n}\n\npoint > * {\n    indexGlyph: parent:parent:parent:index;\n    indexPenstroke: parent:parent:index;\n    indexPoint: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexPenstroke]\n        :children[indexPoint]\n        :children[index]\n        ;\n{{/n}}\n}\n\n* {\n    /* Ensure that the used proportions sum up to 1.\n     * Any other value produces usually unwanted effects.\n     * If you don\'t want this in your master redefine it as\n     * interpolationUnit: 1;\n     */\n    interpolationUnit: 1/(0{{#n}}\n        + proportion{{.}}{{/n}});\n{{#n}}\n    _p{{.}}: proportion{{.}}*interpolationUnit;\n{{/n}}\n}\n\nglyph {\n    advanceWidth: 0{{#n}}\n        + base{{.}}:advanceWidth * _p{{.}}{{/n}};\n    advanceHeight: 0{{#n}}\n        + base{{.}}:advanceHeight * _p{{.}}{{/n}};\n}\n\npoint > * {\n    inLength: 0{{#n}}\n        + base{{.}}:inLength * _p{{.}}{{/n}};\n    outLength: 0{{#n}}\n        + base{{.}}:outLength * _p{{.}}{{/n}};\n    /* This transforms tensions of Infinity to 10000. Then we can interpolate\n     * without creating NaN values.\n     *\n     * NaN is produced when a tension is Infinity and a proportion is zero:\n     * Infinity * 0 => NaN.\n     * AFAIK this behavior is mathematically correct.\n     * But in that case we clearly want a 0 as result, because a proportion\n     * of 0 means we don\'t want to include the master into the Interpolation.\n     *\n     * 10000 will set the control point very very close to the on-curve\n     * point.\n     * FIXME: it would be better to keep the Infinity value when all\n     * `base*:**Tension` values are Infinity. But I think there is no way\n     * to do this right now.\n     * something like:\n     * ifelse (isInfinity base1:inTension and _p1 equals 0) 0 (base1:inTension * _p1)\n     * but that would require the new operators `ifelse` `isInfinity` `equals` `and`\n     * and that would require the booleans `true` and `false` also, consequently\n     * we\'d like also to introduce `not` `or` `isNaN`\n     * But we are holding off conditional execution at the moment, because\n     * we don\'t want to introduce to much power/complexity in CPS.\n     *\n     * (base1:inTension * _p1) elseif (isInfinity base1:inTension and _p1 equals 0) 0\n     *\n     * In another situation we may wan\'t to `grow` a control point in\n     * an interpolation. For better control, the master `not` having that\n     * control point can set the tension value to some big value itself.\n     * This is really the workaround for the missing `ifelse` etc.\n     * What a good value is must be determined in the case itself. I think\n     * it\'s likely that it would be well under 50 then.\n     * FIXME: Thus it may better here to go with a lower replacement value\n     * for Infinity, e.g. 10 or 100?\n     */\n    inTension: 0{{#n}}\n        + (min 1000 base{{.}}:inTension * _p{{.}}}{{/n}};\n    outTension: 0{{#n}}\n        + (min 1000 base{{.}}:outTension * _p{{.}}}{{/n}};\n    inDirIntrinsic: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDirIntrinsic) * _p{{.}}{{/n}};\n    outDirIntrinsic: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDirIntrinsic) * _p{{.}}{{/n}};\n}\n\ncontour > p {\n    on: 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    inDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};\n    outDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};\n    inTension: 0{{#n}}\n        + (min 10000 base{{.}}:inTension) * _p{{.}}{{/n}};\n    outTension: 0{{#n}}\n        + (min 10000 base{{.}}:outTension) * _p{{.}}{{/n}};\n}\n\npoint > left, point > right {\n    onDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:onDir) * _p{{.}}{{/n}};\n    onLength: 0{{#n}}\n        + base{{.}}:onLength * _p{{.}}{{/n}};\n}\n\npoint > center {\n    on: 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    in: 0{{#n}}\n        + base{{.}}:in * _p{{.}}{{/n}};\n    out: 0{{#n}}\n        + base{{.}}:out * _p{{.}}{{/n}};\n}\n\n/* terminals overide of skeleton2outline */\npoint:i(0) > left,\npoint:i(0) > right {\n    inDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};\n}\n\npoint:i(-1) > right,\npoint:i(-1) > left {\n    outDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};\n}\n\n/****\n * set up the super masters of this master and the proportions:\n\n* {\n{{#n}}\n    baseMaster{{.}}: S"master#anyName_{{.}}";\n{{/n}}\n{{#n}}\n    proportion{{.}}: 1;\n{{/n}}\n}\n\n****/\n';});
+
+define('metapolator/project/cps-generators/metapolation',[
+    'bower_components/mustache.js/mustache'
+  , 'require/text!./metapolation.tpl'
+], function(
+    mustache
+  , template
+) {
+    return function(masterCount) {
+        var n
+          , view = {}
+          , masterNs = view.n = [] // [1,2,3,4] when masterCount = 4
+          ;
+        // FIXME: what is better to confront designers with, counting
+        // from 0 or counting from 1? I tend to change this to 0 in the
+        // future, after the blue-pill 0.2.0 demo is out.
+        for(n=1;n<=masterCount;n++)
+            masterNs.push(n);
+        return mustache.render(template, view);
+    }
+});
+
+
 // This file is meant to export a stand alone version of the metapolator,
 // model and it's apis, that can be included as almost a single file.
 
@@ -28863,6 +29906,8 @@ require([
   , 'metapolator/models/CPS/elements/Rule'
   , 'metapolator/models/CPS/elements/AtImportCollection'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , 'metapolator/project/cps-generators/interpolation'
+  , 'metapolator/project/cps-generators/metapolation'
 ],
 function (
     document
@@ -28878,8 +29923,10 @@ function (
   , Rule
   , AtImportCollection
   , parseSelectorList
+  , cpsGenInterpolation
+  , cpsGenMetapolation
 ) {
-    
+    "use strict";
     /*global setTimeout window*/
     document.body.classList.add('dependencies-ready');
     var exports = {};
@@ -28895,6 +29942,7 @@ function (
      * this === project
      */
     function fileChangeHandler(path) {
+        /*jshint validthis: true*/
         var match = path.indexOf(this.cpsDir)
           , sourceName
           ;
@@ -29018,6 +30066,11 @@ function (
                  ;
         }
     };
+
+    exports.cpsGenerators = {
+        interpolation: cpsGenInterpolation
+      , metapolation: cpsGenMetapolation
+    }
 });
 
 define("metapolatorStandAlone", function(){});
