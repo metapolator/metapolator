@@ -141,7 +141,8 @@ app.controller("parametersController", function($scope, sharedScope) {
         return elements;
     };
 
-    $scope.changeParameter = function(parameterName, operatorName, value, elementType) {
+    $scope.changeParameter = function(parameterName, operator, elementType, range) {
+        var operatorName = operator.name;
         var key = parameterName + "Factor";
         if (parameterName == "sidebearingLeft" || parameterName == "sidebearingRight") {
             var key = parameterName + "Summand";
@@ -156,18 +157,28 @@ app.controller("parametersController", function($scope, sharedScope) {
                         } else {
                             var ruleIndex = $scope.addRullAPI(elementType, master, master.name);
                         }
-                        $scope.setParameterModel(master, parameterName, operatorName, value);
+                        if (range) {
+                            var value = $scope.validateValue($scope.getRangeValue(master, parameterName, operator, elementType));
+                        } else {
+                            var value = $scope.validateValue(operator.low);
+                        }
+                        $scope.setParameterModel(master, master, parameterName, operatorName, value);
                         $scope.setParameterAPI(master, ruleIndex, key, value);
                     } else if (elementType == "glyph") {
                         angular.forEach(master.glyphs, function(glyph) {
                             if (glyph.edit) {
-                                // check if the glyph has a rule already
+                                // check if the element has a rule already
                                 if (glyph.ruleIndex) {
                                     var ruleIndex = glyph.ruleIndex;
                                 } else {
                                     var ruleIndex = $scope.addRullAPI(elementType, master, glyph.value);
                                 }
-                                $scope.setParameterModel(glyph, parameterName, operatorName, value);
+                                if (range) {
+                                    var value = $scope.validateValue($scope.getRangeValue(glyph, parameterName, operator, elementType));
+                                } else {
+                                    var value = $scope.validateValue(operator.low);
+                                }
+                                $scope.setParameterModel(master, glyph, parameterName, operatorName, value);
                                 $scope.setParameterAPI(master, ruleIndex, key, value);
                             }
                         });
@@ -176,6 +187,57 @@ app.controller("parametersController", function($scope, sharedScope) {
             });
         });
         $scope.optimizeOperators();
+    };
+
+    $scope.validateValue = function(x) {
+        if (isNaN(x) || x == "") {
+            x = 0;
+        }
+        var roundedX = Math.round(x * 100) / 100;
+        var toF = roundedX.toFixed(2);
+        return toF;
+    };
+
+    $scope.getRangeValue = function(element, parameterName, myOperator, elementType) {
+        var operatorName = myOperator.name;
+        var oldLow = myOperator.low;
+        var oldHigh = myOperator.high;
+        var newLow = parseFloat(myOperator.newLow);
+        var newHigh = parseFloat(myOperator.newHigh);
+        var currentValue = null;
+        var newValue;
+        // find current value
+        angular.forEach(element.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                angular.forEach(parameter.operators, function(operator) {
+                    if (operator.name == operatorName) {
+                        currentValue = parseFloat(operator.value);
+                    }
+                });
+            }
+        });
+        if (currentValue == null) {
+            angular.forEach($scope.operators, function(globalOperator) {
+                if (globalOperator.name == operatorName) {
+                    currentValue = globalOperator.standardValue;
+                }
+            });
+        }
+        if (oldLow == newLow && oldHigh == newHigh) {
+            // no change
+        } else {
+            var scale = oldHigh - oldLow;
+            if (oldLow == newLow) {
+                var changeFactor = newHigh / oldHigh;
+                var change = newHigh - oldHigh;
+            } else {
+                var changeFactor = newLow / oldLow;
+                var change = newLow - oldLow;
+            }
+            var myShare = (currentValue - oldLow) / scale;
+            var newValue = myShare * change + currentValue;
+        }
+        return newValue;
     };
 
     $scope.addRullAPI = function(elementType, master, elementName) {
@@ -198,16 +260,56 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
     };
 
-    $scope.setParameterModel = function(element, parameterName, operatorName, value) {
+    $scope.setParameterModel = function(master, element, parameterName, operatorName, value) {
+        var theParameter = null;
+        var theOperator = null;
         angular.forEach(element.parameters, function(parameter) {
             if (parameter.name == parameterName) {
+                theParameter = parameter;
                 angular.forEach(parameter.operators, function(operator) {
                     if (operator.name == operatorName) {
-                        operator.value = parseFloat(value);
+                        theOperator = operator;
                     }
                 });
             }
         });
+        // in ranges situation can appear where an element doesn't have the parameter or the operator already
+        if (!theOperator) {
+            // create operator
+            var newOperator = $scope.getOperatorByName(operatorName);
+            newOperator.value = parseFloat(value);
+            if (!theParameter) {
+                // create parameter
+                var newParameter = $scope.getParameterByName(parameterName);
+                newParameter.operators = [];
+                newParameter.operators.push(newOperator);
+                element.parameters.push(newParameter);
+            } else {
+                theParameter.operators.push(newOperator);
+            }
+        } else {
+            theOperator.value = parseFloat(value);
+        }
+    };
+
+    $scope.getParameterByName = function(parameterName) {
+        var theParameter;
+        angular.forEach($scope.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                theParameter = parameter;
+            }
+        });
+        return theParameter;
+    };
+
+    $scope.getOperatorByName = function(operatorName) {
+        var theOperator;
+        angular.forEach($scope.operators, function(operator) {
+            if (operator.name == operatorName) {
+                theOperator = operator;
+            }
+        });
+        return theOperator;
     };
 
     // check in model if the glyph has this specific parameter
@@ -293,9 +395,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         $scope.data.parametersPanel = 0;
         $scope.data.updateSelectionParameters();
-        if ($scope.data.pill != "blue") {
-            $scope.data.changeParameter(parameter.name, operator.name, operator.standardValue, $scope.parameterLevel);
-        }
     };
 
     $scope.pushParameterToModel = function(element, newParameter, newOperator) {
