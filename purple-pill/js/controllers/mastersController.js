@@ -35,7 +35,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.duplicateMasters = function () {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     $scope.uniqueMasterId++;
                     var masterName = "master" + $scope.uniqueMasterId;
                     var cpsFile = masterName + ".cps";
@@ -52,7 +52,6 @@ app.controller("mastersController", function($scope, sharedScope) {
                         displayName: masterName,
                         cpsFile: cpsFile,
                         ruleIndex: angular.copy(master.ruleIndex),
-                        type: "redpill",
                         display: false,
                         edit: false,
                         ag: angular.copy(master.ag),
@@ -71,7 +70,6 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.mouseDown = false;
     
     $scope.toggleViewSet = function(set, initialDisplay) {
-        console.log("!");
         if (initialDisplay == "true") {
             var newStatus = false;
         } else {

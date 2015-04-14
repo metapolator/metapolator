@@ -189,7 +189,7 @@ app.filter('specimenFilter', function() {
             if (specimenPanel == 1) {
                 angular.forEach(sequences, function(sequence) {
                     angular.forEach(sequence.masters, function(master) {
-                        if (master.display && master.type == "redpill") {
+                        if (master.display) {
                             nrOfFonts++;
                             masterArray.push({
                                 "sequenceId" : sequence.id,

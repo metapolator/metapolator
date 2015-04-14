@@ -44,87 +44,152 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.selectionParametersGlyphs = [];
 
     $scope.data.updateSelectionParameters = function() {
-        $scope.selectionParametersMasters = [];
+        console.clear();
         $scope.selectionParametersGlyphs = [];
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
-                    angular.forEach(master.parameters, function(masterParameter) {
-                        $scope.selectionParametersMasters.push(masterParameter);
-                    });
-                    angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.edit) {
-                            angular.forEach(glyph.parameters, function(glyphParameter) {
-                                $scope.selectionParametersGlyphs.push(glyphParameter);
+        
+        angular.forEach($scope.parameters, function(theParameter) {
+            var theOperators = [];
+            var hasThisParameter = false;
+            angular.forEach($scope.operators, function(theOperator) {
+                var hasThisOperator = false;
+                var nrOfGlyphs = 0;
+                var nrOfHasOperator = 0;
+                var lowest = null;
+                var highest = null;
+                angular.forEach($scope.data.sequences, function(sequence) {
+                    angular.forEach(sequence.masters, function(master) {
+                        if (master.edit) {
+                            angular.forEach(master.glyphs, function(glyph) {
+                                if (glyph.edit) {
+                                    nrOfGlyphs++;
+                                    angular.forEach(glyph.parameters, function(glyphParameter) {
+                                        if (glyphParameter.name == theParameter.name) {
+                                            hasThisParameter = true;
+                                            angular.forEach(glyphParameter.operators, function(operator) {
+                                                if (operator.name == theOperator.name) {
+                                                    hasThisOperator = true;
+                                                    nrOfHasOperator++;
+                                                    if (operator.value < lowest || lowest == null) {
+                                                        lowest = operator.value;
+                                                    }
+                                                    if (operator.value > highest || highest == null) {
+                                                        highest = operator.value;
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                    });
+                                }
                             });
+                            
                         }
+                    });
+                });
+                // standard value                  
+                if (nrOfGlyphs > nrOfHasOperator && nrOfHasOperator > 0) {
+                    console.log("!");
+                    if (theOperator.standardValue < lowest) {
+                        lowest = theOperator.standardValue;
+                    } 
+                    if (theOperator.standardValue > highest) {
+                        highest = theOperator.standardValue;
+                    }
+                }
+                var range = true;
+                if (lowest == highest) {
+                    range = false;
+                }
+                if (hasThisOperator) {
+                    theOperators.push({
+                        name : theOperator.name,
+                        range : range,
+                        low : lowest,
+                        high : highest
                     });
                 }
             });
+            if (hasThisParameter) {
+                $scope.selectionParametersGlyphs.push({
+                    name : theParameter.name,
+                    displayName : theParameter.displayName,
+                    operators : theOperators
+                });
+            }
         });
     };
 
     $scope.data.changeParameter = function(parameterName, operatorName, value, elementType) {
-        if ($scope.data.pill != "blue") {
-            var key = parameterName + "Factor";
-            if (parameterName == "sidebearingLeft" || parameterName == "sidebearingRight") {
-                var key = parameterName + "Summand";
-            }
-            angular.forEach($scope.data.sequences, function(sequence) {
-                angular.forEach(sequence.masters, function(master) {
-                    if (master.type == "redpill" && master.edit) {
-                        if (elementType == "master") {
-                            // check if the glyph has a rule already
-                            if (master.parameters.length > 0) {
-                                var ruleIndex = master.ruleIndex;
-                            } else {
-                                var ruleIndex = $scope.addRullAPI(elementType, master, master.name);
-                            }
-                            $scope.setParameterAPI(master, ruleIndex, key, value);
-                        } else if (elementType == "glyph") {
-                            angular.forEach(master.glyphs, function(glyph) {
-                                if (glyph.edit) {
-                                    // check if the glyph has a rule already
-                                    if (glyph.ruleIndex) {
-                                        var ruleIndex = glyph.ruleIndex;
-                                    } else {
-                                        var ruleIndex = $scope.addRullAPI(elementType, master, glyph.value);
-                                    }
-                                    $scope.setParameterAPI(master, ruleIndex, key, value);
-                                }
-                            });
-                        }
-                    }
-                });
-            });
+        var key = parameterName + "Factor";
+        if (parameterName == "sidebearingLeft" || parameterName == "sidebearingRight") {
+            var key = parameterName + "Summand";
         }
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.edit) {
+                    if (elementType == "master") {
+                        // check if the glyph has a rule already
+                        if (master.parameters.length > 0) {
+                            var ruleIndex = master.ruleIndex;
+                        } else {
+                            var ruleIndex = $scope.addRullAPI(elementType, master, master.name);
+                        }
+                        $scope.setParameterAPI(master, ruleIndex, key, value);
+                    } else if (elementType == "glyph") {
+                        angular.forEach(master.glyphs, function(glyph) {
+                            if (glyph.edit) {
+                                // check if the glyph has a rule already
+                                if (glyph.ruleIndex) {
+                                    var ruleIndex = glyph.ruleIndex;
+                                } else {
+                                    var ruleIndex = $scope.addRullAPI(elementType, master, glyph.value);
+                                }
+                                $scope.setParameterModel(glyph, parameterName, operatorName, value);
+                                $scope.setParameterAPI(master, ruleIndex, key, value);
+                            }
+                        });
+                    }
+                }
+            });
+        });
         $scope.optimizeOperators();
     };
 
     $scope.addRullAPI = function(elementType, master, elementName) {
-        console.log("added rule");
-        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
-        var l = parameterCollection.length;
-        var selectorListString = elementType + "#" + elementName;
-        var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
-        return ruleIndex;
+        if ($scope.data.pill != "blue") {
+            var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
+            var l = parameterCollection.length;
+            var selectorListString = elementType + "#" + elementName;
+            var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
+            return ruleIndex;
+        }
     };
 
     $scope.setParameterAPI = function(master, ruleIndex, key, value) {
-        console.log(ruleIndex);
-        var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
-        var cpsRule = parameterCollection.getItem(ruleIndex);
-        var parameterDict = cpsRule.parameters;
-        var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
-        setParameter(parameterDict, key, value);
+        if ($scope.data.pill != "blue") {
+            var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
+            var cpsRule = parameterCollection.getItem(ruleIndex);
+            var parameterDict = cpsRule.parameters;
+            var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
+            setParameter(parameterDict, key, value);
+        }
+    };
+
+    $scope.setParameterModel = function(element, parameterName, operatorName, value) {
+        angular.forEach(element.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                angular.forEach(parameter.operators, function(operator) {
+                    if (operator.name == operatorName) {
+                        operator.value = parseFloat(value);
+                    }
+                });
+            }
+        });
     };
 
     // check in model if the glyph has this specific parameter
     $scope.getParameterInRule = function(glyph, parameterName, operatorName) {
         var theParameter;
-        console.log(glyph);
-        console.log(parameterName);
-        console.log(glyph.parameters);
         angular.forEach(glyph.parameters, function(parameter) {
             if (parameter.name == parameterName) {
                 angular.forEach(parameter.operators, function(operator) {
@@ -150,7 +215,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.data.getParameter = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     angular.forEach($scope.parameters, function(parameter, index) {
                         angular.forEach($scope.operators, function(operator) {
                             var key = parameter + operator.affix;
@@ -190,7 +255,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.addParameterToElements = function(parameter, operator) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     if ($scope.parameterLevel == "master") {
                         $scope.pushParameterToModel(master, parameter, operator);
                     } else if ($scope.parameterLevel == "glyph") {
@@ -319,7 +384,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.editParameter = function(editParameter, editOperator) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             angular.forEach(glyph.parameters, function(parameter) {
@@ -359,7 +424,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var inheritance = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             inheritance = true;
@@ -377,7 +442,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var glyphFixed = null;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             angular.forEach(parameter.operations, function(operation) {
@@ -436,7 +501,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var selected = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             selected = true;
@@ -452,7 +517,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var selected = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.type == "redpill" && master.edit) {
+                if (master.edit) {
                     selected = true;
                 }
             });
