@@ -438,15 +438,15 @@ Since there are only stand-alone masters, only simple mixing of masters (e.g. 50
 
 _Quick overview: there are 4 masters in this workspace, the Bold one has been set to take up the slack that the other 3 leave (to implement the 100% rule); the Bold slider is coupled to the slider of the **largest** of the other 3; the metapolation coefficients are the ratio of the 4 setting shown under each slider; 3 other instances live on this design space._
 
-* When 3 or more masters have been dropped on the control design space, one of them is shown as the ‘slack master’ (above: Bold), i.e. the one that picks up the slack of what the others leave, sizing itself to implement the 100% rule;
+* When 2 or more masters have been dropped on the control design space, one of them is shown as the ‘slack master’ (above: Bold), i.e. the one that picks up the slack of what the others leave, sizing itself to implement the 100% rule;
   * the slack master has a reversed slider, starting from the other side; its thumb is rigidly connected to the thumb of the _largest_ (in slider value) of the other masters; **note** that when sliding (or value editing) any of the other masters, they can enter and leave this role of ‘largest’;
   * changing the slack slider changes the largest slider, and changing the largest slider changes the slack slider; the difference is—
     * changing the slack slider changes **all other ones** so that they retain their relative proportions;
     * changing the largest slider, **only** changes the slack one—and the largest slider can lose its ‘largest’ role when moved below any other non-slack slider.
-  * the popup beside the slack master label contains all dropped masters, in the order they were dropped, and allow any of these to be picked as slack master; the default is the second master that was dropped on this design space; when the slack master is changed, the slider setting are recalculated from the current metapolation coefficients;
+  * when there are 3 or more masters, a popup beside the slack master label contains all dropped masters, in the order they were dropped, and allows any of these to be picked as slack master; the default is the second master that was dropped on this design space; when the slack master is changed, the slider setting are recalculated from the current metapolation coefficients;
 * all masters are always listed top–to–bottom in the order they were dropped;
 * the instance symbol (blue diamonds here) is used to show the position of all other instances that are on this design space;
-* for every additional master dropped on this design space, one additional slider is created; its default setting is 50% and the new metapolation is calculated from that;
+* for every additional master dropped on this design space, one additional slider is created; its default setting is **zero**, which means it does not immediately change the metapolation recipe of _all_ the instances on this design space;
 * numerical input/output under each slider:
   * only one decimal point is to be shown;
   * values that are typed in by users or a result from calculation (from metapolation coefficients) can be any, single-decimal, value.
@@ -472,9 +472,9 @@ at this moment the first instance for this design space exists, it is 100% the f
 
 After dropping the second master the design space looks like this:
 
-![](http://mmiworks.net/metapolator/nonsilent2.png)
+![](http://mmiworks.net/metapolator/nonsilent21.png)
 
-a simple slider with no configuration.
+the second slider has become the slack one. 50–50 is the default setting. There is no configuration.
 
 After dropping the third master, the design space becomes fully functional:
 
