@@ -250,6 +250,27 @@ Calculating the effective value of each parameter is done in the following, stri
 
 We see that by and large this follows the order of display of expressions.
 
+#### spacing and sidebearings
+
+Spacing = front Sidebearing + back Sidebearing, and a change to Spacing is equally divided over each Sidebearing. If the coupling between the three is so tight, **why do all three exist?**
+
+They exist because it would be ludicrous if at master level users could not express simply to “increase Spacing by 15”, and it would be just as ludicrous that users could not adjust either sidebearing for individual glyphs.
+
+OK, three numbers, **why only two parameters**, with both Sidebearings squeezed into one? This is because the system of glyph width, advance, sidebearings and spacing is a game of _three_ numbers. It is bloat to end up with _four_ parameters. Hence a Jedi mind trick was performed, there are 3 parameters (Width, Spacing and Sidebearings) and four numbers can be put in. Note that through the coupling of Spacing and Sidebearings the degrees of freedom is lower than four.
+
+Rules for handling Spacing and Sidebearings:
+
+1. Sidebearings is the real (cps administrated) parameter and Spacing the convenience notation—use this when in doubt;
+* changes in Spacing expressions are transferred to equivalent Sidebearings expressions, and then the effective value of both sidebearings is added up and set as the Spacing effective value;
+  * a _change_ to the Spacing assigned value is transferred as a delta (+ or -) to both Sidebearings, split 50–50;
+  * Spacing multiplication (×) and divide (÷) expressions are simply performed on both Sidebearings;
+  * Spacing addition (+) and subtraction (-) expressions performed on both Sidebearings, with half the value;
+  * Sidebearings min and max are performed on either Sidebearing;
+  * the effective values of the Sidebearings are added up and transferred to the Spacing effective value;
+  * Spacing min and max are performed; if this _changed_ the Spacing effective value, then the effective delta this constitutes (+ or -) is transferred to both Sidebearings, split 50–50.
+* **note:** that the system above combines [as usual](https://github.com/metapolator/metapolator/wiki/working-UI-demo#the-math) with the master & glyph level working;
+* expression consolidation is performed separately for Spacing and Sidebearings.
+
 #### layout and typography hints
 Just some input for visual design and development.
 
