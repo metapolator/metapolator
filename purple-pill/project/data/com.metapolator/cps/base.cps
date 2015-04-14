@@ -7959,3 +7959,7 @@ point:i(3) > right {
 }
 }
 }
+
+@namespace(glyph#space) {
+
+}
