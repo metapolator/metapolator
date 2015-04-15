@@ -56,7 +56,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var axesSet = jQuery.extend(true, [], designSpace.axes);
             var newMetapValue = 100/ axesSet.length;
             angular.forEach(axesSet, function(axis) {
-                axis.value = 50;
+                //axis.value = 50;
                 axis.metapValue = newMetapValue;
             });            
             var instanceName = "instance" + $scope.uniqueInstanceId;
@@ -214,15 +214,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designSpace == $scope.data.currentDesignSpace.id) {
                     // for the current instance the slider value of the new axis is 50, for the others in this designspace it is 0 
-                    var thisValue = 0;
-                    if (instance == $scope.data.currentInstance) {
-                        thisValue = value;
-                    }
                     instance.axes.push({
                         metapValue : 0,
                         masterName : master.name,
                         masterdisplayName : master.displayName,
-                        value : thisValue
+                        value : value
                     });
                     // empty current cps file and rewrite it with new masters
                     if ($scope.data.pill != "blue") {

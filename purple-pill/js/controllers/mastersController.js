@@ -205,7 +205,10 @@ app.controller("mastersController", function($scope, sharedScope) {
         if ($scope.data.currentDesignSpace.type == "x") {
             $scope.data.currentDesignSpace.type = "Control";
         }
-        var thisValue = 50;
+        var thisValue = 0;
+        if (designspace.axes.length == 0) {
+           thisValue = 50;
+        }
         if (designspace.axes.length == 1) {
            thisValue = 100 -  designspace.axes[0].value;
         }
