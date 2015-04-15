@@ -109,6 +109,15 @@ app.controller('engine', function($scope, sharedScope) {
                 parameters : []
             });
         }
+        var newParam = {
+            name: "weight",
+            displayName: "Weight",
+            operators: [{
+                name: "x",
+                value: 3
+            }]
+        };
+        glyphs[3].parameters.push(newParam);
 
         for (var i = 0; i < masters.length; i++) {
             var myEdit = false;

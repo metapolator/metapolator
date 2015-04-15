@@ -63,7 +63,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var elements = $scope.findElements(level);
                 angular.forEach(elements, function(element) {
                     nrOfElements++;
-                    angular.forEach(element.parameters, function(elementParameter) {
+                    angular.forEach(element.element.parameters, function(elementParameter) {
                         if (elementParameter.name == theParameter.name) {
                             hasThisParameter = true;
                             angular.forEach(elementParameter.operators, function(operator) {
@@ -121,7 +121,11 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit) {
-                        elements.push(master);
+                        var thisElement = {
+                            element: master,
+                            master: master
+                        };
+                        elements.push(thisElement);
                     }
                 });
             });
@@ -131,7 +135,12 @@ app.controller("parametersController", function($scope, sharedScope) {
                     if (master.edit) {
                         angular.forEach(master.glyphs, function(glyph) {
                             if (glyph.edit) {
-                                elements.push(glyph);
+                                // changeParameter needs to know the master when editing on glyph level
+                                var thisElement = {
+                                    element: glyph,
+                                    master: master
+                                };
+                                elements.push(thisElement);
                             }
                         });
                     }
@@ -147,44 +156,25 @@ app.controller("parametersController", function($scope, sharedScope) {
         if (parameterName == "sidebearingLeft" || parameterName == "sidebearingRight") {
             var key = parameterName + "Summand";
         }
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
-                    if (elementType == "master") {
-                        // check if the master has a rule already
-                        if (master.ruleIndex) {
-                            var ruleIndex = master.ruleIndex;
-                        } else {
-                            var ruleIndex = $scope.addRullAPI(elementType, master, master.name);
-                        }
-                        if (range) {
-                            var value = $scope.validateValue($scope.getRangeValue(master, parameterName, operator, elementType));
-                        } else {
-                            var value = $scope.validateValue(operator.low);
-                        }
-                        $scope.setParameterModel(master, master, parameterName, operatorName, value);
-                        $scope.setParameterAPI(master, ruleIndex, key, value);
-                    } else if (elementType == "glyph") {
-                        angular.forEach(master.glyphs, function(glyph) {
-                            if (glyph.edit) {
-                                // check if the element has a rule already
-                                if (glyph.ruleIndex) {
-                                    var ruleIndex = glyph.ruleIndex;
-                                } else {
-                                    var ruleIndex = $scope.addRullAPI(elementType, master, glyph.value);
-                                }
-                                if (range) {
-                                    var value = $scope.validateValue($scope.getRangeValue(glyph, parameterName, operator, elementType));
-                                } else {
-                                    var value = $scope.validateValue(operator.low);
-                                }
-                                $scope.setParameterModel(master, glyph, parameterName, operatorName, value);
-                                $scope.setParameterAPI(master, ruleIndex, key, value);
-                            }
-                        });
-                    }
+        var elements = $scope.findElements(elementType);
+        angular.forEach(elements, function(element) {
+            if (element.element.ruleIndex) {
+                var ruleIndex = element.element.ruleIndex;
+            } else {
+                if (elementType == "master") {
+                    elementName = element.element.name;
+                } else if (elementType == "glyph") {
+                    elementName = element.element.value;
                 }
-            });
+                var ruleIndex = $scope.addRullAPI(elementType, element.master, elementName);
+            }
+            if (range) {
+                var value = $scope.validateValue($scope.getRangeValue(element.element, parameterName, operator, elementType));
+            } else {
+                var value = $scope.validateValue(operator.low);
+            }
+            $scope.setParameterModel(element.master, element.element, parameterName, operatorName, value);
+            $scope.setParameterAPI(element.master, ruleIndex, key, value);
         });
         $scope.optimizeOperators();
     };
