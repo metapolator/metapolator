@@ -35,7 +35,8 @@ app.directive('control', function($document) {
                 // responsive axes
                 scope.designSpaceWidth = $("#panel-3").outerWidth();
                 axisWidth = scope.designSpaceWidth - 200;
-                var axesString = 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0';
+                var axesString = 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0' + ' L' + (indentLeft + axisWidth) + ' ' + axisTab;
+                var reverseAxesString = 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0';
                 
                 designSpace = scope.data.currentDesignSpace;
                 var inactiveInstances = [];
@@ -89,14 +90,14 @@ app.directive('control', function($document) {
 
                     // append axis itself
                     axes.append('path').attr('d', axesString).attr('class', 'slider-axis');
-                    axes.append('path').attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (thisInstance.axes[0].value * (axisWidth / 100) + indentLeft) + ' 0').attr('class', 'slider-axis-active').attr('id', "axis-active0");
+                    axes.append('path').attr('d', 'M' + indentLeft + ' 0  L' + (thisInstance.axes[0].value * (axisWidth / 100) + indentLeft) + ' 0').attr('class', 'slider-axis-active').attr('id', "axis-active0");
 
                     // append slider handle and according diamond
                     axes.append('circle').attr('r', 8).attr('cx', thisInstance.axes[0].value * (axisWidth / 100) + indentLeft).attr('cy', '0').attr('index', 0).attr('class', 'slider-handle').attr('id', 'slider0').call(drag);
                     axes.append('g').attr('id', 'diamond0').attr('transform', "translate(" + (thisInstance.axes[0].value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)").append('polygon').attr('points', diamondShape).attr('fill', diamondcolor);
 
                     // create left label and remove button
-                    var leftlabels = axes.append('g').attr('transform', "translate(" + (paddingLeft - indentLeft) + "," + paddingLabel + ")").attr('class', 'slider-label-right-container');
+                    var leftlabels = axes.append('g').attr('transform', "translate(" + (paddingLeft + axisWidth - indentRight) + "," + paddingLabel + ")").attr('class', 'slider-label-right-container');
                     leftlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
                     leftlabels.append('text').text(scope.data.findMaster(thisInstance.axes[0].masterName).displayName).attr('class', 'slider-label-right slider-label').attr('x', 16);
                     leftlabels.append('text').attr('x', 0).attr('y', '2').text("o").attr('masterName', thisInstance.axes[0].masterName).attr('class', 'slider-button slider-remove-master').on('click', function() {
@@ -104,10 +105,8 @@ app.directive('control', function($document) {
                     });
 
                     // create right label
-                    axes.append('text').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingLabel).text('Just one more...').attr('class', 'label-right-inactive slider-label');
+                    axes.append('text').attr('x', paddingLeft - indentLeft).attr('y', paddingLabel).text('Just one more...').attr('class', 'label-right-inactive slider-label');
                 } else {
-
-
                         // create slider containers
                         var axes = layer1.selectAll('g').data(thisInstance.axes).enter().append('g').attr('transform', function(d, i) {
                             var x = paddingLeft - indentLeft;
@@ -117,14 +116,18 @@ app.directive('control', function($document) {
 
                         // append axis itself
                         axes.append('path').attr('d', function(d, i) {
-                            return axesString;
+                            if (i == designSpace.mainMaster) {
+                                return reverseAxesString;
+                            } else {
+                                return axesString;
+                            }   
                         }).attr('class', 'slider-axis');
                         // active axis
                         axes.append('path').attr('d', function(d, i) {
                             if (i == designSpace.mainMaster) {
-                                return 'M' + ((100 - d.value) * (axisWidth / 100) + indentLeft) + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab;
+                                return 'M' + ((100 - d.value) * (axisWidth / 100) + indentLeft) + ' 0 L' + (indentLeft + axisWidth) + ' 0';
                             } else {
-                                return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (d.value * (axisWidth / 100) + indentLeft) + ' 0';
+                                return 'M' + indentLeft + ' 0  L' + (d.value * (axisWidth / 100) + indentLeft) + ' 0';
                             }
                         }).attr('class', 'slider-axis-active').attr('id', function(d, i) {
                             return "axis-active" + i;
@@ -157,9 +160,9 @@ app.directive('control', function($document) {
                     // left labels and remove buttons
                     var leftlabels = axes.append('g').attr('transform', function(d, i) {
                         if (i == designSpace.mainMaster) {
-                            var x = paddingLeft + axisWidth - indentRight;
-                        } else {
                             var x = paddingLeft - indentLeft;
+                        } else {
+                            var x = paddingLeft + axisWidth - indentRight;
                         }
                         
                         var y = paddingLabel;
@@ -270,13 +273,13 @@ app.directive('control', function($document) {
 
             function drawNormalAxes(axis, xPosition) {
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
-                d3.select("path#axis-active" + axis).attr('d', 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + xPosition + ' 0');
+                d3.select("path#axis-active" + axis).attr('d', 'M' + indentLeft + ' 0  L' + xPosition + ' 0');
                 d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
             }
 
             function drawSlackAxes(axis, xPosition) {
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
-                d3.select("path#axis-active" + axis).attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0  L' + (indentLeft + axisWidth) + ' ' + axisTab);
+                d3.select("path#axis-active" + axis).attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0');
                 d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
             }
 

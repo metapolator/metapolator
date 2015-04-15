@@ -149,9 +149,9 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.changeParameter = function(parameterName, operator, elementType, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13) {
             var operatorName = operator.name;
-            var key = parameterName + "Factor";
+            var key = parameterName + "F";
             if (parameterName == "spacing") {
-                var key = parameterName + "Summand";
+                var key = parameterName + "S";
             }
             var elements = $scope.findElements(elementType);
             angular.forEach(elements, function(element) {
