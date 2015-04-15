@@ -93,7 +93,7 @@ app.filter('rangeFilter', function() {
             if (filter.length == 0) {
                 filtered.push(thisGlyph);
             } else {
-                if (filter.indexOf(thisGlyph.value) > -1) {
+                if (filter.indexOf(thisGlyph.name) > -1) {
                     filtered.push(thisGlyph);
                 }
             }

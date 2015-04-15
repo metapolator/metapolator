@@ -116,7 +116,7 @@ function($scope, $sce, sharedScope) {
             angular.forEach(sequence.masters, function(master) {
                 if(master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.value == glyphName && sequence.id == sequenceId && master.id == masterId) {
+                        if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = true;
                         } else {
                             glyph.edit = false;
@@ -133,7 +133,7 @@ function($scope, $sce, sharedScope) {
             angular.forEach(sequence.masters, function(master) {
                 if(master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.value == glyphName && sequence.id == sequenceId && master.id == masterId) {
+                        if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = !glyph.edit;
                         }
                     }); 
@@ -150,7 +150,7 @@ function($scope, $sce, sharedScope) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
-                            if (glyph.value == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
+                            if (glyph.name == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
                                 isinset = true;
                             }
                         } 
@@ -174,7 +174,7 @@ function($scope, $sce, sharedScope) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
-                            if (glyph.value == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
+                            if (glyph.name == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
                                 isinset = true;
                             }
                         } 
@@ -210,7 +210,7 @@ function($scope, $sce, sharedScope) {
                 angular.forEach(sequence.masters, function(master) {
                     if(master.id == masterId && master.edit) {
                         angular.forEach(master.glyphs, function(glyph) {
-                            if(glyph.value == glyphName) {
+                            if(glyph.name == glyphName) {
                                 if (glyph.edit) {
                                     edit = true;
                                 }

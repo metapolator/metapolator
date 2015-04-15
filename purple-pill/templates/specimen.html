@@ -30,7 +30,7 @@
             <div ng-repeat="sequence in data.sequences">
                 <ul ui-sortable="sortableOptions" class="glyph-range-master glyph-range" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display && master.type == 'redpill'">
                     <li ng-style="{'margin': (fontSize / 6) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range">
-                        <glyph mastername="{{master.name}}" sequence="{{sequence.id}}" master="{{master.id}}" glyph="{{glyph.value}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'selected-glyph':(glyph.edit && master.edit[0])}"></glyph>
+                        <glyph mastername="{{master.name}}" sequence="{{sequence.id}}" master="{{master.id}}" glyph="{{glyph.name}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'selected-glyph':(glyph.edit && master.edit[0])}"></glyph>
                     </li>
                 </ul>
             </div>

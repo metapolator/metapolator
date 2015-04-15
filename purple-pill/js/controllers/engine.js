@@ -21,7 +21,7 @@ app.controller('engine', function($scope, sharedScope) {
                 // adding glyphs to each master
                 for (var j = 0; j < master.children.length; j++) {
                     glyphs.push({
-                        value : master.children[j].id,
+                        name : master.children[j].id,
                         elementType: "glyph",
                         edit : false,
                         parameters : []
@@ -104,7 +104,7 @@ app.controller('engine', function($scope, sharedScope) {
         // adding glyphs to each master
         for (var j = 0; j < myGlyphs.length; j++) {
             glyphs.push({
-                value : myGlyphs[j],
+                name : myGlyphs[j],
                 edit : false,
                 parameters : []
             });

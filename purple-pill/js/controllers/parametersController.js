@@ -161,12 +161,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             if (element.element.ruleIndex) {
                 var ruleIndex = element.element.ruleIndex;
             } else {
-                if (elementType == "master") {
-                    elementName = element.element.name;
-                } else if (elementType == "glyph") {
-                    elementName = element.element.value;
-                }
-                var ruleIndex = $scope.addRullAPI(elementType, element.master, elementName);
+                var ruleIndex = $scope.addRullAPI(elementType, element.master, element.element.name);
             }
             if (range) {
                 var value = $scope.validateValue($scope.getRangeValue(element.element, parameterName, operator, elementType));
