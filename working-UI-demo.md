@@ -432,18 +432,18 @@ Here we can now see how much work we saved us by culling the masters column. The
 Optional: explore spaces (we look pretty close to having that working too).
 
 ### control space sliders
-Since there are only stand-alone masters, only simple mixing of masters (e.g. 50% bold, 50% italic) can be performed. Feature stacking (100% bold **and** 100% italic) is the realm of master sequences and cannot be performed. To address deficiencies in the [minimum ratio](https://github.com/metapolator/metapolator/wiki/metapolation#minimum-ratio) system, a new one was designed:
+Since there are only stand-alone masters, only simple mixing of masters (e.g. 50% bold, 50% italic) can be performed. Feature stacking (100% bold **and** 100% italic) is the realm of master sequences and cannot be performed. To address deficiencies in the [minimum ratio](https://github.com/metapolator/metapolator/wiki/metapolation#minimum-ratio) system, a new one was designed, and then redesigned:
 
-![](http://mmiworks.net/metapolator/nonsilentmixer.png)
+![](http://mmiworks.net/metapolator/reversemixer.png)
 
-_Quick overview: there are 4 masters in this workspace, the Bold one has been set to take up the slack that the other 3 leave (to implement the 100% rule); the Bold slider is coupled to the slider of the **largest** of the other 3; the metapolation coefficients are the ratio of the 4 setting shown under each slider; 3 other instances live on this design space._
+_Quick overview: there are 4 masters in this workspace, the Regular one has been set to take up the slack that the other 3 leave (to implement the 100% rule); the Regular slider is coupled to the slider of the **largest** of the other 3; the metapolation coefficients are the ratio of the 4 setting shown under each slider; 3 other instances live on this design space._
 
-* When 2 or more masters have been dropped on the control design space, one of them is shown as the ‘slack master’ (above: Bold), i.e. the one that picks up the slack of what the others leave, sizing itself to implement the 100% rule;
+* When 2 or more masters have been dropped on the control design space, one of them is shown as the ‘slack master’ (above: Regular), i.e. the one that picks up the slack of what the others leave, sizing itself to implement the 100% rule;
   * the slack master has a reversed slider, starting from the other side; its thumb is rigidly connected to the thumb of the _largest_ (in slider value) of the other masters; **note** that when sliding (or value editing) any of the other masters, they can enter and leave this role of ‘largest’;
   * changing the slack slider changes the largest slider, and changing the largest slider changes the slack slider; the difference is—
     * changing the slack slider changes **all other ones** so that they retain their relative proportions;
     * changing the largest slider, **only** changes the slack one—and the largest slider can lose its ‘largest’ role when moved below any other non-slack slider.
-  * when there are 3 or more masters, a popup beside the slack master label contains all dropped masters, in the order they were dropped, and allows any of these to be picked as slack master; the default is the second master that was dropped on this design space; when the slack master is changed, the slider setting are recalculated from the current metapolation coefficients;
+  * when there are 3 or more masters, a popup beside the slack master label contains all dropped masters, in the order they were dropped, and allows any of these to be picked as slack master; the default is the first master that was dropped on this design space; when the slack master is changed, the slider setting are recalculated from the current metapolation coefficients;
 * all masters are always listed top–to–bottom in the order they were dropped;
 * the instance symbol (blue diamonds here) is used to show the position of all other instances that are on this design space;
 * for every additional master dropped on this design space, one additional slider is created; its default setting is **zero**, which means it does not immediately change the metapolation recipe of _all_ the instances on this design space;
@@ -453,7 +453,7 @@ _Quick overview: there are 4 masters in this workspace, the Bold one has been se
 
 Here is the same design space as shown above, but right after Alternate has been set to be slack master:
 
-![](http://mmiworks.net/metapolator/nonsilentmixeralt.png)
+![](http://mmiworks.net/metapolator/reversemixeralt.png)
 
 the change of slack master does not change any metapolation coefficients, but _does_ change the input numbers and blue diamonds positions. All sliders and blue diamond positions are to be recalculated using [the math](https://github.com/metapolator/metapolator/wiki/working-UI-demo#metapolation-math) below.
 
@@ -466,25 +466,25 @@ Simon created this little welcome in a _pure_ stroke font (linking to the skelet
 
 After dropping the first master the design space looks like this:
 
-![](http://mmiworks.net/metapolator/nonsilent1.png)
+![](http://mmiworks.net/metapolator/reversemixer1.png)
 
-at this moment the first instance for this design space exists, it is 100% the first master.
+at this moment the first instance for this design space exists, it is 100% this first master.
 
 After dropping the second master the design space looks like this:
 
-![](http://mmiworks.net/metapolator/nonsilent21.png)
+![](http://mmiworks.net/metapolator/reversemixer2.png)
 
-the second slider has become the slack one. 50–50 is the default setting. There is no configuration.
+the first slider has become the slack one. 50–50 is the default setting. There is no configuration.
 
 After dropping the third master, the design space becomes fully functional:
 
-![](http://mmiworks.net/metapolator/nonsilent3.png)
+![](http://mmiworks.net/metapolator/reversemixer3.png)
 
 Non-slack masters can be removed:
 
-![](http://mmiworks.net/metapolator/nonsilentremove.png)
+![](http://mmiworks.net/metapolator/reversemixerremove.png)
 
- _(it is logical that removing the slack master involves a prior step of setting what the new one is)_. When the mouse hovers the label of a non-slack master, and after a 500ms timeout, a closing box appears nest to it. Clicking it **removes the master from the metapolation of every instance that lives on this design space**.
+ _(it is logical that removing the slack master involves a prior step of setting what the new one is)_. When the mouse hovers the label of a non-slack master, and after a 500ms timeout, a closing box appears nest to it. Clicking it **removes the master from the metapolation of every instance that lives on this design space**. **note:** when the number of masters on the design space is 1 or 2, any of them can be removed.
 
 When a master is removed from a design space (this can also be triggered by the removal of the master from the whole project) the metapolation is recalculated from the remaining slider settings. When it was the slack master that was removed from the project, and the number of masters is 4 or more, then conceptually the following is done:
 
