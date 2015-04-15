@@ -58,7 +58,7 @@ app.directive('control', function($document) {
                 // draw inactive instances
                 for(i = 0; i < inactiveInstances.length; i++) {
                     for(j = 0; j < inactiveInstances[i].axes.length; j++) {
-                        if (!(inactiveInstances[i].axes.length == 2 && j == 1)) {
+                        //if (!(inactiveInstances[i].axes.length == 2 && j == 1)) {
                             layer2.append('g').attr('transform', function() {
                                 if (j == scope.data.currentDesignSpace.mainMaster) {
                                     var x = paddingLeft - diamondsize + axisWidth / 100 * (100 - inactiveInstances[i].axes[j].value);    
@@ -70,7 +70,7 @@ app.directive('control', function($document) {
                             }).append('polygon').attr('points', diamondShape).attr('class', 'blue-diamond').attr('stroke', function(){
                                 return scope.data.colorCoding[inactiveInstances[i].id];
                             }).attr('fill', 'none'); 
-                        } 
+                        //} 
                     } 
                 }
                 var diamondcolor = scope.data.colorCoding[thisInstance.id];
@@ -106,41 +106,8 @@ app.directive('control', function($document) {
                     // create right label
                     axes.append('text').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingLabel).text('Just one more...').attr('class', 'label-right-inactive slider-label');
                 } else {
-                    /***** Two master in Design Space -> no 'slack master' *****/
-                    if (designSpace.axes.length == 2) {
-                        // create slider containers
-                        var axes = layer1.append('g').attr('transform', function() {
-                            var x = paddingLeft - indentLeft;
-                            var y = paddingTop;
-                            return "translate(" + x + "," + y + ")";
-                        }).attr('class', 'slider-container');
 
-                        // append axis itself
-                        axes.append('path').attr('d', function() {
-                            return 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0 L' + (indentLeft + axisWidth) + ' ' + axisTab;
-                        }).attr('class', 'slider-axis-active');
 
-                        // append slider handles and according diamond
-                        axes.append('circle').attr('r', 8).attr('cx', thisInstance.axes[0].value * (axisWidth / 100) + indentLeft).attr('cy', '0').attr('index', 0).attr('class', 'slider-handle').attr('type', 'two-master-handle').call(drag);
-                        axes.append('g').attr('id', 'diamond0').attr('transform', "translate(" + (thisInstance.axes[0].value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)").append('polygon').attr('points', diamondShape).attr('fill', diamondcolor);
-
-                        // create right label
-                        //axes.append('text').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingLabel).text(scope.data.findMaster(thisInstance.axes[1].masterName).displayName).attr('class', 'slider-label-right slider-label');
-
-                        var rightlabel = axes.append('g').attr('transform', function() {
-                            var x = paddingLeft + axisWidth - indentRight;
-                            var y = paddingLabel;
-                            return "translate(" + x + "," + y + ")";
-                        }).attr('class', 'slider-label-right-container');
-                        rightlabel.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
-                        rightlabel.append('text').text(scope.data.findMaster(thisInstance.axes[1].masterName).displayName).attr('class', 'slider-label-right slider-label').attr('x', 16);
-                        rightlabel.append('text').attr('x', 0).attr('y', '2').text("o").attr('masterName', thisInstance.axes[1].masterName).attr('class', 'slider-button slider-remove-master').on('click', function() {
-                            scope.removeMaster(1);
-                        });
-                    }
-
-                    /***** More masters in Design Space *****/
-                    else {
                         // create slider containers
                         var axes = layer1.selectAll('g').data(thisInstance.axes).enter().append('g').attr('transform', function(d, i) {
                             var x = paddingLeft - indentLeft;
@@ -185,17 +152,22 @@ app.directive('control', function($document) {
                                 return "translate(" + (d.value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)";
                             }
                         }).append('polygon').attr('points', diamondShape).attr('fill', diamondcolor);
-                    }
+
 
                     // left labels and remove buttons
                     var leftlabels = axes.append('g').attr('transform', function(d, i) {
-                        var x = paddingLeft - indentLeft;
+                        if (i == designSpace.mainMaster) {
+                            var x = paddingLeft + axisWidth - indentRight;
+                        } else {
+                            var x = paddingLeft - indentLeft;
+                        }
+                        
                         var y = paddingLabel;
                         return "translate(" + x + "," + y + ")";
                     }).attr('class', 'slider-label-right-container');
                     leftlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
                     leftlabels.append('text').text(function(d, i) {
-                        if (i != designSpace.mainMaster) {
+                        if (i != designSpace.mainMaster || thisInstance.axes.length == 2) {
                             return scope.data.findMaster(thisInstance.axes[i].masterName).displayName;
                         }
                     }).attr('class', 'slider-label-right slider-label').attr('x', 16);
