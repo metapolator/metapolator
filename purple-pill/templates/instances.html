@@ -26,7 +26,15 @@
                     <span ng-if="instance.exportFont">✓</span>
                 </div>
             </li>
-        </ul>    
+        </ul>  
+        <div style="padding: 20px;">
+            <div ng-repeat="instance in data.families[0].instances track by instance.id">
+                <b>{{instance.id}}</b>
+                <div>axes: <div ng-repeat="axis in instance.axes">{{axis.value}}</div></div><br><br>
+                <div>masters: <div ng-repeat="axis in instance.axes">[{{axis.masterdisplayName}}]: {{axis.metapValue | number:3}}</div></div>
+            </div>
+        </div>
+    </div> 
     </div>
     
 

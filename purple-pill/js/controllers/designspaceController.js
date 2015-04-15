@@ -111,7 +111,13 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         }
         for (var i = 0; i < n; i++) {
             var piece = parseFloat(axes[i].value);
-            instance.axes[i].metapValue = piece / cake;
+            // reverse the values when 2 masters (closer to the master is bigger amount, while in 3+ setup: more away from master is bigger amount)
+            if (n ==2) {
+                instance.axes[i].metapValue = 1 - (piece / cake);
+            } else {
+                instance.axes[i].metapValue = piece / cake;
+            }
+            
         }
     };
 
