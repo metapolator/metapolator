@@ -9,11 +9,11 @@
                         <div class="parameter-operator">{{operator.name}}</div>
                         <div class="operator-value">
                             <span ng-if="!operator.range">
-                                <input ng-model="operator.low" ng-blur="changeParameter(parameter.name, operator, 'master', false)"> 
+                                <input ng-model="operator.low" ng-blur="changeParameter(parameter.name, operator, 'master', false, 'blur')" ng-keyup="changeParameter(parameter.name, operator, 'master', false, $event)"> 
                             </span>
                             <span ng-if="operator.range"> 
-                                <input ng-model="operator.newLow" ng-init="operator.newLow = operator.low" ng-blur="changeParameter(parameter.name, operator, 'master', true)"> to
-                                <input ng-model="operator.newHigh" ng-init="operator.newHigh = operator.high" ng-blur="changeParameter(parameter.name, operator, 'master', true)">
+                                <input ng-model="operator.newLow" ng-init="operator.newLow = operator.low" ng-blur="changeParameter(parameter.name, operator, 'master', true, 'blur')" ng-keyup="changeParameter(parameter.name, operator, 'master', true, $event)"> to
+                                <input ng-model="operator.newHigh" ng-init="operator.newHigh = operator.high" ng-blur="changeParameter(parameter.name, operator, 'master', true, 'blur')" ng-keyup="changeParameter(parameter.name, operator, 'master', true, $event)">
                             </span>
                         </div>
                     </div> 
@@ -31,11 +31,11 @@
                         <div class="parameter-operator">{{operator.name}}</div>
                         <div class="operator-value">
                             <span ng-if="!operator.range">
-                                <input ng-model="operator.low" ng-blur="changeParameter(parameter.name, operator, 'glyph', false)"> 
+                                <input ng-model="operator.low" ng-blur="changeParameter(parameter.name, operator, 'glyph', false, 'blur')" ng-keyup="changeParameter(parameter.name, operator, 'glyph', false, $event)"> 
                             </span>
                             <span ng-if="operator.range"> 
-                                <input ng-model="operator.newLow" ng-init="operator.newLow = operator.low" ng-blur="changeParameter(parameter.name, operator, 'glyph', true)"> to
-                                <input ng-model="operator.newHigh" ng-init="operator.newHigh = operator.high" ng-blur="changeParameter(parameter.name, operator, 'glyph', true)">
+                                <input ng-model="operator.newLow" ng-init="operator.newLow = operator.low" ng-blur="changeParameter(parameter.name, operator, 'glyph', true, 'blur')" ng-keyup="changeParameter(parameter.name, operator, 'glyph', true, $event)"> to
+                                <input ng-model="operator.newHigh" ng-init="operator.newHigh = operator.high" ng-blur="changeParameter(parameter.name, operator, 'glyph', true, 'blur')" ng-keyup="changeParameter(parameter.name, operator, 'glyph', true, $event)">
                             </span>
                         </div>
                     </div>               

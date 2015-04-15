@@ -146,28 +146,30 @@ app.controller("parametersController", function($scope, sharedScope) {
         return elements;
     };
 
-    $scope.changeParameter = function(parameterName, operator, elementType, range) {
-        var operatorName = operator.name;
-        var key = parameterName + "Factor";
-        if (parameterName == "spacing") {
-            var key = parameterName + "Summand";
+    $scope.changeParameter = function(parameterName, operator, elementType, range, keyEvent) {
+        if (keyEvent == "blur" || keyEvent.keyCode == 13) {
+            var operatorName = operator.name;
+            var key = parameterName + "Factor";
+            if (parameterName == "spacing") {
+                var key = parameterName + "Summand";
+            }
+            var elements = $scope.findElements(elementType);
+            angular.forEach(elements, function(element) {
+                if (element.element.ruleIndex) {
+                    var ruleIndex = element.element.ruleIndex;
+                } else {
+                    var ruleIndex = $scope.addRullAPI(elementType, element.master, element.element.name);
+                }
+                if (range) {
+                    var value = $scope.validateValue($scope.getRangeValue(element.element, parameterName, operator, elementType));
+                } else {
+                    var value = $scope.validateValue(operator.low);
+                }
+                $scope.setParameterModel(element.master, element.element, parameterName, operatorName, value);
+                $scope.setParameterAPI(element.master, ruleIndex, key, value);
+            });
+            $scope.optimizeOperators();
         }
-        var elements = $scope.findElements(elementType);
-        angular.forEach(elements, function(element) {
-            if (element.element.ruleIndex) {
-                var ruleIndex = element.element.ruleIndex;
-            } else {
-                var ruleIndex = $scope.addRullAPI(elementType, element.master, element.element.name);
-            }
-            if (range) {
-                var value = $scope.validateValue($scope.getRangeValue(element.element, parameterName, operator, elementType));
-            } else {
-                var value = $scope.validateValue(operator.low);
-            }
-            $scope.setParameterModel(element.master, element.element, parameterName, operatorName, value);
-            $scope.setParameterAPI(element.master, ruleIndex, key, value);
-        });
-        $scope.optimizeOperators();
     };
 
     $scope.validateValue = function(x) {
