@@ -1,8 +1,8 @@
 @import 'flexmaster.cps';
 
 glyph, point > center, contour > p  {
-    sidebearingLeftSummand: master:sidebearingLeftSummand;
-    sidebearingRightSummand: master:sidebearingRightSummand;
+    sidebearingLeftSummand: 0.5 * master:spacingSummand + 0.5 * glyph:spacingSummand;
+    sidebearingRightSummand: 0.5 * master:spacingSummand + 0.5 * glyph:spacingSummand;
     widthFactor: master:widthFactor * glyph:widthFactor;
     heightFactor: master:heightFactor * glyph:heightFactor;
 }
@@ -12,14 +12,15 @@ point > left, point > right, contour > p {
 }
 
 master {
-    sidebearingLeftSummand: 0;
-    sidebearingRightSummand: 0;
+    spacingSummand: 40;
     widthFactor: 1;
     heightFactor: 1;
     weightFactor: 1;
 }
 
 glyph {
+    glyph:this;
+    spacingSummand: 0;
     widthFactor: 1;
     heightFactor: 1;
     weightFactor: 1;

@@ -22,7 +22,7 @@ app.controller('engine', function($scope, sharedScope) {
                 for (var j = 0; j < master.children.length; j++) {
                     glyphs.push({
                         name : master.children[j].id,
-                        elementType: "glyph",
+                        elementType : "glyph",
                         edit : false,
                         parameters : []
                     });
@@ -34,7 +34,7 @@ app.controller('engine', function($scope, sharedScope) {
                     name : masterName,
                     displayName : masterName,
                     cpsFile : cpsFile,
-                    ruleIndex: 3,
+                    ruleIndex : 3,
                     display : true,
                     edit : true,
                     ag : "ag",
@@ -42,16 +42,16 @@ app.controller('engine', function($scope, sharedScope) {
                     elementType : "master",
                     parameters : [{
                         name : "weight",
-                        displayName: "Weight",
+                        displayName : "Weight",
                         unit : "",
                         operators : [{
                             name : "x",
                             value : 1
                         }]
-    
+
                     }, {
                         name : "width",
-                        displayName: "Width",
+                        displayName : "Width",
                         unit : "",
                         operators : [{
                             name : "x",
@@ -59,13 +59,21 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }, {
                         name : "height",
-                        displayName: "Height",
+                        displayName : "Height",
                         unit : "",
                         operators : [{
                             name : "x",
                             value : 1
                         }]
-                }]
+                    }, {
+                        name : "spacing",
+                        displayName : "Spacing",
+                        unit : "",
+                        operators : [{
+                            name : "+",
+                            value : 40
+                        }]
+                    }]
                 });
                 masterId++;
             }
@@ -110,11 +118,11 @@ app.controller('engine', function($scope, sharedScope) {
             });
         }
         var newParam = {
-            name: "weight",
-            displayName: "Weight",
-            operators: [{
-                name: "x",
-                value: 3
+            name : "weight",
+            displayName : "Weight",
+            operators : [{
+                name : "x",
+                value : 3
             }]
         };
         glyphs[3].parameters.push(newParam);
@@ -130,12 +138,12 @@ app.controller('engine', function($scope, sharedScope) {
                 displayName : masters[i][1],
                 display : myEdit,
                 edit : myEdit,
-                ruleIndex: 3,
+                ruleIndex : 3,
                 ag : "ag",
                 glyphs : glyphs,
                 parameters : [{
                     name : "weight",
-                    displayName: "Weight",
+                    displayName : "Weight",
                     unit : "",
                     operators : [{
                         name : "x",
@@ -144,7 +152,7 @@ app.controller('engine', function($scope, sharedScope) {
 
                 }, {
                     name : "width",
-                    displayName: "Width",
+                    displayName : "Width",
                     unit : "",
                     operators : [{
                         name : "x",
@@ -152,7 +160,7 @@ app.controller('engine', function($scope, sharedScope) {
                     }]
                 }, {
                     name : "height",
-                    displayName: "Height",
+                    displayName : "Height",
                     unit : "",
                     operators : [{
                         name : "x",

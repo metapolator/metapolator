@@ -46,8 +46,8 @@ function($scope, $sce, sharedScope) {
         });
     };
 
-    $scope.selectedSpecimen = $scope.specimen[1];
-    $scope.fontSize = 90;
+    $scope.selectedSpecimen = $scope.specimen[0];
+    $scope.fontSize = 130;
     $scope.lineHeight = 0.8;
     $scope.nrOfFonts = 5;
     $scope.fontbys = ["glyph", "word", "paragraph"];

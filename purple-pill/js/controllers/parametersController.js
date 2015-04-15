@@ -14,12 +14,8 @@ app.controller("parametersController", function($scope, sharedScope) {
         displayName : "Height",
         unit : "",
     }, {
-        name : "sidebearingLeft",
-        displayName : "Sidebearing Left",
-        unit : "",
-    }, {
-        name : "sidebearingRight",
-        displayName : "Sidebearing Right",
+        name : "spacing",
+        displayName : "Spacing",
         unit : "",
     }];
 
@@ -153,7 +149,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.changeParameter = function(parameterName, operator, elementType, range) {
         var operatorName = operator.name;
         var key = parameterName + "Factor";
-        if (parameterName == "sidebearingLeft" || parameterName == "sidebearingRight") {
+        if (parameterName == "spacing") {
             var key = parameterName + "Summand";
         }
         var elements = $scope.findElements(elementType);
