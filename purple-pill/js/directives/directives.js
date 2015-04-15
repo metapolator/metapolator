@@ -60,9 +60,10 @@ app.directive('glyph', function($compile) {
         link : function(scope, element, attrs, ctrl) {
             var masterName = attrs.mastername;
             var glyphName = attrs.glyph;
-            if (glyphName == " ") {
+            if (glyphName == "space") {
                 element.parent().addClass("space-character");
-            } else if (glyphName == "*n") {
+            } 
+            if (glyphName == "*n") {
                 element.parent().addClass("line-break");
             } else if (glyphName == "*p") {
                 element.parent().addClass("paragraph-break");

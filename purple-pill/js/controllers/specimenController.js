@@ -46,7 +46,7 @@ function($scope, $sce, sharedScope) {
         });
     };
 
-    $scope.selectedSpecimen = $scope.specimen[0];
+    $scope.selectedSpecimen = $scope.specimen[1];
     $scope.fontSize = 90;
     $scope.lineHeight = 0.8;
     $scope.nrOfFonts = 5;
@@ -77,8 +77,7 @@ function($scope, $sce, sharedScope) {
         var prev_space = false;
         
         $(spaces).css({
-            // width: auto when the master will have a space character
-            "width": "40px",
+            "width": "auto",
             "clear": "none"
         }); 
         var brokenEnd = false;

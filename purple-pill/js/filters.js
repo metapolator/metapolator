@@ -110,8 +110,10 @@ app.filter('specimenFilter', function() {
                 for (var i = 0; i < string.length; i++) {
                     // temporary to lowercase because Project Zero has no lowercases yet
                     var glyph = string[i].toLowerCase();
-                    // detecting linebreak or paragraph
-                    if (glyph == "*" && (string[i + 1] == "n" || string[i + 1] == "p")) {
+                    // detecting space, linebreak or paragraph
+                    if (glyph == " ") {
+                        glyph = "space";
+                    } else if (glyph == "*" && (string[i + 1] == "n" || string[i + 1] == "p")) {
                         glyph = "*" + string[i + 1];
                         i++;
                     } else if (glyph == "<") {
