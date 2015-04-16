@@ -35,7 +35,7 @@ app.controller('engine', function($scope, sharedScope) {
                     displayName : masterName,
                     cpsFile : cpsFile,
                     ruleIndex : 3,
-                    display : true,
+                    display : false,
                     edit : true,
                     ag : "ag",
                     glyphs : glyphs,
