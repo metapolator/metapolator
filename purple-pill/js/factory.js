@@ -38,8 +38,6 @@ app.factory("sharedScope", function($rootScope) {
         },
         view : {
             menuItems : ["Parameters", "Design spaces", "Fonts"],
-            envokedMasterGlyphs: [],
-            envokedInstanceGlyphs: [],
             viewState : 0,
             panels : [3, 10, 3, 10, 3, 1, 12],
             totalPanelParts : 42,

@@ -59,7 +59,6 @@ function($scope, $sce, sharedScope) {
 
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
         $scope.filteredGlyphs = newVal;
-        $scope.envokeAndRevokeGlyphs();
         setTimeout(function() {
              manageSpaces();
         }, 500);
@@ -71,57 +70,6 @@ function($scope, $sce, sharedScope) {
         }, 500);
     }, true);
     
-    $scope.envokeAndRevokeGlyphs = function () {     
-        if ($scope.specimenPanel == 1) {
-            var envokedGlyphs = $scope.data.view.envokedMasterGlyphs;
-        } else if ($scope.specimenPanel == 2) {
-            var envokedGlyphs = $scope.data.view.envokedInstanceGlyphs;
-        }
-        
-        
-        // check if a glyph which is envoked is in the new filter, if not: revoke
-        angular.forEach(envokedGlyphs, function(envokedGlyph) {
-            var isFiltered = false;
-            angular.forEach($scope.filteredGlyphs, function(filteredGlyph) {
-                if (envokedGlyph.masterName == filteredGlyph.master.name && envokedGlyph.glyphName == filteredGlyph.glyphName) {
-                    isFiltered = true;
-                }
-            });
-            if (!isFiltered && $scope.filteredGlyphs.length > 0) {
-                // revoke
-                //console.log("Please revoke: #master:" + envokedGlyph.masterName + " #glyph:" + envokedGlyph.glyphName);
-                $scope.data.stateful.glyphRendererAPI.revoke(envokedGlyph.masterName, envokedGlyph.glyphName);
-            }
-        });
-        
-        // update the envoke array
-        envokedGlyphs = [];
-        angular.forEach($scope.filteredGlyphs, function(filteredGlyph) {
-            if (filteredGlyph.glyphName!= "*n" && filteredGlyph.glyphName!= "*p" && filteredGlyph.glyphName!= " ") {
-                // check for double entries
-                var doubleEntry = false;
-                angular.forEach(envokedGlyphs, function(envokedGlyph) {
-                    if (envokedGlyph.masterName == filteredGlyph.master.name && envokedGlyph.glyphName == filteredGlyph.glyphName) {
-                        doubleEntry = true;    
-                    }
-                });
-                if (!doubleEntry) {
-                    var glyph = {
-                        masterName: filteredGlyph.master.name,
-                        glyphName: filteredGlyph.glyphName
-                    };
-                    envokedGlyphs.push(glyph);
-                }
-            }
-        });
-        
-        if ($scope.specimenPanel == 1) {
-            $scope.data.view.envokedMasterGlyphs = envokedGlyphs;
-        } else if ($scope.specimenPanel == 2) {
-            $scope.data.view.envokedInstanceGlyphs = envokedGlyphs;
-        }
-    };
-
     function manageSpaces() {
         var spaces = $(".space-character");
         var x = 0;

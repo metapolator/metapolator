@@ -60,6 +60,11 @@ app.directive('glyph', function($compile) {
         link : function(scope, element, attrs, ctrl) {
             var masterName = attrs.mastername;
             var glyphName = attrs.glyph;
+            
+            element.bind('$destroy', function(event) {
+                scope.data.stateful.glyphRendererAPI.revoke(masterName, glyphName);
+            });
+            
             if (glyphName == "space") {
                 element.parent().addClass("space-character");
             } 

@@ -7,8 +7,6 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.uniqueMasterId = 0;
 
     $scope.deleteMasters = function(){
-        // need to make functionality to go through design spaces and instances to remove masters as well
-        // and in instances recalculate the metap values
         var thisIndex;
         if (confirm("You are about to remove master(s). This could affect design spaces as well. Ok?")) {
             angular.forEach($scope.data.sequences, function(sequence) {
