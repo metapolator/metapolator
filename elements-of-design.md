@@ -459,8 +459,7 @@ The local menu is as follows:
 * **Delete Family…** Deletes selected family/-ies, but not the instances they contain.
 
 #### dialogs
-
-* **when:** deleting the last instance on a design space; **text:** “Delete instance? This also deletes the design space \<DS name\>.”; **Buttons:** OK, Cancel.
+**when:** deleting the last instance on a design space; **text:** “Delete instance? This also deletes the design space \<DS name\>.”; **Buttons:** OK, Cancel.
 
 #### undo, copy + paste
 All editing of instance (family) data, naming and configuration (e.g. sorting) is Undoable.
