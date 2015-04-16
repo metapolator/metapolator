@@ -300,7 +300,7 @@ define([
         if(data.timeoutId)
             clearTimeout(data.timeoutId);
         // unsubscribe
-        data.glyph.off(data.subscriptionId);
+        data.MOM.off(data.subscriptionId);
         // delete the defs item
         data.svg.parentElement.removeChild(data.svg);
         components = data.components;
