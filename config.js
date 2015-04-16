@@ -16,6 +16,7 @@ module.exports = {
       , 'yaml': 'bower_components/js-yaml/dist/js-yaml.min'
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
       , 'codemirror': 'bower_components/codemirror'
+      , 'jszip': 'bower_components/jszip/dist/jszip'
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
       , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
     }
