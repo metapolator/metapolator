@@ -205,7 +205,7 @@ app.filter('specimenFilter', function() {
             } else if (specimenPanel == 2) {
                 angular.forEach(families, function(family) {
                     angular.forEach(family.instances, function(instance) {
-                        if (instance.display || instance.edit) {
+                        if (instance.display || instance == data.currentInstance) {
                             nrOfFonts++;
                             masterArray.push({
                                 "sequenceId" : family.id,
