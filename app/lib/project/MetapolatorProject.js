@@ -626,28 +626,7 @@ define([
         this._io.writeFile(false, instanceName, new Buffer(content, 'base64'));
 
         //delete the temp dir
-        function rmDirRecursive(io, dir){
-            function _isDirName(name) {
-                return name.slice(-1) === '/';
-            }
-
-            var entries = io.readDir(false, dir),
-                i, l
-                ;
-            for (i=0, l=entries.length; i<l; i++){
-                var entry = entries[i],
-                    fullPath = [dir, entry].join(dir.slice(-1) === '/' ? '' : '/')
-                    ;
-                if (_isDirName(fullPath)){
-                    rmDirRecursive(io, fullPath);
-                } else {
-                    io.unlink(false, fullPath);
-                }
-            }
-            io.rmDir(false, dir);
-        }
-
-        rmDirRecursive(this._io, temp_dir);
+        this._io.rmDirRecursive(false, temp_dir);
     };
 
     _p._getGlyphClassesReverseLookup = function() {
