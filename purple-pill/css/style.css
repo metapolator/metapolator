@@ -801,9 +801,17 @@
                 background: #888!important;
             }
             
+                .temp-view-selection-true svg {
+                    fill: #fff;
+                }
+            
             .temp-view-selection-false {
                 background: transparent!important;
             }
+            
+                .temp-view-selection-false svg {
+                    fill: #000!important;
+                }
         
             .list-view-col svg {
                 height: 60%;
