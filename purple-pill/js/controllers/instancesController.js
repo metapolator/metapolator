@@ -276,16 +276,14 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
-                if (instance != $scope.data.currentInstance) {
-                    var hit = false;
-                    angular.forEach(set, function(selection) {
-                        if (selection.parentObject == family.id && selection.childObject == instance.id) {
-                            hit = true;
-                        }
-                    });
-                    if (hit) {
-                        instance.display = newStatus;
+                var hit = false;
+                angular.forEach(set, function(selection) {
+                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
+                        hit = true;
                     }
+                });
+                if (hit) {
+                    instance.display = newStatus;
                 }
             });
         });
@@ -328,9 +326,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
 
     $scope.toggleDisplay = function(instance) {
-        if (instance != $scope.data.currentInstance) {
-            instance.display = !instance.display;
-        }
+        instance.display = !instance.display;
     };
 
     /***** sortable *****/

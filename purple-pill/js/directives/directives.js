@@ -326,12 +326,10 @@ app.directive('listViewCol', function() {
                                 thisHit = true;
                             }
                             if ((phase == 1 || (phase == 2 && thisHit)) && !falseMouseMove) {
-                                if (!$(this).hasClass('selected')) {
-                                    if (scope.data.eventHandlers.initialDisplay == "true") {
-                                        $(this).find('.list-view-col').addClass('temp-view-selection-false');
-                                    } else {
-                                        $(this).find('.list-view-col').addClass('temp-view-selection-true');
-                                    }
+                                if (scope.data.eventHandlers.initialDisplay == "true") {
+                                    $(this).find('.list-view-col').addClass('temp-view-selection-false');
+                                } else {
+                                    $(this).find('.list-view-col').addClass('temp-view-selection-true');
                                 }
                             }
                         });

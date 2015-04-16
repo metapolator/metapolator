@@ -823,11 +823,11 @@
                 transition: background 0.5s;
             }
         
-            .list-view-col.selected, .list-li.selected .list-view-col {
+            .list-view-col.selected {
                 background: #888;
             }
             
-                .list-view-col.selected svg, .list-li.selected .list-view-col svg {
+                .list-view-col.selected svg {
                     fill: #fff;
                 }
             

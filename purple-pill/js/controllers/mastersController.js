@@ -91,16 +91,14 @@ app.controller("mastersController", function($scope, sharedScope) {
         }
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (!master.edit) {
-                    var hit = false;
-                    angular.forEach(set, function(selection) {
-                        if (selection.parentObject == sequence.id && selection.childObject == master.id) {
-                            hit = true;
-                        }
-                    });
-                    if (hit) {
-                        master.display = newStatus;
+                var hit = false;
+                angular.forEach(set, function(selection) {
+                    if (selection.parentObject == sequence.id && selection.childObject == master.id) {
+                        hit = true;
                     }
+                });
+                if (hit) {
+                    master.display = newStatus;
                 }
             });
         }); 
@@ -158,9 +156,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     
     $scope.toggleDisplay = function(master) {
         if($scope.data.view.viewState == 0) {
-            if(!master.edit) {
-                master.display = !master.display;
-            }
+            master.display = !master.display;
         }
     };
     
