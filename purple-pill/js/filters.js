@@ -191,7 +191,7 @@ app.filter('specimenFilter', function() {
             if (specimenPanel == 1) {
                 angular.forEach(sequences, function(sequence) {
                     angular.forEach(sequence.masters, function(master) {
-                        if (master.display) {
+                        if (master.display || master.edit) {
                             nrOfFonts++;
                             masterArray.push({
                                 "sequenceId" : sequence.id,
@@ -205,7 +205,7 @@ app.filter('specimenFilter', function() {
             } else if (specimenPanel == 2) {
                 angular.forEach(families, function(family) {
                     angular.forEach(family.instances, function(instance) {
-                        if (instance.display) {
+                        if (instance.display || instance.edit) {
                             nrOfFonts++;
                             masterArray.push({
                                 "sequenceId" : family.id,

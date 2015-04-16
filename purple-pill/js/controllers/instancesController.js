@@ -64,7 +64,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var thisInstance = {
                 id : $scope.uniqueInstanceId,
                 edit : true,
-                display : true,
+                display : false,
                 ag : "ag",
                 name : instanceName,
                 displayName : instanceName,
@@ -296,7 +296,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             angular.forEach(family.instances, function(instance) {
                 if (listItem.parentObject == family.id && listItem.childObject == instance.id) {
                     instance.edit = !instance.edit;
-                    instance.display = instance.edit;
                 }
             });
         });
@@ -313,7 +312,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 });
                 if (hit) {
                     instance.edit = true;
-                    instance.display = true;
                 } else {
                     instance.edit = false;
                 }

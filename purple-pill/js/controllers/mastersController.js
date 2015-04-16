@@ -66,7 +66,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                         displayName: masterName,
                         cpsFile: cpsFile,
                         ruleIndex: angular.copy(master.ruleIndex),
-                        display: true,
+                        display: false,
                         edit: true,
                         ag: angular.copy(master.ag),
                         glyphs: angular.copy(master.glyphs),
@@ -92,7 +92,6 @@ app.controller("mastersController", function($scope, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (!master.edit) {
-                    console.log(master.displayName);
                     var hit = false;
                     angular.forEach(set, function(selection) {
                         if (selection.parentObject == sequence.id && selection.childObject == master.id) {
@@ -113,7 +112,6 @@ app.controller("mastersController", function($scope, sharedScope) {
                 angular.forEach(sequence.masters, function(master) {
                     if (listItem.parentObject == sequence.id && listItem.childObject == master.id) {
                         master.edit = !master.edit;
-                        master.display = master.edit;
                         if (master.edit == false) {
                             $scope.deselectAllGlyphs(master);
                         }
@@ -136,7 +134,6 @@ app.controller("mastersController", function($scope, sharedScope) {
                     });
                     if (hit) {
                         master.edit = true;
-                        master.display = true;
                     } else {
                         master.edit = false;
                         $scope.deselectAllGlyphs(master);
@@ -152,7 +149,6 @@ app.controller("mastersController", function($scope, sharedScope) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     master.edit = false;
-                    master.display = false;
                     $scope.deselectAllGlyphs(master);
                 });
             });
