@@ -47,12 +47,7 @@ if (require.main === module) {
                 master = masterInstancePairs.shift();
                 instance = masterInstancePairs.shift();
                 console.warn('Exporting "'+master+'" to "'+instance+'"');
-
-                if (instance.slice(-4) === '.zip'){
-                    project.exportZipInstance(master, instance, program.precision);
-                } else {
-                    project.exportInstance(master, instance, program.precision);
-                }
+                project.exportInstance(io, master, instance, program.precision);
                 if(!masterInstancePairs.length) break;
             }
         })

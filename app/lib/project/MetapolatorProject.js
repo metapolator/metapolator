@@ -19,6 +19,7 @@ define([
   , './ExportController'
   , 'yaml'
   , 'io/zipUtil'
+  , 'io/InMemory'
 ], function(
     errors
   , log
@@ -40,6 +41,7 @@ define([
   , ExportController
   , yaml
   , zipUtil
+  , InMemory
 ) {
     "use strict";
 
@@ -586,9 +588,9 @@ define([
                                this.fontinfoFileName, this.fontinfoFile );
     };
 
-    _p.exportInstance = function(masterName, instanceName, precision) {
+    function exportInstance(io, project, masterName, instanceName, precision) {
         // returns a models/Controller
-        var model = this.open(masterName)
+        var model = project.open(masterName)
           , master = model.query('master#' + masterName)
           , dirName = instanceName
           , glyphSet
@@ -596,37 +598,46 @@ define([
           ;
 
         // create a bare ufoV2 directory
-        this._io.mkDir(false, dirName);
+        io.mkDir(false, dirName);
 
         // create dirName/metainfo.plist
-        this._io.writeFile(false, dirName+'/metainfo.plist'
+        io.writeFile(false, dirName+'/metainfo.plist'
                                 , plistLib.createPlistString(metainfoV2));
 
         // fontforge requires a fontinfo.plist that defines unitsPerEm
-        this._io.writeFile(false, dirName+'/fontinfo.plist'
+        io.writeFile(false, dirName+'/fontinfo.plist'
                                 , plistLib.createPlistString(minimalFontinfo));
 
-        this._io.mkDir(false, dirName+'/glyphs');
-        this._io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
+        io.mkDir(false, dirName+'/glyphs');
+        io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
 
-        glyphSet = this.getNewGlyphSet(
-                                false, dirName +'/glyphs', undefined, 2);
+        glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
 
         exportController = new ExportController(master, model, glyphSet, precision);
         exportController.export();
+    }
+
+    _p.exportInstance = function(io, masterName, instanceName, precision){
+        if (instanceName.slice(-4) === '.zip'){
+            var zipped = this.getZippedInstance(masterName, instanceName, precision);
+            io.writeFile(false, instanceName, zipped);
+        } else {
+            exportInstance(io, this, masterName, instanceName, precision);
+        }
     };
 
-    _p.exportZipInstance = function(masterName, instanceName, precision) {
+    _p.getZippedInstance = function(masterName, instanceName, precision, dataType) {
+        if (typeof dataType === 'undefined') dataType = 'base64';
+
+        var temp_dir = instanceName+"_temp"
+          , mem_io = new InMemory()
+          ;
+
         //export the font to a temporary directory
-        var temp_dir = instanceName+"_temp";
-        this.exportInstance(masterName, temp_dir, precision);
+        exportInstance(mem_io, this, masterName, temp_dir, precision);
 
-        //encode it as a zip file
-        var content = zipUtil.encode(false, this._io, temp_dir);
-        this._io.writeFile(false, instanceName, new Buffer(content, 'base64'));
-
-        //delete the temp dir
-        this._io.rmDirRecursive(false, temp_dir);
+        var content = zipUtil.encode(false, mem_io, temp_dir);
+        return new Buffer(content, dataType);
     };
 
     _p._getGlyphClassesReverseLookup = function() {
