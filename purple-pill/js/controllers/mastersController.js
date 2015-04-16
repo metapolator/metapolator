@@ -28,7 +28,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         }
         // after deleting all selected masters, select a new master
         var n = $scope.data.sequences[0].masters.length;
-        if (n == thisIndex) {
+        if (n <= thisIndex) {
             $scope.data.sequences[0].masters[n - 1].edit = true;
         } else {
             $scope.data.sequences[0].masters[thisIndex].edit = true;
@@ -45,6 +45,8 @@ app.controller("mastersController", function($scope, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit) {
+                    // deselect this one
+                    master.edit = false;
                     $scope.uniqueMasterId++;
                     var masterName = "master" + $scope.uniqueMasterId;
                     var cpsFile = masterName + ".cps";
@@ -61,8 +63,8 @@ app.controller("mastersController", function($scope, sharedScope) {
                         displayName: masterName,
                         cpsFile: cpsFile,
                         ruleIndex: angular.copy(master.ruleIndex),
-                        display: false,
-                        edit: false,
+                        display: true,
+                        edit: true,
                         ag: angular.copy(master.ag),
                         glyphs: angular.copy(master.glyphs),
                         parameters: angular.copy(master.parameters)

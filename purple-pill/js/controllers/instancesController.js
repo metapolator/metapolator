@@ -185,7 +185,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         $scope.data.localmenu.instances = false;
         // set new current instance
         var n = $scope.data.families[0].instances.length;
-        if (n == index) {
+        if (n <= index) {
             $scope.data.currentInstance = $scope.data.families[0].instances[n - 1];
         } else {
             $scope.data.currentInstance = $scope.data.families[0].instances[index];
