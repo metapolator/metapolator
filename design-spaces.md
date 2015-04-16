@@ -15,7 +15,7 @@ The **local menu** is placed on the active tab, and contains these items:
 **notes**:
 
 * Duplicate not only duplicates the current design space tab, it also duplicates its instances in the instances list;
-* Delete ot only removes the current design space tab, it also removes its instances from the instances list.
+* Delete not only removes the current design space tab, it also removes its instances from the instances list, after a confirmation dialog.
 
 The **tabs** can be renamed by double clicking on their label, and resorted. Always at the right (for L–to–R locales) there is a ‘New tab’ tab. The tabs do not have close boxes ([X]), because it a way to heavy action (lose all instances that live on this tab) to be causally offered. Tabs will need an overflow mechanism for when there are too many to show at once. We expect quite a few tabs because they are for serious projects a way to break down complexity for users.
 
@@ -44,6 +44,11 @@ some **general rules** for all spaces:
 * reconfiguring a design space, by adding or deleting master & co, means change to all instances, because now more/less elements go into their mix;
 * when an instance is selected, the design space it lives on is raised to the top—if it is not already;
   * if multiple instances are selected, the first one selected is taken for above action.
+
+### dialogs
+
+* **when:** deleting a design space with 1 instance; **text:** “Delete this design space and its instance?”; **Buttons:** OK, Cancel;
+* **when:** deleting a design space with several instance; **text:** “Delete this design space and its \<# of instances\> instances?”; **Buttons:** OK, Cancel.
 
 ## exploration space
 The action starts when masters get drag ’n’ dropped on the exploration space. Adding one master is not _that_ interesting:
