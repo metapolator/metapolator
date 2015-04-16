@@ -15,7 +15,9 @@ define([
         throw new NotImplementedError('ZIP unpack method is not yet implemented');
     };
 
-    var encode = function(async, io, sourcePath){
+    var encode = function(async, io, sourcePath, dataType){
+        dataType = dataType || 'base64';
+
         if(async)
             throw new NotImplementedError('Asynchronous execution is not yet implemented');
 
@@ -31,7 +33,8 @@ define([
             zip.file(relative_path, data, {binary:true});
         }
 
-        return zip.generate({type:"base64"});
+        var zipped_data = zip.generate({type:dataType});
+        return new Buffer(zipped_data, dataType);
     };
 
     return {

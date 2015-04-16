@@ -617,9 +617,9 @@ define([
         exportController.export();
     }
 
-    _p.exportInstance = function(io, masterName, instanceName, precision){
+    _p.exportInstance = function(io, masterName, instanceName, precision, dataType){
         if (instanceName.slice(-4) === '.zip'){
-            var zipped = this.getZippedInstance(masterName, instanceName, precision);
+            var zipped = this.getZippedInstance(masterName, instanceName, precision, dataType);
             io.writeFile(false, instanceName, zipped);
         } else {
             exportInstance(io, this, masterName, instanceName, precision);
@@ -627,8 +627,6 @@ define([
     };
 
     _p.getZippedInstance = function(masterName, instanceName, precision, dataType) {
-        dataType = dataType || 'base64';
-
         var temp_dir = instanceName+"_temp"
           , mem_io = new InMemory()
           ;
@@ -636,8 +634,7 @@ define([
         //export the font to a temporary directory
         exportInstance(mem_io, this, masterName, temp_dir, precision);
 
-        var content = zipUtil.encode(false, mem_io, temp_dir);
-        return new Buffer(content, dataType);
+        return zipUtil.encode(false, mem_io, temp_dir, dataType);
     };
 
     _p._getGlyphClassesReverseLookup = function() {
