@@ -617,12 +617,12 @@ define([
         exportController.export();
     }
 
-    _p.exportInstance = function(io, masterName, instanceName, precision, dataType){
+    _p.exportInstance = function(masterName, instanceName, precision){
         if (instanceName.slice(-4) === '.zip'){
-            var zipped = this.getZippedInstance(masterName, instanceName, precision, dataType);
-            io.writeFile(false, instanceName, zipped);
+            var zipped = this.getZippedInstance(masterName, instanceName, precision, 'nodebuffer');
+            this._io.writeFile(false, instanceName, zipped);
         } else {
-            exportInstance(io, this, masterName, instanceName, precision);
+            exportInstance(this._io, this, masterName, instanceName, precision);
         }
     };
 

@@ -47,7 +47,7 @@ if (require.main === module) {
                 master = masterInstancePairs.shift();
                 instance = masterInstancePairs.shift();
                 console.warn('Exporting "'+master+'" to "'+instance+'"');
-                project.exportInstance(io, master, instance, program.precision, 'nodebuffer');
+                project.exportInstance(master, instance, program.precision);
                 if(!masterInstancePairs.length) break;
             }
         })
