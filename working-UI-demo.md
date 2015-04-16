@@ -491,6 +491,11 @@ When a master is removed from a design space (this can also be triggered by the 
 1. the master master below the doomed master is set to slack master (if there is none below, then the one above); sliders are recalculated;
 * the doomed master is removed; the metapolation is recalculated;
 
+#### dialogs
+
+* **when:** removing a master from a design space with 1 instance; **text:** “Remove master? It will no longer be part of the instance afterwards.”; **Buttons:** OK, Cancel;
+* **when:** removing a master from a design space with several instance; **text:** “Remove master? It will no longer be part of the instances afterwards.”; **Buttons:** OK, Cancel.
+
 #### metapolation math
 To calculate the metapolation coefficients, add up all the slider settings (the cake, as Jeroen puts it) and divide each master by this number (piece of cake).
 
