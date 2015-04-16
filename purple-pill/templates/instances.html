@@ -20,7 +20,7 @@
                         <path d="M8 2 L14 8 L8 14 L2 8 Z" class="diamond" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
                     </svg> 
                 </span>
-                <span class="list-view-col ag" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}"></span>
+                <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}"></span>
                 <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
                 <div class="export-col" ng-click="instance.exportFont = !instance.exportFont">
                     <span ng-if="instance.exportFont">✓</span>
