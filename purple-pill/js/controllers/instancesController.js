@@ -180,16 +180,29 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
 
     function deleteInstanceConfirmed() {
+        var index = $scope.getIndexOfInstance($scope.data.currentInstance);
         $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf($scope.data.currentInstance), 1);
         $scope.data.localmenu.instances = false;
-        // set top instance as current
-        if ($scope.data.families[0].instances.length) {
-            $scope.data.currentInstance = $scope.data.families[0].instances[0];
-            $scope.data.currentInstance.edit = true;
+        // set new current instance
+        var n = $scope.data.families[0].instances.length;
+        if (n == index) {
+            $scope.data.currentInstance = $scope.data.families[0].instances[n - 1];
         } else {
-            $scope.data.currentInstance = null;
+            $scope.data.currentInstance = $scope.data.families[0].instances[index];
         }
     }
+    
+    $scope.getIndexOfInstance = function(thisInstance) {
+        var thisIndex;
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance, index) {
+                if (instance == thisInstance) {
+                    thisIndex = index;
+                }
+            });
+        }); 
+        return thisIndex;
+    };
 
     /***** feedback on design spaces *****/
 

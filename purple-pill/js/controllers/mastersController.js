@@ -9,13 +9,15 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.deleteMasters = function(){
         // need to make functionality to go through design spaces and instances to remove masters as well
         // and in instances recalculate the metap values
+        var thisIndex;
         if (confirm("You are about to remove master(s). This could affect design spaces as well. Ok?")) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 var notDeleted = [];
-                angular.forEach(sequence.masters, function(master) {
+                angular.forEach(sequence.masters, function(master, index) {
                     if (!master.edit){
                         notDeleted.push(master);
                     } else {
+                        thisIndex = index;
                         $scope.data.stateful.project.deleteMaster(master.name);
                         // empty cps file
                         $scope.data.stateful.project.ruleController.write(false, master.cpsFile, ""); 
@@ -23,6 +25,13 @@ app.controller("mastersController", function($scope, sharedScope) {
                 });
                 sequence.masters = notDeleted;
             }); 
+        }
+        // after deleting all selected masters, select a new master
+        var n = $scope.data.sequences[0].masters.length;
+        if (n == thisIndex) {
+            $scope.data.sequences[0].masters[n - 1].edit = true;
+        } else {
+            $scope.data.sequences[0].masters[thisIndex].edit = true;
         }
         $scope.data.localmenu.masters = false;
     };
