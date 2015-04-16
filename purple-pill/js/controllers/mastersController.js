@@ -18,9 +18,12 @@ app.controller("mastersController", function($scope, sharedScope) {
                         notDeleted.push(master);
                     } else {
                         thisIndex = index;
-                        $scope.data.stateful.project.deleteMaster(master.name);
-                        // empty cps file
-                        $scope.data.stateful.project.ruleController.write(false, master.cpsFile, ""); 
+                        $scope.data.removeMasterFromDesignSpace(master.name);
+                        if($scope.data.pill != "blue") {
+                            $scope.data.stateful.project.deleteMaster(master.name);
+                            // empty cps file to prevent caching issues
+                            $scope.data.stateful.project.ruleController.write(false, master.cpsFile, ""); 
+                        }
                     }
                 });
                 sequence.masters = notDeleted;

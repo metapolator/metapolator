@@ -101,7 +101,7 @@ app.directive('control', function($document) {
                     leftlabels.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
                     leftlabels.append('text').text(scope.data.findMaster(thisInstance.axes[0].masterName).displayName).attr('class', 'slider-label-right slider-label').attr('x', 16);
                     leftlabels.append('text').attr('x', 0).attr('y', '2').text("o").attr('masterName', thisInstance.axes[0].masterName).attr('class', 'slider-button slider-remove-master').on('click', function() {
-                        scope.removeMaster(0);
+                        scope.removeMaster(0, designSpace);
                     });
 
                     // create right label
@@ -183,7 +183,7 @@ app.directive('control', function($document) {
                             return 'display: none';
                         }
                     }).on("click", function(d, i) {
-                        scope.removeMaster(i);
+                        scope.removeMaster(i, designSpace);
                     });
                 }
             }

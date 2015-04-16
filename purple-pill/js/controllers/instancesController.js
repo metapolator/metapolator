@@ -141,6 +141,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         serialNr++;
         return cleanName + serialNr;
     };
+    
+    $scope.data.deleteInstanceFromDesignspace = function(instance) {
+        // this method is called when removing the last master from a designspace
+        $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf(instance), 1);
+    };
 
     $scope.deleteInstance = function() {
         if ($scope.data.currentInstance) {
