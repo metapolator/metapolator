@@ -627,7 +627,7 @@ define([
     };
 
     _p.getZippedInstance = function(masterName, instanceName, precision, dataType) {
-        if (typeof dataType === 'undefined') dataType = 'base64';
+        dataType = dataType || 'base64';
 
         var temp_dir = instanceName+"_temp"
           , mem_io = new InMemory()
