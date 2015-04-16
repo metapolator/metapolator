@@ -103,7 +103,7 @@ app.filter('rangeFilter', function() {
 });
 
 app.filter('specimenFilter', function() {
-    return function(specimen, options, sequences, families, specimenPanel) {
+    return function(specimen, options, sequences, families, specimenPanel, currentInstance) {
         if (specimen.name != "glyph range") {
             function stringToGlyphs(string, unique) {
                 var glyphs = [];
@@ -205,7 +205,7 @@ app.filter('specimenFilter', function() {
             } else if (specimenPanel == 2) {
                 angular.forEach(families, function(family) {
                     angular.forEach(family.instances, function(instance) {
-                        if (instance.display || instance == data.currentInstance) {
+                        if (instance.display || instance == currentInstance) {
                             nrOfFonts++;
                             masterArray.push({
                                 "sequenceId" : family.id,

@@ -57,7 +57,7 @@ function($scope, $sce, sharedScope) {
         selectedFontby : $scope.fontbys[2]
     };
 
-    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel", function(newVal) {
+    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
         $scope.filteredGlyphs = newVal;
         setTimeout(function() {
              manageSpaces();
