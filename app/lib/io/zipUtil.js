@@ -33,8 +33,7 @@ define([
             zip.file(relative_path, data, {binary:true});
         }
 
-        var zipped_data = zip.generate({type:dataType});
-        return new Buffer(zipped_data, dataType);
+        return zip.generate({type:dataType});
     };
 
     return {
