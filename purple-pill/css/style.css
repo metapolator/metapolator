@@ -1048,12 +1048,11 @@
             }
             
         #instances-tools {
-            width: calc(100% + 90px);
+            width: calc(100% + 80px);
             position: absolute;
-            bottom: 0px;
-            left: 0;
+            bottom: 5px;
+            left: 5px;
             border-top: 1px solid #ddd;
-            background: #fff;
         }
         
             .instance-tool {

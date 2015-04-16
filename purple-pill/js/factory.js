@@ -38,7 +38,7 @@ app.factory("sharedScope", function($rootScope) {
         },
         view : {
             menuItems : ["Parameters", "Design spaces", "Fonts"],
-            viewState : 0,
+            viewState : 1,
             panels : [3, 10, 3, 10, 3, 1, 12],
             totalPanelParts : 42,
             dividers : [{
