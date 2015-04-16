@@ -815,9 +815,13 @@
                 transition: background 0.5s;
             }
         
-            .list-view-col.selected {
+            .list-view-col.selected, .list-li.selected .list-view-col {
                 background: #888;
             }
+            
+                .list-view-col.selected svg, .list-li.selected .list-view-col svg {
+                    fill: #fff;
+                }
             
         .list-edit-col {
             float: left;
