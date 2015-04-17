@@ -20,6 +20,7 @@ requirejs.config({
       , 'es6/Reflect': 'bower_components/harmony-reflect/reflect'
       , 'socketio': '../socket.io/socket.io'
       , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
+      , 'jszip': 'bower_components/jszip/dist/jszip'
     }
   // exclude on build
   , excludeShallow: [
