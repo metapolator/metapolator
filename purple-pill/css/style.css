@@ -655,14 +655,17 @@
             font-family: "glyphs";
             cursor: pointer;
             opacity: 0;
-            transition: all 0.5s ease;
+            -webkit-transition-delay: 0.5s;
+            transition-delay: 0.5s;
+            transition-duration: 0.5s;
+            transition-property: opacity;
         }
         
             .slider-button.slider-remove-master {
                 fill: #f00;
             }
 
-            .slider-label-right-container:hover .slider-button {
+            .not-dragging .slider-label-right-container:hover .slider-button {
                 opacity: 1;
             }
             

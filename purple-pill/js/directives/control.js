@@ -80,7 +80,9 @@ app.directive('control', function($document) {
                     var x = paddingLeft - indentLeft;
                     var y = i * axisDistance + paddingTop;
                     return "translate(" + x + "," + y + ")";
-                }).attr('class', 'slider-container');
+                }).attr('class', 'not-dragging').attr('id', function(d,i){
+                    return 'slider-container-' + i;
+                });
 
                 // append axis itself
                 axes.append('path').attr('d', function(d, i) {
@@ -179,6 +181,9 @@ app.directive('control', function($document) {
             var drag = d3.behavior.drag().on('dragstart', function() {
                 var slack = designSpace.mainMaster;
                 var thisIndex = d3.select(this).attr('index');
+                console.log(thisIndex);
+                console.log($("#slider-container-" + thisIndex));
+                $("#slider-container-" + thisIndex).attr("class", "dragging");
                 if (slack == thisIndex) {
                     slackRatios = setSlackRatio(slack);
                 }
@@ -221,6 +226,8 @@ app.directive('control', function($document) {
                 scope.data.getMetapolationRatios(thisInstance);
                 scope.$apply();
             }).on('dragend', function() {
+                var thisIndex = d3.select(this).attr('index');
+                $("#slider-container-" + thisIndex).attr("class", "not-dragging");
                 scope.data.metapolate();
                 dragActive = false;
             });
