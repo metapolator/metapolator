@@ -198,7 +198,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         var max = 0;
         var highest;
         for (var i = 0; i < axes.length; i++) {
-            if (parseFloat(axes[i].value) > max && i != slack) {
+            if (parseFloat(axes[i].value) >= max && i != slack) {
                 highest = i;
                 max = parseFloat(axes[i].value);
             }

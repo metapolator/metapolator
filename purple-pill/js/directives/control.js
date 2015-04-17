@@ -181,8 +181,6 @@ app.directive('control', function($document) {
             var drag = d3.behavior.drag().on('dragstart', function() {
                 var slack = designSpace.mainMaster;
                 var thisIndex = d3.select(this).attr('index');
-                console.log(thisIndex);
-                console.log($("#slider-container-" + thisIndex));
                 $("#slider-container-" + thisIndex).attr("class", "dragging");
                 if (slack == thisIndex) {
                     slackRatios = setSlackRatio(slack);
