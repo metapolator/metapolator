@@ -56,7 +56,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var axesSet = jQuery.extend(true, [], designSpace.axes);
             var newMetapValue = 100/ axesSet.length;
             angular.forEach(axesSet, function(axis) {
-                //axis.value = 50;
+                axis.value = 50;
                 axis.metapValue = newMetapValue;
             });            
             var instanceName = "instance" + $scope.uniqueInstanceId;
