@@ -207,21 +207,18 @@ app.directive('rename', function() {
     };
 });
 
-jQuery.fn.selectText = function() {
-    var doc = document;
-    var element = this[0];
-    if (doc.body.createTextRange) {
-        var range = document.body.createTextRange();
-        range.moveToElementText(element);
-        range.select();
-    } else if (window.getSelection) {
-        var selection = window.getSelection();
-        var range = document.createRange();
-        range.selectNodeContents(element);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
-};
+app.directive('valuefield', function() {
+    return {
+        restrict : 'A',
+        link : function(scope, element, attrs, ctrl) {
+            element.bind('dblclick', function(event) {
+                event.preventDefault();
+                $(element[0]).select();
+            });
+        }
+    };
+});
+
 
 // deselecting local menus
 app.directive('body', function() {

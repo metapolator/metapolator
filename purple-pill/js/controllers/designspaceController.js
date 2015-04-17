@@ -251,22 +251,22 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13) {
+            var designspace = $scope.data.currentDesignSpace;
             var slack = $scope.data.currentDesignSpace.mainMaster;
             var instance = $scope.data.currentInstance;
             var axes = instance.axes;
             // prevent input beyond 0 - 100 or NaN
-            for (var i = 0; i < axes.length; i++) {
-                if (isNaN(axes[i].value) || axes[i].value == "") {
-                    axes[i].value = 0;
-                }
-                if (axes[i].value > 100) {
-                    axes[i].value = 100;
-                }
-                if (axes[i].value < 0) {
-                    axes[i].value = 0;
-                }
+            if (isNaN(axes[inputAxis].value) || axes[inputAxis].value == "") {
+                axes[inputAxis].value = 0;
             }
-            // when 2 master situation, 1 follows 0
+            if (axes[inputAxis].value > 100) {
+                axes[inputAxis].value = 100;
+            }
+            if (axes[inputAxis].value < 0) {
+                axes[inputAxis].value = 0;
+            }
+            designspace.axes[inputAxis].value = axes[inputAxis].value;
+            // find the highest non-slack master
             var max = 0;
             for (var i = 0; i < axes.length; i++) {
                 if (parseFloat(axes[i].value) >= max && i != slack) {
@@ -276,6 +276,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             if (inputAxis != slack) {
                 // correct the slack behaviour
                 axes[slack].value = 100 - max;
+                designspace.axes[slack].value = 100 - max;
             } else {
                 var newMax = 100 - axes[slack].value;
                 if (max != 0) {
@@ -286,7 +287,9 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 // correct all sliders but slack proportionally
                 for (var i = 0; i < axes.length; i++) {
                     if (i != slack) {
-                        axes[i].value = formatX(ratio * axes[i].value);
+                        var thisValue = formatX(ratio * axes[i].value);
+                        axes[i].value = thisValue;
+                        designspace.axes[i].value = thisValue;
                     }
                 }
             }

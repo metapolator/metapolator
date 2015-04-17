@@ -32,6 +32,7 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.data.selectAllText = function(element) {
+        console.log("!");
         var doc = document;
         if (doc.body.createTextRange) {
             var range = document.body.createTextRange();

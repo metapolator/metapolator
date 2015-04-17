@@ -13,7 +13,6 @@ app.factory("sharedScope", function($rootScope) {
             name : "Space 0",
             id : 0,
             type : "x",
-            masters : [],
             axes : [],
             triangle : false,
             mainMaster : 0
