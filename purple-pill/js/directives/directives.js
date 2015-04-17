@@ -62,7 +62,9 @@ app.directive('glyph', function($compile) {
             var glyphName = attrs.glyph;
             
             element.bind('$destroy', function(event) {
-                scope.data.stateful.glyphRendererAPI.revoke(masterName, glyphName);
+                if (scope.data.pill == "red") {
+                    scope.data.stateful.glyphRendererAPI.revoke(masterName, glyphName);
+                }
             });
             
             if (glyphName == "space") {

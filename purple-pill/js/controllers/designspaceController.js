@@ -131,7 +131,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                     if (instance.designSpace == designspace.id) {
                         // remove axis from instance
                         if (instance.axes.length == 1) {
-                            console.log(">");
                             $scope.data.deleteInstanceFromDesignspace(instance);
                         } else {
                             instance.axes.splice(m, 1);
@@ -145,15 +144,18 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             if (designspace.axes.length == 0) {
                 designspace.type = "x";
             }
-        }
-        // reassigning the key of mainmaster
-        if (m < designspace.mainMaster) {
-            designspace.mainMaster--;
-        } else if (m == designspace.mainMaster) {
-            designspace.mainMaster = 1;
-        }
-        if (designspace.axes.length < 3) {
-            designspace.mainMaster = 1;
+            $scope.$apply();
+            //$scope.data.currentDesignSpace.trigger++;
+        
+            // reassigning the key of mainmaster
+            if (m < designspace.mainMaster) {
+                designspace.mainMaster--;
+            } else if (m == designspace.mainMaster) {
+                designspace.mainMaster = 1;
+            }
+            if (designspace.axes.length < 3) {
+                designspace.mainMaster = 1;
+            }
         }
     };
 
