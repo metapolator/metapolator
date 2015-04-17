@@ -1,8 +1,8 @@
 app.controller('engine', function($scope, sharedScope) {
     $scope.data = sharedScope.data;
 
-    $scope.data.stateful
-    $scope.data.stateless
+    $scope.data.stateful;
+    $scope.data.stateless;
     $scope.data.pill = "blue";
 
     function onProjectLoaded(stateless, stateful) {

@@ -469,6 +469,7 @@ app.directive('specGlyphBox', function($document) {
                 var glyph = $(element).attr("glyph");
                 if (event.shiftKey || event.ctrlKey || event.metaKey) {
                     // control click
+                    event.preventDefault();
                     scope.toggleGlyph(sequence, master, glyph);
                     scope.$apply();
                 } else {
