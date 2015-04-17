@@ -80,7 +80,7 @@ app.directive('control', function($document) {
                     var x = paddingLeft - indentLeft;
                     var y = i * axisDistance + paddingTop;
                     return "translate(" + x + "," + y + ")";
-                }).attr('class', 'not-dragging').attr('id', function(d,i){
+                }).attr('class', 'not-dragging').attr('id', function(d, i) {
                     return 'slider-container-' + i;
                 });
 
@@ -149,12 +149,16 @@ app.directive('control', function($document) {
                     }
                     var y = paddingLabel;
                     return "translate(" + x + "," + y + ")";
-                }).attr('class', 'slider-label-right-container');
+                }).attr('class', 'slider-label-right-container').style('display', function(d, i) {
+                    if (i != designSpace.mainMaster) {
+                        return 'block';
+                    } else {
+                        return 'none';
+                    }
+                });
                 label.append('rect').attr('x', '0').attr('y', '-15').attr('width', '100').attr('height', '20').attr('fill', '#fff').attr('class', 'slider-hover-square');
                 label.append('text').text(function(d, i) {
-                    if (i != designSpace.mainMaster) {
-                        return scope.data.findMaster(thisInstance.axes[i].masterName).displayName;
-                    }
+                    return scope.data.findMaster(thisInstance.axes[i].masterName).displayName;
                 }).attr('class', function(d, i) {
                     return 'slider-label-right slider-label slider-label-' + i;
                 }).attr('id', function(d, i) {
