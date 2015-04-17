@@ -16,7 +16,7 @@ app.factory("sharedScope", function($rootScope) {
             masters : [],
             axes : [],
             triangle : false,
-            mainMaster : 1
+            mainMaster : 0
 
         }],
         families : [{

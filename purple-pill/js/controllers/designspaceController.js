@@ -2,7 +2,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
     $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
-    $scope.designSpaceWidth
+    $scope.designSpaceWidth;
 
     $scope.data.findMaster = function(masterName) {
         for (var i = 0; i < $scope.data.sequences.length; i++) {
@@ -42,7 +42,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             id : id,
             type : "x",
             axes : [],
-            mainMaster : 1,
+            mainMaster : 0,
             trigger : 0 //this is to trigger the designspace to redraw when a master is renamed
         });
         $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
@@ -151,10 +151,10 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             if (m < designspace.mainMaster) {
                 designspace.mainMaster--;
             } else if (m == designspace.mainMaster) {
-                designspace.mainMaster = 1;
+                designspace.mainMaster = 0;
             }
             if (designspace.axes.length < 3) {
-                designspace.mainMaster = 1;
+                designspace.mainMaster = 0;
             }
         }
     };
