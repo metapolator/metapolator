@@ -1,6 +1,5 @@
 <ul id="design-space-tabs">
     <li ng-repeat="space in data.designSpaces track by space.id" ng-click="selectDesignSpace(space)" ng-class="{selected : space == data.currentDesignSpace}">
-        <!--<<div>img ng-src="{{ 'img/' + space.type + '.png'}}"></div>-->
         <localmenu class="localmenu localmenu-inside" class="left" ng-if="space == data.currentDesignSpace">
             <div class="lm-head" ng-mousedown="data.selectMenu('designspace')">
                 <div class="rename" ng-model="space.name"></div>&nbsp;
@@ -25,29 +24,12 @@
     <div class="design-space-container" ng-show="data.currentDesignSpace.type == 'x'">
         Drag a master from the left panel into this Design Space. When you drop your first master, an instance of it is created. You will need at least
         two masters to affect interpolation to your instance.
-        <!--
-        <div class="choose-space-type">
-            <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Control'">
-                <img src="img/Control.png">
-                <br>
-                Control
-            </div>
-        </div>
-        
-        <div class="choose-space-type under-construction">
-            <div class="choose-space-type-button" ng-click="data.currentDesignSpace.type = 'Explore'">
-                <img src="img/Explore.png">
-                <br>
-                Explore
-            </div>
-        </div>
-        -->
     </div>
     
     <div class="" ng-show="data.currentDesignSpace.type != 'x'">
         <control ng-if="data.currentDesignSpace.type == 'Control'">
             <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 40 + 40) + 'px', 'left': (designSpaceWidth / 2 - 75) + 'px'}">
-                <input counter="{{$index}}" ng-model="axis.value" ng-change="redrawAxesFromInput($index)" class="slider-input-output">
+                <input counter="{{$index}}" ng-model="axis.value" ng-blur="redrawAxesFromInput($index, 'blur')" ng-keyup="redrawAxesFromInput($index, $event)" class="slider-input-output">
             </div>
             <select class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="data.currentDesignSpace.axes.indexOf(axis) as data.findMaster(axis.masterName).displayName for (index, axis) in data.currentDesignSpace.axes" ng-style="{'top': (data.currentDesignSpace.mainMaster * 40 + 40) + 'px', 'left': '10px'}" ng-if="data.currentDesignSpace.axes.length > 2"></select>
         </control>

@@ -2,7 +2,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
     $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
-    $scope.designSpaceWidth;
+    $scope.designSpaceWidth
 
     $scope.data.findMaster = function(masterName) {
         for (var i = 0; i < $scope.data.sequences.length; i++) {
@@ -146,7 +146,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             }
             $scope.$apply();
             //$scope.data.currentDesignSpace.trigger++;
-        
+
             // reassigning the key of mainmaster
             if (m < designspace.mainMaster) {
                 designspace.mainMaster--;
@@ -223,7 +223,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         });
     };
 
-
     $scope.changeMainMaster = function() {
         var designspace = $scope.data.currentDesignSpace;
         var slack = designspace.mainMaster;
@@ -251,53 +250,55 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     }
 
 
-    $scope.redrawAxesFromInput = function(inputAxis) {
-        var slack = $scope.data.currentDesignSpace.mainMaster;
-        var instance = $scope.data.currentInstance;
-        var axes = instance.axes;
-        // prevent input beyond 0 - 100 or NaN
-        for (var i = 0; i < axes.length; i++) {
-            if (isNaN(axes[i].value) || axes[i].value == "") {
-                axes[i].value = 0;
-            }
-            if (axes[i].value > 100) {
-                axes[i].value = 100;
-            }
-            if (axes[i].value < 0) {
-                axes[i].value = 0;
-            }
-        }
-        // when 2 master situation, 1 follows 0
-        if (axes.length == 2) {
-            axes[1].value = 100 - axes[0].value;
-        }
-        if (axes.length > 2) {
-            var max = 0;
+    $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
+        if (keyEvent == "blur" || keyEvent.keyCode == 13) {
+            var slack = $scope.data.currentDesignSpace.mainMaster;
+            var instance = $scope.data.currentInstance;
+            var axes = instance.axes;
+            // prevent input beyond 0 - 100 or NaN
             for (var i = 0; i < axes.length; i++) {
-                if (parseFloat(axes[i].value) >= max && i != slack) {
-                    max = parseFloat(axes[i].value);
+                if (isNaN(axes[i].value) || axes[i].value == "") {
+                    axes[i].value = 0;
+                }
+                if (axes[i].value > 100) {
+                    axes[i].value = 100;
+                }
+                if (axes[i].value < 0) {
+                    axes[i].value = 0;
                 }
             }
-            if (inputAxis != slack) {
-                // correct the slack behaviour
-                axes[slack].value = 100 - max;
-            } else {
-                var newMax = 100 - axes[slack].value;
-                if (max != 0) {
-                    var ratio = newMax / max;
-                } else {
-                    var ratio = 1;
-                }
-                // correct all sliders but slack proportionally
+            // when 2 master situation, 1 follows 0
+            if (axes.length == 2) {
+                axes[1].value = 100 - axes[0].value;
+            }
+            if (axes.length > 2) {
+                var max = 0;
                 for (var i = 0; i < axes.length; i++) {
-                    if (i != slack) {
-                        axes[i].value = formatX(ratio * axes[i].value);
+                    if (parseFloat(axes[i].value) >= max && i != slack) {
+                        max = parseFloat(axes[i].value);
+                    }
+                }
+                if (inputAxis != slack) {
+                    // correct the slack behaviour
+                    axes[slack].value = 100 - max;
+                } else {
+                    var newMax = 100 - axes[slack].value;
+                    if (max != 0) {
+                        var ratio = newMax / max;
+                    } else {
+                        var ratio = 1;
+                    }
+                    // correct all sliders but slack proportionally
+                    for (var i = 0; i < axes.length; i++) {
+                        if (i != slack) {
+                            axes[i].value = formatX(ratio * axes[i].value);
+                        }
                     }
                 }
             }
+            $scope.data.getMetapolationRatios(instance);
+            $scope.data.currentDesignSpace.trigger++;
         }
-        $scope.data.getMetapolationRatios(instance);
-        $scope.data.currentDesignSpace.trigger++;
     };
 
 });
