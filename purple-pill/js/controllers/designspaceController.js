@@ -31,7 +31,6 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         if (instanceInSpace) {
             $scope.data.currentInstance = instanceInSpace;
             $scope.data.currentInstance.edit = true;
-            $scope.data.currentInstance.display = true;
         }
     };
 

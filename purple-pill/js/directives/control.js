@@ -75,7 +75,6 @@ app.directive('control', function($document) {
                 }
                 var diamondcolor = scope.data.colorCoding[thisInstance.id];
 
-
                 // create slider containers
                 var axes = layer1.selectAll('g').data(thisInstance.axes).enter().append('g').attr('transform', function(d, i) {
                     var x = paddingLeft - indentLeft;
@@ -101,6 +100,20 @@ app.directive('control', function($document) {
                 }).attr('class', 'slider-axis-active').attr('id', function(d, i) {
                     return "axis-active" + i;
                 });
+
+                // for 1 master setup, the "just one more" text
+                if (designSpace.axes.length == 1) {
+                    var tempAxis = layer1.append('g').attr('transform', function(d, i) {
+                        var x = paddingLeft - indentLeft;
+                        var y = axisDistance + paddingTop;
+                        return "translate(" + x + "," + y + ")";
+                    }).attr('class', 'slider-container');
+                    tempAxis.append('path').attr('d', function(d, i) {
+                        return axesString;
+                    }).attr('class', 'slider-axis');
+                    tempAxis.append('text').attr('x', paddingLeft + axisWidth - indentRight).attr('y', paddingLabel).text('Just one more...').attr('class', 'label-right-inactive slider-label');
+
+                }
 
                 // append slider handles and according diamond
                 axes.append('circle').attr('r', 8).attr('cx', function(d, i) {
@@ -206,7 +219,7 @@ app.directive('control', function($document) {
                 if (thisInstance.axes.length > 1) {
                     var ratios = [];
                     var highest = findHighest(slack);
-                    
+
                     var max = thisInstance.axes[highest].value;
                     for (var i = 0; i < thisInstance.axes.length; i++) {
                         if (max != 0) {
