@@ -150,7 +150,7 @@ app.directive('control', function($document) {
                     var y = paddingLabel;
                     return "translate(" + x + "," + y + ")";
                 }).attr('class', 'slider-label-right-container').style('display', function(d, i) {
-                    if (i != designSpace.mainMaster) {
+                    if (i != designSpace.mainMaster || designSpace.axes.length < 3) {
                         return 'block';
                     } else {
                         return 'none';
@@ -165,11 +165,7 @@ app.directive('control', function($document) {
                     return 'slider-label-' + i;
                 }).attr('x', 4);
                 label.append('text').attr('x', function(d, i) {
-                    if (i != designSpace.mainMaster) {
-                        var thisx = document.getElementById("slider-label-" + i).getBoundingClientRect().width;
-                    } else {
-                        var thisx = $("#slack-master-select").outerWidth();
-                    }
+                    var thisx = document.getElementById("slider-label-" + i).getBoundingClientRect().width;
                     thisx += paddingRemoveButton;
                     return thisx;
                 }).attr('y', '2').text("o").attr('masterName', function(d, i) {
