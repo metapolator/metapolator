@@ -15,7 +15,7 @@
         <div class="rename" ng-model="space.name" ng-if="space != data.currentDesignSpace"></div>
         
     </li>
-    <li ng-click="addDesignSpace()">
+    <li ng-click="addDesignSpace()" ng-if="data.designSpaces.length < 8">
         +
     </li>
 </ul>
