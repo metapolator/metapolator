@@ -656,8 +656,8 @@
             cursor: pointer;
             opacity: 0;
             -webkit-transition-delay: 0.5s;
-            transition-delay: 0.5s;
-            transition-duration: 0.5s;
+            transition-delay: 0s;
+            transition-duration: 0s;
             transition-property: opacity;
         }
         
@@ -666,6 +666,8 @@
             }
 
             .not-dragging .slider-label-right-container:hover .slider-button {
+                transition-delay: 0.5s;
+                
                 opacity: 1;
             }
             
