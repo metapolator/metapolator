@@ -15,7 +15,7 @@ app.directive('control', function($document) {
             var layer1 = svg.append('g');
 
             var axisWidth;
-            var paddingLeft = 50, paddingTop = 30, paddingLabel = 25, axisDistance = 50, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3;
+            var paddingLeft = 50, paddingTop = 30, paddingLabel = 25, axisDistance = 50, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3, paddingRemoveButton = 6;
             var diamondShape = '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize;
 
             // watch for data changes and redraw
@@ -140,7 +140,11 @@ app.directive('control', function($document) {
 
                 // labels and remove buttons
                 var label = axes.append('g').attr('transform', function(d, i) {
-                    var x = paddingLeft + axisWidth - indentRight;
+                    if (i == designSpace.mainMaster) {
+                        var x = paddingLeft - indentLeft - 10;
+                    } else {
+                        var x = paddingLeft + axisWidth - indentRight;
+                    }
                     var y = paddingLabel;
                     return "translate(" + x + "," + y + ")";
                 }).attr('class', 'slider-label-right-container');
@@ -149,16 +153,22 @@ app.directive('control', function($document) {
                     if (i != designSpace.mainMaster) {
                         return scope.data.findMaster(thisInstance.axes[i].masterName).displayName;
                     }
-                }).attr('class', 'slider-label-right slider-label').attr('x', 16);
-                label.append('text').attr('x', 0).attr('y', '2').text("o").attr('masterName', function(d, i) {
-                    return thisInstance.axes[i].masterName;
-                }).attr('class', 'slider-button slider-remove-master').attr('style', function(d, i) {
+                }).attr('class', function(d, i) {
+                    return 'slider-label-right slider-label slider-label-' + i;
+                }).attr('id', function(d, i) {
+                    return 'slider-label-' + i;
+                }).attr('x', 4);
+                label.append('text').attr('x', function(d, i) {
                     if (i != designSpace.mainMaster) {
-                        return 'display: block';
+                        var thisx = document.getElementById("slider-label-" + i).getBoundingClientRect().width;
                     } else {
-                        return 'display: none';
+                        var thisx = $("#slack-master-select").outerWidth();
                     }
-                }).on("click", function(d, i) {
+                    thisx += paddingRemoveButton;
+                    return thisx;
+                }).attr('y', '2').text("o").attr('masterName', function(d, i) {
+                    return thisInstance.axes[i].masterName;
+                }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
                     scope.removeMaster(i, designSpace);
                 });
 

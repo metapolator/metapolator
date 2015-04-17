@@ -661,7 +661,7 @@
             .slider-button.slider-remove-master {
                 fill: #f00;
             }
-        
+
             .slider-label-right-container:hover .slider-button {
                 opacity: 1;
             }
@@ -675,6 +675,7 @@
         
         .slider-hover-square {
             opacity: 0;
+            fill: white;
         }
         
         
