@@ -2,7 +2,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
     $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
-    $scope.designSpaceWidth;
+    $scope.designSpaceWidth
 
     $scope.data.findMaster = function(masterName) {
         for (var i = 0; i < $scope.data.sequences.length; i++) {
@@ -51,16 +51,21 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.removeDesignSpace = function() {
-        if (confirm("This will remove all Instances in this Design Space. Sure?")) {
+        if ($scope.data.currentDesignSpace.axes.length == 0) {
             $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
-            $scope.data.deleteInstanceDirect($scope.data.currentDesignSpace.id);
-            var lastDesignspace;
-            angular.forEach($scope.data.designSpaces, function(space) {
-                lastDesignspace = space;
-            });
-            $scope.selectDesignSpace(lastDesignspace);
-            $scope.data.localmenu.designspace = false;
+        } else {
+            if (confirm("This will remove all Instances in this Design Space. Sure?")) {
+                $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
+                $scope.data.deleteInstanceDirect($scope.data.currentDesignSpace.id);
+            }
+
         }
+        var lastDesignspace;
+        angular.forEach($scope.data.designSpaces, function(space) {
+            lastDesignspace = space;
+        });
+        $scope.selectDesignSpace(lastDesignspace);
+        $scope.data.localmenu.designspace = false;
     };
 
     $scope.duplicateDesignSpace = function() {
