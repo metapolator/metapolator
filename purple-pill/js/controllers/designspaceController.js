@@ -268,31 +268,26 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 }
             }
             // when 2 master situation, 1 follows 0
-            if (axes.length == 2) {
-                axes[1].value = 100 - axes[0].value;
-            }
-            if (axes.length > 2) {
-                var max = 0;
-                for (var i = 0; i < axes.length; i++) {
-                    if (parseFloat(axes[i].value) >= max && i != slack) {
-                        max = parseFloat(axes[i].value);
-                    }
+            var max = 0;
+            for (var i = 0; i < axes.length; i++) {
+                if (parseFloat(axes[i].value) >= max && i != slack) {
+                    max = parseFloat(axes[i].value);
                 }
-                if (inputAxis != slack) {
-                    // correct the slack behaviour
-                    axes[slack].value = 100 - max;
+            }
+            if (inputAxis != slack) {
+                // correct the slack behaviour
+                axes[slack].value = 100 - max;
+            } else {
+                var newMax = 100 - axes[slack].value;
+                if (max != 0) {
+                    var ratio = newMax / max;
                 } else {
-                    var newMax = 100 - axes[slack].value;
-                    if (max != 0) {
-                        var ratio = newMax / max;
-                    } else {
-                        var ratio = 1;
-                    }
-                    // correct all sliders but slack proportionally
-                    for (var i = 0; i < axes.length; i++) {
-                        if (i != slack) {
-                            axes[i].value = formatX(ratio * axes[i].value);
-                        }
+                    var ratio = 1;
+                }
+                // correct all sliders but slack proportionally
+                for (var i = 0; i < axes.length; i++) {
+                    if (i != slack) {
+                        axes[i].value = formatX(ratio * axes[i].value);
                     }
                 }
             }
