@@ -255,7 +255,7 @@ app.directive('control', function($document) {
                 var highest;
                 var max = 0;
                 for (var i = 0; i < thisInstance.axes.length; i++) {
-                    if (parseFloat(thisInstance.axes[i].value) > max && i != slack) {
+                    if (parseFloat(thisInstance.axes[i].value) >= max && i != slack) {
                         highest = i;
                         max = parseFloat(thisInstance.axes[i].value);
                     }
