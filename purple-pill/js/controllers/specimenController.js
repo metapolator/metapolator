@@ -69,7 +69,7 @@ function($scope, $sce, sharedScope) {
              manageSpaces();
         }, 500);
     }, true);
-
+    
     function manageSpaces() {
         var spaces = $(".space-character");
         var x = 0;
