@@ -87,6 +87,7 @@ app.filter('glyphsInEditFilter', function() {
 
 app.filter('rangeFilter', function() {
     return function(specimen, filter) {
+        console.clear();
         var filtered = [];
         for (var i = 0; i < specimen.length; i++) {
             var thisGlyph = specimen[i];
@@ -194,10 +195,10 @@ app.filter('specimenFilter', function() {
                         if (master.display || master.edit) {
                             nrOfFonts++;
                             masterArray.push({
-                                "sequenceId" : sequence.id,
-                                "masterId" : master.id,
-                                "name" : master.name,
-                                "edit" : master.edit[0]
+                                sequenceId : sequence.id,
+                                masterId : master.id,
+                                name : master.name,
+                                edit : master.edit
                             });
                         }
                     });
@@ -208,9 +209,10 @@ app.filter('specimenFilter', function() {
                         if (instance.display || instance == currentInstance) {
                             nrOfFonts++;
                             masterArray.push({
-                                "sequenceId" : family.id,
-                                "masterId" : instance.id,
-                                "name" : instance.name
+                                sequenceId : family.id,
+                                masterId : instance.id,
+                                name : instance.name,
+                                edit : master.edit
                             });
                         }
                     });
@@ -268,7 +270,8 @@ app.filter('specimenFilter', function() {
                     master : {
                         sequenceId : master.sequenceId,
                         masterId : master.masterId,
-                        name : master.name
+                        name : master.name,
+                        edit: master.edit
                     },
                     glyphName : "*n",
                     glyphId : master.name + "_*n_" + glyphId
