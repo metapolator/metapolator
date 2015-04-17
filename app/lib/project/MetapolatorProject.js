@@ -20,6 +20,7 @@ define([
   , 'yaml'
   , 'io/zipUtil'
   , 'io/InMemory'
+  , 'filesaver'
 ], function(
     errors
   , log
@@ -624,6 +625,10 @@ define([
         } else {
             exportInstance(this._io, this, masterName, instanceName, precision);
         }
+    };
+
+    _p.saveAs = function(blob, filename) {
+        saveAs(blob, filename);
     };
 
     _p.getZippedInstance = function(masterName, instanceName, precision, dataType) {
