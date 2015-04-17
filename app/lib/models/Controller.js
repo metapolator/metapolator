@@ -83,8 +83,14 @@ define([
     _p.getRulesForElement = function(element) {
         // FIXME: hard coding global.cps is not good here, can this
         // be done configurable?
-        var ruleName = element.master
-                    ? this._getMasterRule(element.master.id)
+        // FIXME: instead of using master a new property in the cps
+        //      nodes, something like "cpsRootElement" could be created
+        //      Or master returns itself when using the master property
+        var master = element.MOMType === 'MOM Master'
+                    ? element
+                    : element.master
+          , ruleName = master
+                    ? this._getMasterRule(master.id)
                     : 'global.cps'
           , parameterCollection
           , subscriptionID
@@ -137,15 +143,12 @@ define([
      */
     _p._updateRule = function(ruleName) {
         var ids = this._rules[ruleName][2]
-          , parameterCollection = this._rules[ruleName][0]
-          , allRules, styleDict, rules
+          , styleDict
           , i, l
           ;
-        allRules = parameterCollection.rules;
         for(i=0,l=ids.length;i<l;i++) {
             styleDict = this._styleDicts[ ids[i] ];
             styleDict.invalidateRules();
-            continue;
         }
     };
 

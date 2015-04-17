@@ -178,8 +178,14 @@ define([
         this._dict[key] = index;
         // emit events
         if(old) old.destroy();
-        this._trigger(event, key);
+
+        // first trigger the propertyChange channel, it's less confusing
+        // for listeners when they don't get a propertyChange 'add' event
+        // after having added the property already because of the normal on channel
+        // FIXME: can there be a reasonable rule, like is it always better to
+        // _triggerPropertyChange before _trigger or so?
         this._triggerPropertyChange(key, event);
+        this._trigger(event, key);
     };
 
     /**

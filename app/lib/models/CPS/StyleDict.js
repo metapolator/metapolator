@@ -30,7 +30,7 @@ define([
         // TODO: Not deleting the channel will take a bit more memory but in turn
         // needs less garbadge collection
         // we could delete this when the key is removed from this._dict
-        // and not added again, supposedly in _rebuildIndex and _paramerChangeHandler
+        // and not added again, supposedly in _rebuildIndex and _parameterChangeHandler
         // delete this._dependants[key];
         // however, _rebuildIndex and updateDictEntry are not part of
         // the concept of emitter/channel thus the emitter should
@@ -455,6 +455,11 @@ define([
         this._rebuildIndex();
     };
 
+    /**
+     * invalidate the rules and let this._buildIndex get them lazily when
+     * needed.
+     *
+     */
     _p.invalidateRules = function() {
         this._rules = null;
         this._unsubscribeFromDicts();
@@ -465,7 +470,11 @@ define([
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
-        // this is needed to trigger _buildIndex when it is time:
+        // needed if this._dict had no keys previously
+        // because then this._invalidateCache would not run
+        // for example when the rules changed from not providing keys to
+        // now providing keys
+        this._nextTrigger('change', key);
         this._dict = null;
     };
 
@@ -475,6 +484,11 @@ define([
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
+        // needed if this._dict had no keys previously
+        // because then this._invalidateCache would not run
+        // for example when the rules changed from not providing keys to
+        // now providing keys
+        this._nextTrigger('change', key);
         this._buildIndex();
     };
 
@@ -486,8 +500,9 @@ define([
         var index = data
           , parametersIndexForKey = this._propertySubscriptions[key]
                     ? this._propertySubscriptions[key][2]
-                    : false
+                    : undefined
           ;
+
         if(parametersIndexForKey > index)
             // the higher index overrides the lower index
             return;
@@ -503,7 +518,7 @@ define([
                         + 'to the new one, but it is.\n index: ' + index
                         + ' key: ' + key
                         + ' channel: ' + channelKey);
-        this._setDictValue(this._rules[index], key, index);
+        this._setDictValue(this._rules[index].parameters, key, index);
     };
 
     _p._setDictValue = function(parameters, key, parametersIndex) {
@@ -511,7 +526,7 @@ define([
         var subscription = this._propertySubscriptions[key] = [];
         this._dict[key] = parameters.get(key);
         subscription[0] = parameters;
-        subscription[1] = parameters.onPropertyChange(key, [this, '_paramerChangeHandler'], parameters);
+        subscription[1] = parameters.onPropertyChange(key, [this, '_parameterChangeHandler'], parameters);
         subscription[2] = parametersIndex;
     };
 
@@ -538,7 +553,7 @@ define([
         this._invalidateCache(key);
     };
 
-    _p._paramerChangeHandler = function(parameters, key, eventData) {
+    _p._parameterChangeHandler = function(parameters, key, eventData) {
         switch(eventData) {
             case('change'):
                 // The value is still active and available, but its definition changed
@@ -552,7 +567,8 @@ define([
                 break;
             default:
                 throw new ReceiverError('Expected an event of "change" or '
-                                       + '"delete" but got "'+eventData+'"');
+                                       + '"delete" but got "'+eventData+'" '
+                                       + '(parameterChangeHandler for "'+key+'")');
         }
     };
 

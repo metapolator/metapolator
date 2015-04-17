@@ -93,7 +93,7 @@ define(function() {
      * unnoticed by the main program.
      */
     function unhandledPromise(originalError) {
-        var error = new errors.Unhandled(originalError+'');
+        var error = new errors.Unhandled(originalError+'\n'+originalError.stack);
         error.originalError = originalError;
         // use setTimout to escape the catch all that es6/Promise applies
         // and that silences unhandled errors

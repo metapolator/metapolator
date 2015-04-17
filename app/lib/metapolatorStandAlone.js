@@ -3,6 +3,7 @@
 
 require([
     'webAPI/document'
+  , 'metapolator/errors'
   , 'metapolator/project/MetapolatorProject'
   , 'ufojs/tools/io/staticBrowserREST'
   , 'metapolator/io/InMemory'
@@ -10,9 +11,16 @@ require([
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/elements/ParameterValue'
   , 'metapolator/models/CPS/elements/Parameter'
+  , 'metapolator/models/CPS/elements/ParameterDict'
+  , 'metapolator/models/CPS/elements/Rule'
+  , 'metapolator/models/CPS/elements/AtImportCollection'
+  , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , 'metapolator/project/cps-generators/interpolation'
+  , 'metapolator/project/cps-generators/metapolation'
 ],
 function (
     document
+  , errors
   , MetapolatorProject
   , ioREST
   , InMemory
@@ -20,6 +28,12 @@ function (
   , parameterRegistry
   , ParameterValue
   , Parameter
+  , ParameterDict
+  , Rule
+  , AtImportCollection
+  , parseSelectorList
+  , cpsGenInterpolation
+  , cpsGenMetapolation
 ) {
     "use strict";
     /*global setTimeout window*/
@@ -30,6 +44,32 @@ function (
         setTimeout(callback, 0, exports);
     }
 
+    /**
+     * FIXME: this should be part of app/lib/project/MetapolatorProject
+     * probably. I copy and pasted it from app/lib/RedPill
+     *
+     * this === project
+     */
+    function fileChangeHandler(path) {
+        /*jshint validthis: true*/
+        var match = path.indexOf(this.cpsDir)
+          , sourceName
+          ;
+        if(match !== 0)
+            return;
+        // +1 to remove the leading slash
+        sourceName = path.slice(this.cpsDir.length + 1);
+        try {
+            this.controller.updateChangedRule(true, sourceName);
+        }
+        catch(error) {
+            // KeyError will be thrown by RuleController.replaceRule if
+            // sourceName is unknown, which is expected at this point,
+            // because that means that sourceName is unused.
+            if(!(error instanceof errors.Key))
+                throw error;
+        }
+    }
 
     // This pattern is used by google analytics, for example, to execute
     // api calls "before" the api is available. The calling code does:
@@ -44,8 +84,6 @@ function (
     // if there are already registered callbacks
     if(callbacks) callbacks.map(metapolatorReady);
 
-
-
     // export the modules that will be needed
     exports.initProject = function(projectPath) {
         // InMemory is its own event emitter
@@ -54,10 +92,12 @@ function (
         io.mkDir(false, 'project');
         // copy the project into memory
         promise = ioREST.copyRecursive(true, projectPath, io, 'project');
-        return promise.then(function(){
+
+        return promise.then(function() {
             var project, glyphRendererAPI;
             project = new MetapolatorProject(io, 'project');
             project.load();
+            fsEvents.on('change', fileChangeHandler.bind(project));
             // load all masters, because right now it is very confusing
             // when some masters are missing from the MOM
             project.masters.forEach(project.open, project);
@@ -99,9 +139,45 @@ function (
                 , parameter
                 , factory = parameterRegistry.getFactory(name)
                 ;
-            _value.initializeTypeFactory(name.name, factory);
+            _value.initializeTypeFactory(name, factory);
             parameter = new Parameter({name:name}, _value);
             parameterDict.setParameter(parameter);
         }
+      , addNewRule: function addNewRule(parameterCollection, index, selectorListString) {
+            var source = 'generated'
+              , selectorList = parseSelectorList.fromString(selectorListString)
+              , parameterDict = new ParameterDict([], source, 0)
+              , rule = new Rule(selectorList, parameterDict, source, 0)
+              ;
+            // returns the actual index at which the rule was created
+            return parameterCollection.splice(index, 0, rule)[0];
+        }
+        /**
+         * CAUTION: Here an intersting dependency to ruleController emerges.
+         * Probably this method should be part of the stateful interface,
+         * because this way a ruleController from a different project can
+         * be used which is not intended right now and was never tested!
+         */
+      , addNewAtImport: function addNewAtImport(async, parameterCollection
+                                    , index, ruleController, resourceName) {
+            var collection = new AtImportCollection(ruleController, 'generated')
+                // it's only a promise if `async` is true
+              , promise = collection.setResource(async, resourceName)
+              ;
+
+            function resolve() {
+                return parameterCollection.splice(index, 0, collection)[0];
+            }
+
+            return async
+                 ? promise.then(resolve, errors.unhandledPromise)
+                 : resolve()
+                 ;
+        }
     };
+
+    exports.cpsGenerators = {
+        interpolation: cpsGenInterpolation
+      , metapolation: cpsGenMetapolation
+    }
 });

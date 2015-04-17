@@ -121,7 +121,17 @@ define([
         while(data.svg.lastChild)
             data.svg.removeChild(data.svg.lastChild);
         data.components = [];
-        draw(renderer, this._controller, data.MOM, pen);
+        try {
+            draw(renderer, this._controller, data.MOM, pen);
+        }
+        catch(e) {
+            // FIXME:
+            console.warn('Drawing glyph', data.MOM.particulars, 'failed with ' + e, e.stack);
+            if(e instanceof KeyError)
+                console.info('KeyError means usually that a property definition in the CPS is missing');
+            console.info('The user should get informed by the UI!');
+        }
+
         this._compareAndRevoke(oldComponents, data.components);
 
         // FIXME: * One day we have to subscribe to unitsPerEM AND
@@ -202,11 +212,25 @@ define([
      */
     _p._setSVGViewBox = function(data, svg) {
         var svgs = svg ? [svg] : data.svgInstances
-          , width = data.MOM.getComputedStyle().get('advanceWidth')
+          , styledict = data.MOM.getComputedStyle()
+          , width
           , height = data.MOM.master.fontinfo.unitsPerEm || 1000
-          , viewBox = [0, 0, width, height].join(' ')
+          , viewBox
           , i,l
           ;
+
+        try {
+            width = styledict.get('advanceWidth')
+        }
+        catch(e){
+            if(!(e instanceof KeyError))
+                throw e;
+            // FIXME: we should inform the user of this problem
+            width = height;
+        }
+
+        viewBox = [0, 0, width, height].join(' ')
+
         for(i=0,l=svgs.length;i<l;i++) {
             if(svgs[i].parentElement);
             svgs[i].setAttribute('viewBox', viewBox);
@@ -276,7 +300,7 @@ define([
         if(data.timeoutId)
             clearTimeout(data.timeoutId);
         // unsubscribe
-        data.glyph.off(data.subscriptionId);
+        data.MOM.off(data.subscriptionId);
         // delete the defs item
         data.svg.parentElement.removeChild(data.svg);
         components = data.components;

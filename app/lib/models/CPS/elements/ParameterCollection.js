@@ -223,6 +223,28 @@ define([
              || item instanceof Comment
         );
     }
+
+    /**
+     * FIXME: this is copy and pasted from models/ParameterDict but the
+     *        implementation should be shared!
+     *
+     * Calculate the start index where Array.prototype.splice really starts.
+     *
+     * > start:
+     * > Index at which to start changing the array. If greater than the
+     * > length of the array, actual starting index will be set to the
+     * > length of the array. If negative, will begin that many elements
+     * > from the end.
+     *
+     * Not in that documentation, if negative after length-start: start = 0
+     */
+    _p._getCanonicalStartIndex = function(start, length) {
+        if(start >= length)
+            return length;
+        if(start < 0)
+            return Math.max(0, length - start);
+        return start;
+    };
     /**
      * One to rule them all:
      *
@@ -250,6 +272,7 @@ define([
           , i, l
           , item
           , events = []
+          , canonicalStartIndex = this._getCanonicalStartIndex(startIndex, this._items.length)
           ;
         for(i=0,l=insertions.length;i<l; i++) {
             item = insertions[i];
@@ -269,6 +292,10 @@ define([
         if(!events.length)
             // nothing happened
             return;
+
+        // prune the cache.
+        this._rules = null;
+
         events.push('structural-change');
         // TODO: Add maybe information like three numbers:
         //      index, deletedCount, insertedCount
@@ -277,6 +304,7 @@ define([
         // NOTE: index and deletedCount must be calculated see the
         // docs for Array.prototype.slice
         this._trigger(events);
+        return [canonicalStartIndex, deleted.length, insertions.length];
     };
 
     _p.getItem = function(index) {
