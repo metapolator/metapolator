@@ -211,8 +211,7 @@ app.filter('specimenFilter', function() {
                             masterArray.push({
                                 sequenceId : family.id,
                                 masterId : instance.id,
-                                name : instance.name,
-                                edit : master.edit
+                                name : instance.name
                             });
                         }
                     });
