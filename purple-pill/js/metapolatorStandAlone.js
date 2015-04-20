@@ -16885,23 +16885,55 @@ define('metapolator/project/parameters/outputConverter',[
           , source
       )
       , new Rule(
-            parseSelectorList.fromString('component', source.name)
+            parseSelectorList.fromString('glyph', source.name)
           , parameterDictFromObject({
-              transformation: 'originalTransformation'
+                  advanceWidth: 'originalAdvanceWidth'
+                , advanceHeight: 'originalAdvanceHeight'
               })
           , source
       )
+      , new Rule(
+            parseSelectorList.fromString('component', source.name)
+          , parameterDictFromObject({
+                  transformation: 'originalTransformation'
+              })
+          , source
+      )
+
       , new Rule(
             parseSelectorList.fromString('contour>p', source.name)
             // FIXME: draw with tensions!
           , parameterDictFromObject({
                   on: 'skeleton:on'
-                , 'in': 'skeleton:in'
-                , out: 'skeleton:out'
+                , 'in': 'tension2controlIn pointBefore:on pointBefore:outDir inTension inDir on'
+                , out: 'tension2controlOut on outDir outTension pointAfter:inDir pointAfter:on'
                 // the dirs are defined by the importer if this calculations
                 // would not produce a good result
-                , inDir: '(on - in):angle'
-                , outDir: '(out - on):angle'
+                , inDir: '(on - skeleton:in):angle'
+                , outDir: '(skeleton:out - on):angle'
+
+                , inLength: '(on - skeleton:in):length'
+                , outLength: '(skeleton:out - on):length'
+
+                , inTension: 'magnitude2tensionIn pointBefore:on pointBefore:outDir inLength inDir on'
+                , outTension: 'magnitude2tensionOut on outDir outLength pointAfter:inDir pointAfter:on'
+
+                , pointBefore: 'parent:children[index - 1]'
+                , pointAfter: 'parent:children[index+1]'
+              })
+          , source
+      )
+      , new Rule(
+            parseSelectorList.fromString('contour > p:i(0)', source.name)
+          , parameterDictFromObject({
+                  pointBefore: 'parent:children[parent:children:length - 1]'
+              })
+          , source
+      )
+      , new Rule(
+            parseSelectorList.fromString('contour > p:i(-1)', source.name)
+          , parameterDictFromObject({
+                  pointBefore: 'pointAfter: parent:children[0]'
               })
           , source
       )
@@ -39493,7 +39525,7 @@ define('require/text',['module'], function (module) {
 });
 
 
-define('require/text!metapolator/project/cps-generators/interpolation.tpl',[],function () { return '@import \'centreline-skeleton-to-symmetric-outline.cps\';\n\nglyph {\n{{#n}}\n    base{{.}}: baseMaster{{.}}:children[index];\n{{/n}}\n}\n\ncontour > p {\n    indexGlyph: parent:parent:index;\n    indexContour: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexContour]\n        :children[index]\n        ;\n{{/n}}\n}\n\npoint > * {\n    indexGlyph: parent:parent:parent:index;\n    indexPenstroke: parent:parent:index;\n    indexPoint: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexPenstroke]\n        :children[indexPoint]\n        :children[index]\n        ;\n{{/n}}\n}\n\n* {\n    /* Ensure that the used proportions sum up to 1.\n     * Any other value produces usually unwanted effects.\n     * If you don\'t want this in your master redefine it as\n     * interpolationUnit: 1;\n     */\n    interpolationUnit: 1/(0{{#n}}\n        + proportion{{.}}{{/n}});\n{{#n}}\n    _p{{.}}: proportion{{.}}*interpolationUnit;\n{{/n}}\n}\n\nglyph {\n    advanceWidth: 0{{#n}}\n        + base{{.}}:advanceWidth * _p{{.}}{{/n}};\n    advanceHeight: 0{{#n}}\n        + base{{.}}:advanceHeight * _p{{.}}{{/n}};\n}\n\npoint > left,\npoint > right,\npoint > center,\ncontour > p {\n    on: 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    in: 0{{#n}}\n        + base{{.}}:in * _p{{.}}{{/n}};\n    out: 0{{#n}}\n        + base{{.}}:out * _p{{.}}{{/n}};\n}\n\n\n/****\n * set up the super masters of this master and the proportions:\n\n* {\n{{#n}}\n    baseMaster{{.}}: S"master#anyName_{{.}}";\n{{/n}}\n{{#n}}\n    proportion{{.}}: 1;\n{{/n}}\n}\n\n****/\n';});
+define('require/text!metapolator/project/cps-generators/interpolation.tpl',[],function () { return 'glyph {\n{{#n}}\n    base{{.}}: baseMaster{{.}}:children[index];\n{{/n}}\n}\n\ncontour > p {\n    indexGlyph: parent:parent:index;\n    indexContour: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexContour]\n        :children[index]\n        ;\n{{/n}}\n}\n\npoint > * {\n    indexGlyph: parent:parent:parent:index;\n    indexPenstroke: parent:parent:index;\n    indexPoint: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexPenstroke]\n        :children[indexPoint]\n        :children[index]\n        ;\n{{/n}}\n}\n\n* {\n    /* Ensure that the used proportions sum up to 1.\n     * Any other value produces usually unwanted effects.\n     * If you don\'t want this in your master redefine it as\n     * interpolationUnit: 1;\n     */\n    interpolationUnit: 1/(0{{#n}}\n        + proportion{{.}}{{/n}});\n{{#n}}\n    _p{{.}}: proportion{{.}} * interpolationUnit;\n{{/n}}\n}\n\nglyph {\n    advanceWidth: 0{{#n}}\n        + base{{.}}:advanceWidth * _p{{.}}{{/n}};\n    advanceHeight: 0{{#n}}\n        + base{{.}}:advanceHeight * _p{{.}}{{/n}};\n}\n\npoint > left,\npoint > right,\npoint > center,\ncontour > p {\n    on: Vector 0 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    in: Vector 0 0{{#n}}\n        + base{{.}}:in * _p{{.}}{{/n}};\n    out: Vector 0 0{{#n}}\n        + base{{.}}:out * _p{{.}}{{/n}};\n}\n\n\n/****\n * set up the super masters of this master and the proportions:\n\n* {\n{{#n}}\n    baseMaster{{.}}: S"master#anyName_{{.}}";\n{{/n}}\n{{#n}}\n    proportion{{.}}: 1;\n{{/n}}\n}\n\n****/\n';});
 
 define('metapolator/project/cps-generators/interpolation',[
     'bower_components/mustache.js/mustache'
@@ -39515,7 +39547,7 @@ define('metapolator/project/cps-generators/interpolation',[
 
 
 
-define('require/text!metapolator/project/cps-generators/metapolation.tpl',[],function () { return '@import \'centreline-skeleton-to-symmetric-outline.cps\';\n\nglyph {\n{{#n}}\n    base{{.}}: baseMaster{{.}}:children[index];\n{{/n}}\n}\n\ncontour > p {\n    indexGlyph: parent:parent:index;\n    indexContour: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexContour]\n        :children[index]\n        ;\n{{/n}}\n}\n\npoint > * {\n    indexGlyph: parent:parent:parent:index;\n    indexPenstroke: parent:parent:index;\n    indexPoint: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexPenstroke]\n        :children[indexPoint]\n        :children[index]\n        ;\n{{/n}}\n}\n\n* {\n    /* Ensure that the used proportions sum up to 1.\n     * Any other value produces usually unwanted effects.\n     * If you don\'t want this in your master redefine it as\n     * interpolationUnit: 1;\n     */\n    interpolationUnit: 1/(0{{#n}}\n        + proportion{{.}}{{/n}});\n{{#n}}\n    _p{{.}}: proportion{{.}}*interpolationUnit;\n{{/n}}\n}\n\nglyph {\n    advanceWidth: 0{{#n}}\n        + base{{.}}:advanceWidth * _p{{.}}{{/n}};\n    advanceHeight: 0{{#n}}\n        + base{{.}}:advanceHeight * _p{{.}}{{/n}};\n}\n\npoint > * {\n    inLength: 0{{#n}}\n        + base{{.}}:inLength * _p{{.}}{{/n}};\n    outLength: 0{{#n}}\n        + base{{.}}:outLength * _p{{.}}{{/n}};\n    /* This transforms tensions of Infinity to 10000. Then we can interpolate\n     * without creating NaN values.\n     *\n     * NaN is produced when a tension is Infinity and a proportion is zero:\n     * Infinity * 0 => NaN.\n     * AFAIK this behavior is mathematically correct.\n     * But in that case we clearly want a 0 as result, because a proportion\n     * of 0 means we don\'t want to include the master into the Interpolation.\n     *\n     * 10000 will set the control point very very close to the on-curve\n     * point.\n     * FIXME: it would be better to keep the Infinity value when all\n     * `base*:**Tension` values are Infinity. But I think there is no way\n     * to do this right now.\n     * something like:\n     * ifelse (isInfinity base1:inTension and _p1 equals 0) 0 (base1:inTension * _p1)\n     * but that would require the new operators `ifelse` `isInfinity` `equals` `and`\n     * and that would require the booleans `true` and `false` also, consequently\n     * we\'d like also to introduce `not` `or` `isNaN`\n     * But we are holding off conditional execution at the moment, because\n     * we don\'t want to introduce to much power/complexity in CPS.\n     *\n     * (base1:inTension * _p1) elseif (isInfinity base1:inTension and _p1 equals 0) 0\n     *\n     * In another situation we may wan\'t to `grow` a control point in\n     * an interpolation. For better control, the master `not` having that\n     * control point can set the tension value to some big value itself.\n     * This is really the workaround for the missing `ifelse` etc.\n     * What a good value is must be determined in the case itself. I think\n     * it\'s likely that it would be well under 50 then.\n     * FIXME: Thus it may better here to go with a lower replacement value\n     * for Infinity, e.g. 10 or 100?\n     */\n    inTension: 0{{#n}}\n        + (min 1000 base{{.}}:inTension * _p{{.}}}{{/n}};\n    outTension: 0{{#n}}\n        + (min 1000 base{{.}}:outTension * _p{{.}}}{{/n}};\n    inDirIntrinsic: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDirIntrinsic) * _p{{.}}{{/n}};\n    outDirIntrinsic: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDirIntrinsic) * _p{{.}}{{/n}};\n}\n\ncontour > p {\n    on: 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    inDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};\n    outDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};\n    inTension: 0{{#n}}\n        + (min 10000 base{{.}}:inTension) * _p{{.}}{{/n}};\n    outTension: 0{{#n}}\n        + (min 10000 base{{.}}:outTension) * _p{{.}}{{/n}};\n}\n\npoint > left, point > right {\n    onDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:onDir) * _p{{.}}{{/n}};\n    onLength: 0{{#n}}\n        + base{{.}}:onLength * _p{{.}}{{/n}};\n}\n\npoint > center {\n    on: 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    in: 0{{#n}}\n        + base{{.}}:in * _p{{.}}{{/n}};\n    out: 0{{#n}}\n        + base{{.}}:out * _p{{.}}{{/n}};\n}\n\n/* terminals overide of skeleton2outline */\npoint:i(0) > left,\npoint:i(0) > right {\n    inDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};\n}\n\npoint:i(-1) > right,\npoint:i(-1) > left {\n    outDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};\n}\n\n/****\n * set up the super masters of this master and the proportions:\n\n* {\n{{#n}}\n    baseMaster{{.}}: S"master#anyName_{{.}}";\n{{/n}}\n{{#n}}\n    proportion{{.}}: 1;\n{{/n}}\n}\n\n****/\n';});
+define('require/text!metapolator/project/cps-generators/metapolation.tpl',[],function () { return '@import \'centreline-skeleton-to-symmetric-outline.cps\';\n\nglyph {\n{{#n}}\n    base{{.}}: baseMaster{{.}}:children[index];\n{{/n}}\n}\n\ncontour > p {\n    indexGlyph: parent:parent:index;\n    indexContour: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexContour]\n        :children[index]\n        ;\n{{/n}}\n}\n\npoint > * {\n    indexGlyph: parent:parent:parent:index;\n    indexPenstroke: parent:parent:index;\n    indexPoint: parent:index;\n{{#n}}\n    base{{.}}: baseMaster{{.}}\n        :children[indexGlyph]\n        :children[indexPenstroke]\n        :children[indexPoint]\n        :children[index]\n        ;\n{{/n}}\n}\n\n* {\n    /* Ensure that the used proportions sum up to 1.\n     * Any other value produces usually unwanted effects.\n     * If you don\'t want this in your master redefine it as\n     * interpolationUnit: 1;\n     */\n    interpolationUnit: 1/(0{{#n}}\n        + proportion{{.}}{{/n}});\n{{#n}}\n    _p{{.}}: proportion{{.}} * interpolationUnit;\n{{/n}}\n}\n\nglyph {\n    advanceWidth: 0{{#n}}\n        + base{{.}}:advanceWidth * _p{{.}}{{/n}};\n    advanceHeight: 0{{#n}}\n        + base{{.}}:advanceHeight * _p{{.}}{{/n}};\n}\n\npoint > * {\n    inLength: 0{{#n}}\n        + base{{.}}:inLength * _p{{.}}{{/n}};\n    outLength: 0{{#n}}\n        + base{{.}}:outLength * _p{{.}}{{/n}};\n    /* This transforms tensions of Infinity to 10000. Then we can interpolate\n     * without creating NaN values.\n     *\n     * NaN is produced when a tension is Infinity and a proportion is zero:\n     * Infinity * 0 => NaN.\n     * AFAIK this behavior is mathematically correct.\n     * But in that case we clearly want a 0 as result, because a proportion\n     * of 0 means we don\'t want to include the master into the Interpolation.\n     *\n     * 10000 will set the control point very very close to the on-curve\n     * point.\n     * FIXME: it would be better to keep the Infinity value when all\n     * `base*:**Tension` values are Infinity. But I think there is no way\n     * to do this right now.\n     * something like:\n     * ifelse (isInfinity base1:inTension and _p1 equals 0) 0 (base1:inTension * _p1)\n     * but that would require the new operators `ifelse` `isInfinity` `equals` `and`\n     * and that would require the booleans `true` and `false` also, consequently\n     * we\'d like also to introduce `not` `or` `isNaN`\n     * But we are holding off conditional execution at the moment, because\n     * we don\'t want to introduce to much power/complexity in CPS.\n     *\n     * (base1:inTension * _p1) elseif (isInfinity base1:inTension and _p1 equals 0) 0\n     *\n     * In another situation we may wan\'t to `grow` a control point in\n     * an interpolation. For better control, the master `not` having that\n     * control point can set the tension value to some big value itself.\n     * This is really the workaround for the missing `ifelse` etc.\n     * What a good value is must be determined in the case itself. I think\n     * it\'s likely that it would be well under 50 then.\n     * FIXME: Thus it may better here to go with a lower replacement value\n     * for Infinity, e.g. 10 or 100?\n     */\n    inTension: 0{{#n}}\n        + (min 1000 base{{.}}:inTension * _p{{.}}){{/n}};\n    outTension: 0{{#n}}\n        + (min 1000 base{{.}}:outTension * _p{{.}}){{/n}};\n    inDirIntrinsic: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDirIntrinsic) * _p{{.}}{{/n}};\n    outDirIntrinsic: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDirIntrinsic) * _p{{.}}{{/n}};\n}\n\ncontour > p {\n    on: Vector 0 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    inDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};\n    outDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};\n    inTension: 0{{#n}}\n        + (min 10000 base{{.}}:inTension) * _p{{.}}{{/n}};\n    outTension: 0{{#n}}\n        + (min 10000 base{{.}}:outTension) * _p{{.}}{{/n}};\n}\n\npoint > left, point > right {\n    onDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:onDir) * _p{{.}}{{/n}};\n    onLength: 0{{#n}}\n        + base{{.}}:onLength * _p{{.}}{{/n}};\n}\n\npoint > center {\n    on: Vector 0 0{{#n}}\n        + base{{.}}:on * _p{{.}}{{/n}};\n    in: Vector 0 0{{#n}}\n        + base{{.}}:in * _p{{.}}{{/n}};\n    out: Vector 0 0{{#n}}\n        + base{{.}}:out * _p{{.}}{{/n}};\n}\n\n/* terminals overide of skeleton2outline */\npoint:i(0) > left,\npoint:i(0) > right {\n    inDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};\n}\n\npoint:i(-1) > right,\npoint:i(-1) > left {\n    outDir: 0{{#n}}\n        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};\n}\n\n/****\n * set up the super masters of this master and the proportions:\n\n* {\n{{#n}}\n    baseMaster{{.}}: S"master#anyName_{{.}}";\n{{/n}}\n{{#n}}\n    proportion{{.}}: 1;\n{{/n}}\n}\n\n****/\n';});
 
 define('metapolator/project/cps-generators/metapolation',[
     'bower_components/mustache.js/mustache'
@@ -39712,10 +39744,6 @@ function (
                  ? promise.then(resolve, errors.unhandledPromise)
                  : resolve()
                  ;
-        }
-      , cpsGenerators: {
-            interpolation: cpsGenInterpolation
-          , metapolation: cpsGenMetapolation
         }
     };
 
