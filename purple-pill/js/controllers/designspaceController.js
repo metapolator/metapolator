@@ -53,19 +53,23 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.removeDesignSpace = function() {
         if ($scope.data.currentDesignSpace.axes.length == 0) {
             $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
+            $scope.setLastDesignspace();
         } else {
             if (confirm("This will remove all Instances in this Design Space. Sure?")) {
                 $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
                 $scope.data.deleteInstanceDirect($scope.data.currentDesignSpace.id);
             }
-
         }
+        $scope.setLastDesignspace();   
+        $scope.data.localmenu.designspace = false;
+    };
+
+    $scope.setLastDesignspace = function() {
         var lastDesignspace;
         angular.forEach($scope.data.designSpaces, function(space) {
             lastDesignspace = space;
         });
         $scope.selectDesignSpace(lastDesignspace);
-        $scope.data.localmenu.designspace = false;
     };
 
     $scope.duplicateDesignSpace = function() {

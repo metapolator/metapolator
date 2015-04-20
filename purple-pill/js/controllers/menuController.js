@@ -32,7 +32,6 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.data.selectAllText = function(element) {
-        console.log("!");
         var doc = document;
         if (doc.body.createTextRange) {
             var range = document.body.createTextRange();
@@ -47,8 +46,27 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         }
     };
 
-    /***** dividers *****/
+    /***** confirm *****/
 
+    $scope.data.confirm = function(message, callback) {
+        var confirmButton, cancelButton;
+        $("#layover").show();
+        $("#confirm").show();
+        $("#confirm #confirm-content").html(message);
+
+        $("#confirm-button").click(function() {
+            $("#layover").hide();
+            $("#confirm").hide();
+            callback(true);
+        });
+        $("#cancel-button").click(function() {
+            $("#layover").hide();
+            $("#confirm").hide();
+            callback(false);
+        });
+    };
+
+    /***** dividers *****/
 
     $scope.data.getLandscapeLeft = function() {
         var end = $scope.data.view.viewState * 2;

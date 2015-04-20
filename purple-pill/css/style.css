@@ -1238,33 +1238,39 @@
         
 /**************** alert ************************/
 
-    #alert, #rename-project {
+    #confirm {
         display: none;
         position: fixed;
-        
-
+        z-index: 10001;
         top: 60px;
-        padding: 20px;
+        padding: 40px;
         background: #fff;
-        border-radius: 3px;
-        box-shadow: 0 0 5px rgba(0,0,0,0.5);
-
-    }
-    
-    #alert {
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.6);
         width: 400px;
-        min-height: 200px;
+        min-height: 100px;
         left: calc(50% - 200px);
     }
     
-        #alert-loading {
+        #confirm-loading {
             text-align: center;
             display: none;
+            padding-top: 20px;
         }
         
-        #alert-content {
+        #confirm-content {
             text-align: center;
-            padding-top: 20px;
+            font-size: 16px;
+        }
+        
+        #confirm-buttons {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        #confirm-buttons button {
+            font-size: 12px;
+            padding: 10px;
         }
         
     #rename-project {
@@ -1285,7 +1291,7 @@
         top: 0;
         height: 100%;
         width: 100%;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0,0,0,0.7);
     }
 
     .compatibility-info {
