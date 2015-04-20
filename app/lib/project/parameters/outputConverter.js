@@ -64,23 +64,55 @@ define([
           , source
       )
       , new Rule(
-            parseSelectorList.fromString('component', source.name)
+            parseSelectorList.fromString('glyph', source.name)
           , parameterDictFromObject({
-              transformation: 'originalTransformation'
+                  advanceWidth: 'originalAdvanceWidth'
+                , advanceHeight: 'originalAdvanceHeight'
               })
           , source
       )
+      , new Rule(
+            parseSelectorList.fromString('component', source.name)
+          , parameterDictFromObject({
+                  transformation: 'originalTransformation'
+              })
+          , source
+      )
+
       , new Rule(
             parseSelectorList.fromString('contour>p', source.name)
             // FIXME: draw with tensions!
           , parameterDictFromObject({
                   on: 'skeleton:on'
-                , 'in': 'skeleton:in'
-                , out: 'skeleton:out'
+                , 'in': 'tension2controlIn pointBefore:on pointBefore:outDir inTension inDir on'
+                , out: 'tension2controlOut on outDir outTension pointAfter:inDir pointAfter:on'
                 // the dirs are defined by the importer if this calculations
                 // would not produce a good result
-                , inDir: '(on - in):angle'
-                , outDir: '(out - on):angle'
+                , inDir: '(on - skeleton:in):angle'
+                , outDir: '(skeleton:out - on):angle'
+
+                , inLength: '(on - skeleton:in):length'
+                , outLength: '(skeleton:out - on):length'
+
+                , inTension: 'magnitude2tensionIn pointBefore:on pointBefore:outDir inLength inDir on'
+                , outTension: 'magnitude2tensionOut on outDir outLength pointAfter:inDir pointAfter:on'
+
+                , pointBefore: 'parent:children[index - 1]'
+                , pointAfter: 'parent:children[index+1]'
+              })
+          , source
+      )
+      , new Rule(
+            parseSelectorList.fromString('contour > p:i(0)', source.name)
+          , parameterDictFromObject({
+                  pointBefore: 'parent:children[parent:children:length - 1]'
+              })
+          , source
+      )
+      , new Rule(
+            parseSelectorList.fromString('contour > p:i(-1)', source.name)
+          , parameterDictFromObject({
+                  pointBefore: 'pointAfter: parent:children[0]'
               })
           , source
       )
