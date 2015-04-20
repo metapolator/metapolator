@@ -43,6 +43,7 @@ define([
   , yaml
   , zipUtil
   , InMemory
+  , saveAs
 ) {
     "use strict";
 
@@ -627,9 +628,7 @@ define([
         }
     };
 
-    _p.saveAs = function(blob, filename) {
-        saveAs(blob, filename);
-    };
+    _p.saveAs = saveAs;
 
     _p.getZippedInstance = function(masterName, instanceName, precision, dataType) {
         var temp_dir = instanceName+"_temp"
