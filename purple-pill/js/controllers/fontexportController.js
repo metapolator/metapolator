@@ -38,8 +38,7 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
                                   , zipped_data = $scope.data.stateful.project.getZippedInstance(
                                                   master.name, instance.name, precision, "blob");
 
-                                console.log("zipped_data = " + zipped_data);
-                                $scope.data.stateful.project.saveAs(zipped_data, filename);
+                                $scope.data.stateless.saveAs(zipped_data, filename);
                             }
                         });
                     });
