@@ -21,6 +21,7 @@ requirejs.config({
       , 'socketio': '../socket.io/socket.io'
       , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
       , 'jszip': 'bower_components/jszip/dist/jszip'
+      , 'filesaver': 'bower_components/file-saver.js/FileSaver'
     }
   // exclude on build
   , excludeShallow: [

@@ -31,6 +31,7 @@
     "harmony-reflect": "~1.1.0",
     "event-emitter.js": "~0.2.0",
     "jszip": "~2.5.0",
-    "mustache.js": "~2.0.0"
+    "mustache.js": "~2.0.0",
+    "file-saver.js": "~1.20150304.1"
   }
 }
