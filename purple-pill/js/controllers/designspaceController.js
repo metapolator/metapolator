@@ -19,7 +19,17 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.selectDesignspace = function(designspace) {
         $scope.data.currentDesignspace = designspace;
-        $scope.selectCurrentInstanceFromDesignspace(designspace.id);
+        $scope.data.selectCurrentInstanceFromDesignspace(designspace.id);
+    };
+    
+    $scope.data.getDesignspaceName = function (designspaceId) {
+        var designspaceName;
+        angular.forEach($scope.data.designspaces, function(designspace) {
+            if (designspace.id == designspaceId) {
+                designspaceName = designspace.name;
+            }
+        });
+        return designspaceName;
     };
    
 
@@ -142,7 +152,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     };
 
-    $scope.data.removeEachMasterFromDesignspaces = function(masterName) {
+    $scope.data.removeMasterFromEachDesignspaces = function(masterName) {
         // this is a method called from the masters list, when deleting a master
         angular.forEach($scope.data.designspaces, function(designspace) {
             angular.forEach(designspace.axes, function(axis, index) {
@@ -154,6 +164,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.data.checkIfIsLargest = function() {
+        console.log("check if is largest");
         var isLargest = false;
         var designspace = $scope.data.currentDesignspace;
         var axes = designspace.axes;
@@ -176,6 +187,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.reDestributeAxes = function(axes) {
+        console.log("redistribute axes");
         var designspace = $scope.data.currentDesignspace;
         var slack = designspace.mainMaster;
         // 1 find highest of the others
@@ -196,6 +208,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.reDistributeValues = function(axes) {
+        console.log("redistribute values");
         var totalValue = 0;
         angular.forEach(axes, function(axis) {
             totalValue += axis.metapValue;
@@ -207,6 +220,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.changeMainMaster = function() {
+        console.log("change mainmaster");
         var designspace = $scope.data.currentDesignspace;
         var slack = designspace.mainMaster;
         // swop main master in each instance in the design space
@@ -230,6 +244,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
 
     $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
+        console.log("redraw after input");
         if (keyEvent == "blur" || keyEvent.keyCode == 13) {
             var designspace = $scope.data.currentDesignspace;
             var slack = $scope.data.currentDesignspace.mainMaster;

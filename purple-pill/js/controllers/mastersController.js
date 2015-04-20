@@ -16,7 +16,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                         notDeleted.push(master);
                     } else {
                         thisIndex = index;
-                        $scope.data.removeEachMasterFromDesignspaces(master.name);
+                        $scope.data.removeMasterFromEachDesignspaces(master.name);
                         if($scope.data.pill != "blue") {
                             $scope.data.stateful.project.deleteMaster(master.name);
                             // empty cps file to prevent caching issues
@@ -249,9 +249,10 @@ app.controller("mastersController", function($scope, sharedScope) {
             masterdisplayName: master.displayName,
             value : thisValue
         });
-        $scope.data.addAxisToInstance(master, thisValue);
         if (designspace.axes.length == 1) {
            $scope.data.addInstance(); 
+        } else {
+            $scope.data.addAxisToInstance(master, thisValue);
         }
         if (designspace.axes.length > 1) {
            $scope.data.metapolate(); 
@@ -263,7 +264,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         var isInDesignspace = false;
         for (var i = 0; i < $scope.data.currentDesignspace.axes.length; i++) {
             if ($scope.data.currentDesignspace.axes[i].masterName == masterName) {
-                x = isInDesignspace;
+                isInDesignspace = isInDesignspace;
                 break;
             }
         }

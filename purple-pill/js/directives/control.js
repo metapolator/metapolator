@@ -31,6 +31,7 @@ app.directive('control', function($document) {
 
             /***** redraw *****/
             function redraw() {
+                console.log("redraw");
                 // responsive axes
                 scope.designspaceWidth = $("#panel-3").outerWidth();
                 axisWidth = scope.designspaceWidth - 200;

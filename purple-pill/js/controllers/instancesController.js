@@ -27,6 +27,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     }
 
     $scope.data.metapolate = function() {
+        console.log("metapolate");
         if($scope.data.pill != "blue") {
             var instance = $scope.data.currentInstance;
             //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
@@ -46,6 +47,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
     
     $scope.data.getMetapolationRatios = function(instance) {
+        console.log("get metap ratios");
         var axes = instance.axes;
         var n = axes.length;
         var cake = 0;
@@ -91,11 +93,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.uniqueInstanceId = 0;
 
     $scope.data.addInstance = function() {
+        console.log("add instance");
         if ($scope.data.canAddInstance()) {
             // link instance to design space and use its masters and values
             var designspace = $scope.data.currentDesignspace;
             var axesSet = jQuery.extend(true, [], designspace.axes);
-            var newMetapValue = 100/ axesSet.length;
+            var newMetapValue = 1/ axesSet.length;
             angular.forEach(axesSet, function(axis) {
                 axis.value = 50;
                 axis.metapValue = newMetapValue;
@@ -139,8 +142,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         $scope.data.families[0].instances.push(instance);
         $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
         // create a master inside the engine and attach a cps file
-        var cpsString = $scope.createMultiMasterCPS(instance.axes);
         if($scope.data.pill != "blue") {
+            var cpsString = $scope.createMultiMasterCPS(instance.axes);
             $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
             $scope.data.stateful.project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
             $scope.data.stateful.project.open(instance.name);
@@ -149,6 +152,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         $scope.data.localmenu.instances = false;
         $scope.uniqueInstanceId++;
         $scope.addColor();
+        console.log(instance.axes);
     };
 
     $scope.duplicateName = function(inputname) {
@@ -198,7 +202,9 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             });
             // last instance of the design space
             if (n == 1) {
-                if (confirm("Removing last instance from Design Space. This will remove the Design Space. Sure?")) {
+                var designspaceName = $scope.data.getDesignspaceName(designspace);
+                var message = "Delete instance? This also deletes the design space '" + designspaceName + "'.";
+                if (confirm(message)) {
                     $scope.data.designspaces.splice($scope.data.designspaces.indexOf($scope.data.currentDesignspace), 1);
                     $scope.data.currentDesignspace = null;
                     deleteInstanceConfirmed();
@@ -280,6 +286,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
 
     $scope.data.addAxisToInstance = function(master, value) {
+        console.log("add axis to instance");
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designspace == $scope.data.currentDesignspace.id) {
@@ -295,6 +302,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                         var cpsString = $scope.createMultiMasterCPS(instance.axes);
                         $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
                     }
+                    console.log(instance.axes);
                     $scope.data.getMetapolationRatios(instance);
                 }
             });
@@ -477,6 +485,21 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             cpsString += "proportion" + i + ": " + axesSet[i - 1].metapValue + ";";
         }
         cpsString += "}";
+        return cpsString;
+    };
+    
+    $scope.createMultiMasterCPSNew = function(axesSet) {
+        var n = axesSet.length;
+        var cpsString = $scope.data.stateless.cpsGenerators.metapolation(n);
+
+        // add the metapolation values as last item
+        cpsString += "* { ";
+        for (var i = 0; i < n; i++) {
+            cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i].masterName + '";';
+            cpsString += "proportion" + i + ": " + axesSet[i].metapValue + ";";
+        }
+        cpsString += "}";
+        console.log(cpsString);
         return cpsString;
     };
 });
