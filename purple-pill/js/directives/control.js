@@ -31,7 +31,6 @@ app.directive('control', function($document) {
 
             /***** redraw *****/
             function redraw() {
-                console.log("redraw");
                 // responsive axes
                 scope.designspaceWidth = $("#panel-3").outerWidth();
                 axisWidth = scope.designspaceWidth - 200;
@@ -175,11 +174,12 @@ app.directive('control', function($document) {
                     var masterName = thisInstance.axes[i].masterName;
                     scope.removeMasterFromDesignspace(masterName, designspace, true);
                 });
-
             }
 
             /***** drag behaviour *****/
             var slackRatios;
+            var startX, startMouseX;
+
             var drag = d3.behavior.drag().on('dragstart', function() {
                 var slack = designspace.mainMaster;
                 var thisIndex = d3.select(this).attr('index');
@@ -187,16 +187,19 @@ app.directive('control', function($document) {
                 if (slack == thisIndex) {
                     slackRatios = setSlackRatio(slack);
                 }
+                startX = parseInt(d3.select(this).attr('cx'));
+                startMouseX = d3.event.sourceEvent.clientX;
                 dragActive = true;
             }).on('drag', function() {
                 // redraw slider and active axis
                 var slack = designspace.mainMaster;
-                var xPosition = limitX(d3.event.x);
+                var thisMouseX = d3.event.sourceEvent.clientX;
+                var deltaX = thisMouseX - startMouseX;
+                var xPosition = limitX(startX + deltaX);
+                console.log(xPosition);
                 var thisIndex = d3.select(this).attr('index');
                 var thisValue = (xPosition - indentLeft) / (axisWidth / 100);
                 var type = d3.select(this).attr('type');
-                // don't redraw the axis when we have two masters
-
                 if (thisIndex == slack) {
                     drawSlackAxes(slack, xPosition);
                     // change all others proportionally
@@ -262,6 +265,7 @@ app.directive('control', function($document) {
             }
 
             function drawNormalAxes(axis, xPosition) {
+                console.log(xPosition);
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
                 d3.select("path#axis-active" + axis).attr('d', 'M' + indentLeft + ' 0  L' + xPosition + ' 0');
                 d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
