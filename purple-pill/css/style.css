@@ -352,6 +352,7 @@
         }
         
             #specimen-content li glyph {
+                display: inline-block;
                 border-bottom: 4px solid transparent;
             }
                   

@@ -17,8 +17,8 @@ function($scope, $sce, sharedScope) {
    $scope.specimenPanel;
 
     $scope.specimen = [{
-        name : "metapolator",
-        text : "metapolator"
+        name : "Metapolator",
+        text : "Metapolator"
     }, {
         name : "Pangram 1",
         text : "The quick brown fox jumps over the lazy dog"
@@ -30,7 +30,7 @@ function($scope, $sce, sharedScope) {
         text : "Quick wafting zephyrs vex bold Jim"
     }, {
         name : "Something with breaks",
-        text : "hey you*nthe rock*nsteady crew"
+        text : "Hey you*nthe rock*nsteady crew"
     }, {
         name : "Devanagari",
         text : "<dvA><dvI><dvKHA><dvBHA><dvDA><dvDHA>"

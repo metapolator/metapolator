@@ -71,7 +71,7 @@ app.controller('engine', function($scope, sharedScope) {
                         unit : "",
                         operators : [{
                             name : "+",
-                            value : 40
+                            value : 0
                         }]
                     }]
                 });
