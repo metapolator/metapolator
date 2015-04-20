@@ -16,7 +16,7 @@
         <ul>
             <li ng-repeat="sequence in data.sequences">
                 <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="list-ul">
-                    <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit}">
+                    <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-mouseover="mouseoverMaster(master)" ng-mouseleave="mouseleaveMaster(master)" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit}">
                         <span class="list-sequence-col" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
                             <svg height="12" width="12">
                                 <circle cx="6" cy="6" r="6" class="diamond">

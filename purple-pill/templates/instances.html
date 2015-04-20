@@ -14,7 +14,7 @@
 <div class="panel-border panel-border-with-menu">
     <div id="instances-list">
         <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
-            <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance == data.currentInstance}">
+            <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-mouseover="mouseoverInstance(instance)" ng-mouseleave="mouseleaveInstance(instance)" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance == data.currentInstance}">
                 <span class="list-sequence-col">
                     <svg height="16" width="16">
                         <path d="M8 2 L14 8 L8 14 L2 8 Z" class="diamond" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">

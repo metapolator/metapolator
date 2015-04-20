@@ -75,6 +75,30 @@ app.controller("mastersController", function($scope, sharedScope) {
         });
         $scope.data.localmenu.masters = false;
     };
+    
+    /***** hover instances *****/
+   
+    $scope.mouseoverMaster = function(master) {
+        if (master.display || master.edit) {
+            var id = master.id;
+            $("specimen #specimen-content ul li").each(function(){
+                var thisId = $(this).find("glyph").attr("master");
+                if (thisId != id) {
+                    $(this).addClass("dimmed");    
+                }
+            });   
+        }
+    };
+    
+    $scope.mouseleaveMaster = function(master) {
+        var id = master.id;
+        $("specimen #specimen-content ul li").each(function(){
+            var thisId = $(this).find("glyph").attr("master");
+            if (thisId != id) {
+                $(this).removeClass("dimmed");    
+            }
+        });  
+    };
    
 
     /***** selecting *****/

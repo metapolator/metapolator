@@ -44,6 +44,34 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             }
         }
     };
+    
+    
+    /***** hover instances *****/
+   
+    $scope.mouseoverInstance = function(instance) {
+        if (instance.display || instance == $scope.data.currentInstance) {
+            var id = instance.id;
+            $("specimen2 #specimen-content ul li").each(function(){
+                var thisId = $(this).find("glyph").attr("master");
+                if (thisId != id) {
+                    $(this).addClass("dimmed");    
+                }
+            });   
+        }
+    };
+    
+    $scope.mouseleaveInstance = function(instance) {
+        var id = instance.id;
+        $("specimen2 #specimen-content ul li").each(function(){
+            var thisId = $(this).find("glyph").attr("master");
+            if (thisId != id) {
+                $(this).removeClass("dimmed");    
+            }
+        });  
+    };
+    
+    
+    
 
     /***** controlling instances *****/
 
