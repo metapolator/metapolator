@@ -2,7 +2,6 @@ app.directive('control', function($document) {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
-
             $(window).resize(function() {
                 return redraw();
             });
