@@ -2,8 +2,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
     $scope.data.colorCoding = ["red"];
-    
-    $scope.addColor = function () {
+
+    $scope.addColor = function() {
         var a = $scope.data.colorCoding.length % 3;
         var b = ($scope.data.colorCoding.length + 1) % 3;
         var c = ($scope.data.colorCoding.length + 2) % 3;
@@ -13,22 +13,23 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         var color = "rgb(" + r + "," + g + "," + b + ")";
         $scope.data.colorCoding.push(color);
     };
-    
-    $scope.getDiamondColor = function (instance) {
+
+    $scope.getDiamondColor = function(instance) {
         if (instance == $scope.data.currentInstance) {
             return $scope.data.colorCoding[instance.id];
         } else {
-            return "none";    
+            return "none";
         }
     };
-    
-    function getRandom (x) {
+
+    function getRandom(x) {
         return Math.round(85 * Math.random()) + x * 85;
     }
 
+
     $scope.data.metapolate = function() {
         console.log("metapolate");
-        if($scope.data.pill != "blue") {
+        if ($scope.data.pill != "blue") {
             var instance = $scope.data.currentInstance;
             //var parameterCollection = $scope.data.stateful.controller.getMasterCPS(false, instance.name);
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, instance.cpsFile);
@@ -45,7 +46,60 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             }
         }
     };
-    
+
+    $scope.data.countInstancesOnDesignspace = function(designspaceId) {
+        n = 0;
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.designspace == designspaceId) {
+                    n++;
+                }
+            });
+        });
+        return n;
+    };
+
+    $scope.data.removeInstanceAfterRemovingDesignspace = function(designspaceId) {
+        console.log(designspaceId);
+        angular.forEach($scope.data.families, function(family) {
+            var notDeleted = [];
+            angular.forEach(family.instances, function(instance) {
+                if (instance.designspace != designspaceId) {
+                    notDeleted.push(instance);
+                } 
+            });
+            family.instances = notDeleted;
+        });
+    };
+
+    $scope.data.countInstancesWithMaster = function(masterName) {
+        n = 0;
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                var hasMaster = false;
+                angular.forEach(instance.axes, function(axis) {
+                    if (axis.masterName == masterName) {
+                        hasMaster = true;
+                    }
+                });
+                if (hasMaster) {
+                    n++;
+                }
+            });
+        });
+        return n;
+    };
+
+    $scope.data.getAxisIndex = function(axes, masterName) {
+        var i;
+        angular.forEach(axes, function(axis, index) {
+            if (axis.masterName == masterName) {
+                i = index;
+            }
+        });
+        return i;
+    };
+
     $scope.data.getMetapolationRatios = function(instance) {
         console.log("get metap ratios");
         var axes = instance.axes;
@@ -59,34 +113,30 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             instance.axes[i].metapValue = piece / cake;
         }
     };
-    
-    
+
     /***** hover instances *****/
-   
+
     $scope.mouseoverInstance = function(instance) {
         if (instance.display || instance == $scope.data.currentInstance) {
             var id = instance.id;
-            $("specimen2 #specimen-content ul li").each(function(){
+            $("specimen2 #specimen-content ul li").each(function() {
                 var thisId = $(this).find("glyph").attr("master");
                 if (thisId != id) {
-                    $(this).addClass("dimmed");    
+                    $(this).addClass("dimmed");
                 }
-            });   
+            });
         }
     };
-    
+
     $scope.mouseleaveInstance = function(instance) {
         var id = instance.id;
-        $("specimen2 #specimen-content ul li").each(function(){
+        $("specimen2 #specimen-content ul li").each(function() {
             var thisId = $(this).find("glyph").attr("master");
             if (thisId != id) {
-                $(this).removeClass("dimmed");    
+                $(this).removeClass("dimmed");
             }
-        });  
+        });
     };
-    
-    
-    
 
     /***** controlling instances *****/
 
@@ -98,11 +148,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             // link instance to design space and use its masters and values
             var designspace = $scope.data.currentDesignspace;
             var axesSet = jQuery.extend(true, [], designspace.axes);
-            var newMetapValue = 1/ axesSet.length;
+            var newMetapValue = 1 / axesSet.length;
             angular.forEach(axesSet, function(axis) {
                 axis.value = 50;
                 axis.metapValue = newMetapValue;
-            });            
+            });
             var instanceName = "instance" + $scope.uniqueInstanceId;
             var cpsFile = instanceName + ".cps";
             var thisInstance = {
@@ -137,18 +187,18 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.registerInstance(duplicate);
         }
     };
-    
-    $scope.data.registerInstance = function (instance) {
+
+    $scope.data.registerInstance = function(instance) {
         $scope.data.families[0].instances.push(instance);
         $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
         // create a master inside the engine and attach a cps file
-        if($scope.data.pill != "blue") {
+        if ($scope.data.pill != "blue") {
             var cpsString = $scope.createMultiMasterCPS(instance.axes);
             $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
             $scope.data.stateful.project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
             $scope.data.stateful.project.open(instance.name);
             $scope.data.metapolate();
-        } 
+        }
         $scope.data.localmenu.instances = false;
         $scope.uniqueInstanceId++;
         $scope.addColor();
@@ -183,7 +233,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         serialNr++;
         return cleanName + serialNr;
     };
-    
+
     $scope.data.deleteInstanceFromDesignspace = function(instance) {
         // this method is called when removing the last master from a designspace
         $scope.data.families[0].instances.splice($scope.data.families[0].instances.indexOf(instance), 1);
@@ -240,7 +290,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.currentInstance = $scope.data.families[0].instances[index];
         }
     }
-    
+
+
     $scope.getIndexOfInstance = function(thisInstance) {
         var thisIndex;
         angular.forEach($scope.data.families, function(family) {
@@ -249,15 +300,15 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                     thisIndex = index;
                 }
             });
-        }); 
+        });
         return thisIndex;
     };
 
     /***** feedback on design spaces *****/
 
     $scope.data.currentInstance = null;
-    
-    $scope.data.selectCurrentInstanceFromDesignspace = function (designspaceId) {
+
+    $scope.data.selectCurrentInstanceFromDesignspace = function(designspaceId) {
         var instanceInSpace = null;
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
@@ -290,7 +341,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designspace == $scope.data.currentDesignspace.id) {
-                    // for the current instance the slider value of the new axis is 50, for the others in this designspace it is 0 
+                    // for the current instance the slider value of the new axis is 50, for the others in this designspace it is 0
                     instance.axes.push({
                         metapValue : 0,
                         masterName : master.name,
@@ -349,7 +400,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         });
     };
 
-
     $scope.toggleDisplay = function(instance) {
         instance.display = !instance.display;
     };
@@ -360,7 +410,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         handle : '.list-edit-col',
         helper : 'clone',
     };
-    
+
     /***** cps *****/
 
     $scope.createMultiMasterCPS = function(axesSet) {
@@ -487,7 +537,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         cpsString += "}";
         return cpsString;
     };
-    
+
     $scope.createMultiMasterCPSNew = function(axesSet) {
         var n = axesSet.length;
         var cpsString = $scope.data.stateless.cpsGenerators.metapolation(n);

@@ -49,16 +49,24 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.removeDesignspace = function() {
-        if ($scope.data.currentDesignspace.axes.length == 0) {
+        var designspace = $scope.data.currentDesignspace;
+        if (designspace.axes.length == 0) {
             remove();
         } else {
-            if (confirm("This will remove all Instances in this Design Space. Sure?")) {
-                remove();
+            var n = $scope.data.countInstancesOnDesignspace(designspace.id);
+            if (n == 1) {
+                if (confirm("Delete this design space and its instance?")) {
+                    remove();
+                }  
+            } else {
+                if (confirm("Delete this design space and its " + n + " instances?")) {
+                    remove();
+                }
             }
         }
         function remove(){
-            $scope.data.designspaces.splice($scope.data.designspaces.indexOf($scope.data.currentDesignspace), 1);
-            $scope.setLastDesignspace();
+            $scope.data.designspaces.splice($scope.data.designspaces.indexOf(designspace), 1);
+            $scope.data.removeInstanceAfterRemovingDesignspace(designspace.id);
         }
         $scope.setNewCurrentDesignspace();   
         $scope.data.localmenu.designspace = false;
@@ -107,12 +115,20 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     //
 
-    $scope.removeMasterFromDesignspace = function(m, designspace, confirmNeeded) {
+    $scope.removeMasterFromDesignspace = function(masterName, designspace, confirmNeeded, arrayIndex) {
         var axesSet = designspace.axes;
         if (confirmNeeded) {
-            if (confirm("Removing master from this Design Space, and also from all Instances in this Design Space. Sure?")) {
-                deleteMaster();
-                $scope.$apply();
+            var n = $scope.data.countInstancesWithMaster(masterName);
+            if (n == 1) {
+                if (confirm("Remove master? It will no longer be part of the instance afterwards.")) {
+                    deleteMaster();
+                    $scope.$apply();
+                }
+            } else {
+                if (confirm("Remove master? It will no longer be part of the instances afterwards.")) {
+                    deleteMaster();
+                    $scope.$apply();
+                }
             }
         } else {
             deleteMaster();
@@ -127,6 +143,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                         if (instance.axes.length == 1) {
                             $scope.data.deleteInstanceFromDesignspace(instance);
                         } else {
+                            var m = $scope.data.getAxisIndex(instance.axes, masterName);
                             instance.axes.splice(m, 1);
                             $scope.reDistributeValues(instance.axes);
                         }
@@ -134,15 +151,15 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 });
             });
             // remove the master from the designspace
-            designspace.axes.splice(m, 1);
+            designspace.axes.splice(arrayIndex, 1);
             if (designspace.axes.length == 0) {
                 designspace.type = "x";
             }
     
             // reassigning the key of mainmaster
-            if (m < designspace.mainMaster) {
+            if (arrayIndex < designspace.mainMaster) {
                 designspace.mainMaster--;
-            } else if (m == designspace.mainMaster) {
+            } else if (arrayIndex == designspace.mainMaster) {
                 designspace.mainMaster = 0;
             }
             if (designspace.axes.length < 3) {
@@ -157,7 +174,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         angular.forEach($scope.data.designspaces, function(designspace) {
             angular.forEach(designspace.axes, function(axis, index) {
                 if (axis.masterName == masterName) {
-                    $scope.removeMasterFromDesignspace(index, designspace, false);
+                    $scope.removeMasterFromDesignspace(masterName, designspace, false, index);
                 }
             });
         });

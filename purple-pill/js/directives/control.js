@@ -172,7 +172,8 @@ app.directive('control', function($document) {
                 }).attr('y', '2').text("o").attr('masterName', function(d, i) {
                     return thisInstance.axes[i].masterName;
                 }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
-                    scope.removeMasterFromDesignspace(i, designspace, true);
+                    var masterName = thisInstance.axes[i].masterName;
+                    scope.removeMasterFromDesignspace(masterName, designspace, true);
                 });
 
             }
