@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<glyph name="space" format="2">
-  <advance width="215"/>
-  <unicode hex="0020"/>
-  <outline/>
-</glyph>
+<glyph name="space" format="2"><advance width="290"/><unicode hex="0020"/><outline/><lib><dict><key>com.typemytype.robofont.layerData</key><dict><key>back</key><dict><key>anchors</key><array/><key>components</key><array/><key>contours</key><array/><key>lib</key><dict/><key>name</key><string>space</string><key>unicodes</key><array/><key>width</key><integer>290</integer></dict></dict></dict></lib></glyph>

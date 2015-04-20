@@ -1,6 +1,6 @@
 /* scale the skeleton */
 point>center, contour > p{
-    /* this way we can override scale and still have access to it's
+    /* this way we can override "scale" and still have access to it's
      * original value
      */
     _scale: (Scaling widthFactor heightFactor);
@@ -28,7 +28,7 @@ contour > p {
 }
 
 
-/* define higher level parameters */
+/* define default higher level properties, override in your master */
 glyph, point > center, contour > p {
     overallWidth: 1;
     xTranslate: 0;

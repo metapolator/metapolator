@@ -1,23 +1,16 @@
 /* change the weight */
-/* needs a "base" */
-@dictionary {
-    point > left,
-    point > right {
-        length: base:onLength*weightFactor + weightSummand;
-    }
-}
-
+/* needs a "base", see lib/point-child-base.cps */
 point > left,
 point > right {
+    length: base:onLength*weightFactor + weightSummand;
     onLength: length;
 }
 
-/* define  higher level parameters, override in your master */
-@dictionary {
-    point > left,
-    point > right,
-    p {
-        weightFactor: 1;
-        weightSummand: 0;
-    }
+/* define default higher level properties, override in your master */
+glyph,
+point > left,
+point > right,
+p {
+    weightFactor: 1;
+    weightSummand: 0;
 }
