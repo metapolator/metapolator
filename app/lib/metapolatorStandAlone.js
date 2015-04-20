@@ -17,6 +17,7 @@ require([
   , 'metapolator/models/CPS/parsing/parseSelectorList'
   , 'metapolator/project/cps-generators/interpolation'
   , 'metapolator/project/cps-generators/metapolation'
+  , 'filesaver'
 ],
 function (
     document
@@ -34,6 +35,7 @@ function (
   , parseSelectorList
   , cpsGenInterpolation
   , cpsGenMetapolation
+  , saveAs
 ) {
     "use strict";
     /*global setTimeout window*/
@@ -179,5 +181,7 @@ function (
     exports.cpsGenerators = {
         interpolation: cpsGenInterpolation
       , metapolation: cpsGenMetapolation
-    }
+    };
+
+    exports.saveAs = saveAs;
 });

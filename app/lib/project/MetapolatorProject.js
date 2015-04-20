@@ -20,7 +20,6 @@ define([
   , 'yaml'
   , 'io/zipUtil'
   , 'io/InMemory'
-  , 'filesaver'
 ], function(
     errors
   , log
@@ -43,7 +42,6 @@ define([
   , yaml
   , zipUtil
   , InMemory
-  , saveAs
 ) {
     "use strict";
 
@@ -627,8 +625,6 @@ define([
             exportInstance(this._io, this, masterName, instanceName, precision);
         }
     };
-
-    _p.saveAs = saveAs;
 
     _p.getZippedInstance = function(masterName, instanceName, precision, dataType) {
         var temp_dir = instanceName+"_temp"
