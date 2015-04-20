@@ -1,5 +1,3 @@
-@import 'centreline-skeleton-to-symmetric-outline.cps';
-
 glyph {
 {{#n}}
     base{{.}}: baseMaster{{.}}:children[index];
@@ -41,7 +39,7 @@ point > * {
     interpolationUnit: 1/(0{{#n}}
         + proportion{{.}}{{/n}});
 {{#n}}
-    _p{{.}}: proportion{{.}}*interpolationUnit;
+    _p{{.}}: proportion{{.}} * interpolationUnit;
 {{/n}}
 }
 
@@ -56,11 +54,11 @@ point > left,
 point > right,
 point > center,
 contour > p {
-    on: 0{{#n}}
+    on: Vector 0 0{{#n}}
         + base{{.}}:on * _p{{.}}{{/n}};
-    in: 0{{#n}}
+    in: Vector 0 0{{#n}}
         + base{{.}}:in * _p{{.}}{{/n}};
-    out: 0{{#n}}
+    out: Vector 0 0{{#n}}
         + base{{.}}:out * _p{{.}}{{/n}};
 }
 

@@ -41,7 +41,7 @@ point > * {
     interpolationUnit: 1/(0{{#n}}
         + proportion{{.}}{{/n}});
 {{#n}}
-    _p{{.}}: proportion{{.}}*interpolationUnit;
+    _p{{.}}: proportion{{.}} * interpolationUnit;
 {{/n}}
 }
 
@@ -91,9 +91,9 @@ point > * {
      * for Infinity, e.g. 10 or 100?
      */
     inTension: 0{{#n}}
-        + (min 1000 base{{.}}:inTension * _p{{.}}}{{/n}};
+        + (min 1000 base{{.}}:inTension * _p{{.}}){{/n}};
     outTension: 0{{#n}}
-        + (min 1000 base{{.}}:outTension * _p{{.}}}{{/n}};
+        + (min 1000 base{{.}}:outTension * _p{{.}}){{/n}};
     inDirIntrinsic: 0{{#n}}
         + (normalizeAngle base{{.}}:inDirIntrinsic) * _p{{.}}{{/n}};
     outDirIntrinsic: 0{{#n}}
@@ -101,7 +101,7 @@ point > * {
 }
 
 contour > p {
-    on: 0{{#n}}
+    on: Vector 0 0{{#n}}
         + base{{.}}:on * _p{{.}}{{/n}};
     inDir: 0{{#n}}
         + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};
@@ -121,11 +121,11 @@ point > left, point > right {
 }
 
 point > center {
-    on: 0{{#n}}
+    on: Vector 0 0{{#n}}
         + base{{.}}:on * _p{{.}}{{/n}};
-    in: 0{{#n}}
+    in: Vector 0 0{{#n}}
         + base{{.}}:in * _p{{.}}{{/n}};
-    out: 0{{#n}}
+    out: Vector 0 0{{#n}}
         + base{{.}}:out * _p{{.}}{{/n}};
 }
 
