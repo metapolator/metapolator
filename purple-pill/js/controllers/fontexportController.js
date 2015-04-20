@@ -21,6 +21,30 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
     
     $scope.data.exportFonts = function (){
         console.log("exporting");
+
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.edit) {
+                    angular.forEach($scope.data.families, function(family) {
+                        angular.forEach(family.instances, function(instance) {
+                            if (instance.exportFont) {
+                                var filename = master.name + "_"+ instance.name + ".zip"
+                                  , msg = "Exporting Zipped UFO font: " + filename;
+
+                                $scope.data.alert(msg, true);
+                                console.log(msg);
+
+                                var precision = -1 //no rounding
+                                  , zipped_data = $scope.data.stateful.project.getZippedInstance(
+                                                  master.name, instance.name, precision, "blob");
+
+                                $scope.data.stateless.saveAs(zipped_data, filename);
+                            }
+                        });
+                    });
+                }
+            });
+        });
     };
     
     $scope.data.instancesForExport = function() {
