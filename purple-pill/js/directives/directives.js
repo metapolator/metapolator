@@ -152,7 +152,7 @@ app.directive('projectRename', function() {
 
             function finishedRenaming(div) {
                 scope.$apply(function() {
-                    scope.data.currentDesignSpace.trigger++;
+                    scope.data.currentDesignspace.trigger++;
                     // this is to trigger the designspace to redraw
                     ctrl.$setViewValue(element.html());
                 });
@@ -193,7 +193,7 @@ app.directive('rename', function() {
 
             function finishedRenaming(div) {
                 scope.$apply(function() {
-                    scope.data.currentDesignSpace.trigger++;
+                    scope.data.currentDesignspace.trigger++;
                     // this is to trigger the designspace to redraw
                     ctrl.$setViewValue(element.html());
                 });
@@ -601,13 +601,13 @@ app.directive('explore', function($document) {
             var layer1 = svg.append('g');
 
             // watch for data changes and re-render
-            scope.$watchCollection('[data.currentDesignSpace.masters.length, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.currentDesignspace.masters.length, data.currentDesignspace]', function(newVals, oldVals, scope) {
                 return redraw();
             }, true);
 
             // (RE-)RENDER
             function redraw() {
-                var data = scope.data.currentDesignSpace;
+                var data = scope.data.currentDesignspace;
                 // remove all previous items before render
                 layer2.selectAll('*').remove();
                 layer1.selectAll('*').remove();

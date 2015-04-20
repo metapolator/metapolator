@@ -8,7 +8,7 @@ app.factory("sharedScope", function($rootScope) {
             masters : []
         }],
         adjustmentMasters : [],
-        designSpaces : [{
+        designspaces : [{
             trigger : 0,
             name : "Space 0",
             id : 0,
@@ -22,7 +22,7 @@ app.factory("sharedScope", function($rootScope) {
             id : 0,
             instances : []
         }],
-        currentDesignSpace : null,
+        currentDesignspace : null,
         eventHandlers : {
             mousedown : false,
             initialDisplay : null
@@ -37,7 +37,7 @@ app.factory("sharedScope", function($rootScope) {
         },
         view : {
             menuItems : ["Parameters", "Design spaces", "Fonts"],
-            viewState : 0,
+            viewState : 1,
             panels : [3, 10, 3, 10, 3, 1, 12],
             totalPanelParts : 42,
             dividers : [{

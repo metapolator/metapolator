@@ -1,38 +1,38 @@
 <ul id="design-space-tabs">
-    <li ng-repeat="space in data.designSpaces track by space.id" ng-click="selectDesignSpace(space)" ng-class="{selected : space == data.currentDesignSpace}">
-        <localmenu class="localmenu localmenu-inside" class="left" ng-if="space == data.currentDesignSpace">
+    <li ng-repeat="space in data.designspaces track by space.id" ng-click="selectDesignspace(space)" ng-class="{selected : space == data.currentDesignspace}">
+        <localmenu class="localmenu localmenu-inside" class="left" ng-if="space == data.currentDesignspace">
             <div class="lm-head" ng-mousedown="data.selectMenu('designspace')">
                 <div class="rename" ng-model="space.name"></div>&nbsp;
             </div>
             <div class="lm-body" ng-if="data.localmenu.designspace">
-                <div class="lm-button" ng-mouseup="addDesignSpace()">New</div>
-                <div class="lm-button" ng-mouseup="duplicateDesignSpace()">Duplicate</div>
+                <div class="lm-button" ng-mouseup="addDesignspace()">New</div>
+                <div class="lm-button" ng-mouseup="duplicateDesignspace()">Duplicate</div>
                 <div class="lm-divider"></div>
-                <div class="lm-button" ng-mouseup="removeDesignSpace()">Delete…</div>
+                <div class="lm-button" ng-mouseup="removeDesignspace()">Delete…</div>
             </div>
         </localmenu>
-        <div class="rename" ng-model="space.name" ng-if="space != data.currentDesignSpace"></div>
+        <div class="rename" ng-model="space.name" ng-if="space != data.currentDesignspace"></div>
         
     </li>
-    <li ng-click="addDesignSpace()" ng-if="data.designSpaces.length < 8">
+    <li ng-click="addDesignspace()" ng-if="data.designspaces.length < 8">
         +
     </li>
 </ul>
 <!-- end of tabs -->
 
-<div class="design-space drop-area" ng-class="{unconfigured : data.currentDesignSpace.type =='x'}">
-    <div class="design-space-container" ng-show="data.currentDesignSpace.type == 'x'">
+<div class="design-space drop-area" ng-class="{unconfigured : data.currentDesignspace.type =='x'}">
+    <div class="design-space-container" ng-show="data.currentDesignspace.type == 'x'">
         Drag a master from the left panel into this Design Space. When you drop your first master, an instance of it is created. You will need at least
         two masters to affect interpolation to your instance.
     </div>
     
-    <div class="" ng-show="data.currentDesignSpace.type != 'x'">
-        <control ng-if="data.currentDesignSpace.type == 'Control'">
-            <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 40) + 'px', 'left': (designSpaceWidth / 2 - 75) + 'px'}">
+    <div class="" ng-show="data.currentDesignspace.type != 'x'">
+        <control ng-if="data.currentDesignspace.type == 'Control'">
+            <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 40) + 'px', 'left': (designspaceWidth / 2 - 75) + 'px'}">
                 <input valuefield id="designspace-input-{{$index}}" counter="{{$index}}" ng-model="axis.value" ng-blur="redrawAxesFromInput($index, 'blur')" ng-keyup="redrawAxesFromInput($index, $event)" class="slider-input-output">
             </div>
-            <select id="slack-master-select" ng-if="data.currentDesignSpace.axes.length > 2" class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignSpace.mainMaster" ng-options="data.currentDesignSpace.axes.indexOf(axis) as data.findMaster(axis.masterName).displayName for (index, axis) in data.currentDesignSpace.axes" ng-style="{'top': (data.currentDesignSpace.mainMaster * 50 + 44) + 'px', 'left': '10px'}"></select>
+            <select id="slack-master-select" ng-if="data.currentDesignspace.axes.length > 2" class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignspace.mainMaster" ng-options="data.currentDesignspace.axes.indexOf(axis) as data.findMaster(axis.masterName).displayName for (index, axis) in data.currentDesignspace.axes" ng-style="{'top': (data.currentDesignspace.mainMaster * 50 + 44) + 'px', 'left': '10px'}"></select>
         </control>
-        <explore ng-if="data.currentDesignSpace.type == 'Explore'"></explore>
+        <explore ng-if="data.currentDesignspace.type == 'Explore'"></explore>
     </div> 
 </div>

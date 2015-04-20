@@ -8,7 +8,7 @@ app.directive('control', function($document) {
             });
 
             var dragActive = false;
-            var designSpace;
+            var designspace;
             var thisInstance;
             var svg = d3.select(element[0]).append('svg');
             var layer2 = svg.append('g');
@@ -19,10 +19,10 @@ app.directive('control', function($document) {
             var diamondShape = '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize;
 
             // watch for data changes and redraw
-            scope.$watchCollection('[data.currentInstance, data.families[0].instances.length, data.currentDesignSpace.trigger, data.currentDesignSpace.masters.length, data.currentDesignSpace.triangle, data.currentDesignSpace]', function(newVals, oldVals, scope) {
+            scope.$watchCollection('[data.currentInstance, data.families[0].instances.length, data.currentDesignspace.trigger, data.currentDesignspace.masters.length, data.currentDesignspace.triangle, data.currentDesignspace]', function(newVals, oldVals, scope) {
                 return redraw();
             }, true);
-            scope.$watch('data.currentDesignSpace.axes', function(newVal) {
+            scope.$watch('data.currentDesignspace.axes', function(newVal) {
                 // prevent a redraw loop, this watch is for manual change of an input box
                 if (!dragActive) {
                     return redraw();
@@ -32,17 +32,17 @@ app.directive('control', function($document) {
             /***** redraw *****/
             function redraw() {
                 // responsive axes
-                scope.designSpaceWidth = $("#panel-3").outerWidth();
-                axisWidth = scope.designSpaceWidth - 200;
+                scope.designspaceWidth = $("#panel-3").outerWidth();
+                axisWidth = scope.designspaceWidth - 200;
                 var axesString = 'M' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0' + ' L' + (indentLeft + axisWidth) + ' ' + axisTab;
                 var reverseAxesString = 'M' + indentLeft + ' ' + axisTab + ' L' + indentLeft + ' 0  L' + (indentLeft + axisWidth) + ' 0';
 
-                designSpace = scope.data.currentDesignSpace;
+                designspace = scope.data.currentDesignspace;
                 var inactiveInstances = [];
                 angular.forEach(scope.data.families, function(family) {
                     angular.forEach(family.instances, function(instance) {
                         // push inactive instances of this designspace
-                        if (instance.designSpace == designSpace.id) {
+                        if (instance.designspace == designspace.id) {
                             if (instance == scope.data.currentInstance) {
                                 thisInstance = instance;
                             } else {
@@ -60,7 +60,7 @@ app.directive('control', function($document) {
                     for ( j = 0; j < inactiveInstances[i].axes.length; j++) {
                         //if (!(inactiveInstances[i].axes.length == 2 && j == 1)) {
                         layer2.append('g').attr('transform', function() {
-                            if (j == scope.data.currentDesignSpace.mainMaster) {
+                            if (j == scope.data.currentDesignspace.mainMaster) {
                                 var x = paddingLeft - diamondsize + axisWidth / 100 * (100 - inactiveInstances[i].axes[j].value);
                             } else {
                                 var x = paddingLeft - diamondsize + axisWidth / 100 * inactiveInstances[i].axes[j].value;
@@ -86,7 +86,7 @@ app.directive('control', function($document) {
 
                 // append axis itself
                 axes.append('path').attr('d', function(d, i) {
-                    if (i == designSpace.mainMaster) {
+                    if (i == designspace.mainMaster) {
                         return reverseAxesString;
                     } else {
                         return axesString;
@@ -94,7 +94,7 @@ app.directive('control', function($document) {
                 }).attr('class', 'slider-axis');
                 // active axis
                 axes.append('path').attr('d', function(d, i) {
-                    if (i == designSpace.mainMaster) {
+                    if (i == designspace.mainMaster) {
                         return 'M' + ((100 - d.value) * (axisWidth / 100) + indentLeft) + ' 0 L' + (indentLeft + axisWidth) + ' 0';
                     } else {
                         return 'M' + indentLeft + ' 0  L' + (d.value * (axisWidth / 100) + indentLeft) + ' 0';
@@ -104,7 +104,7 @@ app.directive('control', function($document) {
                 });
 
                 // for 1 master setup, the "just one more" text
-                if (designSpace.axes.length == 1) {
+                if (designspace.axes.length == 1) {
                     var tempAxis = layer1.append('g').attr('transform', function(d, i) {
                         var x = paddingLeft - indentLeft;
                         var y = axisDistance + paddingTop;
@@ -119,7 +119,7 @@ app.directive('control', function($document) {
 
                 // append slider handles and according diamond
                 axes.append('circle').attr('r', 8).attr('cx', function(d, i) {
-                    if (i == designSpace.mainMaster) {
+                    if (i == designspace.mainMaster) {
                         return (100 - d.value) * (axisWidth / 100) + indentLeft;
                     } else {
                         return d.value * (axisWidth / 100) + indentLeft;
@@ -133,7 +133,7 @@ app.directive('control', function($document) {
                 axes.append('g').attr('id', function(d, i) {
                     return 'diamond' + i;
                 }).attr('transform', function(d, i) {
-                    if (i == designSpace.mainMaster) {
+                    if (i == designspace.mainMaster) {
                         return "translate(" + ((100 - d.value) * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)";
                     } else {
                         return "translate(" + (d.value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)";
@@ -142,7 +142,7 @@ app.directive('control', function($document) {
 
                 // labels and remove buttons
                 var label = axes.append('g').attr('transform', function(d, i) {
-                    if (i == designSpace.mainMaster) {
+                    if (i == designspace.mainMaster) {
                         var x = paddingLeft - indentLeft - 10;
                     } else {
                         var x = paddingLeft + axisWidth - indentRight;
@@ -150,7 +150,7 @@ app.directive('control', function($document) {
                     var y = paddingLabel;
                     return "translate(" + x + "," + y + ")";
                 }).attr('class', 'slider-label-right-container').style('display', function(d, i) {
-                    if (i != designSpace.mainMaster || designSpace.axes.length < 3) {
+                    if (i != designspace.mainMaster || designspace.axes.length < 3) {
                         return 'block';
                     } else {
                         return 'none';
@@ -171,7 +171,7 @@ app.directive('control', function($document) {
                 }).attr('y', '2').text("o").attr('masterName', function(d, i) {
                     return thisInstance.axes[i].masterName;
                 }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
-                    scope.removeMaster(i, designSpace);
+                    scope.removeMasterFromDesignspace(i, designspace, true);
                 });
 
             }
@@ -179,7 +179,7 @@ app.directive('control', function($document) {
             /***** drag behaviour *****/
             var slackRatios;
             var drag = d3.behavior.drag().on('dragstart', function() {
-                var slack = designSpace.mainMaster;
+                var slack = designspace.mainMaster;
                 var thisIndex = d3.select(this).attr('index');
                 $("#slider-container-" + thisIndex).attr("class", "dragging");
                 if (slack == thisIndex) {
@@ -188,7 +188,7 @@ app.directive('control', function($document) {
                 dragActive = true;
             }).on('drag', function() {
                 // redraw slider and active axis
-                var slack = designSpace.mainMaster;
+                var slack = designspace.mainMaster;
                 var xPosition = limitX(d3.event.x);
                 var thisIndex = d3.select(this).attr('index');
                 var thisValue = (xPosition - indentLeft) / (axisWidth / 100);
@@ -272,7 +272,7 @@ app.directive('control', function($document) {
             }
 
             function writeValueToModel(axis, value) {
-                designSpace.axes[axis].value = formatX(value);
+                designspace.axes[axis].value = formatX(value);
                 thisInstance.axes[axis].value = formatX(value);
             }
 

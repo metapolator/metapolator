@@ -45,6 +45,19 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }
     };
     
+    $scope.data.getMetapolationRatios = function(instance) {
+        var axes = instance.axes;
+        var n = axes.length;
+        var cake = 0;
+        for (var i = 0; i < n; i++) {
+            cake += parseFloat(axes[i].value);
+        }
+        for (var i = 0; i < n; i++) {
+            var piece = parseFloat(axes[i].value);
+            instance.axes[i].metapValue = piece / cake;
+        }
+    };
+    
     
     /***** hover instances *****/
    
@@ -80,8 +93,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data.addInstance = function() {
         if ($scope.data.canAddInstance()) {
             // link instance to design space and use its masters and values
-            var designSpace = $scope.data.currentDesignSpace;
-            var axesSet = jQuery.extend(true, [], designSpace.axes);
+            var designspace = $scope.data.currentDesignspace;
+            var axesSet = jQuery.extend(true, [], designspace.axes);
             var newMetapValue = 100/ axesSet.length;
             angular.forEach(axesSet, function(axis) {
                 axis.value = 50;
@@ -91,12 +104,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var cpsFile = instanceName + ".cps";
             var thisInstance = {
                 id : $scope.uniqueInstanceId,
-                edit : true,
                 display : false,
                 ag : "ag",
                 name : instanceName,
                 displayName : instanceName,
-                designSpace : designSpace.id,
+                designspace : designspace.id,
                 fontFamily : "Roboto",
                 fontWeight : 700,
                 axes : axesSet,
@@ -114,11 +126,10 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var newName = $scope.duplicateName(duplicate.name);
             duplicate.name = newName;
             duplicate.displayName = newName;
-            duplicate.edit = true;
             duplicate.id = $scope.uniqueInstanceId;
             if (space) {
                 // duplicate via duplicate design space
-                duplicate.designSpace = space;
+                duplicate.designspace = space;
             }
             $scope.data.registerInstance(duplicate);
         }
@@ -126,7 +137,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     
     $scope.data.registerInstance = function (instance) {
         $scope.data.families[0].instances.push(instance);
-        $scope.data.deselectAllEdit();
         $scope.data.currentInstance = $scope.data.families[0].instances[($scope.data.families[0].instances.length - 1)];
         // create a master inside the engine and attach a cps file
         var cpsString = $scope.createMultiMasterCPS(instance.axes);
@@ -177,11 +187,11 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     $scope.deleteInstance = function() {
         if ($scope.data.currentInstance) {
-            var designSpace = $scope.data.currentInstance.designSpace;
+            var designspace = $scope.data.currentInstance.designspace;
             var n = 0;
             angular.forEach($scope.data.families, function(family) {
                 angular.forEach(family.instances, function(instance) {
-                    if (instance.designSpace == designSpace) {
+                    if (instance.designspace == designspace) {
                         n++;
                     }
                 });
@@ -189,8 +199,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             // last instance of the design space
             if (n == 1) {
                 if (confirm("Removing last instance from Design Space. This will remove the Design Space. Sure?")) {
-                    $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
-                    $scope.data.currentDesignSpace = null;
+                    $scope.data.designspaces.splice($scope.data.designspaces.indexOf($scope.data.currentDesignspace), 1);
+                    $scope.data.currentDesignspace = null;
                     deleteInstanceConfirmed();
                 }
             } else {
@@ -200,12 +210,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
 
     // delete after deleting design space
-    $scope.data.deleteInstanceDirect = function(designSpace) {
+    $scope.data.deleteInstanceDirect = function(designspace) {
         // reverse order, otherwise splice gets confused
         for ( i = $scope.data.families.length - 1; i >= 0; i--) {
             for ( j = $scope.data.families[i].instances.length - 1; j >= 0; j--) {
                 var instance = $scope.data.families[i].instances[j];
-                if (instance.designSpace == designSpace) {
+                if (instance.designspace == designspace) {
                     $scope.data.families[i].instances.splice($scope.data.families[i].instances.indexOf(instance), 1);
                 }
             }
@@ -240,16 +250,30 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     /***** feedback on design spaces *****/
 
     $scope.data.currentInstance = null;
+    
+    $scope.data.selectCurrentInstanceFromDesignspace = function (designspaceId) {
+        var instanceInSpace = null;
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.designspace == designspaceId) {
+                    instanceInSpace = instance;
+                }
+            });
+        });
+        if (instanceInSpace) {
+            $scope.data.currentInstance = instanceInSpace;
+        }
+    };
 
     $scope.setCurrentInstance = function(thisInstance) {
         $scope.data.currentInstance = thisInstance;
-        $scope.setCurrentDesignSpace(thisInstance.designSpace);
+        $scope.setCurrentDesignSpace(thisInstance.designspace);
     };
 
-    $scope.setCurrentDesignSpace = function(designSpaceId) {
-        for (var i = 0; i < $scope.data.designSpaces.length; i++) {
-            if ($scope.data.designSpaces[i].id == designSpaceId) {
-                $scope.data.currentDesignSpace = $scope.data.designSpaces[i];
+    $scope.setCurrentDesignSpace = function(designspaceId) {
+        for (var i = 0; i < $scope.data.designspaces.length; i++) {
+            if ($scope.data.designspaces[i].id == designspaceId) {
+                $scope.data.currentDesignspace = $scope.data.designspaces[i];
                 break;
             }
         }
@@ -258,7 +282,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data.addAxisToInstance = function(master, value) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
-                if (instance.designSpace == $scope.data.currentDesignSpace.id) {
+                if (instance.designspace == $scope.data.currentDesignspace.id) {
                     // for the current instance the slider value of the new axis is 50, for the others in this designspace it is 0 
                     instance.axes.push({
                         metapValue : 0,
@@ -280,9 +304,9 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     /***** bottom buttons *****/
 
     $scope.data.canAddInstance = function() {
-        if ($scope.data.currentDesignSpace) {
-            var designSpace = $scope.data.currentDesignSpace;
-            if ((designSpace && designSpace.type == "Control" && designSpace.axes.length > 0) || (designSpace.type == "Explore" && designSpace.masters.length > 0)) {
+        if ($scope.data.currentDesignspace) {
+            var designspace = $scope.data.currentDesignspace;
+            if ((designspace && designspace.type == "Control" && designspace.axes.length > 0) || (designspace.type == "Explore" && designspace.masters.length > 0)) {
                 return true;
             } else {
                 return false;
@@ -317,41 +341,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         });
     };
 
-    $scope.toggleEdit = function(listItem) {
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (listItem.parentObject == family.id && listItem.childObject == instance.id) {
-                    instance.edit = !instance.edit;
-                }
-            });
-        });
-    };
-
-    $scope.selectEdit = function(set) {
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                var hit = false;
-                angular.forEach(set, function(selection) {
-                    if (selection.parentObject == family.id && selection.childObject == instance.id) {
-                        hit = true;
-                    }
-                });
-                if (hit) {
-                    instance.edit = true;
-                } else {
-                    instance.edit = false;
-                }
-            });
-        });
-    };
-
-    $scope.data.deselectAllEdit = function() {
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                instance.edit = false;
-            });
-        });
-    };
 
     $scope.toggleDisplay = function(instance) {
         instance.display = !instance.display;

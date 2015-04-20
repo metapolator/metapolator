@@ -16,7 +16,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                         notDeleted.push(master);
                     } else {
                         thisIndex = index;
-                        $scope.data.removeMasterFromDesignSpace(master.name);
+                        $scope.data.removeEachMasterFromDesignspaces(master.name);
                         if($scope.data.pill != "blue") {
                             $scope.data.stateful.project.deleteMaster(master.name);
                             // empty cps file to prevent caching issues
@@ -34,6 +34,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         } else {
             $scope.data.sequences[0].masters[thisIndex].edit = true;
         }
+        // close menu
         $scope.data.localmenu.masters = false;
     };
     
@@ -73,6 +74,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             });
         });
+        // close menu
         $scope.data.localmenu.masters = false;
     };
     
@@ -105,7 +107,7 @@ app.controller("mastersController", function($scope, sharedScope) {
 
     $scope.mouseDown = false;
     
-    $scope.toggleViewSet = function(set, initialDisplay) {
+    $scope.toggleViewSet = function(selectedSet, initialDisplay) {
         if (initialDisplay == "true") {
             var newStatus = false;
         } else {
@@ -114,7 +116,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 var hit = false;
-                angular.forEach(set, function(selection) {
+                angular.forEach(selectedSet, function(selection) {
                     if (selection.parentObject == sequence.id && selection.childObject == master.id) {
                         hit = true;
                     }
@@ -217,10 +219,10 @@ app.controller("mastersController", function($scope, sharedScope) {
                 var masterIndex = ui.item.index();
                 var master = $scope.data.sequences[sequenceIndex].masters[masterIndex];
                 // check if master already in this designspace
-                if (isInDesignSpace(master.name)) {
+                if (isInDesignspace(master.name)) {
                     alert("master already in this Design Space");
                 } else {
-                    $scope.addMasterToDesignSpace(master);
+                    $scope.addMasterToDesignspace(master);
                     $scope.$apply();
                 }
             }
@@ -228,23 +230,24 @@ app.controller("mastersController", function($scope, sharedScope) {
         }
     };
 
-    $scope.addMasterToDesignSpace = function(master) {
-        var designspace = $scope.data.currentDesignSpace;
-        if ($scope.data.currentDesignSpace.type == "x") {
-            $scope.data.currentDesignSpace.type = "Control";
+    $scope.addMasterToDesignspace = function(master) {
+        var designspace = $scope.data.currentDesignspace;
+        // activate designspace
+        if (designspace.type == "x") {
+            designspace.type = "Control";
         }
-        var thisValue = 0;
+        // initial slider value
         if (designspace.axes.length == 0) {
-           thisValue = 50;
-        }
-        if (designspace.axes.length == 1) {
-           thisValue = 100 -  designspace.axes[0].value;
+           var thisValue = 50;
+        } else if (designspace.axes.length == 1) {
+           var thisValue = 100 -  designspace.axes[0].value;
+        } else {
+           var thisValue = 0;
         }
         designspace.axes.push({
             masterName : master.name,
             masterdisplayName: master.displayName,
-            value : thisValue,
-            metapValue : 1
+            value : thisValue
         });
         $scope.data.addAxisToInstance(master, thisValue);
         if (designspace.axes.length == 1) {
@@ -256,15 +259,15 @@ app.controller("mastersController", function($scope, sharedScope) {
         $scope.data.checkIfIsLargest();
     };
 
-    function isInDesignSpace(masterName) {
-        var x = false;
-        for (var i = 0; i < $scope.data.currentDesignSpace.axes.length; i++) {
-            if ($scope.data.currentDesignSpace.axes[i].masterName == masterName) {
-                x = true;
+    function isInDesignspace(masterName) {
+        var isInDesignspace = false;
+        for (var i = 0; i < $scope.data.currentDesignspace.axes.length; i++) {
+            if ($scope.data.currentDesignspace.axes[i].masterName == masterName) {
+                x = isInDesignspace;
                 break;
             }
         }
-        return x;
+        return isInDesignspace;
     }
 
     function IsOverDropArea(ui) {

@@ -1,8 +1,10 @@
 app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
-    $scope.data.currentDesignSpace = $scope.data.designSpaces[0];
-    $scope.designSpaceWidth
+    // controlling and selecting designspaces
+
+    $scope.data.currentDesignspace = $scope.data.designspaces[0];
+    $scope.designspaceWidth;
 
     $scope.data.findMaster = function(masterName) {
         for (var i = 0; i < $scope.data.sequences.length; i++) {
@@ -15,28 +17,15 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         }
     };
 
-    $scope.selectDesignSpace = function(designSpace) {
-        $scope.data.currentDesignSpace = designSpace;
-        var id = designSpace.id;
-        // set last instance of this design space as current instance
-        var instanceInSpace = null;
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (instance.designSpace == id) {
-                    instanceInSpace = instance;
-                }
-            });
-        });
-        $scope.data.deselectAllEdit();
-        if (instanceInSpace) {
-            $scope.data.currentInstance = instanceInSpace;
-            $scope.data.currentInstance.edit = true;
-        }
+    $scope.selectDesignspace = function(designspace) {
+        $scope.data.currentDesignspace = designspace;
+        $scope.selectCurrentInstanceFromDesignspace(designspace.id);
     };
+   
 
-    $scope.addDesignSpace = function() {
-        var id = findDesignSpaceId();
-        $scope.data.designSpaces.push({
+    $scope.addDesignspace = function() {
+        var id = findDesignspaceId();
+        $scope.data.designspaces.push({
             name : "Space " + id,
             id : id,
             type : "x",
@@ -44,47 +33,44 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             mainMaster : 0,
             trigger : 0 //this is to trigger the designspace to redraw when a master is renamed
         });
-        $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
-        $scope.data.deselectAllEdit();
+        $scope.data.currentDesignspace = $scope.data.designspaces[($scope.data.designspaces.length - 1)];
         $scope.data.currentInstance = null;
         $scope.data.localmenu.designspace = false;
     };
 
-    $scope.removeDesignSpace = function() {
-        if ($scope.data.currentDesignSpace.axes.length == 0) {
-            $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
-            $scope.setLastDesignspace();
+    $scope.removeDesignspace = function() {
+        if ($scope.data.currentDesignspace.axes.length == 0) {
+            remove();
         } else {
             if (confirm("This will remove all Instances in this Design Space. Sure?")) {
-                $scope.data.designSpaces.splice($scope.data.designSpaces.indexOf($scope.data.currentDesignSpace), 1);
-                $scope.data.deleteInstanceDirect($scope.data.currentDesignSpace.id);
+                remove();
             }
         }
-        $scope.setLastDesignspace();   
+        function remove(){
+            $scope.data.designspaces.splice($scope.data.designspaces.indexOf($scope.data.currentDesignspace), 1);
+            $scope.setLastDesignspace();
+        }
+        $scope.setNewCurrentDesignspace();   
         $scope.data.localmenu.designspace = false;
     };
 
-    $scope.setLastDesignspace = function() {
-        var lastDesignspace;
-        angular.forEach($scope.data.designSpaces, function(space) {
-            lastDesignspace = space;
-        });
-        $scope.selectDesignSpace(lastDesignspace);
+    $scope.setNewCurrentDesignspace = function() {
+        $scope.data.currentDesignspace = $scope.data.designspaces[($scope.data.designspaces.length - 1)];
     };
 
-    $scope.duplicateDesignSpace = function() {
-        var duplicate = jQuery.extend(true, {}, $scope.data.currentDesignSpace);
+    $scope.duplicateDesignspace = function() {
+        var duplicate = jQuery.extend(true, {}, $scope.data.currentDesignspace);
         var oldId = duplicate.id;
-        var duplicateId = findDesignSpaceId();
+        var duplicateId = findDesignspaceId();
         duplicate.name += " copy";
         duplicate.id = duplicateId;
-        $scope.data.designSpaces.push(duplicate);
-        $scope.data.currentDesignSpace = $scope.data.designSpaces[($scope.data.designSpaces.length - 1)];
+        $scope.data.designspaces.push(duplicate);
+        $scope.data.currentDesignspace = $scope.data.designspaces[($scope.data.designspaces.length - 1)];
         // duplicate its instances
         var toBeDuplicated = [];
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
-                if (instance.designSpace == oldId) {
+                if (instance.designspace == oldId) {
                     toBeDuplicated.push(instance);
                 }
             });
@@ -95,11 +81,11 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         $scope.data.localmenu.designspace = false;
     };
 
-    function findDesignSpaceId() {
+    function findDesignspaceId() {
         var max = 0;
-        for (var i = 0; i < $scope.data.designSpaces.length; i++) {
-            if ($scope.data.designSpaces[i].id > max) {
-                max = $scope.data.designSpaces[i].id;
+        for (var i = 0; i < $scope.data.designspaces.length; i++) {
+            if ($scope.data.designspaces[i].id > max) {
+                max = $scope.data.designspaces[i].id;
             }
         }
         max++;
@@ -107,36 +93,26 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     }
 
 
-    $scope.output = [];
-    $scope.total = 0;
 
-    $scope.data.getMetapolationRatios = function(instance) {
-        var axes = instance.axes;
-        var n = axes.length;
-        var cake = 0;
-        for (var i = 0; i < n; i++) {
-            cake += parseFloat(axes[i].value);
-        }
-        for (var i = 0; i < n; i++) {
-            var piece = parseFloat(axes[i].value);
-            instance.axes[i].metapValue = piece / cake;
-        }
-    };
-
-    function roundup(a) {
-        var b = Math.round(a * 1000) / 1000;
-        return b;
-    }
 
     //
 
-    $scope.removeMaster = function(m, designspace) {
+    $scope.removeMasterFromDesignspace = function(m, designspace, confirmNeeded) {
         var axesSet = designspace.axes;
-        if (confirm("Removing master from this Design Space, and also from all Instances in this Design Space. Sure?")) {
-            // remove master from all instances in this design space
+        if (confirmNeeded) {
+            if (confirm("Removing master from this Design Space, and also from all Instances in this Design Space. Sure?")) {
+                deleteMaster();
+                $scope.$apply();
+            }
+        } else {
+            deleteMaster();
+        }
+        
+        function deleteMaster() {
+           // remove master from all instances in this design space
             angular.forEach($scope.data.families, function(family) {
                 angular.forEach(family.instances, function(instance) {
-                    if (instance.designSpace == designspace.id) {
+                    if (instance.designspace == designspace.id) {
                         // remove axis from instance
                         if (instance.axes.length == 1) {
                             $scope.data.deleteInstanceFromDesignspace(instance);
@@ -152,9 +128,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             if (designspace.axes.length == 0) {
                 designspace.type = "x";
             }
-            $scope.$apply();
-            //$scope.data.currentDesignSpace.trigger++;
-
+    
             // reassigning the key of mainmaster
             if (m < designspace.mainMaster) {
                 designspace.mainMaster--;
@@ -165,14 +139,15 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 designspace.mainMaster = 0;
             }
         }
+
     };
 
-    $scope.data.removeMasterFromDesignSpace = function(masterName) {
+    $scope.data.removeEachMasterFromDesignspaces = function(masterName) {
         // this is a method called from the masters list, when deleting a master
-        angular.forEach($scope.data.designSpaces, function(designspace) {
+        angular.forEach($scope.data.designspaces, function(designspace) {
             angular.forEach(designspace.axes, function(axis, index) {
                 if (axis.masterName == masterName) {
-                    $scope.removeMaster(index, designspace);
+                    $scope.removeMasterFromDesignspace(index, designspace, false);
                 }
             });
         });
@@ -180,7 +155,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
 
     $scope.data.checkIfIsLargest = function() {
         var isLargest = false;
-        var designspace = $scope.data.currentDesignSpace;
+        var designspace = $scope.data.currentDesignspace;
         var axes = designspace.axes;
         if (axes.length > 2) {
             var slack = axes[designspace.mainMaster];
@@ -192,7 +167,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
             });
             angular.forEach($scope.data.families, function(family) {
                 angular.forEach(family.instances, function(instance) {
-                    if (instance.designSpace == designspace.id) {
+                    if (instance.designspace == designspace.id) {
                         $scope.reDestributeAxes(instance.axes);
                     }
                 });
@@ -201,7 +176,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.reDestributeAxes = function(axes) {
-        var designspace = $scope.data.currentDesignSpace;
+        var designspace = $scope.data.currentDesignspace;
         var slack = designspace.mainMaster;
         // 1 find highest of the others
         var max = 0;
@@ -232,18 +207,18 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     };
 
     $scope.changeMainMaster = function() {
-        var designspace = $scope.data.currentDesignSpace;
+        var designspace = $scope.data.currentDesignspace;
         var slack = designspace.mainMaster;
         // swop main master in each instance in the design space
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
-                if (instance.designSpace == designspace.id) {
+                if (instance.designspace == designspace.id) {
                     $scope.reDestributeAxes(instance.axes);
                 }
             });
         });
         // trigger the designspace to redraw
-        $scope.data.currentDesignSpace.trigger++;
+        $scope.data.currentDesignspace.trigger++;
     };
 
     function formatX(x) {
@@ -252,16 +227,12 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         return toF;
     }
 
-    function roundupsmall(a) {
-        var b = Math.round(a * 10) / 10;
-        return b;
-    }
 
 
     $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13) {
-            var designspace = $scope.data.currentDesignSpace;
-            var slack = $scope.data.currentDesignSpace.mainMaster;
+            var designspace = $scope.data.currentDesignspace;
+            var slack = $scope.data.currentDesignspace.mainMaster;
             var instance = $scope.data.currentInstance;
             var axes = instance.axes;
             // prevent input beyond 0 - 100 or NaN
@@ -303,7 +274,7 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
                 }
             }
             $scope.data.getMetapolationRatios(instance);
-            $scope.data.currentDesignSpace.trigger++;
+            $scope.data.currentDesignspace.trigger++;
         }
     };
 
