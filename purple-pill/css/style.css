@@ -1260,7 +1260,7 @@
         #confirm-loading {
             text-align: center;
             display: none;
-            padding-top: 20px;
+            padding-bottom: 40px;
         }
         
         #confirm-content {
@@ -1271,6 +1271,7 @@
         #confirm-buttons {
             margin-top: 30px;
             text-align: center;
+            display: none;
         }
         
         #confirm-buttons button {
