@@ -21,22 +21,19 @@ function($scope, $sce, sharedScope) {
         text : "Metapolator"
     }, {
         name : "Pangram 1",
-        text : "The quick brown fox jumps over the lazy dog"
+        text : "The quick brown fox jumps over the lazy dog."
     }, {
         name : "Pangram 2",
-        text : "Bright vixens jump dozy fowl quack"
+        text : "Bright vixens jump dozy fowl quack."
     }, {
         name : "Pangram 3",
-        text : "Quick wafting zephyrs vex bold Jim"
+        text : "Quick wafting zephyrs vex bold Jim."
     }, {
         name : "Something with breaks",
-        text : "Hey you*nthe rock*nsteady crew"
-    }, {
-        name : "Devanagari",
-        text : "<dvA><dvI><dvKHA><dvBHA><dvDA><dvDHA>"
+        text : "Hey you,*nthe rock*nsteady crew."
     }, {
         name : "Paragraph 1",
-        text : "Grumpy wizards make toxic brew for the evil Queen and Jack One morning when Gregor Samsa woke from troubled dreams he found himself transformed in his bed into a horrible vermin*pHe lay on his armour-like back and if he lifted his head a little he could see his brown belly slightly domed and divided by arches into stiff sections*pThe bedding was hardly able to cover it and seemed ready to slide off any moment His many legs pitifully thin compared with the size of the rest of him waved about helplessly as he looked"
+        text : "Grumpy wizards make toxic brew for the evil Queen and Jack. One morning when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.*pHe lay on his armourlike back and if he lifted his head a little, he could see his brown belly slightly domed and divided by arches into stiff sections.*pThe bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs pitifully thin compared with the size of the rest of him, waved about helplessly as he looked."
     }];
 
     // only for the masters specimen panel

@@ -22,18 +22,18 @@ app.filter('glyphsInEditFilter', function() {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             selectedGlyphs.push({
-                                parameters: glyph.parameters,
-                                glyph: glyph,
-                                master: master,
-                                sequence: sequence
+                                parameters : glyph.parameters,
+                                glyph : glyph,
+                                master : master,
+                                sequence : sequence
                             });
                         }
                     });
                 }
             });
-        });      
-        
-        // compare the standard parameters and operators (the_) with parameters in selected glyphs 
+        });
+
+        // compare the standard parameters and operators (the_) with parameters in selected glyphs
         var parameterArray = [];
         angular.forEach(theParameters, function(theParameter) {
             var theOperations = [];
@@ -45,7 +45,7 @@ app.filter('glyphsInEditFilter', function() {
                 // look inside glyphs
                 angular.forEach(selectedGlyphs, function(glyph) {
                     angular.forEach(glyph.parameters, function(glyphParameter) {
-                        if(glyphParameter.name == theParameter) {
+                        if (glyphParameter.name == theParameter) {
                             hasThisParameter = true;
                             angular.forEach(glyphParameter.operations, function(operation) {
                                 if (operation.operator == theOperator) {
@@ -57,7 +57,7 @@ app.filter('glyphsInEditFilter', function() {
                                         highest = operation.value;
                                     }
                                 }
-                            });    
+                            });
                         }
                     });
                 });
@@ -67,17 +67,17 @@ app.filter('glyphsInEditFilter', function() {
                 }
                 if (hasThisOperator) {
                     theOperations.push({
-                        operator: theOperator,
-                        range: range,
-                        low: lowest,
-                        high: highest 
+                        operator : theOperator,
+                        range : range,
+                        low : lowest,
+                        high : highest
                     });
                 }
-            });   
+            });
             if (hasThisParameter) {
                 parameterArray.push({
-                    name: theParameter,
-                    operations: theOperations
+                    name : theParameter,
+                    operations : theOperations
                 });
             }
         });
@@ -103,18 +103,71 @@ app.filter('rangeFilter', function() {
     };
 });
 
+var substitutes = [{
+    before : " ",
+    after : "space"
+}, {
+    before : ".",
+    after : "period"
+}, {
+    before : ",",
+    after : "comma"
+}, {
+    before : ";",
+    after : "semicolon"
+}, {
+    before : "1",
+    after : "one"
+}, {
+    before : "2",
+    after : "two"
+}, {
+    before : "3",
+    after : "three"
+}, {
+    before : "4",
+    after : "four"
+}, {
+    before : "5",
+    after : "five"
+}, {
+    before : "6",
+    after : "six"
+}, {
+    before : "7",
+    after : "seven"
+}, {
+    before : "8",
+    after : "eight"
+}, {
+    before : "9",
+    after : "nine"
+}, {
+    before : "0",
+    after : "zero"
+}];
+
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences, families, specimenPanel, currentInstance) {
         if (specimen.name != "glyph range") {
+            function substitute(glyph) {
+                var pos = -1;
+                for ( i = 0; i < substitutes.length; i++) {
+                    if (glyph == substitutes[i].before) {
+                        pos = i;
+                        break;
+                    }
+                }
+                return pos;
+            }
+
             function stringToGlyphs(string, unique) {
                 var glyphs = [];
                 for (var i = 0; i < string.length; i++) {
-                    // temporary to lowercase because Project Zero has no lowercases yet
                     var glyph = string[i];
+                    var substitutePosition = substitute(glyph);
                     // detecting space, linebreak or paragraph
-                    if (glyph == " ") {
-                        glyph = "space";
-                    } else if (glyph == "*" && (string[i + 1] == "n" || string[i + 1] == "p")) {
+                    if (glyph == "*" && (string[i + 1] == "n" || string[i + 1] == "p")) {
                         glyph = "*" + string[i + 1];
                         i++;
                     } else if (glyph == "<") {
@@ -136,6 +189,8 @@ app.filter('specimenFilter', function() {
                         } else {
                             i = i + glyph.length + 1;
                         }
+                    } else if (substitutePosition > -1) {
+                        glyph = substitutes[substitutePosition].after;
                     }
                     if (unique) {
                         // unique is set for the filter
@@ -217,25 +272,25 @@ app.filter('specimenFilter', function() {
                     });
                 });
             }
-            
+
             if (newGlyphText == "") {
                 // if strict 3, then newflyphtext is already build
                 newGlyphText = stringToGlyphs(newText);
             }
-            
+
             /***** building the matrix when strict == 3 *****/
             if (strict == 3 && filter.length > 1) {
                 var matrix = [];
-                for (var i = 0; i < newGlyphText.length; i++){
-                    for (var j = 0; j < newGlyphText.length; j++){
-                        matrix.push(newGlyphText[i], newGlyphText[j], "space"); 
+                for (var i = 0; i < newGlyphText.length; i++) {
+                    for (var j = 0; j < newGlyphText.length; j++) {
+                        matrix.push(newGlyphText[i], newGlyphText[j], "space");
                     }
-                    matrix.push("*n"); 
+                    matrix.push("*n");
                 }
                 newGlyphText = matrix;
             }
-             
-            /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/           
+
+            /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/
             var filtered = [];
             var glyphId = 0;
 
@@ -250,12 +305,12 @@ app.filter('specimenFilter', function() {
                             sequenceId : master.sequenceId,
                             masterId : master.masterId,
                             name : master.name,
-                            edit: master.edit
+                            edit : master.edit
                         },
                         glyphName : glyph,
                         glyphId : master.name + "_" + glyph + "_" + glyphId
                     });
-                    
+
                     glyphId++;
                     if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == " ") || (options.selectedFontby == "paragraph" && glyph == "*p")) {
                         masterId++;
@@ -270,7 +325,7 @@ app.filter('specimenFilter', function() {
                         sequenceId : master.sequenceId,
                         masterId : master.masterId,
                         name : master.name,
-                        edit: master.edit
+                        edit : master.edit
                     },
                     glyphName : "*n",
                     glyphId : master.name + "_*n_" + glyphId
