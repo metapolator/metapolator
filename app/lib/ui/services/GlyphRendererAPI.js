@@ -233,22 +233,7 @@ define([
 
         for(i=0,l=svgs.length;i<l;i++) {
             if(svgs[i].parentElement);
-            svgs[i].setAttribute('viewBox', viewBox);
-            // FIXME: file a bug for chromiuim:
-            // For some silly reason this is not always enough for chrome
-            // to resize the svg element :-/ especially when the viewbox
-            // is getting smaller than some magic amount, chrome sometimes
-            // just stops synchronizing the real svg width.
-            // This triggers the width update, however, it takes away the
-            // possibility to change "display" via CSS
-            // svgs[i].setAttribute('width', 0);
-            // NOTE: this is also not needed with firefox
-            // Filed a bug:
-            // https://code.google.com/p/chromium/issues/detail?id=462107
-            svgs[i].style.display = svgs[i].style.display === 'inline-block'
-                   ? 'inline'
-                   : 'inline-block'
-                   ;
+                svgs[i].setAttribute('viewBox', viewBox);
         }
     };
 
@@ -270,6 +255,13 @@ define([
         // choice that really makes sense, we may be happy for ever when
         // setting it here
         svg.setAttribute('overflow', 'visible');
+
+        // Using inline-block fails for Chromium. Filed a bug:
+        // https://code.google.com/p/chromium/issues/detail?id=462107
+        // thus, these svgs should be packed inside a container that is
+        // display: inline-block
+        svg.style.display = 'block';
+
         this._setSVGViewBox(data, svg);
         data.svgInstances.push(svg);
         svg.appendChild(use);
