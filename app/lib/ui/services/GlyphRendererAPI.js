@@ -23,25 +23,6 @@ define([
       , draw = ExportController.drawGlyphToPointPen
       ;
 
-    function EnhancedSVGPen(data, glyphRendererAPI, path, glyphSet) {
-        SVGPen.call(this, path, glyphSet);
-        this._data = data;
-        this._glyphRendererAPI = glyphRendererAPI;
-    }
-    var _pp = EnhancedSVGPen.prototype = Object.create(SVGPen.prototype);
-    _pp.constructor = EnhancedSVGPen;
-
-    _pp.addComponent = function(glyphName, transformation, kwargs /*optional, object*/) {
-        var data = this._data
-          , masterName = data.MOM.master.name
-          , use = this._glyphRendererAPI.get(masterName, glyphName, 'use')
-          , key = this._glyphRendererAPI.getKey(masterName, glyphName)
-          ;
-        use.setAttribute('transform', 'matrix(' +  transformation.join(',') + ')');
-        data.components.push(key);
-        data.svg.appendChild(use);
-    };
-
     function GlyphRendererAPI(document, controller) {
         this._doc = document;
         this._controller = controller;
