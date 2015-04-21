@@ -128,8 +128,20 @@
         <div id="pagewrap" class="unselectable">
             <div id="landscape" ng-style="{'width': 'calc(' + (data.view.totalPanelParts / 16) + '* 100%)', 'left': data.getLandscapeLeft()}" class="transition">
                 <div id="panel-0" class="panel" ng-style="{'width': 'calc(' + (data.view.panels[0] / data.view.totalPanelParts) + '* 100%)'}">
-                    <parameters ng-controller="parametersController" class="sub-panel panel"></parameters>
+                    <parameters ng-controller="parametersController" class="sub-panel semi-panel"></parameters>
+                    <dividerHor style="top: 50%"></dividerHor>
+                    <div class="sub-panel semi-panel">
+                        <div class="panel-border">  
+                            <underconstruction>
+                                <div class="bottom-text">
+                                    coming soon:<br>More Parameters
+                                </div>
+                            </underconstruction>
+                        </div>
+                    </div>
                 </div>
+                
+                
                 <specimen id="panel-1" ng-controller="specimenController" ng-init="addGlyphRange(); specimenPanel = 1" class="sub-panel panel" ng-style="{'width': 'calc(' + (data.view.panels[1] / data.view.totalPanelParts) + '* 100%)'}"></specimen>
 
                 <!-- start of view 2 -->
@@ -139,7 +151,9 @@
                     <div class="sub-panel semi-panel">
                         <div class="panel-border">  
                             <underconstruction>
-                                COMING SOON:<br>ADJUSTMENT MASTERS
+                                <div class="bottom-text">
+                                    coming soon:<br>Adjustment Masters
+                                </div>
                             </underconstruction>
                         </div>
                     </div>
@@ -160,7 +174,9 @@
                 <div id="panel-6" class="panel sub-panel" ng-style="{'width': 'calc(' + (data.view.panels[6] / data.view.totalPanelParts) + '* 100%)'}">
                     <div class="panel-border">
                         <underconstruction>
-                            COMING SOON:<br>FAMILY EXPORT
+                            <div class="bottom-text">
+                                coming soon:<br>Family Export
+                            </div>
                         </underconstruction>
                     </div>
                 </div>
