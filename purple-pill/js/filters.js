@@ -312,7 +312,7 @@ app.filter('specimenFilter', function() {
                     });
 
                     glyphId++;
-                    if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == " ") || (options.selectedFontby == "paragraph" && glyph == "*p")) {
+                    if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == "space") || (options.selectedFontby == "paragraph" && glyph == "*p")) {
                         masterId++;
                     }
                     if (masterId == nrOfFonts) {
@@ -327,8 +327,8 @@ app.filter('specimenFilter', function() {
                         name : master.name,
                         edit : master.edit
                     },
-                    glyphName : "*n",
-                    glyphId : master.name + "_*n_" + glyphId
+                    glyphName : "*p",
+                    glyphId : master.name + "_*p_" + glyphId
                 });
             }
         }
