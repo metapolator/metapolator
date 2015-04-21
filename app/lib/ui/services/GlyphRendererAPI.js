@@ -107,7 +107,7 @@ define([
     _p._renderGlyph = function(data) {
         /*global clearTimeout*/
         var path = this._doc.createElementNS(svgns, 'path')
-          , svgPen = new SVGPen(path, {})
+          , svgPen = new EnhancedSVGPen(data, this, path, {})
           , pen = new PointToSegmentPen(svgPen)
           , oldComponents = data.components
           , matrix
