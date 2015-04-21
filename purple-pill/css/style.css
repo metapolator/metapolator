@@ -207,7 +207,7 @@
 		    }
 		    
 		    .panel-border {
-		        border: 1px solid #eee;
+		        border: 2px solid #eee;
 		        height: 100%;
 		        position: relative;
 		    }
@@ -748,7 +748,7 @@
             bottom: 4px;
             left: 0;
             width: 100%;
-            border-top: 1px solid #000;
+            border-top: 2px solid #eee;
         }
         
             .master-tool {
@@ -758,7 +758,7 @@
                 display: inline-block;
                 cursor: pointer;
                 text-align: center;
-                border-right: 1px solid #000;
+                border-right: 2px solid #eee;
                 background: #fff;
             }
 
@@ -794,7 +794,7 @@
         .list-li {
             width: 100%;
             height: 33px;
-            border: 1px solid #eee;
+            border-bottom: 2px solid #eee;
             background: #fff;
             position: relative;
         }
@@ -1139,7 +1139,7 @@
             position: absolute;
             bottom: 5px;
             left: 5px;
-            border-top: 1px solid #ddd;
+            border-top: 2px solid #eee;
         }
         
             .instance-tool {
