@@ -358,7 +358,7 @@
     #specimen-content ul {
         padding: 0;
         margin: 0;
-        overflow: auto;
+        overflow: visible;
     }
     
     #specimen-content ul.glyph-range-master {
