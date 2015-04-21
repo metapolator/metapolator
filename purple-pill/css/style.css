@@ -16,14 +16,20 @@
 		height: 100%;
 		width: 100%;
 		font-family: "Roboto";
-		font-size: 13px;
+		font-size: 12px;
 		background: #fff;
+		color: #515151;
+		padding: 5px;
 	}
 	
 	* {
 		box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;  
+	}
+	
+	input {
+	    font-size: 12px;
 	}
 	
 	.standard-padding {
@@ -110,8 +116,9 @@
 	
 	#menu {
 		width: 100%;
-		height: 50px;
+		height: 55px;
 		position: relative;
+		padding: 5px;
 	}
 	
 		#project {
@@ -123,18 +130,18 @@
 		    position: fixed;
 		    top: 0;
 		    left: calc(50% - 154px);
-			padding: 8px;
+			padding-top: 10px;
 		}
 		
 			 #view-buttons .menu-item {
 				float: left;
-				padding: 8px;
+				padding: 6px;
 				background: #fff;
-				margin-right: 4px;
-				font-size: 0.8em;
-				border: 1px solid #ddd;
+				margin-right: 0px;
+				border: 2px solid #eee;
 				cursor: default;
-				width: 100px;
+				width: 136px;
+				height: 32px;
 				text-align: center;
 			}
 			
@@ -143,7 +150,7 @@
     			 }
 			
 			#view-buttons .menu-item:hover, #view-buttons .menu-item-current {
-				border: 1px solid #000;
+				border: 2px solid #515151;
 			}
 			
         #help {
@@ -164,7 +171,7 @@
 	
 	#pagewrap {
 		width: 100%;
-		height: calc(100% - 50px);
+		height: calc(100% - 55px);
 		position: relative;
 		overflow-x: hidden;
 	}
@@ -192,7 +199,7 @@
 			    overflow-x: hidden;
 			    position: relative;
 				background: #fff;
-				padding: 4px;
+				padding: 5px;
 			}
 			
 			.semi-panel {
@@ -200,12 +207,17 @@
 		    }
 		    
 		    .panel-border {
-		        border: 1px solid #ddd;
+		        border: 1px solid #eee;
 		        height: 100%;
 		        position: relative;
 		    }
 		    
 		      .panel-border-with-menu {
+		          height: calc(100% - 30px);
+		      }
+		      
+		      .panel-border-without-menu {
+		          margin-top: 30px;
 		          height: calc(100% - 30px);
 		      }
 			
@@ -247,11 +259,6 @@
 	
 /******************* specimen ********************/
 
-
-    #specimen-toolbar {
-        padding-bottom: 12px;
-        border-bottom: 1px solid #ddd;
-    }
     
     .specimen-info-holder {
         text-align: center;
@@ -283,15 +290,23 @@
         #specimen-toolbar {
             overflow: auto;
             height: 38px;
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
+            padding: 4px;
             z-index: 1000;
         }
+        
+            #specimen-toolbar input {
+                color: #515151;
+                padding: 4px;
+            }
+            
+            #specimen-toolbar select {
+                margin-top: 2px;
+            }
         
         #specimen-content {
             height: calc(100% - 38px);
             overflow-y: auto;
-            padding: 16px;
+            padding: 36px 40px;
             position: relative;
         }
         
@@ -314,6 +329,8 @@
            }
            
            #filter {
+               background: #eee;
+               border: 0;
                width: 180px;
            }
         
@@ -341,6 +358,7 @@
     #specimen-content ul {
         padding: 0;
         margin: 0;
+        overflow: auto;
     }
     
     #specimen-content ul.glyph-range-master {
@@ -623,7 +641,8 @@
         } 
              
         .slider-label {
-            font-size: 9px;
+            font-size: 12px;
+            color: #515151;
             cursor: default;
         }
     
@@ -769,9 +788,10 @@
 
         .list-li {
             width: 100%;
-            height: 28px;
-            border-bottom: 1px solid #ddd;
+            height: 33px;
+            border: 1px solid #eee;
             background: #fff;
+            position: relative;
         }
         
             .inactive-master .list-li {
@@ -780,19 +800,23 @@
             }
         
             .list-li.selected {
-                background: #ddd;
-                border-bottom: 1px solid #fff;
+                background: #eee;
+                border: 1px solid #515151;
             }
         
             .list-sequence-col {
                 float: left;
-                width: 24px;
+                width: 20px;
                 height: 100%;
                 position: relative;
             }
                     
                 .list-sequence-col svg {
-                    margin: 6px;
+                    margin: 10px 6px;
+                }
+                
+                .list-sequence-col svg .diamond {
+                    fill: #515151;
                 }
                     
                     /* while dragging */
@@ -807,20 +831,19 @@
         .list-view-col {
             float: left;
             text-align: center;
-            width: 28px;
-            height: calc(100% - 4px);
-            margin: 2px;
+            width: 32px;
+            height: 100%;
             padding-top: 1px;
             font-size: 17px;
             cursor: default;
         }
                 
             .temp-view-selection-true {
-                background: #888!important;
+                background: #515151!important;
             }
             
                 .temp-view-selection-true svg {
-                    fill: #fff;
+                    fill: #eee;
                 }
             
             .temp-view-selection-false {
@@ -828,7 +851,7 @@
             }
             
                 .temp-view-selection-false svg {
-                    fill: #000!important;
+                    fill: #515151!important;
                 }
         
             .list-view-col svg {
@@ -837,23 +860,23 @@
             }
             
             .inactive-master .list-view-col {
-                background: #fff!important;
+                background: #eee!important;
                 transition: background 0.5s;
             }
         
             .list-view-col.selected {
-                background: #888;
+                background: #515151;
             }
             
                 .list-view-col.selected svg {
-                    fill: #fff;
+                    fill: #eee;
                 }
             
         .list-edit-col {
             float: left;
-            width: calc(100% - 56px);
+            width: calc(100% - 60px);
             height: 100%;
-            padding: 4px 10px;
+            padding: 8px;
             cursor: default;
             white-space: nowrap;
             overflow: hidden;
@@ -902,45 +925,71 @@
     #parameters-of-master {
         overflow: auto;
     }
-    
-    #parameters-of-glyph {
-        margin-top: 20px;
-    }
-    
+        
         .parameters-selection-head {
-            width: calc(100% - 34px);
+            width: calc(100% - 24px);
+            height: 24px;
             display: inline-block;
-            background: #ddd;
-            padding: 5px;
+            border-right: 2px solid #eee;
+            padding: 3px 6px;
         }
         
         .parameters-add {
-            width: 30px;
-            margin-left: 4px;
+            width: 24px;
+            height: 24px;
             display: inline-block;
-            background: #ddd;
-            padding: 5px;
+            padding: 3px;
             text-align: center;
             cursor: default;
         }
         
-        .parameters-selection-body {
+        .parameters-selection-body  {
             width: 100%;
-            min-height: 30px;
+            overflow: auto;
+            background: #515151;
+            padding: 10px;
         }
+        
+            #parameters-of-master .parameters-selection-body {
+                background: #515151;
+                color: #eee;
+            }
+            
+            #parameters-of-glyph .parameters-selection-body {
+                background: #eee;
+                color: #515151;
+            }
         
             .parameter-row {
                 clear: both;
                 width: 100%;
                 cursor: default;
-                font-size: 13px;
                 font-family: "Roboto Condensed";
             }
             
                 .parameter-row input {
-                    font-size: 13px;
+                    background: transparent;
+                    padding: 0 4px;
                     font-family: "Roboto Condensed";
                 }
+                
+                    #parameters-of-master .parameter-row input {
+                        color: #eee;
+                    }
+                    
+                    #parameters-of-glyph .parameter-row input {
+                        color: #515151;
+                    }
+                    
+                    #parameters-of-master input:focus, #parameters-of-master input:hover {
+                        background: #F01616;
+                        color: #515151;
+                    }
+                    
+                    #parameters-of-glyph input:focus, #parameters-of-glyph input:hover {
+                        background: #F01616;
+                        color: #eee;
+                    }
         
                 .parameter-key {
                     width: 40%;
@@ -967,7 +1016,7 @@
                 }
                 
                     .operator-value input {
-                        background: #eee;
+                        background: transparent;
                         width: 40%;
                         border: 0;
                     }
@@ -977,10 +1026,8 @@
                         text-align: right;
                         display: inline-block;
                     }
-                    
-                        .operator-value input:focus, .operator-value input:hover {
-                            background: #ddd;
-                        }
+
+
         
     #parameters-control-panel {
         display: block;

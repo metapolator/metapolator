@@ -451,8 +451,8 @@ app.directive('strict', function() {
 
             // create line and slider
             // centers at 7, 26 and 42
-            svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 13).text('strict');
-            var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', 'black').style('fill', 'white').style('stroke-width', '1').call(drag);
+            svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 15).text('Strict');
+            var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', '#515151').style('fill', 'white').style('stroke-width', '1').call(drag);
             var line = svg.append('line').attr('x1', 7).attr('y1', 10).attr('x2', 42).attr('y2', 10).style('stroke', '#000').style('stroke-width', '1');
         }
     };
@@ -487,7 +487,7 @@ app.directive('sizeRope', function($document) {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var templayer = '<div id="templayer" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 10000;"></div>';
-            var svg = d3.select(element[0]).append('svg').attr('width', '16px').attr('height', '16px');
+            var svg = d3.select(element[0]).append('svg').attr('width', '18px').attr('height', '18px');
             var svgT;
             var gT;
             var lineT;
@@ -514,7 +514,7 @@ app.directive('sizeRope', function($document) {
                 screenX = $(element[0]).offset().left;
                 screenY = $(element[0]).offset().top;
                 gT = svgT.append('g');
-                diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#000').attr('points', '8,0 16,8 8,16 0,8').style('stroke', 'black').style('fill', 'white');
+                diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#515151').attr('points', '8,0 16,8 8,16 0,8').style('stroke', '#515151').style('stroke-width', 1).style('fill', 'white');
 
             }).on('drag', function() {
                 diamondfill.style('stroke', '#fff');
@@ -524,7 +524,7 @@ app.directive('sizeRope', function($document) {
                 var originY = screenY + diamondSize;
                 diamondT.attr('transform', 'translate(' + x + ',' + y + ')');
                 gT.selectAll('*').remove();
-                lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#000').style('stroke-width', '1');
+                lineT = gT.append('line').attr('x1', originX).attr('y1', originY).attr('x2', (d3.event.x + screenX)).attr('y2', (d3.event.y + screenY)).style('stroke', '#515151').style('stroke-width', '1');
                 var thisLength = getRopeLength(screenX, screenY, x, -y);
                 var absolutePixels = thisLength + pixelOffset;
                 if (absolutePixels > 399) {
@@ -542,7 +542,7 @@ app.directive('sizeRope', function($document) {
 
             // create static diamond
             var diamond = svg.append('g').call(drag);
-            var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('stroke', 'black').style('fill', 'white');
+            var diamondfill = diamond.append('polygon').attr('points', '8,0 16,8 8,16 0,8').style('stroke', '#515151').style('fill', 'white');
 
             function limit(fontsize) {
                 var size = Math.round(fontsize);
