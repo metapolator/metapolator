@@ -28,10 +28,10 @@
     
     <div class="" ng-show="data.currentDesignspace.type != 'x'">
         <control ng-if="data.currentDesignspace.type == 'Control'">
-            <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 40) + 'px', 'left': (designspaceWidth / 2 - 75) + 'px'}">
+            <div class="slider-input-container" ng-repeat="axis in data.currentInstance.axes" ng-style="{'top': ($index * 50 + 56) + 'px', 'left': (designspaceWidth / 2 - 75) + 'px'}">
                 <input valuefield id="designspace-input-{{$index}}" counter="{{$index}}" ng-model="axis.value" ng-blur="redrawAxesFromInput($index, 'blur')" ng-keyup="redrawAxesFromInput($index, $event)" class="slider-input-output">
             </div>
-            <select id="slack-master-select" ng-if="data.currentDesignspace.axes.length > 2" class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignspace.mainMaster" ng-options="data.currentDesignspace.axes.indexOf(axis) as data.findMaster(axis.masterName).displayName for (index, axis) in data.currentDesignspace.axes" ng-style="{'top': (data.currentDesignspace.mainMaster * 50 + 44) + 'px', 'left': '10px'}"></select>
+            <select id="slack-master-select" ng-if="data.currentDesignspace.axes.length > 2" class="left-label-select" ng-change="changeMainMaster()" ng-model="data.currentDesignspace.mainMaster" ng-options="data.currentDesignspace.axes.indexOf(axis) as data.findMaster(axis.masterName).displayName for (index, axis) in data.currentDesignspace.axes" ng-style="{'top': (data.currentDesignspace.mainMaster * 50 + 60) + 'px', 'left': '10px'}"></select>
         </control>
         <explore ng-if="data.currentDesignspace.type == 'Explore'"></explore>
     </div> 

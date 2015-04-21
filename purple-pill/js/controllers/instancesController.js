@@ -1,9 +1,15 @@
 app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.data = sharedScope.data;
 
-    $scope.data.colorCoding = ["red"];
+    $scope.data.colorCoding = ["#F01616", "#D75699", "#A258F5", "#4C51ED", "#3490FF", "#8FE7FD", "#73C4A5", "#A5CF1B", "#FADD04", "#DE7B25"];
 
-    $scope.addColor = function() {
+    $scope.addColor = function (id) {
+        if (id > ($scope.data.colorCoding.length - 1)) {
+            $scope.addNewColor();
+        }
+    };
+    
+    $scope.addNewColor = function() {
         var a = $scope.data.colorCoding.length % 3;
         var b = ($scope.data.colorCoding.length + 1) % 3;
         var c = ($scope.data.colorCoding.length + 2) % 3;

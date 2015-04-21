@@ -17,9 +17,9 @@
             <li ng-repeat="sequence in data.sequences">
                 <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="list-ul">
                     <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-mouseover="mouseoverMaster(master)" ng-mouseleave="mouseleaveMaster(master)" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit}">
-                        <span class="list-sequence-col" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
+                        <span class="list-sequence-col master-diamond" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
                             <svg height="12" width="12">
-                                <polygon points="4.473,0 0,2.582 0,7.746 4.473,10.328 9.059,7.771 9.059,2.689" class="diamond">
+                                <polygon points="5,0 0,3 0,8 5,11 10,8 10,3">
                             </svg> 
                         </span>
                         <span class="list-view-col ag" type="master" mastername="{{master.name}}" masterag="{{master.ag}}" ng-model="master.ag" ng-click="toggleDisplay(master)" ng-class="{'selected': master.display}"></span>

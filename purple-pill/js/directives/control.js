@@ -14,8 +14,8 @@ app.directive('control', function($document) {
             var layer1 = svg.append('g');
 
             var axisWidth;
-            var paddingLeft = 50, paddingTop = 30, paddingLabel = 25, axisDistance = 50, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 5, diamondPadding = diamondsize + 3, paddingRemoveButton = 6;
-            var diamondShape = '0,' + diamondsize + ' ' + diamondsize + ',0 ' + 2 * diamondsize + ',' + diamondsize + ' ' + diamondsize + ',' + 2 * diamondsize;
+            var paddingLeft = 50, paddingTop = 30, paddingLabel = 25, axisDistance = 50, axisTab = 10, axisTabLeft = 60, indentRight = 20, indentLeft = 40, diamondsize = 7, diamondPadding = diamondsize + 12, paddingRemoveButton = 6;
+            var diamondShape = "10,2 4,2 2,6 7,15 12,6";
 
             // watch for data changes and redraw
             scope.$watchCollection('[data.currentInstance, data.families[0].instances.length, data.currentDesignspace.trigger, data.currentDesignspace.masters.length, data.currentDesignspace.triangle, data.currentDesignspace]', function(newVals, oldVals, scope) {
@@ -64,11 +64,11 @@ app.directive('control', function($document) {
                             } else {
                                 var x = paddingLeft - diamondsize + axisWidth / 100 * inactiveInstances[i].axes[j].value;
                             }
-                            var y = j * axisDistance + paddingTop - diamondsize - diamondPadding;
+                            var y = j * axisDistance + paddingTop - 28;
                             return "translate(" + x + "," + y + ")";
                         }).append('polygon').attr('points', diamondShape).attr('class', 'blue-diamond').attr('stroke', function() {
                             return scope.data.colorCoding[inactiveInstances[i].id];
-                        }).attr('fill', 'none');
+                        }).attr('fill', 'none').attr('stroke-width', 2);
                         //}
                     }
                 }
@@ -133,11 +133,11 @@ app.directive('control', function($document) {
                     return 'diamond' + i;
                 }).attr('transform', function(d, i) {
                     if (i == designspace.mainMaster) {
-                        return "translate(" + ((100 - d.value) * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)";
+                        return "translate(" + ((100 - d.value) * (axisWidth / 100) + indentLeft - diamondsize) + ", -28)";
                     } else {
-                        return "translate(" + (d.value * (axisWidth / 100) + indentLeft - diamondsize) + ", -25)";
+                        return "translate(" + (d.value * (axisWidth / 100) + indentLeft - diamondsize) + ", -28)";
                     }
-                }).append('polygon').attr('points', diamondShape).attr('fill', diamondcolor);
+                }).append('polygon').attr('points', diamondShape).attr('fill', diamondcolor).attr('stroke', diamondcolor).attr('stroke-width', 2);
 
                 // labels and remove buttons
                 var label = axes.append('g').attr('transform', function(d, i) {
@@ -195,7 +195,6 @@ app.directive('control', function($document) {
                 var thisMouseX = d3.event.sourceEvent.clientX;
                 var deltaX = thisMouseX - startMouseX;
                 var xPosition = limitX(startX + deltaX);
-                console.log(xPosition);
                 var thisIndex = d3.select(this).attr('index');
                 var thisValue = (xPosition - indentLeft) / (axisWidth / 100);
                 var type = d3.select(this).attr('type');
@@ -267,13 +266,13 @@ app.directive('control', function($document) {
                 console.log(xPosition);
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
                 d3.select("path#axis-active" + axis).attr('d', 'M' + indentLeft + ' 0  L' + xPosition + ' 0');
-                d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
+                d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -28)");
             }
 
             function drawSlackAxes(axis, xPosition) {
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
                 d3.select("path#axis-active" + axis).attr('d', 'M' + xPosition + ' 0 L' + (indentLeft + axisWidth) + ' 0');
-                d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -25)");
+                d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -28)");
             }
 
             function writeValueToModel(axis, value) {

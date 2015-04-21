@@ -538,6 +538,7 @@
                 height: 100%;
                 left: 0;
                 top: 0;
+                padding-top: 16px;
             }
 
                 
@@ -620,13 +621,13 @@
     }      
       
         .slider-axis {
-            stroke: #ddd;
+            stroke: #fff;
             stroke-width: 2;
             fill: none;
         }
         
         .slider-axis-active {
-            stroke: #000;
+            stroke: #515151;
             stroke-width: 2px;
             fill: none;
         }
@@ -634,9 +635,8 @@
         .slider-handle {
             position: absolute;
             top: 3px;
-            cursor: pointer;
             fill: transparent;
-            stroke: #000;
+            stroke: #515151;
             stroke-width: 2px;
         } 
              
@@ -647,7 +647,7 @@
         }
     
             .label-right-inactive {
-                fill: #aaa;
+                fill: #515151;
                 font-style: italic;
             }
             
@@ -801,21 +801,24 @@
         
             .list-li.selected {
                 background: #eee;
-                border: 1px solid #515151;
             }
         
             .list-sequence-col {
                 float: left;
-                width: 20px;
+                width: 24px;
                 height: 100%;
                 position: relative;
             }
                     
-                .list-sequence-col svg {
-                    margin: 10px 6px;
+                .master-diamond  svg {
+                    margin: 10px 7px;
                 }
                 
-                .list-sequence-col svg .diamond {
+                .instance-diamond  svg {
+                    margin: 6px 4px;
+                }
+                
+                .master-diamond svg polygon {
                     fill: #515151;
                 }
                     
@@ -874,7 +877,7 @@
             
         .list-edit-col {
             float: left;
-            width: calc(100% - 60px);
+            width: calc(100% - 64px);
             height: 100%;
             padding: 8px;
             cursor: default;
