@@ -217,10 +217,11 @@ define([
           , height = data.MOM.master.fontinfo.unitsPerEm || 1000
           , viewBox
           , i,l
+          , calculatedWidth
           ;
 
         try {
-            width = styledict.get('advanceWidth')
+            width = styledict.get('advanceWidth');
         }
         catch(e){
             if(!(e instanceof KeyError))
@@ -229,11 +230,18 @@ define([
             width = height;
         }
 
-        viewBox = [0, 0, width, height].join(' ')
+        viewBox = [0, 0, width, height].join(' ');
 
         for(i=0,l=svgs.length;i<l;i++) {
-            if(svgs[i].parentElement);
+            if(svgs[i].parentElement) {
                 svgs[i].setAttribute('viewBox', viewBox);
+                // Set the newly calculated width to parentElement
+                // This should be done automatically by the browser, but
+                // the viewBox change is ignored by Firefox and Chromium
+                // and not propagated to the parent elements.
+                calculatedWidth = svgs[i].getBoundingClientRect().width + 'px';
+                svgs[i].parentElement.style.width = calculatedWidth;
+            }
         }
     };
 
