@@ -11,46 +11,54 @@
     </div>
 </localmenu>
 
-<div class="panel-border panel-border-with-menu">
-    <div id="instances-list">
-        <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
-            <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-mouseover="mouseoverInstance(instance)" ng-mouseleave="mouseleaveInstance(instance)" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance == data.currentInstance}">
-                <span class="list-sequence-col instance-diamond">
-                    <svg height="21" width="17">
-                        <polygon points="10,2 4,2 2,6 7,15 12,6" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
-                    </svg> 
-                </span>
-                <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}"></span>
-                <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
-                <div class="export-col" ng-click="instance.exportFont = !instance.exportFont">
-                    <span ng-if="instance.exportFont">✓</span>
+    <div id="instances-extra-wide" class="panel-border-with-menu">
+        <div id="fake-instances-panel">&nbsp;</div>
+        <div id="fake-fontexport-panel">&nbsp;</div>
+        <div id="instances-list">
+            <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
+                <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-mouseover="mouseoverInstance(instance)" ng-mouseleave="mouseleaveInstance(instance)" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance == data.currentInstance}">
+                    <span class="list-sequence-col instance-diamond">
+                        <svg height="21" width="17">
+                            <polygon points="10,2 4,2 2,6 7,15 12,6" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
+                        </svg> 
+                    </span>
+                    <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}"></span>
+                    <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
+                    <div class="export-col" ng-click="instance.exportFont = !instance.exportFont">
+                        <div class="instance-spacer">&nbsp;</div>
+                        <div class="instance-checkmark">
+                            <div ng-if="instance.exportFont">✓</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>  
+            <div style="padding: 20px;">
+                <div ng-repeat="instance in data.families[0].instances track by instance.id">
+                    <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
+                    <div>masters: <span ng-repeat="axis in instance.axes">[{{axis.masterdisplayName}}]: {{axis.metapValue | number:3}} | </span></div><br>
                 </div>
-            </li>
-        </ul>  
-        <div style="padding: 20px;">
-            <div ng-repeat="instance in data.families[0].instances track by instance.id">
-                <b>{{instance.id}}</b>
-                <div>axes: <div ng-repeat="axis in instance.axes">{{axis.value}}</div></div><br><br>
-                <div>masters: <div ng-repeat="axis in instance.axes">[{{axis.masterdisplayName}}]: {{axis.metapValue | number:3}}</div></div>
+            </div>
+        </div> 
+        
+        <div id="instance-tools-container">
+            <div id="instances-tools">
+                <div id="add-instance" ng-click="data.addInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
+                    <img src="img/addInstance.png">
+                </div>
+                <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+                    <img src="img/duplicateInstance.png">
+                </div>
+                <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+                    <img src="img/deleteInstance.png">
+                </div>
+            </div>
+            <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': !data.instancesForExport()}">
+                Export…
             </div>
         </div>
-    </div> 
-    </div>
-    
+        
+        
 
-    
-    <div id="instances-tools">
-        <div id="add-instance" ng-click="data.addInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
-            <img src="img/addInstance.png">
-        </div>
-        <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
-            <img src="img/duplicateInstance.png">
-        </div>
-        <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
-            <img src="img/deleteInstance.png">
-        </div>
-        <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': !data.instancesForExport()}">
-            Export…
-        </div>
+        
+
     </div>
-</div>
