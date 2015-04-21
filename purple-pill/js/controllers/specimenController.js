@@ -70,6 +70,8 @@ function($scope, $sce, sharedScope) {
         }, 500);
     }, true);
     
+    var startPosition = parseInt($("#specimen-content").css("padding-left"));
+    
     function manageSpaces() {
         var spaces = $(".space-character");
         var x = 0;
@@ -81,7 +83,6 @@ function($scope, $sce, sharedScope) {
             "clear": "none"
         }); 
         var brokenEnd = false;
-        var startPosition = 16;
         $("#non-glyph-range li").each(function(){
             if ($(this).position().left == startPosition){                
                 if ($(this).hasClass("space-character")) {
