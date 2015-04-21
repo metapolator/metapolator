@@ -459,13 +459,18 @@
         padding: 6px 10px;
         margin-right: 4px;
         cursor: pointer;
-        background: #fff;
+        background: #eee;
         height: 30px;
     }
 
     #design-space-tabs li.selected {
-        background: #aaa;
-        color: #fff;
+        background: #515151;
+        color: #eee;
+    }
+    
+    #design-space-tabs li.add-designspace {
+        background: transparent;
+        color: #515151;
     }
 
     #design-space-tabs li div {
@@ -516,7 +521,7 @@
     .drop-area {
         width: 100%;
         background: #fff;
-        border: 1px solid #ddd;
+        border: 2px solid #eee;
         position: relative;
     }
     
@@ -1037,7 +1042,7 @@
         position: fixed;
         z-index: 102;
         width: 200px;
-        background: #ddd;
+        background: #eee;
         padding: 8px;
         border: 1px solid rgba(0,0,0,0.1);
         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
@@ -1065,14 +1070,16 @@
             }
             
             .control-panel-button {
-                background: #aaa;
+                background: #515151;
+                color: #eee;
                 padding: 4px;
                 margin-bottom: 4px; 
                 cursor: default;
             }
             
                 .control-panel-button.selected, .control-panel-button.push-button-down {
-                    background: #60BFEF;
+                    background: #F01616;
+                    
                 }
             
             .control-panel-cancel {
@@ -1228,7 +1235,7 @@
         }
         
         .lm-head:hover {
-            background: #ddd;
+            background: #eee;
         }
         
             designspace .lm-head:hover {
