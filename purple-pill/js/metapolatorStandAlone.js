@@ -36401,6 +36401,10 @@ define('ufojs/tools/io/_base',[
                     failed = true;
                     callback(error, null);
                 }
+                if(!names.length) {
+                    setTimeout(callback, 0, null, true);
+                    return;
+                }
                 for(i=0;i<names.length;i++) {
                     name = names[i];
                     fullTargetPath = [targetPath, name].join('/');
