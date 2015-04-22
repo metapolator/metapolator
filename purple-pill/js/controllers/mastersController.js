@@ -8,7 +8,47 @@ app.controller("mastersController", function($scope, sharedScope) {
 
     $scope.deleteMasters = function(){
         var thisIndex;
-        if (confirm("You are about to remove master(s). This could affect design spaces as well. Ok?")) {
+        // check nr of masters and nr of desing spaces they use
+        var nMasters = 0;
+        var nDesignspaces = [];
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.edit[$scope.data.view.viewState]){
+                    nMasters++;
+                    angular.forEach($scope.data.designspaces, function(designspace) {
+                        angular.forEach(designspace.axes, function(axis) {
+                            console.log(axis);
+                            if(axis.masterName == master.name) {
+                                nDesignspaces.push(designspace.name);
+                            }
+                        });
+                    });
+                } 
+            });
+        }); 
+        
+        if (nDesignspaces.length == 0) {
+            if (nMasters == 1) {
+                var message = "Delete master?";
+            } else {
+                var message = "Delete " + nMasters + " masters?";
+            }
+        } else {
+            if (nMasters == 1) {
+                if (nDesignspaces.length == 1) {
+                    var message = "Delete master? It is in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
+                } else {
+                    var message = "Delete master? It is in use on " + nDesignspaces.length + " design spaces and will no longer be part of its instances after deleting.";
+                }
+            } else {
+                if (nDesignspaces.length == 1) {
+                    var message = "Delete " + nMasters + "  masters? They are in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
+                } else {
+                    var message = "Delete " + nMasters + "  masters? They are in use on " + nDesignspaces.length + " design spaces and will no longer be part of its instances after deleting.";
+                }
+            }
+        }
+        if (confirm(message)) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 var notDeleted = [];
                 angular.forEach(sequence.masters, function(master, index) {
@@ -16,7 +56,9 @@ app.controller("mastersController", function($scope, sharedScope) {
                         notDeleted.push(master);
                     } else {
                         thisIndex = index;
-                        $scope.data.removeMasterFromEachDesignspaces(master.name);
+                        if (nDesignspaces.length > 0) {
+                           $scope.data.removeMasterFromEachDesignspaces(master.name); 
+                        }
                         if($scope.data.pill != "blue") {
                             $scope.data.stateful.project.deleteMaster(master.name);
                             // empty cps file to prevent caching issues
