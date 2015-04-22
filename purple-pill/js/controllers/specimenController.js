@@ -6,15 +6,14 @@ function($scope, $sce, sharedScope) {
         return $scope.data.stateful.glyphRendererAPI.get(masterName, glyphName);
     };
 
-
     $scope.sortableOptions = {
         helper : 'clone'
     };
 
     /*****************filter parameters *****************/
-   
-   // specimenPanel tells the filter to use masters or instances
-   $scope.specimenPanel;
+
+    // specimenPanel tells the filter to use masters or instances
+    $scope.specimenPanel
 
     $scope.specimen = [{
         name : "Metapolator",
@@ -57,41 +56,50 @@ function($scope, $sce, sharedScope) {
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
         $scope.filteredGlyphs = newVal;
         setTimeout(function() {
-             manageSpaces();
+            manageSpaces();
         }, 500);
     }, true);
     
+    $scope.changedSize = 0;
+
     $scope.$watch("fontSize", function(newVal) {
+        // make with auto after initial glyph drawing and resizing
+        $scope.changedSize++;
+        if ($scope.changedSize == 2) {
+            $("glyph").each(function() {
+                $(this).css("width", "auto");
+            });
+        }
         setTimeout(function() {
-             manageSpaces();
+            manageSpaces();
         }, 500);
     }, true);
-    
+
     var startPosition = parseInt($("#specimen-content").css("padding-left"));
-    
+
     function manageSpaces() {
         var spaces = $(".space-character");
         var x = 0;
         var prev_x = 0;
         var prev_space = false;
-        
+
         $(spaces).css({
-            "width": "auto",
-            "clear": "none"
-        }); 
+            "width" : "auto",
+            "clear" : "none"
+        });
         var brokenEnd = false;
-        $("#non-glyph-range li").each(function(){
-            if ($(this).position().left == startPosition){                
+        $("#non-glyph-range li").each(function() {
+            if ($(this).position().left == startPosition) {
                 if ($(this).hasClass("space-character")) {
                     $(this).css({
-                        "width": "0",
-                        "clear": "both"
-                    }); 
+                        "width" : "0",
+                        "clear" : "both"
+                    });
                 }
-                if (brokenEnd && !$(this).hasClass("space-character")&& !$(this).hasClass("line-break") && !$(this).hasClass("paragraph-break")) {
+                if (brokenEnd && !$(this).hasClass("space-character") && !$(this).hasClass("line-break") && !$(this).hasClass("paragraph-break")) {
                     $(prev_space).css({
-                        "width": "0",
-                        "clear": "both"
+                        "width" : "0",
+                        "clear" : "both"
                     });
                 }
             }
@@ -111,14 +119,14 @@ function($scope, $sce, sharedScope) {
     $scope.selectGlyph = function(sequenceId, masterId, glyphName) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.edit) {
+                if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = true;
                         } else {
                             glyph.edit = false;
                         }
-                    }); 
+                    });
                 }
             });
         });
@@ -128,12 +136,12 @@ function($scope, $sce, sharedScope) {
     $scope.toggleGlyph = function(sequenceId, masterId, glyphName) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.edit) {
+                if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = !glyph.edit;
                         }
-                    }); 
+                    });
                 }
             });
         });
@@ -143,21 +151,21 @@ function($scope, $sce, sharedScope) {
     $scope.selectSet = function(set) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.edit) {
+                if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
                             if (glyph.name == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
                                 isinset = true;
                             }
-                        } 
+                        }
                         // could gain speed here, by removing out of set
                         if (isinset) {
                             glyph.edit = true;
                         } else {
                             glyph.edit = false;
                         }
-                    }); 
+                    });
                 }
             });
         });
@@ -167,19 +175,19 @@ function($scope, $sce, sharedScope) {
     $scope.toggleSet = function(set) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.edit) {
+                if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
                             if (glyph.name == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
                                 isinset = true;
                             }
-                        } 
+                        }
                         // could gain speed here, by removing out of set
                         if (isinset) {
                             glyph.edit = !glyph.edit;
                         }
-                    }); 
+                    });
                 }
             });
         });
@@ -189,10 +197,10 @@ function($scope, $sce, sharedScope) {
     $scope.deselectAll = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if(master.edit) {
+                if (master.edit) {
                     angular.forEach(master.glyphs, function(glyph) {
                         glyph.edit = false;
-                    }); 
+                    });
                 }
             });
         });
@@ -205,14 +213,14 @@ function($scope, $sce, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             if (sequence.id == sequenceId) {
                 angular.forEach(sequence.masters, function(master) {
-                    if(master.id == masterId && master.edit) {
+                    if (master.id == masterId && master.edit) {
                         angular.forEach(master.glyphs, function(glyph) {
-                            if(glyph.name == glyphName) {
+                            if (glyph.name == glyphName) {
                                 if (glyph.edit) {
                                     edit = true;
                                 }
-                            }    
-                        }); 
+                            }
+                        });
                     }
                 });
             }
