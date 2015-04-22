@@ -21,25 +21,6 @@ app.directive('ngInputFocus', function($compile) {
     };
 });
 
-app.directive('ag', function($compile) {
-    return {
-        restrict : 'C',
-        require : 'ngModel',
-        link : function(scope, element, attrs, ctrl) {
-            var masterName = attrs.mastername;
-            var masterAg = attrs.masterag;
-            if (scope.data.pill != "blue") {
-                var svg0 = scope.data.renderGlyphs(masterName, masterAg[0]);
-                $compile(svg0)(scope);
-                element.append(svg0);
-                var svg1 = scope.data.renderGlyphs(masterName, masterAg[1]);
-                $compile(svg1)(scope);
-                element.append(svg1);
-            }
-        }
-    };
-});
-
 app.directive('lmButton', function($compile) {
     return {
         restrict : 'C',
@@ -60,7 +41,7 @@ app.directive('glyph', function($compile) {
         link : function(scope, element, attrs, ctrl) {
             var masterName = attrs.mastername;
             var glyphName = attrs.glyph;
-            
+           
             element.bind('$destroy', function(event) {
                 if (scope.data.pill == "red") {
                     scope.data.stateful.glyphRendererAPI.revoke(masterName, glyphName);

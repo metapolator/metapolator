@@ -22,7 +22,13 @@
                                 <polygon points="5,0 0,3 0,8 5,11 10,8 10,3">
                             </svg> 
                         </span>
-                        <span class="list-view-col ag" type="master" mastername="{{master.name}}" masterag="{{master.ag}}" ng-model="master.ag" ng-click="toggleDisplay(master)" ng-class="{'selected': master.display}"></span>
+                        <span class="list-view-col" type="master" mastername="{{master.name}}" masterag="{{master.ag}}" ng-model="master.ag" ng-click="toggleDisplay(master)" ng-class="{'selected': master.display}">
+                            <ul>
+                                <li ng-repeat="x in master.ag">
+                                    <glyph mastername="{{master.name}}" glyph="{{x}}"></glyph>
+                                </li>
+                            </ul>
+                        </span>
                         <span class="list-edit-col rename" ng-model="master.displayName" ng-class="{'selected': master.edit}"></span>
                     </li>
                 </ul>

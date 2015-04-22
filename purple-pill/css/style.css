@@ -365,7 +365,7 @@
         margin-bottom: 40px;
     }
     
-        #specimen-content ul li {
+        #specimen-content ul li, .list-view-col ul li {
             list-style: none;
             display: inline-block;
             cursor: default;
@@ -378,9 +378,17 @@
         }
         
             #specimen-content li glyph {
-                display: inline-block;
                 border-bottom: 4px solid transparent;
             }
+            
+            glyph {
+                display: block;
+            }
+            
+            .list-view-col glyph {
+                height: 24px;
+            }
+            
                   
                 /* space character is temp until there is a space character in the master */
                 #specimen-content li.space-character {
@@ -406,7 +414,8 @@
                     border-bottom: 4px solid #00f!important;
                 }
                     
-                   #specimen-content li glyph svg {
+                   glyph svg {
+                       display: block;
                        height: 100%;
                    } 
                 
@@ -848,10 +857,20 @@
             text-align: center;
             width: 32px;
             height: 100%;
-            padding-top: 1px;
             font-size: 17px;
             cursor: default;
+            padding: 6px 2px 2px 2px;
+            overflow: hidden;
         }
+        
+            .list-view-col ul {
+                margin: 0;
+                padding: 0;    
+            }
+            
+                .list-view-col ul li {
+                    float: left;
+                }
         
             #instances-list .list-view-col {
                 border-bottom: 2px solid #eee;
@@ -873,11 +892,6 @@
                     fill: #515151!important;
                 }
         
-            .list-view-col svg {
-                height: 60%;
-                margin-top: 20%;
-            }
-            
             .inactive-master .list-view-col {
                 background: #eee!important;
                 transition: background 0.5s;
@@ -895,7 +909,7 @@
             float: left;
             width: calc(100% - 64px);
             height: 100%;
-            padding: 8px;
+            padding: 6px;
             cursor: default;
             white-space: nowrap;
             overflow: hidden;

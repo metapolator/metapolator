@@ -37,7 +37,7 @@ app.controller('engine', function($scope, sharedScope) {
                     ruleIndex : 3,
                     display : false,
                     edit : true,
-                    ag : "ag",
+                    ag : "Ag",
                     glyphs : glyphs,
                     elementType : "master",
                     parameters : [{
