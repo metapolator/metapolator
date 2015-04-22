@@ -38361,7 +38361,7 @@ define('metapolator/ui/services/GlyphRendererAPI',[
         data.svg.appendChild(path);
 
         // update all viewboxes
-        this._setSVGViewBox(data);
+        this._updateSVGViewBoxes(data);
     };
 
     _p._scheduleRender = function(data) {
@@ -38423,14 +38423,11 @@ define('metapolator/ui/services/GlyphRendererAPI',[
      *      width is advanceWidth
      *      height is should the font height (fontinfo.unitsPerEm)
      */
-    _p._setSVGViewBox = function(data, svg) {
-        var svgs = svg ? [svg] : data.svgInstances
-          , styledict = data.MOM.getComputedStyle()
+    _p._getViewBox = function(data) {
+        var styledict = data.MOM.getComputedStyle()
           , width
           , height = data.MOM.master.fontinfo.unitsPerEm || 1000
           , viewBox
-          , i,l
-          , calculatedWidth
           ;
 
         try {
@@ -38443,19 +38440,44 @@ define('metapolator/ui/services/GlyphRendererAPI',[
             width = height;
         }
 
-        viewBox = [0, 0, width, height].join(' ');
+        return [0, 0, width, height].join(' ');
+    };
 
+    _p._applySVGViewBox = function(svg, viewBox) {
+        svg.setAttribute('viewBox', viewBox);
+        if(!svg.parentElement)
+            return;
+        // Set the newly calculated width to parentElement
+        // This should be done automatically by the browser, but
+        // the viewBox change is ignored by Firefox and Chromium
+        // and not propagated to the parent elements.
+        // FIXME: This is a pesky workaround. In fact anything that triggers
+        // svg.parentElement recalculating its width would work here, setting
+        // a explicit height is a bit too much; see also An issue raised by
+        // this behavior:
+        // https://github.com/metapolator/metapolator/issues/416#issuecomment-95145551
+        // The width should automatically adapt when svg.parentElement
+        // changes it's height, but it does not when width is set via css
+        // of course.
+        var calculatedWidth = svg.getBoundingClientRect().width + 'px';
+        svg.parentElement.style.width = calculatedWidth;
+    };
+
+    _p._updateSVGViewBoxes = function (data) {
+        var viewBox = this._getViewBox(data)
+          , svgs = data.svgInstances
+          , i,l
+          ;
         for(i=0,l=svgs.length;i<l;i++) {
-            if(svgs[i].parentElement) {
-                svgs[i].setAttribute('viewBox', viewBox);
-                // Set the newly calculated width to parentElement
-                // This should be done automatically by the browser, but
-                // the viewBox change is ignored by Firefox and Chromium
-                // and not propagated to the parent elements.
-                calculatedWidth = svgs[i].getBoundingClientRect().width + 'px';
-                svgs[i].parentElement.style.width = calculatedWidth;
-            }
+            if(!svgs[i].parentElement)
+                continue;
+            this._applySVGViewBox(svgs[i], viewBox);
         }
+    };
+
+    _p._setSVGViewBox = function(data, svg) {
+        var viewBox = this._getViewBox(data);
+        this._applySVGViewBox(svg, viewBox);
     };
 
     _p._createDisplayElement = function(data, type) {
