@@ -43,11 +43,8 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var parameterDict = cpsRule.parameters;
             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
             for (var i = 0; i < instance.axes.length; i++) {
-                var masterName = instance.axes[i].masterName;
-                var selector = 'S"master#' + masterName + '"';
-                //setParameter(parameterDict, "baseMaster" + (i + 1), selector);
-                setParameter(parameterDict, "proportion" + (i + 1), instance.axes[i].metapValue);
-                console.log(instance.axes[i].metapValue);
+                setParameter(parameterDict, "proportion" + i, instance.axes[i].metapValue);
+                console.log(instance.axes[i].masterdisplayName + ": " + instance.axes[i].metapValue);
             }
         }
     };

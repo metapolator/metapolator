@@ -263,7 +263,6 @@ app.directive('control', function($document) {
             }
 
             function drawNormalAxes(axis, xPosition) {
-                console.log(xPosition);
                 d3.select("circle#slider" + axis).attr('cx', xPosition);
                 d3.select("path#axis-active" + axis).attr('d', 'M' + indentLeft + ' 0  L' + xPosition + ' 0');
                 d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - diamondsize) + ", -28)");
