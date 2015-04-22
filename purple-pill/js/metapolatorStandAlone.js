@@ -36091,10 +36091,9 @@ define('io/zipUtil',[
             ;
         for (i=0; i<files.length; i++){
             var file = files[i],
-                relative_path = file.split(sourcePath)[1],
                 data = io.readFile(false, file)
                 ;
-            zip.file(relative_path, data, {binary:true});
+            zip.file(file, data, {binary:true});
         }
 
         return zip.generate({type:dataType});
@@ -37489,11 +37488,10 @@ define('metapolator/project/MetapolatorProject',[
                                this.fontinfoFileName, this.fontinfoFile );
     };
 
-    function exportInstance(io, project, masterName, instanceName, precision) {
+    function exportInstance(io, project, masterName, dirName, precision) {
         // returns a models/Controller
         var model = project.open(masterName)
           , master = model.query('master#' + masterName)
-          , dirName = instanceName
           , glyphSet
           , exportController
           ;
@@ -37518,24 +37516,19 @@ define('metapolator/project/MetapolatorProject',[
         exportController.export();
     }
 
-    _p.exportInstance = function(masterName, instanceName, precision){
-        if (instanceName.slice(-4) === '.zip'){
-            var zipped = this.getZippedInstance(masterName, instanceName, precision, 'nodebuffer');
+    _p.exportInstance = function(masterName, targetFileName, precision){
+        if (targetFileName.slice(-8) === '.ufo.zip'){
+            var zipped = this.getZippedInstance(masterName, targetFileName, precision, 'nodebuffer');
             this._io.writeFile(false, instanceName, zipped);
         } else {
-            exportInstance(this._io, this, masterName, instanceName, precision);
+            exportInstance(this._io, this, masterName, targetFileName, precision);
         }
     };
 
-    _p.getZippedInstance = function(masterName, instanceName, precision, dataType) {
-        var temp_dir = instanceName+"_temp"
-          , mem_io = new InMemory()
-          ;
-
-        //export the font to a temporary directory
-        exportInstance(mem_io, this, masterName, temp_dir, precision);
-
-        return zipUtil.encode(false, mem_io, temp_dir, dataType);
+    _p.getZippedInstance = function(masterName, targetDirName, precision, dataType) {
+        var mem_io = new InMemory();
+        exportInstance(mem_io, this, masterName, targetDirName, precision);
+        return zipUtil.encode(false, mem_io, targetDirName, dataType);
     };
 
     _p._getGlyphClassesReverseLookup = function() {
