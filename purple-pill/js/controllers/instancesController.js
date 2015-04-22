@@ -413,7 +413,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         var n = axesSet.length;
         $scope.createCommonCPSfile(n); 
         // import the common file
-        var cpsString = '@import "metapolation-' + n + '.cps";';
+        var cpsString = '@import "generated/metapolation-' + n + '.cps";';
         // add the metapolation values as last item
         cpsString += '* { ';
         for (var i = 0; i < n; i++) {
@@ -425,7 +425,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
     
     $scope.createCommonCPSfile = function(n) {
-        var commonCPSfile = 'metapolation-' + n + '.cps';
+        var commonCPSfile = 'generated/metapolation-' + n + '.cps';
         var commonCPSString;
         try {
             $scope.data.stateful.project.ruleController.getRule(false, commonCPSfile);
