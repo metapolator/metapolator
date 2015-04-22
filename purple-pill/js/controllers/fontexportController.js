@@ -23,10 +23,15 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.exportFont) {
-                    var filename = instance.displayName + ".zip", message = "Exporting Zipped UFO font: " + filename;
+                    var targetDirName = instance.displayName + ".ufo"
+                      , filename = targetDirName + ".zip"
+                      , message = "Exporting Zipped UFO font: " + filename
+                      ;
                     $scope.data.alert(message, true);
                     var precision = -1//no rounding
-                    , zipped_data = $scope.data.stateful.project.getZippedInstance(instance.name, instance.displayName, precision, "blob");
+                      , zipped_data = $scope.data.stateful.project.getZippedInstance(
+                                       instance.name, targetDirName, precision, "blob")
+                      ;
                     $scope.data.stateless.saveAs(zipped_data, filename);
                 }
             });
